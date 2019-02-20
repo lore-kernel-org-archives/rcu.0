@@ -2,99 +2,116 @@ Return-Path: <SRS0=hk7p=Q3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97D37C10F07
-	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 18:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BD9FC43381
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 18:28:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 709CB20645
-	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 18:09:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="WbT9qddU"
+	by mail.kernel.org (Postfix) with ESMTP id 7A67F2146E
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 18:28:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbfBTSJ4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Feb 2019 13:09:56 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38183 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbfBTSJz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Feb 2019 13:09:55 -0500
-Received: by mail-qt1-f195.google.com with SMTP id s1so2134541qte.5
-        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 10:09:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1cWhkqKwfVl97PNcjmjtwuG+Olh/UWCMwWrW24lQqxM=;
-        b=WbT9qddUPijPvnGLexnd0oc3f3xnZ7u9gZIsN6pODW5a9+CxWzPF/nFpiPu3kJ/wpm
-         9wx++wrlscUDwEX2iOrkOs7mnW9bP+GndwayOmMPArQIO4RMUpSyZu9/uojnop8O/4/P
-         Nf3v82PWxZkpO980hO8TH/4Eqjc7y3xCZJ2AY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1cWhkqKwfVl97PNcjmjtwuG+Olh/UWCMwWrW24lQqxM=;
-        b=MtbJwqljhadntVMStMDDBQ7/KITpePo5zF5v66SVbW6CFLtwFuA29V4xjZbgYNOCOd
-         kv80rdgqVy8jb8llXHI9TpuPtyG1PkOdbPLBcbdjQSiqXxLCSanuo9PZ4F6lXat1awd+
-         gSzj9Gou400mDCpkmBdAMYpW1oVjrZ5IeUlZb1YmFVg1ku3SJuzSnWlvgFPPs7iS4ckD
-         m1G5ZjFSFE2+Al9enFclKL4fnGKhepShGJNK2DYJu8nChAx4b6A1Ld94XWoLtFPnShta
-         fXbBFH9Qj5A9v/MOm/xP59npRjqEVNLGKIhPX31l1WJ5Gn3p/DWTn+JS0Gct8g3RBFu6
-         +Wwg==
-X-Gm-Message-State: AHQUAuYPl2/djHznROvg0dsc2I2RHpP0jL27Z9uaotmWd9tcImpZrRIU
-        /8CX1bKX5z43uxlayKKgVo4inqboTG4=
-X-Google-Smtp-Source: AHgI3IZ27RUnaOjU+KMm0fqd88cEd0GXvVfhBcyzjVldiBZp2tj0TppMxcaKGX0vvlDfKxkNCQtccQ==
-X-Received: by 2002:ac8:2fd1:: with SMTP id m17mr3623322qta.301.1550686194620;
-        Wed, 20 Feb 2019 10:09:54 -0800 (PST)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id z41sm14068619qtz.5.2019.02.20.10.09.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Feb 2019 10:09:53 -0800 (PST)
-Date:   Wed, 20 Feb 2019 13:09:52 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1726213AbfBTS22 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Feb 2019 13:28:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38566 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726232AbfBTS21 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 20 Feb 2019 13:28:27 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1KIOfGm118693
+        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 13:28:26 -0500
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2qsbh3hyrm-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 13:28:26 -0500
+Received: from localhost
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Wed, 20 Feb 2019 18:28:25 -0000
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 20 Feb 2019 18:28:22 -0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1KISLjs19595292
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Feb 2019 18:28:21 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06F72B2066;
+        Wed, 20 Feb 2019 18:28:21 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9019B2064;
+        Wed, 20 Feb 2019 18:28:20 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.138.62])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Feb 2019 18:28:20 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id AEF5F16C3B20; Wed, 20 Feb 2019 10:28:20 -0800 (PST)
+Date:   Wed, 20 Feb 2019 10:28:20 -0800
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
 Subject: Re: [RFC 0/5] RCU fixes for rcu_assign_pointer usage
-Message-ID: <20190220180952.GB97771@google.com>
+Reply-To: paulmck@linux.ibm.com
 References: <20190220040827.136184-1-joel@joelfernandes.org>
  <CAEXW_YRasK=os37QxCwoAY+DXKVD3bBTvR4qH3jaSJB3rP5a-Q@mail.gmail.com>
  <20190220164242.GN11787@linux.ibm.com>
+ <20190220180952.GB97771@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190220164242.GN11787@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190220180952.GB97771@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19022018-0052-0000-0000-0000038D66EA
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010633; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000281; SDB=6.01163889; UDB=6.00607748; IPR=6.00944473;
+ MB=3.00025670; MTD=3.00000008; XFM=3.00000015; UTC=2019-02-20 18:28:23
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19022018-0053-0000-0000-00005FE9A801
+Message-Id: <20190220182820.GO11787@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-02-20_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1902200128
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 20, 2019 at 08:42:43AM -0800, Paul E. McKenney wrote:
-> On Tue, Feb 19, 2019 at 08:11:36PM -0800, Joel Fernandes wrote:
-> > On Tue, Feb 19, 2019 at 8:08 PM Joel Fernandes (Google)
-> > <joel@joelfernandes.org> wrote:
-> > >
-> > > These patches fix various RCU API usage issues found due to sparse errors as a
-> > > result of the recent check to add rcu_check_sparse() to rcu_assign_pointer().
-> > >
-> > > This is very early RFC stage, and is only build tested. I am also only sending
-> > > to the RCU group for initial review before sending to LKML. Thanks for any feedback!
-> > >
-> > > There are still more usages that cause errors such as rbtree which I am
-> > > looking into.
+On Wed, Feb 20, 2019 at 01:09:52PM -0500, Joel Fernandes wrote:
+> On Wed, Feb 20, 2019 at 08:42:43AM -0800, Paul E. McKenney wrote:
+> > On Tue, Feb 19, 2019 at 08:11:36PM -0800, Joel Fernandes wrote:
+> > > On Tue, Feb 19, 2019 at 8:08 PM Joel Fernandes (Google)
+> > > <joel@joelfernandes.org> wrote:
+> > > >
+> > > > These patches fix various RCU API usage issues found due to sparse errors as a
+> > > > result of the recent check to add rcu_check_sparse() to rcu_assign_pointer().
+> > > >
+> > > > This is very early RFC stage, and is only build tested. I am also only sending
+> > > > to the RCU group for initial review before sending to LKML. Thanks for any feedback!
+> > > >
+> > > > There are still more usages that cause errors such as rbtree which I am
+> > > > looking into.
+> > > 
+> > > Looks like it got sent to LKML anyway, ;-) That's Ok since it is
+> > > prefixed as RFC.
 > > 
-> > Looks like it got sent to LKML anyway, ;-) That's Ok since it is
-> > prefixed as RFC.
+> > As is only right and proper.  ;-)
+> > 
+> > I don't see an immediate problem with them, but it would be good to get
+> > the relevant developers and maintainers on CC for the next version.  I
+> > cannot claim to know that code very well.
 > 
-> As is only right and proper.  ;-)
-> 
-> I don't see an immediate problem with them, but it would be good to get
-> the relevant developers and maintainers on CC for the next version.  I
-> cannot claim to know that code very well.
+> Definitely will CC them next time, sorry about that. I'll stop being so shy
+> but I have some scars that are still healing ;-)
 
-Definitely will CC them next time, sorry about that. I'll stop being so shy
-but I have some scars that are still healing ;-)
+If you don't get at least a few scars, you aren't trying hard enough!  ;-)
 
- - Joel
+							Thanx, Paul
 
