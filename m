@@ -1,80 +1,95 @@
-Return-Path: <SRS0=GQnZ=QU=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=hk7p=Q3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD81DC43381
-	for <rcu@archiver.kernel.org>; Wed, 13 Feb 2019 22:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C954C43381
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 721432082F
-	for <rcu@archiver.kernel.org>; Wed, 13 Feb 2019 22:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1550097119;
-	bh=5e9nyGgeJbTClkNilVTelqAakOrUHsM4imp4VVeaPyg=;
-	h=Date:From:To:Subject:List-ID:From;
-	b=EdUCw3opCw5SuaPkp4qNfyTcSLfHFaWQ2cnNZw66Ne8h+TjKUMTnypEKOUbjzGdup
-	 WcXcX79ns0JN5wVsC09IipDcRo4Gd9J+6sn57xVNB5h8g1kCmRd5DwsizVBClPtbNb
-	 RwCzvxJ5N02WCS8JeXeHf2CqjgXUWGS3N+9ZcfnA=
+	by mail.kernel.org (Postfix) with ESMTP id 2FA302147A
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:01 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pxGYaTK+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbfBMWb7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Feb 2019 17:31:59 -0500
-Received: from mail-it1-f177.google.com ([209.85.166.177]:53248 "EHLO
-        mail-it1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728708AbfBMWb7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Feb 2019 17:31:59 -0500
-Received: by mail-it1-f177.google.com with SMTP id x131so8745543itc.3
-        for <rcu@vger.kernel.org>; Wed, 13 Feb 2019 14:31:58 -0800 (PST)
+        id S1728754AbfBTEJA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Feb 2019 23:09:00 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:33051 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbfBTEJA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Feb 2019 23:09:00 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x9so1154130qkf.0
+        for <rcu@vger.kernel.org>; Tue, 19 Feb 2019 20:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=YMG9wtGXVqPZjnOKrkyODVQVkIGZzvk+L2/QJenOM5A=;
-        b=d5YFvbYqOO8N4Z98OGtg8mf/pnknC/mqWCVBhEWakac7pAa0VVnT0lnTaLy28YShB3
-         ilpKXCVC6UsHvqQegtXDBjYWfUO4ujWZlOc9JY8mDMFy8jREAIJ+t3tUN1e7sxOf9lz3
-         7O02oCOuS0uSRRESBm2Yb8jJD7akAxjE/6fGo=
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HguPMmzXQ5VlR/oudafavQco3plilFgPNJadffOuwes=;
+        b=pxGYaTK+n45dzjnRfhmqObmqm+T9nwQUNy8X+j9nrEdv6IEdvWnN/udgsHrtFIS4dW
+         XZMYkn7ddSYsFIED5wl5lHuZxO704VINBhjwe3UTLuNX/gf7biyXSD4fDp/dxL736BeH
+         V2SBj+BDtT/C3OiE8Bh13pi5kjC7qADrvHsa8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=YMG9wtGXVqPZjnOKrkyODVQVkIGZzvk+L2/QJenOM5A=;
-        b=tsTwKBI7grt0DVv9mTb4eeiprNEZDT0b8rR5nyznNYD2xdnFvNCIT1F7xeVU3WbUam
-         2hMl4w2liy37mKmigUwdYpcQ8/uWqwu3qZA0iuwH9lv0adknxiwgS0Hqp7XFdps5OpEz
-         MehOriki21VsI0/MSEcrYgJyZ+v3ZF3CRq+yRXLLqG3cKMRQKEqRg0L3FrIB1Fauh0Jb
-         wlO+PS+mA3O9K69yAID9Me3bQAHAcpmbxFR+TlzRIwkDSV0Gufcd+U4AXTdELb5VCwrw
-         juyrcYN52ODnUt571Db1TrFtohaK027VW8UpfmAYm8ybHULqv4zQbQDztz8RuoExSGWP
-         8ELg==
-X-Gm-Message-State: AHQUAubbXfYhW72GT+/1rfqOyxWmpCeTiBvPyJUIWM5MNdM4qi38/E9d
-        gOV6h7+snucr9oGlAfLki87w4JbopVMABQ==
-X-Google-Smtp-Source: AHgI3Iarh4hxShPVVR9LjshcJlKzXbFg4eQ6M/WVd/RT0BkcS4Vc2gcRxVJLo/EmD7+8BaVg/m/pYA==
-X-Received: by 2002:a02:c4a:: with SMTP id g71mr299414jad.25.1550097117688;
-        Wed, 13 Feb 2019 14:31:57 -0800 (PST)
-Received: from chatter.qube.local ([184.75.214.131])
-        by smtp.gmail.com with ESMTPSA id n124sm319224itn.4.2019.02.13.14.31.56
-        for <rcu@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Feb 2019 14:31:57 -0800 (PST)
-Date:   Wed, 13 Feb 2019 17:31:55 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     rcu@vger.kernel.org
-Subject: Test archiver service, ignore
-Message-ID: <20190213223155.GB20543@chatter.qube.local>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HguPMmzXQ5VlR/oudafavQco3plilFgPNJadffOuwes=;
+        b=EsNzZ8jq39Uv33mxvYv8z7DMB8GnqjrrfHLkAkHOnvuZnUui72FCZ2SwbUEpjzbkXl
+         aOp1nlHTyPlzH0K08RwJb0ENucQmlmMq3TPEUYB9XytGB3/Nab/tRH7XH0CW/MZ4USG3
+         8e6bsjAo9ZJ4sbSowpFsQlonx6yAphl0oz2muzmgkf5nYMshjRau1pLxnSyh+BzSLJR9
+         DzzuZmOGxBfy7HiWh1ZgxcCuH9MTeA+cdSr3kJlfZK/fjQykBaSI3HeL66tZ+Vq6NZbm
+         Bb4LSl+Qi1RmZEDmlME9UoqxJINBxA0NgTF9hWF4+TKWIyeoakQHWBi/PJj+RnfZK1RG
+         2nBQ==
+X-Gm-Message-State: AHQUAuZ62HeMkUoAwPxtB3ifTrGFIkwmKmNS+L8MSjd1T9ZU8VXHrwBO
+        2ptDAKmJPN86X4gL1/CbVTYi8w==
+X-Google-Smtp-Source: AHgI3IYG7MB2qKkvJQm4+Qfujh51SqDR8MfTg1BZmf54LmG9ibWntIfhP3xy1Y2xWtphZrYkmsYsRQ==
+X-Received: by 2002:ac8:365a:: with SMTP id n26mr15031190qtb.18.1550635739422;
+        Tue, 19 Feb 2019 20:08:59 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
+        by smtp.gmail.com with ESMTPSA id s19sm2024593qth.80.2019.02.19.20.08.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Feb 2019 20:08:57 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        paulmck@linux.ibm.com
+Subject: [RFC 0/5] RCU fixes for rcu_assign_pointer usage
+Date:   Tue, 19 Feb 2019 23:08:22 -0500
+Message-Id: <20190220040827.136184-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello:
+These patches fix various RCU API usage issues found due to sparse errors as a
+result of the recent check to add rcu_check_sparse() to rcu_assign_pointer().
 
-The archiver service on lore.kernel.org/rcu was not properly configured, 
-so it didn't receive the messages sent to the list. I believe I've fixed 
-the problem, but to verify this, I am sending this message to confirm 
-delivery.
+This is very early RFC stage, and is only build tested. I am also only sending
+to the RCU group for initial review before sending to LKML. Thanks for any feedback!
 
--K
+There are still more usages that cause errors such as rbtree which I am
+looking into.
+
+Joel Fernandes (5):
+net: rtnetlink: Fix incorrect RCU API usage
+ixgbe: Fix incorrect RCU API usage
+sched/cpufreq: Fix incorrect RCU API usage
+sched/toplogy: Use smp_store_release() instead of rcu_assign_pointer
+rcuwait: Replace rcu_assign_pointer with smp_store_release
+
+drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  4 ++--
+drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 16 +++++++++++-----
+include/linux/rcuwait.h                       |  2 +-
+kernel/sched/cpufreq.c                        |  8 ++++++--
+kernel/sched/sched.h                          |  2 +-
+kernel/sched/topology.c                       | 16 ++++++++--------
+net/core/rtnetlink.c                          |  4 ++--
+7 files changed, 31 insertions(+), 21 deletions(-)
+
+--
+2.21.0.rc0.258.g878e2cd30e-goog
+
