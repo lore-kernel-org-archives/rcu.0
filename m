@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95478C43381
-	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C39C10F01
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5EBEB2183F
-	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A15742183F
+	for <rcu@archiver.kernel.org>; Wed, 20 Feb 2019 04:09:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uurRNFsC"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UyZw/B4f"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728754AbfBTEJF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Feb 2019 23:09:05 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45777 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbfBTEJE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Feb 2019 23:09:04 -0500
-Received: by mail-qk1-f195.google.com with SMTP id v139so1104528qkb.12
-        for <rcu@vger.kernel.org>; Tue, 19 Feb 2019 20:09:03 -0800 (PST)
+        id S1728754AbfBTEJK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Feb 2019 23:09:10 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39188 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728691AbfBTEJK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Feb 2019 23:09:10 -0500
+Received: by mail-qk1-f194.google.com with SMTP id x6so1128623qki.6
+        for <rcu@vger.kernel.org>; Tue, 19 Feb 2019 20:09:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jrq0vtH0QTYMuPVHkZU/Hm3vLoDV6p5bboaCxjtmhVY=;
-        b=uurRNFsCYX6PMRTytiTuGcwrMTTZOTBDjQ0SUTATr2KRFxnBwKKjEwnlSXek2YTNry
-         X71aG3hwnTf83MjrTNF3rf4eGy1EbtFJmvot9TUOIzgKpamBMIJRhF6TNppZ1oyFumGZ
-         jNkX4Yih63iakKtmAiXSCCC/QvAhMeUBBSmJw=
+        bh=P1C55xJx/uAH3YLT6Vk7PSnsH5amwpGoZRQoHvwEukE=;
+        b=UyZw/B4fiNHUYDJUNfiS5hkWYfP0lwpKvyAB5zcqI8UfU62YyWx9alAF5kVcJWS8/T
+         VfVFeJB7pjC7a89hMsyqbQTdRd6vY6VJHZHUMSrGzC7rA7Ong3ARGbRPPHH5/c3mlsyq
+         wr8goT+AesLpCk+OHYDqabldcgIIrxKktcYxc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jrq0vtH0QTYMuPVHkZU/Hm3vLoDV6p5bboaCxjtmhVY=;
-        b=j/Jt8H5FK68beEstI8lm0jJ2ASty/0G/iPaxUOGeaoCMCkGK4kzGE4YKozbjjFT38E
-         7mSZmrZ2/64g8z8mdADi/XAsO/iXSYhNe6nKcdnjwl0v0nteM1xaOBW2n2+yKUth+tVA
-         /5+b6vDbJgfhLWBdRAUk1GzfIyxv94DSydudrdqPKunp1JVV+872QJlg2+s0TIzCD0/P
-         YGk+lN8tvdvVjXkydX4CYu0xUlK4QY0lDTiY1sJLD//5FN6R2QFcOffLklP9dMrhbjew
-         cH35+RRcugcKMtznSigmrc/9SvSzLu8fGy7A2DV3GRUb6MquzoDo4x4Tlr1ToVWBFnIC
-         OVnw==
-X-Gm-Message-State: AHQUAuaaJxtGO1qfxcYWo7ixto1vtM1wzVwBuX5x5iUZ/ndPxU4/pDUK
-        FkKD8u0xxkBPAkcNCy4solD9DkLT3Dc=
-X-Google-Smtp-Source: AHgI3Ia7YoOElwfe8HaAbCXFOXZzcUs9K0vepyG7W9xHaGzRVpKDa0ihwXO7xyUV56yhtFRvzUhStQ==
-X-Received: by 2002:ac8:554d:: with SMTP id o13mr25775337qtr.105.1550635743082;
-        Tue, 19 Feb 2019 20:09:03 -0800 (PST)
+        bh=P1C55xJx/uAH3YLT6Vk7PSnsH5amwpGoZRQoHvwEukE=;
+        b=AhBVj7l47BUrDpoyk8Fdp1oc4fOiBVtyHHAEUUCfJ16caN1pzUclNM5jP+85RdXKy4
+         3HHHyeL96pzikSRJk1q+qh+lrEGBy+3eX8JlWF7wrkxHq5SgKXgfK7+UCyTTWKF7cat9
+         Cu4GuAcOfIi+gqcJIZ76dhOQVHll7Z7UVxqBwXWHaXjvM6JL1uT73jQ+MUeXkuvLZ61S
+         aF931RH9zawiYwcuUiEGyEfTVKh9YEnNNleqIA5o/R5evK9N5doOij+xsmJXtaY/LDfK
+         szi31JiSKanWzyhDFzZG/iWx2XO8RWxPYw9BJFQMAnFs0aAPHLPDl09lsPjgdbgdc5QN
+         3DWg==
+X-Gm-Message-State: AHQUAuZeEgDrDrW3qM8ylV8levZTZk7VuTwI20+XGSJRp2R40f4MCnfu
+        c0ClBmWVulKRmfJt+DjUH6noIJXgWSw=
+X-Google-Smtp-Source: AHgI3IaRs9RlamroA7mKwp5GKGS/8HZbpHYiGuuidAjqsEnsnyqnGaNNnCV0gmfondkinNwRW3467A==
+X-Received: by 2002:a0c:96c1:: with SMTP id b1mr24723353qvd.45.1550635748756;
+        Tue, 19 Feb 2019 20:09:08 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id s19sm2024593qth.80.2019.02.19.20.09.01
+        by smtp.gmail.com with ESMTPSA id s19sm2024593qth.80.2019.02.19.20.09.07
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Feb 2019 20:09:02 -0800 (PST)
+        Tue, 19 Feb 2019 20:09:07 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@linux.ibm.com
-Subject: [RFC 1/5] net: rtnetlink: Fix incorrect RCU API usage
-Date:   Tue, 19 Feb 2019 23:08:23 -0500
-Message-Id: <20190220040827.136184-2-joel@joelfernandes.org>
+Subject: [RFC 2/5] ixgbe: Fix incorrect RCU API usage
+Date:   Tue, 19 Feb 2019 23:08:24 -0500
+Message-Id: <20190220040827.136184-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
 In-Reply-To: <20190220040827.136184-1-joel@joelfernandes.org>
 References: <20190220040827.136184-1-joel@joelfernandes.org>
@@ -69,45 +69,100 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Joel Fernandes <joel@joelfernandes.org>
 
-rtnl_register_internal() and rtnl_unregister_all tries to directly
-dereference an RCU protected pointed outside RCU read side section.
-While this is Ok to do since a lock is held, let us use the correct
-API to avoid programmer bugs in the future.
+Recently, I added an RCU annotation check in rcu_assign_pointer. This
+caused a sparse error to be reported by the ixgbe driver.
 
-This also fixes sparse warnings arising from not using RCU API.
+Further looking, it seems the adapter->xdp_prog pointer is not annotated
+with __rcu. Annonating it fixed the error, but caused a bunch of other
+warnings.
 
-net/core/rtnetlink.c:332:13: warning: incorrect type in assignment
-(different address spaces) net/core/rtnetlink.c:332:13:    expected
-struct rtnl_link **tab net/core/rtnetlink.c:332:13:    got struct
-rtnl_link *[noderef] <asn:4>*<noident>
+This patch tries to fix all warnings by using RCU API properly. This
+makes sense to do because not using RCU properly can result in various
+hard to find bugs. This is a best effort fix and is only build tested.
+The sparse errors and warnings go away with the change. I request
+maintainers / developers in this area to test it properly.
 
 Signed-off-by: Joel Fernandes <joel@joelfernandes.org>
 ---
- net/core/rtnetlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  4 ++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 16 +++++++++++-----
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 5ea1bed08ede..98be4b4818a9 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -188,7 +188,7 @@ static int rtnl_register_internal(struct module *owner,
- 	msgindex = rtm_msgindex(msgtype);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+index 08d85e336bd4..3b14daf27516 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+@@ -311,7 +311,7 @@ struct ixgbe_ring {
+ 	struct ixgbe_ring *next;	/* pointer to next ring in q_vector */
+ 	struct ixgbe_q_vector *q_vector; /* backpointer to host q_vector */
+ 	struct net_device *netdev;	/* netdev ring belongs to */
+-	struct bpf_prog *xdp_prog;
++	struct bpf_prog __rcu *xdp_prog;
+ 	struct device *dev;		/* device for DMA mapping */
+ 	void *desc;			/* descriptor ring memory */
+ 	union {
+@@ -560,7 +560,7 @@ struct ixgbe_adapter {
+ 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
+ 	/* OS defined structs */
+ 	struct net_device *netdev;
+-	struct bpf_prog *xdp_prog;
++	struct bpf_prog __rcu *xdp_prog;
+ 	struct pci_dev *pdev;
+ 	struct mii_bus *mii_bus;
  
- 	rtnl_lock();
--	tab = rtnl_msg_handlers[protocol];
-+	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
- 	if (tab == NULL) {
- 		tab = kcalloc(RTM_NR_MSGTYPES, sizeof(void *), GFP_KERNEL);
- 		if (!tab)
-@@ -329,7 +329,7 @@ void rtnl_unregister_all(int protocol)
- 	BUG_ON(protocol < 0 || protocol > RTNL_FAMILY_MAX);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index daff8183534b..aad7b800aacd 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2199,7 +2199,7 @@ static struct sk_buff *ixgbe_run_xdp(struct ixgbe_adapter *adapter,
+ 	u32 act;
  
- 	rtnl_lock();
--	tab = rtnl_msg_handlers[protocol];
-+	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
- 	if (!tab) {
- 		rtnl_unlock();
- 		return;
+ 	rcu_read_lock();
+-	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
++	xdp_prog = rcu_dereference(rx_ring->xdp_prog);
+ 
+ 	if (!xdp_prog)
+ 		goto xdp_out;
+@@ -6547,7 +6547,7 @@ int ixgbe_setup_rx_resources(struct ixgbe_adapter *adapter,
+ 			     rx_ring->queue_index) < 0)
+ 		goto err;
+ 
+-	rx_ring->xdp_prog = adapter->xdp_prog;
++	rcu_assign_pointer(rx_ring->xdp_prog, adapter->xdp_prog);
+ 
+ 	return 0;
+ err:
+@@ -10246,7 +10246,8 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 	if (nr_cpu_ids > MAX_XDP_QUEUES)
+ 		return -ENOMEM;
+ 
+-	old_prog = xchg(&adapter->xdp_prog, prog);
++	old_prog = rcu_dereference(adapter->xdp_prog);
++	rcu_assign_pointer(adapter->xdp_prog, prog);
+ 
+ 	/* If transitioning XDP modes reconfigure rings */
+ 	if (!!prog != !!old_prog) {
+@@ -10271,13 +10272,18 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ static int ixgbe_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
++	struct bpf_prog *prog;
++	int ret;
+ 
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
+ 		return ixgbe_xdp_setup(dev, xdp->prog);
+ 	case XDP_QUERY_PROG:
+-		xdp->prog_id = adapter->xdp_prog ?
+-			adapter->xdp_prog->aux->id : 0;
++		rcu_read_lock();
++		prog = rcu_dereference(adapter->xdp_prog);
++		xdp->prog_id = prog ? prog->aux->id : 0;
++		rcu_read_unlock();
++
+ 		return 0;
+ 	case XDP_QUERY_XSK_UMEM:
+ 		return ixgbe_xsk_umem_query(adapter, &xdp->xsk.umem,
 -- 
 2.21.0.rc0.258.g878e2cd30e-goog
 
