@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D18FC4360F
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE643C43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1EB762084F
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BE7C2084F
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uoqFMMbj"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qShTQcTd"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbfBUFub (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 00:50:31 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39975 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbfBUFuD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 00:50:03 -0500
-Received: by mail-qk1-f196.google.com with SMTP id h28so3595011qkk.7
-        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 21:50:02 -0800 (PST)
+        id S1726559AbfBUFuc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 00:50:32 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39945 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbfBUFt7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Feb 2019 00:49:59 -0500
+Received: by mail-qt1-f195.google.com with SMTP id j36so30213199qta.7
+        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 21:49:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yJQh9OTMcc8GKjMOMevDLRheK40LG7vhJJv8Mr0Iw/w=;
-        b=uoqFMMbjjyp/Ye2yvo+ESfFkN4f+MztM+/NmqQuFjSGfOx7yPbiRx71jZUAVQnxPxy
-         0REAyP5KXc4D7bmiEU7b/79C3M7DLd85cHRWrQfm2ti6u7zrQJG8eW2N+sxtTnkFj0Ux
-         5ccIv/xRONCSuio88pfmb02DI+AS6hzE2cfD0=
+        bh=Zc6wY8rNCewGZVDgSPtq8BlfOuPURI6nN/IPxD75L4o=;
+        b=qShTQcTd754XHzpJwI56vyDHKKusPA4VcL8Y+AAFePWXkeiXxU3ZDqJWhjH7k4OOyI
+         TXzMqcdej7TKfKh4dmxMtAfmzK8tYkqqPaq7S6GQZmzMsCVbt1M+LHHodwNxQfjthC6c
+         HlkgBykGg3dfgV7xxcqaGoC/3UD8IgTj43wn4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yJQh9OTMcc8GKjMOMevDLRheK40LG7vhJJv8Mr0Iw/w=;
-        b=njl1QuT6MbmowLx7uftyuz6NGCBlU/oVa9KiHeIMZDyKQyVzsGobm/lK/LxExfOKI5
-         RtARdtJOXPb92/W7xaV0Kq6oaiBvhmSITJCQGJ1AEesjilF69ZbJlxpk7I8HtWEdrp8T
-         hyMmqTNXirRErifUJte62s6qrSxmpKApbsgGYCFX5rVSV3IDzZhY328v93aX6e47xWUM
-         7TUKnGUj9lfN5Meq6nxAZ8fCHmJtwFV+RL6fQWJqfmh0fEU7OoF6yYNumSQRnM3SCNzp
-         9xfeYp+kLnVWqd4VFgBDtAaQ41+kz3m2l6qFt+OtvMAOhGy3UcBpostVeOpXH5Wj+LoF
-         D8MQ==
-X-Gm-Message-State: AHQUAua+nqJG2s262eX0do4rNDwS21RyEaENo11p6iB9xdYybicqmasE
-        BdgMrrcabirK83Xs2VOONwhfrA==
-X-Google-Smtp-Source: AHgI3Iah2BBNad0wXiymDZmJBDHzs14if7tgY8VwDYE9gs3+e3rurxaYWcDkNNqyQRz1Mp1KaW/X/w==
-X-Received: by 2002:a37:9682:: with SMTP id y124mr14167594qkd.288.1550728202015;
-        Wed, 20 Feb 2019 21:50:02 -0800 (PST)
+        bh=Zc6wY8rNCewGZVDgSPtq8BlfOuPURI6nN/IPxD75L4o=;
+        b=AUXVRGUBzfG8OwitRicgZeSohrKSRgMwLSPp0d4U/3pRhO1slYbnDG5qb+vzmNteKQ
+         ANkH2kkxv95dJA0sbpTb8F9jZzZoY8KkAr++1GwBDiankkg36vxyeGErwnNQ6vZAddfX
+         H0PzxZK/As6s02JPl2T0ZVDjCMHNrMpW/WXyrQuvQPiselcJsWLZsUeMepdf3KZufVrx
+         nabHzwv4jecTBwmXjQ0tLoOq0ugX0vRMDqil7mj2iUNtvRt4yRSJC27+ns56tCnFHDJ4
+         hQHCwHfUi8ECtr4dYJOV/knLCWR/6gnuY57/PUTjpV7p/CIDuNDRl4JRLZfdpKq4/EmD
+         QGEQ==
+X-Gm-Message-State: AHQUAuZxSsBE7o0tfE8wphRbWgnuh8KkLXj/dt6x6zsKUdNekkmmDZaW
+        LATlFvBUnVYd4Oat2DGIzhlMsA==
+X-Google-Smtp-Source: AHgI3IZDtKyppM3lu4JTN4viMA53x3Iwpt/uImBH+1nEX2ySNpJsklPizojrXDvzLS5DPjNzUrdbrg==
+X-Received: by 2002:ac8:35ad:: with SMTP id k42mr5322820qtb.4.1550728198163;
+        Wed, 20 Feb 2019 21:49:58 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id k185sm11561219qkd.62.2019.02.20.21.50.00
+        by smtp.gmail.com with ESMTPSA id k185sm11561219qkd.62.2019.02.20.21.49.56
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Feb 2019 21:50:01 -0800 (PST)
+        Wed, 20 Feb 2019 21:49:57 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -75,9 +75,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Song Liu <songliubraving@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: [PATCH RFC 3/5] sched/cpufreq: Fix incorrect RCU API usage
-Date:   Thu, 21 Feb 2019 00:49:40 -0500
-Message-Id: <20190221054942.132388-4-joel@joelfernandes.org>
+Subject: [PATCH RFC 1/5] net: rtnetlink: Fix incorrect RCU API usage
+Date:   Thu, 21 Feb 2019 00:49:38 -0500
+Message-Id: <20190221054942.132388-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
 In-Reply-To: <20190221054942.132388-1-joel@joelfernandes.org>
 References: <20190221054942.132388-1-joel@joelfernandes.org>
@@ -88,68 +88,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Recently I added an RCU annotation check to rcu_assign_pointer(). All
-pointers assigned to RCU protected data are to be annotated with __rcu
-inorder to be able to use rcu_assign_pointer() similar to checks in
-other RCU APIs.
+rtnl_register_internal() and rtnl_unregister_all tries to directly
+dereference an RCU protected pointed outside RCU read side section.
+While this is Ok to do since a lock is held, let us use the correct
+API to avoid programmer bugs in the future.
 
-This resulted in a sparse error: kernel//sched/cpufreq.c:41:9: sparse:
-error: incompatible types in comparison expression (different address
-spaces)
+This also fixes sparse warnings arising from not using RCU API.
 
-Fix this by using the correct APIs for RCU accesses. This will
-potentially avoid any future bugs in the code. If it is felt that RCU
-protection is not needed here, then the rcu_assign_pointer call can be
-dropped and replaced with, say, WRITE_ONCE or smp_store_release. Or, may
-be we add a new API to do it. But calls rcu_assign_pointer seems an
-abuse of the RCU API unless RCU is being used.
+net/core/rtnetlink.c:332:13: warning: incorrect type in assignment
+(different address spaces) net/core/rtnetlink.c:332:13:    expected
+struct rtnl_link **tab net/core/rtnetlink.c:332:13:    got struct
+rtnl_link *[noderef] <asn:4>*<noident>
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/cpufreq.c | 8 ++++++--
- kernel/sched/sched.h   | 2 +-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ net/core/rtnetlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/cpufreq.c b/kernel/sched/cpufreq.c
-index 22bd8980f32f..c9aeb3bf5dc2 100644
---- a/kernel/sched/cpufreq.c
-+++ b/kernel/sched/cpufreq.c
-@@ -7,7 +7,7 @@
-  */
- #include "sched.h"
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 5ea1bed08ede..98be4b4818a9 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -188,7 +188,7 @@ static int rtnl_register_internal(struct module *owner,
+ 	msgindex = rtm_msgindex(msgtype);
  
--DEFINE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-+DEFINE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+ 	rtnl_lock();
+-	tab = rtnl_msg_handlers[protocol];
++	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
+ 	if (tab == NULL) {
+ 		tab = kcalloc(RTM_NR_MSGTYPES, sizeof(void *), GFP_KERNEL);
+ 		if (!tab)
+@@ -329,7 +329,7 @@ void rtnl_unregister_all(int protocol)
+ 	BUG_ON(protocol < 0 || protocol > RTNL_FAMILY_MAX);
  
- /**
-  * cpufreq_add_update_util_hook - Populate the CPU's update_util_data pointer.
-@@ -34,8 +34,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
- 	if (WARN_ON(!data || !func))
+ 	rtnl_lock();
+-	tab = rtnl_msg_handlers[protocol];
++	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
+ 	if (!tab) {
+ 		rtnl_unlock();
  		return;
- 
--	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
-+	rcu_read_lock();
-+	if (WARN_ON(rcu_dereference(per_cpu(cpufreq_update_util_data, cpu)))) {
-+		rcu_read_unlock();
- 		return;
-+	}
-+	rcu_read_unlock();
- 
- 	data->func = func;
- 	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d04530bf251f..2ab545d40381 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2166,7 +2166,7 @@ static inline u64 irq_time_read(int cpu)
- #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
- 
- #ifdef CONFIG_CPU_FREQ
--DECLARE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-+DECLARE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
- 
- /**
-  * cpufreq_update_util - Take a note about CPU utilization changes.
 -- 
 2.21.0.rc0.258.g878e2cd30e-goog
 
