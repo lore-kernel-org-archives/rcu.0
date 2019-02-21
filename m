@@ -2,54 +2,55 @@ Return-Path: <SRS0=rKhI=Q4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4806DC43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24232C00319
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 184152086C
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:49:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDBF62086C
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="HXwuk3Be"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="cD4jri7b"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbfBUFt6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 00:49:58 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39001 "EHLO
+        id S1726938AbfBUFuG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 00:50:06 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43407 "EHLO
         mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbfBUFt5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 00:49:57 -0500
-Received: by mail-qk1-f195.google.com with SMTP id x6so3599510qki.6
-        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 21:49:56 -0800 (PST)
+        with ESMTP id S1726820AbfBUFuF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Feb 2019 00:50:05 -0500
+Received: by mail-qk1-f195.google.com with SMTP id f196so3594483qke.10
+        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 21:50:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZndMi1vR8pP/uDQEpl/G+Gkh+/jfQAQYXNz5X7DRoYE=;
-        b=HXwuk3BeRHfjIVcR9oRDVyFtMQbMdbB6iqlT1iCPSvuvHuf5PqOvGoEvA0RerSXNN3
-         IxiBr0e6+Ue3fKS+p+HKNa67QGQJghaa5r1dgb1YfCSEdfSQihc04wk7MY8QLCPpzTON
-         5OD9oO16wKd/LGd2VXFdromAXymHHAXky4Jjk=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Nv7hlAboBR8L2d9iWBFCyqBxcQDbn2qbimp9HVyPCpU=;
+        b=cD4jri7b+UoIGO3mo90h05zxo//ZEQOkVVfU8eLmaukA3Qx9dexvFlsWoDfh2YynV2
+         tvzghbBkC2P0wqpE1wwjrvrsarXMxPPY+uqMuUriFWzu7ZCLJqe+t1rVqntH2CIE/6K4
+         bu2JYMFh1/uA69c7iEUEw3drY6W6UIJloY+as=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZndMi1vR8pP/uDQEpl/G+Gkh+/jfQAQYXNz5X7DRoYE=;
-        b=mtQLNxA/EnLudnAAm//ZBj9KTS2meqVo+9XpDb47q/31FaQWd1cI9+3cIpEmXIUDG6
-         s6wYXwFLYWrF3pUQqfLBgYAkpLIFw4EwfF2pKeN8pr4uSuxAtBP9Ht9p3rNfU2UAiXis
-         vqL056/usuD3cmONKThF68Pm6W2u8lQiFpsn4chRD8fPNZ9Zt0abEtvLXUG0uif8Z8nZ
-         AqyxzRZVRfRgPoca2J+w4ft5zop5VOqUN248ZtdHzmAeWa55CYsmH7qudxs81KJxUM+c
-         Xxl6NrTKMgFAadejnAZaj293pVOQBIAj5zUmOgziQCfODP51pBze1HsPKO1kftPPOK5b
-         3Iow==
-X-Gm-Message-State: AHQUAubDak0xBsd/v8df2ydKf4Cu4hW0Jry2InBQb9IZQBau1sJAz4mU
-        l1pBb/R5oF3heqYeTnzCHZNbxQ==
-X-Google-Smtp-Source: AHgI3IYTOygGX7goz+5D+gWeyTs6X2J1fpXjlzgml9y1fS3y2srDtA2WXSzBoZfOpUxLKtPVleq63A==
-X-Received: by 2002:a37:4d57:: with SMTP id a84mr12453328qkb.35.1550728196248;
-        Wed, 20 Feb 2019 21:49:56 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Nv7hlAboBR8L2d9iWBFCyqBxcQDbn2qbimp9HVyPCpU=;
+        b=CEakCTyM1JuSjiO25IOoI1+OXQZfsZYALLk3bP14JOgHC5U+ZbEBgFGTWnXIUOqPnC
+         WnH+hRvBi1QjkLVUUII5+h+lXGRXMsb4kMKfk6uOrbjsHFXxNbk5AGsIuRAOLxCD13D4
+         sk3mlpYNJrCdvJH4rjRxwrH9ssej/YKMjMaIaDkwli4XFdAkGLrBIC9GrlGO8OBXInmv
+         jnfCmHJHen6Ldtddq2APUrWM4ztq48t3RaoFu61x7BXmfu1wUQYkX65fFKSvzeHs6EAL
+         3SZZ61PHmUm0d9v6Yd4dLJORWYfzI81dowVYekoulJ1WGQbFgGl1oVryeQDJAkDcdOtU
+         uuqQ==
+X-Gm-Message-State: AHQUAuZ7wuytMeZqrUNf3+VdD4Bp8d4frltnlpvGBuEkANQs+jIna681
+        T5wGKR0OE/jAhtKXp28c7j/aKQ==
+X-Google-Smtp-Source: AHgI3IYD251OD9feSlohnYi9tpXZ3AzdO4nIwcK+7mKpsrnA1wnYeSkmdy3EAfBu5zxbgOgBdew/Ww==
+X-Received: by 2002:a37:7845:: with SMTP id t66mr27515988qkc.103.1550728203902;
+        Wed, 20 Feb 2019 21:50:03 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id k185sm11561219qkd.62.2019.02.20.21.49.54
+        by smtp.gmail.com with ESMTPSA id k185sm11561219qkd.62.2019.02.20.21.50.02
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Feb 2019 21:49:55 -0800 (PST)
+        Wed, 20 Feb 2019 21:50:02 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -74,10 +75,12 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Song Liu <songliubraving@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: [PATCH RFC 0/5] RCU fixes for rcu_assign_pointer() usage
-Date:   Thu, 21 Feb 2019 00:49:37 -0500
-Message-Id: <20190221054942.132388-1-joel@joelfernandes.org>
+Subject: [PATCH RFC 4/5] sched/topology: Annonate RCU pointers properly
+Date:   Thu, 21 Feb 2019 00:49:41 -0500
+Message-Id: <20190221054942.132388-5-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
+In-Reply-To: <20190221054942.132388-1-joel@joelfernandes.org>
+References: <20190221054942.132388-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
@@ -85,34 +88,100 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-These patches fix various RCU API usage issues found due to sparse errors as a
-result of the recent check to add rcu_check_sparse() to rcu_assign_pointer().
-The errors in many cases seem to indicate either an incorrect API usage, or
-missing annotations. The annotations added can also help avoid future incorrect
-usages and bugs so it is a good idea to do in any case.
+The scheduler's topology code uses rcu_assign_pointer() to initialize
+various pointers.
 
-These are only build/boot tested and I request for feedback from maintainers
-and developers in the various areas the patches touch. Thanks for any feedback!
+Let us annotate the pointers correctly which also help avoid future
+bugs. This suppresses the new sparse errors caused by an annotation
+check I added to rcu_assign_pointer().
 
-(There are still errors in rbtree.h but I have kept those for a later time
-since fixing them is a bit more involved).
+Also replace rcu_assign_pointer call on rq->sd with WRITE_ONCE. This
+should be sufficient for the rq->sd initialization.
 
-Joel Fernandes (Google) (5):
-net: rtnetlink: Fix incorrect RCU API usage
-ixgbe: Fix incorrect RCU API usage
-sched/cpufreq: Fix incorrect RCU API usage
-sched/topology: Annonate RCU pointers properly
-rcuwait: Replace rcu_assign_pointer() with WRITE_ONCE
+This fixes sparse errors:
+kernel//sched/topology.c:378:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
+kernel//sched/topology.c:387:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
+kernel//sched/topology.c:612:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
+kernel//sched/topology.c:615:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
+kernel//sched/topology.c:618:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
+kernel//sched/topology.c:621:9: sparse: error: incompatible types in
+comparison expression (different address spaces)
 
-drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  4 ++--
-drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 17 ++++++++++++-----
-include/linux/rcuwait.h                       |  2 +-
-kernel/sched/cpufreq.c                        |  8 ++++++--
-kernel/sched/sched.h                          | 14 +++++++-------
-kernel/sched/topology.c                       | 12 ++++++------
-net/core/rtnetlink.c                          |  4 ++--
-7 files changed, 36 insertions(+), 25 deletions(-)
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/sched/sched.h    | 12 ++++++------
+ kernel/sched/topology.c | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
---
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 2ab545d40381..806703afd4b0 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -780,7 +780,7 @@ struct root_domain {
+ 	 * NULL-terminated list of performance domains intersecting with the
+ 	 * CPUs of the rd. Protected by RCU.
+ 	 */
+-	struct perf_domain	*pd;
++	struct perf_domain __rcu *pd;
+ };
+ 
+ extern struct root_domain def_root_domain;
+@@ -1305,13 +1305,13 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
+ 	return sd;
+ }
+ 
+-DECLARE_PER_CPU(struct sched_domain *, sd_llc);
++DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+ DECLARE_PER_CPU(int, sd_llc_size);
+ DECLARE_PER_CPU(int, sd_llc_id);
+-DECLARE_PER_CPU(struct sched_domain_shared *, sd_llc_shared);
+-DECLARE_PER_CPU(struct sched_domain *, sd_numa);
+-DECLARE_PER_CPU(struct sched_domain *, sd_asym_packing);
+-DECLARE_PER_CPU(struct sched_domain *, sd_asym_cpucapacity);
++DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
++DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
++DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
++DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
+ extern struct static_key_false sched_asym_cpucapacity;
+ 
+ struct sched_group_capacity {
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 3f35ba1d8fde..2eab2e16ded5 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -586,13 +586,13 @@ static void destroy_sched_domains(struct sched_domain *sd)
+  * the cpumask of the domain), this allows us to quickly tell if
+  * two CPUs are in the same cache domain, see cpus_share_cache().
+  */
+-DEFINE_PER_CPU(struct sched_domain *, sd_llc);
++DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+ DEFINE_PER_CPU(int, sd_llc_size);
+ DEFINE_PER_CPU(int, sd_llc_id);
+-DEFINE_PER_CPU(struct sched_domain_shared *, sd_llc_shared);
+-DEFINE_PER_CPU(struct sched_domain *, sd_numa);
+-DEFINE_PER_CPU(struct sched_domain *, sd_asym_packing);
+-DEFINE_PER_CPU(struct sched_domain *, sd_asym_cpucapacity);
++DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
++DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
++DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
++DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
+ DEFINE_STATIC_KEY_FALSE(sched_asym_cpucapacity);
+ 
+ static void update_top_cache_domain(int cpu)
+@@ -668,7 +668,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ 
+ 	rq_attach_root(rq, rd);
+ 	tmp = rq->sd;
+-	rcu_assign_pointer(rq->sd, sd);
++	WRITE_ONCE(rq->sd, sd);
+ 	dirty_sched_domain_sysctl(cpu);
+ 	destroy_sched_domains(tmp);
+ 
+-- 
 2.21.0.rc0.258.g878e2cd30e-goog
 
