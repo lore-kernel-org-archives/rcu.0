@@ -2,54 +2,38 @@ Return-Path: <SRS0=rKhI=Q4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 691CFC43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 16:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7647CC43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 16:17:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 389E02075A
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 16:12:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="K2ZBnd88"
+	by mail.kernel.org (Postfix) with ESMTP id 4EB722084D
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 16:17:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbfBUQMW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 11:12:22 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:45072 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbfBUQMW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 11:12:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+afU/7gPddCKUBDq0d2rahTcTZQRyFY7yXaqsaIIiY0=; b=K2ZBnd881nfOv0p2biUTm2bsQ
-        2y19KpXZLPRe4bJDBtpWJzOvsYr3jmdXlgf4UeWm9iGGQB9Cj27r1McuFSVcie7aIXYnxXwbItDHL
-        zCwDoEF3eo5DZfBZcuQQN+V1D4hnZSD8m7Yr3/VZXkHsJVdhpsbkUx9GTXPUiXu4PdRzzid+cUWQU
-        RvagWeh8OrcbrEEdTqgjj9lx87t/hT3vLYv5D857ipKKmqfC1BF2gDC4REr7dJ6V8t7PM9nkKOayI
-        rMiXrmxO8q2gxzYuVAOkkzMDlTr43Fxp+Vr42qm+RwTTcd9x+KtdIOkCkUxBfL4zhwXSHGMJuH4h8
-        yCW9KAhKQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gwqwt-0006aB-Ok; Thu, 21 Feb 2019 16:11:47 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F412A28B8C88B; Thu, 21 Feb 2019 17:11:44 +0100 (CET)
-Date:   Thu, 21 Feb 2019 17:11:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1726371AbfBUQRR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 11:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725932AbfBUQRR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Feb 2019 11:17:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74B5C20836;
+        Thu, 21 Feb 2019 16:17:13 +0000 (UTC)
+Date:   Thu, 21 Feb 2019 11:17:12 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Ido Schimmel <idosch@mellanox.com>,
         Ingo Molnar <mingo@redhat.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
+        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
@@ -58,53 +42,114 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        netdev@vger.kernel.org, rcu@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
+        netdev@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, xdp-newbies@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Subject: Re: [PATCH RFC 3/5] sched/cpufreq: Fix incorrect RCU API usage
-Message-ID: <20190221161144.GU32494@hirez.programming.kicks-ass.net>
+Message-ID: <20190221111712.72ba57e8@gandalf.local.home>
+In-Reply-To: <20190221054942.132388-4-joel@joelfernandes.org>
 References: <20190221054942.132388-1-joel@joelfernandes.org>
- <20190221054942.132388-4-joel@joelfernandes.org>
- <20190221091805.GX32477@hirez.programming.kicks-ass.net>
- <20190221152139.GB19213@google.com>
- <20190221153117.GT32494@hirez.programming.kicks-ass.net>
- <20190221155218.GZ11787@linux.ibm.com>
+        <20190221054942.132388-4-joel@joelfernandes.org>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190221155218.GZ11787@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 21, 2019 at 07:52:18AM -0800, Paul E. McKenney wrote:
-> On Thu, Feb 21, 2019 at 04:31:17PM +0100, Peter Zijlstra wrote:
-> > On Thu, Feb 21, 2019 at 10:21:39AM -0500, Joel Fernandes wrote:
-> > > On Thu, Feb 21, 2019 at 10:18:05AM +0100, Peter Zijlstra wrote:
-> > > > On Thu, Feb 21, 2019 at 12:49:40AM -0500, Joel Fernandes (Google) wrote:
-> > > > > @@ -34,8 +34,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
-> > > > >  	if (WARN_ON(!data || !func))
-> > > > >  		return;
-> > > > >  
-> > > > > -	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
-> > > > > +	rcu_read_lock();
-> > > > > +	if (WARN_ON(rcu_dereference(per_cpu(cpufreq_update_util_data, cpu)))) {
-> > > > > +		rcu_read_unlock();
-> > > > >  		return;
-> > > > > +	}
-> > > > > +	rcu_read_unlock();
-> > > > >  
-> > > > >  	data->func = func;
-> > > > >  	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
+On Thu, 21 Feb 2019 00:49:40 -0500
+"Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
 
-> For whatever it is worth, in that case it could use rcu_access_pointer().
-> And this primitive does not do the lockdep check for being within an RCU
-> read-side critical section.  As Peter says, if there is no dereferencing,
-> there can be no use-after-free bug, so the RCU read-side critical is
-> not needed.
+> Recently I added an RCU annotation check to rcu_assign_pointer(). All
+> pointers assigned to RCU protected data are to be annotated with __rcu
+> inorder to be able to use rcu_assign_pointer() similar to checks in
+> other RCU APIs.
+> 
+> This resulted in a sparse error: kernel//sched/cpufreq.c:41:9: sparse:
+> error: incompatible types in comparison expression (different address
+> spaces)
+> 
+> Fix this by using the correct APIs for RCU accesses. This will
+> potentially avoid any future bugs in the code. If it is felt that RCU
+> protection is not needed here, then the rcu_assign_pointer call can be
+> dropped and replaced with, say, WRITE_ONCE or smp_store_release. Or, may
+> be we add a new API to do it. But calls rcu_assign_pointer seems an
+> abuse of the RCU API unless RCU is being used.
 
-On top of that, I suspect this is under the write-side lock (we're doing
-assignment after all).
+This all looks broken, and this patch is papering over the issue, or
+worse, hiding it.
+
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/sched/cpufreq.c | 8 ++++++--
+>  kernel/sched/sched.h   | 2 +-
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/cpufreq.c b/kernel/sched/cpufreq.c
+> index 22bd8980f32f..c9aeb3bf5dc2 100644
+> --- a/kernel/sched/cpufreq.c
+> +++ b/kernel/sched/cpufreq.c
+> @@ -7,7 +7,7 @@
+>   */
+>  #include "sched.h"
+>  
+> -DEFINE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
+> +DEFINE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+>  
+>  /**
+>   * cpufreq_add_update_util_hook - Populate the CPU's update_util_data pointer.
+> @@ -34,8 +34,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+>  	if (WARN_ON(!data || !func))
+>  		return;
+>  
+> -	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
+> +	rcu_read_lock();
+> +	if (WARN_ON(rcu_dereference(per_cpu(cpufreq_update_util_data, cpu)))) {
+> +		rcu_read_unlock();
+>  		return;
+> +	}
+> +	rcu_read_unlock();
+>  
+>  	data->func = func;
+>  	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
+
+An rcu_assign_pointer() is to update something that is going to be read
+under rcu_read_lock() elsewhere. But updates to an rcu variable are not
+protected by rcu_read_lock() (hence the "read" in the name). Adding
+rcu_read_lock() above does nothing, but perhaps hides an issue.
+
+Writes usually have something else that protects against races. Thus,
+the above shouldn't be switched to using a rcu_dereference(), but
+perhaps a rcu_dereference_protected(), with whatever is protecting
+updates?
+
+Which doing a bit of investigating, looks to be the rwsem
+"policy->rwsem", where policy comes from:
+
+	policy = cpufreq_cpu_get(cpu);
+
+I would say the code as is, is not broken. But this patch isn't helping
+anything.
+
+-- Steve
+
+
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index d04530bf251f..2ab545d40381 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2166,7 +2166,7 @@ static inline u64 irq_time_read(int cpu)
+>  #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
+>  
+>  #ifdef CONFIG_CPU_FREQ
+> -DECLARE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
+> +DECLARE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+>  
+>  /**
+>   * cpufreq_update_util - Take a note about CPU utilization changes.
+
