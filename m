@@ -2,45 +2,57 @@ Return-Path: <SRS0=rKhI=Q4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D58D7C43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 09:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBB9BC43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 15:11:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A2BEE2086A
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 09:20:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B651420842
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 15:11:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kIAemxbp"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Tctc8enw"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbfBUJUu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 04:20:50 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:33424 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbfBUJUu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 04:20:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=wP//jFvsGdNSawgJBIo/KKWC9LGNeQdk4UowQ5cHBuU=; b=kIAemxbpBandbbJU8UFGKf9u+
-        d/uo+EwMEvmj+W34ozPy+phWNNrJVc84p1HF0OGxOdOKkyagqWLvFsGYgPRmSHV/+rLZBwLhOOmv/
-        bvwmJjJvwoUfRGfHgkkzdDhpSHM78/XtXa07fvbFxSHUeycyFwRP0fts4b8PLO/BCbmvLNCZkMZVb
-        JngdLA98YrTBEVog6MG9sB9TDlkgjJgYX5LFuI3GhlAAxCiVr3JdVP3WygXdQak08WAiW37mdzW+l
-        nHtiGBP12sf76jMMcf+xC2e0vSXqiXNxSx3mEWgfUFQ5V8kYDAGrQYEbadBkg1cMuK6Jx4KPrv3UG
-        G5unB8urQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1gwkWk-0007v3-ED; Thu, 21 Feb 2019 09:20:22 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE4D82139CDFF; Thu, 21 Feb 2019 10:20:20 +0100 (CET)
-Date:   Thu, 21 Feb 2019 10:20:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        id S1727703AbfBUPLB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 10:11:01 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46707 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727553AbfBUPLB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Feb 2019 10:11:01 -0500
+Received: by mail-qt1-f196.google.com with SMTP id z25so10087360qti.13
+        for <rcu@vger.kernel.org>; Thu, 21 Feb 2019 07:11:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OfiyWt0nyZYpi1WZA8fh11x04uRedVVor5lXLAWzvDU=;
+        b=Tctc8enw4VBqqUguz44H8pGhWtxEhSCBRy5We/JpX53ACCek7VX4X87rZMixWQkixL
+         D91S1dvDeYq1MZ/3FTCnUPMXJ/j5P32Bml5j0bTFXjKgWcIBAQGQtO7pj1fGe56gOWSm
+         xxecRexVJ6AMCu86e5yHfifSYeNdi2dVAzY1Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OfiyWt0nyZYpi1WZA8fh11x04uRedVVor5lXLAWzvDU=;
+        b=Wi90QhSQ/BXabZ/AJQrcnwMFt8sogTYtW42+aQ2l64JmPBrqqau2ZfGFKwJjhjjiu0
+         kSb29UZV6F+BRCntDlXPzGa49U3KirJgK0yDaWqs6IL5/F83KDXztLRPY/ze9TCiGeMO
+         SbbTkP3QeNXEShT49XIQBCRkJlc58e2/KQ9TJzu6Ly8n4i6Gheyief/PCimCZg80TW/K
+         acwlmRpvCUQNv0+Jq5VKmFgd1v39N4tMzcZsccCkgDwp6fs8A5Ltfue7Rwj6EEIjR03f
+         AadowC+/UxkmerrWevCiUI0YcBgESVhb0B19AC7uOcuCHL19k33cXEeZAKwIm8ZWKYBe
+         pAlQ==
+X-Gm-Message-State: AHQUAubokX0VIwRoLFIL0eI862apIh7rBwdD3OzZjq3t9VeOh5SNyIJP
+        vvT0PUMRGICV8HqL/OCTCGiaNw==
+X-Google-Smtp-Source: AHgI3IZ75rH+4g9uggv+XkAvNL2+ZyCxpx+BttoJpwCekhf9VOxkt53FPt9Hyd9gMkLxha5HPuB/Mw==
+X-Received: by 2002:ac8:2b28:: with SMTP id 37mr10931322qtu.223.1550761860153;
+        Thu, 21 Feb 2019 07:11:00 -0800 (PST)
+Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
+        by smtp.gmail.com with ESMTPSA id s128sm11596624qkh.59.2019.02.21.07.10.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Feb 2019 07:10:58 -0800 (PST)
+Date:   Thu, 21 Feb 2019 10:10:57 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,46 +74,61 @@ Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         rcu@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC 5/5] rcuwait: Replace rcu_assign_pointer() with
- WRITE_ONCE
-Message-ID: <20190221092020.GZ32477@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH RFC 4/5] sched/topology: Annonate RCU pointers properly
+Message-ID: <20190221151057.GA19213@google.com>
 References: <20190221054942.132388-1-joel@joelfernandes.org>
- <20190221054942.132388-6-joel@joelfernandes.org>
+ <20190221054942.132388-5-joel@joelfernandes.org>
+ <20190221091944.GY32477@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190221054942.132388-6-joel@joelfernandes.org>
+In-Reply-To: <20190221091944.GY32477@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 21, 2019 at 12:49:42AM -0500, Joel Fernandes (Google) wrote:
-> This suppresses a sparse error generated due to the recently added
-> rcu_assign_pointer sparse check below. It seems WRITE_ONCE should be
-> sufficient here.
-> 
-> >> kernel//locking/percpu-rwsem.c:162:9: sparse: error: incompatible
-> types in comparison expression (different address spaces)
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  include/linux/rcuwait.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rcuwait.h b/include/linux/rcuwait.h
-> index 90bfa3279a01..9e5b4760e6c2 100644
-> --- a/include/linux/rcuwait.h
-> +++ b/include/linux/rcuwait.h
-> @@ -44,7 +44,7 @@ extern void rcuwait_wake_up(struct rcuwait *w);
->  	 */                                                             \
->  	WARN_ON(current->exit_state);                                   \
->  									\
-> -	rcu_assign_pointer((w)->task, current);				\
-> +	WRITE_ONCE((w)->task, current);					\
->  	for (;;) {							\
->  		/*							\
->  		 * Implicit barrier (A) pairs with (B) in		\
+Hi Peter,
 
-Distinct lack of justification for loosing the RELEASE again.
+Thanks for taking a look.
+
+On Thu, Feb 21, 2019 at 10:19:44AM +0100, Peter Zijlstra wrote:
+> On Thu, Feb 21, 2019 at 12:49:41AM -0500, Joel Fernandes (Google) wrote:
+> 
+> > Also replace rcu_assign_pointer call on rq->sd with WRITE_ONCE. This
+> > should be sufficient for the rq->sd initialization.
+> 
+> > @@ -668,7 +668,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+> >  
+> >  	rq_attach_root(rq, rd);
+> >  	tmp = rq->sd;
+> > -	rcu_assign_pointer(rq->sd, sd);
+> > +	WRITE_ONCE(rq->sd, sd);
+> >  	dirty_sched_domain_sysctl(cpu);
+> >  	destroy_sched_domains(tmp);
+> 
+> Where did the RELEASE barrier go?
+> 
+> That was a publish operation, now it is not.
+
+Funny thing is, initially I had written this patch with smp_store_release()
+instead of WRITE_ONCE, but checkpatch complaints with that since it needs a
+comment on top of it, and I wasn't sure if RELEASE barrier was the intent of
+using rcu_assign_pointer (all the more reason to replace it with something
+more explicit).
+
+I will replace it with the following and resubmit it then:
+
+/* Release barrier */
+smp_store_release(&rq->sd, sd);
+
+Or do we want to just drop the "Release barrier" comment and live with the
+checkpatch warning?
+
+(my same response applies to patch 5/5).
+
+thanks,
+
+ - Joel
+
