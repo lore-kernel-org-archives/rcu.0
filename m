@@ -2,66 +2,54 @@ Return-Path: <SRS0=rKhI=Q4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE643C43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB26C43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9BE7C2084F
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 05:50:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D00AC2086A
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 09:18:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qShTQcTd"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KRmuYw97"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfBUFuc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 00:50:32 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39945 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726665AbfBUFt7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 00:49:59 -0500
-Received: by mail-qt1-f195.google.com with SMTP id j36so30213199qta.7
-        for <rcu@vger.kernel.org>; Wed, 20 Feb 2019 21:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zc6wY8rNCewGZVDgSPtq8BlfOuPURI6nN/IPxD75L4o=;
-        b=qShTQcTd754XHzpJwI56vyDHKKusPA4VcL8Y+AAFePWXkeiXxU3ZDqJWhjH7k4OOyI
-         TXzMqcdej7TKfKh4dmxMtAfmzK8tYkqqPaq7S6GQZmzMsCVbt1M+LHHodwNxQfjthC6c
-         HlkgBykGg3dfgV7xxcqaGoC/3UD8IgTj43wn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zc6wY8rNCewGZVDgSPtq8BlfOuPURI6nN/IPxD75L4o=;
-        b=AUXVRGUBzfG8OwitRicgZeSohrKSRgMwLSPp0d4U/3pRhO1slYbnDG5qb+vzmNteKQ
-         ANkH2kkxv95dJA0sbpTb8F9jZzZoY8KkAr++1GwBDiankkg36vxyeGErwnNQ6vZAddfX
-         H0PzxZK/As6s02JPl2T0ZVDjCMHNrMpW/WXyrQuvQPiselcJsWLZsUeMepdf3KZufVrx
-         nabHzwv4jecTBwmXjQ0tLoOq0ugX0vRMDqil7mj2iUNtvRt4yRSJC27+ns56tCnFHDJ4
-         hQHCwHfUi8ECtr4dYJOV/knLCWR/6gnuY57/PUTjpV7p/CIDuNDRl4JRLZfdpKq4/EmD
-         QGEQ==
-X-Gm-Message-State: AHQUAuZxSsBE7o0tfE8wphRbWgnuh8KkLXj/dt6x6zsKUdNekkmmDZaW
-        LATlFvBUnVYd4Oat2DGIzhlMsA==
-X-Google-Smtp-Source: AHgI3IZDtKyppM3lu4JTN4viMA53x3Iwpt/uImBH+1nEX2ySNpJsklPizojrXDvzLS5DPjNzUrdbrg==
-X-Received: by 2002:ac8:35ad:: with SMTP id k42mr5322820qtb.4.1550728198163;
-        Wed, 20 Feb 2019 21:49:58 -0800 (PST)
-Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id k185sm11561219qkd.62.2019.02.20.21.49.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Feb 2019 21:49:57 -0800 (PST)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726628AbfBUJSk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 04:18:40 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:49506 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbfBUJSk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Feb 2019 04:18:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=B7rZig9hFl0WOpqpndkHdubGgAfrhHC85hdNtjKXIfE=; b=KRmuYw97ckSaxQJ5Wa25EFE04
+        OWOcvxfyXHmJxvb5bgpu7N5YGqQOEciAx3Er1CrcaN0TiX5syP6zDY1+F49cca8Ox9DUWoNMWTIOA
+        AiGdD9p57PWOf5Dg0fxd9qUbGoJkMGLfVmJRK2Z718CtmeDiz/sT1sTABzmWMw68V/xrhi3WUpFBG
+        ImWdZQPNfVOsuGeieT5gfYtY4pmDecbiQSZY4V1JzqMDjZ6yNFvecob7t+9LsZYs76Kl4r1Ddd9HK
+        1RqxwO3R/Hnt120jjpcos2MmzVR6iRMFm+OVlAOp9w29NhwCaw2qgLnUulTeirsdstf1xLyWCyvyO
+        Jd2+E9D2w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1gwkUa-0004XG-Q0; Thu, 21 Feb 2019 09:18:08 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D0A532139CDFF; Thu, 21 Feb 2019 10:18:05 +0100 (CET)
+Date:   Thu, 21 Feb 2019 10:18:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Ido Schimmel <idosch@mellanox.com>,
         Ingo Molnar <mingo@redhat.com>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
@@ -71,62 +59,38 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         netdev@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
+        rcu@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: [PATCH RFC 1/5] net: rtnetlink: Fix incorrect RCU API usage
-Date:   Thu, 21 Feb 2019 00:49:38 -0500
-Message-Id: <20190221054942.132388-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
-In-Reply-To: <20190221054942.132388-1-joel@joelfernandes.org>
+Subject: Re: [PATCH RFC 3/5] sched/cpufreq: Fix incorrect RCU API usage
+Message-ID: <20190221091805.GX32477@hirez.programming.kicks-ass.net>
 References: <20190221054942.132388-1-joel@joelfernandes.org>
+ <20190221054942.132388-4-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190221054942.132388-4-joel@joelfernandes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rtnl_register_internal() and rtnl_unregister_all tries to directly
-dereference an RCU protected pointed outside RCU read side section.
-While this is Ok to do since a lock is held, let us use the correct
-API to avoid programmer bugs in the future.
+On Thu, Feb 21, 2019 at 12:49:40AM -0500, Joel Fernandes (Google) wrote:
+> @@ -34,8 +34,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+>  	if (WARN_ON(!data || !func))
+>  		return;
+>  
+> -	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
+> +	rcu_read_lock();
+> +	if (WARN_ON(rcu_dereference(per_cpu(cpufreq_update_util_data, cpu)))) {
+> +		rcu_read_unlock();
+>  		return;
+> +	}
+> +	rcu_read_unlock();
+>  
+>  	data->func = func;
+>  	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
 
-This also fixes sparse warnings arising from not using RCU API.
-
-net/core/rtnetlink.c:332:13: warning: incorrect type in assignment
-(different address spaces) net/core/rtnetlink.c:332:13:    expected
-struct rtnl_link **tab net/core/rtnetlink.c:332:13:    got struct
-rtnl_link *[noderef] <asn:4>*<noident>
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- net/core/rtnetlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 5ea1bed08ede..98be4b4818a9 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -188,7 +188,7 @@ static int rtnl_register_internal(struct module *owner,
- 	msgindex = rtm_msgindex(msgtype);
- 
- 	rtnl_lock();
--	tab = rtnl_msg_handlers[protocol];
-+	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
- 	if (tab == NULL) {
- 		tab = kcalloc(RTM_NR_MSGTYPES, sizeof(void *), GFP_KERNEL);
- 		if (!tab)
-@@ -329,7 +329,7 @@ void rtnl_unregister_all(int protocol)
- 	BUG_ON(protocol < 0 || protocol > RTNL_FAMILY_MAX);
- 
- 	rtnl_lock();
--	tab = rtnl_msg_handlers[protocol];
-+	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
- 	if (!tab) {
- 		rtnl_unlock();
- 		return;
--- 
-2.21.0.rc0.258.g878e2cd30e-goog
+This doesn't make any kind of sense to me.
 
