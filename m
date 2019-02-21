@@ -2,58 +2,57 @@ Return-Path: <SRS0=rKhI=Q4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71FE2C43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 17:17:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 735C1C43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 17:30:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 40E972083B
-	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 17:17:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="bEmsM7k3"
+	by mail.kernel.org (Postfix) with ESMTP id 411A92080D
+	for <rcu@archiver.kernel.org>; Thu, 21 Feb 2019 17:30:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbfBURR0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Feb 2019 12:17:26 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41014 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbfBURRW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Feb 2019 12:17:22 -0500
-Received: by mail-qt1-f194.google.com with SMTP id v10so32351081qtp.8
-        for <rcu@vger.kernel.org>; Thu, 21 Feb 2019 09:17:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LMtwVzQceYw4mMb6VeeosfIorSojv+5HEgIRi7ypF9o=;
-        b=bEmsM7k3fGmaWWW1lDUyV/5DBJsi+NVcNQHShL3XnQe6XMYr79VQXoo33Tg7BZ2o1v
-         stvXyyucz3TzOwAO5ySRzvAAT/m69jT4wee5ughAKrTeuYqOJdtZNSSFZ4E3Ayso3Loq
-         MPC/rg7pR+Yt5+WK2bHZSqUYSCEL3HThKnHmE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LMtwVzQceYw4mMb6VeeosfIorSojv+5HEgIRi7ypF9o=;
-        b=pZ5u0mzYovjMPI5VbOANlPf7bY78KVFogmOqyXFKtxBZ57UiSA4UYc80yHMGumqwHn
-         3EIFWwwsazX+ot8QYTky2Vn/W/ZhAIGYtVet9W+dUTtT3ubjb0Gu0gWKW6esFOrCVrkh
-         uGSHmTx5ylA/OswMpBCq23Wumd+/jhRoMLjhu0XHh0Jj4IhPKor13sJrWw3x2Nr+4hJT
-         Hn3ozb2pFjhJuVsRiGt5aYB5eyHDbLarC8g1D8NMo/Up3Yusl78HP2TCXXoy+PVaQbw+
-         xI3HuMmslJ5nU8RCt6FhqpXSVUVWQwQYxrfI5DSmSV7oWXXTQJejPST/2WveuXIcHrYJ
-         ikEA==
-X-Gm-Message-State: AHQUAuYz0ifhsMQuFziOzEDo+gIobZ/c0hINAQ9r5CKOny8Vuobqgw7f
-        2wsO2wg9rvOcIGzvoMZfTTDi0g==
-X-Google-Smtp-Source: AHgI3IZ8jNueEem6h0q4j7jKBYzrQds1HarANr3wp+tBgbqkligx+A49DQTYAqOXroQCoRnmfRz6vw==
-X-Received: by 2002:ac8:3932:: with SMTP id s47mr10533144qtb.337.1550769440687;
-        Thu, 21 Feb 2019 09:17:20 -0800 (PST)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id p18sm14879179qkl.48.2019.02.21.09.17.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Feb 2019 09:17:19 -0800 (PST)
-Date:   Thu, 21 Feb 2019 12:17:19 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1726311AbfBURaE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Feb 2019 12:30:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727353AbfBUR37 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 21 Feb 2019 12:29:59 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1LHOSea116293
+        for <rcu@vger.kernel.org>; Thu, 21 Feb 2019 12:29:58 -0500
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2qsy6p43wq-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 21 Feb 2019 12:29:58 -0500
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Thu, 21 Feb 2019 17:29:56 -0000
+Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 21 Feb 2019 17:29:49 -0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1LHTmO924641626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Feb 2019 17:29:48 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6237B205F;
+        Thu, 21 Feb 2019 17:29:48 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45749B2064;
+        Thu, 21 Feb 2019 17:29:48 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.80.207.192])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 21 Feb 2019 17:29:48 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 56BC416C3B5F; Thu, 21 Feb 2019 09:29:48 -0800 (PST)
+Date:   Thu, 21 Feb 2019 09:29:48 -0800
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Ahern <dsahern@gmail.com>,
@@ -70,77 +69,86 @@ Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        netdev@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        rcu@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC 4/5] sched/topology: Annonate RCU pointers properly
-Message-ID: <20190221171719.GB118415@google.com>
+Subject: Re: [PATCH RFC 3/5] sched/cpufreq: Fix incorrect RCU API usage
+Reply-To: paulmck@linux.ibm.com
 References: <20190221054942.132388-1-joel@joelfernandes.org>
- <20190221054942.132388-5-joel@joelfernandes.org>
- <20190221091944.GY32477@hirez.programming.kicks-ass.net>
- <20190221151057.GA19213@google.com>
- <20190221152944.GS32494@hirez.programming.kicks-ass.net>
+ <20190221054942.132388-4-joel@joelfernandes.org>
+ <20190221091805.GX32477@hirez.programming.kicks-ass.net>
+ <20190221152139.GB19213@google.com>
+ <20190221153117.GT32494@hirez.programming.kicks-ass.net>
+ <20190221155218.GZ11787@linux.ibm.com>
+ <20190221161144.GU32494@hirez.programming.kicks-ass.net>
+ <20190221171311.GA118415@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190221152944.GS32494@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190221171311.GA118415@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19022117-0064-0000-0000-000003ACB109
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010638; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000281; SDB=6.01164346; UDB=6.00608024; IPR=6.00944932;
+ MB=3.00025682; MTD=3.00000008; XFM=3.00000015; UTC=2019-02-21 17:29:55
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19022117-0065-0000-0000-00003C7D45F3
+Message-Id: <20190221172948.GA11787@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-02-21_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=990 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1902210125
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 21, 2019 at 04:29:44PM +0100, Peter Zijlstra wrote:
-> On Thu, Feb 21, 2019 at 10:10:57AM -0500, Joel Fernandes wrote:
-> > Hi Peter,
+On Thu, Feb 21, 2019 at 12:13:11PM -0500, Joel Fernandes wrote:
+> On Thu, Feb 21, 2019 at 05:11:44PM +0100, Peter Zijlstra wrote:
+> > On Thu, Feb 21, 2019 at 07:52:18AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Feb 21, 2019 at 04:31:17PM +0100, Peter Zijlstra wrote:
+> > > > On Thu, Feb 21, 2019 at 10:21:39AM -0500, Joel Fernandes wrote:
+> > > > > On Thu, Feb 21, 2019 at 10:18:05AM +0100, Peter Zijlstra wrote:
+> > > > > > On Thu, Feb 21, 2019 at 12:49:40AM -0500, Joel Fernandes (Google) wrote:
+> > > > > > > @@ -34,8 +34,12 @@ void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
+> > > > > > >  	if (WARN_ON(!data || !func))
+> > > > > > >  		return;
+> > > > > > >  
+> > > > > > > -	if (WARN_ON(per_cpu(cpufreq_update_util_data, cpu)))
+> > > > > > > +	rcu_read_lock();
+> > > > > > > +	if (WARN_ON(rcu_dereference(per_cpu(cpufreq_update_util_data, cpu)))) {
+> > > > > > > +		rcu_read_unlock();
+> > > > > > >  		return;
+> > > > > > > +	}
+> > > > > > > +	rcu_read_unlock();
+> > > > > > >  
+> > > > > > >  	data->func = func;
+> > > > > > >  	rcu_assign_pointer(per_cpu(cpufreq_update_util_data, cpu), data);
 > > 
-> > Thanks for taking a look.
+> > > For whatever it is worth, in that case it could use rcu_access_pointer().
+> > > And this primitive does not do the lockdep check for being within an RCU
+> > > read-side critical section.  As Peter says, if there is no dereferencing,
+> > > there can be no use-after-free bug, so the RCU read-side critical is
+> > > not needed.
 > > 
-> > On Thu, Feb 21, 2019 at 10:19:44AM +0100, Peter Zijlstra wrote:
-> > > On Thu, Feb 21, 2019 at 12:49:41AM -0500, Joel Fernandes (Google) wrote:
-> > > 
-> > > > Also replace rcu_assign_pointer call on rq->sd with WRITE_ONCE. This
-> > > > should be sufficient for the rq->sd initialization.
-> > > 
-> > > > @@ -668,7 +668,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
-> > > >  
-> > > >  	rq_attach_root(rq, rd);
-> > > >  	tmp = rq->sd;
-> > > > -	rcu_assign_pointer(rq->sd, sd);
-> > > > +	WRITE_ONCE(rq->sd, sd);
-> > > >  	dirty_sched_domain_sysctl(cpu);
-> > > >  	destroy_sched_domains(tmp);
-> > > 
-> > > Where did the RELEASE barrier go?
-> > > 
-> > > That was a publish operation, now it is not.
-> > 
-> > Funny thing is, initially I had written this patch with smp_store_release()
-> > instead of WRITE_ONCE, but checkpatch complaints with that since it needs a
-> > comment on top of it, and I wasn't sure if RELEASE barrier was the intent of
-> > using rcu_assign_pointer (all the more reason to replace it with something
-> > more explicit).
-> > 
-> > I will replace it with the following and resubmit it then:
-> > 
-> > /* Release barrier */
-> > smp_store_release(&rq->sd, sd);
-> > 
-> > Or do we want to just drop the "Release barrier" comment and live with the
-> > checkpatch warning?
+> > On top of that, I suspect this is under the write-side lock (we're doing
+> > assignment after all).
 > 
-> How about we keep using rcu_assign_pointer(), the whole sched domain
-> tree is under rcu; peruse that destroy_sched_domains() function for
-> instance.
+> Yes it is under a policy->rwsem, just confirmed that.
 > 
-> Also check how for_each_domain() uses rcu_dereference().
+> And indeed rcu_read_lock() is not needed here in this patch, thanks for
+> pointing that out. Sometimes the word "dereference" plays some visual tricks
+> and in this case tempted me to add an RCU reader section ;-) Assuming you
+> guys are in agreement with usage of rcu_access_pointer() here to keep sparse
+> happy, I'll rework the patch accordingly and resubmit with that.
 
-May be then, all those pointers should be made __rcu as well. Then we can use
-rcu_assign_pointer() here. I will look more into it and study these functions
-as you are suggesting.
+Works for me!
 
-thanks,
-
-- Joel
+							Thanx, Paul
 
