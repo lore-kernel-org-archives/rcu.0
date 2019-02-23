@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED6C4C43381
-	for <rcu@archiver.kernel.org>; Sat, 23 Feb 2019 06:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 240D8C43381
+	for <rcu@archiver.kernel.org>; Sat, 23 Feb 2019 06:35:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BC02820652
-	for <rcu@archiver.kernel.org>; Sat, 23 Feb 2019 06:35:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDC2220652
+	for <rcu@archiver.kernel.org>; Sat, 23 Feb 2019 06:35:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="s/78w0YG"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LXf4B9ji"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbfBWGe5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 23 Feb 2019 01:34:57 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38089 "EHLO
+        id S1727604AbfBWGfe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 23 Feb 2019 01:35:34 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40595 "EHLO
         mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727727AbfBWGe4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 23 Feb 2019 01:34:56 -0500
-Received: by mail-qt1-f193.google.com with SMTP id s1so5126645qte.5
-        for <rcu@vger.kernel.org>; Fri, 22 Feb 2019 22:34:55 -0800 (PST)
+        with ESMTP id S1727575AbfBWGey (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 23 Feb 2019 01:34:54 -0500
+Received: by mail-qt1-f193.google.com with SMTP id j36so5109732qta.7
+        for <rcu@vger.kernel.org>; Fri, 22 Feb 2019 22:34:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=j9uaH19zzwr4OSX1n04BhljetL/RmyflP+g9OcvA0u0=;
-        b=s/78w0YGTc2XtFwNSTGRH7EzLpdGadOr9CbcH16Ykl04d98Jj2wGbWSxhbnjOTpfrZ
-         OIuG3RiwNiWryVdu02ArDq7KDyDswe9l8C+bgbkSuPtmL8rpmqfWW2ShIN1TGHSegkj6
-         ErshRyL42Z8mIhldo1XK/Q7NCZuHNZKcERyNo=
+        bh=+VRwkLma4QHsLodLyqLqscrFLAElLwMuFYkHuZgYCiA=;
+        b=LXf4B9jiVhDDmWHqmpX8sitFrnlfo5OGBPgxZMG1SG9dPgcG05UwP/0ab87QJca35A
+         +5vX47xZXK/bvlYBPDse0FJpr4WEcj+RtEPX3feM0h5vddYnqNxNRh1Wj7XVR3VJINey
+         NNLEqhrf5Bc1rXkGgXSBIsTOm2/s0liaYt+t8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=j9uaH19zzwr4OSX1n04BhljetL/RmyflP+g9OcvA0u0=;
-        b=m3PxtlTG1EKrTrU3EOD5gKn3wlT74YnTE1nXJHl9QeMAG+c+Mof9US0gky9aeh6yi7
-         Ncd0QkHjb2mqeNkQuF1vIt9m9mqpe7k2653usYbnn6dT2+jOxLMnNtm2YTqsdJLP1Mql
-         bR8j/3LRkw5r/8qJW+3TgBBFVo4g99krRivZpOLp6NVjlwDMf0J1MRUd3bY0cFEon07Z
-         4QOaehPUh4sd4935l+GUX8QT1If8ncD86Aac0P/jUXBEsKRDIMPwbETE6SrwE9P2kRCZ
-         3g5VIPIgZKhe8AadLpbSH1WUeNP9gkNckH7/FoxM9g+W71ZxKOnFGcIFomz56/KJlLiP
-         hlXA==
-X-Gm-Message-State: AHQUAuat6LmYgo966xvNE63xzEXV4+liXvguatWPIaza+X54SINAG7pz
-        U8qch7El/bEvjOQNstbLoL149g==
-X-Google-Smtp-Source: AHgI3IbH9rbs5/xUnSBNzQ1jBth6cKcBV/4cG/qubG7uaPWUv4MRKW8heTjLFYj1yn326XSsWSWbXg==
-X-Received: by 2002:ac8:29e8:: with SMTP id 37mr6232688qtt.153.1550903695498;
-        Fri, 22 Feb 2019 22:34:55 -0800 (PST)
+        bh=+VRwkLma4QHsLodLyqLqscrFLAElLwMuFYkHuZgYCiA=;
+        b=K1ELmZN3zx9p1SvWaFZs5n7/DMObXTzT/Qrm99YMNPnFsvPBG5m7ii08RbwknFEpjb
+         khluVLV6zPGD2Csw3/cnGwN3ymPk/eJo5SlUr6FlPPQ1dqBoDBtgNlwmsukYtgocTJAV
+         TFoia1UtfyZrbW65GbDSRdX3v4Y0W9jCiFchVdgLAtGkxV19fhArnW0hY5jE0tGbny1Q
+         4yccm958fcrlYn/XDru0cwWw8XeWauvvyf7x96Ub4mwbEhMMwCI+nECVhd3MIsMRMuG3
+         IbkNwW0r8xh9WS6E51rjipuCSuNVE8SVNrtyUB/o5Nazejz3rp0tcCIGA00ARxZ86Ma1
+         +aFA==
+X-Gm-Message-State: AHQUAuZuD3TndNjqrcN5E64Mqd0tI3mfsz9d1x6NO0/OyhVEWM0thh4M
+        SFGUe1dUE3NTfvL+FR/4cXQ7LA==
+X-Google-Smtp-Source: AHgI3IahEVRnoZ+AHkPdERWnSNKPgReNQYpi0yxVo8XFjoaLgTIuIzDAlYYdutedD2WueyS54r/lCw==
+X-Received: by 2002:a0c:92ec:: with SMTP id c41mr6220040qvc.158.1550903693796;
+        Fri, 22 Feb 2019 22:34:53 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id d32sm2189408qtc.88.2019.02.22.22.34.53
+        by smtp.gmail.com with ESMTPSA id d32sm2189408qtc.88.2019.02.22.22.34.51
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Feb 2019 22:34:54 -0800 (PST)
+        Fri, 22 Feb 2019 22:34:52 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -77,9 +77,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: [PATCH v2 3/6] sched/cpufreq: Annotate cpufreq_update_util_data pointer with __rcu
-Date:   Sat, 23 Feb 2019 01:34:31 -0500
-Message-Id: <20190223063434.6793-4-joel@joelfernandes.org>
+Subject: [PATCH v2 2/6] ixgbe: Fix incorrect RCU API usage
+Date:   Sat, 23 Feb 2019 01:34:30 -0500
+Message-Id: <20190223063434.6793-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.rc0.258.g878e2cd30e-goog
 In-Reply-To: <20190223063434.6793-1-joel@joelfernandes.org>
 References: <20190223063434.6793-1-joel@joelfernandes.org>
@@ -90,50 +90,102 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Recently I added an RCU annotation check to rcu_assign_pointer(). All
-pointers assigned to RCU protected data are to be annotated with __rcu
-inorder to be able to use rcu_assign_pointer() similar to checks in
-other RCU APIs.
+Recently, I added an RCU annotation check in rcu_assign_pointer. This
+caused a sparse error to be reported by the ixgbe driver.
 
-This resulted in a sparse error: kernel//sched/cpufreq.c:41:9: sparse:
-error: incompatible types in comparison expression (different address
-spaces)
+Further looking, it seems the adapter->xdp_prog pointer is not annotated
+with __rcu. Annonating it fixed the error, but caused a bunch of other
+warnings.
 
-Fix this by annotating cpufreq_update_util_data pointer with __rcu. This
-will also help sparse catch any future RCU misuage bugs.
+This patch tries to fix all warnings by using RCU API properly. This
+makes sense to do because not using RCU properly can result in various
+hard to find bugs. This is a best effort fix and is only build tested.
+The sparse errors and warnings go away with the change. I request
+maintainers / developers in this area to review / test it properly.
+
+The sparse error fixed is:
+ixgbe_main.c:10256:25: error: incompatible types in comparison expression
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/cpufreq.c | 2 +-
- kernel/sched/sched.h   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |  4 ++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 15 ++++++++++-----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/sched/cpufreq.c b/kernel/sched/cpufreq.c
-index 22bd8980f32f..e316ee7bb2e5 100644
---- a/kernel/sched/cpufreq.c
-+++ b/kernel/sched/cpufreq.c
-@@ -7,7 +7,7 @@
-  */
- #include "sched.h"
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+index 08d85e336bd4..3b14daf27516 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+@@ -311,7 +311,7 @@ struct ixgbe_ring {
+ 	struct ixgbe_ring *next;	/* pointer to next ring in q_vector */
+ 	struct ixgbe_q_vector *q_vector; /* backpointer to host q_vector */
+ 	struct net_device *netdev;	/* netdev ring belongs to */
+-	struct bpf_prog *xdp_prog;
++	struct bpf_prog __rcu *xdp_prog;
+ 	struct device *dev;		/* device for DMA mapping */
+ 	void *desc;			/* descriptor ring memory */
+ 	union {
+@@ -560,7 +560,7 @@ struct ixgbe_adapter {
+ 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
+ 	/* OS defined structs */
+ 	struct net_device *netdev;
+-	struct bpf_prog *xdp_prog;
++	struct bpf_prog __rcu *xdp_prog;
+ 	struct pci_dev *pdev;
+ 	struct mii_bus *mii_bus;
  
--DEFINE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-+DEFINE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index daff8183534b..408a312aa6ba 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2199,7 +2199,7 @@ static struct sk_buff *ixgbe_run_xdp(struct ixgbe_adapter *adapter,
+ 	u32 act;
  
- /**
-  * cpufreq_add_update_util_hook - Populate the CPU's update_util_data pointer.
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d04530bf251f..2ab545d40381 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2166,7 +2166,7 @@ static inline u64 irq_time_read(int cpu)
- #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
+ 	rcu_read_lock();
+-	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
++	xdp_prog = rcu_dereference(rx_ring->xdp_prog);
  
- #ifdef CONFIG_CPU_FREQ
--DECLARE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-+DECLARE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
+ 	if (!xdp_prog)
+ 		goto xdp_out;
+@@ -6547,7 +6547,7 @@ int ixgbe_setup_rx_resources(struct ixgbe_adapter *adapter,
+ 			     rx_ring->queue_index) < 0)
+ 		goto err;
  
- /**
-  * cpufreq_update_util - Take a note about CPU utilization changes.
+-	rx_ring->xdp_prog = adapter->xdp_prog;
++	rcu_assign_pointer(rx_ring->xdp_prog, adapter->xdp_prog);
+ 
+ 	return 0;
+ err:
+@@ -10246,7 +10246,8 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 	if (nr_cpu_ids > MAX_XDP_QUEUES)
+ 		return -ENOMEM;
+ 
+-	old_prog = xchg(&adapter->xdp_prog, prog);
++	old_prog = rcu_access_pointer(adapter->xdp_prog);
++	rcu_assign_pointer(adapter->xdp_prog, prog);
+ 
+ 	/* If transitioning XDP modes reconfigure rings */
+ 	if (!!prog != !!old_prog) {
+@@ -10271,13 +10272,17 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ static int ixgbe_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
++	struct bpf_prog *prog;
+ 
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
+ 		return ixgbe_xdp_setup(dev, xdp->prog);
+ 	case XDP_QUERY_PROG:
+-		xdp->prog_id = adapter->xdp_prog ?
+-			adapter->xdp_prog->aux->id : 0;
++		rcu_read_lock();
++		prog = rcu_dereference(adapter->xdp_prog);
++		xdp->prog_id = prog ? prog->aux->id : 0;
++		rcu_read_unlock();
++
+ 		return 0;
+ 	case XDP_QUERY_XSK_UMEM:
+ 		return ixgbe_xsk_umem_query(adapter, &xdp->xsk.umem,
 -- 
 2.21.0.rc0.258.g878e2cd30e-goog
 
