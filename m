@@ -6,49 +6,49 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF2BC43381
-	for <rcu@archiver.kernel.org>; Mon, 25 Feb 2019 21:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38FC1C4360F
+	for <rcu@archiver.kernel.org>; Mon, 25 Feb 2019 22:05:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B62C420842
-	for <rcu@archiver.kernel.org>; Mon, 25 Feb 2019 21:11:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 10E972184D
+	for <rcu@archiver.kernel.org>; Mon, 25 Feb 2019 22:05:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbfBYVLu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 25 Feb 2019 16:11:50 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60910 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727247AbfBYVLt (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 25 Feb 2019 16:11:49 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1PL4mcp038857
-        for <rcu@vger.kernel.org>; Mon, 25 Feb 2019 16:11:48 -0500
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2qvn8crs4r-1
+        id S1728666AbfBYWFI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 25 Feb 2019 17:05:08 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42534 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728669AbfBYVNA (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 25 Feb 2019 16:13:00 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x1PL53GT046323
+        for <rcu@vger.kernel.org>; Mon, 25 Feb 2019 16:12:59 -0500
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2qvnk97gpe-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 25 Feb 2019 16:11:48 -0500
+        for <rcu@vger.kernel.org>; Mon, 25 Feb 2019 16:12:58 -0500
 Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 25 Feb 2019 21:11:47 -0000
-Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Mon, 25 Feb 2019 21:12:58 -0000
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 25 Feb 2019 21:11:39 -0000
+        Mon, 25 Feb 2019 21:12:51 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1PLBc9J23265510
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x1PLCorj18808996
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Feb 2019 21:11:38 GMT
+        Mon, 25 Feb 2019 21:12:50 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AE94B2067;
-        Mon, 25 Feb 2019 21:11:38 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 6C170B2066;
+        Mon, 25 Feb 2019 21:12:50 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 495EFB2064;
-        Mon, 25 Feb 2019 21:11:38 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 48BE4B205F;
+        Mon, 25 Feb 2019 21:12:50 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 25 Feb 2019 21:11:38 +0000 (GMT)
+        Mon, 25 Feb 2019 21:12:50 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 6A10316C1510; Mon, 25 Feb 2019 13:11:38 -0800 (PST)
-Date:   Mon, 25 Feb 2019 13:11:38 -0800
+        id 6E1DE16C1510; Mon, 25 Feb 2019 13:12:50 -0800 (PST)
+Date:   Mon, 25 Feb 2019 13:12:50 -0800
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -73,24 +73,24 @@ Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v2 5/6] rcuwait: Annotate task_struct with __rcu
+Subject: Re: [PATCH v2 6/6] sched: Annotate perf_domain pointer with __rcu
 Reply-To: paulmck@linux.ibm.com
 References: <20190223063434.6793-1-joel@joelfernandes.org>
- <20190223063434.6793-6-joel@joelfernandes.org>
+ <20190223063434.6793-7-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190223063434.6793-6-joel@joelfernandes.org>
+In-Reply-To: <20190223063434.6793-7-joel@joelfernandes.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19022521-2213-0000-0000-00000358CD72
+x-cbid: 19022521-0072-0000-0000-0000040007A1
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010663; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000281; SDB=6.01166317; UDB=6.00609217; IPR=6.00946921;
- MB=3.00025738; MTD=3.00000008; XFM=3.00000015; UTC=2019-02-25 21:11:46
+ PH=3.00000004; SC=3.00000281; SDB=6.01166318; UDB=6.00609217; IPR=6.00946921;
+ MB=3.00025738; MTD=3.00000008; XFM=3.00000015; UTC=2019-02-25 21:12:57
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19022521-2214-0000-0000-00005D7ABE44
-Message-Id: <20190225211138.GZ4072@linux.ibm.com>
+x-cbparentid: 19022521-0073-0000-0000-00004B4CB56B
+Message-Id: <20190225211250.GA4072@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-02-25_11:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
@@ -103,12 +103,13 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Feb 23, 2019 at 01:34:33AM -0500, Joel Fernandes (Google) wrote:
-> This suppresses sparse error generated due to the recently added
-> rcu_assign_pointer sparse check.
+On Sat, Feb 23, 2019 at 01:34:34AM -0500, Joel Fernandes (Google) wrote:
+> This fixes the following sparse errors in sched/fair.c:
 > 
-> percpu-rwsem.c:162:9: sparse: error: incompatible types in comparison expression
-> exit.c:316:16: sparse: error: incompatible types in comparison expression
+> fair.c:6506:14: error: incompatible types in comparison expression
+> fair.c:8642:21: error: incompatible types in comparison expression
+> 
+> Using __rcu will also help sparse catch any future bugs.
 > 
 > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
@@ -117,22 +118,22 @@ From an RCU perspective:
 Reviewed-by: Paul E. McKenney <paulmck@linux.ibm.com>
 
 > ---
->  include/linux/rcuwait.h | 2 +-
+>  kernel/sched/sched.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/rcuwait.h b/include/linux/rcuwait.h
-> index 90bfa3279a01..563290fc194f 100644
-> --- a/include/linux/rcuwait.h
-> +++ b/include/linux/rcuwait.h
-> @@ -18,7 +18,7 @@
->   * awoken.
->   */
->  struct rcuwait {
-> -	struct task_struct *task;
-> +	struct task_struct __rcu *task;
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index ca6a79f57e7a..c8e6514433a9 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -780,7 +780,7 @@ struct root_domain {
+>  	 * NULL-terminated list of performance domains intersecting with the
+>  	 * CPUs of the rd. Protected by RCU.
+>  	 */
+> -	struct perf_domain	*pd;
+> +	struct perf_domain __rcu *pd;
 >  };
 >  
->  #define __RCUWAIT_INITIALIZER(name)		\
+>  extern struct root_domain def_root_domain;
 > -- 
 > 2.21.0.rc0.258.g878e2cd30e-goog
 > 
