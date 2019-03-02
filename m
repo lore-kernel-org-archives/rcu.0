@@ -1,158 +1,126 @@
-Return-Path: <SRS0=M83I=RC=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ZqZC=RF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B7C3C43381
-	for <rcu@archiver.kernel.org>; Wed, 27 Feb 2019 15:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B560C43381
+	for <rcu@archiver.kernel.org>; Sat,  2 Mar 2019 08:57:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6DFCD2184A
-	for <rcu@archiver.kernel.org>; Wed, 27 Feb 2019 15:42:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC4CF20836
+	for <rcu@archiver.kernel.org>; Sat,  2 Mar 2019 08:57:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="boHUVNLr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uvEVk5rH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbfB0PmU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 27 Feb 2019 10:42:20 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39647 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730032AbfB0PmT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 27 Feb 2019 10:42:19 -0500
-Received: by mail-qk1-f193.google.com with SMTP id x6so10095282qki.6
-        for <rcu@vger.kernel.org>; Wed, 27 Feb 2019 07:42:18 -0800 (PST)
+        id S1725986AbfCBI5Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 2 Mar 2019 03:57:24 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38782 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbfCBI5Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 2 Mar 2019 03:57:24 -0500
+Received: by mail-pg1-f196.google.com with SMTP id m2so157502pgl.5
+        for <rcu@vger.kernel.org>; Sat, 02 Mar 2019 00:57:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bJ5h9be4b7KCjMmK31Zpums+iy/AqhYXrtbrX7XS2j4=;
-        b=boHUVNLrnlG4TgjStODkEU1FcTkx0wyYKewSIai/QoC/lS2BfdId423m0hUDd6nedu
-         xxLvlrxJf6SWVkI44rgL24FToLG+GhYJ+IDweZf/UnU94dNNWCoo/auLAV0oNzCh/sqy
-         SnXQ9kxkTrRODGLFg9MGoeA//cakMmUg6wfo0=
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=AASO09S013pyKisQW6pFp4SixQF+H6IxPOg3z6XrL8s=;
+        b=uvEVk5rH01yd1CCaW+JoYYL1XnHyOxpu0dUsf4ybdstMgfhPWiwEJZKTnhnGFcfLA3
+         WGZE48Ba/d80Nom0QZ904QHVjZipAzzaNTxNOspw8NIefxpfsmxF5hoWhvZqiJkuKpqz
+         FUnDkGS14Yl9vycax7b6uuMw7sp0ilpp4MIN7SjC2oTLFj9E2LYajGKaTOEnvRG2JRKm
+         PfpHfuNLeUhGrjfiH2LzZbyifZiX9/5kLjb0vTmj5myNfShZoPYAekNWQYARdfRQpWyF
+         MyOuVPEz2uBXpek/NmpLkS1p1R+eMt11Xf8QdKzze5P6cM1+rE8KH89o/u6GM0/gafFc
+         1eng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bJ5h9be4b7KCjMmK31Zpums+iy/AqhYXrtbrX7XS2j4=;
-        b=lFZA1P3xar+XD44hQiQ/DqTrDzEmjzSawxAMyl4XbHQPENrkNtM4INmFjTQLr3rx2O
-         29AEnoJC53uNwRzL8fCetooHXygk36KFOn9FtoKSSyQjIOFeCemVnc5V21aLAQ1Ko/VI
-         gf08T2+/lKcEIbzdA21H/B20ek0ZiYqaFN4IoeCplALeAT8+E8onp5J9rxlfgqNw2yzH
-         Y7MbKIEXR6JVnXic5lx3itNE4EH3J8BQir4jpSUmFEyG181jM8cWgTD4DPDaCB2nUntr
-         YjtSKxW3BRFQ+PozAVf4Z3NxR6WTzq/QX6BtDj9MFuogzAUOolWS+AdxIBXf00lQHcgS
-         92lg==
-X-Gm-Message-State: AHQUAuZEQswiK8GCh8c2fx7PR/XLzf+6GFgRG7LP/l/ptM64j/yxJEM8
-        hsIbJkeD7nrTH8KTNbaO437vMA==
-X-Google-Smtp-Source: AHgI3Iamsa3Ik9XV4LjWAIy8cg6gBN5T+YQ/cs9zGO4iqp1O2YCvPCFKiL2sCP5zrblaVykHSQQfrA==
-X-Received: by 2002:a37:9c8f:: with SMTP id f137mr2695722qke.248.1551282138312;
-        Wed, 27 Feb 2019 07:42:18 -0800 (PST)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id r24sm9908162qte.60.2019.02.27.07.42.16
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 Feb 2019 07:42:17 -0800 (PST)
-Date:   Wed, 27 Feb 2019 10:42:16 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=AASO09S013pyKisQW6pFp4SixQF+H6IxPOg3z6XrL8s=;
+        b=tXOWE/rbGFl41kb7tB3DxoBFUrv10Vjkq93xkdnlymG63FO6/XW2ttq+K4t501Cs3+
+         IvFiyL0GUycE49Zu+jELw3VtdbP2KGmF0+p9XWxXm2t1OOgRbmkY8o8NDJ8EvriQpuD/
+         8B5zJEzSHVituo+1u/FvsJav37duOoQqRn9/ZMUZexhvcDoCF0bBoL6fowwz4z5CyG0O
+         kA0+6SyvMXCBljKvUwEe9y378sZHs7aReTJ5toZ+G9Bv/jG+X6bXVLRzxl0EoTfWEZD0
+         WWAnY4T30qs9eu8qMYYVewJub0lv+HvVtozVLd/Q8LjAT7fkXnod2axWStpanTEZDa3p
+         zTSA==
+X-Gm-Message-State: APjAAAW9LD8mXgR6ucjixet3c1U7ldmkTby2/1U7BTA6aAfvyaplPFkD
+        uiT2eycMpuMFLrSvyXdZgJ83Qt9G
+X-Google-Smtp-Source: APXvYqyrfp2PUi+W83GsnfiTYJTsdO/vd3cUVo+89QpXEZo3Yp9obdsmqSHKudkClCZbp0TcpCmzFQ==
+X-Received: by 2002:a65:60cb:: with SMTP id r11mr9104308pgv.143.1551517043366;
+        Sat, 02 Mar 2019 00:57:23 -0800 (PST)
+Received: from [192.168.11.4] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id c130sm934728pfb.145.2019.03.02.00.57.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 02 Mar 2019 00:57:22 -0800 (PST)
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com, kernel-team@android.com,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        netdev@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Quentin Perret <quentin.perret@arm.com>, rcu@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xdp-newbies@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v2 3/6] sched/cpufreq: Annotate cpufreq_update_util_data
- pointer with __rcu
-Message-ID: <20190227154216.GA248723@google.com>
-References: <20190223063434.6793-1-joel@joelfernandes.org>
- <20190223063434.6793-4-joel@joelfernandes.org>
- <20190225211026.GX4072@linux.ibm.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] rcu: Move common code out of if-else block
+Message-ID: <9ee20ff4-c91a-89ce-eab3-62064ec31855@gmail.com>
+Date:   Sat, 2 Mar 2019 17:57:17 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190225211026.GX4072@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 25, 2019 at 01:10:26PM -0800, Paul E. McKenney wrote:
-> On Sat, Feb 23, 2019 at 01:34:31AM -0500, Joel Fernandes (Google) wrote:
-> > Recently I added an RCU annotation check to rcu_assign_pointer(). All
-> > pointers assigned to RCU protected data are to be annotated with __rcu
-> > inorder to be able to use rcu_assign_pointer() similar to checks in
-> > other RCU APIs.
-> > 
-> > This resulted in a sparse error: kernel//sched/cpufreq.c:41:9: sparse:
-> > error: incompatible types in comparison expression (different address
-> > spaces)
-> > 
-> > Fix this by annotating cpufreq_update_util_data pointer with __rcu. This
-> > will also help sparse catch any future RCU misuage bugs.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> From an RCU perspective:
-> 
-> Reviewed-by: Paul E. McKenney <paulmck@linux.ibm.com>
+From 97f4bcece9a9beb792b623f847570144a0a71ccc Mon Sep 17 00:00:00 2001
+From: Akira Yokosawa <akiyks@gmail.com>
+Date: Sat, 2 Mar 2019 17:25:19 +0900
+Subject: [PATCH] rcu: Move common code out of if-else block
 
-Thanks a lot Paul.
+As the result of recent addition of "rdp->core_needs_qs = false;" in
+the "if" block, now both branches of the if-else have the same
+assignment.
 
-Peter, Rafael, Steve,
-Are you Ok with the patches 3-6? It will be nice to quiet down sparse.
+Factor it out and reduce line count.
 
-thanks,
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+---
+Hi Paul,
 
- - Joel
+This patch is supposed to do the change mentioned in off-the-list
+correspondence.  As the earlier change by Joel has not landed on
+tip tree, I avoided mentioning the commit id of the change
+(ac2baf64948d in -rcu as of today) in the change log.
 
-> > ---
-> >  kernel/sched/cpufreq.c | 2 +-
-> >  kernel/sched/sched.h   | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/sched/cpufreq.c b/kernel/sched/cpufreq.c
-> > index 22bd8980f32f..e316ee7bb2e5 100644
-> > --- a/kernel/sched/cpufreq.c
-> > +++ b/kernel/sched/cpufreq.c
-> > @@ -7,7 +7,7 @@
-> >   */
-> >  #include "sched.h"
-> >  
-> > -DEFINE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-> > +DEFINE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
-> >  
-> >  /**
-> >   * cpufreq_add_update_util_hook - Populate the CPU's update_util_data pointer.
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index d04530bf251f..2ab545d40381 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -2166,7 +2166,7 @@ static inline u64 irq_time_read(int cpu)
-> >  #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
-> >  
-> >  #ifdef CONFIG_CPU_FREQ
-> > -DECLARE_PER_CPU(struct update_util_data *, cpufreq_update_util_data);
-> > +DECLARE_PER_CPU(struct update_util_data __rcu *, cpufreq_update_util_data);
-> >  
-> >  /**
-> >   * cpufreq_update_util - Take a note about CPU utilization changes.
-> > -- 
-> > 2.21.0.rc0.258.g878e2cd30e-goog
-> > 
-> 
+Does this work for you? 
+
+        Thanks, Akira
+--
+ kernel/rcu/tree.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7273ef0..449e8a4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1910,12 +1910,10 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+ 		return;
+ 	}
+ 	mask = rdp->grpmask;
++	rdp->core_needs_qs = false;
+ 	if ((rnp->qsmask & mask) == 0) {
+-		rdp->core_needs_qs = false;
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	} else {
+-		rdp->core_needs_qs = false;
+-
+ 		/*
+ 		 * This GP can't end until cpu checks in, so all of our
+ 		 * callbacks can be processed during the next GP.
+-- 
+2.7.4
+
