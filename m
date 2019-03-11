@@ -2,263 +2,158 @@ Return-Path: <SRS0=VzST=RO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6747C43381
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 21:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D8AC43381
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:09:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 976212147C
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 21:50:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69FF92087C
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:09:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727508AbfCKVuU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Mar 2019 17:50:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52470 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727500AbfCKVuU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Mar 2019 17:50:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9E958B0F2;
-        Mon, 11 Mar 2019 21:50:16 +0000 (UTC)
-From:   NeilBrown <neilb@suse.com>
-To:     paulmck@linux.ibm.com
-Date:   Tue, 12 Mar 2019 08:50:05 +1100
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Graf <tgraf@suug.ch>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        neeraju@codeaurora.org
-Subject: Re: [PATCH 2/5] rhashtable: don't hold lock on first table throughout insertion.
-In-Reply-To: <20190311152752.GA10700@linux.ibm.com>
-References: <20180724225825.GE12945@linux.vnet.ibm.com> <87in53oqzz.fsf@notabene.neil.brown.name> <20180725152250.GN12945@linux.vnet.ibm.com> <87r2jpmqu2.fsf@notabene.neil.brown.name> <20180727031815.GW24813@linux.vnet.ibm.com> <20180727145731.GA2780@linux.vnet.ibm.com> <87zhy8s05i.fsf@notabene.neil.brown.name> <20180731041425.GI24813@linux.vnet.ibm.com> <87lg9sro5r.fsf@notabene.neil.brown.name> <20180731144429.GM24813@linux.vnet.ibm.com> <20190311152752.GA10700@linux.ibm.com>
-Message-ID: <874l89qdwy.fsf@notabene.neil.brown.name>
+        id S1727527AbfCKWJe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Mar 2019 18:09:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44892 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727138AbfCKWJe (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 11 Mar 2019 18:09:34 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2BM9TE0071298
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:09:33 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2r5xj440g5-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:09:32 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Mon, 11 Mar 2019 22:09:31 -0000
+Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 11 Mar 2019 22:09:28 -0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2BM9RNY11534358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Mar 2019 22:09:27 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A4CFB2085;
+        Mon, 11 Mar 2019 22:09:27 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C896B2080;
+        Mon, 11 Mar 2019 22:09:27 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Mar 2019 22:09:27 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 5D43816C34A1; Mon, 11 Mar 2019 15:09:29 -0700 (PDT)
+Date:   Mon, 11 Mar 2019 15:09:29 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcuupdate: Do a single rhp->func read in
+ rcu_head_after_call_rcu
+Reply-To: paulmck@linux.ibm.com
+References: <1552305483-15846-1-git-send-email-neeraju@codeaurora.org>
+ <20190311154839.GH13351@linux.ibm.com>
+ <f4e04233-c0ef-f592-a4dc-23d659171396@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4e04233-c0ef-f592-a4dc-23d659171396@codeaurora.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19031122-0060-0000-0000-0000031A81E0
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010741; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000281; SDB=6.01172997; UDB=6.00613254; IPR=6.00953652;
+ MB=3.00025936; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-11 22:09:30
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19031122-0061-0000-0000-00004893D929
+Message-Id: <20190311220929.GA22895@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-11_16:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1903110151
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 11, 2019 at 09:22:30PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 3/11/19 9:18 PM, Paul E. McKenney wrote:
+> >On Mon, Mar 11, 2019 at 05:28:03PM +0530, Neeraj Upadhyay wrote:
+> >>Read rhp->func pointer in rcu_head_after_call_rcu() only once,
+> >>to avoid warning in the case, where call_rcu() happens between
+> >>two reads of rhp->func.
+> >>
+> >>Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> >
+> >This would more gracefully handle racing rcu_head_after_call_rcu()
+> >with call_rcu().
+> >
+> >But this thing is not yet used, so let's see what Neil Brown says.
+> >If he isn't going to use it, my thought is to instead just remove
+> >this.
+> 
+> Agree, makes sense.
 
-On Mon, Mar 11 2019, Paul E. McKenney wrote:
+And Neil said that he intends to use it, so I applied your patch, updated
+as shown below.  Ah, and please use scripts/checkpatch.pl -- it sometimes
+gets overly enthusiastic, but the blank line following the declarations is
+good practice.
 
-> On Tue, Jul 31, 2018 at 07:44:29AM -0700, Paul E. McKenney wrote:
->> On Tue, Jul 31, 2018 at 03:04:48PM +1000, NeilBrown wrote:
->> > On Mon, Jul 30 2018, Paul E. McKenney wrote:
->> >=20
->> > > On Tue, Jul 31, 2018 at 10:45:45AM +1000, NeilBrown wrote:
->> > >> On Fri, Jul 27 2018, Paul E. McKenney wrote:
->> > >>=20
->> > >> > On Thu, Jul 26, 2018 at 08:18:15PM -0700, Paul E. McKenney wrote:
->> > >> >> On Fri, Jul 27, 2018 at 11:04:37AM +1000, NeilBrown wrote:
->> > >> >> > On Wed, Jul 25 2018, Paul E. McKenney wrote:
->> > >> >> > >>=20
->> > >> >> > >> Looks good ... except ... naming is hard.
->> > >> >> > >>=20
->> > >> >> > >>  is_after_call_rcu_init()  asserts where in the lifecycle w=
-e are,
->> > >> >> > >>  is_after_call_rcu() tests where in the lifecycle we are.
->> > >> >> > >>=20
->> > >> >> > >>  The names are similar but the purpose is quite different.
->> > >> >> > >>  Maybe s/is_after_call_rcu_init/call_rcu_init/ ??
->> > >> >> > >
->> > >> >> > > How about rcu_head_init() and rcu_head_after_call_rcu()?
->> > >> >>=20
->> > >> >> Very well, I will pull this change in on my next rebase.
->> > >> >
->> > >> > Like this?
->> > >>=20
->> > >> Hard to say - unwinding white-space damage in my head is too challe=
-nging
->> > >> when newlines have been deleted :-(
->> > >
->> > > What???  Don't you like block-structured code?
->> > >
->> > > All kidding aside, how about the following more conventionally forma=
-tted
->> > > version?
->> >=20
->> > Wow - it's like I just got new glasses!
->> > Yes - nice an clear and now flaws to be found.  Thanks a lot.
->>=20
->> Now that flaws are to be found, please feel free to report them.  ;-)
->
-> Hello, Neil,
->
-> Any plans to use these functions?  There are still no upstream uses.
-> On the other hand, if they proved unuseful, I will remove them.  If I
-> don't hear otherwise from you, I will pull them in v5.2.
+							Thanx, Paul
 
-Hi Paul,
- yes, I do still have plans for them.  I've got quite a few things I
- want to add to rhashtables including this, but got stalled late last
- year and I haven't managed to get back to it.
- Thanks for your prompting - I'll make an effort to post some patches
- soon, particularly the one that makes use of this new functionality.
+------------------------------------------------------------------------
 
-Thanks,
-NeilBrown
+commit fcf4326ee3fb7e0925fe0f299c385c31f5d62fbf
+Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+Date:   Mon Mar 11 17:28:03 2019 +0530
 
+    rcu: Do a single rhp->func read in rcu_head_after_call_rcu()
+    
+    The rcu_head_after_call_rcu() function reads the rhp->func pointer twice,
+    which can result in a false-positive WARN_ON_ONCE() if the callback
+    were passed to call_rcu() between the two reads.  Although racing
+    rcu_head_after_call_rcu() with call_rcu() is to be a dubious use case
+    (the return value is not reliable in that case), intermittent and
+    irreproducible warnings are also quite dubious.  This commit therefore
+    uses a single READ_ONCE() to pick up the value of rhp->func once, then
+    tests that value twice, thus guaranteeing consistent processing within
+    rcu_head_after_call_rcu()().
+    
+    Neverthless, racing rcu_head_after_call_rcu() with call_rcu() is still
+    a dubious use case.
+    
+    Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+    [ paulmck: Add blank line after declaration per checkpatch.pl. ]
+    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 
->
-> 							Thanx, Paul
->
->> > NeilBrown
->> >=20
->> > >
->> > > 							Thanx, Paul
->> > >
->> > > --------------------------------------------------------------------=
-----
->> > >
->> > > commit e3408141ed7d702995b2fdc94703af88aadd226b
->> > > Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
->> > > Date:   Tue Jul 24 15:28:09 2018 -0700
->> > >
->> > >     rcu: Provide functions for determining if call_rcu() has been in=
-voked
->> > >=20=20=20=20=20
->> > >     This commit adds rcu_head_init() and rcu_head_after_call_rcu() f=
-unctions
->> > >     to help RCU users detect when another CPU has passed the specifi=
-ed
->> > >     rcu_head structure and function to call_rcu().  The rcu_head_ini=
-t()
->> > >     should be invoked before making the structure visible to RCU rea=
-ders,
->> > >     and then the rcu_head_after_call_rcu() may be invoked from within
->> > >     an RCU read-side critical section on an rcu_head structure that
->> > >     was obtained during a traversal of the data structure in questio=
-n.
->> > >     The rcu_head_after_call_rcu() function will return true if the r=
-cu_head
->> > >     structure has already been passed (with the specified function) =
-to
->> > >     call_rcu(), otherwise it will return false.
->> > >=20=20=20=20=20
->> > >     If rcu_head_init() has not been invoked on the rcu_head structure
->> > >     or if the rcu_head (AKA callback) has already been invoked, then
->> > >     rcu_head_after_call_rcu() will do WARN_ON_ONCE().
->> > >=20=20=20=20=20
->> > >     Reported-by: NeilBrown <neilb@suse.com>
->> > >     Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
->> > >     [ paulmck: Apply neilb naming feedback. ]
->> > >
->> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->> > > index e4f821165d0b..4db8bcacc51a 100644
->> > > --- a/include/linux/rcupdate.h
->> > > +++ b/include/linux/rcupdate.h
->> > > @@ -857,6 +857,46 @@ static inline notrace void rcu_read_unlock_sche=
-d_notrace(void)
->> > >  #endif /* #else #ifdef CONFIG_ARCH_WEAK_RELEASE_ACQUIRE */
->> > >=20=20
->> > >=20=20
->> > > +/* Has the specified rcu_head structure been handed to call_rcu()? =
-*/
->> > > +
->> > > +/*
->> > > + * rcu_head_init - Initialize rcu_head for rcu_head_after_call_rcu()
->> > > + * @rhp: The rcu_head structure to initialize.
->> > > + *
->> > > + * If you intend to invoke rcu_head_after_call_rcu() to test whethe=
-r a
->> > > + * given rcu_head structure has already been passed to call_rcu(), =
-then
->> > > + * you must also invoke this rcu_head_init() function on it just af=
-ter
->> > > + * allocating that structure.  Calls to this function must not race=
- with
->> > > + * calls to call_rcu(), rcu_head_after_call_rcu(), or callback invo=
-cation.
->> > > + */
->> > > +static inline void rcu_head_init(struct rcu_head *rhp)
->> > > +{
->> > > +	rhp->func =3D (rcu_callback_t)~0L;
->> > > +}
->> > > +
->> > > +/*
->> > > + * rcu_head_after_call_rcu - Has this rcu_head been passed to call_=
-rcu()?
->> > > + * @rhp: The rcu_head structure to test.
->> > > + * @func: The function passed to call_rcu() along with @rhp.
->> > > + *
->> > > + * Returns @true if the @rhp has been passed to call_rcu() with @fu=
-nc,
->> > > + * and @false otherwise.  Emits a warning in any other case, includ=
-ing
->> > > + * the case where @rhp has already been invoked after a grace perio=
-d.
->> > > + * Calls to this function must not race with callback invocation.  =
-One way
->> > > + * to avoid such races is to enclose the call to rcu_head_after_cal=
-l_rcu()
->> > > + * in an RCU read-side critical section that includes a read-side f=
-etch
->> > > + * of the pointer to the structure containing @rhp.
->> > > + */
->> > > +static inline bool
->> > > +rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
->> > > +{
->> > > +	if (READ_ONCE(rhp->func) =3D=3D f)
->> > > +		return true;
->> > > +	WARN_ON_ONCE(READ_ONCE(rhp->func) !=3D (rcu_callback_t)~0L);
->> > > +	return false;
->> > > +}
->> > > +
->> > > +
->> > >  /* Transitional pre-consolidation compatibility definitions. */
->> > >=20=20
->> > >  static inline void synchronize_rcu_bh(void)
->> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->> > > index 5dec94509a7e..4c56c1d98fb3 100644
->> > > --- a/kernel/rcu/rcu.h
->> > > +++ b/kernel/rcu/rcu.h
->> > > @@ -224,6 +224,7 @@ void kfree(const void *);
->> > >   */
->> > >  static inline bool __rcu_reclaim(const char *rn, struct rcu_head *h=
-ead)
->> > >  {
->> > > +	rcu_callback_t f;
->> > >  	unsigned long offset =3D (unsigned long)head->func;
->> > >=20=20
->> > >  	rcu_lock_acquire(&rcu_callback_map);
->> > > @@ -234,7 +235,9 @@ static inline bool __rcu_reclaim(const char *rn,=
- struct rcu_head *head)
->> > >  		return true;
->> > >  	} else {
->> > >  		RCU_TRACE(trace_rcu_invoke_callback(rn, head);)
->> > > -		head->func(head);
->> > > +		f =3D head->func;
->> > > +		WRITE_ONCE(head->func, (rcu_callback_t)0L);
->> > > +		f(head);
->> > >  		rcu_lock_release(&rcu_callback_map);
->> > >  		return false;
->> > >  	}
->>=20
->>=20
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 6cdb1db776cf..922bb6848813 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -878,9 +878,11 @@ static inline void rcu_head_init(struct rcu_head *rhp)
+ static inline bool
+ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
+ {
+-	if (READ_ONCE(rhp->func) == f)
++	rcu_callback_t func = READ_ONCE(rhp->func);
++
++	if (func == f)
+ 		return true;
+-	WARN_ON_ONCE(READ_ONCE(rhp->func) != (rcu_callback_t)~0L);
++	WARN_ON_ONCE(func != (rcu_callback_t)~0L);
+ 	return false;
+ }
+ 
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlyG2A0ACgkQOeye3VZi
-gbmQhg/9G8CjVJNnvsmrt6UIntBjlPZxZeno0sVyVVWlZ8+daxawKIfWmp8811zG
-H3oVZ1NHQCzlmY1iVvZODW+cfKrrRiFdU30VBLvWUsZVmBhPhqTvoEPWJa0+RB1Q
-5j3WRYMr/CLuGOzmTEjpY/FrRvKr4WRi2HZ3RqxKR9STIKdS1qtSvB1c85ho60ie
-fBOdQwNuucYwygmV4YcWJqqwAn4qSQ47ZRGXHJBn2mT0me4IpI+fOI3iYnRqiXzy
-anD6RabMhThkYHwAUuV+IMqydmJMvLRGOYiJ1vPbU9b84E6Vcp1AbTFPGwWg+wcA
-CxKAA1p9VGtHy4aZzW42bEEtGZP/sumkaWb5UhLQ82WoHKZuyn5vAnzEqeygx+YS
-M4E+Mk9olaZctvTSGvUOr4y4B7is1qNGZwN5rjmIP9Wf8qaMNrPlc6lEdH4pS6uW
-AhfwlHrGRgxyavDaHChaNbIrAOVPVpVx9Yo33gLWqWz6wc0UuIncTGyLPJA9Q08h
-+NQEdIisVkavm9eUGGFm303QaxNHckGOGvcPQNbAQ9jG6Y8pd4Zk6P6cCCDGxVcr
-Mb/DY+JisFRi6H56WyqRIWsalQAQDQc8RqN/m7yEx3KdrlacJPT8D5PVMEXRMSIQ
-6ZIYTg8+L0hDV1FCLUrD0w0kWuPv2fWzYU1MhCe1zm9LK8HFYfw=
-=i37E
------END PGP SIGNATURE-----
---=-=-=--
