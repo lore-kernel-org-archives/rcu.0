@@ -6,238 +6,208 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE36C43381
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61F13C43381
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:47:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E780B214AE
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:29:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2986B2087C
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 22:47:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbfCKW3I (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Mar 2019 18:29:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34060 "EHLO
+        id S1725843AbfCKWrq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Mar 2019 18:47:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38534 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725861AbfCKW3I (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 11 Mar 2019 18:29:08 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2BMIjMG119462
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:29:06 -0400
-Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2r5x4d5twq-1
+        by vger.kernel.org with ESMTP id S1725826AbfCKWrq (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 11 Mar 2019 18:47:46 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2BMiRHp077760
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:47:44 -0400
+Received: from e15.ny.us.ibm.com (e15.ny.us.ibm.com [129.33.205.205])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2r5x8w63as-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:29:06 -0400
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 18:47:44 -0400
 Received: from localhost
-        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e15.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 11 Mar 2019 22:29:06 -0000
-Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
-        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Mon, 11 Mar 2019 22:47:44 -0000
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e15.ny.us.ibm.com (146.89.104.202) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 11 Mar 2019 22:29:02 -0000
+        Mon, 11 Mar 2019 22:47:41 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2BMT1DZ24838234
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2BMleR14391050
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Mar 2019 22:29:02 GMT
+        Mon, 11 Mar 2019 22:47:40 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C56DFB2068;
-        Mon, 11 Mar 2019 22:29:01 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 797A3B2064;
+        Mon, 11 Mar 2019 22:47:40 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8DD7EB2065;
-        Mon, 11 Mar 2019 22:29:01 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 4C56DB205F;
+        Mon, 11 Mar 2019 22:47:40 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Mar 2019 22:29:01 +0000 (GMT)
+        Mon, 11 Mar 2019 22:47:40 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 7FFB316C5F31; Mon, 11 Mar 2019 15:29:03 -0700 (PDT)
-Date:   Mon, 11 Mar 2019 15:29:03 -0700
+        id 4210C16C0828; Mon, 11 Mar 2019 15:47:42 -0700 (PDT)
+Date:   Mon, 11 Mar 2019 15:47:42 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, luto@kernel.org, byungchul.park@lge.com
-Subject: Re: [PATCH tip/core/rcu 06/19] rcu: Add warning to detect
- half-interrupts
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Default jiffies_to_sched_qs to
+ jiffies_till_sched_qs
 Reply-To: paulmck@linux.ibm.com
-References: <20180829222021.GA29944@linux.vnet.ibm.com>
- <20180829222047.319-6-paulmck@linux.vnet.ibm.com>
- <20190311133939.GA29747@google.com>
+References: <1552297571-5617-1-git-send-email-neeraju@codeaurora.org>
+ <20190311151854.GG13351@linux.ibm.com>
+ <20190311151947.GA8862@linux.ibm.com>
+ <20190311173540.GA80041@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190311133939.GA29747@google.com>
+In-Reply-To: <20190311173540.GA80041@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19031122-0052-0000-0000-000003994067
+x-cbid: 19031122-0068-0000-0000-000003A3C1DB
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010741; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000281; SDB=6.01173004; UDB=6.00613258; IPR=6.00953659;
- MB=3.00025936; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-11 22:29:05
+ PH=3.00000004; SC=3.00000281; SDB=6.01173010; UDB=6.00613261; IPR=6.00953664;
+ MB=3.00025936; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-11 22:47:43
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19031122-0053-0000-0000-0000601F6387
-Message-Id: <20190311222903.GR13351@linux.ibm.com>
+x-cbparentid: 19031122-0069-0000-0000-000047C98F6D
+Message-Id: <20190311224742.GS13351@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-11_16:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1903110153
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1903110154
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 11, 2019 at 09:39:39AM -0400, Joel Fernandes wrote:
-> On Wed, Aug 29, 2018 at 03:20:34PM -0700, Paul E. McKenney wrote:
-> > RCU's dyntick-idle code is written to tolerate half-interrupts, that it,
-> > either an interrupt that invokes rcu_irq_enter() but never invokes the
-> > corresponding rcu_irq_exit() on the one hand, or an interrupt that never
-> > invokes rcu_irq_enter() but does invoke the "corresponding" rcu_irq_exit()
-> > on the other.  These things really did happen at one time, as evidenced
-> > by this ca-2011 LKML post:
+On Mon, Mar 11, 2019 at 01:35:40PM -0400, Joel Fernandes wrote:
+> On Mon, Mar 11, 2019 at 08:19:47AM -0700, Paul E. McKenney wrote:
+> > This time keeping the CC list...
 > > 
-> > http://lkml.kernel.org/r/20111014170019.GE2428@linux.vnet.ibm.com
+> > 							Thanx, Paul
 > > 
-> > The reason why RCU tolerates half-interrupts is that usermode helpers
-> > used exceptions to invoke a system call from within the kernel such that
-> > the system call did a normal return (not a return from exception) to
-> > the calling context.  This caused rcu_irq_enter() to be invoked without
-> > a matching rcu_irq_exit().  However, usermode helpers have since been
-> > rewritten to make much more housebroken use of workqueues, kernel threads,
-> > and do_execve(), and therefore should no longer produce half-interrupts.
-> > No one knows of any other source of half-interrupts, but then again,
-> > no one seems insane enough to go audit the entire kernel to verify that
-> > half-interrupts really are a relic of the past.
+> > On Mon, Mar 11, 2019 at 08:18:54AM -0700, Paul E. McKenney wrote:
+> > > On Mon, Mar 11, 2019 at 03:16:11PM +0530, Neeraj Upadhyay wrote:
+> > > > Current code does not call adjust_jiffies_till_sched_qs(),
+> > > > if jiffies_till_sched_qs is specified. For the case, where
+> > > > jiffies_till_first_fqs and jiffies_till_next_fqs are default,
+> > > > jiffies_to_sched_qs won't be a correct adjustment of
+> > > > jiffies_till_sched_qs.
+> > > > 
+> > > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > 
+> > > Good catch!  Queued and pushed.  Please see below for updated
+> > > commit log.  On future patches, could you please first describe
+> > > the problem and consequences, then what the fix is?  This approach
+> > > makes it much easier for people later on who will be trying to
+> > > figure out what is going on, and who might or might not have much
+> > > understanding of RCU.  (For example, they might be doing a bisection
+> > > or some such.)
+> > > 
+> > > Not a big deal, as I can touch this up, but a good habit to get into.
+> > > 
+> > > And no, rcutorture currently does not specify non-default values
+> > > for jiffies_till_sched_qs.  Which should probably be fixed.  I could
+> > > make rcu_implicit_dynticks_qs() complain if jiffies_to_sched_qs is
+> > > zero, but that feels a bit hacky and specific.  :-/
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit ee474b85fa0815be940ed89a91e0d84a110a0a92
+> > > Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > Date:   Mon Mar 11 15:16:11 2019 +0530
+> > > 
+> > >     rcu: Default jiffies_to_sched_qs to jiffies_till_sched_qs
+> > >     
+> > >     The current code only calls adjust_jiffies_till_sched_qs() if
+> > >     jiffies_till_sched_qs is left at its default value, so when the
+> > >     jiffies_till_sched_qs kernel-boot parameter actually is specified,
+> > >     jiffies_to_sched_qs will be left with the value zero, which
+> > >     will result in useless slowdowns of cond_resched().  This commit
+> > >     therefore changes rcu_init_geometry() to unconditionally invoke
+> > >     adjust_jiffies_till_sched_qs(), which ensures that jiffies_to_sched_qs
+> > >     will be initialized in all cases, thus maintaining good cond_resched()
+> > >     performance.
+> > >     
+> > >     Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > >     Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index ddd5c74e386b..10aeb89395ea 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3259,8 +3259,7 @@ static void __init rcu_init_geometry(void)
+> > >  		jiffies_till_first_fqs = d;
+> > >  	if (jiffies_till_next_fqs == ULONG_MAX)
+> > >  		jiffies_till_next_fqs = d;
+> > > -	if (jiffies_till_sched_qs == ULONG_MAX)
+> > > -		adjust_jiffies_till_sched_qs();
+> > > +	adjust_jiffies_till_sched_qs();
+> > >  
+> > >  	/* If the compile-time values are accurate, just leave. */
+> > >  	if (rcu_fanout_leaf == RCU_FANOUT_LEAF &&
 > > 
-> > This commit therefore adds a pair of WARN_ON_ONCE() calls that will
-> > trigger in the presence of half interrupts, which the code will continue
-> > to handle correctly.  If neither of these WARN_ON_ONCE() trigger by
-> > mid-2021, then perhaps RCU can stop handling half-interrupts, which
-> > would be a considerable simplification.
 > 
-> Hi Paul and everyone,
-> I was thinking some more about this patch and whether we can simplify this code
-> much in 2021. Since 2021 is a bit far away, I thought working on it in again to
-> keep it fresh in memory is a good idea ;-)
-
-Indeed, easy to forget.  ;-)
-
-> To me it seems we cannot easily combine the counters (dynticks_nesting and
-> dynticks_nmi_nesting) even if we confirmed that there is no possibility of a
-> half-interrupt scenario (assuming simplication means counter combining like
-> Byungchul tried to do in https://goo.gl/X1U77X). The reason is because these
-> 2 counters need to be tracked separately as they are used differently in the
-> following function:
+> Makes sense to me.
 > 
-> static int rcu_is_cpu_rrupt_from_idle(void)
-> {
->         return __this_cpu_read(rcu_data.dynticks_nesting) <= 0 &&
->                __this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 1;
-> }
+> Also the comment here needs an update too I think:
 > 
-> dynticks_nesting actually tracks if we entered/exited idle or user mode.
-
-True, though it tracks user mode only in CONFIG_NO_HZ_FULL kernels.
-
-> dynticks_nmi_nesting tracks if we entered/exited interrupts.
-
-Including NMIs, yes.
-
-> We have to do the "dynticks_nmi_nesting <= 1" check because
-> rcu_is_cpu_rrupt_from_idle() can possibly be called from an interrupt itself
-> (like timer) so we discount 1 interrupt, and, the "dynticks_nesting <= 0"
-> check is because the CPU MUST be in user or idle for the check to return
-> true. We can't really combine these two into one counter then I think because
-> they both convey different messages.
+> static ulong jiffies_to_sched_qs; /* Adjusted version of above if not default */
 > 
-> The only simplication we can do, is probably the "crowbar" updates to
-> dynticks_nmi_nesting can be removed from rcu_eqs_enter/exit once we confirm
-> no more half-interrupts are possible. Which might still be a worthwhile thing
-> to do (while still keeping both counters separate).
+> Seems to me, after your patch jiffies_to_sched_qs will always be an adjusted
+> value of some sort, unless jiffies_till_sched_qs is specified.
 > 
-> However, I think we could combine the counters and lead to simplying the code
-> in case we implement rcu_is_cpu_rrupt_from_idle differently such that it does
-> not need the counters but NOHZ_FULL may take issue with that since it needs
-> rcu_user_enter->rcu_eqs_enter to convey that the CPU is "RCU"-idle.
-
-I haven't gone through it in detail, but it seems like we should be able
-to treat in-kernel process-level execution like an interrupt from idle
-or userspace, as the case might be.  If we did that, shouldn't we be
-able to just do this?
-
-static int rcu_is_cpu_rrupt_from_idle(void)
-{
-        return __this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 1;
-}
-
-> Actually, I had another question... rcu_user_enter() is a NOOP in !NOHZ_FULL config.
-> In this case I was wondering if the the warning Paul added (in the patch I'm replying to)
-> will really get fired for half-interrupts. The vast majority of the systems I believe are
-> NOHZ_IDLE not NOHZ_FULL.
-> This is what a half-interrupt really looks like right? Please correct me if I'm wrong:
-> rcu_irq_enter()   [half interrupt causes an exception and thus rcu_irq_enter]
-> rcu_user_enter()  [due to usermode upcall]
-> rcu_user_exit()
-> (no more rcu_irq_exit() - hence half an interrupt)
+> Comment should be some thing like this then?
 > 
-> But the rcu_user_enter()/exit is a NOOP in some configs, so will the warning in
-> rcu_eqs_e{xit,nter} really do anything?
+> /* Either the above, or an adjusted default version based on
+>  * jiffies_till_{first,next}_fqs if it is not specified */
 
-Yes, because these are also called from rcu_idle_enter() and
-rcu_idle_exit(), which is invoked even in !NO_HZ_FULL kernels.
-
-> Or was the idea with adding the new warnings, that they would fire the next
-> time rcu_idle_enter/exit is called? Like for example:
-> 
-> rcu_irq_enter()   [This is due to half-interrupt]
-> rcu_idle_enter()  [Eventually we enter the idle loop at some point
-> 		   after the half-interrupt and the rcu_eqs_enter()
-> 		   would "crowbar" the dynticks_nmi_nesting counter to 0].
-
-You got it!  ;-)
-
-So yes, these warnings just detect the presence of misnesting.  Presumably
-event tracing would then be used to track down the culprits.  Assuming that
-the misnesting is reproducible and all that.
+Good point, but how about the patch below?
 
 							Thanx, Paul
 
-> thanks!
-> 
->  - Joel
-> 
-> > 
-> > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> > Reported-by: Joel Fernandes <joel@joelfernandes.org>
-> > Reported-by: Andy Lutomirski <luto@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/rcu/tree.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index dc041c2afbcc..d2b6ade692c9 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -714,6 +714,7 @@ static void rcu_eqs_enter(bool user)
-> >  	struct rcu_dynticks *rdtp;
-> >  
-> >  	rdtp = this_cpu_ptr(&rcu_dynticks);
-> > +	WARN_ON_ONCE(rdtp->dynticks_nmi_nesting != DYNTICK_IRQ_NONIDLE);
-> >  	WRITE_ONCE(rdtp->dynticks_nmi_nesting, 0);
-> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-> >  		     rdtp->dynticks_nesting == 0);
-> > @@ -895,6 +896,7 @@ static void rcu_eqs_exit(bool user)
-> >  	trace_rcu_dyntick(TPS("End"), rdtp->dynticks_nesting, 1, rdtp->dynticks);
-> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-> >  	WRITE_ONCE(rdtp->dynticks_nesting, 1);
-> > +	WARN_ON_ONCE(rdtp->dynticks_nmi_nesting);
-> >  	WRITE_ONCE(rdtp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
-> >  }
-> >  
-> > -- 
-> > 2.17.1
-> > 
-> 
+------------------------------------------------------------------------
+
+commit b1d5aaf8eff7872a63531f35aa0490f2fc8118d6
+Author: Paul E. McKenney <paulmck@linux.ibm.com>
+Date:   Mon Mar 11 15:45:13 2019 -0700
+
+    rcu: Update jiffies_to_sched_qs and adjust_jiffies_till_sched_qs() comments
+    
+    This commit better documents the jiffies_to_sched_qs default-value
+    strategy used by adjust_jiffies_till_sched_qs()
+    
+    Reported-by: Joel Fernandes <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 10aeb89395ea..355775a82581 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -400,7 +400,7 @@ static bool rcu_kick_kthreads;
+  */
+ static ulong jiffies_till_sched_qs = ULONG_MAX;
+ module_param(jiffies_till_sched_qs, ulong, 0444);
+-static ulong jiffies_to_sched_qs; /* Adjusted version of above if not default */
++static ulong jiffies_to_sched_qs; /* See adjust_jiffies_till_sched_qs(). */
+ module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
+ 
+ /*
+@@ -418,6 +418,7 @@ static void adjust_jiffies_till_sched_qs(void)
+ 		WRITE_ONCE(jiffies_to_sched_qs, jiffies_till_sched_qs);
+ 		return;
+ 	}
++	/* Otherwise, set to third fqs scan, but bound below on large system. */
+ 	j = READ_ONCE(jiffies_till_first_fqs) +
+ 		      2 * READ_ONCE(jiffies_till_next_fqs);
+ 	if (j < HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV)
 
