@@ -2,198 +2,153 @@ Return-Path: <SRS0=VzST=RO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49695C43381
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 13:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9478C43381
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 15:19:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0E90E2075C
-	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 13:39:43 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VU1U9PxC"
+	by mail.kernel.org (Postfix) with ESMTP id B50AB206BA
+	for <rcu@archiver.kernel.org>; Mon, 11 Mar 2019 15:19:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbfCKNjm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Mar 2019 09:39:42 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35040 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727334AbfCKNjm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Mar 2019 09:39:42 -0400
-Received: by mail-qt1-f193.google.com with SMTP id b16so3914819qtt.2
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 06:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NyK4GfMt/DHi95NLfTJrQeYHSok+IWJ5DODJR1IX2Bc=;
-        b=VU1U9PxCn/zV/FhEnOlyYpZofUcifQzq0InlYhXk1YeoG4yhOWFHaHwlxu1eHMP8fQ
-         W1DGKVZmWgbkYjaZ7Z+VVXpfME5VmIPN/QtVcbHsv0uEPPj5XjfcHkQIUKkDHDstTugR
-         sKxAKA7qXzMmCrFUNn5+65FAPH1sL57Owv8H4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NyK4GfMt/DHi95NLfTJrQeYHSok+IWJ5DODJR1IX2Bc=;
-        b=tJCGn9T4ijk/n/Y3cbqrdtGmYoEPOjcoV7KojRWaPxMxwJ/hIqJf+a+nBoGrizC4/4
-         IziKH0SrPR5XzkBxJuWgVEZsSHj54SZnaaEP2w2ngBEqqR4nzm1AuvmTeDl99Mutrn3g
-         7PXcTs0u3adrJEJEGfh3jBQhUdL9ptxptFg5u1bbQCEEkka/7hFweuR6GMtalURGTjoE
-         u/QYFvCC2ZS4G6vTflQT2RtlpfxCVb9TDtkr1ZMgH38wS3ASTrj9meJZVhhxF598G3/g
-         IOiD5552em9uFDo9Lk/7SKz7r9z+hB6+QBAgDirEP3JHBbgggwAikz7yLJRVdWQjpcjb
-         xbNA==
-X-Gm-Message-State: APjAAAWfUpIyJWksETeEzbwMincgYRti2nGTQauGJhkWNXPPzif7z+0U
-        sovlj2r5+TbmMXmqrelGhsbgAA==
-X-Google-Smtp-Source: APXvYqy/Kd4aByMV2oD+czNPFKHJs6B6CdmpfTDXyLrFWdj8qLbADnTJJGrGR9DBuTdGu0NVVT3wbw==
-X-Received: by 2002:ac8:2273:: with SMTP id p48mr25414541qtp.7.1552311581168;
-        Mon, 11 Mar 2019 06:39:41 -0700 (PDT)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id y53sm4527879qtj.66.2019.03.11.06.39.39
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 Mar 2019 06:39:40 -0700 (PDT)
-Date:   Mon, 11 Mar 2019 09:39:39 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, luto@kernel.org, byungchul.park@lge.com
-Subject: Re: [PATCH tip/core/rcu 06/19] rcu: Add warning to detect
- half-interrupts
-Message-ID: <20190311133939.GA29747@google.com>
-References: <20180829222021.GA29944@linux.vnet.ibm.com>
- <20180829222047.319-6-paulmck@linux.vnet.ibm.com>
+        id S1726352AbfCKPTx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Mar 2019 11:19:53 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726000AbfCKPTx (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 11 Mar 2019 11:19:53 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2BFGcfj147215
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 11:19:52 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2r5ra1prc7-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2019 11:19:51 -0400
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Mon, 11 Mar 2019 15:19:51 -0000
+Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 11 Mar 2019 15:19:47 -0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2BFJkK07798998
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Mar 2019 15:19:46 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7C42B2064;
+        Mon, 11 Mar 2019 15:19:45 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB5FEB2065;
+        Mon, 11 Mar 2019 15:19:45 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Mar 2019 15:19:45 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 8D03116C35B1; Mon, 11 Mar 2019 08:19:47 -0700 (PDT)
+Date:   Mon, 11 Mar 2019 08:19:47 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Default jiffies_to_sched_qs to
+ jiffies_till_sched_qs
+Reply-To: paulmck@linux.ibm.com
+References: <1552297571-5617-1-git-send-email-neeraju@codeaurora.org>
+ <20190311151854.GG13351@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180829222047.319-6-paulmck@linux.vnet.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190311151854.GG13351@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19031115-0064-0000-0000-000003B81D5E
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010739; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000281; SDB=6.01172861; UDB=6.00613172; IPR=6.00953515;
+ MB=3.00025928; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-11 15:19:49
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19031115-0065-0000-0000-00003CAF898C
+Message-Id: <20190311151947.GA8862@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-11_12:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1903110109
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 29, 2018 at 03:20:34PM -0700, Paul E. McKenney wrote:
-> RCU's dyntick-idle code is written to tolerate half-interrupts, that it,
-> either an interrupt that invokes rcu_irq_enter() but never invokes the
-> corresponding rcu_irq_exit() on the one hand, or an interrupt that never
-> invokes rcu_irq_enter() but does invoke the "corresponding" rcu_irq_exit()
-> on the other.  These things really did happen at one time, as evidenced
-> by this ca-2011 LKML post:
+This time keeping the CC list...
+
+							Thanx, Paul
+
+On Mon, Mar 11, 2019 at 08:18:54AM -0700, Paul E. McKenney wrote:
+> On Mon, Mar 11, 2019 at 03:16:11PM +0530, Neeraj Upadhyay wrote:
+> > Current code does not call adjust_jiffies_till_sched_qs(),
+> > if jiffies_till_sched_qs is specified. For the case, where
+> > jiffies_till_first_fqs and jiffies_till_next_fqs are default,
+> > jiffies_to_sched_qs won't be a correct adjustment of
+> > jiffies_till_sched_qs.
+> > 
+> > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 > 
-> http://lkml.kernel.org/r/20111014170019.GE2428@linux.vnet.ibm.com
+> Good catch!  Queued and pushed.  Please see below for updated
+> commit log.  On future patches, could you please first describe
+> the problem and consequences, then what the fix is?  This approach
+> makes it much easier for people later on who will be trying to
+> figure out what is going on, and who might or might not have much
+> understanding of RCU.  (For example, they might be doing a bisection
+> or some such.)
 > 
-> The reason why RCU tolerates half-interrupts is that usermode helpers
-> used exceptions to invoke a system call from within the kernel such that
-> the system call did a normal return (not a return from exception) to
-> the calling context.  This caused rcu_irq_enter() to be invoked without
-> a matching rcu_irq_exit().  However, usermode helpers have since been
-> rewritten to make much more housebroken use of workqueues, kernel threads,
-> and do_execve(), and therefore should no longer produce half-interrupts.
-> No one knows of any other source of half-interrupts, but then again,
-> no one seems insane enough to go audit the entire kernel to verify that
-> half-interrupts really are a relic of the past.
+> Not a big deal, as I can touch this up, but a good habit to get into.
 > 
-> This commit therefore adds a pair of WARN_ON_ONCE() calls that will
-> trigger in the presence of half interrupts, which the code will continue
-> to handle correctly.  If neither of these WARN_ON_ONCE() trigger by
-> mid-2021, then perhaps RCU can stop handling half-interrupts, which
-> would be a considerable simplification.
-
-Hi Paul and everyone,
-I was thinking some more about this patch and whether we can simplify this code
-much in 2021. Since 2021 is a bit far away, I thought working on it in again to
-keep it fresh in memory is a good idea ;-)
-
-To me it seems we cannot easily combine the counters (dynticks_nesting and
-dynticks_nmi_nesting) even if we confirmed that there is no possibility of a
-half-interrupt scenario (assuming simplication means counter combining like
-Byungchul tried to do in https://goo.gl/X1U77X). The reason is because these
-2 counters need to be tracked separately as they are used differently in the
-following function:
-
-static int rcu_is_cpu_rrupt_from_idle(void)
-{
-        return __this_cpu_read(rcu_data.dynticks_nesting) <= 0 &&
-               __this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 1;
-}
-
-dynticks_nesting actually tracks if we entered/exited idle or user mode.
-
-dynticks_nmi_nesting tracks if we entered/exited interrupts.
-
-We have to do the "dynticks_nmi_nesting <= 1" check because
-rcu_is_cpu_rrupt_from_idle() can possibly be called from an interrupt itself
-(like timer) so we discount 1 interrupt, and, the "dynticks_nesting <= 0"
-check is because the CPU MUST be in user or idle for the check to return
-true. We can't really combine these two into one counter then I think because
-they both convey different messages.
-
-The only simplication we can do, is probably the "crowbar" updates to
-dynticks_nmi_nesting can be removed from rcu_eqs_enter/exit once we confirm
-no more half-interrupts are possible. Which might still be a worthwhile thing
-to do (while still keeping both counters separate).
-
-However, I think we could combine the counters and lead to simplying the code
-in case we implement rcu_is_cpu_rrupt_from_idle differently such that it does
-not need the counters but NOHZ_FULL may take issue with that since it needs
-rcu_user_enter->rcu_eqs_enter to convey that the CPU is "RCU"-idle.
-
-Actually, I had another question... rcu_user_enter() is a NOOP in !NOHZ_FULL config.
-In this case I was wondering if the the warning Paul added (in the patch I'm replying to)
-will really get fired for half-interrupts. The vast majority of the systems I believe are
-NOHZ_IDLE not NOHZ_FULL.
-This is what a half-interrupt really looks like right? Please correct me if I'm wrong:
-rcu_irq_enter()   [half interrupt causes an exception and thus rcu_irq_enter]
-rcu_user_enter()  [due to usermode upcall]
-rcu_user_exit()
-(no more rcu_irq_exit() - hence half an interrupt)
-
-But the rcu_user_enter()/exit is a NOOP in some configs, so will the warning in
-rcu_eqs_e{xit,nter} really do anything?
-
-Or was the idea with adding the new warnings, that they would fire the next
-time rcu_idle_enter/exit is called? Like for example:
-
-rcu_irq_enter()   [This is due to half-interrupt]
-rcu_idle_enter()  [Eventually we enter the idle loop at some point
-		   after the half-interrupt and the rcu_eqs_enter()
-		   would "crowbar" the dynticks_nmi_nesting counter to 0].
-
-thanks!
-
- - Joel
-
+> And no, rcutorture currently does not specify non-default values
+> for jiffies_till_sched_qs.  Which should probably be fixed.  I could
+> make rcu_implicit_dynticks_qs() complain if jiffies_to_sched_qs is
+> zero, but that feels a bit hacky and specific.  :-/
 > 
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> Reported-by: Joel Fernandes <joel@joelfernandes.org>
-> Reported-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree.c | 2 ++
->  1 file changed, 2 insertions(+)
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit ee474b85fa0815be940ed89a91e0d84a110a0a92
+> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Date:   Mon Mar 11 15:16:11 2019 +0530
+> 
+>     rcu: Default jiffies_to_sched_qs to jiffies_till_sched_qs
+>     
+>     The current code only calls adjust_jiffies_till_sched_qs() if
+>     jiffies_till_sched_qs is left at its default value, so when the
+>     jiffies_till_sched_qs kernel-boot parameter actually is specified,
+>     jiffies_to_sched_qs will be left with the value zero, which
+>     will result in useless slowdowns of cond_resched().  This commit
+>     therefore changes rcu_init_geometry() to unconditionally invoke
+>     adjust_jiffies_till_sched_qs(), which ensures that jiffies_to_sched_qs
+>     will be initialized in all cases, thus maintaining good cond_resched()
+>     performance.
+>     
+>     Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index dc041c2afbcc..d2b6ade692c9 100644
+> index ddd5c74e386b..10aeb89395ea 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -714,6 +714,7 @@ static void rcu_eqs_enter(bool user)
->  	struct rcu_dynticks *rdtp;
+> @@ -3259,8 +3259,7 @@ static void __init rcu_init_geometry(void)
+>  		jiffies_till_first_fqs = d;
+>  	if (jiffies_till_next_fqs == ULONG_MAX)
+>  		jiffies_till_next_fqs = d;
+> -	if (jiffies_till_sched_qs == ULONG_MAX)
+> -		adjust_jiffies_till_sched_qs();
+> +	adjust_jiffies_till_sched_qs();
 >  
->  	rdtp = this_cpu_ptr(&rcu_dynticks);
-> +	WARN_ON_ONCE(rdtp->dynticks_nmi_nesting != DYNTICK_IRQ_NONIDLE);
->  	WRITE_ONCE(rdtp->dynticks_nmi_nesting, 0);
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
->  		     rdtp->dynticks_nesting == 0);
-> @@ -895,6 +896,7 @@ static void rcu_eqs_exit(bool user)
->  	trace_rcu_dyntick(TPS("End"), rdtp->dynticks_nesting, 1, rdtp->dynticks);
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
->  	WRITE_ONCE(rdtp->dynticks_nesting, 1);
-> +	WARN_ON_ONCE(rdtp->dynticks_nmi_nesting);
->  	WRITE_ONCE(rdtp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
->  }
->  
-> -- 
-> 2.17.1
-> 
+>  	/* If the compile-time values are accurate, just leave. */
+>  	if (rcu_fanout_leaf == RCU_FANOUT_LEAF &&
+
