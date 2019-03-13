@@ -2,109 +2,77 @@ Return-Path: <SRS0=1mdm=RQ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 025B3C43381
-	for <rcu@archiver.kernel.org>; Wed, 13 Mar 2019 15:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 327A6C43381
+	for <rcu@archiver.kernel.org>; Wed, 13 Mar 2019 15:27:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C283120854
-	for <rcu@archiver.kernel.org>; Wed, 13 Mar 2019 15:09:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LDaoyqrw"
+	by mail.kernel.org (Postfix) with ESMTP id 050482146E
+	for <rcu@archiver.kernel.org>; Wed, 13 Mar 2019 15:27:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbfCMPJ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Mar 2019 11:09:58 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33511 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbfCMPJx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Mar 2019 11:09:53 -0400
-Received: by mail-qk1-f193.google.com with SMTP id x9so1304157qkf.0
-        for <rcu@vger.kernel.org>; Wed, 13 Mar 2019 08:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mj0DhrxZTmFLVOfVIzftegHQm2AO6E/ovwMv4xmvu1s=;
-        b=LDaoyqrwIQfQtzAVT0xPlDuTTgmuqXB7UWiZt7DPjD5LTEYZ7cBl3P38NH2DbUoNC6
-         F3tskJ/6xV9TYEbfQuxMKeQFi369+p1W8D13ofdxJ3ctcb1J6dH49WQYRD7vhc9E7NJT
-         JLwT11ZVyacyc8+PzM6+ShLY3WzPH84Ap4tDw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mj0DhrxZTmFLVOfVIzftegHQm2AO6E/ovwMv4xmvu1s=;
-        b=qSpavJg01eT5aH2O4fMRgImbjctxtI/id4nRiv8pdAq3y13RmB1IWfp/+d4ujG4c4J
-         eIbr1iYypB+/YJ4rB+HpJK3l2xD7+CQllm3/8a/y/hCVMGYrnupPBLNBd2is+C9fxQqt
-         QOI4sdpqYKKyXi8jXV2ZfQtbxnezj9k2Ze+veR1lZ7zLmYIoILH6X2IAGXxX7Uq91/Rc
-         l3hVvJFxXyrXJbspYhVTPTQ9wbOqIzVfWh7sl18vawgPpMociET7iyfZU7hDUoKeEVcv
-         b3DioO+zvjo93UscImSzKP98tsFlWlvrQ4R0VDoqj0wOAqJPRXlaednf3gCmahhyGpjG
-         QubQ==
-X-Gm-Message-State: APjAAAUD9+cSJuDoOTw5zwjp8zj//2r41px6B43f+M6rQG9YuBUv1fPj
-        mhB1GyiBeqE6er+KczZL5k2MUw==
-X-Google-Smtp-Source: APXvYqzPNw9uOiFocGo94IjlmAenfP6QkFBo3mpV4S8oKFNcWr2bHK/yyOxpn4BePaZ4YiIN7dfajQ==
-X-Received: by 2002:a05:620a:109b:: with SMTP id g27mr32665247qkk.128.1552489792423;
-        Wed, 13 Mar 2019 08:09:52 -0700 (PDT)
-Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id i1sm6438110qtb.0.2019.03.13.08.09.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Mar 2019 08:09:49 -0700 (PDT)
-Date:   Wed, 13 Mar 2019 11:09:48 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        id S1725876AbfCMP13 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Mar 2019 11:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbfCMP13 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Mar 2019 11:27:29 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 105B421019;
+        Wed, 13 Mar 2019 15:27:27 +0000 (UTC)
+Date:   Wed, 13 Mar 2019 11:27:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, luto@kernel.org, byungchul.park@lge.com
+        luto@kernel.org, byungchul.park@lge.com
 Subject: Re: [PATCH tip/core/rcu 06/19] rcu: Add warning to detect
  half-interrupts
-Message-ID: <20190313150948.GA84821@google.com>
+Message-ID: <20190313112726.01d974fc@gandalf.local.home>
+In-Reply-To: <20190313150948.GA84821@google.com>
 References: <20180829222021.GA29944@linux.vnet.ibm.com>
- <20180829222047.319-6-paulmck@linux.vnet.ibm.com>
- <20190311133939.GA29747@google.com>
- <20190311222903.GR13351@linux.ibm.com>
- <20190312150514.GB249405@google.com>
- <20190312152034.GZ13351@linux.ibm.com>
+        <20180829222047.319-6-paulmck@linux.vnet.ibm.com>
+        <20190311133939.GA29747@google.com>
+        <20190311222903.GR13351@linux.ibm.com>
+        <20190312150514.GB249405@google.com>
+        <20190312152034.GZ13351@linux.ibm.com>
+        <20190313150948.GA84821@google.com>
+X-Mailer: Claws Mail 3.16.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190312152034.GZ13351@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 12, 2019 at 08:20:34AM -0700, Paul E. McKenney wrote:
-[snip]
-> 
-> >            Could we be more explicit in the code that this function can only
-> > be called from an interrupt, and also we change the code comment to be more
-> > clear about it (like the following diff)?
-> 
-> That would be good!
-> 
-> Nice trick on using dyntick state to check for interrupt nesting, but
-> wouldn't consolidating the counters break that?  But is there a lockdep
-> check for being in a hardware interrupt handler?  If not, could one
-> be added?  This would have the benefit of not adding overhead to the
-> scheduling-clock interrupt in production builds of the Linux kernel,
-> while still finding this bug in testing.
-> 
-> (Another approach would be to use IS_ENABLED(CONFIG_PROVE_RCU), but
-> a lockdep check would be cleaner.)
+On Wed, 13 Mar 2019 11:09:48 -0400
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-AFAICS, lockdep does not specifically track when we enter an interrupt, but
-rather only tracks when interrupts are enabled/disabled.
+> AFAICS, lockdep does not specifically track when we enter an interrupt, but
+> rather only tracks when interrupts are enabled/disabled.
 
-But we could use in_irq() to find if we are in an interrupt (which uses the
-preempt_count to track in HARDIRQ_MASK section of the counter).
+It does:
 
-I will add an in_irq() check that does the check only when PROVE_RCU is
-enabled, and send a patch.
+#define __irq_enter()					\
+	do {						\
+		account_irq_enter_time(current);	\
+		preempt_count_add(HARDIRQ_OFFSET);	\
+		trace_hardirq_enter();			\
+	} while (0)
 
-Thanks and it is my pleasure to look into this, quite interesting!
+# define trace_hardirq_enter()			\
+do {						\
+	current->hardirq_context++;		\
+} while (0)
 
- - Joel
 
+And if the hardirq_context ever does not match "in_irq()" lockdep will
+complain loudly.
+
+-- Steve
