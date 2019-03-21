@@ -2,209 +2,254 @@ Return-Path: <SRS0=muXe=RY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D73B7C43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Mar 2019 00:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9076BC43381
+	for <rcu@archiver.kernel.org>; Thu, 21 Mar 2019 12:07:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9E37F20835
-	for <rcu@archiver.kernel.org>; Thu, 21 Mar 2019 00:35:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 48B7E21874
+	for <rcu@archiver.kernel.org>; Thu, 21 Mar 2019 12:07:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="b2m+E2rB"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Ad6j8D/F"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbfCUAez (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Mar 2019 20:34:55 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45087 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727538AbfCUAey (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Mar 2019 20:34:54 -0400
-Received: by mail-qt1-f195.google.com with SMTP id v20so4801625qtv.12
-        for <rcu@vger.kernel.org>; Wed, 20 Mar 2019 17:34:53 -0700 (PDT)
+        id S1727883AbfCUMG7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Mar 2019 08:06:59 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37293 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbfCUMG7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Mar 2019 08:06:59 -0400
+Received: by mail-qt1-f194.google.com with SMTP id z16so4802244qtn.4
+        for <rcu@vger.kernel.org>; Thu, 21 Mar 2019 05:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3DYNvRjo/HuWAfPzKwiaae98YACyxnfggO4JrZh0pqc=;
-        b=b2m+E2rBIWrjAEK7ksC+kUdda6i79l+OAnqTq4Nh+wMfEJZEL78oIKpbExSGNTsbjS
-         QgODnchgWoidxWeW7gCR6+pyoOPVkGgcqBYXflx61USkvWOpf2mw30X6HA2uqNuUja6N
-         zBbTar2Vbof5pPo/Ul2SVXB1PoWCvUgckJ0U0=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tmLxNvHglUGHNpHUKmRi7iiO4J3SVPDfcA7k8hgaYTo=;
+        b=Ad6j8D/FENFz01hanNDFZpe794+GYeb1V9F3BlCHlcumhZQtVg34QkFupg/zCEca+4
+         qHY8hcySqKD43FNnCk88GS4UwAopJIte+uStD9LRsfBYrRE2mV+S37epQkuNJyyayV8/
+         ha4FC+zytQQ6IUQj6GoRGIvN9mnuTZgtXD/3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3DYNvRjo/HuWAfPzKwiaae98YACyxnfggO4JrZh0pqc=;
-        b=UbRBCd1LDfS+opo6yVPPQn9+0lLjOw94k6tKZMAvY4kb6YQ4YyNn15cytIOwormj2w
-         XfbrvFrnWGyDsrdPoDJEjIxUxoo6ysCewFHKNyVgnTgYYbsiKIRIrjc96SOvhY5OeyOs
-         RCGBjRnI/DA/3l36koDhJckPL5c0hZSaqYTHQF3H7Bn7m4vFCCW681vPwGjvFXuMaGc8
-         Az7WzOOi5sH6HqldEldIqdg802OaVIhe9Uhovq48z6Siw6FBS7oxFKet0b7R/pFKj5yh
-         qObgGNwgqCU5unvEsjRUWTZZ7WbN3YkFV8guLRlvzi4l4anzOjMWt4HzwkpW677Y6CB+
-         zixg==
-X-Gm-Message-State: APjAAAX2qTx51yX9iVtoc9VDL12wjm8Lb28s9UwgYNieBOYmAgpBNktW
-        xrZXPVIonyL8AtyvkBYgqIDyqg==
-X-Google-Smtp-Source: APXvYqxHYc6IcQHMWIULRulGndrlcJYc90PK4ZArKF2CW4dAOuOnIN93yfvj1vApt5VMlyPuYm41gw==
-X-Received: by 2002:a0c:94d0:: with SMTP id k16mr813759qvk.158.1553128492678;
-        Wed, 20 Mar 2019 17:34:52 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
-        by smtp.gmail.com with ESMTPSA id u15sm2908475qth.54.2019.03.20.17.34.51
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Mar 2019 17:34:51 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tmLxNvHglUGHNpHUKmRi7iiO4J3SVPDfcA7k8hgaYTo=;
+        b=WX4N6ZywK2+S/OMG8ABabLsX+Diruy2uG86XhJcFhpT4FBTNkO3skJ11NfJ0Rxnn9v
+         MWpffY+PHDa72pQTxKZN5R/5szS8+FR04/61xFn/BFJewxcHhomWNHg0gcSVIvio8l5X
+         CsRkCMWKbZxH/ygeECny+RnqRqs1E7V0G8ss0/82336s4ZPUkOhm6AmA10gpoJR3TsEC
+         b2NWbyexnptf0pP7B1MQ7L9B80DfHCYX/b8qLDYBvWFsbAqjr8/QecSEA6KiEkEpV9Co
+         bWCUSLe3uDvGxxACFW5XOswuz4ZlXJdyY1Kbj4C2gJP2y+hxFVYCKRzo/rsz5SlBAJHM
+         d9Rw==
+X-Gm-Message-State: APjAAAWf5zVuiloRfbd37B14uND1MuechBBJZP4cN/y1IqGMPOxL6zjs
+        m3zbim1u0WbuvcIlPr0Q+VD3OhP4lng=
+X-Google-Smtp-Source: APXvYqxPzC1Wjh3zAfziZLhhzWEh01AGt5v1yLe2YbUlIFHOzu3LDN/T95y65Ydvx/1As/NI5KR99A==
+X-Received: by 2002:ac8:21c7:: with SMTP id 7mr1270433qtz.66.1553170018348;
+        Thu, 21 Mar 2019 05:06:58 -0700 (PDT)
+Received: from localhost ([2620:0:1004:1100:cca9:fccc:8667:9bdc])
+        by smtp.gmail.com with ESMTPSA id u24sm3102693qku.85.2019.03.21.05.06.56
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Mar 2019 05:06:57 -0700 (PDT)
+Date:   Thu, 21 Mar 2019 08:06:56 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 2/4] sched_domain: Annotate RCU pointers properly
-Date:   Wed, 20 Mar 2019 20:34:24 -0400
-Message-Id: <20190321003426.160260-3-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.225.g810b269d1ac-goog
-In-Reply-To: <20190321003426.160260-1-joel@joelfernandes.org>
-References: <20190321003426.160260-1-joel@joelfernandes.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>, tglx@linutronix.de,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Mike Galbraith <bitbucket@online.de>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Allow to eliminate softirq processing from rcutree
+Message-ID: <20190321120656.GA61489@google.com>
+References: <20190315111130.4902-1-bigeasy@linutronix.de>
+ <20190320002613.GA129907@google.com>
+ <20190320112835.prq22vsto3ecckff@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190320112835.prq22vsto3ecckff@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The scheduler uses RCU API in various places to access sched_domain
-pointers. These cause sparse errors as below.
+On Wed, Mar 20, 2019 at 12:28:35PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2019-03-19 20:26:13 [-0400], Joel Fernandes wrote:
+> > > @@ -2769,19 +2782,121 @@ static void invoke_rcu_callbacks(struct rcu_data *rdp)
+> > >  {
+> > >  	if (unlikely(!READ_ONCE(rcu_scheduler_fully_active)))
+> > >  		return;
+> > > -	if (likely(!rcu_state.boost)) {
+> > > -		rcu_do_batch(rdp);
+> > > -		return;
+> > > -	}
+> > > -	invoke_rcu_callbacks_kthread();
+> > > +	rcu_do_batch(rdp);
+> > 
+> > Looks like a nice change, but one question...
+> > 
+> > Consider the case where rcunosoftirq boot option is not passed.
+> > 
+> > Before, if RCU_BOOST=y, then callbacks would be invoked in rcuc threads if
+> > possible, by those threads being woken up from within the softirq context
+> > (in invoke_rcu_callbacks).
+> > 
+> > Now, if RCU_BOOST=y, then callbacks would only be invoked in softirq context
+> > and not in the threads at all. Because rcu_softirq_enabled = false, so the
+> > path executes:
+> >   rcu_read_unlock_special() ->
+> >         raise_softirq_irqsoff() ->
+> >                 rcu_process_callbacks_si() ->
+> >                         rcu_process_callbacks() ->
+> >                                 invoke_rcu_callbacks() ->
+> >                                         rcu_do_batch()
+> > 
+> > This seems like a behavioral change to me. This makes the callbacks always
+> > execute from the softirq context and not the threads when boosting is
+> > configured. IMO in the very least, such behavioral change should be
+> > documented in the change.
+> > 
+> > One way to fix this I think could be, if boosting is enabled, then set
+> > rcu_softirq_enabled to false by default so the callbacks are still executed
+> > in the rcuc threads.
+> > 
+> > Did I miss something? Sorry if I did, thanks!
+> 
+> So with all the swaps and reorder we talking about this change:
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 0a719f726e149..82810483bfc6c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2306,20 +2306,6 @@ static void rcu_core_si(struct softirq_action *h)
+>  	rcu_core();
+>  }
+>  
+> -/*
+> - * Schedule RCU callback invocation.  If the running implementation of RCU
+> - * does not support RCU priority boosting, just do a direct call, otherwise
+> - * wake up the per-CPU kernel kthread.  Note that because we are running
+> - * on the current CPU with softirqs disabled, the rcu_cpu_kthread_task
+> - * cannot disappear out from under us.
+> - */
+> -static void invoke_rcu_callbacks(struct rcu_data *rdp)
+> -{
+> -	if (unlikely(!READ_ONCE(rcu_scheduler_fully_active)))
+> -		return;
+> -	rcu_do_batch(rdp);
+> -}
+> -
+>  static void rcu_wake_cond(struct task_struct *t, int status)
+>  {
+>  	/*
+> @@ -2330,6 +2316,19 @@ static void rcu_wake_cond(struct task_struct *t, int status)
+>  		wake_up_process(t);
+>  }
+>  
+> +static void invoke_rcu_core_kthread(void)
+> +{
+> +	struct task_struct *t;
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	__this_cpu_write(rcu_data.rcu_cpu_has_work, 1);
+> +	t = __this_cpu_read(rcu_data.rcu_cpu_kthread_task);
+> +	if (t != NULL && t != current)
+> +		rcu_wake_cond(t, __this_cpu_read(rcu_data.rcu_cpu_kthread_status));
+> +	local_irq_restore(flags);
+> +}
+> +
+>  static bool rcu_softirq_enabled = true;
+>  
+>  static int __init rcunosoftirq_setup(char *str)
+> @@ -2339,26 +2338,33 @@ static int __init rcunosoftirq_setup(char *str)
+>  }
+>  __setup("rcunosoftirq", rcunosoftirq_setup);
+>  
+> +/*
+> + * Schedule RCU callback invocation.  If the running implementation of RCU
+> + * does not support RCU priority boosting, just do a direct call, otherwise
+> + * wake up the per-CPU kernel kthread.  Note that because we are running
+> + * on the current CPU with softirqs disabled, the rcu_cpu_kthread_task
+> + * cannot disappear out from under us.
+> + */
+> +static void invoke_rcu_callbacks(struct rcu_data *rdp)
+> +{
+> +	if (unlikely(!READ_ONCE(rcu_scheduler_fully_active)))
+> +		return;
+> +	if (rcu_state.boost || rcu_softirq_enabled)
+> +		invoke_rcu_core_kthread();
 
-Many new errors show up because of an annotation check I added to
-rcu_assign_pointer(). Let us annotate the pointers correctly which also
-will help sparse catch any potential future bugs.
+Here shouldn't it be this?
+	if (rcu_state.boost || !rcu_softirq_enabled)
 
-This fixes the following sparse errors:
+Also the rcu/dev branch has the following hunk where we unconditionally
+invoke rcu_do_batch even when boosting which would still have the issue I
+pointed. I would suggest Sebastian to post the latest v4 or v5 with all diff
+squashed, and then we do another round of review with latest patch, thanks!
 
-rt.c:1681:9: error: incompatible types in comparison expression
-deadline.c:1904:9: error: incompatible types in comparison expression
-core.c:519:9: error: incompatible types in comparison expression
-core.c:1634:17: error: incompatible types in comparison expression
-fair.c:6193:14: error: incompatible types in comparison expression
-fair.c:9883:22: error: incompatible types in comparison expression
-fair.c:9897:9: error: incompatible types in comparison expression
-sched.h:1287:9: error: incompatible types in comparison expression
-topology.c:612:9: error: incompatible types in comparison expression
-topology.c:615:9: error: incompatible types in comparison expression
-sched.h:1300:9: error: incompatible types in comparison expression
-topology.c:618:9: error: incompatible types in comparison expression
-sched.h:1287:9: error: incompatible types in comparison expression
-topology.c:621:9: error: incompatible types in comparison expression
-sched.h:1300:9: error: incompatible types in comparison expression
-topology.c:624:9: error: incompatible types in comparison expression
-topology.c:671:9: error: incompatible types in comparison expression
-stats.c:45:17: error: incompatible types in comparison expression
-fair.c:5998:15: error: incompatible types in comparison expression
-fair.c:5989:15: error: incompatible types in comparison expression
-fair.c:5998:15: error: incompatible types in comparison expression
-fair.c:5989:15: error: incompatible types in comparison expression
-fair.c:6120:19: error: incompatible types in comparison expression
-fair.c:6506:14: error: incompatible types in comparison expression
-fair.c:6515:14: error: incompatible types in comparison expression
-fair.c:6623:9: error: incompatible types in comparison expression
-fair.c:5970:17: error: incompatible types in comparison expression
-fair.c:8642:21: error: incompatible types in comparison expression
-fair.c:9253:9: error: incompatible types in comparison expression
-fair.c:9331:9: error: incompatible types in comparison expression
-fair.c:9519:15: error: incompatible types in comparison expression
-fair.c:9533:14: error: incompatible types in comparison expression
-fair.c:9542:14: error: incompatible types in comparison expression
-fair.c:9567:14: error: incompatible types in comparison expression
-fair.c:9597:14: error: incompatible types in comparison expression
-fair.c:9421:16: error: incompatible types in comparison expression
-fair.c:9421:16: error: incompatible types in comparison expression
+	@@ -2306,18 +2320,110 @@ static void invoke_rcu_callbacks(struct rcu_data *rdp)
+ {
+ 	if (unlikely(!READ_ONCE(rcu_scheduler_fully_active)))
+ 		return;
+-	if (likely(!rcu_state.boost)) {
+-		rcu_do_batch(rdp);
+-		return;
+-	}
+-	invoke_rcu_callbacks_kthread();
++	rcu_do_batch(rdp);
++}
++
 
-[From an RCU perspective]
-Reviewed-by: Paul E. McKenney <paulmck@linux.ibm.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/linux/sched/topology.h |  4 ++--
- kernel/sched/sched.h           | 14 +++++++-------
- kernel/sched/topology.c        | 10 +++++-----
- 3 files changed, 14 insertions(+), 14 deletions(-)
+thanks,
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 57c7ed3fe465..cfc0a89a7159 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -76,8 +76,8 @@ struct sched_domain_shared {
- 
- struct sched_domain {
- 	/* These fields must be setup */
--	struct sched_domain *parent;	/* top domain must be null terminated */
--	struct sched_domain *child;	/* bottom domain must be null terminated */
-+	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
-+	struct sched_domain __rcu *child;	/* bottom domain must be null terminated */
- 	struct sched_group *groups;	/* the balancing groups of the domain */
- 	unsigned long min_interval;	/* Minimum balance interval ms */
- 	unsigned long max_interval;	/* Maximum balance interval ms */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 713715dd00cf..2b452d68ab2e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -869,8 +869,8 @@ struct rq {
- 	atomic_t		nr_iowait;
- 
- #ifdef CONFIG_SMP
--	struct root_domain	*rd;
--	struct sched_domain	*sd;
-+	struct root_domain		*rd;
-+	struct sched_domain __rcu	*sd;
- 
- 	unsigned long		cpu_capacity;
- 	unsigned long		cpu_capacity_orig;
-@@ -1324,13 +1324,13 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
- 	return sd;
- }
- 
--DECLARE_PER_CPU(struct sched_domain *, sd_llc);
-+DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DECLARE_PER_CPU(int, sd_llc_size);
- DECLARE_PER_CPU(int, sd_llc_id);
--DECLARE_PER_CPU(struct sched_domain_shared *, sd_llc_shared);
--DECLARE_PER_CPU(struct sched_domain *, sd_numa);
--DECLARE_PER_CPU(struct sched_domain *, sd_asym_packing);
--DECLARE_PER_CPU(struct sched_domain *, sd_asym_cpucapacity);
-+DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
-+DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-+DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-+DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
- extern struct static_key_false sched_asym_cpucapacity;
- 
- struct sched_group_capacity {
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index ab7f371a3a17..64bec54ded3e 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -615,13 +615,13 @@ static void destroy_sched_domains(struct sched_domain *sd)
-  * the cpumask of the domain), this allows us to quickly tell if
-  * two CPUs are in the same cache domain, see cpus_share_cache().
-  */
--DEFINE_PER_CPU(struct sched_domain *, sd_llc);
-+DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DEFINE_PER_CPU(int, sd_llc_size);
- DEFINE_PER_CPU(int, sd_llc_id);
--DEFINE_PER_CPU(struct sched_domain_shared *, sd_llc_shared);
--DEFINE_PER_CPU(struct sched_domain *, sd_numa);
--DEFINE_PER_CPU(struct sched_domain *, sd_asym_packing);
--DEFINE_PER_CPU(struct sched_domain *, sd_asym_cpucapacity);
-+DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
-+DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-+DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-+DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
- DEFINE_STATIC_KEY_FALSE(sched_asym_cpucapacity);
- 
- static void update_top_cache_domain(int cpu)
--- 
-2.21.0.225.g810b269d1ac-goog
+ - Joel
 
+
+> +	rcu_do_batch(rdp);
+> +}
+> +
+>  /*
+>   * Wake up this CPU's rcuc kthread to do RCU core processing.
+>   */
+>  static void invoke_rcu_core(void)
+>  {
+> -	unsigned long flags;
+> -	struct task_struct *t;
+> -
+>  	if (!cpu_online(smp_processor_id()))
+>  		return;
+> -	if (rcu_softirq_enabled) {
+> +	if (rcu_softirq_enabled)
+>  		raise_softirq(RCU_SOFTIRQ);
+> -	} else {
+> -		local_irq_save(flags);
+> -		__this_cpu_write(rcu_data.rcu_cpu_has_work, 1);
+> -		t = __this_cpu_read(rcu_data.rcu_cpu_kthread_task);
+> -		if (t != NULL && t != current)
+> -			rcu_wake_cond(t, __this_cpu_read(rcu_data.rcu_cpu_kthread_status));
+> -		local_irq_restore(flags);
+> -	}
+> +	else
+> +		invoke_rcu_core_kthread();
+>  }
+>  
+>  static void rcu_cpu_kthread_park(unsigned int cpu)
+> @@ -2426,7 +2432,8 @@ static int __init rcu_spawn_core_kthreads(void)
+>  		per_cpu(rcu_data.rcu_cpu_has_work, cpu) = 0;
+>  	if (!IS_ENABLED(CONFIG_RCU_BOOST) && !rcu_softirq_enabled)
+>  		return 0;
+> -	WARN_ONCE(smpboot_register_percpu_thread(&rcu_cpu_thread_spec), "%s: Could not start rcub kthread, OOM is now expected behavior\n", __func__);
+> +	WARN_ONCE(smpboot_register_percpu_thread(&rcu_cpu_thread_spec),
+> +		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
+>  	return 0;
+>  }
+>  early_initcall(rcu_spawn_core_kthreads);
+> -- 
+> 2.20.1
+> 
+> >  - Joel
+> 
+> Sebastian
