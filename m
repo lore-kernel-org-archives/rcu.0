@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 517BCC43381
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:23:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 306B8C4360F
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:23:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 119662087C
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:23:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 064CA2087C
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:23:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732957AbfCZXWe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 19:22:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49078 "EHLO
+        id S1732947AbfCZXX2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 19:23:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35646 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732846AbfCZXWe (ORCPT
+        by vger.kernel.org with ESMTP id S1732905AbfCZXWe (ORCPT
         <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:22:34 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QNIgxZ166064
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QNIaN8024329
         for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:22:33 -0400
 Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2rfvt9srdk-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2rfv1ybfra-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:22:32 -0400
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:22:33 -0400
 Received: from localhost
         by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
         Tue, 26 Mar 2019 23:22:32 -0000
-Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
         by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
         Tue, 26 Mar 2019 23:22:27 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNMPas24510676
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNMQ8417301626
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 26 Mar 2019 23:22:26 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB5B7B206E;
-        Tue, 26 Mar 2019 23:22:25 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 3874CB2074;
+        Tue, 26 Mar 2019 23:22:26 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9C8DFB206A;
-        Tue, 26 Mar 2019 23:22:25 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 19D47B2072;
+        Tue, 26 Mar 2019 23:22:26 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Mar 2019 23:22:25 +0000 (GMT)
+        Tue, 26 Mar 2019 23:22:26 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id B9C5316C60F7; Tue, 26 Mar 2019 16:22:26 -0700 (PDT)
+        id DFDCD16C6125; Tue, 26 Mar 2019 16:22:26 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,20 +57,20 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 02/11] rcu: Move RCU CPU stall-warning code out of tree_plugin.h
-Date:   Tue, 26 Mar 2019 16:22:16 -0700
+Subject: [PATCH tip/core/rcu 09/11] rcu: Move irq-disabled stall-warning checking to tree_stall.h
+Date:   Tue, 26 Mar 2019 16:22:23 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190326232208.GA20384@linux.ibm.com>
 References: <20190326232208.GA20384@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19032623-0064-0000-0000-000003C06EC7
+x-cbid: 19032623-0064-0000-0000-000003C06EC9
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000282; SDB=6.01180136; UDB=6.00617574; IPR=6.00960851;
- MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:22:30
+ MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:22:31
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032623-0065-0000-0000-00003CD8B776
-Message-Id: <20190326232225.21332-2-paulmck@linux.ibm.com>
+x-cbparentid: 19032623-0065-0000-0000-00003CD8B778
+Message-Id: <20190326232225.21332-9-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
@@ -83,231 +83,91 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The RCU CPU stall-warning code for normal grace periods is currently
-scattered across two files, due to earlier Tiny RCU support for RCU
-CPU stall warnings and for old Kconfig options that have long since
-been retired.  Given that it is hard for the lead RCU maintainer to
-find relevant stall-warning code, it would be good to consolidate it.
-This commit continues this process by moving stall-warning code from
-kernel/rcu/tree_plugin.c to a new kernel/rcu/tree_stall.h file.
+The rcu_iw_handler() function's sole purpose in life is to indicate
+whether a stalled CPU had interrupts disabled, so it belongs in
+kernel/rcu/tree_stall.h.  This commit therefore makes that move,
+clarifying its header comment while in the area.
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree_plugin.h | 90 -------------------------------------
- kernel/rcu/tree_stall.h  | 95 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 95 insertions(+), 90 deletions(-)
+ kernel/rcu/tree.c       | 21 ---------------------
+ kernel/rcu/tree.h       |  1 +
+ kernel/rcu/tree_stall.h | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 97dba50f6fb2..7fa3bc4d481b 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -642,79 +642,6 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 	rcu_preempt_deferred_qs_irqrestore(t, flags);
- }
- 
--/*
-- * Dump detailed information for all tasks blocking the current RCU
-- * grace period on the specified rcu_node structure.
-- */
--static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
--{
--	unsigned long flags;
--	struct task_struct *t;
--
--	raw_spin_lock_irqsave_rcu_node(rnp, flags);
--	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
--		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--		return;
--	}
--	t = list_entry(rnp->gp_tasks->prev,
--		       struct task_struct, rcu_node_entry);
--	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
--		/*
--		 * We could be printing a lot while holding a spinlock.
--		 * Avoid triggering hard lockup.
--		 */
--		touch_nmi_watchdog();
--		sched_show_task(t);
--	}
--	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--}
--
--/*
-- * Dump detailed information for all tasks blocking the current RCU
-- * grace period.
-- */
--static void rcu_print_detail_task_stall(void)
--{
--	struct rcu_node *rnp = rcu_get_root();
--
--	rcu_print_detail_task_stall_rnp(rnp);
--	rcu_for_each_leaf_node(rnp)
--		rcu_print_detail_task_stall_rnp(rnp);
--}
--
--static void rcu_print_task_stall_begin(struct rcu_node *rnp)
--{
--	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
--	       rnp->level, rnp->grplo, rnp->grphi);
--}
--
--static void rcu_print_task_stall_end(void)
--{
--	pr_cont("\n");
--}
--
--/*
-- * Scan the current list of tasks blocked within RCU read-side critical
-- * sections, printing out the tid of each.
-- */
--static int rcu_print_task_stall(struct rcu_node *rnp)
--{
--	struct task_struct *t;
--	int ndetected = 0;
--
--	if (!rcu_preempt_blocked_readers_cgp(rnp))
--		return 0;
--	rcu_print_task_stall_begin(rnp);
--	t = list_entry(rnp->gp_tasks->prev,
--		       struct task_struct, rcu_node_entry);
--	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
--		pr_cont(" P%d", t->pid);
--		ndetected++;
--	}
--	rcu_print_task_stall_end();
--	return ndetected;
--}
--
- /*
-  * Scan the current list of tasks blocked within RCU read-side critical
-  * sections, printing out the tid of each that is blocking the current
-@@ -979,23 +906,6 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
- }
- static void rcu_preempt_deferred_qs(struct task_struct *t) { }
- 
--/*
-- * Because preemptible RCU does not exist, we never have to check for
-- * tasks blocked within RCU read-side critical sections.
-- */
--static void rcu_print_detail_task_stall(void)
--{
--}
--
--/*
-- * Because preemptible RCU does not exist, we never have to check for
-- * tasks blocked within RCU read-side critical sections.
-- */
--static int rcu_print_task_stall(struct rcu_node *rnp)
--{
--	return 0;
--}
--
- /*
-  * Because preemptible RCU does not exist, we never have to check for
-  * tasks blocked within RCU read-side critical sections that are
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 682189f4d083..6f5f94944f49 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -61,3 +61,98 @@ static int __init check_cpu_stall_init(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 001dd05f6e38..929531ed168c 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1031,27 +1031,6 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp)
  	return 0;
  }
- early_initcall(check_cpu_stall_init);
-+
-+#ifdef CONFIG_PREEMPT
-+
+ 
+-/*
+- * Handler for the irq_work request posted when a grace period has
+- * gone on for too long, but not yet long enough for an RCU CPU
+- * stall warning.  Set state appropriately, but just complain if
+- * there is unexpected state on entry.
+- */
+-static void rcu_iw_handler(struct irq_work *iwp)
+-{
+-	struct rcu_data *rdp;
+-	struct rcu_node *rnp;
+-
+-	rdp = container_of(iwp, struct rcu_data, rcu_iw);
+-	rnp = rdp->mynode;
+-	raw_spin_lock_rcu_node(rnp);
+-	if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
+-		rdp->rcu_iw_gp_seq = rnp->gp_seq;
+-		rdp->rcu_iw_pending = false;
+-	}
+-	raw_spin_unlock_rcu_node(rnp);
+-}
+-
+ /*
+  * Return true if the specified CPU has passed through a quiescent
+  * state by virtue of being in or having passed through an dynticks
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 099410dbcbe9..f882ce3ca5a5 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -443,4 +443,5 @@ static void rcu_dynticks_task_exit(void);
+ 
+ /* Forward declarations for tree_stall.h */
+ static void record_gp_stall_check_time(void);
++static void rcu_iw_handler(struct irq_work *iwp);
+ static void check_cpu_stall(struct rcu_data *rdp);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 03ed47883d8a..526e223e41ce 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -139,6 +139,26 @@ static void rcu_stall_kick_kthreads(void)
+ 	}
+ }
+ 
 +/*
-+ * Dump detailed information for all tasks blocking the current RCU
-+ * grace period on the specified rcu_node structure.
++ * Handler for the irq_work request posted about halfway into the RCU CPU
++ * stall timeout, and used to detect excessive irq disabling.  Set state
++ * appropriately, but just complain if there is unexpected state on entry.
 + */
-+static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
++static void rcu_iw_handler(struct irq_work *iwp)
 +{
-+	unsigned long flags;
-+	struct task_struct *t;
++	struct rcu_data *rdp;
++	struct rcu_node *rnp;
 +
-+	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		return;
++	rdp = container_of(iwp, struct rcu_data, rcu_iw);
++	rnp = rdp->mynode;
++	raw_spin_lock_rcu_node(rnp);
++	if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
++		rdp->rcu_iw_gp_seq = rnp->gp_seq;
++		rdp->rcu_iw_pending = false;
 +	}
-+	t = list_entry(rnp->gp_tasks->prev,
-+		       struct task_struct, rcu_node_entry);
-+	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
-+		/*
-+		 * We could be printing a lot while holding a spinlock.
-+		 * Avoid triggering hard lockup.
-+		 */
-+		touch_nmi_watchdog();
-+		sched_show_task(t);
-+	}
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	raw_spin_unlock_rcu_node(rnp);
 +}
 +
-+/*
-+ * Dump detailed information for all tasks blocking the current RCU
-+ * grace period.
-+ */
-+static void rcu_print_detail_task_stall(void)
-+{
-+	struct rcu_node *rnp = rcu_get_root();
-+
-+	rcu_print_detail_task_stall_rnp(rnp);
-+	rcu_for_each_leaf_node(rnp)
-+		rcu_print_detail_task_stall_rnp(rnp);
-+}
-+
-+static void rcu_print_task_stall_begin(struct rcu_node *rnp)
-+{
-+	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
-+	       rnp->level, rnp->grplo, rnp->grphi);
-+}
-+
-+static void rcu_print_task_stall_end(void)
-+{
-+	pr_cont("\n");
-+}
-+
-+/*
-+ * Scan the current list of tasks blocked within RCU read-side critical
-+ * sections, printing out the tid of each.
-+ */
-+static int rcu_print_task_stall(struct rcu_node *rnp)
-+{
-+	struct task_struct *t;
-+	int ndetected = 0;
-+
-+	if (!rcu_preempt_blocked_readers_cgp(rnp))
-+		return 0;
-+	rcu_print_task_stall_begin(rnp);
-+	t = list_entry(rnp->gp_tasks->prev,
-+		       struct task_struct, rcu_node_entry);
-+	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
-+		pr_cont(" P%d", t->pid);
-+		ndetected++;
-+	}
-+	rcu_print_task_stall_end();
-+	return ndetected;
-+}
-+
-+#else /* #ifdef CONFIG_PREEMPT */
-+
-+/*
-+ * Because preemptible RCU does not exist, we never have to check for
-+ * tasks blocked within RCU read-side critical sections.
-+ */
-+static void rcu_print_detail_task_stall(void)
-+{
-+}
-+
-+/*
-+ * Because preemptible RCU does not exist, we never have to check for
-+ * tasks blocked within RCU read-side critical sections.
-+ */
-+static int rcu_print_task_stall(struct rcu_node *rnp)
-+{
-+	return 0;
-+}
-+#endif /* #else #ifdef CONFIG_PREEMPT */
+ //////////////////////////////////////////////////////////////////////////////
+ //
+ // Printing RCU CPU stall warnings
 -- 
 2.17.1
 
