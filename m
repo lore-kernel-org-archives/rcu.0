@@ -2,112 +2,101 @@ Return-Path: <SRS0=WNJD=R5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B6DC4360F
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EF1DC43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:00:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 95FE920823
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:50 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ic2pO6Jr"
+	by mail.kernel.org (Postfix) with ESMTP id 0C3962075D
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:00:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732244AbfCZTYu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 15:24:50 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:35697 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732196AbfCZTYg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 26 Mar 2019 15:24:36 -0400
-Received: by mail-pg1-f195.google.com with SMTP id g8so8738460pgf.2
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 12:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VpO+kH5n/TCwOCtL6i6LDDDwCLUmaIA5kDbeBwsenW8=;
-        b=ic2pO6JrvwEPAs1CnVuT7xWHP8ABOKGkFUt9H1s0OLBDzjFRw1epxg+DmzlHEGONnX
-         IixtodF2vh92KGgKTGRYdCz8Qfg7aK04HlZJQmLZZu6bgaA7wzxGBDOf24vFPGpVK2hJ
-         cmIfAFVEayqe/33wv7JRMHW2vxfovfoZ/Y5Ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VpO+kH5n/TCwOCtL6i6LDDDwCLUmaIA5kDbeBwsenW8=;
-        b=UKvKCG/U55zlllDxq4oizJOD27ZQMf7qoVTq9Ig0tFWOpyR6oJTw6WEiUkTJGuOQxM
-         d+9Cj9/GZuSGhuyV/W3h2dNwfhCjUzgUfBl2DZ4XC2O+px10iM0sT7Hbna8njrTAyayv
-         Bcr1/M9kW7q/jNdpUgeXeZx3dJVEsL7OGFcOvPDcYzoFGqLTPpUC2JcjVsxjurZuYG+p
-         FhjIDaJ0cy4SG4d1ThSufsJWA5CanBeqcTK5h6WMGdAoV+a6XhiH8Iq6B+lSU+Qdr1+u
-         bF/TsHxu+T1lo/2XjXAQuwhV0lrF6S2GyWpauaLc5jIHDYRJA/n2hZm3YtZYYG/He/mc
-         2iUQ==
-X-Gm-Message-State: APjAAAV+8kNQ+SK9eP4wdw3VMIT9mTveixl4NCyWk4vUbbuxB2YTmnMu
-        fpOYxMMmvLLndZ5OmG7kmXCgFg==
-X-Google-Smtp-Source: APXvYqxRuFbNRDdKaMGu2pfXId9tLkyI2m9Vc5ldX1d4DDCuVuNBaT6qoRUfJTbviF9W9099+n61Lg==
-X-Received: by 2002:a62:e502:: with SMTP id n2mr31731079pff.242.1553628275495;
-        Tue, 26 Mar 2019 12:24:35 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l12sm36761889pgn.83.2019.03.26.12.24.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Mar 2019 12:24:34 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, byungchul.park@lge.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will.deacon@arm.com>
-Subject: [PATCH v2 3/4] rcutorture: Select from only online CPUs
-Date:   Tue, 26 Mar 2019 15:24:10 -0400
-Message-Id: <20190326192411.198070-3-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
-In-Reply-To: <20190326192411.198070-1-joel@joelfernandes.org>
-References: <20190326192411.198070-1-joel@joelfernandes.org>
+        id S1731666AbfCZXAU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 19:00:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44064 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729506AbfCZXAU (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:00:20 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QMrYTh037090
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:00:19 -0400
+Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfuyg2t1y-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:00:19 -0400
+Received: from localhost
+        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Tue, 26 Mar 2019 23:00:18 -0000
+Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
+        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 26 Mar 2019 23:00:13 -0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QN0CuI7667814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Mar 2019 23:00:12 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA830B2087;
+        Tue, 26 Mar 2019 23:00:10 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6208B209C;
+        Tue, 26 Mar 2019 23:00:10 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Mar 2019 23:00:10 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id B736116C60F9; Tue, 26 Mar 2019 16:00:11 -0700 (PDT)
+Date:   Tue, 26 Mar 2019 16:00:11 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/2] straggling consolidation cleanups for v5.2
+Reply-To: paulmck@linux.ibm.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19032623-2213-0000-0000-0000036A65FB
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000282; SDB=6.01180128; UDB=6.00617570; IPR=6.00960844;
+ MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:00:17
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19032623-2214-0000-0000-00005DCD8163
+Message-Id: <20190326230011.GA16275@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=590 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1903260154
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcutorture jitter.sh script selects a random CPU but does not check
-if it is offline or online. This leads to taskset errors many times. On
-my machine, hyper threading is disabled so half the cores are offline
-causing taskset errors a lot of times. Let us fix this by checking from
-only the online CPUs on the system.
+Hello!
 
-Cc: rcu@vger.kernel.org
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- tools/testing/selftests/rcutorture/bin/jitter.sh | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+This series contains a few straggling RCU consolidation updates:
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index 3633828375e3..47bd9829dc55 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -47,10 +47,11 @@ do
- 		exit 0;
- 	fi
- 
--	# Set affinity to randomly selected CPU
--	cpus=`ls /sys/devices/system/cpu/*/online |
-+	# Set affinity to randomly selected online CPU
-+	cpus=`grep 1 /sys/devices/system/cpu/*/online |
- 		sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//' |
- 		grep -v '^0*$'`
-+
- 	cpumask=`awk -v cpus="$cpus" -v me=$me -v n=$n 'BEGIN {
- 		srand(n + me + systime());
- 		ncpus = split(cpus, ca);
--- 
-2.21.0.392.gf8f6787159e-goog
+1.	Update kprobes's documentation of obsolete RCU update functions.
+
+2.	Update netfilter comment from call_rcu_bh() to call_rcu()
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/kprobes.txt          |    6 +++---
+ net/ipv4/netfilter/ipt_CLUSTERIP.c |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
