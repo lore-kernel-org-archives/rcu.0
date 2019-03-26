@@ -2,52 +2,53 @@ Return-Path: <SRS0=WNJD=R5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7592FC10F05
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B497C43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4D1BB208E4
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:04:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F41E22087C
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732861AbfCZXEw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 19:04:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36536 "EHLO
+        id S1731668AbfCZXM7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 19:12:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57418 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732803AbfCZXEl (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:04:41 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN4TcM084621
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:04:40 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2rft9vq3tr-1
+        by vger.kernel.org with ESMTP id S1731516AbfCZXM7 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:12:59 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN9NdL059985
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:12:58 -0400
+Received: from e15.ny.us.ibm.com (e15.ny.us.ibm.com [129.33.205.205])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfsd61yes-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:04:40 -0400
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:12:57 -0400
 Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e15.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 26 Mar 2019 23:04:39 -0000
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Tue, 26 Mar 2019 23:12:57 -0000
+Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
+        by e15.ny.us.ibm.com (146.89.104.202) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 26 Mar 2019 23:04:33 -0000
+        Tue, 26 Mar 2019 23:12:53 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QN4Wnq25362550
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNCqfr22806596
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Mar 2019 23:04:32 GMT
+        Tue, 26 Mar 2019 23:12:52 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24415B205F;
-        Tue, 26 Mar 2019 23:04:32 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 22152B2065;
+        Tue, 26 Mar 2019 23:12:52 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 06623B2071;
-        Tue, 26 Mar 2019 23:04:32 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 0237CB205F;
+        Tue, 26 Mar 2019 23:12:51 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Mar 2019 23:04:31 +0000 (GMT)
+        Tue, 26 Mar 2019 23:12:51 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 2051D16C60F7; Tue, 26 Mar 2019 16:04:33 -0700 (PDT)
+        id 17A6F16C60F3; Tue, 26 Mar 2019 16:12:53 -0700 (PDT)
+Date:   Tue, 26 Mar 2019 16:12:53 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -55,78 +56,93 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Tycho Andersen <tycho@tycho.ws>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 2/4] doc: Repair some whitespace damage
-Date:   Tue, 26 Mar 2019 16:04:30 -0700
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190326230408.GA17069@linux.ibm.com>
-References: <20190326230408.GA17069@linux.ibm.com>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/18] Miscellaneous fixes for v5.2
+Reply-To: paulmck@linux.ibm.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19032623-0064-0000-0000-000003C06DAB
+x-cbid: 19032623-0068-0000-0000-000003AB7494
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000282; SDB=6.01180130; UDB=6.00617571; IPR=6.00960845;
- MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:04:37
+ PH=3.00000004; SC=3.00000282; SDB=6.01180132; UDB=6.00617572; IPR=6.00960848;
+ MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:12:56
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032623-0065-0000-0000-00003CD8AE9C
-Message-Id: <20190326230432.17963-2-paulmck@linux.ibm.com>
+x-cbparentid: 19032623-0069-0000-0000-000047F21E07
+Message-Id: <20190326231253.GA18343@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=757 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1903260155
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1903260156
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Tycho Andersen <tycho@tycho.ws>
+Hello!
 
-A diagram in whatisRCU.txt has space character before tabs.  This commit
-therefore makes this diagram consistent with elsewhere in the document:
-Use one leading tab, followed by spaces for any additional whitespace
-required.
+This series contains miscellaneous fixes.
 
-Signed-off-by: Tycho Andersen <tycho@tycho.ws>
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- Documentation/RCU/whatisRCU.txt | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+1.	Unconditionally expedite during suspend/hibernate (unless the
+	real-time guys have disabled expediting altogether, that is).
 
-diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.txt
-index 1ace20815bb1..981651a8b65d 100644
---- a/Documentation/RCU/whatisRCU.txt
-+++ b/Documentation/RCU/whatisRCU.txt
-@@ -310,7 +310,7 @@ reader, updater, and reclaimer.
- 
- 
- 	    rcu_assign_pointer()
--	    			    +--------+
-+	                            +--------+
- 	    +---------------------->| reader |---------+
- 	    |                       +--------+         |
- 	    |                           |              |
-@@ -318,12 +318,12 @@ reader, updater, and reclaimer.
- 	    |                           |              | rcu_read_lock()
- 	    |                           |              | rcu_read_unlock()
- 	    |        rcu_dereference()  |              |
--       +---------+                      |              |
--       | updater |<---------------------+              |
--       +---------+                                     V
-+	    +---------+                 |              |
-+	    | updater |<----------------+              |
-+	    +---------+                                V
- 	    |                                    +-----------+
- 	    +----------------------------------->| reclaimer |
--	    				         +-----------+
-+	                                         +-----------+
- 	      Defer:
- 	      synchronize_rcu() & call_rcu()
- 
--- 
-2.17.1
+2.	Avoid unnecessary softirq when system is idle, courtesy of
+	Joel Fernandes.
+
+3.	rcu_qs -- Use raise_softirq_irqoff to not save irqs twice,
+	courtesy of Cyrill Gorcunov.
+
+4.	Make exit_rcu() handle non-preempted RCU readers.
+
+5.	Set rcutree.kthread_prio sysfs access to read-only, courtesy
+	of Liu Song.
+
+6.	MAINTAINERS: RCU now has its own email list.
+
+7.	MAINTAINERS: Add -rcu branch name ("dev").
+
+8.	rcu: Move common code out of if-else block, courtesy of Akira
+	Yokosawa.
+
+9.	Allow rcu_nocbs= to specify all CPUs.
+
+10.	Report error for bad rcu_nocbs= parameter values.
+
+11.	Fix self-wakeups for grace-period kthread, courtesy of Neeraj
+	Upadhyay.
+
+12.	Default jiffies_to_sched_qs to jiffies_till_sched_qs, courtesy
+	of Neeraj Upadhyay.
+
+13.	Do a single rhp->func read in rcu_head_after_call_rcu(),
+	courtesy of Neeraj Upadhyay.
+
+14.	Update jiffies_to_sched_qs and adjust_jiffies_till_sched_qs()
+	comments.
+
+15.	Fix force_qs_rnp() header comment, courtesy of Zhouyi Zhou.
+
+16.	Eliminate redundant NULL-pointer check.
+
+17.	Fix typo in tree_exp.h comment.
+
+18.	Correct READ_ONCE()/WRITE_ONCE() for ->rcu_read_unlock_special.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt |    4 +-
+ MAINTAINERS                                     |   16 ++++----
+ include/linux/rcupdate.h                        |    6 ++-
+ kernel/rcu/tiny.c                               |    2 -
+ kernel/rcu/tree.c                               |   31 +++++++--------
+ kernel/rcu/tree_exp.h                           |    4 +-
+ kernel/rcu/tree_plugin.h                        |   48 +++++++++++++++---------
+ 7 files changed, 63 insertions(+), 48 deletions(-)
 
