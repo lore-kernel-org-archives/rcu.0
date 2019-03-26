@@ -1,233 +1,118 @@
-Return-Path: <SRS0=V4fh=R4=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=WNJD=R5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77E2BC43381
-	for <rcu@archiver.kernel.org>; Mon, 25 Mar 2019 16:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1BF8C43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3357120879
-	for <rcu@archiver.kernel.org>; Mon, 25 Mar 2019 16:44:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 93BE4206DF
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MOvLGG5t"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="WIyBizMn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbfCYQon (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 25 Mar 2019 12:44:43 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41188 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729713AbfCYQon (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 25 Mar 2019 12:44:43 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 188so1262623pfd.8
-        for <rcu@vger.kernel.org>; Mon, 25 Mar 2019 09:44:43 -0700 (PDT)
+        id S1730451AbfCZTYb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 15:24:31 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:35038 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728314AbfCZTYb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Mar 2019 15:24:31 -0400
+Received: by mail-pl1-f194.google.com with SMTP id p19so2090086plo.2
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 12:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t9zy/7o/wXxn8o9xiennO56tqny6qYj28o2PkgbCnMU=;
-        b=MOvLGG5tLn0biNvCmTTbgLuQZ4wsa0zeH2hjvDbu6XPQNhHyKLPuvOWEmvKaJL2Wtm
-         P6+tZ/8XD+nwYi+BNde9/qrPsgN/VrpKZLhQ7VSMDb6xO6xH2yRxmUd+LXSQYQc8odOz
-         EiVLbFLi4VQvv2j9LDA6TOIbjhaOaml7u5p/4=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cBJLe6/JGplG+Cy8Q3/cMVi7Shc7ruJGMSA1cWOMVqY=;
+        b=WIyBizMngixWEhCS5V1bN1IbboWlbBa/zzrPjtzcGpBAqm9dDvsYykZKnRKho5FZvm
+         waFLFVy194hEvmK7je9hxoDmUOzvW8fiSsEkt+sz2wr9ghG5955KLCCx49DjcgSR9E3z
+         m0cbfO0jiIvx7ys5FH0c4R6IZ/KvKyvBD6wfc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t9zy/7o/wXxn8o9xiennO56tqny6qYj28o2PkgbCnMU=;
-        b=DM13mAZnqZOqWJOm73ZIasnl08EIJxtOtFw9IjSlnhoCHh0EB2L62lnGcn/SkHEib5
-         M4nRi09WDkfXVYt34ZEzEonJJC0jWKyOZQHuIoy4i8y6U7IkDkX+/r/Jyn5ZscXuOwk3
-         cmewZXQRvT+6JOk6Kv/B+tutud4iQnhIPZQkm+aQMBRBjRa4lVpU2l+52Bfo9AKDDRou
-         23Z4a28nL2QimB2uqp+ZTBjHnQ4XhNwivwtw9eUuE36LyziHNgoKkI4pwnwBZooQ74Xt
-         NhTtrw76yyd4FMEUGylYAtpwKGHgIE2URep83jqclStorzALmstC6lTiLzEZahZWb6dB
-         eWpQ==
-X-Gm-Message-State: APjAAAVApwzVQG6fEcCOCd4G3Yh6iOUuvOCiXbmEv1Ah7t3fOIPI2qHi
-        5CA4ODzf3aCqZdA8wc+X5pDQ8g==
-X-Google-Smtp-Source: APXvYqz4GmgKSuLoWMlEHsTlpg6TaOd4kBaJQALreNIV1Nd1+OY7jww4ruWKlGKq60XFMFS8Iqs5ow==
-X-Received: by 2002:a62:7049:: with SMTP id l70mr25082091pfc.78.1553532282631;
-        Mon, 25 Mar 2019 09:44:42 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id e21sm10803828pfd.177.2019.03.25.09.44.41
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 Mar 2019 09:44:41 -0700 (PDT)
-Date:   Mon, 25 Mar 2019 12:44:40 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
-        kernel-team@android.com, rcu@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cBJLe6/JGplG+Cy8Q3/cMVi7Shc7ruJGMSA1cWOMVqY=;
+        b=lvOD+q6yx+Yv070Y0gvjnbSljlgDKJRpJwmkUu+C2+Tt3C+n+NKG8iliGL4a133klL
+         vQYHx1Ro6VhAYiN4B39c/7M4wHQ/w+tMpN8+5Km6iOt1dlb3487CrNq7xLB0N54WCYAM
+         otHVzATn27aU9FWOWw6Nb7l/WfWetVvlQqjSjZLLM0hIWYT34ayDi4LZRfEQ7tvJ0swc
+         W0nXGPwBNqwg0mVImvV4WO8aTPwp4ZruAGXk1JJcFvFtDeib7ikR5r4GlR8r+V+yGJBC
+         kt93PRUpQVdkkE2fZi2mztAOb3JlzxfVmvak2+dj5gQe9lAXvgaXH7v3alSn2ILHnYu4
+         s80g==
+X-Gm-Message-State: APjAAAUx0Eas75ALTQ9Y9YRxdiwlUvtrICIFEflGECcNfFLYYYToxZgq
+        IagGSC+gf/u2hi2GWbACpBBcLQ==
+X-Google-Smtp-Source: APXvYqypEKPXcoQJgDVy5MvfSX2VsoZ1x9Ur4x5YtgQwDWYTEU/kZATCqD9coRmyBcoDdt/Dx7aYRw==
+X-Received: by 2002:a17:902:20e5:: with SMTP id v34mr33077657plg.319.1553628270382;
+        Tue, 26 Mar 2019 12:24:30 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id l12sm36761889pgn.83.2019.03.26.12.24.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Mar 2019 12:24:29 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com,
+        rcu@vger.kernel.org, byungchul.park@lge.com,
         Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kselftest@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>,
         Will Deacon <will.deacon@arm.com>
-Subject: Re: [RFC 2/2] rcutree: Add checks for dynticks counters in
- rcu_is_cpu_rrupt_from_idle
-Message-ID: <20190325164440.GA25975@google.com>
-References: <20190323012939.15185-1-joel@joelfernandes.org>
- <20190323012939.15185-2-joel@joelfernandes.org>
- <20190323030251.GB136835@google.com>
- <20190324234351.GX4102@linux.ibm.com>
- <20190325133646.GA182885@google.com>
- <20190325155341.GC4102@linux.ibm.com>
+Subject: [PATCH v2 1/4] lockdep: Add assertion to check if in an interrupt
+Date:   Tue, 26 Mar 2019 15:24:08 -0400
+Message-Id: <20190326192411.198070-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190325155341.GC4102@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 25, 2019 at 08:53:41AM -0700, Paul E. McKenney wrote:
-> On Mon, Mar 25, 2019 at 09:36:46AM -0400, Joel Fernandes wrote:
-> > On Sun, Mar 24, 2019 at 04:43:51PM -0700, Paul E. McKenney wrote:
-> > > On Fri, Mar 22, 2019 at 11:02:51PM -0400, Joel Fernandes wrote:
-> > > > On Fri, Mar 22, 2019 at 09:29:39PM -0400, Joel Fernandes (Google) wrote:
-> > > > > In the future we would like to combine the dynticks and dynticks_nesting
-> > > > > counters thus leading to simplifying the code. At the moment we cannot
-> > > > > do that due to concerns about usermode upcalls appearing to RCU as half
-> > > > > of an interrupt. Byungchul tried to do it in [1] but the
-> > > > > "half-interrupt" concern was raised. It is half because, what RCU
-> > > > > expects is rcu_irq_enter() and rcu_irq_exit() pairs when the usermode
-> > > > > exception happens. However, only rcu_irq_enter() is observed. This
-> > > > > concern may not be valid anymore, but at least it used to be the case.
-> > > > > 
-> > > > > Out of abundance of caution, Paul added warnings [2] in the RCU code
-> > > > > which if not fired by 2021 may allow us to assume that such
-> > > > > half-interrupt scenario cannot happen any more, which can lead to
-> > > > > simplification of this code.
-> > > > > 
-> > > > > Summary of the changes are the following:
-> > > > > 
-> > > > > (1) In preparation for this combination of counters in the future, we
-> > > > > first need to first be sure that rcu_rrupt_from_idle cannot be called
-> > > > > from anywhere but a hard-interrupt because previously, the comments
-> > > > > suggested otherwise so let us be sure. We discussed this here [3]. We
-> > > > > use the services of lockdep to accomplish this.
-> > > > > 
-> > > > > (2) Further rcu_rrupt_from_idle() is not explicit about how it is using
-> > > > > the counters which can lead to weird future bugs. This patch therefore
-> > > > > makes it more explicit about the specific counter values being tested
-> > > > > 
-> > > > > (3) Lastly, we check for counter underflows just to be sure these are
-> > > > > not happening, because the previous code in rcu_rrupt_from_idle() was
-> > > > > allowing the case where the counters can underflow, and the function
-> > > > > would still return true. Now we are checking for specific values so let
-> > > > > us be confident by additional checking, that such underflows don't
-> > > > > happen. Any case, if they do, we should fix them and the screaming
-> > > > > warning is appropriate. All these checks checks are NOOPs if PROVE_RCU
-> > > > > and PROVE_LOCKING are disabled.
-> > > > > 
-> > > > > [1] https://lore.kernel.org/patchwork/patch/952349/
-> > > > > [2] Commit e11ec65cc8d6 ("rcu: Add warning to detect half-interrupts")
-> > > > > [3] https://lore.kernel.org/lkml/20190312150514.GB249405@google.com/
-> > > > > 
-> > > > > Cc: byungchul.park@lge.com
-> > > > > Cc: kernel-team@android.com
-> > > > > Cc: rcu@vger.kernel.org
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 21 +++++++++++++++++----
-> > > > >  1 file changed, 17 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 9180158756d2..d94c8ed29f6b 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -381,16 +381,29 @@ static void __maybe_unused rcu_momentary_dyntick_idle(void)
-> > > > >  }
-> > > > >  
-> > > > >  /**
-> > > > > - * rcu_is_cpu_rrupt_from_idle - see if idle or immediately interrupted from idle
-> > > > > + * rcu_is_cpu_rrupt_from_idle - see if interrupted from idle
-> > > > >   *
-> > > > > - * If the current CPU is idle or running at a first-level (not nested)
-> > > > > + * If the current CPU is idle and running at a first-level (not nested)
-> > > > >   * interrupt from idle, return true.  The caller must have at least
-> > > > >   * disabled preemption.
-> > > > >   */
-> > > > >  static int rcu_is_cpu_rrupt_from_idle(void)
-> > > > >  {
-> > > > > -	return __this_cpu_read(rcu_data.dynticks_nesting) <= 0 &&
-> > > > > -	       __this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 1;
-> > > > > +	/* Called only from within the scheduling-clock interrupt */
-> > > > > +	lockdep_assert_in_irq();
-> > > > > +
-> > > > > +	/* Check for counter underflows */
-> > > > > +	RCU_LOCKDEP_WARN(
-> > > > > +		(__this_cpu_read(rcu_data.dynticks_nesting) < 0) &&
-> > > > > +		(__this_cpu_read(rcu_data.dynticks_nmi_nesting) < 0),
-> > > > 
-> > > >  
-> > > > This condition for the warning is supposed to be || instead of &&. Sorry.
-> > > > 
-> > > > Or, I will just use 2 RCU_LOCKDEP_WARN(s) here, that's better.
-> > > 
-> > > Also, the dynticks_nmi_nesting being zero is a bug given that we know
-> > > we are in an interrupt handler, right?  Or am I off by one again?
-> > 
-> > You are right, we can do additional checking for making sure its never zero.
-> > I refreshed the patch as below, does this look Ok?
-> > 
-> > ---8<-----------------------
-> > 
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > Subject: [RFC v2] rcutree: Add checks for dynticks counters in
-> > 
-> > In the future we would like to combine the dynticks and dynticks_nesting
-> > counters thus leading to simplifying the code. At the moment we cannot
-> > do that due to concerns about usermode upcalls appearing to RCU as half
-> > of an interrupt. Byungchul tried to do it in [1] but the
-> > "half-interrupt" concern was raised. It is half because, what RCU
-> > expects is rcu_irq_enter() and rcu_irq_exit() pairs when the usermode
-> > exception happens. However, only rcu_irq_enter() is observed. This
-> > concern may not be valid anymore, but at least it used to be the case.
-> > 
-> > Out of abundance of caution, Paul added warnings [2] in the RCU code
-> > which if not fired by 2021 may allow us to assume that such
-> > half-interrupt scenario cannot happen any more, which can lead to
-> > simplification of this code.
-> > 
-> > Summary of the changes are the following:
-> > 
-> > (1) In preparation for this combination of counters in the future, we
-> > first need to first be sure that rcu_rrupt_from_idle cannot be called
-> > from anywhere but a hard-interrupt because previously, the comments
-> > suggested otherwise so let us be sure. We discussed this here [3]. We
-> > use the services of lockdep to accomplish this.
-> > 
-> > (2) Further rcu_rrupt_from_idle() is not explicit about how it is using
-> > the counters which can lead to weird future bugs. This patch therefore
-> > makes it more explicit about the specific counter values being tested
-> > 
-> > (3) Lastly, we check for counter underflows just to be sure these are
-> > not happening, because the previous code in rcu_rrupt_from_idle() was
-> > allowing the case where the counters can underflow, and the function
-> > would still return true. Now we are checking for specific values so let
-> > us be confident by additional checking, that such underflows don't
-> > happen. Any case, if they do, we should fix them and the screaming
-> > warning is appropriate. All these checks checks are NOOPs if PROVE_RCU
-> > and PROVE_LOCKING are disabled.
-> > 
-> > [1] https://lore.kernel.org/patchwork/patch/952349/
-> > [2] Commit e11ec65cc8d6 ("rcu: Add warning to detect half-interrupts")
-> > [3] https://lore.kernel.org/lkml/20190312150514.GB249405@google.com/
-> > 
-> > Cc: byungchul.park@lge.com
-> > Cc: kernel-team@android.com
-> > Cc: rcu@vger.kernel.org
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> Looks better!  I have applied this and its predecessor, if in backwards
-> order.  (Will fix, rebase coming up anyway.)
-> 
-> I do like your Cc-ing kernel-team@android.com -- one less thing for me
-> to remember!  ;-)
- 
-Thanks a lot Paul! :)
+In rcu_rrupt_from_idle, we want to check if it is called from within an
+interrupt, but want to do such checking only for debug builds. lockdep
+already tracks when we enter an interrupt. Let us expose it as an
+assertion macro so it can be used to assert this.
 
- - Joel
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Cc: kernel-team@android.com
+Cc: rcu@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+---
+ include/linux/lockdep.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index c5335df2372f..d24f564823d3 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -601,11 +601,18 @@ do {									\
+ 			  "IRQs not disabled as expected\n");		\
+ 	} while (0)
+ 
++#define lockdep_assert_in_irq() do {					\
++		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
++			  !current->hardirq_context,			\
++			  "Not in hardirq as expected\n");		\
++	} while (0)
++
+ #else
+ # define might_lock(lock) do { } while (0)
+ # define might_lock_read(lock) do { } while (0)
+ # define lockdep_assert_irqs_enabled() do { } while (0)
+ # define lockdep_assert_irqs_disabled() do { } while (0)
++# define lockdep_assert_in_irq() do { } while (0)
+ #endif
+ 
+ #ifdef CONFIG_LOCKDEP
+-- 
+2.21.0.392.gf8f6787159e-goog
+
