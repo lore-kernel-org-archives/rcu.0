@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1088C10F06
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AE33C43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:15:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C74FF2087E
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:14:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 31D962087C
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:15:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732843AbfCZXO6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 19:14:58 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46432 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732813AbfCZXNX (ORCPT
+        id S1732902AbfCZXO7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 19:14:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51784 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732817AbfCZXNX (ORCPT
         <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:13:23 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN9JM2001503
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:21 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2rfv1yb6up-1
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN9SK2143278
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:22 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfunybv29-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:21 -0400
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:22 -0400
 Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 26 Mar 2019 23:13:21 -0000
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Tue, 26 Mar 2019 23:13:20 -0000
+Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 26 Mar 2019 23:13:16 -0000
+        Tue, 26 Mar 2019 23:13:17 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNDFBx16253160
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNDGMF24051748
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Mar 2019 23:13:15 GMT
+        Tue, 26 Mar 2019 23:13:16 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C62D4B207D;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EF7AAB2068;
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A92E7B2073;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id DCBCAB2064;
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 909D016C612E; Tue, 26 Mar 2019 16:13:15 -0700 (PDT)
+        id AD27A16C623D; Tue, 26 Mar 2019 16:13:15 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -56,66 +56,67 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 11/18] rcu: Fix self-wakeups for grace-period kthread
-Date:   Tue, 26 Mar 2019 16:13:07 -0700
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 16/18] rcu: Eliminate redundant NULL-pointer check
+Date:   Tue, 26 Mar 2019 16:13:12 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190326231253.GA18343@linux.ibm.com>
 References: <20190326231253.GA18343@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19032623-0064-0000-0000-000003C06E3C
+x-cbid: 19032623-0060-0000-0000-0000032273B2
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000282; SDB=6.01180133; UDB=6.00617572; IPR=6.00960848;
+ PH=3.00000004; SC=3.00000282; SDB=6.01180133; UDB=6.00617573; IPR=6.00960848;
  MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:13:20
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032623-0065-0000-0000-00003CD8B377
-Message-Id: <20190326231314.19518-11-paulmck@linux.ibm.com>
+x-cbparentid: 19032623-0061-0000-0000-000048BCCEC5
+Message-Id: <20190326231314.19518-16-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=688 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=627 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1903260156
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+Because rcu_wake_cond() checks for a null task_struct pointer, there is
+no need for its callers to do so.  This commit eliminates the redundant
+check.
 
-The current rcu_gp_kthread_wake() function uses in_interrupt()
-and thus does a self-wakeup from all interrupt contexts, including
-the pointless case where the GP kthread happens to be running with
-bottom halves disabled, along with the impossible case where the GP
-kthread is running within an NMI handler (you are not supposed to invoke
-rcu_gp_kthread_wake() from within an NMI handler.  This commit therefore
-replaces the in_interrupt() with in_irq(), so that the self-wakeups
-happen only from handlers for hardware interrupts and softirqs.
-This also makes the code match the comment.
-
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5aefd36ac648..139fa1f5c537 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1585,7 +1585,7 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
- static void rcu_gp_kthread_wake(void)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index f0aeb7416dcc..81d3cd821891 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1191,8 +1191,6 @@ static int rcu_boost_kthread(void *arg)
+ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 	__releases(rnp->lock)
  {
- 	if ((current == rcu_state.gp_kthread &&
--	     !in_interrupt() && !in_serving_softirq()) ||
-+	     !in_irq() && !in_serving_softirq()) ||
- 	    !READ_ONCE(rcu_state.gp_flags) ||
- 	    !rcu_state.gp_kthread)
- 		return;
+-	struct task_struct *t;
+-
+ 	raw_lockdep_assert_held_rcu_node(rnp);
+ 	if (!rcu_preempt_blocked_readers_cgp(rnp) && rnp->exp_tasks == NULL) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+@@ -1206,9 +1204,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 		if (rnp->exp_tasks == NULL)
+ 			rnp->boost_tasks = rnp->gp_tasks;
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+-		t = rnp->boost_kthread_task;
+-		if (t)
+-			rcu_wake_cond(t, rnp->boost_kthread_status);
++		rcu_wake_cond(rnp->boost_kthread_task,
++			      rnp->boost_kthread_status);
+ 	} else {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
 -- 
 2.17.1
 
