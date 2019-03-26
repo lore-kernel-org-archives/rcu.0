@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EBC9C43381
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D04C43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DC281206DF
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A2CFE20823
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 19:24:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wR28RfZ8"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="v/VOm10t"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbfCZTYe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 15:24:34 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:38153 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730449AbfCZTYd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 26 Mar 2019 15:24:33 -0400
-Received: by mail-pl1-f195.google.com with SMTP id g37so2086785plb.5
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 12:24:33 -0700 (PDT)
+        id S1732622AbfCZTYj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 15:24:39 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:40284 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732619AbfCZTYi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Mar 2019 15:24:38 -0400
+Received: by mail-pl1-f196.google.com with SMTP id b11so2088268plr.7
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 12:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=03p3ODFVQvd6EJVrQdS1N5Fn4xNiqjPABgOQRHIhcDc=;
-        b=wR28RfZ8qqW/OhBxbQWwxK1hqfOW99Wi+R5C9zwy0N/m8KsbEDa+ocRieqjAOL1vBl
-         fpzjl+d4iZstuTiyCkdV/5Hp3gFaJQu5KiKH4UOlGzTjOeyYQxQj/+2h5Koi7FMfDpZ4
-         cLu6YD37NBR4qIYEP5ZrsWo3itletofOp1DqA=
+        bh=9xe2cnKgj2u/5e350AhnUZqGhZDwjch2potbZGjEHUM=;
+        b=v/VOm10tv19N25u4AXHbxwGBxHou9OBjaSYgwhqnd9yTlGqrc6cJ0pZyoTS1BIvrpJ
+         r4fvbu/5qL9sC0M4MnERILS/2oPRyhlTlSjFPLbSOdYmZsmuF67L3ISWgQOtHavmn9SM
+         H/DTQ/dbDqIiWwZd5Hi26iBq9B6ZYC65e3e2M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=03p3ODFVQvd6EJVrQdS1N5Fn4xNiqjPABgOQRHIhcDc=;
-        b=Fb7NI/00AllR0qlSzKY+VmRUuMh1rQXImD4S+iMqCpHJihcK8pxpELiRapD/x74aC6
-         cjtEKzEfJhV3QO0dXYywAG9wXvOv8Nx0ZA8HUBt+gtqjrrObYwfsvx1eUqD7Ictheoxw
-         IhnJGnxGKBjMkIxPM3EzdvJM8yJl0IhhiDBzF7OJUpfhScZ5tGqVclzm4PE4m8toHKyr
-         ixR7xWdG6f+FpVFUYeGltZLJnfl68BGMRf0Jn4Vw3eCFQWtiFryBIREQOIEKgnMg4cgZ
-         98ImOOSkyd96yanNQUyGxuBWbKHLCt2FCBc9OOhmuwu5Fsx5akeNe7n5IciQTbgEXbzX
-         7CBw==
-X-Gm-Message-State: APjAAAV+7U3z00IE0OKOrI6ZH4hqCTszVc5q2MiEbt2zwgdlt6OWx1rG
-        btfqh/7mLo7NcVES6ALmt7OOzQ==
-X-Google-Smtp-Source: APXvYqz0CpZVgoinljCuzSh12Y9Mbmv/Ll+Vo/kIttOgigpinJboA+vihBRBMjMLEiV4rhip7GywxQ==
-X-Received: by 2002:a17:902:2963:: with SMTP id g90mr33228185plb.182.1553628272923;
-        Tue, 26 Mar 2019 12:24:32 -0700 (PDT)
+        bh=9xe2cnKgj2u/5e350AhnUZqGhZDwjch2potbZGjEHUM=;
+        b=V8RT8GgkVERmH6UyPC54NrqVJW4uN3MNaMGiIF0OtNQoSxK+326DD7ew6NodEuxWmT
+         JACID5pveVNTccvXChk5eQ99lBOLqpSQQeyTjN6WytjEZN9AGyFj4JtWkFQjxWmFTehS
+         tTGM0xeklrT+u26kls60eyggx6MpcqRBXCm/caEbgRzYUMF6pitR2vpXgtF8rGt/xeSt
+         JyE+c9IgvjAEgzImBjIxEBrb9U9xxmFHPUgJOzO2ZI8VCPI4MsrTWoO1SJqrkeEU3+HH
+         uRe4eHfRuaB4DitKskDkYDB7Npf26yjI7452GXlpPuWMuAWH4aGbn5D0PLVHY8LgaY99
+         goRg==
+X-Gm-Message-State: APjAAAX/vXgCV1t7TtHKGNQZoYjQAEck8vcXEyYEuW1KSA8gPaS4BUA8
+        7ags+st2RWOI94OpEydvSw8f4w==
+X-Google-Smtp-Source: APXvYqwMJ3hs4xED/sxyQLZzrjezrjuatGt1jM2/TtrZQmpPXSsOJnh8yMCjdjiUOwVv9nMh0rSFxQ==
+X-Received: by 2002:a17:902:2c01:: with SMTP id m1mr32840752plb.186.1553628278149;
+        Tue, 26 Mar 2019 12:24:38 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l12sm36761889pgn.83.2019.03.26.12.24.30
+        by smtp.gmail.com with ESMTPSA id l12sm36761889pgn.83.2019.03.26.12.24.35
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Mar 2019 12:24:32 -0700 (PDT)
+        Tue, 26 Mar 2019 12:24:37 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        byungchul.park@lge.com, kernel-team@android.com,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+        byungchul.park@lge.com, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-kselftest@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
         Shuah Khan <shuah@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will.deacon@arm.com>
-Subject: [PATCH v2 2/4] rcutree: Add checks for dynticks counters in rcu_is_cpu_rrupt_from_idle
-Date:   Tue, 26 Mar 2019 15:24:09 -0400
-Message-Id: <20190326192411.198070-2-joel@joelfernandes.org>
+Subject: [PATCH v2 4/4] rcutorture: Add cpu0 to the set of CPUs to add jitter
+Date:   Tue, 26 Mar 2019 15:24:11 -0400
+Message-Id: <20190326192411.198070-4-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.21.0.392.gf8f6787159e-goog
 In-Reply-To: <20190326192411.198070-1-joel@joelfernandes.org>
 References: <20190326192411.198070-1-joel@joelfernandes.org>
@@ -78,91 +77,33 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In the future we would like to combine the dynticks and dynticks_nesting
-counters thus leading to simplifying the code. At the moment we cannot
-do that due to concerns about usermode upcalls appearing to RCU as half
-of an interrupt. Byungchul tried to do it in [1] but the
-"half-interrupt" concern was raised. It is half because, what RCU
-expects is rcu_irq_enter() and rcu_irq_exit() pairs when the usermode
-exception happens. However, only rcu_irq_enter() is observed. This
-concern may not be valid anymore, but at least it used to be the case.
+jitter.sh currently does not add CPU0 to the list of CPUs for adding of
+jitter. Let us add it to this list even when it is not hot-pluggable.
 
-Out of abundance of caution, Paul added warnings [2] in the RCU code
-which if not fired by 2021 may allow us to assume that such
-half-interrupt scenario cannot happen any more, which can lead to
-simplification of this code.
-
-Summary of the changes are the following:
-
-(1) In preparation for this combination of counters in the future, we
-first need to first be sure that rcu_rrupt_from_idle cannot be called
-from anywhere but a hard-interrupt because previously, the comments
-suggested otherwise so let us be sure. We discussed this here [3]. We
-use the services of lockdep to accomplish this.
-
-(2) Further rcu_rrupt_from_idle() is not explicit about how it is using
-the counters which can lead to weird future bugs. This patch therefore
-makes it more explicit about the specific counter values being tested
-
-(3) Lastly, we check for counter underflows just to be sure these are
-not happening, because the previous code in rcu_rrupt_from_idle() was
-allowing the case where the counters can underflow, and the function
-would still return true. Now we are checking for specific values so let
-us be confident by additional checking, that such underflows don't
-happen. Any case, if they do, we should fix them and the screaming
-warning is appropriate. All these checks checks are NOOPs if PROVE_RCU
-and PROVE_LOCKING are disabled.
-
-[1] https://lore.kernel.org/patchwork/patch/952349/
-[2] Commit e11ec65cc8d6 ("rcu: Add warning to detect half-interrupts")
-[3] https://lore.kernel.org/lkml/20190312150514.GB249405@google.com/
-
-Cc: byungchul.park@lge.com
-Cc: kernel-team@android.com
-Cc: rcu@vger.kernel.org
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ tools/testing/selftests/rcutorture/bin/jitter.sh | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9180158756d2..dbff8a274c46 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -381,16 +381,29 @@ static void __maybe_unused rcu_momentary_dyntick_idle(void)
- }
+diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
+index 47bd9829dc55..26faf5824a1f 100755
+--- a/tools/testing/selftests/rcutorture/bin/jitter.sh
++++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
+@@ -49,8 +49,12 @@ do
  
- /**
-- * rcu_is_cpu_rrupt_from_idle - see if idle or immediately interrupted from idle
-+ * rcu_is_cpu_rrupt_from_idle - see if interrupted from idle
-  *
-- * If the current CPU is idle or running at a first-level (not nested)
-+ * If the current CPU is idle and running at a first-level (not nested)
-  * interrupt from idle, return true.  The caller must have at least
-  * disabled preemption.
-  */
- static int rcu_is_cpu_rrupt_from_idle(void)
- {
--	return __this_cpu_read(rcu_data.dynticks_nesting) <= 0 &&
--	       __this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 1;
-+	/* Called only from within the scheduling-clock interrupt */
-+	lockdep_assert_in_irq();
+ 	# Set affinity to randomly selected online CPU
+ 	cpus=`grep 1 /sys/devices/system/cpu/*/online |
+-		sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//' |
+-		grep -v '^0*$'`
++		sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//'`
 +
-+	/* Check for counter underflows */
-+	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
-+			 "RCU dynticks_nesting counter underflow!");
-+	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-+			 "RCU dynticks_nmi_nesting counter underflow/zero!");
-+
-+	/* Are we at first interrupt nesting level? */
-+	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) != 1)
-+		return false;
-+
-+	/* Does CPU appear to be idle from an RCU standpoint? */
-+	return __this_cpu_read(rcu_data.dynticks_nesting) == 0;
- }
++	# Do not leave out poor old cpu0 which may not be hot-pluggable
++	if [ ! -f "/sys/devices/system/cpu/cpu0/online" ]; then
++		cpus="0 $cpus"
++	fi
  
- #define DEFAULT_RCU_BLIMIT 10     /* Maximum callbacks per rcu_do_batch. */
+ 	cpumask=`awk -v cpus="$cpus" -v me=$me -v n=$n 'BEGIN {
+ 		srand(n + me + systime());
 -- 
 2.21.0.392.gf8f6787159e-goog
 
