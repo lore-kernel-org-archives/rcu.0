@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D2DAC4360F
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBB7FC43381
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 644BF2087C
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C330D2087C
+	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:13:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732482AbfCZXNj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 19:13:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51978 "EHLO
+        id S1733002AbfCZXNu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 19:13:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41426 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732906AbfCZXNZ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:13:25 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN9Mgg114282
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:24 -0400
-Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfst60s2j-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        by vger.kernel.org with ESMTP id S1732873AbfCZXNY (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:13:24 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QN9KYg017129
         for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:23 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfuyj3dgg-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:13:22 -0400
 Received: from localhost
-        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 26 Mar 2019 23:13:22 -0000
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Tue, 26 Mar 2019 23:13:21 -0000
+Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 26 Mar 2019 23:13:16 -0000
+        Tue, 26 Mar 2019 23:13:17 -0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNDFcr24051800
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNDGHG21299300
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Mar 2019 23:13:15 GMT
+        Tue, 26 Mar 2019 23:13:16 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CDF50B206B;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EF730B2067;
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8891B2078;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id DCB98B205F;
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Mar 2019 23:13:14 +0000 (GMT)
+        Tue, 26 Mar 2019 23:13:15 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 963F416C6130; Tue, 26 Mar 2019 16:13:15 -0700 (PDT)
+        id B2B7916C623E; Tue, 26 Mar 2019 16:13:15 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -56,66 +56,54 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 12/18] rcu: Default jiffies_to_sched_qs to jiffies_till_sched_qs
-Date:   Tue, 26 Mar 2019 16:13:08 -0700
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 17/18] rcu: Fix typo in tree_exp.h comment
+Date:   Tue, 26 Mar 2019 16:13:13 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190326231253.GA18343@linux.ibm.com>
 References: <20190326231253.GA18343@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19032623-0060-0000-0000-0000032273B1
+x-cbid: 19032623-0072-0000-0000-00000410BAA0
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000282; SDB=6.01180133; UDB=6.00617573; IPR=6.00960848;
  MB=3.00026169; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:13:20
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032623-0061-0000-0000-000048BCCEC1
-Message-Id: <20190326231314.19518-12-paulmck@linux.ibm.com>
+x-cbparentid: 19032623-0073-0000-0000-00004B9D5756
+Message-Id: <20190326231314.19518-17-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=888 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1903260156
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+This commit changes a rcu_exp_handler() comment from rcu_preempt_defer_qs()
+to rcu_preempt_deferred_qs() in order to better match reality.
 
-The current code only calls adjust_jiffies_till_sched_qs() if
-jiffies_till_sched_qs is left at its default value, so when the
-jiffies_till_sched_qs kernel-boot parameter actually is specified,
-jiffies_to_sched_qs will be left with the value zero, which
-will result in useless slowdowns of cond_resched().  This commit
-therefore changes rcu_init_geometry() to unconditionally invoke
-adjust_jiffies_till_sched_qs(), which ensures that jiffies_to_sched_qs
-will be initialized in all cases, thus maintaining good cond_resched()
-performance.
-
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/tree_exp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 139fa1f5c537..466299c3d2da 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3739,8 +3739,7 @@ static void __init rcu_init_geometry(void)
- 		jiffies_till_first_fqs = d;
- 	if (jiffies_till_next_fqs == ULONG_MAX)
- 		jiffies_till_next_fqs = d;
--	if (jiffies_till_sched_qs == ULONG_MAX)
--		adjust_jiffies_till_sched_qs();
-+	adjust_jiffies_till_sched_qs();
- 
- 	/* If the compile-time values are accurate, just leave. */
- 	if (rcu_fanout_leaf == RCU_FANOUT_LEAF &&
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 4c2a0189e748..ec4fb93a5dbe 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -648,7 +648,7 @@ static void rcu_exp_handler(void *unused)
+ 	 *
+ 	 * If the CPU is fully enabled (or if some buggy RCU-preempt
+ 	 * read-side critical section is being used from idle), just
+-	 * invoke rcu_preempt_defer_qs() to immediately report the
++	 * invoke rcu_preempt_deferred_qs() to immediately report the
+ 	 * quiescent state.  We cannot use rcu_read_unlock_special()
+ 	 * because we are in an interrupt handler, which will cause that
+ 	 * function to take an early exit without doing anything.
 -- 
 2.17.1
 
