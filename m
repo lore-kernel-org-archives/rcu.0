@@ -1,112 +1,115 @@
-Return-Path: <SRS0=WNJD=R5=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=CqW9=R6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41AFEC4360F
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2DCBC43381
+	for <rcu@archiver.kernel.org>; Wed, 27 Mar 2019 03:21:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A7E42146E
-	for <rcu@archiver.kernel.org>; Tue, 26 Mar 2019 23:32:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 82AA82146E
+	for <rcu@archiver.kernel.org>; Wed, 27 Mar 2019 03:21:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1553656883;
+	bh=wWJZg7hFW30nvHrRJ3216p8dXbFyJgzZYr2WaKsfWww=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=d0ubvh/sksdub+o3WrFKNFUNHssLIXjVuoxInHHUNvQuOcLvXcffn6DVSEeBQj1p0
+	 dXeHlQyNUKO8UYM0ENcoPHdAKLX7dXVODhB58PWjvMsPay4TdSTnke0tA1GVl+0TLB
+	 xfykawAMAU/G5ibkR53DgUpnxlP0wcb+gX1hN2i4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732936AbfCZXcJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Mar 2019 19:32:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35030 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732947AbfCZXb0 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 26 Mar 2019 19:31:26 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2QNT5gJ144883
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:31:25 -0400
-Received: from e17.ny.us.ibm.com (e17.ny.us.ibm.com [129.33.205.207])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rfuftd1q9-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 26 Mar 2019 19:31:25 -0400
-Received: from localhost
-        by e17.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 26 Mar 2019 23:31:24 -0000
-Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
-        by e17.ny.us.ibm.com (146.89.104.204) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 26 Mar 2019 23:31:19 -0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2QNVIAa20381866
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Mar 2019 23:31:18 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 79983B206B;
-        Tue, 26 Mar 2019 23:31:18 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 598B1B2064;
-        Tue, 26 Mar 2019 23:31:18 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Mar 2019 23:31:18 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 7431516C42B1; Tue, 26 Mar 2019 16:31:19 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        id S1732727AbfC0DVS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 26 Mar 2019 23:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727452AbfC0DVS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Mar 2019 23:21:18 -0400
+Received: from devbox (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 608422087E;
+        Wed, 27 Mar 2019 03:21:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1553656877;
+        bh=wWJZg7hFW30nvHrRJ3216p8dXbFyJgzZYr2WaKsfWww=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H+rKWIw9ZGBwzg0IY8jynL0h37sz7beRWOAWspESzJagiFaHiWAHgUP3LsCDvb2Fd
+         MhUlUk+l9qTyGG8+g1WoR4L5nUMM7DBsOffnFmipE+b8CF+qKQ27NqdyJOLkzhBacT
+         ERbzzNL94IXHIqgqzovfuPQhuDHo139COOHGziA8=
+Date:   Wed, 27 Mar 2019 12:21:12 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 3/9] rcutorture: Make rcutorture_extend_mask() comment match the code
-Date:   Tue, 26 Mar 2019 16:31:12 -0700
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190326233054.GA21523@linux.ibm.com>
-References: <20190326233054.GA21523@linux.ibm.com>
-X-TM-AS-GCONF: 00
-x-cbid: 19032623-0040-0000-0000-000004D7AFDF
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010820; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000282; SDB=6.01180139; UDB=6.00606765; IPR=6.00960854;
- MB=3.00026170; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-26 23:31:23
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032623-0041-0000-0000-000008E2D131
-Message-Id: <20190326233118.23057-3-paulmck@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-26_15:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1903260158
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH tip/core/rcu 1/2] doc/kprobes: Update obsolete RCU
+ update functions
+Message-Id: <20190327122112.1993060d4b8500125adf9c2d@kernel.org>
+In-Reply-To: <20190326230050.16840-1-paulmck@linux.ibm.com>
+References: <20190326230011.GA16275@linux.ibm.com>
+        <20190326230050.16840-1-paulmck@linux.ibm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The code actually rarely uses more than one type of RCU read-side
-protection, as is actually desired given that we need some reasonable
-probability of preempting RCU read-side critical sections, which cannot
-happen with multiple types of protection.  This comment therefore adjusts
-the comment.
+On Tue, 26 Mar 2019 16:00:49 -0700
+"Paul E. McKenney" <paulmck@linux.ibm.com> wrote:
 
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- kernel/rcu/rcutorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The RCU flavors have been consolidated, so this commit replaces mentions
+> of the now-obsolete synchronize_sched() function with synchronize_rcu().
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index f14d1b18a74f..2453229ba15a 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1160,7 +1160,7 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	unsigned long randmask2 = randmask1 >> 3;
- 
- 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
--	/* Most of the time lots of bits, half the time only one bit. */
-+	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
- 	if (!(randmask1 & 0x7))
- 		mask = mask & randmask2;
- 	else
+Thank you for updating!
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: <linux-doc@vger.kernel.org>
+> ---
+>  Documentation/kprobes.txt | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/kprobes.txt b/Documentation/kprobes.txt
+> index 10f4499e677c..ee60e519438a 100644
+> --- a/Documentation/kprobes.txt
+> +++ b/Documentation/kprobes.txt
+> @@ -243,10 +243,10 @@ Optimization
+>  ^^^^^^^^^^^^
+>  
+>  The Kprobe-optimizer doesn't insert the jump instruction immediately;
+> -rather, it calls synchronize_sched() for safety first, because it's
+> +rather, it calls synchronize_rcu() for safety first, because it's
+>  possible for a CPU to be interrupted in the middle of executing the
+> -optimized region [3]_.  As you know, synchronize_sched() can ensure
+> -that all interruptions that were active when synchronize_sched()
+> +optimized region [3]_.  As you know, synchronize_rcu() can ensure
+> +that all interruptions that were active when synchronize_rcu()
+>  was called are done, but only if CONFIG_PREEMPT=n.  So, this version
+>  of kprobe optimization supports only kernels with CONFIG_PREEMPT=n [4]_.
+>  
+> -- 
+> 2.17.1
+> 
+
+
 -- 
-2.17.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
