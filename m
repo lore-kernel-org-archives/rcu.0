@@ -1,162 +1,168 @@
-Return-Path: <SRS0=IJRf=SA=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=5pCW=SB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 705BFC43381
-	for <rcu@archiver.kernel.org>; Fri, 29 Mar 2019 21:28:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B24C43381
+	for <rcu@archiver.kernel.org>; Sat, 30 Mar 2019 03:44:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 43139218A2
-	for <rcu@archiver.kernel.org>; Fri, 29 Mar 2019 21:28:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D554C218A3
+	for <rcu@archiver.kernel.org>; Sat, 30 Mar 2019 03:44:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="NQHus6+s";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="OYzIMBXX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730059AbfC2V2A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 Mar 2019 17:28:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45058 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729904AbfC2V17 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 29 Mar 2019 17:27:59 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x2TLOMEe093745
-        for <rcu@vger.kernel.org>; Fri, 29 Mar 2019 17:27:58 -0400
-Received: from e15.ny.us.ibm.com (e15.ny.us.ibm.com [129.33.205.205])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rhradqm07-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 29 Mar 2019 17:27:58 -0400
-Received: from localhost
-        by e15.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 29 Mar 2019 21:27:57 -0000
-Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
-        by e15.ny.us.ibm.com (146.89.104.202) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 29 Mar 2019 21:27:54 -0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x2TLRrXG8585388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Mar 2019 21:27:53 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AC52B2065;
-        Fri, 29 Mar 2019 21:27:53 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D0E5B205F;
-        Fri, 29 Mar 2019 21:27:53 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 29 Mar 2019 21:27:53 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id BF63216C170A; Fri, 29 Mar 2019 14:27:55 -0700 (PDT)
-Date:   Fri, 29 Mar 2019 14:27:55 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+        id S1730221AbfC3Don (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Mar 2019 23:44:43 -0400
+Received: from smtp.codeaurora.org ([198.145.29.96]:38254 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730144AbfC3Don (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Mar 2019 23:44:43 -0400
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+        id 23EE56079C; Sat, 30 Mar 2019 03:44:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1553917482;
+        bh=93iznbvlKQ3F7xK/RPlPSlA0NlZ9shD2OCP07kE9t/M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NQHus6+s2eQCFJxzfo8wko4+qq5ffr0vsA2OP3tVGQp3hWabHAOrAMi80GCjE56AG
+         oLamI49lv+OzSKe1pQ11aFTqD3ZvcK5zQHwQs1JyJXAiqJ7MIIwJfUDAgTkla3Cefr
+         3aKDtVj9Kx7KkQ5Nbm87HdAaR2EiG7HORBGn94mI=
+Received: from [10.204.78.89] (blr-c-bdr-fw-01_globalnat_allzones-outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju@smtp.codeaurora.org)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 887906079C;
+        Sat, 30 Mar 2019 03:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1553917481;
+        bh=93iznbvlKQ3F7xK/RPlPSlA0NlZ9shD2OCP07kE9t/M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OYzIMBXXC322DJxTAt9nqRG48Bf1MIT85Mnifdzs4FExyQPSpzRFlH5hzCXHKILrr
+         ykQcl5mBychb5k5yTR3xCQ7iezXIOXA3bfdgS1PfDkOM5i7R6PiNeTD3O8n6CqtWOE
+         dYFHEp1fV3xLz9bNXHPIeR5TGHqIjlIZyh0L+pes=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 887906079C
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] rcu: tree_stall: Correctly unlock root node in
+ rcu_check_gp_start_stall
+To:     paulmck@linux.ibm.com
 Cc:     Mukesh Ojha <mojha@codeaurora.org>, josh@joshtriplett.org,
         rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         jiangshanlai@gmail.com, joel@joelfernandes.org,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: tree_stall: Correctly unlock root node in
- rcu_check_gp_start_stall
-Reply-To: paulmck@linux.ibm.com
 References: <1553858828-23097-1-git-send-email-neeraju@codeaurora.org>
  <7a9eed5a-9bcf-460c-abb9-1e9bd6eae102@codeaurora.org>
  <2a8057f7-0704-5e8f-423e-e56a91a9b448@codeaurora.org>
+ <20190329212755.GB4102@linux.ibm.com>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <10b7ba19-9184-a4aa-d609-a644fcbe0503@codeaurora.org>
+Date:   Sat, 30 Mar 2019 09:14:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20190329212755.GB4102@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2a8057f7-0704-5e8f-423e-e56a91a9b448@codeaurora.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19032921-0068-0000-0000-000003AD2589
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010836; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000283; SDB=6.01181531; UDB=6.00618415; IPR=6.00962251;
- MB=3.00026214; MTD=3.00000008; XFM=3.00000015; UTC=2019-03-29 21:27:57
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19032921-0069-0000-0000-000047FA7E59
-Message-Id: <20190329212755.GB4102@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-03-29_12:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1903290146
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 29, 2019 at 07:52:15PM +0530, Neeraj Upadhyay wrote:
-> 
-> 
-> On 3/29/19 6:58 PM, Mukesh Ojha wrote:
-> >
-> >On 3/29/2019 4:57 PM, Neeraj Upadhyay wrote:
-> >>Only unlock the root node, if current node (rnp) is not
-> >>root node.
-> >>
-> >>Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> >
-> >
-> >
-> >>---
-> >>  kernel/rcu/tree_stall.h | 4 +++-
-> >>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>
-> >>diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> >>index f65a73a..0651833 100644
-> >>--- a/kernel/rcu/tree_stall.h
-> >>+++ b/kernel/rcu/tree_stall.h
-> >
-> >
-> >why this is showing as under tree_stall.h while it is under
-> >"kernel/rcu/tree.c"
-> 
-> It's moved in https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=10462d6f58fb6dbde7563e9343505d98d5bfba3d
-> 
-> Please see linux-rcu dev tree for other changes, which moves code to
-> this file.
-> 
-> 
-> Thanks
-> Neeraj
-> 
-> >
-> >>@@ -630,7 +630,9 @@ static void rcu_check_gp_start_stall(struct
-> >>rcu_node *rnp, struct rcu_data *rdp,
-> >>          time_before(j, rcu_state.gp_req_activity + gpssdelay) ||
-> >>          time_before(j, rcu_state.gp_activity + gpssdelay) ||
-> >>          atomic_xchg(&warned, 1)) {
-> >>-        raw_spin_unlock_rcu_node(rnp_root); /* irqs remain disabled. */
-> >>+        if (rnp_root != rnp)
-> >>+            /* irqs remain disabled. */
-> >>+            raw_spin_unlock_rcu_node(rnp_root);
-> >
-> >Looks good as it will balance the lock .if it is the root_node,
-> >which was not there earlier, and unlock was happening without any
-> >lock on root.
-> >
-> >Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 
-Applied, again thank you both!
 
-In both cases, I updated the commit log, so please check to make sure
-that I didn't mess anything up.
-
-							Thanx, Paul
-
-> >Cheers,
-> >-Mukesh
-> >
-> >>          raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >>          return;
-> >>      }
+On 3/30/19 2:57 AM, Paul E. McKenney wrote:
+> On Fri, Mar 29, 2019 at 07:52:15PM +0530, Neeraj Upadhyay wrote:
+>>
+>>
+>> On 3/29/19 6:58 PM, Mukesh Ojha wrote:
+>>>
+>>> On 3/29/2019 4:57 PM, Neeraj Upadhyay wrote:
+>>>> Only unlock the root node, if current node (rnp) is not
+>>>> root node.
+>>>>
+>>>> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>>>
+>>>
+>>>
+>>>> ---
+>>>>  Â  kernel/rcu/tree_stall.h | 4 +++-
+>>>>  Â  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>>>> index f65a73a..0651833 100644
+>>>> --- a/kernel/rcu/tree_stall.h
+>>>> +++ b/kernel/rcu/tree_stall.h
+>>>
+>>>
+>>> why this is showing as under tree_stall.h while it is under
+>>> "kernel/rcu/tree.c"
+>>
+>> It's moved in https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=10462d6f58fb6dbde7563e9343505d98d5bfba3d
+>>
+>> Please see linux-rcu dev tree for other changes, which moves code to
+>> this file.
+>>
+>>
+>> Thanks
+>> Neeraj
+>>
+>>>
+>>>> @@ -630,7 +630,9 @@ static void rcu_check_gp_start_stall(struct
+>>>> rcu_node *rnp, struct rcu_data *rdp,
+>>>>  Â Â Â Â Â Â Â Â Â  time_before(j, rcu_state.gp_req_activity + gpssdelay) ||
+>>>>  Â Â Â Â Â Â Â Â Â  time_before(j, rcu_state.gp_activity + gpssdelay) ||
+>>>>  Â Â Â Â Â Â Â Â Â  atomic_xchg(&warned, 1)) {
+>>>> -Â Â Â Â Â Â Â  raw_spin_unlock_rcu_node(rnp_root); /* irqs remain disabled. */
+>>>> +Â Â Â Â Â Â Â  if (rnp_root != rnp)
+>>>> +Â Â Â Â Â Â Â Â Â Â Â  /* irqs remain disabled. */
+>>>> +Â Â Â Â Â Â Â Â Â Â Â  raw_spin_unlock_rcu_node(rnp_root);
+>>>
+>>> Looks good as it will balance the lock .if it is the root_node,
+>>> which was not there earlier, and unlock was happening without any
+>>> lock on root.
+>>>
+>>> Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 > 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of the Code Aurora Forum, hosted by The Linux Foundation
+> Applied, again thank you both!
+> 
+> In both cases, I updated the commit log, so please check to make sure
+> that I didn't mess anything up.
+> 
+> 							Thanx, Paul
 > 
 
+Thanks Paul. One minor comment on 
+https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=ec6530e763046b6bb1f4c2c2aed49ebc68aae2a0 
+
+
+"it clearly does not make sense to release
+both rnp->lock and rnp->lock"
+
+should be rnp->lock and rnp_root->lock
+
+
+
+Thanks
+Neeraj
+
+>>> Cheers,
+>>> -Mukesh
+>>>
+>>>>  Â Â Â Â Â Â Â Â Â  raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>>>  Â Â Â Â Â Â Â Â Â  return;
+>>>>  Â Â Â Â Â  }
+>>
+>> -- 
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+>> member of the Code Aurora Forum, hosted by The Linux Foundation
+>>
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
