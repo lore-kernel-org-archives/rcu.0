@@ -2,170 +2,170 @@ Return-Path: <SRS0=1tPq=SE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A614C4360F
-	for <rcu@archiver.kernel.org>; Tue,  2 Apr 2019 15:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B8BAC4360F
+	for <rcu@archiver.kernel.org>; Tue,  2 Apr 2019 16:14:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1079B2082C
-	for <rcu@archiver.kernel.org>; Tue,  2 Apr 2019 15:34:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A24B204EC
+	for <rcu@archiver.kernel.org>; Tue,  2 Apr 2019 16:14:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="tb6ptQeh"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="ZLtk758R"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbfDBPeJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 2 Apr 2019 11:34:09 -0400
-Received: from mail.efficios.com ([167.114.142.138]:44522 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729827AbfDBPeJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 2 Apr 2019 11:34:09 -0400
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id 508C9182ECE;
-        Tue,  2 Apr 2019 11:34:08 -0400 (EDT)
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id 5nVrw3w6Xmtl; Tue,  2 Apr 2019 11:34:08 -0400 (EDT)
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id E7075182EC7;
-        Tue,  2 Apr 2019 11:34:07 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E7075182EC7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1554219247;
-        bh=7+VWmD43ZhhxkfPwCd9D37efmzVn6YVOFJg0VOODA8I=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=tb6ptQehk0btdsdCyQ9gZTGK/QF/lK33jSgjV9lcUGHrwzEgC6xOneh2tDQv+35WZ
-         frsM48fjcyVKpGzSvPETttMxdJKsPA+norqjQoJQN70C5IolyphOxMy9yfSd32QILG
-         qYc3AdFSCRcLNKX00vGfwQvRqLbTofiSMT4ra8936AYCnFi9fM/XnXcXfSWasW+EqW
-         TRkaJzIlKvp43jEA0FU5MuftIqqiZ7QSlq9ymBaauCLpwy8oJIvOY+x7WjzRuWJw6S
-         HgzaCawbqaBkDAkJmu2Uie3nsiNte5SxAvRJTXUWbjau8aKvIHE1M31zrmo3tqLdHU
-         eYzlfW1qU6h4g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id OpaXTqZDysy1; Tue,  2 Apr 2019 11:34:07 -0400 (EDT)
-Received: from mail02.efficios.com (mail02.efficios.com [167.114.142.138])
-        by mail.efficios.com (Postfix) with ESMTP id BE223182EBA;
-        Tue,  2 Apr 2019 11:34:07 -0400 (EDT)
-Date:   Tue, 2 Apr 2019 11:34:07 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@linux.ibm.com>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dipankar <dipankar@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx <amd-gfx@lists.freedesktop.org>
-Message-ID: <161156422.1435.1554219247444.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20190402152334.GC4102@linux.ibm.com>
-References: <20190402142816.GA13084@linux.ibm.com> <886051277.1395.1554218080591.JavaMail.zimbra@efficios.com> <20190402152334.GC4102@linux.ibm.com>
-Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
+        id S1729600AbfDBQOd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 2 Apr 2019 12:14:33 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:39932 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729135AbfDBQOd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 2 Apr 2019 12:14:33 -0400
+Received: by mail-ed1-f65.google.com with SMTP id p20so12192331eds.6
+        for <rcu@vger.kernel.org>; Tue, 02 Apr 2019 09:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1FwBWnVtp2A1UjavE6GDLjjZeFVpOsXxYVw4gzWiuzo=;
+        b=ZLtk758R6+fqNBqGlySDep2Y6wKz//X4O3sRTaS2OgUOSA0IqDaRnjG1RnLLlJ5yRN
+         qtZ87qs7F35qFa2HWV+RcF4f8kAI6UCvc7BCYdHnGHa7qZnqnfWVwaMOBCCkFd8r+gsh
+         9QIV0XYqE35Z1uAIFxpnYAsVxnmwMUIhTqx9Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=1FwBWnVtp2A1UjavE6GDLjjZeFVpOsXxYVw4gzWiuzo=;
+        b=RpP5P5dhbj16CkStqGVvLcw4vDyUIAglJeD5WfuKvnobUOutfLyGF/vh+Uw/zpQyqk
+         Nobg93TSAAzrYMYOCkcgZNEqZPDQCz0i9VbOAViC4DA3eBAtthgjnSq9d8oI8jlmU20r
+         9mJpSPpFQYmMkEicHfTv65mtL25XO+FJNP25Bu+iiyPO7CiXa060Z+N8qzwvgdN4sNSv
+         K8VeeyViEh0STSpTv4cXKbYtDd3AJfAZbsosnCrwAafOPg7SoFd/oST7YeLyJ+LmLP+h
+         xXlnfG00zCyaVPfnyIuV7zt0aQGySUSJq5wyWRubJ0UmAsrrZm4GP+YocvATyVE7SE4R
+         mKlw==
+X-Gm-Message-State: APjAAAWeZXhXMSw1FOTVBCkMFBZJ9JTl289mZnnup2BCvCOVPf5rcW8C
+        bTTQZe+JH5pESPPFjsa8+41m2d6E2UE=
+X-Google-Smtp-Source: APXvYqyLX1vOgTPjCKVjyTUPGS2O9zDO0yejogmOVBsYFAQ6G7YEaaj9ndy9tEPUqUwkH2B1lu1PlQ==
+X-Received: by 2002:a50:cb4a:: with SMTP id h10mr47180168edi.134.1554221671203;
+        Tue, 02 Apr 2019 09:14:31 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
+        by smtp.gmail.com with ESMTPSA id k8sm4114064edr.85.2019.04.02.09.14.29
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Apr 2019 09:14:30 -0700 (PDT)
+Date:   Tue, 2 Apr 2019 18:14:28 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Tejun Heo <tj@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC tip/core/rcu 2/4] drivers/gpu/drm: Dynamically
+ allocate drm_unplug_srcu
+Message-ID: <20190402161428.GM2665@phenom.ffwll.local>
+Mail-Followup-To: "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Tejun Heo <tj@kernel.org>, dri-devel@lists.freedesktop.org
+References: <20190402142816.GA13084@linux.ibm.com>
+ <20190402142933.14547-2-paulmck@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.142.138]
-X-Mailer: Zimbra 8.8.11_GA_3780 (ZimbraWebClient - FF65 (Linux)/8.8.11_GA_3787)
-Thread-Topic: Forbid static SRCU use in modules
-Thread-Index: ywUP1lCrURB9E62aUdXe3hyxFky+tg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190402142933.14547-2-paulmck@linux.ibm.com>
+X-Operating-System: Linux phenom 4.19.0-1-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Apr 2, 2019, at 11:23 AM, paulmck paulmck@linux.ibm.com wrote:
-
-> On Tue, Apr 02, 2019 at 11:14:40AM -0400, Mathieu Desnoyers wrote:
->> ----- On Apr 2, 2019, at 10:28 AM, paulmck paulmck@linux.ibm.com wrote:
->> 
->> > Hello!
->> > 
->> > This series prohibits use of DEFINE_SRCU() and DEFINE_STATIC_SRCU()
->> > by loadable modules.  The reason for this prohibition is the fact
->> > that using these two macros within modules requires that the size of
->> > the reserved region be increased, which is not something we want to
->> > be doing all that often.  Instead, loadable modules should define an
->> > srcu_struct and invoke init_srcu_struct() from their module_init function
->> > and cleanup_srcu_struct() from their module_exit function.  Note that
->> > modules using call_srcu() will also need to invoke srcu_barrier() from
->> > their module_exit function.
->> 
->> This arbitrary API limitation seems weird.
->> 
->> Isn't there a way to allow modules to use DEFINE_SRCU and DEFINE_STATIC_SRCU
->> while implementing them with dynamic allocation under the hood ?
+On Tue, Apr 02, 2019 at 07:29:31AM -0700, Paul E. McKenney wrote:
+> Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
+> requires that the size of the reserved region be increased, which is not
+> something we really want to be doing.  This commit therefore removes
+> the DEFINE_STATIC_SRCU() from drivers/gpu/drm/drm_drv.c in favor of
+> defining drm_unplug_srcu as a simple srcu_struct, initializing it in
+> drm_core_init(), and cleaning it up in drm_core_exit().
 > 
-> Although call_srcu() already has initialization hooks, some would
-> also be required in srcu_read_lock(), and I am concerned about adding
-> memory allocation at that point, especially given the possibility
-> of memory-allocation failure.  And the possibility that the first
-> srcu_read_lock() happens in an interrupt handler or similar.
+> In this particular case, drm_unplug_srcu is statically allocated and thus
+> guaranteed to be initially zero.  Unfortunately, cleanup_srcu_struct()
+> cannot rely on this in the general case (which includes dynamically
+> allocated srcu_struct structures), and therefore cannot tell whether it
+> is being called on something that has been passed to init_srcu_struct().
+> Thus the code added to drm_core_init() is a bit non-standard.
 > 
-> Or am I missing a trick here?
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: <dri-devel@lists.freedesktop.org>
 
-I was more thinking that under #ifdef MODULE, both DEFINE_SRCU and
-DEFINE_STATIC_SRCU could append data in a dedicated section. module.c
-would additionally lookup that section on module load, and deal with
-those statically defined SRCU entries as if they were dynamically
-allocated ones. It would of course cleanup those resources on module
-unload.
+Seems reasonable (but I don't have the full patch series as context).
 
-Am I missing some subtlety there ?
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Thanks,
-
-Mathieu
-
-
+Any preferences as to how this should be merged? Upfront ack for merging
+through rcu trees if that helps you.
+-Daniel
+> ---
+>  drivers/gpu/drm/drm_drv.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
->							Thanx, Paul
+> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> index 381581b01d48..ce4582af814d 100644
+> --- a/drivers/gpu/drm/drm_drv.c
+> +++ b/drivers/gpu/drm/drm_drv.c
+> @@ -77,7 +77,7 @@ static bool drm_core_init_complete = false;
+>  
+>  static struct dentry *drm_debugfs_root;
+>  
+> -DEFINE_STATIC_SRCU(drm_unplug_srcu);
+> +static struct srcu_struct drm_unplug_srcu;
+>  
+>  /*
+>   * DRM Minors
+> @@ -958,12 +958,18 @@ static void drm_core_exit(void)
+>  	drm_sysfs_destroy();
+>  	idr_destroy(&drm_minors_idr);
+>  	drm_connector_ida_destroy();
+> +	cleanup_srcu_struct(&drm_unplug_srcu);
+>  }
+>  
+>  static int __init drm_core_init(void)
+>  {
+>  	int ret;
+>  
+> +	ret = init_srcu_struct(&drm_unplug_srcu);
+> +	if (ret) {
+> +		DRM_ERROR("Cannot create DRM class: %d\n", ret);
+> +		return ret; /* cannot cleanup after failed srcu_struct init. */
+> +	}
+>  	drm_connector_ida_init();
+>  	idr_init(&drm_minors_idr);
+>  
+> -- 
+> 2.17.1
 > 
->> Thanks,
->> 
->> Mathieu
->> 
->> 
->> > 
->> > This series consist of the following:
->> > 
->> > 1.	Dynamically allocate dax_srcu.
->> > 
->> > 2.	Dynamically allocate drm_unplug_srcu.
->> > 
->> > 3.	Dynamically allocate kfd_processes_srcu.
->> > 
->> > These build and have been subjected to 0day testing, but might also need
->> > testing by someone having the requisite hardware.
->> > 
->> >							Thanx, Paul
->> > 
->> > ------------------------------------------------------------------------
->> > 
->> > drivers/dax/super.c                        |   10 +++++-
->> > drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c |    5 +++
->> > drivers/gpu/drm/amd/amdkfd/kfd_process.c   |    2 -
->> > drivers/gpu/drm/drm_drv.c                  |    8 ++++
->> > include/linux/srcutree.h                   |   19 +++++++++--
->> > kernel/rcu/rcuperf.c                       |   40 +++++++++++++++++++-----
->> > kernel/rcu/rcutorture.c                    |   48 +++++++++++++++++++++--------
->> >  7 files changed, 105 insertions(+), 27 deletions(-)
->> 
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> http://www.efficios.com
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
