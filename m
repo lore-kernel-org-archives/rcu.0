@@ -6,290 +6,139 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9B4EC10F0B
-	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA3BC10F06
+	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:26:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 49E03206C0
-	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:20:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4DEC20700
+	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:26:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbfDCQUv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Apr 2019 12:20:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53252 "EHLO
+        id S1726193AbfDCQ0B (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Apr 2019 12:26:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36166 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726097AbfDCQUv (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 3 Apr 2019 12:20:51 -0400
+        by vger.kernel.org with ESMTP id S1725990AbfDCQ0A (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 3 Apr 2019 12:26:00 -0400
 Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x33GF8nX089585
-        for <rcu@vger.kernel.org>; Wed, 3 Apr 2019 12:20:49 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rmyht2rv5-1
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x33GM1lI110300
+        for <rcu@vger.kernel.org>; Wed, 3 Apr 2019 12:26:00 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rmyht31br-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Wed, 03 Apr 2019 12:20:47 -0400
+        for <rcu@vger.kernel.org>; Wed, 03 Apr 2019 12:25:59 -0400
 Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Wed, 3 Apr 2019 17:20:46 +0100
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Wed, 3 Apr 2019 17:25:57 +0100
+Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 3 Apr 2019 17:20:41 +0100
+        Wed, 3 Apr 2019 17:25:51 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x33GKeN422020310
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x33GPoF722347998
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Apr 2019 16:20:40 GMT
+        Wed, 3 Apr 2019 16:25:50 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3FF20B2065;
-        Wed,  3 Apr 2019 16:20:40 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id A0CC8B205F;
+        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E00B5B205F;
-        Wed,  3 Apr 2019 16:20:39 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 7D900B2065;
+        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.80.202.55])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Apr 2019 16:20:39 +0000 (GMT)
+        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id C026816C2664; Wed,  3 Apr 2019 09:20:39 -0700 (PDT)
-Date:   Wed, 3 Apr 2019 09:20:39 -0700
+        id 602A916C2A41; Wed,  3 Apr 2019 09:25:50 -0700 (PDT)
+Date:   Wed, 3 Apr 2019 09:25:50 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dipankar <dipankar@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH tip/core/rcu 2/2] rcu: Check for wakeup-safe conditions
+ in rcu_read_unlock_special()
 Reply-To: paulmck@linux.ibm.com
-References: <20190402142816.GA13084@linux.ibm.com>
- <886051277.1395.1554218080591.JavaMail.zimbra@efficios.com>
- <20190402152334.GC4102@linux.ibm.com>
- <161156422.1435.1554219247444.JavaMail.zimbra@efficios.com>
- <20190403133243.GE4102@linux.ibm.com>
- <1028306587.504.1554301662374.JavaMail.zimbra@efficios.com>
+References: <20190329182608.GA23877@linux.ibm.com>
+ <20190329182634.24994-2-paulmck@linux.ibm.com>
+ <20190401083211.GD11158@hirez.programming.kicks-ass.net>
+ <20190401172257.GN4102@linux.ibm.com>
+ <20190402070953.GG12232@hirez.programming.kicks-ass.net>
+ <20190402131853.GV4102@linux.ibm.com>
+ <20190403095046.GD4038@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1028306587.504.1554301662374.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20190403095046.GD4038@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19040316-0064-0000-0000-000003C5F4CA
+x-cbid: 19040316-0072-0000-0000-00000414F999
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010867; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01183798; UDB=6.00619788; IPR=6.00964550;
- MB=3.00026279; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-03 16:20:46
+ PH=3.00000004; SC=3.00000284; SDB=6.01183800; UDB=6.00619789; IPR=6.00964551;
+ MB=3.00026279; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-03 16:25:55
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19040316-0065-0000-0000-00003CEFB2BB
-Message-Id: <20190403162039.GA14111@linux.ibm.com>
+x-cbparentid: 19040316-0073-0000-0000-00004BB2CAF9
+Message-Id: <20190403162550.GB14111@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-03_10:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904030110
+ mlxlogscore=820 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1904030111
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 03, 2019 at 10:27:42AM -0400, Mathieu Desnoyers wrote:
-> ----- On Apr 3, 2019, at 9:32 AM, paulmck paulmck@linux.ibm.com wrote:
+On Wed, Apr 03, 2019 at 11:50:46AM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 02, 2019 at 06:18:53AM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 02, 2019 at 09:09:53AM +0200, Peter Zijlstra wrote:
+> > > On Mon, Apr 01, 2019 at 10:22:57AM -0700, Paul E. McKenney wrote:
 > 
-> > On Tue, Apr 02, 2019 at 11:34:07AM -0400, Mathieu Desnoyers wrote:
-> >> ----- On Apr 2, 2019, at 11:23 AM, paulmck paulmck@linux.ibm.com wrote:
-> >> 
-> >> > On Tue, Apr 02, 2019 at 11:14:40AM -0400, Mathieu Desnoyers wrote:
-> >> >> ----- On Apr 2, 2019, at 10:28 AM, paulmck paulmck@linux.ibm.com wrote:
-> >> >> 
-> >> >> > Hello!
-> >> >> > 
-> >> >> > This series prohibits use of DEFINE_SRCU() and DEFINE_STATIC_SRCU()
-> >> >> > by loadable modules.  The reason for this prohibition is the fact
-> >> >> > that using these two macros within modules requires that the size of
-> >> >> > the reserved region be increased, which is not something we want to
-> >> >> > be doing all that often.  Instead, loadable modules should define an
-> >> >> > srcu_struct and invoke init_srcu_struct() from their module_init function
-> >> >> > and cleanup_srcu_struct() from their module_exit function.  Note that
-> >> >> > modules using call_srcu() will also need to invoke srcu_barrier() from
-> >> >> > their module_exit function.
-> >> >> 
-> >> >> This arbitrary API limitation seems weird.
-> >> >> 
-> >> >> Isn't there a way to allow modules to use DEFINE_SRCU and DEFINE_STATIC_SRCU
-> >> >> while implementing them with dynamic allocation under the hood ?
-> >> > 
-> >> > Although call_srcu() already has initialization hooks, some would
-> >> > also be required in srcu_read_lock(), and I am concerned about adding
-> >> > memory allocation at that point, especially given the possibility
-> >> > of memory-allocation failure.  And the possibility that the first
-> >> > srcu_read_lock() happens in an interrupt handler or similar.
-> >> > 
-> >> > Or am I missing a trick here?
-> >> 
-> >> I was more thinking that under #ifdef MODULE, both DEFINE_SRCU and
-> >> DEFINE_STATIC_SRCU could append data in a dedicated section. module.c
-> >> would additionally lookup that section on module load, and deal with
-> >> those statically defined SRCU entries as if they were dynamically
-> >> allocated ones. It would of course cleanup those resources on module
-> >> unload.
-> >> 
-> >> Am I missing some subtlety there ?
+> > > > Or am I missing something that gets the scheduler on the job faster?
+> > > 
+> > > Oh urgh, yah. So normally we only twiddle with the need_resched state:
+> > > 
+> > >  - while preempt_disabl(), such that preempt_enable() will reschedule
+> > >  - from interrupt context, such that interrupt return will reschedule
+> > > 
+> > > But the usage here 'violates' those rules and then there is an
+> > > unspecified latency between setting the state and it getting observed,
+> > > but no longer than 1 tick I would think.
 > > 
-> > If I understand you correctly, that is actually what is already done.  The
-> > size of this dedicated section is currently set by PERCPU_MODULE_RESERVE,
-> > and the additions of DEFINE{_STATIC}_SRCU() in modules was requiring that
-> > this to be increased frequently.  That led to a request that something
-> > be done, in turn leading to this patch series.
-> 
-> I think we are not expressing quite the same idea.
-> 
-> AFAIU, yours is to have DEFINE*_SRCU directly define per-cpu data within modules,
-> which ends up using percpu module reserved memory.
-> 
-> My idea is to make DEFINE*_SRCU have a different behavior under #ifdef MODULE.
-> It could emit a _global variable_ (_not_ per-cpu) within a new section. That
-> section would then be used by module init/exit code to figure out what "srcu
-> descriptors" are present in the modules. It would therefore rely on dynamic
-> allocation for those, therefore removing the need to involve the percpu module
-> reserved pool at all.
-> 
+> > In general, yes, which is fine (famous last words) for normal grace
+> > periods but not so good for expedited grace periods.
 > > 
-> > I don't see a way around this short of changing module loading to do
-> > alloc_percpu() and then updating the relocation based on this result.
-> > Which would admittedly be far more convenient.  I was assuming that
-> > this would be difficult due to varying CPU offsets or the like.
+> > > I don't think we can go NOHZ with need_resched set, because the moment
+> > > we hit the idle loop with that set, we _will_ reschedule.
 > > 
-> > But if it can be done reasonably, it would be quite a bit nicer than
-> > forcing dynamic allocation in cases where it is not otherwise needed.
+> > Agreed, and I believe that transitioning to usermode execution also
+> > gives the scheduler a chance to take action.
+> > 
+> > The one exception to this is when a nohz_full CPU running in nohz_full
+> > mode does a system call that decides to execute for a very long time.
+> > Last I checked, the scheduling-clock interrupt did -not- get retriggered
+> > in this case, and the delay could be indefinite, as in bad even for
+> > normal grace periods.
 > 
-> Hopefully my explanation above helps clear out what I have in mind.
+> Right, there is that.
 > 
-> You can find similar tricks performed by include/linux/tracepoint.h:
+> > > So in that respect the irq_work suggestion I made would fix things
+> > > properly.
+> > 
+> > But wouldn't the current use of set_tsk_need_resched(current) followed by
+> > set_preempt_need_resched() work just as well in that case?  The scheduler
+> > would react to these at the next scheduler-clock interrupt on their
+> > own, right?  Or am I being scheduler-naive again?
 > 
-> #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-> static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> {
->         return offset_to_ptr(p);
-> }
-> 
-> #define __TRACEPOINT_ENTRY(name)                                        \
->         asm("   .section \"__tracepoints_ptrs\", \"a\"          \n"     \
->             "   .balign 4                                       \n"     \
->             "   .long   __tracepoint_" #name " - .              \n"     \
->             "   .previous                                       \n")
-> #else
-> static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> {
->         return *p;
-> }
-> 
-> #define __TRACEPOINT_ENTRY(name)                                         \
->         static tracepoint_ptr_t __tracepoint_ptr_##name __used           \
->         __attribute__((section("__tracepoints_ptrs"))) =                 \
->                 &__tracepoint_##name
-> #endif
-> 
-> [...]
-> 
-> #define DEFINE_TRACE_FN(name, reg, unreg)                                \
->         static const char __tpstrtab_##name[]                            \
->         __attribute__((section("__tracepoints_strings"))) = #name;       \
->         struct tracepoint __tracepoint_##name                            \
->         __attribute__((section("__tracepoints"), used)) =                \
->                 { __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
->         __TRACEPOINT_ENTRY(name);
-> 
-> And kernel/module.c:
-> 
-> find_module_sections():
-> 
-> #ifdef CONFIG_TRACEPOINTS
->         mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
->                                              sizeof(*mod->tracepoints_ptrs),
->                                              &mod->num_tracepoints);
-> #endif
-> 
-> And kernel/tracepoint.c:tracepoint_module_notify() for the module coming/going
-> notifier.
-> 
-> Basically you would want to have your own structure within your own section of
-> the module which describes the srcu domain, and have a module coming/going
-> notifier responsible for dynamically allocating the srcu domain on "coming", and
-> doing a srcu barrier and cleanup the domain on "going".
+> Well, you have that unspecified delay. By forcing the (self) interrupt
+> you enforce a timely response.
 
-Ah, sounds like an excellent approach!  I will give it a shot, thank you!
+Good point!  I will give this a go, thank you!
 
 							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> 
-> > 
-> >							Thanx, Paul
-> > 
-> >> Thanks,
-> >> 
-> >> Mathieu
-> >> 
-> >> 
-> >> > 
-> >> >							Thanx, Paul
-> >> > 
-> >> >> Thanks,
-> >> >> 
-> >> >> Mathieu
-> >> >> 
-> >> >> 
-> >> >> > 
-> >> >> > This series consist of the following:
-> >> >> > 
-> >> >> > 1.	Dynamically allocate dax_srcu.
-> >> >> > 
-> >> >> > 2.	Dynamically allocate drm_unplug_srcu.
-> >> >> > 
-> >> >> > 3.	Dynamically allocate kfd_processes_srcu.
-> >> >> > 
-> >> >> > These build and have been subjected to 0day testing, but might also need
-> >> >> > testing by someone having the requisite hardware.
-> >> >> > 
-> >> >> >							Thanx, Paul
-> >> >> > 
-> >> >> > ------------------------------------------------------------------------
-> >> >> > 
-> >> >> > drivers/dax/super.c                        |   10 +++++-
-> >> >> > drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c |    5 +++
-> >> >> > drivers/gpu/drm/amd/amdkfd/kfd_process.c   |    2 -
-> >> >> > drivers/gpu/drm/drm_drv.c                  |    8 ++++
-> >> >> > include/linux/srcutree.h                   |   19 +++++++++--
-> >> >> > kernel/rcu/rcuperf.c                       |   40 +++++++++++++++++++-----
-> >> >> > kernel/rcu/rcutorture.c                    |   48 +++++++++++++++++++++--------
-> >> >> >  7 files changed, 105 insertions(+), 27 deletions(-)
-> >> >> 
-> >> >> --
-> >> >> Mathieu Desnoyers
-> >> >> EfficiOS Inc.
-> >> >> http://www.efficios.com
-> >> 
-> >> --
-> >> Mathieu Desnoyers
-> >> EfficiOS Inc.
-> >> http://www.efficios.com
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
-> 
 
