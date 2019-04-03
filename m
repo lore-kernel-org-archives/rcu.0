@@ -2,143 +2,95 @@ Return-Path: <SRS0=cCdg=SF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA3BC10F06
-	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B22CCC4360F
+	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 18:31:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4DEC20700
-	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 16:26:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DBC520882
+	for <rcu@archiver.kernel.org>; Wed,  3 Apr 2019 18:31:16 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="K82tE2mG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbfDCQ0B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Apr 2019 12:26:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36166 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725990AbfDCQ0A (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 3 Apr 2019 12:26:00 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x33GM1lI110300
-        for <rcu@vger.kernel.org>; Wed, 3 Apr 2019 12:26:00 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rmyht31br-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Wed, 03 Apr 2019 12:25:59 -0400
-Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Wed, 3 Apr 2019 17:25:57 +0100
-Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 3 Apr 2019 17:25:51 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x33GPoF722347998
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Apr 2019 16:25:50 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0CC8B205F;
-        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D900B2065;
-        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.202.55])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Apr 2019 16:25:50 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 602A916C2A41; Wed,  3 Apr 2019 09:25:50 -0700 (PDT)
-Date:   Wed, 3 Apr 2019 09:25:50 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH tip/core/rcu 2/2] rcu: Check for wakeup-safe conditions
- in rcu_read_unlock_special()
-Reply-To: paulmck@linux.ibm.com
-References: <20190329182608.GA23877@linux.ibm.com>
- <20190329182634.24994-2-paulmck@linux.ibm.com>
- <20190401083211.GD11158@hirez.programming.kicks-ass.net>
- <20190401172257.GN4102@linux.ibm.com>
- <20190402070953.GG12232@hirez.programming.kicks-ass.net>
- <20190402131853.GV4102@linux.ibm.com>
- <20190403095046.GD4038@hirez.programming.kicks-ass.net>
+        id S1726568AbfDCSbP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Apr 2019 14:31:15 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:46685 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbfDCSbN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Apr 2019 14:31:13 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x188so14405250oia.13
+        for <rcu@vger.kernel.org>; Wed, 03 Apr 2019 11:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qGyOEoxy0h99gsusBdQVGr14JAL4WdfFO3oAZW2FLVs=;
+        b=K82tE2mGbkfbDv/ZMwdn2vS34AGRa8573cH/nOfXtricK6qHk2WruUr1jEHi/JPnXV
+         vWxTeXlW66+TJ1NbEvo1lrtb3vYU+bqXNe0Qrx5Uoq3sc4YDHNNtCOvOOf4+FqSjdFsa
+         pOoZQ5neek+VAx7fOLXhKPMlurb9qAEtyn2RqpAVr24wGx0Fs6eFUjEk0mCydcuxhOBY
+         EqtaZWO6vXg4UVn3DbNsTTqexizZMU2QIiAKrGzBH6wD1q8cKP6AAbpjs5TKrWrfyOa1
+         r4KWwti4xfuXWzoHYsHPBLF7WwXni4OkLXXBxHfwBXnkuIQ3a1+CB/Nc+Q0xbiuDymGR
+         CLJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qGyOEoxy0h99gsusBdQVGr14JAL4WdfFO3oAZW2FLVs=;
+        b=Jo4FZPotyGsLL9HriGrHUitkodC1QaXBBsSeoFc5KdJo1vJ4rYY7sNU5Kzzdf7uhaS
+         PGREHDT0WO5OicGzli5wSn37Pu0kI649nIGNSQWwn7S0QpVJzwk9fqBaXSWI9sBh4uT9
+         PYgkE55+a2HrwFmk6SOk4mXBfB50bkgnQdAZDLpSYz08Xfqaz2gupw+4c38oIDerRD06
+         EeWMWAHlXVDCcmS5S0Z1sgdyzhVjRRmWFiD1a63LsMDNhM5tBYdQ5gljO+AkH4E9XilM
+         2BikJU2jNzK9NVkScPg2joJfY74faJ96s7lvRFKTk+t0fKCalI+n+FkflsFscapFUSAO
+         EJaw==
+X-Gm-Message-State: APjAAAV/DL3Bqwlals64cvOrb0cWR9Z+SUalxMCjBw5Nz00XsLrh5yJi
+        1Yw4I1LgYR0YPTYGCRXGg7tn1PBr1DJhEJYt68xtmdcMfF4=
+X-Google-Smtp-Source: APXvYqy5zjcoJ2avp8UeuvRXQCAhzPmvu0BeDnN5WLnF6of2XTu8J+cpcrq0tNVk3mzxziWnqwlUeLwz8FrjyibkgAs=
+X-Received: by 2002:aca:f581:: with SMTP id t123mr660054oih.0.1554316272610;
+ Wed, 03 Apr 2019 11:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190403095046.GD4038@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19040316-0072-0000-0000-00000414F999
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010867; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01183800; UDB=6.00619789; IPR=6.00964551;
- MB=3.00026279; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-03 16:25:55
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19040316-0073-0000-0000-00004BB2CAF9
-Message-Id: <20190403162550.GB14111@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-03_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=820 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904030111
+References: <20190402142816.GA13084@linux.ibm.com> <20190402142933.14547-1-paulmck@linux.ibm.com>
+In-Reply-To: <20190402142933.14547-1-paulmck@linux.ibm.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 3 Apr 2019 11:31:01 -0700
+Message-ID: <CAPcyv4gOQ_KpZm8ediav4O-cLzqP6Fsd3ZmFC-AKeAh77i0N+A@mail.gmail.com>
+Subject: Re: [PATCH RFC tip/core/rcu 1/4] dax/super: Dynamically allocate dax_srcu
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
+        Oleg Nesterov <oleg@redhat.com>, joel@joelfernandes.org,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, Tejun Heo <tj@kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 03, 2019 at 11:50:46AM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 02, 2019 at 06:18:53AM -0700, Paul E. McKenney wrote:
-> > On Tue, Apr 02, 2019 at 09:09:53AM +0200, Peter Zijlstra wrote:
-> > > On Mon, Apr 01, 2019 at 10:22:57AM -0700, Paul E. McKenney wrote:
-> 
-> > > > Or am I missing something that gets the scheduler on the job faster?
-> > > 
-> > > Oh urgh, yah. So normally we only twiddle with the need_resched state:
-> > > 
-> > >  - while preempt_disabl(), such that preempt_enable() will reschedule
-> > >  - from interrupt context, such that interrupt return will reschedule
-> > > 
-> > > But the usage here 'violates' those rules and then there is an
-> > > unspecified latency between setting the state and it getting observed,
-> > > but no longer than 1 tick I would think.
-> > 
-> > In general, yes, which is fine (famous last words) for normal grace
-> > periods but not so good for expedited grace periods.
-> > 
-> > > I don't think we can go NOHZ with need_resched set, because the moment
-> > > we hit the idle loop with that set, we _will_ reschedule.
-> > 
-> > Agreed, and I believe that transitioning to usermode execution also
-> > gives the scheduler a chance to take action.
-> > 
-> > The one exception to this is when a nohz_full CPU running in nohz_full
-> > mode does a system call that decides to execute for a very long time.
-> > Last I checked, the scheduling-clock interrupt did -not- get retriggered
-> > in this case, and the delay could be indefinite, as in bad even for
-> > normal grace periods.
-> 
-> Right, there is that.
-> 
-> > > So in that respect the irq_work suggestion I made would fix things
-> > > properly.
-> > 
-> > But wouldn't the current use of set_tsk_need_resched(current) followed by
-> > set_preempt_need_resched() work just as well in that case?  The scheduler
-> > would react to these at the next scheduler-clock interrupt on their
-> > own, right?  Or am I being scheduler-naive again?
-> 
-> Well, you have that unspecified delay. By forcing the (self) interrupt
-> you enforce a timely response.
+On Tue, Apr 2, 2019 at 7:29 AM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+>
+> Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
+> requires that the size of the reserved region be increased, which is
+> not something we really want to be doing.  This commit therefore removes
+> the DEFINE_STATIC_SRCU() from drivers/dax/super.c in favor of defining
+> dax_srcu as a simple srcu_struct, initializing it in dax_core_init(),
+> and cleaning it up in dax_core_exit().
+>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 
-Good point!  I will give this a go, thank you!
+Looks good to me.
 
-							Thanx, Paul
-
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
