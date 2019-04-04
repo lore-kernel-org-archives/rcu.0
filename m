@@ -2,91 +2,83 @@ Return-Path: <SRS0=QvuK=SG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.5 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 955D4C4360F
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72589C4360F
+	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:08:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 61B022082E
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:05:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D2932171F
+	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:08:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbfDDVFG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Apr 2019 17:05:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33172 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730574AbfDDVFF (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 4 Apr 2019 17:05:05 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x34L3h1G024735
-        for <rcu@vger.kernel.org>; Thu, 4 Apr 2019 17:05:04 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rns8h8q05-1
+        id S1729827AbfDDVID (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Apr 2019 17:08:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59182 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729802AbfDDVID (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 4 Apr 2019 17:08:03 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x34L3mvI006312
+        for <rcu@vger.kernel.org>; Thu, 4 Apr 2019 17:08:02 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rns8ggs5s-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 04 Apr 2019 17:05:04 -0400
+        for <rcu@vger.kernel.org>; Thu, 04 Apr 2019 17:08:02 -0400
 Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 4 Apr 2019 22:05:02 +0100
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Thu, 4 Apr 2019 22:08:01 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 4 Apr 2019 22:04:56 +0100
+        Thu, 4 Apr 2019 22:07:57 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x34L4tnd22151220
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x34L7uAA19595392
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Apr 2019 21:04:55 GMT
+        Thu, 4 Apr 2019 21:07:56 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C76AB2064;
-        Thu,  4 Apr 2019 21:04:55 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 1C4B2B2064;
+        Thu,  4 Apr 2019 21:07:56 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0970B2068;
-        Thu,  4 Apr 2019 21:04:54 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id E2D3FB205F;
+        Thu,  4 Apr 2019 21:07:55 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Apr 2019 21:04:54 +0000 (GMT)
+        Thu,  4 Apr 2019 21:07:55 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id DCD2516C34BA; Thu,  4 Apr 2019 14:04:56 -0700 (PDT)
-Date:   Thu, 4 Apr 2019 14:04:56 -0700
+        id D9FD616C5F74; Thu,  4 Apr 2019 14:07:57 -0700 (PDT)
+Date:   Thu, 4 Apr 2019 14:07:57 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
-        Oleg Nesterov <oleg@redhat.com>, joel@joelfernandes.org,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, Tejun Heo <tj@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [PATCH RFC tip/core/rcu 1/4] dax/super: Dynamically allocate
- dax_srcu
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     Mukesh Ojha <mojha@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: tree_stall: Correctly unlock root node in
+ rcu_check_gp_start_stall
 Reply-To: paulmck@linux.ibm.com
-References: <20190402142816.GA13084@linux.ibm.com>
- <20190402142933.14547-1-paulmck@linux.ibm.com>
- <CAPcyv4gOQ_KpZm8ediav4O-cLzqP6Fsd3ZmFC-AKeAh77i0N+A@mail.gmail.com>
+References: <1553858828-23097-1-git-send-email-neeraju@codeaurora.org>
+ <7a9eed5a-9bcf-460c-abb9-1e9bd6eae102@codeaurora.org>
+ <2a8057f7-0704-5e8f-423e-e56a91a9b448@codeaurora.org>
+ <20190329212755.GB4102@linux.ibm.com>
+ <10b7ba19-9184-a4aa-d609-a644fcbe0503@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4gOQ_KpZm8ediav4O-cLzqP6Fsd3ZmFC-AKeAh77i0N+A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <10b7ba19-9184-a4aa-d609-a644fcbe0503@codeaurora.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19040421-2213-0000-0000-000003718965
+x-cbid: 19040421-0072-0000-0000-00000415A8C6
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010873; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01184368; UDB=6.00620132; IPR=6.00965121;
- MB=3.00026298; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-04 21:05:01
+ PH=3.00000004; SC=3.00000284; SDB=6.01184369; UDB=6.00620132; IPR=6.00965122;
+ MB=3.00026298; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-04 21:08:00
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19040421-2214-0000-0000-00005DE7BF12
-Message-Id: <20190404210456.GN14111@linux.ibm.com>
+x-cbparentid: 19040421-0073-0000-0000-00004BB67CDA
+Message-Id: <20190404210757.GO14111@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-04_12:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
@@ -99,24 +91,98 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 03, 2019 at 11:31:01AM -0700, Dan Williams wrote:
-> On Tue, Apr 2, 2019 at 7:29 AM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+On Sat, Mar 30, 2019 at 09:14:36AM +0530, Neeraj Upadhyay wrote:
+> On 3/30/19 2:57 AM, Paul E. McKenney wrote:
+> >On Fri, Mar 29, 2019 at 07:52:15PM +0530, Neeraj Upadhyay wrote:
+> >>
+> >>
+> >>On 3/29/19 6:58 PM, Mukesh Ojha wrote:
+> >>>
+> >>>On 3/29/2019 4:57 PM, Neeraj Upadhyay wrote:
+> >>>>Only unlock the root node, if current node (rnp) is not
+> >>>>root node.
+> >>>>
+> >>>>Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> >>>
+> >>>
+> >>>
+> >>>>---
+> >>>>   kernel/rcu/tree_stall.h | 4 +++-
+> >>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>>
+> >>>>diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> >>>>index f65a73a..0651833 100644
+> >>>>--- a/kernel/rcu/tree_stall.h
+> >>>>+++ b/kernel/rcu/tree_stall.h
+> >>>
+> >>>
+> >>>why this is showing as under tree_stall.h while it is under
+> >>>"kernel/rcu/tree.c"
+> >>
+> >>It's moved in https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=10462d6f58fb6dbde7563e9343505d98d5bfba3d
+> >>
+> >>Please see linux-rcu dev tree for other changes, which moves code to
+> >>this file.
+> >>
+> >>
+> >>Thanks
+> >>Neeraj
+> >>
+> >>>
+> >>>>@@ -630,7 +630,9 @@ static void rcu_check_gp_start_stall(struct
+> >>>>rcu_node *rnp, struct rcu_data *rdp,
+> >>>>           time_before(j, rcu_state.gp_req_activity + gpssdelay) ||
+> >>>>           time_before(j, rcu_state.gp_activity + gpssdelay) ||
+> >>>>           atomic_xchg(&warned, 1)) {
+> >>>>-        raw_spin_unlock_rcu_node(rnp_root); /* irqs remain disabled. */
+> >>>>+        if (rnp_root != rnp)
+> >>>>+            /* irqs remain disabled. */
+> >>>>+            raw_spin_unlock_rcu_node(rnp_root);
+> >>>
+> >>>Looks good as it will balance the lock .if it is the root_node,
+> >>>which was not there earlier, and unlock was happening without any
+> >>>lock on root.
+> >>>
+> >>>Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 > >
-> > Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
-> > requires that the size of the reserved region be increased, which is
-> > not something we really want to be doing.  This commit therefore removes
-> > the DEFINE_STATIC_SRCU() from drivers/dax/super.c in favor of defining
-> > dax_srcu as a simple srcu_struct, initializing it in dax_core_init(),
-> > and cleaning it up in dax_core_exit().
+> >Applied, again thank you both!
 > >
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> >In both cases, I updated the commit log, so please check to make sure
+> >that I didn't mess anything up.
+> >
+> >							Thanx, Paul
+> >
 > 
-> Looks good to me.
+> Thanks Paul. One minor comment on https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=ec6530e763046b6bb1f4c2c2aed49ebc68aae2a0
 > 
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> 
+> "it clearly does not make sense to release
+> both rnp->lock and rnp->lock"
+> 
+> should be rnp->lock and rnp_root->lock
 
-Applied, thank you!
+Good eyes, fixed, thank you!
 
 							Thanx, Paul
+
+> Thanks
+> Neeraj
+> 
+> >>>Cheers,
+> >>>-Mukesh
+> >>>
+> >>>>           raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >>>>           return;
+> >>>>       }
+> >>
+> >>-- 
+> >>QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> >>member of the Code Aurora Forum, hosted by The Linux Foundation
+> >>
+> >
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member of the Code Aurora Forum, hosted by The Linux Foundation
+> 
 
