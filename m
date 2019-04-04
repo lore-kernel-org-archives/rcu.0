@@ -2,187 +2,348 @@ Return-Path: <SRS0=QvuK=SG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72589C4360F
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B830C4360F
+	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:16:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3D2932171F
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:08:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5AEF720882
+	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:16:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbfDDVID (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Apr 2019 17:08:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59182 "EHLO
+        id S1729433AbfDDVQ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Apr 2019 17:16:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40372 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729802AbfDDVID (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 4 Apr 2019 17:08:03 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x34L3mvI006312
-        for <rcu@vger.kernel.org>; Thu, 4 Apr 2019 17:08:02 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rns8ggs5s-1
+        by vger.kernel.org with ESMTP id S1728699AbfDDVQ1 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 4 Apr 2019 17:16:27 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x34LB0Qd128046
+        for <rcu@vger.kernel.org>; Thu, 4 Apr 2019 17:16:26 -0400
+Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rnsky86fp-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 04 Apr 2019 17:08:02 -0400
+        for <rcu@vger.kernel.org>; Thu, 04 Apr 2019 17:16:26 -0400
 Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 4 Apr 2019 22:08:01 +0100
-Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Thu, 4 Apr 2019 22:16:25 +0100
+Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 4 Apr 2019 22:07:57 +0100
+        Thu, 4 Apr 2019 22:16:18 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x34L7uAA19595392
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x34LGH5t22806578
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Apr 2019 21:07:56 GMT
+        Thu, 4 Apr 2019 21:16:17 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C4B2B2064;
-        Thu,  4 Apr 2019 21:07:56 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id B7BCCB206B;
+        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2D3FB205F;
-        Thu,  4 Apr 2019 21:07:55 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 88263B2064;
+        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Apr 2019 21:07:55 +0000 (GMT)
+        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D9FD616C5F74; Thu,  4 Apr 2019 14:07:57 -0700 (PDT)
-Date:   Thu, 4 Apr 2019 14:07:57 -0700
+        id 7C63616C5F74; Thu,  4 Apr 2019 14:16:19 -0700 (PDT)
+Date:   Thu, 4 Apr 2019 14:16:19 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     Mukesh Ojha <mojha@codeaurora.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: tree_stall: Correctly unlock root node in
- rcu_check_gp_start_stall
+To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        "dipankar@in.ibm.com" <dipankar@in.ibm.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [PATCH RFC tip/core/rcu 3/4] drivers/gpu/drm/amd: Dynamically
+ allocate kfd_processes_srcu
 Reply-To: paulmck@linux.ibm.com
-References: <1553858828-23097-1-git-send-email-neeraju@codeaurora.org>
- <7a9eed5a-9bcf-460c-abb9-1e9bd6eae102@codeaurora.org>
- <2a8057f7-0704-5e8f-423e-e56a91a9b448@codeaurora.org>
- <20190329212755.GB4102@linux.ibm.com>
- <10b7ba19-9184-a4aa-d609-a644fcbe0503@codeaurora.org>
+References: <20190402142816.GA13084@linux.ibm.com>
+ <20190402142933.14547-3-paulmck@linux.ibm.com>
+ <474488ce-75a1-06d9-768a-66008648c70e@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <10b7ba19-9184-a4aa-d609-a644fcbe0503@codeaurora.org>
+In-Reply-To: <474488ce-75a1-06d9-768a-66008648c70e@amd.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19040421-0072-0000-0000-00000415A8C6
+x-cbid: 19040421-2213-0000-0000-000003718A66
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00010873; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01184369; UDB=6.00620132; IPR=6.00965122;
- MB=3.00026298; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-04 21:08:00
+ PH=3.00000004; SC=3.00000284; SDB=6.01184371; UDB=6.00620134; IPR=6.00965125;
+ MB=3.00026298; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-04 21:16:24
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19040421-0073-0000-0000-00004BB67CDA
-Message-Id: <20190404210757.GO14111@linux.ibm.com>
+x-cbparentid: 19040421-2214-0000-0000-00005DE7C5E0
+Message-Id: <20190404211619.GP14111@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-04_12:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=962 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1904040134
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Mar 30, 2019 at 09:14:36AM +0530, Neeraj Upadhyay wrote:
-> On 3/30/19 2:57 AM, Paul E. McKenney wrote:
-> >On Fri, Mar 29, 2019 at 07:52:15PM +0530, Neeraj Upadhyay wrote:
-> >>
-> >>
-> >>On 3/29/19 6:58 PM, Mukesh Ojha wrote:
-> >>>
-> >>>On 3/29/2019 4:57 PM, Neeraj Upadhyay wrote:
-> >>>>Only unlock the root node, if current node (rnp) is not
-> >>>>root node.
-> >>>>
-> >>>>Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> >>>
-> >>>
-> >>>
-> >>>>---
-> >>>>   kernel/rcu/tree_stall.h | 4 +++-
-> >>>>   1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>>
-> >>>>diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> >>>>index f65a73a..0651833 100644
-> >>>>--- a/kernel/rcu/tree_stall.h
-> >>>>+++ b/kernel/rcu/tree_stall.h
-> >>>
-> >>>
-> >>>why this is showing as under tree_stall.h while it is under
-> >>>"kernel/rcu/tree.c"
-> >>
-> >>It's moved in https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=10462d6f58fb6dbde7563e9343505d98d5bfba3d
-> >>
-> >>Please see linux-rcu dev tree for other changes, which moves code to
-> >>this file.
-> >>
-> >>
-> >>Thanks
-> >>Neeraj
-> >>
-> >>>
-> >>>>@@ -630,7 +630,9 @@ static void rcu_check_gp_start_stall(struct
-> >>>>rcu_node *rnp, struct rcu_data *rdp,
-> >>>>           time_before(j, rcu_state.gp_req_activity + gpssdelay) ||
-> >>>>           time_before(j, rcu_state.gp_activity + gpssdelay) ||
-> >>>>           atomic_xchg(&warned, 1)) {
-> >>>>-        raw_spin_unlock_rcu_node(rnp_root); /* irqs remain disabled. */
-> >>>>+        if (rnp_root != rnp)
-> >>>>+            /* irqs remain disabled. */
-> >>>>+            raw_spin_unlock_rcu_node(rnp_root);
-> >>>
-> >>>Looks good as it will balance the lock .if it is the root_node,
-> >>>which was not there earlier, and unlock was happening without any
-> >>>lock on root.
-> >>>
-> >>>Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+On Tue, Apr 02, 2019 at 05:40:54PM +0000, Kuehling, Felix wrote:
+> On 2019-04-02 10:29 a.m., Paul E. McKenney wrote:
+> > Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
+> > requires that the size of the reserved region be increased, which is
+> > not something we really want to be doing.  This commit therefore removes
+> > the DEFINE_STATIC_SRCU() from drivers/gpu/drm/amd/amdkfd/kfd_process.c in
+> > favor of defining kfd_processes_srcu as a simple srcu_struct, initializing
+> > it in amdgpu_amdkfd_init(), and cleaning it up in amdgpu_amdkfd_fini().
 > >
-> >Applied, again thank you both!
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> > Tested-by: kbuild test robot <lkp@intel.com>
+> > Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com
+> > Cc: "David (ChunMing) Zhou" <David1.Zhou@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Cc: <dri-devel@lists.freedesktop.org>
+> > Cc: <amd-gfx@lists.freedesktop.org>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c | 5 +++++
+> >   drivers/gpu/drm/amd/amdkfd/kfd_process.c   | 2 +-
+> >   2 files changed, 6 insertions(+), 1 deletion(-)
 > >
-> >In both cases, I updated the commit log, so please check to make sure
-> >that I didn't mess anything up.
-> >
-> >							Thanx, Paul
-> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
+> > index fe1d7368c1e6..eadb20dee867 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
+> > @@ -28,6 +28,8 @@
+> >   #include <linux/module.h>
+> >   #include <linux/dma-buf.h>
+> >   
+> > +extern struct srcu_struct kfd_processes_srcu;
+> > +
+> >   static const unsigned int compute_vmid_bitmap = 0xFF00;
+> >   
+> >   /* Total memory size in system memory and all GPU VRAM. Used to
+> > @@ -40,6 +42,8 @@ int amdgpu_amdkfd_init(void)
+> >   	struct sysinfo si;
+> >   	int ret;
+> >   
+> > +	ret = init_srcu_struct(&kfd_processes_srcu);
+> > +	WARN_ON(ret);
 > 
-> Thanks Paul. One minor comment on https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=ec6530e763046b6bb1f4c2c2aed49ebc68aae2a0
+> kfd_processes_srcu only exists if kfd_process.c is compiled in. That 
+> depends on CONFIG_HSA_AMD. So this should at least move into #ifdef a 
+> few lines below.
+> 
+> However, it would be cleaner to move this initialization into kfd_init 
+> in kfd_module.c, or better yet, into kfd_process_create_wq in 
+> kfd_process.c. Then kfd_process_create_wq should be renamed to something 
+> more generic, such as kfd_process_init.
 > 
 > 
-> "it clearly does not make sense to release
-> both rnp->lock and rnp->lock"
+> >   	si_meminfo(&si);
+> >   	amdgpu_amdkfd_total_mem_size = si.totalram - si.totalhigh;
+> >   	amdgpu_amdkfd_total_mem_size *= si.mem_unit;
+> > @@ -57,6 +61,7 @@ int amdgpu_amdkfd_init(void)
+> >   void amdgpu_amdkfd_fini(void)
+> >   {
+> >   	kgd2kfd_exit();
+> > +	cleanup_srcu_struct(&kfd_processes_srcu);
 > 
-> should be rnp->lock and rnp_root->lock
+> Similarly, this would be cleaner in kfd_exit in kfd_module.c or 
+> kfd_process_destroy_wq in kfd_process.c, with that function similarly 
+> renamed to kfd_process_fini.
+> 
+> I'm attaching a revised patch. It's only compile tested.
 
-Good eyes, fixed, thank you!
+Thank you, Felix!  I have reverted my original and applied your revised
+version.
 
 							Thanx, Paul
 
-> Thanks
-> Neeraj
+> Regards,
+>    Felix
 > 
-> >>>Cheers,
-> >>>-Mukesh
-> >>>
-> >>>>           raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >>>>           return;
-> >>>>       }
-> >>
-> >>-- 
-> >>QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >>member of the Code Aurora Forum, hosted by The Linux Foundation
-> >>
-> >
 > 
+> >   }
+> >   
+> >   void amdgpu_amdkfd_device_probe(struct amdgpu_device *adev)
+> > diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> > index 4bdae78bab8e..98b694068b8a 100644
+> > --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> > +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> > @@ -47,7 +47,7 @@ struct mm_struct;
+> >   DEFINE_HASHTABLE(kfd_processes_table, KFD_PROCESS_TABLE_SIZE);
+> >   static DEFINE_MUTEX(kfd_processes_mutex);
+> >   
+> > -DEFINE_SRCU(kfd_processes_srcu);
+> > +struct srcu_struct kfd_processes_srcu;
+> >   
+> >   /* For process termination handling */
+> >   static struct workqueue_struct *kfd_process_wq;
+
+> From 5857a9aa63957a5755ff81ae5c46533bca408c12 Mon Sep 17 00:00:00 2001
+> From: "Paul E. McKenney" <paulmck@linux.ibm.com>
+> Date: Tue, 2 Apr 2019 07:29:32 -0700
+> Subject: [PATCH 1/1] drivers/gpu/drm/amd: Dynamically allocate
+>  kfd_processes_srcu v2
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
+> requires that the size of the reserved region be increased, which is
+> not something we really want to be doing.  This commit therefore removes
+> the DEFINE_STATIC_SRCU() from drivers/gpu/drm/amd/amdkfd/kfd_process.c in
+> favor of defining kfd_processes_srcu as a simple srcu_struct, initializing
+> it in kfd_process_init(), and cleaning it up in kfd_process_fini().
+> 
+> v2 (Felix Kuehling): Move srcu init and cleanup into kfd_process.c
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Tested-by (v1): kbuild test robot <lkp@intel.com>
+> Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K??nig" <christian.koenig@amd.com>
+> Cc: "David (ChunMing) Zhou" <David1.Zhou@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: <dri-devel@lists.freedesktop.org>
+> Cc: <amd-gfx@lists.freedesktop.org>
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_module.c  |  8 ++++----
+>  drivers/gpu/drm/amd/amdkfd/kfd_priv.h    |  4 ++--
+>  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 19 ++++++++++++-------
+>  3 files changed, 18 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_module.c b/drivers/gpu/drm/amd/amdkfd/kfd_module.c
+> index 932007e..e8e2c15 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_module.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_module.c
+> @@ -52,15 +52,15 @@ static int kfd_init(void)
+>  	if (err < 0)
+>  		goto err_topology;
+>  
+> -	err = kfd_process_create_wq();
+> +	err = kfd_process_init();
+>  	if (err < 0)
+> -		goto err_create_wq;
+> +		goto err_process;
+>  
+>  	kfd_debugfs_init();
+>  
+>  	return 0;
+>  
+> -err_create_wq:
+> +err_process:
+>  	kfd_topology_shutdown();
+>  err_topology:
+>  	kfd_chardev_exit();
+> @@ -71,7 +71,7 @@ static int kfd_init(void)
+>  static void kfd_exit(void)
+>  {
+>  	kfd_debugfs_fini();
+> -	kfd_process_destroy_wq();
+> +	kfd_process_fini();
+>  	kfd_topology_shutdown();
+>  	kfd_chardev_exit();
+>  }
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+> index 9e02309..9dd187c 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+> @@ -708,8 +708,8 @@ struct amdkfd_ioctl_desc {
+>  };
+>  bool kfd_dev_is_large_bar(struct kfd_dev *dev);
+>  
+> -int kfd_process_create_wq(void);
+> -void kfd_process_destroy_wq(void);
+> +int kfd_process_init(void);
+> +void kfd_process_fini(void);
+>  struct kfd_process *kfd_create_process(struct file *filep);
+>  struct kfd_process *kfd_get_process(const struct task_struct *);
+>  struct kfd_process *kfd_lookup_process_by_pasid(unsigned int pasid);
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> index 4bdae78..f810911 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> @@ -47,7 +47,7 @@ struct mm_struct;
+>  DEFINE_HASHTABLE(kfd_processes_table, KFD_PROCESS_TABLE_SIZE);
+>  static DEFINE_MUTEX(kfd_processes_mutex);
+>  
+> -DEFINE_SRCU(kfd_processes_srcu);
+> +struct srcu_struct kfd_processes_srcu;
+>  
+>  /* For process termination handling */
+>  static struct workqueue_struct *kfd_process_wq;
+> @@ -69,22 +69,25 @@ static void evict_process_worker(struct work_struct *work);
+>  static void restore_process_worker(struct work_struct *work);
+>  
+>  
+> -int kfd_process_create_wq(void)
+> +int kfd_process_init(void)
+>  {
+> +	int ret;
+> +
+>  	if (!kfd_process_wq)
+>  		kfd_process_wq = alloc_workqueue("kfd_process_wq", 0, 0);
+>  	if (!kfd_restore_wq)
+>  		kfd_restore_wq = alloc_ordered_workqueue("kfd_restore_wq", 0);
+>  
+> -	if (!kfd_process_wq || !kfd_restore_wq) {
+> -		kfd_process_destroy_wq();
+> +	if (!kfd_process_wq || !kfd_restore_wq)
+>  		return -ENOMEM;
+> -	}
+>  
+> -	return 0;
+> +	ret = init_srcu_struct(&kfd_processes_srcu);
+> +	WARN_ON(ret);
+> +
+> +	return ret;
+>  }
+>  
+> -void kfd_process_destroy_wq(void)
+> +void kfd_process_fini(void)
+>  {
+>  	if (kfd_process_wq) {
+>  		destroy_workqueue(kfd_process_wq);
+> @@ -94,6 +97,8 @@ void kfd_process_destroy_wq(void)
+>  		destroy_workqueue(kfd_restore_wq);
+>  		kfd_restore_wq = NULL;
+>  	}
+> +
+> +	cleanup_srcu_struct(&kfd_processes_srcu);
+>  }
+>  
+>  static void kfd_process_free_gpuvm(struct kgd_mem *mem,
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of the Code Aurora Forum, hosted by The Linux Foundation
+> 2.7.4
 > 
 
