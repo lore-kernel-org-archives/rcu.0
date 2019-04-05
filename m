@@ -1,349 +1,430 @@
-Return-Path: <SRS0=QvuK=SG=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=tJnf=SH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B830C4360F
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3909BC282DC
+	for <rcu@archiver.kernel.org>; Fri,  5 Apr 2019 23:28:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5AEF720882
-	for <rcu@archiver.kernel.org>; Thu,  4 Apr 2019 21:16:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1109D2186A
+	for <rcu@archiver.kernel.org>; Fri,  5 Apr 2019 23:28:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729433AbfDDVQ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Apr 2019 17:16:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40372 "EHLO
+        id S1725973AbfDEX2r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 Apr 2019 19:28:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44860 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728699AbfDDVQ1 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 4 Apr 2019 17:16:27 -0400
+        by vger.kernel.org with ESMTP id S1726124AbfDEX2q (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 5 Apr 2019 19:28:46 -0400
 Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x34LB0Qd128046
-        for <rcu@vger.kernel.org>; Thu, 4 Apr 2019 17:16:26 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2rnsky86fp-1
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x35NNd34147439
+        for <rcu@vger.kernel.org>; Fri, 5 Apr 2019 19:28:44 -0400
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rpf4ub7fk-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 04 Apr 2019 17:16:26 -0400
+        for <rcu@vger.kernel.org>; Fri, 05 Apr 2019 19:28:44 -0400
 Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 4 Apr 2019 22:16:25 +0100
-Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Sat, 6 Apr 2019 00:28:43 +0100
+Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 4 Apr 2019 22:16:18 +0100
+        Sat, 6 Apr 2019 00:28:36 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x34LGH5t22806578
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x35NSZsG21037192
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Apr 2019 21:16:17 GMT
+        Fri, 5 Apr 2019 23:28:35 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7BCCB206B;
-        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 1A1DBB2065;
+        Fri,  5 Apr 2019 23:28:35 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88263B2064;
-        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id D167FB2064;
+        Fri,  5 Apr 2019 23:28:34 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Apr 2019 21:16:17 +0000 (GMT)
+        Fri,  5 Apr 2019 23:28:34 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 7C63616C5F74; Thu,  4 Apr 2019 14:16:19 -0700 (PDT)
-Date:   Thu, 4 Apr 2019 14:16:19 -0700
+        id 17BA816C35FC; Fri,  5 Apr 2019 16:28:35 -0700 (PDT)
+Date:   Fri, 5 Apr 2019 16:28:35 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
-Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        "dipankar@in.ibm.com" <dipankar@in.ibm.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH RFC tip/core/rcu 3/4] drivers/gpu/drm/amd: Dynamically
- allocate kfd_processes_srcu
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dipankar <dipankar@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
 Reply-To: paulmck@linux.ibm.com
 References: <20190402142816.GA13084@linux.ibm.com>
- <20190402142933.14547-3-paulmck@linux.ibm.com>
- <474488ce-75a1-06d9-768a-66008648c70e@amd.com>
+ <886051277.1395.1554218080591.JavaMail.zimbra@efficios.com>
+ <20190402152334.GC4102@linux.ibm.com>
+ <161156422.1435.1554219247444.JavaMail.zimbra@efficios.com>
+ <20190403133243.GE4102@linux.ibm.com>
+ <1028306587.504.1554301662374.JavaMail.zimbra@efficios.com>
+ <20190403162039.GA14111@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <474488ce-75a1-06d9-768a-66008648c70e@amd.com>
+In-Reply-To: <20190403162039.GA14111@linux.ibm.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19040421-2213-0000-0000-000003718A66
+x-cbid: 19040523-0052-0000-0000-000003A83CFD
 X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010873; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01184371; UDB=6.00620134; IPR=6.00965125;
- MB=3.00026298; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-04 21:16:24
+X-IBM-SpamModules-Versions: BY=3.00010875; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000284; SDB=6.01184894; UDB=6.00620447; IPR=6.00965636;
+ MB=3.00026312; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-05 23:28:41
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19040421-2214-0000-0000-00005DE7C5E0
-Message-Id: <20190404211619.GP14111@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-04_12:,,
+x-cbparentid: 19040523-0053-0000-0000-00006065C1D6
+Message-Id: <20190405232835.GA24702@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-05_17:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=962 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904040134
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1904050155
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 02, 2019 at 05:40:54PM +0000, Kuehling, Felix wrote:
-> On 2019-04-02 10:29 a.m., Paul E. McKenney wrote:
-> > Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
-> > requires that the size of the reserved region be increased, which is
-> > not something we really want to be doing.  This commit therefore removes
-> > the DEFINE_STATIC_SRCU() from drivers/gpu/drm/amd/amdkfd/kfd_process.c in
-> > favor of defining kfd_processes_srcu as a simple srcu_struct, initializing
-> > it in amdgpu_amdkfd_init(), and cleaning it up in amdgpu_amdkfd_fini().
-> >
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-> > Tested-by: kbuild test robot <lkp@intel.com>
-> > Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com
-> > Cc: "David (ChunMing) Zhou" <David1.Zhou@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: <dri-devel@lists.freedesktop.org>
-> > Cc: <amd-gfx@lists.freedesktop.org>
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c | 5 +++++
-> >   drivers/gpu/drm/amd/amdkfd/kfd_process.c   | 2 +-
-> >   2 files changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
-> > index fe1d7368c1e6..eadb20dee867 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.c
-> > @@ -28,6 +28,8 @@
-> >   #include <linux/module.h>
-> >   #include <linux/dma-buf.h>
-> >   
-> > +extern struct srcu_struct kfd_processes_srcu;
-> > +
-> >   static const unsigned int compute_vmid_bitmap = 0xFF00;
-> >   
-> >   /* Total memory size in system memory and all GPU VRAM. Used to
-> > @@ -40,6 +42,8 @@ int amdgpu_amdkfd_init(void)
-> >   	struct sysinfo si;
-> >   	int ret;
-> >   
-> > +	ret = init_srcu_struct(&kfd_processes_srcu);
-> > +	WARN_ON(ret);
+On Wed, Apr 03, 2019 at 09:20:39AM -0700, Paul E. McKenney wrote:
+> On Wed, Apr 03, 2019 at 10:27:42AM -0400, Mathieu Desnoyers wrote:
+> > ----- On Apr 3, 2019, at 9:32 AM, paulmck paulmck@linux.ibm.com wrote:
+> > 
+> > > On Tue, Apr 02, 2019 at 11:34:07AM -0400, Mathieu Desnoyers wrote:
+> > >> ----- On Apr 2, 2019, at 11:23 AM, paulmck paulmck@linux.ibm.com wrote:
+> > >> 
+> > >> > On Tue, Apr 02, 2019 at 11:14:40AM -0400, Mathieu Desnoyers wrote:
+> > >> >> ----- On Apr 2, 2019, at 10:28 AM, paulmck paulmck@linux.ibm.com wrote:
+> > >> >> 
+> > >> >> > Hello!
+> > >> >> > 
+> > >> >> > This series prohibits use of DEFINE_SRCU() and DEFINE_STATIC_SRCU()
+> > >> >> > by loadable modules.  The reason for this prohibition is the fact
+> > >> >> > that using these two macros within modules requires that the size of
+> > >> >> > the reserved region be increased, which is not something we want to
+> > >> >> > be doing all that often.  Instead, loadable modules should define an
+> > >> >> > srcu_struct and invoke init_srcu_struct() from their module_init function
+> > >> >> > and cleanup_srcu_struct() from their module_exit function.  Note that
+> > >> >> > modules using call_srcu() will also need to invoke srcu_barrier() from
+> > >> >> > their module_exit function.
+> > >> >> 
+> > >> >> This arbitrary API limitation seems weird.
+> > >> >> 
+> > >> >> Isn't there a way to allow modules to use DEFINE_SRCU and DEFINE_STATIC_SRCU
+> > >> >> while implementing them with dynamic allocation under the hood ?
+> > >> > 
+> > >> > Although call_srcu() already has initialization hooks, some would
+> > >> > also be required in srcu_read_lock(), and I am concerned about adding
+> > >> > memory allocation at that point, especially given the possibility
+> > >> > of memory-allocation failure.  And the possibility that the first
+> > >> > srcu_read_lock() happens in an interrupt handler or similar.
+> > >> > 
+> > >> > Or am I missing a trick here?
+> > >> 
+> > >> I was more thinking that under #ifdef MODULE, both DEFINE_SRCU and
+> > >> DEFINE_STATIC_SRCU could append data in a dedicated section. module.c
+> > >> would additionally lookup that section on module load, and deal with
+> > >> those statically defined SRCU entries as if they were dynamically
+> > >> allocated ones. It would of course cleanup those resources on module
+> > >> unload.
+> > >> 
+> > >> Am I missing some subtlety there ?
+> > > 
+> > > If I understand you correctly, that is actually what is already done.  The
+> > > size of this dedicated section is currently set by PERCPU_MODULE_RESERVE,
+> > > and the additions of DEFINE{_STATIC}_SRCU() in modules was requiring that
+> > > this to be increased frequently.  That led to a request that something
+> > > be done, in turn leading to this patch series.
+> > 
+> > I think we are not expressing quite the same idea.
+> > 
+> > AFAIU, yours is to have DEFINE*_SRCU directly define per-cpu data within modules,
+> > which ends up using percpu module reserved memory.
+> > 
+> > My idea is to make DEFINE*_SRCU have a different behavior under #ifdef MODULE.
+> > It could emit a _global variable_ (_not_ per-cpu) within a new section. That
+> > section would then be used by module init/exit code to figure out what "srcu
+> > descriptors" are present in the modules. It would therefore rely on dynamic
+> > allocation for those, therefore removing the need to involve the percpu module
+> > reserved pool at all.
+> > 
+> > > 
+> > > I don't see a way around this short of changing module loading to do
+> > > alloc_percpu() and then updating the relocation based on this result.
+> > > Which would admittedly be far more convenient.  I was assuming that
+> > > this would be difficult due to varying CPU offsets or the like.
+> > > 
+> > > But if it can be done reasonably, it would be quite a bit nicer than
+> > > forcing dynamic allocation in cases where it is not otherwise needed.
+> > 
+> > Hopefully my explanation above helps clear out what I have in mind.
+> > 
+> > You can find similar tricks performed by include/linux/tracepoint.h:
+> > 
+> > #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+> > static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> > {
+> >         return offset_to_ptr(p);
+> > }
+> > 
+> > #define __TRACEPOINT_ENTRY(name)                                        \
+> >         asm("   .section \"__tracepoints_ptrs\", \"a\"          \n"     \
+> >             "   .balign 4                                       \n"     \
+> >             "   .long   __tracepoint_" #name " - .              \n"     \
+> >             "   .previous                                       \n")
+> > #else
+> > static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> > {
+> >         return *p;
+> > }
+> > 
+> > #define __TRACEPOINT_ENTRY(name)                                         \
+> >         static tracepoint_ptr_t __tracepoint_ptr_##name __used           \
+> >         __attribute__((section("__tracepoints_ptrs"))) =                 \
+> >                 &__tracepoint_##name
+> > #endif
+> > 
+> > [...]
+> > 
+> > #define DEFINE_TRACE_FN(name, reg, unreg)                                \
+> >         static const char __tpstrtab_##name[]                            \
+> >         __attribute__((section("__tracepoints_strings"))) = #name;       \
+> >         struct tracepoint __tracepoint_##name                            \
+> >         __attribute__((section("__tracepoints"), used)) =                \
+> >                 { __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
+> >         __TRACEPOINT_ENTRY(name);
+> > 
+> > And kernel/module.c:
+> > 
+> > find_module_sections():
+> > 
+> > #ifdef CONFIG_TRACEPOINTS
+> >         mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
+> >                                              sizeof(*mod->tracepoints_ptrs),
+> >                                              &mod->num_tracepoints);
+> > #endif
+> > 
+> > And kernel/tracepoint.c:tracepoint_module_notify() for the module coming/going
+> > notifier.
+> > 
+> > Basically you would want to have your own structure within your own section of
+> > the module which describes the srcu domain, and have a module coming/going
+> > notifier responsible for dynamically allocating the srcu domain on "coming", and
+> > doing a srcu barrier and cleanup the domain on "going".
 > 
-> kfd_processes_srcu only exists if kfd_process.c is compiled in. That 
-> depends on CONFIG_HSA_AMD. So this should at least move into #ifdef a 
-> few lines below.
-> 
-> However, it would be cleaner to move this initialization into kfd_init 
-> in kfd_module.c, or better yet, into kfd_process_create_wq in 
-> kfd_process.c. Then kfd_process_create_wq should be renamed to something 
-> more generic, such as kfd_process_init.
-> 
-> 
-> >   	si_meminfo(&si);
-> >   	amdgpu_amdkfd_total_mem_size = si.totalram - si.totalhigh;
-> >   	amdgpu_amdkfd_total_mem_size *= si.mem_unit;
-> > @@ -57,6 +61,7 @@ int amdgpu_amdkfd_init(void)
-> >   void amdgpu_amdkfd_fini(void)
-> >   {
-> >   	kgd2kfd_exit();
-> > +	cleanup_srcu_struct(&kfd_processes_srcu);
-> 
-> Similarly, this would be cleaner in kfd_exit in kfd_module.c or 
-> kfd_process_destroy_wq in kfd_process.c, with that function similarly 
-> renamed to kfd_process_fini.
-> 
-> I'm attaching a revised patch. It's only compile tested.
+> Ah, sounds like an excellent approach!  I will give it a shot, thank you!
 
-Thank you, Felix!  I have reverted my original and applied your revised
-version.
+Please see below for an untested shot.
+
+The original commits posted in this series are still available within
+the -srcu tree at branch srcunomod.2019.04.05a.  Yes, I am a digital
+packrat.  Why do you ask?
+
+Thoughts?  Or more accurately, given that this is the first time I
+have used linker sections, what did I mess up?
 
 							Thanx, Paul
 
-> Regards,
->    Felix
-> 
-> 
-> >   }
-> >   
-> >   void amdgpu_amdkfd_device_probe(struct amdgpu_device *adev)
-> > diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > index 4bdae78bab8e..98b694068b8a 100644
-> > --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > @@ -47,7 +47,7 @@ struct mm_struct;
-> >   DEFINE_HASHTABLE(kfd_processes_table, KFD_PROCESS_TABLE_SIZE);
-> >   static DEFINE_MUTEX(kfd_processes_mutex);
-> >   
-> > -DEFINE_SRCU(kfd_processes_srcu);
-> > +struct srcu_struct kfd_processes_srcu;
-> >   
-> >   /* For process termination handling */
-> >   static struct workqueue_struct *kfd_process_wq;
+------------------------------------------------------------------------
 
-> From 5857a9aa63957a5755ff81ae5c46533bca408c12 Mon Sep 17 00:00:00 2001
-> From: "Paul E. McKenney" <paulmck@linux.ibm.com>
-> Date: Tue, 2 Apr 2019 07:29:32 -0700
-> Subject: [PATCH 1/1] drivers/gpu/drm/amd: Dynamically allocate
->  kfd_processes_srcu v2
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
-> 
-> Having DEFINE_SRCU() or DEFINE_STATIC_SRCU() in a loadable module
-> requires that the size of the reserved region be increased, which is
-> not something we really want to be doing.  This commit therefore removes
-> the DEFINE_STATIC_SRCU() from drivers/gpu/drm/amd/amdkfd/kfd_process.c in
-> favor of defining kfd_processes_srcu as a simple srcu_struct, initializing
-> it in kfd_process_init(), and cleaning it up in kfd_process_fini().
-> 
-> v2 (Felix Kuehling): Move srcu init and cleanup into kfd_process.c
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-> Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> Tested-by (v1): kbuild test robot <lkp@intel.com>
-> Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K??nig" <christian.koenig@amd.com>
-> Cc: "David (ChunMing) Zhou" <David1.Zhou@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: <dri-devel@lists.freedesktop.org>
-> Cc: <amd-gfx@lists.freedesktop.org>
-> ---
->  drivers/gpu/drm/amd/amdkfd/kfd_module.c  |  8 ++++----
->  drivers/gpu/drm/amd/amdkfd/kfd_priv.h    |  4 ++--
->  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 19 ++++++++++++-------
->  3 files changed, 18 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_module.c b/drivers/gpu/drm/amd/amdkfd/kfd_module.c
-> index 932007e..e8e2c15 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_module.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_module.c
-> @@ -52,15 +52,15 @@ static int kfd_init(void)
->  	if (err < 0)
->  		goto err_topology;
->  
-> -	err = kfd_process_create_wq();
-> +	err = kfd_process_init();
->  	if (err < 0)
-> -		goto err_create_wq;
-> +		goto err_process;
->  
->  	kfd_debugfs_init();
->  
->  	return 0;
->  
-> -err_create_wq:
-> +err_process:
->  	kfd_topology_shutdown();
->  err_topology:
->  	kfd_chardev_exit();
-> @@ -71,7 +71,7 @@ static int kfd_init(void)
->  static void kfd_exit(void)
->  {
->  	kfd_debugfs_fini();
-> -	kfd_process_destroy_wq();
-> +	kfd_process_fini();
->  	kfd_topology_shutdown();
->  	kfd_chardev_exit();
->  }
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> index 9e02309..9dd187c 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> @@ -708,8 +708,8 @@ struct amdkfd_ioctl_desc {
->  };
->  bool kfd_dev_is_large_bar(struct kfd_dev *dev);
->  
-> -int kfd_process_create_wq(void);
-> -void kfd_process_destroy_wq(void);
-> +int kfd_process_init(void);
-> +void kfd_process_fini(void);
->  struct kfd_process *kfd_create_process(struct file *filep);
->  struct kfd_process *kfd_get_process(const struct task_struct *);
->  struct kfd_process *kfd_lookup_process_by_pasid(unsigned int pasid);
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> index 4bdae78..f810911 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> @@ -47,7 +47,7 @@ struct mm_struct;
->  DEFINE_HASHTABLE(kfd_processes_table, KFD_PROCESS_TABLE_SIZE);
->  static DEFINE_MUTEX(kfd_processes_mutex);
->  
-> -DEFINE_SRCU(kfd_processes_srcu);
-> +struct srcu_struct kfd_processes_srcu;
->  
->  /* For process termination handling */
->  static struct workqueue_struct *kfd_process_wq;
-> @@ -69,22 +69,25 @@ static void evict_process_worker(struct work_struct *work);
->  static void restore_process_worker(struct work_struct *work);
->  
->  
-> -int kfd_process_create_wq(void)
-> +int kfd_process_init(void)
->  {
-> +	int ret;
-> +
->  	if (!kfd_process_wq)
->  		kfd_process_wq = alloc_workqueue("kfd_process_wq", 0, 0);
->  	if (!kfd_restore_wq)
->  		kfd_restore_wq = alloc_ordered_workqueue("kfd_restore_wq", 0);
->  
-> -	if (!kfd_process_wq || !kfd_restore_wq) {
-> -		kfd_process_destroy_wq();
-> +	if (!kfd_process_wq || !kfd_restore_wq)
->  		return -ENOMEM;
-> -	}
->  
-> -	return 0;
-> +	ret = init_srcu_struct(&kfd_processes_srcu);
-> +	WARN_ON(ret);
-> +
-> +	return ret;
->  }
->  
-> -void kfd_process_destroy_wq(void)
-> +void kfd_process_fini(void)
->  {
->  	if (kfd_process_wq) {
->  		destroy_workqueue(kfd_process_wq);
-> @@ -94,6 +97,8 @@ void kfd_process_destroy_wq(void)
->  		destroy_workqueue(kfd_restore_wq);
->  		kfd_restore_wq = NULL;
->  	}
-> +
-> +	cleanup_srcu_struct(&kfd_processes_srcu);
->  }
->  
->  static void kfd_process_free_gpuvm(struct kgd_mem *mem,
-> -- 
-> 2.7.4
-> 
+commit e24a0dab1414c563bb96bcb28d5963c9df18b1e8
+Author: Paul E. McKenney <paulmck@linux.ibm.com>
+Date:   Fri Apr 5 16:15:00 2019 -0700
+
+    srcu: Allocate per-CPU data for DEFINE_SRCU() in modules
+    
+    Adding DEFINE_SRCU() or DEFINE_STATIC_SRCU() to a loadable module requires
+    that the size of the reserved region be increased, which is not something
+    we want to be doing all that often.  One approach would be to require
+    that loadable modules define an srcu_struct and invoke init_srcu_struct()
+    from their module_init function and cleanup_srcu_struct() from their
+    module_exit function.  However, this is more than a bit user unfriendly.
+    
+    This commit therefore creates an ___srcu_struct_ptrs linker section,
+    and pointers to srcu_struct structures created by DEFINE_SRCU() and
+    DEFINE_STATIC_SRCU() within a module are placed into that module's
+    ___srcu_struct_ptrs section.  The required init_srcu_struct() and
+    cleanup_srcu_struct() functions are then automatically invoked as needed
+    when that module is loaded and unloaded, thus allowing modules to continue
+    to use DEFINE_SRCU() and DEFINE_STATIC_SRCU() while avoiding the need
+    to increase the size of the reserved region.
+    
+    Many of the algorithms and some of the code was cheerfully cherry-picked
+    from other code making use of linker sections, perhaps most notably from
+    tracepoints.  All bugs are nevertheless the sole property of the author.
+    
+    Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index f8f6f04c4453..c2d919a1566e 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -338,6 +338,10 @@
+ 		KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
+ 		__stop___tracepoints_ptrs = .;				\
+ 		*(__tracepoints_strings)/* Tracepoints: strings */	\
++		. = ALIGN(8);						\
++		__start___srcu_struct = .;				\
++		*(___srcu_struct_ptrs)					\
++		__end___srcu_struct = .;				\
+ 	}								\
+ 									\
+ 	.rodata1          : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 5bf5dcd91009..921443a026dd 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -21,6 +21,7 @@
+ #include <linux/rbtree_latch.h>
+ #include <linux/error-injection.h>
+ #include <linux/tracepoint-defs.h>
++#include <linux/srcu.h>
+ 
+ #include <linux/percpu.h>
+ #include <asm/module.h>
+@@ -448,6 +449,10 @@ struct module {
+ 	unsigned int num_tracepoints;
+ 	tracepoint_ptr_t *tracepoints_ptrs;
+ #endif
++#ifdef CONFIG_TREE_SRCU
++	unsigned int num_srcu_structs;
++	struct srcu_struct **srcu_struct_ptrs;
++#endif
+ #ifdef CONFIG_BPF_EVENTS
+ 	unsigned int num_bpf_raw_events;
+ 	struct bpf_raw_event_map *bpf_raw_events;
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 7f7c8c050f63..93685a9f3b4c 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -120,9 +120,17 @@ struct srcu_struct {
+  *
+  * See include/linux/percpu-defs.h for the rules on per-CPU variables.
+  */
+-#define __DEFINE_SRCU(name, is_static)					\
+-	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);\
+-	is_static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name##_srcu_data)
++#ifdef MODULE
++# define __DEFINE_SRCU(name, is_static)					\
++	is_static struct srcu_struct name;				\
++	struct srcu_struct *__srcu_struct_##name			\
++		__attribute__((section("___srcu_struct_ptrs"))) = &name
++#else
++# define __DEFINE_SRCU(name, is_static)					\
++	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
++	is_static struct srcu_struct name =				\
++		__SRCU_STRUCT_INIT(name, name##_srcu_data)
++#endif
+ #define DEFINE_SRCU(name)		__DEFINE_SRCU(name, /* not static */)
+ #define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, static)
+ 
+diff --git a/kernel/module.c b/kernel/module.c
+index 0b9aa8ab89f0..524da609c884 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3093,6 +3093,11 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+ 					     sizeof(*mod->tracepoints_ptrs),
+ 					     &mod->num_tracepoints);
+ #endif
++#ifdef CONFIG_TREE_SRCU
++	mod->srcu_struct_ptrs = section_objs(info, "___srcu_struct_ptrs",
++					     sizeof(*mod->srcu_struct_ptrs),
++					     &mod->num_srcu_structs);
++#endif
+ #ifdef CONFIG_BPF_EVENTS
+ 	mod->bpf_raw_events = section_objs(info, "__bpf_raw_tp_map",
+ 					   sizeof(*mod->bpf_raw_events),
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 9b761e546de8..ac0f6f0a8916 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1310,3 +1310,70 @@ void __init srcu_init(void)
+ 		queue_work(rcu_gp_wq, &ssp->work.work);
+ 	}
+ }
++
++#ifdef CONFIG_MODULES
++
++/* Initialize any global-scope srcu_struct structures used by this module. */
++static int srcu_module_coming(struct module *mod)
++{
++	int i;
++	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
++	int ret;
++
++	for (i = 0; i < mod->num_srcu_structs; i++) {
++		ret = init_srcu_struct(*(sspp++));
++		if (WARN_ON_ONCE(ret))
++			return ret;
++	}
++	return 0;
++}
++
++/* Clean up any global-scope srcu_struct structures used by this module. */
++static void srcu_module_going(struct module *mod)
++{
++	int i;
++	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
++
++	for (i = 0; i < mod->num_srcu_structs; i++)
++		cleanup_srcu_struct(*(sspp++));
++}
++
++/* Handle one module, either coming or going. */
++static int srcu_module_notify(struct notifier_block *self,
++			      unsigned long val, void *data)
++{
++	struct module *mod = data;
++	int ret = 0;
++
++	switch (val) {
++	case MODULE_STATE_COMING:
++		ret = srcu_module_coming(mod);
++		break;
++	case MODULE_STATE_LIVE:
++		break;
++	case MODULE_STATE_GOING:
++		srcu_module_going(mod);
++		break;
++	case MODULE_STATE_UNFORMED:
++		break;
++	}
++	return ret;
++}
++
++static struct notifier_block srcu_module_nb = {
++	.notifier_call = srcu_module_notify,
++	.priority = 0,
++};
++
++static __init int init_srcu_module_notifier(void)
++{
++	int ret;
++
++	ret = register_module_notifier(&srcu_module_nb);
++	if (ret)
++		pr_warn("Failed to register srcu module notifier\n");
++	return ret;
++}
++late_initcall(init_srcu_module_notifier);
++
++#endif /* #ifdef CONFIG_MODULES */
 
