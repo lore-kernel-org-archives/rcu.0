@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72294C10F06
-	for <rcu@archiver.kernel.org>; Sat,  6 Apr 2019 13:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D239BC282DA
+	for <rcu@archiver.kernel.org>; Sat,  6 Apr 2019 23:06:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3373820B1F
-	for <rcu@archiver.kernel.org>; Sat,  6 Apr 2019 13:33:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BA3621019
+	for <rcu@archiver.kernel.org>; Sat,  6 Apr 2019 23:06:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="rHCT9bcI"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Xl764JPf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbfDFNdc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 6 Apr 2019 09:33:32 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:40669 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbfDFNdc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 6 Apr 2019 09:33:32 -0400
-Received: by mail-qk1-f193.google.com with SMTP id w20so5476367qka.7
-        for <rcu@vger.kernel.org>; Sat, 06 Apr 2019 06:33:31 -0700 (PDT)
+        id S1726315AbfDFXGS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 6 Apr 2019 19:06:18 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40350 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbfDFXGR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 6 Apr 2019 19:06:17 -0400
+Received: by mail-pf1-f194.google.com with SMTP id c207so5342631pfc.7
+        for <rcu@vger.kernel.org>; Sat, 06 Apr 2019 16:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Sq+agN94Qt0MitYTYxno7FjtYc0wVnkmNcptjFpTTyM=;
-        b=rHCT9bcI4zF+u7AdP0uVWyPxOMHrmo7126yIrhSIDxK7eSAA1RLoEFLe7EOEXYGZGA
-         0Uh9C+69/41Qu8KQXB9NzQA0sR7+1jl65ocUbLnt+vsqW3n8rllCF7vn/vmdQTGgUlF2
-         gPf1rvPkWCxCZS5tjIXDFv1y0OkyrCai00wNY=
+        bh=n1w7o6jHm/pHouk7zr8EtkZZ+fNE+0alYUOjtyCyUaE=;
+        b=Xl764JPfHP3SqgGW7yGApBi3+MhQMYj8wOzHugFbIucsanvF5LobN57mC/p/kxSHi9
+         +xu5ptuKmT7Z/ptYeF1Tyt0baJzZ2DOGdQbiq56TrIDqC1o49YuFJGt0ICOy62iikNwx
+         OZQChlrA/dDp+P3zapLo0q2RcPegAuJYbKNjU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sq+agN94Qt0MitYTYxno7FjtYc0wVnkmNcptjFpTTyM=;
-        b=lMSnNAEO2yoApqIUrvoPK3bRyZEwGhK+hrECJphV90akuoKMc4KCgb13F90gToC/Th
-         qsWme/5EKE0XjBg0qcQCgxYUuHPNo6cl0mcyo0GKs61lXdhSkL2g698stlWQj/ZYwAXK
-         065q1UNh3Egy7mjKk9hii6b3P6fv/qVXTQkXaVTl1U6CtvmhCDzC+Oqy38FKcM8fnvWj
-         2WD/5Ei1A4hZ0gOnIUUtynWa4tI5Jv8vJfEkMtpA2ua89TEWs2XArUAwfsjDLhA6FmcL
-         ayIg4asqUEHoQSlv/NrqSfFvbp8v0fmZ+vyKxrwFDz06/UGItCRB1JYKjCq0TzwthCme
-         drVw==
-X-Gm-Message-State: APjAAAXr43Jhr73InSgzo0HZSdXhXfM5bvR/1m00Lhir6zb8EGY9El2I
-        QtkStAKTEoR7ZD6b/mJW3Nho6w==
-X-Google-Smtp-Source: APXvYqzH5DJK6UBof3TVfa/U1Ql0joyfPkhtxMnOLNVDndFVvXccVVvrtUh1eSUq7jri5hPmFGz3XQ==
-X-Received: by 2002:a37:b4c:: with SMTP id 73mr14858137qkl.250.1554557610635;
-        Sat, 06 Apr 2019 06:33:30 -0700 (PDT)
-Received: from localhost (c-73-216-90-110.hsd1.va.comcast.net. [73.216.90.110])
-        by smtp.gmail.com with ESMTPSA id b9sm13878324qkk.41.2019.04.06.06.33.29
+        bh=n1w7o6jHm/pHouk7zr8EtkZZ+fNE+0alYUOjtyCyUaE=;
+        b=GrUO0WuB4nh4eGTzGyfPG14mVEKtNEH8GoNjLIR0FhXECrdD9b9qdzeVef//HSPnN/
+         YN2kq1gZXRcBUIS/L1aDR4Gb0SYmGygCGP8xEB6asvEYlBp3asXcCW9kTySDczX4LfaK
+         br1ZyOpjkjVao8XNJEkv3koU7lkFFeQBJ5rArLYKTZ/lA5dx0cILaYKTQlMnegXyI/O6
+         SDDXGL9HXXULbM2FsPHvCWcWRS3yTZOPXnqWZ6jItAQ9T0+S2RkKRPdr3fj8s8+qoGNJ
+         QfE4POwVNdhFGcAxU0pCsFIlOZ399RHlSdCQaA14V/KraMKdgXvtmt4qT66tyv3APa2R
+         SdfA==
+X-Gm-Message-State: APjAAAVOTFEega0VzyzYF78qEP4QJpZhzGFgd+1y2x7hbF2HSrZtdxfW
+        maT58oyhOvqNexa61LJCsmEv9w==
+X-Google-Smtp-Source: APXvYqy3x+z0j6ljP2y9ZLSCPRcpvlTWYzP/gRTSOFIOwsH2M0tphoYzDjUuBvFgWrRv4+2jKifFqw==
+X-Received: by 2002:aa7:8c42:: with SMTP id e2mr20986864pfd.24.1554591976078;
+        Sat, 06 Apr 2019 16:06:16 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id c130sm42254103pfb.145.2019.04.06.16.06.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 06 Apr 2019 06:33:29 -0700 (PDT)
-Date:   Sat, 6 Apr 2019 13:33:27 +0000
+        Sat, 06 Apr 2019 16:06:14 -0700 (PDT)
+Date:   Sat, 6 Apr 2019 19:06:13 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -72,7 +72,7 @@ Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx <amd-gfx@lists.freedesktop.org>
 Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
-Message-ID: <20190406133327.GA21438@localhost>
+Message-ID: <20190406230613.GA187766@google.com>
 References: <20190402142816.GA13084@linux.ibm.com>
  <886051277.1395.1554218080591.JavaMail.zimbra@efficios.com>
  <20190402152334.GC4102@linux.ibm.com>
@@ -85,7 +85,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190405232835.GA24702@linux.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -275,157 +275,50 @@ On Fri, Apr 05, 2019 at 04:28:35PM -0700, Paul E. McKenney wrote:
 > +		*(___srcu_struct_ptrs)					\
 > +		__end___srcu_struct = .;				\
 >  	}								\
->  									\
->  	.rodata1          : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 5bf5dcd91009..921443a026dd 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -21,6 +21,7 @@
->  #include <linux/rbtree_latch.h>
->  #include <linux/error-injection.h>
->  #include <linux/tracepoint-defs.h>
-> +#include <linux/srcu.h>
->  
->  #include <linux/percpu.h>
->  #include <asm/module.h>
-> @@ -448,6 +449,10 @@ struct module {
->  	unsigned int num_tracepoints;
->  	tracepoint_ptr_t *tracepoints_ptrs;
->  #endif
-> +#ifdef CONFIG_TREE_SRCU
-> +	unsigned int num_srcu_structs;
-> +	struct srcu_struct **srcu_struct_ptrs;
-> +#endif
->  #ifdef CONFIG_BPF_EVENTS
->  	unsigned int num_bpf_raw_events;
->  	struct bpf_raw_event_map *bpf_raw_events;
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 7f7c8c050f63..93685a9f3b4c 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -120,9 +120,17 @@ struct srcu_struct {
->   *
->   * See include/linux/percpu-defs.h for the rules on per-CPU variables.
->   */
-> -#define __DEFINE_SRCU(name, is_static)					\
-> -	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);\
-> -	is_static struct srcu_struct name = __SRCU_STRUCT_INIT(name, name##_srcu_data)
-> +#ifdef MODULE
-> +# define __DEFINE_SRCU(name, is_static)					\
-> +	is_static struct srcu_struct name;				\
-> +	struct srcu_struct *__srcu_struct_##name			\
-> +		__attribute__((section("___srcu_struct_ptrs"))) = &name
 
-This can be replaced by:
-__section("__srcu_struct_ptrs") = &name;
+This vmlinux linker modification is not needed. I tested without it and srcu
+torture works fine with rcutorture built as a module. Putting further prints
+in kernel/module.c verified that the kernel is able to find the srcu structs
+just fine. You could squash the below patch into this one or apply it on top
+of the dev branch.
 
-> +#else
-> +# define __DEFINE_SRCU(name, is_static)					\
-> +	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
-> +	is_static struct srcu_struct name =				\
-> +		__SRCU_STRUCT_INIT(name, name##_srcu_data)
-> +#endif
->  #define DEFINE_SRCU(name)		__DEFINE_SRCU(name, /* not static */)
->  #define DEFINE_STATIC_SRCU(name)	__DEFINE_SRCU(name, static)
->  
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 0b9aa8ab89f0..524da609c884 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3093,6 +3093,11 @@ static int find_module_sections(struct module *mod, struct load_info *info)
->  					     sizeof(*mod->tracepoints_ptrs),
->  					     &mod->num_tracepoints);
->  #endif
-> +#ifdef CONFIG_TREE_SRCU
-> +	mod->srcu_struct_ptrs = section_objs(info, "___srcu_struct_ptrs",
-> +					     sizeof(*mod->srcu_struct_ptrs),
-> +					     &mod->num_srcu_structs);
-> +#endif
->  #ifdef CONFIG_BPF_EVENTS
->  	mod->bpf_raw_events = section_objs(info, "__bpf_raw_tp_map",
->  					   sizeof(*mod->bpf_raw_events),
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 9b761e546de8..ac0f6f0a8916 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1310,3 +1310,70 @@ void __init srcu_init(void)
->  		queue_work(rcu_gp_wq, &ssp->work.work);
->  	}
->  }
-> +
-> +#ifdef CONFIG_MODULES
-> +
-> +/* Initialize any global-scope srcu_struct structures used by this module. */
-> +static int srcu_module_coming(struct module *mod)
-> +{
-> +	int i;
-> +	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-> +	int ret;
-> +
-> +	for (i = 0; i < mod->num_srcu_structs; i++) {
-> +		ret = init_srcu_struct(*(sspp++));
-> +		if (WARN_ON_ONCE(ret))
-> +			return ret;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/* Clean up any global-scope srcu_struct structures used by this module. */
-> +static void srcu_module_going(struct module *mod)
-> +{
-> +	int i;
-> +	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-> +
-> +	for (i = 0; i < mod->num_srcu_structs; i++)
-> +		cleanup_srcu_struct(*(sspp++));
-> +}
-> +
-> +/* Handle one module, either coming or going. */
-> +static int srcu_module_notify(struct notifier_block *self,
-> +			      unsigned long val, void *data)
-> +{
-> +	struct module *mod = data;
-> +	int ret = 0;
-> +
-> +	switch (val) {
-> +	case MODULE_STATE_COMING:
-> +		ret = srcu_module_coming(mod);
-> +		break;
-> +	case MODULE_STATE_LIVE:
-> +		break;
-> +	case MODULE_STATE_GOING:
-> +		srcu_module_going(mod);
-> +		break;
-> +	case MODULE_STATE_UNFORMED:
-> +		break;
+Thanks!
 
-The unused cases can be put under default or even clubbed thus saving a line
-but if you prefer to keep them.like this that is fine.
+---8<-----------------------
 
-It looks good to me but I will test it out more later today. Thanks!
+From 369ad090f706ce8e1facdd18eb10828b5f7e2b72 Mon Sep 17 00:00:00 2001
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Date: Sat, 6 Apr 2019 18:57:17 -0400
+Subject: [PATCH] srcu: Remove unused vmlinux srcu linker entries
 
-- Joel
+The SRCU for modules optimization introduced vmlinux linker entries
+which is unused since it applies only to the built-in vmlinux. So remove
+it to prevent any space usage due to the 8 byte alignment.
 
+Tested with SRCU torture_type and rcutorture.
 
-> +	return ret;
-> +}
-> +
-> +static struct notifier_block srcu_module_nb = {
-> +	.notifier_call = srcu_module_notify,
-> +	.priority = 0,
-> +};
-> +
-> +static __init int init_srcu_module_notifier(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_module_notifier(&srcu_module_nb);
-> +	if (ret)
-> +		pr_warn("Failed to register srcu module notifier\n");
-> +	return ret;
-> +}
-> +late_initcall(init_srcu_module_notifier);
-> +
-> +#endif /* #ifdef CONFIG_MODULES */
-> 
+Cc: kernel-team@android.com
+Cc: paulmck@linux.vnet.ibm.com
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ include/asm-generic/vmlinux.lds.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index c2d919a1566e..f8f6f04c4453 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -338,10 +338,6 @@
+ 		KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
+ 		__stop___tracepoints_ptrs = .;				\
+ 		*(__tracepoints_strings)/* Tracepoints: strings */	\
+-		. = ALIGN(8);						\
+-		__start___srcu_struct = .;				\
+-		*(___srcu_struct_ptrs)					\
+-		__end___srcu_struct = .;				\
+ 	}								\
+ 									\
+ 	.rodata1          : AT(ADDR(.rodata1) - LOAD_OFFSET) {		\
+-- 
+2.21.0.392.gf8f6787159e-goog
+
