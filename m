@@ -1,4 +1,4 @@
-Return-Path: <SRS0=nzIb=SJ=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=rvB6=SK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,54 +6,56 @@ X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22334C10F0E
-	for <rcu@archiver.kernel.org>; Sun,  7 Apr 2019 21:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C286C10F0E
+	for <rcu@archiver.kernel.org>; Mon,  8 Apr 2019 00:36:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DEBB32087F
-	for <rcu@archiver.kernel.org>; Sun,  7 Apr 2019 21:07:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0535A20857
+	for <rcu@archiver.kernel.org>; Mon,  8 Apr 2019 00:36:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="p3Y+ILcX"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="bP2uTrkh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbfDGVHV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 7 Apr 2019 17:07:21 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35246 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbfDGVHV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 7 Apr 2019 17:07:21 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h39so4413032qte.2
-        for <rcu@vger.kernel.org>; Sun, 07 Apr 2019 14:07:20 -0700 (PDT)
+        id S1726412AbfDHAgt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 7 Apr 2019 20:36:49 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35360 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbfDHAgt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 7 Apr 2019 20:36:49 -0400
+Received: by mail-pl1-f193.google.com with SMTP id w24so6294372plp.2
+        for <rcu@vger.kernel.org>; Sun, 07 Apr 2019 17:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=2vNfUNP3i+O55viCb8wmk1mIJ8Q3I7LsPR2jHYkKESo=;
-        b=p3Y+ILcXCSIom06UiCBs75Tv83mtP+PfgZZbWZTGAxM2cexlsoFrw43alqEWi1fPme
-         K5j5tm4A2KjC1QqnkW0WCwZtSqXsobb6MG9Lmp+G4NmzDwaZw7tNF64kJrMf0gcbA+a3
-         UR+3kHre/VxxR8+9nSxvc7hiUN9nWda4rnGzc=
+        bh=mUF7FisCWPJBcyY+1uY0DR4+j9qrIcKSbRWtjK3YtW8=;
+        b=bP2uTrkh739fzSEIqWmyX/sG6NKbgLlBEcO5pUqvbm5z+aN6K3VaMPnW/2QA9Wz44b
+         l3N6uPAeWeFSP1TMOIGsmwa8qjrs6+GJA8hSsrvshaJ6UsZYJuQ2QpJSMj2vGcJ9Uoay
+         s/srx7huOPqF0Za9+Wb0oLU1a9Yrn7RSEZ9pY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2vNfUNP3i+O55viCb8wmk1mIJ8Q3I7LsPR2jHYkKESo=;
-        b=V9M3NUipkGQLrzaHIxymKSn26GHxooQZCJPTn1c/HPXXJETPc8LPZn4G/GP6Y9laYF
-         mEcwYePDjtoCtTK1n4XQSYiDq0sM+PYOfbOXv3PwqJYS7kuAQ3vlv2ISLUO/vCR+B0eK
-         /NHxOLV0mH0Sg5V8DilqoUmVXPLjXxFWi4qJhM0/dx4ps/p8w4b7BohdNEChGX+fKIry
-         xCPXv+sxy+QBqreECZYliMQINvtl57GOll0fmlIdpJg9iq8M1ULkATXeugiVbHCQ7HJH
-         E2We4EtbA9TVcoLNfKAYtKNq6rR+nFBBFwSI53mJaTL4YeEuAx0rbksvlbs3jHGdxXta
-         quIg==
-X-Gm-Message-State: APjAAAWbBdU8Zd0nbKPFQWMwPCJKyGfDPeGgo6ufi5H3sggB3aHzM/H1
-        nS2wdtvTIkZ3wo4qlAoyfuPvVQ==
-X-Google-Smtp-Source: APXvYqzZf1qj3N0PtGU5dfxFiIepADbEWP5vJXbkBxUgr9vxLtabNVNjrkGbRAiE5scGg4WYXIWOOA==
-X-Received: by 2002:ac8:30f9:: with SMTP id w54mr21488807qta.336.1554671240424;
-        Sun, 07 Apr 2019 14:07:20 -0700 (PDT)
-Received: from localhost ([2600:1003:b457:899d:6e8:4c99:e38f:32bb])
-        by smtp.gmail.com with ESMTPSA id h2sm13052343qkl.3.2019.04.07.14.07.19
+        bh=mUF7FisCWPJBcyY+1uY0DR4+j9qrIcKSbRWtjK3YtW8=;
+        b=dobVF+Bd25Vqe7GaLnCNZMyJDyoMwLCL+qsj6MPjAYB9jxdnNBUK/B/JbDqUxrBcBj
+         rLmRpAUFYzm5RF4dwFBSMOeFNq+2CIup6kXdO0m9c13W/95vGj4vC/uZZ0UzpS9YZor1
+         fVupk3r9CWqKaYqsW0x5bLy/5EbYttsvrczeU5GRWGeSRRbyAs6YbTfACVRyl0Z2cloI
+         +sIYcU7BnFKrvVC72/vhLDbLoLUNft1LpTqP5yzhGDHW3uX0zrebnLW8lauMbCs/cI5O
+         2kb8r7NezQW9uHihZCU9ECIMt0jqh6LGZYVeiTbxGpvuNtVfRVgHkaX9KrHtp0wTbbw9
+         uXXg==
+X-Gm-Message-State: APjAAAVCBKreszhJU7fU7XEv5+1M3UDOX2oiUl8ZV2IS3qCxmjEsR99L
+        3HuPnFM8PS+PFQ2S3KcMuCEaCw==
+X-Google-Smtp-Source: APXvYqyEcxluh0LRXUByCtbfcaG1gVCzjI9vRF+orWx6aBtjmYnzxp/Thsz0QHzd2rPbi2TCPhYnXA==
+X-Received: by 2002:a17:902:b7cc:: with SMTP id v12mr19536417plz.166.1554683808261;
+        Sun, 07 Apr 2019 17:36:48 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id 6sm5669455pft.64.2019.04.07.17.36.46
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 07 Apr 2019 14:07:19 -0700 (PDT)
-Date:   Sun, 7 Apr 2019 21:07:18 +0000
+        Sun, 07 Apr 2019 17:36:47 -0700 (PDT)
+Date:   Sun, 7 Apr 2019 20:36:46 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck <paulmck@linux.ibm.com>, rcu <rcu@vger.kernel.org>,
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Jessica Yu <jeyu@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -70,97 +72,114 @@ Cc:     paulmck <paulmck@linux.ibm.com>, rcu <rcu@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx <amd-gfx@lists.freedesktop.org>
 Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
-Message-ID: <20190407210718.GA6656@localhost>
-References: <20190402142816.GA13084@linux.ibm.com>
+Message-ID: <20190408003646.GA135726@google.com>
+References: <161156422.1435.1554219247444.JavaMail.zimbra@efficios.com>
+ <20190403133243.GE4102@linux.ibm.com>
+ <1028306587.504.1554301662374.JavaMail.zimbra@efficios.com>
  <20190403162039.GA14111@linux.ibm.com>
  <20190405232835.GA24702@linux.ibm.com>
  <20190406230613.GA187766@google.com>
  <20190407133941.GC14111@linux.ibm.com>
  <20190407135937.GA30053@linux.ibm.com>
- <134026717.535.1554665176677.JavaMail.zimbra@efficios.com>
- <20190407193202.GA30934@localhost>
- <1632568795.549.1554669696728.JavaMail.zimbra@efficios.com>
+ <20190407154613.GA2770@localhost>
+ <20190407170514.GE14111@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1632568795.549.1554669696728.JavaMail.zimbra@efficios.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190407170514.GE14111@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Apr 07, 2019 at 04:41:36PM -0400, Mathieu Desnoyers wrote:
-> 
-> ----- On Apr 7, 2019, at 3:32 PM, Joel Fernandes, Google joel@joelfernandes.org wrote:
-> 
-> > On Sun, Apr 07, 2019 at 03:26:16PM -0400, Mathieu Desnoyers wrote:
-> >> ----- On Apr 7, 2019, at 9:59 AM, paulmck paulmck@linux.ibm.com wrote:
-> >> 
-> >> > On Sun, Apr 07, 2019 at 06:39:41AM -0700, Paul E. McKenney wrote:
-> >> >> On Sat, Apr 06, 2019 at 07:06:13PM -0400, Joel Fernandes wrote:
-> >> > 
-> >> > [ . . . ]
-> >> > 
-> >> >> > > diff --git a/include/asm-generic/vmlinux.lds.h
-> >> >> > > b/include/asm-generic/vmlinux.lds.h
-> >> >> > > index f8f6f04c4453..c2d919a1566e 100644
-> >> >> > > --- a/include/asm-generic/vmlinux.lds.h
-> >> >> > > +++ b/include/asm-generic/vmlinux.lds.h
-> >> >> > > @@ -338,6 +338,10 @@
-> >> >> > >  		KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
-> >> >> > >  		__stop___tracepoints_ptrs = .;				\
-> >> >> > >  		*(__tracepoints_strings)/* Tracepoints: strings */	\
-> >> >> > > +		. = ALIGN(8);						\
-> >> >> > > +		__start___srcu_struct = .;				\
-> >> >> > > +		*(___srcu_struct_ptrs)					\
-> >> >> > > +		__end___srcu_struct = .;				\
-> >> >> > >  	}								\
-> >> >> > 
-> >> >> > This vmlinux linker modification is not needed. I tested without it and srcu
-> >> >> > torture works fine with rcutorture built as a module. Putting further prints
-> >> >> > in kernel/module.c verified that the kernel is able to find the srcu structs
-> >> >> > just fine. You could squash the below patch into this one or apply it on top
-> >> >> > of the dev branch.
-> >> >> 
-> >> >> Good point, given that otherwise FORTRAN named common blocks would not
-> >> >> work.
-> >> >> 
-> >> >> But isn't one advantage of leaving that stuff in the RO_DATA_SECTION()
-> >> >> macro that it can be mapped read-only?  Or am I suffering from excessive
-> >> >> optimism?
-> >> > 
-> >> > And to answer the other question, in the case where I am suffering from
-> >> > excessive optimism, it should be a separate commit.  Please see below
-> >> > for the updated original commit thus far.
-> >> > 
-> >> > And may I have your Tested-by?
-> >> 
-> >> Just to confirm: does the cleanup performed in the modules going
-> >> notifier end up acting as a barrier first before freeing the memory ?
-> >> If not, is it explicitly stated that a barrier must be issued before
-> >> module unload ?
-> >> 
+On Sun, Apr 07, 2019 at 10:05:14AM -0700, Paul E. McKenney wrote:
+> On Sun, Apr 07, 2019 at 03:46:13PM +0000, Joel Fernandes wrote:
+> > On Sun, Apr 07, 2019 at 06:59:37AM -0700, Paul E. McKenney wrote:
+> > > On Sun, Apr 07, 2019 at 06:39:41AM -0700, Paul E. McKenney wrote:
+> > > > On Sat, Apr 06, 2019 at 07:06:13PM -0400, Joel Fernandes wrote:
+> > > 
+> > > [ . . . ]
+> > > 
+> > > > > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > > > > > index f8f6f04c4453..c2d919a1566e 100644
+> > > > > > --- a/include/asm-generic/vmlinux.lds.h
+> > > > > > +++ b/include/asm-generic/vmlinux.lds.h
+> > > > > > @@ -338,6 +338,10 @@
+> > > > > >  		KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
+> > > > > >  		__stop___tracepoints_ptrs = .;				\
+> > > > > >  		*(__tracepoints_strings)/* Tracepoints: strings */	\
+> > > > > > +		. = ALIGN(8);						\
+> > > > > > +		__start___srcu_struct = .;				\
+> > > > > > +		*(___srcu_struct_ptrs)					\
+> > > > > > +		__end___srcu_struct = .;				\
+> > > > > >  	}								\
+> > > > > 
+> > > > > This vmlinux linker modification is not needed. I tested without it and srcu
+> > > > > torture works fine with rcutorture built as a module. Putting further prints
+> > > > > in kernel/module.c verified that the kernel is able to find the srcu structs
+> > > > > just fine. You could squash the below patch into this one or apply it on top
+> > > > > of the dev branch.
+> > > > 
+> > > > Good point, given that otherwise FORTRAN named common blocks would not
+> > > > work.
+> > > > 
+> > > > But isn't one advantage of leaving that stuff in the RO_DATA_SECTION()
+> > > > macro that it can be mapped read-only?  Or am I suffering from excessive
+> > > > optimism?
+> > > 
+> > > And to answer the other question, in the case where I am suffering from
+> > > excessive optimism, it should be a separate commit.  Please see below
+> > > for the updated original commit thus far.
 > > 
-> > You mean rcu_barrier? It is mentioned in the documentation that this is the
-> > responsibility of the module writer to prevent delays for all modules.
+> > Actually the vmlinux.lds.h file is unused for module building. For ex, if you
+> > delete include/asm-generic/vmlinux.lds.h , then you can still build
+> > rcutorture.ko. Did I miss something obvious? In that case the vmlinux.lds.h
+> > are not needed since the __section annotations automatically place the srcu
+> > structs in a separate section.
 > 
-> It's a srcu barrier yes. Considering it would be a barrier specific to the
-> srcu domain within that module, I don't see how it would cause delays for
-> "all" modules if we implicitly issue the barrier on module unload. What
-> am I missing ?
+> Hard to argue given that I just deleted include/asm-generic/vmlinux.lds.h,
+> touched kernel/rcu/rcutorture.c, and rebuilt the corresponding .ko
+> without errors.  ;-)
+> 
+> Hmmm...  Is there some way to place a section into a read-only page,
+> for example, tagged onto the text section for that module?  That would
+> get rid of a class of bugs, if nothing else.
 
-Yes you are right. I thought of this after I just sent my email. I think it
-makes sense for srcu case to do and could avoid a class of bugs.
+Strictly speaking, the array of pointers in the new srcu section are fixed up
+at runtime because the srcu_struct(s) they point to can be loaded at a
+dynamic location in memory. The srcu_struct(s) are themselves in the .bss
+section of the module and their locations depend on where the .bss section of
+the module is loaded in memory at load time.
 
-thanks!
+I agree that after such relocation fixups are done, there is no reason to keep
+the array-of-pointers section readable but unfortunately I couldn't figure a
+way out to make them read-only post the relocations.
 
+I copied Jessica Yu who maintains module loading for any input. Jessica, as a
+summary, we are trying to create a custom ELF section of srcu_struct pointers
+in kernels modules, and then make the module loader do SRCU initialization
+from structs pointed to by this section.  The srcu_struct themselves are defined
+on the .bss section. Is there any way we can make this pointer array section
+read-only *after* the relocation fixups of the array are completed?
+
+> > Let me know if you would like me to send a patch separately, or if the
+> > appended patch for the same in my previous email suffices.
 > 
-> Thanks,
+> Please do resend as a formal patch with the above in the commit log.
+> I doubt that I am the only one needing a bit of module-build education!
+> And thank you for providing that education, by the way!
+
+Sounds great, I will go ahead and send out a patch in the morning for this
+part.
+
+> > > And may I have your Tested-by?
+> > 
+> > Absolutely, please do and thanks!
 > 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+> Done, and thank you for giving it a go!
+
+You're very welcome. thanks,
+
+ - Joel
+
