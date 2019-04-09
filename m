@@ -2,59 +2,57 @@ Return-Path: <SRS0=JKca=SL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 443CEC10F0E
-	for <rcu@archiver.kernel.org>; Tue,  9 Apr 2019 16:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDA5C10F0E
+	for <rcu@archiver.kernel.org>; Tue,  9 Apr 2019 16:42:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F2F8B214AF
-	for <rcu@archiver.kernel.org>; Tue,  9 Apr 2019 16:18:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="jxSOesuH"
+	by mail.kernel.org (Postfix) with ESMTP id 25E212084C
+	for <rcu@archiver.kernel.org>; Tue,  9 Apr 2019 16:42:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbfDIQSM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 9 Apr 2019 12:18:12 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:36628 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbfDIQSM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 9 Apr 2019 12:18:12 -0400
-Received: by mail-pl1-f193.google.com with SMTP id ck15so9699455plb.3
-        for <rcu@vger.kernel.org>; Tue, 09 Apr 2019 09:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7vTW31AUTO6cZ3I7PxgLoU4SnH1OSBJW0NkQcXxBp0s=;
-        b=jxSOesuHjysiwSiJ22DL9LtmtpFa6PrylMaQUmc64MXbIVllsY6wpQuh0DLMY3cYAA
-         n25/MffrluXgWfl+sf0A0NcRKDbUPgyqmG3/CMcaMh5V7JuSKnbnIcKGaeCZ7EvmrkxZ
-         7D0RcNstvWA4umnzXCOCkG0ynqVFW7oLXzvws=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7vTW31AUTO6cZ3I7PxgLoU4SnH1OSBJW0NkQcXxBp0s=;
-        b=YY3p3TuVC1cnuXc+5OOXioOnGtQMrBmggDqobXhpq9oFdyoSTpXWkoTXdTbb3og/8z
-         I3ezTPsRGZUj9gBsAgBafSORLtNaKdigimBCs3awZ3275pRCYqT02OzPyhWlXdfcDlRN
-         BsjQ4tymYLuSi14hjmUlyx1pnv5b398Dxojh2gp79Y9cDiuq7db14OaK/96uMenZj4p/
-         Cit+YqtEvPnKC3JNfH57GAXnKcmrNomz3buz70lV3eydNH4dHqTyoQcEOvUD94MuMrpF
-         epwcDinB/0DUueKsCMjMPIl6jBtB6wvGLXW0BLX0lOaKI4NcOHPVe70B3FBV1tgg5dca
-         10Zg==
-X-Gm-Message-State: APjAAAVJt32xUog7fJBFnGzN+NvGZqTAqjHDlxnTev2nMB1E0vMHRiAz
-        oRnTTOkkfiCaOO3Nk0hJ0rMlIA==
-X-Google-Smtp-Source: APXvYqw+m/K00hARXr0tFdnhpSJ28C1FBQ0n+SO6AK3ah8VtCcwiUkRT8xPani9glBFPaaBcpHMx3Q==
-X-Received: by 2002:a17:902:2f43:: with SMTP id s61mr16377788plb.181.1554826691282;
-        Tue, 09 Apr 2019 09:18:11 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id c17sm48448392pfd.76.2019.04.09.09.18.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 09 Apr 2019 09:18:10 -0700 (PDT)
-Date:   Tue, 9 Apr 2019 12:18:09 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
+        id S1726396AbfDIQmH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 9 Apr 2019 12:42:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34636 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726431AbfDIQmH (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 9 Apr 2019 12:42:07 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x39Gg23X012950
+        for <rcu@vger.kernel.org>; Tue, 9 Apr 2019 12:42:06 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2rrwerwm8m-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 09 Apr 2019 12:41:56 -0400
+Received: from localhost
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Tue, 9 Apr 2019 17:40:37 +0100
+Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 9 Apr 2019 17:40:32 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x39GeVcX33882264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Apr 2019 16:40:31 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0CD68B2068;
+        Tue,  9 Apr 2019 16:40:31 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3BE0B2064;
+        Tue,  9 Apr 2019 16:40:30 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Apr 2019 16:40:30 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id D9F1216C36AE; Tue,  9 Apr 2019 09:40:31 -0700 (PDT)
+Date:   Tue, 9 Apr 2019 09:40:31 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck <paulmck@linux.ibm.com>, rcu <rcu@vger.kernel.org>,
+Cc:     "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -71,7 +69,7 @@ Cc:     paulmck <paulmck@linux.ibm.com>, rcu <rcu@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx <amd-gfx@lists.freedesktop.org>
 Subject: Re: [PATCH RFC tip/core/rcu 0/4] Forbid static SRCU use in modules
-Message-ID: <20190409161809.GA10629@google.com>
+Reply-To: paulmck@linux.ibm.com
 References: <20190402142816.GA13084@linux.ibm.com>
  <20190408022728.GF14111@linux.ibm.com>
  <1504296005.857.1554728734661.JavaMail.zimbra@efficios.com>
@@ -85,7 +83,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <534133139.2374.1554825363211.JavaMail.zimbra@efficios.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19040916-0072-0000-0000-000004178F6C
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00010896; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000284; SDB=6.01186660; UDB=6.00621518; IPR=6.00967420;
+ MB=3.00026365; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-09 16:40:36
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19040916-0073-0000-0000-00004BC3DA96
+Message-Id: <20190409164031.GE14111@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-09_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1904090106
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -276,9 +290,8 @@ On Tue, Apr 09, 2019 at 11:56:03AM -0400, Mathieu Desnoyers wrote:
 > In order for the module unload not to race against module execution, it needs
 > to happen after the call_srcu in a way that is already ordered by other means,
 > else module unload races against the module code.
-
-Agreed.
-
+> 
+> > 
 > > Also about doing the unconditional srcu_barrier, since a module could be
 > > unloaded at any time - don't all SRCU using modules need to invoke
 > > srcu_barrier() during their clean up anyway so we are incurring the barrier
@@ -290,10 +303,45 @@ Agreed.
 > to its module going notifier should not hurt. The rare case where a module defines
 > a static SRCU domain *and* does not actually use it with call_srcu() does not
 > seem that usual, and not worth optimizing for.
+> 
+> Thoughts ?
 
-That sounds like a reasonable approach to me.
+Most SRCU users use only synchronize_srcu(), and don't ever use
+call_srcu().  Which is not too surprising given that call_srcu() showed
+up late in the game.
 
-thanks,
+But something still bothers me about this, and I am not yet sure
+what.  One thing that seems to reduce anxiety somewhat is doing the
+srcu_barrier() on all calls to cleanup_srcu_struct() rather than just
+those invoked from the modules infrastructure, but I don't see why at
+the moment.
 
- - Joel
+							Thanx, Paul
+
+> Thanks,
+> 
+> Mathieu
+> 
+> 
+> > 
+> > thanks,
+> > 
+> > - Joel
+> > 
+> >> Thoughts ?
+> >> 
+> >> Thanks,
+> >> 
+> >> Mathieu
+> >> 
+> >> --
+> >> Mathieu Desnoyers
+> >> EfficiOS Inc.
+> > > http://www.efficios.com
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
+> 
 
