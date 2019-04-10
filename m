@@ -2,112 +2,182 @@ Return-Path: <SRS0=7kaP=SM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 086BCC10F11
-	for <rcu@archiver.kernel.org>; Wed, 10 Apr 2019 04:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3269FC10F11
+	for <rcu@archiver.kernel.org>; Wed, 10 Apr 2019 16:26:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CB8A02082E
-	for <rcu@archiver.kernel.org>; Wed, 10 Apr 2019 04:20:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F35E820830
+	for <rcu@archiver.kernel.org>; Wed, 10 Apr 2019 16:26:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="qqHkI44P"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E9gnJVUt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbfDJEUv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 Apr 2019 00:20:51 -0400
-Received: from mail.efficios.com ([167.114.142.138]:47014 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbfDJEUv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 Apr 2019 00:20:51 -0400
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id F0DE91D5E48;
-        Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id 4lpnZ8M89aeY; Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id 961FF1D5E42;
-        Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 961FF1D5E42
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1554870049;
-        bh=TiAMzGmAJm0ScciKXOR3aomQUAKVtUVfBwsaVA/f1ow=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=qqHkI44PK7tt7oCUBZCws3kAbN9ztcuhXpvgiDax33jHM/M7X9KEjKPXFh0q2EZ5d
-         VU70iO6nBMoVxJNZk0EZzEnrFCPukW3efbqHZqBWL2f+FgaI2mEBEXY7WiSikC8EtR
-         SDLrrnHgxC81FYrqqTenQFVyV2hFBZta3dJDiAV81jr8fUR3qgYGg/wwmewS17zAgW
-         1bnajV1bMemphSQP8ALuf6yJwWf8sXSSxZeCGRgTqTy/OEHBChb7rYu8A+7Vd1sDpr
-         1FTvrv60UXBy69asoijS8B8by2Sy/HBwZfyudbVYYi5DthD05ZSIWcay2P4dQ12Z7I
-         xHlzsewg4ks3g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id oRQ38X3Twyhy; Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-Received: from mail02.efficios.com (mail02.efficios.com [167.114.142.138])
-        by mail.efficios.com (Postfix) with ESMTP id 792DC1D5E3C;
-        Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-Date:   Wed, 10 Apr 2019 00:20:49 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        kernel-hardening <kernel-hardening@lists.openwall.com>,
-        kernel-team <kernel-team@android.com>, rcu <rcu@vger.kernel.org>
-Message-ID: <475423743.2834.1554870049461.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAJWu+orXgFkJpB8ww9kz_Nzmmj4qXjj2HtN_eDW3x+XPLbH0qw@mail.gmail.com>
-References: <20190410011418.76408-1-joel@joelfernandes.org> <20190410011418.76408-2-joel@joelfernandes.org> <20190409223820.511e3671@oasis.local.home> <20190410024103.GA104423@google.com> <20190409224826.308b12a4@oasis.local.home> <CAJWu+orXgFkJpB8ww9kz_Nzmmj4qXjj2HtN_eDW3x+XPLbH0qw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] module: Make srcu_struct ptr array as read-only
- post init
+        id S1731073AbfDJQ06 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 Apr 2019 12:26:58 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:41349 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730614AbfDJQ06 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 Apr 2019 12:26:58 -0400
+Received: by mail-vs1-f65.google.com with SMTP id g187so1716703vsc.8
+        for <rcu@vger.kernel.org>; Wed, 10 Apr 2019 09:26:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RGqWd5s2z6twzy3qMbCU3gfqqHA/VTihRqe1wZ4RTtA=;
+        b=E9gnJVUtMzsmf5rEACunC74b4NvUmMxRKKstD0MEOfGYfSWUcIWFiJSPJnbwfbjOFc
+         aD0o75AWKlg92da2NVPisryx8XdC4Vw9m04sdHyZOWMED4/lmbb2aoKxZO3LSjElsXW/
+         E4Z0lg6C2FfGLHAdisUsa8OiwULoAiSLtmSws=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RGqWd5s2z6twzy3qMbCU3gfqqHA/VTihRqe1wZ4RTtA=;
+        b=IrIy2UW2mAUSTJ1s2lZyzFK6zBJ6P9NKOWXd6b1l23YhFwv5NYbONdj5wjKJVKTmhd
+         GITAH1YFC96ybeAve/aYrtU7kGBA0AnqNUavOt0guVZmbNLk3zG/yWZcjlniWS4LVKLs
+         SPzkav11CkH8quBAXRmGI/tzFP8Vr5jWa1ni/+n0ErV2FhPYLu+QZil2H12v4r3Pj3An
+         FAGdYtaE6qldn61xaIGWiA2wuCjXMlCwhHEjGkCwxQCNY8nEcQ7CBzHD5fsQKdaM29C8
+         FUrFXh3uF9XwjYbYJ7isZyk22jcENl9ShR5rSNHk1zKZuXQA9pl9f7KxXP911MZlQMqV
+         wt0w==
+X-Gm-Message-State: APjAAAX6Vx/5poxNfX9PswXVXwfaKEhKOv9XUKK5Kdnwueb6aG1ddMRH
+        OnZs1U94aLaqB2pNOnz+nGq5LT/ZwDI=
+X-Google-Smtp-Source: APXvYqzmddlXY745KGdE8R3eQvREiEAuS3BbsuwJfGAtfRvmPuVU7eGxb4QKYGUYOT5m70pC52lhcA==
+X-Received: by 2002:a67:8010:: with SMTP id b16mr25039450vsd.189.1554913617215;
+        Wed, 10 Apr 2019 09:26:57 -0700 (PDT)
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
+        by smtp.gmail.com with ESMTPSA id j71sm28343408vsd.0.2019.04.10.09.26.56
+        for <rcu@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Apr 2019 09:26:56 -0700 (PDT)
+Received: by mail-ua1-f53.google.com with SMTP id d5so986984uan.6
+        for <rcu@vger.kernel.org>; Wed, 10 Apr 2019 09:26:56 -0700 (PDT)
+X-Received: by 2002:ab0:4eaa:: with SMTP id l42mr18185593uah.80.1554913615771;
+ Wed, 10 Apr 2019 09:26:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.142.138]
-X-Mailer: Zimbra 8.8.12_GA_3794 (ZimbraWebClient - FF66 (Linux)/8.8.12_GA_3794)
-Thread-Topic: module: Make srcu_struct ptr array as read-only post init
-Thread-Index: S1oZQGKExjQi6X7deCx2BAyn87KuYg==
+References: <20190410011418.76408-1-joel@joelfernandes.org>
+In-Reply-To: <20190410011418.76408-1-joel@joelfernandes.org>
+From:   Kees Cook <keescook@chromium.org>
+Date:   Wed, 10 Apr 2019 09:26:44 -0700
+X-Gmail-Original-Message-ID: <CAGXu5jKs6Ag2L+GYEVYAzPky1pLntZt-Tc5ki-pqjVoyCWgxxg@mail.gmail.com>
+Message-ID: <CAGXu5jKs6Ag2L+GYEVYAzPky1pLntZt-Tc5ki-pqjVoyCWgxxg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] module: Prepare for addition of new ro_after_init sections
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Kees Cook <keescook@chromium.org>, Jessica Yu <jeyu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Apr 9, 2019, at 11:38 PM, Joel Fernandes joelaf@google.com wrote:
+On Tue, Apr 9, 2019 at 6:14 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> For the purposes of hardening modules by adding sections to
+> ro_after_init sections, prepare for addition of new ro_after_init
+> entries which we do in future patches. Create a table to which new
+> entries could be added later. This makes it less error prone and reduce
+> code duplication.
+>
+> Cc: paulmck@linux.vnet.ibm.com
+> Cc: rostedt@goodmis.org
+> Cc: mathieu.desnoyers@efficios.com
+> Cc: rcu@vger.kernel.org
+> Cc: kernel-hardening@lists.openwall.com
+> Cc: kernel-team@android.com
+> Suggested-by: keescook@chromium.org
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>
+> ---
+>  kernel/module.c | 42 ++++++++++++++++++++++++------------------
+>  1 file changed, 24 insertions(+), 18 deletions(-)
+>
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 524da609c884..f9221381d076 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -3300,11 +3300,28 @@ static bool blacklisted(const char *module_name)
+>  }
+>  core_param(module_blacklist, module_blacklist, charp, 0400);
+>
+> +/*
+> + * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
+> + * layout_sections() can put it in the right place.
+> + * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
+> + */
+> +static char *ro_after_init_sections[] = {
 
-> On Tue, Apr 9, 2019 at 10:48 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->>
->> On Tue, 9 Apr 2019 22:41:03 -0400
->> Joel Fernandes <joel@joelfernandes.org> wrote:
->>
->> > > Other than that, the two patches look fine to me.
->> >
->> > Could I add your Reviewed-by in the respin?
->>
->> You can add an Acked-by, as I haven't spent enough time to offer a
->> Reviewed-by tag. ;-)
->>
->> Maybe I'll get some time to vet it a bit more tomorrow, and then
->> upgrade the ack to a review.
->>
->> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->>
-> 
-> Thanks!
-> 
-> Also we could possibly consider adding the tracepoint ptrs array as
-> well to the list, which would be useful I think, if one were to over
-> write that array by accident (and the bpf tps related array too).
+static const char * const ... Need to make sure the table and its
+strings can't be changed. :)
 
-Yes, please!
+> +       ".data..ro_after_init",
+> +
+> +       /*
+> +        * __jump_table structures are never modified, with the exception of
+> +        * entries that refer to code in the __init section, which are
+> +        * annotated as such at module load time.
+> +        */
+> +       "__jump_table",
+> +       NULL
 
-Thanks,
+Since this table is known at build time, you don't need a NULL
+terminator, you can use ARRAY_SIZE() instead.
 
-Mathieu
+> +};
+> +
+>  static struct module *layout_and_allocate(struct load_info *info, int flags)
+>  {
+>         struct module *mod;
+>         unsigned int ndx;
+> -       int err;
+> +       int err, i;
+>
+>         err = check_modinfo(info->mod, info, flags);
+>         if (err)
+> @@ -3319,23 +3336,12 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
+>         /* We will do a special allocation for per-cpu sections later. */
+>         info->sechdrs[info->index.pcpu].sh_flags &= ~(unsigned long)SHF_ALLOC;
+>
+> -       /*
+> -        * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
+> -        * layout_sections() can put it in the right place.
+> -        * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
+> -        */
+> -       ndx = find_sec(info, ".data..ro_after_init");
+> -       if (ndx)
+> -               info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+> -       /*
+> -        * Mark the __jump_table section as ro_after_init as well: these data
+> -        * structures are never modified, with the exception of entries that
+> -        * refer to code in the __init section, which are annotated as such
+> -        * at module load time.
+> -        */
+> -       ndx = find_sec(info, "__jump_table");
+> -       if (ndx)
+> -               info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+> +       /* Set sh_flags for read-only after init sections */
+> +       for (i = 0; ro_after_init_sections[i]; i++) {
+
+i.e. for (i = 0; i < ARRAY_SIZE(ro_after_init_sections); i++)
+
+> +               ndx = find_sec(info, ro_after_init_sections[i]);
+> +               if (ndx)
+> +                       info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+> +       }
+>
+>         /* Determine total sizes, and put offsets in sh_entsize.  For now
+>            this is done generically; there doesn't appear to be any
+
+Otherwise, yeah, looks good to me.
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Kees Cook
