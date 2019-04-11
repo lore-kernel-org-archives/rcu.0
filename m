@@ -2,176 +2,110 @@ Return-Path: <SRS0=j/BQ=SN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C66DC10F13
-	for <rcu@archiver.kernel.org>; Thu, 11 Apr 2019 13:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ADD2C10F14
+	for <rcu@archiver.kernel.org>; Thu, 11 Apr 2019 20:06:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 52E5F2133D
-	for <rcu@archiver.kernel.org>; Thu, 11 Apr 2019 13:44:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAB1320850
+	for <rcu@archiver.kernel.org>; Thu, 11 Apr 2019 20:06:19 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VIOhwHDU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbfDKNog (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 Apr 2019 09:44:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47162 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726577AbfDKNof (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 11 Apr 2019 09:44:35 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x3BDbkdT168148
-        for <rcu@vger.kernel.org>; Thu, 11 Apr 2019 09:44:34 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2rt6esh1th-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 11 Apr 2019 09:44:34 -0400
-Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 11 Apr 2019 14:44:34 +0100
-Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 11 Apr 2019 14:44:29 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x3BDiShL32243756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Apr 2019 13:44:28 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E57A6B2065;
-        Thu, 11 Apr 2019 13:44:27 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B830BB205F;
-        Thu, 11 Apr 2019 13:44:27 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.188])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Apr 2019 13:44:27 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id BFC7916C32C2; Thu, 11 Apr 2019 06:44:28 -0700 (PDT)
-Date:   Thu, 11 Apr 2019 06:44:28 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        id S1726588AbfDKUGO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 Apr 2019 16:06:14 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:37954 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbfDKUGN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 Apr 2019 16:06:13 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 10so3972066pfo.5
+        for <rcu@vger.kernel.org>; Thu, 11 Apr 2019 13:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=33mEP7tbzfOYcDBGIZUOmFHkLkGTwi8h/F9OkEGYBn4=;
+        b=VIOhwHDUmhRtKAyDseH3thEZN5Al79WBRcOs868zuNxTZFDJ2wNg9BtfQkyEsNZkPZ
+         +C/2wpv48l1XDSYpn5MmvvNfQbtFZbIlpdWyuNoBMU2+FKK1szfTHqGsR7eMXG0r69L6
+         yfyhpFHoNVKihw67J4PNiST5D4LoZiDOPyfxM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=33mEP7tbzfOYcDBGIZUOmFHkLkGTwi8h/F9OkEGYBn4=;
+        b=kOs4AIGK1SW2zBTzPywcu/MprmpLEVf7NUOyF73ap8sNt39Halhpxyffst1+ahCVtq
+         Q2i9t2LAd5UDu/GHWtTu0eAhELQYGx+Cy6zHumoE+VFWxBWNl6YO9w1fKw2nqhCUtV9p
+         tRLowlTK23UP5bTy1F4/HZwnCMzg8oyqeNe+4hDkipOkmiFrFQ4PVwwe8H/FVHWengw7
+         E/0A8G8DAxVGIo5HO8w0oQUyZNg8l1oQLdb3Wbwu85/q1PGTyma7Uy8ebpqF71USTOtV
+         6DXImZGY1tS10Cbq0CEg46CZ4RnAQTve4PhFAskpUE8jCO4U33QUsHwugH0ry2WFPc+m
+         X4pA==
+X-Gm-Message-State: APjAAAWWeP+dO0PE4mFZWLOTBhzaYvqHzovhcJS4R55cDSZMUJ5M3tGB
+        HxB14UGMn2r/1cHDvfA4weZE8MOD+3o=
+X-Google-Smtp-Source: APXvYqwB5DtGkh435cnR8fMLFN1Yc803RjIiMHi9ATh0RzmfFWCO2sEt2j1pHk6KYYj/drUph8WtYw==
+X-Received: by 2002:a63:2a8f:: with SMTP id q137mr47908875pgq.31.1555013172973;
+        Thu, 11 Apr 2019 13:06:12 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id l88sm66103469pfb.104.2019.04.11.13.06.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Apr 2019 13:06:11 -0700 (PDT)
+Date:   Thu, 11 Apr 2019 16:06:10 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, paulmck@linux.vnet.ibm.com,
         keescook@chromium.org, mathieu.desnoyers@efficios.com,
         Jessica Yu <jeyu@kernel.org>,
         kernel-hardening@lists.openwall.com, kernel-team@android.com,
         rcu@vger.kernel.org
 Subject: Re: [PATCH v3 3/3] module: Make __tracepoints_ptrs as read-only
-Reply-To: paulmck@linux.ibm.com
+Message-ID: <20190411200610.GB75190@google.com>
 References: <20190410195708.162185-1-joel@joelfernandes.org>
  <20190410195708.162185-3-joel@joelfernandes.org>
  <20190410161112.540017d9@gandalf.local.home>
  <20190410202902.GA167446@google.com>
  <20190410204401.62f928ca@gandalf.local.home>
  <20190411082106.GB167446@google.com>
+ <20190411091955.67cdd9fd@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190411082106.GB167446@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19041113-2213-0000-0000-00000375012F
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010908; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01187551; UDB=6.00622058; IPR=6.00968315;
- MB=3.00026393; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-11 13:44:32
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19041113-2214-0000-0000-00005DFC1540
-Message-Id: <20190411134428.GY14111@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-11_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904110094
+In-Reply-To: <20190411091955.67cdd9fd@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 11, 2019 at 04:21:06AM -0400, Joel Fernandes wrote:
-> On Wed, Apr 10, 2019 at 08:44:01PM -0400, Steven Rostedt wrote:
-> > On Wed, 10 Apr 2019 16:29:02 -0400
-> > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > 
-> > > The srcu structure pointer array is modified at module load time because the
-> > > array is fixed up by the module loader at load-time with the final locations
-> > > of the tracepoints right?  Basically relocation fixups. At compile time, I
-> > > believe it is not know what the values in the ptr array are. I believe same
-> > > is true for the tracepoint ptrs array.
-> > > 
-> > > Also it needs to be in a separate __tracepoint_ptrs so that this code works:
-> > > 
-> > > 
-> > > #ifdef CONFIG_TRACEPOINTS
-> > > 	mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
-> > > 					     sizeof(*mod->tracepoints_ptrs),
-> > > 					     &mod->num_tracepoints);
-> > > #endif
-> > > 
-> > > Did I  miss some point? Thanks,
-> > 
-> > But there's a lot of others too. Hmm, does this mean that the RO data
-> > sections that are in modules are not set to RO?
-> > 
-> > There's a bunch of separate sections that are RO. Just look in
-> > include/asm-generic/vmlinux.lds.h under the RO_DATA_SECTION() macro.
-> > 
-> > A lot of the sections saved in module.c:find_module_sections() are in
-> > that RO_DATA when compiled as a builtin. Are they not RO when loaded via
-> > a module?
-> > 
-> > If this is the case, there probably is going to be a lot more sections
-> > added to your list.
+On Thu, Apr 11, 2019 at 09:19:55AM -0400, Steven Rostedt wrote:
+> On Thu, 11 Apr 2019 04:21:06 -0400
+> Joel Fernandes <joel@joelfernandes.org> wrote:
 > 
-> Hi Steven,
+> > Patch 2/3 and 3/3 would not be nececessary if this works out. 1/3 may be a
+> > nice clean up but is not something urgent and we could do that in the future
+> > if needed.
 > 
-> You are right. It turns out that this patch for tracepoint is not needed
-> since each tracepoint pointer is marked as a const which automatically makes
-> the section non-writable after relocations..
+> Well, jump_labels is "special" because it requires sorting the RO data
+> and is done via module notify. The only other user that had to modify
+> RO data on module load is ftrace. It had to do the nop conversions in
+> the text area. It use to do it via module notify, but because of the
+> hardening of the kernel, doing it there was no longer possible because
+> everything was RO then. The solution was to call into ftrace directly
+> from the module code instead of a notifier. This was done before
+> sections were made RO.
 > 
-> #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-> typedef const int tracepoint_ptr_t;
-> #else
-> typedef struct tracepoint * const tracepoint_ptr_t;
-> #endif
-> 
-> So the fix for SRCU could just be the following. I verified with the change
-> that the ELF section section is marked only with the ALLOCATE flag, not the
-> WRITE flag which should automatically put the srcu pointer array in rodata.
-> I'll test this out tomorrow.
-> 
-> Patch 2/3 and 3/3 would not be nececessary if this works out. 1/3 may be a
-> nice clean up but is not something urgent and we could do that in the future
-> if needed.
-> 
-> Any thoughts? Thanks a lot for the review!
-> 
-> (I believe it is still worth auditing other sections in built-in RODATA and
-> making sure they are non-writable for modules as well).
+> One option is to do the same with jump_labels and just have a call to
+> the sorting before the notifiers and before the section gets turned
+> into RO. Or I would say just leave it as is. As I stated, jump_labels
+> are "special" and adding a loop of one section where I don't envision
+> any other sections needing to do the same thing for a long time to
+> come. I would save that patch for if there is another section that
+> comes along that needs to be modify at module notify.
 
-Nice and simple change!  ;-)
+Sounds good, thanks for the detailed history of this. It sounds like you are
+Ok with making of the srcu pointer array as const, which I will test shortly
+and send it out for your review. And we can drop this patch series for now.
 
-If it works and Steve is OK with it, I will be happy to take the
-corresponding formal patch.
+thanks,
 
-							Thanx, Paul
-
-> ---8<-----------------------
-> 
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 8af1824c46a8..9cfcc8a756ae 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -123,7 +123,7 @@ struct srcu_struct {
->  #ifdef MODULE
->  # define __DEFINE_SRCU(name, is_static)					\
->  	is_static struct srcu_struct name;				\
-> -	struct srcu_struct *__srcu_struct_##name			\
-> +	struct srcu_struct * const __srcu_struct_##name			\
->  		__section("___srcu_struct_ptrs") = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)					\
-> 
-
+ - Joel
