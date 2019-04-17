@@ -1,142 +1,164 @@
-Return-Path: <SRS0=RbG4=SO=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Egts=ST=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3884C10F14
-	for <rcu@archiver.kernel.org>; Fri, 12 Apr 2019 02:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC86C282DA
+	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 13:29:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ACDA32083E
-	for <rcu@archiver.kernel.org>; Fri, 12 Apr 2019 02:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7F6E217D7
+	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 13:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1555507775;
+	bh=0xJnJZYcgd0q+PpUhdPcfaC9aLx6V78fhgRRB1mEoMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=TCcy0lTEIHZ7cJOSyJEoOCMavv80f6hCw93AJnrP9lwsIvqb2YWWMvcrp+dETcptL
+	 deVbIC8s6s2vjMdmZB2PsXTcbVWjosi70/bhIi6Ni7gpyAV09A1/jRDONDw1FLUOFP
+	 R0TZoCIYFOtMeqUvWXYbrrmOMTSOl/3QFAU2pOSY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbfDLCfu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 Apr 2019 22:35:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726677AbfDLCfu (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 11 Apr 2019 22:35:50 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x3C2YxBd046725
-        for <rcu@vger.kernel.org>; Thu, 11 Apr 2019 22:35:49 -0400
-Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2rthp5gp0a-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 11 Apr 2019 22:35:48 -0400
-Received: from localhost
-        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 12 Apr 2019 03:35:48 +0100
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
-        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 12 Apr 2019 03:35:43 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x3C2Zg0b30343260
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Apr 2019 02:35:42 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52FB6B2066;
-        Fri, 12 Apr 2019 02:35:42 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 321E0B205F;
-        Fri, 12 Apr 2019 02:35:42 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.226.95])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Apr 2019 02:35:42 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 1526816C5EEB; Thu, 11 Apr 2019 19:35:42 -0700 (PDT)
-Date:   Thu, 11 Apr 2019 19:35:42 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        id S1731454AbfDQN3f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 17 Apr 2019 09:29:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727034AbfDQN3f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 17 Apr 2019 09:29:35 -0400
+Received: from linux-8ccs (charybdis-ext.suse.de [195.135.221.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 655C72173C;
+        Wed, 17 Apr 2019 13:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1555507774;
+        bh=0xJnJZYcgd0q+PpUhdPcfaC9aLx6V78fhgRRB1mEoMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uoNwipDx1HX3uEz2u3yaItHobSLLQ/0QXLuhaUOmRGGBhP8yLFszHDQ2fyP/Qd9C6
+         oF0X93LjGfK00Z70keih5xxx+48yoTecUC3dROMESmURbKStfr4V7TjSLW1vT/d4WL
+         4JAu/5IIYYzOmO1tZkQ2/dbBplQjtMvdXQzLIAH8=
+Date:   Wed, 17 Apr 2019 15:29:29 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, paulmck@linux.vnet.ibm.com,
         rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         rcu@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        kernel-team@android.com, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] module: Make srcu_struct ptr array as read-only
-Reply-To: paulmck@linux.ibm.com
-References: <20190411202421.131779-1-joel@joelfernandes.org>
- <20190411213155.GD14111@linux.ibm.com>
- <20190412021422.GA208673@google.com>
+        kernel-team@android.com, keescook@chromium.org
+Subject: Re: [PATCH v3 1/3] module: Prepare for addition of new ro_after_init
+ sections
+Message-ID: <20190417132929.GC17099@linux-8ccs>
+References: <20190410195708.162185-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20190412021422.GA208673@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19041202-0060-0000-0000-0000032BDE16
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010912; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000284; SDB=6.01187806; UDB=6.00622212; IPR=6.00968572;
- MB=3.00026402; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-12 02:35:46
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19041202-0061-0000-0000-000048EB7C43
-Message-Id: <20190412023542.GF14111@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-12_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904120017
+In-Reply-To: <20190410195708.162185-1-joel@joelfernandes.org>
+X-OS:   Linux linux-8ccs 5.1.0-rc1-lp150.12.28-default+ x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 11, 2019 at 10:14:22PM -0400, Joel Fernandes wrote:
-> On Thu, Apr 11, 2019 at 02:31:55PM -0700, Paul E. McKenney wrote:
-> > On Thu, Apr 11, 2019 at 04:24:21PM -0400, Joel Fernandes (Google) wrote:
-> > > Since commit title ("srcu: Allocate per-CPU data for DEFINE_SRCU() in
-> > > modules"), modules that call DEFINE_{STATIC,}SRCU will have a new array
-> > > of srcu_struct pointers, which is used by srcu code to initialize and
-> > > clean up these structures and save valuable per-cpu reserved space.
-> > > 
-> > > There is no reason for this array of pointers to be writable, and can
-> > > cause security or other hidden bugs. Mark these are read-only after the
-> > > module init has completed.
-> > > 
-> > > Tested with the following diff to ensure array not writable:
-> > > 
-> > > (diff is a bit reduced to avoid patch command getting confused)
-> > >  a/kernel/module.c
-> > >  b/kernel/module.c
-> > >   -3506,6 +3506,14  static noinline int do_init_module [snip]
-> > >  	rcu_assign_pointer(mod->kallsyms, &mod->core_kallsyms);
-> > >  #endif
-> > >  	module_enable_ro(mod, true);
-> > > +
-> > > +	if (mod->srcu_struct_ptrs) {
-> > > +		// Check if srcu_struct_ptrs access is possible
-> > > +		char x = *(char *)mod->srcu_struct_ptrs;
-> > > +		*(char *)mod->srcu_struct_ptrs = 0;
-> > > +		*(char *)mod->srcu_struct_ptrs = x;
-> > > +	}
-> > > +
-> > >  	mod_tree_remove_init(mod);
-> > >  	disable_ro_nx(&mod->init_layout);
-> > >  	module_arch_freeing_init(mod);
-> > > 
-> > > Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > Cc: paulmck@linux.vnet.ibm.com
-> > > Cc: rostedt@goodmis.org
-> > > Cc: mathieu.desnoyers@efficios.com
-> > > Cc: rcu@vger.kernel.org
-> > > Cc: kernel-hardening@lists.openwall.com
-> > > Cc: kernel-team@android.com
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > 
-> > Queued for testing and further review, thank you, Joel!
-> 
-> Thanks a lot! I also just saw you added the rcutorture module to be built as
-> a part kselftests which is really cool ;-)
++++ Joel Fernandes (Google) [10/04/19 15:57 -0400]:
+>For the purposes of hardening modules by adding sections to
+>ro_after_init sections, prepare for addition of new ro_after_init
+>entries which we do in future patches. Create a table to which new
+>entries could be added later. This makes it less error prone and reduce
+>code duplication.
+>
+>Cc: paulmck@linux.vnet.ibm.com
+>Cc: rostedt@goodmis.org
+>Cc: mathieu.desnoyers@efficios.com
+>Cc: rcu@vger.kernel.org
+>Cc: kernel-hardening@lists.openwall.com
+>Cc: kernel-team@android.com
+>Suggested-by: keescook@chromium.org
+>Reviewed-by: keescook@chromium.org
+>Acked-by: rostedt@goodmis.org
+>Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Just a smoke test, really, but it will be interesting to see how
-it goes.  ;-)
+Hi Joel!
 
-							Thanx, Paul
+Thanks for the patchset! Apologies for the late reply, I've returned
+from vacation this week and am catching up on the previous threads..
 
+And if I'm all caught up now, it looks like the plan now is to drop
+this patchset in favor of just marking the srcu pointer array const,
+is that correct? That should put it in a rodata section (ie., a
+section without SHF_WRITE) and the module loader will mark it RO
+appropriately after relocations are applied, so it really doesn't have
+to be a ro_after_init section then if I'm understanding correctly.
+
+Jessica
+
+>---
+> kernel/module.c | 41 +++++++++++++++++++++++------------------
+> 1 file changed, 23 insertions(+), 18 deletions(-)
+>
+>diff --git a/kernel/module.c b/kernel/module.c
+>index 524da609c884..42e4e289d6c7 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -3300,11 +3300,27 @@ static bool blacklisted(const char *module_name)
+> }
+> core_param(module_blacklist, module_blacklist, charp, 0400);
+>
+>+/*
+>+ * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
+>+ * layout_sections() can put it in the right place.
+>+ * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
+>+ */
+>+static const char * const ro_after_init_sections[] = {
+>+	".data..ro_after_init",
+>+
+>+	/*
+>+	 * __jump_table structures are never modified, with the exception of
+>+	 * entries that refer to code in the __init section, which are
+>+	 * annotated as such at module load time.
+>+	 */
+>+	"__jump_table",
+>+};
+>+
+> static struct module *layout_and_allocate(struct load_info *info, int flags)
+> {
+> 	struct module *mod;
+> 	unsigned int ndx;
+>-	int err;
+>+	int err, i;
+>
+> 	err = check_modinfo(info->mod, info, flags);
+> 	if (err)
+>@@ -3319,23 +3335,12 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
+> 	/* We will do a special allocation for per-cpu sections later. */
+> 	info->sechdrs[info->index.pcpu].sh_flags &= ~(unsigned long)SHF_ALLOC;
+>
+>-	/*
+>-	 * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
+>-	 * layout_sections() can put it in the right place.
+>-	 * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
+>-	 */
+>-	ndx = find_sec(info, ".data..ro_after_init");
+>-	if (ndx)
+>-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+>-	/*
+>-	 * Mark the __jump_table section as ro_after_init as well: these data
+>-	 * structures are never modified, with the exception of entries that
+>-	 * refer to code in the __init section, which are annotated as such
+>-	 * at module load time.
+>-	 */
+>-	ndx = find_sec(info, "__jump_table");
+>-	if (ndx)
+>-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+>+	/* Set sh_flags for read-only after init sections */
+>+	for (i = 0; i < ARRAY_SIZE(ro_after_init_sections); i++) {
+>+		ndx = find_sec(info, ro_after_init_sections[i]);
+>+		if (ndx)
+>+			info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+>+	}
+>
+> 	/* Determine total sizes, and put offsets in sh_entsize.  For now
+> 	   this is done generically; there doesn't appear to be any
+>-- 
+>2.21.0.392.gf8f6787159e-goog
+>
