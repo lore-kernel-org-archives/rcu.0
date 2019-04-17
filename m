@@ -2,57 +2,60 @@ Return-Path: <SRS0=Egts=ST=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC86C282DA
-	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 13:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD5ABC282DA
+	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 15:16:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A7F6E217D7
-	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 13:29:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C553217D7
+	for <rcu@archiver.kernel.org>; Wed, 17 Apr 2019 15:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1555507775;
-	bh=0xJnJZYcgd0q+PpUhdPcfaC9aLx6V78fhgRRB1mEoMw=;
+	s=default; t=1555514184;
+	bh=JH2HUpdWLGb4SijG4uMgSFaNehYepgtc1BtSkXiffjo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=TCcy0lTEIHZ7cJOSyJEoOCMavv80f6hCw93AJnrP9lwsIvqb2YWWMvcrp+dETcptL
-	 deVbIC8s6s2vjMdmZB2PsXTcbVWjosi70/bhIi6Ni7gpyAV09A1/jRDONDw1FLUOFP
-	 R0TZoCIYFOtMeqUvWXYbrrmOMTSOl/3QFAU2pOSY=
+	b=q/W6bSyAEB6haIP36NPnBJNQlkagOWbdqy4jOWuTIfdZDuRUs+Semuey48d1fo0/2
+	 tWNyvnEDhQKMSaYr6dzjOSxcWXftYo6v2R4nS8rne68dHx8jqGN0iXDdeQzwYXqDFc
+	 5btUzTtDYTliI1nn4ZSG1+qlbN4/CsIn48rUNonM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbfDQN3f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 17 Apr 2019 09:29:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        id S1730463AbfDQPQY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 17 Apr 2019 11:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727034AbfDQN3f (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 17 Apr 2019 09:29:35 -0400
-Received: from linux-8ccs (charybdis-ext.suse.de [195.135.221.2])
+        id S1729940AbfDQPQY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 17 Apr 2019 11:16:24 -0400
+Received: from linux-8ccs (nat.nue.novell.com [195.135.221.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 655C72173C;
-        Wed, 17 Apr 2019 13:29:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9414E20645;
+        Wed, 17 Apr 2019 15:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1555507774;
-        bh=0xJnJZYcgd0q+PpUhdPcfaC9aLx6V78fhgRRB1mEoMw=;
+        s=default; t=1555514183;
+        bh=JH2HUpdWLGb4SijG4uMgSFaNehYepgtc1BtSkXiffjo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uoNwipDx1HX3uEz2u3yaItHobSLLQ/0QXLuhaUOmRGGBhP8yLFszHDQ2fyP/Qd9C6
-         oF0X93LjGfK00Z70keih5xxx+48yoTecUC3dROMESmURbKStfr4V7TjSLW1vT/d4WL
-         4JAu/5IIYYzOmO1tZkQ2/dbBplQjtMvdXQzLIAH8=
-Date:   Wed, 17 Apr 2019 15:29:29 +0200
+        b=fcC9YlYIw23SgDLWb2KU5r2Ygg7zxasDA+c/d0JSMMCi7SZP9fu7/x+3Me0OUgYJq
+         tpBCwF9K4W3E+OidkKYDJH3AsOOq9jwOmW5xXhgaycQciwHJRA9gst0Jf+GMWxp86z
+         lb6wEOpJ5WiSW+Q+vWKZc+6Fbv9johAfdC/ppPR0=
+Date:   Wed, 17 Apr 2019 17:16:18 +0200
 From:   Jessica Yu <jeyu@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, paulmck@linux.vnet.ibm.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        rcu@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        kernel-team@android.com, keescook@chromium.org
-Subject: Re: [PATCH v3 1/3] module: Prepare for addition of new ro_after_init
- sections
-Message-ID: <20190417132929.GC17099@linux-8ccs>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, paulmck@linux.vnet.ibm.com,
+        keescook@chromium.org, mathieu.desnoyers@efficios.com,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] module: Make __tracepoints_ptrs as read-only
+Message-ID: <20190417151618.GD17099@linux-8ccs>
 References: <20190410195708.162185-1-joel@joelfernandes.org>
+ <20190410195708.162185-3-joel@joelfernandes.org>
+ <20190410161112.540017d9@gandalf.local.home>
+ <20190410202902.GA167446@google.com>
+ <20190410204401.62f928ca@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20190410195708.162185-1-joel@joelfernandes.org>
+In-Reply-To: <20190410204401.62f928ca@gandalf.local.home>
 X-OS:   Linux linux-8ccs 5.1.0-rc1-lp150.12.28-default+ x86_64
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
@@ -60,105 +63,49 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-+++ Joel Fernandes (Google) [10/04/19 15:57 -0400]:
->For the purposes of hardening modules by adding sections to
->ro_after_init sections, prepare for addition of new ro_after_init
->entries which we do in future patches. Create a table to which new
->entries could be added later. This makes it less error prone and reduce
->code duplication.
++++ Steven Rostedt [10/04/19 20:44 -0400]:
+>On Wed, 10 Apr 2019 16:29:02 -0400
+>Joel Fernandes <joel@joelfernandes.org> wrote:
 >
->Cc: paulmck@linux.vnet.ibm.com
->Cc: rostedt@goodmis.org
->Cc: mathieu.desnoyers@efficios.com
->Cc: rcu@vger.kernel.org
->Cc: kernel-hardening@lists.openwall.com
->Cc: kernel-team@android.com
->Suggested-by: keescook@chromium.org
->Reviewed-by: keescook@chromium.org
->Acked-by: rostedt@goodmis.org
->Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>> The srcu structure pointer array is modified at module load time because the
+>> array is fixed up by the module loader at load-time with the final locations
+>> of the tracepoints right?  Basically relocation fixups. At compile time, I
+>> believe it is not know what the values in the ptr array are. I believe same
+>> is true for the tracepoint ptrs array.
+>>
+>> Also it needs to be in a separate __tracepoint_ptrs so that this code works:
+>>
+>>
+>> #ifdef CONFIG_TRACEPOINTS
+>> 	mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
+>> 					     sizeof(*mod->tracepoints_ptrs),
+>> 					     &mod->num_tracepoints);
+>> #endif
+>>
+>> Did I  miss some point? Thanks,
+>
+>But there's a lot of others too. Hmm, does this mean that the RO data
+>sections that are in modules are not set to RO?
+>
+>There's a bunch of separate sections that are RO. Just look in
+>include/asm-generic/vmlinux.lds.h under the RO_DATA_SECTION() macro.
+>
+>A lot of the sections saved in module.c:find_module_sections() are in
+>that RO_DATA when compiled as a builtin. Are they not RO when loaded via
+>a module?
 
-Hi Joel!
+Unlike the kernel, the module loader does not rely on a linker script
+to determine which sections get what protections. On module load, all
+sections in a module are looped through and those sections without the
+SHF_WRITE flag will be set to RO. For example, when there is a section
+filled with structs declared as const or if the section was explicitly
+given only the SHF_ALLOC attribute, those will be read-only. As long
+as the sections were given the correct section attributes for
+read-only, it'll have read-only protection. I see this is already the
+case for __param and  __ksymtab*/__kcrctab* sections, but I agree that
+a full audit would be useful to be consistent with builtin RO
+protections.
 
-Thanks for the patchset! Apologies for the late reply, I've returned
-from vacation this week and am catching up on the previous threads..
-
-And if I'm all caught up now, it looks like the plan now is to drop
-this patchset in favor of just marking the srcu pointer array const,
-is that correct? That should put it in a rodata section (ie., a
-section without SHF_WRITE) and the module loader will mark it RO
-appropriately after relocations are applied, so it really doesn't have
-to be a ro_after_init section then if I'm understanding correctly.
+Hope that helps,
 
 Jessica
-
->---
-> kernel/module.c | 41 +++++++++++++++++++++++------------------
-> 1 file changed, 23 insertions(+), 18 deletions(-)
->
->diff --git a/kernel/module.c b/kernel/module.c
->index 524da609c884..42e4e289d6c7 100644
->--- a/kernel/module.c
->+++ b/kernel/module.c
->@@ -3300,11 +3300,27 @@ static bool blacklisted(const char *module_name)
-> }
-> core_param(module_blacklist, module_blacklist, charp, 0400);
->
->+/*
->+ * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
->+ * layout_sections() can put it in the right place.
->+ * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
->+ */
->+static const char * const ro_after_init_sections[] = {
->+	".data..ro_after_init",
->+
->+	/*
->+	 * __jump_table structures are never modified, with the exception of
->+	 * entries that refer to code in the __init section, which are
->+	 * annotated as such at module load time.
->+	 */
->+	"__jump_table",
->+};
->+
-> static struct module *layout_and_allocate(struct load_info *info, int flags)
-> {
-> 	struct module *mod;
-> 	unsigned int ndx;
->-	int err;
->+	int err, i;
->
-> 	err = check_modinfo(info->mod, info, flags);
-> 	if (err)
->@@ -3319,23 +3335,12 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
-> 	/* We will do a special allocation for per-cpu sections later. */
-> 	info->sechdrs[info->index.pcpu].sh_flags &= ~(unsigned long)SHF_ALLOC;
->
->-	/*
->-	 * Mark ro_after_init section with SHF_RO_AFTER_INIT so that
->-	 * layout_sections() can put it in the right place.
->-	 * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
->-	 */
->-	ndx = find_sec(info, ".data..ro_after_init");
->-	if (ndx)
->-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
->-	/*
->-	 * Mark the __jump_table section as ro_after_init as well: these data
->-	 * structures are never modified, with the exception of entries that
->-	 * refer to code in the __init section, which are annotated as such
->-	 * at module load time.
->-	 */
->-	ndx = find_sec(info, "__jump_table");
->-	if (ndx)
->-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
->+	/* Set sh_flags for read-only after init sections */
->+	for (i = 0; i < ARRAY_SIZE(ro_after_init_sections); i++) {
->+		ndx = find_sec(info, ro_after_init_sections[i]);
->+		if (ndx)
->+			info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
->+	}
->
-> 	/* Determine total sizes, and put offsets in sh_entsize.  For now
-> 	   this is done generically; there doesn't appear to be any
->-- 
->2.21.0.392.gf8f6787159e-goog
->
