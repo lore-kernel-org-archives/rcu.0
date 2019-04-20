@@ -1,281 +1,130 @@
-Return-Path: <SRS0=ZM70=SU=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ulTw=SW=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC6EC10F0E
-	for <rcu@archiver.kernel.org>; Thu, 18 Apr 2019 12:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DB4C282DD
+	for <rcu@archiver.kernel.org>; Sat, 20 Apr 2019 11:39:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B87752183E
-	for <rcu@archiver.kernel.org>; Thu, 18 Apr 2019 12:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1555591502;
-	bh=2PlXePokWr1wSzRQwGc0o7shaYvzRCnydY+y0bEq9l4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=NER9CCafvHnbeJFgzfQnS6lvmmsoCFLOPAthk0tbk3Nr1xLmGiZhIgvJKMC1/fjAr
-	 PgqQiJTf4FT04bugt8n0CiQrYeb194Okc/waparcW6dyfZaq+tE35zaHP3JEYSSw29
-	 iUUJON1xkLNDhQs57Uo/V60ARmufRBQgGhVlNDd8=
+	by mail.kernel.org (Postfix) with ESMTP id D44C92087F
+	for <rcu@archiver.kernel.org>; Sat, 20 Apr 2019 11:39:01 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="tB2wm3wN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388369AbfDRMo6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Apr 2019 08:44:58 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:42804 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbfDRMo5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Apr 2019 08:44:57 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g3so2805801wrx.9;
-        Thu, 18 Apr 2019 05:44:55 -0700 (PDT)
+        id S1726267AbfDTLjB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 20 Apr 2019 07:39:01 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41464 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbfDTLjB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 20 Apr 2019 07:39:01 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p185so4024098qkb.8
+        for <rcu@vger.kernel.org>; Sat, 20 Apr 2019 04:39:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=84uhRl9AuEGIl1F/Od76UWaTAs3PNfVWrvKdwRlVU9Y=;
-        b=uo2fPyh6WNOGizzs2OvVkhAEEg+j6wgXWoVu1+XZRSpK6DcQcLxvVI7oDH81dTxlQ0
-         kuqzycDjaij3A5FLujrhHM04MGv/dj2SnIudVMlL2UPFcNj4E1TvYGsIaSpdXl2tWBX2
-         1SRqawtHLOexMKWh8tt/2UXOT/9oD2s36qKxWwyWzXQTEv8lVvaZvaNo1qP3xjRJUw50
-         e+PSuXlIsju5tvWYugyfTFx2PZpD1J6JwuBMIMnplyaeVZpR3kckkYJB1qrJ9mFesGt0
-         mXthu5dDbbF03WV20UYJiTMYkLzpxk9D7w47pxfyW7TtDMHVpDnmTl5/MuEswshmlqWe
-         sGEg==
+        bh=OsDcQdZeF4Hg0g3DvskuWeoRBxlX3x0h8DSFWh8g77A=;
+        b=tB2wm3wN5sca1OGJ1NXKXSbdNdgY10r6JxAD1wiGhXms3/1Tm0H9mV5Mvte+abaj47
+         jLmhffjlqU2/invqray1awTRIVaHE8C2wqqRhTwXykaqFTa2JtHOnSLnWSQk+Yb2QKKK
+         RhLO44tDpXiSDHkifVCguPAKKQTD7fmYU7p4I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=84uhRl9AuEGIl1F/Od76UWaTAs3PNfVWrvKdwRlVU9Y=;
-        b=sAZB1jkamxiCJwKLXsJqS0Lkz8czpMJa8YgttrhCfuXThEzX5LNdof2RKYnstYgghY
-         rzbBd8KW22W0CtUgY6HxR2XggBdOfbJTDqWruSBikCBYVIDYPrjfbiMKsh660ExuWCrL
-         Ls0cA8eH/0DryPkCHoxmBSQhPEvJTfDl0U5cUI32XibTxqyNMboKvBD/FhI1NA9pDRsh
-         R6IHteN2BHXeVa0IPFm28gp7CgXVrDuJ3W5pi5xdazqqfykER3KakEVr/kpy9I9PLZQK
-         12A91QM+cZFjRYa+x32++V11ZuLSGEfh8SCdjAYJP+wP/z7zLWDhTfsHdTsOj9DA0MBP
-         sd8g==
-X-Gm-Message-State: APjAAAWHVznu+BbWxOdleNt1O9t8DV7qynmvn5NmMfBKG+IW06Et93j9
-        smD+C0AEiMeLzHqyvJtDvtk=
-X-Google-Smtp-Source: APXvYqxfL6oS52M4aC2Sd6GHX8oFW5wJPI5iL3EBmpyHb2T3WxSGR5D9H8pjr1MOVWRCbwGUOD9yUg==
-X-Received: by 2002:adf:ea81:: with SMTP id s1mr14684136wrm.277.1555591495054;
-        Thu, 18 Apr 2019 05:44:55 -0700 (PDT)
-Received: from gmail.com (2E8B0CD5.catv.pool.telekom.hu. [46.139.12.213])
-        by smtp.gmail.com with ESMTPSA id w11sm3393354wre.15.2019.04.18.05.44.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OsDcQdZeF4Hg0g3DvskuWeoRBxlX3x0h8DSFWh8g77A=;
+        b=K6UZuv1HJNe6mejkswEBnVd/HSVrKMUw+aLkgoaNm2hBn8QpX58Pj+EfmZQhG0uoDP
+         R6q1UhXuUn0Hm0wDDVopi4h3ofRcFqLcV/VMHNa0OwK0nNsAp9htYUwMsjCgAtJCvSSZ
+         txOI3CzwPhYMAuz6bScsnhhKkGr0VsicUmaKm6NozXE1YAMCptcU7LMJ4TRvHdSdQ7c2
+         Lt3XFeMnwQrU0R81tK3F/rY4JKycxMZ5tBm6QKvdvX/f26DtYc9RkxQcp/vafVTdEdRh
+         9nQtFrqDp/0PN5Nk2w2tpxGyOMBewDnZYENpT8AhCMxnaBXQoLew8eQLSKp5tMkM6Osv
+         idRw==
+X-Gm-Message-State: APjAAAV4N2LnrzcR4z8VGMVnvBWl6Gi9N5eIjmyIqJg81S8qhOe2RbJM
+        f0V/ji3uuhCg0jsBRNxkE05/Qw==
+X-Google-Smtp-Source: APXvYqyLGqkjonz4aCz/+g8/U4M0XUI9Z2qmO5Y8UVUkr6H2TGM28TtLwYJ9crLkNO5jQGx3jgP2pA==
+X-Received: by 2002:a37:de04:: with SMTP id h4mr6745862qkj.196.1555760340410;
+        Sat, 20 Apr 2019 04:39:00 -0700 (PDT)
+Received: from localhost (c-73-216-90-110.hsd1.va.comcast.net. [73.216.90.110])
+        by smtp.gmail.com with ESMTPSA id u190sm3362335qkf.91.2019.04.20.04.38.59
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Apr 2019 05:44:54 -0700 (PDT)
-Date:   Thu, 18 Apr 2019 14:44:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stern@rowland.harvard.edu, Luc.Maranget@inria.fr,
-        andrea.parri@amarulasolutions.com, sj38.park@gmail.com,
-        peterz@infradead.org, tycho@tycho.ws, joel@joelfernandes.org,
-        gorcunov@gmail.com, fishland@aliyun.com, akiyks@gmail.com,
-        neeraju@codeaurora.org, zhouzhouyi@gmail.com
-Subject: Re: [GIT PULL rcu/next + tools/memory-model] RCU and LKMM commits
- for 5.2
-Message-ID: <20190418124451.GA104512@gmail.com>
-References: <20190418123859.GA21854@linux.ibm.com>
+        Sat, 20 Apr 2019 04:38:59 -0700 (PDT)
+Date:   Sat, 20 Apr 2019 11:38:58 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        paulmck@linux.vnet.ibm.com, keescook@chromium.org,
+        mathieu.desnoyers@efficios.com,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] module: Make __tracepoints_ptrs as read-only
+Message-ID: <20190420113858.GA1058@localhost>
+References: <20190410195708.162185-1-joel@joelfernandes.org>
+ <20190410195708.162185-3-joel@joelfernandes.org>
+ <20190410161112.540017d9@gandalf.local.home>
+ <20190410202902.GA167446@google.com>
+ <20190410204401.62f928ca@gandalf.local.home>
+ <20190417151618.GD17099@linux-8ccs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190418123859.GA21854@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190417151618.GD17099@linux-8ccs>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Apr 17, 2019 at 05:16:18PM +0200, Jessica Yu wrote:
+> +++ Steven Rostedt [10/04/19 20:44 -0400]:
+> > On Wed, 10 Apr 2019 16:29:02 -0400
+> > Joel Fernandes <joel@joelfernandes.org> wrote:
+> > 
+> > > The srcu structure pointer array is modified at module load time because the
+> > > array is fixed up by the module loader at load-time with the final locations
+> > > of the tracepoints right?  Basically relocation fixups. At compile time, I
+> > > believe it is not know what the values in the ptr array are. I believe same
+> > > is true for the tracepoint ptrs array.
+> > > 
+> > > Also it needs to be in a separate __tracepoint_ptrs so that this code works:
+> > > 
+> > > 
+> > > #ifdef CONFIG_TRACEPOINTS
+> > > 	mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
+> > > 					     sizeof(*mod->tracepoints_ptrs),
+> > > 					     &mod->num_tracepoints);
+> > > #endif
+> > > 
+> > > Did I  miss some point? Thanks,
+> > 
+> > But there's a lot of others too. Hmm, does this mean that the RO data
+> > sections that are in modules are not set to RO?
+> > 
+> > There's a bunch of separate sections that are RO. Just look in
+> > include/asm-generic/vmlinux.lds.h under the RO_DATA_SECTION() macro.
+> > 
+> > A lot of the sections saved in module.c:find_module_sections() are in
+> > that RO_DATA when compiled as a builtin. Are they not RO when loaded via
+> > a module?
+> 
+> Unlike the kernel, the module loader does not rely on a linker script
+> to determine which sections get what protections. On module load, all
+> sections in a module are looped through and those sections without the
+> SHF_WRITE flag will be set to RO. For example, when there is a section
+> filled with structs declared as const or if the section was explicitly
+> given only the SHF_ALLOC attribute, those will be read-only. As long
+> as the sections were given the correct section attributes for
+> read-only, it'll have read-only protection. I see this is already the
+> case for __param and  __ksymtab*/__kcrctab* sections, but I agree that
+> a full audit would be useful to be consistent with builtin RO
+> protections.
 
-* Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+Thanks a lot for the explanations. Yes we dropped the patches because const
+worked. This is good to know for future such ventures as well ;-)
 
-> Hello, Ingo,
-> 
-> This pull request contains the following changes:
-> 
-> 1.	An LKMM commit adding support for synchronize_srcu_expedited().
-> 
-> 	http://lkml.kernel.org/r/20190326234133.24962-8-paulmck@linux.ibm.com
-> 
-> 2.	A couple of straggling RCU flavor consolidation updates.
-> 
-> 	http://lkml.kernel.org/r/20190326230011.GA16275@linux.ibm.com
-> 
-> 3.	Documentation updates.
-> 
-> 	http://lkml.kernel.org/r/20190326230408.GA17069@linux.ibm.com
-> 
-> 4.	Miscellaneous fixes.
-> 
-> 	http://lkml.kernel.org/r/20190326231253.GA18343@linux.ibm.com
-> 
-> 5.	SRCU updates.
-> 
-> 	http://lkml.kernel.org/r/20190326231512.GA19843@linux.ibm.com
-> 
-> 6.	RCU CPU stall-warning updates.
-> 
-> 	http://lkml.kernel.org/r/20190326232208.GA20384@linux.ibm.com
-> 
-> 7.	Torture-test updates.
-> 
-> 	http://lkml.kernel.org/r/20190326233054.GA21523@linux.ibm.com
-> 
-> All of these changes have been subjected to 0day Test Robot and -next
-> testing, and are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
-> 
-> for you to fetch changes up to 91df49e187c1a111e423fe0c3aec3472980385e4:
-> 
->   Merge LKMM and RCU commits (2019-04-16 07:08:07 -0700)
-> 
-> ----------------------------------------------------------------
-> Akira Yokosawa (1):
->       rcu: Move common code out of if-else block
-> 
-> Alan Stern (4):
->       tools/memory-model: Rename some RCU relations
->       tools/memory-model: Refactor some RCU relations
->       tools/memory-model: Add SRCU support
->       tools/memory-model: Update Documentation/explanation.txt to include SRCU support
-> 
-> Andrea Parri (1):
->       tools/memory-model: Avoid duplicating herdtools versions
-> 
-> Cyrill Gorcunov (1):
->       rcu: rcu_qs -- Use raise_softirq_irqoff to not save irqs twice
-> 
-> Joel Fernandes (Google) (1):
->       rcu: Avoid unnecessary softirq when system is idle
-> 
-> Liu Song (1):
->       rcu: Set rcutree.kthread_prio sysfs access to read-only
-> 
-> Luc Maranget (1):
->       tools/memory-model: Dynamically check SRCU lock-to-unlock matching
-> 
-> Neeraj Upadhyay (5):
->       rcu: Fix self-wakeups for grace-period kthread
->       rcu: Default jiffies_to_sched_qs to jiffies_till_sched_qs
->       rcu: Do a single rhp->func read in rcu_head_after_call_rcu()
->       rcu: Fix nohz status in stall warning
->       rcutorture: Fix expected forward progress duration in OOM notifier
-> 
-> Paul E. McKenney (39):
->       tools/memory-model: Update README for addition of SRCU
->       doc: Remove obsolete RCU update functions from RCU documentation
->       doc: Describe choice of rcu_dereference() APIs and __rcu usage
->       doc: Fix typos and otherwise modernize checklist.txt
->       rcu: Unconditionally expedite during suspend/hibernate
->       rcu: Make exit_rcu() handle non-preempted RCU readers
->       MAINTAINERS: RCU now has its own email list
->       MAINTAINERS: Add -rcu branch name ("dev")
->       rcu: Allow rcu_nocbs= to specify all CPUs
->       rcu: Report error for bad rcu_nocbs= parameter values
->       rcu: Update jiffies_to_sched_qs and adjust_jiffies_till_sched_qs() comments
->       rcu: Eliminate redundant NULL-pointer check
->       rcu: Fix typo in tree_exp.h comment
->       rcu: Correct READ_ONCE()/WRITE_ONCE() for ->rcu_read_unlock_special
->       srcu: Check for in-flight callbacks in _cleanup_srcu_struct()
->       srcu: Remove cleanup_srcu_struct_quiesced()
->       rcu: Move RCU CPU stall-warning code out of update.c
->       rcu: Move RCU CPU stall-warning code out of tree_plugin.h
->       rcu: Move RCU CPU stall-warning code out of tree.c
->       rcu: Inline RCU task stall-warning helper functions
->       rcu: Move rcu_print_task_exp_stall() to tree_exp.h
->       rcu: Inline RCU stall-warning info helper functions
->       rcu: Move FAST_NO_HZ stall-warning code to tree_stall.h
->       rcu: Organize functions in tree_stall.h
->       rcu: Move irq-disabled stall-warning checking to tree_stall.h
->       rcu: Move forward-progress checkers into tree_stall.h
->       torture: Don't try to offline the last CPU
->       tools/.../rcutorture: Convert to SPDX license identifier
->       rcutorture: Make rcutorture_extend_mask() comment match the code
->       rcutorture: Remove ->ext_irq_conflict field
->       rcutorture: Fix cleanup path for invalid torture_type strings
->       rcuperf: Fix cleanup path for invalid perf_type strings
->       locktorture: NULL cxt.lwsa and cxt.lrsa to allow bad-arg detection
->       torture: Suppress false-positive CONFIG_INITRAMFS_SOURCE complaint
->       doc/kprobes: Update obsolete RCU update functions
->       tools/memory-model: Add support for synchronize_srcu_expedited()
->       net/ipv4/netfilter: Update comment from call_rcu_bh() to call_rcu()
->       Merge branches 'consolidate.2019.04.09a', 'doc.2019.03.26b', 'fixes.2019.03.26b', 'srcu.2019.03.26b', 'stall.2019.03.26b' and 'torture.2019.03.26b' into HEAD
->       Merge LKMM and RCU commits
-> 
-> Peter Zijlstra (1):
->       Documentation/atomic_t: Clarify signed vs unsigned
-> 
-> SeongJae Park (2):
->       sched/Documentation/kokr: Update Korean translation to update wake_up() & co. memory-barrier guarantees
->       locking/memory-barriers/kokr: Update Korean translation to replace smp_cond_acquire() with smp_cond_load_acquire()
-> 
-> Tycho Andersen (1):
->       doc: Repair some whitespace damage
-> 
-> Zhouyi Zhou (1):
->       rcu: Fix force_qs_rnp() header comment
-> 
->  .../Design/Data-Structures/Data-Structures.html    |   3 +-
->  .../Expedited-Grace-Periods.html                   |   4 +-
->  .../Memory-Ordering/Tree-RCU-Memory-Ordering.html  |   5 +-
->  Documentation/RCU/NMI-RCU.txt                      |  13 +-
->  Documentation/RCU/UP.txt                           |   6 +-
->  Documentation/RCU/checklist.txt                    |  91 ++-
->  Documentation/RCU/rcu.txt                          |   8 +-
->  Documentation/RCU/rcu_dereference.txt              | 103 +++
->  Documentation/RCU/rcubarrier.txt                   |  27 +-
->  Documentation/RCU/whatisRCU.txt                    |  10 +-
->  Documentation/admin-guide/kernel-parameters.txt    |   4 +-
->  Documentation/atomic_t.txt                         |  17 +
->  Documentation/kprobes.txt                          |   6 +-
->  .../translations/ko_KR/memory-barriers.txt         |  49 +-
->  MAINTAINERS                                        |  16 +-
->  drivers/nvme/host/core.c                           |   2 +-
->  include/linux/rcupdate.h                           |   6 +-
->  include/linux/srcu.h                               |  36 +-
->  kernel/locking/locktorture.c                       |   2 +
->  kernel/rcu/rcu.h                                   |   1 +
->  kernel/rcu/rcuperf.c                               |   5 +
->  kernel/rcu/rcutorture.c                            |  21 +-
->  kernel/rcu/srcutiny.c                              |   9 +-
->  kernel/rcu/srcutree.c                              |  32 +-
->  kernel/rcu/tiny.c                                  |   2 +-
->  kernel/rcu/tree.c                                  | 508 +--------------
->  kernel/rcu/tree.h                                  |  14 +-
->  kernel/rcu/tree_exp.h                              |  36 +-
->  kernel/rcu/tree_plugin.h                           | 257 +-------
->  kernel/rcu/tree_stall.h                            | 709 +++++++++++++++++++++
->  kernel/rcu/update.c                                |  59 +-
->  kernel/torture.c                                   |   2 +
->  net/ipv4/netfilter/ipt_CLUSTERIP.c                 |   2 +-
->  tools/memory-model/Documentation/explanation.txt   | 289 +++++----
->  tools/memory-model/README                          |  33 +-
->  tools/memory-model/linux-kernel.bell               |  35 +-
->  tools/memory-model/linux-kernel.cat                |  39 +-
->  tools/memory-model/linux-kernel.def                |   6 +
->  tools/memory-model/lock.cat                        |   3 -
->  .../selftests/rcutorture/bin/configNR_CPUS.sh      |  17 +-
->  .../selftests/rcutorture/bin/config_override.sh    |  17 +-
->  .../selftests/rcutorture/bin/configcheck.sh        |  19 +-
->  .../testing/selftests/rcutorture/bin/configinit.sh |  17 +-
->  tools/testing/selftests/rcutorture/bin/cpus2use.sh |  17 +-
->  .../testing/selftests/rcutorture/bin/functions.sh  |  17 +-
->  tools/testing/selftests/rcutorture/bin/jitter.sh   |  17 +-
->  .../testing/selftests/rcutorture/bin/kvm-build.sh  |  17 +-
->  .../selftests/rcutorture/bin/kvm-find-errors.sh    |   5 +
->  .../selftests/rcutorture/bin/kvm-recheck-lock.sh   |  17 +-
->  .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |  17 +-
->  .../rcutorture/bin/kvm-recheck-rcuperf-ftrace.sh   |  17 +-
->  .../rcutorture/bin/kvm-recheck-rcuperf.sh          |  17 +-
->  .../selftests/rcutorture/bin/kvm-recheck.sh        |  17 +-
->  .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  17 +-
->  tools/testing/selftests/rcutorture/bin/kvm.sh      |  17 +-
->  tools/testing/selftests/rcutorture/bin/mkinitrd.sh |  15 +-
->  .../selftests/rcutorture/bin/parse-build.sh        |  17 +-
->  .../selftests/rcutorture/bin/parse-console.sh      |  17 +-
->  .../rcutorture/configs/lock/ver_functions.sh       |  17 +-
->  .../rcutorture/configs/rcu/ver_functions.sh        |  17 +-
->  .../rcutorture/configs/rcuperf/ver_functions.sh    |  17 +-
->  61 files changed, 1374 insertions(+), 1458 deletions(-)
->  create mode 100644 kernel/rcu/tree_stall.h
+Best,
 
-Pulled into tip:core/rcu, thanks a lot Paul!
+- Joel
 
-	Ingo
+> Jessica
