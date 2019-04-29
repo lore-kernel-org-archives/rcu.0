@@ -1,56 +1,29 @@
-Return-Path: <SRS0=mJfo=S4=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=TJoU=S7=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_NEOMUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEEBC43219
-	for <rcu@archiver.kernel.org>; Fri, 26 Apr 2019 13:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F18C43219
+	for <rcu@archiver.kernel.org>; Mon, 29 Apr 2019 08:19:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 266122084F
-	for <rcu@archiver.kernel.org>; Fri, 26 Apr 2019 13:51:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E3192147A
+	for <rcu@archiver.kernel.org>; Mon, 29 Apr 2019 08:19:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbfDZNvG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 Apr 2019 09:51:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726039AbfDZNvF (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 26 Apr 2019 09:51:05 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x3QDovD4093628
-        for <rcu@vger.kernel.org>; Fri, 26 Apr 2019 09:51:04 -0400
-Received: from e17.ny.us.ibm.com (e17.ny.us.ibm.com [129.33.205.207])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2s42tgss21-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 26 Apr 2019 09:51:03 -0400
-Received: from localhost
-        by e17.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 26 Apr 2019 14:51:02 +0100
-Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
-        by e17.ny.us.ibm.com (146.89.104.204) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 26 Apr 2019 14:51:00 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x3QDoxHn18940104
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Apr 2019 13:50:59 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D2B0B2066;
-        Fri, 26 Apr 2019 13:50:59 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDEC8B2064;
-        Fri, 26 Apr 2019 13:50:58 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.206.135])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Apr 2019 13:50:58 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 86C2616C6B4C; Fri, 26 Apr 2019 06:50:58 -0700 (PDT)
-Date:   Fri, 26 Apr 2019 06:50:58 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+        id S1727608AbfD2ITt convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Mon, 29 Apr 2019 04:19:49 -0400
+Received: from Galois.linutronix.de ([146.0.238.70]:40857 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727531AbfD2ITt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 29 Apr 2019 04:19:49 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1hL1Vo-0007FQ-AA; Mon, 29 Apr 2019 10:19:44 +0200
+Date:   Mon, 29 Apr 2019 10:19:44 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     linux-kselftest@vger.kernel.org, rcu@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -58,82 +31,91 @@ Cc:     linux-kselftest@vger.kernel.org, rcu@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Shuah Khan <shuah@kernel.org>
 Subject: Re: [PATCH] rcutorture: Tweak kvm options
-Reply-To: paulmck@linux.ibm.com
+Message-ID: <20190429081943.gucbalncrrttxxcr@linutronix.de>
 References: <20190424073446.8577-1-bigeasy@linutronix.de>
  <20190424103809.GM3923@linux.ibm.com>
  <20190424183039.GA4494@linux.ibm.com>
  <20190425194638.GA7238@linux.ibm.com>
  <20190426105413.rajcon4vyzov446c@linutronix.de>
+ <20190426135058.GD3923@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190426105413.rajcon4vyzov446c@linutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19042613-0040-0000-0000-000004E79841
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00010999; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000285; SDB=6.01194664; UDB=6.00626372; IPR=6.00975500;
- MB=3.00026608; MTD=3.00000008; XFM=3.00000015; UTC=2019-04-26 13:51:02
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19042613-0041-0000-0000-000008F398DD
-Message-Id: <20190426135058.GD3923@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-26_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904260096
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20190426135058.GD3923@linux.ibm.com>
+User-Agent: NeoMutt/20180716
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 26, 2019 at 12:54:14PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2019-04-25 12:46:38 [-0700], Paul E. McKenney wrote:
-> > > And it doesn't like my (admittedly ancient) QEMU, complaining about not
-> > > knowing about "x2apic=on,tsc-deadline=on,hypervisor=on,tsc_adjust=on".
-> > > If I remove these, it works.  I will be upgrading soon (famous last
-> > > words), so what I am going to do is queue the following separate
-> > > not-for-upstream patch that makes it work on my setup.
-> > 
-> > Also, the !SMP scenarios get this:
-> > 
-> > :CONFIG_PARAVIRT_SPINLOCKS=y: improperly set
+On 2019-04-26 06:50:58 [-0700], Paul E. McKenney wrote:
+> One place to look is in the summary output:
 > 
-> I ignored that (because there is a CHECK option to ensure that certain
-> options are set).
-
-True enough, but these things are a bit like compiler warnings in that
-it is good to have a clean run.
-
-> > Would it make sense to only set this on CONFIG_SMP=y runs?  The easy
-> > way to do this is to move it from CFcommon to the scenario files not
-> > having CONFIG_SMP=n.
-
-(Which is how I am currently running, I should have added.)
-
-> > having CONFIG_SMP=n.  Or would something else work better?
-> > 
-> > Or am I doing something wrong?
+> TREE01 ------- 17540 GPs (58.4667/s) [rcu: g130629 f0x0 ]
 > 
-> You should also get that warning on ARM for instance since those
-> PARAVIRT SPINLOCKS are only implemented on x86.
+> The "58.4667/s" is the number of grace periods per second.  I would be
+> surprised if CONFIG_PARAVIRT_SPINLOCKS made a noticeable difference in
+> grace-period rate (given the natural variation), but you never know.
 
-OK, so we would want this to only be added for x86 runs.
+I did four runs of the different parts of the patch:
+- 5.1-rc6
+- #1 + kvm64 CPU + some config options
+- #2 + tsc-deadline=on and so on (the whole line)
+- #3 + CONFIG_PARAVIRT_SPINLOCKS (now everything)
 
-> I have no numbers to compare the performance with and without that
-> option. So we could drop that option or you tell me where to look after
-> a run with/without that option so I can tell if it is worth the effort.
+the test command was
+	tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 112 --duration 60 --configs "16*TREE08" --memory 4G
 
-One place to look is in the summary output:
+and the results:
+| HEAD is now at 085b7755808a... Linux 5.1-rc6
+| (28.5942 +27.4658 +28.0203 +27.2061 +28.0731 +26.9078 +27.8494 + 27.3392 +26.4339 +28.025 +27.4797 +27.6775 +28.0653 +28.0742 +27.9581 +28.6508)/ 16
+| 27.738775
+| 
+| HEAD is now at 36a12aa9761a... tune #1
+| (28.5761 +26.6514 +26.6989 +27.4375 +27.3442 +28.3228 +26.6353 +27.5461+28.5531 +27.7006 +27.8078 +27.9753 +27.4269 +28.0464 +27.6314 +27.8356) / 16
+| 27.6368375
+| 
+| HEAD is now at af5cd7196436... tune #2
+| (28.4867 +26.3675 +27.6364 +28.3344 +27.4153 +27.9306 +27.1703 +26.8461+27.3194 +28.5486 +27.8975 +27.4356 +28.12 +28.4397 +29.0186 +26.9328 )/ 16
+| 27.74371875
+| 
+| HEAD is now at 3701f64943f5... tune #3
+| (28.2431 +27.7831 +28.39 +28.2586 +27.7408 +27.9258 +26.6236 +26.7817+29.1178 +26.9564 +29.0525 +27.4258 +27.4931 +27.8928 +26.9308 +28.4833)/ 16
+| 27.8187
 
-TREE01 ------- 17540 GPs (58.4667/s) [rcu: g130629 f0x0 ]
+This 28.… is the number of GP/s. Based on the results in looks like
+noise to me. Also I have no idea why you have more than twice as many
+GP/s as I do.
+Different box doing:
+	tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 112 --duration 60 --configs "42*TREE01" --memory 4G
+and got this:
 
-The "58.4667/s" is the number of grace periods per second.  I would be
-surprised if CONFIG_PARAVIRT_SPINLOCKS made a noticeable difference in
-grace-period rate (given the natural variation), but you never know.
+| HEAD is now at 085b7755808aa... Linux 5.1-rc6
+| (15.2878 + 15.8664 + 15.6369 + 15.6714 + 15.3667 + 16.4706 + 15.7844 +
+| 16.2119 + 15.6108 + 15.84 + 16.0003 + 16.2886 + 15.8728 + 15.5347 +
+| 15.6753 + 15.6628 + 15.8628 + 15.8158 + 15.8419 + 16.0053 + 15.7878 +
+| 16.465 + 16.2267 + 16.6881 + 16.3186 + 16.1778 + 15.7069 + 16.0178 +
+| 15.7156 + 16.0083 + 15.7181 + 15.8961 + 15.5253 + 16.1569 + 15.7692 +
+| 16.2622 + 16.2931 + 15.9531 + 15.6697 + 15.4539 + 15.6478 + 15.8047) /
+| 42
+|	~15.89452142857142857143
+|
+| HEAD is now at 3701f64943f5a... tune #3
+| ; (15.8461 + 15.8653 + 16.0392 + 15.8906 + 15.7606 + 15.6169 + 16.1425 +
+| 15.9089 + 16.2169 + 16.1694 + 16.2122 + 15.6417 + 15.8022 + 16.1178 +
+| 15.1689 + 16.1303 + 16.0181 + 16.3797 + 16.0614 + 16.2839 + 15.4583 +
+| 15.9178 + 16.0589 + 16.3428 + 15.5486 + 16.0839 + 15.9931 + 15.8417 +
+| 16.0981 + 15.8075 + 15.9925 + 15.7311 + 15.9172 + 16.1164 + 15.6303 +
+| 15.9383 + 16.0714 + 16.2786 + 15.8394 + 15.9597 + 16.0175 + 15.3908) /
+| 42
+|	~15.93586904761904761905
 
-							Thanx, Paul
+Noise.
 
+So from RCUtorture point of view there is no improvement right? In that
+case I would suggest to drop the problematic parts…
+
+> 							Thanx, Paul
+
+Sebastian
