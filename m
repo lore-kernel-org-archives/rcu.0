@@ -1,106 +1,126 @@
-Return-Path: <SRS0=OFqp=TF=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Ve56=TG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.4 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CC7AC04AAA
-	for <rcu@archiver.kernel.org>; Sun,  5 May 2019 02:04:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88EA4C04A6B
+	for <rcu@archiver.kernel.org>; Mon,  6 May 2019 23:54:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D97B620675
-	for <rcu@archiver.kernel.org>; Sun,  5 May 2019 02:04:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VF97BCjY"
+	by mail.kernel.org (Postfix) with ESMTP id 628B820830
+	for <rcu@archiver.kernel.org>; Mon,  6 May 2019 23:54:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbfEECED (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 4 May 2019 22:04:03 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40884 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbfEECED (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 4 May 2019 22:04:03 -0400
-Received: by mail-pf1-f195.google.com with SMTP id u17so4867320pfn.7
-        for <rcu@vger.kernel.org>; Sat, 04 May 2019 19:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZFhA4rpBi4Ho6CrUxobqyCCZrYULhg304dSUdvW7O94=;
-        b=VF97BCjYFHEAQLpYYbW91gr3FQIXdhnksyX+tLBpQCq6IOPLNoGKQ1xLm4n+GoZEK1
-         ZrMI9jRmv92rcu4yERa1vUnvkrYoiSlvlVDtuk58zcMFywKQjMNULJqXEPROjvk2LhoS
-         3IZ2EhwORtG6UrMA7SYMD7RU/CopH/XHCGLFM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZFhA4rpBi4Ho6CrUxobqyCCZrYULhg304dSUdvW7O94=;
-        b=CO2UcqB37qw8uYaSvojYUUgF147YSuliCw2JN6+l/C3IIYSzQwJsuzE+h5yKz9Wclg
-         XhhSLBgdzDiG3Kk9s/ql+RYvLu/3Xc1qeeho/yuriJzblHcQsFvRLeOsQcSEonO2GLIC
-         71KN1z+uruNTPnJPB9wHa/5M5Ve9LzkteSA9LF0eC+TTWXGeChsUMF9bkAXq4UpuJORm
-         h4CrCIcV4c4lrgSehp0PpH4FprQPMn6aod6vG80fiIlT0KBDdBrwKwRfwVDzuWm1BKHD
-         HYcVA5GhzhsM6BzGjFoVorDLlJt+Nv3lXpT5fU/Z03geFA8y+/NZBT/fKrhdzCIO1SH8
-         A2IQ==
-X-Gm-Message-State: APjAAAWI75kUqdoSDMonthQp2Mv1PmhSL8ucxkS/FORGM6uQ143/+qz5
-        bzm7V1jmfpgOONDn1LlMqnQ7lQ==
-X-Google-Smtp-Source: APXvYqxVp6IA/vCCGuS3+eK5MQzvCZdy0r4p5IJ9nTyEy86IgB/c5iImNtANV5yxYN8IFPwA87P+VQ==
-X-Received: by 2002:aa7:91c8:: with SMTP id z8mr23430186pfa.110.1557021842475;
-        Sat, 04 May 2019 19:04:02 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 5sm2632829pfs.17.2019.05.04.19.03.59
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 04 May 2019 19:04:00 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH] doc/rcu: Correct field_count field naming in examples
-Date:   Sat,  4 May 2019 22:03:10 -0400
-Message-Id: <20190505020328.165839-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+        id S1726438AbfEFXye (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 May 2019 19:54:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48482 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726236AbfEFXyd (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 6 May 2019 19:54:33 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x46NqQIE016582
+        for <rcu@vger.kernel.org>; Mon, 6 May 2019 19:54:32 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2saudayphh-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 06 May 2019 19:54:32 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Tue, 7 May 2019 00:54:32 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 7 May 2019 00:54:29 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x46NsSiM41419102
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 May 2019 23:54:29 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E1183B2066;
+        Mon,  6 May 2019 23:54:28 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5481B2064;
+        Mon,  6 May 2019 23:54:28 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  6 May 2019 23:54:28 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 3E1A216C6094; Mon,  6 May 2019 16:54:30 -0700 (PDT)
+Date:   Mon, 6 May 2019 16:54:30 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org
+Subject: Re: Should list_entry_rcu use rcu_dereference ?
+Reply-To: paulmck@linux.ibm.com
+References: <20190504185944.GA79652@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190504185944.GA79652@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19050623-0060-0000-0000-0000033C0624
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011062; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000285; SDB=6.01199621; UDB=6.00629368; IPR=6.00980498;
+ MB=3.00026763; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-06 23:54:30
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19050623-0061-0000-0000-0000493F8DB0
+Message-Id: <20190506235430.GA3923@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-06_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905060180
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I believe this field should be called field_count instead of file_count.
-Correct the doc with the same.
+On Sat, May 04, 2019 at 02:59:44PM -0400, Joel Fernandes wrote:
+> Hi,
+> Sorry if this is a silly question.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- Documentation/RCU/listRCU.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Not at all silly!
 
-diff --git a/Documentation/RCU/listRCU.txt b/Documentation/RCU/listRCU.txt
-index adb5a3782846..190e666fc359 100644
---- a/Documentation/RCU/listRCU.txt
-+++ b/Documentation/RCU/listRCU.txt
-@@ -175,7 +175,7 @@ otherwise, the added fields would need to be filled in):
- 		list_for_each_entry(e, list, list) {
- 			if (!audit_compare_rule(rule, &e->rule)) {
- 				e->rule.action = newaction;
--				e->rule.file_count = newfield_count;
-+				e->rule.field_count = newfield_count;
- 				write_unlock(&auditsc_lock);
- 				return 0;
- 			}
-@@ -204,7 +204,7 @@ RCU ("read-copy update") its name.  The RCU code is as follows:
- 					return -ENOMEM;
- 				audit_copy_rule(&ne->rule, &e->rule);
- 				ne->rule.action = newaction;
--				ne->rule.file_count = newfield_count;
-+				ne->rule.field_count = newfield_count;
- 				list_replace_rcu(&e->list, &ne->list);
- 				call_rcu(&e->rcu, audit_free_rule);
- 				return 0;
--- 
-2.21.0.1020.gf2820cf01a-goog
+> Looking at the list_entry_rcu primitive, I see it does direct READ_ONCE
+> on ptr. That's Ok, but rcu_dereference also does additional lockdep and
+> sparse checking.  Why not call rcu_dereference instead of READ_ONCE? The
+> pointer may be dereference by the caller so IMO makes sense to check.
+> 
+> Here is the definition of list_entry_rcu:
+> /**
+>  * list_entry_rcu - get the struct for this entry
+>  [snip]
+> * This primitive may safely run concurrently with the _rcu list-mutation
+>  * primitives such as list_add_rcu() as long as it's guarded by rcu_read_lock().
+>  */
+> #define list_entry_rcu(ptr, type, member) \
+> 	container_of(READ_ONCE(ptr), type, member)
+> 
+> Also, I was curious why hlist_for_each_entry_rcu() uses rcu_dereference_raw()
+> while __hlist_for_each_rcu)_ uses rcu_dereference(). I feel both should use
+> rcu_dereference to have the lockdep checking. Is this not done due to
+> performance reasons?
+> 
+> thanks!
+> 
+>   - Joel
+> 
+> https://cdn-images-1.medium.com/max/1600/0*XTYvSNj_rT2UZwfm.png
+
+The issue is that most of the RCU list macros are generic over the RCU
+read-side flavors.  We could have created _bh and _sched variants of all
+of these, but that seemed like way too much RCU API expansion at the time,
+and still does.  This shows up in the sparse checking as well, so that
+there is just __rcu instead of also being __rcu_bh and __rcu_sched.
+
+Or are do you have a trick in mind that would allow lockdep checking
+without RCU API expansion?
+
+							Thanx, Paul
 
