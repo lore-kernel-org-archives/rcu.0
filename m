@@ -1,203 +1,124 @@
-Return-Path: <SRS0=Or09=TI=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=5zSV=TL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_PASS,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 250E8C04AAD
-	for <rcu@archiver.kernel.org>; Wed,  8 May 2019 18:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 404EAC04AB1
+	for <rcu@archiver.kernel.org>; Sat, 11 May 2019 22:11:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F29BC21726
-	for <rcu@archiver.kernel.org>; Wed,  8 May 2019 18:16:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B9F4217D7
+	for <rcu@archiver.kernel.org>; Sat, 11 May 2019 22:11:37 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Ej4E7gbn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfEHSQo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 May 2019 14:16:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34402 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727352AbfEHSQn (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 8 May 2019 14:16:43 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x48I7Eec096956
-        for <rcu@vger.kernel.org>; Wed, 8 May 2019 14:16:42 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2sc3uxs5wc-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Wed, 08 May 2019 14:16:41 -0400
-Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Wed, 8 May 2019 19:16:40 +0100
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 8 May 2019 19:16:38 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x48IGbn431719532
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 May 2019 18:16:37 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E2B3B205F;
-        Wed,  8 May 2019 18:16:37 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 71029B2067;
-        Wed,  8 May 2019 18:16:37 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  8 May 2019 18:16:37 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id E6DC116C343E; Wed,  8 May 2019 11:16:38 -0700 (PDT)
-Date:   Wed, 8 May 2019 11:16:38 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        id S1726233AbfEKWLh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 May 2019 18:11:37 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:56171 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfEKWLh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 May 2019 18:11:37 -0400
+Received: by mail-wm1-f66.google.com with SMTP id y2so10467293wmi.5
+        for <rcu@vger.kernel.org>; Sat, 11 May 2019 15:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d1+FGziLF47L4qrx03aVD+M8jY5l9sq1jNKrZJyhi2o=;
+        b=Ej4E7gbnKGYiowwSnWtaTwbeMaxu1nIyXWrwEaork0CeI/aFXbuw4R6MmShvlH/OZ4
+         fC5MfKzqE6lg+eUSu+7ClEGLLRY+L/4hU+vlLfCpQZokJksy/FUSAezD1n3yQyBSXfWJ
+         5WDCkAW7BK2eq0YLIvZHkl87MGNWpVc+Id3/M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d1+FGziLF47L4qrx03aVD+M8jY5l9sq1jNKrZJyhi2o=;
+        b=c+qmP3vfT/sHP3e+0lE2Gsl2fAHqg07veNnRm0hh3QMZL2z0kSdHXMYJbbYLvsVb48
+         xZnv+Wvi6gkfWF6hi9zD0QdSo4cku+DAsBbyb7yEAlRs/R0MhszkLIY4yKAN1IJKk7J9
+         T4bWmWoqwc4IMJ3YRS3XU5oJLHEbnPM16ddJgipIsa8XeXbmvFUo+8hesuywPCtgidnW
+         T/dm0P3KHEqxUNZlz6Ddy6XsPTMmG7JJayqLmAI0PzDfERdIdfPFj8ijBQq31w5GQhW+
+         DMJLIW4Xyu389ojqYWmaoqvgU0Lmb9okiwWHRLYClMJlTVTFnzs58yc1CFiJooy4Z8AN
+         fyEA==
+X-Gm-Message-State: APjAAAWKdAt5jHg/tvThex5LfNAQfmef/6AnhQCkIAnyqpd0UtuaeL4e
+        77YIq2UzX0OuY1S2MkKFkbZ3kg==
+X-Google-Smtp-Source: APXvYqxOKIy4AHjaZp8FltX2FkddcS0U5ptHUeNcdKRpT68Ku+qiK08plVhUjpP6TiWqvwmGdD4eYw==
+X-Received: by 2002:a1c:cc10:: with SMTP id h16mr11462278wmb.39.1557612695128;
+        Sat, 11 May 2019 15:11:35 -0700 (PDT)
+Received: from andrea ([89.22.71.151])
+        by smtp.gmail.com with ESMTPSA id 91sm17491123wrs.43.2019.05.11.15.11.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 11 May 2019 15:11:34 -0700 (PDT)
+Date:   Sun, 12 May 2019 00:11:26 +0200
+From:   Andrea Parri <andrea.parri@amarulasolutions.com>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 Subject: Re: [PATCH] doc/rcu: Correct field_count field naming in examples
-Reply-To: paulmck@linux.ibm.com
+Message-ID: <20190511221126.GA3984@andrea>
 References: <20190505020328.165839-1-joel@joelfernandes.org>
  <20190507000453.GB3923@linux.ibm.com>
  <20190508162635.GD187505@google.com>
+ <20190508181638.GY3923@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190508162635.GD187505@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19050818-2213-0000-0000-0000038AA190
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011072; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000285; SDB=6.01200459; UDB=6.00629877; IPR=6.00981345;
- MB=3.00026796; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-08 18:16:40
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19050818-2214-0000-0000-00005E5B2D6C
-Message-Id: <20190508181638.GY3923@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-08_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905080111
+In-Reply-To: <20190508181638.GY3923@linux.ibm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 08, 2019 at 12:26:35PM -0400, Joel Fernandes wrote:
-> On Mon, May 06, 2019 at 05:04:53PM -0700, Paul E. McKenney wrote:
-> > On Sat, May 04, 2019 at 10:03:10PM -0400, Joel Fernandes (Google) wrote:
-> > > I believe this field should be called field_count instead of file_count.
-> > > Correct the doc with the same.
-> > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Hi Paul, Joel,
+
+> > > On the other hand, would you have ideas for more modern replacement
+> > > examples?
 > > 
-> > But if we are going to update this, why not update it with the current
-> > audit_filter_task(), audit_del_rule(), and audit_add_rule() code?
+> > There are 3 cases I can see in listRCU.txt:
+> >   (1) action taken outside of read_lock (can tolerate stale data), no in-place update.
+> >                 this is the best possible usage of RCU.
+> >   (2) action taken outside of read_lock, in-place updates
+> >                 this is good as long as not too many in-place updates.
+> >                 involves copying creating new list node and replacing the
+> >                 node being updated with it.
+> >   (3) cannot tolerate stale data: here a deleted or obsolete flag can be used
+> >                                   protected by a per-entry lock. reader
+> > 				  aborts if object is stale.
 > > 
-> > Hmmm...  One reason is that some of them have changed beyond recognition.
+> > Any replacement example must make satisfy (3) too?
 > 
-> It seems to me that these 3 functions are just structured differently but is
-> conceptually the same.
+> It would be OK to have a separate example for (3).  It would of course
+> be nicer to have one example for all three, but not all -that- important.
 > 
-> There is now an array of lists stored in audit_filter_list. Each list is a
-> set of rules. Versus in the listRCU.txt, there is only one global.
+> > The only example for (3) that I know of is sysvipc sempahores which you also
+> > mentioned in the paper. Looking through this code, it hasn't changed
+> > conceptually and it could be a fit for an example (ipc_valid_object() checks
+> > for whether the object is stale).
 > 
-> The other difference is there is a mutex held &audit_filter_mutex
-> audit_{add,del}_rule. Where as in listRCU, it says that is not needed since
-> another mutex is already held.
-
-Agreed.
-
-> > And this example code predates v2.6.12.  ;-)
-> > 
-> > So good eyes, but I believe that this really does reflect the ancient
-> > code...
-> > 
-> > On the other hand, would you have ideas for more modern replacement
-> > examples?
+> That is indeed the classic canonical example.  ;-)
 > 
-> There are 3 cases I can see in listRCU.txt:
->   (1) action taken outside of read_lock (can tolerate stale data), no in-place update.
->                 this is the best possible usage of RCU.
->   (2) action taken outside of read_lock, in-place updates
->                 this is good as long as not too many in-place updates.
->                 involves copying creating new list node and replacing the
->                 node being updated with it.
->   (3) cannot tolerate stale data: here a deleted or obsolete flag can be used
->                                   protected by a per-entry lock. reader
-> 				  aborts if object is stale.
+> > The other example could be dentry look up which uses seqlocks for the
+> > RCU-walk case? But that could be too complex. This is also something I first
+> > learnt from the paper and then the excellent path-lookup.rst document in
+> > kernel sources.
 > 
-> Any replacement example must make satisfy (3) too?
-
-It would be OK to have a separate example for (3).  It would of course
-be nicer to have one example for all three, but not all -that- important.
-
-> The only example for (3) that I know of is sysvipc sempahores which you also
-> mentioned in the paper. Looking through this code, it hasn't changed
-> conceptually and it could be a fit for an example (ipc_valid_object() checks
-> for whether the object is stale).
-
-That is indeed the classic canonical example.  ;-)
-
-> The other example could be dentry look up which uses seqlocks for the
-> RCU-walk case? But that could be too complex. This is also something I first
-> learnt from the paper and then the excellent path-lookup.rst document in
-> kernel sources.
-
-This is a great example, but it would need serious simplification for
-use in the Documentation/RCU directory.  Note that dcache uses it to
-gain very limited and targeted consistency -- only a few types of updates
-acquire the write-side of that seqlock.
-
-Might be quite worthwhile to have a simplified example, though!
-Perhaps a trivial hash table where write-side sequence lock is acquired
-only when moving an element from one chain to another?
-
-> I will keep any eye out for other examples in the kernel code as well.
-
-Very good!
-
-							Thanx, Paul
-
-> Let me know what you think, thanks!
+> This is a great example, but it would need serious simplification for
+> use in the Documentation/RCU directory.  Note that dcache uses it to
+> gain very limited and targeted consistency -- only a few types of updates
+> acquire the write-side of that seqlock.
 > 
->  - Joel
-> 
-> 
-> > > ---
-> > >  Documentation/RCU/listRCU.txt | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/Documentation/RCU/listRCU.txt b/Documentation/RCU/listRCU.txt
-> > > index adb5a3782846..190e666fc359 100644
-> > > --- a/Documentation/RCU/listRCU.txt
-> > > +++ b/Documentation/RCU/listRCU.txt
-> > > @@ -175,7 +175,7 @@ otherwise, the added fields would need to be filled in):
-> > >  		list_for_each_entry(e, list, list) {
-> > >  			if (!audit_compare_rule(rule, &e->rule)) {
-> > >  				e->rule.action = newaction;
-> > > -				e->rule.file_count = newfield_count;
-> > > +				e->rule.field_count = newfield_count;
-> > >  				write_unlock(&auditsc_lock);
-> > >  				return 0;
-> > >  			}
-> > > @@ -204,7 +204,7 @@ RCU ("read-copy update") its name.  The RCU code is as follows:
-> > >  					return -ENOMEM;
-> > >  				audit_copy_rule(&ne->rule, &e->rule);
-> > >  				ne->rule.action = newaction;
-> > > -				ne->rule.file_count = newfield_count;
-> > > +				ne->rule.field_count = newfield_count;
-> > >  				list_replace_rcu(&e->list, &ne->list);
-> > >  				call_rcu(&e->rcu, audit_free_rule);
-> > >  				return 0;
-> > > -- 
-> > > 2.21.0.1020.gf2820cf01a-goog
-> > > 
-> > 
-> 
+> Might be quite worthwhile to have a simplified example, though!
+> Perhaps a trivial hash table where write-side sequence lock is acquired
+> only when moving an element from one chain to another?
 
+Sorry to take you down here..., but what do you mean by "the paper"?  ;-/
+
+Thanx,
+  Andrea
