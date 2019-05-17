@@ -2,64 +2,57 @@ Return-Path: <SRS0=J74S=TR=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77868C04AB4
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:51:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD53C04AB4
+	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 11:57:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 496F82087E
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:51:16 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y/eaNLUq"
+	by mail.kernel.org (Postfix) with ESMTP id 98C6A20848
+	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 11:57:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbfEQKvQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 May 2019 06:51:16 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:36579 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbfEQKvP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 May 2019 06:51:15 -0400
-Received: by mail-wm1-f66.google.com with SMTP id j187so6303169wmj.1
-        for <rcu@vger.kernel.org>; Fri, 17 May 2019 03:51:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=I9rj8wX+8J0bujnI+u0p0sO0A094wMEogFOiqKUHZlk=;
-        b=y/eaNLUqsYgwNrvXFu07+EliHgRZ3HaRERZdf/QAyvcumCWEAv48V/ie7wvBYsRVah
-         S7AG+qg9dUafEBpfYqjE4+dt9fhRPDLIYc6x3a6aqLbePL9Gc7S8mWu7E2kwG6uzfOoR
-         vbpE3priHNrfBaO3G5q6MN3EJ0UHGwtWSqim589t8K2TQpIOw7KtgI1ghYgVb388FGzQ
-         lRvrD7pr6b3YPvmTiz59iYbTBFJ1POfp4hCiHBdQrr7WuyVSmTsOmanwxjUf9+ohJW3Z
-         Wwu2GQMHgCwhMDMR2aiS3I8Zrxi5QNAkCa3qM5lNnOdzBJzwUhKtIwgbFZhtyGsJpYgQ
-         T6SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=I9rj8wX+8J0bujnI+u0p0sO0A094wMEogFOiqKUHZlk=;
-        b=jvbLL6hA9rUGwn5ctvvLNklUdILwNGHQxRVxLbCf/DyIvws4tGaURhI4F7EYEIAyEC
-         O4zqcnldBM2aMjeGlkAJgG/dJPuAlundXqObO6CHOh+N3i6Uhy8Nao9Ouji21yvySkZo
-         1roq7j5JkAKiHRKUBI9o/1emfs2XNCgfjURBSp+w66ABtdaHx0vaJBbwUE16lAawtNoC
-         y0QYCIemINnlclrS59b3Ylh8ljZ74BsWrmaZgPwynEnEXHPMbbLQCOFgwEKQ201CnwT8
-         3VgmYeP9yfssX83OSMK4+ndsnN+wkvkUEjVcAhtbC0+Dl5EXUnGjGc3vGhACZWc8AsIk
-         06Kw==
-X-Gm-Message-State: APjAAAUz1sc9EpqpMEa93K0SH9f0yrkr6o6BiVjK95h31NUoHciBDyth
-        VFxYDW5hqkwg/goN6omY3TqlOg==
-X-Google-Smtp-Source: APXvYqxOX/9KP887aat370qATZZE8CQNkvdb6o3ptCMW7T3KAmlQu5vX96Ik0eNWwdoqpTFHQnlP8A==
-X-Received: by 2002:a1c:1d46:: with SMTP id d67mr21446385wmd.98.1558090273797;
-        Fri, 17 May 2019 03:51:13 -0700 (PDT)
-Received: from dell ([2.27.167.43])
-        by smtp.gmail.com with ESMTPSA id v12sm7462554wrw.23.2019.05.17.03.51.13
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 May 2019 03:51:13 -0700 (PDT)
-Date:   Fri, 17 May 2019 11:51:11 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Philippe Mazenauer <philippe.mazenauer@outlook.de>
-Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        id S1728081AbfEQL5m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 May 2019 07:57:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54290 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727727AbfEQL5m (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 17 May 2019 07:57:42 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4HBqlWr013503
+        for <rcu@vger.kernel.org>; Fri, 17 May 2019 07:57:41 -0400
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2shu7t3kt2-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Fri, 17 May 2019 07:57:40 -0400
+Received: from localhost
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Fri, 17 May 2019 12:57:39 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 17 May 2019 12:57:35 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4HBvYZo37159404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 May 2019 11:57:35 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6D2FB2066;
+        Fri, 17 May 2019 11:57:34 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5A3EB2064;
+        Fri, 17 May 2019 11:57:34 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.80.212.26])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 17 May 2019 11:57:34 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id E637216C168F; Fri, 17 May 2019 04:57:34 -0700 (PDT)
+Date:   Fri, 17 May 2019 04:57:34 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Philippe Mazenauer <philippe.mazenauer@outlook.de>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -68,39 +61,61 @@ Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] rcu: Remove unused variable
-Message-ID: <20190517105111.GW4319@dell>
+Reply-To: paulmck@linux.ibm.com
 References: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
+ <20190517105111.GW4319@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190517105111.GW4319@dell>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19051711-0052-0000-0000-000003C09A5F
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011111; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01204598; UDB=6.00632385; IPR=6.00985533;
+ MB=3.00026931; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-17 11:57:38
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19051711-0053-0000-0000-000060EE1E39
+Message-Id: <20190517115734.GJ28207@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-17_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=896 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905170078
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 17 May 2019, Philippe Mazenauer wrote:
-
-> Variable 'rdp' is set but not used in synchronize_rcu_expidited(). The
-> macro per_cpu_ptr() used to set the value of 'rdp' has no side effect.
+On Fri, May 17, 2019 at 11:51:11AM +0100, Lee Jones wrote:
+> On Fri, 17 May 2019, Philippe Mazenauer wrote:
 > 
-> ../kernel/rcu/tree_exp.h:768:19: warning: variable ‘rdp’ set but not used [-Wunused-but-set-variable]
->    struct rcu_data *rdp;
->                     ^~~
+> > Variable 'rdp' is set but not used in synchronize_rcu_expidited(). The
+> > macro per_cpu_ptr() used to set the value of 'rdp' has no side effect.
+> > 
+> > ../kernel/rcu/tree_exp.h:768:19: warning: variable ‘rdp’ set but not used [-Wunused-but-set-variable]
+> >    struct rcu_data *rdp;
+> >                     ^~~
+> > 
+> > Signed-off-by: Philippe Mazenauer <philippe.mazenauer@outlook.de>
+> > ---
+> >  kernel/rcu/tree_exp.h | 2 --
+> >  1 file changed, 2 deletions(-)
 > 
-> Signed-off-by: Philippe Mazenauer <philippe.mazenauer@outlook.de>
-> ---
->  kernel/rcu/tree_exp.h | 2 --
->  1 file changed, 2 deletions(-)
+> Looks reasonable:
+> 
+> Acked-by: Lee Jones <lee.jones@linaro.org>
 
-Looks reasonable:
+Good eyes!
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+However, Jiang Biao beat you to it.  Please see commmit a18e1552af94
+("rcu: Remove unused rdp local from synchronize_rcu_expedited()") in -rcu:
+git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git branch
+"dev".
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+							Thanx, Paul
+
