@@ -2,41 +2,64 @@ Return-Path: <SRS0=J74S=TR=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2806DC04AB4
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77868C04AB4
+	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:51:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 016682087B
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:41:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 496F82087E
+	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 10:51:16 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y/eaNLUq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbfEQKlV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 May 2019 06:41:21 -0400
-Received: from mail-oln040092067080.outbound.protection.outlook.com ([40.92.67.80]:21463
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727689AbfEQKlV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 May 2019 06:41:21 -0400
-Received: from AM5EUR02FT015.eop-EUR02.prod.protection.outlook.com
- (10.152.8.57) by AM5EUR02HT137.eop-EUR02.prod.protection.outlook.com
- (10.152.9.206) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1856.11; Fri, 17 May
- 2019 10:41:18 +0000
-Received: from AM0PR07MB4417.eurprd07.prod.outlook.com (10.152.8.53) by
- AM5EUR02FT015.mail.protection.outlook.com (10.152.8.154) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.16 via Frontend Transport; Fri, 17 May 2019 10:41:18 +0000
-Received: from AM0PR07MB4417.eurprd07.prod.outlook.com
- ([fe80::9046:9a59:4519:d984]) by AM0PR07MB4417.eurprd07.prod.outlook.com
- ([fe80::9046:9a59:4519:d984%3]) with mapi id 15.20.1900.010; Fri, 17 May 2019
- 10:41:18 +0000
-From:   Philippe Mazenauer <philippe.mazenauer@outlook.de>
-CC:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        Philippe Mazenauer <philippe.mazenauer@outlook.de>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        id S1728081AbfEQKvQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 May 2019 06:51:16 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36579 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727689AbfEQKvP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 May 2019 06:51:15 -0400
+Received: by mail-wm1-f66.google.com with SMTP id j187so6303169wmj.1
+        for <rcu@vger.kernel.org>; Fri, 17 May 2019 03:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=I9rj8wX+8J0bujnI+u0p0sO0A094wMEogFOiqKUHZlk=;
+        b=y/eaNLUqsYgwNrvXFu07+EliHgRZ3HaRERZdf/QAyvcumCWEAv48V/ie7wvBYsRVah
+         S7AG+qg9dUafEBpfYqjE4+dt9fhRPDLIYc6x3a6aqLbePL9Gc7S8mWu7E2kwG6uzfOoR
+         vbpE3priHNrfBaO3G5q6MN3EJ0UHGwtWSqim589t8K2TQpIOw7KtgI1ghYgVb388FGzQ
+         lRvrD7pr6b3YPvmTiz59iYbTBFJ1POfp4hCiHBdQrr7WuyVSmTsOmanwxjUf9+ohJW3Z
+         Wwu2GQMHgCwhMDMR2aiS3I8Zrxi5QNAkCa3qM5lNnOdzBJzwUhKtIwgbFZhtyGsJpYgQ
+         T6SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=I9rj8wX+8J0bujnI+u0p0sO0A094wMEogFOiqKUHZlk=;
+        b=jvbLL6hA9rUGwn5ctvvLNklUdILwNGHQxRVxLbCf/DyIvws4tGaURhI4F7EYEIAyEC
+         O4zqcnldBM2aMjeGlkAJgG/dJPuAlundXqObO6CHOh+N3i6Uhy8Nao9Ouji21yvySkZo
+         1roq7j5JkAKiHRKUBI9o/1emfs2XNCgfjURBSp+w66ABtdaHx0vaJBbwUE16lAawtNoC
+         y0QYCIemINnlclrS59b3Ylh8ljZ74BsWrmaZgPwynEnEXHPMbbLQCOFgwEKQ201CnwT8
+         3VgmYeP9yfssX83OSMK4+ndsnN+wkvkUEjVcAhtbC0+Dl5EXUnGjGc3vGhACZWc8AsIk
+         06Kw==
+X-Gm-Message-State: APjAAAUz1sc9EpqpMEa93K0SH9f0yrkr6o6BiVjK95h31NUoHciBDyth
+        VFxYDW5hqkwg/goN6omY3TqlOg==
+X-Google-Smtp-Source: APXvYqxOX/9KP887aat370qATZZE8CQNkvdb6o3ptCMW7T3KAmlQu5vX96Ik0eNWwdoqpTFHQnlP8A==
+X-Received: by 2002:a1c:1d46:: with SMTP id d67mr21446385wmd.98.1558090273797;
+        Fri, 17 May 2019 03:51:13 -0700 (PDT)
+Received: from dell ([2.27.167.43])
+        by smtp.gmail.com with ESMTPSA id v12sm7462554wrw.23.2019.05.17.03.51.13
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 May 2019 03:51:13 -0700 (PDT)
+Date:   Fri, 17 May 2019 11:51:11 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Philippe Mazenauer <philippe.mazenauer@outlook.de>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -44,65 +67,40 @@ CC:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] rcu: Remove unused variable
-Thread-Topic: [PATCH] rcu: Remove unused variable
-Thread-Index: AQHVDJ0PaytwmI+cjkO4D+WVtF6z0Q==
-Date:   Fri, 17 May 2019 10:41:18 +0000
-Message-ID: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
-Accept-Language: de-CH, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR02CA0133.namprd02.prod.outlook.com
- (2603:10b6:208:35::38) To AM0PR07MB4417.eurprd07.prod.outlook.com
- (2603:10a6:208:b8::26)
-x-incomingtopheadermarker: OriginalChecksum:33A003E4205DE6DDA650AAB83182455DED3AD86DA580A7F85906A817FEAC7FB1;UpperCasedChecksum:F73777195E42FA6D16F0B4FDE304236849D2C80CC7278501C6FFCE5797F0817A;SizeAsReceived:7687;Count:47
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.17.1
-x-tmn:  [izYu5eZZWdk23ffCP/JKispLyHTtTt9b]
-x-microsoft-original-message-id: <20190517104032.26157-1-philippe.mazenauer@outlook.de>
-x-ms-publictraffictype: Email
-x-incomingheadercount: 47
-x-eopattributedmessage: 0
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(5050001)(7020095)(20181119110)(201702061078)(5061506573)(5061507331)(1603103135)(2017031320274)(2017031323274)(2017031324274)(2017031322404)(1601125500)(1603101475)(1701031045);SRVR:AM5EUR02HT137;
-x-ms-traffictypediagnostic: AM5EUR02HT137:
-x-microsoft-antispam-message-info: 7P5bXffb1m6GXx6rMc5tzRtFGmLDC4Hjrq9SK8ddRc+K3aRlh6fnaS8tTvfXsrzE7Zaaq/nh+uNs4cpywetZ5e+vzpT95lxGTJUveCxoH3PX+H0tlVC0SEZ8lMFZpyQLZtyoiADkukL4Za1P3heUk7XjtICak+bGRUc8JBb9GY7BurdrT+/13And5QRGiT0S
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <670F3AF570FAFF499022D46B5FFDFA4A@eurprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH] rcu: Remove unused variable
+Message-ID: <20190517105111.GW4319@dell>
+References: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26a29653-80e7-4422-3c9e-08d6dab43166
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2019 10:41:18.1103
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5EUR02HT137
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-VmFyaWFibGUgJ3JkcCcgaXMgc2V0IGJ1dCBub3QgdXNlZCBpbiBzeW5jaHJvbml6ZV9yY3VfZXhw
-aWRpdGVkKCkuIFRoZQ0KbWFjcm8gcGVyX2NwdV9wdHIoKSB1c2VkIHRvIHNldCB0aGUgdmFsdWUg
-b2YgJ3JkcCcgaGFzIG5vIHNpZGUgZWZmZWN0Lg0KDQouLi9rZXJuZWwvcmN1L3RyZWVfZXhwLmg6
-NzY4OjE5OiB3YXJuaW5nOiB2YXJpYWJsZSDigJhyZHDigJkgc2V0IGJ1dCBub3QgdXNlZCBbLVd1
-bnVzZWQtYnV0LXNldC12YXJpYWJsZV0NCiAgIHN0cnVjdCByY3VfZGF0YSAqcmRwOw0KICAgICAg
-ICAgICAgICAgICAgICBefn4NCg0KU2lnbmVkLW9mZi1ieTogUGhpbGlwcGUgTWF6ZW5hdWVyIDxw
-aGlsaXBwZS5tYXplbmF1ZXJAb3V0bG9vay5kZT4NCi0tLQ0KIGtlcm5lbC9yY3UvdHJlZV9leHAu
-aCB8IDIgLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBh
-L2tlcm5lbC9yY3UvdHJlZV9leHAuaCBiL2tlcm5lbC9yY3UvdHJlZV9leHAuaA0KaW5kZXggOWM5
-OTBkZjg4MGQxLi40MWY1NmI2MDY1YzYgMTAwNjQ0DQotLS0gYS9rZXJuZWwvcmN1L3RyZWVfZXhw
-LmgNCisrKyBiL2tlcm5lbC9yY3UvdHJlZV9leHAuaA0KQEAgLTc2NSw3ICs3NjUsNiBAQCBzdGF0
-aWMgaW50IHJjdV9wcmludF90YXNrX2V4cF9zdGFsbChzdHJ1Y3QgcmN1X25vZGUgKnJucCkNCiAg
-Ki8NCiB2b2lkIHN5bmNocm9uaXplX3JjdV9leHBlZGl0ZWQodm9pZCkNCiB7DQotCXN0cnVjdCBy
-Y3VfZGF0YSAqcmRwOw0KIAlzdHJ1Y3QgcmN1X2V4cF93b3JrIHJldzsNCiAJc3RydWN0IHJjdV9u
-b2RlICpybnA7DQogCXVuc2lnbmVkIGxvbmcgczsNCkBAIC04MDIsNyArODAxLDYgQEAgdm9pZCBz
-eW5jaHJvbml6ZV9yY3VfZXhwZWRpdGVkKHZvaWQpDQogCX0NCiANCiAJLyogV2FpdCBmb3IgZXhw
-ZWRpdGVkIGdyYWNlIHBlcmlvZCB0byBjb21wbGV0ZS4gKi8NCi0JcmRwID0gcGVyX2NwdV9wdHIo
-JnJjdV9kYXRhLCByYXdfc21wX3Byb2Nlc3Nvcl9pZCgpKTsNCiAJcm5wID0gcmN1X2dldF9yb290
-KCk7DQogCXdhaXRfZXZlbnQocm5wLT5leHBfd3FbcmN1X3NlcV9jdHIocykgJiAweDNdLA0KIAkJ
-ICAgc3luY19leHBfd29ya19kb25lKHMpKTsNCi0tIA0KMi4xNy4xDQoNCg==
+On Fri, 17 May 2019, Philippe Mazenauer wrote:
+
+> Variable 'rdp' is set but not used in synchronize_rcu_expidited(). The
+> macro per_cpu_ptr() used to set the value of 'rdp' has no side effect.
+> 
+> ../kernel/rcu/tree_exp.h:768:19: warning: variable ‘rdp’ set but not used [-Wunused-but-set-variable]
+>    struct rcu_data *rdp;
+>                     ^~~
+> 
+> Signed-off-by: Philippe Mazenauer <philippe.mazenauer@outlook.de>
+> ---
+>  kernel/rcu/tree_exp.h | 2 --
+>  1 file changed, 2 deletions(-)
+
+Looks reasonable:
+
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
