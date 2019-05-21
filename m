@@ -1,121 +1,93 @@
-Return-Path: <SRS0=J74S=TR=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=UUQT=TV=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD53C04AB4
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 11:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAEDC072B5
+	for <rcu@archiver.kernel.org>; Tue, 21 May 2019 20:49:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 98C6A20848
-	for <rcu@archiver.kernel.org>; Fri, 17 May 2019 11:57:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 59B7B217D7
+	for <rcu@archiver.kernel.org>; Tue, 21 May 2019 20:49:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbfEQL5m (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 May 2019 07:57:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54290 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727727AbfEQL5m (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 17 May 2019 07:57:42 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4HBqlWr013503
-        for <rcu@vger.kernel.org>; Fri, 17 May 2019 07:57:41 -0400
-Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2shu7t3kt2-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 17 May 2019 07:57:40 -0400
-Received: from localhost
-        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 17 May 2019 12:57:39 +0100
-Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
-        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 17 May 2019 12:57:35 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4HBvYZo37159404
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 May 2019 11:57:35 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6D2FB2066;
-        Fri, 17 May 2019 11:57:34 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5A3EB2064;
-        Fri, 17 May 2019 11:57:34 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.212.26])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 17 May 2019 11:57:34 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id E637216C168F; Fri, 17 May 2019 04:57:34 -0700 (PDT)
-Date:   Fri, 17 May 2019 04:57:34 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Philippe Mazenauer <philippe.mazenauer@outlook.de>,
+        id S1727222AbfEUUtE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 May 2019 16:49:04 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:4837 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727218AbfEUUtD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 May 2019 16:49:03 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3A2BBC002965;
+        Tue, 21 May 2019 20:48:55 +0000 (UTC)
+Received: from llong.com (dhcp-17-85.bos.redhat.com [10.18.17.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D45D5C69A;
+        Tue, 21 May 2019 20:48:51 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Remove unused variable
-Reply-To: paulmck@linux.ibm.com
-References: <AM0PR07MB4417DD6F49126041FFC18864FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
- <20190517105111.GW4319@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190517105111.GW4319@dell>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19051711-0052-0000-0000-000003C09A5F
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011111; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01204598; UDB=6.00632385; IPR=6.00985533;
- MB=3.00026931; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-17 11:57:38
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19051711-0053-0000-0000-000060EE1E39
-Message-Id: <20190517115734.GJ28207@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-17_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=896 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905170078
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] rcu: Force inlining of rcu_read_lock()
+Date:   Tue, 21 May 2019 16:48:43 -0400
+Message-Id: <20190521204843.11060-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Tue, 21 May 2019 20:49:03 +0000 (UTC)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 17, 2019 at 11:51:11AM +0100, Lee Jones wrote:
-> On Fri, 17 May 2019, Philippe Mazenauer wrote:
-> 
-> > Variable 'rdp' is set but not used in synchronize_rcu_expidited(). The
-> > macro per_cpu_ptr() used to set the value of 'rdp' has no side effect.
-> > 
-> > ../kernel/rcu/tree_exp.h:768:19: warning: variable ‘rdp’ set but not used [-Wunused-but-set-variable]
-> >    struct rcu_data *rdp;
-> >                     ^~~
-> > 
-> > Signed-off-by: Philippe Mazenauer <philippe.mazenauer@outlook.de>
-> > ---
-> >  kernel/rcu/tree_exp.h | 2 --
-> >  1 file changed, 2 deletions(-)
-> 
-> Looks reasonable:
-> 
-> Acked-by: Lee Jones <lee.jones@linaro.org>
+It is found that when debugging options are turned on, the
+rcu_read_lock() function may not be inlined at all. That will make
+it harder to debug RCU related problem as the print_lock() function
+in lockdep will print "rcu_read_lock()" instead of the caller of
+rcu_read_lock() function. For example,
 
-Good eyes!
+[   10.579995] =============================
+[   10.584033] WARNING: suspicious RCU usage
+[   10.588074] 4.18.0.memcg_v2+ #1 Not tainted
+[   10.593162] -----------------------------
+[   10.597203] include/linux/rcupdate.h:281 Illegal context switch in
+RCU read-side critical section!
+[   10.606220]
+[   10.606220] other info that might help us debug this:
+[   10.606220]
+[   10.614280]
+[   10.614280] rcu_scheduler_active = 2, debug_locks = 1
+[   10.620853] 3 locks held by systemd/1:
+[   10.624632]  #0: (____ptrval____) (&type->i_mutex_dir_key#5){.+.+}, at: lookup_slow+0x42/0x70
+[   10.633232]  #1: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
+[   10.640954]  #2: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
 
-However, Jiang Biao beat you to it.  Please see commmit a18e1552af94
-("rcu: Remove unused rdp local from synchronize_rcu_expedited()") in -rcu:
-git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git branch
-"dev".
+To make sure that the proper caller of rcu_read_lock() is shown, we
+have to force the inlining of the rcu_read_lock() function.
 
-							Thanx, Paul
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ include/linux/rcupdate.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 922bb6848813..44f80aced02b 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -588,7 +588,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+  * read-side critical sections may be preempted and they may also block, but
+  * only when acquiring spinlocks that are subject to priority inheritance.
+  */
+-static inline void rcu_read_lock(void)
++static __always_inline void rcu_read_lock(void)
+ {
+ 	__rcu_read_lock();
+ 	__acquire(RCU);
+-- 
+2.18.1
 
