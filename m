@@ -2,94 +2,81 @@ Return-Path: <SRS0=UraA=TX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C13B7C282DD
-	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 14:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 013ECC282DE
+	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 14:53:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9DFED20863
-	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 14:19:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C43CE20863
+	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 14:53:20 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Sl9c/IVp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbfEWOT0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 May 2019 10:19:26 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:47372 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730495AbfEWOT0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 May 2019 10:19:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90E3680D;
-        Thu, 23 May 2019 07:19:25 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FBFA3F690;
-        Thu, 23 May 2019 07:19:23 -0700 (PDT)
-Date:   Thu, 23 May 2019 15:19:19 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
+        id S1730979AbfEWOxT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 May 2019 10:53:19 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45730 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730960AbfEWOxT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 May 2019 10:53:19 -0400
+Received: by mail-wr1-f65.google.com with SMTP id b18so6594631wrq.12
+        for <rcu@vger.kernel.org>; Thu, 23 May 2019 07:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KuauVzjJswarfobGLMx62HbVwFkgBXXbK672bwB029A=;
+        b=Sl9c/IVpkPxfdQFvyhEaxuRn1gyGyncWJpElpyHVCz0PT2Jqa0CZ78ux8e4bvp/UDK
+         9VGVElVF1dfjJUkX9iP/zAXDhTRf5rhu5AkZfZwIPthOEGQLaemCwa7mO+bs7KhepM9W
+         b/Q1OdXSLuvvNGxjKUhlYBAIKZPFsLK2aloT4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KuauVzjJswarfobGLMx62HbVwFkgBXXbK672bwB029A=;
+        b=pLtHSyyUOJga56Nup+MO8AFlgxUR0JRgPEnzxg6ICdmAycWtSUB1ALutF1Qzj06ocq
+         temNFs5+DaOY7Z9PhQgojf0/UVXlXCp26CUDgu6tchJT9tKVQYeMlfwpXJ6YbH3ehFLa
+         upS6gb6yLwR2W6n7Vsvg4uCslEZQGzNaKbvADi/gKNRBOXEBOdUqyrG03sMTjkfhOabl
+         m4HoO9WMxpmRQzYyQpz2nkjLwIQ4YM/bmLWFmemKbehrPZ09RvLiA0tl6mhyFecD9Zrc
+         j7v6F6DSTapFAYeFqqJ3gT8K1CWV9HYsAqshrppM0S/iIjG2n5EscfdTVhSkisXuporF
+         BxxQ==
+X-Gm-Message-State: APjAAAW6YqchH3VdMYg9lYFcvjGo6PbOa2eOi59mJ+6LFzkzq8RxWcy0
+        /EqIpmpP6NHhQmwoh7dbYBD6Xg==
+X-Google-Smtp-Source: APXvYqzoZglxEGBUuaQVwNP9WVW+5YjppemivpSRz1xRQFi3El+oY+7xYQL+IEIzgLJn+DvEfnJcCA==
+X-Received: by 2002:adf:aa09:: with SMTP id p9mr6578948wrd.59.1558623197442;
+        Thu, 23 May 2019 07:53:17 -0700 (PDT)
+Received: from andrea (86.100.broadband17.iol.cz. [109.80.100.86])
+        by smtp.gmail.com with ESMTPSA id j206sm14293686wma.47.2019.05.23.07.53.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 07:53:16 -0700 (PDT)
+Date:   Thu, 23 May 2019 16:53:09 +0200
+From:   Andrea Parri <andrea.parri@amarulasolutions.com>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Andrea Parri <andrea.parri@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will.deacon@arm.com>
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Subject: Re: [RFC PATCH] rcu: Make 'rcu_assign_pointer(p, v)' of type
  'typeof(p)'
-Message-ID: <20190523141851.GA7523@lakrids.cambridge.arm.com>
+Message-ID: <20190523145309.GA18692@andrea>
 References: <1558618340-17254-1-git-send-email-andrea.parri@amarulasolutions.com>
  <20190523135013.GL28207@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20190523135013.GL28207@linux.ibm.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 23, 2019 at 06:50:13AM -0700, Paul E. McKenney wrote:
-> On Thu, May 23, 2019 at 03:32:20PM +0200, Andrea Parri wrote:
-> > The expression
-> > 
-> >   rcu_assign_pointer(p, typeof(p) v)
-> > 
-> > is reported to be of type 'typeof(p)' in the documentation (c.f., e.g.,
-> > Documentation/RCU/whatisRCU.txt) but this is not the case: for example,
-> > the following snippet
-> > 
-> >   int **y;
-> >   int *x;
-> >   int *r0;
-> > 
-> >   ...
-> > 
-> >   r0 = rcu_assign_pointer(*y, x);
-> > 
-> > can currently result in the compiler warning
-> > 
-> >   warning: assignment to ‘int *’ from ‘uintptr_t’ {aka ‘long unsigned int’} makes pointer from integer without a cast [-Wint-conversion]
-> > 
-> > Cast the uintptr_t value to a typeof(p) value.
-> > 
-> > Signed-off-by: Andrea Parri <andrea.parri@amarulasolutions.com>
-> > Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
-> > Cc: Josh Triplett <josh@joshtriplett.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > Cc: rcu@vger.kernel.org
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Will Deacon <will.deacon@arm.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > ---
-> > NOTE:
-> > 
 > > TBH, I'm not sure this is 'the right patch' (hence the RFC...): in
 > > fact, I'm currently missing the motivations for allowing assignments
 > > such as the "r0 = ..." assignment above in generic code.  (BTW, it's
@@ -100,14 +87,6 @@ On Thu, May 23, 2019 at 06:50:13AM -0700, Paul E. McKenney wrote:
 > value, let's please instead change the documentation and implementation
 > to eliminate the return value.
 
-FWIW, I completely agree, and for similar reasons I'd say we should do
-the same to WRITE_ONCE(), where this 'cool feature' has been inherited
-from.
+Thanks for the confirmation, Paul; I'll prepare the new patch shortly...
 
-For WRITE_ONCE() there's at least one user that needs to be cleaned up
-first (relying on non-portable implementation detaisl of atomic*_set()),
-but I suspect rcu_assign_pointer() isn't used as much as a building
-block for low-level macros.
-
-Thanks,
-Mark.
+  Andrea
