@@ -1,146 +1,157 @@
-Return-Path: <SRS0=kCTs=TW=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=UraA=TX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0389CC282CE
-	for <rcu@archiver.kernel.org>; Wed, 22 May 2019 18:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5FFFC282DE
+	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 13:32:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D22D920881
-	for <rcu@archiver.kernel.org>; Wed, 22 May 2019 18:41:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79A032175B
+	for <rcu@archiver.kernel.org>; Thu, 23 May 2019 13:32:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="RW8IHPk8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbfEVSl4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 May 2019 14:41:56 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49912 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728450AbfEVSl4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 May 2019 14:41:56 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7F4A58666F;
-        Wed, 22 May 2019 18:41:53 +0000 (UTC)
-Received: from llong.remote.csb (dhcp-17-85.bos.redhat.com [10.18.17.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F37F61001284;
-        Wed, 22 May 2019 18:41:49 +0000 (UTC)
-Subject: Re: [PATCH] rcu: Force inlining of rcu_read_lock()
-To:     paulmck@linux.ibm.com
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        id S1728309AbfEWNcw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 May 2019 09:32:52 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:40003 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729361AbfEWNcv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 May 2019 09:32:51 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 15so5798219wmg.5
+        for <rcu@vger.kernel.org>; Thu, 23 May 2019 06:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZL2mTowtd+iMS19QPGPsV0ihDUcR6R3pM4Mf8egGGYk=;
+        b=RW8IHPk8xrGrRfFLfeE7DQsgUQlpaZ98zcUFZ9VMv9++4lY8ZqqqCwrgPtGDNaLnQT
+         AIydtDp0R/68FYPA4lMfw8o1ekSgcBnzXcKcW8qg67lhOtQwEA+yAlAe42grac7wXFqL
+         JJaoX8Qvrgn3Tjdmz8TvMP2hifGpOat5AH48E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZL2mTowtd+iMS19QPGPsV0ihDUcR6R3pM4Mf8egGGYk=;
+        b=ClTOh2Yz+tL05Wfw1cyG+0HK1DEye3DgH4/yvltMkPzs+AAxPvuKLkUPwXWX+ZUgUo
+         y2AVH+ufr/SXxXDJboYH0MwmXDg34LmK1up9gYztvAG82dgT7B7kalS+YOOGpBlaQFgE
+         LnikqMBn2U36XVHKsxEz1G1riJWlzaaXqV2/OSxigb9qFafWkXm+Jz3vH9sK+P7h1aUV
+         lkBQrMH6s8MtvIr6erBV0/YZKNR2b39jFG3IDUheGSgjPETnA+XgX40iSzMENTdb2ngP
+         ktg6086qZRK1nZE2obEo2XIBDmuSl8abXG9/wG0tnpfY8GIdryTrFLCRnnsSDh/tzOIt
+         2rDw==
+X-Gm-Message-State: APjAAAU02V1r+rWsEN1N+I0c0dDLQdVbecS5rxzFH2IwaAjpTLlIa77g
+        FmTyGLR+WzKOl9buKZmGUBAlQQigpOqFRQ==
+X-Google-Smtp-Source: APXvYqxKrJOPJRcvYLMrdPZnlVlCNLb48gdjcwCy4V1eDa2hEzDxmAnHtDnBkHcBtZSUt+9RfSJwmQ==
+X-Received: by 2002:a1c:7c0b:: with SMTP id x11mr11221336wmc.86.1558618370123;
+        Thu, 23 May 2019 06:32:50 -0700 (PDT)
+Received: from localhost.localdomain (86.100.broadband17.iol.cz. [109.80.100.86])
+        by smtp.gmail.com with ESMTPSA id g16sm1633868wrm.96.2019.05.23.06.32.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Thu, 23 May 2019 06:32:49 -0700 (PDT)
+From:   Andrea Parri <andrea.parri@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrea Parri <andrea.parri@amarulasolutions.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190521204843.11060-1-longman@redhat.com>
- <20190522181817.GF28207@linux.ibm.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <57dc4711-8e06-4c29-6e9a-ce98577e27fa@redhat.com>
-Date:   Wed, 22 May 2019 14:41:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [RFC PATCH] rcu: Make 'rcu_assign_pointer(p, v)' of type 'typeof(p)'
+Date:   Thu, 23 May 2019 15:32:20 +0200
+Message-Id: <1558618340-17254-1-git-send-email-andrea.parri@amarulasolutions.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20190522181817.GF28207@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Wed, 22 May 2019 18:41:55 +0000 (UTC)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 5/22/19 2:18 PM, Paul E. McKenney wrote:
-> On Tue, May 21, 2019 at 04:48:43PM -0400, Waiman Long wrote:
->> It is found that when debugging options are turned on, the
->> rcu_read_lock() function may not be inlined at all. That will make
->> it harder to debug RCU related problem as the print_lock() function
->> in lockdep will print "rcu_read_lock()" instead of the caller of
->> rcu_read_lock() function. For example,
->>
->> [   10.579995] =============================
->> [   10.584033] WARNING: suspicious RCU usage
->> [   10.588074] 4.18.0.memcg_v2+ #1 Not tainted
->> [   10.593162] -----------------------------
->> [   10.597203] include/linux/rcupdate.h:281 Illegal context switch in
->> RCU read-side critical section!
->> [   10.606220]
->> [   10.606220] other info that might help us debug this:
->> [   10.606220]
->> [   10.614280]
->> [   10.614280] rcu_scheduler_active = 2, debug_locks = 1
->> [   10.620853] 3 locks held by systemd/1:
->> [   10.624632]  #0: (____ptrval____) (&type->i_mutex_dir_key#5){.+.+}, at: lookup_slow+0x42/0x70
->> [   10.633232]  #1: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
->> [   10.640954]  #2: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
->>
->> To make sure that the proper caller of rcu_read_lock() is shown, we
->> have to force the inlining of the rcu_read_lock() function.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> Good point, queued!  I reworked the commit log as follows, is this OK?
->
-> 							Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit c006ffd7b607f8ee216f6a7a6d845b9514881e92
-> Author: Waiman Long <longman@redhat.com>
-> Date:   Tue May 21 16:48:43 2019 -0400
->
->     rcu: Force inlining of rcu_read_lock()
->     
->     When debugging options are turned on, the rcu_read_lock() function
->     might not be inlined. This results in lockdep's print_lock() function
->     printing "rcu_read_lock+0x0/0x70" instead of rcu_read_lock()'s caller.
->     For example:
->     
->     [   10.579995] =============================
->     [   10.584033] WARNING: suspicious RCU usage
->     [   10.588074] 4.18.0.memcg_v2+ #1 Not tainted
->     [   10.593162] -----------------------------
->     [   10.597203] include/linux/rcupdate.h:281 Illegal context switch in
->     RCU read-side critical section!
->     [   10.606220]
->     [   10.606220] other info that might help us debug this:
->     [   10.606220]
->     [   10.614280]
->     [   10.614280] rcu_scheduler_active = 2, debug_locks = 1
->     [   10.620853] 3 locks held by systemd/1:
->     [   10.624632]  #0: (____ptrval____) (&type->i_mutex_dir_key#5){.+.+}, at: lookup_slow+0x42/0x70
->     [   10.633232]  #1: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
->     [   10.640954]  #2: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
->     
->     These "rcu_read_lock+0x0/0x70" strings are not providing any useful
->     information.  This commit therefore forces inlining of the rcu_read_lock()
->     function so that rcu_read_lock()'s caller is instead shown.
->     
+The expression
 
-Your modification make sense to me.
+  rcu_assign_pointer(p, typeof(p) v)
 
-Thanks,
-Longman
+is reported to be of type 'typeof(p)' in the documentation (c.f., e.g.,
+Documentation/RCU/whatisRCU.txt) but this is not the case: for example,
+the following snippet
 
+  int **y;
+  int *x;
+  int *r0;
 
->     Signed-off-by: Waiman Long <longman@redhat.com>
->     Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
->
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 534c05d529b5..a8ed624da555 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -588,7 +588,7 @@ static inline void rcu_preempt_sleep_check(void) { }
->   * read-side critical sections may be preempted and they may also block, but
->   * only when acquiring spinlocks that are subject to priority inheritance.
->   */
-> -static inline void rcu_read_lock(void)
-> +static __always_inline void rcu_read_lock(void)
->  {
->  	__rcu_read_lock();
->  	__acquire(RCU);
->
+  ...
+
+  r0 = rcu_assign_pointer(*y, x);
+
+can currently result in the compiler warning
+
+  warning: assignment to ‘int *’ from ‘uintptr_t’ {aka ‘long unsigned int’} makes pointer from integer without a cast [-Wint-conversion]
+
+Cast the uintptr_t value to a typeof(p) value.
+
+Signed-off-by: Andrea Parri <andrea.parri@amarulasolutions.com>
+Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: rcu@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+---
+NOTE:
+
+TBH, I'm not sure this is 'the right patch' (hence the RFC...): in
+fact, I'm currently missing the motivations for allowing assignments
+such as the "r0 = ..." assignment above in generic code.  (BTW, it's
+not currently possible to use such assignments in litmus tests...)
+
+The usual concern is, of course, that if something is allowed (read
+'compile!' ;/) then people will soon or later use it and they'll do
+it in all sorts of 'creative' ways, such as 'to extend dependencies
+across rcu_assign_pointer() calls' as in
+
+  x = READ_ONCE(*z);
+  r0 = rcu_assign_pointer(*y, x);
+  WRITE_ONCE(*w, r0);
+
+Notice that using a 'do { ... } while (0)', say, would prevent such
+tricks/rvalues. (The same approach is used by smp_store_release().)
+
+For a related discussion, please see:
+
+  https://lkml.kernel.org/r/20190523083013.GA4616@andrea
+
+Thoughts?
+
+  Andrea
+---
+ include/linux/rcupdate.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 915460ec08722..b94ba5de78fba 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -375,7 +375,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+ 		WRITE_ONCE((p), (typeof(p))(_r_a_p__v));		      \
+ 	else								      \
+ 		smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
+-	_r_a_p__v;							      \
++	((typeof(p))_r_a_p__v);						      \
+ })
+ 
+ /**
+-- 
+2.7.4
 
