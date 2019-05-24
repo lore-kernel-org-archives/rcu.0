@@ -2,90 +2,77 @@ Return-Path: <SRS0=/QKf=TY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB53DC072B5
-	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 13:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A5DBC072B5
+	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 16:45:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AA146217F9
-	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 13:30:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E492D21773
+	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 16:45:12 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ngVpiceK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391470AbfEXNan (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 May 2019 09:30:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38408 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391330AbfEXNan (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 24 May 2019 09:30:43 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4ODUY1B139674
-        for <rcu@vger.kernel.org>; Fri, 24 May 2019 09:30:41 -0400
-Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2spe8ja8w3-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 24 May 2019 09:30:35 -0400
-Received: from localhost
-        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 24 May 2019 14:29:15 +0100
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 24 May 2019 14:29:11 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4ODTAaQ24707516
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 May 2019 13:29:10 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B02AFB2064;
-        Fri, 24 May 2019 13:29:10 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8222EB2065;
-        Fri, 24 May 2019 13:29:10 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 24 May 2019 13:29:10 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id BF94316C3609; Fri, 24 May 2019 06:29:11 -0700 (PDT)
-Date:   Fri, 24 May 2019 06:29:11 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S2390507AbfEXQpM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 May 2019 12:45:12 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:44467 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390314AbfEXQpM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 May 2019 12:45:12 -0400
+Received: by mail-pl1-f194.google.com with SMTP id c5so4387583pll.11
+        for <rcu@vger.kernel.org>; Fri, 24 May 2019 09:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y2z2dUkL6OhM76g8NRgsrjEEVDS8Qi9hxxcwTP5yXro=;
+        b=ngVpiceK0/3tVomB8NgMcKoVlDAL4VKoCylBb3sHtgzh3IdevD7uh9d93p7S+3mBtg
+         VWzXRMkGxSaNcTe8rWjbyeOLsuUn29vXbeB34U66Ctqp7nE8+br9lXCxFVs0YsczFnlx
+         g2DtyLmw9/jP1htQchRZMkJDcqWiC6ZnQDe8A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y2z2dUkL6OhM76g8NRgsrjEEVDS8Qi9hxxcwTP5yXro=;
+        b=tXZBUK7/3I5DCndOo7Ye1hN5yJHuuML5ubz+geQAAKdqD5kh4mlS+Rj0rplPRMhOPa
+         iPh9AiDkC3i6oHlrTSKdq6+oIezbrkq12g6jor9/YUaCjSTJw1aTFmXeoFPiaAW/NC9e
+         WF5Vb3dDUi57o47WKZX79z8XXThGT8ITXlBJUhiFf+ExAtGk1IynLfpCp+elk0Mt17iK
+         L0+Nyr/LGUXAoEvbpUdx13zqp4yC+hZ5+N6x6gnnDojQeZRA4mx3nCwx1jzDXIZ0zoO7
+         LPbFYrepue5KOypRvVgOjnCnvLt+jmOKwx26mJLduCjJcCrpkA1GBi8cinG70J3V9ufH
+         Xe+Q==
+X-Gm-Message-State: APjAAAXhfwo5jmOoBE30M1n5bbRUBr+Kq0D8j2UmhT81NIN8pSUSz2Jf
+        W6+99ta66tGtjHnTpZ6gr3Ql2w==
+X-Google-Smtp-Source: APXvYqy5csoUelKHq3QiRCp9VtPY9ZkTFbQOg5Wt/yEN3POdZnheqeeWKxFczwhSSIBvKLJRw89cNw==
+X-Received: by 2002:a17:902:f81:: with SMTP id 1mr58195262plz.242.1558716311638;
+        Fri, 24 May 2019 09:45:11 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id w1sm1326713pfg.51.2019.05.24.09.45.10
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 May 2019 09:45:10 -0700 (PDT)
+Date:   Fri, 24 May 2019 12:45:09 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Andrea Parri <andrea.parri@amarulasolutions.com>
 Cc:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will.deacon@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Matthew Wilcox <willy@infradead.org>,
         Sasha Levin <sashal@kernel.org>
 Subject: Re: [PATCH] rcu: Prevent evaluation of rcu_assign_pointer()
-Reply-To: paulmck@linux.ibm.com
+Message-ID: <20190524164509.GA197789@google.com>
 References: <1558694197-19295-1-git-send-email-andrea.parri@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <1558694197-19295-1-git-send-email-andrea.parri@amarulasolutions.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19052413-0052-0000-0000-000003C67251
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011154; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01207923; UDB=6.00634413; IPR=6.00988913;
- MB=3.00027032; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-24 13:29:15
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19052413-0053-0000-0000-000061074ABD
-Message-Id: <20190524132911.GV28207@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-24_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905240091
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -100,11 +87,7 @@ On Fri, May 24, 2019 at 12:36:37PM +0200, Andrea Parri wrote:
 >   implementation to eliminate the return value."
 > 
 > [1] https://lkml.kernel.org/r/20190523135013.GL28207@linux.ibm.com
-
-Thank you!  A few comments below.
-
-							Thanx, Paul
-
+> 
 > Signed-off-by: Andrea Parri <andrea.parri@amarulasolutions.com>
 > Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
 > Cc: Josh Triplett <josh@joshtriplett.org>
@@ -146,9 +129,7 @@ Thank you!  A few comments below.
 >  
 > -	typeof(p) rcu_assign_pointer(p, typeof(p) v);
 > +	rcu_assign_pointer(p, typeof(p) v);
-
-Please add the "void", similar to synchronize_rcu() above.
-
+>  
 >  	Yes, rcu_assign_pointer() -is- implemented as a macro, though it
 >  	would be cool to be able to declare a function in this manner.
 > @@ -220,9 +220,9 @@ rcu_assign_pointer()
@@ -206,12 +187,6 @@ Please add the "void", similar to synchronize_rcu() above.
 > +do {								\
 > +	(p) = (v);						\
 > +} while (0)
-
-These two each fit nicely on one line:
-
-	#define rcu_assign_pointer(p, v) do { (p) = (v); } while (0)
-	#define RCU_INIT_POINTER(p, v)   do { (p) = (v); } while (0)
-
 >  
 >  #endif
 > diff --git a/tools/testing/radix-tree/linux/rcupdate.h b/tools/testing/radix-tree/linux/rcupdate.h
@@ -227,11 +202,11 @@ These two each fit nicely on one line:
 > +do {								\
 > +	(p) = (v);						\
 > +} while (0)
-
-As does this one.
-
+>  
 >  #endif
 > -- 
 > 2.7.4
 > 
+
+Other than Paul's nits, LGTM. Thanks.
 
