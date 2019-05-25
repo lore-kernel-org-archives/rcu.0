@@ -1,59 +1,32 @@
-Return-Path: <SRS0=/QKf=TY=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=KF8c=TZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC973C282E1
-	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 23:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF19AC282E1
+	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 03:25:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B272D217F9
-	for <rcu@archiver.kernel.org>; Fri, 24 May 2019 23:50:20 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FtBgIcfy"
+	by mail.kernel.org (Postfix) with ESMTP id ABB052177E
+	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 03:25:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbfEXXt4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 May 2019 19:49:56 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37379 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbfEXXtz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 May 2019 19:49:55 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n27so5852800pgm.4
-        for <rcu@vger.kernel.org>; Fri, 24 May 2019 16:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JWprfXxnZYwrSMlSa8B0jYY+Kk48KO4t7l+blfnMKTI=;
-        b=FtBgIcfyzP/9kJsM+zqDbKcy6VZwEKAANCQ1/eZQrD6rviA4awDDcac9F6JHAeC8Ww
-         /QISOXT5+haCwcCXiDtBTzmrbvUPQt/eQFfssAfxoublccYDf4cZJhSHGojIabZd0IPc
-         VxKmmE96CtJBAuxlrRyraOLObouJSFe2WI5dc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JWprfXxnZYwrSMlSa8B0jYY+Kk48KO4t7l+blfnMKTI=;
-        b=nYPV45oHKngDZUzr6E5k46PmP1St+zEUHhXwc25weOi9H15gLV1ohdA++EjU76+2SX
-         0ndBmdOxo6LZe7xA79Y+3AofM1RqyD7xV3pZDLb7LStMEVVVlj99J7WVfENxa6IJ5Soy
-         z4VsF17HvvZ/k0R3ZYrkVNF1NFYf2nBaZXTTIeUUm1k5RQfYWQc2xcZBS39h+nKs7sMQ
-         EIzonOMuFk0NhDteOyUrtChFCiuJrqEgdFbZxMUEY1MkFfD7Jm+oo/Tr+pXGV2SQ70AP
-         KrGhXXUdjVqh+ciKQz/qIexmiV+OlIgZGFYgvG5v8gLXzUE6dO6MHb2MSz1hn14tey4j
-         A+TA==
-X-Gm-Message-State: APjAAAUDegIC+IoCPgemtJFT4xv3SJDadgaER4nSTmWBjVMN1BMigNBr
-        tvFg+94KsiMC9PdZy0lzyh+f7w==
-X-Google-Smtp-Source: APXvYqz7Pfyyr4nOlV734fVH1bvjX4jHzTMPj1aZT0g/Pt0V2GglxzMFOH0INg1fPuB6UlDmRBFhmw==
-X-Received: by 2002:a63:495e:: with SMTP id y30mr65431636pgk.185.1558741794604;
-        Fri, 24 May 2019 16:49:54 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q4sm3297595pgb.39.2019.05.24.16.49.52
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 24 May 2019 16:49:53 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        id S1726641AbfEYDZD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 May 2019 23:25:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726390AbfEYDZD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 May 2019 23:25:03 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84AF82075C;
+        Sat, 25 May 2019 03:25:01 +0000 (UTC)
+Date:   Fri, 24 May 2019 23:24:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Ingo Molnar <mingo@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -64,43 +37,31 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH RFC 1/5] powerpc: Use regular rcu_dereference_raw API
-Date:   Fri, 24 May 2019 19:49:29 -0400
-Message-Id: <20190524234933.5133-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.22.0.rc1.257.g3120a18244-goog
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 0/5] Remove some notrace RCU APIs
+Message-ID: <20190524232458.4bcf4eb4@gandalf.local.home>
 In-Reply-To: <20190524234933.5133-1-joel@joelfernandes.org>
 References: <20190524234933.5133-1-joel@joelfernandes.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rcu_dereference_raw already does not do any tracing. There is no need to
-use the _notrace variant of it and this series removes that API, so let us
-use the regular variant here.
+On Fri, 24 May 2019 19:49:28 -0400
+"Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- arch/powerpc/include/asm/kvm_book3s_64.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The series removes users of the following APIs, and the APIs themselves, since
+> the regular non - _notrace variants don't do any tracing anyway.
+>  * hlist_for_each_entry_rcu_notrace
+>  * rcu_dereference_raw_notrace
+> 
 
-diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
-index 21b1ed5df888..c15c9bbf0206 100644
---- a/arch/powerpc/include/asm/kvm_book3s_64.h
-+++ b/arch/powerpc/include/asm/kvm_book3s_64.h
-@@ -546,7 +546,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
-  */
- static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
- {
--	return rcu_dereference_raw_notrace(kvm->memslots[0]);
-+	return rcu_dereference_raw(kvm->memslots[0]);
- }
- 
- extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
--- 
-2.22.0.rc1.257.g3120a18244-goog
+I guess the difference between the _raw_notrace and just _raw variants
+is that _notrace ones do a rcu_check_sparse(). Don't we want to keep
+that check?
 
+-- Steve
