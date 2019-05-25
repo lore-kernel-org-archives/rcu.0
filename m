@@ -2,111 +2,74 @@ Return-Path: <SRS0=KF8c=TZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE4DC282CE
-	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 10:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 370A6C282CE
+	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 11:08:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 054862133D
-	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 10:07:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="V+31VLVF"
+	by mail.kernel.org (Postfix) with ESMTP id 18C6D2085A
+	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 11:08:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbfEYKHZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 25 May 2019 06:07:25 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45006 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbfEYKHZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 25 May 2019 06:07:25 -0400
-Received: by mail-lj1-f195.google.com with SMTP id e13so10698065ljl.11
-        for <rcu@vger.kernel.org>; Sat, 25 May 2019 03:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bfhrFcakAvRPFa4ilNfgzQaeIke1aVQ4rQMw2nVHnyQ=;
-        b=V+31VLVFf0iRYRwGsw5tWZHAhTFLsXaICfdGZfiZo+NyQjSI9NaoGEt1cHGfAYlRGD
-         n9Qw7h7fW41Kh4bOHZcjd0TJRtCteIx3wgfQytobyyAmdaAQGu5pZwCvAcinQRpol0Vb
-         Se5JGOkQkhbgVqsYnDGhDQFpuwsb2tSwPJ2sY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bfhrFcakAvRPFa4ilNfgzQaeIke1aVQ4rQMw2nVHnyQ=;
-        b=Q9skGUdklFyND0RIgdNSTEEECyxdcrfn3iQF2JLZ9QcBVDQQxpAnHuAtEvFmFgswa8
-         ZLJx130cwTzeqM+ChnfGM/s99W5UqSyLP3AUMebMRGYAhznrVRVMjzpwMMZ6UMw90di/
-         MCVKwXErD4AcXFF8YVLWJOwXWnJDiKmdTGQX0yzzAPIydKKxnj4cNpC7dB2jcemnWZEf
-         NCAIugN7H6c9cLLsFTAt/47PZNtESP4blBMz7UC4r4fF8/m+8vcHBXpjpwycHNRsDKsQ
-         0aTb+cXkgkYzZjCz8znq13v2WsqN2CN6pKKzQ6KCKh5dzb4pOsNzASGoQV1HmyEs4zwA
-         OmSA==
-X-Gm-Message-State: APjAAAUDdtCJMkgHqor2MalRqJ/yaxmwbzwybnmjWg0XPALQSEetxxoY
-        l7EbawlrUqzxi4TV9iLF0Iov46udHIGy4uQXN8EuUA==
-X-Google-Smtp-Source: APXvYqywdt40Ja53oXe/SSQu2SKEQwGvPcmn3GlG7VOzrC7N6WqqKTni+2mVHgNtnDt4a3+auHks65LyrVBmoXXXevs=
-X-Received: by 2002:a2e:9bc5:: with SMTP id w5mr17423153ljj.87.1558778843232;
- Sat, 25 May 2019 03:07:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190505020328.165839-1-joel@joelfernandes.org>
- <20190507000453.GB3923@linux.ibm.com> <20190508162635.GD187505@google.com> <20190508181638.GY3923@linux.ibm.com>
-In-Reply-To: <20190508181638.GY3923@linux.ibm.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sat, 25 May 2019 13:07:12 +0300
-Message-ID: <CAEXW_YR69RRNZfkfFyvprs5+VKBGu29h0_-gnQmuNhN54+ReHQ@mail.gmail.com>
-Subject: Re: [PATCH] doc/rcu: Correct field_count field naming in examples
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1726733AbfEYLIa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 25 May 2019 07:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726484AbfEYLIa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 25 May 2019 07:08:30 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B2D22085A;
+        Sat, 25 May 2019 11:08:28 +0000 (UTC)
+Date:   Sat, 25 May 2019 07:08:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 0/5] Remove some notrace RCU APIs
+Message-ID: <20190525070826.16f76ee7@gandalf.local.home>
+In-Reply-To: <20190525081444.GC197789@google.com>
+References: <20190524234933.5133-1-joel@joelfernandes.org>
+        <20190524232458.4bcf4eb4@gandalf.local.home>
+        <20190525081444.GC197789@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 8, 2019 at 9:16 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-[snip]
-> > > And this example code predates v2.6.12.  ;-)
-> > >
-> > > So good eyes, but I believe that this really does reflect the ancient
-> > > code...
-> > >
-> > > On the other hand, would you have ideas for more modern replacement
-> > > examples?
-> >
-> > There are 3 cases I can see in listRCU.txt:
-> >   (1) action taken outside of read_lock (can tolerate stale data), no in-place update.
-> >                 this is the best possible usage of RCU.
-> >   (2) action taken outside of read_lock, in-place updates
-> >                 this is good as long as not too many in-place updates.
-> >                 involves copying creating new list node and replacing the
-> >                 node being updated with it.
-> >   (3) cannot tolerate stale data: here a deleted or obsolete flag can be used
-> >                                   protected by a per-entry lock. reader
-> >                                 aborts if object is stale.
-> >
-> > Any replacement example must make satisfy (3) too?
->
-> It would be OK to have a separate example for (3).  It would of course
-> be nicer to have one example for all three, but not all -that- important.
->
-> > The only example for (3) that I know of is sysvipc sempahores which you also
-> > mentioned in the paper. Looking through this code, it hasn't changed
-> > conceptually and it could be a fit for an example (ipc_valid_object() checks
-> > for whether the object is stale).
->
-> That is indeed the classic canonical example.  ;-)
+On Sat, 25 May 2019 04:14:44 -0400
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-FWIW just want to mention, it seems to me the ptrace task list
-traversal could be a great example of "mark obsolete objects" and is
-simple so I could just use that.
-Neil talks about it in his article here:
-https://lwn.net/Articles/610972/ . In "Group 3: Transform the way the
-list is walked"
+> > I guess the difference between the _raw_notrace and just _raw variants
+> > is that _notrace ones do a rcu_check_sparse(). Don't we want to keep
+> > that check?  
+> 
+> This is true.
+> 
+> Since the users of _raw_notrace are very few, is it worth keeping this API
+> just for sparse checking? The API naming is also confusing. I was expecting
+> _raw_notrace to do fewer checks than _raw, instead of more. Honestly, I just
+> want to nuke _raw_notrace as done in this series and later we can introduce a
+> sparse checking version of _raw if need-be. The other option could be to
+> always do sparse checking for _raw however that used to be the case and got
+> changed in http://lists.infradead.org/pipermail/linux-afs/2016-July/001016.html
 
-Cheers,
-- Joel
+What if we just rename _raw to _raw_nocheck, and _raw_notrace to _raw ?
+
+-- Steve
