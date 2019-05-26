@@ -1,110 +1,94 @@
-Return-Path: <SRS0=KF8c=TZ=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=+pn2=T2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A9FBC07542
-	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 18:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C691C282E3
+	for <rcu@archiver.kernel.org>; Sun, 26 May 2019 16:20:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5076C20815
-	for <rcu@archiver.kernel.org>; Sat, 25 May 2019 18:18:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E307220657
+	for <rcu@archiver.kernel.org>; Sun, 26 May 2019 16:20:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kkcebdla"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9kOov7C"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbfEYSSV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 25 May 2019 14:18:21 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:42915 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727300AbfEYSSV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 25 May 2019 14:18:21 -0400
-Received: by mail-pg1-f193.google.com with SMTP id 33so3847417pgv.9
-        for <rcu@vger.kernel.org>; Sat, 25 May 2019 11:18:21 -0700 (PDT)
+        id S1727865AbfEZQUw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 May 2019 12:20:52 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39463 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726622AbfEZQUw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 May 2019 12:20:52 -0400
+Received: by mail-lf1-f68.google.com with SMTP id f1so10349915lfl.6;
+        Sun, 26 May 2019 09:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pwUwT3IH5HpGo/L8sP6//cCZtClp5/ip6vUnZdkkz+4=;
-        b=kkcebdlaAxI4tg4ycJmEqrzHnyewgh+jjzD8JuWykQMD1lxIZbs14DxRaS3JzJWrkx
-         D3zUk40qEzDf9b4/+3m3e4ZQvAeZltgNBFxxlJjzMPDywJcvPdcoFqhPgZYDwqU6gPKo
-         ZKBP/5ISTo1G00dTfWL1Nmxp2HkYKifVw8IVU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=01nMFHopGBCZI/oY5AFsKMqNsMt7+AjmjgP0ZjkgZD0=;
+        b=H9kOov7CMbdB+pTxe0jciE/0X9oGCvFwZWDK1QndljD3nCAkXWhPqQrhRAkQi59WA+
+         d1eMVPPgA648vZfajLaltDW4PpoUB4pt83MyTL8K46y+UiuRDyXY5HNuTOJif87Lqecv
+         kL+pn979wtoM5zsiZjVxsKyorZ5fDMvXc5EYdLwfb29E7UMtLbbi6SY6+B9EjVK9V9N9
+         jppYbzw6fnq8W4DKmTORjKAQGOTgjdVW0TITDNwUDfmzZIQ2GHdOG9eZLBAnZ2U1JIpK
+         oZea98ME0YjW6/g1Ch8EirFC6vsAF2YeXFVxSa5XzAQMHPBzbwOOEGdLWTiIgXY9fDAt
+         gF9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pwUwT3IH5HpGo/L8sP6//cCZtClp5/ip6vUnZdkkz+4=;
-        b=B0ZzQA5pWuhNyMgAA+plj/wZFmOWViqRUOSORp8696lb1B+R2hZWEZy37EqTaVULAR
-         30luvgfgqNtNEeqYJnIxda2XXlKLbLfDQI4QzMPSrYs/LIhuql5rhlY9mR4wq71l989m
-         3gcHHZKFslW3EeLRUopMxXKRjyiqG2ikJNbOBuuyXVHs6pUhRuZzyMh5DsQQODU3TqLP
-         n1SsrrI76MGOFF/8SGBk23wmUDmQUaoOOoJtrxCP7xmpc/9cfQJmQ5ISIoDpeaNYHyXS
-         8mZN1z7JbJKEoZFmslIpI0ndefcy+ljmAPx77qq29+ofO9fd2h5GkgiXh0Gzqw3R4zlW
-         xeFQ==
-X-Gm-Message-State: APjAAAWzNjDaAXWKeCtwKSiLWxtPH0zCKTOy9zi3vVcJ7pjzqrBbvUBi
-        67hjkmbk1BT2H+oWfvQSrFwdBA==
-X-Google-Smtp-Source: APXvYqx/tYCXEdllU2F4/1JetbgrhH8TFsHxXRye9Amlmvbkp4RD4ve2+88VYqD+upEJsBYYCIqDXw==
-X-Received: by 2002:aa7:8554:: with SMTP id y20mr121952964pfn.258.1558808300867;
-        Sat, 25 May 2019 11:18:20 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id s24sm6537148pfe.57.2019.05.25.11.18.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 May 2019 11:18:20 -0700 (PDT)
-Date:   Sat, 25 May 2019 14:18:18 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=01nMFHopGBCZI/oY5AFsKMqNsMt7+AjmjgP0ZjkgZD0=;
+        b=d+AT28OZkvToROcSkbKH5jDUExZ2jL1zqXBWcbMzoaO5CnNKnVwB4Bdnv/W9KjTRCj
+         LtlVH9zLz1zZpsECumMdLbQtQPydUVjZ1DJSGiiGjbqKCz316yY1s1DHHpGls2UBrZKr
+         70XoB052Ee96vNxu3VhyGszjCIu9cHaG1T+l0kV831yzStmRS1azl4oaS7xwX9fesJNN
+         kC4oWA5SZ98+J6gUY78k+Dz51z5EN01n2QMNAv2DinP0MhSyYnigXOH/kESj5qemSyVP
+         OMNu3YFRAOLJx1txpji9nm1pU2hnV0lfrfprdNodnK0C/qEtUGW1r8vKtb2w83gi6h9R
+         VL8Q==
+X-Gm-Message-State: APjAAAWE8sW+PDz2rv9j219t4UDEqbUKp3r4ucW1/rFp753PEqoinbW2
+        +HLac4dosE5i5QcANESRCNwOqGu5BeI41VXG1Pw=
+X-Google-Smtp-Source: APXvYqwxMEk0IUeAy9UBTsg3h8S+c0X1iydUjhxKYRUIOzNVGYIXzMI1MwgnfY73XGd4ekjkgDqWVxxMzKH40Taah+c=
+X-Received: by 2002:ac2:4213:: with SMTP id y19mr4505084lfh.66.1558887650127;
+ Sun, 26 May 2019 09:20:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190524234933.5133-1-joel@joelfernandes.org> <20190524234933.5133-5-joel@joelfernandes.org>
+In-Reply-To: <20190524234933.5133-5-joel@joelfernandes.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sun, 26 May 2019 18:20:39 +0200
+Message-ID: <CANiq72noLXGXo7iarC1vCYX3X5L4fXq1DASK9gMtD_25-VEuHA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/5] rculist: Remove hlist_for_each_entry_rcu_notrace
+ since no users
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Ingo Molnar <mingo@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC 0/5] Remove some notrace RCU APIs
-Message-ID: <20190525181818.GA225569@google.com>
-References: <20190524234933.5133-1-joel@joelfernandes.org>
- <20190524232458.4bcf4eb4@gandalf.local.home>
- <20190525081444.GC197789@google.com>
- <20190525070826.16f76ee7@gandalf.local.home>
- <20190525141954.GA176647@google.com>
- <20190525155035.GE28207@linux.ibm.com>
- <20190525181407.GA220326@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190525181407.GA220326@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, May 25, 2019 at 02:14:07PM -0400, Joel Fernandes wrote:
-[snip]
-> > That aside, if we are going to change the name of an API that is
-> > used 160 places throughout the tree, we would need to have a pretty
-> > good justification.  Without such a justification, it will just look
-> > like pointless churn to the various developers and maintainers on the
-> > receiving end of the patches.
-> 
-> Actually, the API name change is not something I want to do, it is Steven
-> suggestion. My suggestion is let us just delete _raw_notrace and just use the
-> _raw API for tracing, since _raw doesn't do any tracing anyway. Steve pointed
-> that _raw_notrace does sparse checking unlike _raw, but I think that isn't an
-> issue since _raw doesn't do such checking at the moment anyway.. (if possible
-> check my cover letter again for details/motivation of this series).
+On Sat, May 25, 2019 at 1:50 AM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> The series removes all users of the API and with this patch, the API
+> itself.
+>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  .clang-format           |  1 -
 
-Come to think of it, if we/I succeed in adding lockdep checking in _raw, then
-we can just keep the current APIs and not delete anything. And we can have
-_raw_notrace skip the lockdep checks. The sparse check question would still
-be an open one though, since _raw doesn't do sparse checks at the moment
-unlike _raw_notrace as Steve pointed.
+Ack for clang-format, and thanks for removing it there too! :-)
 
-Thanks,
-
- - Joel
-
+Cheers,
+Miguel
