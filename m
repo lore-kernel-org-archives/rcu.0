@@ -1,94 +1,185 @@
-Return-Path: <SRS0=+pn2=T2=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=7HQ/=T3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C691C282E3
-	for <rcu@archiver.kernel.org>; Sun, 26 May 2019 16:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CB6CC282CE
+	for <rcu@archiver.kernel.org>; Mon, 27 May 2019 08:50:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E307220657
-	for <rcu@archiver.kernel.org>; Sun, 26 May 2019 16:20:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF5832173C
+	for <rcu@archiver.kernel.org>; Mon, 27 May 2019 08:50:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9kOov7C"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="eXFCI9Im"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbfEZQUw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 May 2019 12:20:52 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:39463 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726622AbfEZQUw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 May 2019 12:20:52 -0400
-Received: by mail-lf1-f68.google.com with SMTP id f1so10349915lfl.6;
-        Sun, 26 May 2019 09:20:50 -0700 (PDT)
+        id S1726764AbfE0IuX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 May 2019 04:50:23 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53982 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726753AbfE0IuX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 May 2019 04:50:23 -0400
+Received: by mail-wm1-f66.google.com with SMTP id d17so2120492wmb.3
+        for <rcu@vger.kernel.org>; Mon, 27 May 2019 01:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=01nMFHopGBCZI/oY5AFsKMqNsMt7+AjmjgP0ZjkgZD0=;
-        b=H9kOov7CMbdB+pTxe0jciE/0X9oGCvFwZWDK1QndljD3nCAkXWhPqQrhRAkQi59WA+
-         d1eMVPPgA648vZfajLaltDW4PpoUB4pt83MyTL8K46y+UiuRDyXY5HNuTOJif87Lqecv
-         kL+pn979wtoM5zsiZjVxsKyorZ5fDMvXc5EYdLwfb29E7UMtLbbi6SY6+B9EjVK9V9N9
-         jppYbzw6fnq8W4DKmTORjKAQGOTgjdVW0TITDNwUDfmzZIQ2GHdOG9eZLBAnZ2U1JIpK
-         oZea98ME0YjW6/g1Ch8EirFC6vsAF2YeXFVxSa5XzAQMHPBzbwOOEGdLWTiIgXY9fDAt
-         gF9Q==
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=JSYe47ktmWDVImdRMdjKYkUfFXl23hlJNQIL3W+hEjY=;
+        b=eXFCI9ImDvCZKjk0jgbcXG/WbIcHIk+7MQNwJdKDwJNbEzr9PvGux3wik26Mz5q/tx
+         H2Ibzxqwhdwns143brs5zym7VWKd5/QQ2XIFU3HnPs1F09NqKgQzR3TZIqfpSabiDjKg
+         e2h4YOZwHNXtEVNoUyr2IuvyeaKI5tGdXv98g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=01nMFHopGBCZI/oY5AFsKMqNsMt7+AjmjgP0ZjkgZD0=;
-        b=d+AT28OZkvToROcSkbKH5jDUExZ2jL1zqXBWcbMzoaO5CnNKnVwB4Bdnv/W9KjTRCj
-         LtlVH9zLz1zZpsECumMdLbQtQPydUVjZ1DJSGiiGjbqKCz316yY1s1DHHpGls2UBrZKr
-         70XoB052Ee96vNxu3VhyGszjCIu9cHaG1T+l0kV831yzStmRS1azl4oaS7xwX9fesJNN
-         kC4oWA5SZ98+J6gUY78k+Dz51z5EN01n2QMNAv2DinP0MhSyYnigXOH/kESj5qemSyVP
-         OMNu3YFRAOLJx1txpji9nm1pU2hnV0lfrfprdNodnK0C/qEtUGW1r8vKtb2w83gi6h9R
-         VL8Q==
-X-Gm-Message-State: APjAAAWE8sW+PDz2rv9j219t4UDEqbUKp3r4ucW1/rFp753PEqoinbW2
-        +HLac4dosE5i5QcANESRCNwOqGu5BeI41VXG1Pw=
-X-Google-Smtp-Source: APXvYqwxMEk0IUeAy9UBTsg3h8S+c0X1iydUjhxKYRUIOzNVGYIXzMI1MwgnfY73XGd4ekjkgDqWVxxMzKH40Taah+c=
-X-Received: by 2002:ac2:4213:: with SMTP id y19mr4505084lfh.66.1558887650127;
- Sun, 26 May 2019 09:20:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190524234933.5133-1-joel@joelfernandes.org> <20190524234933.5133-5-joel@joelfernandes.org>
-In-Reply-To: <20190524234933.5133-5-joel@joelfernandes.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 26 May 2019 18:20:39 +0200
-Message-ID: <CANiq72noLXGXo7iarC1vCYX3X5L4fXq1DASK9gMtD_25-VEuHA@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/5] rculist: Remove hlist_for_each_entry_rcu_notrace
- since no users
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JSYe47ktmWDVImdRMdjKYkUfFXl23hlJNQIL3W+hEjY=;
+        b=QXsUKe+sjIOxuKhn/RruN2R7bAVvfiZyrhq/uf4GjXK8KUtOc33Cmy43UXyW46pnit
+         tbmJs2QtxjPC6JbaoiJojtM4Y95O84BxOqPoCKzo4qN4Yg4XgBAJCoNDWGO3OlrDYS5k
+         DTMMSfg69N+G4AIRALQrm8EPYCN4NdGuDY3aLUR1u2YUQMG3/vkYcd/kN5VfzaLeZKlU
+         TEfVD/7TZWj4rmJ9kgQYi/PTgtpSf1pC2uzou/ksqdF5cfN3RmrfJopwUG4UZ23Lup2W
+         vyF0Y6AIULSd99CzXBdIF2CTJcXGFVDJ37X6QGcAsNLqNXQ/ZNKlIKr/eJ0Sn7xCGkOJ
+         H6SQ==
+X-Gm-Message-State: APjAAAVE/iF4uxW1zA0da+e9TEKKnmyqFriZeR06lRNVWXligUZu3uGg
+        kOO3Jx7U/CNKHJRCV6gOElPh3w==
+X-Google-Smtp-Source: APXvYqyCt7v/FXUTPMZGhsTlodF+U+d/X6SYkTSx9P2iis4pvWer/HfaVOOWbV7b5JQTHHKxXjxT0g==
+X-Received: by 2002:a7b:c943:: with SMTP id i3mr8400604wml.128.1558947019989;
+        Mon, 27 May 2019 01:50:19 -0700 (PDT)
+Received: from localhost.localdomain (86.100.broadband17.iol.cz. [109.80.100.86])
+        by smtp.gmail.com with ESMTPSA id f197sm10308637wme.39.2019.05.27.01.50.18
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Mon, 27 May 2019 01:50:19 -0700 (PDT)
+From:   Andrea Parri <andrea.parri@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrea Parri <andrea.parri@amarulasolutions.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v2] rcu: Don't return a value from rcu_assign_pointer()
+Date:   Mon, 27 May 2019 10:49:57 +0200
+Message-Id: <1558946997-25559-1-git-send-email-andrea.parri@amarulasolutions.com>
+X-Mailer: git-send-email 2.7.4
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, May 25, 2019 at 1:50 AM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> The series removes all users of the API and with this patch, the API
-> itself.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  .clang-format           |  1 -
+Quoting Paul [1]:
 
-Ack for clang-format, and thanks for removing it there too! :-)
+  "Given that a quick (and perhaps error-prone) search of the uses
+   of rcu_assign_pointer() in v5.1 didn't find a single use of the
+   return value, let's please instead change the documentation and
+   implementation to eliminate the return value."
 
-Cheers,
-Miguel
+[1] https://lkml.kernel.org/r/20190523135013.GL28207@linux.ibm.com
+
+Signed-off-by: Andrea Parri <andrea.parri@amarulasolutions.com>
+Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: rcu@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>
+---
+Changes in v2:
+  - Fix documentation and style (Paul E. McKenney)
+  - Improve subject line (Mark Rutland) 
+---
+ Documentation/RCU/whatisRCU.txt           | 8 ++++----
+ include/linux/rcupdate.h                  | 5 ++---
+ tools/include/linux/rcu.h                 | 4 ++--
+ tools/testing/radix-tree/linux/rcupdate.h | 2 +-
+ 4 files changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.txt
+index 981651a8b65d2..7e1a8721637ab 100644
+--- a/Documentation/RCU/whatisRCU.txt
++++ b/Documentation/RCU/whatisRCU.txt
+@@ -212,7 +212,7 @@ synchronize_rcu()
+ 
+ rcu_assign_pointer()
+ 
+-	typeof(p) rcu_assign_pointer(p, typeof(p) v);
++	void rcu_assign_pointer(p, typeof(p) v);
+ 
+ 	Yes, rcu_assign_pointer() -is- implemented as a macro, though it
+ 	would be cool to be able to declare a function in this manner.
+@@ -220,9 +220,9 @@ rcu_assign_pointer()
+ 
+ 	The updater uses this function to assign a new value to an
+ 	RCU-protected pointer, in order to safely communicate the change
+-	in value from the updater to the reader.  This function returns
+-	the new value, and also executes any memory-barrier instructions
+-	required for a given CPU architecture.
++	in value from the updater to the reader.  This macro does not
++	evaluate to an rvalue, but it does execute any memory-barrier
++	instructions required for a given CPU architecture.
+ 
+ 	Perhaps just as important, it serves to document (1) which
+ 	pointers are protected by RCU and (2) the point at which a
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index a8ed624da5556..0c9b92799abc7 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -367,7 +367,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+  * other macros that it invokes.
+  */
+ #define rcu_assign_pointer(p, v)					      \
+-({									      \
++do {									      \
+ 	uintptr_t _r_a_p__v = (uintptr_t)(v);				      \
+ 	rcu_check_sparse(p, __rcu);					      \
+ 									      \
+@@ -375,8 +375,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+ 		WRITE_ONCE((p), (typeof(p))(_r_a_p__v));		      \
+ 	else								      \
+ 		smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
+-	_r_a_p__v;							      \
+-})
++} while (0)
+ 
+ /**
+  * rcu_swap_protected() - swap an RCU and a regular pointer
+diff --git a/tools/include/linux/rcu.h b/tools/include/linux/rcu.h
+index 7d02527e5bcea..9554d3fa54f33 100644
+--- a/tools/include/linux/rcu.h
++++ b/tools/include/linux/rcu.h
+@@ -19,7 +19,7 @@ static inline bool rcu_is_watching(void)
+ 	return false;
+ }
+ 
+-#define rcu_assign_pointer(p, v) ((p) = (v))
+-#define RCU_INIT_POINTER(p, v) p=(v)
++#define rcu_assign_pointer(p, v)	do { (p) = (v); } while (0)
++#define RCU_INIT_POINTER(p, v)	do { (p) = (v); } while (0)
+ 
+ #endif
+diff --git a/tools/testing/radix-tree/linux/rcupdate.h b/tools/testing/radix-tree/linux/rcupdate.h
+index fd280b070fdb1..fed468fb0c78d 100644
+--- a/tools/testing/radix-tree/linux/rcupdate.h
++++ b/tools/testing/radix-tree/linux/rcupdate.h
+@@ -7,6 +7,6 @@
+ #define rcu_dereference_raw(p) rcu_dereference(p)
+ #define rcu_dereference_protected(p, cond) rcu_dereference(p)
+ #define rcu_dereference_check(p, cond) rcu_dereference(p)
+-#define RCU_INIT_POINTER(p, v)	(p) = (v)
++#define RCU_INIT_POINTER(p, v)	do { (p) = (v); } while (0)
+ 
+ #endif
+-- 
+2.7.4
+
