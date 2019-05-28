@@ -1,151 +1,189 @@
-Return-Path: <SRS0=7HQ/=T3=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=J5m5=T4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5B32C04AB3
-	for <rcu@archiver.kernel.org>; Mon, 27 May 2019 19:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7920FC04AB6
+	for <rcu@archiver.kernel.org>; Tue, 28 May 2019 12:24:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A623D20883
-	for <rcu@archiver.kernel.org>; Mon, 27 May 2019 19:24:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A9D3208C3
+	for <rcu@archiver.kernel.org>; Tue, 28 May 2019 12:24:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbfE0TYC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 May 2019 15:24:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34472 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726817AbfE0TYB (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 27 May 2019 15:24:01 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4RJM5fY078148
-        for <rcu@vger.kernel.org>; Mon, 27 May 2019 15:24:00 -0400
+        id S1726787AbfE1MYv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 May 2019 08:24:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40680 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726824AbfE1MYv (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 28 May 2019 08:24:51 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4SCMZVN125635
+        for <rcu@vger.kernel.org>; Tue, 28 May 2019 08:24:50 -0400
 Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2srhwpj07q-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ss3mfuh79-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 27 May 2019 15:24:00 -0400
+        for <rcu@vger.kernel.org>; Tue, 28 May 2019 08:24:50 -0400
 Received: from localhost
         by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 27 May 2019 20:23:59 +0100
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        Tue, 28 May 2019 13:24:49 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
         by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 27 May 2019 20:23:53 +0100
+        Tue, 28 May 2019 13:24:43 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4RJNqu439387206
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4SCOgvP29491484
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 May 2019 19:23:52 GMT
+        Tue, 28 May 2019 12:24:43 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6B9CB2067;
-        Mon, 27 May 2019 19:23:52 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id C2B1FB206E;
+        Tue, 28 May 2019 12:24:42 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A48C9B2064;
-        Mon, 27 May 2019 19:23:52 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.199.73])
+        by IMSVA (Postfix) with ESMTP id 994BFB2065;
+        Tue, 28 May 2019 12:24:42 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 27 May 2019 19:23:52 +0000 (GMT)
+        Tue, 28 May 2019 12:24:42 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D347016C396E; Mon, 27 May 2019 12:23:56 -0700 (PDT)
-Date:   Mon, 27 May 2019 12:23:56 -0700
+        id C799516C35C0; Tue, 28 May 2019 05:24:47 -0700 (PDT)
+Date:   Tue, 28 May 2019 05:24:47 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrea Parri <andrea.parri@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sasha Levin <sashal@kernel.org>, apw@canonical.com
-Subject: Re: [PATCH v2] rcu: Don't return a value from rcu_assign_pointer()
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 0/5] Remove some notrace RCU APIs
 Reply-To: paulmck@linux.ibm.com
-References: <1558946997-25559-1-git-send-email-andrea.parri@amarulasolutions.com>
- <20190527161050.GK28207@linux.ibm.com>
- <810a0dae47c90c39015903c413303fcee89ab5eb.camel@perches.com>
- <20190527174901.GL28207@linux.ibm.com>
- <475b18e78ba7e04363fe002315f75d2ce35496f9.camel@perches.com>
+References: <20190524234933.5133-1-joel@joelfernandes.org>
+ <20190524232458.4bcf4eb4@gandalf.local.home>
+ <20190525081444.GC197789@google.com>
+ <20190525070826.16f76ee7@gandalf.local.home>
+ <20190525141954.GA176647@google.com>
+ <20190525155035.GE28207@linux.ibm.com>
+ <20190525181407.GA220326@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <475b18e78ba7e04363fe002315f75d2ce35496f9.camel@perches.com>
+In-Reply-To: <20190525181407.GA220326@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19052719-0072-0000-0000-00000433DAAD
+x-cbid: 19052812-0072-0000-0000-00000434284E
 X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011172; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01209443; UDB=6.00635346; IPR=6.00990469;
- MB=3.00027076; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-27 19:23:58
+X-IBM-SpamModules-Versions: BY=3.00011175; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01209781; UDB=6.00635551; IPR=6.00990810;
+ MB=3.00027084; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-28 12:24:48
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19052719-0073-0000-0000-00004C62F272
-Message-Id: <20190527192356.GN28207@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-27_10:,,
+x-cbparentid: 19052812-0073-0000-0000-00004C6504FA
+Message-Id: <20190528122447.GS28207@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-28_05:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905270136
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905280081
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 27, 2019 at 10:57:52AM -0700, Joe Perches wrote:
-> On Mon, 2019-05-27 at 10:49 -0700, Paul E. McKenney wrote:
-> > On Mon, May 27, 2019 at 10:21:22AM -0700, Joe Perches wrote:
-> > > On Mon, 2019-05-27 at 09:10 -0700, Paul E. McKenney wrote:
-> > > > On Mon, May 27, 2019 at 10:49:57AM +0200, Andrea Parri wrote:
-> > > > > Quoting Paul [1]:
-> > > > > 
-> > > > >   "Given that a quick (and perhaps error-prone) search of the uses
-> > > > >    of rcu_assign_pointer() in v5.1 didn't find a single use of the
-> > > > >    return value, let's please instead change the documentation and
-> > > > >    implementation to eliminate the return value."
-> > > > > 
-> > > > > [1] https://lkml.kernel.org/r/20190523135013.GL28207@linux.ibm.com
+On Sat, May 25, 2019 at 02:14:07PM -0400, Joel Fernandes wrote:
+> On Sat, May 25, 2019 at 08:50:35AM -0700, Paul E. McKenney wrote:
+> > On Sat, May 25, 2019 at 10:19:54AM -0400, Joel Fernandes wrote:
+> > > On Sat, May 25, 2019 at 07:08:26AM -0400, Steven Rostedt wrote:
+> > > > On Sat, 25 May 2019 04:14:44 -0400
+> > > > Joel Fernandes <joel@joelfernandes.org> wrote:
 > > > > 
-> > > > Queued, thank you!
+> > > > > > I guess the difference between the _raw_notrace and just _raw variants
+> > > > > > is that _notrace ones do a rcu_check_sparse(). Don't we want to keep
+> > > > > > that check?  
+> > > > > 
+> > > > > This is true.
+> > > > > 
+> > > > > Since the users of _raw_notrace are very few, is it worth keeping this API
+> > > > > just for sparse checking? The API naming is also confusing. I was expecting
+> > > > > _raw_notrace to do fewer checks than _raw, instead of more. Honestly, I just
+> > > > > want to nuke _raw_notrace as done in this series and later we can introduce a
+> > > > > sparse checking version of _raw if need-be. The other option could be to
+> > > > > always do sparse checking for _raw however that used to be the case and got
+> > > > > changed in http://lists.infradead.org/pipermail/linux-afs/2016-July/001016.html
 > > > > 
-> > > > Adding the checkpatch maintainers on CC as well.  The "do { } while
-> > > > (0)" prevents the return value from being used, by design.  Given the
-> > > > checkpatch complaint, is there some better way to achieve this?
+> > > > What if we just rename _raw to _raw_nocheck, and _raw_notrace to _raw ?
 > > > 
-> > > Not sure what the checkpatch complaint is here.
-> > 
-> > Checkpatch seems to want at least two statements in each
-> > "do { } while (0)" macro definition:
-> > 
-> > WARNING: Single statement macros should not use a do {} while (0) loop
-> > 
-> > > Reading the link above, there seems to be a compiler warning.
-> > 
-> > The compiler warning is a theoretical issue that is being fixed by this
-> > patch, and the patch is giving the checkpatch warning.
-> > 
-> > > Perhaps a statement expression macro with no return value?
+> > > That would also mean changing 160 usages of _raw to _raw_nocheck in the
+> > > kernel :-/.
 > > > 
-> > > #define rcu_assign_pointer(p, v)	({ (p) = (v); ; })
+> > > The tracing usage of _raw_notrace is only like 2 or 3 users. Can we just call
+> > > rcu_check_sparse directly in the calling code for those and eliminate the APIs?
+> > > 
+> > > I wonder what Paul thinks about the matter as well.
 > > 
-> > This is at best an acquired taste for me...
+> > My thought is that it is likely that a goodly number of the current uses
+> > of _raw should really be some form of _check, with lockdep expressions
+> > spelled out.  Not that working out what exactly those lockdep expressions
+> > should be is necessarily a trivial undertaking.  ;-)
 > 
-> Another ugly possibility could be:
+> Yes, currently where I am a bit stuck is the rcu_dereference_raw()
+> cannot possibly know what SRCU domain it is under, so lockdep cannot check if
+> an SRCU lock is held without the user also passing along the SRCU domain. I
+> am trying to change lockdep to see if it can check if *any* srcu domain lock
+> is held (regardless of which one) and complain if none are. This is at least
+> better than no check at all.
 > 
-> #define rcu_assign_pointer(p, v) do {if (1) (p) = (v); } while (0)
+> However, I think it gets tricky for mutexes. If you have something like:
+> mutex_lock(some_mutex);
+> p = rcu_dereference_raw(gp);
+> mutex_unlock(some_mutex);
+> 
+> This might be a perfectly valid invocation of _raw, however my checks (patch
+> is still cooking) trigger a lockdep warning becase _raw cannot know that this
+> is Ok. lockdep thinks it is not in a reader section. This then gets into the
+> territory of a new rcu_derference_raw_protected(gp, assert_held(some_mutex))
+> which sucks because its yet another API. To circumvent this issue, can we
+> just have callers of rcu_dereference_raw ensure that they call
+> rcu_read_lock() if they are protecting dereferences by a mutex? That would
+> make things a lot easier and also may be Ok since rcu_read_lock is quite
+> cheap.
 
-And, not to be left out, another ugly possibility might be:
+Why not just rcu_dereference_protected(lockdep_is_held(some_mutex))?
+The API is already there, and no need for spurious readers.
 
-#define rcu_assign_pointer(p, v) ((void)((p) = (v)))
+> > That aside, if we are going to change the name of an API that is
+> > used 160 places throughout the tree, we would need to have a pretty
+> > good justification.  Without such a justification, it will just look
+> > like pointless churn to the various developers and maintainers on the
+> > receiving end of the patches.
+> 
+> Actually, the API name change is not something I want to do, it is Steven
+> suggestion. My suggestion is let us just delete _raw_notrace and just use the
+> _raw API for tracing, since _raw doesn't do any tracing anyway. Steve pointed
+> that _raw_notrace does sparse checking unlike _raw, but I think that isn't an
+> issue since _raw doesn't do such checking at the moment anyway.. (if possible
+> check my cover letter again for details/motivation of this series).
 
-> Possibly the best option would be to ignore checkpatch here
-> and just add a comment above the use.
-
-Works for me!
+Understood, but regardless of who suggested it, if we are to go through
+with it, good justification will be required.  ;-)
 
 							Thanx, Paul
+
+> thanks!
+> 
+>  - Joel
+> 
+> > 							Thanx, Paul
+> > 
+> > > thanks, Steven!
+> > > 
+> > 
+> 
 
