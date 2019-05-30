@@ -4,56 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F997C28CC0
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB09C28CC2
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6267325BB8
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2B8C25BB4
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbfE3OxS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 May 2019 10:53:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54350 "EHLO
+        id S1725934AbfE3OxY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 May 2019 10:53:24 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35878 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725934AbfE3OxR (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 10:53:17 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UEq1mx068069;
-        Thu, 30 May 2019 10:52:33 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2stgm223uy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 10:52:33 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4UEqWcQ070369;
-        Thu, 30 May 2019 10:52:32 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2stgm223u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 10:52:32 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x4UCslRK014806;
-        Thu, 30 May 2019 12:55:04 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01dal.us.ibm.com with ESMTP id 2spwb96ny7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 12:55:04 +0000
+        by vger.kernel.org with ESMTP id S1727080AbfE3OxY (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 10:53:24 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UErAEg125917
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 10:53:23 -0400
+Received: from e17.ny.us.ibm.com (e17.ny.us.ibm.com [129.33.205.207])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2stg3buk14-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 10:53:11 -0400
+Received: from localhost
+        by e17.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Thu, 30 May 2019 15:52:37 +0100
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e17.ny.us.ibm.com (146.89.104.204) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 30 May 2019 15:52:30 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UEqUA542336570
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UEqTrh16711908
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 May 2019 14:52:30 GMT
+        Thu, 30 May 2019 14:52:29 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF7B1B206E;
+        by IMSVA (Postfix) with ESMTP id 93129B2070;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D3444B2065;
+        by IMSVA (Postfix) with ESMTP id 752C5B206A;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 5974916C5D9F; Thu, 30 May 2019 07:52:31 -0700 (PDT)
+        id 3CAD116C5D85; Thu, 30 May 2019 07:52:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -62,66 +56,59 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        kernel-team@android.com,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 09/12] lockdep: Add assertion to check if in an interrupt
-Date:   Thu, 30 May 2019 07:52:26 -0700
-Message-Id: <20190530145229.29565-9-paulmck@linux.ibm.com>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 04/12] rcu: Allow rcu_read_unlock_special() to raise_softirq() if in_irq()
+Date:   Thu, 30 May 2019 07:52:21 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190530145204.GA28526@linux.ibm.com>
 References: <20190530145204.GA28526@linux.ibm.com>
 X-TM-AS-GCONF: 00
+x-cbid: 19053014-0040-0000-0000-000004F681DC
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011185; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01210783; UDB=6.00636156; IPR=6.00991817;
+ MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 14:52:35
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19053014-0041-0000-0000-000009029C2B
+Message-Id: <20190530145229.29565-4-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_08:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=854 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1905300106
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+When running in an interrupt handler, raise_softirq() and
+raise_softirq_irqoff() have extremely low overhead: They simply set a
+bit in a per-CPU mask, which is checked upon exit from that interrupt
+handler.  Therefore, if rcu_read_unlock_special() is invoked within an
+interrupt handler and RCU_SOFTIRQ is in use, this commit make use of
+raise_softirq_irqoff() even if there is no expedited grace period in
+flight and even if this is not a nohz_full CPU.
 
-In rcu_rrupt_from_idle, we want to check if it is called from within an
-interrupt, but want to do such checking only for debug builds. lockdep
-already tracks when we enter an interrupt. Let us expose it as an
-assertion macro so it can be used to assert this.
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Cc: kernel-team@android.com
-Cc: rcu@vger.kernel.org
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- include/linux/lockdep.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 6e2377e6c1d6..e8eef38b2213 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -632,11 +632,18 @@ do {									\
- 			  "IRQs not disabled as expected\n");		\
- 	} while (0)
- 
-+#define lockdep_assert_in_irq() do {					\
-+		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
-+			  !current->hardirq_context,			\
-+			  "Not in hardirq as expected\n");		\
-+	} while (0)
-+
- #else
- # define might_lock(lock) do { } while (0)
- # define might_lock_read(lock) do { } while (0)
- # define lockdep_assert_irqs_enabled() do { } while (0)
- # define lockdep_assert_irqs_disabled() do { } while (0)
-+# define lockdep_assert_in_irq() do { } while (0)
- #endif
- 
- #ifdef CONFIG_LOCKDEP
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index d15cdab6aeb4..e1005f5e8094 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -615,7 +615,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 		      (rdp->grpmask & rnp->expmask) ||
+ 		      tick_nohz_full_cpu(rdp->cpu);
+ 		// Need to defer quiescent state until everything is enabled.
+-		if (exp && irqs_were_disabled && use_softirq &&
++		if ((exp || in_irq()) && irqs_were_disabled && use_softirq &&
+ 		    (in_irq() || !t->rcu_read_unlock_special.b.deferred_qs)) {
+ 			// Using softirq, safe to awaken, and we get
+ 			// no help from enabling irqs, unlike bh/preempt.
 -- 
 2.17.1
 
