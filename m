@@ -2,58 +2,53 @@ Return-Path: <SRS0=Yx8L=T6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E354DC28CC0
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39C70C28CC0
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:03:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AECE325C0F
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:01:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 19AF42343A
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:03:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbfE3PBP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 May 2019 11:01:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57532 "EHLO
+        id S1726450AbfE3PDx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 May 2019 11:03:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57284 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725897AbfE3PBP (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:01:15 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UEpsFn128988;
-        Thu, 30 May 2019 11:00:29 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2stfb3ps72-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 11:00:29 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4UEqJ6G130442;
-        Thu, 30 May 2019 11:00:28 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2stfb3prye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 11:00:28 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x4UCslWT014806;
-        Thu, 30 May 2019 13:02:09 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01dal.us.ibm.com with ESMTP id 2spwb96q5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 May 2019 13:02:09 +0000
+        by vger.kernel.org with ESMTP id S1726355AbfE3PDx (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:03:53 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UF2sPU126599
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:03:52 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2stfacet3v-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:03:52 -0400
+Received: from localhost
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Thu, 30 May 2019 16:03:51 +0100
+Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 30 May 2019 16:03:46 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UF0FRG34603326
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UF3kpx38404264
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 May 2019 15:00:15 GMT
+        Thu, 30 May 2019 15:03:46 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D27CB2068;
-        Thu, 30 May 2019 15:00:15 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EA2DCB2064;
+        Thu, 30 May 2019 15:03:45 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07AE0B2078;
-        Thu, 30 May 2019 15:00:15 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id CBC10B205F;
+        Thu, 30 May 2019 15:03:45 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 30 May 2019 15:00:14 +0000 (GMT)
+        Thu, 30 May 2019 15:03:45 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id C86A816C366B; Thu, 30 May 2019 08:00:16 -0700 (PDT)
+        id 98AD716C366B; Thu, 30 May 2019 08:03:47 -0700 (PDT)
+Date:   Thu, 30 May 2019 08:03:47 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -61,56 +56,54 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 1/9] rcu: Dump specified number of blocked tasks
-Date:   Thu, 30 May 2019 08:00:07 -0700
-Message-Id: <20190530150015.30995-1-paulmck@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190530145942.GA30318@linux.ibm.com>
-References: <20190530145942.GA30318@linux.ibm.com>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/4] SRCU updates for v5.3
+Reply-To: paulmck@linux.ibm.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
+x-cbid: 19053015-0072-0000-0000-000004354E28
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011185; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01210787; UDB=6.00636158; IPR=6.00991821;
+ MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 15:03:50
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19053015-0073-0000-0000-00004C6B62A7
+Message-Id: <20190530150347.GA31311@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_08:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905300106
+ mlxlogscore=815 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905300107
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+Hello!
 
-The dump_blkd_tasks() function dumps at most 10 blocked tasks, ignoring
-the value of the ncheck parameter.  This commit therefore substitutes
-the value of ncheck for the hard-coded value of 10.  Because all callers
-currently pass 10 as the number, this patch does not change behavior,
-but it is clearly an accident waiting to happen.
+This series provides SRCU updates:
 
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1.	Allocate per-CPU data for DEFINE_SRCU() in modules.
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 1102765f91fd..3a9891a74ead 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -760,7 +760,7 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- 	i = 0;
- 	list_for_each(lhp, &rnp->blkd_tasks) {
- 		pr_cont(" %p", lhp);
--		if (++i >= 10)
-+		if (++i >= ncheck)
- 			break;
- 	}
- 	pr_cont("\n");
--- 
-2.17.1
+2.	Remove unused vmlinux srcu linker entries, courtesy of Joel Fernandes.
+
+3.	Make srcu_struct ptr array as read-only, courtesy of Joel Fernandes.
+
+4.	Make __call_srcu static, courtesy of Jiang Biao.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/asm-generic/vmlinux.lds.h |    8 ++--
+ include/linux/module.h            |    5 ++
+ include/linux/srcutree.h          |   16 ++++++--
+ kernel/module.c                   |    5 ++
+ kernel/rcu/srcutree.c             |   69 ++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 93 insertions(+), 10 deletions(-)
 
