@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA84AC28CC2
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C57E2C28CC0
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FD4325CCB
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F0B225CC4
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbfE3PSj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 May 2019 11:18:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41654 "EHLO
+        id S1727406AbfE3PSi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 May 2019 11:18:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42238 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727896AbfE3PSg (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:18:36 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UFHq0Z053337
-        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:18:35 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2stgm13es8-1
+        by vger.kernel.org with ESMTP id S1727911AbfE3PSi (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:18:38 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UFIV2p008227
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:18:36 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2stfmrxguk-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
         for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:18:34 -0400
 Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 30 May 2019 16:18:33 +0100
+        Thu, 30 May 2019 16:17:19 +0100
 Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 30 May 2019 16:18:28 +0100
+        Thu, 30 May 2019 16:17:13 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UFHCkP35782874
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UFHCgD29425714
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 30 May 2019 15:17:12 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 77AFAB2072;
+        by IMSVA (Postfix) with ESMTP id 6D94FB2071;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A1EEB2066;
+        by IMSVA (Postfix) with ESMTP id 4F2FAB2078;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id CD24C16C5DA5; Thu, 30 May 2019 08:17:13 -0700 (PDT)
+        id D42F516C5DA7; Thu, 30 May 2019 08:17:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,111 +57,81 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 13/21] rcutorture: Tweak kvm options
-Date:   Thu, 30 May 2019 08:17:04 -0700
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 14/21] torture: Capture qemu output
+Date:   Thu, 30 May 2019 08:17:05 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190530151650.GA422@linux.ibm.com>
 References: <20190530151650.GA422@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19053015-0072-0000-0000-000004354F5E
+x-cbid: 19053015-0060-0000-0000-00000349F81E
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00011185; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000286; SDB=6.01210791; UDB=6.00636161; IPR=6.00991826;
- MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 15:18:32
+ MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 15:17:17
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19053015-0073-0000-0000-00004C6B6BD4
-Message-Id: <20190530151712.1612-13-paulmck@linux.ibm.com>
+x-cbparentid: 19053015-0061-0000-0000-0000498E046B
+Message-Id: <20190530151712.1612-14-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_08:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=15 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=917 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1905300108
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Currently qemu output appears on standard output, but is inaccessible
+later on.  This commit therefore captures this output and causes
+kvm-recheck.sh to output this output if QEMU gave a non-zero non-137
+exit code.  (And exit code of 137 indicates that QEMU was killed, in
+which case we want to know about the hang rather than the fact that
+QEMU was killed.)
 
-In one of my rcutorture tests the TSC clocksource got marked unstable
-due to a large difference in the TSC value. I'm not sure if the guest
-run for a long time with disabled interrupts or if the host was very
-busy and didn't schedule the guest for some time.
-
-I took a look on the qemu/KVM options and decided to update the options:
-
-- Use kvm{32|64} as CPU. We could probably use `host' (like ARM does)
-  for maximum available features but since we don't run any userland I'm
-  not sure if it makes any difference.
-
-- Drop the "noapic" option. There is no history why the APIC was disabled,
-  I see no reason for it.  Once old qemu versions fade away, we can add
-  "x2apic=on,tsc-deadline=on,hypervisor=on,tsc_adjust=on".
-
-- Additional config options. It ensures that the kernel knowns that it
-  runs as a kvm guest and can use virt devices like the kvm-clock as
-  clocksource. The kvm-clock was the main motivation here.
-
-- I didn't add a random HW device. It would make the random device ready
-  earlier (not it doesn't complete the initialisation at all) but I
-  doubt that there is any need for this.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-[ paulmck: The world is not quite ready for CONFIG_PARAVIRT_SPINLOCKS=y
-  and x2apic, so they are omitted for the time being. ]
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- tools/testing/selftests/rcutorture/bin/functions.sh | 13 ++++++++++++-
- .../selftests/rcutorture/configs/rcu/CFcommon       |  3 +++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh  | 10 +++++++++-
+ .../testing/selftests/rcutorture/bin/kvm-test-1-run.sh |  2 +-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-index 6bcb8b5b2ff2..c3a49fb4d6f6 100644
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -172,7 +172,7 @@ identify_qemu_append () {
- 	local console=ttyS0
- 	case "$1" in
- 	qemu-system-x86_64|qemu-system-i386)
--		echo noapic selinux=0 initcall_debug debug
-+		echo selinux=0 initcall_debug debug
- 		;;
- 	qemu-system-aarch64)
- 		console=ttyAMA0
-@@ -191,8 +191,19 @@ identify_qemu_append () {
- # Output arguments for qemu arguments based on the TORTURE_QEMU_MAC
- # and TORTURE_QEMU_INTERACTIVE environment variables.
- identify_qemu_args () {
-+	local KVM_CPU=""
-+	case "$1" in
-+	qemu-system-x86_64)
-+		KVM_CPU=kvm64
-+		;;
-+	qemu-system-i386)
-+		KVM_CPU=kvm32
-+		;;
-+	esac
- 	case "$1" in
- 	qemu-system-x86_64|qemu-system-i386)
-+		echo -machine q35,accel=kvm
-+		echo -cpu ${KVM_CPU}
- 		;;
- 	qemu-system-aarch64)
- 		echo -machine virt,gic-version=host -cpu host
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-index d2d2a86139db..e19a444a0684 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-@@ -1,2 +1,5 @@
- CONFIG_RCU_TORTURE_TEST=y
- CONFIG_PRINTK_TIME=y
-+CONFIG_HYPERVISOR_GUEST=y
-+CONFIG_PARAVIRT=y
-+CONFIG_KVM_GUEST=y
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index 2297ddc2d4c5..e5edd5198725 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -30,8 +30,16 @@ do
+ 		TORTURE_SUITE="`cat $i/../TORTURE_SUITE`"
+ 		rm -f $i/console.log.*.diags
+ 		kvm-recheck-${TORTURE_SUITE}.sh $i
+-		if test -f "$i/console.log"
++		if test -f "$i/qemu-retval" && test "`cat $i/qemu-retval`" -ne 0 && test "`cat $i/qemu-retval`" -ne 137
+ 		then
++			echo QEMU error, output:
++			cat $i/qemu-output
++		elif test -f "$i/console.log"
++		then
++			if test -f "$i/qemu-retval" && test "`cat $i/qemu-retval`" -eq 137
++			then
++				echo QEMU killed
++			fi
+ 			configcheck.sh $i/.config $i/ConfigFragment
+ 			if test -r $i/Make.oldconfig.err
+ 			then
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 0eb1ec16d78a..003511494fd9 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -165,7 +165,7 @@ then
+ fi
+ echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
+ echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" > $resdir/qemu-cmd
+-( $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append "$qemu_append $boot_args"& echo $! > $resdir/qemu_pid; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
++( $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append "$qemu_append $boot_args" > $resdir/qemu-output 2>&1 & echo $! > $resdir/qemu_pid; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
+ commandcompleted=0
+ sleep 10 # Give qemu's pid a chance to reach the file
+ if test -s "$resdir/qemu_pid"
 -- 
 2.17.1
 
