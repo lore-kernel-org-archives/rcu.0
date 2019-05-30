@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9BDAC28CC0
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:52:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D11CC28CC0
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9343F25BBD
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:52:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB00725BBD
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 14:53:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbfE3Owy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727289AbfE3Owy (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 30 May 2019 10:52:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43934 "EHLO
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54920 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726476AbfE3Owi (ORCPT
+        by vger.kernel.org with ESMTP id S1727180AbfE3Owi (ORCPT
         <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 10:52:38 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UEppaf105166
-        for <rcu@vger.kernel.org>; Thu, 30 May 2019 10:52:37 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UEps4h128943
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 10:52:38 -0400
 Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2stgu3sjj6-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2stfb3petm-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
         for <rcu@vger.kernel.org>; Thu, 30 May 2019 10:52:37 -0400
 Received: from localhost
         by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 30 May 2019 15:52:36 +0100
-Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        Thu, 30 May 2019 15:52:35 +0100
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
         by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 30 May 2019 15:52:31 +0100
+        Thu, 30 May 2019 15:52:30 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UEqUZc37028230
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UEqTmR37879820
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 May 2019 14:52:30 GMT
+        Thu, 30 May 2019 14:52:29 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9B39B2074;
+        by IMSVA (Postfix) with ESMTP id 893E2B2066;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CDDB6B2064;
+        by IMSVA (Postfix) with ESMTP id 6B1EBB2068;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu, 30 May 2019 14:52:29 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 4BD1916C5D9D; Thu, 30 May 2019 07:52:31 -0700 (PDT)
+        id 35E3C16C5D84; Thu, 30 May 2019 07:52:31 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,20 +58,20 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 07/12] rcu: Avoid self-IPI in sync_rcu_exp_select_node_cpus()
-Date:   Thu, 30 May 2019 07:52:24 -0700
+Subject: [PATCH tip/core/rcu 03/12] rcu: Only do rcu_read_unlock_special() wakeups if expedited
+Date:   Thu, 30 May 2019 07:52:20 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190530145204.GA28526@linux.ibm.com>
 References: <20190530145204.GA28526@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19053014-0052-0000-0000-000003C912BC
+x-cbid: 19053014-0052-0000-0000-000003C912BA
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00011185; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000286; SDB=6.01210783; UDB=6.00636156; IPR=6.00991817;
- MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 14:52:35
+ MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 14:52:34
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19053014-0053-0000-0000-0000611A106B
-Message-Id: <20190530145229.29565-7-paulmck@linux.ibm.com>
+x-cbparentid: 19053014-0053-0000-0000-0000611A1069
+Message-Id: <20190530145229.29565-3-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_08:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
@@ -83,41 +84,63 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Although sync_rcu_exp_select_node_cpus() treats the current CPU as being
-in a quiescent state, it might well migrate to some other CPU before
-reaching the smp_call_function_single(), which could then result in an
-unnecessary simulated self-IPI.  This commit therefore instead simply
-refuses to invoke smp_call_function_single() on the current CPU, which
-causes the later rcu_report_exp_cpu_mult() to report this CPU's quiescent
-state with less overhead.
+Currently, rcu_read_unlock_special() will do wakeups whenever it is safe
+to do so.  However, wakeups are expensive, and they are only really
+needed when the just-ended RCU read-side critical section is blocking
+an expedited grace period (in which case speed is of the essence)
+or on a nohz_full CPU (where it might be a good long time before an
+interrupt arrives).  This commit therefore checks for these conditions,
+and does the expensive wakeups only if doing so would be useful.
 
-This also reduces the rcu_exp_handler() function's state space by removing
-the direct call that this smp_call_function_single() uses to emulate the
-requested self-IPI.
+Note it can be rather expensive to determine whether or not the current
+task (as opposed to the current CPU) is blocking the current expedited
+grace period.  Doing so requires traversing the ->blkd_tasks list, which
+can be quite long.  This commit therefore cheats:  If the current task
+is on a given ->blkd_tasks list, and some task on that list is blocking
+the current expedited grace period, the code assumes that the current
+task is blocking that expedited grace period.
 
+Reported-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-[ paulmck: Use get_cpu() instead of preempt_disable() per Joel Fernandes. ]
 ---
- kernel/rcu/tree_exp.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/tree_plugin.h | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 9c990df880d1..5390618787b6 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -384,7 +384,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
- 			mask_ofl_test |= mask;
- 			continue;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 75110ea75d01..d15cdab6aeb4 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -606,20 +606,28 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 	local_irq_save(flags);
+ 	irqs_were_disabled = irqs_disabled_flags(flags);
+ 	if (preempt_bh_were_disabled || irqs_were_disabled) {
++		bool exp;
++		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++		struct rcu_node *rnp = rdp->mynode;
++
+ 		t->rcu_read_unlock_special.b.exp_hint = false;
++		exp = (t->rcu_blocked_node && t->rcu_blocked_node->exp_tasks) ||
++		      (rdp->grpmask & rnp->expmask) ||
++		      tick_nohz_full_cpu(rdp->cpu);
+ 		// Need to defer quiescent state until everything is enabled.
+-		if (irqs_were_disabled && use_softirq &&
++		if (exp && irqs_were_disabled && use_softirq &&
+ 		    (in_irq() || !t->rcu_read_unlock_special.b.deferred_qs)) {
+ 			// Using softirq, safe to awaken, and we get
+ 			// no help from enabling irqs, unlike bh/preempt.
+ 			raise_softirq_irqoff(RCU_SOFTIRQ);
+-		} else if (irqs_were_disabled && !use_softirq &&
++		} else if (exp && irqs_were_disabled && !use_softirq &&
+ 			   !t->rcu_read_unlock_special.b.deferred_qs) {
+ 			// Safe to awaken and we get no help from enabling
+ 			// irqs, unlike bh/preempt.
+ 			invoke_rcu_core();
+ 		} else {
+ 			// Enabling BH or preempt does reschedule, so...
++			// Also if no expediting or NO_HZ_FULL, slow is OK.
+ 			set_tsk_need_resched(current);
+ 			set_preempt_need_resched();
  		}
-+		if (get_cpu() == cpu) {
-+			put_cpu();
-+			continue;
-+		}
- 		ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
-+		put_cpu();
- 		if (!ret) {
- 			mask_ofl_ipi &= ~mask;
- 			continue;
 -- 
 2.17.1
 
