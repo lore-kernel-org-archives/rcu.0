@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A01C5C28CC0
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56352C28CC0
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:19:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 833FA25CB6
-	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:18:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34AF325CBF
+	for <rcu@archiver.kernel.org>; Thu, 30 May 2019 15:19:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbfE3PSy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 May 2019 11:18:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36064 "EHLO
+        id S1727222AbfE3PTP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 May 2019 11:19:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49040 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726355AbfE3PRz (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:17:55 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UFHp6j004364
-        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:17:53 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2stgm235ea-1
+        by vger.kernel.org with ESMTP id S1726469AbfE3PTP (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 30 May 2019 11:19:15 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UFINI0126416
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:19:13 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2stfevffuf-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:17:52 -0400
+        for <rcu@vger.kernel.org>; Thu, 30 May 2019 11:18:30 -0400
 Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 30 May 2019 16:17:19 +0100
+        Thu, 30 May 2019 16:17:18 +0100
 Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
         Thu, 30 May 2019 16:17:13 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UFHC8930736452
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x4UFHCt236962436
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 30 May 2019 15:17:12 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44A26B2075;
+        by IMSVA (Postfix) with ESMTP id 44E31B2076;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F4DDB206E;
+        by IMSVA (Postfix) with ESMTP id 2598DB206C;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.216])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu, 30 May 2019 15:17:12 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id BC50916C5D9F; Thu, 30 May 2019 08:17:13 -0700 (PDT)
+        id AF5C916C5D9D; Thu, 30 May 2019 08:17:13 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,102 +57,72 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 10/21] rcutorture: Give the scheduler a chance on PREEMPT && NO_HZ_FULL kernels
-Date:   Thu, 30 May 2019 08:17:01 -0700
+Subject: [PATCH tip/core/rcu 08/21] rcutorture: Exempt tasks RCU from timely draining of grace periods
+Date:   Thu, 30 May 2019 08:16:59 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190530151650.GA422@linux.ibm.com>
 References: <20190530151650.GA422@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19053015-0072-0000-0000-000004354F4A
+x-cbid: 19053015-0064-0000-0000-000003E70FAE
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00011185; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000286; SDB=6.01210791; UDB=6.00636161; IPR=6.00991825;
  MB=3.00027120; MTD=3.00000008; XFM=3.00000015; UTC=2019-05-30 15:17:17
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19053015-0073-0000-0000-00004C6B6B5C
-Message-Id: <20190530151712.1612-10-paulmck@linux.ibm.com>
+x-cbparentid: 19053015-0065-0000-0000-00003DABA812
+Message-Id: <20190530151712.1612-8-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_08:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=38 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905300108
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=38
+ malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=880 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.0.1-1810050000 definitions=main-1905300108
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In !PREEMPT kernels, cond_resched() is a no-op.  In NO_HZ_FULL kernels,
-in-kernel execution (such as that of rcutorture's kthreads) might extend
-indefinitely without the scheduler gaining the aid of a scheduling-clock
-interrupt.  This combination can make the interaction of an rcutorture
-forward-progress test and a CPU-hotplug stop_machine operation make less
-forward progress than one might like.  Additionally, Sebastian Siewior
-notes that NO_HZ_FULL kernels have a scheduler check upon return to
-userspace execution, which suggests that in-kernel emulation of tight
-userspace loops containing system calls doing call_rcu() might also need
-explicit checks in the PREEMPT && NO_HZ_FULL case.
-
-This commit therefore introduces a rcu_torture_fwd_prog_cond_resched()
-function that explicitly invokes schedule() in such kernels whenever
-need_resched() returns true, while retaining use of cond_resched()
-for kernels that are either !PREEMPT or !NO_HZ_FULL.
+After the end of each stutter pause interval, the rcu_torture_writer()
+kthread checks to be sure that all prior callbacks have completed so
+that all the test structures have been freed.  This works fine except
+for tasks RCU, in which grace periods can take one good long time.
+This commit therefore exempts tasks RCU from this check.
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/rcutorture.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ kernel/rcu/rcutorture.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 6a4558532eac..ef6f6dedf4c4 100644
+index a16d6abe1715..6a4558532eac 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1667,6 +1667,17 @@ static void rcu_torture_fwd_cb_cr(struct rcu_head *rhp)
- 	spin_unlock_irqrestore(&rcu_fwd_lock, flags);
- }
+@@ -299,6 +299,7 @@ struct rcu_torture_ops {
+ 	int irq_capable;
+ 	int can_boost;
+ 	int extendables;
++	int slow_gps;
+ 	const char *name;
+ };
  
-+// Give the scheduler a chance, even on nohz_full CPUs.
-+static void rcu_torture_fwd_prog_cond_resched(void)
-+{
-+	if (IS_ENABLED(CONFIG_PREEMPT) && IS_ENABLED(CONFIG_NO_HZ_FULL)) {
-+		if (need_resched())
-+			schedule();
-+	} else {
-+		cond_resched();
-+	}
-+}
-+
- /*
-  * Free all callbacks on the rcu_fwd_cb_head list, either because the
-  * test is over or because we hit an OOM event.
-@@ -1690,7 +1701,7 @@ static unsigned long rcu_torture_fwd_prog_cbfree(void)
- 		spin_unlock_irqrestore(&rcu_fwd_lock, flags);
- 		kfree(rfcp);
- 		freed++;
--		cond_resched();
-+		rcu_torture_fwd_prog_cond_resched();
- 	}
- 	return freed;
- }
-@@ -1734,7 +1745,7 @@ static void rcu_torture_fwd_prog_nr(int *tested, int *tested_tries)
- 		udelay(10);
- 		cur_ops->readunlock(idx);
- 		if (!fwd_progress_need_resched || need_resched())
--			cond_resched();
-+			rcu_torture_fwd_prog_cond_resched();
- 	}
- 	(*tested_tries)++;
- 	if (!time_before(jiffies, stopat) &&
-@@ -1817,7 +1828,7 @@ static void rcu_torture_fwd_prog_cr(void)
- 			rfcp->rfc_gps = 0;
+@@ -667,6 +668,7 @@ static struct rcu_torture_ops tasks_ops = {
+ 	.fqs		= NULL,
+ 	.stats		= NULL,
+ 	.irq_capable	= 1,
++	.slow_gps	= 1,
+ 	.name		= "tasks"
+ };
+ 
+@@ -1011,7 +1013,8 @@ rcu_torture_writer(void *arg)
  		}
- 		cur_ops->call(&rfcp->rh, rcu_torture_fwd_cb_cr);
--		cond_resched();
-+		rcu_torture_fwd_prog_cond_resched();
- 	}
- 	stoppedat = jiffies;
- 	n_launders_cb_snap = READ_ONCE(n_launders_cb);
+ 		rcu_torture_writer_state = RTWS_STUTTER;
+ 		if (stutter_wait("rcu_torture_writer") &&
+-		    !READ_ONCE(rcu_fwd_cb_nodelay))
++		    !READ_ONCE(rcu_fwd_cb_nodelay) &&
++		    !cur_ops->slow_gps)
+ 			for (i = 0; i < ARRAY_SIZE(rcu_tortures); i++)
+ 				if (list_empty(&rcu_tortures[i].rtort_free) &&
+ 				    rcu_access_pointer(rcu_torture_current) !=
 -- 
 2.17.1
 
