@@ -6,67 +6,68 @@ X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E223C04AB6
-	for <rcu@archiver.kernel.org>; Fri, 31 May 2019 14:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97FB8C04AB6
+	for <rcu@archiver.kernel.org>; Fri, 31 May 2019 14:43:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F117326AD3
-	for <rcu@archiver.kernel.org>; Fri, 31 May 2019 14:43:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C89F26AD5
+	for <rcu@archiver.kernel.org>; Fri, 31 May 2019 14:43:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="SS9EfYt6"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="lFuE7Tzn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbfEaOnA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 31 May 2019 10:43:00 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:46876 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbfEaOnA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 31 May 2019 10:43:00 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m15so1570067ljg.13
-        for <rcu@vger.kernel.org>; Fri, 31 May 2019 07:42:59 -0700 (PDT)
+        id S1726485AbfEaOnl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 31 May 2019 10:43:41 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34467 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbfEaOnl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 31 May 2019 10:43:41 -0400
+Received: by mail-lj1-f196.google.com with SMTP id j24so9906988ljg.1
+        for <rcu@vger.kernel.org>; Fri, 31 May 2019 07:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cj1dziJpkg4AftRC+MQAi3qMacmhd+EZ17On7NFE2+U=;
-        b=SS9EfYt6n3DJ7/S/5yoTzQFRGXJlw5a5QzJKt0GynlvYWeu014F2RXTwxyAkk6XNeA
-         De9J2rZwtS1fYBnuo5bfDCoxXLRoHm39iBPs3ax6OFQMZ1xAZ+tW20CnGPHiijDPGo/F
-         hPopTaBCS55SfDqXN/N6ggf6yuuESJvnOKQNM=
+        bh=PswtOJAomPPWBtzsozo2zLXICMfwMKX0ykeXVxxlIYc=;
+        b=lFuE7Tznx3886xmAs3rOxCP3M1WGFlBwq+Mf9sW3tl+MQhdRREP/s7oT9JBSd34Y7c
+         RlyPl4EFWpQjpbFil5+FXUDm2BIf9XMUsi4aObQr5A+BrbBzfNGpt+oTU+H7BMrXTiWv
+         Nap7I1zzJeKRm35EQNCsEV1cCZgd7T6AfzpWo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cj1dziJpkg4AftRC+MQAi3qMacmhd+EZ17On7NFE2+U=;
-        b=gvVHJ4NZYN2F88gM9KbfJ8FxBgbdDcXBFVCyuxLqS+XsIgD3HtJHW61/OBfkGOhOlN
-         ApI36MhZNKJD2UVzFghORSH7KiXJeyl/Mp7UNTwFUf6VHpdFzTkcEPKv/Kl2TX9kpOrr
-         93dKqMKr/LxBPdJlVynC4dIoo2sOZnX1YOxPZ1nVcneBnSx+k9f4EuVIwdHnwBogl2YS
-         XN4RTrJxTS19xxFjzsdoKDhFX1VohAyYAPsVjm3kW/jEiFpBCrYmsJl967yiv2ovMlui
-         3W/qAUucvXsccr5BGh+Ckby8iMZ591NEaeBF1hokl6SExOunYKCefoiw3jOvyrspv2Km
-         UDmA==
-X-Gm-Message-State: APjAAAVLjVtdI/HVkOmbIE2SvXcjlnXTk+vAi0wvWHF+e2rKueyQRW4N
-        MT0VpdPW5bWQEdqfPQH07wS99DWHmVQAtcRLO1aaEQ==
-X-Google-Smtp-Source: APXvYqxvhyScGubi6Pohh1r7kUFOzmBLt/GH6pQAPL9Lk+kMiNaS319HnBWIYcs+IwpNUzJkr743dQJtgn/NiSzCeL4=
-X-Received: by 2002:a2e:6109:: with SMTP id v9mr6213051ljb.205.1559313778469;
- Fri, 31 May 2019 07:42:58 -0700 (PDT)
+        bh=PswtOJAomPPWBtzsozo2zLXICMfwMKX0ykeXVxxlIYc=;
+        b=aPsndAxBgtkSAf2koexheUweJCarSNAH51eyEOnCbxT+8nffbVE6zSufcHW90tifSi
+         MN4akvvOoxCUzDV9JeuDVyqtuYfxNnH1FiGGvgngsya90xBcV1JVF5gkVKHmgL/Lf90a
+         Ss/XR+cit2UR1QVE949orLAUUddl8c6ZD7OJ2v/+VYwJXD+k9H9fQJMXpetVy3O5ZPec
+         BKE20B8wy7ffbzZwNuS8zk25+z5uKAaBI8lZqyw0/BOSSCItsjw8vlkf3D1eXy8/xHKo
+         qvDUcCIAZjQlEoCMOLvH0xSCuC/PH+QC7pifNVlncwkevqLIIe7smfHygd5khZWrGwUg
+         CwdQ==
+X-Gm-Message-State: APjAAAVoHKNGgclxRhH6+FfAlmx20J1y9kbm8X+mAAMskrzNoHZqGong
+        Wg/UzBZZUxuvFo2EDgAadfyhVHOq72NlePafCTB9uLRUdLs=
+X-Google-Smtp-Source: APXvYqxgl1iyuw/FDdUGgk2WgP6sh25vlmQy/g0lZH4v/6uxDEtMwwUJ4TnFgqL9be/QPwvfVEW1f2tTbReQEtGhcgs=
+X-Received: by 2002:a2e:9742:: with SMTP id f2mr6234729ljj.184.1559313819087;
+ Fri, 31 May 2019 07:43:39 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAEXW_YTzUsT8xCD=vkSR=mT+L7ot7tCESTWYVqNt_3SQeVDUEA@mail.gmail.com>
- <20190531134529.GC31323@redhat.com>
-In-Reply-To: <20190531134529.GC31323@redhat.com>
+ <20190531135051.GL28207@linux.ibm.com>
+In-Reply-To: <20190531135051.GL28207@linux.ibm.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 31 May 2019 10:42:47 -0400
-Message-ID: <CAEXW_YR1G2EUUMr+G5VKRqhu5DRjg+S3nk81N-zjH73WmnYe7Q@mail.gmail.com>
+Date:   Fri, 31 May 2019 10:43:27 -0400
+Message-ID: <CAEXW_YReo2juN8A3CF+CKv8PcN_cH23gYWkLfkOJQqignyx85g@mail.gmail.com>
 Subject: Re: Question about cacheline bounching with percpu-rwsem and rcu-sync
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        rcu <rcu@vger.kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Eric Dumazet <edumazet@google.com>, rcu <rcu@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 31, 2019 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+On Fri, May 31, 2019 at 9:52 AM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
 >
-> On 05/31, Joel Fernandes wrote:
+> On Fri, May 31, 2019 at 09:10:16AM -0400, Joel Fernandes wrote:
+> > Hi,
+> > As per the documentation for rationale of percpu-rwsem, the Documentation says:
 > >
 > > The problem with traditional read-write semaphores is that when multiple
 > > cores take the lock for reading, the cache line containing the semaphore
@@ -79,9 +80,23 @@ On Fri, May 31, 2019 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
 > > rss is shared and will bounce by multiple CPUs. For that matter, even
 > > the cacheline containing the percpu_rw_semaphore itself will be bounce
 > > among multiple reader CPUs.
+> >
+> > So how does percpu-rwsem eliminate cache line bouncing in the common
+> > case. Could you let me know what I am missing?
+> >
+> > Thanks a lot.
 >
-> The readers won't modify this memory? read_lock/unlock will only update
-> the per-cpu counter, ->read_count.
+> The accesses are loads, except for the __this_cpu_inc(), which updates
+> a per-CPU variable.  The locations loaded will replicate across the
+> CPUs' caches and the per-CPU variables are private to each CPU.  Hence
+> no cacheline bouncing.
 
-Makes sense, I was confusing cache misses for cache bouncing. Thanks
-for clarification!
+Makes sense, thanks for the answer!
+
+>
+> Either way, it would be good for you to just try it.  Create a kernel
+> module or similar than hammers on percpu_down_read() and percpu_up_read(),
+> and empirically check the scalability on a largish system.  Then compare
+> this to down_read() and up_read()
+
+Will do! thanks.
