@@ -2,112 +2,304 @@ Return-Path: <SRS0=rUB2=UA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2E07C04AB6
-	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 02:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 603F0C28CC1
+	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 09:39:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A21EB27074
-	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 02:08:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2105A271BC
+	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 09:39:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="E7K3rAJJ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="WJe9Z5Oq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbfFACIp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 31 May 2019 22:08:45 -0400
-Received: from mail-m971.mail.163.com ([123.126.97.1]:34096 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbfFACIp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 31 May 2019 22:08:45 -0400
-X-Greylist: delayed 948 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 May 2019 22:08:43 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=WOOhS
-        5yuu+uyjSyW2+icauOgVQIB0mfTTXZlm+bneW4=; b=E7K3rAJJEaPbEKY0Nca99
-        MQ42I9hxAP+VAIPOxeOkOlOqyLwsEPRkVPmR9BugQz2slwE48kjIQyHVLXRq5DOc
-        KqLOuR9z78NXBnyhUVBqHJ7ICxVeGoZJ0PMz6V8erjdB1DMgVfuqJE2/UPjY42sN
-        Ma6MCn9vYZi5ke+5AVQHCY=
-Received: from [172.20.10.4] (unknown [122.192.14.47])
-        by smtp15 (Coremail) with SMTP id GdxpCgBXW1NB2vFcB8l4AA--.19S2;
-        Sat, 01 Jun 2019 09:52:02 +0800 (CST)
-Subject: Re: [PATCH] rcuperf: correct a example of perf_type
-To:     paulmck@linux.ibm.com
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org
-References: <1559315745-26570-1-git-send-email-ice_yangxiao@163.com>
- <20190531190025.GP28207@linux.ibm.com>
-From:   Xiao Yang <ice_yangxiao@163.com>
-Message-ID: <35a30752-383c-7d11-a7e5-a58ae2a8f7bd@163.com>
-Date:   Sat, 1 Jun 2019 09:52:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        id S1726210AbfFAJjh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 1 Jun 2019 05:39:37 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:42866 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbfFAJjh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 1 Jun 2019 05:39:37 -0400
+Received: by mail-pg1-f193.google.com with SMTP id e6so4165200pgd.9
+        for <rcu@vger.kernel.org>; Sat, 01 Jun 2019 02:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kHU9WDsTuxeYxZqszC75DA7d1d2AxdYUJeB/AV9RVdI=;
+        b=WJe9Z5Oqvk1lOQYuWRaRqPP1AF5jrxYEe2dIx4oKVOpkJxcoRWJ6iW9q7c9K8qsPwR
+         D2Vaf1TR2GVlOkh93ALqQF28W+GRJQwwWHMcVMrjDUHGwsDnFRfPhPtlU6W+tI+sjbE0
+         2Y4waZ4Z3Fl1g2qQpgZkJToE38WOJq48147mE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kHU9WDsTuxeYxZqszC75DA7d1d2AxdYUJeB/AV9RVdI=;
+        b=gTvlK416jvK0U/6hqtVz1O7EYJvmHeBZaQ6Q5fNtEWdZ+6oAc3q6kkt+3ECZ+vqLw2
+         SB1MUC6Bgmaq2ZC7cCshXSvtIPycxGGeYOPfmC3Dnft70xXsT+rYX9wCb7Mju/mkYefL
+         v6P4g6CxpJKrQFPIKRtwkY1ptK4K3ZLBxy8p8GJDCxYOvek3b3MSdf7wyYu/A2xRrAGT
+         rh7gEca4F3b8yX2V7hWB9tIG9xxVWFGu1SRZ9Imiiim65Mp+1RTEC2oOeKIj7rbto4Y8
+         0AmKAAv/DnXfZONrYstFD0BINx3nWUzacag1StB42xs4oO2PO6MwQ60ghyy/+acCTMQl
+         XM5w==
+X-Gm-Message-State: APjAAAXRQl1fUXRhMCzzlruVmBn6JVipkSj8aigVQZa1TTnPpSbDxVW9
+        YdJjZdFQOhGpjtfDBhMA/DnKJw==
+X-Google-Smtp-Source: APXvYqwAfaNg4d36lXjAEpQpSz860HWdVWlQp/oJJUWsZ3Ib871kokjq3xoLMuV9e50WZTFwX1TYBg==
+X-Received: by 2002:a63:fd4a:: with SMTP id m10mr12937734pgj.302.1559381976288;
+        Sat, 01 Jun 2019 02:39:36 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id o192sm1593046pgo.74.2019.06.01.02.39.34
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 01 Jun 2019 02:39:35 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, peterz@infradead.org
+Subject: [PATCH RFC 1/1] doc/rcu: Add some more listRCU patterns in the kernel
+Date:   Sat,  1 Jun 2019 05:39:26 -0400
+Message-Id: <20190601093926.28158-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
 MIME-Version: 1.0
-In-Reply-To: <20190531190025.GP28207@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: GdxpCgBXW1NB2vFcB8l4AA--.19S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJryrAr1xArWDZw1kAFy8uFg_yoW8Cw18pr
-        WfCF17KrWkJryIganrArn5XFy5Xa98XF42qFnIq3y8tw1Yvr18JFnrKF1rXF909ry5JrW2
-        qFsIq3y3Jw4kAwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b5NVkUUUUU=
-X-Originating-IP: [122.192.14.47]
-X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/1tbiTALGXlSIfi228QAAse
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 06/01/2019 03:00 AM, Paul E. McKenney wrote:
-> On Fri, May 31, 2019 at 11:15:45PM +0800, Xiao Yang wrote:
->> rcu_bh type has been removed by commit 620d246065cd("rcuperf:
->> Remove the "rcu_bh" and "sched" torture types") and only four
->> types(i.e rcu, srcu, srcud, tasks) are supported currently, so
->> use srcu as a example.
->>
->> Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
-> Good eyes, applied!
->
-> I edited the subject and commit log as shown below.  Could you please
-> check to make sure that I didn't mess something up?
->
-> 							Thanx, Paul
-Hi,
+We keep the initially written audit examples and add to it, since the
+code that audit has is still relevant even though slightly different in
+the kernel.
 
-Thanks for your change, and it's fine to me.
+Cc: rcu@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ Documentation/RCU/listRCU.txt | 154 +++++++++++++++++++++++++++++++---
+ 1 file changed, 144 insertions(+), 10 deletions(-)
 
-Best Regards,
-Xiao Yang
->
-> ------------------------------------------------------------------------
->
-> commit f499b80f236316c5f16c4d5c0d7804c258a003cb
-> Author: Xiao Yang <ice_yangxiao@163.com>
-> Date:   Fri May 31 23:15:45 2019 +0800
->
->      rcuperf: Fix perf_type module-parameter description
->      
->      The rcu_bh rcuperf type was removed by commit 620d246065cd("rcuperf:
->      Remove the "rcu_bh" and "sched" torture types"), but it lives on in the
->      MODULE_PARM_DESC() of perf_type.  This commit therefore changes that
->      module-parameter description to substitute srcu for rcu_bh.
->      
->      Signed-off-by: Xiao Yang <ice_yangxiao@163.com>
->      Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
->
-> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> index 7a6890b23c5f..4513807cd4c4 100644
-> --- a/kernel/rcu/rcuperf.c
-> +++ b/kernel/rcu/rcuperf.c
-> @@ -89,7 +89,7 @@ torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable
->   
->   static char *perf_type = "rcu";
->   module_param(perf_type, charp, 0444);
-> -MODULE_PARM_DESC(perf_type, "Type of RCU to performance-test (rcu, rcu_bh, ...)");
-> +MODULE_PARM_DESC(perf_type, "Type of RCU to performance-test (rcu, srcu, ...)");
->   
->   static int nrealreaders;
->   static int nrealwriters;
+diff --git a/Documentation/RCU/listRCU.txt b/Documentation/RCU/listRCU.txt
+index adb5a3782846..af5bf1bd689c 100644
+--- a/Documentation/RCU/listRCU.txt
++++ b/Documentation/RCU/listRCU.txt
+@@ -7,8 +7,54 @@ is that all of the required memory barriers are included for you in
+ the list macros.  This document describes several applications of RCU,
+ with the best fits first.
+ 
+-
+-Example 1: Read-Side Action Taken Outside of Lock, No In-Place Updates
++Example 1: Read-mostly list: Deferred Destruction
++
++A widely used usecase for RCU lists in the kernel is lockless iteration over
++all processes in the system. task_struct::tasks represents the list node that
++links all the processes. The list can be traversed in parallel to any list
++additions or removals.
++
++The traversal of the list is done using for_each_process() which is defined by
++the 2 macros:
++
++#define next_task(p) \
++	list_entry_rcu((p)->tasks.next, struct task_struct, tasks)
++
++#define for_each_process(p) \
++	for (p = &init_task ; (p = next_task(p)) != &init_task ; )
++
++The code traversing the list of all processes typically looks like:
++rcu_read_lock();
++for_each_process(p) {
++	/* Do something with p */
++}
++rcu_read_unlock();
++
++Thes code (simplified) removing a process from the task lists is in
++release_task():
++
++void release_task(struct task_struct *p)
++{
++	write_lock(&tasklist_lock);
++	list_del_rcu(&p->tasks);
++	write_unlock(&tasklist_lock);
++	call_rcu(&p->rcu, delayed_put_task_struct);
++}
++
++When a process exits, release_task() calls list_del_rcu(&p->tasks) to remove
++the task from the list of all tasks, under tasklist_lock writer lock
++protection. The tasklist_lock prevents concurrent list adds/removes from
++corrupting the list. Readers using for_each_process() are not protected with
++the tasklist_lock. To prevent readers from appearing to notice changes in the
++list pointers, the task_struct object is freed only after one more more grace
++periods elapse (with the help of call_rcu). This deferring of destruction
++ensures that any readers traversing the list will see valid p->tasks.next
++pointers and deletion/freeing can happen in parallel to traversal of the list.
++This pattern is also called an "existence lock" sometimes, since RCU makes sure
++the object exists in memory as long as readers exist, that are traversing.
++
++
++Example 2: Read-Side Action Taken Outside of Lock, No In-Place Updates
+ 
+ The best applications are cases where, if reader-writer locking were
+ used, the read-side lock would be dropped before taking any action
+@@ -32,7 +78,7 @@ implementation of audit_filter_task() might be as follows:
+ 		enum audit_state   state;
+ 
+ 		read_lock(&auditsc_lock);
+-		/* Note: audit_netlink_sem held by caller. */
++		/* Note: audit_filter_mutex held by caller. */
+ 		list_for_each_entry(e, &audit_tsklist, list) {
+ 			if (audit_filter_rules(tsk, &e->rule, NULL, &state)) {
+ 				read_unlock(&auditsc_lock);
+@@ -56,7 +102,7 @@ This means that RCU can be easily applied to the read side, as follows:
+ 		enum audit_state   state;
+ 
+ 		rcu_read_lock();
+-		/* Note: audit_netlink_sem held by caller. */
++		/* Note: audit_filter_mutex held by caller. */
+ 		list_for_each_entry_rcu(e, &audit_tsklist, list) {
+ 			if (audit_filter_rules(tsk, &e->rule, NULL, &state)) {
+ 				rcu_read_unlock();
+@@ -139,7 +185,7 @@ Following are the RCU equivalents for these two functions:
+ 
+ Normally, the write_lock() and write_unlock() would be replaced by
+ a spin_lock() and a spin_unlock(), but in this case, all callers hold
+-audit_netlink_sem, so no additional locking is required.  The auditsc_lock
++audit_filter_mutex, so no additional locking is required.  The auditsc_lock
+ can therefore be eliminated, since use of RCU eliminates the need for
+ writers to exclude readers.  Normally, the write_lock() calls would
+ be converted into spin_lock() calls.
+@@ -155,7 +201,7 @@ So, when readers can tolerate stale data and when entries are either added
+ or deleted, without in-place modification, it is very easy to use RCU!
+ 
+ 
+-Example 2: Handling In-Place Updates
++Example 3: Handling In-Place Updates
+ 
+ The system-call auditing code does not update auditing rules in place.
+ However, if it did, reader-writer-locked code to do so might look as
+@@ -171,7 +217,7 @@ otherwise, the added fields would need to be filled in):
+ 		struct audit_newentry *ne;
+ 
+ 		write_lock(&auditsc_lock);
+-		/* Note: audit_netlink_sem held by caller. */
++		/* Note: audit_filter_mutex held by caller. */
+ 		list_for_each_entry(e, list, list) {
+ 			if (!audit_compare_rule(rule, &e->rule)) {
+ 				e->rule.action = newaction;
+@@ -213,13 +259,23 @@ RCU ("read-copy update") its name.  The RCU code is as follows:
+ 		return -EFAULT;		/* No matching rule */
+ 	}
+ 
+-Again, this assumes that the caller holds audit_netlink_sem.  Normally,
++Again, this assumes that the caller holds audit_filter_mutex.  Normally,
+ the reader-writer lock would become a spinlock in this sort of code.
+ 
++Another use of this pattern can be found in the openswitch driver's "connection
++tracking table" code (ct_limit_set()). The table holds connection tracking
++entries and has a limit on the maximum entries. There is one such table
++per-zone and hence one "limit" per zone. The zones are mapped to their limits
++through a hashtable using an RCU-managed hlist for the hash chains. When a new
++limit is to be set, a new limit object is allocated and ct_limit_set() is
++called to replace the old limit object with the new one using
++list_replace_rcu(). The old limit object is then freed after a grace period
++using kfree_rcu().
++
+ 
+-Example 3: Eliminating Stale Data
++Example 4: Eliminating Stale Data
+ 
+-The auditing examples above tolerate stale data, as do most algorithms
++The auditing exampes above tolerates stale data, as do most algorithms
+ that are tracking external state.  Because there is a delay from the
+ time the external state changes before Linux becomes aware of the change,
+ additional RCU-induced staleness is normally not a problem.
+@@ -291,6 +347,84 @@ flag under the spinlock as follows:
+ 	}
+ 
+ 
++EXAMPLE 5: Skipping Stale Objects
++
++Stale data can also be eliminated for performance reasons since it is pointless
++to process items in a list, if the object is being destroyed.  One such example
++can be found in the timerfd subsystem. When a CLOCK_REALTIME clock is
++reprogrammed - for example due to setting of the system time, then all programmed
++timerfds that depend on this clock get triggered and processes waiting on them
++to expire are woken up in advance of their scheduled expiry. To facilitate
++this, all such timers are added to a 'cancel_list' when they are setup in
++timerfd_setup_cancel:
++
++static void timerfd_setup_cancel(struct timerfd_ctx *ctx, int flags)
++{
++	spin_lock(&ctx->cancel_lock);
++	if ((ctx->clockid == CLOCK_REALTIME &&
++	    (flags & TFD_TIMER_ABSTIME) && (flags & TFD_TIMER_CANCEL_ON_SET)) {
++		if (!ctx->might_cancel) {
++			ctx->might_cancel = true;
++			spin_lock(&cancel_lock);
++			list_add_rcu(&ctx->clist, &cancel_list);
++			spin_unlock(&cancel_lock);
++		}
++	}
++	spin_unlock(&ctx->cancel_lock);
++}
++
++When a timerfd is freed (fd is closed), then the might_cancel flag of the
++timerfd object is cleared, the object removed from the cancel_list and destroyed:
++
++int timerfd_release(struct inode *inode, struct file *file)
++{
++	struct timerfd_ctx *ctx = file->private_data;
++
++	spin_lock(&ctx->cancel_lock);
++	if (ctx->might_cancel) {
++		ctx->might_cancel = false;
++		spin_lock(&cancel_lock);
++		list_del_rcu(&ctx->clist);
++		spin_unlock(&cancel_lock);
++	}
++	spin_unlock(&ctx->cancel_lock);
++
++	hrtimer_cancel(&ctx->t.tmr);
++	kfree_rcu(ctx, rcu);
++	return 0;
++}
++
++If the CLOCK_REALTIME clock is set, for example by a time server, the hrtimer
++framework calls timerfd_clock_was_set() which walks the cancel_list and wakes
++up processes waiting on the timerfd. While iterating the cancel list, the
++might_cancel flag is consulted to skip stale objects:
++
++void timerfd_clock_was_set(void)
++{
++	struct timerfd_ctx *ctx;
++	unsigned long flags;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(ctx, &cancel_list, clist) {
++		if (!ctx->might_cancel)
++			continue;
++		spin_lock_irqsave(&ctx->wqh.lock, flags);
++		if (ctx->moffs != ktime_mono_to_real(0)) {
++			ctx->moffs = KTIME_MAX;
++			ctx->ticks++;
++			wake_up_locked_poll(&ctx->wqh, EPOLLIN);
++		}
++		spin_unlock_irqrestore(&ctx->wqh.lock, flags);
++	}
++	rcu_read_unlock();
++}
++
++The key point here is, because RCU-traversal of the cancel_list happens while
++objects are being added and removed to the list, sometimes the traversal can
++step on an object that has been removed from the list. In this example, it is
++seen that it is better to skip such objects using a flag.
++
++
+ Summary
+ 
+ Read-mostly list-based data structures that can tolerate stale data are
+-- 
+2.22.0.rc1.311.g5d7573a151-goog
 
