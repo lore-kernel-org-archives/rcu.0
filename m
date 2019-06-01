@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB24DC28CC3
-	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 22:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F5EDC28CC5
+	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 22:28:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C00FB27749
-	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 22:27:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE484277AC
+	for <rcu@archiver.kernel.org>; Sat,  1 Jun 2019 22:28:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="gHAEz0W9"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="cAGodZzS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbfFAW1y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 1 Jun 2019 18:27:54 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:32816 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbfFAW1x (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 1 Jun 2019 18:27:53 -0400
-Received: by mail-pf1-f196.google.com with SMTP id x10so3233787pfi.0
-        for <rcu@vger.kernel.org>; Sat, 01 Jun 2019 15:27:53 -0700 (PDT)
+        id S1726935AbfFAW2H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 1 Jun 2019 18:28:07 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:36308 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726832AbfFAW2F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 1 Jun 2019 18:28:05 -0400
+Received: by mail-pg1-f196.google.com with SMTP id a3so6059118pgb.3
+        for <rcu@vger.kernel.org>; Sat, 01 Jun 2019 15:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D3sdCrSta+1LinDxkJqXRJ9YdXWa10ctUItDBKvA25M=;
-        b=gHAEz0W9Uu6qrM4ChuzLYGhD2n+4olfOU6qtJoOTBMe07a7Pc4Kg4feW7OCrB0FNOD
-         pQJX/g4h2kdJiFQw/ZIM4s5GiPaQM2j5/cGGfHCrCR2g/GZ5h0YzW+8SpyH7GWKKIGYX
-         JsyoEKMQELkCHYwUEweS6UvTXF7q7XQ+nsWJs=
+        bh=rPaZRgyzQF7DCy2Q79gveolqcRd2gZR4xnQeESxSxI8=;
+        b=cAGodZzSRsQMt/+agP3IVTRjmy7GJn9PFgRKDBVOfndMOmU790nOh6r8RDl2NSEttn
+         ozggt0Vl0AEPviZREUImDWgpoB8D77NfGsskgK/Bj9R0lxq+Xa1zB1Rz3dBJYKQUD7bL
+         uSS2mFmHddK5rTGvh+vSHZuyEX0sX9MRSOJjg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D3sdCrSta+1LinDxkJqXRJ9YdXWa10ctUItDBKvA25M=;
-        b=NWrD1sfNgUweR6MNjUg/DL+CAoVPFAOrlsw04r/HtO6Kxd0SQCJbBn4z81dtJA2l3p
-         kqFO/9RMZFj0MKvy4v5uDBfiHWYHUvxeefhKbxXPklGjC8ul4ObEfxHeN8h+G9ly1qUy
-         AxZdfO0tN7ScBT/Q4B2/W8kyEZ5U9VKUKj7d66DbNUyrzYPwC5yjKaRsI+8SE9J0jOfp
-         UJ5l1LTQDDObrx1zvjL17+A4JsF0fttgMfhHmDMQlUYD6IQ4C4L1EWC8S/1Md3/m4Yuo
-         mM3R4gSRmdhFIO2Nb+LQbMhkrtGCxrglPH/mmpaZje+nGOabGBDqOB7DiW7PW1l2yR2p
-         XOBA==
-X-Gm-Message-State: APjAAAXSpt30RlR5OVKCTQ+V/VwvyRCW03xSML3yU+oRkD8v9DJCDkBq
-        WvA99r/jLLRjGjyn9pmg4h8L1A==
-X-Google-Smtp-Source: APXvYqyzFAgWiq9Zmv6qgFmEjp82uhykmH3iEDVhVPdvKHGIbsKdjW+zFeDMBpdGsYU3yEg7JY6LEQ==
-X-Received: by 2002:a62:a511:: with SMTP id v17mr19913167pfm.129.1559428073227;
-        Sat, 01 Jun 2019 15:27:53 -0700 (PDT)
+        bh=rPaZRgyzQF7DCy2Q79gveolqcRd2gZR4xnQeESxSxI8=;
+        b=OBw6c/fwo0CpZsRdoo1dHN3qLJ2Aaj++L0n+GCgnzJyS4p3+BA89G56yEEPI/bbPCQ
+         ssEyw+sB7e41ilxsA8FNyLh4kLJu3dBdAjjrm/e57KIEtkMXA6GjNkq9TIYex3AhkPiU
+         rtrSTeYaLQUdL2roFJhS63RwIo6qbRt3WXPBq9wFMru1pkrXGOY7bmInDGQL2NISYioq
+         DE3Keb5wp0neFkKSz9lDB0OHCVGPbL5fc9Eea9/OK3OdlZ8DSnscf7Dq6HwEiW8mz+36
+         pQ+UGXDHU4Sd8Ep9w5fEVd/2CXXpM8dls3NOWA40MgcF8yKesWn1SHZtxxPSyI+gitHN
+         JDpQ==
+X-Gm-Message-State: APjAAAW/2kdUOovBfVj8diCu2EezIFxtOY9/qcI1scyLfZSfavsDwsxb
+        XyqRozU/NmiJh73XCQIse1y0Ug==
+X-Google-Smtp-Source: APXvYqx/DSML7hGGCdUoQbZcef6z1i2E+ZJBXAJvbUYli+Bo+0PJ9dMusQpxsqpBr79TPzH4e5AIzA==
+X-Received: by 2002:a65:5206:: with SMTP id o6mr18823746pgp.248.1559428084316;
+        Sat, 01 Jun 2019 15:28:04 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id t33sm9908018pjb.1.2019.06.01.15.27.49
+        by smtp.gmail.com with ESMTPSA id t33sm9908018pjb.1.2019.06.01.15.28.00
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 01 Jun 2019 15:27:52 -0700 (PDT)
+        Sat, 01 Jun 2019 15:28:03 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -75,9 +75,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [RFC 2/6] ipv4: add lockdep condition to fix for_each_entry
-Date:   Sat,  1 Jun 2019 18:27:34 -0400
-Message-Id: <20190601222738.6856-3-joel@joelfernandes.org>
+Subject: [RFC 5/6] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator
+Date:   Sat,  1 Jun 2019 18:27:37 -0400
+Message-Id: <20190601222738.6856-6-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
 In-Reply-To: <20190601222738.6856-1-joel@joelfernandes.org>
 References: <20190601222738.6856-1-joel@joelfernandes.org>
@@ -88,25 +88,46 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+The pcm_mmcfg_list is traversed with list_for_each_entry_rcu without a
+reader-lock held, because the pci_mmcfg_lock is already held. Make this
+known to the list macro so that it fixes new lockdep warnings that
+trigger due to lockdep checks added to list_for_each_entry_rcu().
+
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- net/ipv4/fib_frontend.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/pci/mmconfig-shared.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
-index b298255f6fdb..ef7c9f8e8682 100644
---- a/net/ipv4/fib_frontend.c
-+++ b/net/ipv4/fib_frontend.c
-@@ -127,7 +127,8 @@ struct fib_table *fib_get_table(struct net *net, u32 id)
- 	h = id & (FIB_TABLE_HASHSZ - 1);
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 7389db538c30..6fa42e9c4e6f 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -29,6 +29,7 @@
+ static bool pci_mmcfg_running_state;
+ static bool pci_mmcfg_arch_init_failed;
+ static DEFINE_MUTEX(pci_mmcfg_lock);
++#define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
  
- 	head = &net->ipv4.fib_table_hash[h];
--	hlist_for_each_entry_rcu(tb, head, tb_hlist) {
-+	hlist_for_each_entry_rcu(tb, head, tb_hlist,
-+				 lockdep_rtnl_is_held()) {
- 		if (tb->tb_id == id)
- 			return tb;
- 	}
+ LIST_HEAD(pci_mmcfg_list);
+ 
+@@ -54,7 +55,7 @@ static void list_add_sorted(struct pci_mmcfg_region *new)
+ 	struct pci_mmcfg_region *cfg;
+ 
+ 	/* keep list sorted by segment and starting bus number */
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list) {
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held()) {
+ 		if (cfg->segment > new->segment ||
+ 		    (cfg->segment == new->segment &&
+ 		     cfg->start_bus >= new->start_bus)) {
+@@ -118,7 +119,7 @@ struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int bus)
+ {
+ 	struct pci_mmcfg_region *cfg;
+ 
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list)
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held())
+ 		if (cfg->segment == segment &&
+ 		    cfg->start_bus <= bus && bus <= cfg->end_bus)
+ 			return cfg;
 -- 
 2.22.0.rc1.311.g5d7573a151-goog
 
