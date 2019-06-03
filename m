@@ -2,111 +2,118 @@ Return-Path: <SRS0=MVZj=UC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7EAC28CC7
-	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 08:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA18C28CC6
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 12:29:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 59C6324AD8
-	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 08:03:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89DCF263F4
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 12:29:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Kh81Fh/G"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PYGUZK+G"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbfFCIDh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Jun 2019 04:03:37 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:50138 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbfFCIDg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Jun 2019 04:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YGw/VDsnOloIaXgrEbA/FOCyBbJYxl2QNc1vAYVXNY0=; b=Kh81Fh/GkYy+PcGkyTuRLYqJr
-        5d3meB8Iu/apofeU9LBaVTbdU34exlCBZ6/cvkSTsWYbCITa+85dcFdl1TuwCCRcbBbbBHcmz79tU
-        YNA75f//Beu0qWv4xrOjE3yCBU/h7Wpdldb8AXCdnFyE/xt6GG7X5SHHOhvkwxY2EDPpuVJ40I8NT
-        ZcmLp7vu3BxxYFbsJSX2sSX4rHSTxLEQ0MZogDpDfR8tMLBVyzA2HGhhcxPa3RuWryoN7hsbltCid
-        ApVADLC1Be6a9Xztz6ysLp/Pg3F0N3np5vQaItnOalc4ycKqr7JKLLA3Zs069bXnA/w4o4wPQqclC
-        BYeGsVrnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hXhuM-0001Ln-LU; Mon, 03 Jun 2019 08:01:31 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0FE772029F880; Mon,  3 Jun 2019 10:01:28 +0200 (CEST)
-Date:   Mon, 3 Jun 2019 10:01:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+        id S1727355AbfFCM2y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Jun 2019 08:28:54 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40023 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727337AbfFCM2y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Jun 2019 08:28:54 -0400
+Received: by mail-lj1-f194.google.com with SMTP id a21so778025ljh.7
+        for <rcu@vger.kernel.org>; Mon, 03 Jun 2019 05:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WvqHOC4rVKX462WwE0yHSlmBZF1YO9aROqbvN/HfH6Y=;
+        b=PYGUZK+GV8eTc/sc1/LJV2/FRh6sJ3eQVXqtHpM1WdCHjxWxGcJHVX6no/5nw7UnO6
+         DV0yDj/ec3TxqyDkkmaBhVAS4R0g44dxp9/lCrwxqbNfRaWzZra8qYmAc+YZXjsgn2FX
+         UGutllvZNq/hEvDPh7uqahFLrpIWsFBdileHo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WvqHOC4rVKX462WwE0yHSlmBZF1YO9aROqbvN/HfH6Y=;
+        b=NkixsyQBTzg3S98jPQSHhuj171DiAa3tjglA+/xT40eBA4MJaubB121eIEdp1qYJYq
+         SPScf+0e1GuX7bx0scrPYqzVxV1P2VXUrKnn8THGx8AvfK2Uk8LwyksaqYIvpdZ1CabH
+         7ZGHK5mwCwTaQPBJkWumQyIvxcqr0rw2ffot7XOnvgqL8f6cxmF5y+OX5JCLjt4VTzpW
+         IuKpWyp3rS05PvB0X6LoEadRLX3AT3t7CiLzjVMzB3LTgdxWUsS30sl6u3VEKHAbAuUu
+         mgkBRjm4VEcAL1QXj/OLwDDPaiMWeVnMOzrrEFIHzLsUABjgj3NuVUhaARlt2KK9fBOX
+         D9lA==
+X-Gm-Message-State: APjAAAXxyrbeQ9dh7Tw6qxYGXkzyasa5O2TiERgpEumYf5u3Jpvs2kdB
+        GL2hnju3SC5nGUvWFhUBQ5jvrFPUP3db+Ig6eQlLrQ==
+X-Google-Smtp-Source: APXvYqzHzzga29JITONK+bAJt2s0MgC0PRTzbGVoOX6cnbI/p9OIDGMPiEXt3Q9ji63k1yr8CtUni9paU765sGDmFMs=
+X-Received: by 2002:a2e:9742:: with SMTP id f2mr13977662ljj.184.1559564932484;
+ Mon, 03 Jun 2019 05:28:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190601222738.6856-1-joel@joelfernandes.org> <20190601222738.6856-3-joel@joelfernandes.org>
+ <20190602070014.GA543@amd> <CAEXW_YT3t4Hb6wKsjXPGng+YbA5rhNRa7OSdZwdN4AKGfVkX3g@mail.gmail.com>
+ <CAEXW_YSM2wwah2Q7LKmUO1Dp7GG62ciQA1nZ7GLw3m6cyuXXTw@mail.gmail.com> <20190603064212.GA7400@amd>
+In-Reply-To: <20190603064212.GA7400@amd>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 3 Jun 2019 08:28:41 -0400
+Message-ID: <CAEXW_YSz8SNQCTnJj_86uJvRX3LFEQ6xJX-UV07HGwwA7oLwvg@mail.gmail.com>
+Subject: Re: [RFC 2/6] ipv4: add lockdep condition to fix for_each_entry
+To:     Pavel Machek <pavel@denx.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pci@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neilb@suse.com, netdev@vger.kernel.org, oleg@redhat.com,
+        Neil Brown <neilb@suse.com>, netdev <netdev@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
+        Peter Zilstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu <rcu@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [RFC 1/6] rcu: Add support for consolidated-RCU reader checking
-Message-ID: <20190603080128.GA3436@hirez.programming.kicks-ass.net>
-References: <20190601222738.6856-1-joel@joelfernandes.org>
- <20190601222738.6856-2-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190601222738.6856-2-joel@joelfernandes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 01, 2019 at 06:27:33PM -0400, Joel Fernandes (Google) wrote:
-> +#define list_for_each_entry_rcu(pos, head, member, cond...)		\
-> +	if (COUNT_VARGS(cond) != 0) {					\
-> +		__list_check_rcu_cond(0, ## cond);			\
-> +	} else {							\
-> +		__list_check_rcu();					\
-> +	}								\
-> +	for (pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
-> +		&pos->member != (head);					\
->  		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
->  
->  /**
-> @@ -621,7 +648,12 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
->   * the _rcu list-mutation primitives such as hlist_add_head_rcu()
->   * as long as the traversal is guarded by rcu_read_lock().
->   */
-> +#define hlist_for_each_entry_rcu(pos, head, member, cond...)		\
-> +	if (COUNT_VARGS(cond) != 0) {					\
-> +		__list_check_rcu_cond(0, ## cond);			\
-> +	} else {							\
-> +		__list_check_rcu();					\
-> +	}								\
->  	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
->  			typeof(*(pos)), member);			\
->  		pos;							\
+On Mon, Jun 3, 2019 at 2:42 AM Pavel Machek <pavel@denx.de> wrote:
+>
+> On Sun 2019-06-02 08:24:35, Joel Fernandes wrote:
+> > On Sun, Jun 2, 2019 at 8:20 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Sun, Jun 2, 2019 at 3:00 AM Pavel Machek <pavel@denx.de> wrote:
+> > > >
+> > > > On Sat 2019-06-01 18:27:34, Joel Fernandes (Google) wrote:
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > >
+> > > > This really needs to be merged to previous patch, you can't break
+> > > > compilation in middle of series...
+> > > >
+> > > > Or probably you need hlist_for_each_entry_rcu_lockdep() macro with
+> > > > additional argument, and switch users to it.
+> > >
+> > > Good point. I can also just add a temporary transition macro, and then
+> > > remove it in the last patch. That way no new macro is needed.
+> >
+> > Actually, no. There is no compilation break so I did not follow what
+> > you mean. The fourth argument to the hlist_for_each_entry_rcu is
+> > optional. The only thing that happens is new lockdep warnings will
+> > arise which later parts of the series fix by passing in that fourth
+> > argument.
+>
+> Sorry, I missed that subtlety. Might be worth it enabling the lockdep
+> warning last in the series...
 
-
-This breaks code like:
-
-	if (...)
-		list_for_each_entry_rcu(...);
-
-as they are no longer a single statement. You'll have to frob it into
-the initializer part of the for statement.
+Good idea, will do! Thanks.
