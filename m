@@ -2,118 +2,187 @@ Return-Path: <SRS0=MVZj=UC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA18C28CC6
-	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 12:29:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C45C282CE
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 14:18:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 89DCF263F4
-	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 12:29:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36A60278F8
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 14:18:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PYGUZK+G"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ILFGoBB8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbfFCM2y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Jun 2019 08:28:54 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:40023 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727337AbfFCM2y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Jun 2019 08:28:54 -0400
-Received: by mail-lj1-f194.google.com with SMTP id a21so778025ljh.7
-        for <rcu@vger.kernel.org>; Mon, 03 Jun 2019 05:28:53 -0700 (PDT)
+        id S1728990AbfFCOSu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Jun 2019 10:18:50 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40616 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727429AbfFCOSu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Jun 2019 10:18:50 -0400
+Received: by mail-pf1-f196.google.com with SMTP id u17so10707729pfn.7
+        for <rcu@vger.kernel.org>; Mon, 03 Jun 2019 07:18:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WvqHOC4rVKX462WwE0yHSlmBZF1YO9aROqbvN/HfH6Y=;
-        b=PYGUZK+GV8eTc/sc1/LJV2/FRh6sJ3eQVXqtHpM1WdCHjxWxGcJHVX6no/5nw7UnO6
-         DV0yDj/ec3TxqyDkkmaBhVAS4R0g44dxp9/lCrwxqbNfRaWzZra8qYmAc+YZXjsgn2FX
-         UGutllvZNq/hEvDPh7uqahFLrpIWsFBdileHo=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wino6sk3VdZE6+hAQNM1PvtsWBqO77h9pHog6R+saB4=;
+        b=ILFGoBB8mLMqVVtS8/R/M5XmKpli9djqbjha1UCLJ1dh/6QP3UUReHWHDiD4kff4T7
+         9/EuFMLCU7KEekS2AIMDnGtUJRZ7MQJimC/aYCot7tPs1eoHEET2YsyCOXT26R5TB610
+         BnMntKUbojtA1j1WCh9KSm7cLhDJ39hgwOFSU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WvqHOC4rVKX462WwE0yHSlmBZF1YO9aROqbvN/HfH6Y=;
-        b=NkixsyQBTzg3S98jPQSHhuj171DiAa3tjglA+/xT40eBA4MJaubB121eIEdp1qYJYq
-         SPScf+0e1GuX7bx0scrPYqzVxV1P2VXUrKnn8THGx8AvfK2Uk8LwyksaqYIvpdZ1CabH
-         7ZGHK5mwCwTaQPBJkWumQyIvxcqr0rw2ffot7XOnvgqL8f6cxmF5y+OX5JCLjt4VTzpW
-         IuKpWyp3rS05PvB0X6LoEadRLX3AT3t7CiLzjVMzB3LTgdxWUsS30sl6u3VEKHAbAuUu
-         mgkBRjm4VEcAL1QXj/OLwDDPaiMWeVnMOzrrEFIHzLsUABjgj3NuVUhaARlt2KK9fBOX
-         D9lA==
-X-Gm-Message-State: APjAAAXxyrbeQ9dh7Tw6qxYGXkzyasa5O2TiERgpEumYf5u3Jpvs2kdB
-        GL2hnju3SC5nGUvWFhUBQ5jvrFPUP3db+Ig6eQlLrQ==
-X-Google-Smtp-Source: APXvYqzHzzga29JITONK+bAJt2s0MgC0PRTzbGVoOX6cnbI/p9OIDGMPiEXt3Q9ji63k1yr8CtUni9paU765sGDmFMs=
-X-Received: by 2002:a2e:9742:: with SMTP id f2mr13977662ljj.184.1559564932484;
- Mon, 03 Jun 2019 05:28:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190601222738.6856-1-joel@joelfernandes.org> <20190601222738.6856-3-joel@joelfernandes.org>
- <20190602070014.GA543@amd> <CAEXW_YT3t4Hb6wKsjXPGng+YbA5rhNRa7OSdZwdN4AKGfVkX3g@mail.gmail.com>
- <CAEXW_YSM2wwah2Q7LKmUO1Dp7GG62ciQA1nZ7GLw3m6cyuXXTw@mail.gmail.com> <20190603064212.GA7400@amd>
-In-Reply-To: <20190603064212.GA7400@amd>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wino6sk3VdZE6+hAQNM1PvtsWBqO77h9pHog6R+saB4=;
+        b=Ln/Hy6lL1Al4o8XV44OlUh7wQ7Ns7jalX8MneCHJsK1/SIIMm4rBpsaiOocIweL0m+
+         p7afGhUYs3nLo06If1pIvqXlLI/hHy0EqIeD+CsZlxmkIdSQ7wV1qJlK15xIDwy6x47n
+         MIYM3908wmYAlcQbKtCi3kKCB0dnx2cDW1HtJgActYimLAk8rNYWp5Lav37nIsGYrIe1
+         5bTIMOgWmjQzyXaWJddt4DXxGxpeOjYEpr++yvVws8dED0mk5gLOtKbVv1pxErKl+RBF
+         lwfZmFkjO8ZygA70SBQdqL23wP+qZK/vcU4/nYn1rJpEXpy1+ySc4VdXHz4v5MAbBnb7
+         /ieg==
+X-Gm-Message-State: APjAAAUzfl2dClVJT3hzUtLmkpefzMyvS7TyNn191NrwwmYm/4qebvyh
+        8dacF7jTDZs6mivVWMDkco7k8Q==
+X-Google-Smtp-Source: APXvYqyKAjR/D78/kGgs8thHzTfUR/LOLb5cBxjo6X/LlWYPb4MJB9cnaSwLt+1e5dELPHpdsRQU0Q==
+X-Received: by 2002:a63:6157:: with SMTP id v84mr14697278pgb.36.1559571529472;
+        Mon, 03 Jun 2019 07:18:49 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id d2sm13148346pfh.115.2019.06.03.07.18.48
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 03 Jun 2019 07:18:48 -0700 (PDT)
+Date:   Mon, 3 Jun 2019 10:18:47 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 3 Jun 2019 08:28:41 -0400
-Message-ID: <CAEXW_YSz8SNQCTnJj_86uJvRX3LFEQ6xJX-UV07HGwwA7oLwvg@mail.gmail.com>
-Subject: Re: [RFC 2/6] ipv4: add lockdep condition to fix for_each_entry
-To:     Pavel Machek <pavel@denx.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neil Brown <neilb@suse.com>, netdev <netdev@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
+        neilb@suse.com, netdev@vger.kernel.org, oleg@redhat.com,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Peter Zilstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu <rcu@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC 1/6] rcu: Add support for consolidated-RCU reader checking
+Message-ID: <20190603141847.GA94186@google.com>
+References: <20190601222738.6856-1-joel@joelfernandes.org>
+ <20190601222738.6856-2-joel@joelfernandes.org>
+ <20190603080128.GA3436@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190603080128.GA3436@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 3, 2019 at 2:42 AM Pavel Machek <pavel@denx.de> wrote:
->
-> On Sun 2019-06-02 08:24:35, Joel Fernandes wrote:
-> > On Sun, Jun 2, 2019 at 8:20 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > >
-> > > On Sun, Jun 2, 2019 at 3:00 AM Pavel Machek <pavel@denx.de> wrote:
-> > > >
-> > > > On Sat 2019-06-01 18:27:34, Joel Fernandes (Google) wrote:
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >
-> > > > This really needs to be merged to previous patch, you can't break
-> > > > compilation in middle of series...
-> > > >
-> > > > Or probably you need hlist_for_each_entry_rcu_lockdep() macro with
-> > > > additional argument, and switch users to it.
-> > >
-> > > Good point. I can also just add a temporary transition macro, and then
-> > > remove it in the last patch. That way no new macro is needed.
-> >
-> > Actually, no. There is no compilation break so I did not follow what
-> > you mean. The fourth argument to the hlist_for_each_entry_rcu is
-> > optional. The only thing that happens is new lockdep warnings will
-> > arise which later parts of the series fix by passing in that fourth
-> > argument.
->
-> Sorry, I missed that subtlety. Might be worth it enabling the lockdep
-> warning last in the series...
+On Mon, Jun 03, 2019 at 10:01:28AM +0200, Peter Zijlstra wrote:
+> On Sat, Jun 01, 2019 at 06:27:33PM -0400, Joel Fernandes (Google) wrote:
+> > +#define list_for_each_entry_rcu(pos, head, member, cond...)		\
+> > +	if (COUNT_VARGS(cond) != 0) {					\
+> > +		__list_check_rcu_cond(0, ## cond);			\
+> > +	} else {							\
+> > +		__list_check_rcu();					\
+> > +	}								\
+> > +	for (pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
+> > +		&pos->member != (head);					\
+> >  		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
+> >  
+> >  /**
+> > @@ -621,7 +648,12 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+> >   * the _rcu list-mutation primitives such as hlist_add_head_rcu()
+> >   * as long as the traversal is guarded by rcu_read_lock().
+> >   */
+> > +#define hlist_for_each_entry_rcu(pos, head, member, cond...)		\
+> > +	if (COUNT_VARGS(cond) != 0) {					\
+> > +		__list_check_rcu_cond(0, ## cond);			\
+> > +	} else {							\
+> > +		__list_check_rcu();					\
+> > +	}								\
+> >  	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
+> >  			typeof(*(pos)), member);			\
+> >  		pos;							\
+> 
+> 
+> This breaks code like:
+> 
+> 	if (...)
+> 		list_for_each_entry_rcu(...);
+> 
+> as they are no longer a single statement. You'll have to frob it into
+> the initializer part of the for statement.
 
-Good idea, will do! Thanks.
+Thanks a lot for that. I fixed it as below (diff is on top of the patch):
+
+If not for that '##' , I could have abstracted the whole if/else
+expression into its own macro and called it from list_for_each_entry_rcu() to
+keep it more clean.
+
+---8<-----------------------
+
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index b641fdd9f1a2..cc742d294bb0 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -371,12 +372,15 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  * as long as the traversal is guarded by rcu_read_lock().
+  */
+ #define list_for_each_entry_rcu(pos, head, member, cond...)		\
+-	if (COUNT_VARGS(cond) != 0) {					\
+-		__list_check_rcu_cond(0, ## cond);			\
+-	} else {							\
+-		__list_check_rcu();					\
+-	}								\
+-	for (pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
++	for (								\
++	     ({								\
++		if (COUNT_VARGS(cond) != 0) {				\
++			__list_check_rcu_cond(0, ## cond);		\
++		} else {						\
++			__list_check_rcu_nocond();			\
++		}							\
++	      }),							\
++	     pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
+ 		&pos->member != (head);					\
+ 		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
+ 
+@@ -649,12 +653,15 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * as long as the traversal is guarded by rcu_read_lock().
+  */
+ #define hlist_for_each_entry_rcu(pos, head, member, cond...)		\
+-	if (COUNT_VARGS(cond) != 0) {					\
+-		__list_check_rcu_cond(0, ## cond);			\
+-	} else {							\
+-		__list_check_rcu();					\
+-	}								\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
++	for (								\
++	     ({								\
++		if (COUNT_VARGS(cond) != 0) {				\
++			__list_check_rcu_cond(0, ## cond);		\
++		} else {						\
++			__list_check_rcu_nocond();			\
++		}							\
++	     }),							\
++	     pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+ 		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
+-- 
+2.22.0.rc1.311.g5d7573a151-goog
+
