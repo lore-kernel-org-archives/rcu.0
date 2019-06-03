@@ -1,61 +1,29 @@
-Return-Path: <SRS0=73dG=UB=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=MVZj=UC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FE46C28CC6
-	for <rcu@archiver.kernel.org>; Sun,  2 Jun 2019 12:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37FC3C28CC6
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 06:42:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 589442790C
-	for <rcu@archiver.kernel.org>; Sun,  2 Jun 2019 12:24:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="eIiL2pGu"
+	by mail.kernel.org (Postfix) with ESMTP id 19AC4205ED
+	for <rcu@archiver.kernel.org>; Mon,  3 Jun 2019 06:42:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbfFBMYt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 2 Jun 2019 08:24:49 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42381 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbfFBMYs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 2 Jun 2019 08:24:48 -0400
-Received: by mail-lf1-f66.google.com with SMTP id y13so11397380lfh.9
-        for <rcu@vger.kernel.org>; Sun, 02 Jun 2019 05:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d9XL3Kdg/XwAAZpeQtzVh3EdhTNcfgE61MkHiEb6f6I=;
-        b=eIiL2pGuoT1uPZ6iXK+26kX3ON9RbP1IPb/stloJPcBPj9Zo94HojRPxXy/OkFOiPK
-         X9H9+xcdJRrG5OhcVzQf2kFWuTRAl5KXardR/13k2qRA9L3/8mMVGyJhfmvfa1CKQ5lZ
-         kXMSBhJU+EcziEfH4B1bkn1X38iaVN/7RnDp8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d9XL3Kdg/XwAAZpeQtzVh3EdhTNcfgE61MkHiEb6f6I=;
-        b=FZhkHvKKub+eelAEzAoiKtV5bo7ESOVlx/U6DpsiN0+4mz7dPFVQnHwbH2rHPqbuR2
-         YuTHXbBpICGxWgniTyhGO4LSJGqBhTPRSmlPvlLXnwziNbuPIz/WN/PUkSnd622m2uhh
-         sxI9/2dheTdk1askGn6q+fEC5m9WqXtQ7bvyiYrmTm5pgnCq4lFYvBy3OFOsw1plVhsL
-         8AINQk0lG9M5+5IIlfY+QTfv9Tn5yV3akLJVGtsJfY7oda/2MzsgT68n5xusBWYNQ0zK
-         7VZFV6hHlQ7f08z/DfmaVWQ8SMuhN1KTJ2vLcr1LOi69oTaLQT2Ku4/xYj0b/0QvWt2G
-         ikjw==
-X-Gm-Message-State: APjAAAUc4IKGsYTMtJ/lixJdNdGZihyL1NS125hxE9MNmsqnW83AhEvy
-        TfakOh3mMsOgsi8IEc1s90QAirMYwTenTOHY1MvWJQ==
-X-Google-Smtp-Source: APXvYqx4YBeHBoQTcjTH8I7UAKp3m6GHYEI6h8xOHmlpzR1QFhMBG6BANgkDDCynETKbf79fFNw+DGqbIxcWNN3SHnE=
-X-Received: by 2002:ac2:4544:: with SMTP id j4mr10902247lfm.176.1559478286535;
- Sun, 02 Jun 2019 05:24:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190601222738.6856-1-joel@joelfernandes.org> <20190601222738.6856-3-joel@joelfernandes.org>
- <20190602070014.GA543@amd> <CAEXW_YT3t4Hb6wKsjXPGng+YbA5rhNRa7OSdZwdN4AKGfVkX3g@mail.gmail.com>
-In-Reply-To: <CAEXW_YT3t4Hb6wKsjXPGng+YbA5rhNRa7OSdZwdN4AKGfVkX3g@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 2 Jun 2019 08:24:35 -0400
-Message-ID: <CAEXW_YSM2wwah2Q7LKmUO1Dp7GG62ciQA1nZ7GLw3m6cyuXXTw@mail.gmail.com>
-Subject: Re: [RFC 2/6] ipv4: add lockdep condition to fix for_each_entry
-To:     Pavel Machek <pavel@denx.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S1727217AbfFCGmQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Jun 2019 02:42:16 -0400
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:53347 "EHLO
+        atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727194AbfFCGmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Jun 2019 02:42:16 -0400
+Received: by atrey.karlin.mff.cuni.cz (Postfix, from userid 512)
+        id 72C3D80295; Mon,  3 Jun 2019 08:42:03 +0200 (CEST)
+Date:   Mon, 3 Jun 2019 08:42:12 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Pavel Machek <pavel@denx.de>, LKML <linux-kernel@vger.kernel.org>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Borislav Petkov <bp@alien8.de>,
@@ -80,30 +48,72 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC 2/6] ipv4: add lockdep condition to fix for_each_entry
+Message-ID: <20190603064212.GA7400@amd>
+References: <20190601222738.6856-1-joel@joelfernandes.org>
+ <20190601222738.6856-3-joel@joelfernandes.org>
+ <20190602070014.GA543@amd>
+ <CAEXW_YT3t4Hb6wKsjXPGng+YbA5rhNRa7OSdZwdN4AKGfVkX3g@mail.gmail.com>
+ <CAEXW_YSM2wwah2Q7LKmUO1Dp7GG62ciQA1nZ7GLw3m6cyuXXTw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSM2wwah2Q7LKmUO1Dp7GG62ciQA1nZ7GLw3m6cyuXXTw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jun 2, 2019 at 8:20 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Sun, Jun 2, 2019 at 3:00 AM Pavel Machek <pavel@denx.de> wrote:
-> >
-> > On Sat 2019-06-01 18:27:34, Joel Fernandes (Google) wrote:
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > This really needs to be merged to previous patch, you can't break
-> > compilation in middle of series...
-> >
-> > Or probably you need hlist_for_each_entry_rcu_lockdep() macro with
-> > additional argument, and switch users to it.
->
-> Good point. I can also just add a temporary transition macro, and then
-> remove it in the last patch. That way no new macro is needed.
 
-Actually, no. There is no compilation break so I did not follow what
-you mean. The fourth argument to the hlist_for_each_entry_rcu is
-optional. The only thing that happens is new lockdep warnings will
-arise which later parts of the series fix by passing in that fourth
-argument.
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun 2019-06-02 08:24:35, Joel Fernandes wrote:
+> On Sun, Jun 2, 2019 at 8:20 AM Joel Fernandes <joel@joelfernandes.org> wr=
+ote:
+> >
+> > On Sun, Jun 2, 2019 at 3:00 AM Pavel Machek <pavel@denx.de> wrote:
+> > >
+> > > On Sat 2019-06-01 18:27:34, Joel Fernandes (Google) wrote:
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > >
+> > > This really needs to be merged to previous patch, you can't break
+> > > compilation in middle of series...
+> > >
+> > > Or probably you need hlist_for_each_entry_rcu_lockdep() macro with
+> > > additional argument, and switch users to it.
+> >
+> > Good point. I can also just add a temporary transition macro, and then
+> > remove it in the last patch. That way no new macro is needed.
+>=20
+> Actually, no. There is no compilation break so I did not follow what
+> you mean. The fourth argument to the hlist_for_each_entry_rcu is
+> optional. The only thing that happens is new lockdep warnings will
+> arise which later parts of the series fix by passing in that fourth
+> argument.
+
+Sorry, I missed that subtlety. Might be worth it enabling the lockdep
+warning last in the series...
+
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlz0wUQACgkQMOfwapXb+vJZhACeMv6qy1KMl8fpAmSRbXsFU5yP
+LY8Ani5H9/TBihxu13cOJbn7mJJ9RWkQ
+=hotv
+-----END PGP SIGNATURE-----
+
+--SLDf9lqlvOQaIe6s--
