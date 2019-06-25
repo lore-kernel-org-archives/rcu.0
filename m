@@ -2,194 +2,118 @@ Return-Path: <SRS0=oVcv=UY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F5CEC48BD3
-	for <rcu@archiver.kernel.org>; Tue, 25 Jun 2019 02:50:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ED7FC48BD5
+	for <rcu@archiver.kernel.org>; Tue, 25 Jun 2019 06:26:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 19BD1206DD
-	for <rcu@archiver.kernel.org>; Tue, 25 Jun 2019 02:50:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47B1E20659
+	for <rcu@archiver.kernel.org>; Tue, 25 Jun 2019 06:26:30 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0QAWFUI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730466AbfFYCu4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jun 2019 22:50:56 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:35133 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730622AbfFYCu4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jun 2019 22:50:56 -0400
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.51 with ESMTP; 25 Jun 2019 11:50:53 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 25 Jun 2019 11:50:53 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Tue, 25 Jun 2019 11:50:15 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com
-Subject: Re: [RFC] rcu: Warn that rcu ktheads cannot be spawned
-Message-ID: <20190625025015.GB10912@X58A-UD3R>
-References: <1561364852-5113-1-git-send-email-byungchul.park@lge.com>
- <20190624164624.GA41314@google.com>
+        id S1729251AbfFYG03 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jun 2019 02:26:29 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41319 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729059AbfFYG03 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jun 2019 02:26:29 -0400
+Received: by mail-oi1-f195.google.com with SMTP id g7so11656536oia.8
+        for <rcu@vger.kernel.org>; Mon, 24 Jun 2019 23:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4GBBKoiFmb6Nevyn+zO+DhtsVC7JYsfFW8rnMSFI5Iw=;
+        b=g0QAWFUI6+5vFN6DqiFPJbjgSaYd2oXaq5C36JQ1RDrqSKntLlSZIIF3Kx2JZ0zggD
+         Hf1CrDTV09AgHD9pYg+6rzsifRczOdbgzAaNjYbf0SqqRGWj1xzUt3L/q+weq7qEAJif
+         RGTL+3dii1GSqS35d5bOQIJTHSX3IDpdQRbMmH5ZJucosegi/JInJvEEz+x5VVhwmzxK
+         /ycAdHhzDMmmLMjqpkMIuWgUDL+vzbb4gpsdegpX+q/fFwH9Q4CYQEVMmtr4zAVj888D
+         ZbwpqzvayFS6ie+v1xtNVbRlSvktgXuSXhm9ysKB0CNWXFNyUYQyLoB7gJrkiX9je2RD
+         bLkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4GBBKoiFmb6Nevyn+zO+DhtsVC7JYsfFW8rnMSFI5Iw=;
+        b=otAiltj0FGjlkfv0k3qGeWA5ddAcYCp5FOMVugwveO6vTYCCxy3nx7gHBGjgeSkfl4
+         kFAp6m/Vh7YdRp50dbHe2m5WFJTuPu95anp8UuddKqY88k+v9qrNXXHLGMp4bUyWDbbb
+         wMKoLHgyelJM8+yS1IL9mm8hPDtY8QDXYvZ0bH+F+bE6KIZRl6COI3mSlGMUwTpeoPha
+         TscxEvZZ8cyulPvYs0IX1n/KzeE7GstyHbvUiemGvwwJ8jnCDQgB+pPfRA2E2mXjNdH0
+         0GluSX7WGO9dP3KEJ6zjirLezf6/6VsAy1oyxE/gVx24ARrr/m6zcfyODrjcNeQzhik9
+         HYRw==
+X-Gm-Message-State: APjAAAWpWt996gvUeFLdqUqEezGh1BpzlIDeFJu6j+OOczWEpeJWmYpz
+        Px55gvVj2PCKzKSG7aDiHCk=
+X-Google-Smtp-Source: APXvYqzS/jPbErR1eYFQ9ZtSf2UIsMVFdI95LwRta55szgk1GezTfuTpAaF5GICnW7IY5tD8jJQPLA==
+X-Received: by 2002:aca:ba02:: with SMTP id k2mr12174797oif.70.1561443988746;
+        Mon, 24 Jun 2019 23:26:28 -0700 (PDT)
+Received: from rYz3n.attlocal.net ([2600:1700:210:3790::48])
+        by smtp.googlemail.com with ESMTPSA id e4sm5050183oti.64.2019.06.24.23.26.27
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 24 Jun 2019 23:26:28 -0700 (PDT)
+From:   Jiunn Chang <c0d1n61at3@gmail.com>
+To:     skhan@linuxfoundation.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, paulmck@linux.ibm.com, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org, corbet@lwn.net
+Subject: [Linux-kernel-mentees][PATCH v3 0/6] Documentation: RCU: Convert to reST
+Date:   Tue, 25 Jun 2019 01:26:21 -0500
+Message-Id: <20190625062627.26378-1-c0d1n61at3@gmail.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190623081413.7095-1-c0d1n61at3@gmail.com>
+References: <20190623081413.7095-1-c0d1n61at3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190624164624.GA41314@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 12:46:24PM -0400, Joel Fernandes wrote:
-> On Mon, Jun 24, 2019 at 05:27:32PM +0900, Byungchul Park wrote:
-> > Hello rcu folks,
-> > 
-> > I thought it'd better to announce it if those spawnings fail because of
-> > !rcu_scheduler_fully_active.
-> > 
-> > Of course, with the current code, it never happens though.
-> > 
-> > Thoughts?
-> 
-> It seems in the right spirit, but with your patch a warning always fires.
-> rcu_prepare_cpu() is called multiple times, once from rcu_init() and then
-> from hotplug paths.
+This patch series is the initial conversion of the RCU documentation
+section.  This includes reST markup and renaming txt files to rst.  For files
+converted, internal and external links have been created with cross-references.
+Checkpatch was used to leverage codespell for any spelling errors.  Each patch
+in the series has been compiled and reviewed for warnings and errors.
+Patches can be bisected.
 
-I'm sorry bothering you.
+The changes made in v3 include:
+  - correcting markup to maintain even more of the original text
+  - correcting markup for line breaks
+  - combining all file renaming into one patch
+  - add reviewed-by tags
+  - add required public list to CC
 
-I sent the patch to ask how you guys think about the direction coz I'm
-not sure if the current code w/o warning on it is intended or not.
+The changes made in v2 include:
+  - correcting markup to maintain as much of the original text as possible
+  - correcting markup to reduce reader context switching
+  - breakout file renaming into individual patches in the series
 
-However from now on, I think I need to test it first even if it's RFC :)
+>8-----------------------------------------------------------------8<
 
-Thank you very much for the information.
+Jiunn Chang (6):
+  Documentation: RCU: Convert RCU basic concepts to reST
+  Documentation: RCU: Convert RCU linked list to reST
+  Documentation: RCU: Convert RCU UP systems to reST
+  Documentation: RCU: Rename txt files to rst
+  Documentation: RCU: Add links to rcu.rst
+  Documentation: RCU: Add TOC tree hooks
 
-Thanks,
-Byungchul
+ Documentation/RCU/index.rst                   | 19 ++++
+ .../RCU/{listRCU.txt => list_rcu.rst}         | 38 ++++----
+ Documentation/RCU/rcu.rst                     | 91 +++++++++++++++++++
+ Documentation/RCU/rcu.txt                     | 89 ------------------
+ Documentation/RCU/{UP.txt => up_rcu.rst}      | 37 +++++---
+ 5 files changed, 155 insertions(+), 119 deletions(-)
+ create mode 100644 Documentation/RCU/index.rst
+ rename Documentation/RCU/{listRCU.txt => list_rcu.rst} (92%)
+ create mode 100644 Documentation/RCU/rcu.rst
+ delete mode 100644 Documentation/RCU/rcu.txt
+ rename Documentation/RCU/{UP.txt => up_rcu.rst} (84%)
 
-> Warning splat stack looks like:
-> 
-> [    0.398767] Call Trace:                                                                                                        
-> [    0.398775]  rcu_init+0x6aa/0x724                                             
-> [    0.398779]  start_kernel+0x220/0x4a2                                    
-> [    0.398780]  ? copy_bootdata+0x12/0xac                                                                                                                                   
-> [    0.398782]  secondary_startup_64+0xa4/0xb0    
-> 
-> 
-> > 
-> > Thanks,
-> > Byungchul
-> > 
-> > ---8<---
-> > From 58a33a85c70f82c406319b4752af95cf6ceb73a3 Mon Sep 17 00:00:00 2001
-> > From: Byungchul Park <byungchul.park@lge.com>
-> > Date: Mon, 24 Jun 2019 17:08:26 +0900
-> > Subject: [RFC] rcu: Warn that rcu ktheads cannot be spawned
-> > 
-> > In case that rcu ktheads cannot be spawned due to
-> > !rcu_scheduler_fully_active, it'd be better to anounce it.
-> > 
-> > While at it, because the return value of rcu_spawn_one_boost_kthread()
-> > is not used any longer, changed the return type from int to void.
-> > 
-> > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> > ---
-> >  kernel/rcu/tree_plugin.h | 31 +++++++++++++++++++------------
-> >  1 file changed, 19 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 1102765..7d74193 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -1131,7 +1131,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-> >   * already exist.  We only create this kthread for preemptible RCU.
-> >   * Returns zero if all is well, a negated errno otherwise.
-> >   */
-> > -static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > +static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> >  {
-> >  	int rnp_index = rnp - rcu_get_root();
-> >  	unsigned long flags;
-> > @@ -1139,25 +1139,24 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> >  	struct task_struct *t;
-> >  
-> >  	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-> > -		return 0;
-> > +		return;
-> >  
-> > -	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-> > -		return 0;
-> > +	if (rcu_rnp_online_cpus(rnp) == 0)
-> > +		return;
-> >  
-> >  	rcu_state.boost = 1;
-> >  	if (rnp->boost_kthread_task != NULL)
-> > -		return 0;
-> > +		return;
-> >  	t = kthread_create(rcu_boost_kthread, (void *)rnp,
-> >  			   "rcub/%d", rnp_index);
-> >  	if (IS_ERR(t))
-> > -		return PTR_ERR(t);
-> > +		return;
-> >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> >  	rnp->boost_kthread_task = t;
-> >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  	sp.sched_priority = kthread_prio;
-> >  	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-> >  	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
-> > -	return 0;
-> >  }
-> >  
-> >  static void rcu_cpu_kthread_setup(unsigned int cpu)
-> > @@ -1264,8 +1263,12 @@ static void __init rcu_spawn_boost_kthreads(void)
-> >  		per_cpu(rcu_data.rcu_cpu_has_work, cpu) = 0;
-> >  	if (WARN_ONCE(smpboot_register_percpu_thread(&rcu_cpu_thread_spec), "%s: Could not start rcub kthread, OOM is now expected behavior\n", __func__))
-> >  		return;
-> > +
-> > +	if (WARN_ON(!rcu_scheduler_fully_active))
-> > +		return;
-> > +
-> >  	rcu_for_each_leaf_node(rnp)
-> > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > +		rcu_spawn_one_boost_kthread(rnp);
-> >  }
-> >  
-> >  static void rcu_prepare_kthreads(int cpu)
-> > @@ -1273,9 +1276,11 @@ static void rcu_prepare_kthreads(int cpu)
-> >  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  	struct rcu_node *rnp = rdp->mynode;
-> >  
-> > +	if (WARN_ON(!rcu_scheduler_fully_active))
-> > +		return;
-> > +
-> >  	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
-> > -	if (rcu_scheduler_fully_active)
-> > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > +	rcu_spawn_one_boost_kthread(rnp);
-> >  }
-> >  
-> >  #else /* #ifdef CONFIG_RCU_BOOST */
-> > @@ -2198,8 +2203,10 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
-> >   */
-> >  static void rcu_spawn_cpu_nocb_kthread(int cpu)
-> >  {
-> > -	if (rcu_scheduler_fully_active)
-> > -		rcu_spawn_one_nocb_kthread(cpu);
-> > +	if (WARN_ON(!rcu_scheduler_fully_active))
-> > +		return;
-> > +
-> > +	rcu_spawn_one_nocb_kthread(cpu);
-> >  }
-> >  
-> >  /*
-> > -- 
-> > 1.9.1
-> > 
+-- 
+2.22.0
+
