@@ -5,56 +5,56 @@ X-Spam-Level:
 X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C807C48BD9
-	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3548C48BD6
+	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 49CBD208E3
-	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A1450208E3
+	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxutfEB+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgTJ557x"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbfFZTMy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Jun 2019 15:12:54 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:33120 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbfFZTMy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Jun 2019 15:12:54 -0400
-Received: by mail-oi1-f194.google.com with SMTP id f80so2826890oib.0;
-        Wed, 26 Jun 2019 12:12:53 -0700 (PDT)
+        id S1726359AbfFZTMz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Jun 2019 15:12:55 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41466 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbfFZTMz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Jun 2019 15:12:55 -0400
+Received: by mail-oi1-f196.google.com with SMTP id g7so2774862oia.8;
+        Wed, 26 Jun 2019 12:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vYKHVAh8aou7moDwqPbE8pHJ3v8Vn4ReJ1k+Rwq7PdU=;
-        b=FxutfEB+JVAvvoRFP4KAd96AQzhqZS8xPueDtbXJsEPbuyqMmPNdd0QKiO0NoF1GPH
-         cDFz8XbHOeUDVuGb0XCD4LKmmAaGTVEKT/JYQcXIQ+LOmJRKiMKHUIXEomgbHJHdDvq0
-         2fSoFkUZ+V6DujgCP4hh7xn8SxV2d7QCbdaODVb6vXqFCBS1ix3NVVz+WLLCm3qrW3gz
-         bGLqlLOOvSPBaj6t5XZ+k28mchLuoFuBTQiG3ra2WnqOUDexpHlc/5Zb4qVecQeNp6kI
-         zthv5ySoMEf+skDdazH0+fmW+RniijERf2eU5WCQJ9Fslpuo5QgI7skuaK45wPJRGYO5
-         wDAg==
+        bh=8LsqGKVqHsA3QFbhiUqQaAgq2yHXmXdpVbDSUB0uWiw=;
+        b=RgTJ557xIEHyzSp7M9JOMW2zSOaG5D+m+56IggCMjkzATOMtrwis3aZvRGpdX7QRUA
+         sIhPdQCpOJ6mT2grn6dXXHdzDeWFYvTI6JSJ1y0A8/4BgMONebl7jTiNMKZQnrNMyrpF
+         5WJyYJ8JJYqbE6/GWCUbXeTqZEbagQOHfVxDfC2dmRBqZmvx+4PKrCQyyU3gzMG+qFUA
+         CYmG9aJjlmM52juOmT+ac+3IuMlrW6OACJ/jkDgKCbqLvbI05fz4Ob+5GnnobbtyQc+v
+         ziiZ2UbOanPiBy6xW0eUgcFu2Dh8Fmmq8IDb/sTuwXF1PqZhGvGGZ3ylblx1fEBWP8Lf
+         RJUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vYKHVAh8aou7moDwqPbE8pHJ3v8Vn4ReJ1k+Rwq7PdU=;
-        b=BeqKryXrreaqr0qpOt1NaxOx9Tim2TXqDCl36HUXhKYIRd2kU3/qBYo1exN3lL+ZVo
-         MFHGJwnG2X41snGl9+y7WgqfmkWSff91SLoYdhAzkoqQ9WOSFQr6fS+2zXS2B/CJjN/B
-         0REOvTuBJBDsHK44pV1B+YhYsdCZT0uF088Z0n906C/jFYMCRrPNwi01ZbLFtJ5Pgv6a
-         9771fLGh+uIkOMEcKzywjFcZ4SyHQb0riO+3u7VI7U0Koln8eOdoP48hsOqNT7TE0QBf
-         4Eao/3btEgMiy928ksMnaDiRDJKWWz1DCGQ/lwNHF0F/e9IE/vXD2lj+2bvHN3pCqizY
-         NR2A==
-X-Gm-Message-State: APjAAAWLXvVs6YHs+n1hx5rOlxGriYoqTSl2PWkiUuotqeLwQE3X3XeE
-        IGtM8oi52UHk+MbpqPaZ8TA=
-X-Google-Smtp-Source: APXvYqxVCuZh9Rr4No5quL8MUkuw45OECKHeokooJ84yir5vM0hRfa1G8BPLr/gsTzmC7WAU8QMfgg==
-X-Received: by 2002:aca:c4d5:: with SMTP id u204mr378012oif.131.1561576372845;
-        Wed, 26 Jun 2019 12:12:52 -0700 (PDT)
+        bh=8LsqGKVqHsA3QFbhiUqQaAgq2yHXmXdpVbDSUB0uWiw=;
+        b=tcJGN924JJAdKuQ/BnCQL/vwbzIu48JxtgUjTcv3mIdoFpOVM5oXdaAd6gMGwdsu+x
+         rDrMCYW5UrUHea564q9Ti7Hnc7IY2lVYFH71ctfj/H9zYfJoutax4H1WwrDKJDUfW+Yn
+         rnuutTiWeZZXA+RDozu7OwQCUwRzdEaL+57MSZKZ37nF/ltTWdxJsnQpbTEKFY/XwuNr
+         UVXnvEPoubvpaUczTWnwCjYMzaO/XIho0d9MTPnU1VWJ9gXNilDGQTtPmYWGkh3K4SDo
+         UDv3BcE6Ku7ZP4W0bC3eJjngO90Qhz5ii6eR5g2bu3BuqHdq0sUo+DHOUykRKkU+n0Sb
+         PmSw==
+X-Gm-Message-State: APjAAAXYea1LNTYTiyyUnE8C4U8CrPh6ZBmycMlJXhjv+wAERoEGl0+w
+        JhIQfdVIMYr1n+3fBx48G1A=
+X-Google-Smtp-Source: APXvYqxzVmRDPf7PuxkVsrEm0tlHhmnxwD0gzLBo2/tycd+tIpcKxIptrhtGl9bXu1f0FG2LVMtvIw==
+X-Received: by 2002:aca:d40f:: with SMTP id l15mr382417oig.61.1561576373636;
+        Wed, 26 Jun 2019 12:12:53 -0700 (PDT)
 Received: from rYz3n.attlocal.net ([2600:1700:210:3790::48])
         by smtp.googlemail.com with ESMTPSA id e16sm7886679oih.9.2019.06.26.12.12.52
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 12:12:52 -0700 (PDT)
+        Wed, 26 Jun 2019 12:12:53 -0700 (PDT)
 From:   Jiunn Chang <c0d1n61at3@gmail.com>
 To:     skhan@linuxfoundation.org
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
@@ -62,9 +62,9 @@ Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, corbet@lwn.net
-Subject: [Linux-kernel-mentees][PATCH v4 1/5] Documentation: RCU: Convert RCU basic concepts to reST
-Date:   Wed, 26 Jun 2019 14:12:45 -0500
-Message-Id: <20190626191249.21135-2-c0d1n61at3@gmail.com>
+Subject: [Linux-kernel-mentees][PATCH v4 2/5] Documentation: RCU: Convert RCU linked list to reST
+Date:   Wed, 26 Jun 2019 14:12:46 -0500
+Message-Id: <20190626191249.21135-3-c0d1n61at3@gmail.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190625062627.26378-1-c0d1n61at3@gmail.com>
 References: <20190625062627.26378-1-c0d1n61at3@gmail.com>
@@ -75,167 +75,157 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU basic concepts reST markup.
+RCU linked list reST markup.
 
 Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
 ---
- Documentation/RCU/rcu.txt | 119 +++++++++++++++++++-------------------
- 1 file changed, 61 insertions(+), 58 deletions(-)
+ Documentation/RCU/listRCU.txt | 38 ++++++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/RCU/rcu.txt b/Documentation/RCU/rcu.txt
-index c818cf65c5a9..8dfb437dacc3 100644
---- a/Documentation/RCU/rcu.txt
-+++ b/Documentation/RCU/rcu.txt
+diff --git a/Documentation/RCU/listRCU.txt b/Documentation/RCU/listRCU.txt
+index adb5a3782846..7956ff33042b 100644
+--- a/Documentation/RCU/listRCU.txt
++++ b/Documentation/RCU/listRCU.txt
 @@ -1,5 +1,7 @@
--RCU Concepts
-+.. _rcu_doc:
+-Using RCU to Protect Read-Mostly Linked Lists
++.. _list_rcu_doc:
  
-+RCU Concepts
-+============
++Using RCU to Protect Read-Mostly Linked Lists
++=============================================
  
- The basic idea behind RCU (read-copy update) is to split destructive
- operations into two parts, one that prevents anyone from seeing the data
-@@ -8,82 +10,83 @@ A "grace period" must elapse between the two parts, and this grace period
- must be long enough that any readers accessing the item being deleted have
- since dropped their references.  For example, an RCU-protected deletion
- from a linked list would first remove the item from the list, wait for
--a grace period to elapse, then free the element.  See the listRCU.txt
--file for more information on using RCU with linked lists.
+ One of the best applications of RCU is to protect read-mostly linked lists
+ ("struct list_head" in list.h).  One big advantage of this approach
+@@ -7,8 +9,8 @@ is that all of the required memory barriers are included for you in
+ the list macros.  This document describes several applications of RCU,
+ with the best fits first.
+ 
 -
-+a grace period to elapse, then free the element.  See the
-+Documentation/RCU/listRCU.rst file for more information on using RCU with
-+linked lists.
+ Example 1: Read-Side Action Taken Outside of Lock, No In-Place Updates
++----------------------------------------------------------------------
  
- Frequently Asked Questions
-+--------------------------
+ The best applications are cases where, if reader-writer locking were
+ used, the read-side lock would be dropped before taking any action
+@@ -24,7 +26,7 @@ added or deleted, rather than being modified in place.
  
--o	Why would anyone want to use RCU?
-+- Why would anyone want to use RCU?
+ A straightforward example of this use of RCU may be found in the
+ system-call auditing support.  For example, a reader-writer locked
+-implementation of audit_filter_task() might be as follows:
++implementation of audit_filter_task() might be as follows::
  
--	The advantage of RCU's two-part approach is that RCU readers need
--	not acquire any locks, perform any atomic instructions, write to
--	shared memory, or (on CPUs other than Alpha) execute any memory
--	barriers.  The fact that these operations are quite expensive
--	on modern CPUs is what gives RCU its performance advantages
--	in read-mostly situations.  The fact that RCU readers need not
--	acquire locks can also greatly simplify deadlock-avoidance code.
-+  The advantage of RCU's two-part approach is that RCU readers need
-+  not acquire any locks, perform any atomic instructions, write to
-+  shared memory, or (on CPUs other than Alpha) execute any memory
-+  barriers.  The fact that these operations are quite expensive
-+  on modern CPUs is what gives RCU its performance advantages
-+  in read-mostly situations.  The fact that RCU readers need not
-+  acquire locks can also greatly simplify deadlock-avoidance code.
+ 	static enum audit_state audit_filter_task(struct task_struct *tsk)
+ 	{
+@@ -48,7 +50,7 @@ the corresponding value is returned.  By the time that this value is acted
+ on, the list may well have been modified.  This makes sense, since if
+ you are turning auditing off, it is OK to audit a few extra system calls.
  
--o	How can the updater tell when a grace period has completed
--	if the RCU readers give no indication when they are done?
-+- How can the updater tell when a grace period has completed
-+  if the RCU readers give no indication when they are done?
+-This means that RCU can be easily applied to the read side, as follows:
++This means that RCU can be easily applied to the read side, as follows::
  
--	Just as with spinlocks, RCU readers are not permitted to
--	block, switch to user-mode execution, or enter the idle loop.
--	Therefore, as soon as a CPU is seen passing through any of these
--	three states, we know that that CPU has exited any previous RCU
--	read-side critical sections.  So, if we remove an item from a
--	linked list, and then wait until all CPUs have switched context,
--	executed in user mode, or executed in the idle loop, we can
--	safely free up that item.
-+  Just as with spinlocks, RCU readers are not permitted to
-+  block, switch to user-mode execution, or enter the idle loop.
-+  Therefore, as soon as a CPU is seen passing through any of these
-+  three states, we know that that CPU has exited any previous RCU
-+  read-side critical sections.  So, if we remove an item from a
-+  linked list, and then wait until all CPUs have switched context,
-+  executed in user mode, or executed in the idle loop, we can
-+  safely free up that item.
+ 	static enum audit_state audit_filter_task(struct task_struct *tsk)
+ 	{
+@@ -73,7 +75,7 @@ become list_for_each_entry_rcu().  The _rcu() list-traversal primitives
+ insert the read-side memory barriers that are required on DEC Alpha CPUs.
  
--	Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
--	same effect, but require that the readers manipulate CPU-local
--	counters.  These counters allow limited types of blocking within
--	RCU read-side critical sections.  SRCU also uses CPU-local
--	counters, and permits general blocking within RCU read-side
--	critical sections.  These variants of RCU detect grace periods
--	by sampling these counters.
-+  Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
-+  same effect, but require that the readers manipulate CPU-local
-+  counters.  These counters allow limited types of blocking within
-+  RCU read-side critical sections.  SRCU also uses CPU-local
-+  counters, and permits general blocking within RCU read-side
-+  critical sections.  These variants of RCU detect grace periods
-+  by sampling these counters.
+ The changes to the update side are also straightforward.  A reader-writer
+-lock might be used as follows for deletion and insertion:
++lock might be used as follows for deletion and insertion::
  
--o	If I am running on a uniprocessor kernel, which can only do one
--	thing at a time, why should I wait for a grace period?
-+- If I am running on a uniprocessor kernel, which can only do one
-+  thing at a time, why should I wait for a grace period?
+ 	static inline int audit_del_rule(struct audit_rule *rule,
+ 					 struct list_head *list)
+@@ -106,7 +108,7 @@ lock might be used as follows for deletion and insertion:
+ 		return 0;
+ 	}
  
--	See the UP.txt file in this directory.
-+  See the Documentation/RCU/UP.rst file for more information.
+-Following are the RCU equivalents for these two functions:
++Following are the RCU equivalents for these two functions::
  
--o	How can I see where RCU is currently used in the Linux kernel?
-+- How can I see where RCU is currently used in the Linux kernel?
+ 	static inline int audit_del_rule(struct audit_rule *rule,
+ 					 struct list_head *list)
+@@ -154,13 +156,13 @@ otherwise cause concurrent readers to fail spectacularly.
+ So, when readers can tolerate stale data and when entries are either added
+ or deleted, without in-place modification, it is very easy to use RCU!
  
--	Search for "rcu_read_lock", "rcu_read_unlock", "call_rcu",
--	"rcu_read_lock_bh", "rcu_read_unlock_bh", "srcu_read_lock",
--	"srcu_read_unlock", "synchronize_rcu", "synchronize_net",
--	"synchronize_srcu", and the other RCU primitives.  Or grab one
--	of the cscope databases from:
-+  Search for "rcu_read_lock", "rcu_read_unlock", "call_rcu",
-+  "rcu_read_lock_bh", "rcu_read_unlock_bh", "srcu_read_lock",
-+  "srcu_read_unlock", "synchronize_rcu", "synchronize_net",
-+  "synchronize_srcu", and the other RCU primitives.  Or grab one
-+  of the cscope databases from:
+-
+ Example 2: Handling In-Place Updates
++------------------------------------
  
--	http://www.rdrop.com/users/paulmck/RCU/linuxusage/rculocktab.html
-+  (http://www.rdrop.com/users/paulmck/RCU/linuxusage/rculocktab.html).
+ The system-call auditing code does not update auditing rules in place.
+ However, if it did, reader-writer-locked code to do so might look as
+ follows (presumably, the field_count is only permitted to decrease,
+-otherwise, the added fields would need to be filled in):
++otherwise, the added fields would need to be filled in)::
  
--o	What guidelines should I follow when writing code that uses RCU?
-+- What guidelines should I follow when writing code that uses RCU?
+ 	static inline int audit_upd_rule(struct audit_rule *rule,
+ 					 struct list_head *list,
+@@ -187,7 +189,7 @@ otherwise, the added fields would need to be filled in):
+ The RCU version creates a copy, updates the copy, then replaces the old
+ entry with the newly updated entry.  This sequence of actions, allowing
+ concurrent reads while doing a copy to perform an update, is what gives
+-RCU ("read-copy update") its name.  The RCU code is as follows:
++RCU ("read-copy update") its name.  The RCU code is as follows::
  
--	See the checklist.txt file in this directory.
-+  See the checklist.txt file in this directory.
+ 	static inline int audit_upd_rule(struct audit_rule *rule,
+ 					 struct list_head *list,
+@@ -216,8 +218,8 @@ RCU ("read-copy update") its name.  The RCU code is as follows:
+ Again, this assumes that the caller holds audit_netlink_sem.  Normally,
+ the reader-writer lock would become a spinlock in this sort of code.
  
--o	Why the name "RCU"?
-+- Why the name "RCU"?
+-
+ Example 3: Eliminating Stale Data
++---------------------------------
  
--	"RCU" stands for "read-copy update".  The file listRCU.txt has
--	more information on where this name came from, search for
--	"read-copy update" to find it.
-+  "RCU" stands for "read-copy update".  The file Documentation/RCU/listRCU.rst
-+  has more information on where this name came from, search for
-+  "read-copy update" to find it.
+ The auditing examples above tolerate stale data, as do most algorithms
+ that are tracking external state.  Because there is a delay from the
+@@ -231,13 +233,16 @@ per-entry spinlock, and, if the "deleted" flag is set, pretends that the
+ entry does not exist.  For this to be helpful, the search function must
+ return holding the per-entry spinlock, as ipc_lock() does in fact do.
  
--o	I hear that RCU is patented?  What is with that?
-+- I hear that RCU is patented?  What is with that?
+-Quick Quiz:  Why does the search function need to return holding the
+-	per-entry lock for this deleted-flag technique to be helpful?
++Quick Quiz:
++	Why does the search function need to return holding the per-entry lock for
++	this deleted-flag technique to be helpful?
++
++:ref:`Answer to Quick Quiz <answer_quick_quiz_list>`
  
--	Yes, it is.  There are several known patents related to RCU,
--	search for the string "Patent" in RTFP.txt to find them.
--	Of these, one was allowed to lapse by the assignee, and the
--	others have been contributed to the Linux kernel under GPL.
--	There are now also LGPL implementations of user-level RCU
--	available (http://liburcu.org/).
-+  Yes, it is.  There are several known patents related to RCU,
-+  search for the string "Patent" in RTFP.txt to find them.
-+  Of these, one was allowed to lapse by the assignee, and the
-+  others have been contributed to the Linux kernel under GPL.
-+  There are now also LGPL implementations of user-level RCU
-+  available (http://liburcu.org/).
+ If the system-call audit module were to ever need to reject stale data,
+ one way to accomplish this would be to add a "deleted" flag and a "lock"
+ spinlock to the audit_entry structure, and modify audit_filter_task()
+-as follows:
++as follows::
  
--o	I hear that RCU needs work in order to support realtime kernels?
-+- I hear that RCU needs work in order to support realtime kernels?
+ 	static enum audit_state audit_filter_task(struct task_struct *tsk)
+ 	{
+@@ -268,7 +273,7 @@ audit_upd_rule() would need additional memory barriers to ensure
+ that the list_add_rcu() was really executed before the list_del_rcu().
  
--	Realtime-friendly RCU can be enabled via the CONFIG_PREEMPT_RCU
--	kernel configuration parameter.
-+  Realtime-friendly RCU can be enabled via the CONFIG_PREEMPT_RCU
-+  kernel configuration parameter.
+ The audit_del_rule() function would need to set the "deleted"
+-flag under the spinlock as follows:
++flag under the spinlock as follows::
  
--o	Where can I find more information on RCU?
-+- Where can I find more information on RCU?
+ 	static inline int audit_del_rule(struct audit_rule *rule,
+ 					 struct list_head *list)
+@@ -290,8 +295,8 @@ flag under the spinlock as follows:
+ 		return -EFAULT;		/* No matching rule */
+ 	}
  
--	See the RTFP.txt file in this directory.
--	Or point your browser at http://www.rdrop.com/users/paulmck/RCU/.
-+  See the RTFP.txt file in this directory.
-+  Or point your browser at (http://www.rdrop.com/users/paulmck/RCU/).
+-
+ Summary
++-------
+ 
+ Read-mostly list-based data structures that can tolerate stale data are
+ the most amenable to use of RCU.  The simplest case is where entries are
+@@ -302,8 +307,9 @@ If stale data cannot be tolerated, then a "deleted" flag may be used
+ in conjunction with a per-entry spinlock in order to allow the search
+ function to reject newly deleted data.
+ 
++.. _answer_quick_quiz_list:
+ 
+-Answer to Quick Quiz
++Answer to Quick Quiz:
+ 	Why does the search function need to return holding the per-entry
+ 	lock for this deleted-flag technique to be helpful?
+ 
 -- 
 2.22.0
 
