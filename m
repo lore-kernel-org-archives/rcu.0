@@ -8,53 +8,53 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3548C48BD6
-	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAB1C48BD3
+	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A1450208E3
-	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05AB8208E3
+	for <rcu@archiver.kernel.org>; Wed, 26 Jun 2019 19:12:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgTJ557x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jl9McW+g"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbfFZTMz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1726320AbfFZTMz (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 26 Jun 2019 15:12:55 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41466 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbfFZTMz (ORCPT <rfc822;rcu@vger.kernel.org>);
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39844 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726223AbfFZTMz (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 26 Jun 2019 15:12:55 -0400
-Received: by mail-oi1-f196.google.com with SMTP id g7so2774862oia.8;
-        Wed, 26 Jun 2019 12:12:54 -0700 (PDT)
+Received: by mail-oi1-f194.google.com with SMTP id m202so2794812oig.6;
+        Wed, 26 Jun 2019 12:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8LsqGKVqHsA3QFbhiUqQaAgq2yHXmXdpVbDSUB0uWiw=;
-        b=RgTJ557xIEHyzSp7M9JOMW2zSOaG5D+m+56IggCMjkzATOMtrwis3aZvRGpdX7QRUA
-         sIhPdQCpOJ6mT2grn6dXXHdzDeWFYvTI6JSJ1y0A8/4BgMONebl7jTiNMKZQnrNMyrpF
-         5WJyYJ8JJYqbE6/GWCUbXeTqZEbagQOHfVxDfC2dmRBqZmvx+4PKrCQyyU3gzMG+qFUA
-         CYmG9aJjlmM52juOmT+ac+3IuMlrW6OACJ/jkDgKCbqLvbI05fz4Ob+5GnnobbtyQc+v
-         ziiZ2UbOanPiBy6xW0eUgcFu2Dh8Fmmq8IDb/sTuwXF1PqZhGvGGZ3ylblx1fEBWP8Lf
-         RJUg==
+        bh=HfGl7rnx2VtiN/Akv3IMVbLxZWEXAljsIINNTGpUd6E=;
+        b=jl9McW+gD+Xjw9rPobYEAO8x98Cyu0pUIzt/bD3vkobvtlRnotgJCJz4v0Cez4L+z/
+         HgoG8jFUOy6s3VcUmXA2+BzWSr+F5lnHG17u2mFtOhFFqU6vDMrk6aLLjxTGf3R1tAw4
+         ZJE4SqB0wuB9HlcVATD0feWDyWQ1VrZXmxUwVl9zUxl5LB2xd12iYwtSWojp2YJf0tel
+         CiSha9pkQlAFJDAeFXrgeWFZzTzim0qvjBPiSgthDv2joDaD0pcFqDE13oqyoSSdFltD
+         5C8sVhiJJJy0ggdUeFSZtfCs1Rd/BwicNX8ZFXH0JbDSSms0VkqIUQ1hch20PMREm7dl
+         Yyow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8LsqGKVqHsA3QFbhiUqQaAgq2yHXmXdpVbDSUB0uWiw=;
-        b=tcJGN924JJAdKuQ/BnCQL/vwbzIu48JxtgUjTcv3mIdoFpOVM5oXdaAd6gMGwdsu+x
-         rDrMCYW5UrUHea564q9Ti7Hnc7IY2lVYFH71ctfj/H9zYfJoutax4H1WwrDKJDUfW+Yn
-         rnuutTiWeZZXA+RDozu7OwQCUwRzdEaL+57MSZKZ37nF/ltTWdxJsnQpbTEKFY/XwuNr
-         UVXnvEPoubvpaUczTWnwCjYMzaO/XIho0d9MTPnU1VWJ9gXNilDGQTtPmYWGkh3K4SDo
-         UDv3BcE6Ku7ZP4W0bC3eJjngO90Qhz5ii6eR5g2bu3BuqHdq0sUo+DHOUykRKkU+n0Sb
-         PmSw==
-X-Gm-Message-State: APjAAAXYea1LNTYTiyyUnE8C4U8CrPh6ZBmycMlJXhjv+wAERoEGl0+w
-        JhIQfdVIMYr1n+3fBx48G1A=
-X-Google-Smtp-Source: APXvYqxzVmRDPf7PuxkVsrEm0tlHhmnxwD0gzLBo2/tycd+tIpcKxIptrhtGl9bXu1f0FG2LVMtvIw==
-X-Received: by 2002:aca:d40f:: with SMTP id l15mr382417oig.61.1561576373636;
-        Wed, 26 Jun 2019 12:12:53 -0700 (PDT)
+        bh=HfGl7rnx2VtiN/Akv3IMVbLxZWEXAljsIINNTGpUd6E=;
+        b=mH4RVPseONBrZdv86cLX12swbTZ/dq4Rkg4QoKT2TWRFI4tH7QH/PRPa1GCX1h1Kx6
+         cPsuQocBzlyxyt9g8mf2W3lB57GG++Lwji6aVazrKp9UhyPkqBA7Fl4hRyl1ZmhtourY
+         cxkNtG++mG/HRsp+2p2CWSQtBUnVCE/Gq+5izPiMggZ2xs9dS/avKHG1nCk2LNIxRI+K
+         eoMd9jTJnlg8sCxw7nYiY/lKUth+PChaq6jqTv4Oi0dFImmGWaR1vwFrXjfNxLaCQuHq
+         8hG+huIC7kORivjvyHnk7+AlW67T860LFeHODBWTjYhNuWB/reihvyTDuEMVPGwnb54k
+         5VhQ==
+X-Gm-Message-State: APjAAAXzJlYyful8WonGfigGUD/aY6WnTA8bdckrh9/rkn3UI1W6MFyV
+        FKA8syiEL6Bb9t1qIBhKWkM=
+X-Google-Smtp-Source: APXvYqzpNRFKFM/eTrTNRyRxj7z8foMAIm/sh7RNDbNBKvHKJzGpsVkrRh0XgHiUKUvHqewyKBAo7A==
+X-Received: by 2002:aca:4083:: with SMTP id n125mr398169oia.106.1561576374562;
+        Wed, 26 Jun 2019 12:12:54 -0700 (PDT)
 Received: from rYz3n.attlocal.net ([2600:1700:210:3790::48])
-        by smtp.googlemail.com with ESMTPSA id e16sm7886679oih.9.2019.06.26.12.12.52
+        by smtp.googlemail.com with ESMTPSA id e16sm7886679oih.9.2019.06.26.12.12.53
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 12:12:53 -0700 (PDT)
+        Wed, 26 Jun 2019 12:12:54 -0700 (PDT)
 From:   Jiunn Chang <c0d1n61at3@gmail.com>
 To:     skhan@linuxfoundation.org
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
@@ -62,9 +62,9 @@ Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, corbet@lwn.net
-Subject: [Linux-kernel-mentees][PATCH v4 2/5] Documentation: RCU: Convert RCU linked list to reST
-Date:   Wed, 26 Jun 2019 14:12:46 -0500
-Message-Id: <20190626191249.21135-3-c0d1n61at3@gmail.com>
+Subject: [Linux-kernel-mentees][PATCH v4 3/5] Documentation: RCU: Convert RCU UP systems to reST
+Date:   Wed, 26 Jun 2019 14:12:47 -0500
+Message-Id: <20190626191249.21135-4-c0d1n61at3@gmail.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190625062627.26378-1-c0d1n61at3@gmail.com>
 References: <20190625062627.26378-1-c0d1n61at3@gmail.com>
@@ -75,157 +75,113 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU linked list reST markup.
+RCU UP systems reST markup.
 
 Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
 ---
- Documentation/RCU/listRCU.txt | 38 ++++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ Documentation/RCU/UP.txt | 37 +++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/RCU/listRCU.txt b/Documentation/RCU/listRCU.txt
-index adb5a3782846..7956ff33042b 100644
---- a/Documentation/RCU/listRCU.txt
-+++ b/Documentation/RCU/listRCU.txt
-@@ -1,5 +1,7 @@
--Using RCU to Protect Read-Mostly Linked Lists
-+.. _list_rcu_doc:
+diff --git a/Documentation/RCU/UP.txt b/Documentation/RCU/UP.txt
+index 53bde717017b..67715a47ae89 100644
+--- a/Documentation/RCU/UP.txt
++++ b/Documentation/RCU/UP.txt
+@@ -1,17 +1,19 @@
+-RCU on Uniprocessor Systems
++.. _up_doc:
  
-+Using RCU to Protect Read-Mostly Linked Lists
-+=============================================
++RCU on Uniprocessor Systems
++===========================
  
- One of the best applications of RCU is to protect read-mostly linked lists
- ("struct list_head" in list.h).  One big advantage of this approach
-@@ -7,8 +9,8 @@ is that all of the required memory barriers are included for you in
- the list macros.  This document describes several applications of RCU,
- with the best fits first.
- 
--
- Example 1: Read-Side Action Taken Outside of Lock, No In-Place Updates
-+----------------------------------------------------------------------
- 
- The best applications are cases where, if reader-writer locking were
- used, the read-side lock would be dropped before taking any action
-@@ -24,7 +26,7 @@ added or deleted, rather than being modified in place.
- 
- A straightforward example of this use of RCU may be found in the
- system-call auditing support.  For example, a reader-writer locked
--implementation of audit_filter_task() might be as follows:
-+implementation of audit_filter_task() might be as follows::
- 
- 	static enum audit_state audit_filter_task(struct task_struct *tsk)
- 	{
-@@ -48,7 +50,7 @@ the corresponding value is returned.  By the time that this value is acted
- on, the list may well have been modified.  This makes sense, since if
- you are turning auditing off, it is OK to audit a few extra system calls.
- 
--This means that RCU can be easily applied to the read side, as follows:
-+This means that RCU can be easily applied to the read side, as follows::
- 
- 	static enum audit_state audit_filter_task(struct task_struct *tsk)
- 	{
-@@ -73,7 +75,7 @@ become list_for_each_entry_rcu().  The _rcu() list-traversal primitives
- insert the read-side memory barriers that are required on DEC Alpha CPUs.
- 
- The changes to the update side are also straightforward.  A reader-writer
--lock might be used as follows for deletion and insertion:
-+lock might be used as follows for deletion and insertion::
- 
- 	static inline int audit_del_rule(struct audit_rule *rule,
- 					 struct list_head *list)
-@@ -106,7 +108,7 @@ lock might be used as follows for deletion and insertion:
- 		return 0;
- 	}
- 
--Following are the RCU equivalents for these two functions:
-+Following are the RCU equivalents for these two functions::
- 
- 	static inline int audit_del_rule(struct audit_rule *rule,
- 					 struct list_head *list)
-@@ -154,13 +156,13 @@ otherwise cause concurrent readers to fail spectacularly.
- So, when readers can tolerate stale data and when entries are either added
- or deleted, without in-place modification, it is very easy to use RCU!
+ A common misconception is that, on UP systems, the call_rcu() primitive
+ may immediately invoke its function.  The basis of this misconception
+ is that since there is only one CPU, it should not be necessary to
+ wait for anything else to get done, since there are no other CPUs for
+-anything else to be happening on.  Although this approach will -sort- -of-
++anything else to be happening on.  Although this approach will *sort of*
+ work a surprising amount of the time, it is a very bad idea in general.
+ This document presents three examples that demonstrate exactly how bad
+ an idea this is.
  
 -
- Example 2: Handling In-Place Updates
-+------------------------------------
+ Example 1: softirq Suicide
++--------------------------
  
- The system-call auditing code does not update auditing rules in place.
- However, if it did, reader-writer-locked code to do so might look as
- follows (presumably, the field_count is only permitted to decrease,
--otherwise, the added fields would need to be filled in):
-+otherwise, the added fields would need to be filled in)::
- 
- 	static inline int audit_upd_rule(struct audit_rule *rule,
- 					 struct list_head *list,
-@@ -187,7 +189,7 @@ otherwise, the added fields would need to be filled in):
- The RCU version creates a copy, updates the copy, then replaces the old
- entry with the newly updated entry.  This sequence of actions, allowing
- concurrent reads while doing a copy to perform an update, is what gives
--RCU ("read-copy update") its name.  The RCU code is as follows:
-+RCU ("read-copy update") its name.  The RCU code is as follows::
- 
- 	static inline int audit_upd_rule(struct audit_rule *rule,
- 					 struct list_head *list,
-@@ -216,8 +218,8 @@ RCU ("read-copy update") its name.  The RCU code is as follows:
- Again, this assumes that the caller holds audit_netlink_sem.  Normally,
- the reader-writer lock would become a spinlock in this sort of code.
+ Suppose that an RCU-based algorithm scans a linked list containing
+ elements A, B, and C in process context, and can delete elements from
+@@ -28,8 +30,8 @@ your kernel.
+ This same problem can occur if call_rcu() is invoked from a hardware
+ interrupt handler.
  
 -
- Example 3: Eliminating Stale Data
+ Example 2: Function-Call Fatality
 +---------------------------------
  
- The auditing examples above tolerate stale data, as do most algorithms
- that are tracking external state.  Because there is a delay from the
-@@ -231,13 +233,16 @@ per-entry spinlock, and, if the "deleted" flag is set, pretends that the
- entry does not exist.  For this to be helpful, the search function must
- return holding the per-entry spinlock, as ipc_lock() does in fact do.
+ Of course, one could avert the suicide described in the preceding example
+ by having call_rcu() directly invoke its arguments only if it was called
+@@ -46,11 +48,13 @@ its arguments would cause it to fail to make the fundamental guarantee
+ underlying RCU, namely that call_rcu() defers invoking its arguments until
+ all RCU read-side critical sections currently executing have completed.
  
--Quick Quiz:  Why does the search function need to return holding the
--	per-entry lock for this deleted-flag technique to be helpful?
-+Quick Quiz:
-+	Why does the search function need to return holding the per-entry lock for
-+	this deleted-flag technique to be helpful?
-+
-+:ref:`Answer to Quick Quiz <answer_quick_quiz_list>`
+-Quick Quiz #1: why is it -not- legal to invoke synchronize_rcu() in
+-	this case?
++Quick Quiz #1:
++	Why is it *not* legal to invoke synchronize_rcu() in this case?
  
- If the system-call audit module were to ever need to reject stale data,
- one way to accomplish this would be to add a "deleted" flag and a "lock"
- spinlock to the audit_entry structure, and modify audit_filter_task()
--as follows:
-+as follows::
++:ref:`Answers to Quick Quiz <answer_quick_quiz_up>`
  
- 	static enum audit_state audit_filter_task(struct task_struct *tsk)
- 	{
-@@ -268,7 +273,7 @@ audit_upd_rule() would need additional memory barriers to ensure
- that the list_add_rcu() was really executed before the list_del_rcu().
+ Example 3: Death by Deadlock
++----------------------------
  
- The audit_del_rule() function would need to set the "deleted"
--flag under the spinlock as follows:
-+flag under the spinlock as follows::
+ Suppose that call_rcu() is invoked while holding a lock, and that the
+ callback function must acquire this same lock.  In this case, if
+@@ -76,25 +80,30 @@ there are cases where this can be quite ugly:
+ If call_rcu() directly invokes the callback, painful locking restrictions
+ or API changes would be required.
  
- 	static inline int audit_del_rule(struct audit_rule *rule,
- 					 struct list_head *list)
-@@ -290,8 +295,8 @@ flag under the spinlock as follows:
- 		return -EFAULT;		/* No matching rule */
- 	}
+-Quick Quiz #2: What locking restriction must RCU callbacks respect?
++Quick Quiz #2:
++	What locking restriction must RCU callbacks respect?
  
--
++:ref:`Answers to Quick Quiz <answer_quick_quiz_up>`
+ 
  Summary
 +-------
  
- Read-mostly list-based data structures that can tolerate stale data are
- the most amenable to use of RCU.  The simplest case is where entries are
-@@ -302,8 +307,9 @@ If stale data cannot be tolerated, then a "deleted" flag may be used
- in conjunction with a per-entry spinlock in order to allow the search
- function to reject newly deleted data.
+ Permitting call_rcu() to immediately invoke its arguments breaks RCU,
+ even on a UP system.  So do not do it!  Even on a UP system, the RCU
+-infrastructure -must- respect grace periods, and -must- invoke callbacks
++infrastructure *must* respect grace periods, and *must* invoke callbacks
+ from a known environment in which no locks are held.
  
-+.. _answer_quick_quiz_list:
+-Note that it -is- safe for synchronize_rcu() to return immediately on
+-UP systems, including !PREEMPT SMP builds running on UP systems.
++Note that it *is* safe for synchronize_rcu() to return immediately on
++UP systems, including PREEMPT SMP builds running on UP systems.
  
--Answer to Quick Quiz
-+Answer to Quick Quiz:
- 	Why does the search function need to return holding the per-entry
- 	lock for this deleted-flag technique to be helpful?
+-Quick Quiz #3: Why can't synchronize_rcu() return immediately on
+-	UP systems running preemptable RCU?
++Quick Quiz #3:
++	Why can't synchronize_rcu() return immediately on UP systems running
++	preemptable RCU?
  
++.. _answer_quick_quiz_up:
+ 
+ Answer to Quick Quiz #1:
+-	Why is it -not- legal to invoke synchronize_rcu() in this case?
++	Why is it *not* legal to invoke synchronize_rcu() in this case?
+ 
+ 	Because the calling function is scanning an RCU-protected linked
+ 	list, and is therefore within an RCU read-side critical section.
+@@ -119,7 +128,7 @@ Answer to Quick Quiz #2:
+ 
+ 	This restriction might seem gratuitous, since very few RCU
+ 	callbacks acquire locks directly.  However, a great many RCU
+-	callbacks do acquire locks -indirectly-, for example, via
++	callbacks do acquire locks *indirectly*, for example, via
+ 	the kfree() primitive.
+ 
+ Answer to Quick Quiz #3:
 -- 
 2.22.0
 
