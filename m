@@ -2,201 +2,112 @@ Return-Path: <SRS0=YNYv=U2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F13FC4646D
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 20:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 778E1C4321A
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 21:01:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4AD392075E
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 20:57:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E24C2075E
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 21:01:51 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lvwP3K3i"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbfF0U5I (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jun 2019 16:57:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8006 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726384AbfF0U5H (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 27 Jun 2019 16:57:07 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RKqjAh094165
-        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 16:57:06 -0400
-Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2td4sd1858-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 16:57:06 -0400
-Received: from localhost
-        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 27 Jun 2019 21:57:05 +0100
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 27 Jun 2019 21:57:02 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5RKv1JY50200954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Jun 2019 20:57:01 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D1C7B2064;
-        Thu, 27 Jun 2019 20:57:01 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0FC27B2067;
-        Thu, 27 Jun 2019 20:57:01 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Jun 2019 20:57:01 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 3CCA616C5D69; Thu, 27 Jun 2019 13:57:03 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 13:57:03 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH v2] rcu: Change return type of
- rcu_spawn_one_boost_kthread()
-Reply-To: paulmck@linux.ibm.com
-References: <1561619266-8850-1-git-send-email-byungchul.park@lge.com>
- <20190627134240.GB215968@google.com>
+        id S1726426AbfF0VBu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jun 2019 17:01:50 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:43258 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbfF0VBu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jun 2019 17:01:50 -0400
+Received: by mail-ot1-f68.google.com with SMTP id i8so3726836oth.10;
+        Thu, 27 Jun 2019 14:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=46fsmRV54TI9u4qvwSxfKVE3AHZxURoD917dwtDUxuM=;
+        b=lvwP3K3iw+5FF+C4mYw4gFEeOjHmRThblBmhHO/VELWQQvqCGTfD4rQdLwv8dKEVdg
+         W6LXzT2aqC8tsrx9Yyd4mV824j3zik4+R7plhAeYd6EICVKCk5cBUeZKPfg6xgOE98kp
+         hMohMvZhSwq0M4kQiEpyN/RQyj9G9v4cFQi5WsGJJIjU/HnZT6iE+xbYRzh0RqL/g/wp
+         D4Bh/+wMh4UsN69yc/2aKoJg58TNTm0K9IlDJTzOXSIPP1lm1q3c74pJNbJuwLEjoj4m
+         VmEFxspsTO41zNkZk43bQvFnH0iVJvZWliz435qG3frj/MnZs394VaV9miBP3YMV2uuB
+         TJKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=46fsmRV54TI9u4qvwSxfKVE3AHZxURoD917dwtDUxuM=;
+        b=OfM/ncHbpI0KK+lDOgej+xsW63796uad8ywkRS+Xecjm4bTnqG3XkWvpCeg2mHU45s
+         z8sUr00r04VVJJ1IoybesWXTVwL5MPry9gq+h1vW4faBS7yPraShNhrCaSGR9hhhj9+r
+         K5hCDLB7uavyxO+c8OH6ihyUplUEhZ9zING3EqaGHAHVQaMJ4wwdyKV77kfErUhEke/a
+         UQEO0iOom75wCJt0+IKbs1Ane5Cmyh15GWhHJkapA32xtAibFEeAXhGjWWTIAX0FOQDd
+         AH5oMK0Q7xSSjdrWZFLFZ51V88+XA0gBn6dAeFRRmiokghPaR+WUGsPaOZDy475jk0eo
+         x2zg==
+X-Gm-Message-State: APjAAAXJdJCSBssg1HtFJu+woS2ekueHgnnv9CpBnB6sKHlbo69Fr5ea
+        jYjArxixtiJb55iOED5NvnM=
+X-Google-Smtp-Source: APXvYqxoOvmkT354FS4zQ8PRDBJ2dMz7T6UzEens2gmdol9ZIB+5jtPYW8BBEy9FnlGLTNy5FtkkFQ==
+X-Received: by 2002:a9d:6a92:: with SMTP id l18mr5033616otq.294.1561669309835;
+        Thu, 27 Jun 2019 14:01:49 -0700 (PDT)
+Received: from rYz3n.attlocal.net ([2600:1700:210:3790::48])
+        by smtp.googlemail.com with ESMTPSA id c64sm86066otb.79.2019.06.27.14.01.48
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 27 Jun 2019 14:01:49 -0700 (PDT)
+From:   Jiunn Chang <c0d1n61at3@gmail.com>
+To:     skhan@linuxfoundation.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees][PATCH] doc: RCU callback locks need only _bh, not necessarily _irq
+Date:   Thu, 27 Jun 2019 16:01:47 -0500
+Message-Id: <20190627210147.19510-1-c0d1n61at3@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190627134240.GB215968@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19062720-0052-0000-0000-000003D716BA
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011343; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01224163; UDB=6.00644283; IPR=6.01005351;
- MB=3.00027495; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-27 20:57:04
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19062720-0053-0000-0000-0000617BFAED
-Message-Id: <20190627205703.GF26519@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906270240
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 09:42:40AM -0400, Joel Fernandes wrote:
-> On Thu, Jun 27, 2019 at 04:07:46PM +0900, Byungchul Park wrote:
-> > Hello,
-> > 
-> > I tested if the WARN_ON_ONCE() is fired with my box and it was ok.
-> 
-> Looks pretty safe to me and nice clean up!
-> 
-> Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+The UP.rst file calls for locks acquired within RCU callback functions
+to use _irq variants (spin_lock_irqsave() or similar), which does work,
+but can be overkill.  This commit therefore instead calls for _bh variants
+(spin_lock_bh() or similar), while noting that _irq does work.
 
-Agreed, but I still cannot find where this applies.  I did try rcu/next,
-which is currently here:
+Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
+---
+ Documentation/RCU/UP.rst | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-commit b989ff070574ad8b8621d866de0a8e9a65d42c80 (rcu/rcu/next, rcu/next)
-Merge: 4289ee7d5a83 11ca7a9d541d
-Author: Paul E. McKenney <paulmck@linux.ibm.com>
-Date:   Mon Jun 24 09:12:39 2019 -0700
-
-    Merge LKMM and RCU commits
-
-Help?
-
-							Thanx, Paul
-
->  - Joel
-> 
-> > 
-> > Thanks,
-> > Byungchul
-> > 
-> > Changes from v1
-> > -. WARN_ON_ONCE() on failing to create rcu_boost_kthread.
-> > -. Changed title and commit message a bit.
-> > 
-> > ---8<---
-> > From 7100fcf82202f063f70f45def208ea5198412f5a Mon Sep 17 00:00:00 2001
-> > From: Byungchul Park <byungchul.park@lge.com>
-> > Date: Thu, 27 Jun 2019 15:58:10 +0900
-> > Subject: [PATCH v2] rcu: Change return type of rcu_spawn_one_boost_kthread()
-> > 
-> > The return value of rcu_spawn_one_boost_kthread() is not used any
-> > longer. Change return type of that function from int to void.
-> > 
-> > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> > ---
-> >  kernel/rcu/tree_plugin.h | 17 ++++++++---------
-> >  1 file changed, 8 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 1102765..3c8444e 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -1131,7 +1131,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-> >   * already exist.  We only create this kthread for preemptible RCU.
-> >   * Returns zero if all is well, a negated errno otherwise.
-> >   */
-> > -static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > +static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> >  {
-> >  	int rnp_index = rnp - rcu_get_root();
-> >  	unsigned long flags;
-> > @@ -1139,25 +1139,24 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> >  	struct task_struct *t;
-> >  
-> >  	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-> > -		return 0;
-> > +		return;
-> >  
-> >  	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-> > -		return 0;
-> > +		return;
-> >  
-> >  	rcu_state.boost = 1;
-> >  	if (rnp->boost_kthread_task != NULL)
-> > -		return 0;
-> > +		return;
-> >  	t = kthread_create(rcu_boost_kthread, (void *)rnp,
-> >  			   "rcub/%d", rnp_index);
-> > -	if (IS_ERR(t))
-> > -		return PTR_ERR(t);
-> > +	if (WARN_ON_ONCE(IS_ERR(t)))
-> > +		return;
-> >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> >  	rnp->boost_kthread_task = t;
-> >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  	sp.sched_priority = kthread_prio;
-> >  	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-> >  	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
-> > -	return 0;
-> >  }
-> >  
-> >  static void rcu_cpu_kthread_setup(unsigned int cpu)
-> > @@ -1265,7 +1264,7 @@ static void __init rcu_spawn_boost_kthreads(void)
-> >  	if (WARN_ONCE(smpboot_register_percpu_thread(&rcu_cpu_thread_spec), "%s: Could not start rcub kthread, OOM is now expected behavior\n", __func__))
-> >  		return;
-> >  	rcu_for_each_leaf_node(rnp)
-> > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > +		rcu_spawn_one_boost_kthread(rnp);
-> >  }
-> >  
-> >  static void rcu_prepare_kthreads(int cpu)
-> > @@ -1275,7 +1274,7 @@ static void rcu_prepare_kthreads(int cpu)
-> >  
-> >  	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
-> >  	if (rcu_scheduler_fully_active)
-> > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > +		rcu_spawn_one_boost_kthread(rnp);
-> >  }
-> >  
-> >  #else /* #ifdef CONFIG_RCU_BOOST */
-> > -- 
-> > 1.9.1
-> > 
+diff --git a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
+index 67715a47ae89..e26dda27430c 100644
+--- a/Documentation/RCU/UP.rst
++++ b/Documentation/RCU/UP.rst
+@@ -113,12 +113,13 @@ Answer to Quick Quiz #1:
+ Answer to Quick Quiz #2:
+ 	What locking restriction must RCU callbacks respect?
+ 
+-	Any lock that is acquired within an RCU callback must be
+-	acquired elsewhere using an _irq variant of the spinlock
+-	primitive.  For example, if "mylock" is acquired by an
+-	RCU callback, then a process-context acquisition of this
+-	lock must use something like spin_lock_irqsave() to
+-	acquire the lock.
++	Any lock that is acquired within an RCU callback must be acquired
++	elsewhere using an _bh variant of the spinlock primitive.
++	For example, if "mylock" is acquired by an RCU callback, then
++	a process-context acquisition of this lock must use something
++	like spin_lock_bh() to acquire the lock.  Please note that
++	it is also OK to use _irq variants of spinlocks, for example,
++	spin_lock_irqsave().
+ 
+ 	If the process-context code were to simply use spin_lock(),
+ 	then, since RCU callbacks can be invoked from softirq context,
+-- 
+2.22.0
 
