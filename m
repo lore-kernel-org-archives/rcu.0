@@ -2,58 +2,61 @@ Return-Path: <SRS0=YNYv=U2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_MUTT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE1DCC48BE4
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:27:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 556E0C48BD7
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:31:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ACFB8205F4
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:27:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NxVM7YBW"
+	by mail.kernel.org (Postfix) with ESMTP id 32791205F4
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:31:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbfF0S10 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jun 2019 14:27:26 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43050 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbfF0S10 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jun 2019 14:27:26 -0400
-Received: by mail-pf1-f194.google.com with SMTP id i189so1634634pfg.10
-        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 11:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/tPbgIhiysm/d1Ywl3wGAgxq8Xdcczm220C0nQC/hxg=;
-        b=NxVM7YBW6DUZF3CRwC4AgQoieWxrwha0CvcCn86d+8q8TVHlk4Y6Iztj3J90a+ohcU
-         Mk/79AGiO/wkUaln5fK8DfsUi8axlzA9IWjfIz29/f/CWCZub3NM34wVtwvSPWydnuzM
-         1HU1nMNufa35eUXgSl9GOOeY6ZIx8D5+ApZmk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/tPbgIhiysm/d1Ywl3wGAgxq8Xdcczm220C0nQC/hxg=;
-        b=rxZMMNknTCS2xDji5Ie7yyJk8cJhTrGvPz7arYNtUsHUjGPx47J/ewecYsTIv5h/mx
-         RhFRUq8vcI0lO3kpQ1VGhAdkohbkRnL7gig22WiJ+MAVrt415JiUBuz7uQpav0fw3B6a
-         z/n57+yyHnY/ANI2jkpOnNAdQfegmqkF+BMr191aGySK82FwqSaF9U/uvBW++eHZJal5
-         jwPyjHtwjtyW8mWCEpPGG5kEtljS1xHsyoiKtyirW0IVY4HIBp9qJ/liCeEc/7/wViPo
-         NU07nNUrJn+egKqO4abfoYmiau0YIFTI2Y4yaEGQhUH9IV2UGVvqGNz93I6Gz53gJ710
-         rQPQ==
-X-Gm-Message-State: APjAAAWPMpfTlb45b4HyMeu1C2xUlbyDcm8Ytg/2rMNbLpXhxNGeIMnw
-        ujVubYF22owY33k6GxJyTWtngQ==
-X-Google-Smtp-Source: APXvYqySr10RSRrB3OQ2M3OBBj/rzOvKDpBsP+9GEBLQ5cfdQbv1h4UQQ3oHeAT2JTu1KGGQcxircw==
-X-Received: by 2002:a65:510c:: with SMTP id f12mr4905772pgq.92.1561660045043;
-        Thu, 27 Jun 2019 11:27:25 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id e16sm4770647pga.11.2019.06.27.11.27.23
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 11:27:24 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 14:27:22 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1726513AbfF0SbR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jun 2019 14:31:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8918 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726482AbfF0SbQ (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 27 Jun 2019 14:31:16 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RINg8w094655;
+        Thu, 27 Jun 2019 14:30:24 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2td0frfxak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jun 2019 14:30:23 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5RIPkTR110005;
+        Thu, 27 Jun 2019 14:30:23 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2td0frfx9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jun 2019 14:30:23 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x5RIUFtn024033;
+        Thu, 27 Jun 2019 18:30:22 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma04dal.us.ibm.com with ESMTP id 2t9by7871q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jun 2019 18:30:22 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5RIUL8E54526270
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jun 2019 18:30:21 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35F55B205F;
+        Thu, 27 Jun 2019 18:30:21 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0FEEDB2066;
+        Thu, 27 Jun 2019 18:30:21 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Jun 2019 18:30:20 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 1522116C2ACE; Thu, 27 Jun 2019 11:30:23 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 11:30:23 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
@@ -64,7 +67,8 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
 Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
-Message-ID: <20190627182722.GA216610@google.com>
+Message-ID: <20190627183022.GZ26519@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
 References: <20190626135447.y24mvfuid5fifwjc@linutronix.de>
  <20190626162558.GY26519@linux.ibm.com>
  <20190627142436.GD215968@google.com>
@@ -79,7 +83,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190627181112.GY26519@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_12:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906270209
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -118,21 +130,19 @@ On Thu, Jun 27, 2019 at 11:11:12AM -0700, Paul E. McKenney wrote:
 > 
 > $ tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --duration 5 --trust-make --configs "TREE03" --bootargs "threadirqs"
 
-I built x86_64_defconfig with CONFIG_PREEMPT enabled, then I ran it with
-following boot params:
-rcutorture.shutdown_secs=60 rcutorture.n_barrier_cbs=4 rcutree.kthread_prio=2
+Ah, but I was running -rcu.  TREE03 fails at 38 seconds for me on v5.2.
 
-and also "threadirqs"
-
-This was not a TREE config, but just my simple RCU test using qemu.
-
-
-I will try this diff and let you know.
+Now to find out which -rcu commit fixed it.  Or at least made it much
+less probable, to Sebastian's point.
 
 > If it had failed, I would have tried the patch shown below.  I know that
 > Sebastian has some concerns about the bug happening anyway, but we have
 > to start somewhere!  ;-)
-> 
+
+This patch might thus be completely unnecessary.
+
+							Thanx, Paul
+
 > ------------------------------------------------------------------------
 > 
 > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
@@ -172,6 +182,7 @@ I will try this diff and let you know.
 > +				      rcu_preempt_deferred_qs_handler);
 > +			rdp->defer_qs_iw_pending = true;
 > +			irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-
-Nice to see the code here got simplified ;-)
-
+>  		}
+>  		t->rcu_read_unlock_special.b.deferred_qs = true;
+>  		local_irq_restore(flags);
+> 
