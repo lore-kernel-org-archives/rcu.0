@@ -2,60 +2,60 @@ Return-Path: <SRS0=YNYv=U2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_MUTT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0AFDC48BD7
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE1DCC48BE4
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:27:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 800872147A
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:16:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACFB8205F4
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 18:27:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BRJUs3TN"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NxVM7YBW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbfF0SQm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jun 2019 14:16:42 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:37943 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbfF0SQl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jun 2019 14:16:41 -0400
-Received: by mail-pl1-f193.google.com with SMTP id 9so949136ple.5
-        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 11:16:41 -0700 (PDT)
+        id S1726651AbfF0S10 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jun 2019 14:27:26 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43050 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbfF0S10 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jun 2019 14:27:26 -0400
+Received: by mail-pf1-f194.google.com with SMTP id i189so1634634pfg.10
+        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 11:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=BqXuPgbDW9jqhBIRJbFP1aVNCPUo6cgHt9WqrHFg/IU=;
-        b=BRJUs3TNRerJ3fL8rJInBzd8TDNO1Xt/5ZcpLmTBc9afiaB1MMX+OQsgBbhOdjqeds
-         QeHsPOoP98odXHa2NkWNL7Sny9knai7Xms2gZ5yl3IlCGZA8TcPcV6XrVJMUAUZnh3fB
-         c6EyIm0dSIf7n+Mcuvw0FKrix9o9A233jA1jI=
+        bh=/tPbgIhiysm/d1Ywl3wGAgxq8Xdcczm220C0nQC/hxg=;
+        b=NxVM7YBW6DUZF3CRwC4AgQoieWxrwha0CvcCn86d+8q8TVHlk4Y6Iztj3J90a+ohcU
+         Mk/79AGiO/wkUaln5fK8DfsUi8axlzA9IWjfIz29/f/CWCZub3NM34wVtwvSPWydnuzM
+         1HU1nMNufa35eUXgSl9GOOeY6ZIx8D5+ApZmk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BqXuPgbDW9jqhBIRJbFP1aVNCPUo6cgHt9WqrHFg/IU=;
-        b=iCgzzfxfGcR0KiC11M5cSYqjucknbtecTLvGzh5qo9Rdi8MdF+F0kN0hbeNVnJujnf
-         nD0mV1vesd2RsEzdhAOOvMnjOCMk8zZK6W8dbcRxfbINxp5tSBv3QiplcEHG+GhG78Ur
-         wLslltKStAmSCaHKdV2M8PjnTmeKJLS8EEuVrfaQV1vydX8OJcKD2HD8DIBG4U1NTQQA
-         8g2/Y5QROdIDcpHh686eXkY9SzwFLcCaRLv64ET42IicNZWJt8banpjbVEHLtYi8cwP5
-         tg2JbsQbftxX9GUn7/mFll5nTj1p17XuYqZbV0/KbLAIB55OVR5yMj9wvQaloliehAm9
-         SZVQ==
-X-Gm-Message-State: APjAAAWbL1xTu7eEZghrpbLa5leuYAf8Xu9Y/nDxGr9XAK5VfM7rKjLR
-        P37rVuScwN+NjMJ9FQwDB9ZE/A==
-X-Google-Smtp-Source: APXvYqwehXNd4wUz0H/vlo6QWlr+zz7ONrR/4ce9LJBpll0BznfhO0S14Pq5QoVelxg1Ovr2MS6ltg==
-X-Received: by 2002:a17:902:1c9:: with SMTP id b67mr6303823plb.333.1561659400991;
-        Thu, 27 Jun 2019 11:16:40 -0700 (PDT)
+        bh=/tPbgIhiysm/d1Ywl3wGAgxq8Xdcczm220C0nQC/hxg=;
+        b=rxZMMNknTCS2xDji5Ie7yyJk8cJhTrGvPz7arYNtUsHUjGPx47J/ewecYsTIv5h/mx
+         RhFRUq8vcI0lO3kpQ1VGhAdkohbkRnL7gig22WiJ+MAVrt415JiUBuz7uQpav0fw3B6a
+         z/n57+yyHnY/ANI2jkpOnNAdQfegmqkF+BMr191aGySK82FwqSaF9U/uvBW++eHZJal5
+         jwPyjHtwjtyW8mWCEpPGG5kEtljS1xHsyoiKtyirW0IVY4HIBp9qJ/liCeEc/7/wViPo
+         NU07nNUrJn+egKqO4abfoYmiau0YIFTI2Y4yaEGQhUH9IV2UGVvqGNz93I6Gz53gJ710
+         rQPQ==
+X-Gm-Message-State: APjAAAWPMpfTlb45b4HyMeu1C2xUlbyDcm8Ytg/2rMNbLpXhxNGeIMnw
+        ujVubYF22owY33k6GxJyTWtngQ==
+X-Google-Smtp-Source: APXvYqySr10RSRrB3OQ2M3OBBj/rzOvKDpBsP+9GEBLQ5cfdQbv1h4UQQ3oHeAT2JTu1KGGQcxircw==
+X-Received: by 2002:a65:510c:: with SMTP id f12mr4905772pgq.92.1561660045043;
+        Thu, 27 Jun 2019 11:27:25 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a3sm3983347pfo.49.2019.06.27.11.16.39
+        by smtp.gmail.com with ESMTPSA id e16sm4770647pga.11.2019.06.27.11.27.23
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 11:16:40 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 14:16:38 -0400
+        Thu, 27 Jun 2019 11:27:24 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 14:27:22 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
@@ -64,199 +64,114 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
 Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
-Message-ID: <20190627181638.GA209455@google.com>
+Message-ID: <20190627182722.GA216610@google.com>
 References: <20190626135447.y24mvfuid5fifwjc@linutronix.de>
  <20190626162558.GY26519@linux.ibm.com>
  <20190627142436.GD215968@google.com>
  <20190627103455.01014276@gandalf.local.home>
  <20190627153031.GA249127@google.com>
- <20190627155506.GU26519@linux.ibm.com>
- <CAEXW_YSEN_OL3ftTLN=M-W70WSuCgHJqU-R9VhS=A3uVj_AL+A@mail.gmail.com>
- <20190627173831.GW26519@linux.ibm.com>
+ <CAEXW_YT5LgdP_9SrachU4ZrhV9a7o_DM8eBfgxj=n7yRRyS-TQ@mail.gmail.com>
+ <20190627154011.vbje64x6auaknhx4@linutronix.de>
+ <CAEXW_YTvkSTqwi_jOE2Pr+uD-GC4Xv0CtBEL9YO7=LvJcM3FBQ@mail.gmail.com>
+ <CAEXW_YTmx3wFKuiLyrQO6uSPYAL179EPa6N3WO7qZahccCs-pg@mail.gmail.com>
+ <20190627181112.GY26519@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190627173831.GW26519@linux.ibm.com>
+In-Reply-To: <20190627181112.GY26519@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 10:38:31AM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 27, 2019 at 12:47:24PM -0400, Joel Fernandes wrote:
-> > On Thu, Jun 27, 2019 at 11:55 AM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+On Thu, Jun 27, 2019 at 11:11:12AM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 27, 2019 at 01:46:27PM -0400, Joel Fernandes wrote:
+> > On Thu, Jun 27, 2019 at 1:43 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 > > >
-> > > On Thu, Jun 27, 2019 at 11:30:31AM -0400, Joel Fernandes wrote:
-> > > > On Thu, Jun 27, 2019 at 10:34:55AM -0400, Steven Rostedt wrote:
-> > > > > On Thu, 27 Jun 2019 10:24:36 -0400
-> > > > > Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > On Thu, Jun 27, 2019 at 11:40 AM Sebastian Andrzej Siewior
+> > > <bigeasy@linutronix.de> wrote:
+> > > >
+> > > > On 2019-06-27 11:37:10 [-0400], Joel Fernandes wrote:
+> > > > > Sebastian it would be nice if possible to trace where the
+> > > > > t->rcu_read_unlock_special is set for this scenario of calling
+> > > > > rcu_read_unlock_special, to give a clear idea about whether it was
+> > > > > really because of an IPI. I guess we could also add additional RCU
+> > > > > debug fields to task_struct (just for debugging) to see where there
+> > > > > unlock_special is set.
 > > > > >
-> > > > > > > What am I missing here?
-> > > > > >
-> > > > > > This issue I think is
-> > > > > >
-> > > > > > (in normal process context)
-> > > > > > spin_lock_irqsave(rq_lock); // which disables both preemption and interrupt
-> > > > > >                      // but this was done in normal process context,
-> > > > > >                      // not from IRQ handler
-> > > > > > rcu_read_lock();
-> > > > > >           <---------- IPI comes in and sets exp_hint
-> > > > >
-> > > > > How would an IPI come in here with interrupts disabled?
-> > > > >
-> > > > > -- Steve
+> > > > > Is there a test to reproduce this, or do I just boot an intel x86_64
+> > > > > machine with "threadirqs" and run into it?
 > > > >
-> > > > This is true, could it be rcu_read_unlock_special() got called for some
-> > > > *other* reason other than the IPI then?
-> > > >
-> > > > Per Sebastian's stack trace of the recursive lock scenario, it is happening
-> > > > during cpu_acct_charge() which is called with the rq_lock held.
-> > > >
-> > > > The only other reasons I know off to call rcu_read_unlock_special() are if
-> > > > 1. the tick indicated that the CPU has to report a QS
-> > > > 2. an IPI in the middle of the reader section for expedited GPs
-> > > > 3. preemption in the middle of a preemptible RCU reader section
+> > > > Do you want to send me a patch or should I send you my kvm image which
+> > > > triggers the bug on boot?
 > > >
-> > > 4. Some previous reader section was IPIed or preempted, but either
-> > >    interrupts, softirqs, or preemption was disabled across the
-> > >    rcu_read_unlock() of that previous reader section.
+> > > I could reproduce this as well just booting Linus tree with threadirqs
+> > > command line and running rcutorture. In 15 seconds or so it locks
+> > > up... gdb backtrace shows the recursive lock:
 > > 
-> > Hi Paul, I did not fully understand 4. The previous RCU reader section
-> > could not have been IPI'ed or been preempted if interrupts were
-> > disabled across. Also, if softirq/preempt is disabled across the
-> > previous reader section, the previous reader could not be preempted in
-> > these case.
+> > Sorry that got badly wrapped, so I pasted it here:
+> > https://hastebin.com/ajivofomik.shell
 > 
-> Like this, courtesy of the consolidation of RCU flavors:
+> Which rcutorture scenario would that be?  TREE03 is thus far refusing
+> to fail for me when run this way:
 > 
-> 	previous_reader()
-> 	{
-> 		rcu_read_lock();
-> 		do_something(); /* Preemption happened here. */
-> 		local_irq_disable(); /* Cannot be the scheduler! */
-> 		do_something_else();
-> 		rcu_read_unlock();  /* Must defer QS, task still queued. */
-> 		do_some_other_thing();
-> 		local_irq_enable();
-> 	}
+> $ tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 8 --duration 5 --trust-make --configs "TREE03" --bootargs "threadirqs"
+
+I built x86_64_defconfig with CONFIG_PREEMPT enabled, then I ran it with
+following boot params:
+rcutorture.shutdown_secs=60 rcutorture.n_barrier_cbs=4 rcutree.kthread_prio=2
+
+and also "threadirqs"
+
+This was not a TREE config, but just my simple RCU test using qemu.
+
+
+I will try this diff and let you know.
+
+> If it had failed, I would have tried the patch shown below.  I know that
+> Sebastian has some concerns about the bug happening anyway, but we have
+> to start somewhere!  ;-)
 > 
-> 	current_reader() /* QS from previous_reader() is still deferred. */
-> 	{
-> 		local_irq_disable();  /* Might be the scheduler. */
-> 		do_whatever();
-> 		rcu_read_lock();
-> 		do_whatever_else();
-> 		rcu_read_unlock();  /* Must still defer reporting QS. */
-> 		do_whatever_comes_to_mind();
-> 		local_irq_enable();
-> 	}
+> ------------------------------------------------------------------------
 > 
-> Both instances of rcu_read_unlock() need to cause some later thing
-> to report the quiescent state, and in some cases it will do a wakeup.
-> Now, previous_reader()'s IRQ disabling cannot be due to scheduler rq/pi
-> locks due to the rule about holding them across the entire RCU reader
-> if they are held across the rcu_read_unlock().  But current_reader()'s
-> IRQ disabling might well be due to the scheduler rq/pi locks, so
-> current_reader() must be careful about doing wakeups.
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 82c925df1d92..be7bafc2c0a0 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -624,25 +624,16 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  		      (rdp->grpmask & rnp->expmask) ||
+>  		      tick_nohz_full_cpu(rdp->cpu);
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if ((exp || in_irq()) && irqs_were_disabled && use_softirq &&
+> -		    (in_irq() || !t->rcu_read_unlock_special.b.deferred_qs)) {
+> -			// Using softirq, safe to awaken, and we get
+> -			// no help from enabling irqs, unlike bh/preempt.
+> -			raise_softirq_irqoff(RCU_SOFTIRQ);
+> -		} else {
+> -			// Enabling BH or preempt does reschedule, so...
+> -			// Also if no expediting or NO_HZ_FULL, slow is OK.
+> -			set_tsk_need_resched(current);
+> -			set_preempt_need_resched();
+> -			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> -			    !rdp->defer_qs_iw_pending && exp) {
+> -				// Get scheduler to re-evaluate and call hooks.
+> -				// If !IRQ_WORK, FQS scan will eventually IPI.
+> -				init_irq_work(&rdp->defer_qs_iw,
+> -					      rcu_preempt_deferred_qs_handler);
+> -				rdp->defer_qs_iw_pending = true;
+> -				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+> -			}
+> +		set_tsk_need_resched(current);
+> +		set_preempt_need_resched();
+> +		if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> +		    !rdp->defer_qs_iw_pending && exp) {
+> +			// Get scheduler to re-evaluate and call hooks.
+> +			// If !IRQ_WORK, FQS scan will eventually IPI.
+> +			init_irq_work(&rdp->defer_qs_iw,
+> +				      rcu_preempt_deferred_qs_handler);
+> +			rdp->defer_qs_iw_pending = true;
+> +			irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
 
-Makes sense now, thanks.
+Nice to see the code here got simplified ;-)
 
-> > That leaves us with the only scenario where the previous reader was
-> > IPI'ed while softirq/preempt was disabled across it. Is that what you
-> > meant?
-> 
-> No, but that can also happen.
-> 
-> >        But in this scenario, the previous reader should have set
-> > exp_hint to false in the previous reader's rcu_read_unlock_special()
-> > invocation itself. So I would think t->rcu_read_unlock_special should
-> > be 0 during the new reader's invocation thus I did not understand how
-> > rcu_read_unlock_special can be called because of a previous reader.
-> 
-> Yes, exp_hint would unconditionally be set to false in the first
-> reader's rcu_read_unlock().  But .blocked won't be.
-
-Makes sense.
-
-> > I'll borrow some of that confused color paint if you don't mind ;-)
-> > And we should document this somewhere for future sanity preservation
-> > :-D
-> 
-> Or adjust the code and requirements to make it more sane, if feasible.
-> 
-> My current (probably wildly unreliable) guess that the conditions in
-> rcu_read_unlock_special() need adjusting.  I was assuming that in_irq()
-> implies a hardirq context, in other words that in_irq() would return
-> false from a threaded interrupt handler.  If in_irq() instead returns
-> true from within a threaded interrupt handler, then this code in
-> rcu_read_unlock_special() needs fixing:
-> 
-> 		if ((exp || in_irq()) && irqs_were_disabled && use_softirq &&
-> 		    (in_irq() || !t->rcu_read_unlock_special.b.deferred_qs)) {
-> 			// Using softirq, safe to awaken, and we get
-> 			// no help from enabling irqs, unlike bh/preempt.
-> 			raise_softirq_irqoff(RCU_SOFTIRQ);
-> 
-> The fix would be replacing the calls to in_irq() with something that
-> returns true only if called from within a hardirq context.
-> Thoughts?
-
-I am not sure if this will fix all cases though?
-
-I think the crux of the problem is doing a recursive wake up. The threaded
-IRQ probably just happens to be causing it here, it seems to me this problem
-can also occur on a non-threaded irq system (say current_reader() in your
-example executed in a scheduler path in process-context and not from an
-interrupt). Is that not possible?
-
-I think the fix should be to prevent the wake-up not based on whether we are
-in hard/soft-interrupt mode but that we are doing the rcu_read_unlock() from
-a scheduler path (if we can detect that)
-
-I lost track of this code:
- 		if ((exp || in_irq()) && irqs_were_disabled && use_softirq &&
- 		    (in_irq() || !t->rcu_read_unlock_special.b.deferred_qs)) {
-
-Was this patch posted to the list? I will blame it to try to get some
-context. It sounds like you added more conditions on when to kick the
-softirq.
-
-> Ugh.  Same question about IRQ work.  Will the current use of it by
-> rcu_read_unlock_special() cause breakage in the presence of threaded
-> interrupt handlers?
-
-/me needs to understand why the irq work stuff was added here as well. Have
-my work cut out for the day! ;-)
-
-thanks,
-
- - Joel
-
-
-> 
-> 							Thanx, Paul
-> 
-> > thanks,
-> >  - Joel
-> > 
-> > 
-> > 
-> > >
-> > > I -think- that this is what Sebastian is seeing.
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > 1. and 2. are not possible because interrupts are disabled, that's why the
-> > > > wakeup_softirq even happened.
-> > > > 3. is not possible because we are holding rq_lock in the RCU reader section.
-> > > >
-> > > > So I am at a bit of a loss how this can happen :-(
-> > > >
-> > > > Spurious call to rcu_read_unlock_special() may be when it should not have
-> > > > been called?
-> > > >
-> > > > thanks,
-> > > >
-> > > > - Joel
-> 
