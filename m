@@ -2,144 +2,113 @@ Return-Path: <SRS0=YNYv=U2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_MUTT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A4D3C48BD9
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 15:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 529BCC48BD6
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 16:27:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 58F8520B1F
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 15:56:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 309FF2133F
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 16:27:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbfF0P4A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jun 2019 11:56:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14020 "EHLO
+        id S1726445AbfF0Q1E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jun 2019 12:27:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55864 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726405AbfF0Pz7 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 27 Jun 2019 11:55:59 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RFpbSY106098;
-        Thu, 27 Jun 2019 11:55:08 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tcy4redr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jun 2019 11:55:07 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5RFruBQ112277;
-        Thu, 27 Jun 2019 11:55:07 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tcy4redpd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jun 2019 11:55:06 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x5RFneD7027772;
-        Thu, 27 Jun 2019 15:55:05 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01wdc.us.ibm.com with ESMTP id 2t9by77bub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jun 2019 15:55:05 +0000
+        by vger.kernel.org with ESMTP id S1726315AbfF0Q1E (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 27 Jun 2019 12:27:04 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RGIMap145608
+        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 12:27:03 -0400
+Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2td0krtgf1-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 12:27:02 -0400
+Received: from localhost
+        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Thu, 27 Jun 2019 17:27:02 +0100
+Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
+        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 27 Jun 2019 17:26:57 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5RFt4x749414456
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5RGQu7r36045142
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Jun 2019 15:55:04 GMT
+        Thu, 27 Jun 2019 16:26:56 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9EB08B2065;
-        Thu, 27 Jun 2019 15:55:04 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 8D1CDB206A;
+        Thu, 27 Jun 2019 16:26:56 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80B42B2064;
-        Thu, 27 Jun 2019 15:55:04 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 6FDACB205F;
+        Thu, 27 Jun 2019 16:26:56 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Jun 2019 15:55:04 +0000 (GMT)
+        Thu, 27 Jun 2019 16:26:56 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 6515716C2F90; Thu, 27 Jun 2019 08:55:06 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 08:55:06 -0700
+        id 58C6716C2BD7; Thu, 27 Jun 2019 09:26:58 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 09:26:58 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
-Message-ID: <20190627155506.GU26519@linux.ibm.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Jiunn Chang <c0d1n61at3@gmail.com>, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Subject: Re: [Linux-kernel-mentees][PATCH v5 1/5] Documentation: RCU: Convert
+ RCU basic concepts to reST
 Reply-To: paulmck@linux.ibm.com
-References: <20190626135447.y24mvfuid5fifwjc@linutronix.de>
- <20190626162558.GY26519@linux.ibm.com>
- <20190627142436.GD215968@google.com>
- <20190627103455.01014276@gandalf.local.home>
- <20190627153031.GA249127@google.com>
+References: <20190626191249.21135-1-c0d1n61at3@gmail.com>
+ <20190626200705.24501-2-c0d1n61at3@gmail.com>
+ <20190627083443.4f4918a7@lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190627153031.GA249127@google.com>
+In-Reply-To: <20190627083443.4f4918a7@lwn.net>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
+x-cbid: 19062716-0072-0000-0000-00000441C521
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011341; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01224073; UDB=6.00644229; IPR=6.01005262;
+ MB=3.00027492; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-27 16:27:01
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19062716-0073-0000-0000-00004CB1F2C5
+Message-Id: <20190627162658.GV26519@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_10:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906270181
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906270187
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 11:30:31AM -0400, Joel Fernandes wrote:
-> On Thu, Jun 27, 2019 at 10:34:55AM -0400, Steven Rostedt wrote:
-> > On Thu, 27 Jun 2019 10:24:36 -0400
-> > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > 
-> > > > What am I missing here?  
-> > > 
-> > > This issue I think is
-> > > 
-> > > (in normal process context)
-> > > spin_lock_irqsave(rq_lock); // which disables both preemption and interrupt
-> > > 			   // but this was done in normal process context,
-> > > 			   // not from IRQ handler
-> > > rcu_read_lock();
-> > >           <---------- IPI comes in and sets exp_hint
-> > 
-> > How would an IPI come in here with interrupts disabled?
-> > 
-> > -- Steve
+On Thu, Jun 27, 2019 at 08:34:43AM -0600, Jonathan Corbet wrote:
+> On Wed, 26 Jun 2019 15:07:01 -0500
+> Jiunn Chang <c0d1n61at3@gmail.com> wrote:
 > 
-> This is true, could it be rcu_read_unlock_special() got called for some
-> *other* reason other than the IPI then?
+> > RCU basic concepts reST markup.
+> > 
+> > Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Per Sebastian's stack trace of the recursive lock scenario, it is happening
-> during cpu_acct_charge() which is called with the rq_lock held. 
+> So this is a little detail but ... your signoff should be the last thing
+> in the set of tags on the patch.
 > 
-> The only other reasons I know off to call rcu_read_unlock_special() are if
-> 1. the tick indicated that the CPU has to report a QS
-> 2. an IPI in the middle of the reader section for expedited GPs
-> 3. preemption in the middle of a preemptible RCU reader section
+> This isn't worth making you do yet another revision, so I went ahead and
+> applied the patches and fixed the tag ordering on the way in.  I'll also
+> append a patch adding the new RCU stuff into the core-api manual so people
+> can actually get to it.
 
-4. Some previous reader section was IPIed or preempted, but either
-   interrupts, softirqs, or preemption was disabled across the
-   rcu_read_unlock() of that previous reader section.
+Please feel free to add my ack:
 
-I -think- that this is what Sebastian is seeing.
+Acked-by: Paul E. McKenney <paulmck@linux.ibm.com>
 
 							Thanx, Paul
 
-> 1. and 2. are not possible because interrupts are disabled, that's why the
-> wakeup_softirq even happened.
-> 3. is not possible because we are holding rq_lock in the RCU reader section.
-> 
-> So I am at a bit of a loss how this can happen :-(
-> 
-> Spurious call to rcu_read_unlock_special() may be when it should not have
-> been called?
-> 
-> thanks,
-> 
-> - Joel
