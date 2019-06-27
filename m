@@ -2,126 +2,138 @@ Return-Path: <SRS0=YNYv=U2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0531C4321A
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 22:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 987A0C46478
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 22:10:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B427D2075E
-	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 22:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1561672898;
-	bh=xuNaRVxvFrwYpNNaax5D6Dx243448WQqfhCw7Koc188=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:List-ID:From;
-	b=QmFQO8GiUWGU2+/h43K/Qm7QwjUDCqWhJnCxaonL6oHnlVswqT/+2FvnSFxBCw/64
-	 wfPbkwPsc2OGaHf8RqxTKMfDmrvKoCYQ+fuUxaIaJvu/gDFGnZmS5hxUXpMMDMFvy8
-	 dCSiODWb7dGEXYoXC4eOcce43GgmP6j10MKBF8SM=
+	by mail.kernel.org (Postfix) with ESMTP id 77F29208E3
+	for <rcu@archiver.kernel.org>; Thu, 27 Jun 2019 22:10:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbfF0WBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jun 2019 18:01:38 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:46841 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfF0WBi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jun 2019 18:01:38 -0400
-Received: by mail-io1-f68.google.com with SMTP id i10so8114597iol.13
-        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 15:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Wdf1nBH0PL7WyynZAhKLoekJmYEyf1wAOf9OL+xS3ps=;
-        b=EZHy57R286JnmS4RonvV6TgNEpBo7e4UR6VUQq5Li7wTrWYpHwlkn/4WQUkF2lQ6Id
-         Rv3dpR5L2/bLYYSOZX6qLqoRJ06fSz1sXieusMNnGTlqu43X9nUNHFZCEqWM7ABauNp4
-         G56OIJb6sANOtjquvzu+W7fjjNna3Qti3oceA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wdf1nBH0PL7WyynZAhKLoekJmYEyf1wAOf9OL+xS3ps=;
-        b=L//SPZ+8oUz0aeCoOb/sB2bKIoRECxMqtENa/ZR0lZNOJv/RpL05TuKYl8BSTS9ZR6
-         9mvmaDbE9PyZH4XiA7zldzI4qD5FQz0XBY6Ykl8e1BeY4g/ZzoKQah+ecLjL0Sddpps9
-         08R/Of9NlLt60X8q2n6s8PeV67T5MFmSMEEOhuC46reE0oT9MmPd7tpTUV8F0oSu10B9
-         P04zuebgn6hmwRJYe/5Z5100D7nOsslA5ydjHrHCEsLpj3afaKIj6LwVTbJLNQWubE7d
-         qoH+X52EIpNqvtGRQTzTfLqwNRBm04/IIGOsvbEYURbun53USdIBw44t3VZ1bJ0A4aky
-         tl7Q==
-X-Gm-Message-State: APjAAAWCIzqCu0XtV0jhcQd/ua2qx8Oe/xKGXPbsmHe9+99cR7AKQVBN
-        iPGRWbGjcAfu4D1daYqkqavDtQ==
-X-Google-Smtp-Source: APXvYqwIakKTlYV+0olJ7RCZ68AsDHHJsD4oFuVMJEN85upKVc7g8czSyY8b7jU772BU5N/q4HZWgw==
-X-Received: by 2002:a6b:7606:: with SMTP id g6mr7245403iom.288.1561672897612;
-        Thu, 27 Jun 2019 15:01:37 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p25sm319707iol.48.2019.06.27.15.01.36
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 15:01:36 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees][PATCH] doc: RCU callback locks need only
- _bh, not necessarily _irq
-To:     Jiunn Chang <c0d1n61at3@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
+        id S1726590AbfF0WKv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jun 2019 18:10:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24552 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726603AbfF0WKv (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 27 Jun 2019 18:10:51 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RM6o2M068181
+        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 18:10:49 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2td4sd3tph-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Thu, 27 Jun 2019 18:10:49 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Thu, 27 Jun 2019 23:10:48 +0100
+Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 27 Jun 2019 23:10:44 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5RMAh2010748580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jun 2019 22:10:43 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B85C2B2095;
+        Thu, 27 Jun 2019 22:10:43 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9AEF3B2094;
+        Thu, 27 Jun 2019 22:10:43 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Jun 2019 22:10:43 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id DBE6216C5D5C; Thu, 27 Jun 2019 15:10:45 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 15:10:45 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Jiunn Chang <c0d1n61at3@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "skh >> Shuah Khan" <skhan@linuxfoundation.org>
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees][PATCH] doc: RCU callback locks need only
+ _bh, not necessarily _irq
+Reply-To: paulmck@linux.ibm.com
 References: <20190627210147.19510-1-c0d1n61at3@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <bc2ce605-56ab-33aa-c94d-d7774e6ce8cd@linuxfoundation.org>
-Date:   Thu, 27 Jun 2019 16:01:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <bc2ce605-56ab-33aa-c94d-d7774e6ce8cd@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20190627210147.19510-1-c0d1n61at3@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc2ce605-56ab-33aa-c94d-d7774e6ce8cd@linuxfoundation.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19062722-0060-0000-0000-0000035662CE
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011343; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01224188; UDB=6.00644298; IPR=6.01005376;
+ MB=3.00027497; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-27 22:10:47
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19062722-0061-0000-0000-000049EE81F9
+Message-Id: <20190627221045.GH26519@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906270254
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 6/27/19 3:01 PM, Jiunn Chang wrote:
-> The UP.rst file calls for locks acquired within RCU callback functions
-> to use _irq variants (spin_lock_irqsave() or similar), which does work,
-> but can be overkill.  This commit therefore instead calls for _bh variants
-> (spin_lock_bh() or similar), while noting that _irq does work.
+On Thu, Jun 27, 2019 at 04:01:35PM -0600, Shuah Khan wrote:
+> On 6/27/19 3:01 PM, Jiunn Chang wrote:
+> >The UP.rst file calls for locks acquired within RCU callback functions
+> >to use _irq variants (spin_lock_irqsave() or similar), which does work,
+> >but can be overkill.  This commit therefore instead calls for _bh variants
+> >(spin_lock_bh() or similar), while noting that _irq does work.
+> >
+> >Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 > 
-> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> Should this by Suggested-by?
 
-Should this by Suggested-by?
+I wrote it and Jiunn converted my change to .rst, so I believe that
+this is correct as is.
 
-> Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
-> ---
->   Documentation/RCU/UP.rst | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
+							Thanx, Paul
+
+> >Signed-off-by: Jiunn Chang <c0d1n61at3@gmail.com>
+> >---
+> >  Documentation/RCU/UP.rst | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> >
+> >diff --git a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
+> >index 67715a47ae89..e26dda27430c 100644
+> >--- a/Documentation/RCU/UP.rst
+> >+++ b/Documentation/RCU/UP.rst
+> >@@ -113,12 +113,13 @@ Answer to Quick Quiz #1:
+> >  Answer to Quick Quiz #2:
+> >  	What locking restriction must RCU callbacks respect?
+> >-	Any lock that is acquired within an RCU callback must be
+> >-	acquired elsewhere using an _irq variant of the spinlock
+> >-	primitive.  For example, if "mylock" is acquired by an
+> >-	RCU callback, then a process-context acquisition of this
+> >-	lock must use something like spin_lock_irqsave() to
+> >-	acquire the lock.
+> >+	Any lock that is acquired within an RCU callback must be acquired
+> >+	elsewhere using an _bh variant of the spinlock primitive.
+> >+	For example, if "mylock" is acquired by an RCU callback, then
+> >+	a process-context acquisition of this lock must use something
+> >+	like spin_lock_bh() to acquire the lock.  Please note that
+> >+	it is also OK to use _irq variants of spinlocks, for example,
+> >+	spin_lock_irqsave().
+> >  	If the process-context code were to simply use spin_lock(),
+> >  	then, since RCU callbacks can be invoked from softirq context,
+> >
 > 
-> diff --git a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
-> index 67715a47ae89..e26dda27430c 100644
-> --- a/Documentation/RCU/UP.rst
-> +++ b/Documentation/RCU/UP.rst
-> @@ -113,12 +113,13 @@ Answer to Quick Quiz #1:
->   Answer to Quick Quiz #2:
->   	What locking restriction must RCU callbacks respect?
->   
-> -	Any lock that is acquired within an RCU callback must be
-> -	acquired elsewhere using an _irq variant of the spinlock
-> -	primitive.  For example, if "mylock" is acquired by an
-> -	RCU callback, then a process-context acquisition of this
-> -	lock must use something like spin_lock_irqsave() to
-> -	acquire the lock.
-> +	Any lock that is acquired within an RCU callback must be acquired
-> +	elsewhere using an _bh variant of the spinlock primitive.
-> +	For example, if "mylock" is acquired by an RCU callback, then
-> +	a process-context acquisition of this lock must use something
-> +	like spin_lock_bh() to acquire the lock.  Please note that
-> +	it is also OK to use _irq variants of spinlocks, for example,
-> +	spin_lock_irqsave().
->   
->   	If the process-context code were to simply use spin_lock(),
->   	then, since RCU callbacks can be invoked from softirq context,
+> thanks,
+> -- Shuah
 > 
 
-thanks,
--- Shuah
