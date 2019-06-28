@@ -3,30 +3,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 489BCC5B579
-	for <rcu@archiver.kernel.org>; Fri, 28 Jun 2019 09:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18F2BC4321A
+	for <rcu@archiver.kernel.org>; Fri, 28 Jun 2019 09:28:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 217E1208CB
-	for <rcu@archiver.kernel.org>; Fri, 28 Jun 2019 09:11:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E274620665
+	for <rcu@archiver.kernel.org>; Fri, 28 Jun 2019 09:28:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbfF1JL3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Jun 2019 05:11:29 -0400
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:57384 "EHLO
+        id S1726561AbfF1J2t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Jun 2019 05:28:49 -0400
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:52316 "EHLO
         lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726431AbfF1JL2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Jun 2019 05:11:28 -0400
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.52 with ESMTP; 28 Jun 2019 18:11:23 +0900
-X-Original-SENDERIP: 156.147.1.151
+        with ESMTP id S1726518AbfF1J2t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Jun 2019 05:28:49 -0400
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.53 with ESMTP; 28 Jun 2019 18:28:47 +0900
+X-Original-SENDERIP: 156.147.1.127
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.151 with ESMTP; 28 Jun 2019 18:11:23 +0900
+        by 156.147.1.127 with ESMTP; 28 Jun 2019 18:28:47 +0900
 X-Original-SENDERIP: 10.177.222.33
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Fri, 28 Jun 2019 18:10:42 +0900
+Date:   Fri, 28 Jun 2019 18:28:06 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     Scott Wood <swood@redhat.com>,
@@ -41,9 +41,8 @@ Cc:     Scott Wood <swood@redhat.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>, kernel-team@lge.com
 Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
-Message-ID: <20190628091042.GA11339@X58A-UD3R>
-References: <20190627153031.GA249127@google.com>
- <20190627155506.GU26519@linux.ibm.com>
+Message-ID: <20190628092806.GB11339@X58A-UD3R>
+References: <20190627155506.GU26519@linux.ibm.com>
  <CAEXW_YSEN_OL3ftTLN=M-W70WSuCgHJqU-R9VhS=A3uVj_AL+A@mail.gmail.com>
  <20190627173831.GW26519@linux.ibm.com>
  <20190627181638.GA209455@google.com>
@@ -52,160 +51,173 @@ References: <20190627153031.GA249127@google.com>
  <20190627203612.GD26519@linux.ibm.com>
  <20190628073138.GB13650@X58A-UD3R>
  <20190628074350.GA11214@X58A-UD3R>
+ <20190628091042.GA11339@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190628074350.GA11214@X58A-UD3R>
+In-Reply-To: <20190628091042.GA11339@X58A-UD3R>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 04:43:50PM +0900, Byungchul Park wrote:
-> On Fri, Jun 28, 2019 at 04:31:38PM +0900, Byungchul Park wrote:
-> > On Thu, Jun 27, 2019 at 01:36:12PM -0700, Paul E. McKenney wrote:
-> > > On Thu, Jun 27, 2019 at 03:17:27PM -0500, Scott Wood wrote:
-> > > > On Thu, 2019-06-27 at 11:41 -0700, Paul E. McKenney wrote:
-> > > > > On Thu, Jun 27, 2019 at 02:16:38PM -0400, Joel Fernandes wrote:
+On Fri, Jun 28, 2019 at 06:10:42PM +0900, Byungchul Park wrote:
+> On Fri, Jun 28, 2019 at 04:43:50PM +0900, Byungchul Park wrote:
+> > On Fri, Jun 28, 2019 at 04:31:38PM +0900, Byungchul Park wrote:
+> > > On Thu, Jun 27, 2019 at 01:36:12PM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Jun 27, 2019 at 03:17:27PM -0500, Scott Wood wrote:
+> > > > > On Thu, 2019-06-27 at 11:41 -0700, Paul E. McKenney wrote:
+> > > > > > On Thu, Jun 27, 2019 at 02:16:38PM -0400, Joel Fernandes wrote:
+> > > > > > > 
+> > > > > > > I think the fix should be to prevent the wake-up not based on whether we
+> > > > > > > are
+> > > > > > > in hard/soft-interrupt mode but that we are doing the rcu_read_unlock()
+> > > > > > > from
+> > > > > > > a scheduler path (if we can detect that)
 > > > > > > 
-> > > > > > I think the fix should be to prevent the wake-up not based on whether we
-> > > > > > are
-> > > > > > in hard/soft-interrupt mode but that we are doing the rcu_read_unlock()
-> > > > > > from
-> > > > > > a scheduler path (if we can detect that)
+> > > > > > Or just don't do the wakeup at all, if it comes to that.  I don't know
+> > > > > > of any way to determine whether rcu_read_unlock() is being called from
+> > > > > > the scheduler, but it has been some time since I asked Peter Zijlstra
+> > > > > > about that.
+> > > > > > 
+> > > > > > Of course, unconditionally refusing to do the wakeup might not be happy
+> > > > > > thing for NO_HZ_FULL kernels that don't implement IRQ work.
 > > > > > 
-> > > > > Or just don't do the wakeup at all, if it comes to that.  I don't know
-> > > > > of any way to determine whether rcu_read_unlock() is being called from
-> > > > > the scheduler, but it has been some time since I asked Peter Zijlstra
-> > > > > about that.
-> > > > > 
-> > > > > Of course, unconditionally refusing to do the wakeup might not be happy
-> > > > > thing for NO_HZ_FULL kernels that don't implement IRQ work.
+> > > > > Couldn't smp_send_reschedule() be used instead?
 > > > > 
-> > > > Couldn't smp_send_reschedule() be used instead?
+> > > > Good point.  If current -rcu doesn't fix things for Sebastian's case,
+> > > > that would be well worth looking at.  But there must be some reason
+> > > > why Peter Zijlstra didn't suggest it when he instead suggested using
+> > > > the IRQ work approach.
+> > > > 
+> > > > Peter, thoughts?
 > > > 
-> > > Good point.  If current -rcu doesn't fix things for Sebastian's case,
-> > > that would be well worth looking at.  But there must be some reason
-> > > why Peter Zijlstra didn't suggest it when he instead suggested using
-> > > the IRQ work approach.
+> > 
+> > +cc kernel-team@lge.com
+> > (I'm sorry for more noise on the thread.)
+> > 
+> > > Hello,
 > > > 
-> > > Peter, thoughts?
-> > 
+> > > Isn't the following scenario possible?
+> > > 
+> > > The original code
+> > > -----------------
+> > > rcu_read_lock();
+> > > ...
+> > > /* Experdite */
+> > > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> > > ...
+> > > __rcu_read_unlock();
+> > > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> > > 		rcu_read_unlock_special(t);
+> > > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> > > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> > > 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> > > 		t->rcu_read_lock_nesting = 0;
+> > > 
+> > > The reordered code by machine
+> > > -----------------------------
+> > > rcu_read_lock();
+> > > ...
+> > > /* Experdite */
+> > > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> > > ...
+> > > __rcu_read_unlock();
+> > > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> > > 		rcu_read_unlock_special(t);
+> > > 		t->rcu_read_lock_nesting = 0; <--- LOOK AT THIS!!!
+> > > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> > > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> > > 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> > > 
+> > > An interrupt happens
+> > > --------------------
+> > > rcu_read_lock();
+> > > ...
+> > > /* Experdite */
+> > > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> > > ...
+> > > __rcu_read_unlock();
+> > > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> > > 		rcu_read_unlock_special(t);
+> > > 		t->rcu_read_lock_nesting = 0; <--- LOOK AT THIS!!!
+> > > <--- Handle an (any) irq
+> > > 	rcu_read_lock();
+> > > 	/* This call should be skipped */
+> > > 	rcu_read_unlock_special(t);
+> > > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> > > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> > > 		barrier();  /* ->rcu_read_unlock_special load before assign */
 > 
-> +cc kernel-team@lge.com
-> (I'm sorry for more noise on the thread.)
+> I was confused it was a LOAD access. The example should be changed a bit.
 > 
-> > Hello,
-> > 
-> > Isn't the following scenario possible?
-> > 
-> > The original code
-> > -----------------
-> > rcu_read_lock();
-> > ...
-> > /* Experdite */
-> > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-> > ...
-> > __rcu_read_unlock();
-> > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-> > 		rcu_read_unlock_special(t);
-> > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-> > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
-> > 		barrier();  /* ->rcu_read_unlock_special load before assign */
-> > 		t->rcu_read_lock_nesting = 0;
-> > 
-> > The reordered code by machine
-> > -----------------------------
-> > rcu_read_lock();
-> > ...
-> > /* Experdite */
-> > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-> > ...
-> > __rcu_read_unlock();
-> > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-> > 		rcu_read_unlock_special(t);
-> > 		t->rcu_read_lock_nesting = 0; <--- LOOK AT THIS!!!
-> > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-> > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
-> > 		barrier();  /* ->rcu_read_unlock_special load before assign */
-> > 
-> > An interrupt happens
-> > --------------------
-> > rcu_read_lock();
-> > ...
-> > /* Experdite */
-> > WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-> > ...
-> > __rcu_read_unlock();
-> > 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-> > 		rcu_read_unlock_special(t);
-> > 		t->rcu_read_lock_nesting = 0; <--- LOOK AT THIS!!!
-> > <--- Handle an (any) irq
-> > 	rcu_read_lock();
-> > 	/* This call should be skipped */
-> > 	rcu_read_unlock_special(t);
-> > 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-> > 			rcu_preempt_deferred_qs_irqrestore(t, flags);
-> > 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> 
+> 
+> The original code
+> -----------------
+> rcu_read_lock();
+> ...
+> /* Experdite */
+> WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> ...
+> __rcu_read_unlock();
+> 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> 		rcu_read_unlock_special(t);
+> 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> 		t->rcu_read_lock_nesting = 0;
+> 
+> The reordered code by machine
+> -----------------------------
+> rcu_read_lock();
+> ...
+> /* Experdite */
+> WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> ...
+> __rcu_read_unlock();
+> 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> 		rcu_read_unlock_special(t);
+> 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> 		t->rcu_read_lock_nesting = 0;
+> 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> 
+> An interrupt happens
+> --------------------
+> rcu_read_lock();
+> ...
+> /* Experdite */
+> WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+> ...
+> __rcu_read_unlock();
+> 	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> 		rcu_read_unlock_special(t);
+> 			rcu_preempt_deferred_qs_irqrestore(t, flags);
+> 		barrier();  /* ->rcu_read_unlock_special load before assign */
+> 		t->rcu_read_lock_nesting = 0;
+> <--- Handle an (any) irq
+> rcu_read_lock();
+> /* This call should be skipped */
+> rcu_read_unlock_special(t);
+> 			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+> 
+> 
+> 
+> Now that I re-made the example, I'm afraid it'd be no problem because
+> anyway it'd be within a cpu so it can see inside of the store-buffer of
+> the cpu.
+> 
+> I'm sorry. Please ignore my suggestion here.
 
-I was confused it was a LOAD access. The example should be changed a bit.
+Even though the example is wrong but I think you can get confused with
+about what I was trying to tell. It was about (1) LOAD in advance and
+(2) reordering within a store buffer within a cpu, but not about
+reordering instructions - I wrote the example as if it's about the
+latter though.
 
+Sorry for noise again.
 
-
-The original code
------------------
-rcu_read_lock();
-...
-/* Experdite */
-WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-...
-__rcu_read_unlock();
-	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-		rcu_read_unlock_special(t);
-			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-			rcu_preempt_deferred_qs_irqrestore(t, flags);
-		barrier();  /* ->rcu_read_unlock_special load before assign */
-		t->rcu_read_lock_nesting = 0;
-
-The reordered code by machine
------------------------------
-rcu_read_lock();
-...
-/* Experdite */
-WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-...
-__rcu_read_unlock();
-	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-		rcu_read_unlock_special(t);
-			rcu_preempt_deferred_qs_irqrestore(t, flags);
-		barrier();  /* ->rcu_read_unlock_special load before assign */
-		t->rcu_read_lock_nesting = 0;
-			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-
-An interrupt happens
---------------------
-rcu_read_lock();
-...
-/* Experdite */
-WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
-...
-__rcu_read_unlock();
-	if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-		rcu_read_unlock_special(t);
-			rcu_preempt_deferred_qs_irqrestore(t, flags);
-		barrier();  /* ->rcu_read_unlock_special load before assign */
-		t->rcu_read_lock_nesting = 0;
-<--- Handle an (any) irq
-rcu_read_lock();
-/* This call should be skipped */
-rcu_read_unlock_special(t);
-			WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
-
-
-
-Now that I re-made the example, I'm afraid it'd be no problem because
-anyway it'd be within a cpu so it can see inside of the store-buffer of
-the cpu.
-
-I'm sorry. Please ignore my suggestion here.
+Thanks,
+Byungchul
