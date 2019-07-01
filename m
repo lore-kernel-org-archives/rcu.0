@@ -2,206 +2,137 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D947C5B578
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 831AAC5B578
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:29:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 13ABD206A3
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:12:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61B672146F
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:29:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbfGAUMT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Jul 2019 16:12:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45140 "EHLO
+        id S1726586AbfGAU3d (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jul 2019 16:29:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48814 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726586AbfGAUMT (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 16:12:19 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61KBYdS047690
-        for <rcu@vger.kernel.org>; Mon, 1 Jul 2019 16:12:19 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfqcbuybs-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 16:12:18 -0400
-Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 1 Jul 2019 21:12:17 +0100
-Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 1 Jul 2019 21:12:14 +0100
+        by vger.kernel.org with ESMTP id S1726509AbfGAU3d (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 16:29:33 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61KTShR060549;
+        Mon, 1 Jul 2019 16:29:31 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfqjbbxk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Jul 2019 16:29:30 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x61KP38p002639;
+        Mon, 1 Jul 2019 20:27:25 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma01dal.us.ibm.com with ESMTP id 2tdym6s9te-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Jul 2019 20:27:25 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61KCDIA47579440
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61KROMP52298082
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Jul 2019 20:12:13 GMT
+        Mon, 1 Jul 2019 20:27:24 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D4E5B2064;
-        Mon,  1 Jul 2019 20:12:13 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 57603B2064;
+        Mon,  1 Jul 2019 20:27:24 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50BF1B205F;
-        Mon,  1 Jul 2019 20:12:13 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 3B597B205F;
+        Mon,  1 Jul 2019 20:27:24 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Jul 2019 20:12:13 +0000 (GMT)
+        Mon,  1 Jul 2019 20:27:24 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 6B41816C2BD7; Mon,  1 Jul 2019 13:12:16 -0700 (PDT)
-Date:   Mon, 1 Jul 2019 13:12:16 -0700
+        id 597D216C362C; Mon,  1 Jul 2019 13:27:27 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 13:27:27 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH v3] rcu: Change return type of
- rcu_spawn_one_boost_kthread()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org
+Subject: Re: [RFC 3/3] Revert "rcutorture: Tweak kvm options"
+Message-ID: <20190701202727.GR26519@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <1561941639-14318-1-git-send-email-byungchul.park@lge.com>
+References: <20190701040415.219001-1-joel@joelfernandes.org>
+ <20190701040415.219001-3-joel@joelfernandes.org>
+ <20190701122358.nzebpuunp6o5jxhx@linutronix.de>
+ <20190701141403.GA246562@google.com>
+ <CACT4Y+bJ-tNvMsfHcFEsWdjtBnaLTP9q=u7PCk4VMVPvW51WLQ@mail.gmail.com>
+ <20190701145920.GA71270@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1561941639-14318-1-git-send-email-byungchul.park@lge.com>
+In-Reply-To: <20190701145920.GA71270@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19070120-0072-0000-0000-000004432C59
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011361; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01226043; UDB=6.00645426; IPR=6.01007256;
- MB=3.00027541; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-01 20:12:17
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070120-0073-0000-0000-00004CB36361
-Message-Id: <20190701201216.GQ26519@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_12:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907010234
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010237
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 09:40:39AM +0900, Byungchul Park wrote:
-> Hello,
+On Mon, Jul 01, 2019 at 10:59:20AM -0400, Joel Fernandes wrote:
+> On Mon, Jul 01, 2019 at 04:48:43PM +0200, Dmitry Vyukov wrote:
+> > On Mon, Jul 1, 2019 at 4:14 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Mon, Jul 01, 2019 at 02:23:58PM +0200, Sebastian Andrzej Siewior wrote:
+> > > > On 2019-07-01 00:04:15 [-0400], Joel Fernandes (Google) wrote:
+> > > > > This reverts commit a6fda6dab93c2c06ef4b8cb4b9258df6674d2438 which
+> > > > > causes kvm.sh to not run on my machines. The qemu-system-x86_64 command
+> > > > > runs but does nothing.
+> > > >
+> > > > Nope. I would like to know *why* you need 'noapic' to work. Is it a
+> > > > brand new or old qemu-system-x86_64?
+> > >
+> > > I did not have time to debug yesterday and I posted this particular revert as
+> > > an 'RFC' just to make aware of this problem.
+> > >
+> > > I spent some more time just now, it looks like this has nothing to do with
+> > > 'noapic' and appears to be a problem on debian distros with the e1000e NIC.
+> > > May be this NIC was added to the virtual hardware because of -machine in the
+> > > patch?
+> > >
+> > > Any if I add the following to the qemu command that kvm.sh runs, it works again:
+> > > -net nic,model=e1000
+> > >
+> > > Without it I get:
+> > >  qemu-system-x86_64: Initialization of device e1000e failed: failed to find romfile "efi-e1000e.rom"
+> > >
+> > > Seems to be mentioned here:
+> > > https://bugs.launchpad.net/ubuntu/+source/ipxe/+bug/1737211
+> > >
+> > > And in syzkaller as well:
+> > > https://github.com/google/syzkaller/blob/master/vm/qemu/qemu.go#L88
+> > >
+> > > Adding Dmitry who is syzkaller owner for any thoughts as well.
+> > 
+> > I don't have many thoughts on this. That particular error looked like
+> > a bug in the package in the particular distro/version.
 > 
-> I tested again if the WARN_ON_ONCE() is fired with my box.
+> Paul, what is your preference here? Can we add the -net nic,model=e1000 to
+> fix it for the benefit of any other Debian folks running kvm.sh?
 > 
-> And it was OK.
+> Or do you prefer if I just built my own custom Qemu? I can't upgrade Qemu on
+> this machine unfortunately. But may be I can build my own.
 > 
-> Thanks,
-> Byungchul
+> I prefer the -net option since I can save the time for something else. ;) Let
+> me know what you prefer and I'll fix it accordingly.
 
-And it now applies just fine, so I have queued it, thank you!
+Why not just add the following to your kvm.sh command line?
 
-In the future, could you please use something like "git send-email"
-to email a proper patch?  When you do it this way, after I do "git am",
-I have to hand-edit the commit to remove this preamble.
+	--qemu-args "-net nic,model=e1000"
 
-But while I was doing the hand-editing, I updated the commit log as
-follows:
+Easy workaround and no need to wait for changes to hit mainline.
 
-	rcu: Change return type of rcu_spawn_one_boost_kthread()
+Yes, I am perhaps naively assuming that the qemu bug in Debian will
+be fixed in about the time that it would take for any change to the
+rcutorture scripting to make its way into mainline.  ;-)
 
-	The return value of rcu_spawn_one_boost_kthread() is not used
-	any longer.  This commit therefore changes its return type from
-	int to void, and removes the cast to void from its callers.
-
-Does that work for you?
-
-						Thanx, Paul
-
-> Changes from v2
-> -. Port the patch to a1af11a24cb0 (Paul's request)
-> -. Add a few new lines for a better look
-> 
-> Changes from v1
-> -. WARN_ON_ONCE() on failing to create rcu_boost_kthread.
-> -. Changed title and commit message a bit.
-> 
-> ---8<---
-> >From 20c934c5657a7a0f13ebb050ffd350d4174965d0 Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul.park@lge.com>
-> Date: Mon, 1 Jul 2019 09:27:15 +0900
-> Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
-> 
-> The return value of rcu_spawn_one_boost_kthread() is not used any
-> longer. Change return type of that function from int to void.
-> 
-> Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> ---
->  kernel/rcu/tree_plugin.h | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index c588ef9..b8eea22 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1119,7 +1119,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
->   * already exist.  We only create this kthread for preemptible RCU.
->   * Returns zero if all is well, a negated errno otherwise.
->   */
-> -static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> +static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
->  {
->  	int rnp_index = rnp - rcu_get_root();
->  	unsigned long flags;
-> @@ -1127,25 +1127,27 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
->  	struct task_struct *t;
->  
->  	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-> -		return 0;
-> +		return;
->  
->  	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-> -		return 0;
-> +		return;
->  
->  	rcu_state.boost = 1;
-> +
->  	if (rnp->boost_kthread_task != NULL)
-> -		return 0;
-> +		return;
-> +
->  	t = kthread_create(rcu_boost_kthread, (void *)rnp,
->  			   "rcub/%d", rnp_index);
-> -	if (IS_ERR(t))
-> -		return PTR_ERR(t);
-> +	if (WARN_ON_ONCE(IS_ERR(t)))
-> +		return;
-> +
->  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  	rnp->boost_kthread_task = t;
->  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	sp.sched_priority = kthread_prio;
->  	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
->  	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
-> -	return 0;
->  }
->  
->  /*
-> @@ -1186,7 +1188,7 @@ static void __init rcu_spawn_boost_kthreads(void)
->  	struct rcu_node *rnp;
->  
->  	rcu_for_each_leaf_node(rnp)
-> -		(void)rcu_spawn_one_boost_kthread(rnp);
-> +		rcu_spawn_one_boost_kthread(rnp);
->  }
->  
->  static void rcu_prepare_kthreads(int cpu)
-> @@ -1196,7 +1198,7 @@ static void rcu_prepare_kthreads(int cpu)
->  
->  	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
->  	if (rcu_scheduler_fully_active)
-> -		(void)rcu_spawn_one_boost_kthread(rnp);
-> +		rcu_spawn_one_boost_kthread(rnp);
->  }
->  
->  #else /* #ifdef CONFIG_RCU_BOOST */
-> -- 
-> 1.9.1
-> 
-
+							Thanx, Paul
