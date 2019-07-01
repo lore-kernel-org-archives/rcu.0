@@ -2,122 +2,140 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D528AC0650E
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D0BDC0650E
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 16:01:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A76D920665
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:59:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XTLNTxAm"
+	by mail.kernel.org (Postfix) with ESMTP id EA0A621473
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 16:01:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727279AbfGAO7X (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Jul 2019 10:59:23 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43970 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbfGAO7X (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 Jul 2019 10:59:23 -0400
-Received: by mail-pg1-f194.google.com with SMTP id f25so6178877pgv.10
-        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 07:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=u5y62+0FFlEOJ4wqoIJ4BKfS4aH2ZeWmGiU2RoeaVxs=;
-        b=XTLNTxAmcLMByyqS4pDTU8M4JggErW2udQuU2wfqaKXiorMn7AamHAOPsEi/Hf4wtO
-         r9pYiqSz19wiMLywDzCxMO6GkSCQ0QQFIME9nHcNHkGiWwn+8RnDndTb1YO7foRsEM2Z
-         LJJDU7GEnNCejqBFfasWPXe5l8kYxRp+iB2fA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=u5y62+0FFlEOJ4wqoIJ4BKfS4aH2ZeWmGiU2RoeaVxs=;
-        b=ZOc77trADRSf/x0I+lAfbzoggZh6KO21gG1TRnPA1iOr0OeRfJWTTzSLe4zIRl45EW
-         k++0eUP+QQxfM2Dk+0Dy9wNIHBGsrh71w7MZ7ixbXc9PdcQKZ8ErFpDPRPtwyQyOVkUr
-         JfbLCzAjAhLqGXAUu+T5dJHl2hTjYL3hlmr/KGH7MP4qVwsRXRf/5FUVS1eiX14m/hcP
-         JQpoO/ulmMOJ3/pHu/22cuyb0DMWve8IZT5JIYRnLgUfdECbGTnzlR8EGqtEvDBaS7h0
-         XNIh8vFpJkLkCA8fg2Vs/I3A+voFN3VyDcLoD5WL6MBrOIf9AO0I5+I0o3Qgp8lofGxu
-         G3SA==
-X-Gm-Message-State: APjAAAUf48H50MZka9CYyPcXO4+v2TmO5Ja1KtY2vWzguaq6+WRK3XkK
-        4xHBGRjxMHH1wsW/1d9Nv682CFCGOQY=
-X-Google-Smtp-Source: APXvYqwdPuDzJMGgvRb3FdkTBcAuOJNmpkvejGQK0WCO10NaOnX+8wcnoOKHS9VKBXBaRiw1SOTDMQ==
-X-Received: by 2002:a17:90a:fa12:: with SMTP id cm18mr31568290pjb.137.1561993162315;
-        Mon, 01 Jul 2019 07:59:22 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id s129sm10737707pfb.186.2019.07.01.07.59.21
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 01 Jul 2019 07:59:21 -0700 (PDT)
-Date:   Mon, 1 Jul 2019 10:59:20 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: Re: [RFC 3/3] Revert "rcutorture: Tweak kvm options"
-Message-ID: <20190701145920.GA71270@google.com>
-References: <20190701040415.219001-1-joel@joelfernandes.org>
- <20190701040415.219001-3-joel@joelfernandes.org>
- <20190701122358.nzebpuunp6o5jxhx@linutronix.de>
- <20190701141403.GA246562@google.com>
- <CACT4Y+bJ-tNvMsfHcFEsWdjtBnaLTP9q=u7PCk4VMVPvW51WLQ@mail.gmail.com>
+        id S1728142AbfGAQBP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jul 2019 12:01:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52340 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729225AbfGAQBM (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 12:01:12 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Fvcu4119476
+        for <rcu@vger.kernel.org>; Mon, 1 Jul 2019 12:01:11 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfm264xks-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 12:01:10 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Mon, 1 Jul 2019 17:01:09 +0100
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 1 Jul 2019 17:01:05 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61G14Yh10289498
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Jul 2019 16:01:04 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4085B2067;
+        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 956AFB2066;
+        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 7054916C0B88; Mon,  1 Jul 2019 09:01:07 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 09:01:07 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Scott Wood <swood@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
+Reply-To: paulmck@linux.ibm.com
+References: <13761fee4b71cc004ad0d6709875ce917ff28fce.camel@redhat.com>
+ <20190627203612.GD26519@linux.ibm.com>
+ <20190628141522.GF3402@hirez.programming.kicks-ass.net>
+ <20190628155404.GV26519@linux.ibm.com>
+ <20190628160408.GH32547@worktop.programming.kicks-ass.net>
+ <20190628172056.GW26519@linux.ibm.com>
+ <20190701094215.GR3402@hirez.programming.kicks-ass.net>
+ <20190701102442.35grdpcsbrwyyaco@linutronix.de>
+ <20190701122305.GB26519@linux.ibm.com>
+ <20190701140053.GV3402@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bJ-tNvMsfHcFEsWdjtBnaLTP9q=u7PCk4VMVPvW51WLQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190701140053.GV3402@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19070116-0060-0000-0000-000003579D17
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011360; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01225960; UDB=6.00645376; IPR=6.01007172;
+ MB=3.00027538; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-01 16:01:09
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070116-0061-0000-0000-000049F9B055
+Message-Id: <20190701160107.GG26519@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=827 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010192
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 04:48:43PM +0200, Dmitry Vyukov wrote:
-> On Mon, Jul 1, 2019 at 4:14 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Mon, Jul 01, 2019 at 02:23:58PM +0200, Sebastian Andrzej Siewior wrote:
-> > > On 2019-07-01 00:04:15 [-0400], Joel Fernandes (Google) wrote:
-> > > > This reverts commit a6fda6dab93c2c06ef4b8cb4b9258df6674d2438 which
-> > > > causes kvm.sh to not run on my machines. The qemu-system-x86_64 command
-> > > > runs but does nothing.
-> > >
-> > > Nope. I would like to know *why* you need 'noapic' to work. Is it a
-> > > brand new or old qemu-system-x86_64?
-> >
-> > I did not have time to debug yesterday and I posted this particular revert as
-> > an 'RFC' just to make aware of this problem.
-> >
-> > I spent some more time just now, it looks like this has nothing to do with
-> > 'noapic' and appears to be a problem on debian distros with the e1000e NIC.
-> > May be this NIC was added to the virtual hardware because of -machine in the
-> > patch?
-> >
-> > Any if I add the following to the qemu command that kvm.sh runs, it works again:
-> > -net nic,model=e1000
-> >
-> > Without it I get:
-> >  qemu-system-x86_64: Initialization of device e1000e failed: failed to find romfile "efi-e1000e.rom"
-> >
-> > Seems to be mentioned here:
-> > https://bugs.launchpad.net/ubuntu/+source/ipxe/+bug/1737211
-> >
-> > And in syzkaller as well:
-> > https://github.com/google/syzkaller/blob/master/vm/qemu/qemu.go#L88
-> >
-> > Adding Dmitry who is syzkaller owner for any thoughts as well.
+On Mon, Jul 01, 2019 at 04:00:53PM +0200, Peter Zijlstra wrote:
+> On Mon, Jul 01, 2019 at 05:23:05AM -0700, Paul E. McKenney wrote:
+> > On Mon, Jul 01, 2019 at 12:24:42PM +0200, Sebastian Andrzej Siewior wrote:
+> > > On 2019-07-01 11:42:15 [+0200], Peter Zijlstra wrote:
+> > > > I'm not sure if smp_send_reschedule() can be used as self-IPI, some
+> > > > hardware doesn't particularly like that IIRC. That is, hardware might
+> > > > only have interfaces to IPI _other_ CPUs, but not self.
+> > > > 
+> > > > The normal scheduler code takes care to not call smp_send_reschedule()
+> > > > to self.
+> > > 
+> > > and irq_work:
+> > >   471ba0e686cb1 ("irq_work: Do not raise an IPI when queueing work on the local CPU")
+> > 
+> > OK, so it looks like I will need to use something else.  But thank you
+> > for calling my attention to this commit.
 > 
-> I don't have many thoughts on this. That particular error looked like
-> a bug in the package in the particular distro/version.
+> I think that commit is worded slight confusing -- sorry I should've paid
+> more attention.
+> 
+> irq_work _does_ work locally, and arch_irq_work_raise() must self-IPI,
+> otherwise everything is horribly broken.
+> 
+> But what happened, was that irq_work_queue() and irq_work_queue_on(.cpu
+> = smp_processor_id()) wasn't using the same code, and the latter would
+> try to self-IPI through arch_send_call_function_single_ipi().
+> 
+> Nick fixed that so that irq_work_queue() and irq_work_queue_on(.cpu =
+> smp_processor_id() now both use arch_raise_irq_work() and remote stuff
+> uses arch_send_call_function_single_ipi().
 
-Paul, what is your preference here? Can we add the -net nic,model=e1000 to
-fix it for the benefit of any other Debian folks running kvm.sh?
+OK, thank you for looking into this!
 
-Or do you prefer if I just built my own custom Qemu? I can't upgrade Qemu on
-this machine unfortunately. But may be I can build my own.
+I therefore continue relying on IRQ work.  Should there be problems with
+kernels not supporting IRQ work, and if there is a legitimate reason
+why they should not support IRQ work, I can look into things like timers
+for those kernels.
 
-I prefer the -net option since I can save the time for something else. ;) Let
-me know what you prefer and I'll fix it accordingly.
-
-thanks,
-
- J.
+							Thanx, Paul
 
