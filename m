@@ -2,103 +2,141 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53114C06508
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DED3C06508
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:41:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2650E214AF
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:02:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DFAFD2145D
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:41:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbfGAACB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 30 Jun 2019 20:02:01 -0400
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:48317 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726803AbfGAACB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 30 Jun 2019 20:02:01 -0400
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.53 with ESMTP; 1 Jul 2019 09:01:59 +0900
-X-Original-SENDERIP: 156.147.1.151
+        id S1727048AbfGAAl0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 30 Jun 2019 20:41:26 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:39603 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbfGAAl0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 30 Jun 2019 20:41:26 -0400
+Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
+        by 156.147.23.51 with ESMTP; 1 Jul 2019 09:41:24 +0900
+X-Original-SENDERIP: 156.147.1.125
 X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.151 with ESMTP; 1 Jul 2019 09:01:59 +0900
+Received: from unknown (HELO localhost.localdomain) (10.177.222.33)
+        by 156.147.1.125 with ESMTP; 1 Jul 2019 09:41:24 +0900
 X-Original-SENDERIP: 10.177.222.33
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 1 Jul 2019 09:01:14 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH v2] rcu: Change return type of
- rcu_spawn_one_boost_kthread()
-Message-ID: <20190701000114.GB23795@X58A-UD3R>
-References: <1561619266-8850-1-git-send-email-byungchul.park@lge.com>
- <20190627134240.GB215968@google.com>
- <20190627205703.GF26519@linux.ibm.com>
- <20190628024339.GA13650@X58A-UD3R>
- <20190630193834.GU26519@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190630193834.GU26519@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+To:     paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@lge.com
+Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
+Date:   Mon,  1 Jul 2019 09:40:39 +0900
+Message-Id: <1561941639-14318-1-git-send-email-byungchul.park@lge.com>
+X-Mailer: git-send-email 1.9.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jun 30, 2019 at 12:38:34PM -0700, Paul E. McKenney wrote:
-> On Fri, Jun 28, 2019 at 11:43:39AM +0900, Byungchul Park wrote:
-> > On Thu, Jun 27, 2019 at 01:57:03PM -0700, Paul E. McKenney wrote:
-> > > On Thu, Jun 27, 2019 at 09:42:40AM -0400, Joel Fernandes wrote:
-> > > > On Thu, Jun 27, 2019 at 04:07:46PM +0900, Byungchul Park wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > I tested if the WARN_ON_ONCE() is fired with my box and it was ok.
-> > > > 
-> > > > Looks pretty safe to me and nice clean up!
-> > > > 
-> > > > Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > 
-> > > Agreed, but I still cannot find where this applies.  I did try rcu/next,
-> > > which is currently here:
-> > > 
-> > > commit b989ff070574ad8b8621d866de0a8e9a65d42c80 (rcu/rcu/next, rcu/next)
-> > > Merge: 4289ee7d5a83 11ca7a9d541d
-> > > Author: Paul E. McKenney <paulmck@linux.ibm.com>
-> > > Date:   Mon Jun 24 09:12:39 2019 -0700
-> > > 
-> > >     Merge LKMM and RCU commits
-> > > 
-> > > Help?
-> > 
-> > commit 204d7a60670f3f6399a4d0826667ab7863b3e429
-> > 
-> >      Merge LKMM and RCU commits
-> > 
-> > I made it on top of the above. And could you tell me which branch I'd
-> > better use when developing. I think it's been changing sometimes.
-> 
-> That would be because idiot here took so much care to avoid risking
-> pushing some early development commits into the upcoming merge window
-> that he managed to misplace them entirely.  The -rcu tree's "dev" branch
-> now includes them.  Could you please port to it?
+Hello,
 
-Of course, I can.
+I tested again if the WARN_ON_ONCE() is fired with my box.
 
-> a1af11a24cb0 ("rcu/nocb: Make __call_rcu_nocb_wake() safe for many callbacks")
-> 
-> > Thank you for the answer in advance!
-> 
-> And please accept my apologies for the very confusing tree layout this
-> time around!
+And it was OK.
 
-It would be totally OK if you give me the answer when I feel confused
-with branch for development. :)
+Thanks,
+Byungchul
 
-> 
-> 							Thanx, Paul
+Changes from v2
+-. Port the patch to a1af11a24cb0 (Paul's request)
+-. Add a few new lines for a better look
+
+Changes from v1
+-. WARN_ON_ONCE() on failing to create rcu_boost_kthread.
+-. Changed title and commit message a bit.
+
+---8<---
+From 20c934c5657a7a0f13ebb050ffd350d4174965d0 Mon Sep 17 00:00:00 2001
+From: Byungchul Park <byungchul.park@lge.com>
+Date: Mon, 1 Jul 2019 09:27:15 +0900
+Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
+
+The return value of rcu_spawn_one_boost_kthread() is not used any
+longer. Change return type of that function from int to void.
+
+Signed-off-by: Byungchul Park <byungchul.park@lge.com>
+---
+ kernel/rcu/tree_plugin.h | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c588ef9..b8eea22 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1119,7 +1119,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
+  * already exist.  We only create this kthread for preemptible RCU.
+  * Returns zero if all is well, a negated errno otherwise.
+  */
+-static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
++static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+ {
+ 	int rnp_index = rnp - rcu_get_root();
+ 	unsigned long flags;
+@@ -1127,25 +1127,27 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+ 	struct task_struct *t;
+ 
+ 	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
+-		return 0;
++		return;
+ 
+ 	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
+-		return 0;
++		return;
+ 
+ 	rcu_state.boost = 1;
++
+ 	if (rnp->boost_kthread_task != NULL)
+-		return 0;
++		return;
++
+ 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
+ 			   "rcub/%d", rnp_index);
+-	if (IS_ERR(t))
+-		return PTR_ERR(t);
++	if (WARN_ON_ONCE(IS_ERR(t)))
++		return;
++
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	rnp->boost_kthread_task = t;
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	sp.sched_priority = kthread_prio;
+ 	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+ 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
+-	return 0;
+ }
+ 
+ /*
+@@ -1186,7 +1188,7 @@ static void __init rcu_spawn_boost_kthreads(void)
+ 	struct rcu_node *rnp;
+ 
+ 	rcu_for_each_leaf_node(rnp)
+-		(void)rcu_spawn_one_boost_kthread(rnp);
++		rcu_spawn_one_boost_kthread(rnp);
+ }
+ 
+ static void rcu_prepare_kthreads(int cpu)
+@@ -1196,7 +1198,7 @@ static void rcu_prepare_kthreads(int cpu)
+ 
+ 	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
+ 	if (rcu_scheduler_fully_active)
+-		(void)rcu_spawn_one_boost_kthread(rnp);
++		rcu_spawn_one_boost_kthread(rnp);
+ }
+ 
+ #else /* #ifdef CONFIG_RCU_BOOST */
+-- 
+1.9.1
+
