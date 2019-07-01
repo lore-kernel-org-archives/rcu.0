@@ -2,140 +2,200 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D0BDC0650E
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 16:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49528C5B578
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:03:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EA0A621473
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 16:01:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1EF4321479
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 20:03:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbfGAQBP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Jul 2019 12:01:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52340 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729225AbfGAQBM (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 12:01:12 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Fvcu4119476
-        for <rcu@vger.kernel.org>; Mon, 1 Jul 2019 12:01:11 -0400
-Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfm264xks-1
+        id S1726866AbfGAUDP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jul 2019 16:03:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726658AbfGAUDO (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 16:03:14 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Jx0l1137258
+        for <rcu@vger.kernel.org>; Mon, 1 Jul 2019 16:03:13 -0400
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tfr3cswbw-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 12:01:10 -0400
+        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 16:03:13 -0400
 Received: from localhost
-        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 1 Jul 2019 17:01:09 +0100
-Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
-        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Mon, 1 Jul 2019 21:03:12 +0100
+Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 1 Jul 2019 17:01:05 +0100
+        Mon, 1 Jul 2019 21:03:08 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61G14Yh10289498
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61K37AU53936414
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Jul 2019 16:01:04 GMT
+        Mon, 1 Jul 2019 20:03:07 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4085B2067;
-        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 3FC97B205F;
+        Mon,  1 Jul 2019 20:03:07 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 956AFB2066;
-        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 111EAB2064;
+        Mon,  1 Jul 2019 20:03:07 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Jul 2019 16:01:04 +0000 (GMT)
+        Mon,  1 Jul 2019 20:03:07 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 7054916C0B88; Mon,  1 Jul 2019 09:01:07 -0700 (PDT)
-Date:   Mon, 1 Jul 2019 09:01:07 -0700
+        id 270A716C2BD7; Mon,  1 Jul 2019 13:03:10 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 13:03:10 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Scott Wood <swood@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kernel-team@android.com, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kselftest@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC 2/3] rcu: Simplify rcu_note_context_switch exit from
+ critical section
 Reply-To: paulmck@linux.ibm.com
-References: <13761fee4b71cc004ad0d6709875ce917ff28fce.camel@redhat.com>
- <20190627203612.GD26519@linux.ibm.com>
- <20190628141522.GF3402@hirez.programming.kicks-ass.net>
- <20190628155404.GV26519@linux.ibm.com>
- <20190628160408.GH32547@worktop.programming.kicks-ass.net>
- <20190628172056.GW26519@linux.ibm.com>
- <20190701094215.GR3402@hirez.programming.kicks-ass.net>
- <20190701102442.35grdpcsbrwyyaco@linutronix.de>
- <20190701122305.GB26519@linux.ibm.com>
- <20190701140053.GV3402@hirez.programming.kicks-ass.net>
+References: <20190701040415.219001-1-joel@joelfernandes.org>
+ <20190701040415.219001-2-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190701140053.GV3402@hirez.programming.kicks-ass.net>
+In-Reply-To: <20190701040415.219001-2-joel@joelfernandes.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19070116-0060-0000-0000-000003579D17
+x-cbid: 19070120-0052-0000-0000-000003D90CE8
 X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011360; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01225960; UDB=6.00645376; IPR=6.01007172;
- MB=3.00027538; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-01 16:01:09
+X-IBM-SpamModules-Versions: BY=3.00011361; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01226040; UDB=6.00645424; IPR=6.01007252;
+ MB=3.00027541; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-01 20:03:11
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070116-0061-0000-0000-000049F9B055
-Message-Id: <20190701160107.GG26519@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_10:,,
+x-cbparentid: 19070120-0053-0000-0000-00006187F46E
+Message-Id: <20190701200310.GP26519@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_12:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=827 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907010192
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010231
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 04:00:53PM +0200, Peter Zijlstra wrote:
-> On Mon, Jul 01, 2019 at 05:23:05AM -0700, Paul E. McKenney wrote:
-> > On Mon, Jul 01, 2019 at 12:24:42PM +0200, Sebastian Andrzej Siewior wrote:
-> > > On 2019-07-01 11:42:15 [+0200], Peter Zijlstra wrote:
-> > > > I'm not sure if smp_send_reschedule() can be used as self-IPI, some
-> > > > hardware doesn't particularly like that IIRC. That is, hardware might
-> > > > only have interfaces to IPI _other_ CPUs, but not self.
-> > > > 
-> > > > The normal scheduler code takes care to not call smp_send_reschedule()
-> > > > to self.
-> > > 
-> > > and irq_work:
-> > >   471ba0e686cb1 ("irq_work: Do not raise an IPI when queueing work on the local CPU")
-> > 
-> > OK, so it looks like I will need to use something else.  But thank you
-> > for calling my attention to this commit.
+On Mon, Jul 01, 2019 at 12:04:14AM -0400, Joel Fernandes (Google) wrote:
+> The rcu_preempt_note_context_switch() tries to handle cases where
+> __rcu_read_unlock() got preempted and then the context switch path does
+> the reporting of the quiscent state along with clearing any bits in the
+> rcu_read_unlock_special union.
 > 
-> I think that commit is worded slight confusing -- sorry I should've paid
-> more attention.
+> This can be handled by just calling rcu_deferred_qs() which was added
+> during the RCU consolidation work and already does these checks.
 > 
-> irq_work _does_ work locally, and arch_irq_work_raise() must self-IPI,
-> otherwise everything is horribly broken.
+> Tested RCU config TREE03 for an hour which succeeds.
 > 
-> But what happened, was that irq_work_queue() and irq_work_queue_on(.cpu
-> = smp_processor_id()) wasn't using the same code, and the latter would
-> try to self-IPI through arch_send_call_function_single_ipi().
-> 
-> Nick fixed that so that irq_work_queue() and irq_work_queue_on(.cpu =
-> smp_processor_id() now both use arch_raise_irq_work() and remote stuff
-> uses arch_send_call_function_single_ipi().
+> Cc: rcu@vger.kernel.org
+> Cc: kernel-team@android.com
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-OK, thank you for looking into this!
+My first reaction was "that cannot possibly work", but after a bit of
+digging, it really does appear to work just fine.  I therefore expanded
+the commit log a bit, so please check it to catch any messups on my part.
 
-I therefore continue relying on IRQ work.  Should there be problems with
-kernels not supporting IRQ work, and if there is a legitimate reason
-why they should not support IRQ work, I can look into things like timers
-for those kernels.
+Very cool, thank you very much!  ;-)
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit ce547cb41ed7662f70d0b07d4c7f7555ba130c61
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Mon Jul 1 00:04:14 2019 -0400
+
+    rcu: Simplify rcu_note_context_switch exit from critical section
+    
+    Because __rcu_read_unlock() can be preempted just before the call to
+    rcu_read_unlock_special(), it is possible for a task to be preempted just
+    before it would have fully exited its RCU read-side critical section.
+    This would result in a needless extension of that critical section until
+    that task was resumed, which might in turn result in a needlessly
+    long grace period, needless RCU priority boosting, and needless
+    force-quiescent-state actions.  Therefore, rcu_note_context_switch()
+    invokes __rcu_read_unlock() followed by rcu_preempt_deferred_qs() when
+    it detects this situation.  This action by rcu_note_context_switch()
+    ends the RCU read-side critical section immediately.
+    
+    Of course, once the task resumes, it will invoke rcu_read_unlock_special()
+    redundantly.  This is harmless because the fact that a preemption
+    happened means that interrupts, preemption, and softirqs cannot
+    have been disabled, so there would be no deferred quiescent state.
+    While ->rcu_read_lock_nesting remains less than zero, none of the
+    ->rcu_read_unlock_special.b bits can be set, and they were all zeroed by
+    the call to rcu_note_context_switch() at task-preemption time.  Therefore,
+    setting ->rcu_read_unlock_special.b.exp_hint to false has no effect.
+    
+    Therefore, the extra call to rcu_preempt_deferred_qs_irqrestore()
+    would return immediately.  With one possible exception, which is
+    if an expedited grace period started just as the task was being
+    resumed, which could leave ->exp_deferred_qs set.  This will cause
+    rcu_preempt_deferred_qs_irqrestore() to invoke rcu_report_exp_rdp(),
+    reporting the quiescent state, just as it should.  (Such an expedited
+    grace period won't affect the preemption code path due to interrupts
+    having already been disabled.)
+    
+    But when rcu_note_context_switch() invokes __rcu_read_unlock(), it
+    is doing so with preemption disabled, hence __rcu_read_unlock() will
+    unconditionally defer the quiescent state, only to immediately invoke
+    rcu_preempt_deferred_qs(), thus immediately reporting the deferred
+    quiescent state.  It turns out to be safe (and faster) to instead
+    just invoke rcu_preempt_deferred_qs() without the __rcu_read_unlock()
+    middleman.
+    
+    Because this is the invocation during the preemption (as opposed to
+    the invocation just after the resume), at least one of the bits in
+    ->rcu_read_unlock_special.b must be set and ->rcu_read_lock_nesting
+    must be negative.  This means that rcu_preempt_need_deferred_qs() must
+    return true, avoiding the early exit from rcu_preempt_deferred_qs().
+    Thus, rcu_preempt_deferred_qs_irqrestore() will be invoked immediately,
+    as required.
+    
+    This commit therefore simplifies the CONFIG_PREEMPT=y version of
+    rcu_note_context_switch() by removing the "else if" branch of its
+    "if" statement.  This change means that all callers that would have
+    invoked rcu_read_unlock_special() followed by rcu_preempt_deferred_qs()
+    will now simply invoke rcu_preempt_deferred_qs(), thus avoiding the
+    rcu_read_unlock_special() middleman when __rcu_read_unlock() is preempted.
+    
+    Cc: rcu@vger.kernel.org
+    Cc: kernel-team@android.com
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 187dc076c497..214e4689c29d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -313,15 +313,6 @@ void rcu_note_context_switch(bool preempt)
+ 				       ? rnp->gp_seq
+ 				       : rcu_seq_snap(&rnp->gp_seq));
+ 		rcu_preempt_ctxt_queue(rnp, rdp);
+-	} else if (t->rcu_read_lock_nesting < 0 &&
+-		   t->rcu_read_unlock_special.s) {
+-
+-		/*
+-		 * Complete exit from RCU read-side critical section on
+-		 * behalf of preempted instance of __rcu_read_unlock().
+-		 */
+-		rcu_read_unlock_special(t);
+-		rcu_preempt_deferred_qs(t);
+ 	} else {
+ 		rcu_preempt_deferred_qs(t);
+ 	}
 
