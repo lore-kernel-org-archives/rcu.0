@@ -2,141 +2,146 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DED3C06508
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:41:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C0F0C06508
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 02:09:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DFAFD2145D
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 00:41:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A09C2089C
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 02:09:02 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NjYju7wW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbfGAAl0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 30 Jun 2019 20:41:26 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:39603 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbfGAAl0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 30 Jun 2019 20:41:26 -0400
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 1 Jul 2019 09:41:24 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.222.33)
-        by 156.147.1.125 with ESMTP; 1 Jul 2019 09:41:24 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
-Date:   Mon,  1 Jul 2019 09:40:39 +0900
-Message-Id: <1561941639-14318-1-git-send-email-byungchul.park@lge.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727080AbfGACJC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 30 Jun 2019 22:09:02 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37835 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbfGACJC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 30 Jun 2019 22:09:02 -0400
+Received: by mail-pg1-f196.google.com with SMTP id g15so3315445pgi.4
+        for <rcu@vger.kernel.org>; Sun, 30 Jun 2019 19:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=e+nV6SEqkVplGDMo9LBcx7XdOKfxU2ZqhQqt7J6g96Q=;
+        b=NjYju7wWnz5EbtX6bH2cwVkIIRHS7lbzxZfh7c0+DzM4WFLUy3q4U3v7ygXkWlu0G8
+         j+yUnGjvS8yOTsDEtWvh1hgo7nccEi17Z0FcYMnw1ECG6OV2heG95oSQ1fAIk2AqG70s
+         BaPKPilgxjn8d44/6ju9p9Gc+GJD7Z5EfLtPo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=e+nV6SEqkVplGDMo9LBcx7XdOKfxU2ZqhQqt7J6g96Q=;
+        b=a9yx3C97vFBxWN21SjvUyqsRzBxGwI8e6X/52GjCfDFhJ7TTe3CYL1Yrxwbstug0en
+         z0K5PYpIIZZkl9oLzbUJjcOqZIxBQCCcp2f2l2s8Y1f5jVyzq7bkMLd+tENPLF+Z4QnG
+         zcpEtL7/ZOvPOVguqOmy6+YUTPGrp0mpzTBi/mJJ9pbeeJXgnodKYNy844om5Y2wqyFz
+         k/FtNiyBZOjhwNCgq3YGdheev3vIELIf27YyuC3UCd4KuM7giA65FhzvtOrERz5SNA+v
+         8KB0xSNpdGzvYjIxOhOUwPlxIEhKO7rE9oj49Ply/DRlvcenRqo7k9HSO6Egy8Q6AL+2
+         e/Xg==
+X-Gm-Message-State: APjAAAXVb20fTWk+OPaU/YvP+1qaJXAxZAHaSVngwfWuoW0uyFTXUSo1
+        PViDVibwpVpOa+AW9yq5m6Cnbw==
+X-Google-Smtp-Source: APXvYqxYLeG5CfuGOCStlY/xNilCvFjhIQ7lhtO95+sf9510YDBC+6t0zaEgRTmK90pnvc5lH6+yhg==
+X-Received: by 2002:a63:4c0b:: with SMTP id z11mr22191190pga.440.1561946941135;
+        Sun, 30 Jun 2019 19:09:01 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id n5sm10469711pgd.26.2019.06.30.19.08.59
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 30 Jun 2019 19:09:00 -0700 (PDT)
+Date:   Sun, 30 Jun 2019 22:08:58 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
+Message-ID: <20190701020858.GA47263@google.com>
+References: <CAEXW_YSEN_OL3ftTLN=M-W70WSuCgHJqU-R9VhS=A3uVj_AL+A@mail.gmail.com>
+ <20190627173831.GW26519@linux.ibm.com>
+ <20190627181638.GA209455@google.com>
+ <20190627184107.GA26519@linux.ibm.com>
+ <20190628164008.GB240964@google.com>
+ <20190628164559.GC240964@google.com>
+ <20190628173011.GX26519@linux.ibm.com>
+ <20190628174545.pwgwi3wxl2eapkvm@linutronix.de>
+ <20190628180727.GE240964@google.com>
+ <20190628182045.ow4i5cncauk2jxjl@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190628182045.ow4i5cncauk2jxjl@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+On Fri, Jun 28, 2019 at 08:20:45PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2019-06-28 14:07:27 [-0400], Joel Fernandes wrote:
+> > On Fri, Jun 28, 2019 at 07:45:45PM +0200, Sebastian Andrzej Siewior wrote:
+> > > On 2019-06-28 10:30:11 [-0700], Paul E. McKenney wrote:
+> > > > > I believe the .blocked field remains set even though we are not any more in a
+> > > > > reader section because of deferred processing of the blocked lists that you
+> > > > > mentioned yesterday.
+> > > > 
+> > > > That can indeed happen.  However, in current -rcu, that would mean
+> > > > that .deferred_qs is also set, which (if in_irq()) would prevent
+> > > > the raise_softirq_irqsoff() from being invoked.  Which was why I was
+> > > > asking the questions about whether in_irq() returns true within threaded
+> > > > interrupts yesterday.  If it does, I need to find if there is some way
+> > > > of determining whether rcu_read_unlock_special() is being called from
+> > > > a threaded interrupt in order to suppress the call to raise_softirq()
+> > > > in that case.
+> > > 
+> > > Please not that:
+> > > | void irq_exit(void)
+> > > | {
+> > > |…
+> > > in_irq() returns true
+> > > |         preempt_count_sub(HARDIRQ_OFFSET);
+> > > in_irq() returns false
+> > > |         if (!in_interrupt() && local_softirq_pending())
+> > > |                 invoke_softirq();
+> > > 
+> > > -> invoke_softirq() does
+> > > |        if (!force_irqthreads) {
+> > > |                 __do_softirq();
+> > > |         } else {
+> > > |                 wakeup_softirqd();
+> > > |         }
+> > > 
+> > 
+> > In my traces which I shared previous email, the wakeup_softirqd() gets
+> > called.
+> > 
+> > I thought force_irqthreads value is decided at boot time, so I got lost a bit
+> > with your comment.
+> 
+> It does. I just wanted point out that in this case
+> rcu_unlock() / rcu_read_unlock_special() won't see in_irq() true.
 
-I tested again if the WARN_ON_ONCE() is fired with my box.
+Paul, Sebastian, This commit breaks kvm.sh for me on both my machines. I have
+to revert it to make things work otherwise the test just runs for 10 seconds
+or so and dies.
 
-And it was OK.
+ "rcutorture: Tweak kvm options"
+    This reverts commit a6fda6dab93c2c06ef4b8cb4b9258df6674d2438.
 
-Thanks,
-Byungchul
+Any thoughts or debug ideas? I am running v4.19.37
 
-Changes from v2
--. Port the patch to a1af11a24cb0 (Paul's request)
--. Add a few new lines for a better look
+thanks,
 
-Changes from v1
--. WARN_ON_ONCE() on failing to create rcu_boost_kthread.
--. Changed title and commit message a bit.
-
----8<---
-From 20c934c5657a7a0f13ebb050ffd350d4174965d0 Mon Sep 17 00:00:00 2001
-From: Byungchul Park <byungchul.park@lge.com>
-Date: Mon, 1 Jul 2019 09:27:15 +0900
-Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
-
-The return value of rcu_spawn_one_boost_kthread() is not used any
-longer. Change return type of that function from int to void.
-
-Signed-off-by: Byungchul Park <byungchul.park@lge.com>
----
- kernel/rcu/tree_plugin.h | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c588ef9..b8eea22 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1119,7 +1119,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-  * already exist.  We only create this kthread for preemptible RCU.
-  * Returns zero if all is well, a negated errno otherwise.
-  */
--static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-+static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- {
- 	int rnp_index = rnp - rcu_get_root();
- 	unsigned long flags;
-@@ -1127,25 +1127,27 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	struct task_struct *t;
- 
- 	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
--		return 0;
-+		return;
- 
- 	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
--		return 0;
-+		return;
- 
- 	rcu_state.boost = 1;
-+
- 	if (rnp->boost_kthread_task != NULL)
--		return 0;
-+		return;
-+
- 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
- 			   "rcub/%d", rnp_index);
--	if (IS_ERR(t))
--		return PTR_ERR(t);
-+	if (WARN_ON_ONCE(IS_ERR(t)))
-+		return;
-+
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	rnp->boost_kthread_task = t;
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	sp.sched_priority = kthread_prio;
- 	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
- 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
--	return 0;
- }
- 
- /*
-@@ -1186,7 +1188,7 @@ static void __init rcu_spawn_boost_kthreads(void)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp)
--		(void)rcu_spawn_one_boost_kthread(rnp);
-+		rcu_spawn_one_boost_kthread(rnp);
- }
- 
- static void rcu_prepare_kthreads(int cpu)
-@@ -1196,7 +1198,7 @@ static void rcu_prepare_kthreads(int cpu)
- 
- 	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
- 	if (rcu_scheduler_fully_active)
--		(void)rcu_spawn_one_boost_kthread(rnp);
-+		rcu_spawn_one_boost_kthread(rnp);
- }
- 
- #else /* #ifdef CONFIG_RCU_BOOST */
--- 
-1.9.1
+ - Joel
 
