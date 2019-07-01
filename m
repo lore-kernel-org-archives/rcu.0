@@ -2,103 +2,114 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32321C0650E
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9748C06510
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:14:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EFDC421721
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:01:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A335721721
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 14:14:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q1EXwTG4"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="P0m+0Pg5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbfGAOBX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Jul 2019 10:01:23 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:50212 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727031AbfGAOBX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 Jul 2019 10:01:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=afNqu/duuK9wJTjZbPueWefwBIXHOijfGxxZ9sdqRnQ=; b=q1EXwTG4IJbKO+kQhc70xhFLZ
-        zx4OCyUxNDvnpQzcKOkkzn63y1QkqNmFWfh53S3jS3iEdiVAD5zrS3iN0Yc5WtNQTUhALi5BR9kr7
-        Ts0K7a+gmFwsemaJV6qgp6jEfJNtjTWmSz57A3cBzms/myhXugJx0aYIv4dJ5gB5sbEV66IXddxmW
-        xe2WKaCnIqqMBnHLtiH+aI4AL5uy+XjXmjkYUtPHnNaCITPxRsAN3AzJgptIkKXGbd8J/6FvPDorU
-        RrjrAzJwX+ePwqkpviUHdyT163GtfmimDS+5sj5RryHa8O/OekqcXnZH1SyiUrXZM34pIdJHldHAs
-        WZpE54ufA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hhwrX-0004zz-Io; Mon, 01 Jul 2019 14:00:55 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C9D6720963E23; Mon,  1 Jul 2019 16:00:53 +0200 (CEST)
-Date:   Mon, 1 Jul 2019 16:00:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Scott Wood <swood@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+        id S1726329AbfGAOOG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jul 2019 10:14:06 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:41905 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729444AbfGAOOG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 Jul 2019 10:14:06 -0400
+Received: by mail-pf1-f194.google.com with SMTP id m30so6643913pff.8
+        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 07:14:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YINPfktv7kA/rIjO+Od90qPPmCseH3mnLZRR1IdPF7U=;
+        b=P0m+0Pg5zUKQchHletu/G/Y+dNejGuQsWLqu87B4A6eMz/sjyy81hitHFOR6fXzhPz
+         AMN5nlo6Uy6MMzsJaLz8vgHnGDnk+5OwHIB/wFbp5UlRcnXkTQap8n1x6/809h8GnhKJ
+         4W1Ny7IBkYis2w/3iZ1w5tLUKuOdOoRUjJPI8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YINPfktv7kA/rIjO+Od90qPPmCseH3mnLZRR1IdPF7U=;
+        b=jV+cnKx2Cyj6/ZTLVem/boxzUC6DPeGzKfswluXmTyFyDMW5iDx62bIb7ZEGIGXnUM
+         vaD9QFeBWvp6/t56W2pyPn/imsMMaBiS1X1YM99W8VGVcaYvE+dICdGYRvM278dMJx3l
+         T2A5iuBdJK4v332me1jh15kyFvZ7Jovxbal4hG5yTrrIrGLUaY89xgInp7SNVONpDDyw
+         2I3uTdv+K3Ax7AKnmHbyQo/sn5jnuIHgUvI+0lDe9V3hgCIC49VNuOgVxjr6UOsGFerK
+         GQ6mR0ftULSHwdGXkauuluYlIZPF/DVcA2fTqmj3wrtcrXuj3CgeqpW94qlfmASHrNsa
+         ZUkw==
+X-Gm-Message-State: APjAAAUg15ly3zfPXdktywwv8Xxl2U302zCx6Vo/tgV1yMEAlvvQH4MK
+        KNcdL14aIYUZwUg6hWO+9tUDvQ==
+X-Google-Smtp-Source: APXvYqyj27gOPZDN0GjUTiTvjHFulxKrQi1/lS6qeYFZf+9M3Eo6w5AY65wlDwexnpHe3Y9i+UCHXA==
+X-Received: by 2002:a17:90a:d681:: with SMTP id x1mr30838291pju.13.1561990445430;
+        Mon, 01 Jul 2019 07:14:05 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id a16sm16528335pfd.68.2019.07.01.07.14.04
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 01 Jul 2019 07:14:04 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 10:14:03 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kselftest@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [RFC] Deadlock via recursive wakeup via RCU with threadirqs
-Message-ID: <20190701140053.GV3402@hirez.programming.kicks-ass.net>
-References: <20190627184107.GA26519@linux.ibm.com>
- <13761fee4b71cc004ad0d6709875ce917ff28fce.camel@redhat.com>
- <20190627203612.GD26519@linux.ibm.com>
- <20190628141522.GF3402@hirez.programming.kicks-ass.net>
- <20190628155404.GV26519@linux.ibm.com>
- <20190628160408.GH32547@worktop.programming.kicks-ass.net>
- <20190628172056.GW26519@linux.ibm.com>
- <20190701094215.GR3402@hirez.programming.kicks-ass.net>
- <20190701102442.35grdpcsbrwyyaco@linutronix.de>
- <20190701122305.GB26519@linux.ibm.com>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, dvyukov@google.com
+Subject: Re: [RFC 3/3] Revert "rcutorture: Tweak kvm options"
+Message-ID: <20190701141403.GA246562@google.com>
+References: <20190701040415.219001-1-joel@joelfernandes.org>
+ <20190701040415.219001-3-joel@joelfernandes.org>
+ <20190701122358.nzebpuunp6o5jxhx@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190701122305.GB26519@linux.ibm.com>
+In-Reply-To: <20190701122358.nzebpuunp6o5jxhx@linutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 05:23:05AM -0700, Paul E. McKenney wrote:
-> On Mon, Jul 01, 2019 at 12:24:42PM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2019-07-01 11:42:15 [+0200], Peter Zijlstra wrote:
-> > > I'm not sure if smp_send_reschedule() can be used as self-IPI, some
-> > > hardware doesn't particularly like that IIRC. That is, hardware might
-> > > only have interfaces to IPI _other_ CPUs, but not self.
-> > > 
-> > > The normal scheduler code takes care to not call smp_send_reschedule()
-> > > to self.
-> > 
-> > and irq_work:
-> >   471ba0e686cb1 ("irq_work: Do not raise an IPI when queueing work on the local CPU")
+On Mon, Jul 01, 2019 at 02:23:58PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2019-07-01 00:04:15 [-0400], Joel Fernandes (Google) wrote:
+> > This reverts commit a6fda6dab93c2c06ef4b8cb4b9258df6674d2438 which
+> > causes kvm.sh to not run on my machines. The qemu-system-x86_64 command
+> > runs but does nothing.
 > 
-> OK, so it looks like I will need to use something else.  But thank you
-> for calling my attention to this commit.
+> Nope. I would like to know *why* you need 'noapic' to work. Is it a
+> brand new or old qemu-system-x86_64?
 
-I think that commit is worded slight confusing -- sorry I should've paid
-more attention.
+I did not have time to debug yesterday and I posted this particular revert as
+an 'RFC' just to make aware of this problem.
 
-irq_work _does_ work locally, and arch_irq_work_raise() must self-IPI,
-otherwise everything is horribly broken.
+I spent some more time just now, it looks like this has nothing to do with
+'noapic' and appears to be a problem on debian distros with the e1000e NIC.
+May be this NIC was added to the virtual hardware because of -machine in the
+patch?
 
-But what happened, was that irq_work_queue() and irq_work_queue_on(.cpu
-= smp_processor_id()) wasn't using the same code, and the latter would
-try to self-IPI through arch_send_call_function_single_ipi().
+Any if I add the following to the qemu command that kvm.sh runs, it works again:
+-net nic,model=e1000
 
-Nick fixed that so that irq_work_queue() and irq_work_queue_on(.cpu =
-smp_processor_id() now both use arch_raise_irq_work() and remote stuff
-uses arch_send_call_function_single_ipi().
+Without it I get:
+ qemu-system-x86_64: Initialization of device e1000e failed: failed to find romfile "efi-e1000e.rom"
+
+Seems to be mentioned here:
+https://bugs.launchpad.net/ubuntu/+source/ipxe/+bug/1737211
+
+And in syzkaller as well:
+https://github.com/google/syzkaller/blob/master/vm/qemu/qemu.go#L88
+
+Adding Dmitry who is syzkaller owner for any thoughts as well.
+
+I'm happy to write a patch to set the nic model as e1000 and send it out if
+we agree this solution is good enough.
+
+ - Joel
 
