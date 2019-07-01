@@ -2,217 +2,184 @@ Return-Path: <SRS0=e+uF=U6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-7.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53601C5B578
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 21:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D48BEC5B578
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 21:50:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 27E1F20B7C
-	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 21:42:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A659321479
+	for <rcu@archiver.kernel.org>; Mon,  1 Jul 2019 21:50:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbfGAVmt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Jul 2019 17:42:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36828 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726678AbfGAVms (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 17:42:48 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61LfoQS100493;
-        Mon, 1 Jul 2019 17:42:11 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tfry0b5au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jul 2019 17:42:11 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x61Lg61f101132;
-        Mon, 1 Jul 2019 17:42:10 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tfry0b5ae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jul 2019 17:42:10 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x61Le3Um013715;
-        Mon, 1 Jul 2019 21:42:09 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 2tdym6hp84-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Jul 2019 21:42:09 +0000
+        id S1727047AbfGAVuY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jul 2019 17:50:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54854 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727028AbfGAVuY (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 1 Jul 2019 17:50:24 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Lm53Z101580
+        for <rcu@vger.kernel.org>; Mon, 1 Jul 2019 17:50:23 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfrxnbdrn-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Mon, 01 Jul 2019 17:50:22 -0400
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Mon, 1 Jul 2019 22:50:21 +0100
+Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 1 Jul 2019 22:50:18 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61Lg8r451773744
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61LoHdZ54460834
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Jul 2019 21:42:08 GMT
+        Mon, 1 Jul 2019 21:50:18 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CEB38B205F;
-        Mon,  1 Jul 2019 21:42:08 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id DCBA0B2066;
+        Mon,  1 Jul 2019 21:50:17 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A10B6B2066;
-        Mon,  1 Jul 2019 21:42:08 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id B1491B2065;
+        Mon,  1 Jul 2019 21:50:17 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Jul 2019 21:42:08 +0000 (GMT)
+        Mon,  1 Jul 2019 21:50:17 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D4F0416C2BD7; Mon,  1 Jul 2019 14:42:11 -0700 (PDT)
-Date:   Mon, 1 Jul 2019 14:42:11 -0700
+        id E450316C362C; Mon,  1 Jul 2019 14:50:20 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 14:50:20 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        kernel-team@android.com, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC 2/3] rcu: Simplify rcu_note_context_switch exit from
- critical section
-Message-ID: <20190701214211.GV26519@linux.ibm.com>
+Cc:     rcu@vger.kernel.org
+Subject: Re: [RFC 3/3] Revert "rcutorture: Tweak kvm options"
 Reply-To: paulmck@linux.ibm.com
 References: <20190701040415.219001-1-joel@joelfernandes.org>
- <20190701040415.219001-2-joel@joelfernandes.org>
- <20190701200310.GP26519@linux.ibm.com>
- <20190701213328.GB240327@google.com>
+ <20190701040415.219001-3-joel@joelfernandes.org>
+ <20190701122358.nzebpuunp6o5jxhx@linutronix.de>
+ <20190701141403.GA246562@google.com>
+ <CACT4Y+bJ-tNvMsfHcFEsWdjtBnaLTP9q=u7PCk4VMVPvW51WLQ@mail.gmail.com>
+ <20190701145920.GA71270@google.com>
+ <20190701202727.GR26519@linux.ibm.com>
+ <20190701213107.GA240327@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190701213328.GB240327@google.com>
+In-Reply-To: <20190701213107.GA240327@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
+x-cbid: 19070121-0064-0000-0000-000003F5DCD7
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011362; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01226076; UDB=6.00645446; IPR=6.01007288;
+ MB=3.00027543; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-01 21:50:20
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070121-0065-0000-0000-00003E1A765D
+Message-Id: <20190701215020.GW26519@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_13:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907010251
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010252
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 05:33:28PM -0400, Joel Fernandes wrote:
-> On Mon, Jul 01, 2019 at 01:03:10PM -0700, Paul E. McKenney wrote:
-> > On Mon, Jul 01, 2019 at 12:04:14AM -0400, Joel Fernandes (Google) wrote:
-> > > The rcu_preempt_note_context_switch() tries to handle cases where
-> > > __rcu_read_unlock() got preempted and then the context switch path does
-> > > the reporting of the quiscent state along with clearing any bits in the
-> > > rcu_read_unlock_special union.
+On Mon, Jul 01, 2019 at 05:31:07PM -0400, Joel Fernandes wrote:
+> On Mon, Jul 01, 2019 at 01:27:27PM -0700, Paul E. McKenney wrote:
+> > On Mon, Jul 01, 2019 at 10:59:20AM -0400, Joel Fernandes wrote:
+> > > On Mon, Jul 01, 2019 at 04:48:43PM +0200, Dmitry Vyukov wrote:
+> > > > On Mon, Jul 1, 2019 at 4:14 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > > >
+> > > > > On Mon, Jul 01, 2019 at 02:23:58PM +0200, Sebastian Andrzej Siewior wrote:
+> > > > > > On 2019-07-01 00:04:15 [-0400], Joel Fernandes (Google) wrote:
+> > > > > > > This reverts commit a6fda6dab93c2c06ef4b8cb4b9258df6674d2438 which
+> > > > > > > causes kvm.sh to not run on my machines. The qemu-system-x86_64 command
+> > > > > > > runs but does nothing.
+> > > > > >
+> > > > > > Nope. I would like to know *why* you need 'noapic' to work. Is it a
+> > > > > > brand new or old qemu-system-x86_64?
+> > > > >
+> > > > > I did not have time to debug yesterday and I posted this particular revert as
+> > > > > an 'RFC' just to make aware of this problem.
+> > > > >
+> > > > > I spent some more time just now, it looks like this has nothing to do with
+> > > > > 'noapic' and appears to be a problem on debian distros with the e1000e NIC.
+> > > > > May be this NIC was added to the virtual hardware because of -machine in the
+> > > > > patch?
+> > > > >
+> > > > > Any if I add the following to the qemu command that kvm.sh runs, it works again:
+> > > > > -net nic,model=e1000
+> > > > >
+> > > > > Without it I get:
+> > > > >  qemu-system-x86_64: Initialization of device e1000e failed: failed to find romfile "efi-e1000e.rom"
+> > > > >
+> > > > > Seems to be mentioned here:
+> > > > > https://bugs.launchpad.net/ubuntu/+source/ipxe/+bug/1737211
+> > > > >
+> > > > > And in syzkaller as well:
+> > > > > https://github.com/google/syzkaller/blob/master/vm/qemu/qemu.go#L88
+> > > > >
+> > > > > Adding Dmitry who is syzkaller owner for any thoughts as well.
+> > > > 
+> > > > I don't have many thoughts on this. That particular error looked like
+> > > > a bug in the package in the particular distro/version.
 > > > 
-> > > This can be handled by just calling rcu_deferred_qs() which was added
-> > > during the RCU consolidation work and already does these checks.
+> > > Paul, what is your preference here? Can we add the -net nic,model=e1000 to
+> > > fix it for the benefit of any other Debian folks running kvm.sh?
 > > > 
-> > > Tested RCU config TREE03 for an hour which succeeds.
+> > > Or do you prefer if I just built my own custom Qemu? I can't upgrade Qemu on
+> > > this machine unfortunately. But may be I can build my own.
 > > > 
-> > > Cc: rcu@vger.kernel.org
-> > > Cc: kernel-team@android.com
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > I prefer the -net option since I can save the time for something else. ;) Let
+> > > me know what you prefer and I'll fix it accordingly.
 > > 
-> > My first reaction was "that cannot possibly work", but after a bit of
-> > digging, it really does appear to work just fine.  I therefore expanded
-> > the commit log a bit, so please check it to catch any messups on my part.
+> > Why not just add the following to your kvm.sh command line?
 > > 
-> > Very cool, thank you very much!  ;-)
+> > 	--qemu-args "-net nic,model=e1000"
+> > 
+> > Easy workaround and no need to wait for changes to hit mainline.
+> > 
+> > Yes, I am perhaps naively assuming that the qemu bug in Debian will
+> > be fixed in about the time that it would take for any change to the
+> > rcutorture scripting to make its way into mainline.  ;-)
 > 
-> Awesome! Thanks. I am glad you agree with the change and I agree with your
-> changes to the commit log.
+> Thanks for the pointer to the args! Just what I wanted.
+> 
+> Only down side is then we run into the risk of other developers running
+> kvm.sh on debian as well and wondering why torture is broken. Perhaps the kvm
+> tweaks commit hasn't hit that many machines yet but it might. At least we
+> have this discussion archive here to guide such poor souls, if we don't want
+> to append these arguments by default ;-)
 
-Very good, I will push it to -rcu shortly.
+What is the likely timeframe of a qemu fix in Debian?
+
+This does raise a question of rcutorture workarounds in general.
+There will be times when some failure or another is expected behavior.
+For example, in current -rcu getting an rcutorture_oom_notify() splat or
+the occasional RCU CPU stall warning from TREE04 is expected behavior.
+This is because rcutorture's forward-progress testing is more aggressive
+that the TREE04 configuration can currently handle (but I am working
+on it).
+
+For internal-to-RCU issues, I could make rcutorture warn of the likely
+problem.  for external-to-RCU issues, such as your fun with Debian qemu,
+that won't work all that well.  I could blog about the external-to-RCU
+issues, if that would help.  Or we could trust people to either do
+the websearch or ask for help on the rcu email list.
+
+Thoughts?
+
+> The other fix, could be I just build and run a new custom qemu instance but I
+> am happy with qemu-args as well.
+
+My concern is that applying the workaround to the rcutorture scripts might
+break someone else.  Plus it is hard to synchronize with qemu releases,
+to say nothing of distro releases containing qemu.  Hence my preference
+for use of kvm.sh's --qemu-args for this purpose.
 
 							Thanx, Paul
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit ce547cb41ed7662f70d0b07d4c7f7555ba130c61
-> > Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Date:   Mon Jul 1 00:04:14 2019 -0400
-> > 
-> >     rcu: Simplify rcu_note_context_switch exit from critical section
-> >     
-> >     Because __rcu_read_unlock() can be preempted just before the call to
-> >     rcu_read_unlock_special(), it is possible for a task to be preempted just
-> >     before it would have fully exited its RCU read-side critical section.
-> >     This would result in a needless extension of that critical section until
-> >     that task was resumed, which might in turn result in a needlessly
-> >     long grace period, needless RCU priority boosting, and needless
-> >     force-quiescent-state actions.  Therefore, rcu_note_context_switch()
-> >     invokes __rcu_read_unlock() followed by rcu_preempt_deferred_qs() when
-> >     it detects this situation.  This action by rcu_note_context_switch()
-> >     ends the RCU read-side critical section immediately.
-> >     
-> >     Of course, once the task resumes, it will invoke rcu_read_unlock_special()
-> >     redundantly.  This is harmless because the fact that a preemption
-> >     happened means that interrupts, preemption, and softirqs cannot
-> >     have been disabled, so there would be no deferred quiescent state.
-> >     While ->rcu_read_lock_nesting remains less than zero, none of the
-> >     ->rcu_read_unlock_special.b bits can be set, and they were all zeroed by
-> >     the call to rcu_note_context_switch() at task-preemption time.  Therefore,
-> >     setting ->rcu_read_unlock_special.b.exp_hint to false has no effect.
-> >     
-> >     Therefore, the extra call to rcu_preempt_deferred_qs_irqrestore()
-> >     would return immediately.  With one possible exception, which is
-> >     if an expedited grace period started just as the task was being
-> >     resumed, which could leave ->exp_deferred_qs set.  This will cause
-> >     rcu_preempt_deferred_qs_irqrestore() to invoke rcu_report_exp_rdp(),
-> >     reporting the quiescent state, just as it should.  (Such an expedited
-> >     grace period won't affect the preemption code path due to interrupts
-> >     having already been disabled.)
-> >     
-> >     But when rcu_note_context_switch() invokes __rcu_read_unlock(), it
-> >     is doing so with preemption disabled, hence __rcu_read_unlock() will
-> >     unconditionally defer the quiescent state, only to immediately invoke
-> >     rcu_preempt_deferred_qs(), thus immediately reporting the deferred
-> >     quiescent state.  It turns out to be safe (and faster) to instead
-> >     just invoke rcu_preempt_deferred_qs() without the __rcu_read_unlock()
-> >     middleman.
-> >     
-> >     Because this is the invocation during the preemption (as opposed to
-> >     the invocation just after the resume), at least one of the bits in
-> >     ->rcu_read_unlock_special.b must be set and ->rcu_read_lock_nesting
-> >     must be negative.  This means that rcu_preempt_need_deferred_qs() must
-> >     return true, avoiding the early exit from rcu_preempt_deferred_qs().
-> >     Thus, rcu_preempt_deferred_qs_irqrestore() will be invoked immediately,
-> >     as required.
-> >     
-> >     This commit therefore simplifies the CONFIG_PREEMPT=y version of
-> >     rcu_note_context_switch() by removing the "else if" branch of its
-> >     "if" statement.  This change means that all callers that would have
-> >     invoked rcu_read_unlock_special() followed by rcu_preempt_deferred_qs()
-> >     will now simply invoke rcu_preempt_deferred_qs(), thus avoiding the
-> >     rcu_read_unlock_special() middleman when __rcu_read_unlock() is preempted.
-> >     
-> >     Cc: rcu@vger.kernel.org
-> >     Cc: kernel-team@android.com
-> >     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >     Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 187dc076c497..214e4689c29d 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -313,15 +313,6 @@ void rcu_note_context_switch(bool preempt)
-> >  				       ? rnp->gp_seq
-> >  				       : rcu_seq_snap(&rnp->gp_seq));
-> >  		rcu_preempt_ctxt_queue(rnp, rdp);
-> > -	} else if (t->rcu_read_lock_nesting < 0 &&
-> > -		   t->rcu_read_unlock_special.s) {
-> > -
-> > -		/*
-> > -		 * Complete exit from RCU read-side critical section on
-> > -		 * behalf of preempted instance of __rcu_read_unlock().
-> > -		 */
-> > -		rcu_read_unlock_special(t);
-> > -		rcu_preempt_deferred_qs(t);
-> >  	} else {
-> >  		rcu_preempt_deferred_qs(t);
-> >  	}
-> > 
-> 
