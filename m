@@ -2,198 +2,139 @@ Return-Path: <SRS0=UBUU=U7=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB84AC06510
-	for <rcu@archiver.kernel.org>; Tue,  2 Jul 2019 08:56:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3129C06510
+	for <rcu@archiver.kernel.org>; Tue,  2 Jul 2019 11:40:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C7F5D2089C
-	for <rcu@archiver.kernel.org>; Tue,  2 Jul 2019 08:56:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9850F2173E
+	for <rcu@archiver.kernel.org>; Tue,  2 Jul 2019 11:40:38 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="cIGkhZFv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbfGBI4n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 2 Jul 2019 04:56:43 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:36978 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbfGBI4n (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 2 Jul 2019 04:56:43 -0400
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.51 with ESMTP; 2 Jul 2019 17:56:39 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.121 with ESMTP; 2 Jul 2019 17:56:39 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Tue, 2 Jul 2019 17:55:54 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
+        id S1726811AbfGBLke (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 2 Jul 2019 07:40:34 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45806 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbfGBLke (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 2 Jul 2019 07:40:34 -0400
+Received: by mail-qk1-f195.google.com with SMTP id s22so13616547qkj.12
+        for <rcu@vger.kernel.org>; Tue, 02 Jul 2019 04:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d76+rBrIQU/StBU8cagTKv7l2BvLzcU1f3o2NLAUyms=;
+        b=cIGkhZFvDLliFso7QWmxHW9042AROXayE+sWsH7mIqA3lSlte5wY0A033Gz4nKLlWx
+         Hx/pl/r4pbHt2T0oVdSIEyu+Uma9Ug1HqKRsH/azxx+VTcRyh3KHihu+Q0LQ/kvDocKL
+         LueRxh2AwkA+lsRP4c7rTZD6VWZrhUYM4U1/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d76+rBrIQU/StBU8cagTKv7l2BvLzcU1f3o2NLAUyms=;
+        b=V9X+6SOrKUxbyO9f/TFejrQZf472wwBnBJzJO+3eX2RanxXoKf3YycjE4vxjKxXWx2
+         eazKeWjnUte1blDUFZMYw6kyMcUl39Beo0c7AXVq0ctNmHF4zITj/6GML12HbwFWyMmS
+         y+CPBhjxEPFhIEs3SG1gEh0xMrgOb2DTc78rdDEjH1M/L5pXwfz29+HIJ1p7od6WTgfP
+         641dtQWAC8l8FF29FuLwBYcaIGfLE7e/6XERTNF8FQr35OJeKKInQ2gdCZT/zH5GPX+Q
+         EsR4bDprgQaGEyZ+G8NBlb+cgJieYG45WzhRIADZVPi/UdGwK0GPfyRlf2O01aLJwjKo
+         AbqA==
+X-Gm-Message-State: APjAAAU/D5QwADZnLghkkxI218XT16jlS5txhzoMsx15y+TrPYKvcLdW
+        mX8qAspLFIpF84VUpc6meAiN2w==
+X-Google-Smtp-Source: APXvYqy6oDQ53DK9Bb+d0Z5bMhOn790lQmOVX5Wgnb6SgVmP7KjBq+ACmgSlzcTevyjdX/7RwcE8vQ==
+X-Received: by 2002:a37:b843:: with SMTP id i64mr24028603qkf.77.1562067632950;
+        Tue, 02 Jul 2019 04:40:32 -0700 (PDT)
+Received: from localhost (c-73-216-90-110.hsd1.va.comcast.net. [73.216.90.110])
+        by smtp.gmail.com with ESMTPSA id s44sm7882269qtc.8.2019.07.02.04.40.31
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Jul 2019 04:40:32 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 11:40:30 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH v3] rcu: Change return type of
- rcu_spawn_one_boost_kthread()
-Message-ID: <20190702085554.GB13132@X58A-UD3R>
-References: <1561941639-14318-1-git-send-email-byungchul.park@lge.com>
- <20190701201216.GQ26519@linux.ibm.com>
- <20190702051103.GA13132@X58A-UD3R>
- <20190702084502.GL26519@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC 1/3] rcu: Expedite the rcu quiescent state reporting if
+ help needed
+Message-ID: <20190702114030.GA5429@localhost>
+References: <20190701040415.219001-1-joel@joelfernandes.org>
+ <20190702034730.GI26519@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190702084502.GL26519@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190702034730.GI26519@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 01:45:02AM -0700, Paul E. McKenney wrote:
-> On Tue, Jul 02, 2019 at 02:11:03PM +0900, Byungchul Park wrote:
-> > On Mon, Jul 01, 2019 at 01:12:16PM -0700, Paul E. McKenney wrote:
-> > > On Mon, Jul 01, 2019 at 09:40:39AM +0900, Byungchul Park wrote:
-> > > > Hello,
-> > > > 
-> > > > I tested again if the WARN_ON_ONCE() is fired with my box.
-> > > > 
-> > > > And it was OK.
-> > > > 
-> > > > Thanks,
-> > > > Byungchul
-> > > 
-> > > And it now applies just fine, so I have queued it, thank you!
-> > > 
-> > > In the future, could you please use something like "git send-email"
-> > > to email a proper patch?  When you do it this way, after I do "git am",
-> > > I have to hand-edit the commit to remove this preamble.
+On Mon, Jul 01, 2019 at 08:47:30PM -0700, Paul E. McKenney wrote:
+> On Mon, Jul 01, 2019 at 12:04:13AM -0400, Joel Fernandes (Google) wrote:
+> > The t->rcu_read_unlock_special union's need_qs bit can be set by the
+> > scheduler tick (in rcu_flavor_sched_clock_irq) to indicate that help is
+> > needed from the rcu_read_unlock path. When this help arrives however, we
+> > can do better to speed up the quiescent state reporting which if
+> > rcu_read_unlock_special::need_qs is set might be quite urgent. Make use
+> > of this information in deciding when to do heavy-weight softirq raising
+> > where possible.
 > > 
-> > Oh! Sorry to hear that. I've been always using "git send-email" with
-> > scissors in the body expecting you do "git am -c". Do you mean it's not
-> > a good way, right? I won't use the scissors again.
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Ah.  First I have heard of the "-c" argument to "git am".  OK, now that
-> I know, feel free to continue sending me scissored patches, and thank
-> you for calling my attention to this feature!
+> Cute thought, but I am going to have to pass on this one.  The reason
+> is that by the time that ->rcu_read_unlock_special.b.need_qs gets set,
+> the grace period is already one full second old.  At that point, the
+> extra tick of waiting is down in the noise.
 > 
-> Actually, I just updated my git config to make "-c" the default.  That
-> way I don't have to remember.  ;-)
+> Right now, we do the extra work if we really are blocking an expedited
+> grace period (the first two lines of the original condition) or we are
+> running on a nohz_full CPU (which might never execute a scheduling clock
+> tick, thus potentially delaying forever).  And expedited grace periods
+> are supposed to complete in tens or maybe hundreds of microseconds,
+> assuming the RCU readers are being cooperative, which is a whole
+> different level of urgent.
 
-OK! Haha~ Thank you!
+Makes sense, I agree the patch may not be that helpful right now. I mixed up
+the different levels or urgencies. No problem dropping it.
 
-Thanks,
-Byungchul
+> 
+> Nevertheless, thank you for looking into this!
+
+My pleasure! Will keep them coming.
+
+ - Joel
 
 > 
 > 							Thanx, Paul
 > 
-> > > But while I was doing the hand-editing, I updated the commit log as
-> > > follows:
-> > > 
-> > > 	rcu: Change return type of rcu_spawn_one_boost_kthread()
-> > > 
-> > > 	The return value of rcu_spawn_one_boost_kthread() is not used
-> > > 	any longer.  This commit therefore changes its return type from
-> > > 	int to void, and removes the cast to void from its callers.
-> > > 
-> > > Does that work for you?
+> > ---
+> >  kernel/rcu/tree_plugin.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
 > > 
-> > Sure. Thank you.
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index c588ef98efd3..bff6410fac06 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -622,7 +622,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
+> >  		t->rcu_read_unlock_special.b.exp_hint = false;
+> >  		exp = (t->rcu_blocked_node && t->rcu_blocked_node->exp_tasks) ||
+> >  		      (rdp->grpmask & rnp->expmask) ||
+> > -		      tick_nohz_full_cpu(rdp->cpu);
+> > +		      tick_nohz_full_cpu(rdp->cpu)  ||
+> > +		      t->rcu_read_unlock_special.b.need_qs;
+> >  		// Need to defer quiescent state until everything is enabled.
+> >  		if (irqs_were_disabled && use_softirq &&
+> >  		    (in_interrupt() ||
+> > -- 
+> > 2.22.0.410.gd8fdbe21b5-goog
 > > 
-> > Thanks,
-> > Byungchul
-> > 
-> > > 						Thanx, Paul
-> > > 
-> > > > Changes from v2
-> > > > -. Port the patch to a1af11a24cb0 (Paul's request)
-> > > > -. Add a few new lines for a better look
-> > > > 
-> > > > Changes from v1
-> > > > -. WARN_ON_ONCE() on failing to create rcu_boost_kthread.
-> > > > -. Changed title and commit message a bit.
-> > > > 
-> > > > ---8<---
-> > > > >From 20c934c5657a7a0f13ebb050ffd350d4174965d0 Mon Sep 17 00:00:00 2001
-> > > > From: Byungchul Park <byungchul.park@lge.com>
-> > > > Date: Mon, 1 Jul 2019 09:27:15 +0900
-> > > > Subject: [PATCH v3] rcu: Change return type of rcu_spawn_one_boost_kthread()
-> > > > 
-> > > > The return value of rcu_spawn_one_boost_kthread() is not used any
-> > > > longer. Change return type of that function from int to void.
-> > > > 
-> > > > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> > > > ---
-> > > >  kernel/rcu/tree_plugin.h | 20 +++++++++++---------
-> > > >  1 file changed, 11 insertions(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > index c588ef9..b8eea22 100644
-> > > > --- a/kernel/rcu/tree_plugin.h
-> > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > @@ -1119,7 +1119,7 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-> > > >   * already exist.  We only create this kthread for preemptible RCU.
-> > > >   * Returns zero if all is well, a negated errno otherwise.
-> > > >   */
-> > > > -static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > > > +static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > > >  {
-> > > >  	int rnp_index = rnp - rcu_get_root();
-> > > >  	unsigned long flags;
-> > > > @@ -1127,25 +1127,27 @@ static int rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
-> > > >  	struct task_struct *t;
-> > > >  
-> > > >  	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-> > > > -		return 0;
-> > > > +		return;
-> > > >  
-> > > >  	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-> > > > -		return 0;
-> > > > +		return;
-> > > >  
-> > > >  	rcu_state.boost = 1;
-> > > > +
-> > > >  	if (rnp->boost_kthread_task != NULL)
-> > > > -		return 0;
-> > > > +		return;
-> > > > +
-> > > >  	t = kthread_create(rcu_boost_kthread, (void *)rnp,
-> > > >  			   "rcub/%d", rnp_index);
-> > > > -	if (IS_ERR(t))
-> > > > -		return PTR_ERR(t);
-> > > > +	if (WARN_ON_ONCE(IS_ERR(t)))
-> > > > +		return;
-> > > > +
-> > > >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > > >  	rnp->boost_kthread_task = t;
-> > > >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > > >  	sp.sched_priority = kthread_prio;
-> > > >  	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-> > > >  	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
-> > > > -	return 0;
-> > > >  }
-> > > >  
-> > > >  /*
-> > > > @@ -1186,7 +1188,7 @@ static void __init rcu_spawn_boost_kthreads(void)
-> > > >  	struct rcu_node *rnp;
-> > > >  
-> > > >  	rcu_for_each_leaf_node(rnp)
-> > > > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > > > +		rcu_spawn_one_boost_kthread(rnp);
-> > > >  }
-> > > >  
-> > > >  static void rcu_prepare_kthreads(int cpu)
-> > > > @@ -1196,7 +1198,7 @@ static void rcu_prepare_kthreads(int cpu)
-> > > >  
-> > > >  	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
-> > > >  	if (rcu_scheduler_fully_active)
-> > > > -		(void)rcu_spawn_one_boost_kthread(rnp);
-> > > > +		rcu_spawn_one_boost_kthread(rnp);
-> > > >  }
-> > > >  
-> > > >  #else /* #ifdef CONFIG_RCU_BOOST */
-> > > > -- 
-> > > > 1.9.1
-> > > > 
-> > 
+> 
