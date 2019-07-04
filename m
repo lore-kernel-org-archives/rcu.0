@@ -2,64 +2,61 @@ Return-Path: <SRS0=COUN=VB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C101C5B578
-	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 00:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C156C5B578
+	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 00:48:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BCF57218A4
-	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 00:32:17 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="x93QbMjp"
+	by mail.kernel.org (Postfix) with ESMTP id CCB4E218A4
+	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 00:48:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbfGDAcR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Jul 2019 20:32:17 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34040 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727326AbfGDAcR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Jul 2019 20:32:17 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c85so2071305pfc.1
-        for <rcu@vger.kernel.org>; Wed, 03 Jul 2019 17:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5mSLwj7+gkvo95ZBqB8MGtk8gX5/pyhYNqwWnFpcorQ=;
-        b=x93QbMjpBb5/q31ow76yg5ww75TwAvoYvPkRe2kjgaGXBNZifgkoZT8ENqITwkd+DJ
-         HSswTTv+bx+AECMesgdC7iDYRjUFaKBvcWERIfV57lYxzpuqW7l42/TCJnVWxo5/J0PG
-         2eL6bayqHNeN2+T/RIubsvEVvoK1Jqpv+bPvA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5mSLwj7+gkvo95ZBqB8MGtk8gX5/pyhYNqwWnFpcorQ=;
-        b=DDdT+UytMBJ+VCDHlbQ25V2hdrrbYFfvEaEPa0S5uCLKW3zBSHjjKf51jRF1GdqnpB
-         KnoYoKfxObVuYPoYUguD1pr39hnS2JAjaOrjTWsBc/GyblvXOBOa5eG8cU5rEohF8C8Z
-         5MwS/rPS3UA13RzgGRpWqXBwAaie3QZ6wL1sSGu366dlQZoh3FenDAOLCpOd2GkRTkbJ
-         cS+DtC7W2tyCr9MoNx6cW2P4OSAVaB8OUoQ5KkSEi2p0sooGwXENLKEIZxawUA+LTD5r
-         CHE+6pluq1+sKR11WXqh6C6QaiMzM/aqPDjFcqjr2V/W0e5Wg3MQxp3HiGONSiAxkheK
-         wJJw==
-X-Gm-Message-State: APjAAAVrCtHBFxVUmsAA/tb3rBGcYuELijvbUoJ4oYgVWfNyuIenUWug
-        U+MWLu7IepvGdVjJcLVuySeWxMb3M7o=
-X-Google-Smtp-Source: APXvYqxX/0Vh6fyzJeI9u4FsF4YlwTr0jzd9w+aoen38xc/XNZ5RJHMWJgWvAVQFyJDO5J5mLNyFNA==
-X-Received: by 2002:a65:498c:: with SMTP id r12mr39004090pgs.27.1562200335987;
-        Wed, 03 Jul 2019 17:32:15 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j5sm3674343pfi.104.2019.07.03.17.32.14
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 03 Jul 2019 17:32:15 -0700 (PDT)
-Date:   Wed, 3 Jul 2019 20:32:13 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1726656AbfGDAs2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Jul 2019 20:48:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726574AbfGDAs2 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 3 Jul 2019 20:48:28 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x640kRjt127507;
+        Wed, 3 Jul 2019 20:47:57 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2th470572u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Jul 2019 20:47:57 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x640j7pR018664;
+        Thu, 4 Jul 2019 00:47:56 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 2tdym79jna-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Jul 2019 00:47:56 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x640ltXK48038340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Jul 2019 00:47:55 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8319B2066;
+        Thu,  4 Jul 2019 00:47:55 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 854C0B205F;
+        Thu,  4 Jul 2019 00:47:55 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.26])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Jul 2019 00:47:55 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 7559A16C0B88; Wed,  3 Jul 2019 17:47:57 -0700 (PDT)
+Date:   Wed, 3 Jul 2019 17:47:57 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu <rcu@vger.kernel.org>
 Subject: Re: Normal RCU grace period can be stalled for long because
  need-resched flags not set?
-Message-ID: <20190704003213.GA218086@google.com>
+Message-ID: <20190704004757.GY26519@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
 References: <CAEXW_YTzPJptrLqx1zzouVSYpssE0JExDYLr+HRnPQco+9Tk2g@mail.gmail.com>
  <20190703113036.04f6169d@gandalf.local.home>
  <20190703164134.GA125833@google.com>
@@ -73,7 +70,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190704002130.GA68801@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-03_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907040008
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -244,7 +249,13 @@ On Wed, Jul 03, 2019 at 08:21:30PM -0400, Joel Fernandes wrote:
 > > (Not that .b.need_qs does anything about vCPU preemption just yet.)
 > 
 > Actually, I just realized, there is an extra 0 on those outliers. So it is
-> really 12 seconds, for example: 12,466,000 microseconds is ~12.4 seconds. So
+> really 12 seconds, for example: 12,466,000 microseconds is ~12.4 seconds.
+
+This is not too far off of another RCU panic point at half of the RCU CPU
+stall warning time.  But that is at roughly 10.5 seconds rather than 12.4.
+At this point, RCU asks the scheduler to force a reschedule.
+
+>                                                                           So
 > these outliers are really odd since I don't see any RCU stalls, possible theories:
 > 
 > Looking closer into the logs, it is always the last iteration of a writer:
@@ -281,7 +292,12 @@ On Wed, Jul 03, 2019 at 08:21:30PM -0400, Joel Fernandes wrote:
 > I am wondering if this because the torture_stop() is having a hard time
 > stopping my preempt disable thread, which is odd because I am checking for
 > torture_must_stop() to break out of the loop as are other threads.
-> 
+
+But you do have a number of CPU-bound kthreads that are being
+torture_stop()ed in succession, right?  I -suppose- that one of
+them consuming all CPU might make it harder for another to run,
+delaying the second thread running torture_must_stop().
+
 > Anyway this is clearly more of a test issue than an RCU one ;-)
 > 
 > > > Average grace-period duration: 215642 microseconds <-- avg ended up skewed
@@ -292,14 +308,23 @@ On Wed, Jul 03, 2019 at 08:21:30PM -0400, Joel Fernandes wrote:
 > > 
 > > Indeed, medians and percentiles are often more stable than are averages.
 > > (But yes, you can cook up distributions that work the other way around.)
+> > 
+> > > (And just did another test and the outliers are pretty consistent).
+> > > 
+> > > Also, I do occassionally see that preempt disable test not getting its Need
+> > > resched bit set yet. Even though we have multiple ticks. I am trying to trace
+> > > this out and understand it as well.
+> > 
+> > That might also be a sign that the RCU grace-period kthread is being
+> > starved for short time periods.  One way to check this is to use the
+> > rcutree.kthread_prio kernel boot parameter to set RCU's kthreads to
+> > some real-time priority.  This is not something you usually want to
+> > do because it can greatly increase the context-switch rate, but as an
+> > experiment it might provide useful clues.
+> 
+> Tried and did not change the result of outliers but that's just because it is
+> likely not an RCU issue.
 
-If I add an rcu_perf_wait_shutdown() to the end of the loop, the outliers go away.
+OK.  Strange, though.
 
-Still can't explain that :)
-
-	do {
-		...
-		...
-+               rcu_perf_wait_shutdown();
-        } while (!torture_must_stop());
-
+							Thanx, Paul
