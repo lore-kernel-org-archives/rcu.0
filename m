@@ -2,146 +2,175 @@ Return-Path: <SRS0=COUN=VB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FBA1C0651F
-	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 17:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99513C0651F
+	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 18:50:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 59376218A3
-	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 17:41:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 62BF92189E
+	for <rcu@archiver.kernel.org>; Thu,  4 Jul 2019 18:50:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XsPDatcT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbfGDRl2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Jul 2019 13:41:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31160 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726120AbfGDRl1 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 4 Jul 2019 13:41:27 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x64HbXPZ112546;
-        Thu, 4 Jul 2019 13:40:46 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2thku24be1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jul 2019 13:40:46 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x64HboBk113564;
-        Thu, 4 Jul 2019 13:40:45 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2thku24bdr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jul 2019 13:40:45 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x64HXabT001148;
-        Thu, 4 Jul 2019 17:40:45 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma03dal.us.ibm.com with ESMTP id 2tdym7ektc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Jul 2019 17:40:45 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x64HeiJr49086918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Jul 2019 17:40:44 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4BB1AB2066;
-        Thu,  4 Jul 2019 17:40:44 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2AE84B205F;
-        Thu,  4 Jul 2019 17:40:44 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.225.224])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Jul 2019 17:40:44 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D9D3B16C8EB0; Thu,  4 Jul 2019 10:40:44 -0700 (PDT)
-Date:   Thu, 4 Jul 2019 10:40:44 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1726991AbfGDSu7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Jul 2019 14:50:59 -0400
+Received: from mail-pf1-f182.google.com ([209.85.210.182]:35419 "EHLO
+        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbfGDSu6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 4 Jul 2019 14:50:58 -0400
+Received: by mail-pf1-f182.google.com with SMTP id u14so2075507pfn.2
+        for <rcu@vger.kernel.org>; Thu, 04 Jul 2019 11:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vGLU+acHWsb9J2RgHb+Q6p2v+II40Ti5aVimx/7z1pI=;
+        b=XsPDatcT4l3WHqea0mltT03pcdCEtAW9gd+Mk1Jpoa1Y86mklZrDmldJHWLFgA9Al3
+         1SnptqQQy7T6X9WmJyOnCxk5q9Ibwti4+F2VV2eHINbs4oNQV+ie5WBP2g5xDIBXPUVw
+         V9Yz4GgZyoh0Ds/plJ6QYNRDr5C/2qnQdvcQc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vGLU+acHWsb9J2RgHb+Q6p2v+II40Ti5aVimx/7z1pI=;
+        b=bLMljxiFlqvD8ZcLg1s9iUWPaszNWKLMTgtqPHMD0lgAceJ1/BK/lE251vMxVymqgl
+         YWAWTK64O+KcGkaYdmEAgB3m60POAsQGvLiOmKaJpNBN4hFuwaN2zRsIR3PXIYI7A8Ir
+         vj7Amgp3LmDbEsV1UIvrm7XaiHHXXDWbQ8f1CTmi6HsZ2VXtLuo3Uaaw0NP6KDnQHOH+
+         UP0lX6sUfjhOVIA3RQBbFiUXlNLsA8ods0r0DI2c/qLqh1SYGxcKLu1Z5CYMErAxs/vI
+         jQ+eYe/mj/6gK2TowVaUljB+NtpBLq1euk1V7V1ACx6RILbmk+Uooe8s3F8I2zO1WVDG
+         FAaQ==
+X-Gm-Message-State: APjAAAWgphbOKApy8gK70f+xsCtyqlp9PFS5NcbaNoRMlOjw7WIVHOZC
+        S7/qHlEtzmlUgxD9b7e+5Q6e6Tz/8Cw=
+X-Google-Smtp-Source: APXvYqwfsxujEw5WJgZq/eGs9oYReXEBNtw75vHS/xubWUu3mhezGDY0fZuwfSilOZFtz7xqGub6WQ==
+X-Received: by 2002:a17:90a:360b:: with SMTP id s11mr1020035pjb.51.1562266257666;
+        Thu, 04 Jul 2019 11:50:57 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id m101sm5377657pjb.7.2019.07.04.11.50.56
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 04 Jul 2019 11:50:56 -0700 (PDT)
+Date:   Thu, 4 Jul 2019 14:50:55 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH] rcuperf: Make rcuperf kernel test more robust for
- !expedited mode
-Message-ID: <20190704174044.GK26519@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190704043431.208689-1-joel@joelfernandes.org>
+        rcu <rcu@vger.kernel.org>
+Subject: Re: Normal RCU grace period can be stalled for long because
+ need-resched flags not set?
+Message-ID: <20190704185055.GA12919@google.com>
+References: <20190703173935.GU26519@linux.ibm.com>
+ <20190703212426.GC146386@google.com>
+ <20190703215714.GW26519@linux.ibm.com>
+ <20190703222406.GA203913@google.com>
+ <20190703230103.GX26519@linux.ibm.com>
+ <20190704002130.GA68801@google.com>
+ <20190704003213.GA218086@google.com>
+ <20190704005009.GZ26519@linux.ibm.com>
+ <20190704032454.GA259593@google.com>
+ <20190704171315.GG26519@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190704043431.208689-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-04_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907040225
+In-Reply-To: <20190704171315.GG26519@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 12:34:30AM -0400, Joel Fernandes (Google) wrote:
-> It is possible that the rcuperf kernel test runs concurrently with init
-> starting up.  During this time, the system is running all grace periods
-> as expedited.  However, rcuperf can also be run for normal GP tests.
-> Right now, it depends on a holdoff time before starting the test to
-> ensure grace periods start later. This works fine with the default
-> holdoff time however it is not robust in situations where init takes
-> greater than the holdoff time to finish running. Or, as in my case:
+On Thu, Jul 04, 2019 at 10:13:15AM -0700, Paul E. McKenney wrote:
+> On Wed, Jul 03, 2019 at 11:24:54PM -0400, Joel Fernandes wrote:
+> > On Wed, Jul 03, 2019 at 05:50:09PM -0700, Paul E. McKenney wrote:
+> > > On Wed, Jul 03, 2019 at 08:32:13PM -0400, Joel Fernandes wrote:
 > 
-> I modified the rcuperf test locally to also run a thread that did
-> preempt disable/enable in a loop. This had the effect of slowing down
-> init. The end result was that the "batches:" counter in rcuperf was 0
-> causing a division by 0 error in the results. This counter was 0 because
-> only expedited GPs seem to happen, not normal ones which led to the
-> rcu_state.gp_seq counter remaining constant across grace periods which
-> unexpectedly happen to be expedited. The system was running expedited
-> RCU all the time because rcu_unexpedited_gp() would not have run yet
-> from init.  In other words, the test would concurrently with init
-> booting in expedited GP mode.
+> [ . . . ]
 > 
-> To fix this properly, let us check if system_state if SYSTEM_RUNNING
-> is set before starting the test. The system_state approximately aligns
-> with when rcu_unexpedited_gp() is called and works well in practice.
+> > > > If I add an rcu_perf_wait_shutdown() to the end of the loop, the outliers go away.
+> > > > 
+> > > > Still can't explain that :)
+> > > > 
+> > > > 	do {
+> > > > 		...
+> > > > 		...
+> > > > +               rcu_perf_wait_shutdown();
+> > > >         } while (!torture_must_stop());
+> > > 
+> > > Might it be the cond_resched_tasks_rcu_qs() invoked from within
+> > > rcu_perf_wait_shutdown()?  So I have to ask...  What happens if you
+> > > use cond_resched_tasks_rcu_qs() at the end of that loop instead of
+> > > rcu_perf_wait_shutdown()?
+> > 
+> > I don't think it is, if I call cond_resched_tasks_rcu_qs(), it still doesn't
+> > help. Only calling rcu_perf_wait_shutdown() cures it.
 > 
-> I also tried late_initcall however it is still too early to be
-> meaningful for this case.
+> My eyes seem to be working better today.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Here is rcu_perf_wait_shutdown():
+> 
+> 	static void rcu_perf_wait_shutdown(void)
+> 	{
+> 		cond_resched_tasks_rcu_qs();
+> 		if (atomic_read(&n_rcu_perf_writer_finished) < nrealwriters)
+> 			return;
+> 		while (!torture_must_stop())
+> 			schedule_timeout_uninterruptible(1);
+> 	}
+> 
+> Take a close look at the "while" loop.  It is effectively ending your
+> test prematurely and thus rendering the code no longer CPU-bound.  ;-)
 
-Good catch, queued, thank you!
+That makes a lot of sense. I also found that I can drop
+'rcu_perf_wait_shutdown' in my preempt-disable loop as long as I don't do an
+ftrace trace. I suspect the trace dump happening at the end is messing with
+the last iteration of the writer loops. My preempt disable loop probably
+disables preemption for a long time without rescheduling during this ftrace
+dump.
 
-							Thanx, Paul
+Anyway, having the rcu_perf_wait_shutdown without doing the ftrace dump seems
+to solve it.
 
-> ---
->  kernel/rcu/rcuperf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> index 4513807cd4c4..5a879d073c1c 100644
-> --- a/kernel/rcu/rcuperf.c
-> +++ b/kernel/rcu/rcuperf.c
-> @@ -375,6 +375,14 @@ rcu_perf_writer(void *arg)
->  	if (holdoff)
->  		schedule_timeout_uninterruptible(holdoff * HZ);
->  
-> +	/*
-> +	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
-> +	 * so that RCU is not always expedited for normal GP tests.
-> +	 * The system_state test is approximate, but works well in practice.
-> +	 */
-> +	while (!gp_exp && system_state != SYSTEM_RUNNING)
-> +		schedule_timeout_uninterruptible(1);
-> +
->  	t = ktime_get_mono_fast_ns();
->  	if (atomic_inc_return(&n_rcu_perf_writer_started) >= nrealwriters) {
->  		t_rcu_perf_writer_started = t;
-> -- 
-> 2.22.0.410.gd8fdbe21b5-goog
-> 
+So actually the point of all my testing was (other than learning) was to
+compare how RCU pre-consolidated vs post-consolidated does. As predicted,
+with post-consolidated RCU, the preempt-disable / enable does manage to slow
+down the grace periods. This is not an issue per-se as you said that even
+100s of ms of grace period delay is within acceptable RCU latencies. The
+results are as below:
+
+I am happy to try out any other test scenarios as well if you would like me
+to. I am open to any other suggestions you may have to improve the rcuperf
+tests in this (deferred/consolidated RCU) or other regards.
+
+I did have a request, could you help me understand why is the grace period
+duration double that of my busy wait time? You mentioned this has something
+to do with the thread not waking up before another GP is started. But I did
+not follow this. Thanks a lot!!
+
+Performance changes in consolidated vs regular
+-------------------------------------------
+I ran a thread on a reserved CPU doing preempt disable + busy wait + preempt enable
+in a loop and measured the difference in rcuperf between conslidated and regular.
+nreaders = nwriters = 10.
+
+		(preempt disable duration)
+		5ms	10ms	20ms	50ms
+v4.19
+median (usecs)	12000.3	12001	11000	12000
+
+v5.1 (deferred)
+median (usecs)	13000	19999   40000   100000
+
+All of this is still within spec of RCU.
+
+Note as discussed:
+These results are independent of the value of jiffies_to_sched_qs. However,
+in my preempt-disable + enable loop, if I don't do a
+set_preempt_need_resched() in my loop, then I need to lower
+jiffies_to_sched_qs to bring down the grace period durations. This is
+understandable because the tick may not know sooner that it needs to resched
+the preempt disable busy loop.
+
+thanks,
+
+ J.
+
