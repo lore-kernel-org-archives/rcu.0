@@ -2,34 +2,58 @@ Return-Path: <SRS0=HKaF=VC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BEA1C5B57D
-	for <rcu@archiver.kernel.org>; Fri,  5 Jul 2019 03:53:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC164C46499
+	for <rcu@archiver.kernel.org>; Fri,  5 Jul 2019 12:24:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4A379216E3
-	for <rcu@archiver.kernel.org>; Fri,  5 Jul 2019 03:53:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B86421850
+	for <rcu@archiver.kernel.org>; Fri,  5 Jul 2019 12:24:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="YMLUm+Os"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbfGEDxX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Jul 2019 23:53:23 -0400
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:41457 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727053AbfGEDxX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 4 Jul 2019 23:53:23 -0400
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.53 with ESMTP; 5 Jul 2019 12:53:20 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.121 with ESMTP; 5 Jul 2019 12:53:20 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Fri, 5 Jul 2019 12:52:31 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        id S1725730AbfGEMYx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 Jul 2019 08:24:53 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:44768 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbfGEMYx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 5 Jul 2019 08:24:53 -0400
+Received: by mail-pl1-f194.google.com with SMTP id t14so1466508plr.11
+        for <rcu@vger.kernel.org>; Fri, 05 Jul 2019 05:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=n+92+mQnqCZ85omin5e6YlwLAH24rD0pIJUmhGE33hw=;
+        b=YMLUm+Oskz620j3p0Ws9Tub7WR4bn2kIp+Yj5nnbwLmtfu9jCvdDJFNPmaJPD3PuSO
+         QwWHb7Dz0k/IPJUe+7lloYfW2Nv8Xruz52EjVyZnb27KFZOsCemBK0F/xZT7qSw5FBLy
+         efH3BnsIR/XBoyE9ZcOwt+kZGyJjM0KjKVTeQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n+92+mQnqCZ85omin5e6YlwLAH24rD0pIJUmhGE33hw=;
+        b=nehk37aX0wMGfehRmB6PlkM8tAK84QaP/c3Jrg7XR0cNPAprt6fDpAa7HGk5eY8tlr
+         fQmn8OHOBVBZ3I8AKcd1kWmkk0DJ54FcCSHjORTd5aglInEIByAGIDb/lTtzHMo8SjZG
+         XRWUheB2w6VC3ArEwjUcyQPui/DA/VCCZCQ8BpvNxVrcAVNB65HyEr/9VZ2oCFdwzSzb
+         EVvcQyUM5c3rfv6KymJSJCorQSD8aOenrYwntF18pA38mRicPypZg/2tDvCBk7Ktazdx
+         s47isgtr9Piq7oDZ1c2KwTOgRf334a6FOTfV02BHk1moH1UUeTyUwp+Br9A0ToEh4CgO
+         a4Og==
+X-Gm-Message-State: APjAAAV1yx+Peuev6mearZpcfpFw6g6853ZlUS9UbLEc5F6odqyjVyTE
+        nnn664eqXHDr2WoJO0Gz1Nuddw==
+X-Google-Smtp-Source: APXvYqz9Zg2BFfwa8+N5Mja9B+tXvwy1K4XGIBLkOS/IhmO07//Bx7qCdd5bXEtvmGP3HnRsd+VGCQ==
+X-Received: by 2002:a17:902:2889:: with SMTP id f9mr5078928plb.230.1562329492204;
+        Fri, 05 Jul 2019 05:24:52 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id v23sm8845074pff.185.2019.07.05.05.24.50
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 05 Jul 2019 05:24:51 -0700 (PDT)
+Date:   Fri, 5 Jul 2019 08:24:50 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -38,90 +62,57 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         kernel-team@android.com
 Subject: Re: [PATCH] rcuperf: Make rcuperf kernel test more robust for
  !expedited mode
-Message-ID: <20190705035231.GA31088@X58A-UD3R>
+Message-ID: <20190705122450.GA82532@google.com>
 References: <20190704043431.208689-1-joel@joelfernandes.org>
  <20190704174044.GK26519@linux.ibm.com>
+ <20190705035231.GA31088@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190704174044.GK26519@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190705035231.GA31088@X58A-UD3R>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 10:40:44AM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 04, 2019 at 12:34:30AM -0400, Joel Fernandes (Google) wrote:
-> > It is possible that the rcuperf kernel test runs concurrently with init
-> > starting up.  During this time, the system is running all grace periods
-> > as expedited.  However, rcuperf can also be run for normal GP tests.
-> > Right now, it depends on a holdoff time before starting the test to
-> > ensure grace periods start later. This works fine with the default
-> > holdoff time however it is not robust in situations where init takes
-> > greater than the holdoff time to finish running. Or, as in my case:
-> > 
-> > I modified the rcuperf test locally to also run a thread that did
-> > preempt disable/enable in a loop. This had the effect of slowing down
-> > init. The end result was that the "batches:" counter in rcuperf was 0
-> > causing a division by 0 error in the results. This counter was 0 because
-> > only expedited GPs seem to happen, not normal ones which led to the
-> > rcu_state.gp_seq counter remaining constant across grace periods which
-> > unexpectedly happen to be expedited. The system was running expedited
-> > RCU all the time because rcu_unexpedited_gp() would not have run yet
-> > from init.  In other words, the test would concurrently with init
-> > booting in expedited GP mode.
-> > 
-> > To fix this properly, let us check if system_state if SYSTEM_RUNNING
-> > is set before starting the test. The system_state approximately aligns
-
-Just minor typo..
-
-To fix this properly, let us check if system_state if SYSTEM_RUNNING
-is set before starting the test. ...
-
-Should be
-
-To fix this properly, let us check if system_state is set to
-SYSTEM_RUNNING before starting the test. ...
-
-Thanks,
-Byungchul
-
-> > with when rcu_unexpedited_gp() is called and works well in practice.
-> > 
-> > I also tried late_initcall however it is still too early to be
-> > meaningful for this case.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Fri, Jul 05, 2019 at 12:52:31PM +0900, Byungchul Park wrote:
+> On Thu, Jul 04, 2019 at 10:40:44AM -0700, Paul E. McKenney wrote:
+> > On Thu, Jul 04, 2019 at 12:34:30AM -0400, Joel Fernandes (Google) wrote:
+> > > It is possible that the rcuperf kernel test runs concurrently with init
+> > > starting up.  During this time, the system is running all grace periods
+> > > as expedited.  However, rcuperf can also be run for normal GP tests.
+> > > Right now, it depends on a holdoff time before starting the test to
+> > > ensure grace periods start later. This works fine with the default
+> > > holdoff time however it is not robust in situations where init takes
+> > > greater than the holdoff time to finish running. Or, as in my case:
+> > > 
+> > > I modified the rcuperf test locally to also run a thread that did
+> > > preempt disable/enable in a loop. This had the effect of slowing down
+> > > init. The end result was that the "batches:" counter in rcuperf was 0
+> > > causing a division by 0 error in the results. This counter was 0 because
+> > > only expedited GPs seem to happen, not normal ones which led to the
+> > > rcu_state.gp_seq counter remaining constant across grace periods which
+> > > unexpectedly happen to be expedited. The system was running expedited
+> > > RCU all the time because rcu_unexpedited_gp() would not have run yet
+> > > from init.  In other words, the test would concurrently with init
+> > > booting in expedited GP mode.
+> > > 
+> > > To fix this properly, let us check if system_state if SYSTEM_RUNNING
+> > > is set before starting the test. The system_state approximately aligns
 > 
-> Good catch, queued, thank you!
+> Just minor typo..
 > 
-> 							Thanx, Paul
+> To fix this properly, let us check if system_state if SYSTEM_RUNNING
+> is set before starting the test. ...
 > 
-> > ---
-> >  kernel/rcu/rcuperf.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> > index 4513807cd4c4..5a879d073c1c 100644
-> > --- a/kernel/rcu/rcuperf.c
-> > +++ b/kernel/rcu/rcuperf.c
-> > @@ -375,6 +375,14 @@ rcu_perf_writer(void *arg)
-> >  	if (holdoff)
-> >  		schedule_timeout_uninterruptible(holdoff * HZ);
-> >  
-> > +	/*
-> > +	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
-> > +	 * so that RCU is not always expedited for normal GP tests.
-> > +	 * The system_state test is approximate, but works well in practice.
-> > +	 */
-> > +	while (!gp_exp && system_state != SYSTEM_RUNNING)
-> > +		schedule_timeout_uninterruptible(1);
-> > +
-> >  	t = ktime_get_mono_fast_ns();
-> >  	if (atomic_inc_return(&n_rcu_perf_writer_started) >= nrealwriters) {
-> >  		t_rcu_perf_writer_started = t;
-> > -- 
-> > 2.22.0.410.gd8fdbe21b5-goog
-> > 
+> Should be
+> 
+> To fix this properly, let us check if system_state is set to
+> SYSTEM_RUNNING before starting the test. ...
+
+That's a fair point. I wonder if Paul already fixed it up in his tree,
+however I am happy to resend if he hasn't. Paul, how would you like to handle
+this commit log nit?
+
+it is just 'if ..' to 'is SYSTEM_RUNNING'
