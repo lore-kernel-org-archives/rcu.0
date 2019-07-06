@@ -2,65 +2,62 @@ Return-Path: <SRS0=wSob=VD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 981CEC0650E
-	for <rcu@archiver.kernel.org>; Sat,  6 Jul 2019 12:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C0FAC0650E
+	for <rcu@archiver.kernel.org>; Sat,  6 Jul 2019 18:05:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 68D1720989
-	for <rcu@archiver.kernel.org>; Sat,  6 Jul 2019 12:18:11 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="WviQ2C11"
+	by mail.kernel.org (Postfix) with ESMTP id EBD3B2082F
+	for <rcu@archiver.kernel.org>; Sat,  6 Jul 2019 18:05:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbfGFMSL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 6 Jul 2019 08:18:11 -0400
-Received: from mail-pf1-f179.google.com ([209.85.210.179]:43876 "EHLO
-        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbfGFMSK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 6 Jul 2019 08:18:10 -0400
-Received: by mail-pf1-f179.google.com with SMTP id i189so5403373pfg.10
-        for <rcu@vger.kernel.org>; Sat, 06 Jul 2019 05:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ekzw620iVN9hopuCq9HDJezZD1Eq5z77ZDpcBE0Rd5M=;
-        b=WviQ2C11mGiDHMb3WHn9M0dOFBDxFLzQLdA6Z875Jb1IzBXV4CsZW1Cf2m2tZ9QGwl
-         7wwsHE+gA3T37RLpRdVSCYjd1boBbjy5a4ABH5QS609GbZPhcee4i00ebpe+JdDMTdm/
-         jfO0s6hjs27HfeFqr0533Tkc2hdPyf5ECSXlc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ekzw620iVN9hopuCq9HDJezZD1Eq5z77ZDpcBE0Rd5M=;
-        b=UH1eNi/u17G7bx/LjEaycohiuIC4xZNVNSK0wUtUqyGEe/g84sNYl/C1DusQFrOINQ
-         1t5Mutas3fgQsRRHGxgXDVJ2Ee+lQ220xboOcUbJQ6yuVeZKoLxJj2Dw5nnnn2UNWgDV
-         BMFvZhNIhJDnR+dh3pgov2Rmi0Pq/Jx2jQVtLs/VpRHX/3dTqtJAKIkCahYwaqpaEBdA
-         iK0fS0TdOLDopMW+khzHfij8AqA55nl2vLWgNd0Qa8E/SSzjEUsdh8S0uVKC5MkKwZjF
-         sQX//KG96BEIvNS3JKAEmNZJsRZMjhNgYiIah62h2amjFEx56zD4ZfYJLyZtbiFoT3yP
-         DGFQ==
-X-Gm-Message-State: APjAAAU6wCfF9rbdvCb96AImZio/uOrbaVT6zrCoLl2H+aX4g7WnHHfC
-        TzcMeROKKcLacVRds0zfT9FJHA==
-X-Google-Smtp-Source: APXvYqzjFh9diEY7yWc1z7dToSeCs22Bkfm6L1WawHSEArKaRL18p1kqIDR6ZF+ouOakQpMa3lrLZg==
-X-Received: by 2002:a63:8f09:: with SMTP id n9mr10666325pgd.249.1562415489976;
-        Sat, 06 Jul 2019 05:18:09 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a5sm10407147pjv.21.2019.07.06.05.18.08
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 06 Jul 2019 05:18:09 -0700 (PDT)
-Date:   Sat, 6 Jul 2019 08:18:07 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1726915AbfGFSFh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 6 Jul 2019 14:05:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726966AbfGFSFh (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sat, 6 Jul 2019 14:05:37 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x66I1uHq039679
+        for <rcu@vger.kernel.org>; Sat, 6 Jul 2019 14:05:35 -0400
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tjn8u7cd5-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Sat, 06 Jul 2019 14:05:35 -0400
+Received: from localhost
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Sat, 6 Jul 2019 19:05:35 +0100
+Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Sat, 6 Jul 2019 19:05:32 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x66I5VoH52232614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 6 Jul 2019 18:05:31 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9AC7EB205F;
+        Sat,  6 Jul 2019 18:05:31 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A977B2067;
+        Sat,  6 Jul 2019 18:05:31 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.80.215.71])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sat,  6 Jul 2019 18:05:31 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 106F716C1F1D; Sat,  6 Jul 2019 11:05:32 -0700 (PDT)
+Date:   Sat, 6 Jul 2019 11:05:32 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu <rcu@vger.kernel.org>
-Subject: [attn: Steve] Re: Normal RCU grace period can be stalled for long
- because need-resched flags not set?
-Message-ID: <20190706121807.GB200542@google.com>
-References: <20190704002130.GA68801@google.com>
- <20190704003213.GA218086@google.com>
+Subject: Re: [attn: Steve] Re: Normal RCU grace period can be stalled for
+ long because need-resched flags not set?
+Reply-To: paulmck@linux.ibm.com
+References: <20190704003213.GA218086@google.com>
  <20190704005009.GZ26519@linux.ibm.com>
  <20190704032454.GA259593@google.com>
  <20190704171315.GG26519@linux.ibm.com>
@@ -69,48 +66,68 @@ References: <20190704002130.GA68801@google.com>
  <20190705000830.GB12919@google.com>
  <20190705013045.GA141984@google.com>
  <20190705015726.GN26519@linux.ibm.com>
+ <20190706121807.GB200542@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190705015726.GN26519@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190706121807.GB200542@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19070618-0052-0000-0000-000003DB2CD2
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011388; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01228361; UDB=6.00646837; IPR=6.01009612;
+ MB=3.00027611; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-06 18:05:33
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070618-0053-0000-0000-000061976999
+Message-Id: <20190706180532.GX26519@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-06_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907060240
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 06:57:26PM -0700, Paul E. McKenney wrote:
-[snip]
-> > I tried again, if I make sure the ftrace dump absolutely does not happen
-> > until the preempt-disable loop is done marked by a new global variable as you
-> > pointed, then it fixes it. And I don't need any set_preempt_need_resched() or
-> > rcu_perf_shutdown_wait() in my preempt disable loop to fix it. Basically the
-> > below diff. However, it still does answer the question about why a parallel
-> > ftrace dump running in parallel with the still running preempt-disable loop
-> > caused some writers to have multi-second grace periods. I think something
-> > during the ftrace dump prevented the tick path of that loop CPU to set the
-> > need-resched flag. It is quite hard to trace because the problem itself is
-> > caused by tracing, so by the time the dump starts, the traces cannot be seen
-> > after that which are what would give a clue here.
+On Sat, Jul 06, 2019 at 08:18:07AM -0400, Joel Fernandes wrote:
+> On Thu, Jul 04, 2019 at 06:57:26PM -0700, Paul E. McKenney wrote:
+> [snip]
+> > > I tried again, if I make sure the ftrace dump absolutely does not happen
+> > > until the preempt-disable loop is done marked by a new global variable as you
+> > > pointed, then it fixes it. And I don't need any set_preempt_need_resched() or
+> > > rcu_perf_shutdown_wait() in my preempt disable loop to fix it. Basically the
+> > > below diff. However, it still does answer the question about why a parallel
+> > > ftrace dump running in parallel with the still running preempt-disable loop
+> > > caused some writers to have multi-second grace periods. I think something
+> > > during the ftrace dump prevented the tick path of that loop CPU to set the
+> > > need-resched flag. It is quite hard to trace because the problem itself is
+> > > caused by tracing, so by the time the dump starts, the traces cannot be seen
+> > > after that which are what would give a clue here.
+> > 
+> > Hmmm...  Doesn't ftrace_dump() iterate through the trace buffer with
+> > interrupts disabled or some such?  If so, that would fully explain
+> > its delaying RCU grace periods.
 > 
-> Hmmm...  Doesn't ftrace_dump() iterate through the trace buffer with
-> interrupts disabled or some such?  If so, that would fully explain
-> its delaying RCU grace periods.
+> Looking through the ftrace_dump() code, I don't see any interrupt disabled
+> happening, and in this case it would be happening on a different CPU than my
+> preempt disable loop anyway since that loop runs on a CPU I reserved, and the
+> writer thread doing the dump runs on a different CPU. So it is a bit odd that
+> the presence of my preempt disable loop effects anything. No having the
+> preempt disable loop in the first place, does not have this issue.
+> 
+> (Also added "attn: Steve" for the tracing question, to get his attention
+> since this thread is very long).
+> Steven, any thoughts on how rcu_ftrace_dump() can affect grace-period
+> durations or other RCU parts? Do you see how it could impact the RCU GP
+> thread if at all? I did setup RT priority 10 for the thread.
 
-Looking through the ftrace_dump() code, I don't see any interrupt disabled
-happening, and in this case it would be happening on a different CPU than my
-preempt disable loop anyway since that loop runs on a CPU I reserved, and the
-writer thread doing the dump runs on a different CPU. So it is a bit odd that
-the presence of my preempt disable loop effects anything. No having the
-preempt disable loop in the first place, does not have this issue.
+I see a local_irq_save() a few lines into ftrace_dump() itself.  Am I
+missing where interrupts are being re-enabled prior to the trace-dump
+loop?
 
-(Also added "attn: Steve" for the tracing question, to get his attention
-since this thread is very long).
-Steven, any thoughts on how rcu_ftrace_dump() can affect grace-period
-durations or other RCU parts? Do you see how it could impact the RCU GP
-thread if at all? I did setup RT priority 10 for the thread.
-
-thanks,
-
-- Joel
+							Thanx, Paul
 
