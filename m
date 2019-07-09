@@ -1,182 +1,162 @@
-Return-Path: <SRS0=xvUT=VF=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=kj2p=VG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 635D7C606BD
-	for <rcu@archiver.kernel.org>; Mon,  8 Jul 2019 14:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E3EDC606D4
+	for <rcu@archiver.kernel.org>; Tue,  9 Jul 2019 05:59:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 37B94216E3
-	for <rcu@archiver.kernel.org>; Mon,  8 Jul 2019 14:16:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="gyN0YHNc"
+	by mail.kernel.org (Postfix) with ESMTP id 21D5821707
+	for <rcu@archiver.kernel.org>; Tue,  9 Jul 2019 05:59:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbfGHOQD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 Jul 2019 10:16:03 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46345 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728596AbfGHOQC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 Jul 2019 10:16:02 -0400
-Received: by mail-pl1-f195.google.com with SMTP id c2so6785344plz.13
-        for <rcu@vger.kernel.org>; Mon, 08 Jul 2019 07:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=u9RL5HLIh6yezhONARBvRLsllF5O+Vu+bd50FG8GPeY=;
-        b=gyN0YHNczYaqbKMNxfVnPIHqbb7Poo5eHmBPxPyR7UH18iDMNfNqvvwfAp0LudnpgN
-         9drB30RY6sopMAGb/+PSDNk7s1iGnLv43LKlFHK/2ebtEIRMJ7kDg70BHPh67z9ka0xI
-         KjS0xw64uJQ9BPCf05c0u6GMwWzhF7ZIGCFbc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=u9RL5HLIh6yezhONARBvRLsllF5O+Vu+bd50FG8GPeY=;
-        b=aU3ozfxYafngTwNVmiftwJwOp3ycvU4P49dFX5QvdTaiqMKp8v9BTGwN8bTAq3rrgp
-         z1rxG0a20j3QjaDk/1PlIcGv9WMtK+a7EZUdxipfGYmerFZEyDa1daTiz202hIE+inYA
-         u7YZdAgYPJb2kipbEAEMPLPhwKzeLsS3vcl07WZ/USiMOHG3KgodNxLj56mqhGruvB6a
-         VbDghjaYyeSdhurYOLyBPCLT0+VJsxeoM0e6AC9x5ksXV3Qs+8PMAyukjkpKGe63FlwC
-         0rMMPwoLZyo/kp5sowMoILwkZpD8ucS9DSGeNJb7M9hFNthobFewDRxqLSJXjYc0/5QU
-         2Hew==
-X-Gm-Message-State: APjAAAVXGDC7rJy5yL0tgvNm/hp6weCsWB0YQ9H5eaUkWIOKVkXifDQR
-        906Iwqx2rbG2rmecfcAXMMi6eQ==
-X-Google-Smtp-Source: APXvYqxb6IizE0wC0he65Sm98Lu2XGHoXIXCLk+iD3+4L4dS8QzFXvI2oZXifbXVO6KE2sewejXoKw==
-X-Received: by 2002:a17:902:6a87:: with SMTP id n7mr24899181plk.336.1562595361294;
-        Mon, 08 Jul 2019 07:16:01 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h2sm15169663pgs.17.2019.07.08.07.16.00
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 08 Jul 2019 07:16:00 -0700 (PDT)
-Date:   Mon, 8 Jul 2019 10:15:59 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
+        id S1727242AbfGIF7N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 9 Jul 2019 01:59:13 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:49027 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726917AbfGIF7N (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 9 Jul 2019 01:59:13 -0400
+Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
+        by 156.147.23.51 with ESMTP; 9 Jul 2019 14:59:09 +0900
+X-Original-SENDERIP: 156.147.1.121
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.121 with ESMTP; 9 Jul 2019 14:59:09 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Tue, 9 Jul 2019 14:58:16 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>, josh@joshtriplett.org,
         rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         jiangshanlai@gmail.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@lge.com
 Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190708141559.GA62060@google.com>
+Message-ID: <20190709055815.GA19459@X58A-UD3R>
 References: <1562565609-12482-1-git-send-email-byungchul.park@lge.com>
  <20190708125013.GG26519@linux.ibm.com>
  <20190708130359.GA42888@google.com>
- <20190708131942.GH26519@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190708131942.GH26519@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190708130359.GA42888@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 06:19:42AM -0700, Paul E. McKenney wrote:
-[snip]
-> > > Actually, the intent was to only allow this to be changed at boot time.
-> > > Of course, if there is now a good reason to adjust it, it needs
-> > > to be adjustable.  So what situation is making you want to change
-> > > jiffies_till_sched_qs at runtime?  To what values is it proving useful
-> > > to adjust it?  What (if any) relationships between this timeout and the
-> > > various other RCU timeouts need to be maintained?  What changes to
-> > > rcutorture should be applied in order to test the ability to change
-> > > this at runtime?
-> > 
-> > I am also interested in the context, are you changing it at runtime for
-> > experimentation? I recently was doing some performance experiments and it is
-> > quite interesting how reducing this value can shorten grace period times :)
+On Mon, Jul 08, 2019 at 09:03:59AM -0400, Joel Fernandes wrote:
+> > Actually, the intent was to only allow this to be changed at boot time.
+> > Of course, if there is now a good reason to adjust it, it needs
+> > to be adjustable.  So what situation is making you want to change
+> > jiffies_till_sched_qs at runtime?  To what values is it proving useful
+> > to adjust it?  What (if any) relationships between this timeout and the
+> > various other RCU timeouts need to be maintained?  What changes to
+> > rcutorture should be applied in order to test the ability to change
+> > this at runtime?
 > 
-> If you -really- want to reduce grace-period latencies, you can always
-> boot with rcupdate.rcu_expedited=1.  ;-)
+> I am also interested in the context, are you changing it at runtime for
+> experimentation? I recently was doing some performance experiments and it is
+> quite interesting how reducing this value can shorten grace period times :)
+
+Hi Joel,
+
+I've read a thread talking about your experiment to see how the grace
+periods change depending on the tunnable variables which was interesting
+to me. While reading it, I found out jiffies_till_sched_qs is not
+tunnable at runtime unlike jiffies_till_{first,next}_fqs which looks
+like non-sense to me that's why I tried this patch. :)
+
+Hi Paul,
+
+IMHO, as much as we want to tune the time for fqs to be initiated, we
+can also want to tune the time for the help from scheduler to start.
+I thought only difference between them is a level of urgency. I might be
+wrong. It would be appreciated if you let me know if I miss something.
+
+And it's ok even if the patch is turned down based on your criteria. :)
+
+Thanks,
+Byungchul
+
+> Joel
 > 
-> If you want to reduce grace-period latencies, but without all the IPIs
-> that expedited grace periods give you, the rcutree.jiffies_till_first_fqs
-> and rcutree.jiffies_till_next_fqs kernel boot parameters might be better
-> places to start than rcutree.jiffies_till_sched_qs.  For one thing,
-> adjusting these two affects the value of jiffies_till_sched_qs.
-
-Yes, agreed ;)
-
- Joel
-
+> 
+> > 							Thanx, Paul
 > > 
-> > > 							Thanx, Paul
+> > > The function for setting jiffies_to_sched_qs,
+> > > adjust_jiffies_till_sched_qs() will be called only if
+> > > the value from sysfs != ULONG_MAX. And the value won't be adjusted
+> > > unlike first/next fqs jiffies.
 > > > 
-> > > > The function for setting jiffies_to_sched_qs,
-> > > > adjust_jiffies_till_sched_qs() will be called only if
-> > > > the value from sysfs != ULONG_MAX. And the value won't be adjusted
-> > > > unlike first/next fqs jiffies.
-> > > > 
-> > > > While at it, changed the positions of two module_param()s downward.
-> > > > 
-> > > > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
-> > > > ---
-> > > >  kernel/rcu/tree.c | 22 ++++++++++++++++++++--
-> > > >  1 file changed, 20 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index a2f8ba2..a28e2fe 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -422,9 +422,7 @@ static int rcu_is_cpu_rrupt_from_idle(void)
-> > > >   * quiescent-state help from rcu_note_context_switch().
-> > > >   */
-> > > >  static ulong jiffies_till_sched_qs = ULONG_MAX;
-> > > > -module_param(jiffies_till_sched_qs, ulong, 0444);
-> > > >  static ulong jiffies_to_sched_qs; /* See adjust_jiffies_till_sched_qs(). */
-> > > > -module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
-> > > >  
-> > > >  /*
-> > > >   * Make sure that we give the grace-period kthread time to detect any
-> > > > @@ -450,6 +448,18 @@ static void adjust_jiffies_till_sched_qs(void)
-> > > >  	WRITE_ONCE(jiffies_to_sched_qs, j);
-> > > >  }
-> > > >  
-> > > > +static int param_set_sched_qs_jiffies(const char *val, const struct kernel_param *kp)
-> > > > +{
-> > > > +	ulong j;
-> > > > +	int ret = kstrtoul(val, 0, &j);
-> > > > +
-> > > > +	if (!ret && j != ULONG_MAX) {
-> > > > +		WRITE_ONCE(*(ulong *)kp->arg, j);
-> > > > +		adjust_jiffies_till_sched_qs();
-> > > > +	}
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > >  static int param_set_first_fqs_jiffies(const char *val, const struct kernel_param *kp)
-> > > >  {
-> > > >  	ulong j;
-> > > > @@ -474,6 +484,11 @@ static int param_set_next_fqs_jiffies(const char *val, const struct kernel_param
-> > > >  	return ret;
-> > > >  }
-> > > >  
-> > > > +static struct kernel_param_ops sched_qs_jiffies_ops = {
-> > > > +	.set = param_set_sched_qs_jiffies,
-> > > > +	.get = param_get_ulong,
-> > > > +};
-> > > > +
-> > > >  static struct kernel_param_ops first_fqs_jiffies_ops = {
-> > > >  	.set = param_set_first_fqs_jiffies,
-> > > >  	.get = param_get_ulong,
-> > > > @@ -484,8 +499,11 @@ static int param_set_next_fqs_jiffies(const char *val, const struct kernel_param
-> > > >  	.get = param_get_ulong,
-> > > >  };
-> > > >  
-> > > > +module_param_cb(jiffies_till_sched_qs, &sched_qs_jiffies_ops, &jiffies_till_sched_qs, 0644);
-> > > >  module_param_cb(jiffies_till_first_fqs, &first_fqs_jiffies_ops, &jiffies_till_first_fqs, 0644);
-> > > >  module_param_cb(jiffies_till_next_fqs, &next_fqs_jiffies_ops, &jiffies_till_next_fqs, 0644);
-> > > > +
-> > > > +module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
-> > > >  module_param(rcu_kick_kthreads, bool, 0644);
-> > > >  
-> > > >  static void force_qs_rnp(int (*f)(struct rcu_data *rdp));
-> > > > -- 
-> > > > 1.9.1
-> > > > 
+> > > While at it, changed the positions of two module_param()s downward.
+> > > 
+> > > Signed-off-by: Byungchul Park <byungchul.park@lge.com>
+> > > ---
+> > >  kernel/rcu/tree.c | 22 ++++++++++++++++++++--
+> > >  1 file changed, 20 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index a2f8ba2..a28e2fe 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -422,9 +422,7 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+> > >   * quiescent-state help from rcu_note_context_switch().
+> > >   */
+> > >  static ulong jiffies_till_sched_qs = ULONG_MAX;
+> > > -module_param(jiffies_till_sched_qs, ulong, 0444);
+> > >  static ulong jiffies_to_sched_qs; /* See adjust_jiffies_till_sched_qs(). */
+> > > -module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
+> > >  
+> > >  /*
+> > >   * Make sure that we give the grace-period kthread time to detect any
+> > > @@ -450,6 +448,18 @@ static void adjust_jiffies_till_sched_qs(void)
+> > >  	WRITE_ONCE(jiffies_to_sched_qs, j);
+> > >  }
+> > >  
+> > > +static int param_set_sched_qs_jiffies(const char *val, const struct kernel_param *kp)
+> > > +{
+> > > +	ulong j;
+> > > +	int ret = kstrtoul(val, 0, &j);
+> > > +
+> > > +	if (!ret && j != ULONG_MAX) {
+> > > +		WRITE_ONCE(*(ulong *)kp->arg, j);
+> > > +		adjust_jiffies_till_sched_qs();
+> > > +	}
+> > > +	return ret;
+> > > +}
+> > > +
+> > >  static int param_set_first_fqs_jiffies(const char *val, const struct kernel_param *kp)
+> > >  {
+> > >  	ulong j;
+> > > @@ -474,6 +484,11 @@ static int param_set_next_fqs_jiffies(const char *val, const struct kernel_param
+> > >  	return ret;
+> > >  }
+> > >  
+> > > +static struct kernel_param_ops sched_qs_jiffies_ops = {
+> > > +	.set = param_set_sched_qs_jiffies,
+> > > +	.get = param_get_ulong,
+> > > +};
+> > > +
+> > >  static struct kernel_param_ops first_fqs_jiffies_ops = {
+> > >  	.set = param_set_first_fqs_jiffies,
+> > >  	.get = param_get_ulong,
+> > > @@ -484,8 +499,11 @@ static int param_set_next_fqs_jiffies(const char *val, const struct kernel_param
+> > >  	.get = param_get_ulong,
+> > >  };
+> > >  
+> > > +module_param_cb(jiffies_till_sched_qs, &sched_qs_jiffies_ops, &jiffies_till_sched_qs, 0644);
+> > >  module_param_cb(jiffies_till_first_fqs, &first_fqs_jiffies_ops, &jiffies_till_first_fqs, 0644);
+> > >  module_param_cb(jiffies_till_next_fqs, &next_fqs_jiffies_ops, &jiffies_till_next_fqs, 0644);
+> > > +
+> > > +module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
+> > >  module_param(rcu_kick_kthreads, bool, 0644);
+> > >  
+> > >  static void force_qs_rnp(int (*f)(struct rcu_data *rdp));
+> > > -- 
+> > > 1.9.1
 > > > 
 > > 
-> 
