@@ -2,227 +2,206 @@ Return-Path: <SRS0=upIL=VI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34484C742A1
-	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 19:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5281DC742A2
+	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 20:45:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F363821019
-	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 19:58:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A8E5208E4
+	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 20:45:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="q+taS8xQ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BwhngOtO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbfGKT6n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 Jul 2019 15:58:43 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:44150 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728934AbfGKT6n (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 Jul 2019 15:58:43 -0400
-Received: by mail-pl1-f193.google.com with SMTP id t14so3553100plr.11
-        for <rcu@vger.kernel.org>; Thu, 11 Jul 2019 12:58:42 -0700 (PDT)
+        id S1728840AbfGKUpw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 Jul 2019 16:45:52 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:35665 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728574AbfGKUpw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 Jul 2019 16:45:52 -0400
+Received: by mail-pg1-f196.google.com with SMTP id s27so3505688pgl.2
+        for <rcu@vger.kernel.org>; Thu, 11 Jul 2019 13:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ht9JIkdKnsND0qRfdxvtr9JOrmvYFxMRa0bAr2nWrT8=;
-        b=q+taS8xQftTPcsu718h0VpXS4k0nrAc3iWEcqUf6v5fSr4dJ2XXxIsWOSkx3b8ISS4
-         UR+u0ZqbrLa6iN+GGEqoRwP/jIexCCBuYa9mZAe0NN4UuwiqJct5pSFqdU/72RZM//M4
-         PDD9mnKb7UVUZWH5yvsRk0b6AwObX0/b8yxV8=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FAgMNOYOPvzfrhNLldHVb19fW7VpQgXrnLMhcZOOzzs=;
+        b=BwhngOtO8Nu7zYAeNU/xva2uz2AnFZ9jfpv+3OHWnK+riarbVIlSWPdfB25P++KWpM
+         QVxLEPUIHjMA+QqfkfkhctquS0azuY/r/ojtxpUWtUfoWtmq6qMLYBDzqHmuxtUJ30oy
+         MTd0LwPXNYB62gu7TJfWJlr+m4tzWAaTOQACU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ht9JIkdKnsND0qRfdxvtr9JOrmvYFxMRa0bAr2nWrT8=;
-        b=nvH3wszbjpYgE9hDm2QN4FV3doY1LbkHC1OPazCV12hgQIEYz5tvztMzqJOOtDj/Sf
-         SnZ83LEMMD9OjxlydJnoMg51mA3Z9r/NeKbYoSgjob6iP0tjDdTE4qUeTLt4vDWB8+F3
-         xJ5aGYi3qdULFBHO1cKg1jWTg65lZIpiTsrRa+QT5YLILS4jvuIip8b1vlqDXKPIbmPf
-         98pHoadhuWVrK3VskDOIWAqlZDVi9BzrRlvGqUs2ylMO0ZlyGCwsHpkMuSJiBzXvdmrz
-         yq+4ryn8TT9FOeVXVLwjKkzaQaeiZLa4cfHs8SP6tbaVfN1U7BRL8M7kQw4W9/yNRff5
-         sGDw==
-X-Gm-Message-State: APjAAAWQ0HxRVgxhCH7zrkQ+R9fAxAVJMy+FG3d+ptxDkxjhotaxfKw+
-        dZoYcWy0wxbErhiTbjHsin4=
-X-Google-Smtp-Source: APXvYqwGHjCIXofIQD1MYuS6DMYCoGyPvFzy/BnOMEeKNsXK91RwKc4AOWUpMANIiyqd0XHBR+arvw==
-X-Received: by 2002:a17:902:44f:: with SMTP id 73mr6700269ple.192.1562875122087;
-        Thu, 11 Jul 2019 12:58:42 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q144sm6337161pfc.103.2019.07.11.12.58.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FAgMNOYOPvzfrhNLldHVb19fW7VpQgXrnLMhcZOOzzs=;
+        b=SWMRRbXQ1rO/WwoAhQC9AHWH0EsMLQTCX7ZnuceHqNK2YOalVjbxMPO8bmbv4F5Nyy
+         5NqPQP1REmgzWWduT7c1Mibf9d1I+XR8aTU5QN4pNs27bonPUu8XLToMipV8WKPzb1hp
+         sbzjHGxaaW/a6p4K+ODppF/qc221geuqIKewbDTgTA32br37dqladFmSSb73XaqzvqeS
+         wRDKW03Z5iwCLmABm+0j4QzclR2wjonNT9bTFRJcRTT0oNnm857/v5no8/sjmBEk8SqA
+         ub6jbYphc5oAYuLN7xrOP/ddbjWVXz7DRjjhrS2wWDN6A7PP5Na0IW53QR799ECWQG/B
+         ry4g==
+X-Gm-Message-State: APjAAAVh8zuatxIucJQ88YfiHC6QC+FIJQ4PUDRqcbdra3qfCYAfbxRf
+        z44IU6CQMlFaa4dhBzhdG00=
+X-Google-Smtp-Source: APXvYqzwqFWG5FAS708qmjT7OvxwSnxErqOKN+3y3GLJgx3B9ybHEpj1LDsHWYbII1JJoa1at0PEqA==
+X-Received: by 2002:a63:4d50:: with SMTP id n16mr6518323pgl.146.1562877951310;
+        Thu, 11 Jul 2019 13:45:51 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id f19sm9047502pfk.180.2019.07.11.13.45.48
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 11 Jul 2019 12:58:41 -0700 (PDT)
-Date:   Thu, 11 Jul 2019 15:58:39 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190711195839.GA163275@google.com>
-References: <1562565609-12482-1-git-send-email-byungchul.park@lge.com>
- <20190708125013.GG26519@linux.ibm.com>
- <20190708130359.GA42888@google.com>
- <20190709055815.GA19459@X58A-UD3R>
- <20190709124102.GR26519@linux.ibm.com>
- <20190710012025.GA20711@X58A-UD3R>
- <20190711123052.GI26519@linux.ibm.com>
- <20190711130849.GA212044@google.com>
- <20190711150215.GK26519@linux.ibm.com>
- <20190711164818.GA260447@google.com>
+        Thu, 11 Jul 2019 13:45:50 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, byungchul.park@lge.com,
+        kernel-team@android.com
+Subject: [PATCH] treewide: Rename  rcu_dereference_raw_notrace to _check
+Date:   Thu, 11 Jul 2019 16:45:41 -0400
+Message-Id: <20190711204541.28940-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190711164818.GA260447@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 12:48:18PM -0400, Joel Fernandes wrote:
-> On Thu, Jul 11, 2019 at 08:02:15AM -0700, Paul E. McKenney wrote:
-> > On Thu, Jul 11, 2019 at 09:08:49AM -0400, Joel Fernandes wrote:
-> > > On Thu, Jul 11, 2019 at 05:30:52AM -0700, Paul E. McKenney wrote:
-> > > > On Wed, Jul 10, 2019 at 10:20:25AM +0900, Byungchul Park wrote:
-> > > > > On Tue, Jul 09, 2019 at 05:41:02AM -0700, Paul E. McKenney wrote:
-> > > > > > > Hi Paul,
-> > > > > > > 
-> > > > > > > IMHO, as much as we want to tune the time for fqs to be initiated, we
-> > > > > > > can also want to tune the time for the help from scheduler to start.
-> > > > > > > I thought only difference between them is a level of urgency. I might be
-> > > > > > > wrong. It would be appreciated if you let me know if I miss something.
-> > > > > > 
-> > > > > > Hello, Byungchul,
-> > > > > > 
-> > > > > > I understand that one hypothetically might want to tune this at runtime,
-> > > > > > but have you had need to tune this at runtime on a real production
-> > > > > > workload?  If so, what problem was happening that caused you to want to
-> > > > > > do this tuning?
-> > > > > 
-> > > > > Not actually.
-> > > > > 
-> > > > > > > And it's ok even if the patch is turned down based on your criteria. :)
-> > > > > > 
-> > > > > > If there is a real need, something needs to be provided to meet that
-> > > > > > need.  But in the absence of a real need, past experience has shown
-> > > > > > that speculative tuning knobs usually do more harm than good.  ;-)
-> > > > > 
-> > > > > It makes sense, "A speculative tuning knobs do more harm than good".
-> > > > > 
-> > > > > Then, it would be better to leave jiffies_till_{first,next}_fqs tunnable
-> > > > > but jiffies_till_sched_qs until we need it.
-> > > > > 
-> > > > > However,
-> > > > > 
-> > > > > (1) In case that jiffies_till_sched_qs is tunnable:
-> > > > > 
-> > > > > 	We might need all of jiffies_till_{first,next}_qs,
-> > > > > 	jiffies_till_sched_qs and jiffies_to_sched_qs because
-> > > > > 	jiffies_to_sched_qs can be affected by any of them. So we
-> > > > > 	should be able to read each value at any time.
-> > > > > 
-> > > > > (2) In case that jiffies_till_sched_qs is not tunnable:
-> > > > > 
-> > > > > 	I think we don't have to keep the jiffies_till_sched_qs any
-> > > > > 	longer since that's only for setting jiffies_to_sched_qs at
-> > > > > 	*booting time*, which can be done with jiffies_to_sched_qs too.
-> > > > > 	It's meaningless to keep all of tree variables.
-> > > > > 
-> > > > > The simpler and less knobs that we really need we have, the better.
-> > > > > 
-> > > > > what do you think about it?
-> > > > > 
-> > > > > In the following patch, I (1) removed jiffies_till_sched_qs and then
-> > > > > (2) renamed jiffies_*to*_sched_qs to jiffies_*till*_sched_qs because I
-> > > > > think jiffies_till_sched_qs is a much better name for the purpose. I
-> > > > > will resend it with a commit msg after knowing your opinion on it.
-> > > > 
-> > > > I will give you a definite "maybe".
-> > > > 
-> > > > Here are the two reasons for changing RCU's embarrassingly large array
-> > > > of tuning parameters:
-> > > > 
-> > > > 1.	They are causing a problem in production.  This would represent a
-> > > > 	bug that clearly must be fixed.  As you say, this change is not
-> > > > 	in this category.
-> > > > 
-> > > > 2.	The change simplifies either RCU's code or the process of tuning
-> > > > 	RCU, but without degrading RCU's ability to run everywhere and
-> > > > 	without removing debugging tools.
-> > > > 
-> > > > The change below clearly simplifies things by removing a few lines of
-> > > > code, and it does not change RCU's default self-configuration.  But are
-> > > > we sure about the debugging aspect?  (Please keep in mind that many more
-> > > > sites are willing to change boot parameters than are willing to patch
-> > > > their kernels.)
-> > > > 
-> > > > What do you think?
-> > > 
-> > > Just to add that independent of whether the runtime tunable make sense or
-> > > not, may be it is still worth correcting the 0444 to be 0644 to be a separate
-> > > patch?
-> > 
-> > You lost me on this one.  Doesn't changing from 0444 to 0644 make it be
-> > a runtime tunable?
-> 
-> I was going by our earlier discussion that the parameter is still writable at
-> boot time. You mentioned something like the following:
-> ---
-> In Byungchul's defense, the current module_param() permissions are
-> 0444, which really is read-only.  Although I do agree that they can
-> be written at boot, one could use this same line of reasoning to argue
-> that const variables can be written at compile time (or, for on-stack
-> const variables, at function-invocation time).  But we still call them
-> "const".
-> ---
-> 
-> Sorry if I got confused. You are right that we could leave it as read-only.
-> 
-> > > > Finally, I urge you to join with Joel Fernandes and go through these
-> > > > grace-period-duration tuning parameters.  Once you guys get your heads
-> > > > completely around all of them and how they interact across the different
-> > > > possible RCU configurations, I bet that the two of you will have excellent
-> > > > ideas for improvement.
-> > >
-> > > Yes, I am quite happy to join forces. Byungchul, let me know what about this
-> > > or other things you had in mind. I have some other RCU topics too I am trying
-> > > to get my head around and planning to work on more patches.
-> > >
-> > > Paul, in case you had any other specific tunables or experiments in mind, let
-> > > me know. I am quite happy to try out new experiments and learn something
-> > > based on tuning something.
-> >
-> > These would be the tunables controlling how quickly RCU takes its
-> > various actions to encourage the current grace period to end quickly.
-> > I would be happy to give you the exact list if you wish, but most of
-> > them have appeared in this thread.
-> >
-> > The experiments should be designed to work out whether the current
-> > default settings have configurations where they act badly.  This might
-> > also come up with advice for people attempting hand-tuning, or proposed
-> > parameter-checking code to avoid bad combinations.
-> >
-> > For one example, setting the RCU CPU stall timeout too low will definitely
-> > cause some unwanted splats.  (Yes, one could argue that other things in
-> > the kernel should change to allow this value to decrease, but things
-> > like latency tracer and friends are probably more useful and important.)
-> 
-> Ok, thank you for the hints. 
+The rcu_dereference_raw_notrace() API name is confusing.
+It is equivalent to rcu_dereference_raw() except that it also does
+sparse pointer checking.
 
-Hmm, speaking of grace period durations, it seems to me the maximum grace
-period ever is recorded in rcu_state.gp_max. However it is not read from
-anywhere.
+There are only a few users of rcu_dereference_raw_notrace(). This
+patches renames all of them to be rcu_dereference_raw_check with the
+"check" indicating sparse checking.
 
-Any idea why it was added but not used?
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-I am interested in dumping this value just for fun, and seeing what I get.
+---
+Previous discussion is here:
+https://lore.kernel.org/linuxppc-dev/20190528200014.GV28207@linux.ibm.com/T/
 
-I wonder also it is useful to dump it in rcutorture/rcuperf to find any
-issues, or even expose it in sys/proc fs to see what worst case grace periods
-look like.
+ Documentation/RCU/Design/Requirements/Requirements.html | 2 +-
+ arch/powerpc/include/asm/kvm_book3s_64.h                | 2 +-
+ include/linux/rculist.h                                 | 4 ++--
+ include/linux/rcupdate.h                                | 2 +-
+ kernel/trace/ftrace_internal.h                          | 8 ++++----
+ kernel/trace/trace.c                                    | 4 ++--
+ 6 files changed, 11 insertions(+), 11 deletions(-)
 
- - Joel
-
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
+index f04c467e55c5..467251f7fef6 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.html
++++ b/Documentation/RCU/Design/Requirements/Requirements.html
+@@ -2514,7 +2514,7 @@ disabled across the entire RCU read-side critical section.
+ <p>
+ It is possible to use tracing on RCU code, but tracing itself
+ uses RCU.
+-For this reason, <tt>rcu_dereference_raw_notrace()</tt>
++For this reason, <tt>rcu_dereference_raw_check()</tt>
+ is provided for use by tracing, which avoids the destructive
+ recursion that could otherwise ensue.
+ This API is also used by virtualization in some architectures,
+diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
+index 21b1ed5df888..53388a311967 100644
+--- a/arch/powerpc/include/asm/kvm_book3s_64.h
++++ b/arch/powerpc/include/asm/kvm_book3s_64.h
+@@ -546,7 +546,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
+  */
+ static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
+ {
+-	return rcu_dereference_raw_notrace(kvm->memslots[0]);
++	return rcu_dereference_raw_check(kvm->memslots[0]);
+ }
+ 
+ extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index e91ec9ddcd30..10aab1d2d471 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -642,10 +642,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * not do any RCU debugging or tracing.
+  */
+ #define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
++	for (pos = hlist_entry_safe (rcu_dereference_raw_check(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+-		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
++		pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_next_rcu(\
+ 			&(pos)->member)), typeof(*(pos)), member))
+ 
+ /**
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0c9b92799abc..e5161e377ad4 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -478,7 +478,7 @@ do {									      \
+  * The no-tracing version of rcu_dereference_raw() must not call
+  * rcu_read_lock_held().
+  */
+-#define rcu_dereference_raw_notrace(p) __rcu_dereference_check((p), 1, __rcu)
++#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
+ 
+ /**
+  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 0515a2096f90..0456e0a3dab1 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -6,22 +6,22 @@
+ 
+ /*
+  * Traverse the ftrace_global_list, invoking all entries.  The reason that we
+- * can use rcu_dereference_raw_notrace() is that elements removed from this list
++ * can use rcu_dereference_raw_check() is that elements removed from this list
+  * are simply leaked, so there is no need to interact with a grace-period
+- * mechanism.  The rcu_dereference_raw_notrace() calls are needed to handle
++ * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+  * concurrent insertions into the ftrace_global_list.
+  *
+  * Silly Alpha and silly pointer-speculation compiler optimizations!
+  */
+ #define do_for_each_ftrace_op(op, list)			\
+-	op = rcu_dereference_raw_notrace(list);			\
++	op = rcu_dereference_raw_check(list);			\
+ 	do
+ 
+ /*
+  * Optimized for just a single item in the list (as that is the normal case).
+  */
+ #define while_for_each_ftrace_op(op)				\
+-	while (likely(op = rcu_dereference_raw_notrace((op)->next)) &&	\
++	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
+ 	       unlikely((op) != &ftrace_list_end))
+ 
+ extern struct ftrace_ops __rcu *ftrace_ops_list;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2c92b3d9ea30..1d69110d9e5b 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2642,10 +2642,10 @@ static void ftrace_exports(struct ring_buffer_event *event)
+ 
+ 	preempt_disable_notrace();
+ 
+-	export = rcu_dereference_raw_notrace(ftrace_exports_list);
++	export = rcu_dereference_raw_check(ftrace_exports_list);
+ 	while (export) {
+ 		trace_process_export(export, event);
+-		export = rcu_dereference_raw_notrace(export->next);
++		export = rcu_dereference_raw_check(export->next);
+ 	}
+ 
+ 	preempt_enable_notrace();
+-- 
+2.22.0.410.gd8fdbe21b5-goog
