@@ -2,94 +2,112 @@ Return-Path: <SRS0=upIL=VI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE3E8C742A1
-	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 20:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E03DDC742A2
+	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 23:44:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 87EE7208E4
-	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 20:50:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B532D2171F
+	for <rcu@archiver.kernel.org>; Thu, 11 Jul 2019 23:44:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="OH1nH1Jx"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="POP2I6vc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbfGKUuk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 Jul 2019 16:50:40 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:35336 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728413AbfGKUuk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 Jul 2019 16:50:40 -0400
-Received: by mail-lj1-f193.google.com with SMTP id x25so7201361ljh.2
-        for <rcu@vger.kernel.org>; Thu, 11 Jul 2019 13:50:38 -0700 (PDT)
+        id S1730462AbfGKXoX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 Jul 2019 19:44:23 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:42736 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730454AbfGKXoX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 Jul 2019 19:44:23 -0400
+Received: by mail-pf1-f193.google.com with SMTP id q10so3450861pff.9
+        for <rcu@vger.kernel.org>; Thu, 11 Jul 2019 16:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dYjxp66wgB3t394QorK0WPrW2jXGX2qG/znE9bxRn1o=;
-        b=OH1nH1JxcyIJ1Frv7bR1psVD2AkOX68Z06jMu6w+iKf4koMKEnVt0JThRnXKzImvV7
-         J3Z3Nl/H5FA/erTmCGF/qw3sMCLW0JXQR/CgOLxF+xN3iTuTAPf+3vmVJxb5wDaonHmn
-         N5opQfDUhQroiwNBX3un98PdvECR62kpygl3U=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/GuW47+ITVwlHRyFWoit77iH8wSxBVV56wbG/AJ8g+A=;
+        b=POP2I6vcsX7mrpLNszrDZ3jHjn5JeGjYvt0TIBarOc+TTSSHTMCxN8ZJl3umrbGe13
+         LL/K6XJbcw8liWBMr5VJm7tJsyYXkpeSHOo93Z5cFDVSa8Vym2EQZ+vSjFXjz8J4Wkoy
+         ABgjJP8Cfel0JsMbqaLz7L8BjEej7RSdpehss=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dYjxp66wgB3t394QorK0WPrW2jXGX2qG/znE9bxRn1o=;
-        b=jmQIZ2zlaBpfURnOLohszQnXH6HAXk6z4pizEF83021twkH7FaX2dERhR+q7jeQoE6
-         Yd9wzBRO+Zho6fM1Z0UiPeRjmxrLZLEx2+cq7NYcJ+COM7sVjucPBfI3lhRb7RdOk7bY
-         1NC6PchSMIxUVs1ftM5a569a41onn4VWfUEX/wD8t9kjMMPfP0Q/5HQQnWHJYdDYrI+I
-         EoGSJNghVrB3Mxmo/dYhnwU19zOmzbB80Z+RnOkF7m42UNkIQtgUT89ZN1Ee3nyOfU8r
-         PqXY6/TNycr1+cJ5aQZql+b6MLCECs24AIUAklPNygbC6tM5/ztI4fUZvZLSQTDl2IEZ
-         jJlA==
-X-Gm-Message-State: APjAAAXZiDN4pcs7ZknW8r4W4lt6mOOXOCqSdOGqoFvppCAQMZlE/+gO
-        MLe7NGIWk+3YL44yBguTOS95dm0REeKkGLzTjGg=
-X-Google-Smtp-Source: APXvYqyTowl8LDpO3glgWe4q53UddCDACSqIkn83mbNwYk66wIQHKoZZ8RculjXa8Wt7mSwwCQxgYNfcJFE9RnOFrVI=
-X-Received: by 2002:a2e:9147:: with SMTP id q7mr3641900ljg.19.1562878238030;
- Thu, 11 Jul 2019 13:50:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190711204541.28940-1-joel@joelfernandes.org>
-In-Reply-To: <20190711204541.28940-1-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 11 Jul 2019 16:50:26 -0400
-Message-ID: <CAEXW_YS=Sb6k4_Z-fXdtERTHZDO_PHQCOhx6bhotWduCB7K28w@mail.gmail.com>
-Subject: Re: [PATCH] treewide: Rename rcu_dereference_raw_notrace to _check
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/GuW47+ITVwlHRyFWoit77iH8wSxBVV56wbG/AJ8g+A=;
+        b=oe68Ae7jt2ldA1aJ3ivWwMG8G7RDwwPcQyFRLmK/j9jF1t9FHZ/Kpm85NwtQmKAHC8
+         LEvN7U+6utZ3zWAzdy94FDWMtXDUsM1K7Fahsy8Y+0AyVchWD2c9H21yCvls5SRAXHlu
+         4fWlAWHYWtEPf7I2f3VH1ziDoPd8PqGsbAX7PKSqhazf9Irn7BgzOGv47f+6yXNDA+SA
+         TK6ZbVn76eW5JnvV8gNMhhMe1rfzfMXG83OYMxie7vol6LOzHQGDrI8M09wkASKYMfT+
+         +v+JER+mlEim/WuGW755+9XdT9XFbJvpN93orbPonUwShxU2lOiM9YjRYjCc2yTdx1QU
+         nwYA==
+X-Gm-Message-State: APjAAAXa18tZO6B/jGYJ5Wf6gI71tm8qIoFNpd1WS3hTe+awpMiCxVN1
+        PKYbk/huASalQDjVttDX0cc=
+X-Google-Smtp-Source: APXvYqwL3radJMAbdECmS/G+TOrWXAIf4q3T6x0oa7czoYNYGbVr9jTCwdHXMM+5nal4G43CSaqnjQ==
+X-Received: by 2002:a63:3f48:: with SMTP id m69mr7029829pga.17.1562888662320;
+        Thu, 11 Jul 2019 16:44:22 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id t10sm6163450pjr.13.2019.07.11.16.44.18
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 11 Jul 2019 16:44:21 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        neilb@suse.com, netdev@vger.kernel.org, oleg@redhat.com,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Paul Mackerras <paulus@ozlabs.org>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH v1 2/6] ipv4: add lockdep condition to fix for_each_entry
+Date:   Thu, 11 Jul 2019 19:43:57 -0400
+Message-Id: <20190711234401.220336-3-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+In-Reply-To: <20190711234401.220336-1-joel@joelfernandes.org>
+References: <20190711234401.220336-1-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 4:45 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> The rcu_dereference_raw_notrace() API name is confusing.
-> It is equivalent to rcu_dereference_raw() except that it also does
-> sparse pointer checking.
->
-> There are only a few users of rcu_dereference_raw_notrace(). This
-> patches renames all of them to be rcu_dereference_raw_check with the
-> "check" indicating sparse checking.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ net/ipv4/fib_frontend.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-There also these _notrace things but I am Ok with leaving them alone for now:
-hash_for_each_possible_rcu_notrace
-hlist_for_each_entry_rcu_notrace
+diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
+index b298255f6fdb..ef7c9f8e8682 100644
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -127,7 +127,8 @@ struct fib_table *fib_get_table(struct net *net, u32 id)
+ 	h = id & (FIB_TABLE_HASHSZ - 1);
+ 
+ 	head = &net->ipv4.fib_table_hash[h];
+-	hlist_for_each_entry_rcu(tb, head, tb_hlist) {
++	hlist_for_each_entry_rcu(tb, head, tb_hlist,
++				 lockdep_rtnl_is_held()) {
+ 		if (tb->tb_id == id)
+ 			return tb;
+ 	}
+-- 
+2.22.0.410.gd8fdbe21b5-goog
 
-- Joel
