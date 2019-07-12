@@ -2,182 +2,241 @@ Return-Path: <SRS0=P+IJ=VJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AE37C742C7
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 14:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A6C4C742C7
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:02:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 45C422080A
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 14:53:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE41F2084B
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:02:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbfGLOxr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 Jul 2019 10:53:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23020 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726254AbfGLOxq (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 12 Jul 2019 10:53:46 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CEquei118847
-        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 10:53:45 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpu8gtwf6-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 10:53:45 -0400
-Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 12 Jul 2019 15:53:44 +0100
-Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 12 Jul 2019 15:53:40 +0100
+        id S1727019AbfGLPCN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 Jul 2019 11:02:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26224 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726977AbfGLPCM (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 12 Jul 2019 11:02:12 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CEwjbO014486;
+        Fri, 12 Jul 2019 11:01:13 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpu50c27p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jul 2019 11:01:12 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6CExP1e017416;
+        Fri, 12 Jul 2019 11:01:11 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpu50c25u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jul 2019 11:01:11 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6CF0MVc015958;
+        Fri, 12 Jul 2019 15:01:09 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01wdc.us.ibm.com with ESMTP id 2tjk974cr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Jul 2019 15:01:09 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6CErdX850397476
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6CF18cj31457644
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jul 2019 14:53:39 GMT
+        Fri, 12 Jul 2019 15:01:09 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E5BCB2065;
-        Fri, 12 Jul 2019 14:53:39 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id D6E10B2066;
+        Fri, 12 Jul 2019 15:01:07 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEAAEB206B;
-        Fri, 12 Jul 2019 14:53:38 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id A730DB2086;
+        Fri, 12 Jul 2019 15:01:07 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.85.195.235])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Jul 2019 14:53:38 +0000 (GMT)
+        Fri, 12 Jul 2019 15:01:07 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 63D8E16C39C0; Fri, 12 Jul 2019 07:53:38 -0700 (PDT)
-Date:   Fri, 12 Jul 2019 07:53:38 -0700
+        id 8599316C3FC8; Fri, 12 Jul 2019 08:01:07 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 08:01:07 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, byungchul.park@lge.com,
+        kernel-team@android.com
+Subject: Re: [PATCH] treewide: Rename  rcu_dereference_raw_notrace to _check
+Message-ID: <20190712150107.GT26519@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <20190710012025.GA20711@X58A-UD3R>
- <20190711123052.GI26519@linux.ibm.com>
- <20190711130849.GA212044@google.com>
- <20190711150215.GK26519@linux.ibm.com>
- <20190711164818.GA260447@google.com>
- <20190711195839.GA163275@google.com>
- <20190712063240.GD7702@X58A-UD3R>
- <20190712125116.GB92297@google.com>
- <20190712130242.GM26519@linux.ibm.com>
- <20190712134311.GE92297@google.com>
+References: <20190711204541.28940-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190712134311.GE92297@google.com>
+In-Reply-To: <20190711204541.28940-1-joel@joelfernandes.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19071214-2213-0000-0000-000003ADAEAB
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011415; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01231139; UDB=6.00648525; IPR=6.01012424;
- MB=3.00027692; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-12 14:53:43
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071214-2214-0000-0000-00005F34B79D
-Message-Id: <20190712145338.GR26519@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_04:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907120161
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907120162
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 09:43:11AM -0400, Joel Fernandes wrote:
-> On Fri, Jul 12, 2019 at 06:02:42AM -0700, Paul E. McKenney wrote:
-> > On Fri, Jul 12, 2019 at 08:51:16AM -0400, Joel Fernandes wrote:
-> > > On Fri, Jul 12, 2019 at 03:32:40PM +0900, Byungchul Park wrote:
-> > > > On Thu, Jul 11, 2019 at 03:58:39PM -0400, Joel Fernandes wrote:
-> > > > > Hmm, speaking of grace period durations, it seems to me the maximum grace
-> > > > > period ever is recorded in rcu_state.gp_max. However it is not read from
-> > > > > anywhere.
-> > > > > 
-> > > > > Any idea why it was added but not used?
-> > > > > 
-> > > > > I am interested in dumping this value just for fun, and seeing what I get.
-> > > > > 
-> > > > > I wonder also it is useful to dump it in rcutorture/rcuperf to find any
-> > > > > issues, or even expose it in sys/proc fs to see what worst case grace periods
-> > > > > look like.
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > 	commit ae91aa0adb14dc33114d566feca2f7cb7a96b8b7
-> > > > 	rcu: Remove debugfs tracing
-> > > > 
-> > > > removed all debugfs tracing, gp_max also included.
-> > > > 
-> > > > And you sounds great. And even looks not that hard to add it like,
-> > > > 
-> > > > :)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index ad9dc86..86095ff 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -1658,8 +1658,10 @@ static void rcu_gp_cleanup(void)
-> > > >  	raw_spin_lock_irq_rcu_node(rnp);
-> > > >  	rcu_state.gp_end = jiffies;
-> > > >  	gp_duration = rcu_state.gp_end - rcu_state.gp_start;
-> > > > -	if (gp_duration > rcu_state.gp_max)
-> > > > +	if (gp_duration > rcu_state.gp_max) {
-> > > >  		rcu_state.gp_max = gp_duration;
-> > > > +		trace_rcu_grace_period(something something);
-> > > > +	}
-> > > 
-> > > Yes, that makes sense. But I think it is much better off as a readable value
-> > > from a virtual fs. The drawback of tracing for this sort of thing are:
-> > >  - Tracing will only catch it if tracing is on
-> > >  - Tracing data can be lost if too many events, then no one has a clue what
-> > >    the max gp time is.
-> > >  - The data is already available in rcu_state::gp_max so copying it into the
-> > >    trace buffer seems a bit pointless IMHO
-> > >  - It is a lot easier on ones eyes to process a single counter than process
-> > >    heaps of traces.
-> > > 
-> > > I think a minimal set of RCU counters exposed to /proc or /sys should not
-> > > hurt and could do more good than not. The scheduler already does this for
-> > > scheduler statistics. I have seen Peter complain a lot about new tracepoints
-> > > but not much (or never) about new statistics.
-> > > 
-> > > Tracing has its strengths but may not apply well here IMO. I think a counter
-> > > like this could be useful for tuning of things like the jiffies_*_sched_qs,
-> > > the stall timeouts and also any other RCU knobs. What do you think?
-> > 
-> > Is this one of those cases where eBPF is the answer, regardless of
-> > the question?  ;-)
+On Thu, Jul 11, 2019 at 04:45:41PM -0400, Joel Fernandes (Google) wrote:
+> The rcu_dereference_raw_notrace() API name is confusing.
+> It is equivalent to rcu_dereference_raw() except that it also does
+> sparse pointer checking.
 > 
-> It could be. Except that people who fancy busybox still could benefit from
-> the counter ;-)
+> There are only a few users of rcu_dereference_raw_notrace(). This
+> patches renames all of them to be rcu_dereference_raw_check with the
+> "check" indicating sparse checking.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-;-)
-
-Another approach might be for RCU to dump statistics, including this
-one, to the console every so often, for example, maybe every minute for
-the first hour, every hour for the first day, and every day after that.
-What else might work?
-
-(I am not a huge fan of bringing back RCU's debugfs due to testability
-concerns and due to the fact that very few people ever used it.)
-
-Plus the busybox people could always add a trace_printk() or similar.
-
-> And also, eBPF uses RCU itself heavily, so it would help if the debug related
-> counter itself didn't depend on it. ;-)
-
-I would think that eBPF printing a statistical counter from RCU wouldn't
-pose danger even given that eBPF uses RCU, so I suspect that your point
-about busybox carries more force in this argument.  ;-)
+I queued this, but reworked the commit log and fixed a couple of
+irritating checkpatch issues that were in the original code.
+Does this work for you?
 
 							Thanx, Paul
 
+------------------------------------------------------------------------
+
+commit bd5c0fea6016c90cf7a9eb0435cd0c373dfdac2f
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Thu Jul 11 16:45:41 2019 -0400
+
+    treewide: Rename rcu_dereference_raw_notrace() to _check()
+    
+    The rcu_dereference_raw_notrace() API name is confusing.  It is equivalent
+    to rcu_dereference_raw() except that it also does sparse pointer checking.
+    
+    There are only a few users of rcu_dereference_raw_notrace(). This patches
+    renames all of them to be rcu_dereference_raw_check() with the "_check()"
+    indicating sparse checking.
+    
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    [ paulmck: Fix checkpatch warnings about parentheses. ]
+    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
+index f04c467e55c5..467251f7fef6 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.html
++++ b/Documentation/RCU/Design/Requirements/Requirements.html
+@@ -2514,7 +2514,7 @@ disabled across the entire RCU read-side critical section.
+ <p>
+ It is possible to use tracing on RCU code, but tracing itself
+ uses RCU.
+-For this reason, <tt>rcu_dereference_raw_notrace()</tt>
++For this reason, <tt>rcu_dereference_raw_check()</tt>
+ is provided for use by tracing, which avoids the destructive
+ recursion that could otherwise ensue.
+ This API is also used by virtualization in some architectures,
+diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
+index 21b1ed5df888..53388a311967 100644
+--- a/arch/powerpc/include/asm/kvm_book3s_64.h
++++ b/arch/powerpc/include/asm/kvm_book3s_64.h
+@@ -546,7 +546,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
+  */
+ static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
+ {
+-	return rcu_dereference_raw_notrace(kvm->memslots[0]);
++	return rcu_dereference_raw_check(kvm->memslots[0]);
+ }
+ 
+ extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index e91ec9ddcd30..932296144131 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -622,7 +622,7 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * as long as the traversal is guarded by rcu_read_lock().
+  */
+ #define hlist_for_each_entry_rcu(pos, head, member)			\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
++	for (pos = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+ 		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
+@@ -642,10 +642,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * not do any RCU debugging or tracing.
+  */
+ #define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
++	for (pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+-		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
++		pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_next_rcu(\
+ 			&(pos)->member)), typeof(*(pos)), member))
+ 
+ /**
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0c9b92799abc..e5161e377ad4 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -478,7 +478,7 @@ do {									      \
+  * The no-tracing version of rcu_dereference_raw() must not call
+  * rcu_read_lock_held().
+  */
+-#define rcu_dereference_raw_notrace(p) __rcu_dereference_check((p), 1, __rcu)
++#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
+ 
+ /**
+  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 0515a2096f90..0456e0a3dab1 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -6,22 +6,22 @@
+ 
+ /*
+  * Traverse the ftrace_global_list, invoking all entries.  The reason that we
+- * can use rcu_dereference_raw_notrace() is that elements removed from this list
++ * can use rcu_dereference_raw_check() is that elements removed from this list
+  * are simply leaked, so there is no need to interact with a grace-period
+- * mechanism.  The rcu_dereference_raw_notrace() calls are needed to handle
++ * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+  * concurrent insertions into the ftrace_global_list.
+  *
+  * Silly Alpha and silly pointer-speculation compiler optimizations!
+  */
+ #define do_for_each_ftrace_op(op, list)			\
+-	op = rcu_dereference_raw_notrace(list);			\
++	op = rcu_dereference_raw_check(list);			\
+ 	do
+ 
+ /*
+  * Optimized for just a single item in the list (as that is the normal case).
+  */
+ #define while_for_each_ftrace_op(op)				\
+-	while (likely(op = rcu_dereference_raw_notrace((op)->next)) &&	\
++	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
+ 	       unlikely((op) != &ftrace_list_end))
+ 
+ extern struct ftrace_ops __rcu *ftrace_ops_list;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2c92b3d9ea30..1d69110d9e5b 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2642,10 +2642,10 @@ static void ftrace_exports(struct ring_buffer_event *event)
+ 
+ 	preempt_disable_notrace();
+ 
+-	export = rcu_dereference_raw_notrace(ftrace_exports_list);
++	export = rcu_dereference_raw_check(ftrace_exports_list);
+ 	while (export) {
+ 		trace_process_export(export, event);
+-		export = rcu_dereference_raw_notrace(export->next);
++		export = rcu_dereference_raw_check(export->next);
+ 	}
+ 
+ 	preempt_enable_notrace();
