@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5BC5C742D4
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 17:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9D82C742D1
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 17:01:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BEF3220989
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 17:01:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C380D20651
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 17:01:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yQvAOcpI"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UAjbMqka"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727555AbfGLRBB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 Jul 2019 13:01:01 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:32872 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbfGLRA7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 12 Jul 2019 13:00:59 -0400
-Received: by mail-pl1-f195.google.com with SMTP id c14so5041107plo.0
-        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 10:00:59 -0700 (PDT)
+        id S1727662AbfGLRBO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 Jul 2019 13:01:14 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40720 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727650AbfGLRBM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 12 Jul 2019 13:01:12 -0400
+Received: by mail-pg1-f195.google.com with SMTP id w10so4794423pgj.7
+        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 10:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AptpBaMmXVEAzBSMLWJKxPr4rttPnZ1wioK1nwnHwy8=;
-        b=yQvAOcpIfNDNwzp6qEHjOsGXYqVnpbH/+yqEi1B80+c8YsLEO2bHlrNL9T4ka/DGw/
-         z2jqgOlDW+zlIDSpKaAxSzYrAquMnRnl5eFGmevh+cE6wTqwUm8hjiPn1KaWffrhd+9j
-         /1RA5jQTnJIh+/+WoSk+cY6XTKUqwecgKppuY=
+        bh=/5hJQY7vBLoyimOM3U70MNxFgsc86oXhHYtdVzU5ujQ=;
+        b=UAjbMqka7p1GCxFlNusyg29g1RCPFz9WIMtWvkN7qrcNF+ATnO9YKmLvPnuqPRJWG8
+         01CXWPFPyGYm3lOSoebpREdMbvmnc55dMqjKROvd/t5QxrZ6o7iZwPGUGOYk4Ll55hdr
+         IVAnsP7Rq6Ff+RAPzreODHBCQNzqAghR4nuBM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AptpBaMmXVEAzBSMLWJKxPr4rttPnZ1wioK1nwnHwy8=;
-        b=c2zfHL3fvvdu7qawMjCt3c6Oqef8XEJI+MdbJ+YNOZigWNZuL3/M/nqB1wGAyTXusk
-         oXVTwljcwaDIkto0LFfA7Du0SMEtweaLNc7IgJ6xuuqBlYdQjJtM/qvEgpL5OB6Kqd6N
-         jmuwffBc8UPRJBaJpz49QQguGvIWt9uVSYx+iGPPFTbS8WEbDregdGAtMA4HaK65X0JS
-         DfkkGlKPUMX381oOaVOSfTWS5j6HsXemBdMYy3ldCvILgARX1G8Q1Thm9tV72CzTnuPi
-         LJ28dt3E0FFaATUPEavxCwzQOs+67Q5ha5k6mUyZdesRHt07y58P0SckK1dqcGnHXN69
-         LraA==
-X-Gm-Message-State: APjAAAXubs2DaaabgO5F3mDIoXL4VPFifAFSxh6VE41j9LFwL818qKxj
-        tgkCqBKRCJDbGs5J+0/hNo8=
-X-Google-Smtp-Source: APXvYqxSVQC9IuM5FvE8lT+y5f9yl5+BBjiQfPurEohLODoTR1n3Ry5MZxUFhO2jwyxSjsXaeUm7lw==
-X-Received: by 2002:a17:902:7c96:: with SMTP id y22mr12852939pll.39.1562950858903;
-        Fri, 12 Jul 2019 10:00:58 -0700 (PDT)
+        bh=/5hJQY7vBLoyimOM3U70MNxFgsc86oXhHYtdVzU5ujQ=;
+        b=uNvejnoLQ0D4eOhphMW7hwaP0i1Tq3+vVlxkXinfJVnJnAqAh+HRZAC0IPuYfkU0I8
+         u9LaWRMWTfnIs5ICRAvfl1s43DrS51GwTapD2RUpe3F9Gg1Xg/2t3PeRW8cmQqM+w3VG
+         AIsPG5xjI8Expku9LOBmAPlp1szMxCzkysxmCUR5v/7DlT/KVfCiBWdG8xG1ODl8bNr0
+         wVp4z8SGqxkVspU3+NMMoSqmKOQCn5PEhfAKaU8NeqsUbYTPaH3guR/o4d4MWkKcJTD3
+         P4gtDdMNYO8QpulZPIlzPwpz8sjRNBMJ7MUe7MLTSMGlTZR1XI6V6HKQrPdGm0pBqekJ
+         h0QA==
+X-Gm-Message-State: APjAAAXdGwePnwTjUG5nwtvLm/S4pzTrOZ/osslrGvzain/uz1T4r/oi
+        JIQq+Ef7EpcuYYKxg8xEfoc=
+X-Google-Smtp-Source: APXvYqysKQjlbPJnzD1SgXu0qrPOgUWrpmjWhJmLr3dLME/oF4p6YcJaiWDgGdC5pNxKNHie+MpwEA==
+X-Received: by 2002:a63:dc56:: with SMTP id f22mr12036675pgj.305.1562950871565;
+        Fri, 12 Jul 2019 10:01:11 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a15sm7127385pgw.3.2019.07.12.10.00.54
+        by smtp.gmail.com with ESMTPSA id a15sm7127385pgw.3.2019.07.12.10.01.07
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 12 Jul 2019 10:00:58 -0700 (PDT)
+        Fri, 12 Jul 2019 10:01:10 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -79,9 +79,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [PATCH v2 6/9] workqueue: Convert for_each_wq to use built-in list check
-Date:   Fri, 12 Jul 2019 13:00:21 -0400
-Message-Id: <20190712170024.111093-7-joel@joelfernandes.org>
+Subject: [PATCH v2 9/9] doc: Update documentation about list_for_each_entry_rcu
+Date:   Fri, 12 Jul 2019 13:00:24 -0400
+Message-Id: <20190712170024.111093-10-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.510.g264f2c817a-goog
 In-Reply-To: <20190712170024.111093-1-joel@joelfernandes.org>
 References: <20190712170024.111093-1-joel@joelfernandes.org>
@@ -92,42 +92,64 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-list_for_each_entry_rcu now has support to check for RCU reader sections
-as well as lock. Just use the support in it, instead of explictly
-checking in the caller.
+This patch updates the documentation with information about
+usage of lockdep with list_for_each_entry_rcu().
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/workqueue.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ Documentation/RCU/lockdep.txt   | 15 +++++++++++----
+ Documentation/RCU/whatisRCU.txt |  9 ++++++++-
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 9657315405de..5e88449bdd83 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -363,11 +363,6 @@ static void workqueue_sysfs_unregister(struct workqueue_struct *wq);
- 			 !lockdep_is_held(&wq_pool_mutex),		\
- 			 "RCU or wq_pool_mutex should be held")
+diff --git a/Documentation/RCU/lockdep.txt b/Documentation/RCU/lockdep.txt
+index da51d3068850..3d967df3a801 100644
+--- a/Documentation/RCU/lockdep.txt
++++ b/Documentation/RCU/lockdep.txt
+@@ -96,7 +96,14 @@ other flavors of rcu_dereference().  On the other hand, it is illegal
+ to use rcu_dereference_protected() if either the RCU-protected pointer
+ or the RCU-protected data that it points to can change concurrently.
  
--#define assert_rcu_or_wq_mutex(wq)					\
--	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&			\
--			 !lockdep_is_held(&wq->mutex),			\
--			 "RCU or wq->mutex should be held")
--
- #define assert_rcu_or_wq_mutex_or_pool_mutex(wq)			\
- 	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&			\
- 			 !lockdep_is_held(&wq->mutex) &&		\
-@@ -424,9 +419,8 @@ static void workqueue_sysfs_unregister(struct workqueue_struct *wq);
-  * ignored.
-  */
- #define for_each_pwq(pwq, wq)						\
--	list_for_each_entry_rcu((pwq), &(wq)->pwqs, pwqs_node)		\
--		if (({ assert_rcu_or_wq_mutex(wq); false; })) { }	\
--		else
-+	list_for_each_entry_rcu((pwq), &(wq)->pwqs, pwqs_node,		\
-+				 lock_is_held(&(wq->mutex).dep_map))
+-There are currently only "universal" versions of the rcu_assign_pointer()
+-and RCU list-/tree-traversal primitives, which do not (yet) check for
+-being in an RCU read-side critical section.  In the future, separate
+-versions of these primitives might be created.
++Similar to rcu_dereference_protected, The RCU list and hlist traversal
++primitives also check for whether there are called from within a reader
++section. However, an optional lockdep expression can be passed to them as
++the last argument in case they are called under other non-RCU protection.
++
++For example, the workqueue for_each_pwq() macro is implemented as follows.
++It is safe to call for_each_pwq() outside a reader section but under protection
++of wq->mutex:
++#define for_each_pwq(pwq, wq)
++	list_for_each_entry_rcu((pwq), &(wq)->pwqs, pwqs_node,
++				lock_is_held(&(wq->mutex).dep_map))
+diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.txt
+index 981651a8b65d..a08c03735963 100644
+--- a/Documentation/RCU/whatisRCU.txt
++++ b/Documentation/RCU/whatisRCU.txt
+@@ -290,7 +290,7 @@ rcu_dereference()
+ 	at any time, including immediately after the rcu_dereference().
+ 	And, again like rcu_assign_pointer(), rcu_dereference() is
+ 	typically used indirectly, via the _rcu list-manipulation
+-	primitives, such as list_for_each_entry_rcu().
++	primitives, such as list_for_each_entry_rcu() [2].
  
- #ifdef CONFIG_DEBUG_OBJECTS_WORK
+ 	[1] The variant rcu_dereference_protected() can be used outside
+ 	of an RCU read-side critical section as long as the usage is
+@@ -305,6 +305,13 @@ rcu_dereference()
+ 	a lockdep splat is emitted.  See RCU/Design/Requirements/Requirements.html
+ 	and the API's code comments for more details and example usage.
+ 
++	[2] In case the list_for_each_entry_rcu() primitive is intended
++	to be used outside of an RCU reader section such as when
++	protected by a lock, then an additional lockdep expression can be
++	passed as the last argument to it so that RCU lockdep checking code
++	knows that the dereference of the list pointers are safe. If the
++	indicated protection is not provided, a lockdep splat is emitted.
++
+ The following diagram shows how each API communicates among the
+ reader, updater, and reclaimer.
  
 -- 
 2.22.0.510.g264f2c817a-goog
