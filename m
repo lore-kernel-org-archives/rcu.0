@@ -2,188 +2,238 @@ Return-Path: <SRS0=P+IJ=VJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44567C742C7
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B7EBC742CA
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:34:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A6F5206B8
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:10:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C78AA21019
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 15:34:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="xyHw0p49"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="d3vjeUDp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbfGLPKy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 Jul 2019 11:10:54 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34988 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbfGLPKy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 12 Jul 2019 11:10:54 -0400
-Received: by mail-pl1-f194.google.com with SMTP id w24so4930306plp.2
-        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 08:10:53 -0700 (PDT)
+        id S1727297AbfGLPeg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 Jul 2019 11:34:36 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43681 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727286AbfGLPeg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 12 Jul 2019 11:34:36 -0400
+Received: by mail-pf1-f194.google.com with SMTP id i189so4458729pfg.10
+        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 08:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=bpkdGumnCxVJ5QkvopMAKHuDk2Cmi1QHk5zgDoY3xmE=;
-        b=xyHw0p49aGG+bHJkAwOFsAyVLIy6ynGQUOVqJSZW2rdYBcMge9BS0dv8b3pXcc+QsB
-         52ZjWyLo4eCKwwXkK1MywW+/ICPskgQBpOWaqdYt311VFlay/UvS+NI+iDdRBDC8nfQH
-         7iG2DsYxsndMDH8pWwOufpGY4o74/6StEFO8o=
+        bh=plTISl7XRgKbWO6zw1c5j3WZeogtjYrXm6i/h/jyEdM=;
+        b=d3vjeUDpa24Uc8U/u+S+d6BI2l6i7lglR9JIxg0XBVZioQ6X8zajrBKL90Iwon+bp0
+         Us06yFpgUdXGq/Y8vA3j3OHHbl3hebXZ3RDMsWe4b6rrkItzStgF0An8jIkP/Tl8h/OT
+         U/725+NKgUVLfEW1GmKhZefiD3RdoW+j1XQv0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bpkdGumnCxVJ5QkvopMAKHuDk2Cmi1QHk5zgDoY3xmE=;
-        b=CSEtLXoXnwg0FP+XNN15nE9J9LlZsv2bb8cAKwxH8roUC+RQvokMm0bEjfiLh0oVDR
-         UfDbKfe72Ij+oaUMBjypm3cbELGygBK1e9vuMrTqT+jcnpdZFUOf4JrqR83xurzyEiCM
-         Qa4lW9bqE5Gb+H37cSZeGxcZ+qvuerfdBJgT/RyrhLRqukDof28bIQLHY8DkN6zbUgLj
-         yrxoEvC25NwdsaLvbkCLwYlHmQPdqa7hp9RzDkThn9v5XK+SmLKRuudCd0dPovDvixUj
-         Krnd+CG9BGjJ6162skkrwbb8DZ5WZAwXCb1aRKspleF1aZLwHfu+eXmNY7WkOfmyJXm1
-         YHsg==
-X-Gm-Message-State: APjAAAVF3T46IT8UeFTffP2S23LnF+spJ+x4+Z9dUkN8bRNMtJk4xL2E
-        eVmcxTvPX4i4dbUO2tF3vKM=
-X-Google-Smtp-Source: APXvYqxJ7Kem+nQt02Z16GBq/vs2O/YsBJDeceBJIv6amPGaj5XayXNv7u5mL3pmC3eI8AkB/Vv2gw==
-X-Received: by 2002:a17:902:6a88:: with SMTP id n8mr12077228plk.70.1562944253560;
-        Fri, 12 Jul 2019 08:10:53 -0700 (PDT)
+        bh=plTISl7XRgKbWO6zw1c5j3WZeogtjYrXm6i/h/jyEdM=;
+        b=FJCu7wJvFnGUiFamKofqHpF/3tR5FQdDvFbM8HaIjR7j7967b9CoALiGToPPpuInnE
+         UxowJ1l4KpyZVw9Z8r188cU0Gx/0SoBYcWDdFSVe3cMV2EKxxUfuOJcJ2DHtyy1//kcz
+         oHfz8xN8YFUtzAdWi/ftlgnBnpxzLod0W0fOW+jLCYV0ynuIIbXQ2L0vOPQQpMYdTJQ+
+         B9PZ/M2pIg+KkVszlqOI3+APJLj7R1TzAnxooscpJ/GlevJ4MQJrSEQonvQbE/NmR0lO
+         wo6rlwatxo4XQRdg8Vqn7X+RhNZ7f9in/1a+7aSR0ZtSXwWAkLbhjcNym0zNK9XZq1LF
+         nShQ==
+X-Gm-Message-State: APjAAAV6QOtlRAcy2l63edfcxPBHMnGF9YRkLioJT6S8k0dcO5UbYVez
+        NjYFGRa/TQJ3DGR2Z+sw3aE=
+X-Google-Smtp-Source: APXvYqwX2szxRvImPGUWPwCBB9Zx7iRJ2PX+9w9TRedou4r8JruFvsQRPwg13cuKgQnds8hoTD6mug==
+X-Received: by 2002:a63:da52:: with SMTP id l18mr11572275pgj.131.1562945674764;
+        Fri, 12 Jul 2019 08:34:34 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l124sm8863171pgl.54.2019.07.12.08.10.52
+        by smtp.gmail.com with ESMTPSA id 1sm9736153pfe.102.2019.07.12.08.34.33
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 12 Jul 2019 08:10:52 -0700 (PDT)
-Date:   Fri, 12 Jul 2019 11:10:51 -0400
+        Fri, 12 Jul 2019 08:34:34 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 11:34:32 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     linux-kernel@vger.kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
-        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kvm-ppc@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neilb@suse.com, netdev@vger.kernel.org, oleg@redhat.com,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH v1 1/6] rcu: Add support for consolidated-RCU reader
- checking
-Message-ID: <20190712151051.GB235410@google.com>
-References: <20190711234401.220336-1-joel@joelfernandes.org>
- <20190711234401.220336-2-joel@joelfernandes.org>
- <20190712111125.GT3402@hirez.programming.kicks-ass.net>
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, byungchul.park@lge.com,
+        kernel-team@android.com
+Subject: Re: [PATCH] treewide: Rename  rcu_dereference_raw_notrace to _check
+Message-ID: <20190712153432.GC235410@google.com>
+References: <20190711204541.28940-1-joel@joelfernandes.org>
+ <20190712150107.GT26519@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190712111125.GT3402@hirez.programming.kicks-ass.net>
+In-Reply-To: <20190712150107.GT26519@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 01:11:25PM +0200, Peter Zijlstra wrote:
-> On Thu, Jul 11, 2019 at 07:43:56PM -0400, Joel Fernandes (Google) wrote:
-> > +int rcu_read_lock_any_held(void)
-> > +{
-> > +	int lockdep_opinion = 0;
-> > +
-> > +	if (!debug_lockdep_rcu_enabled())
-> > +		return 1;
-> > +	if (!rcu_is_watching())
-> > +		return 0;
-> > +	if (!rcu_lockdep_current_cpu_online())
-> > +		return 0;
-> > +
-> > +	/* Preemptible RCU flavor */
-> > +	if (lock_is_held(&rcu_lock_map))
+On Fri, Jul 12, 2019 at 08:01:07AM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 11, 2019 at 04:45:41PM -0400, Joel Fernandes (Google) wrote:
+> > The rcu_dereference_raw_notrace() API name is confusing.
+> > It is equivalent to rcu_dereference_raw() except that it also does
+> > sparse pointer checking.
+> > 
+> > There are only a few users of rcu_dereference_raw_notrace(). This
+> > patches renames all of them to be rcu_dereference_raw_check with the
+> > "check" indicating sparse checking.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> you forgot debug_locks here.
+> I queued this, but reworked the commit log and fixed a couple of
+> irritating checkpatch issues that were in the original code.
+> Does this work for you?
 
-Actually, it turns out debug_locks checking is not even needed. If
-debug_locks == 0, then debug_lockdep_rcu_enabled() returns 0 and we would not
-get to this point.
+Thanks, yes it looks good to me.
 
-> > +		return 1;
-> > +
-> > +	/* BH flavor */
-> > +	if (in_softirq() || irqs_disabled())
-> 
-> I'm not sure I'd put irqs_disabled() under BH, also this entire
-> condition is superfluous, see below.
-> 
-> > +		return 1;
-> > +
-> > +	/* Sched flavor */
-> > +	if (debug_locks)
-> > +		lockdep_opinion = lock_is_held(&rcu_sched_lock_map);
-> > +	return lockdep_opinion || !preemptible();
-> 
-> that !preemptible() turns into:
-> 
->   !(preempt_count()==0 && !irqs_disabled())
-> 
-> which is:
-> 
->   preempt_count() != 0 || irqs_disabled()
-> 
-> and already includes irqs_disabled() and in_softirq().
-> 
-> > +}
-> 
-> So maybe something lke:
-> 
-> 	if (debug_locks && (lock_is_held(&rcu_lock_map) ||
-> 			    lock_is_held(&rcu_sched_lock_map)))
-> 		return true;
+thanks,
 
-Agreed, I will do it this way (without the debug_locks) like:
+ - Joel
 
----8<-----------------------
-
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index ba861d1716d3..339aebc330db 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -296,27 +296,15 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
- 
- int rcu_read_lock_any_held(void)
- {
--	int lockdep_opinion = 0;
--
- 	if (!debug_lockdep_rcu_enabled())
- 		return 1;
- 	if (!rcu_is_watching())
- 		return 0;
- 	if (!rcu_lockdep_current_cpu_online())
- 		return 0;
--
--	/* Preemptible RCU flavor */
--	if (lock_is_held(&rcu_lock_map))
--		return 1;
--
--	/* BH flavor */
--	if (in_softirq() || irqs_disabled())
--		return 1;
--
--	/* Sched flavor */
--	if (debug_locks)
--		lockdep_opinion = lock_is_held(&rcu_sched_lock_map);
--	return lockdep_opinion || !preemptible();
-+	if (lock_is_held(&rcu_lock_map) || lock_is_held(&rcu_sched_lock_map))
-+		return 1;
-+	return !preemptible();
- }
- EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
- 
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit bd5c0fea6016c90cf7a9eb0435cd0c373dfdac2f
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Thu Jul 11 16:45:41 2019 -0400
+> 
+>     treewide: Rename rcu_dereference_raw_notrace() to _check()
+>     
+>     The rcu_dereference_raw_notrace() API name is confusing.  It is equivalent
+>     to rcu_dereference_raw() except that it also does sparse pointer checking.
+>     
+>     There are only a few users of rcu_dereference_raw_notrace(). This patches
+>     renames all of them to be rcu_dereference_raw_check() with the "_check()"
+>     indicating sparse checking.
+>     
+>     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>     [ paulmck: Fix checkpatch warnings about parentheses. ]
+>     Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> 
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
+> index f04c467e55c5..467251f7fef6 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.html
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.html
+> @@ -2514,7 +2514,7 @@ disabled across the entire RCU read-side critical section.
+>  <p>
+>  It is possible to use tracing on RCU code, but tracing itself
+>  uses RCU.
+> -For this reason, <tt>rcu_dereference_raw_notrace()</tt>
+> +For this reason, <tt>rcu_dereference_raw_check()</tt>
+>  is provided for use by tracing, which avoids the destructive
+>  recursion that could otherwise ensue.
+>  This API is also used by virtualization in some architectures,
+> diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
+> index 21b1ed5df888..53388a311967 100644
+> --- a/arch/powerpc/include/asm/kvm_book3s_64.h
+> +++ b/arch/powerpc/include/asm/kvm_book3s_64.h
+> @@ -546,7 +546,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
+>   */
+>  static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
+>  {
+> -	return rcu_dereference_raw_notrace(kvm->memslots[0]);
+> +	return rcu_dereference_raw_check(kvm->memslots[0]);
+>  }
+>  
+>  extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index e91ec9ddcd30..932296144131 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -622,7 +622,7 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+>   * as long as the traversal is guarded by rcu_read_lock().
+>   */
+>  #define hlist_for_each_entry_rcu(pos, head, member)			\
+> -	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
+> +	for (pos = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),\
+>  			typeof(*(pos)), member);			\
+>  		pos;							\
+>  		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
+> @@ -642,10 +642,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+>   * not do any RCU debugging or tracing.
+>   */
+>  #define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
+> -	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
+> +	for (pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_first_rcu(head)),\
+>  			typeof(*(pos)), member);			\
+>  		pos;							\
+> -		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
+> +		pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_next_rcu(\
+>  			&(pos)->member)), typeof(*(pos)), member))
+>  
+>  /**
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 0c9b92799abc..e5161e377ad4 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -478,7 +478,7 @@ do {									      \
+>   * The no-tracing version of rcu_dereference_raw() must not call
+>   * rcu_read_lock_held().
+>   */
+> -#define rcu_dereference_raw_notrace(p) __rcu_dereference_check((p), 1, __rcu)
+> +#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
+>  
+>  /**
+>   * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+> diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+> index 0515a2096f90..0456e0a3dab1 100644
+> --- a/kernel/trace/ftrace_internal.h
+> +++ b/kernel/trace/ftrace_internal.h
+> @@ -6,22 +6,22 @@
+>  
+>  /*
+>   * Traverse the ftrace_global_list, invoking all entries.  The reason that we
+> - * can use rcu_dereference_raw_notrace() is that elements removed from this list
+> + * can use rcu_dereference_raw_check() is that elements removed from this list
+>   * are simply leaked, so there is no need to interact with a grace-period
+> - * mechanism.  The rcu_dereference_raw_notrace() calls are needed to handle
+> + * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+>   * concurrent insertions into the ftrace_global_list.
+>   *
+>   * Silly Alpha and silly pointer-speculation compiler optimizations!
+>   */
+>  #define do_for_each_ftrace_op(op, list)			\
+> -	op = rcu_dereference_raw_notrace(list);			\
+> +	op = rcu_dereference_raw_check(list);			\
+>  	do
+>  
+>  /*
+>   * Optimized for just a single item in the list (as that is the normal case).
+>   */
+>  #define while_for_each_ftrace_op(op)				\
+> -	while (likely(op = rcu_dereference_raw_notrace((op)->next)) &&	\
+> +	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
+>  	       unlikely((op) != &ftrace_list_end))
+>  
+>  extern struct ftrace_ops __rcu *ftrace_ops_list;
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 2c92b3d9ea30..1d69110d9e5b 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2642,10 +2642,10 @@ static void ftrace_exports(struct ring_buffer_event *event)
+>  
+>  	preempt_disable_notrace();
+>  
+> -	export = rcu_dereference_raw_notrace(ftrace_exports_list);
+> +	export = rcu_dereference_raw_check(ftrace_exports_list);
+>  	while (export) {
+>  		trace_process_export(export, event);
+> -		export = rcu_dereference_raw_notrace(export->next);
+> +		export = rcu_dereference_raw_check(export->next);
+>  	}
+>  
+>  	preempt_enable_notrace();
