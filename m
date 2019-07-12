@@ -2,57 +2,56 @@ Return-Path: <SRS0=P+IJ=VJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78CA6C742BD
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 13:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA83C742BD
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 13:43:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 42EB920863
-	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 13:40:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5A472084B
+	for <rcu@archiver.kernel.org>; Fri, 12 Jul 2019 13:43:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="inOaNhNW"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qgFQP1/X"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbfGLNky (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 Jul 2019 09:40:54 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:37220 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbfGLNky (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 12 Jul 2019 09:40:54 -0400
-Received: by mail-pg1-f194.google.com with SMTP id g15so4572270pgi.4
-        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 06:40:54 -0700 (PDT)
+        id S1726887AbfGLNnO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 Jul 2019 09:43:14 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39476 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726664AbfGLNnO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 12 Jul 2019 09:43:14 -0400
+Received: by mail-pf1-f196.google.com with SMTP id f17so348648pfn.6
+        for <rcu@vger.kernel.org>; Fri, 12 Jul 2019 06:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=OMgju0w2PM5gayEE0w1vUuk92goZhVVWaxsCGErqD5k=;
-        b=inOaNhNWdhCY0qpdYSA52yf2J7QrWJUNlU7Wkes6VGtLleWrejJ8/pilpFVRQ7I2CE
-         LwPRX1NxHRKudYm/FdduMHQhgaXdZqnczBcB7kVrkwR3idEb2DDdLNYqMVQ+wBE2vfiA
-         Xsic8WM3p5GWUcXYIRdjQ/NCrX6TSNWJQhXB0=
+         :content-disposition:in-reply-to:user-agent;
+        bh=dvwf5h5QheNfbAgZ15KkYPbUWiFiftC/9b/6E82GKtA=;
+        b=qgFQP1/XvWXdvGQ0UVrwdQMLepBx+wCXYMQu3xo7zi/2/V5YeA3wOUEfqCCVRfNw3p
+         o6Gqh4E2MWbXOZthselANaUI9bfG04UUG3kHvrVEDYb77WW1VFTPU3cV1kVI/48s2eAt
+         vegLbPYXSJVu52lbaYEBI8lOA+9f4q92fHDz8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=OMgju0w2PM5gayEE0w1vUuk92goZhVVWaxsCGErqD5k=;
-        b=OVr2DDyLdT02TYj+kk/UmTpT06tqt2Ru5hFwL0ZsppQYzokN944Cco0NFtd6H41l1U
-         xbAMWBTDYN1ywKVpZbWSVh1iquE9RZ5d9eQ7Mh4NshWkYsbo7rsofQOHP9yLAREnP7nO
-         2+ISnYLdYPQcHC/AvZ5ct0uJmIPA0xQf5mOayRYQNHAxi69+WcYpH/ebQlkIWx9OfCDF
-         4oHBxSBdGeRckdeoiume8+X0Xt+FfJUl/fm6P3BA+trxsgqCUfBN1Hk6FTOJSYAaiISy
-         FYw/aOiBKz9G2X+vim5/Ru44/XwuivLjuom6O4GCR7gsBfVmPgtcuC5A/OhnhVpikytd
-         NaVg==
-X-Gm-Message-State: APjAAAWgKjimPbH7sSp1u95aiURHgN0iLsO4VsV1zPjL2tooYNgGD2JZ
-        95JinHatSouVH+lztAW/jZo=
-X-Google-Smtp-Source: APXvYqyM8NziRaZJVuWM1fRQ4RnyWa7EcTM2Of5+auAvT11F+IQb/PtEtjyKh2l7JoD64MgoiG57kw==
-X-Received: by 2002:a65:5888:: with SMTP id d8mr10750820pgu.124.1562938853708;
-        Fri, 12 Jul 2019 06:40:53 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dvwf5h5QheNfbAgZ15KkYPbUWiFiftC/9b/6E82GKtA=;
+        b=XHAH+vM99Ag2Fl47dbKZnmSlzlAokeOQ5+lPrfmVPZxezxNg9iZDwrE41zaDocIq5r
+         n+ahVdbi0sGjTDpKdY8xN8PdKhSTe7DIxe/lMtH7VXSBgrz2iFDr0j8WQjzdmdnRjKCF
+         J4JpdR13ScLeTSmsE7Xjk6zE863dX6JE4b4R4unwDwYev9LNOihVBIs+H+rBLOGPassz
+         hP6xYxx4vq3uCVcBINJS9ut2K/KsmQ3r6uDN/3v1JdhU2DPnfzQqjtkwynmB64BStPEf
+         FYOBNlFGLw+u89HKI30QLfVS/nPAggmnVUBvi1XgYSoGTxJfmVX2fSVhzVwiYpOK3qdw
+         zCcA==
+X-Gm-Message-State: APjAAAVh0uNe+MwV+RTdycbOy8tuwceQ+jEB/ntf8QYtWtbr8fDhOVeA
+        OkJkyHkVJPfDf6lPYFYbXF0=
+X-Google-Smtp-Source: APXvYqyttS+EhdeWHy41kpYCkHqcfwOXBEX68JkxIMXiDyrl6XR78PzbQnwyrkKcVA47G4FlD+n8vw==
+X-Received: by 2002:a17:90b:d8b:: with SMTP id bg11mr11915248pjb.30.1562938993722;
+        Fri, 12 Jul 2019 06:43:13 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q36sm7829989pgl.23.2019.07.12.06.40.52
+        by smtp.gmail.com with ESMTPSA id i123sm14360138pfe.147.2019.07.12.06.43.12
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 12 Jul 2019 06:40:52 -0700 (PDT)
-Date:   Fri, 12 Jul 2019 09:40:51 -0400
+        Fri, 12 Jul 2019 06:43:12 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 09:43:11 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
@@ -60,192 +59,97 @@ Cc:     Byungchul Park <byungchul.park@lge.com>, josh@joshtriplett.org,
         jiangshanlai@gmail.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@lge.com
 Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190712134051.GD92297@google.com>
-References: <20190708130359.GA42888@google.com>
- <20190709055815.GA19459@X58A-UD3R>
- <20190709124102.GR26519@linux.ibm.com>
+Message-ID: <20190712134311.GE92297@google.com>
+References: <20190709124102.GR26519@linux.ibm.com>
  <20190710012025.GA20711@X58A-UD3R>
  <20190711123052.GI26519@linux.ibm.com>
  <20190711130849.GA212044@google.com>
  <20190711150215.GK26519@linux.ibm.com>
  <20190711164818.GA260447@google.com>
  <20190711195839.GA163275@google.com>
- <20190712130105.GL26519@linux.ibm.com>
+ <20190712063240.GD7702@X58A-UD3R>
+ <20190712125116.GB92297@google.com>
+ <20190712130242.GM26519@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190712130105.GL26519@linux.ibm.com>
+In-Reply-To: <20190712130242.GM26519@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 06:01:05AM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 11, 2019 at 03:58:39PM -0400, Joel Fernandes wrote:
-> > On Thu, Jul 11, 2019 at 12:48:18PM -0400, Joel Fernandes wrote:
-> > > On Thu, Jul 11, 2019 at 08:02:15AM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Jul 11, 2019 at 09:08:49AM -0400, Joel Fernandes wrote:
-> > > > > On Thu, Jul 11, 2019 at 05:30:52AM -0700, Paul E. McKenney wrote:
-> > > > > > On Wed, Jul 10, 2019 at 10:20:25AM +0900, Byungchul Park wrote:
-> > > > > > > On Tue, Jul 09, 2019 at 05:41:02AM -0700, Paul E. McKenney wrote:
-> > > > > > > > > Hi Paul,
-> > > > > > > > > 
-> > > > > > > > > IMHO, as much as we want to tune the time for fqs to be initiated, we
-> > > > > > > > > can also want to tune the time for the help from scheduler to start.
-> > > > > > > > > I thought only difference between them is a level of urgency. I might be
-> > > > > > > > > wrong. It would be appreciated if you let me know if I miss something.
-> > > > > > > > 
-> > > > > > > > Hello, Byungchul,
-> > > > > > > > 
-> > > > > > > > I understand that one hypothetically might want to tune this at runtime,
-> > > > > > > > but have you had need to tune this at runtime on a real production
-> > > > > > > > workload?  If so, what problem was happening that caused you to want to
-> > > > > > > > do this tuning?
-> > > > > > > 
-> > > > > > > Not actually.
-> > > > > > > 
-> > > > > > > > > And it's ok even if the patch is turned down based on your criteria. :)
-> > > > > > > > 
-> > > > > > > > If there is a real need, something needs to be provided to meet that
-> > > > > > > > need.  But in the absence of a real need, past experience has shown
-> > > > > > > > that speculative tuning knobs usually do more harm than good.  ;-)
-> > > > > > > 
-> > > > > > > It makes sense, "A speculative tuning knobs do more harm than good".
-> > > > > > > 
-> > > > > > > Then, it would be better to leave jiffies_till_{first,next}_fqs tunnable
-> > > > > > > but jiffies_till_sched_qs until we need it.
-> > > > > > > 
-> > > > > > > However,
-> > > > > > > 
-> > > > > > > (1) In case that jiffies_till_sched_qs is tunnable:
-> > > > > > > 
-> > > > > > > 	We might need all of jiffies_till_{first,next}_qs,
-> > > > > > > 	jiffies_till_sched_qs and jiffies_to_sched_qs because
-> > > > > > > 	jiffies_to_sched_qs can be affected by any of them. So we
-> > > > > > > 	should be able to read each value at any time.
-> > > > > > > 
-> > > > > > > (2) In case that jiffies_till_sched_qs is not tunnable:
-> > > > > > > 
-> > > > > > > 	I think we don't have to keep the jiffies_till_sched_qs any
-> > > > > > > 	longer since that's only for setting jiffies_to_sched_qs at
-> > > > > > > 	*booting time*, which can be done with jiffies_to_sched_qs too.
-> > > > > > > 	It's meaningless to keep all of tree variables.
-> > > > > > > 
-> > > > > > > The simpler and less knobs that we really need we have, the better.
-> > > > > > > 
-> > > > > > > what do you think about it?
-> > > > > > > 
-> > > > > > > In the following patch, I (1) removed jiffies_till_sched_qs and then
-> > > > > > > (2) renamed jiffies_*to*_sched_qs to jiffies_*till*_sched_qs because I
-> > > > > > > think jiffies_till_sched_qs is a much better name for the purpose. I
-> > > > > > > will resend it with a commit msg after knowing your opinion on it.
-> > > > > > 
-> > > > > > I will give you a definite "maybe".
-> > > > > > 
-> > > > > > Here are the two reasons for changing RCU's embarrassingly large array
-> > > > > > of tuning parameters:
-> > > > > > 
-> > > > > > 1.	They are causing a problem in production.  This would represent a
-> > > > > > 	bug that clearly must be fixed.  As you say, this change is not
-> > > > > > 	in this category.
-> > > > > > 
-> > > > > > 2.	The change simplifies either RCU's code or the process of tuning
-> > > > > > 	RCU, but without degrading RCU's ability to run everywhere and
-> > > > > > 	without removing debugging tools.
-> > > > > > 
-> > > > > > The change below clearly simplifies things by removing a few lines of
-> > > > > > code, and it does not change RCU's default self-configuration.  But are
-> > > > > > we sure about the debugging aspect?  (Please keep in mind that many more
-> > > > > > sites are willing to change boot parameters than are willing to patch
-> > > > > > their kernels.)
-> > > > > > 
-> > > > > > What do you think?
-> > > > > 
-> > > > > Just to add that independent of whether the runtime tunable make sense or
-> > > > > not, may be it is still worth correcting the 0444 to be 0644 to be a separate
-> > > > > patch?
+On Fri, Jul 12, 2019 at 06:02:42AM -0700, Paul E. McKenney wrote:
+> On Fri, Jul 12, 2019 at 08:51:16AM -0400, Joel Fernandes wrote:
+> > On Fri, Jul 12, 2019 at 03:32:40PM +0900, Byungchul Park wrote:
+> > > On Thu, Jul 11, 2019 at 03:58:39PM -0400, Joel Fernandes wrote:
+> > > > Hmm, speaking of grace period durations, it seems to me the maximum grace
+> > > > period ever is recorded in rcu_state.gp_max. However it is not read from
+> > > > anywhere.
 > > > > 
-> > > > You lost me on this one.  Doesn't changing from 0444 to 0644 make it be
-> > > > a runtime tunable?
+> > > > Any idea why it was added but not used?
+> > > > 
+> > > > I am interested in dumping this value just for fun, and seeing what I get.
+> > > > 
+> > > > I wonder also it is useful to dump it in rcutorture/rcuperf to find any
+> > > > issues, or even expose it in sys/proc fs to see what worst case grace periods
+> > > > look like.
 > > > 
-> > > I was going by our earlier discussion that the parameter is still writable at
-> > > boot time. You mentioned something like the following:
-> > > ---
-> > > In Byungchul's defense, the current module_param() permissions are
-> > > 0444, which really is read-only.  Although I do agree that they can
-> > > be written at boot, one could use this same line of reasoning to argue
-> > > that const variables can be written at compile time (or, for on-stack
-> > > const variables, at function-invocation time).  But we still call them
-> > > "const".
-> > > ---
+> > > Hi,
 > > > 
-> > > Sorry if I got confused. You are right that we could leave it as read-only.
+> > > 	commit ae91aa0adb14dc33114d566feca2f7cb7a96b8b7
+> > > 	rcu: Remove debugfs tracing
 > > > 
-> > > > > > Finally, I urge you to join with Joel Fernandes and go through these
-> > > > > > grace-period-duration tuning parameters.  Once you guys get your heads
-> > > > > > completely around all of them and how they interact across the different
-> > > > > > possible RCU configurations, I bet that the two of you will have excellent
-> > > > > > ideas for improvement.
-> > > > >
-> > > > > Yes, I am quite happy to join forces. Byungchul, let me know what about this
-> > > > > or other things you had in mind. I have some other RCU topics too I am trying
-> > > > > to get my head around and planning to work on more patches.
-> > > > >
-> > > > > Paul, in case you had any other specific tunables or experiments in mind, let
-> > > > > me know. I am quite happy to try out new experiments and learn something
-> > > > > based on tuning something.
-> > > >
-> > > > These would be the tunables controlling how quickly RCU takes its
-> > > > various actions to encourage the current grace period to end quickly.
-> > > > I would be happy to give you the exact list if you wish, but most of
-> > > > them have appeared in this thread.
-> > > >
-> > > > The experiments should be designed to work out whether the current
-> > > > default settings have configurations where they act badly.  This might
-> > > > also come up with advice for people attempting hand-tuning, or proposed
-> > > > parameter-checking code to avoid bad combinations.
-> > > >
-> > > > For one example, setting the RCU CPU stall timeout too low will definitely
-> > > > cause some unwanted splats.  (Yes, one could argue that other things in
-> > > > the kernel should change to allow this value to decrease, but things
-> > > > like latency tracer and friends are probably more useful and important.)
+> > > removed all debugfs tracing, gp_max also included.
 > > > 
-> > > Ok, thank you for the hints. 
+> > > And you sounds great. And even looks not that hard to add it like,
+> > > 
+> > > :)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index ad9dc86..86095ff 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -1658,8 +1658,10 @@ static void rcu_gp_cleanup(void)
+> > >  	raw_spin_lock_irq_rcu_node(rnp);
+> > >  	rcu_state.gp_end = jiffies;
+> > >  	gp_duration = rcu_state.gp_end - rcu_state.gp_start;
+> > > -	if (gp_duration > rcu_state.gp_max)
+> > > +	if (gp_duration > rcu_state.gp_max) {
+> > >  		rcu_state.gp_max = gp_duration;
+> > > +		trace_rcu_grace_period(something something);
+> > > +	}
 > > 
-> > Hmm, speaking of grace period durations, it seems to me the maximum grace
-> > period ever is recorded in rcu_state.gp_max. However it is not read from
-> > anywhere.
+> > Yes, that makes sense. But I think it is much better off as a readable value
+> > from a virtual fs. The drawback of tracing for this sort of thing are:
+> >  - Tracing will only catch it if tracing is on
+> >  - Tracing data can be lost if too many events, then no one has a clue what
+> >    the max gp time is.
+> >  - The data is already available in rcu_state::gp_max so copying it into the
+> >    trace buffer seems a bit pointless IMHO
+> >  - It is a lot easier on ones eyes to process a single counter than process
+> >    heaps of traces.
 > > 
-> > Any idea why it was added but not used?
+> > I think a minimal set of RCU counters exposed to /proc or /sys should not
+> > hurt and could do more good than not. The scheduler already does this for
+> > scheduler statistics. I have seen Peter complain a lot about new tracepoints
+> > but not much (or never) about new statistics.
+> > 
+> > Tracing has its strengths but may not apply well here IMO. I think a counter
+> > like this could be useful for tuning of things like the jiffies_*_sched_qs,
+> > the stall timeouts and also any other RCU knobs. What do you think?
 > 
-> If I remember correclty, it used to be used in debugfs prints.  It is
-> useful for working out how low you can decrease rcutorture.stall_cpu to
-> without getting RCU CPU stall warnings.  A rather infrequent need,
-> given that the mainline default has been adjusted only once.
+> Is this one of those cases where eBPF is the answer, regardless of
+> the question?  ;-)
 
-Got it.
+It could be. Except that people who fancy busybox still could benefit from
+the counter ;-)
 
-> > I am interested in dumping this value just for fun, and seeing what I get.
-> > 
-> > I wonder also it is useful to dump it in rcutorture/rcuperf to find any
-> > issues, or even expose it in sys/proc fs to see what worst case grace periods
-> > look like.
-> 
-> That might be worthwhile.
+And also, eBPF uses RCU itself heavily, so it would help if the debug related
+counter itself didn't depend on it. ;-)
 
-Thanks. I am thinking also it will help see whether something else like GP
-thread priority or other configuration could be causing long GP times that is
-otherwise not possible to see without a counter.
+thanks,
 
-I will work out with Byungchul and come up with something.
-
-Cheers,
-
- - Joel
-
-
-
-
+- Joel
 
