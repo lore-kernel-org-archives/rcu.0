@@ -2,214 +2,143 @@ Return-Path: <SRS0=J7H2=VK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E278C71142
-	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 08:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACE7C742D7
+	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 08:47:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 21B2020838
-	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 08:23:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAB162083B
+	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 08:47:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFYsFC6Z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbfGMIXq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 13 Jul 2019 04:23:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32096 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726334AbfGMIXp (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sat, 13 Jul 2019 04:23:45 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6D8GuqC140611;
-        Sat, 13 Jul 2019 04:21:16 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tqbcpghfy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Jul 2019 04:21:16 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6D8Imex011412;
-        Sat, 13 Jul 2019 04:21:15 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tqbcpghfn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Jul 2019 04:21:15 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6D8JSWE020328;
-        Sat, 13 Jul 2019 08:21:14 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma03dal.us.ibm.com with ESMTP id 2tq6x6hea4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 13 Jul 2019 08:21:14 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6D8LDlZ41746710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 13 Jul 2019 08:21:13 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6DA5DB205F;
-        Sat, 13 Jul 2019 08:21:13 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11EA3B2064;
-        Sat, 13 Jul 2019 08:21:13 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.195.235])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sat, 13 Jul 2019 08:21:13 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 1013216C6BA7; Sat, 13 Jul 2019 01:21:14 -0700 (PDT)
-Date:   Sat, 13 Jul 2019 01:21:14 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
-        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neilb@suse.com, netdev@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH v2 3/9] rcu/sync: Remove custom check for reader-section
-Message-ID: <20190713082114.GA26519@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190712170024.111093-1-joel@joelfernandes.org>
- <20190712170024.111093-4-joel@joelfernandes.org>
- <20190712213559.GA175138@google.com>
- <20190712233206.GZ26519@linux.ibm.com>
- <20190713030150.GA246587@google.com>
- <20190713031008.GA248225@google.com>
+        id S1727418AbfGMIrn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 13 Jul 2019 04:47:43 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:41364 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbfGMIrn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 13 Jul 2019 04:47:43 -0400
+Received: by mail-ed1-f67.google.com with SMTP id p15so11144588eds.8;
+        Sat, 13 Jul 2019 01:47:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aKh1W7omwWLA2k9sKjo76Pevd8zQpf7ZgCucbVdxePk=;
+        b=WFYsFC6ZV2mwPVXgz84QxWoezyTFRAI3+7Pvqz42wPspAmlXrPmCEqtjFdQ4NbN1IW
+         2Mj2Blx1aOQhugsYGs5Zjwuwpv6j0Tk6YV+LfNtTo81psSKoVj80DdmZ9Xfr2mIB0lwO
+         tjk731FbsaafBPIpXDDcY3jSQFunmTBA7gezSYEDDccasM+fOZC+fBwpJfMRNkukvCgd
+         /wbSZkB3TzOUF0z1s9X5UwIxGg38F4dFlxUpyjp2OgU4TwzlReEabYDcMrvunULBwVQi
+         bCPCrMBsOJtG2IfXpsQoeWQXBUjNkDBFgI4Hfh5wItzkeHiLGyYu9Q2yoC1aySYtO5st
+         +Mpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aKh1W7omwWLA2k9sKjo76Pevd8zQpf7ZgCucbVdxePk=;
+        b=BUDyrkHC4dQVUXtNoa5JpGYwqHunfuo0PvpqpVx01Dw6hFbEbRooM6Uy2kXDTEVStP
+         reZkFd7n9HhmDNkYD/+8m8tCyGnuydekALmYGuTedwNv44DjIHPM5YWxogRPanCLriSY
+         wovmPNHGlrz8VXW5MbMIZHhfHWCxVfKvzCLsrzPh7NdJg5tiLxJRjeGCc1AfSwHS9D/e
+         BBG6fYlmmM/PiMubnTHDu6N2gt9J9piEpc3bFK+WzzJ11fQcQYlANX9dsJDuGrMRgK0o
+         GF9ACzptlm+0j3YUIaANvGGVxz/UZLB6DBBaCh1Wda2FV7wBkO1MHGcVUIVsIlZJrrFx
+         9Imw==
+X-Gm-Message-State: APjAAAXhZ0pd/7cxbtef6Q6g8rW+v5a7razenIESOeMx5sZ/qtm8g91n
+        squ2ei9+6NeHSle7uRpXEtYwGcg1B0PcT2iDf8s=
+X-Google-Smtp-Source: APXvYqwMcolUP9NhbhbrymbCCZllb/0oQrvT4PipY+yJEllSkg8TWHYWI1nRLTniFu9P6tcNgjR0rLp1J5KC3FApV78=
+X-Received: by 2002:a05:6402:14d4:: with SMTP id f20mr13107423edx.125.1563007661149;
+ Sat, 13 Jul 2019 01:47:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190713031008.GA248225@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-13_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907130098
+References: <20190708130359.GA42888@google.com> <20190709055815.GA19459@X58A-UD3R>
+ <20190709124102.GR26519@linux.ibm.com> <20190710012025.GA20711@X58A-UD3R>
+ <20190711123052.GI26519@linux.ibm.com> <20190711130849.GA212044@google.com>
+ <20190711150215.GK26519@linux.ibm.com> <20190711164818.GA260447@google.com>
+ <20190711195839.GA163275@google.com> <20190712063240.GD7702@X58A-UD3R> <20190712125116.GB92297@google.com>
+In-Reply-To: <20190712125116.GB92297@google.com>
+From:   Byungchul Park <max.byungchul.park@gmail.com>
+Date:   Sat, 13 Jul 2019 17:47:31 +0900
+Message-ID: <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, josh@joshtriplett.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 11:10:08PM -0400, Joel Fernandes wrote:
-> On Fri, Jul 12, 2019 at 11:01:50PM -0400, Joel Fernandes wrote:
-> > On Fri, Jul 12, 2019 at 04:32:06PM -0700, Paul E. McKenney wrote:
-> > > On Fri, Jul 12, 2019 at 05:35:59PM -0400, Joel Fernandes wrote:
-> > > > On Fri, Jul 12, 2019 at 01:00:18PM -0400, Joel Fernandes (Google) wrote:
-> > > > > The rcu/sync code was doing its own check whether we are in a reader
-> > > > > section. With RCU consolidating flavors and the generic helper added in
-> > > > > this series, this is no longer need. We can just use the generic helper
-> > > > > and it results in a nice cleanup.
-> > > > > 
-> > > > > Cc: Oleg Nesterov <oleg@redhat.com>
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > 
-> > > > Hi Oleg,
-> > > > Slightly unrelated to the patch,
-> > > > I tried hard to understand this comment below in percpu_down_read() but no dice.
-> > > > 
-> > > > I do understand how rcu sync and percpu rwsem works, however the comment
-> > > > below didn't make much sense to me. For one, there's no readers_fast anymore
-> > > > so I did not follow what readers_fast means. Could the comment be updated to
-> > > > reflect latest changes?
-> > > > Also could you help understand how is a writer not able to change
-> > > > sem->state and count the per-cpu read counters at the same time as the
-> > > > comment tries to say?
-> > > > 
-> > > > 	/*
-> > > > 	 * We are in an RCU-sched read-side critical section, so the writer
-> > > > 	 * cannot both change sem->state from readers_fast and start checking
-> > > > 	 * counters while we are here. So if we see !sem->state, we know that
-> > > > 	 * the writer won't be checking until we're past the preempt_enable()
-> > > > 	 * and that once the synchronize_rcu() is done, the writer will see
-> > > > 	 * anything we did within this RCU-sched read-size critical section.
-> > > > 	 */
-> > > > 
-> > > > Also,
-> > > > I guess we could get rid of all of the gp_ops struct stuff now that since all
-> > > > the callbacks are the same now. I will post that as a follow-up patch to this
-> > > > series.
-> > > 
-> > > Hello, Joel,
-> > > 
-> > > Oleg has a set of patches updating this code that just hit mainline
-> > > this week.  These patches get rid of the code that previously handled
-> > > RCU's multiple flavors.  Or are you looking at current mainline and
-> > > me just missing your point?
-> > > 
-> > 
-> > Hi Paul,
-> > You are right on point. I have a bad habit of not rebasing my trees. In this
-> > case the feature branch of mine in concern was based on v5.1. Needless to
-> > say, I need to rebase my tree.
-> > 
-> > Yes, this sync clean up patch does conflict when I rebase, but other patches
-> > rebase just fine.
-> > 
-> > The 2 options I see are:
-> > 1. Let us drop this patch for now and I resend it later.
-> > 2. I resend all patches based on Linus's master branch.
-> 
-> Below is the updated patch based on Linus master branch:
-> 
-> ---8<-----------------------
-> 
-> >From 5f40c9a07fcf3d6dafc2189599d0ba9443097d0f Mon Sep 17 00:00:00 2001
-> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> Date: Fri, 12 Jul 2019 12:13:27 -0400
-> Subject: [PATCH v2.1 3/9] rcu/sync: Remove custom check for reader-section
-> 
-> The rcu/sync code was doing its own check whether we are in a reader
-> section. With RCU consolidating flavors and the generic helper added in
-> this series, this is no longer need. We can just use the generic helper
-> and it results in a nice cleanup.
-> 
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  include/linux/rcu_sync.h | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
-> index 9b83865d24f9..0027d4c8087c 100644
-> --- a/include/linux/rcu_sync.h
-> +++ b/include/linux/rcu_sync.h
-> @@ -31,9 +31,7 @@ struct rcu_sync {
->   */
->  static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
->  {
-> -	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&
-> -			 !rcu_read_lock_bh_held() &&
-> -			 !rcu_read_lock_sched_held(),
-> +	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
+On Fri, Jul 12, 2019 at 9:51 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> On Fri, Jul 12, 2019 at 03:32:40PM +0900, Byungchul Park wrote:
+> > On Thu, Jul 11, 2019 at 03:58:39PM -0400, Joel Fernandes wrote:
+> > > Hmm, speaking of grace period durations, it seems to me the maximum grace
+> > > period ever is recorded in rcu_state.gp_max. However it is not read from
+> > > anywhere.
+> > >
+> > > Any idea why it was added but not used?
+> > >
+> > > I am interested in dumping this value just for fun, and seeing what I get.
+> > >
+> > > I wonder also it is useful to dump it in rcutorture/rcuperf to find any
+> > > issues, or even expose it in sys/proc fs to see what worst case grace periods
+> > > look like.
+> >
+> > Hi,
+> >
+> >       commit ae91aa0adb14dc33114d566feca2f7cb7a96b8b7
+> >       rcu: Remove debugfs tracing
+> >
+> > removed all debugfs tracing, gp_max also included.
+> >
+> > And you sounds great. And even looks not that hard to add it like,
+> >
+> > :)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index ad9dc86..86095ff 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1658,8 +1658,10 @@ static void rcu_gp_cleanup(void)
+> >       raw_spin_lock_irq_rcu_node(rnp);
+> >       rcu_state.gp_end = jiffies;
+> >       gp_duration = rcu_state.gp_end - rcu_state.gp_start;
+> > -     if (gp_duration > rcu_state.gp_max)
+> > +     if (gp_duration > rcu_state.gp_max) {
+> >               rcu_state.gp_max = gp_duration;
+> > +             trace_rcu_grace_period(something something);
+> > +     }
+>
+> Yes, that makes sense. But I think it is much better off as a readable value
+> from a virtual fs. The drawback of tracing for this sort of thing are:
+>  - Tracing will only catch it if tracing is on
+>  - Tracing data can be lost if too many events, then no one has a clue what
+>    the max gp time is.
+>  - The data is already available in rcu_state::gp_max so copying it into the
+>    trace buffer seems a bit pointless IMHO
+>  - It is a lot easier on ones eyes to process a single counter than process
+>    heaps of traces.
+>
+> I think a minimal set of RCU counters exposed to /proc or /sys should not
+> hurt and could do more good than not. The scheduler already does this for
+> scheduler statistics. I have seen Peter complain a lot about new tracepoints
+> but not much (or never) about new statistics.
+>
+> Tracing has its strengths but may not apply well here IMO. I think a counter
+> like this could be useful for tuning of things like the jiffies_*_sched_qs,
+> the stall timeouts and also any other RCU knobs. What do you think?
 
-I believe that replacing rcu_read_lock_sched_held() with preemptible()
-in a CONFIG_PREEMPT=n kernel will give you false-positive splats here.
-If you have not already done so, could you please give it a try?
+I prefer proc/sys knob for it to tracepoint. Why I've considered it is just it
+looks like undoing what Paul did at ae91aa0ad.
 
-							Thanx, Paul
+I think you're rational enough. I just wondered how Paul think of it.
 
->  			 "suspicious rcu_sync_is_idle() usage");
->  	return !READ_ONCE(rsp->gp_state); /* GP_IDLE */
->  }
-> -- 
-> 2.22.0.510.g264f2c817a-goog
-> 
+-- 
+Thanks,
+Byungchul
