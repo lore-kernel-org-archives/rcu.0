@@ -2,251 +2,216 @@ Return-Path: <SRS0=J7H2=VK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49569C742A7
-	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 09:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BBA1C742D7
+	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 13:30:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 14CD320838
-	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 09:08:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1749C2084C
+	for <rcu@archiver.kernel.org>; Sat, 13 Jul 2019 13:30:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ/DAdmq"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="vi4Pm0Vp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbfGMJIX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 13 Jul 2019 05:08:23 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:39607 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbfGMJIX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 13 Jul 2019 05:08:23 -0400
-Received: by mail-ed1-f66.google.com with SMTP id m10so11187547edv.6;
-        Sat, 13 Jul 2019 02:08:21 -0700 (PDT)
+        id S1727711AbfGMNax (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 13 Jul 2019 09:30:53 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39435 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727691AbfGMNax (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 13 Jul 2019 09:30:53 -0400
+Received: by mail-pf1-f194.google.com with SMTP id f17so1519480pfn.6
+        for <rcu@vger.kernel.org>; Sat, 13 Jul 2019 06:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=InthuJXiayzcD8gp2yREYoHv0WHNFmuulsUeQryAlZY=;
-        b=EJ/DAdmq1WEPZPn/8ChYK/YUMGl346eWtQ1DHfV/ggcYbdbs+gX9OYhHtwxRQnWyyl
-         eh+wZzerU5kM5P8x49BVGosDWDwW5fGg7tz6Sp74fxPkUKN3d2LAUDYfbt4137zazUCg
-         0VLrSCvkuW0BFW0c44TkcLY1vduhKjJQC+phMIFPEflpnOgr1ftc0lhEJZ3SEFVvzlZI
-         H4b2kg5ckFIwBaZ36TUwzmM/ur/NMlq3rI/nbMkkbahZHDS8ebw/s07m2PgWWVtd5olr
-         X/ZD7sPUz7rBggb6ERJQduiSgMmm+GT4pFi6rT9xnvEshrcgTdzwT+AS1wTupKd/dE6J
-         zrCg==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8Efni7GzakeBOsv72KKL/k3VXvcmb6CAQIn29trk+Ms=;
+        b=vi4Pm0Vp88ZDcBEmNwgK3ndXTrJqUqLLpFVAsRazuQbe6ItioWXAxH8x2ZNcDzhCJQ
+         pEUZaylwGZeoiyJm9xMYvAgjqjY4VrGjZY6uMPOzgi+wI0vRlfF6k5ZYvoB3BUkZjDoT
+         Kc4HA9nGtVNNW/KARl3nDBwGz83fybXtLdz+Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=InthuJXiayzcD8gp2yREYoHv0WHNFmuulsUeQryAlZY=;
-        b=oxvUkZ3ZIaBwl/L1/NDfDN6WCPTb2PaULHG5oRyi38gjXy1LL8M7xgf4HxsdCuRIoP
-         I5WgkF7oVdKgygQPyEuXHIP2FWYujnG7iQhUDcFC4YOA0SoaNyCgFgfzpERADWqWClw6
-         NtXEks8VVuV/hXAhAGO8qgBQ0WR6KOhijJrETAmkAgjHWEAWNcsZhSLl/E4y+KKSqKAY
-         n/4jy9zjr3yTWqtad9EqB1MgA6JnLzaiXJ8dF662nDxjQJuUxkdiRwkiu+RYmmGfSVA2
-         l7OEbzNCqSuMlmoV8z3OUPpx2EeDmb47w/ykSA8ykPNiYSv4nC8N6ZQk0kLV0vqsTo2d
-         B6Fg==
-X-Gm-Message-State: APjAAAWwPUgc3NUtX+dwuX2x8v94Jd5pKDrhw44noO9SEBsHlae4nTDR
-        pyjdlrq4or3TtBEKux9Wi1y24hIt/sf9htogao8=
-X-Google-Smtp-Source: APXvYqzeKycO3PYMJbRGiN5tmBgbrMAi7uSRmMwZMYaXc/N2tLguiI0FmLOoosyhdaoqtjKVvoJLYgBUk5bEhD183LQ=
-X-Received: by 2002:a50:a56b:: with SMTP id z40mr13163880edb.99.1563008901078;
- Sat, 13 Jul 2019 02:08:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <1562565609-12482-1-git-send-email-byungchul.park@lge.com>
- <20190708125013.GG26519@linux.ibm.com> <20190708130359.GA42888@google.com>
- <20190709055815.GA19459@X58A-UD3R> <20190709124102.GR26519@linux.ibm.com>
- <20190710012025.GA20711@X58A-UD3R> <20190711123052.GI26519@linux.ibm.com> <20190712054828.GA7702@X58A-UD3R>
-In-Reply-To: <20190712054828.GA7702@X58A-UD3R>
-From:   Byungchul Park <max.byungchul.park@gmail.com>
-Date:   Sat, 13 Jul 2019 18:08:11 +0900
-Message-ID: <CANrsvRNWHD6EM3Jska2S6iqpUyqZdQzW8HsmRFb7uxdUzP9WVg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Joel Fernandes <joel@joelfernandes.org>, josh@joshtriplett.org,
-        Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8Efni7GzakeBOsv72KKL/k3VXvcmb6CAQIn29trk+Ms=;
+        b=VSXsNbPKd2NKer0csOegzxko7L8qj3KGM0wo0rhoWP3edPLPkHbtLvMTG6u4EjQ0qp
+         X2Fi7k1IpES9Gwoi0F5I5mQnvDmyrOQOKJHETvo2N7P/BRVAVc8Sn7vJr+/6FoqmWXkx
+         obXpqx1GP6lKh/p8c87T4qzGvJJsM2TzaB9n+eSPIgEuTGJLAfCHILZ4cutBVyl2XU/R
+         +5wSvChgjCAsiqSxVzKorPvLDreuAGMtTz73uEN+0z5oF+BoTDKZF2OGph4LLiX5qVSa
+         G06QHMqmJ3jH0zXZbzutj6wuRJclc/i70liyg/Ev3ElXeji+PZh6lvMYh67h1xNgl19I
+         eYeQ==
+X-Gm-Message-State: APjAAAUNh7Lcv7l6CBrrWeOxHo1Dr6yEvuNKMT8+rrCXl1/V7mODEOG+
+        9/YPa3qM1ruk/0FmnadqVvM=
+X-Google-Smtp-Source: APXvYqxHqqPqIhZ4yAdKHwlf4joWWp7xZcECA5a6L7ZeujtpEnTWlNmypQkxkaimiE7EaAdPcs4Tnw==
+X-Received: by 2002:a17:90a:1b4a:: with SMTP id q68mr18260364pjq.61.1563024652349;
+        Sat, 13 Jul 2019 06:30:52 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id o14sm10021697pjp.19.2019.07.13.06.30.50
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 13 Jul 2019 06:30:51 -0700 (PDT)
+Date:   Sat, 13 Jul 2019 09:30:49 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
+        neilb@suse.com, netdev@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v2 3/9] rcu/sync: Remove custom check for reader-section
+Message-ID: <20190713133049.GA133650@google.com>
+References: <20190712170024.111093-1-joel@joelfernandes.org>
+ <20190712170024.111093-4-joel@joelfernandes.org>
+ <20190712213559.GA175138@google.com>
+ <20190712233206.GZ26519@linux.ibm.com>
+ <20190713030150.GA246587@google.com>
+ <20190713031008.GA248225@google.com>
+ <20190713082114.GA26519@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190713082114.GA26519@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 12, 2019 at 2:50 PM Byungchul Park <byungchul.park@lge.com> wrote:
->
-> On Thu, Jul 11, 2019 at 05:30:52AM -0700, Paul E. McKenney wrote:
-> > > > If there is a real need, something needs to be provided to meet that
-> > > > need.  But in the absence of a real need, past experience has shown
-> > > > that speculative tuning knobs usually do more harm than good.  ;-)
-> > >
-> > > It makes sense, "A speculative tuning knobs do more harm than good".
-> > >
-> > > Then, it would be better to leave jiffies_till_{first,next}_fqs tunnable
-> > > but jiffies_till_sched_qs until we need it.
-> > >
-> > > However,
-> > >
-> > > (1) In case that jiffies_till_sched_qs is tunnable:
-> > >
-> > >     We might need all of jiffies_till_{first,next}_qs,
-> > >     jiffies_till_sched_qs and jiffies_to_sched_qs because
-> > >     jiffies_to_sched_qs can be affected by any of them. So we
-> > >     should be able to read each value at any time.
-> > >
-> > > (2) In case that jiffies_till_sched_qs is not tunnable:
-> > >
-> > >     I think we don't have to keep the jiffies_till_sched_qs any
-> > >     longer since that's only for setting jiffies_to_sched_qs at
-> > >     *booting time*, which can be done with jiffies_to_sched_qs too.
-> > >     It's meaningless to keep all of tree variables.
-> > >
-> > > The simpler and less knobs that we really need we have, the better.
-> > >
-> > > what do you think about it?
-> > >
-> > > In the following patch, I (1) removed jiffies_till_sched_qs and then
-> > > (2) renamed jiffies_*to*_sched_qs to jiffies_*till*_sched_qs because I
-> > > think jiffies_till_sched_qs is a much better name for the purpose. I
-> > > will resend it with a commit msg after knowing your opinion on it.
->
-> Hi Paul,
->
-> > I will give you a definite "maybe".
-> >
-> > Here are the two reasons for changing RCU's embarrassingly large array
-> > of tuning parameters:
-> >
-> > 1.    They are causing a problem in production.  This would represent a
-> >       bug that clearly must be fixed.  As you say, this change is not
-> >       in this category.
-> >
-> > 2.    The change simplifies either RCU's code or the process of tuning
-> >       RCU, but without degrading RCU's ability to run everywhere and
-> >       without removing debugging tools.
->
-> Agree.
->
-> > The change below clearly simplifies things by removing a few lines of
-> > code, and it does not change RCU's default self-configuration.  But are
-> > we sure about the debugging aspect?  (Please keep in mind that many more
->
-> I'm sorry I don't get it. I don't think this patch affect any debugging
-> ability. What do you think it hurts? Could you explain it more?
+On Sat, Jul 13, 2019 at 01:21:14AM -0700, Paul E. McKenney wrote:
+> On Fri, Jul 12, 2019 at 11:10:08PM -0400, Joel Fernandes wrote:
+> > On Fri, Jul 12, 2019 at 11:01:50PM -0400, Joel Fernandes wrote:
+> > > On Fri, Jul 12, 2019 at 04:32:06PM -0700, Paul E. McKenney wrote:
+> > > > On Fri, Jul 12, 2019 at 05:35:59PM -0400, Joel Fernandes wrote:
+> > > > > On Fri, Jul 12, 2019 at 01:00:18PM -0400, Joel Fernandes (Google) wrote:
+> > > > > > The rcu/sync code was doing its own check whether we are in a reader
+> > > > > > section. With RCU consolidating flavors and the generic helper added in
+> > > > > > this series, this is no longer need. We can just use the generic helper
+> > > > > > and it results in a nice cleanup.
+> > > > > > 
+> > > > > > Cc: Oleg Nesterov <oleg@redhat.com>
+> > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > 
+> > > > > Hi Oleg,
+> > > > > Slightly unrelated to the patch,
+> > > > > I tried hard to understand this comment below in percpu_down_read() but no dice.
+> > > > > 
+> > > > > I do understand how rcu sync and percpu rwsem works, however the comment
+> > > > > below didn't make much sense to me. For one, there's no readers_fast anymore
+> > > > > so I did not follow what readers_fast means. Could the comment be updated to
+> > > > > reflect latest changes?
+> > > > > Also could you help understand how is a writer not able to change
+> > > > > sem->state and count the per-cpu read counters at the same time as the
+> > > > > comment tries to say?
+> > > > > 
+> > > > > 	/*
+> > > > > 	 * We are in an RCU-sched read-side critical section, so the writer
+> > > > > 	 * cannot both change sem->state from readers_fast and start checking
+> > > > > 	 * counters while we are here. So if we see !sem->state, we know that
+> > > > > 	 * the writer won't be checking until we're past the preempt_enable()
+> > > > > 	 * and that once the synchronize_rcu() is done, the writer will see
+> > > > > 	 * anything we did within this RCU-sched read-size critical section.
+> > > > > 	 */
+> > > > > 
+> > > > > Also,
+> > > > > I guess we could get rid of all of the gp_ops struct stuff now that since all
+> > > > > the callbacks are the same now. I will post that as a follow-up patch to this
+> > > > > series.
+> > > > 
+> > > > Hello, Joel,
+> > > > 
+> > > > Oleg has a set of patches updating this code that just hit mainline
+> > > > this week.  These patches get rid of the code that previously handled
+> > > > RCU's multiple flavors.  Or are you looking at current mainline and
+> > > > me just missing your point?
+> > > > 
+> > > 
+> > > Hi Paul,
+> > > You are right on point. I have a bad habit of not rebasing my trees. In this
+> > > case the feature branch of mine in concern was based on v5.1. Needless to
+> > > say, I need to rebase my tree.
+> > > 
+> > > Yes, this sync clean up patch does conflict when I rebase, but other patches
+> > > rebase just fine.
+> > > 
+> > > The 2 options I see are:
+> > > 1. Let us drop this patch for now and I resend it later.
+> > > 2. I resend all patches based on Linus's master branch.
+> > 
+> > Below is the updated patch based on Linus master branch:
+> > 
+> > ---8<-----------------------
+> > 
+> > >From 5f40c9a07fcf3d6dafc2189599d0ba9443097d0f Mon Sep 17 00:00:00 2001
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > Date: Fri, 12 Jul 2019 12:13:27 -0400
+> > Subject: [PATCH v2.1 3/9] rcu/sync: Remove custom check for reader-section
+> > 
+> > The rcu/sync code was doing its own check whether we are in a reader
+> > section. With RCU consolidating flavors and the generic helper added in
+> > this series, this is no longer need. We can just use the generic helper
+> > and it results in a nice cleanup.
+> > 
+> > Cc: Oleg Nesterov <oleg@redhat.com>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  include/linux/rcu_sync.h | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
+> > index 9b83865d24f9..0027d4c8087c 100644
+> > --- a/include/linux/rcu_sync.h
+> > +++ b/include/linux/rcu_sync.h
+> > @@ -31,9 +31,7 @@ struct rcu_sync {
+> >   */
+> >  static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
+> >  {
+> > -	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&
+> > -			 !rcu_read_lock_bh_held() &&
+> > -			 !rcu_read_lock_sched_held(),
+> > +	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
+> 
+> I believe that replacing rcu_read_lock_sched_held() with preemptible()
+> in a CONFIG_PREEMPT=n kernel will give you false-positive splats here.
+> If you have not already done so, could you please give it a try?
 
-I meant we are able to achieve it by directly changing
-rcutree.jiffies_to_sched_qs even for the debugging purpose
-w/o changing code itself as well. Thoughts?
+Hi Paul,
+I don't think it will cause splats for !CONFIG_PREEMPT.
 
--- 
-Thanks,
-Byungchul
+Currently, rcu_read_lock_any_held() introduced in this patch returns true if
+!preemptible(). This means that:
 
-> > sites are willing to change boot parameters than are willing to patch
-> > their kernels.)
->
-> Right.
->
-> > What do you think?
-> >
-> > Finally, I urge you to join with Joel Fernandes and go through these
-> > grace-period-duration tuning parameters.  Once you guys get your heads
-> > completely around all of them and how they interact across the different
-> > possible RCU configurations, I bet that the two of you will have excellent
-> > ideas for improvement.
->
-> Great. I'd be happy if I join the improvement and with Joel. I might
-> need to ask you exactly what you expect in detail maybe. Anyway I will
-> willingly go with it. :)
->
-> Thanks,
-> Byungchul
->
-> >                                                       Thanx, Paul
-> >
-> > > Thanks,
-> > > Byungchul
-> > >
-> > > ---8<---
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index e72c184..94b58f5 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -3792,10 +3792,6 @@
-> > >                     a value based on the most recent settings
-> > >                     of rcutree.jiffies_till_first_fqs
-> > >                     and rcutree.jiffies_till_next_fqs.
-> > > -                   This calculated value may be viewed in
-> > > -                   rcutree.jiffies_to_sched_qs.  Any attempt to set
-> > > -                   rcutree.jiffies_to_sched_qs will be cheerfully
-> > > -                   overwritten.
-> > >
-> > >     rcutree.kthread_prio=    [KNL,BOOT]
-> > >                     Set the SCHED_FIFO priority of the RCU per-CPU
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index a2f8ba2..ad9dc86 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -421,10 +421,8 @@ static int rcu_is_cpu_rrupt_from_idle(void)
-> > >   * How long the grace period must be before we start recruiting
-> > >   * quiescent-state help from rcu_note_context_switch().
-> > >   */
-> > > -static ulong jiffies_till_sched_qs = ULONG_MAX;
-> > > +static ulong jiffies_till_sched_qs = ULONG_MAX; /* See adjust_jiffies_till_sched_qs(). */
-> > >  module_param(jiffies_till_sched_qs, ulong, 0444);
-> > > -static ulong jiffies_to_sched_qs; /* See adjust_jiffies_till_sched_qs(). */
-> > > -module_param(jiffies_to_sched_qs, ulong, 0444); /* Display only! */
-> > >
-> > >  /*
-> > >   * Make sure that we give the grace-period kthread time to detect any
-> > > @@ -436,18 +434,13 @@ static void adjust_jiffies_till_sched_qs(void)
-> > >  {
-> > >     unsigned long j;
-> > >
-> > > -   /* If jiffies_till_sched_qs was specified, respect the request. */
-> > > -   if (jiffies_till_sched_qs != ULONG_MAX) {
-> > > -           WRITE_ONCE(jiffies_to_sched_qs, jiffies_till_sched_qs);
-> > > -           return;
-> > > -   }
-> > >     /* Otherwise, set to third fqs scan, but bound below on large system. */
-> > >     j = READ_ONCE(jiffies_till_first_fqs) +
-> > >                   2 * READ_ONCE(jiffies_till_next_fqs);
-> > >     if (j < HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV)
-> > >             j = HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV;
-> > >     pr_info("RCU calculated value of scheduler-enlistment delay is %ld jiffies.\n", j);
-> > > -   WRITE_ONCE(jiffies_to_sched_qs, j);
-> > > +   WRITE_ONCE(jiffies_till_sched_qs, j);
-> > >  }
-> > >
-> > >  static int param_set_first_fqs_jiffies(const char *val, const struct kernel_param *kp)
-> > > @@ -1033,16 +1026,16 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
-> > >
-> > >     /*
-> > >      * A CPU running for an extended time within the kernel can
-> > > -    * delay RCU grace periods: (1) At age jiffies_to_sched_qs,
-> > > -    * set .rcu_urgent_qs, (2) At age 2*jiffies_to_sched_qs, set
-> > > +    * delay RCU grace periods: (1) At age jiffies_till_sched_qs,
-> > > +    * set .rcu_urgent_qs, (2) At age 2*jiffies_till_sched_qs, set
-> > >      * both .rcu_need_heavy_qs and .rcu_urgent_qs.  Note that the
-> > >      * unsynchronized assignments to the per-CPU rcu_need_heavy_qs
-> > >      * variable are safe because the assignments are repeated if this
-> > >      * CPU failed to pass through a quiescent state.  This code
-> > > -    * also checks .jiffies_resched in case jiffies_to_sched_qs
-> > > +    * also checks .jiffies_resched in case jiffies_till_sched_qs
-> > >      * is set way high.
-> > >      */
-> > > -   jtsq = READ_ONCE(jiffies_to_sched_qs);
-> > > +   jtsq = READ_ONCE(jiffies_till_sched_qs);
-> > >     ruqp = per_cpu_ptr(&rcu_data.rcu_urgent_qs, rdp->cpu);
-> > >     rnhqp = &per_cpu(rcu_data.rcu_need_heavy_qs, rdp->cpu);
-> > >     if (!READ_ONCE(*rnhqp) &&
-> > > @@ -3383,7 +3376,8 @@ static void __init rcu_init_geometry(void)
-> > >             jiffies_till_first_fqs = d;
-> > >     if (jiffies_till_next_fqs == ULONG_MAX)
-> > >             jiffies_till_next_fqs = d;
-> > > -   adjust_jiffies_till_sched_qs();
-> > > +   if (jiffies_till_sched_qs == ULONG_MAX)
-> > > +           adjust_jiffies_till_sched_qs();
-> > >
-> > >     /* If the compile-time values are accurate, just leave. */
-> > >     if (rcu_fanout_leaf == RCU_FANOUT_LEAF &&
+The following expression above:
+RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),...)
+
+Becomes:
+RCU_LOCKDEP_WARN(preemptible(), ...)
+
+For, CONFIG_PREEMPT=n kernels, this means:
+RCU_LOCKDEP_WARN(0, ...)
+
+Which would mean no splats. Or, did I miss the point?
+
+thanks,
+
+ - Joel
+
