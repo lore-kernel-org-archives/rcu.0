@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88626C7618F
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3F8AC7618F
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:22:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 61D72212F5
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:09:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7C5D21537
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1563199741;
-	bh=K6p7uPspMkLhTzpyhVEtNgFuB9A1jf4O97Vg3SfgP30=;
+	s=default; t=1563200530;
+	bh=raCm2z9IR6RzYY5VMxy8o2cFZlPyoTrU7xWbKHrzAn8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rhGuPVTudG3ZTyYbmR9ye1kPEczqNv94y3y7trYTcy8MtbKUi1s4ZKYJcgdOsu0Ej
-	 /ti9rRygBJNk5yMcTXiaAoS5ofJpdMPSJ7ZhOKuiEpCTcKumEeP2bTpA0AuPzUGLmE
-	 tVdkB2srue25c0CdlOTUiQTs0pJKp1Qo/EM5bmNo=
+	b=uGOSSe+MjLba4mUgVWBbbr0epeSVOqLWl1lAe9Hj1gYJ/oRdPGVPTEaQrWWAkxMqG
+	 2GITS2heDu/nM2Kc0Pd9LTevMQgFX2NJf63ceiCagSQRQy4DuVzjtyWXYJ7feAJVEM
+	 gxn3cBNsW21K+WbUoyhOiBA4HemFRUKjKmjuiTl4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388344AbfGOOI6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 10:08:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
+        id S2389146AbfGOOWE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 10:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388023AbfGOOI5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:08:57 -0400
+        id S2390545AbfGOOVy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:21:54 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAB9D217D8;
-        Mon, 15 Jul 2019 14:08:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 978AA2184C;
+        Mon, 15 Jul 2019 14:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199736;
-        bh=K6p7uPspMkLhTzpyhVEtNgFuB9A1jf4O97Vg3SfgP30=;
+        s=default; t=1563200514;
+        bh=raCm2z9IR6RzYY5VMxy8o2cFZlPyoTrU7xWbKHrzAn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TN1ncVKmJVU2GXyQkgEOB/0seyElVxWPT7qPl8eyU6Zt7zkxdHJYqPu3rPZOPBNaw
-         c8tgRdcu4WJ/EIG7OhycQXRU/cs+RefHwKivN0Hskz26HoAhTJqXB/arg1n220i32L
-         tDphhbehBqCC9VySUkeqh637GuI61Y4qeculrwDo=
+        b=gi+oZm8JA8IhKUZ8U6lO2JoPBqduAld6zpOrd1zcda/AjwNNV9zYdzOL/JeGHmnaM
+         BtFDNhi/Q8YQbiRW83KQZjFOF+n+QsZhwm1doQlEp7Z68WaWoO4hdp+qHjNRT3BA74
+         JG6Pshwd6AmB0o6SbIiwC2CteRUG7ZDbMYb6K/gk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Waiman Long <longman@redhat.com>,
         "Paul E . McKenney" <paulmck@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 089/219] rcu: Force inlining of rcu_read_lock()
-Date:   Mon, 15 Jul 2019 10:01:30 -0400
-Message-Id: <20190715140341.6443-89-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 067/158] rcu: Force inlining of rcu_read_lock()
+Date:   Mon, 15 Jul 2019 10:16:38 -0400
+Message-Id: <20190715141809.8445-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
-References: <20190715140341.6443-1-sashal@kernel.org>
+In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
+References: <20190715141809.8445-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -95,10 +95,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b25d20822e75..3508f4508a11 100644
+index e102c5bccbb9..68cbe111420b 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -586,7 +586,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+@@ -620,7 +620,7 @@ static inline void rcu_preempt_sleep_check(void) { }
   * read-side critical sections may be preempted and they may also block, but
   * only when acquiring spinlocks that are subject to priority inheritance.
   */
