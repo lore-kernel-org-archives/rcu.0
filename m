@@ -7,54 +7,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE0B2C76191
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31F76C76191
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:45:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C6A7320896
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:45:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B7062067C
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:45:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="AUubZl4E"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QjihkdzO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404229AbfGOOoy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 10:44:54 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46571 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404550AbfGOOh1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:37:27 -0400
-Received: by mail-pl1-f196.google.com with SMTP id c2so8368350plz.13
-        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 07:37:26 -0700 (PDT)
+        id S1730891AbfGOOpQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 10:45:16 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36316 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404402AbfGOOhT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:37:19 -0400
+Received: by mail-pg1-f195.google.com with SMTP id l21so7814748pgm.3
+        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 07:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z+lAujGo7GrSG40jkK2/203/pKxvTLE13nrgeKcOwgI=;
-        b=AUubZl4ETLIsW/m5dgXLBulJXDHc0BCosX1eCwyxi+94m0Nn+UMJmqa85ypsCsZq1j
-         xz0LM9usgNKyVFOetyi7Bh0t5cemvEnRKdil/TVdpWNJXsluRFLQGvr0RhdUuQJTVlAU
-         AAiUQF4zYjdlsdkxFoX9G9U8IN3eAZ1c3LtuQ=
+        bh=peLCyvMnb6GAqXrVywa8AT70STEJ77uX6TkkVXJzQ/M=;
+        b=QjihkdzO56EyWdL1UBrowr4J0diPIpjeawlNo5eUXRlutEI+PMdDLg/2ovhGCm9dB1
+         am3dJfpAJ98Tx9IokTbTDJI/QLnhNHnLoi+VI/95oP5fp/RwwQCZGPG9aCEKUlUpO/1N
+         atHPVJ+wXVzYcfg26NNOs6IX7iznL6Gp2AAwA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z+lAujGo7GrSG40jkK2/203/pKxvTLE13nrgeKcOwgI=;
-        b=d96CyzuzpfB5K2PWYVSfuQlWOxnQTi3cTcYfMXtGjrdO4ztoTmnxgS/9lUDBy53KOZ
-         ycdlGQDsVxjMIKjTz31XxWSvxHDXI56QHZlGvEtUUa1RfEyjBNX4OEyjcdSij2eIJlvg
-         IEK0r6u9bGEcuj12U/hjlg0/g+iXhrUc021AtY1Qu8mJsuyCLJspWUWMklo0iGxGWvMb
-         FKOn1VS/5VpJ2qXK91XLBW+2vLwu5MMg3eGT4+CZhoQ9TNgySqiTiP638Rkx/Ag2/LBm
-         o3/yxv9HfIU7E5+wxyKAtvi6B5n5uznYFGO5YKFwX/5era8lxFtfnBMSK85HbAzveABF
-         L/4Q==
-X-Gm-Message-State: APjAAAU8Kr0fVR6w3nFlcma3Dy8yOUhajpAp61R3gtvFRS5aidCWiAs/
-        cNZe4t6pY3wxVnulYxS5Fuc=
-X-Google-Smtp-Source: APXvYqyfIIGoLXgS2oKcW7Wk3sDCdph3kdkFQYwRHA7oKCzkGjxEv3JlpE2AZDMyjbjqgNcrkFD7WQ==
-X-Received: by 2002:a17:902:8649:: with SMTP id y9mr28192780plt.289.1563201446297;
-        Mon, 15 Jul 2019 07:37:26 -0700 (PDT)
+        bh=peLCyvMnb6GAqXrVywa8AT70STEJ77uX6TkkVXJzQ/M=;
+        b=R/NfNIYxiQSoc/tC7at5Nqd5enfetQv4onBevUDDaH7DYBwmnB1VgkCxeBVjbjZZLk
+         c5p8E8vzcpY2fqpo1HBKSZOp8H18ft/WWutNuwpeJugnfGuofeUDTCFlxLOpwjU4kjI4
+         VVcSkelFF/7qyhACniPl4YMkkPE+qVCa9yPz7TdWXX5b4hDyZFB8EEvFSQK9AwyxpUt0
+         fXhdXjSqWgxV2ugLzBrNXZYDhZHgRTXkoWaoIAGXjVdDSK1ulUz+tbIyCJXvpnpqO9Qb
+         CnykjoStUngjDyHqdkh3yrlSyLZuClmv3QcSa6lddWUGA7Ks97HMgyJzDMlUGcyScLYJ
+         5x+A==
+X-Gm-Message-State: APjAAAURxCeRW/LtVnpFwizVWksPcD3+6fpjPss89atGSp2mriWyTg41
+        QCXCQEJu5Oc7XWoQNTC8+Kk=
+X-Google-Smtp-Source: APXvYqzmK9tD8rYXtIru39NtpVyI6dVamC0JOl/Vm3L4KkimM24dL0CBqeO9C1zAEuPYG8wK9FgMFA==
+X-Received: by 2002:a65:6281:: with SMTP id f1mr25763664pgv.400.1563201437978;
+        Mon, 15 Jul 2019 07:37:17 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id s66sm18381852pfs.8.2019.07.15.07.37.22
+        by smtp.gmail.com with ESMTPSA id s66sm18381852pfs.8.2019.07.15.07.37.14
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 07:37:25 -0700 (PDT)
+        Mon, 15 Jul 2019 07:37:17 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Oleg Nesterov <oleg@redhat.com>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
@@ -71,6 +70,7 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         linux-pm@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         neilb@suse.com, netdev@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
@@ -79,9 +79,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Tejun Heo <tj@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [PATCH 3/9] rcu/sync: Remove custom check for reader-section (v2)
-Date:   Mon, 15 Jul 2019 10:36:59 -0400
-Message-Id: <20190715143705.117908-4-joel@joelfernandes.org>
+Subject: [PATCH 1/9] rcu/update: Remove useless check for debug_locks (v1)
+Date:   Mon, 15 Jul 2019 10:36:57 -0400
+Message-Id: <20190715143705.117908-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.510.g264f2c817a-goog
 In-Reply-To: <20190715143705.117908-1-joel@joelfernandes.org>
 References: <20190715143705.117908-1-joel@joelfernandes.org>
@@ -92,33 +92,38 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcu/sync code was doing its own check whether we are in a reader
-section. With RCU consolidating flavors and the generic helper added in
-this series, this is no longer need. We can just use the generic helper
-and it results in a nice cleanup.
+In rcu_read_lock_sched_held(), debug_locks can never be true at the
+point we check it because we already check debug_locks in
+debug_lockdep_rcu_enabled() in the beginning. Remove the check.
 
-Cc: Oleg Nesterov <oleg@redhat.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcu_sync.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/rcu/update.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
-index 9b83865d24f9..0027d4c8087c 100644
---- a/include/linux/rcu_sync.h
-+++ b/include/linux/rcu_sync.h
-@@ -31,9 +31,7 @@ struct rcu_sync {
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 61df2bf08563..9dd5aeef6e70 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -93,17 +93,13 @@ module_param(rcu_normal_after_boot, int, 0);
   */
- static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
+ int rcu_read_lock_sched_held(void)
  {
--	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&
--			 !rcu_read_lock_bh_held() &&
--			 !rcu_read_lock_sched_held(),
-+	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
- 			 "suspicious rcu_sync_is_idle() usage");
- 	return !READ_ONCE(rsp->gp_state); /* GP_IDLE */
+-	int lockdep_opinion = 0;
+-
+ 	if (!debug_lockdep_rcu_enabled())
+ 		return 1;
+ 	if (!rcu_is_watching())
+ 		return 0;
+ 	if (!rcu_lockdep_current_cpu_online())
+ 		return 0;
+-	if (debug_locks)
+-		lockdep_opinion = lock_is_held(&rcu_sched_lock_map);
+-	return lockdep_opinion || !preemptible();
++	return lock_is_held(&rcu_sched_lock_map) || !preemptible();
  }
+ EXPORT_SYMBOL(rcu_read_lock_sched_held);
+ #endif
 -- 
 2.22.0.510.g264f2c817a-goog
 
