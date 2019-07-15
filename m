@@ -4,206 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBF8EC7618F
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 09:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88626C7618F
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:09:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4A3F20838
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 09:12:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61D72212F5
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1563181933;
-	bh=RwiZ8UMJglb7huO6ODrgpPb37mmIu1Z/WU/rJhEzoxI=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=y9FE4slaji7iUV3imuRK5cKUui4WZaq+gxRlrOk4RWL7vl04+ZVQb5LWlHYiCBVfJ
-	 AwNOW9++G/y5v+ZLkb8R4MBHzYDzkCgnb4BdocT0z2UlV2f6qqCLhgQEXXqjnmWYN1
-	 DssvxZbp47XQsym+/TXTxBOZwdhqNzHzzpZcbO9s=
+	s=default; t=1563199741;
+	bh=K6p7uPspMkLhTzpyhVEtNgFuB9A1jf4O97Vg3SfgP30=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=rhGuPVTudG3ZTyYbmR9ye1kPEczqNv94y3y7trYTcy8MtbKUi1s4ZKYJcgdOsu0Ej
+	 /ti9rRygBJNk5yMcTXiaAoS5ofJpdMPSJ7ZhOKuiEpCTcKumEeP2bTpA0AuPzUGLmE
+	 tVdkB2srue25c0CdlOTUiQTs0pJKp1Qo/EM5bmNo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbfGOJMN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 05:12:13 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:32922 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729257AbfGOJMN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 05:12:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=G74tw8/WRevpQR45VkSXUw895ku/QpK/SEIzWOOpE7M=; b=GIS8ohvL4nhs8885qyPsS4p/H
-        C/eZqHfFt6ngpx+bTOTkjUp4sw1so4Dk6MilrU5r9T1MB9hKY3BvPeSiNoyAfISpZJykRgMJKE8bP
-        tBcMBorFQvtMmtdN8JCujcCAus/rZoLknbrGsxNnF6kAaomADv5cEhV4y5vdofLDEILdmOJm+Kspw
-        Odam9/SbL1M+FHigZGZDcs9GlF9c7bcQUA3AXXLuMoLJw97xN35yxet/a4SkIa+U5+Nctc0gPKugY
-        V4I9DaKZfA3uv6F0LmBAc/hY3ojc8fubKl4Da7W3swYIUc2IFy80uUi+nXlwCyJFVqV750ACWI361
-        OYNjOzwJg==;
-Received: from [189.27.46.152] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hmx1n-0005vg-N8; Mon, 15 Jul 2019 09:12:11 +0000
-Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
-        (envelope-from <mchehab@bombadil.infradead.org>)
-        id 1hmx1l-0001dt-Jf; Mon, 15 Jul 2019 06:12:09 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org
-Subject: [PATCH] docs: fix broken doc links due to renames
-Date:   Mon, 15 Jul 2019 06:12:08 -0300
-Message-Id: <93185ad3a67685429c84fceb94d20fb500c0aedb.1563181814.git.mchehab+samsung@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S2388344AbfGOOI6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 10:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388023AbfGOOI5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:08:57 -0400
+Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAB9D217D8;
+        Mon, 15 Jul 2019 14:08:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563199736;
+        bh=K6p7uPspMkLhTzpyhVEtNgFuB9A1jf4O97Vg3SfgP30=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TN1ncVKmJVU2GXyQkgEOB/0seyElVxWPT7qPl8eyU6Zt7zkxdHJYqPu3rPZOPBNaw
+         c8tgRdcu4WJ/EIG7OhycQXRU/cs+RefHwKivN0Hskz26HoAhTJqXB/arg1n220i32L
+         tDphhbehBqCC9VySUkeqh637GuI61Y4qeculrwDo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Waiman Long <longman@redhat.com>,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 089/219] rcu: Force inlining of rcu_read_lock()
+Date:   Mon, 15 Jul 2019 10:01:30 -0400
+Message-Id: <20190715140341.6443-89-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
+References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Some files got renamed but the patch was incomplete, as it forgot
-to update the documentation reference accordingly.
+From: Waiman Long <longman@redhat.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+[ Upstream commit 6da9f775175e516fc7229ceaa9b54f8f56aa7924 ]
+
+When debugging options are turned on, the rcu_read_lock() function
+might not be inlined. This results in lockdep's print_lock() function
+printing "rcu_read_lock+0x0/0x70" instead of rcu_read_lock()'s caller.
+For example:
+
+[   10.579995] =============================
+[   10.584033] WARNING: suspicious RCU usage
+[   10.588074] 4.18.0.memcg_v2+ #1 Not tainted
+[   10.593162] -----------------------------
+[   10.597203] include/linux/rcupdate.h:281 Illegal context switch in
+RCU read-side critical section!
+[   10.606220]
+[   10.606220] other info that might help us debug this:
+[   10.606220]
+[   10.614280]
+[   10.614280] rcu_scheduler_active = 2, debug_locks = 1
+[   10.620853] 3 locks held by systemd/1:
+[   10.624632]  #0: (____ptrval____) (&type->i_mutex_dir_key#5){.+.+}, at: lookup_slow+0x42/0x70
+[   10.633232]  #1: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
+[   10.640954]  #2: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
+
+These "rcu_read_lock+0x0/0x70" strings are not providing any useful
+information.  This commit therefore forces inlining of the rcu_read_lock()
+function so that rcu_read_lock()'s caller is instead shown.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ include/linux/rcupdate.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This patch is against current linus/master branch.
-
- Documentation/RCU/rculist_nulls.txt                   | 2 +-
- Documentation/devicetree/bindings/arm/idle-states.txt | 2 +-
- Documentation/locking/spinlocks.txt                   | 4 ++--
- Documentation/memory-barriers.txt                     | 2 +-
- Documentation/translations/ko_KR/memory-barriers.txt  | 2 +-
- MAINTAINERS                                           | 6 +++---
- drivers/scsi/hpsa.c                                   | 4 ++--
- 7 files changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/RCU/rculist_nulls.txt b/Documentation/RCU/rculist_nulls.txt
-index 8151f0195f76..23f115dc87cf 100644
---- a/Documentation/RCU/rculist_nulls.txt
-+++ b/Documentation/RCU/rculist_nulls.txt
-@@ -1,7 +1,7 @@
- Using hlist_nulls to protect read-mostly linked lists and
- objects using SLAB_TYPESAFE_BY_RCU allocations.
- 
--Please read the basics in Documentation/RCU/listRCU.txt
-+Please read the basics in Documentation/RCU/listRCU.rst
- 
- Using special makers (called 'nulls') is a convenient way
- to solve following problem :
-diff --git a/Documentation/devicetree/bindings/arm/idle-states.txt b/Documentation/devicetree/bindings/arm/idle-states.txt
-index 326f29b270ad..2d325bed37e5 100644
---- a/Documentation/devicetree/bindings/arm/idle-states.txt
-+++ b/Documentation/devicetree/bindings/arm/idle-states.txt
-@@ -703,4 +703,4 @@ cpus {
-     https://www.devicetree.org/specifications/
- 
- [6] ARM Linux Kernel documentation - Booting AArch64 Linux
--    Documentation/arm64/booting.txt
-+    Documentation/arm64/booting.rst
-diff --git a/Documentation/locking/spinlocks.txt b/Documentation/locking/spinlocks.txt
-index ff35e40bdf5b..430b641ae072 100644
---- a/Documentation/locking/spinlocks.txt
-+++ b/Documentation/locking/spinlocks.txt
-@@ -74,7 +74,7 @@ itself.  The read lock allows many concurrent readers.  Anything that
- _changes_ the list will have to get the write lock.
- 
-    NOTE! RCU is better for list traversal, but requires careful
--   attention to design detail (see Documentation/RCU/listRCU.txt).
-+   attention to design detail (see Documentation/RCU/listRCU.rst).
- 
- Also, you cannot "upgrade" a read-lock to a write-lock, so if you at _any_
- time need to do any changes (even if you don't do it every time), you have
-@@ -82,7 +82,7 @@ to get the write-lock at the very beginning.
- 
-    NOTE! We are working hard to remove reader-writer spinlocks in most
-    cases, so please don't add a new one without consensus.  (Instead, see
--   Documentation/RCU/rcu.txt for complete information.)
-+   Documentation/RCU/rcu.rst for complete information.)
- 
- ----
- 
-diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-index 045bb8148fe9..1adbb8a371c7 100644
---- a/Documentation/memory-barriers.txt
-+++ b/Documentation/memory-barriers.txt
-@@ -548,7 +548,7 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
- 
- 	[*] For information on bus mastering DMA and coherency please read:
- 
--	    Documentation/PCI/pci.rst
-+	    Documentation/driver-api/pci/pci.rst
- 	    Documentation/DMA-API-HOWTO.txt
- 	    Documentation/DMA-API.txt
- 
-diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Documentation/translations/ko_KR/memory-barriers.txt
-index a33c2a536542..2774624ee843 100644
---- a/Documentation/translations/ko_KR/memory-barriers.txt
-+++ b/Documentation/translations/ko_KR/memory-barriers.txt
-@@ -569,7 +569,7 @@ ACQUIRE 는 해당 오퍼레이션의 로드 부분에만 적용되고 RELEASE 
- 
- 	[*] 버스 마스터링 DMA 와 일관성에 대해서는 다음을 참고하시기 바랍니다:
- 
--	    Documentation/PCI/pci.rst
-+	    Documentation/driver-api/pci/pci.rst
- 	    Documentation/DMA-API-HOWTO.txt
- 	    Documentation/DMA-API.txt
- 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f5533d1bda2e..51ad84a3f4e3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -899,7 +899,7 @@ L:	linux-iio@vger.kernel.org
- W:	http://ez.analog.com/community/linux-device-drivers
- S:	Supported
- F:	drivers/iio/adc/ad7124.c
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.txt
-+F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
- 
- ANALOG DEVICES INC AD7606 DRIVER
- M:	Stefan Popa <stefan.popa@analog.com>
-@@ -6828,7 +6828,7 @@ R:	Sagi Shahar <sagis@google.com>
- R:	Jon Olson <jonolson@google.com>
- L:	netdev@vger.kernel.org
- S:	Supported
--F:	Documentation/networking/device_drivers/google/gve.txt
-+F:	Documentation/networking/device_drivers/google/gve.rst
- F:	drivers/net/ethernet/google
- 
- GPD POCKET FAN DRIVER
-@@ -12077,7 +12077,7 @@ M:	Juergen Gross <jgross@suse.com>
- M:	Alok Kataria <akataria@vmware.com>
- L:	virtualization@lists.linux-foundation.org
- S:	Supported
--F:	Documentation/virtual/paravirt_ops.txt
-+F:	Documentation/virtual/paravirt_ops.rst
- F:	arch/*/kernel/paravirt*
- F:	arch/*/include/asm/paravirt*.h
- F:	include/linux/hypervisor.h
-diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
-index 43a6b5350775..eaf6177ac9ee 100644
---- a/drivers/scsi/hpsa.c
-+++ b/drivers/scsi/hpsa.c
-@@ -7798,7 +7798,7 @@ static void hpsa_free_pci_init(struct ctlr_info *h)
- 	hpsa_disable_interrupt_mode(h);		/* pci_init 2 */
- 	/*
- 	 * call pci_disable_device before pci_release_regions per
--	 * Documentation/PCI/pci.rst
-+	 * Documentation/driver-api/pci/pci.rst
- 	 */
- 	pci_disable_device(h->pdev);		/* pci_init 1 */
- 	pci_release_regions(h->pdev);		/* pci_init 2 */
-@@ -7881,7 +7881,7 @@ static int hpsa_pci_init(struct ctlr_info *h)
- clean1:
- 	/*
- 	 * call pci_disable_device before pci_release_regions per
--	 * Documentation/PCI/pci.rst
-+	 * Documentation/driver-api/pci/pci.rst
- 	 */
- 	pci_disable_device(h->pdev);
- 	pci_release_regions(h->pdev);
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index b25d20822e75..3508f4508a11 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -586,7 +586,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+  * read-side critical sections may be preempted and they may also block, but
+  * only when acquiring spinlocks that are subject to priority inheritance.
+  */
+-static inline void rcu_read_lock(void)
++static __always_inline void rcu_read_lock(void)
+ {
+ 	__rcu_read_lock();
+ 	__acquire(RCU);
 -- 
-2.21.0
-
+2.20.1
 
