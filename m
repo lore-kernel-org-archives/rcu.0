@@ -2,234 +2,147 @@ Return-Path: <SRS0=Bt3H=VM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D14DC7618F
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 20:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08E6FC76191
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 21:44:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E571C2086C
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 20:09:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D47032086C
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 21:44:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1563227088;
+	bh=QhjAhcrBGIu89ZYNTAQunk1Pw0Bn7GPi6K8d8BScnIs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=LUSyKkvS8yDU1G7PBWZqnefhcSgNTcOybzVhSjHorHx8KLfUVirmYdeTHV7OG85Oz
+	 7OMCYBx9nzvVpVkaElMo4zWLipltMWNqfMDv2gJJboAgJTGNuKeWNytqoi78mJ2cju
+	 ub1spGg1G3/HQ+wAq57vEtRx1dLAYaveU6eQpmhw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbfGOUJt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 16:09:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15208 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729793AbfGOUJt (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 15 Jul 2019 16:09:49 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6FK7nOw017252;
-        Mon, 15 Jul 2019 16:09:04 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2trw8kg5n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jul 2019 16:09:03 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6FK93io021161;
-        Mon, 15 Jul 2019 16:09:03 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2trw8kg5mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jul 2019 16:09:03 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6FK56fD017550;
-        Mon, 15 Jul 2019 20:09:02 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01wdc.us.ibm.com with ESMTP id 2tq6x5ssvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jul 2019 20:09:02 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6FK91Zb51314950
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Jul 2019 20:09:01 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B69D0B2065;
-        Mon, 15 Jul 2019 20:09:01 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 767E8B2064;
-        Mon, 15 Jul 2019 20:09:01 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.187.221])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Jul 2019 20:09:01 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 2796216C8F40; Mon, 15 Jul 2019 13:09:01 -0700 (PDT)
-Date:   Mon, 15 Jul 2019 13:09:01 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190715200901.GW26519@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190712063240.GD7702@X58A-UD3R>
- <20190712125116.GB92297@google.com>
- <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
- <CAEXW_YTeAUuVqViBfiOTQhckMDH229oQdPXG6SNqGK0xYm-yzA@mail.gmail.com>
- <20190713151330.GE26519@linux.ibm.com>
- <20190713154257.GE133650@google.com>
- <20190713174111.GG26519@linux.ibm.com>
- <CANrsvRNK=+SKHJNLmwNjp2tnjacJpqwFVQH9aRCj2E1L10GHDQ@mail.gmail.com>
- <20190714135610.GJ26519@linux.ibm.com>
- <20190715173924.GA2494@google.com>
+        id S1732578AbfGOVop (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 17:44:45 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41953 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731858AbfGOVop (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 17:44:45 -0400
+Received: by mail-ot1-f68.google.com with SMTP id o101so18695714ota.8;
+        Mon, 15 Jul 2019 14:44:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hO2lc5/RCrOfroO8+pzsn6ZrqRVw3tFQDoLgNfzmBUQ=;
+        b=QxXDGZ3v64gyAMTDqUN0aDnOZUEUriuNBjPSYo18FhopZ8P0hjPzAG+ZIKn7zH4gUi
+         QQfKwc35vqrWxz9Pdos45CbPkxluZAY+xJxiCUnS/c8V3irYv3sVlFOGVsI03FOmIaXv
+         1EW+EKfby2IgVifnLuY8yMlV3B9g9zSRWk+MkjD42FojhmDrPbL1Gj05OvCQfmBMrtVC
+         H2sgMK8MwEiq61UuGNkJPV+VQ+plnLtUXI5O8yARGzjtU/JH3OxAdhS+CBaJnz7jEarF
+         rKc52Lygct/0tLMNo/N1pP0Qx0Vim/zzGg889XPO1TWBw/bRbhAqCy7vbi3fogYK9Wkn
+         2OSA==
+X-Gm-Message-State: APjAAAUsAOkRYO87kbLMCwaOxid9BCDbmnB2OvJG6nh20Bt2jxK632To
+        Re3Z9R3uMSLoWgU/fV0rp3nL8QXeSGq3NMcP2Ik=
+X-Google-Smtp-Source: APXvYqxeBU+lL3PSYmxhb7JppIVz9aT6KKyGzUIDEJ8gGEzipFV4PQx8sL/9KU3ERl8XEJvsrjqZy4/vHGyUSxfUvR0=
+X-Received: by 2002:a05:6830:1516:: with SMTP id k22mr18941426otp.189.1563227084317;
+ Mon, 15 Jul 2019 14:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190715173924.GA2494@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-15_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907150230
+References: <20190715143705.117908-1-joel@joelfernandes.org> <20190715143705.117908-9-joel@joelfernandes.org>
+In-Reply-To: <20190715143705.117908-9-joel@joelfernandes.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 15 Jul 2019 23:44:31 +0200
+Message-ID: <CAJZ5v0jdx1dgBZLyH_Loj1XVuLCV+HMHjk8r_n8xG7qmoH_z3A@mail.gmail.com>
+Subject: Re: [PATCH 8/9] acpi: Use built-in RCU list checking for
+ acpi_ioremaps list (v1)
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        NeilBrown <neilb@suse.com>, netdev <netdev@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 01:39:24PM -0400, Joel Fernandes wrote:
-> On Sun, Jul 14, 2019 at 06:56:10AM -0700, Paul E. McKenney wrote:
-> [snip]
-> > > > > > > > > >
-> > > > > > > > > >       commit ae91aa0adb14dc33114d566feca2f7cb7a96b8b7
-> > > > > > > > > >       rcu: Remove debugfs tracing
-> > > > > > > > > >
-> > > > > > > > > > removed all debugfs tracing, gp_max also included.
-> > > > > > > > > >
-> > > > > > > > > > And you sounds great. And even looks not that hard to add it like,
-> > > > > > > > > >
-> > > > > > > > > > :)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > > > > index ad9dc86..86095ff 100644
-> > > > > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > > > > @@ -1658,8 +1658,10 @@ static void rcu_gp_cleanup(void)
-> > > > > > > > > >       raw_spin_lock_irq_rcu_node(rnp);
-> > > > > > > > > >       rcu_state.gp_end = jiffies;
-> > > > > > > > > >       gp_duration = rcu_state.gp_end - rcu_state.gp_start;
-> > > > > > > > > > -     if (gp_duration > rcu_state.gp_max)
-> > > > > > > > > > +     if (gp_duration > rcu_state.gp_max) {
-> > > > > > > > > >               rcu_state.gp_max = gp_duration;
-> > > > > > > > > > +             trace_rcu_grace_period(something something);
-> > > > > > > > > > +     }
-> > > > > > > > >
-> > > > > > > > > Yes, that makes sense. But I think it is much better off as a readable value
-> > > > > > > > > from a virtual fs. The drawback of tracing for this sort of thing are:
-> > > > > > > > >  - Tracing will only catch it if tracing is on
-> > > > > > > > >  - Tracing data can be lost if too many events, then no one has a clue what
-> > > > > > > > >    the max gp time is.
-> > > > > > > > >  - The data is already available in rcu_state::gp_max so copying it into the
-> > > > > > > > >    trace buffer seems a bit pointless IMHO
-> > > > > > > > >  - It is a lot easier on ones eyes to process a single counter than process
-> > > > > > > > >    heaps of traces.
-> > > > > > > > >
-> > > > > > > > > I think a minimal set of RCU counters exposed to /proc or /sys should not
-> > > > > > > > > hurt and could do more good than not. The scheduler already does this for
-> > > > > > > > > scheduler statistics. I have seen Peter complain a lot about new tracepoints
-> > > > > > > > > but not much (or never) about new statistics.
-> > > > > > > > >
-> > > > > > > > > Tracing has its strengths but may not apply well here IMO. I think a counter
-> > > > > > > > > like this could be useful for tuning of things like the jiffies_*_sched_qs,
-> > > > > > > > > the stall timeouts and also any other RCU knobs. What do you think?
-> > > > > > > >
-> > > > > > > > I prefer proc/sys knob for it to tracepoint. Why I've considered it is just it
-> > > > > > > > looks like undoing what Paul did at ae91aa0ad.
-> > > > > > > >
-> > > > > > > > I think you're rational enough. I just wondered how Paul think of it.
-> > > > > > >
-> > > > > > > I believe at least initially, a set of statistics can be made
-> > > > > > > available only when rcutorture or rcuperf module is loaded. That way
-> > > > > > > they are purely only for debugging and nothing needs to be exposed to
-> > > > > > > normal kernels distributed thus reducing testability concerns.
-> > > > > > >
-> > > > > > > rcu_state::gp_max would be trivial to expose through this, but for
-> > > > > > > other statistics that are more complicated - perhaps
-> > > > > > > tracepoint_probe_register can be used to add hooks on to the
-> > > > > > > tracepoints and generate statistics from them. Again the registration
-> > > > > > > of the probe and the probe handler itself would all be in
-> > > > > > > rcutorture/rcuperf test code and not a part of the kernel proper.
-> > > > > > > Thoughts?
-> > > > > >
-> > > > > > It still feels like you guys are hyperfocusing on this one particular
-> > > > > > knob.  I instead need you to look at the interrelating knobs as a group.
-> > > > >
-> > > > > Thanks for the hints, we'll do that.
-> > > > >
-> > > > > > On the debugging side, suppose someone gives you an RCU bug report.
-> > > > > > What information will you need?  How can you best get that information
-> > > > > > without excessive numbers of over-and-back interactions with the guy
-> > > > > > reporting the bug?  As part of this last question, what information is
-> > > > > > normally supplied with the bug?  Alternatively, what information are
-> > > > > > bug reporters normally expected to provide when asked?
-> > > > >
-> > > > > I suppose I could dig out some of our Android bug reports of the past where
-> > > > > there were RCU issues but if there's any fires you are currently fighting do
-> > > > > send it our way as debugging homework ;-)
-> > > >
-> > > > Evading the questions, are we?
-> 
-> Sorry if I sounded like evading, I was just saying that it would be nice to
-> work on some specific issue or bug report and then figure out what is needed
-> from there, instead of trying to predict what data is useful. Of course, I
-> think predicting and dumping data is also useful, but I was just wondering if
-> you had some specific issue in mind that we could work off of (you did
-> mention the CPU stopper below so thank you!)
+On Mon, Jul 15, 2019 at 4:43 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> list_for_each_entry_rcu has built-in RCU and lock checking. Make use of
+> it for acpi_ioremaps list traversal.
+>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-No worries, and fair enough!
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> > > > OK, I can be flexible.  Suppose that you were getting RCU CPU stall
-> > > > warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
-> > > > Of course, this really means that some other CPU/task is holding up
-> > > > multi_cpu_stop() without also blocking the current grace period.
-> > > >
-> > > > What is the best way to work out what is really holding things up?
-> > > 
-> > > Either the stopper preempted another being in a critical section and
-> > > has something wrong itself in case of PREEMPT or mechanisms for
-> > > urgent control doesn't work correctly.
-> > > 
-> > > I don't know what exactly you intended but I would check things like
-> > > (1) irq disable / eqs / tick / scheduler events and (2) whether special
-> > > handling for each level of qs urgency has started correctly. For that
-> > > purpose all the history of those events would be more useful.
-> 
-> Agreed, these are all good.
-
-Just to reiterate -- it would be good if multi_cpu_stop() could
-automatically dump out useful information when it has been delayed too
-long, where "too long" is probably a bit shorter than the RCU CPU stall
-warning timeout.  Useful information would include the stack of the task
-impeding multi_cpu_stop().
-
-> > > And with thinking it more, we could come up with a good way to
-> > > make use of those data to identify what the problem is. Do I catch
-> > > the point correctly? If so, me and Joel can start to work on it.
-> > > Otherwise, please correct me.
-> > 
-> > I believe you are on the right track.  In short, it would be great if
-> > the kernel would automatically dump out the needed information when
-> > cpu_stopper gets stalled, sort of like RCU does (much of the time,
-> > anyway) in its CPU stall warnings.  Given a patch that did this, I would
-> > be quite happy to help advocate for it!
-> 
-> In case you have a LKML link to a thread or bug report to this specific
-> cpu_stopper issue, please do pass it along.
-
-I hope to have an rcutorture-based repeat-by in a few days, give or take.
-(Famous last words!)
-
-> Happy to work on this with Byungchul, thanks,
-
-Thank you both!
-
-							Thanx, Paul
+> ---
+>  drivers/acpi/osl.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+> index 9c0edf2fc0dd..2f9d0d20b836 100644
+> --- a/drivers/acpi/osl.c
+> +++ b/drivers/acpi/osl.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/mm.h>
+>  #include <linux/highmem.h>
+> +#include <linux/lockdep.h>
+>  #include <linux/pci.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/kmod.h>
+> @@ -80,6 +81,7 @@ struct acpi_ioremap {
+>
+>  static LIST_HEAD(acpi_ioremaps);
+>  static DEFINE_MUTEX(acpi_ioremap_lock);
+> +#define acpi_ioremap_lock_held() lock_is_held(&acpi_ioremap_lock.dep_map)
+>
+>  static void __init acpi_request_region (struct acpi_generic_address *gas,
+>         unsigned int length, char *desc)
+> @@ -206,7 +208,7 @@ acpi_map_lookup(acpi_physical_address phys, acpi_size size)
+>  {
+>         struct acpi_ioremap *map;
+>
+> -       list_for_each_entry_rcu(map, &acpi_ioremaps, list)
+> +       list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
+>                 if (map->phys <= phys &&
+>                     phys + size <= map->phys + map->size)
+>                         return map;
+> @@ -249,7 +251,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+>  {
+>         struct acpi_ioremap *map;
+>
+> -       list_for_each_entry_rcu(map, &acpi_ioremaps, list)
+> +       list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
+>                 if (map->virt <= virt &&
+>                     virt + size <= map->virt + map->size)
+>                         return map;
+> --
+> 2.22.0.510.g264f2c817a-goog
+>
