@@ -2,111 +2,142 @@ Return-Path: <SRS0=Bt3H=VM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F52AC76195
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ABEBC76191
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:44:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DB42820896
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1563201542;
-	bh=43mLy/FhIxwNRsZyZGCom5oJs3AcHLeg9Kd0gaNJZ/s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rsmfpK1wiStMvIoJ8Rxt66epQe5R1cdIt50oXL4UNIGwxb12juOLDm49DS3glEkF8
-	 soXezHV9bQZrxuD58cqVqSgbKRwzcn2KZEy5EiJ2/p7v6Z4i0wOjihvIkySM82UA/R
-	 hH2K7fnvNz/h2o7XAQ9tHk1X6ag07hXuuVmdWxcU=
+	by mail.kernel.org (Postfix) with ESMTP id 53DEA20651
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 14:44:01 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XStDr0pO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403767AbfGOOjA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 10:39:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392217AbfGOOi4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:38:56 -0400
-Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55BE4205ED;
-        Mon, 15 Jul 2019 14:38:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563201536;
-        bh=43mLy/FhIxwNRsZyZGCom5oJs3AcHLeg9Kd0gaNJZ/s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cVquqlqoMOAydl7BxdBTSyYxllj6XGyYVDACj+O0awoIMzbtuNktfwsZXhx5K6BG0
-         9iegz6qh5BHPW/j5zmrsm+T29QvWG6nJiH2dIx90Tj1xUB4L38DEFYVgSFKQan3vgl
-         0M5m6tBjt8TV+eMfq8zwvLXI4uYZHorwEe4hOFxs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Waiman Long <longman@redhat.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 37/73] rcu: Force inlining of rcu_read_lock()
-Date:   Mon, 15 Jul 2019 10:35:53 -0400
-Message-Id: <20190715143629.10893-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715143629.10893-1-sashal@kernel.org>
-References: <20190715143629.10893-1-sashal@kernel.org>
+        id S1733194AbfGOOnx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 10:43:53 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39290 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392039AbfGOOhr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:37:47 -0400
+Received: by mail-pl1-f195.google.com with SMTP id b7so8397891pls.6
+        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 07:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5zPd11qsqBV6enPH1pgmEhMrw3DVmEsKL+rgelJGu5E=;
+        b=XStDr0pOpAvfMPGvyaCiXhax5OpTI8omiicJPCmLonS9L7hbMWB8WbkqauDTlsAue1
+         /IzXyBhFpxdPHPkwfVRCjLPZYScMK7RsrUnJmmgQGxgyicRfMpFtWxfw1YpluI/oDB0w
+         mhjDfrjf8F43ROWC4kjFdePNxqWjxG9UE7yCo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5zPd11qsqBV6enPH1pgmEhMrw3DVmEsKL+rgelJGu5E=;
+        b=Kq4Xoxjr1s7/cnwpyjiUlsHqXPK7LTZMcaWmHzUf+9hxxIn9ZclvXhI5ZDg35kax/3
+         WvLn/9Wi6jvL/Aloawq7P8Fsx6SrkgoKu3lAdtIppN4qrWiRS54Ijc1vh5wYa7+fdfPX
+         F4ka5Xc47rAl3y3I+/VmeUHYlEZHHG6YIF1rchfeOEICm577PTZp0TQjnnBjb0wfGaLc
+         y22fsf6Sqhwj370yKJGp0zxm/cuFimk+BfNCcD70JdIdDWCBr5wJCnF88uGwH9VGPd+i
+         p8QJTynYnTpIQzh3Aj7K8+QkH4pM6JLNPG3QyxOaCXV+R3q3j3aWvo/1Vj4MH9mt+Pz5
+         6oBQ==
+X-Gm-Message-State: APjAAAWfwwrSX2Dtf8nOwOadvOVGil02z3d4zmtKxVHI6FBlaf+E/S3a
+        JgiXqkGnEz4JFhoKgsXQb7U=
+X-Google-Smtp-Source: APXvYqzkIpFv5vPuz81gmhFr3B+gCTSP4FKDqSNzw1vK/5n3JtNPasCMdlzt1VHFYex1IyUvrWl66Q==
+X-Received: by 2002:a17:902:2889:: with SMTP id f9mr27373830plb.230.1563201466638;
+        Mon, 15 Jul 2019 07:37:46 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id s66sm18381852pfs.8.2019.07.15.07.37.42
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 15 Jul 2019 07:37:45 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neilb@suse.com, netdev@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH 8/9] acpi: Use built-in RCU list checking for acpi_ioremaps list (v1)
+Date:   Mon, 15 Jul 2019 10:37:04 -0400
+Message-Id: <20190715143705.117908-9-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.22.0.510.g264f2c817a-goog
+In-Reply-To: <20190715143705.117908-1-joel@joelfernandes.org>
+References: <20190715143705.117908-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+list_for_each_entry_rcu has built-in RCU and lock checking. Make use of
+it for acpi_ioremaps list traversal.
 
-[ Upstream commit 6da9f775175e516fc7229ceaa9b54f8f56aa7924 ]
-
-When debugging options are turned on, the rcu_read_lock() function
-might not be inlined. This results in lockdep's print_lock() function
-printing "rcu_read_lock+0x0/0x70" instead of rcu_read_lock()'s caller.
-For example:
-
-[   10.579995] =============================
-[   10.584033] WARNING: suspicious RCU usage
-[   10.588074] 4.18.0.memcg_v2+ #1 Not tainted
-[   10.593162] -----------------------------
-[   10.597203] include/linux/rcupdate.h:281 Illegal context switch in
-RCU read-side critical section!
-[   10.606220]
-[   10.606220] other info that might help us debug this:
-[   10.606220]
-[   10.614280]
-[   10.614280] rcu_scheduler_active = 2, debug_locks = 1
-[   10.620853] 3 locks held by systemd/1:
-[   10.624632]  #0: (____ptrval____) (&type->i_mutex_dir_key#5){.+.+}, at: lookup_slow+0x42/0x70
-[   10.633232]  #1: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
-[   10.640954]  #2: (____ptrval____) (rcu_read_lock){....}, at: rcu_read_lock+0x0/0x70
-
-These "rcu_read_lock+0x0/0x70" strings are not providing any useful
-information.  This commit therefore forces inlining of the rcu_read_lock()
-function so that rcu_read_lock()'s caller is instead shown.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcupdate.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/osl.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index aa2935779e43..96037ba940ee 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -866,7 +866,7 @@ static inline void rcu_preempt_sleep_check(void)
-  * read-side critical sections may be preempted and they may also block, but
-  * only when acquiring spinlocks that are subject to priority inheritance.
-  */
--static inline void rcu_read_lock(void)
-+static __always_inline void rcu_read_lock(void)
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 9c0edf2fc0dd..2f9d0d20b836 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -14,6 +14,7 @@
+ #include <linux/slab.h>
+ #include <linux/mm.h>
+ #include <linux/highmem.h>
++#include <linux/lockdep.h>
+ #include <linux/pci.h>
+ #include <linux/interrupt.h>
+ #include <linux/kmod.h>
+@@ -80,6 +81,7 @@ struct acpi_ioremap {
+ 
+ static LIST_HEAD(acpi_ioremaps);
+ static DEFINE_MUTEX(acpi_ioremap_lock);
++#define acpi_ioremap_lock_held() lock_is_held(&acpi_ioremap_lock.dep_map)
+ 
+ static void __init acpi_request_region (struct acpi_generic_address *gas,
+ 	unsigned int length, char *desc)
+@@ -206,7 +208,7 @@ acpi_map_lookup(acpi_physical_address phys, acpi_size size)
  {
- 	__rcu_read_lock();
- 	__acquire(RCU);
+ 	struct acpi_ioremap *map;
+ 
+-	list_for_each_entry_rcu(map, &acpi_ioremaps, list)
++	list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
+ 		if (map->phys <= phys &&
+ 		    phys + size <= map->phys + map->size)
+ 			return map;
+@@ -249,7 +251,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+ {
+ 	struct acpi_ioremap *map;
+ 
+-	list_for_each_entry_rcu(map, &acpi_ioremaps, list)
++	list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
+ 		if (map->virt <= virt &&
+ 		    virt + size <= map->virt + map->size)
+ 			return map;
 -- 
-2.20.1
+2.22.0.510.g264f2c817a-goog
 
