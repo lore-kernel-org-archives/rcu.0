@@ -2,209 +2,139 @@ Return-Path: <SRS0=Bt3H=VM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4090BC7618F
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 17:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F5CBC76191
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 20:02:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F08BD20665
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 17:39:28 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fP8z5XCh"
+	by mail.kernel.org (Postfix) with ESMTP id 011D320665
+	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 20:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1563220972;
+	bh=YctKhCkISL0QPipV+bux3pgwhg/+Wfr5uFkoRtTAvW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=tpYFD5YT3iZfSlYboEvgZiZ1/kr8UCZy+iswykrR4lHG1jwzWPynszpAptYT1Mnkx
+	 JizYq58o+zvAp2Nvd0tkt8fE1wL4klPh7dR/kdADtDM1nN6WhmiT/FJ5NZoxkl2nP5
+	 11E0PP9e8TKA2wBKPldPy4Doc5QVTfoxUkGKiBqM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731692AbfGORj2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 13:39:28 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:40906 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731631AbfGORj2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 13:39:28 -0400
-Received: by mail-pg1-f195.google.com with SMTP id w10so8051009pgj.7
-        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 10:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7U1Xh3KJHRX3fVObFfNniPQDr+9DvufaO0iXvtp2ATI=;
-        b=fP8z5XChx2nfUCYytw2wl18tc3wHbm9R+/m3U+VYRuzfycbKtDqXFXUS5fQ6cQ88qL
-         geCTZGgWwbdkzpqMineiy+pGa2fLbiGkdkczWEnDQCqFZhl4htdbvDgErys0wLWV9jR9
-         Rqaar9sS0n3KdndGjlbksnM/Ni5r8Zq6WwsCM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7U1Xh3KJHRX3fVObFfNniPQDr+9DvufaO0iXvtp2ATI=;
-        b=e97+/PgsSpXmrGxfGesxPKmzNW4CFGFXnsJbBVSOLPvvtTkBNLYWpYP/f8t7M3F2JY
-         PTJReSC/lXUzXU/YYvAxdMeEG9AJI9ercqwzw32kDd6KHC3WpBVzMMr4QUbXJPqMy71d
-         nJBuCtDf5VCwmwR5GqeJABNEjgUECE6u6yIH7Juk9VEi4myMtgCHIbQbqhSWtZ0/eoiX
-         AAzgqEhLZjM56aFmpDzw0VoFRpfLojoyEaTAkN52XfSKpN9mO+x0NkOAka2KYRQ6KGyY
-         ny0WQOExXcs6Xb7zbcJy5GgJb85hMoUfJlzb1p4mf5YKfbA0zXZuitMtP92mrvkS+pjc
-         LIBQ==
-X-Gm-Message-State: APjAAAXtj6UDxAtSD0z+ipa1OAOcmTOyd/CgI9eg/iLMpuN5vOUgIwM9
-        Ntd+xiOO9az38p5dT4zfG7Y=
-X-Google-Smtp-Source: APXvYqwnE+Ox7CluL9ZvKyYVQysEGycFVnLDm6E1FR3A/gFPiF5hf5S+n5LYLg5n6AWcikohmXEwsQ==
-X-Received: by 2002:a17:90a:d996:: with SMTP id d22mr30632422pjv.86.1563212367205;
-        Mon, 15 Jul 2019 10:39:27 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 14sm17547769pfy.40.2019.07.15.10.39.25
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 10:39:26 -0700 (PDT)
-Date:   Mon, 15 Jul 2019 13:39:24 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S1732918AbfGOUCp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jul 2019 16:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731540AbfGOUCh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jul 2019 16:02:37 -0400
+Received: from localhost (unknown [69.71.4.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A8A620659;
+        Mon, 15 Jul 2019 20:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563220956;
+        bh=YctKhCkISL0QPipV+bux3pgwhg/+Wfr5uFkoRtTAvW4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zpmgc+90naNM5ZNKifvDCcoZ3spBOmMeL6aUQCdQN6DChBG1dtV+fiAmUZdgdt7Nv
+         WepQllK+1iqQA9GayKjQYU7a8D6suBSxT0G6Ps5JjrhQxY6MeINoIye7/tO5Ql8yWg
+         wSYw4E9KxCddQ4CbrfQgZiLypFMsonffeLgLmMiw=
+Date:   Mon, 15 Jul 2019 15:02:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190715173924.GA2494@google.com>
-References: <20190711195839.GA163275@google.com>
- <20190712063240.GD7702@X58A-UD3R>
- <20190712125116.GB92297@google.com>
- <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
- <CAEXW_YTeAUuVqViBfiOTQhckMDH229oQdPXG6SNqGK0xYm-yzA@mail.gmail.com>
- <20190713151330.GE26519@linux.ibm.com>
- <20190713154257.GE133650@google.com>
- <20190713174111.GG26519@linux.ibm.com>
- <CANrsvRNK=+SKHJNLmwNjp2tnjacJpqwFVQH9aRCj2E1L10GHDQ@mail.gmail.com>
- <20190714135610.GJ26519@linux.ibm.com>
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neilb@suse.com, netdev@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list
+ iterator (v1)
+Message-ID: <20190715200235.GG46935@google.com>
+References: <20190715143705.117908-1-joel@joelfernandes.org>
+ <20190715143705.117908-8-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190714135610.GJ26519@linux.ibm.com>
+In-Reply-To: <20190715143705.117908-8-joel@joelfernandes.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jul 14, 2019 at 06:56:10AM -0700, Paul E. McKenney wrote:
-[snip]
-> > > > > > > > >
-> > > > > > > > >       commit ae91aa0adb14dc33114d566feca2f7cb7a96b8b7
-> > > > > > > > >       rcu: Remove debugfs tracing
-> > > > > > > > >
-> > > > > > > > > removed all debugfs tracing, gp_max also included.
-> > > > > > > > >
-> > > > > > > > > And you sounds great. And even looks not that hard to add it like,
-> > > > > > > > >
-> > > > > > > > > :)
-> > > > > > > > >
-> > > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > > > index ad9dc86..86095ff 100644
-> > > > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > > > @@ -1658,8 +1658,10 @@ static void rcu_gp_cleanup(void)
-> > > > > > > > >       raw_spin_lock_irq_rcu_node(rnp);
-> > > > > > > > >       rcu_state.gp_end = jiffies;
-> > > > > > > > >       gp_duration = rcu_state.gp_end - rcu_state.gp_start;
-> > > > > > > > > -     if (gp_duration > rcu_state.gp_max)
-> > > > > > > > > +     if (gp_duration > rcu_state.gp_max) {
-> > > > > > > > >               rcu_state.gp_max = gp_duration;
-> > > > > > > > > +             trace_rcu_grace_period(something something);
-> > > > > > > > > +     }
-> > > > > > > >
-> > > > > > > > Yes, that makes sense. But I think it is much better off as a readable value
-> > > > > > > > from a virtual fs. The drawback of tracing for this sort of thing are:
-> > > > > > > >  - Tracing will only catch it if tracing is on
-> > > > > > > >  - Tracing data can be lost if too many events, then no one has a clue what
-> > > > > > > >    the max gp time is.
-> > > > > > > >  - The data is already available in rcu_state::gp_max so copying it into the
-> > > > > > > >    trace buffer seems a bit pointless IMHO
-> > > > > > > >  - It is a lot easier on ones eyes to process a single counter than process
-> > > > > > > >    heaps of traces.
-> > > > > > > >
-> > > > > > > > I think a minimal set of RCU counters exposed to /proc or /sys should not
-> > > > > > > > hurt and could do more good than not. The scheduler already does this for
-> > > > > > > > scheduler statistics. I have seen Peter complain a lot about new tracepoints
-> > > > > > > > but not much (or never) about new statistics.
-> > > > > > > >
-> > > > > > > > Tracing has its strengths but may not apply well here IMO. I think a counter
-> > > > > > > > like this could be useful for tuning of things like the jiffies_*_sched_qs,
-> > > > > > > > the stall timeouts and also any other RCU knobs. What do you think?
-> > > > > > >
-> > > > > > > I prefer proc/sys knob for it to tracepoint. Why I've considered it is just it
-> > > > > > > looks like undoing what Paul did at ae91aa0ad.
-> > > > > > >
-> > > > > > > I think you're rational enough. I just wondered how Paul think of it.
-> > > > > >
-> > > > > > I believe at least initially, a set of statistics can be made
-> > > > > > available only when rcutorture or rcuperf module is loaded. That way
-> > > > > > they are purely only for debugging and nothing needs to be exposed to
-> > > > > > normal kernels distributed thus reducing testability concerns.
-> > > > > >
-> > > > > > rcu_state::gp_max would be trivial to expose through this, but for
-> > > > > > other statistics that are more complicated - perhaps
-> > > > > > tracepoint_probe_register can be used to add hooks on to the
-> > > > > > tracepoints and generate statistics from them. Again the registration
-> > > > > > of the probe and the probe handler itself would all be in
-> > > > > > rcutorture/rcuperf test code and not a part of the kernel proper.
-> > > > > > Thoughts?
-> > > > >
-> > > > > It still feels like you guys are hyperfocusing on this one particular
-> > > > > knob.  I instead need you to look at the interrelating knobs as a group.
-> > > >
-> > > > Thanks for the hints, we'll do that.
-> > > >
-> > > > > On the debugging side, suppose someone gives you an RCU bug report.
-> > > > > What information will you need?  How can you best get that information
-> > > > > without excessive numbers of over-and-back interactions with the guy
-> > > > > reporting the bug?  As part of this last question, what information is
-> > > > > normally supplied with the bug?  Alternatively, what information are
-> > > > > bug reporters normally expected to provide when asked?
-> > > >
-> > > > I suppose I could dig out some of our Android bug reports of the past where
-> > > > there were RCU issues but if there's any fires you are currently fighting do
-> > > > send it our way as debugging homework ;-)
-> > >
-> > > Evading the questions, are we?
-
-Sorry if I sounded like evading, I was just saying that it would be nice to
-work on some specific issue or bug report and then figure out what is needed
-from there, instead of trying to predict what data is useful. Of course, I
-think predicting and dumping data is also useful, but I was just wondering if
-you had some specific issue in mind that we could work off of (you did
-mention the CPU stopper below so thank you!)
-
-> > > OK, I can be flexible.  Suppose that you were getting RCU CPU stall
-> > > warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
-> > > Of course, this really means that some other CPU/task is holding up
-> > > multi_cpu_stop() without also blocking the current grace period.
-> > >
-> > > What is the best way to work out what is really holding things up?
-> > 
-> > Either the stopper preempted another being in a critical section and
-> > has something wrong itself in case of PREEMPT or mechanisms for
-> > urgent control doesn't work correctly.
-> > 
-> > I don't know what exactly you intended but I would check things like
-> > (1) irq disable / eqs / tick / scheduler events and (2) whether special
-> > handling for each level of qs urgency has started correctly. For that
-> > purpose all the history of those events would be more useful.
-
-Agreed, these are all good.
-
-> > And with thinking it more, we could come up with a good way to
-> > make use of those data to identify what the problem is. Do I catch
-> > the point correctly? If so, me and Joel can start to work on it.
-> > Otherwise, please correct me.
+On Mon, Jul 15, 2019 at 10:37:03AM -0400, Joel Fernandes (Google) wrote:
+> The pcm_mmcfg_list is traversed with list_for_each_entry_rcu without a
+> reader-lock held, because the pci_mmcfg_lock is already held. Make this
+> known to the list macro so that it fixes new lockdep warnings that
+> trigger due to lockdep checks added to list_for_each_entry_rcu().
 > 
-> I believe you are on the right track.  In short, it would be great if
-> the kernel would automatically dump out the needed information when
-> cpu_stopper gets stalled, sort of like RCU does (much of the time,
-> anyway) in its CPU stall warnings.  Given a patch that did this, I would
-> be quite happy to help advocate for it!
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-In case you have a LKML link to a thread or bug report to this specific
-cpu_stopper issue, please do pass it along.
+Ingo takes care of most patches to this file, but FWIW,
 
-Happy to work on this with Byungchul, thanks,
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-- Joel
+I would personally prefer if you capitalized the subject to match the
+"x86/PCI:" convention that's used fairly consistently in
+arch/x86/pci/.
 
+Also, I didn't apply this to be sure, but it looks like this might
+make a line or two wider than 80 columns, which I would rewrap if I
+were applying this.
+
+> ---
+>  arch/x86/pci/mmconfig-shared.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> index 7389db538c30..6fa42e9c4e6f 100644
+> --- a/arch/x86/pci/mmconfig-shared.c
+> +++ b/arch/x86/pci/mmconfig-shared.c
+> @@ -29,6 +29,7 @@
+>  static bool pci_mmcfg_running_state;
+>  static bool pci_mmcfg_arch_init_failed;
+>  static DEFINE_MUTEX(pci_mmcfg_lock);
+> +#define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+>  
+>  LIST_HEAD(pci_mmcfg_list);
+>  
+> @@ -54,7 +55,7 @@ static void list_add_sorted(struct pci_mmcfg_region *new)
+>  	struct pci_mmcfg_region *cfg;
+>  
+>  	/* keep list sorted by segment and starting bus number */
+> -	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list) {
+> +	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held()) {
+>  		if (cfg->segment > new->segment ||
+>  		    (cfg->segment == new->segment &&
+>  		     cfg->start_bus >= new->start_bus)) {
+> @@ -118,7 +119,7 @@ struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int bus)
+>  {
+>  	struct pci_mmcfg_region *cfg;
+>  
+> -	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list)
+> +	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held())
+>  		if (cfg->segment == segment &&
+>  		    cfg->start_bus <= bus && bus <= cfg->end_bus)
+>  			return cfg;
+> -- 
+> 2.22.0.510.g264f2c817a-goog
+> 
