@@ -1,148 +1,176 @@
-Return-Path: <SRS0=Bt3H=VM=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=R11G=VN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08E6FC76191
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 21:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1451C76188
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 04:03:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D47032086C
-	for <rcu@archiver.kernel.org>; Mon, 15 Jul 2019 21:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1563227088;
-	bh=QhjAhcrBGIu89ZYNTAQunk1Pw0Bn7GPi6K8d8BScnIs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=LUSyKkvS8yDU1G7PBWZqnefhcSgNTcOybzVhSjHorHx8KLfUVirmYdeTHV7OG85Oz
-	 7OMCYBx9nzvVpVkaElMo4zWLipltMWNqfMDv2gJJboAgJTGNuKeWNytqoi78mJ2cju
-	 ub1spGg1G3/HQ+wAq57vEtRx1dLAYaveU6eQpmhw=
+	by mail.kernel.org (Postfix) with ESMTP id CAED320693
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 04:03:12 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="EUayzWAA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732578AbfGOVop (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jul 2019 17:44:45 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:41953 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731858AbfGOVop (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jul 2019 17:44:45 -0400
-Received: by mail-ot1-f68.google.com with SMTP id o101so18695714ota.8;
-        Mon, 15 Jul 2019 14:44:44 -0700 (PDT)
+        id S1726295AbfGPEDI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Jul 2019 00:03:08 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38000 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbfGPEDH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Jul 2019 00:03:07 -0400
+Received: by mail-pg1-f196.google.com with SMTP id z75so8734321pgz.5
+        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 21:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=emWs4O8hlB2TIuNtkX4TCZFbfAkCg1SZuUU8yDd2sEA=;
+        b=EUayzWAAPKzWkqzvEU0EkCIPVbFaXgTPLnhPDPXNEGqZowkwVyB0fuRja+ukvx2jRx
+         /JsAJvv2ngG4+HyMb/ksTKGTTuCNw6tiK8jigG3DyiGHLTshKdgdlpd3cg/yvXQ34IXh
+         LxYQ1MLKK8X//mQ7Xm/s6D4lgquYO/nzn6BMw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hO2lc5/RCrOfroO8+pzsn6ZrqRVw3tFQDoLgNfzmBUQ=;
-        b=QxXDGZ3v64gyAMTDqUN0aDnOZUEUriuNBjPSYo18FhopZ8P0hjPzAG+ZIKn7zH4gUi
-         QQfKwc35vqrWxz9Pdos45CbPkxluZAY+xJxiCUnS/c8V3irYv3sVlFOGVsI03FOmIaXv
-         1EW+EKfby2IgVifnLuY8yMlV3B9g9zSRWk+MkjD42FojhmDrPbL1Gj05OvCQfmBMrtVC
-         H2sgMK8MwEiq61UuGNkJPV+VQ+plnLtUXI5O8yARGzjtU/JH3OxAdhS+CBaJnz7jEarF
-         rKc52Lygct/0tLMNo/N1pP0Qx0Vim/zzGg889XPO1TWBw/bRbhAqCy7vbi3fogYK9Wkn
-         2OSA==
-X-Gm-Message-State: APjAAAUsAOkRYO87kbLMCwaOxid9BCDbmnB2OvJG6nh20Bt2jxK632To
-        Re3Z9R3uMSLoWgU/fV0rp3nL8QXeSGq3NMcP2Ik=
-X-Google-Smtp-Source: APXvYqxeBU+lL3PSYmxhb7JppIVz9aT6KKyGzUIDEJ8gGEzipFV4PQx8sL/9KU3ERl8XEJvsrjqZy4/vHGyUSxfUvR0=
-X-Received: by 2002:a05:6830:1516:: with SMTP id k22mr18941426otp.189.1563227084317;
- Mon, 15 Jul 2019 14:44:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190715143705.117908-1-joel@joelfernandes.org> <20190715143705.117908-9-joel@joelfernandes.org>
-In-Reply-To: <20190715143705.117908-9-joel@joelfernandes.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 15 Jul 2019 23:44:31 +0200
-Message-ID: <CAJZ5v0jdx1dgBZLyH_Loj1XVuLCV+HMHjk8r_n8xG7qmoH_z3A@mail.gmail.com>
-Subject: Re: [PATCH 8/9] acpi: Use built-in RCU list checking for
- acpi_ioremaps list (v1)
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=emWs4O8hlB2TIuNtkX4TCZFbfAkCg1SZuUU8yDd2sEA=;
+        b=BI4lnFLOguxFvXvAsWR/YDmPaRgnru9gM2kxVvAns2omtoc0v2+qF+0Mdw0GO+vd9c
+         zAlL/T9gmIuP78CIW0d/WHKWEl0HtyM+IcqiAI7wPkv9kQ951ZoIJpbQWt60pPUIswyO
+         QgIS0j0n5IZ+1MKDyAx34aA8YcfNWMMHfT8/R5J5MydH6qGLGICZig+BUFqAbXdwAbo/
+         dQokBXr2VmQfRw+j2LSfc7r3mUo1UVTh3T4iXWnW28UgbeGgaauJyPNhIswj5EWmTJ/p
+         ugWsUw3JXhlTZmrZKOBhREVwgng+QB+mZVwtl3vDpqJ3DGdZWw9VPO7QW1Tayn5OR7qS
+         EcLQ==
+X-Gm-Message-State: APjAAAXIFDkn4h91BlAoBRQ1uatNmsDmEd8YR0Q/jChKQBMsIqjARbX/
+        SN9zK5/0P06+6cxzHU0QPWI=
+X-Google-Smtp-Source: APXvYqxyHJD5IpHHcJaM1ojDiiimToJpqwPzyUOe3rbN2WwHYdOcsvYOosL3yD4qnxS7tzykZLERPg==
+X-Received: by 2002:a17:90a:374a:: with SMTP id u68mr33288835pjb.4.1563249786384;
+        Mon, 15 Jul 2019 21:03:06 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id y133sm21032895pfb.28.2019.07.15.21.03.04
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 15 Jul 2019 21:03:05 -0700 (PDT)
+Date:   Tue, 16 Jul 2019 00:03:03 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
         Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
         "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        NeilBrown <neilb@suse.com>, netdev <netdev@vger.kernel.org>,
+        neilb@suse.com, netdev@vger.kernel.org,
         Oleg Nesterov <oleg@redhat.com>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 7/9] x86/pci: Pass lockdep condition to pcm_mmcfg_list
+ iterator (v1)
+Message-ID: <20190716040303.GA73383@google.com>
+References: <20190715143705.117908-1-joel@joelfernandes.org>
+ <20190715143705.117908-8-joel@joelfernandes.org>
+ <20190715200235.GG46935@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190715200235.GG46935@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 4:43 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> list_for_each_entry_rcu has built-in RCU and lock checking. Make use of
-> it for acpi_ioremaps list traversal.
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Mon, Jul 15, 2019 at 03:02:35PM -0500, Bjorn Helgaas wrote:
+> On Mon, Jul 15, 2019 at 10:37:03AM -0400, Joel Fernandes (Google) wrote:
+> > The pcm_mmcfg_list is traversed with list_for_each_entry_rcu without a
+> > reader-lock held, because the pci_mmcfg_lock is already held. Make this
+> > known to the list macro so that it fixes new lockdep warnings that
+> > trigger due to lockdep checks added to list_for_each_entry_rcu().
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Ingo takes care of most patches to this file, but FWIW,
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Thanks.
 
-> ---
->  drivers/acpi/osl.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> index 9c0edf2fc0dd..2f9d0d20b836 100644
-> --- a/drivers/acpi/osl.c
-> +++ b/drivers/acpi/osl.c
-> @@ -14,6 +14,7 @@
->  #include <linux/slab.h>
->  #include <linux/mm.h>
->  #include <linux/highmem.h>
-> +#include <linux/lockdep.h>
->  #include <linux/pci.h>
->  #include <linux/interrupt.h>
->  #include <linux/kmod.h>
-> @@ -80,6 +81,7 @@ struct acpi_ioremap {
->
->  static LIST_HEAD(acpi_ioremaps);
->  static DEFINE_MUTEX(acpi_ioremap_lock);
-> +#define acpi_ioremap_lock_held() lock_is_held(&acpi_ioremap_lock.dep_map)
->
->  static void __init acpi_request_region (struct acpi_generic_address *gas,
->         unsigned int length, char *desc)
-> @@ -206,7 +208,7 @@ acpi_map_lookup(acpi_physical_address phys, acpi_size size)
->  {
->         struct acpi_ioremap *map;
->
-> -       list_for_each_entry_rcu(map, &acpi_ioremaps, list)
-> +       list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
->                 if (map->phys <= phys &&
->                     phys + size <= map->phys + map->size)
->                         return map;
-> @@ -249,7 +251,7 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
->  {
->         struct acpi_ioremap *map;
->
-> -       list_for_each_entry_rcu(map, &acpi_ioremaps, list)
-> +       list_for_each_entry_rcu(map, &acpi_ioremaps, list, acpi_ioremap_lock_held())
->                 if (map->virt <= virt &&
->                     virt + size <= map->virt + map->size)
->                         return map;
-> --
-> 2.22.0.510.g264f2c817a-goog
->
+> I would personally prefer if you capitalized the subject to match the
+> "x86/PCI:" convention that's used fairly consistently in
+> arch/x86/pci/.
+> 
+> Also, I didn't apply this to be sure, but it looks like this might
+> make a line or two wider than 80 columns, which I would rewrap if I
+> were applying this.
+
+Updated below is the patch with the nits corrected:
+
+---8<-----------------------
+
+From 73fab09d7e33ca2110c24215f8ed428c12625dbe Mon Sep 17 00:00:00 2001
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Date: Sat, 1 Jun 2019 15:05:49 -0400
+Subject: [PATCH] x86/PCI: Pass lockdep condition to pcm_mmcfg_list iterator
+ (v1)
+
+The pcm_mmcfg_list is traversed with list_for_each_entry_rcu without a
+reader-lock held, because the pci_mmcfg_lock is already held. Make this
+known to the list macro so that it fixes new lockdep warnings that
+trigger due to lockdep checks added to list_for_each_entry_rcu().
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ arch/x86/pci/mmconfig-shared.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 7389db538c30..9e3250ec5a37 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -29,6 +29,7 @@
+ static bool pci_mmcfg_running_state;
+ static bool pci_mmcfg_arch_init_failed;
+ static DEFINE_MUTEX(pci_mmcfg_lock);
++#define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+ 
+ LIST_HEAD(pci_mmcfg_list);
+ 
+@@ -54,7 +55,8 @@ static void list_add_sorted(struct pci_mmcfg_region *new)
+ 	struct pci_mmcfg_region *cfg;
+ 
+ 	/* keep list sorted by segment and starting bus number */
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list) {
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list,
++				pci_mmcfg_lock_held()) {
+ 		if (cfg->segment > new->segment ||
+ 		    (cfg->segment == new->segment &&
+ 		     cfg->start_bus >= new->start_bus)) {
+@@ -118,7 +120,8 @@ struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int bus)
+ {
+ 	struct pci_mmcfg_region *cfg;
+ 
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list)
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list
++				pci_mmcfg_lock_held())
+ 		if (cfg->segment == segment &&
+ 		    cfg->start_bus <= bus && bus <= cfg->end_bus)
+ 			return cfg;
+-- 
+2.22.0.510.g264f2c817a-goog
+
