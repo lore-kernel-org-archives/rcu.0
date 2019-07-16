@@ -2,134 +2,246 @@ Return-Path: <SRS0=R11G=VN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C042AC76188
-	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 04:07:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD301C76192
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 12:11:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8D24820880
-	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 04:07:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Kq0teeTe"
+	by mail.kernel.org (Postfix) with ESMTP id 9A3CC2173C
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 12:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1563279063;
+	bh=vUwqHoZ5x81TFeYIg67nfdnYj5axOl0J8XfYAwB1f5k=;
+	h=From:Cc:Subject:Date:To:List-ID:From;
+	b=E9gk6oohfOqJYoC6XglelvlLiMBptCuV7nVmWIuCp4tH1bQvh30BK7OhehpzlF6V1
+	 jo6pBsq9GHuK/FVRrMG8qn1em9Sr2nfq1xTyVGxs90X+/RmxGC8wZn6xeSAUkn4x6/
+	 6siufDdRqGN8A8VkHydqqi/5tXEEw5FlHw+D9caw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbfGPEH5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Jul 2019 00:07:57 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:34942 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbfGPEH5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Jul 2019 00:07:57 -0400
-Received: by mail-pf1-f196.google.com with SMTP id u14so8438611pfn.2
-        for <rcu@vger.kernel.org>; Mon, 15 Jul 2019 21:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rmC6wxi5sfJ1hgZ1T5d4GnYkV6yYjgLN1LSLJD9G/N4=;
-        b=Kq0teeTexfzjIuo8X5x7eq1y/4O5B2Bmjf3Fma8qxHKz570TnWd5F41ARTOX+ZB9o5
-         ZrA8d8qX6imHshG3/BIhlS9G3/USuQssQxWSRVgYqXyJ69AtXg6PA4i/A/poj8yG+f0m
-         jjDlhK3uHe61XmDCNPq7CEmNnt62VWeTQWFEQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rmC6wxi5sfJ1hgZ1T5d4GnYkV6yYjgLN1LSLJD9G/N4=;
-        b=phV2C7xAkIqlrT7Map795NACt7NhjaXyix7mibup35hbY1+OzIt+nMhPBf0SqnprrI
-         BwyugAilvut/iTHD5T8cpkK86YNlH6A4arihwziB22vAwcbFeN5e9s453nIOQZvtN4mT
-         RNiQvgz1PEOCl85nnp8BjT607fLtVpPr6YWQpVi9U9/BEf/6kRoF/Sv8bxnyoifZ9sdJ
-         BjF0k2fzqP1/LVmrFX3mGPZvYlR1aMdyaAB2hDRb4Y41DyxTEu8YP0o+QTKODxaCBu2C
-         TL/ht8WvBubLjvyh7LNgwIyDCqXuIwR2O4vrjX1zwIybFAXuC1MaJcmQkc4faPgVmp0s
-         JRZg==
-X-Gm-Message-State: APjAAAUsEGK4oh6TkUrkvO6EtlqeCHFjEor5n1GwqKC/iKoUAjAg4Kmw
-        CGeeaQhaDE0uQBDVee0lrHo=
-X-Google-Smtp-Source: APXvYqzgpmFKYjtDybWIlQwIoYF/PfoRh5ad2Zk33yjjz2GZk9FWUyWvHOfYTa/TTjzB9GZPuRionw==
-X-Received: by 2002:a63:9249:: with SMTP id s9mr29860119pgn.356.1563250076442;
-        Mon, 15 Jul 2019 21:07:56 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id f14sm17867883pfn.53.2019.07.15.21.07.52
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 21:07:55 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
-        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neilb@suse.com, netdev@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [PATCH] rculist: Add build check for single optional list argument
-Date:   Tue, 16 Jul 2019 00:07:43 -0400
-Message-Id: <20190716040743.78343-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.22.0.510.g264f2c817a-goog
+        id S1733132AbfGPMLB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Jul 2019 08:11:01 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:39064 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732581AbfGPMLA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Jul 2019 08:11:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=cmrXWeKZex18XPtqOqXe6bsYV64AO68iLYgMsiWQPIg=; b=QAAw/LhYE17kHpcrRzOCn1piW
+        wDQhBm1yl/KZ+dj8rCQhgNieg+hhttiHCd56p5QhHz5ASeESwhg4e5NnaVU0xFvaS1lhK+pI34VAH
+        U07mMZP9tRQ4deiPKcIy4WDiR29u2hCPogiZhF9Lz2jHXns+8RDa0pzAsZAsHJhW3j3YMjCZIm/+P
+        LGpxBBG2lEGO3KMHIzygFcSKKg0GHttc1pRY0pbQBDBk7P+UYDrt1y6b2Q/bZPeVAySSZNi95nOXL
+        A9MLC1Mv0VfRw8xgU7fIrVDbMile7MGuQFtM0dQbNTrXk9FcF/xI3aZ/c1Bhe5nAJD6JiU0T0som+
+        3cGvhJxcQ==;
+Received: from [189.27.46.152] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hnMIL-0004hz-Al; Tue, 16 Jul 2019 12:10:57 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1hnMII-0000QW-KI; Tue, 16 Jul 2019 09:10:54 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        linuxppc-dev@lists.ozlabs.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, kvm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, rcu@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org, x86@kernel.org,
+        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH 00/14] pending doc patches for 5.3-rc
+Date:   Tue, 16 Jul 2019 09:10:39 -0300
+Message-Id: <cover.1563277838.git.mchehab+samsung@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In a previous patch series [1], we added an optional lockdep expression
-argument to list_for_each_entry_rcu() and the hlist equivalent. This
-also meant more than one optional argument can be passed to them with
-that error going unnoticed. To fix this, let us force a compiler error
-more than one optional argument is passed.
+Those are the pending documentation patches after my pull request
+for this branch:
 
-[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=402150
+    git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media.git tags/docs/v5.3-1
 
-Suggested-by: Paul McKenney <paulmck@linux.vnet.ibm.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/linux/rculist.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Patches 1 to 13 were already submitted, but got rebased. Patch 14
+is a new fixup one.
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 1048160625bb..86659f6d72dc 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -44,14 +44,18 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
-  * Check during list traversal that we are within an RCU reader
-  */
- 
-+#define check_arg_count_one(dummy)
-+
- #ifdef CONFIG_PROVE_RCU_LIST
--#define __list_check_rcu(dummy, cond, ...)				\
-+#define __list_check_rcu(dummy, cond, extra...)				\
- 	({								\
-+	check_arg_count_one(extra);					\
- 	RCU_LOCKDEP_WARN(!cond && !rcu_read_lock_any_held(),		\
- 			 "RCU-list traversed in non-reader section!");	\
- 	 })
- #else
--#define __list_check_rcu(dummy, cond, ...) ({})
-+#define __list_check_rcu(dummy, cond, extra...)				\
-+	({ check_arg_count_one(extra); })
- #endif
- 
- /*
+Patches 1 and 2 weren't submitted before due to merge conflicts
+that are now solved upstream;
+
+Patch 3 fixes a series of random Documentation/* references that
+are pointing to the wrong places.
+
+Patch 4 fix a longstanding issue: every time a new book is added,
+conf.py need changes, in order to allow generating a PDF file.
+After the patch, conf.py will automatically recognize new books,
+saving the trouble of keeping adding documents to it.
+
+Patches 5 to 11 are due to fonts support when building translations.pdf.
+The main focus is to add xeCJK support. While doing it, I discovered
+some bugs at sphinx-pre-install script after running it with 7 different
+distributions.
+
+Patch 12 improves support for partial doc building. Currently, each
+subdir needs to have its own conf.py, in order to support partial
+doc build. After it, any Documentation subdir can be used to 
+roduce html/pdf docs with:
+
+	make SPHINXDIRS="foo bar" htmldocs
+	(or pdfdocs, latexdocs, epubdocs, ...)
+
+Patch 13 is a cleanup patch: it simply get rid of all those extra
+conf.py files that  aren't needed anymore. The only extra config
+file after it is this one:
+
+	Documentation/media/conf_nitpick.py
+
+With enables some extra optional Sphinx features.
+
+Patch 14 adds Documentation/virtual to the main index.rst file
+and add a new *.rst file that was orphaned there.
+
+-
+
+After this series, there's just one more patch meant to be applied
+for 5.3, with is still waiting for some patches to be merged from
+linux-next:
+
+    https://git.linuxtv.org/mchehab/experimental.git/commit/?id=b1b5dc7d7bbfbbfdace2a248c6458301c6e34100
+
+
+Mauro Carvalho Chehab (14):
+  docs: powerpc: convert docs to ReST and rename to *.rst
+  docs: power: add it to to the main documentation index
+  docs: fix broken doc references due to renames
+  docs: pdf: add all Documentation/*/index.rst to PDF output
+  docs: conf.py: add CJK package needed by translations
+  docs: conf.py: only use CJK if the font is available
+  scripts/sphinx-pre-install: fix script for RHEL/CentOS
+  scripts/sphinx-pre-install: don't use LaTeX with CentOS 7
+  scripts/sphinx-pre-install: fix latexmk dependencies
+  scripts/sphinx-pre-install: cleanup Gentoo checks
+  scripts/sphinx-pre-install: seek for Noto CJK fonts for pdf output
+  docs: load_config.py: avoid needing a conf.py just due to LaTeX docs
+  docs: remove extra conf.py files
+  docs: virtual: add it to the documentation body
+
+ Documentation/PCI/pci-error-recovery.rst      |   5 +-
+ Documentation/RCU/rculist_nulls.txt           |   2 +-
+ Documentation/admin-guide/conf.py             |  10 --
+ Documentation/conf.py                         |  30 +++-
+ Documentation/core-api/conf.py                |  10 --
+ Documentation/crypto/conf.py                  |  10 --
+ Documentation/dev-tools/conf.py               |  10 --
+ .../devicetree/bindings/arm/idle-states.txt   |   2 +-
+ Documentation/doc-guide/conf.py               |  10 --
+ Documentation/driver-api/80211/conf.py        |  10 --
+ Documentation/driver-api/conf.py              |  10 --
+ Documentation/driver-api/pm/conf.py           |  10 --
+ Documentation/filesystems/conf.py             |  10 --
+ Documentation/gpu/conf.py                     |  10 --
+ Documentation/index.rst                       |   3 +
+ Documentation/input/conf.py                   |  10 --
+ Documentation/kernel-hacking/conf.py          |  10 --
+ Documentation/locking/spinlocks.rst           |   4 +-
+ Documentation/maintainer/conf.py              |  10 --
+ Documentation/media/conf.py                   |  12 --
+ Documentation/memory-barriers.txt             |   2 +-
+ Documentation/networking/conf.py              |  10 --
+ Documentation/power/index.rst                 |   2 +-
+ .../{bootwrapper.txt => bootwrapper.rst}      |  28 +++-
+ .../{cpu_families.txt => cpu_families.rst}    |  23 +--
+ .../{cpu_features.txt => cpu_features.rst}    |   6 +-
+ Documentation/powerpc/{cxl.txt => cxl.rst}    |  46 ++++--
+ .../powerpc/{cxlflash.txt => cxlflash.rst}    |  10 +-
+ .../{DAWR-POWER9.txt => dawr-power9.rst}      |  15 +-
+ Documentation/powerpc/{dscr.txt => dscr.rst}  |  18 +-
+ ...ecovery.txt => eeh-pci-error-recovery.rst} | 108 ++++++------
+ ...ed-dump.txt => firmware-assisted-dump.rst} | 117 +++++++------
+ Documentation/powerpc/{hvcs.txt => hvcs.rst}  | 108 ++++++------
+ Documentation/powerpc/index.rst               |  34 ++++
+ Documentation/powerpc/isa-versions.rst        |  15 +-
+ .../powerpc/{mpc52xx.txt => mpc52xx.rst}      |  12 +-
+ ...nv.txt => pci_iov_resource_on_powernv.rst} |  15 +-
+ .../powerpc/{pmu-ebb.txt => pmu-ebb.rst}      |   1 +
+ Documentation/powerpc/ptrace.rst              | 156 ++++++++++++++++++
+ Documentation/powerpc/ptrace.txt              | 151 -----------------
+ .../{qe_firmware.txt => qe_firmware.rst}      |  37 +++--
+ .../{syscall64-abi.txt => syscall64-abi.rst}  |  29 ++--
+ ...al_memory.txt => transactional_memory.rst} |  45 ++---
+ Documentation/process/conf.py                 |  10 --
+ Documentation/sh/conf.py                      |  10 --
+ Documentation/sound/conf.py                   |  10 --
+ Documentation/sphinx/load_config.py           |  27 ++-
+ .../translations/ko_KR/memory-barriers.txt    |   2 +-
+ Documentation/userspace-api/conf.py           |  10 --
+ Documentation/virtual/kvm/index.rst           |   1 +
+ Documentation/vm/conf.py                      |  10 --
+ Documentation/watchdog/hpwdt.rst              |   2 +-
+ Documentation/x86/conf.py                     |  10 --
+ MAINTAINERS                                   |  14 +-
+ arch/powerpc/kernel/exceptions-64s.S          |   2 +-
+ drivers/gpu/drm/drm_modes.c                   |   2 +-
+ drivers/i2c/busses/i2c-nvidia-gpu.c           |   2 +-
+ drivers/scsi/hpsa.c                           |   4 +-
+ drivers/soc/fsl/qe/qe.c                       |   2 +-
+ drivers/tty/hvc/hvcs.c                        |   2 +-
+ include/soc/fsl/qe/qe.h                       |   2 +-
+ scripts/sphinx-pre-install                    | 118 ++++++++++---
+ 62 files changed, 738 insertions(+), 678 deletions(-)
+ delete mode 100644 Documentation/admin-guide/conf.py
+ delete mode 100644 Documentation/core-api/conf.py
+ delete mode 100644 Documentation/crypto/conf.py
+ delete mode 100644 Documentation/dev-tools/conf.py
+ delete mode 100644 Documentation/doc-guide/conf.py
+ delete mode 100644 Documentation/driver-api/80211/conf.py
+ delete mode 100644 Documentation/driver-api/conf.py
+ delete mode 100644 Documentation/driver-api/pm/conf.py
+ delete mode 100644 Documentation/filesystems/conf.py
+ delete mode 100644 Documentation/gpu/conf.py
+ delete mode 100644 Documentation/input/conf.py
+ delete mode 100644 Documentation/kernel-hacking/conf.py
+ delete mode 100644 Documentation/maintainer/conf.py
+ delete mode 100644 Documentation/media/conf.py
+ delete mode 100644 Documentation/networking/conf.py
+ rename Documentation/powerpc/{bootwrapper.txt => bootwrapper.rst} (93%)
+ rename Documentation/powerpc/{cpu_families.txt => cpu_families.rst} (95%)
+ rename Documentation/powerpc/{cpu_features.txt => cpu_features.rst} (97%)
+ rename Documentation/powerpc/{cxl.txt => cxl.rst} (95%)
+ rename Documentation/powerpc/{cxlflash.txt => cxlflash.rst} (98%)
+ rename Documentation/powerpc/{DAWR-POWER9.txt => dawr-power9.rst} (95%)
+ rename Documentation/powerpc/{dscr.txt => dscr.rst} (91%)
+ rename Documentation/powerpc/{eeh-pci-error-recovery.txt => eeh-pci-error-recovery.rst} (82%)
+ rename Documentation/powerpc/{firmware-assisted-dump.txt => firmware-assisted-dump.rst} (80%)
+ rename Documentation/powerpc/{hvcs.txt => hvcs.rst} (91%)
+ create mode 100644 Documentation/powerpc/index.rst
+ rename Documentation/powerpc/{mpc52xx.txt => mpc52xx.rst} (91%)
+ rename Documentation/powerpc/{pci_iov_resource_on_powernv.txt => pci_iov_resource_on_powernv.rst} (97%)
+ rename Documentation/powerpc/{pmu-ebb.txt => pmu-ebb.rst} (99%)
+ create mode 100644 Documentation/powerpc/ptrace.rst
+ delete mode 100644 Documentation/powerpc/ptrace.txt
+ rename Documentation/powerpc/{qe_firmware.txt => qe_firmware.rst} (95%)
+ rename Documentation/powerpc/{syscall64-abi.txt => syscall64-abi.rst} (82%)
+ rename Documentation/powerpc/{transactional_memory.txt => transactional_memory.rst} (93%)
+ delete mode 100644 Documentation/process/conf.py
+ delete mode 100644 Documentation/sh/conf.py
+ delete mode 100644 Documentation/sound/conf.py
+ delete mode 100644 Documentation/userspace-api/conf.py
+ delete mode 100644 Documentation/vm/conf.py
+ delete mode 100644 Documentation/x86/conf.py
+
 -- 
-2.22.0.510.g264f2c817a-goog
+2.21.0
+
 
