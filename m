@@ -2,289 +2,209 @@ Return-Path: <SRS0=R11G=VN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52488C76195
-	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 12:11:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63037C76192
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 18:27:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2CA5B21721
-	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 12:11:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1563279113;
-	bh=HoDmFTjuKmIhIfl4sqF4x3HuLpndK4CgSdvS6b2PdbM=;
-	h=From:Cc:Subject:Date:In-Reply-To:References:To:List-ID:From;
-	b=Ns1whsvWRYmWSMOE2RQRgLFbDU/MDmXMlbCz1TxykN8/9zi+Qe0Lc4lRIAuDeUPfy
-	 ybt+VKOXJlpF58LYVm8gjWmmROzYmFUGjvk1Nt5T0S2JmBzg20tHtpmsLVc5qyzkuH
-	 n5KSWcAW1XUOg9eoqojcfifNf2p3/gBtYcONfFAI=
+	by mail.kernel.org (Postfix) with ESMTP id 3EE442145D
+	for <rcu@archiver.kernel.org>; Tue, 16 Jul 2019 18:27:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732614AbfGPMLw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Jul 2019 08:11:52 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42268 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbfGPMLw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Jul 2019 08:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-        To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iZYeg9Nbps8f84ceOabjIWQOvWBOi7Zf+58kDSKfKw4=; b=SYnfqTRIRg+lXMoK+qjBAcWjJA
-        ukjt6ndWG1X2HGVA05EOW3eBW5FIo9Cz470o5K/fa+Bet69ocanRP1jSFnJDD0Q+CF5jJ/7Ewa9bz
-        cY5H3AR2T9VL+AoIk2h0uh1a436/Ipe5A9mwZYsb5CklukzZMl11r79DSv0pKbPc7g5p/CXLWVCO1
-        dHYPVggmNYesmyEKxBcLJc0Cojr0KKRtvlRmkH4ACHZ2VPsqXDEb7uvhgil1lJ965UtnBkZn9xYvk
-        aQxImhre7/hmN5ANVcgEiOzt4T4JbwjOPrMk9ALiinZ0MJ+BhU2LJIjdZGtWja7AC1+ZZz/RhmF3O
-        LCdCnauQ==;
-Received: from [189.27.46.152] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hnMIL-0004i2-BI; Tue, 16 Jul 2019 12:10:57 +0000
-Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
-        (envelope-from <mchehab@bombadil.infradead.org>)
-        id 1hnMII-0000Qj-NF; Tue, 16 Jul 2019 09:10:54 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        id S2388418AbfGPS05 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Jul 2019 14:26:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387773AbfGPS05 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 16 Jul 2019 14:26:57 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6GILwWK042196
+        for <rcu@vger.kernel.org>; Tue, 16 Jul 2019 14:26:55 -0400
+Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tsj8244n0-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 16 Jul 2019 14:26:55 -0400
+Received: from localhost
+        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Tue, 16 Jul 2019 19:26:54 +0100
+Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
+        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 16 Jul 2019 19:26:44 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6GIQh3r15860536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jul 2019 18:26:43 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE3B7B2066;
+        Tue, 16 Jul 2019 18:26:42 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70B34B2068;
+        Tue, 16 Jul 2019 18:26:42 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.80.225.134])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Jul 2019 18:26:42 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 7609D16C8EBE; Tue, 16 Jul 2019 11:26:42 -0700 (PDT)
+Date:   Tue, 16 Jul 2019 11:26:42 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
+        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Ajay Gupta <ajayg@nvidia.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, esc.storagedev@microsemi.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH 03/14] docs: fix broken doc references due to renames
-Date:   Tue, 16 Jul 2019 09:10:42 -0300
-Message-Id: <aa415583bf6b812b0249093a601aa31412f3a1cf.1563277838.git.mchehab+samsung@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1563277838.git.mchehab+samsung@kernel.org>
-References: <cover.1563277838.git.mchehab+samsung@kernel.org>
+        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neilb@suse.com, netdev@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, peterz@infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v2 3/9] rcu/sync: Remove custom check for reader-section
+Reply-To: paulmck@linux.ibm.com
+References: <20190712170024.111093-1-joel@joelfernandes.org>
+ <20190712170024.111093-4-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190712170024.111093-4-joel@joelfernandes.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19071618-2213-0000-0000-000003AF9AB3
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011440; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01233103; UDB=6.00649716; IPR=6.01014414;
+ MB=3.00027748; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-16 18:26:52
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071618-2214-0000-0000-00005F427600
+Message-Id: <20190716182642.GB22819@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-16_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907160225
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Some files got renamed but probably due to some merge conflicts,
-a few references still point to the old locations.
+On Fri, Jul 12, 2019 at 01:00:18PM -0400, Joel Fernandes (Google) wrote:
+> The rcu/sync code was doing its own check whether we are in a reader
+> section. With RCU consolidating flavors and the generic helper added in
+> this series, this is no longer need. We can just use the generic helper
+> and it results in a nice cleanup.
+> 
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/RCU/rculist_nulls.txt                   | 2 +-
- Documentation/devicetree/bindings/arm/idle-states.txt | 2 +-
- Documentation/locking/spinlocks.rst                   | 4 ++--
- Documentation/memory-barriers.txt                     | 2 +-
- Documentation/translations/ko_KR/memory-barriers.txt  | 2 +-
- Documentation/watchdog/hpwdt.rst                      | 2 +-
- MAINTAINERS                                           | 8 ++++----
- drivers/gpu/drm/drm_modes.c                           | 2 +-
- drivers/i2c/busses/i2c-nvidia-gpu.c                   | 2 +-
- drivers/scsi/hpsa.c                                   | 4 ++--
- 10 files changed, 15 insertions(+), 15 deletions(-)
+This needs to be forward-ported to current mainline.  (Or, I believe
+equivalently for this file, to branch "dev" of -rcu.)
 
-diff --git a/Documentation/RCU/rculist_nulls.txt b/Documentation/RCU/rculist_nulls.txt
-index 8151f0195f76..23f115dc87cf 100644
---- a/Documentation/RCU/rculist_nulls.txt
-+++ b/Documentation/RCU/rculist_nulls.txt
-@@ -1,7 +1,7 @@
- Using hlist_nulls to protect read-mostly linked lists and
- objects using SLAB_TYPESAFE_BY_RCU allocations.
- 
--Please read the basics in Documentation/RCU/listRCU.txt
-+Please read the basics in Documentation/RCU/listRCU.rst
- 
- Using special makers (called 'nulls') is a convenient way
- to solve following problem :
-diff --git a/Documentation/devicetree/bindings/arm/idle-states.txt b/Documentation/devicetree/bindings/arm/idle-states.txt
-index 326f29b270ad..2d325bed37e5 100644
---- a/Documentation/devicetree/bindings/arm/idle-states.txt
-+++ b/Documentation/devicetree/bindings/arm/idle-states.txt
-@@ -703,4 +703,4 @@ cpus {
-     https://www.devicetree.org/specifications/
- 
- [6] ARM Linux Kernel documentation - Booting AArch64 Linux
--    Documentation/arm64/booting.txt
-+    Documentation/arm64/booting.rst
-diff --git a/Documentation/locking/spinlocks.rst b/Documentation/locking/spinlocks.rst
-index 098107fb7d86..e93ec6645238 100644
---- a/Documentation/locking/spinlocks.rst
-+++ b/Documentation/locking/spinlocks.rst
-@@ -82,7 +82,7 @@ itself.  The read lock allows many concurrent readers.  Anything that
- **changes** the list will have to get the write lock.
- 
-    NOTE! RCU is better for list traversal, but requires careful
--   attention to design detail (see Documentation/RCU/listRCU.txt).
-+   attention to design detail (see Documentation/RCU/listRCU.rst).
- 
- Also, you cannot "upgrade" a read-lock to a write-lock, so if you at _any_
- time need to do any changes (even if you don't do it every time), you have
-@@ -90,7 +90,7 @@ to get the write-lock at the very beginning.
- 
-    NOTE! We are working hard to remove reader-writer spinlocks in most
-    cases, so please don't add a new one without consensus.  (Instead, see
--   Documentation/RCU/rcu.txt for complete information.)
-+   Documentation/RCU/rcu.rst for complete information.)
- 
- ----
- 
-diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-index 045bb8148fe9..1adbb8a371c7 100644
---- a/Documentation/memory-barriers.txt
-+++ b/Documentation/memory-barriers.txt
-@@ -548,7 +548,7 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
- 
- 	[*] For information on bus mastering DMA and coherency please read:
- 
--	    Documentation/PCI/pci.rst
-+	    Documentation/driver-api/pci/pci.rst
- 	    Documentation/DMA-API-HOWTO.txt
- 	    Documentation/DMA-API.txt
- 
-diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Documentation/translations/ko_KR/memory-barriers.txt
-index a33c2a536542..2774624ee843 100644
---- a/Documentation/translations/ko_KR/memory-barriers.txt
-+++ b/Documentation/translations/ko_KR/memory-barriers.txt
-@@ -569,7 +569,7 @@ ACQUIRE 는 해당 오퍼레이션의 로드 부분에만 적용되고 RELEASE 
- 
- 	[*] 버스 마스터링 DMA 와 일관성에 대해서는 다음을 참고하시기 바랍니다:
- 
--	    Documentation/PCI/pci.rst
-+	    Documentation/driver-api/pci/pci.rst
- 	    Documentation/DMA-API-HOWTO.txt
- 	    Documentation/DMA-API.txt
- 
-diff --git a/Documentation/watchdog/hpwdt.rst b/Documentation/watchdog/hpwdt.rst
-index 94a96371113e..49c647dba8aa 100644
---- a/Documentation/watchdog/hpwdt.rst
-+++ b/Documentation/watchdog/hpwdt.rst
-@@ -59,7 +59,7 @@ Last reviewed: 08/20/2018
-  and loop forever.  This is generally not what a watchdog user wants.
- 
-  For those wishing to learn more please see:
--	Documentation/kdump/kdump.rst
-+	Documentation/admin-guide/kdump/kdump.rst
- 	Documentation/admin-guide/kernel-parameters.txt (panic=)
- 	Your Linux Distribution specific documentation.
- 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b3a5c72f3298..b0acc138e9e9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -899,7 +899,7 @@ L:	linux-iio@vger.kernel.org
- W:	http://ez.analog.com/community/linux-device-drivers
- S:	Supported
- F:	drivers/iio/adc/ad7124.c
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.txt
-+F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
- 
- ANALOG DEVICES INC AD7606 DRIVER
- M:	Stefan Popa <stefan.popa@analog.com>
-@@ -4189,7 +4189,7 @@ M:	Jens Axboe <axboe@kernel.dk>
- L:	cgroups@vger.kernel.org
- L:	linux-block@vger.kernel.org
- T:	git git://git.kernel.dk/linux-block
--F:	Documentation/cgroup-v1/blkio-controller.rst
-+F:	Documentation/admin-guide/cgroup-v1/blkio-controller.rst
- F:	block/blk-cgroup.c
- F:	include/linux/blk-cgroup.h
- F:	block/blk-throttle.c
-@@ -6848,7 +6848,7 @@ R:	Sagi Shahar <sagis@google.com>
- R:	Jon Olson <jonolson@google.com>
- L:	netdev@vger.kernel.org
- S:	Supported
--F:	Documentation/networking/device_drivers/google/gve.txt
-+F:	Documentation/networking/device_drivers/google/gve.rst
- F:	drivers/net/ethernet/google
- 
- GPD POCKET FAN DRIVER
-@@ -12096,7 +12096,7 @@ M:	Juergen Gross <jgross@suse.com>
- M:	Alok Kataria <akataria@vmware.com>
- L:	virtualization@lists.linux-foundation.org
- S:	Supported
--F:	Documentation/virtual/paravirt_ops.txt
-+F:	Documentation/virtual/paravirt_ops.rst
- F:	arch/*/kernel/paravirt*
- F:	arch/*/include/asm/paravirt*.h
- F:	include/linux/hypervisor.h
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index 57e6408288c8..4645af681ef8 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -1680,7 +1680,7 @@ static int drm_mode_parse_cmdline_options(char *str, size_t len,
-  *
-  * Additionals options can be provided following the mode, using a comma to
-  * separate each option. Valid options can be found in
-- * Documentation/fb/modedb.txt.
-+ * Documentation/fb/modedb.rst.
-  *
-  * The intermediate drm_cmdline_mode structure is required to store additional
-  * options from the command line modline like the force-enable/disable flag.
-diff --git a/drivers/i2c/busses/i2c-nvidia-gpu.c b/drivers/i2c/busses/i2c-nvidia-gpu.c
-index cfc76b5de726..5a1235fd86bb 100644
---- a/drivers/i2c/busses/i2c-nvidia-gpu.c
-+++ b/drivers/i2c/busses/i2c-nvidia-gpu.c
-@@ -364,7 +364,7 @@ static void gpu_i2c_remove(struct pci_dev *pdev)
- /*
-  * We need gpu_i2c_suspend() even if it is stub, for runtime pm to work
-  * correctly. Without it, lspci shows runtime pm status as "D0" for the card.
-- * Documentation/power/pci.txt also insists for driver to provide this.
-+ * Documentation/power/pci.rst also insists for driver to provide this.
-  */
- static __maybe_unused int gpu_i2c_suspend(struct device *dev)
- {
-diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
-index 43a6b5350775..eaf6177ac9ee 100644
---- a/drivers/scsi/hpsa.c
-+++ b/drivers/scsi/hpsa.c
-@@ -7798,7 +7798,7 @@ static void hpsa_free_pci_init(struct ctlr_info *h)
- 	hpsa_disable_interrupt_mode(h);		/* pci_init 2 */
- 	/*
- 	 * call pci_disable_device before pci_release_regions per
--	 * Documentation/PCI/pci.rst
-+	 * Documentation/driver-api/pci/pci.rst
- 	 */
- 	pci_disable_device(h->pdev);		/* pci_init 1 */
- 	pci_release_regions(h->pdev);		/* pci_init 2 */
-@@ -7881,7 +7881,7 @@ static int hpsa_pci_init(struct ctlr_info *h)
- clean1:
- 	/*
- 	 * call pci_disable_device before pci_release_regions per
--	 * Documentation/PCI/pci.rst
-+	 * Documentation/driver-api/pci/pci.rst
- 	 */
- 	pci_disable_device(h->pdev);
- 	pci_release_regions(h->pdev);
--- 
-2.21.0
+Especially given that you have Oleg's Ack, I would be happy to
+take the forward-ported version.
+
+							Thanx, Paul
+
+> ---
+> Please note: Only build and boot tested this particular patch so far.
+> 
+>  include/linux/rcu_sync.h |  5 ++---
+>  kernel/rcu/sync.c        | 22 ----------------------
+>  2 files changed, 2 insertions(+), 25 deletions(-)
+> 
+> diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
+> index 6fc53a1345b3..c954f1efc919 100644
+> --- a/include/linux/rcu_sync.h
+> +++ b/include/linux/rcu_sync.h
+> @@ -39,9 +39,8 @@ extern void rcu_sync_lockdep_assert(struct rcu_sync *);
+>   */
+>  static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
+>  {
+> -#ifdef CONFIG_PROVE_RCU
+> -	rcu_sync_lockdep_assert(rsp);
+> -#endif
+> +	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
+> +			 "suspicious rcu_sync_is_idle() usage");
+>  	return !rsp->gp_state; /* GP_IDLE */
+>  }
+>  
+> diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+> index a8304d90573f..535e02601f56 100644
+> --- a/kernel/rcu/sync.c
+> +++ b/kernel/rcu/sync.c
+> @@ -10,37 +10,25 @@
+>  #include <linux/rcu_sync.h>
+>  #include <linux/sched.h>
+>  
+> -#ifdef CONFIG_PROVE_RCU
+> -#define __INIT_HELD(func)	.held = func,
+> -#else
+> -#define __INIT_HELD(func)
+> -#endif
+> -
+>  static const struct {
+>  	void (*sync)(void);
+>  	void (*call)(struct rcu_head *, void (*)(struct rcu_head *));
+>  	void (*wait)(void);
+> -#ifdef CONFIG_PROVE_RCU
+> -	int  (*held)(void);
+> -#endif
+>  } gp_ops[] = {
+>  	[RCU_SYNC] = {
+>  		.sync = synchronize_rcu,
+>  		.call = call_rcu,
+>  		.wait = rcu_barrier,
+> -		__INIT_HELD(rcu_read_lock_held)
+>  	},
+>  	[RCU_SCHED_SYNC] = {
+>  		.sync = synchronize_rcu,
+>  		.call = call_rcu,
+>  		.wait = rcu_barrier,
+> -		__INIT_HELD(rcu_read_lock_sched_held)
+>  	},
+>  	[RCU_BH_SYNC] = {
+>  		.sync = synchronize_rcu,
+>  		.call = call_rcu,
+>  		.wait = rcu_barrier,
+> -		__INIT_HELD(rcu_read_lock_bh_held)
+>  	},
+>  };
+>  
+> @@ -49,16 +37,6 @@ enum { CB_IDLE = 0, CB_PENDING, CB_REPLAY };
+>  
+>  #define	rss_lock	gp_wait.lock
+>  
+> -#ifdef CONFIG_PROVE_RCU
+> -void rcu_sync_lockdep_assert(struct rcu_sync *rsp)
+> -{
+> -	RCU_LOCKDEP_WARN(!gp_ops[rsp->gp_type].held(),
+> -			 "suspicious rcu_sync_is_idle() usage");
+> -}
+> -
+> -EXPORT_SYMBOL_GPL(rcu_sync_lockdep_assert);
+> -#endif
+> -
+>  /**
+>   * rcu_sync_init() - Initialize an rcu_sync structure
+>   * @rsp: Pointer to rcu_sync structure to be initialized
+> -- 
+> 2.22.0.510.g264f2c817a-goog
+> 
 
