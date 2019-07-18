@@ -6,111 +6,91 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6859C76195
-	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 16:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BFBAC7618F
+	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 21:10:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8D2B02184E
-	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 16:16:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA9A921019
+	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 21:09:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yl42423+"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="p4GGsZS1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbfGRQQG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jul 2019 12:16:06 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:46365 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726649AbfGRQQF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jul 2019 12:16:05 -0400
-Received: by mail-lf1-f66.google.com with SMTP id z15so15344496lfh.13
-        for <rcu@vger.kernel.org>; Thu, 18 Jul 2019 09:16:04 -0700 (PDT)
+        id S1727762AbfGRVJ7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jul 2019 17:09:59 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:42347 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbfGRVJ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jul 2019 17:09:59 -0400
+Received: by mail-lf1-f49.google.com with SMTP id s19so20232488lfb.9
+        for <rcu@vger.kernel.org>; Thu, 18 Jul 2019 14:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hcUjT0W7KZXLkur2UXUjc33cVy9DWOd5ZbJ4nex9bqo=;
-        b=yl42423+ShMJNj0qJ6yfAuBSR0MXnGVaDILz9UQlWPSYEdTrOp+3pnad7KPBf60BH6
-         fppJeMupie5K3dihgf9R+Qi+xJDWJugRkkO7KTci5nIcqaqe15xdJpCdgNxr57Dew51u
-         6QeJ1kp0ZdPv6HtKQpWz4c+KXoxXD8vMf66j8=
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=BiwbvIf2E7UeHN/qIeJzBVwubFLsFnVJKQ4SGUt+nxE=;
+        b=p4GGsZS1Oj0uO76AWEWBUnn/j2vBG4YeRWYhY6CScnX7iUSsJ0C5f/Np7Cp00/+sod
+         dALJYlE4WpVgWtiYMbe8XcAFe4RM4qzEPLOvXEdNxWslRc8dUUonVK1GQ0BmuJYRJm8F
+         yY5FgxImfY/QdMRQ0K2eqEx7Hh46AO/qE6Fig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hcUjT0W7KZXLkur2UXUjc33cVy9DWOd5ZbJ4nex9bqo=;
-        b=ix112QcGrLjBKEql1kVZipCxMqDn9Qnj2MVuMClwNbPL3cO/qZiSKDXN04aVL9bKQ0
-         +dN+IZT+HRF0MXuBX2SB5IEdz4PHOixOFAkicHYXHExu5FShmiTPfjdR19jwCK06UZp7
-         ZtB4clPWCf8fDKgKwnk07gDVEhu7Ygzscfefq+Fonczujio1HTAhSJt39Qqv6CXtkZvo
-         sTOT3t9seaRrzAkkmrTANsa4FbIG4I/Atd/YdjFEJ8NIAH38OAYKLPxYQJjurYy4kT9n
-         vY4zwG5cb7cdzCwqeWnjln9JitrU8KgSmcRyw6K08ktVzA8aZ/+9znDT3zI+eamglftx
-         0y5A==
-X-Gm-Message-State: APjAAAWvXIVZOsQgqahAnPNjtN2T7+hAhvzxWFStsIcidOaE76FJpSEk
-        PuUsLlGvzyT04jTfkiDIhCA/jA4UXYnPyrnxqtU=
-X-Google-Smtp-Source: APXvYqwwm1e2Odt7yODnCqh+OqI4eqB7zWbv4IcCiwZAUNYcYVmuBPI5wLuDkuEy011/XOFOy46UYf0YQsQ6Jh8rsmU=
-X-Received: by 2002:a19:c503:: with SMTP id w3mr19091061lfe.139.1563466563806;
- Thu, 18 Jul 2019 09:16:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=BiwbvIf2E7UeHN/qIeJzBVwubFLsFnVJKQ4SGUt+nxE=;
+        b=lfVk6uGzFk2OHi8oXs8Li4gpacfoCPuiXrEbqn/h2Bocbq3MYaTs0Ctitx3DkYh8vA
+         fE5uyX0hGqA1F5p1ygZThdLBYzx1OtRKEPbvxV0erpbJYsC+p1YoRCd30piWi4FW2YAn
+         HpU49t/H59PW16O/0Q7fuFl/hLlJPdKerXCDyx/R4gmwktf94Wn/ChjD9J7tCRgSYKYq
+         5THf0eanm9xqnTqUQVb70+byEInkK0MsulFAdMUNeNG+EWUjxX4qVp/B3UMxKeodeGO8
+         5AAN3hcokvOJZms5+sb+nehdff0Y8FuFoHguGv4gkhkX0kzF6TDm53qFDfshY/EzYE/I
+         SzYQ==
+X-Gm-Message-State: APjAAAVLKJJOLd83ZyzG6rKudG6eDXYPJFt5Yq8Hg+a5tm+A+rUMMcK0
+        Egqfu+AlmItWJLCZwVc0fULbDB1Lh25HZHoI5ONHNUnt
+X-Google-Smtp-Source: APXvYqx/8NQE97aOlobZ88gVPC1hMNhoEjQhH4i9kPa7Duebm51E21m905Zf52PMo5LT4qBgl50Ziwz+bCwldimwvZg=
+X-Received: by 2002:a19:ccc6:: with SMTP id c189mr21906432lfg.160.1563484196861;
+ Thu, 18 Jul 2019 14:09:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190711130849.GA212044@google.com> <20190711150215.GK26519@linux.ibm.com>
- <20190711164818.GA260447@google.com> <20190711195839.GA163275@google.com>
- <20190712063240.GD7702@X58A-UD3R> <20190712125116.GB92297@google.com>
- <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
- <CAEXW_YTeAUuVqViBfiOTQhckMDH229oQdPXG6SNqGK0xYm-yzA@mail.gmail.com>
- <20190713151330.GE26519@linux.ibm.com> <20190713154257.GE133650@google.com>
- <20190713174111.GG26519@linux.ibm.com> <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
-In-Reply-To: <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 18 Jul 2019 12:15:51 -0400
-Message-ID: <CAEXW_YTsNNySKbDU12ZeidXQ0GrWqaTKbVUym3kFfnKeV44Tug@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
+Date:   Thu, 18 Jul 2019 17:09:45 -0400
+Message-ID: <CAEXW_YR39bnCCj+eo30jSZrNEvcJY8wrXuA0fYr_gfbfNiVsPQ@mail.gmail.com>
+Subject: This percpu_rwsem that always enters its reader slow path
+To:     rcu <rcu@vger.kernel.org>
+Cc:     Byungchul Park <byungchul.park@lge.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 12:14 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> Trimming the list a bit to keep my noise level low,
->
-> On Sat, Jul 13, 2019 at 1:41 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> [snip]
-> > > It still feels like you guys are hyperfocusing on this one particular
-> > > > knob.  I instead need you to look at the interrelating knobs as a group.
-> > >
-> > > Thanks for the hints, we'll do that.
-> > >
-> > > > On the debugging side, suppose someone gives you an RCU bug report.
-> > > > What information will you need?  How can you best get that information
-> > > > without excessive numbers of over-and-back interactions with the guy
-> > > > reporting the bug?  As part of this last question, what information is
-> > > > normally supplied with the bug?  Alternatively, what information are
-> > > > bug reporters normally expected to provide when asked?
-> > >
-> > > I suppose I could dig out some of our Android bug reports of the past where
-> > > there were RCU issues but if there's any fires you are currently fighting do
-> > > send it our way as debugging homework ;-)
-> >
-> >   Suppose that you were getting RCU CPU stall
-> > warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
-> > Of course, this really means that some other CPU/task is holding up
-> > multi_cpu_stop() without also blocking the current grace period.
-> >
->
-> So I took a shot at this trying to learn how CPU stoppers work in
-> relation to this problem.
->
-> I am assuming here say CPU X has entered MULTI_STOP_DISABLE_IRQ state
-> in multi_cpu_stop() but another CPU Y has not yet entered this state.
-> So CPU X is stalling RCU but it is really because of CPU Y. Now in the
-> problem statement, you mentioned CPU Y is not holding up the grace
-> period, which means Y doesn't have any of IRQ, BH or preemption
-> disabled ; but is still somehow stalling RCU indirectly by troubling
-> X.
->
-> This can only happen if :
-> - CPU Y has a thread executing on it that is higher priority than CPU
-> X's stopper thread which prevents it from getting scheduled. - but the
+Hello friends,
 
-Sorry, here I meant "higher priority than CPU Y's stopper thread".
+Just providing an update on my debugging of percpu_rwsem (related to
+rcu-sync) for the day! which I pinged Byungchul about. Please ignore
+this email if you are busy :) I am just archiving it in here..
+
+As you may know, percpu_rwsem uses rcu-sync framework to reduce cost
+of read-side by making it free of any serializing/atomic instructions
+at all. However, there was one sempahore which broke the rules!
+
+I spent a couple hours trying to figure out why
+cgroup_threadgroup_rwsem always entered the reader-slow path on my
+system (RCU-sync turns out to be non-idle for this rwsem). I really
+thought it was a bug, because I felt what's the pointed of rcu-sync if
+it never goes idle..
+
+Then I landed on the commit below, and turns it was done for Android
+and reported by John :) And the patch author was a certain guy named
+Peter :)
+
+commit 3942a9bd7b5842a924e99ee6ec1350b8006c94ec
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Thu Aug 11 18:54:13 2016 +0200
+
+    locking, rcu, cgroup: Avoid synchronize_sched() in __cgroup_procs_write()
+-----------
+
+Basically, this commit makes the read-side cost percpu_rwsem slightly
+more expensive (one smp_load_acquire of readers_block, at the cost of
+making write-side a bit more expensive...)
+
+So turns out it is weird, but it is certainly not a bug.
+
+Learned something new but wasted my time a bit :)
+
+Cheers, and see you later,
+- Joel
