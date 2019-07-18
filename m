@@ -1,165 +1,123 @@
-Return-Path: <SRS0=fUFo=VO=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=SMg2=VP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C016C76192
-	for <rcu@archiver.kernel.org>; Wed, 17 Jul 2019 00:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31BA6C7618F
+	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 16:14:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3EE4821871
-	for <rcu@archiver.kernel.org>; Wed, 17 Jul 2019 00:10:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EDE8E21019
+	for <rcu@archiver.kernel.org>; Thu, 18 Jul 2019 16:14:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="OYS8zzov"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbfGQAKM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Jul 2019 20:10:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46304 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728597AbfGQAKM (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 16 Jul 2019 20:10:12 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6H07KiH124292;
-        Tue, 16 Jul 2019 20:08:00 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tsnmnejq4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jul 2019 20:07:59 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6H07OI6125043;
-        Tue, 16 Jul 2019 20:07:59 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tsnmnejpc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Jul 2019 20:07:59 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6H06MZU032508;
-        Wed, 17 Jul 2019 00:07:57 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01wdc.us.ibm.com with ESMTP id 2tq6x63b2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Jul 2019 00:07:57 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6H07vFM39780686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jul 2019 00:07:57 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A3E4B2065;
-        Wed, 17 Jul 2019 00:07:57 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0D28B206E;
-        Wed, 17 Jul 2019 00:07:56 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.225.134])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Jul 2019 00:07:56 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 30CFA16C8E9B; Tue, 16 Jul 2019 17:07:57 -0700 (PDT)
-Date:   Tue, 16 Jul 2019 17:07:57 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>, c0d1n61at3@gmail.com,
-        "David S. Miller" <davem@davemloft.net>, edumazet@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, keescook@chromium.org,
-        kernel-hardening@lists.openwall.com, kernel-team@android.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neilb@suse.com, netdev@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        peterz@infradead.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH 2/9] rcu: Add support for consolidated-RCU reader
- checking (v3)
-Message-ID: <20190717000757.GQ14271@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190715143705.117908-1-joel@joelfernandes.org>
- <20190715143705.117908-3-joel@joelfernandes.org>
- <20190716183833.GD14271@linux.ibm.com>
- <20190716184649.GA130463@google.com>
- <20190716185303.GM14271@linux.ibm.com>
- <20190716220205.GB172157@google.com>
+        id S1727685AbfGRQOf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jul 2019 12:14:35 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33109 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbfGRQOf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jul 2019 12:14:35 -0400
+Received: by mail-lf1-f68.google.com with SMTP id x3so19709375lfc.0
+        for <rcu@vger.kernel.org>; Thu, 18 Jul 2019 09:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kaojJi+dg+txqNSRlh/qKTQmkDls7tEGMsUj1+NKXOE=;
+        b=OYS8zzovkDSGmIJ5CvE9WtxD7QYP4M0Wj43MxRDLoPkEtknF9Ezu3QRWS2geVPNYdH
+         p5jfH44AUZqRV1RbpJ6MCL/ss9ND2Yf1dP9WUJNXXaCrRUTrpvq34svc5owsm8UzuR1H
+         RgtKXG3jd5avfNUDAFFYfCoJxWimD8RNkSGTE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kaojJi+dg+txqNSRlh/qKTQmkDls7tEGMsUj1+NKXOE=;
+        b=TAY6f/pQx3WtNvnWz6sSLyVL+lTls8AlzqfYY4fUiER4e6AxBNST4qPvQHbgEEbm4q
+         hDTkQtqTIx98l5hpFo48j0CVddbaw73SvLQyjbXDtHpUekxs7lFuAvl4Y4af0PTu9o2b
+         wiThtDRxk0u9R1ikPO+s073vse23z5UcqwBrrkFstezlpOMmHM1eOOWdNSQYk7x4/Zi9
+         XTStL7AUq7hKMSETYKoYUxJN0GQDNspsN0Tcu8ZmUqc4BXuRJzKIOy4esiT11arXOEQK
+         ZvnErXmUO9i0sOfeIggIOpjx+bPjywi2RSuUSqmnJEYi6YpaFTYQj4VSZ8uQ5vFDetBY
+         TTaQ==
+X-Gm-Message-State: APjAAAXBbi7i1+DKf0tAIXjvUBbqI5BC+hIyIJ8H+OCgZiQfJvbPfI+f
+        tagx+SI3mc98D8zY0cI4k+K+ANAJDx3aPdji1vmbt9JI
+X-Google-Smtp-Source: APXvYqyhnUflYyfqDDAii3Dm8cVfsNANSxmQ1PKt1+23cthFmJd4RCj10tEqWheZW4oA2Iytx1fG7Cf+iASqjwWTGJQ=
+X-Received: by 2002:a19:6602:: with SMTP id a2mr20784338lfc.25.1563466473470;
+ Thu, 18 Jul 2019 09:14:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190716220205.GB172157@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-16_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907160263
+References: <20190711130849.GA212044@google.com> <20190711150215.GK26519@linux.ibm.com>
+ <20190711164818.GA260447@google.com> <20190711195839.GA163275@google.com>
+ <20190712063240.GD7702@X58A-UD3R> <20190712125116.GB92297@google.com>
+ <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
+ <CAEXW_YTeAUuVqViBfiOTQhckMDH229oQdPXG6SNqGK0xYm-yzA@mail.gmail.com>
+ <20190713151330.GE26519@linux.ibm.com> <20190713154257.GE133650@google.com> <20190713174111.GG26519@linux.ibm.com>
+In-Reply-To: <20190713174111.GG26519@linux.ibm.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 18 Jul 2019 12:14:22 -0400
+Message-ID: <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 06:02:05PM -0400, Joel Fernandes wrote:
-> On Tue, Jul 16, 2019 at 11:53:03AM -0700, Paul E. McKenney wrote:
-> [snip]
-> > > > A few more things below.
-> > > > > ---
-> > > > >  include/linux/rculist.h  | 28 ++++++++++++++++++++-----
-> > > > >  include/linux/rcupdate.h |  7 +++++++
-> > > > >  kernel/rcu/Kconfig.debug | 11 ++++++++++
-> > > > >  kernel/rcu/update.c      | 44 ++++++++++++++++++++++++----------------
-> > > > >  4 files changed, 67 insertions(+), 23 deletions(-)
-> > > > > 
-> > > > > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> > > > > index e91ec9ddcd30..1048160625bb 100644
-> > > > > --- a/include/linux/rculist.h
-> > > > > +++ b/include/linux/rculist.h
-> > > > > @@ -40,6 +40,20 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
-> > > > >   */
-> > > > >  #define list_next_rcu(list)	(*((struct list_head __rcu **)(&(list)->next)))
-> > > > >  
-> > > > > +/*
-> > > > > + * Check during list traversal that we are within an RCU reader
-> > > > > + */
-> > > > > +
-> > > > > +#ifdef CONFIG_PROVE_RCU_LIST
-> > > > 
-> > > > This new Kconfig option is OK temporarily, but unless there is reason to
-> > > > fear malfunction that a few weeks of rcutorture, 0day, and -next won't
-> > > > find, it would be better to just use CONFIG_PROVE_RCU.  The overall goal
-> > > > is to reduce the number of RCU knobs rather than grow them, must though
-> > > > history might lead one to believe otherwise.  :-/
-> > > 
-> > > If you want, we can try to drop this option and just use PROVE_RCU however I
-> > > must say there may be several warnings that need to be fixed in a short
-> > > period of time (even a few weeks may be too short) considering the 1000+
-> > > uses of RCU lists.
-> > Do many people other than me build with CONFIG_PROVE_RCU?  If so, then
-> > that would be a good reason for a temporary CONFIG_PROVE_RCU_LIST,
-> > as in going away in a release or two once the warnings get fixed.
-> 
-> PROVE_RCU is enabled by default with PROVE_LOCKING, so it is used quite
-> heavilty.
-> 
-> > > But I don't mind dropping it and it may just accelerate the fixing up of all
-> > > callers.
-> > 
-> > I will let you decide based on the above question.  But if you have
-> > CONFIG_PROVE_RCU_LIST, as noted below, it needs to depend on RCU_EXPERT.
-> 
-> Ok, will make it depend. But yes for temporary purpose, I will leave it as a
-> config and remove it later.
+Trimming the list a bit to keep my noise level low,
 
-Very good, thank you!  Plus you got another ack.  ;-)
+On Sat, Jul 13, 2019 at 1:41 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+[snip]
+> > It still feels like you guys are hyperfocusing on this one particular
+> > > knob.  I instead need you to look at the interrelating knobs as a group.
+> >
+> > Thanks for the hints, we'll do that.
+> >
+> > > On the debugging side, suppose someone gives you an RCU bug report.
+> > > What information will you need?  How can you best get that information
+> > > without excessive numbers of over-and-back interactions with the guy
+> > > reporting the bug?  As part of this last question, what information is
+> > > normally supplied with the bug?  Alternatively, what information are
+> > > bug reporters normally expected to provide when asked?
+> >
+> > I suppose I could dig out some of our Android bug reports of the past where
+> > there were RCU issues but if there's any fires you are currently fighting do
+> > send it our way as debugging homework ;-)
+>
+>   Suppose that you were getting RCU CPU stall
+> warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
+> Of course, this really means that some other CPU/task is holding up
+> multi_cpu_stop() without also blocking the current grace period.
+>
 
-							Thanx, Paul
+So I took a shot at this trying to learn how CPU stoppers work in
+relation to this problem.
+
+I am assuming here say CPU X has entered MULTI_STOP_DISABLE_IRQ state
+in multi_cpu_stop() but another CPU Y has not yet entered this state.
+So CPU X is stalling RCU but it is really because of CPU Y. Now in the
+problem statement, you mentioned CPU Y is not holding up the grace
+period, which means Y doesn't have any of IRQ, BH or preemption
+disabled ; but is still somehow stalling RCU indirectly by troubling
+X.
+
+This can only happen if :
+- CPU Y has a thread executing on it that is higher priority than CPU
+X's stopper thread which prevents it from getting scheduled. - but the
+CPU stopper thread (migration/..) is highest priority RT so this would
+be some kind of an odd scheduler bug.
+- There is a bug in the CPU stopper machinery itself preventing it
+from scheduling the stopper on Y. Even though Y is not holding up the
+grace period.
+
+Did I get that right? Would be exciting to run the rcutorture test
+once Paul has it available to reproduce this problem.
+
+thanks,
+
+ - Joel
