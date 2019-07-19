@@ -2,41 +2,64 @@ Return-Path: <SRS0=nLJu=VQ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02FBCC76195
-	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 00:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92B74C76195
+	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 00:48:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DB92E2173B
-	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 00:40:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F8C22173B
+	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 00:48:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wJ4Do64T"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbfGSAkr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jul 2019 20:40:47 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:40021 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbfGSAkr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jul 2019 20:40:47 -0400
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-        by 156.147.23.51 with ESMTP; 19 Jul 2019 09:40:45 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.121 with ESMTP; 19 Jul 2019 09:40:45 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Fri, 19 Jul 2019 09:39:42 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Byungchul Park <max.byungchul.park@gmail.com>,
+        id S1726112AbfGSAst (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jul 2019 20:48:49 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:33433 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbfGSAst (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jul 2019 20:48:49 -0400
+Received: by mail-pl1-f196.google.com with SMTP id c14so14693230plo.0
+        for <rcu@vger.kernel.org>; Thu, 18 Jul 2019 17:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7jHRVGYnOvUursfYWZeDAUUnbVipDkEH1tJJIaRboaw=;
+        b=wJ4Do64TgslH5ajaP39l3lzWeOkT7er76jZGcUJG2PYrgj1XIa8WPr5AJWdIo6ztbf
+         6SgS4u/Mzqxd5dp6vzMR0WsJQS8P2WmPY/FjBG/JNFP0Rn8+sIYpTm4QHn1+gah9+xck
+         sdm0QTt3Tc4LqhY6vZJzce98FmnJotTEeFC6g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7jHRVGYnOvUursfYWZeDAUUnbVipDkEH1tJJIaRboaw=;
+        b=H/KsDyHNq0mN8+NgcECnA/tVgRFTlf4tV3bas07NLIAsAMLxQOP7idkQWeeTMCyE/T
+         oNGXAGwmvIiuJ9cdFXHYybVVJXVtCTZNbV3cSNOjHbnKjyfyMKo7LjJ0yVo0BKORWgNF
+         gzWdttAHqEXTUJS81jvvDRHN1lkIplNJgxedEQC6oGb4vjFOj4JNzpYTE4IQv0vPPEu/
+         4LVmNuUC049cLkLHDrvrCPVZZfjgXCICGADuMvUyAUJ8AY4xow9wax+/eKr26jskxfz7
+         i138gaRjuS9QCghFrHsys38dWY8cL6f4t9lP207Du3ov0/8WiY4WwrE3marViczrtIXH
+         NbFg==
+X-Gm-Message-State: APjAAAWGmFw4AeG0g4uk/bhaevUz4lk5+YyzGVU5VwxtQvDGcAtKdOib
+        xIMM32Fu6u+RwyOXT4bMfFM=
+X-Google-Smtp-Source: APXvYqx734KcWZYzkKf3/SIjDUX0yRPIkJuI1pcTeivj+Em++JUJ/9kBxm9LhHvmYSzZWN8PSnJwwQ==
+X-Received: by 2002:a17:902:724a:: with SMTP id c10mr49965858pll.298.1563497328827;
+        Thu, 18 Jul 2019 17:48:48 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id m16sm29639113pfd.127.2019.07.18.17.48.47
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 18 Jul 2019 17:48:48 -0700 (PDT)
+Date:   Thu, 18 Jul 2019 20:48:46 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
+        Byungchul Park <byungchul.park@lge.com>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
         kernel-team@lge.com
 Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190719003942.GA28226@X58A-UD3R>
-References: <20190711164818.GA260447@google.com>
- <20190711195839.GA163275@google.com>
+Message-ID: <20190719004846.GA61615@google.com>
+References: <20190711195839.GA163275@google.com>
  <20190712063240.GD7702@X58A-UD3R>
  <20190712125116.GB92297@google.com>
  <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
@@ -45,82 +68,74 @@ References: <20190711164818.GA260447@google.com>
  <20190713154257.GE133650@google.com>
  <20190713174111.GG26519@linux.ibm.com>
  <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
+ <20190718213419.GV14271@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190718213419.GV14271@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 12:14:22PM -0400, Joel Fernandes wrote:
-> Trimming the list a bit to keep my noise level low,
-> 
-> On Sat, Jul 13, 2019 at 1:41 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> [snip]
-> > > It still feels like you guys are hyperfocusing on this one particular
-> > > > knob.  I instead need you to look at the interrelating knobs as a group.
+On Thu, Jul 18, 2019 at 02:34:19PM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 18, 2019 at 12:14:22PM -0400, Joel Fernandes wrote:
+> > Trimming the list a bit to keep my noise level low,
+> > 
+> > On Sat, Jul 13, 2019 at 1:41 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+> > [snip]
+> > > > It still feels like you guys are hyperfocusing on this one particular
+> > > > > knob.  I instead need you to look at the interrelating knobs as a group.
+> > > >
+> > > > Thanks for the hints, we'll do that.
+> > > >
+> > > > > On the debugging side, suppose someone gives you an RCU bug report.
+> > > > > What information will you need?  How can you best get that information
+> > > > > without excessive numbers of over-and-back interactions with the guy
+> > > > > reporting the bug?  As part of this last question, what information is
+> > > > > normally supplied with the bug?  Alternatively, what information are
+> > > > > bug reporters normally expected to provide when asked?
+> > > >
+> > > > I suppose I could dig out some of our Android bug reports of the past where
+> > > > there were RCU issues but if there's any fires you are currently fighting do
+> > > > send it our way as debugging homework ;-)
 > > >
-> > > Thanks for the hints, we'll do that.
+> > >   Suppose that you were getting RCU CPU stall
+> > > warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
+> > > Of course, this really means that some other CPU/task is holding up
+> > > multi_cpu_stop() without also blocking the current grace period.
 > > >
-> > > > On the debugging side, suppose someone gives you an RCU bug report.
-> > > > What information will you need?  How can you best get that information
-> > > > without excessive numbers of over-and-back interactions with the guy
-> > > > reporting the bug?  As part of this last question, what information is
-> > > > normally supplied with the bug?  Alternatively, what information are
-> > > > bug reporters normally expected to provide when asked?
-> > >
-> > > I suppose I could dig out some of our Android bug reports of the past where
-> > > there were RCU issues but if there's any fires you are currently fighting do
-> > > send it our way as debugging homework ;-)
-> >
-> >   Suppose that you were getting RCU CPU stall
-> > warnings featuring multi_cpu_stop() called from cpu_stopper_thread().
-> > Of course, this really means that some other CPU/task is holding up
-> > multi_cpu_stop() without also blocking the current grace period.
-> >
+> > 
+> > So I took a shot at this trying to learn how CPU stoppers work in
+> > relation to this problem.
+> > 
+> > I am assuming here say CPU X has entered MULTI_STOP_DISABLE_IRQ state
+> > in multi_cpu_stop() but another CPU Y has not yet entered this state.
+> > So CPU X is stalling RCU but it is really because of CPU Y. Now in the
+> > problem statement, you mentioned CPU Y is not holding up the grace
+> > period, which means Y doesn't have any of IRQ, BH or preemption
+> > disabled ; but is still somehow stalling RCU indirectly by troubling
+> > X.
+> > 
+> > This can only happen if :
+> > - CPU Y has a thread executing on it that is higher priority than CPU
+> > X's stopper thread which prevents it from getting scheduled. - but the
+> > CPU stopper thread (migration/..) is highest priority RT so this would
+> > be some kind of an odd scheduler bug.
+> > - There is a bug in the CPU stopper machinery itself preventing it
+> > from scheduling the stopper on Y. Even though Y is not holding up the
+> > grace period.
 > 
-> So I took a shot at this trying to learn how CPU stoppers work in
-> relation to this problem.
-> 
-> I am assuming here say CPU X has entered MULTI_STOP_DISABLE_IRQ state
-> in multi_cpu_stop() but another CPU Y has not yet entered this state.
-> So CPU X is stalling RCU but it is really because of CPU Y. Now in the
-> problem statement, you mentioned CPU Y is not holding up the grace
-> period, which means Y doesn't have any of IRQ, BH or preemption
-> disabled ; but is still somehow stalling RCU indirectly by troubling
-> X.
-> 
-> This can only happen if :
-> - CPU Y has a thread executing on it that is higher priority than CPU
-> X's stopper thread which prevents it from getting scheduled. - but the
-> CPU stopper thread (migration/..) is highest priority RT so this would
-> be some kind of an odd scheduler bug.
+> - CPU Y might have already passed through its quiescent state for
+>   the current grace period, then disabled IRQs indefinitely.
+>   Now, CPU Y would block a later grace period, but CPU X is
+>   preventing the current grace period from ending, so no such
+>   later grace period can start.
 
-I think this bug hardly can happen.
+Ah totally possible, yes!
 
-> - There is a bug in the CPU stopper machinery itself preventing it
-> from scheduling the stopper on Y. Even though Y is not holding up the
-> grace period.
+thanks,
 
-Or any thread on Y is busy with preemption/irq disabled preventing the
-stopper from being scheduled on Y.
-
-Or something is stuck in ttwu() to wake up the stopper on Y due to any
-scheduler locks such as pi_lock or rq->lock or something.
-
-I think what you mentioned can happen easily.
-
-Basically we would need information about preemption/irq disabled
-sections on Y and scheduler's current activity on every cpu at that time.
-
-Am I missing something?
-
-> Did I get that right? Would be exciting to run the rcutorture test
-> once Paul has it available to reproduce this problem.
-
-Thanks,
-Byungchul
+ - Joel
 
