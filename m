@@ -1,120 +1,108 @@
-Return-Path: <SRS0=nLJu=VQ=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=pgRM=VS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE35C7618F
-	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 20:34:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE636C76188
+	for <rcu@archiver.kernel.org>; Sun, 21 Jul 2019 13:28:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 02CE621873
-	for <rcu@archiver.kernel.org>; Fri, 19 Jul 2019 20:34:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B4122085A
+	for <rcu@archiver.kernel.org>; Sun, 21 Jul 2019 13:28:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="iOcnUsUO"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="DLbQ4opc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbfGSUeN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Jul 2019 16:34:13 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:37550 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbfGSUeK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 19 Jul 2019 16:34:10 -0400
-Received: by mail-lj1-f193.google.com with SMTP id z28so32014919ljn.4
-        for <rcu@vger.kernel.org>; Fri, 19 Jul 2019 13:34:09 -0700 (PDT)
+        id S1726311AbfGUN2q (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 21 Jul 2019 09:28:46 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35160 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbfGUN2p (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 21 Jul 2019 09:28:45 -0400
+Received: by mail-pl1-f193.google.com with SMTP id w24so17858785plp.2
+        for <rcu@vger.kernel.org>; Sun, 21 Jul 2019 06:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YWoLcIWo45da57QgaYno7VI6Op8uVj/Cqdt+Sn9VmY0=;
-        b=iOcnUsUOUmUDjUPd2RB7piycSYuRa0AXleJVgdN2h7YSBPG3416E5nC6hOnjd+wwLj
-         Ggo0iU/RRwL6CXCbxKfsxQoSLuMiCW1vGnCQyhaTUt4tV3nx9uTJr2CpIGB8xyPZCfMy
-         VLJL5zyEFPoIpF/pFAmQzdew8l7ALpgpyKrt4=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tf1DKfYz6MJVrEbH9g9T7Q+vdj4I3AhFgEqPaqSMi9k=;
+        b=DLbQ4opcL9Khu3nj4ptPiQ+8Fzz6MPii51+rhhus2K7X4cn0BcNqcdbRi6relEeE4q
+         Gtu39h2Q1IKVBlFhV1BzSzqhbO7t/BfXNyGd7ucUNeMmHjSACi3w790/gTj7p/vKbfgp
+         t5QjCfCr1S7BsBHcehRQKQKztW4TVkIYnBBsU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YWoLcIWo45da57QgaYno7VI6Op8uVj/Cqdt+Sn9VmY0=;
-        b=Arytt3RdnnZrPIUyfwuS/2aU+oO608LXiQVcSXjpdstsf8fd8GvqGAl/PCIXLXEmQN
-         jaGX1X3c9R1V1fQOUbrlhh1bWNfLIgQDX1gxWvS77QuSQ2wi5IO3TjiYqLrSiFtbG4mp
-         5aSnCS4EcuLoCmjSbyBoKD687/0iLqg8ioI/PeZcoK5MDB3aPAIOdmMBVxxx1c5ndWws
-         qyjaZxxFwc/bCU8JZ16nchlzAITvaCh5VjI/pj9uNMDzDUTZdcN27J8JIRQSbxksm5Hm
-         T+9UGX5OHb91U7JD7oRiNcDHiDsrOQLOKC9A4mQeMmdz133NfxRTALe8UW92OYk3yRgt
-         9CRw==
-X-Gm-Message-State: APjAAAU8ed5/ZqcwusCot9FBs1H6FaLleEmXHfOLFXedThlXRc8enTmk
-        gkiTHmrdqw+7OsT2ydNtgt0chIbXZ7Mwnk8zjXs=
-X-Google-Smtp-Source: APXvYqxJIT/ulpm6D6M1/aGWkcJqVmFa6Pfr0jgRty160DDMnx2/Xlv3f7J7ThMzu8xCHC17SRMRSvZJyZSJy8P3R5o=
-X-Received: by 2002:a2e:3602:: with SMTP id d2mr28981129lja.112.1563568448218;
- Fri, 19 Jul 2019 13:34:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANrsvRMh6L_sEmoF_K3Mx=1VcuGSwQAT8CZHep69aSZUTBvwpA@mail.gmail.com>
- <CAEXW_YTeAUuVqViBfiOTQhckMDH229oQdPXG6SNqGK0xYm-yzA@mail.gmail.com>
- <20190713151330.GE26519@linux.ibm.com> <20190713154257.GE133650@google.com>
- <20190713174111.GG26519@linux.ibm.com> <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
- <20190719003942.GA28226@X58A-UD3R> <CAEXW_YQij-N2-NFjUQtsmYxVLtWxcQk_Kb16fGBzzPAZtWg+sg@mail.gmail.com>
- <20190719074329.GY14271@linux.ibm.com> <CANrsvRM7ehvqcPtKMV7RyRCiXwe_R_TsLZiNtxBPY_qnSg2LNQ@mail.gmail.com>
- <20190719195728.GF14271@linux.ibm.com>
-In-Reply-To: <20190719195728.GF14271@linux.ibm.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tf1DKfYz6MJVrEbH9g9T7Q+vdj4I3AhFgEqPaqSMi9k=;
+        b=omreZQbxbz2QpFnPVv7nEe1nzfk1vGbYhKKTvx1sIIe1xys3xmmr1IGso9GHq3UFvj
+         HGPBB4U+1W5UU2lPFP0GULfCsZUyoSnaNcm2JF3oqSm/Cev1RE+p4VjWrd8d/kF8sXUs
+         NWAFrzL0PCCo3CxXDRrq39zy2yrIQBCBQom2xxJvwetzeTt1T11s1S9B6CdI82/uC2ID
+         yE243AzIKU698VawwEO7tCkWvvaFbBzp80rYaMA3d4iKbFrkCK6uaKhDMJ+usYVha9Ph
+         dJ65aKm/qSgSa2lm9/51BZ64XFMc09tbLlTVPQtKr/H0CTVtBSM8K+yi5QVerjck7WDi
+         0rWw==
+X-Gm-Message-State: APjAAAWrcK6eUJBkhnzIvwAYF78OzypYsv5+ST7sLgMwgPy12PwXZssh
+        JF/hosjdyDdZpXVGmXTsBQ3IsxHr
+X-Google-Smtp-Source: APXvYqxX9mmiVUI0zjerY0iYf3SclUHtjco7scU3wNmdizCJbVdLk45RqWlEx2TJOiaR8As04xRfcg==
+X-Received: by 2002:a17:902:8f81:: with SMTP id z1mr68454868plo.290.1563715724870;
+        Sun, 21 Jul 2019 06:28:44 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id h9sm33874301pgh.51.2019.07.21.06.28.43
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 21 Jul 2019 06:28:43 -0700 (PDT)
+Date:   Sun, 21 Jul 2019 09:28:42 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 19 Jul 2019 16:33:56 -0400
-Message-ID: <CAEXW_YQADrPRtJW7yJZyROH1_d2yOA7_1HVgm50wxpOC80+=Wg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     rcu <rcu@vger.kernel.org>, kernel-team@lge.com
+Subject: Re: This percpu_rwsem that always enters its reader slow path
+Message-ID: <20190721132842.GA4584@google.com>
+References: <CAEXW_YR39bnCCj+eo30jSZrNEvcJY8wrXuA0fYr_gfbfNiVsPQ@mail.gmail.com>
+ <20190719075011.GD28226@X58A-UD3R>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190719075011.GD28226@X58A-UD3R>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 19, 2019 at 3:57 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
->
-> On Fri, Jul 19, 2019 at 06:57:58PM +0900, Byungchul Park wrote:
-> > On Fri, Jul 19, 2019 at 4:43 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> > >
-> > > On Thu, Jul 18, 2019 at 08:52:52PM -0400, Joel Fernandes wrote:
-> > > > On Thu, Jul 18, 2019 at 8:40 PM Byungchul Park <byungchul.park@lge.com> wrote:
-> > > > [snip]
-> > > > > > - There is a bug in the CPU stopper machinery itself preventing it
-> > > > > > from scheduling the stopper on Y. Even though Y is not holding up the
-> > > > > > grace period.
-> > > > >
-> > > > > Or any thread on Y is busy with preemption/irq disabled preventing the
-> > > > > stopper from being scheduled on Y.
-> > > > >
-> > > > > Or something is stuck in ttwu() to wake up the stopper on Y due to any
-> > > > > scheduler locks such as pi_lock or rq->lock or something.
-> > > > >
-> > > > > I think what you mentioned can happen easily.
-> > > > >
-> > > > > Basically we would need information about preemption/irq disabled
-> > > > > sections on Y and scheduler's current activity on every cpu at that time.
-> > > >
-> > > > I think all that's needed is an NMI backtrace on all CPUs. An ARM we
-> > > > don't have NMI solutions and only IPI or interrupt based backtrace
-> > > > works which should at least catch and the preempt disable and softirq
-> > > > disable cases.
-> > >
-> > > True, though people with systems having hundreds of CPUs might not
-> > > thank you for forcing an NMI backtrace on each of them.  Is it possible
-> > > to NMI only the ones that are holding up the CPU stopper?
-> >
-> > What a good idea! I think it's possible!
-> >
-> > But we need to think about the case NMI doesn't work when the
-> > holding-up was caused by IRQ disabled.
-> >
-> > Though it's just around the corner of weekend, I will keep thinking
-> > on it during weekend!
->
-> Very good!
+On Fri, Jul 19, 2019 at 04:50:11PM +0900, Byungchul Park wrote:
+> On Thu, Jul 18, 2019 at 05:09:45PM -0400, Joel Fernandes wrote:
+> > Hello friends,
+> > 
+> > Just providing an update on my debugging of percpu_rwsem (related to
+> > rcu-sync) for the day! which I pinged Byungchul about. Please ignore
+> > this email if you are busy :) I am just archiving it in here..
+> > 
+> > As you may know, percpu_rwsem uses rcu-sync framework to reduce cost
+> > of read-side by making it free of any serializing/atomic instructions
+> > at all. However, there was one sempahore which broke the rules!
+> > 
+> > I spent a couple hours trying to figure out why
+> > cgroup_threadgroup_rwsem always entered the reader-slow path on my
+> > system (RCU-sync turns out to be non-idle for this rwsem). I really
+> > thought it was a bug, because I felt what's the pointed of rcu-sync if
+> > it never goes idle..
+> 
+> Yes, with the following patch, the cgroup rwsem cannot make use of
+> rcu_sync any more, but it still gets benefit from percpu structure
+> as you told me like avoiding cache bouncing and contention on a shared
+> area even though every read lock keeps firing smp full barrier.
 
-Me too will think more about it ;-) Agreed with point about 100s of
-CPUs usecase,
+Yes. So it seems to me main benefit of RCU in percpu_rw_sempahore is to
+completely avoid memory barriers in the read path, while also benefiting from
+the percpu nature of the lock.
 
-Thanks, have a great weekend,
+> What matters is which one is more expensive between (1) firing smp_mb
+> and (2) accessing a shared data, sem->count, and acquiring/releasing
+> sem->wait_lock. I think using percpu-rwsem involving the smp barrier is
+> much better even with rcu_sync disabled.
+
+Right. Fully agreed.
+
+thanks,
 
  - Joel
+
