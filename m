@@ -1,112 +1,122 @@
-Return-Path: <SRS0=/+2F=VT=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Xd+n=VU=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70961C76188
-	for <rcu@archiver.kernel.org>; Mon, 22 Jul 2019 11:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E930EC7618E
+	for <rcu@archiver.kernel.org>; Tue, 23 Jul 2019 11:06:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 50C382190D
-	for <rcu@archiver.kernel.org>; Mon, 22 Jul 2019 11:38:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD06721901
+	for <rcu@archiver.kernel.org>; Tue, 23 Jul 2019 11:06:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbfGVLix (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jul 2019 07:38:53 -0400
-Received: from sauhun.de ([88.99.104.3]:39256 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726895AbfGVLiw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jul 2019 07:38:52 -0400
-Received: from localhost (p54B33E22.dip0.t-ipconnect.de [84.179.62.34])
-        by pokefinder.org (Postfix) with ESMTPSA id 2529E2C28E9;
-        Mon, 22 Jul 2019 13:38:49 +0200 (CEST)
-Date:   Mon, 22 Jul 2019 13:38:46 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+        id S1730651AbfGWLGc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 23 Jul 2019 07:06:32 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:57999 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728921AbfGWLGc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 23 Jul 2019 07:06:32 -0400
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.51 with ESMTP; 23 Jul 2019 20:06:29 +0900
+X-Original-SENDERIP: 156.147.1.151
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.151 with ESMTP; 23 Jul 2019 20:06:29 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Tue, 23 Jul 2019 20:05:21 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Ajay Gupta <ajayg@nvidia.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, esc.storagedev@microsemi.com,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 03/14] docs: fix broken doc references due to renames
-Message-ID: <20190722113845.GA1115@ninjato>
-References: <cover.1563277838.git.mchehab+samsung@kernel.org>
- <aa415583bf6b812b0249093a601aa31412f3a1cf.1563277838.git.mchehab+samsung@kernel.org>
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@lge.com
+Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
+Message-ID: <20190723110521.GA28883@X58A-UD3R>
+References: <20190713151330.GE26519@linux.ibm.com>
+ <20190713154257.GE133650@google.com>
+ <20190713174111.GG26519@linux.ibm.com>
+ <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
+ <20190719003942.GA28226@X58A-UD3R>
+ <CAEXW_YQij-N2-NFjUQtsmYxVLtWxcQk_Kb16fGBzzPAZtWg+sg@mail.gmail.com>
+ <20190719074329.GY14271@linux.ibm.com>
+ <CANrsvRM7ehvqcPtKMV7RyRCiXwe_R_TsLZiNtxBPY_qnSg2LNQ@mail.gmail.com>
+ <20190719195728.GF14271@linux.ibm.com>
+ <CAEXW_YQADrPRtJW7yJZyROH1_d2yOA7_1HVgm50wxpOC80+=Wg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa415583bf6b812b0249093a601aa31412f3a1cf.1563277838.git.mchehab+samsung@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAEXW_YQADrPRtJW7yJZyROH1_d2yOA7_1HVgm50wxpOC80+=Wg@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jul 19, 2019 at 04:33:56PM -0400, Joel Fernandes wrote:
+> On Fri, Jul 19, 2019 at 3:57 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+> >
+> > On Fri, Jul 19, 2019 at 06:57:58PM +0900, Byungchul Park wrote:
+> > > On Fri, Jul 19, 2019 at 4:43 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+> > > >
+> > > > On Thu, Jul 18, 2019 at 08:52:52PM -0400, Joel Fernandes wrote:
+> > > > > On Thu, Jul 18, 2019 at 8:40 PM Byungchul Park <byungchul.park@lge.com> wrote:
+> > > > > [snip]
+> > > > > > > - There is a bug in the CPU stopper machinery itself preventing it
+> > > > > > > from scheduling the stopper on Y. Even though Y is not holding up the
+> > > > > > > grace period.
+> > > > > >
+> > > > > > Or any thread on Y is busy with preemption/irq disabled preventing the
+> > > > > > stopper from being scheduled on Y.
+> > > > > >
+> > > > > > Or something is stuck in ttwu() to wake up the stopper on Y due to any
+> > > > > > scheduler locks such as pi_lock or rq->lock or something.
+> > > > > >
+> > > > > > I think what you mentioned can happen easily.
+> > > > > >
+> > > > > > Basically we would need information about preemption/irq disabled
+> > > > > > sections on Y and scheduler's current activity on every cpu at that time.
+> > > > >
+> > > > > I think all that's needed is an NMI backtrace on all CPUs. An ARM we
+> > > > > don't have NMI solutions and only IPI or interrupt based backtrace
+> > > > > works which should at least catch and the preempt disable and softirq
+> > > > > disable cases.
+> > > >
+> > > > True, though people with systems having hundreds of CPUs might not
+> > > > thank you for forcing an NMI backtrace on each of them.  Is it possible
+> > > > to NMI only the ones that are holding up the CPU stopper?
+> > >
+> > > What a good idea! I think it's possible!
+> > >
+> > > But we need to think about the case NMI doesn't work when the
+> > > holding-up was caused by IRQ disabled.
+> > >
+> > > Though it's just around the corner of weekend, I will keep thinking
+> > > on it during weekend!
+> >
+> > Very good!
+> 
+> Me too will think more about it ;-) Agreed with point about 100s of
+> CPUs usecase,
+> 
+> Thanks, have a great weekend,
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BTW, if there's any long code section with irq/preemption disabled, then
+the problem would be not only about RCU stall. And we can also use
+latency tracer or something to detect the bad situation.
 
-On Tue, Jul 16, 2019 at 09:10:42AM -0300, Mauro Carvalho Chehab wrote:
-> Some files got renamed but probably due to some merge conflicts,
-> a few references still point to the old locations.
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+So in this case, sending ipi/nmi to the CPUs where the stoppers cannot
+to be scheduled does not give us additional meaningful information.
 
-Acked-by: Wolfram Sang <wsa@the-dreams.de> # I2C part
+I think Paul started to think about this to solve some real problem. I
+seriously love to help RCU and it's my pleasure to dig deep into kind of
+RCU stuff, but I've yet to define exactly what problem is. Sorry.
 
+Could you share the real issue? I think you don't have to reproduce it.
+Just sharing the issue that you got inspired from is enough. Then I
+might be able to develop 'how' with Joel! :-) It's our pleasure!
 
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl01oEEACgkQFA3kzBSg
-KbYvLhAAiBCzjlLaOX8TozT9yXWwqRye46Tkkjqei2Gh2ruk6HulzAm4JLL1ghij
-bD5UKIqsqMqs8SThEWtBr7lpGKPY5dTOO7Lvp3Gg6Ykw4DSJHjwRbY9Gz3eKpjm6
-XCeKu+qe7IWU4PyqjfTmT2tYQBjZTg8+e5ycnPtgLxvLZGpqoOwplZvwady9klS0
-6KfODAi0M8Bv05man76ECm1z4PeUjQMjuSgO4lxWDm9QPN6pL1tZ1DN4TWoQpmY8
-gnS6iqRtIVwRqjxnx3BNP6q0iF0oMBIJbufn+udz5FVAvXkWtx6gaJ+HZO02CPnd
-DfLhbW0h0SzzRnLA8rtuTQl/wJwHcfRtlYBNitXwbXIewlBTqlhzhvuW7JZnXJTe
-QXk4bXJuRofQsmWiK/i6bP0ifWyWmH/mLQkZhXEAZXsiiSHYuLC0RGLYTk2OSbRS
-d4kM+3WQfr0F8KTgmhKZv0g6yKqxziFVCBFMkKvpYqOfk3MuRf9JREpFnAmtHaox
-310crjxth9IwT/SMq813fSz5+SueTeiTp7DZyOANc23QCyJTpTTnIsdpzYzna4+i
-t8H5nyy2JKWKP7rvIfn2O4BKHOt14Klmbno/pUak4lxLadz7Av7mC65akEwLWSiI
-0qO7h0/ZSuPlu8OPAyR3I7cvx8/RriyeQJUceA6/KjTSKtWhw/E=
-=7t6S
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
+Thanks,
+Byungchul
