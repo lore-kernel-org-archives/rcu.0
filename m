@@ -2,137 +2,100 @@ Return-Path: <SRS0=oYzV=VV=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EA67C76191
-	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 08:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE832C76191
+	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 11:53:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 50C8422387
-	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 08:00:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C143C229ED
+	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 11:53:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbfGXIAc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Jul 2019 04:00:32 -0400
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:42092 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725826AbfGXIAc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Jul 2019 04:00:32 -0400
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.52 with ESMTP; 24 Jul 2019 17:00:29 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.151 with ESMTP; 24 Jul 2019 17:00:29 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Wed, 24 Jul 2019 16:59:20 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Byungchul Park <max.byungchul.park@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
-Subject: Re: [PATCH] rcu: Make jiffies_till_sched_qs writable
-Message-ID: <20190724075919.GB14712@X58A-UD3R>
-References: <20190713174111.GG26519@linux.ibm.com>
- <CAEXW_YTcL-nOfJXkChGhvQtqqfSLpAYr327PLu1SmGEEADCevw@mail.gmail.com>
- <20190719003942.GA28226@X58A-UD3R>
- <CAEXW_YQij-N2-NFjUQtsmYxVLtWxcQk_Kb16fGBzzPAZtWg+sg@mail.gmail.com>
- <20190719074329.GY14271@linux.ibm.com>
- <CANrsvRM7ehvqcPtKMV7RyRCiXwe_R_TsLZiNtxBPY_qnSg2LNQ@mail.gmail.com>
- <20190719195728.GF14271@linux.ibm.com>
- <CAEXW_YQADrPRtJW7yJZyROH1_d2yOA7_1HVgm50wxpOC80+=Wg@mail.gmail.com>
- <20190723110521.GA28883@X58A-UD3R>
- <20190723134717.GT14271@linux.ibm.com>
+        id S1727699AbfGXLxq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Jul 2019 07:53:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10150 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727629AbfGXLxq (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 24 Jul 2019 07:53:46 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6OBmKav000951;
+        Wed, 24 Jul 2019 07:53:30 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2txnw8jm90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jul 2019 07:53:29 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6OBmpoh003013;
+        Wed, 24 Jul 2019 07:53:29 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2txnw8jm7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jul 2019 07:53:29 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6OBoIJJ012381;
+        Wed, 24 Jul 2019 11:53:28 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01wdc.us.ibm.com with ESMTP id 2tx61mx1m1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jul 2019 11:53:28 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6OBrRgh47645148
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jul 2019 11:53:27 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89295B2064;
+        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6871CB205F;
+        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.189.166])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id AFB6516C8FD5; Wed, 24 Jul 2019 04:53:31 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 04:53:31 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        peterz@infradead.org
+Subject: How to turn scheduler tick on for current nohz_full CPU?
+Message-ID: <20190724115331.GA29059@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190723134717.GT14271@linux.ibm.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-24_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907240134
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 06:47:17AM -0700, Paul E. McKenney wrote:
-> On Tue, Jul 23, 2019 at 08:05:21PM +0900, Byungchul Park wrote:
-> > On Fri, Jul 19, 2019 at 04:33:56PM -0400, Joel Fernandes wrote:
-> > > On Fri, Jul 19, 2019 at 3:57 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> > > >
-> > > > On Fri, Jul 19, 2019 at 06:57:58PM +0900, Byungchul Park wrote:
-> > > > > On Fri, Jul 19, 2019 at 4:43 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> > > > > >
-> > > > > > On Thu, Jul 18, 2019 at 08:52:52PM -0400, Joel Fernandes wrote:
-> > > > > > > On Thu, Jul 18, 2019 at 8:40 PM Byungchul Park <byungchul.park@lge.com> wrote:
-> > > > > > > [snip]
-> > > > > > > > > - There is a bug in the CPU stopper machinery itself preventing it
-> > > > > > > > > from scheduling the stopper on Y. Even though Y is not holding up the
-> > > > > > > > > grace period.
-> > > > > > > >
-> > > > > > > > Or any thread on Y is busy with preemption/irq disabled preventing the
-> > > > > > > > stopper from being scheduled on Y.
-> > > > > > > >
-> > > > > > > > Or something is stuck in ttwu() to wake up the stopper on Y due to any
-> > > > > > > > scheduler locks such as pi_lock or rq->lock or something.
-> > > > > > > >
-> > > > > > > > I think what you mentioned can happen easily.
-> > > > > > > >
-> > > > > > > > Basically we would need information about preemption/irq disabled
-> > > > > > > > sections on Y and scheduler's current activity on every cpu at that time.
-> > > > > > >
-> > > > > > > I think all that's needed is an NMI backtrace on all CPUs. An ARM we
-> > > > > > > don't have NMI solutions and only IPI or interrupt based backtrace
-> > > > > > > works which should at least catch and the preempt disable and softirq
-> > > > > > > disable cases.
-> > > > > >
-> > > > > > True, though people with systems having hundreds of CPUs might not
-> > > > > > thank you for forcing an NMI backtrace on each of them.  Is it possible
-> > > > > > to NMI only the ones that are holding up the CPU stopper?
-> > > > >
-> > > > > What a good idea! I think it's possible!
-> > > > >
-> > > > > But we need to think about the case NMI doesn't work when the
-> > > > > holding-up was caused by IRQ disabled.
-> > > > >
-> > > > > Though it's just around the corner of weekend, I will keep thinking
-> > > > > on it during weekend!
-> > > >
-> > > > Very good!
-> > > 
-> > > Me too will think more about it ;-) Agreed with point about 100s of
-> > > CPUs usecase,
-> > > 
-> > > Thanks, have a great weekend,
-> > 
-> > BTW, if there's any long code section with irq/preemption disabled, then
-> > the problem would be not only about RCU stall. And we can also use
-> > latency tracer or something to detect the bad situation.
-> > 
-> > So in this case, sending ipi/nmi to the CPUs where the stoppers cannot
-> > to be scheduled does not give us additional meaningful information.
-> > 
-> > I think Paul started to think about this to solve some real problem. I
-> > seriously love to help RCU and it's my pleasure to dig deep into kind of
-> > RCU stuff, but I've yet to define exactly what problem is. Sorry.
-> > 
-> > Could you share the real issue? I think you don't have to reproduce it.
-> > Just sharing the issue that you got inspired from is enough. Then I
-> > might be able to develop 'how' with Joel! :-) It's our pleasure!
-> 
-> It is unfortunately quite intermittent.  I was hoping to find a way
-> to make it happen more often.  Part of the underlying problem appears
-> to be lock contention, in that reducing contention made it even more
-> intermittent.  Which is good in general, but not for exercising the
-> CPU-stopper issue.
-> 
-> But perhaps your hardware will make this happen more readily than does
-> mine.  The repeat-by is simple, namely run TREE04 on branch "dev" on an
-> eight-CPU system.  It appear that the number of CPUs used by the test
-> should match the number available on the system that you are running on,
-> though perhaps affinity could allow mismatches.
-> 
-> So why not try it and see what happens?
+Hello!
 
-Thank you. I'll try it too.
+One of the callback-invocation forward-progress issues turns out to
+be nohz_full CPUs not turning their scheduling-clock interrupt back on
+when running in kernel mode.  Given that callback floods can cause RCU's
+callback-invocation loop to run for some time, it would be good for this
+loop to re-enable this interrupt.  Of course, this problem applies to
+pretty much any kernel code that might loop for an extended time period,
+not just RCU.
 
+I took a quick look at kernel/time/tick-sched.c and the closest thing
+I found was tick_nohz_full_kick_cpu(), except that (1) it isn't clear
+that this does much when invoked on the current CPU and (2) it doesn't
+help in rcutorture TREE04.  In contrast, disabling NO_HZ_FULL and using
+RCU_NOCB_CPU instead works quite well.
+
+So what should I be calling instead of tick_nohz_full_kick_cpu() to
+re-enable the current CPU's scheduling-clock interrupt?
+
+							Thanx, Paul
