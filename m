@@ -2,100 +2,106 @@ Return-Path: <SRS0=oYzV=VV=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE832C76191
-	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 11:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A395EC7618B
+	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 13:23:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C143C229ED
-	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 11:53:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7968322ADA
+	for <rcu@archiver.kernel.org>; Wed, 24 Jul 2019 13:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1563974583;
+	bh=vI86Cb9bObgMVdZk6vXxi3znWGB57B0Oal7Vl2bmFW0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=pIge1noaJbObbtHJVm52HOvBuHI/j5oO4i5cQzaHIDbmpROZ1nfSQHzNw+NkGsovu
+	 RF2p1u1F5DVaPDgElLgIvJxqiHWnI6RIQ7BBLeAebIFIaouVIlsOXOPyd6S2Zk49Ip
+	 +DSGjBEMSDurPx1NQrn0vyo7QPbNnmIiuY6oy1sI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbfGXLxq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Jul 2019 07:53:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10150 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727629AbfGXLxq (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 24 Jul 2019 07:53:46 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6OBmKav000951;
-        Wed, 24 Jul 2019 07:53:30 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2txnw8jm90-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jul 2019 07:53:29 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6OBmpoh003013;
-        Wed, 24 Jul 2019 07:53:29 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2txnw8jm7q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jul 2019 07:53:29 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6OBoIJJ012381;
-        Wed, 24 Jul 2019 11:53:28 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01wdc.us.ibm.com with ESMTP id 2tx61mx1m1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jul 2019 11:53:28 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6OBrRgh47645148
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Jul 2019 11:53:27 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89295B2064;
-        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6871CB205F;
-        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.189.166])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Jul 2019 11:53:27 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id AFB6516C8FD5; Wed, 24 Jul 2019 04:53:31 -0700 (PDT)
-Date:   Wed, 24 Jul 2019 04:53:31 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        id S1727570AbfGXNXD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Jul 2019 09:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726600AbfGXNXD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Jul 2019 09:23:03 -0400
+Received: from localhost (lfbn-ncy-1-174-150.w83-194.abo.wanadoo.fr [83.194.254.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CA12229FA;
+        Wed, 24 Jul 2019 13:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563974582;
+        bh=vI86Cb9bObgMVdZk6vXxi3znWGB57B0Oal7Vl2bmFW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wt9/IVATBgt0Y6xz6sm/Ig+4zP1sU8BAsr6e0BYxOsgr9Ts0lObsvDR3TDjwoo3hp
+         NUm4ypOKjhJPXQYorZIQh0qEiaDboIksNjyHZbivo3ktma2sGPk9+FCmSH7bCKeNwo
+         l+Mu2pvt28qdcpsHyCLIeyRsJLnwdjgkdtBPQGSs=
+Date:   Wed, 24 Jul 2019 15:22:59 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         peterz@infradead.org
-Subject: How to turn scheduler tick on for current nohz_full CPU?
-Message-ID: <20190724115331.GA29059@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
+Subject: Re: How to turn scheduler tick on for current nohz_full CPU?
+Message-ID: <20190724132257.GA1029@lenoir>
+References: <20190724115331.GA29059@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-24_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907240134
+In-Reply-To: <20190724115331.GA29059@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+On Wed, Jul 24, 2019 at 04:53:31AM -0700, Paul E. McKenney wrote:
+> Hello!
+> 
+> One of the callback-invocation forward-progress issues turns out to
+> be nohz_full CPUs not turning their scheduling-clock interrupt back on
+> when running in kernel mode.  Given that callback floods can cause RCU's
+> callback-invocation loop to run for some time, it would be good for this
+> loop to re-enable this interrupt.  Of course, this problem applies to
+> pretty much any kernel code that might loop for an extended time period,
+> not just RCU.
+> 
+> I took a quick look at kernel/time/tick-sched.c and the closest thing
+> I found was tick_nohz_full_kick_cpu(), except that (1) it isn't clear
+> that this does much when invoked on the current CPU and (2) it doesn't
+> help in rcutorture TREE04.  In contrast, disabling NO_HZ_FULL and using
+> RCU_NOCB_CPU instead works quite well.
+> 
+> So what should I be calling instead of tick_nohz_full_kick_cpu() to
+> re-enable the current CPU's scheduling-clock interrupt?
 
-One of the callback-invocation forward-progress issues turns out to
-be nohz_full CPUs not turning their scheduling-clock interrupt back on
-when running in kernel mode.  Given that callback floods can cause RCU's
-callback-invocation loop to run for some time, it would be good for this
-loop to re-enable this interrupt.  Of course, this problem applies to
-pretty much any kernel code that might loop for an extended time period,
-not just RCU.
+Indeed, kernel code is assumed to be quick enough (between two extended grace
+periods) to avoid running the tick for RCU. But some long lasting kernel code
+may require to tick temporarily.
 
-I took a quick look at kernel/time/tick-sched.c and the closest thing
-I found was tick_nohz_full_kick_cpu(), except that (1) it isn't clear
-that this does much when invoked on the current CPU and (2) it doesn't
-help in rcutorture TREE04.  In contrast, disabling NO_HZ_FULL and using
-RCU_NOCB_CPU instead works quite well.
+You can use tick_nohz_dep_set_cpu(cpu, TICK_DEP_MASK_RCU) with the
+following:
 
-So what should I be calling instead of tick_nohz_full_kick_cpu() to
-re-enable the current CPU's scheduling-clock interrupt?
-
-							Thanx, Paul
+diff --git a/include/linux/tick.h b/include/linux/tick.h
+index f92a10b5e112..3f476e2a4bf7 100644
+--- a/include/linux/tick.h
++++ b/include/linux/tick.h
+@@ -108,7 +108,8 @@ enum tick_dep_bits {
+ 	TICK_DEP_BIT_POSIX_TIMER	= 0,
+ 	TICK_DEP_BIT_PERF_EVENTS	= 1,
+ 	TICK_DEP_BIT_SCHED		= 2,
+-	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3
++	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
++	TICK_DEP_BIT_RCU		= 4
+ };
+ 
+ #define TICK_DEP_MASK_NONE		0
+@@ -116,6 +117,7 @@ enum tick_dep_bits {
+ #define TICK_DEP_MASK_PERF_EVENTS	(1 << TICK_DEP_BIT_PERF_EVENTS)
+ #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
+ #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
++#define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+ extern bool tick_nohz_enabled;
