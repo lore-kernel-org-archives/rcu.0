@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2875CC76191
-	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 17:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 926EDC7618F
+	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 18:02:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F3261218B8
-	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 17:55:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B52421842
+	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 18:02:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QA8YC1na"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ATl2MF1P"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbfGZRza (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 Jul 2019 13:55:30 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:46795 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbfGZRza (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 Jul 2019 13:55:30 -0400
-Received: by mail-pf1-f194.google.com with SMTP id c3so1724919pfa.13
-        for <rcu@vger.kernel.org>; Fri, 26 Jul 2019 10:55:29 -0700 (PDT)
+        id S1727951AbfGZSCF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 Jul 2019 14:02:05 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:46268 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727856AbfGZSCE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 Jul 2019 14:02:04 -0400
+Received: by mail-pl1-f195.google.com with SMTP id c2so25002932plz.13
+        for <rcu@vger.kernel.org>; Fri, 26 Jul 2019 11:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=3fIEQ/rN6TuynElYAq5+lHqap74wdnXdLlsttyXNjH4=;
-        b=QA8YC1na5sGMKcBdn4bysIlb2yL9sVlYEPximyWG2Mbn0jj+5chPnPXvVfFnlGeu1F
-         H/icn9uOPIRD8RsEeUQYaenrQhycela8rSIE9f4jLrCNokfA2TNwzcHvqLKmg2Yb9gKf
-         uS3yJ1mqbOe+mLzcZyXStwZPqoBj1sEjd69h4=
+        bh=14H5paQYitVS4/WKEkQEhitnAZvza/nR/XH2Tu80JBM=;
+        b=ATl2MF1PvrU6lqcczyISZ5li9yUR8jig8dOSRgnjQeXeiDCIVHf64anGGJiNWgbJRZ
+         8D0mrbgpCzlusjkYRt+BFu3Sjf507OvqqyxGlU54NakUjQCByhzDfCAJ8KbksbolpjiE
+         6l81eTSLCHx3OmpsLBpNnYlhDb2+PuQ5S0q70=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3fIEQ/rN6TuynElYAq5+lHqap74wdnXdLlsttyXNjH4=;
-        b=FDl/QvXxo9mHGNVjoxEVEpaejksm9eIoldfkRiix/ULzyAmI4G2j3RDKLvh6XwMVtb
-         lIhAfs/DVvPQMorM2bwxDhAFbdXIAKZLpDVVDine8U1BTbuMOEQmhAhEBY3L+EHhQRV8
-         uBd1WyGzJmqfonRCUXTCDgk9wJZivAdl3+OTAGPqXaRdGIUQESeIjCZKvJQeBR9152Mo
-         iTvWPR+m5PjixXXijM0RetYZDQgd5RDo/LknMg+GPemYOoEppmASh7YOiBtLDoXn3Wn8
-         y7dUGbc4NbUGOBoARJplGauPtdXMkqCiiKAALWFod8h0Y735Okpc9dlinN6x99k2sENx
-         +CBw==
-X-Gm-Message-State: APjAAAWXfMJ6L87d6/nE5VX0k0ghbENFYo5B8Jb64odwz96qrUmcxwfI
-        eZGAi231E/67KZ8XGkx4fhY=
-X-Google-Smtp-Source: APXvYqxxu6QceJ+8y8qbWMgZcdskuT5YWE9rp2petvNwlDt0G92QRX4JPz26bnDmlBn8OePHLp6Odg==
-X-Received: by 2002:a62:2582:: with SMTP id l124mr23333722pfl.43.1564163729394;
-        Fri, 26 Jul 2019 10:55:29 -0700 (PDT)
+        bh=14H5paQYitVS4/WKEkQEhitnAZvza/nR/XH2Tu80JBM=;
+        b=nIYmhnIcTDzdupf9j2AdXlJxzXsNWfKW/MGRA3XaP0b2tD48KRYZPzcutnoBvYjAYt
+         8RIr+3nU5KUXZUYm2PprUnSE5L4jljv28aj+IG5S3FSPJYksNhj7vrwunPNkduqwRPg8
+         qIQWA4vhq6z8ILMCYQzvrHxVhceBH9f3lUJvcV3wSXAKR6/kiuGenf5I6j8Kmucp0sps
+         LhMGhh8lOs+Hx/Ov6QCC/TwDl76HS78BgHELzZ6mC94zPe11pIk2uymZ2yZPvpI/1pYK
+         K2kIRXzCw07Dx9C4JtymbZLD0yx80aYFE1NaXAVxbydEIMjaP9JEbYPu0L3coJEtTaPq
+         R/jg==
+X-Gm-Message-State: APjAAAVxpTZ+w/fC8a2K8uPr5oqGp1UVmiY6Q9dIkEdrtCHk0IxJIPd+
+        tzKi9cWBkujQ8gSjORwHKAA=
+X-Google-Smtp-Source: APXvYqw97ZsPDtoTN2djhrefEf5+wLhvEdfdhidAUMzWJN9QkJDPwJHLI27GDbQ70fWEquCP6vW8Kw==
+X-Received: by 2002:a17:902:2f:: with SMTP id 44mr99206440pla.5.1564164123861;
+        Fri, 26 Jul 2019 11:02:03 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a25sm27783889pfo.60.2019.07.26.10.55.28
+        by smtp.gmail.com with ESMTPSA id d17sm63317928pgl.66.2019.07.26.11.02.02
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 10:55:28 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 13:55:27 -0400
+        Fri, 26 Jul 2019 11:02:03 -0700 (PDT)
+Date:   Fri, 26 Jul 2019 14:02:01 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
@@ -62,98 +62,112 @@ Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         linux-doc@vger.kernel.org
 Subject: Re: [PATCH v2 25/26] docs: rcu: convert some articles from html to
  ReST
-Message-ID: <20190726175527.GD146401@google.com>
+Message-ID: <20190726180201.GE146401@google.com>
 References: <cover.1564145354.git.mchehab+samsung@kernel.org>
  <8444797277eea7be474f40625bb190775a9cee33.1564145354.git.mchehab+samsung@kernel.org>
- <20190726162002.GA146401@google.com>
- <20190726140028.38abb5fa@coco.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190726140028.38abb5fa@coco.lan>
+In-Reply-To: <8444797277eea7be474f40625bb190775a9cee33.1564145354.git.mchehab+samsung@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 02:00:28PM -0300, Mauro Carvalho Chehab wrote:
-> Hi Joel,
-> 
-> Em Fri, 26 Jul 2019 12:20:02 -0400
-> Joel Fernandes <joel@joelfernandes.org> escreveu:
-> 
-> > On Fri, Jul 26, 2019 at 09:51:35AM -0300, Mauro Carvalho Chehab wrote:
-> > > There are 4 RCU articles that are written on html format.
-> > > 
-> > > The way they are, they can't be part of the Linux Kernel
-> > > documentation body nor share the styles and pdf output.
-> > > 
-> > > So, convert them to ReST format.
-> > > 
-> > > This way, make htmldocs and make pdfdocs will produce a
-> > > documentation output that will be like the original ones, but
-> > > will be part of the Linux Kernel documentation body.
-> > > 
-> > > Part of the conversion was done with the help of pandoc, but
-> > > the result had some broken things that had to be manually
-> > > fixed.  
-> > 
-> > This looks Ok to me, but I also nervous something could have been done
-> > incorrectly during the conversion.
-> > 
-> > Could you list what were the "some broken things" that you had to manually
-> > fix to make reviewing easier?
-> 
-> There are a couple of things.
-> 
-> At least the pandoc's version I used here has a bug: its conversion 
-> from html to ReST on those files only start after a <body> tag - or 
-> when the first quiz table starts. I only discovered that adding a
-> <body> at the beginning of the file solve this book at the last
-> conversions.
-> 
-> So, for most html->ReST conversions, I manually converted the first
-> part of the document, basically stripping html paragraph tags and
-> by replacing highlights by the ReST syntax.
-> 
-> Also, all the quiz tables seem to assume some javascript macro or
-> css style that would be hiding the answer part until the mouse moves
-> to it. Such macro/css was not there at the kernel tree. So, the quiz
-> answers have the same color as the background, making them invisible.
-> Even if we had such macro/css, this is not portable for pdf/LaTeX output
-> (and I'm not sure if this would work with ePub).
-> 
-> So, I ended by manually doing the table conversion.
-> 
-> Finally, I double-checked if the conversions ended ok, addressing any
-> issues that might have heppened.
-> 
-> So, after both automatic conversion and manual fixes, I opened both the 
-> html files produced by Sphinx and the original ones and compared them
-> line per line (except for the indexes, as Sphinx produces them 
-> automatically), in order to see if all information from the original 
-> files will be there on a format close to what we have on other ReST
-> files, fixing any pending issues if any.
+On Fri, Jul 26, 2019 at 09:51:35AM -0300, Mauro Carvalho Chehab wrote:
+[snip]
+> +| until the assignment to ``gp``, by which time both fields are fully   |
+> +| initialized. So reordering the assignments to ``p->a`` and ``p->b``   |
+> +| cannot possibly cause any problems.                                   |
+> ++-----------------------------------------------------------------------+
+> +
+> +It is tempting to assume that the reader need not do anything special to
+> +control its accesses to the RCU-protected data, as shown in
+> +``do_something_gp_buggy()`` below:
+> +
+> +   ::
+> +
+> +       1 bool do_something_gp_buggy(void)
+> +       2 {
+> +       3   rcu_read_lock();
+> +       4   p = gp;  /* OPTIMIZATIONS GALORE!!! */
+> +       5   if (p) {
+> +       6     do_something(p->a, p->b);
+> +       7     rcu_read_unlock();
+> +       8     return true;
+> +       9   }
+> +      10   rcu_read_unlock();
+> +      11   return false;
+> +      12 }
+> +
+> +However, this temptation must be resisted because there are a
+> +surprisingly large number of ways that the compiler (to say nothing of
+> +`DEC Alpha CPUs <https://h71000.www7.hp.com/wizard/wiz_2637.html>`__)
+> +can trip this code up. For but one example, if the compiler were short
+> +of registers, it might choose to refetch from ``gp`` rather than keeping
+> +a separate copy in ``p`` as follows:
+> +
+> +   ::
+> +
+> +       1 bool do_something_gp_buggy_optimized(void)
+> +       2 {
+> +       3   rcu_read_lock();
+> +       4   if (gp) { /* OPTIMIZATIONS GALORE!!! */
+> +       5     do_something(gp->a, gp->b);
+> +       6     rcu_read_unlock();
+> +       7     return true;
+> +       8   }
+> +       9   rcu_read_unlock();
+> +      10   return false;
+> +      11 }
+> +
+> +If this function ran concurrently with a series of updates that replaced
+> +the current structure with a new one, the fetches of ``gp->a`` and
+> +``gp->b`` might well come from two different structures, which could
+> +cause serious confusion. To prevent this (and much else besides),
+> +``do_something_gp()`` uses ``rcu_dereference()`` to fetch from ``gp``:
+> +
+> +   ::
+> +
+> +       1 bool do_something_gp(void)
+> +       2 {
+> +       3   rcu_read_lock();
+> +       4   p = rcu_dereference(gp);
+> +       5   if (p) {
+> +       6     do_something(p->a, p->b);
+> +       7     rcu_read_unlock();
+> +       8     return true;
+> +       9   }
+> +      10   rcu_read_unlock();
+> +      11   return false;
+> +      12 }
+> +
+> +The ``rcu_dereference()`` uses volatile casts and (for DEC Alpha) memory
+> +barriers in the Linux kernel. Should a `high-quality implementation of
+> +C11 ``memory_order_consume``
+> +[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
+> +ever appear, then ``rcu_dereference()`` could be implemented as a
+> +``memory_order_consume`` load. Regardless of the exact implementation, a
+> +pointer fetched by ``rcu_dereference()`` may not be used outside of the
+> +outermost RCU read-side critical section containing that
+> +``rcu_dereference()``, unless protection of the corresponding data
+> +element has been passed from RCU to some other synchronization
+> +mechanism, most commonly locking or `reference
+> +counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
 
-Thanks, I am in the process of going through these docs today and will let
-you know anything I find. It would be nice to include the above challenges in
-the changelog as well.
+From the make htmldocs output, this appears very poorly for me, I get
+something like this in the browser:
 
-Some reason 'make htmldocs' needed me to install a whole bunch of
-dependencies this time around.
+The rcu_dereference() uses volatile casts and (for DEC Alpha) memory barriers
+in the Linux kernel. Should a high-quality implementation of C11
+``memory_order_consume` [PDF]
+<http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__ ever
+appear, then rcu_dereference() could be implemented as a memory_order_consume
+load.
 
-By the way, that tools/memory-model/Documentation/explanation.txt is a useful
-little document. Well not really little with over 1000 lines ;-). But it
-would certainly benefit from ReST's / htmldocs ability to jump to labels and
-search, etc since it is so long..
+Is there a syntax issue here?
 
-thanks,
-
- - Joel
-
-
-
-
-
-
+One more feedback,
+the image under "RCU read-side critical section that started before the current
+grace period:" should probably be blown up a bit.
