@@ -2,184 +2,158 @@ Return-Path: <SRS0=Ypbo=VX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52A85C7618B
-	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 14:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2875CC76191
+	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 17:55:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1E48C229F9
-	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 14:24:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F3261218B8
+	for <rcu@archiver.kernel.org>; Fri, 26 Jul 2019 17:55:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="f5L5IA3a"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QA8YC1na"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbfGZOY5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 Jul 2019 10:24:57 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:37882 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727870AbfGZOY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 Jul 2019 10:24:57 -0400
-Received: by mail-ed1-f67.google.com with SMTP id w13so53487288eds.4
-        for <rcu@vger.kernel.org>; Fri, 26 Jul 2019 07:24:55 -0700 (PDT)
+        id S1727770AbfGZRza (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 Jul 2019 13:55:30 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46795 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbfGZRza (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 Jul 2019 13:55:30 -0400
+Received: by mail-pf1-f194.google.com with SMTP id c3so1724919pfa.13
+        for <rcu@vger.kernel.org>; Fri, 26 Jul 2019 10:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iKvptB00eRJtAAyTA2xD7jIbIFN8n5r7X55dRtJg5Cw=;
-        b=f5L5IA3ayQmsQHY5KhIVuOFZAzingVgEcKk8EvRC5mL0KaqQyGnWAI0cbPTrNNuCz7
-         K18hM9pz10KIe5v0Z75fubUwSrYuFdOojHzAiYoIdyx9DO1Z5oW1vH1CNjwbsYziO6sT
-         /QI7SGtnnJxli3UbqAjXRyOHKL5kB7R4In+E8=
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3fIEQ/rN6TuynElYAq5+lHqap74wdnXdLlsttyXNjH4=;
+        b=QA8YC1na5sGMKcBdn4bysIlb2yL9sVlYEPximyWG2Mbn0jj+5chPnPXvVfFnlGeu1F
+         H/icn9uOPIRD8RsEeUQYaenrQhycela8rSIE9f4jLrCNokfA2TNwzcHvqLKmg2Yb9gKf
+         uS3yJ1mqbOe+mLzcZyXStwZPqoBj1sEjd69h4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=iKvptB00eRJtAAyTA2xD7jIbIFN8n5r7X55dRtJg5Cw=;
-        b=pBhYomHX4cnOgVvm9zbRz7I22cSzmhRBppV2uXxjuquU4fwVrxs7xGisxAvVFlIEvd
-         41Drb9Y4as3zS4sYrkSQb/Rjp2RSjEIoUjpHqrFLjEYpi/H7Qcptsy7A3oxwJjnmspA2
-         lLFsvDcegtFxs8D5ucTEtqESOoDTi69SyCL8rBovBHlr9DVs5acOyUIi79InHDRS21Jb
-         iZ3bspR/J0Y0bo4LRF1TzMQEC3EYgmd0xspQ5917AYluX6Bus972ig2tpJtCOCn4p1Fw
-         6AcVMyNRtEXss1HucIpaDlVVy/hv1j4v0ohuLm5zH/iatyDiliVtz2ZehNgRvUapG1Dn
-         RqOA==
-X-Gm-Message-State: APjAAAVfC+XM9swPQ61QDnUyzH5PM5NbpRCP/QcwMmWWtvy7kkCGtjYW
-        JY/wcvcbFNvZmuxEQjbDLyM=
-X-Google-Smtp-Source: APXvYqziEeXaDKlMzj6WkqFhfWfsWvSAtDFO47Ob8pLZS5KABUGhUNYgZNlFDTi49ewicGXyP7F9Dg==
-X-Received: by 2002:a50:ad48:: with SMTP id z8mr82669671edc.66.1564151094716;
-        Fri, 26 Jul 2019 07:24:54 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id m31sm14121701edd.42.2019.07.26.07.24.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3fIEQ/rN6TuynElYAq5+lHqap74wdnXdLlsttyXNjH4=;
+        b=FDl/QvXxo9mHGNVjoxEVEpaejksm9eIoldfkRiix/ULzyAmI4G2j3RDKLvh6XwMVtb
+         lIhAfs/DVvPQMorM2bwxDhAFbdXIAKZLpDVVDine8U1BTbuMOEQmhAhEBY3L+EHhQRV8
+         uBd1WyGzJmqfonRCUXTCDgk9wJZivAdl3+OTAGPqXaRdGIUQESeIjCZKvJQeBR9152Mo
+         iTvWPR+m5PjixXXijM0RetYZDQgd5RDo/LknMg+GPemYOoEppmASh7YOiBtLDoXn3Wn8
+         y7dUGbc4NbUGOBoARJplGauPtdXMkqCiiKAALWFod8h0Y735Okpc9dlinN6x99k2sENx
+         +CBw==
+X-Gm-Message-State: APjAAAWXfMJ6L87d6/nE5VX0k0ghbENFYo5B8Jb64odwz96qrUmcxwfI
+        eZGAi231E/67KZ8XGkx4fhY=
+X-Google-Smtp-Source: APXvYqxxu6QceJ+8y8qbWMgZcdskuT5YWE9rp2petvNwlDt0G92QRX4JPz26bnDmlBn8OePHLp6Odg==
+X-Received: by 2002:a62:2582:: with SMTP id l124mr23333722pfl.43.1564163729394;
+        Fri, 26 Jul 2019 10:55:29 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id a25sm27783889pfo.60.2019.07.26.10.55.28
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 07:24:53 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 16:24:50 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Fri, 26 Jul 2019 10:55:28 -0700 (PDT)
+Date:   Fri, 26 Jul 2019 13:55:27 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Ajay Gupta <ajayg@nvidia.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        esc.storagedev@microsemi.com, SCSI <linux-scsi@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH 1/7] docs: fix broken doc references due to renames
-Message-ID: <20190726142450.GJ15868@phenom.ffwll.local>
-Mail-Followup-To: Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Ajay Gupta <ajayg@nvidia.com>, Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>,
-        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>, esc.storagedev@microsemi.com,
-        SCSI <linux-scsi@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>
-References: <cover.1564140865.git.mchehab+samsung@kernel.org>
- <430ed96cb234805d1deb216e8c8559da22cc6bac.1564140865.git.mchehab+samsung@kernel.org>
- <CAL_JsqK_rfHehrKW_NS89BOV0=dYoao0H=zOzG=D-724vKduKw@mail.gmail.com>
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 25/26] docs: rcu: convert some articles from html to
+ ReST
+Message-ID: <20190726175527.GD146401@google.com>
+References: <cover.1564145354.git.mchehab+samsung@kernel.org>
+ <8444797277eea7be474f40625bb190775a9cee33.1564145354.git.mchehab+samsung@kernel.org>
+ <20190726162002.GA146401@google.com>
+ <20190726140028.38abb5fa@coco.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqK_rfHehrKW_NS89BOV0=dYoao0H=zOzG=D-724vKduKw@mail.gmail.com>
-X-Operating-System: Linux phenom 4.19.0-5-amd64 
+In-Reply-To: <20190726140028.38abb5fa@coco.lan>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 07:41:35AM -0600, Rob Herring wrote:
-> On Fri, Jul 26, 2019 at 5:47 AM Mauro Carvalho Chehab
-> <mchehab+samsung@kernel.org> wrote:
-> >
-> > Some files got renamed but probably due to some merge conflicts,
-> > a few references still point to the old locations.
-> >
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> > Acked-by: Wolfram Sang <wsa@the-dreams.de> # I2C part
-> > Reviewed-by: Jerry Hoemann <jerry.hoemann@hpe.com> # hpwdt.rst
-> > ---
-> >  Documentation/RCU/rculist_nulls.txt                   |  2 +-
-> >  Documentation/devicetree/bindings/arm/idle-states.txt |  2 +-
-> >  Documentation/locking/spinlocks.rst                   |  4 ++--
-> >  Documentation/memory-barriers.txt                     |  2 +-
-> >  Documentation/translations/ko_KR/memory-barriers.txt  |  2 +-
-> >  Documentation/watchdog/hpwdt.rst                      |  2 +-
-> >  MAINTAINERS                                           | 10 +++++-----
-> >  drivers/gpu/drm/drm_modes.c                           |  2 +-
-
-for the drm part:
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-> >  drivers/i2c/busses/i2c-nvidia-gpu.c                   |  2 +-
-> >  drivers/scsi/hpsa.c                                   |  4 ++--
-> >  10 files changed, 16 insertions(+), 16 deletions(-)
+On Fri, Jul 26, 2019 at 02:00:28PM -0300, Mauro Carvalho Chehab wrote:
+> Hi Joel,
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Em Fri, 26 Jul 2019 12:20:02 -0400
+> Joel Fernandes <joel@joelfernandes.org> escreveu:
+> 
+> > On Fri, Jul 26, 2019 at 09:51:35AM -0300, Mauro Carvalho Chehab wrote:
+> > > There are 4 RCU articles that are written on html format.
+> > > 
+> > > The way they are, they can't be part of the Linux Kernel
+> > > documentation body nor share the styles and pdf output.
+> > > 
+> > > So, convert them to ReST format.
+> > > 
+> > > This way, make htmldocs and make pdfdocs will produce a
+> > > documentation output that will be like the original ones, but
+> > > will be part of the Linux Kernel documentation body.
+> > > 
+> > > Part of the conversion was done with the help of pandoc, but
+> > > the result had some broken things that had to be manually
+> > > fixed.  
+> > 
+> > This looks Ok to me, but I also nervous something could have been done
+> > incorrectly during the conversion.
+> > 
+> > Could you list what were the "some broken things" that you had to manually
+> > fix to make reviewing easier?
+> 
+> There are a couple of things.
+> 
+> At least the pandoc's version I used here has a bug: its conversion 
+> from html to ReST on those files only start after a <body> tag - or 
+> when the first quiz table starts. I only discovered that adding a
+> <body> at the beginning of the file solve this book at the last
+> conversions.
+> 
+> So, for most html->ReST conversions, I manually converted the first
+> part of the document, basically stripping html paragraph tags and
+> by replacing highlights by the ReST syntax.
+> 
+> Also, all the quiz tables seem to assume some javascript macro or
+> css style that would be hiding the answer part until the mouse moves
+> to it. Such macro/css was not there at the kernel tree. So, the quiz
+> answers have the same color as the background, making them invisible.
+> Even if we had such macro/css, this is not portable for pdf/LaTeX output
+> (and I'm not sure if this would work with ePub).
+> 
+> So, I ended by manually doing the table conversion.
+> 
+> Finally, I double-checked if the conversions ended ok, addressing any
+> issues that might have heppened.
+> 
+> So, after both automatic conversion and manual fixes, I opened both the 
+> html files produced by Sphinx and the original ones and compared them
+> line per line (except for the indexes, as Sphinx produces them 
+> automatically), in order to see if all information from the original 
+> files will be there on a format close to what we have on other ReST
+> files, fixing any pending issues if any.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks, I am in the process of going through these docs today and will let
+you know anything I find. It would be nice to include the above challenges in
+the changelog as well.
+
+Some reason 'make htmldocs' needed me to install a whole bunch of
+dependencies this time around.
+
+By the way, that tools/memory-model/Documentation/explanation.txt is a useful
+little document. Well not really little with over 1000 lines ;-). But it
+would certainly benefit from ReST's / htmldocs ability to jump to labels and
+search, etc since it is so long..
+
+thanks,
+
+ - Joel
+
+
+
+
+
+
