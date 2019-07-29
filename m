@@ -2,377 +2,324 @@ Return-Path: <SRS0=I3EL=V2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.2 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A955BC433FF
-	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 22:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ED8AC76186
+	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 23:19:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7354B2070D
-	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 22:32:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4BC0D206E0
+	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 23:19:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbfG2Wc4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 Jul 2019 18:32:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30932 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726208AbfG2Wcz (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 29 Jul 2019 18:32:55 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6TMVm1c156877;
-        Mon, 29 Jul 2019 18:32:37 -0400
+        id S1729511AbfG2XTA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 29 Jul 2019 19:19:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55088 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725818AbfG2XS7 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 29 Jul 2019 19:18:59 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6TNH3BO063522;
+        Mon, 29 Jul 2019 19:17:24 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u29gcgbfm-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u27cxx1xv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 18:32:37 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6TMVlWe156836;
-        Mon, 29 Jul 2019 18:32:37 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u29gcgbex-1
+        Mon, 29 Jul 2019 19:17:24 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6TNGwSv062662;
+        Mon, 29 Jul 2019 19:17:23 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u27cxx1x9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 18:32:37 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6TMUYOx010031;
-        Mon, 29 Jul 2019 22:32:36 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 2u0e86jewu-1
+        Mon, 29 Jul 2019 19:17:23 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6TNEpdI020884;
+        Mon, 29 Jul 2019 23:17:22 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02wdc.us.ibm.com with ESMTP id 2u0e85sx2r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 22:32:36 +0000
+        Mon, 29 Jul 2019 23:17:22 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6TMWZc239911904
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6TNHLfd35127572
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jul 2019 22:32:35 GMT
+        Mon, 29 Jul 2019 23:17:21 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4EDC1B2066;
-        Mon, 29 Jul 2019 22:32:35 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 70E4EB2066;
+        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21839B205F;
-        Mon, 29 Jul 2019 22:32:35 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 27D13B2067;
+        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jul 2019 22:32:35 +0000 (GMT)
+        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id C4C8B16C9987; Mon, 29 Jul 2019 15:32:38 -0700 (PDT)
-Date:   Mon, 29 Jul 2019 15:32:38 -0700
+        id D719B16C1EAE; Mon, 29 Jul 2019 16:17:24 -0700 (PDT)
+Date:   Mon, 29 Jul 2019 16:17:24 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        peterz@infradead.org, paulmckrcu@gmail.com
-Subject: Re: How to turn scheduler tick on for current nohz_full CPU?
-Message-ID: <20190729223238.GF14271@linux.ibm.com>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <andrea.parri@amarulasolutions.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Jerry Hoemann <jerry.hoemann@hpe.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Ajay Gupta <ajayg@nvidia.com>,
+        Don Brace <don.brace@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, esc.storagedev@microsemi.com,
+        linux-scsi@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH 1/7] docs: fix broken doc references due to renames
+Message-ID: <20190729231724.GH14271@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <20190724115331.GA29059@linux.ibm.com>
- <20190724132257.GA1029@lenoir>
- <20190724135219.GY14271@linux.ibm.com>
- <20190724143012.GB1029@lenoir>
- <20190725011243.GZ14271@linux.ibm.com>
+References: <cover.1564140865.git.mchehab+samsung@kernel.org>
+ <430ed96cb234805d1deb216e8c8559da22cc6bac.1564140865.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190725011243.GZ14271@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <430ed96cb234805d1deb216e8c8559da22cc6bac.1564140865.git.mchehab+samsung@kernel.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-29_10:,,
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-29_11:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907290246
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907290255
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 06:12:43PM -0700, Paul E. McKenney wrote:
-> On Wed, Jul 24, 2019 at 04:30:13PM +0200, Frederic Weisbecker wrote:
-> > On Wed, Jul 24, 2019 at 06:52:19AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Jul 24, 2019 at 03:22:59PM +0200, Frederic Weisbecker wrote:
-> > > > On Wed, Jul 24, 2019 at 04:53:31AM -0700, Paul E. McKenney wrote:
-> > > > > Hello!
-> > > > > 
-> > > > > One of the callback-invocation forward-progress issues turns out to
-> > > > > be nohz_full CPUs not turning their scheduling-clock interrupt back on
-> > > > > when running in kernel mode.  Given that callback floods can cause RCU's
-> > > > > callback-invocation loop to run for some time, it would be good for this
-> > > > > loop to re-enable this interrupt.  Of course, this problem applies to
-> > > > > pretty much any kernel code that might loop for an extended time period,
-> > > > > not just RCU.
-> > > > > 
-> > > > > I took a quick look at kernel/time/tick-sched.c and the closest thing
-> > > > > I found was tick_nohz_full_kick_cpu(), except that (1) it isn't clear
-> > > > > that this does much when invoked on the current CPU and (2) it doesn't
-> > > > > help in rcutorture TREE04.  In contrast, disabling NO_HZ_FULL and using
-> > > > > RCU_NOCB_CPU instead works quite well.
-> > > > > 
-> > > > > So what should I be calling instead of tick_nohz_full_kick_cpu() to
-> > > > > re-enable the current CPU's scheduling-clock interrupt?
-> > > > 
-> > > > Indeed, kernel code is assumed to be quick enough (between two extended grace
-> > > > periods) to avoid running the tick for RCU. But some long lasting kernel code
-> > > > may require to tick temporarily.
-> > > > 
-> > > > You can use tick_nohz_dep_set_cpu(cpu, TICK_DEP_MASK_RCU) with the
-> > > > following:
-> > > > 
-> > > > diff --git a/include/linux/tick.h b/include/linux/tick.h
-> > > > index f92a10b5e112..3f476e2a4bf7 100644
-> > > > --- a/include/linux/tick.h
-> > > > +++ b/include/linux/tick.h
-> > > > @@ -108,7 +108,8 @@ enum tick_dep_bits {
-> > > >  	TICK_DEP_BIT_POSIX_TIMER	= 0,
-> > > >  	TICK_DEP_BIT_PERF_EVENTS	= 1,
-> > > >  	TICK_DEP_BIT_SCHED		= 2,
-> > > > -	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3
-> > > > +	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
-> > > > +	TICK_DEP_BIT_RCU		= 4
-> > > >  };
-> > > >  
-> > > >  #define TICK_DEP_MASK_NONE		0
-> > > > @@ -116,6 +117,7 @@ enum tick_dep_bits {
-> > > >  #define TICK_DEP_MASK_PERF_EVENTS	(1 << TICK_DEP_BIT_PERF_EVENTS)
-> > > >  #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
-> > > >  #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
-> > > > +#define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
-> > > >  
-> > > >  #ifdef CONFIG_NO_HZ_COMMON
-> > > >  extern bool tick_nohz_enabled;
-> > > 
-> > > I will give this a try, thank you!  (Testing will take a few days.)
-> > 
-> > Sure!
-> > 
-> > For the background: expect a self-IPI to fire which then restart the tick on IRQ exit.
-> > Once you're later done with the work, don't forget to remove the tick dependency:
-> > 
-> >      tick_nohz_dep_clear_cpu(cpu, TICK_DEP_MASK_RCU);
+On Fri, Jul 26, 2019 at 08:47:21AM -0300, Mauro Carvalho Chehab wrote:
+> Some files got renamed but probably due to some merge conflicts,
+> a few references still point to the old locations.
 > 
-> Does this get cleared automatically if preempted, or should I clear
-> this is one of RCU's scheduler hooks?  (My guess is the latter, but
-> I figured I should ask.)
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> Acked-by: Wolfram Sang <wsa@the-dreams.de> # I2C part
+> Reviewed-by: Jerry Hoemann <jerry.hoemann@hpe.com> # hpwdt.rst
 
-The patch below (which includes your patch) does help considerably.
-However, it does have some shortcomings:
+Acked-by: Paul E. McKenney <paulmck@linux.ibm.com>
 
-1.	Adds an atomic operation (albeit a cache-local one) to
-	the scheduler fastpath.  One approach would be to have
-	a way of testing this bit and clearing it only if set.
-
-	Another approach would be to instead clear it on the
-	transition to nohz_full userspace or to idle.
-
-2.	There are a lot of other places in the kernel that are in
-	need of this bit being set.  I am therefore considering making
-	multi_cpu_stop() or its callers set this bit on all CPUs upon
-	entry and clear it upon exit.  While in this state, it is
-	likely necessary to disable clearing this bit.  Or it would
-	be necessary to make multi_cpu_stop() repeat clearing the bit
-	every so often.
-
-	As it stands, I have CPU hotplug removal operations taking
-	more than 400 seconds.
-
-3.	It was tempting to ask for this bit to be tracked on a per-task
-	basis, but from what I can see that adds at least as much
-	complexity as it removes.
-
-Thoughts?
-
-							Thanx, Paul
-
-PS.  Outage on @linux.ibm.com, hence the CC of my gmail address.
-
-------------------------------------------------------------------------
-
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index 196a0a7bfc4f..0dea6fb33a11 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -108,7 +108,8 @@ enum tick_dep_bits {
- 	TICK_DEP_BIT_POSIX_TIMER	= 0,
- 	TICK_DEP_BIT_PERF_EVENTS	= 1,
- 	TICK_DEP_BIT_SCHED		= 2,
--	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3
-+	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
-+	TICK_DEP_BIT_RCU		= 4
- };
- 
- #define TICK_DEP_MASK_NONE		0
-@@ -116,6 +117,7 @@ enum tick_dep_bits {
- #define TICK_DEP_MASK_PERF_EVENTS	(1 << TICK_DEP_BIT_PERF_EVENTS)
- #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
- #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
-+#define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
- 
- #ifdef CONFIG_NO_HZ_COMMON
- extern bool tick_nohz_enabled;
-@@ -258,6 +260,9 @@ static inline bool tick_nohz_full_enabled(void) { return false; }
- static inline bool tick_nohz_full_cpu(int cpu) { return false; }
- static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask) { }
- 
-+static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
-+static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
-+
- static inline void tick_dep_set(enum tick_dep_bits bit) { }
- static inline void tick_dep_clear(enum tick_dep_bits bit) { }
- static inline void tick_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 3c9feca1eab1..e6a74b9fb0b8 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -44,6 +44,7 @@
- #include <linux/sched/debug.h>
- #include <linux/sched/sysctl.h>
- #include <linux/oom.h>
-+#include <linux/tick.h>
- 
- #include "rcu.h"
- 
-@@ -1353,6 +1354,7 @@ static void rcu_torture_timer(struct timer_list *unused)
- static int
- rcu_torture_reader(void *arg)
- {
-+	unsigned long i = 0;
- 	unsigned long lastsleep = jiffies;
- 	long myid = (long)arg;
- 	int mynumonline = myid;
-@@ -1363,26 +1365,31 @@ rcu_torture_reader(void *arg)
- 	set_user_nice(current, MAX_NICE);
- 	if (irqreader && cur_ops->irq_capable)
- 		timer_setup_on_stack(&t, rcu_torture_timer, 0);
--
- 	do {
- 		if (irqreader && cur_ops->irq_capable) {
- 			if (!timer_pending(&t))
- 				mod_timer(&t, jiffies + 1);
- 		}
--		if (!rcu_torture_one_read(&rand))
-+		if (!rcu_torture_one_read(&rand) && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ);
--		if (time_after(jiffies, lastsleep)) {
-+		if (time_after(jiffies, lastsleep) && !torture_must_stop()) {
- 			schedule_timeout_interruptible(1);
- 			lastsleep = jiffies + 10;
- 		}
- 		while (num_online_cpus() < mynumonline && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ / 5);
-+		if (IS_ENABLED(CONFIG_NO_HZ_FULL) && i++ & 0x1f)
-+			tick_nohz_dep_set_cpu(raw_smp_processor_id(),
-+					      TICK_DEP_MASK_RCU);
- 		stutter_wait("rcu_torture_reader");
- 	} while (!torture_must_stop());
- 	if (irqreader && cur_ops->irq_capable) {
- 		del_timer_sync(&t);
- 		destroy_timer_on_stack(&t);
- 	}
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(raw_smp_processor_id(),
-+					TICK_DEP_MASK_RCU);
- 	torture_kthread_stopping("rcu_torture_reader");
- 	return 0;
- }
-@@ -1729,10 +1736,12 @@ static void rcu_torture_fwd_prog_cond_resched(unsigned long iter)
- 		// Real call_rcu() floods hit userspace, so emulate that.
- 		if (need_resched() || (iter & 0xfff))
- 			schedule();
--	} else {
--		// No userspace emulation: CB invocation throttles call_rcu()
--		cond_resched();
-+		return;
- 	}
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_set_cpu(smp_processor_id(), TICK_DEP_MASK_RCU);
-+	// No userspace emulation: CB invocation throttles call_rcu()
-+	cond_resched();
- }
- 
- /*
-@@ -1760,6 +1769,9 @@ static unsigned long rcu_torture_fwd_prog_cbfree(void)
- 		freed++;
- 		rcu_torture_fwd_prog_cond_resched(freed);
- 	}
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(raw_smp_processor_id(),
-+					TICK_DEP_MASK_RCU);
- 	return freed;
- }
- 
-@@ -1826,6 +1838,9 @@ static void rcu_torture_fwd_prog_nr(int *tested, int *tested_tries)
- 		destroy_rcu_head_on_stack(&fcs.rh);
- 	}
- 	schedule_timeout_uninterruptible(HZ / 10); /* Let kthreads recover. */
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(raw_smp_processor_id(),
-+					TICK_DEP_MASK_RCU);
- 	WRITE_ONCE(rcu_fwd_cb_nodelay, false);
- }
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 256622168356..4f0eb24d986e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2178,6 +2178,10 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 			cond_resched_tasks_rcu_qs();
- 			lockdep_assert_irqs_enabled();
- 			local_bh_disable();
-+			if (IS_ENABLED(CONFIG_NO_HZ_FULL) &&
-+			    !likely(-rcl.len & 31))
-+				tick_nohz_dep_set_cpu(smp_processor_id(),
-+						      TICK_DEP_MASK_RCU);
- 		}
- 	}
- 
-@@ -2217,6 +2221,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Re-invoke RCU core processing if there are callbacks remaining. */
- 	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
- 		invoke_rcu_core();
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(raw_smp_processor_id(),
-+					TICK_DEP_MASK_RCU);
- }
- 
- /*
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 379cb7e50a62..7d285adc34c6 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -329,6 +329,8 @@ void rcu_note_context_switch(bool preempt)
- 	rcu_qs();
- 	if (rdp->exp_deferred_qs)
- 		rcu_report_exp_rdp(rdp);
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(smp_processor_id(), TICK_DEP_MASK_RCU);
- 	trace_rcu_utilization(TPS("End context switch"));
- }
- EXPORT_SYMBOL_GPL(rcu_note_context_switch);
-@@ -853,6 +855,8 @@ void rcu_note_context_switch(bool preempt)
- 	if (!preempt)
- 		rcu_tasks_qs(current);
- out:
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_nohz_dep_clear_cpu(smp_processor_id(), TICK_DEP_MASK_RCU);
- 	trace_rcu_utilization(TPS("End context switch"));
- }
- EXPORT_SYMBOL_GPL(rcu_note_context_switch);
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index f4ee1a3428ae..e617421a2c97 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -324,6 +324,7 @@ void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit)
- 		preempt_enable();
- 	}
- }
-+EXPORT_SYMBOL_GPL(tick_nohz_dep_set_cpu);
- 
- void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit)
- {
-@@ -331,6 +332,7 @@ void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit)
- 
- 	atomic_andnot(BIT(bit), &ts->tick_dep_mask);
- }
-+EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_cpu);
- 
- /*
-  * Set a per-task tick dependency. Posix CPU timers need this in order to elapse
+> ---
+>  Documentation/RCU/rculist_nulls.txt                   |  2 +-
+>  Documentation/devicetree/bindings/arm/idle-states.txt |  2 +-
+>  Documentation/locking/spinlocks.rst                   |  4 ++--
+>  Documentation/memory-barriers.txt                     |  2 +-
+>  Documentation/translations/ko_KR/memory-barriers.txt  |  2 +-
+>  Documentation/watchdog/hpwdt.rst                      |  2 +-
+>  MAINTAINERS                                           | 10 +++++-----
+>  drivers/gpu/drm/drm_modes.c                           |  2 +-
+>  drivers/i2c/busses/i2c-nvidia-gpu.c                   |  2 +-
+>  drivers/scsi/hpsa.c                                   |  4 ++--
+>  10 files changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/Documentation/RCU/rculist_nulls.txt b/Documentation/RCU/rculist_nulls.txt
+> index 8151f0195f76..23f115dc87cf 100644
+> --- a/Documentation/RCU/rculist_nulls.txt
+> +++ b/Documentation/RCU/rculist_nulls.txt
+> @@ -1,7 +1,7 @@
+>  Using hlist_nulls to protect read-mostly linked lists and
+>  objects using SLAB_TYPESAFE_BY_RCU allocations.
+>  
+> -Please read the basics in Documentation/RCU/listRCU.txt
+> +Please read the basics in Documentation/RCU/listRCU.rst
+>  
+>  Using special makers (called 'nulls') is a convenient way
+>  to solve following problem :
+> diff --git a/Documentation/devicetree/bindings/arm/idle-states.txt b/Documentation/devicetree/bindings/arm/idle-states.txt
+> index 326f29b270ad..2d325bed37e5 100644
+> --- a/Documentation/devicetree/bindings/arm/idle-states.txt
+> +++ b/Documentation/devicetree/bindings/arm/idle-states.txt
+> @@ -703,4 +703,4 @@ cpus {
+>      https://www.devicetree.org/specifications/
+>  
+>  [6] ARM Linux Kernel documentation - Booting AArch64 Linux
+> -    Documentation/arm64/booting.txt
+> +    Documentation/arm64/booting.rst
+> diff --git a/Documentation/locking/spinlocks.rst b/Documentation/locking/spinlocks.rst
+> index 098107fb7d86..e93ec6645238 100644
+> --- a/Documentation/locking/spinlocks.rst
+> +++ b/Documentation/locking/spinlocks.rst
+> @@ -82,7 +82,7 @@ itself.  The read lock allows many concurrent readers.  Anything that
+>  **changes** the list will have to get the write lock.
+>  
+>     NOTE! RCU is better for list traversal, but requires careful
+> -   attention to design detail (see Documentation/RCU/listRCU.txt).
+> +   attention to design detail (see Documentation/RCU/listRCU.rst).
+>  
+>  Also, you cannot "upgrade" a read-lock to a write-lock, so if you at _any_
+>  time need to do any changes (even if you don't do it every time), you have
+> @@ -90,7 +90,7 @@ to get the write-lock at the very beginning.
+>  
+>     NOTE! We are working hard to remove reader-writer spinlocks in most
+>     cases, so please don't add a new one without consensus.  (Instead, see
+> -   Documentation/RCU/rcu.txt for complete information.)
+> +   Documentation/RCU/rcu.rst for complete information.)
+>  
+>  ----
+>  
+> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> index 045bb8148fe9..1adbb8a371c7 100644
+> --- a/Documentation/memory-barriers.txt
+> +++ b/Documentation/memory-barriers.txt
+> @@ -548,7 +548,7 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
+>  
+>  	[*] For information on bus mastering DMA and coherency please read:
+>  
+> -	    Documentation/PCI/pci.rst
+> +	    Documentation/driver-api/pci/pci.rst
+>  	    Documentation/DMA-API-HOWTO.txt
+>  	    Documentation/DMA-API.txt
+>  
+> diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Documentation/translations/ko_KR/memory-barriers.txt
+> index a33c2a536542..2774624ee843 100644
+> --- a/Documentation/translations/ko_KR/memory-barriers.txt
+> +++ b/Documentation/translations/ko_KR/memory-barriers.txt
+> @@ -569,7 +569,7 @@ ACQUIRE 는 해당 오퍼레이션의 로드 부분에만 적용되고 RELEASE 
+>  
+>  	[*] 버스 마스터링 DMA 와 일관성에 대해서는 다음을 참고하시기 바랍니다:
+>  
+> -	    Documentation/PCI/pci.rst
+> +	    Documentation/driver-api/pci/pci.rst
+>  	    Documentation/DMA-API-HOWTO.txt
+>  	    Documentation/DMA-API.txt
+>  
+> diff --git a/Documentation/watchdog/hpwdt.rst b/Documentation/watchdog/hpwdt.rst
+> index c165d92cfd12..c824cd7f6e32 100644
+> --- a/Documentation/watchdog/hpwdt.rst
+> +++ b/Documentation/watchdog/hpwdt.rst
+> @@ -63,7 +63,7 @@ Last reviewed: 08/20/2018
+>   and loop forever.  This is generally not what a watchdog user wants.
+>  
+>   For those wishing to learn more please see:
+> -	Documentation/kdump/kdump.rst
+> +	Documentation/admin-guide/kdump/kdump.rst
+>  	Documentation/admin-guide/kernel-parameters.txt (panic=)
+>  	Your Linux Distribution specific documentation.
+>  
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4e2a525e22c0..51bdbd230174 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -899,7 +899,7 @@ L:	linux-iio@vger.kernel.org
+>  W:	http://ez.analog.com/community/linux-device-drivers
+>  S:	Supported
+>  F:	drivers/iio/adc/ad7124.c
+> -F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.txt
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
+>  
+>  ANALOG DEVICES INC AD7606 DRIVER
+>  M:	Stefan Popa <stefan.popa@analog.com>
+> @@ -4190,7 +4190,7 @@ M:	Jens Axboe <axboe@kernel.dk>
+>  L:	cgroups@vger.kernel.org
+>  L:	linux-block@vger.kernel.org
+>  T:	git git://git.kernel.dk/linux-block
+> -F:	Documentation/cgroup-v1/blkio-controller.rst
+> +F:	Documentation/admin-guide/cgroup-v1/blkio-controller.rst
+>  F:	block/blk-cgroup.c
+>  F:	include/linux/blk-cgroup.h
+>  F:	block/blk-throttle.c
+> @@ -6317,7 +6317,7 @@ FLEXTIMER FTM-QUADDEC DRIVER
+>  M:	Patrick Havelange <patrick.havelange@essensium.com>
+>  L:	linux-iio@vger.kernel.org
+>  S:	Maintained
+> -F:	Documentation/ABI/testing/sysfs-bus-counter-ftm-quadddec
+> +F:	Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
+>  F:	Documentation/devicetree/bindings/counter/ftm-quaddec.txt
+>  F:	drivers/counter/ftm-quaddec.c
+>  
+> @@ -6856,7 +6856,7 @@ R:	Sagi Shahar <sagis@google.com>
+>  R:	Jon Olson <jonolson@google.com>
+>  L:	netdev@vger.kernel.org
+>  S:	Supported
+> -F:	Documentation/networking/device_drivers/google/gve.txt
+> +F:	Documentation/networking/device_drivers/google/gve.rst
+>  F:	drivers/net/ethernet/google
+>  
+>  GPD POCKET FAN DRIVER
+> @@ -12137,7 +12137,7 @@ M:	Thomas Hellstrom <thellstrom@vmware.com>
+>  M:	"VMware, Inc." <pv-drivers@vmware.com>
+>  L:	virtualization@lists.linux-foundation.org
+>  S:	Supported
+> -F:	Documentation/virt/paravirt_ops.txt
+> +F:	Documentation/virt/paravirt_ops.rst
+>  F:	arch/*/kernel/paravirt*
+>  F:	arch/*/include/asm/paravirt*.h
+>  F:	include/linux/hypervisor.h
+> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+> index 74a5739df506..80fcd5dc1558 100644
+> --- a/drivers/gpu/drm/drm_modes.c
+> +++ b/drivers/gpu/drm/drm_modes.c
+> @@ -1686,7 +1686,7 @@ static int drm_mode_parse_cmdline_options(char *str, size_t len,
+>   *
+>   * Additionals options can be provided following the mode, using a comma to
+>   * separate each option. Valid options can be found in
+> - * Documentation/fb/modedb.txt.
+> + * Documentation/fb/modedb.rst.
+>   *
+>   * The intermediate drm_cmdline_mode structure is required to store additional
+>   * options from the command line modline like the force-enable/disable flag.
+> diff --git a/drivers/i2c/busses/i2c-nvidia-gpu.c b/drivers/i2c/busses/i2c-nvidia-gpu.c
+> index cfc76b5de726..5a1235fd86bb 100644
+> --- a/drivers/i2c/busses/i2c-nvidia-gpu.c
+> +++ b/drivers/i2c/busses/i2c-nvidia-gpu.c
+> @@ -364,7 +364,7 @@ static void gpu_i2c_remove(struct pci_dev *pdev)
+>  /*
+>   * We need gpu_i2c_suspend() even if it is stub, for runtime pm to work
+>   * correctly. Without it, lspci shows runtime pm status as "D0" for the card.
+> - * Documentation/power/pci.txt also insists for driver to provide this.
+> + * Documentation/power/pci.rst also insists for driver to provide this.
+>   */
+>  static __maybe_unused int gpu_i2c_suspend(struct device *dev)
+>  {
+> diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
+> index 43a6b5350775..eaf6177ac9ee 100644
+> --- a/drivers/scsi/hpsa.c
+> +++ b/drivers/scsi/hpsa.c
+> @@ -7798,7 +7798,7 @@ static void hpsa_free_pci_init(struct ctlr_info *h)
+>  	hpsa_disable_interrupt_mode(h);		/* pci_init 2 */
+>  	/*
+>  	 * call pci_disable_device before pci_release_regions per
+> -	 * Documentation/PCI/pci.rst
+> +	 * Documentation/driver-api/pci/pci.rst
+>  	 */
+>  	pci_disable_device(h->pdev);		/* pci_init 1 */
+>  	pci_release_regions(h->pdev);		/* pci_init 2 */
+> @@ -7881,7 +7881,7 @@ static int hpsa_pci_init(struct ctlr_info *h)
+>  clean1:
+>  	/*
+>  	 * call pci_disable_device before pci_release_regions per
+> -	 * Documentation/PCI/pci.rst
+> +	 * Documentation/driver-api/pci/pci.rst
+>  	 */
+>  	pci_disable_device(h->pdev);
+>  	pci_release_regions(h->pdev);
+> -- 
+> 2.21.0
+> 
