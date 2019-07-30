@@ -2,115 +2,140 @@ Return-Path: <SRS0=Tqm2=V3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E79BC433FF
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:02:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D776EC0650F
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:43:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5E82020693
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:02:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABD92206E0
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:43:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1564504994;
+	bh=mVaQfCUduyzwcuSDuf/0pHJrjsbowJ87qw05RgYyXQE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=0zhVVRNhEnQ9AHca8dcz/fsE/IpUqnPqs3MYTTmKQzYYkyhYBTR3Omiq5hpTAqgnL
+	 woTP5PSujL4z5df2MDMhf2LTkUkKdSd2ngjju/g2Ud7boVJ6mOx887UfuR9/Y2xe9h
+	 8PaFD+8wJwg/vDVS+5S1ZMqJbbG+obRuyOO2Lmnw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbfG3QCe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Jul 2019 12:02:34 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13352 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727944AbfG3QCd (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 30 Jul 2019 12:02:33 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6UFvX5Z140164
-        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 12:02:32 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u2qf9mmet-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 12:02:29 -0400
-Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Tue, 30 Jul 2019 17:02:24 +0100
-Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 30 Jul 2019 17:02:21 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6UG2KRU54329736
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Jul 2019 16:02:21 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E531BB2066;
-        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C51D5B2065;
-        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.181.16])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 6A3BC16C1708; Tue, 30 Jul 2019 09:02:21 -0700 (PDT)
-Date:   Tue, 30 Jul 2019 09:02:21 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Mukesh Ojha <mojha@codeaurora.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix spelling mistake "greate"->"great"
-Reply-To: paulmck@linux.ibm.com
-References: <1564386957-22833-1-git-send-email-mojha@codeaurora.org>
+        id S1727392AbfG3QnO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jul 2019 12:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725974AbfG3QnO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Jul 2019 12:43:14 -0400
+Received: from localhost (lfbn-ncy-1-174-150.w83-194.abo.wanadoo.fr [83.194.254.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E60E9206A2;
+        Tue, 30 Jul 2019 16:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564504993;
+        bh=mVaQfCUduyzwcuSDuf/0pHJrjsbowJ87qw05RgYyXQE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1oQy6DccGyY7TC6pRc2eJsnPfi+bdsqdoeupCCLYHUfH8LL82VRB2LxDHL0KRFo8
+         kUUS2tNQUSUFwzTP/ymVG0SoLI4y6HkFQDtNN6G7Ob10gxvkGlbdFziqGMIbeNJauF
+         ciK3a8J5Mi8FUhh+W+FEiwGOy0RWKe8hTJAs8waY=
+Date:   Tue, 30 Jul 2019 18:43:10 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        peterz@infradead.org, paulmckrcu@gmail.com
+Subject: Re: How to turn scheduler tick on for current nohz_full CPU?
+Message-ID: <20190730164309.GA962@lenoir>
+References: <20190724115331.GA29059@linux.ibm.com>
+ <20190724132257.GA1029@lenoir>
+ <20190724135219.GY14271@linux.ibm.com>
+ <20190724143012.GB1029@lenoir>
+ <20190725011243.GZ14271@linux.ibm.com>
+ <20190729223238.GF14271@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1564386957-22833-1-git-send-email-mojha@codeaurora.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19073016-0064-0000-0000-000004047DCC
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011523; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01239657; UDB=6.00653639; IPR=6.01021069;
- MB=3.00027960; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-30 16:02:23
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19073016-0065-0000-0000-00003E79E43D
-Message-Id: <20190730160221.GX14271@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-30_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907300165
+In-Reply-To: <20190729223238.GF14271@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 29, 2019 at 01:25:57PM +0530, Mukesh Ojha wrote:
-> There is a spelling mistake in file tree_exp.h,
-> fix this.
+On Mon, Jul 29, 2019 at 03:32:38PM -0700, Paul E. McKenney wrote:
+> On Wed, Jul 24, 2019 at 06:12:43PM -0700, Paul E. McKenney wrote:
 > 
-> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
-
-Queued, thank you very much!
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tree_exp.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The patch below (which includes your patch) does help considerably.
+> However, it does have some shortcomings:
 > 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index af7e7b9..609fc87 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -781,7 +781,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
->   * other hand, if the CPU is not in an RCU read-side critical section,
->   * the IPI handler reports the quiescent state immediately.
->   *
-> - * Although this is a greate improvement over previous expedited
-> + * Although this is a great improvement over previous expedited
->   * implementations, it is still unfriendly to real-time workloads, so is
->   * thus not recommended for any sort of common-case code.  In fact, if
->   * you are using synchronize_rcu_expedited() in a loop, please restructure
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-> Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+> 1.	Adds an atomic operation (albeit a cache-local one) to
+> 	the scheduler fastpath.  One approach would be to have
+> 	a way of testing this bit and clearing it only if set.
 > 
+> 	Another approach would be to instead clear it on the
+> 	transition to nohz_full userspace or to idle.
 
+Well, the latter would be costly as it is going to restart the tick on every
+user -> kernel transitions.
+
+> 
+> 2.	There are a lot of other places in the kernel that are in
+> 	need of this bit being set.  I am therefore considering making
+> 	multi_cpu_stop() or its callers set this bit on all CPUs upon
+> 	entry and clear it upon exit.  While in this state, it is
+> 	likely necessary to disable clearing this bit.  Or it would
+> 	be necessary to make multi_cpu_stop() repeat clearing the bit
+> 	every so often.
+> 
+> 	As it stands, I have CPU hotplug removal operations taking
+> 	more than 400 seconds.
+> 
+> 3.	It was tempting to ask for this bit to be tracked on a per-task
+> 	basis, but from what I can see that adds at least as much
+> 	complexity as it removes.
+
+Yeah I forgot to answer, you can use tick_dep_set_task() for that.
+
+> 
+> Thoughts?
+> 
+> 							Thanx, Paul
+> 
+> PS.  Outage on @linux.ibm.com, hence the CC of my gmail address.
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/include/linux/tick.h b/include/linux/tick.h
+> index 196a0a7bfc4f..0dea6fb33a11 100644
+> --- a/include/linux/tick.h
+> +++ b/include/linux/tick.h
+> @@ -108,7 +108,8 @@ enum tick_dep_bits {
+>  	TICK_DEP_BIT_POSIX_TIMER	= 0,
+>  	TICK_DEP_BIT_PERF_EVENTS	= 1,
+>  	TICK_DEP_BIT_SCHED		= 2,
+> -	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3
+> +	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
+> +	TICK_DEP_BIT_RCU		= 4
+>  };
+>  
+>  #define TICK_DEP_MASK_NONE		0
+> @@ -116,6 +117,7 @@ enum tick_dep_bits {
+>  #define TICK_DEP_MASK_PERF_EVENTS	(1 << TICK_DEP_BIT_PERF_EVENTS)
+>  #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
+>  #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
+> +#define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
+>  
+>  #ifdef CONFIG_NO_HZ_COMMON
+>  extern bool tick_nohz_enabled;
+> @@ -258,6 +260,9 @@ static inline bool tick_nohz_full_enabled(void) { return false; }
+>  static inline bool tick_nohz_full_cpu(int cpu) { return false; }
+>  static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask) { }
+>  
+> +static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
+> +static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
+
+And I gave you the wrong APIs. Please consider_using tick_dep_set_cpu()
+and tick_dep_clear_cpu() that first check if the CPU uses nohz_full.
+
+Those should have the !CONFIG_NO_HZ_FULL stub implemented as well.
+
+Thanks.
