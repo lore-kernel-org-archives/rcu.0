@@ -1,325 +1,116 @@
-Return-Path: <SRS0=I3EL=V2=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Tqm2=V3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ED8AC76186
-	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 23:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E79BC433FF
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:02:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4BC0D206E0
-	for <rcu@archiver.kernel.org>; Mon, 29 Jul 2019 23:19:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E82020693
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 16:02:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbfG2XTA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 Jul 2019 19:19:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55088 "EHLO
+        id S1730229AbfG3QCe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jul 2019 12:02:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13352 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbfG2XS7 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 29 Jul 2019 19:18:59 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6TNH3BO063522;
-        Mon, 29 Jul 2019 19:17:24 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u27cxx1xv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 19:17:24 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6TNGwSv062662;
-        Mon, 29 Jul 2019 19:17:23 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u27cxx1x9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 19:17:23 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6TNEpdI020884;
-        Mon, 29 Jul 2019 23:17:22 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma02wdc.us.ibm.com with ESMTP id 2u0e85sx2r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Jul 2019 23:17:22 +0000
+        by vger.kernel.org with ESMTP id S1727944AbfG3QCd (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 30 Jul 2019 12:02:33 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6UFvX5Z140164
+        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 12:02:32 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u2qf9mmet-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 12:02:29 -0400
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Tue, 30 Jul 2019 17:02:24 +0100
+Received: from b01cxnp22035.gho.pok.ibm.com (9.57.198.25)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 30 Jul 2019 17:02:21 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6TNHLfd35127572
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6UG2KRU54329736
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Jul 2019 23:17:21 GMT
+        Tue, 30 Jul 2019 16:02:21 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 70E4EB2066;
-        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id E531BB2066;
+        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 27D13B2067;
-        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by IMSVA (Postfix) with ESMTP id C51D5B2065;
+        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.181.16])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 29 Jul 2019 23:17:21 +0000 (GMT)
+        Tue, 30 Jul 2019 16:02:20 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D719B16C1EAE; Mon, 29 Jul 2019 16:17:24 -0700 (PDT)
-Date:   Mon, 29 Jul 2019 16:17:24 -0700
+        id 6A3BC16C1708; Tue, 30 Jul 2019 09:02:21 -0700 (PDT)
+Date:   Tue, 30 Jul 2019 09:02:21 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Ajay Gupta <ajayg@nvidia.com>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, esc.storagedev@microsemi.com,
-        linux-scsi@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH 1/7] docs: fix broken doc references due to renames
-Message-ID: <20190729231724.GH14271@linux.ibm.com>
+To:     Mukesh Ojha <mojha@codeaurora.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix spelling mistake "greate"->"great"
 Reply-To: paulmck@linux.ibm.com
-References: <cover.1564140865.git.mchehab+samsung@kernel.org>
- <430ed96cb234805d1deb216e8c8559da22cc6bac.1564140865.git.mchehab+samsung@kernel.org>
+References: <1564386957-22833-1-git-send-email-mojha@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <430ed96cb234805d1deb216e8c8559da22cc6bac.1564140865.git.mchehab+samsung@kernel.org>
+In-Reply-To: <1564386957-22833-1-git-send-email-mojha@codeaurora.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-29_11:,,
+x-cbid: 19073016-0064-0000-0000-000004047DCC
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011523; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01239657; UDB=6.00653639; IPR=6.01021069;
+ MB=3.00027960; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-30 16:02:23
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19073016-0065-0000-0000-00003E79E43D
+Message-Id: <20190730160221.GX14271@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-30_07:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907290255
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907300165
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 08:47:21AM -0300, Mauro Carvalho Chehab wrote:
-> Some files got renamed but probably due to some merge conflicts,
-> a few references still point to the old locations.
+On Mon, Jul 29, 2019 at 01:25:57PM +0530, Mukesh Ojha wrote:
+> There is a spelling mistake in file tree_exp.h,
+> fix this.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Acked-by: Wolfram Sang <wsa@the-dreams.de> # I2C part
-> Reviewed-by: Jerry Hoemann <jerry.hoemann@hpe.com> # hpwdt.rst
+> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
 
-Acked-by: Paul E. McKenney <paulmck@linux.ibm.com>
+Queued, thank you very much!
+
+							Thanx, Paul
 
 > ---
->  Documentation/RCU/rculist_nulls.txt                   |  2 +-
->  Documentation/devicetree/bindings/arm/idle-states.txt |  2 +-
->  Documentation/locking/spinlocks.rst                   |  4 ++--
->  Documentation/memory-barriers.txt                     |  2 +-
->  Documentation/translations/ko_KR/memory-barriers.txt  |  2 +-
->  Documentation/watchdog/hpwdt.rst                      |  2 +-
->  MAINTAINERS                                           | 10 +++++-----
->  drivers/gpu/drm/drm_modes.c                           |  2 +-
->  drivers/i2c/busses/i2c-nvidia-gpu.c                   |  2 +-
->  drivers/scsi/hpsa.c                                   |  4 ++--
->  10 files changed, 16 insertions(+), 16 deletions(-)
+>  kernel/rcu/tree_exp.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/RCU/rculist_nulls.txt b/Documentation/RCU/rculist_nulls.txt
-> index 8151f0195f76..23f115dc87cf 100644
-> --- a/Documentation/RCU/rculist_nulls.txt
-> +++ b/Documentation/RCU/rculist_nulls.txt
-> @@ -1,7 +1,7 @@
->  Using hlist_nulls to protect read-mostly linked lists and
->  objects using SLAB_TYPESAFE_BY_RCU allocations.
->  
-> -Please read the basics in Documentation/RCU/listRCU.txt
-> +Please read the basics in Documentation/RCU/listRCU.rst
->  
->  Using special makers (called 'nulls') is a convenient way
->  to solve following problem :
-> diff --git a/Documentation/devicetree/bindings/arm/idle-states.txt b/Documentation/devicetree/bindings/arm/idle-states.txt
-> index 326f29b270ad..2d325bed37e5 100644
-> --- a/Documentation/devicetree/bindings/arm/idle-states.txt
-> +++ b/Documentation/devicetree/bindings/arm/idle-states.txt
-> @@ -703,4 +703,4 @@ cpus {
->      https://www.devicetree.org/specifications/
->  
->  [6] ARM Linux Kernel documentation - Booting AArch64 Linux
-> -    Documentation/arm64/booting.txt
-> +    Documentation/arm64/booting.rst
-> diff --git a/Documentation/locking/spinlocks.rst b/Documentation/locking/spinlocks.rst
-> index 098107fb7d86..e93ec6645238 100644
-> --- a/Documentation/locking/spinlocks.rst
-> +++ b/Documentation/locking/spinlocks.rst
-> @@ -82,7 +82,7 @@ itself.  The read lock allows many concurrent readers.  Anything that
->  **changes** the list will have to get the write lock.
->  
->     NOTE! RCU is better for list traversal, but requires careful
-> -   attention to design detail (see Documentation/RCU/listRCU.txt).
-> +   attention to design detail (see Documentation/RCU/listRCU.rst).
->  
->  Also, you cannot "upgrade" a read-lock to a write-lock, so if you at _any_
->  time need to do any changes (even if you don't do it every time), you have
-> @@ -90,7 +90,7 @@ to get the write-lock at the very beginning.
->  
->     NOTE! We are working hard to remove reader-writer spinlocks in most
->     cases, so please don't add a new one without consensus.  (Instead, see
-> -   Documentation/RCU/rcu.txt for complete information.)
-> +   Documentation/RCU/rcu.rst for complete information.)
->  
->  ----
->  
-> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> index 045bb8148fe9..1adbb8a371c7 100644
-> --- a/Documentation/memory-barriers.txt
-> +++ b/Documentation/memory-barriers.txt
-> @@ -548,7 +548,7 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
->  
->  	[*] For information on bus mastering DMA and coherency please read:
->  
-> -	    Documentation/PCI/pci.rst
-> +	    Documentation/driver-api/pci/pci.rst
->  	    Documentation/DMA-API-HOWTO.txt
->  	    Documentation/DMA-API.txt
->  
-> diff --git a/Documentation/translations/ko_KR/memory-barriers.txt b/Documentation/translations/ko_KR/memory-barriers.txt
-> index a33c2a536542..2774624ee843 100644
-> --- a/Documentation/translations/ko_KR/memory-barriers.txt
-> +++ b/Documentation/translations/ko_KR/memory-barriers.txt
-> @@ -569,7 +569,7 @@ ACQUIRE 는 해당 오퍼레이션의 로드 부분에만 적용되고 RELEASE 
->  
->  	[*] 버스 마스터링 DMA 와 일관성에 대해서는 다음을 참고하시기 바랍니다:
->  
-> -	    Documentation/PCI/pci.rst
-> +	    Documentation/driver-api/pci/pci.rst
->  	    Documentation/DMA-API-HOWTO.txt
->  	    Documentation/DMA-API.txt
->  
-> diff --git a/Documentation/watchdog/hpwdt.rst b/Documentation/watchdog/hpwdt.rst
-> index c165d92cfd12..c824cd7f6e32 100644
-> --- a/Documentation/watchdog/hpwdt.rst
-> +++ b/Documentation/watchdog/hpwdt.rst
-> @@ -63,7 +63,7 @@ Last reviewed: 08/20/2018
->   and loop forever.  This is generally not what a watchdog user wants.
->  
->   For those wishing to learn more please see:
-> -	Documentation/kdump/kdump.rst
-> +	Documentation/admin-guide/kdump/kdump.rst
->  	Documentation/admin-guide/kernel-parameters.txt (panic=)
->  	Your Linux Distribution specific documentation.
->  
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4e2a525e22c0..51bdbd230174 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -899,7 +899,7 @@ L:	linux-iio@vger.kernel.org
->  W:	http://ez.analog.com/community/linux-device-drivers
->  S:	Supported
->  F:	drivers/iio/adc/ad7124.c
-> -F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.txt
-> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
->  
->  ANALOG DEVICES INC AD7606 DRIVER
->  M:	Stefan Popa <stefan.popa@analog.com>
-> @@ -4190,7 +4190,7 @@ M:	Jens Axboe <axboe@kernel.dk>
->  L:	cgroups@vger.kernel.org
->  L:	linux-block@vger.kernel.org
->  T:	git git://git.kernel.dk/linux-block
-> -F:	Documentation/cgroup-v1/blkio-controller.rst
-> +F:	Documentation/admin-guide/cgroup-v1/blkio-controller.rst
->  F:	block/blk-cgroup.c
->  F:	include/linux/blk-cgroup.h
->  F:	block/blk-throttle.c
-> @@ -6317,7 +6317,7 @@ FLEXTIMER FTM-QUADDEC DRIVER
->  M:	Patrick Havelange <patrick.havelange@essensium.com>
->  L:	linux-iio@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/ABI/testing/sysfs-bus-counter-ftm-quadddec
-> +F:	Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
->  F:	Documentation/devicetree/bindings/counter/ftm-quaddec.txt
->  F:	drivers/counter/ftm-quaddec.c
->  
-> @@ -6856,7 +6856,7 @@ R:	Sagi Shahar <sagis@google.com>
->  R:	Jon Olson <jonolson@google.com>
->  L:	netdev@vger.kernel.org
->  S:	Supported
-> -F:	Documentation/networking/device_drivers/google/gve.txt
-> +F:	Documentation/networking/device_drivers/google/gve.rst
->  F:	drivers/net/ethernet/google
->  
->  GPD POCKET FAN DRIVER
-> @@ -12137,7 +12137,7 @@ M:	Thomas Hellstrom <thellstrom@vmware.com>
->  M:	"VMware, Inc." <pv-drivers@vmware.com>
->  L:	virtualization@lists.linux-foundation.org
->  S:	Supported
-> -F:	Documentation/virt/paravirt_ops.txt
-> +F:	Documentation/virt/paravirt_ops.rst
->  F:	arch/*/kernel/paravirt*
->  F:	arch/*/include/asm/paravirt*.h
->  F:	include/linux/hypervisor.h
-> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-> index 74a5739df506..80fcd5dc1558 100644
-> --- a/drivers/gpu/drm/drm_modes.c
-> +++ b/drivers/gpu/drm/drm_modes.c
-> @@ -1686,7 +1686,7 @@ static int drm_mode_parse_cmdline_options(char *str, size_t len,
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index af7e7b9..609fc87 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -781,7 +781,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+>   * other hand, if the CPU is not in an RCU read-side critical section,
+>   * the IPI handler reports the quiescent state immediately.
 >   *
->   * Additionals options can be provided following the mode, using a comma to
->   * separate each option. Valid options can be found in
-> - * Documentation/fb/modedb.txt.
-> + * Documentation/fb/modedb.rst.
->   *
->   * The intermediate drm_cmdline_mode structure is required to store additional
->   * options from the command line modline like the force-enable/disable flag.
-> diff --git a/drivers/i2c/busses/i2c-nvidia-gpu.c b/drivers/i2c/busses/i2c-nvidia-gpu.c
-> index cfc76b5de726..5a1235fd86bb 100644
-> --- a/drivers/i2c/busses/i2c-nvidia-gpu.c
-> +++ b/drivers/i2c/busses/i2c-nvidia-gpu.c
-> @@ -364,7 +364,7 @@ static void gpu_i2c_remove(struct pci_dev *pdev)
->  /*
->   * We need gpu_i2c_suspend() even if it is stub, for runtime pm to work
->   * correctly. Without it, lspci shows runtime pm status as "D0" for the card.
-> - * Documentation/power/pci.txt also insists for driver to provide this.
-> + * Documentation/power/pci.rst also insists for driver to provide this.
->   */
->  static __maybe_unused int gpu_i2c_suspend(struct device *dev)
->  {
-> diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
-> index 43a6b5350775..eaf6177ac9ee 100644
-> --- a/drivers/scsi/hpsa.c
-> +++ b/drivers/scsi/hpsa.c
-> @@ -7798,7 +7798,7 @@ static void hpsa_free_pci_init(struct ctlr_info *h)
->  	hpsa_disable_interrupt_mode(h);		/* pci_init 2 */
->  	/*
->  	 * call pci_disable_device before pci_release_regions per
-> -	 * Documentation/PCI/pci.rst
-> +	 * Documentation/driver-api/pci/pci.rst
->  	 */
->  	pci_disable_device(h->pdev);		/* pci_init 1 */
->  	pci_release_regions(h->pdev);		/* pci_init 2 */
-> @@ -7881,7 +7881,7 @@ static int hpsa_pci_init(struct ctlr_info *h)
->  clean1:
->  	/*
->  	 * call pci_disable_device before pci_release_regions per
-> -	 * Documentation/PCI/pci.rst
-> +	 * Documentation/driver-api/pci/pci.rst
->  	 */
->  	pci_disable_device(h->pdev);
->  	pci_release_regions(h->pdev);
+> - * Although this is a greate improvement over previous expedited
+> + * Although this is a great improvement over previous expedited
+>   * implementations, it is still unfriendly to real-time workloads, so is
+>   * thus not recommended for any sort of common-case code.  In fact, if
+>   * you are using synchronize_rcu_expedited() in a loop, please restructure
 > -- 
-> 2.21.0
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+> Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 > 
+
