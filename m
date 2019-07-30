@@ -2,143 +2,253 @@ Return-Path: <SRS0=Tqm2=V3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 380F6C433FF
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA090C433FF
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:56:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 088242067D
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:37:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 725D52087F
+	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1564530981;
+	bh=5cw5UMIQzzNDhVkdjfYBVpsACJVeh1Vqmj5RxFAzRTc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=RyuKisKchSAM+8lRGF18ngmZg8pHjs3l2TTiAtPiW5AMssAZpxLed3lE6pTWRcp4A
+	 OyD08iuur5DTTXOWcbET9QuiO245D9sQzqtHW8yJVruLbmn+fXgAr+dIdBBHhEAp8Z
+	 LRs5KZRqKZNEnt7izJ0fSfzBPt4NmSCjN9VdggV0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbfG3Xh0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Jul 2019 19:37:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3194 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726162AbfG3Xh0 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 30 Jul 2019 19:37:26 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6UNbEKl144401
-        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 19:37:25 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u2tyka5jg-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Tue, 30 Jul 2019 19:37:25 -0400
-Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Wed, 31 Jul 2019 00:37:24 +0100
-Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 31 Jul 2019 00:37:20 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6UNbJAJ24904096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 30 Jul 2019 23:37:19 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44932B206A;
-        Tue, 30 Jul 2019 23:37:19 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23ADCB2066;
-        Tue, 30 Jul 2019 23:37:19 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.181.16])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 30 Jul 2019 23:37:19 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 3CF2416C99B9; Tue, 30 Jul 2019 16:37:20 -0700 (PDT)
-Date:   Tue, 30 Jul 2019 16:37:20 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S1727262AbfG3X4V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jul 2019 19:56:21 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:53228 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbfG3X4V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Jul 2019 19:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+        From:Date:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=JQ8ZXlp9GXhn73FiB2SmOA/5VvS72scj4r/PouoaPAI=; b=bxINSaUTX7XjFtdLHCPljHp1M
+        qm59hPe7okTSFnq+8y4mFINTa6nu8olhY2xI7KNCVqrRvQtrfqApwhiZeHpTyelWInsOQSCoV9U9e
+        34X55U9gp6EYK+S04Ok39X4SVpgiIlVXW8WAI+NcEB3y643eSQQdfP5wm9OAGyjSbu0bGs96MvzNT
+        wlJjp1txOD+ML3bWf+ln4o9Ge7wegqwGwak8PFY74O1SGy6NhxU2lJiZe10UTPPemm1LEP6W5Xyga
+        5ZcG3eftPzFHhJS7J7xdEZ7tpVWxWOrWUpH4ajV1rUaGwVVRuGSW7XbhK37swk8uCfwt9YC72RfyQ
+        0xkRwOh7A==;
+Received: from [177.157.101.143] (helo=coco.lan)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hsbyb-0006se-Ed; Tue, 30 Jul 2019 23:56:17 +0000
+Date:   Tue, 30 Jul 2019 20:56:11 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 25/26] docs: rcu: convert some articles from html to
- ReST
-Reply-To: paulmck@linux.ibm.com
-References: <cover.1564145354.git.mchehab+samsung@kernel.org>
- <8444797277eea7be474f40625bb190775a9cee33.1564145354.git.mchehab+samsung@kernel.org>
- <20190730212250.GJ14271@linux.ibm.com>
- <20190730185040.3fbc44ca@coco.lan>
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 2/3] docs: rcu: Correct links referring to titles
+Message-ID: <20190730205611.2810fc26@coco.lan>
+In-Reply-To: <20190730231030.27510-3-joel@joelfernandes.org>
+References: <20190730231030.27510-1-joel@joelfernandes.org>
+        <20190730231030.27510-3-joel@joelfernandes.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190730185040.3fbc44ca@coco.lan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19073023-0064-0000-0000-000004049405
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011525; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01239809; UDB=6.00653730; IPR=6.01021221;
- MB=3.00027966; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-30 23:37:23
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19073023-0065-0000-0000-00003E7AFB9E
-Message-Id: <20190730233720.GL14271@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-30_11:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907300239
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 30, 2019 at 06:50:51PM -0300, Mauro Carvalho Chehab wrote:
-> Em Tue, 30 Jul 2019 14:22:50 -0700
-> "Paul E. McKenney" <paulmck@linux.ibm.com> escreveu:
-> 
-> > On Fri, Jul 26, 2019 at 09:51:35AM -0300, Mauro Carvalho Chehab wrote:
-> > > There are 4 RCU articles that are written on html format.
-> > > 
-> > > The way they are, they can't be part of the Linux Kernel
-> > > documentation body nor share the styles and pdf output.
-> > > 
-> > > So, convert them to ReST format.
-> > > 
-> > > This way, make htmldocs and make pdfdocs will produce a
-> > > documentation output that will be like the original ones, but
-> > > will be part of the Linux Kernel documentation body.
-> > > 
-> > > Part of the conversion was done with the help of pandoc, but
-> > > the result had some broken things that had to be manually
-> > > fixed.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>  
-> > 
-> > I am having some trouble applying these, at least in part due to UTF-8
-> > sequences, for example double left quotation mark.  These end up being
-> > "=E2=80=9C", with a few space characters turned into "=20".
-> > 
-> > Any advice on how to apply these?
-> 
-> Didn't notice it ended with UTF-8 chars. It is probably because it came
-> from the html conversion.
+Em Tue, 30 Jul 2019 19:10:29 -0400
+"Joel Fernandes (Google)" <joel@joelfernandes.org> escreveu:
 
-Or maybe there are some email issues somewhere along the way.
+> Mauro's auto conversion broken these links, fix them.
 
-> I guess it shouldn't hurt keeping those, but if you prefer I can find 
-> some time later to replace them.
-> 
-> > Should I just pull commits from somewhere?
-> 
-> Yeah, if you prefer, you can pull from this branch:
-> 
-> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=rcu-v1
-> 
-> It has just two patches: the RCU and tools/memory-model ones.
-> 
-> It is based on v5.3-rc2.
+They actually worked here with the Sphinx I used, but yeah, the way it
+is is a way cleaner.
 
-And that does apply, thank you!
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  .../Tree-RCU-Memory-Ordering.rst              | 17 ++--
+>  .../RCU/Design/Requirements/Requirements.rst  | 90 ++++++++-----------
+>  2 files changed, 47 insertions(+), 60 deletions(-)
+> 
+> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> index 1011b5db1b3d..248b1222f918 100644
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> @@ -230,15 +230,14 @@ Tree RCU Grace Period Memory Ordering Components
+>  Tree RCU's grace-period memory-ordering guarantee is provided by a
+>  number of RCU components:
+>  
+> -#. `Callback Registry <#Callback%20Registry>`__
+> -#. `Grace-Period Initialization <#Grace-Period%20Initialization>`__
+> -#. `Self-Reported Quiescent
+> -   States <#Self-Reported%20Quiescent%20States>`__
+> -#. `Dynamic Tick Interface <#Dynamic%20Tick%20Interface>`__
+> -#. `CPU-Hotplug Interface <#CPU-Hotplug%20Interface>`__
+> -#. `Forcing Quiescent States <Forcing%20Quiescent%20States>`__
+> -#. `Grace-Period Cleanup <Grace-Period%20Cleanup>`__
+> -#. `Callback Invocation <Callback%20Invocation>`__
+> +#. `Callback Registry`_
+> +#. `Grace-Period Initialization`_
+> +#. `Self-Reported Quiescent States`_
+> +#. `Dynamic Tick Interface`_
+> +#. `CPU-Hotplug Interface`_
+> +#. `Forcing Quiescent States`_
+> +#. `Grace-Period Cleanup`_
+> +#. `Callback Invocation`_
+>  
+>  Each of the following section looks at the corresponding component in
+>  detail.
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 876e0038bb58..a33b5fb331b4 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -36,16 +36,14 @@ technologies in interesting new ways.
+>  All that aside, here are the categories of currently known RCU
+>  requirements:
+>  
+> -#. `Fundamental Requirements <#Fundamental%20Requirements>`__
+> -#. `Fundamental Non-Requirements <#Fundamental%20Non-Requirements>`__
+> -#. `Parallelism Facts of Life <#Parallelism%20Facts%20of%20Life>`__
+> -#. `Quality-of-Implementation
+> -   Requirements <#Quality-of-Implementation%20Requirements>`__
+> -#. `Linux Kernel Complications <#Linux%20Kernel%20Complications>`__
+> -#. `Software-Engineering
+> -   Requirements <#Software-Engineering%20Requirements>`__
+> -#. `Other RCU Flavors <#Other%20RCU%20Flavors>`__
+> -#. `Possible Future Changes <#Possible%20Future%20Changes>`__
+> +#. `Fundamental Requirements`_
+> +#. `Fundamental Non-Requirements`_
+> +#. `Parallelism Facts of Life`_
+> +#. `Quality-of-Implementation Requirements`_
+> +#. `Linux Kernel Complications`_
+> +#. `Software-Engineering Requirements`_
+> +#. `Other RCU Flavors`_
+> +#. `Possible Future Changes`_
+>  
+>  This is followed by a `summary <#Summary>`__, however, the answers to
+>  each quick quiz immediately follows the quiz. Select the big white space
+> @@ -57,13 +55,11 @@ Fundamental Requirements
+>  RCU's fundamental requirements are the closest thing RCU has to hard
+>  mathematical requirements. These are:
+>  
+> -#. `Grace-Period Guarantee <#Grace-Period%20Guarantee>`__
+> -#. `Publish-Subscribe Guarantee <#Publish-Subscribe%20Guarantee>`__
+> -#. `Memory-Barrier Guarantees <#Memory-Barrier%20Guarantees>`__
+> -#. `RCU Primitives Guaranteed to Execute
+> -   Unconditionally <#RCU%20Primitives%20Guaranteed%20to%20Execute%20Unconditionally>`__
+> -#. `Guaranteed Read-to-Write
+> -   Upgrade <#Guaranteed%20Read-to-Write%20Upgrade>`__
+> +#. `Grace-Period Guarantee`_
+> +#. `Publish/Subscribe Guarantee`_
+> +#. `Memory-Barrier Guarantees`_
+> +#. `RCU Primitives Guaranteed to Execute Unconditionally`_
+> +#. `Guaranteed Read-to-Write Upgrade`_
+>  
+>  Grace-Period Guarantee
+>  ~~~~~~~~~~~~~~~~~~~~~~
+> @@ -689,16 +685,11 @@ infinitely long, however, the following sections list a few
+>  non-guarantees that have caused confusion. Except where otherwise noted,
+>  these non-guarantees were premeditated.
+>  
+> -#. `Readers Impose Minimal
+> -   Ordering <#Readers%20Impose%20Minimal%20Ordering>`__
+> -#. `Readers Do Not Exclude
+> -   Updaters <#Readers%20Do%20Not%20Exclude%20Updaters>`__
+> -#. `Updaters Only Wait For Old
+> -   Readers <#Updaters%20Only%20Wait%20For%20Old%20Readers>`__
+> -#. `Grace Periods Don't Partition Read-Side Critical
+> -   Sections <#Grace%20Periods%20Don't%20Partition%20Read-Side%20Critical%20Sections>`__
+> -#. `Read-Side Critical Sections Don't Partition Grace
+> -   Periods <#Read-Side%20Critical%20Sections%20Don't%20Partition%20Grace%20Periods>`__
+> +#. `Readers Impose Minimal Ordering`_
+> +#. `Readers Do Not Exclude Updaters`_
+> +#. `Updaters Only Wait For Old Readers`_
+> +#. `Grace Periods Don't Partition Read-Side Critical Sections`_
+> +#. `Read-Side Critical Sections Don't Partition Grace Periods`_
+>  
+>  Readers Impose Minimal Ordering
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -1056,11 +1047,11 @@ it would likely be subject to limitations that would make it
+>  inappropriate for industrial-strength production use. Classes of
+>  quality-of-implementation requirements are as follows:
+>  
+> -#. `Specialization <#Specialization>`__
+> -#. `Performance and Scalability <#Performance%20and%20Scalability>`__
+> -#. `Forward Progress <#Forward%20Progress>`__
+> -#. `Composability <#Composability>`__
+> -#. `Corner Cases <#Corner%20Cases>`__
+> +#. `Specialization`_
+> +#. `Performance and Scalability`_
+> +#. `Forward Progress`_
+> +#. `Composability`_
+> +#. `Corner Cases`_
+>  
+>  These classes is covered in the following sections.
+>  
+> @@ -1692,21 +1683,18 @@ The Linux kernel provides an interesting environment for all kinds of
+>  software, including RCU. Some of the relevant points of interest are as
+>  follows:
+>  
+> -#. `Configuration <#Configuration>`__.
+> -#. `Firmware Interface <#Firmware%20Interface>`__.
+> -#. `Early Boot <#Early%20Boot>`__.
+> -#. `Interrupts and non-maskable interrupts
+> -   (NMIs) <#Interrupts%20and%20NMIs>`__.
+> -#. `Loadable Modules <#Loadable%20Modules>`__.
+> -#. `Hotplug CPU <#Hotplug%20CPU>`__.
+> -#. `Scheduler and RCU <#Scheduler%20and%20RCU>`__.
+> -#. `Tracing and RCU <#Tracing%20and%20RCU>`__.
+> -#. `Energy Efficiency <#Energy%20Efficiency>`__.
+> -#. `Scheduling-Clock Interrupts and
+> -   RCU <#Scheduling-Clock%20Interrupts%20and%20RCU>`__.
+> -#. `Memory Efficiency <#Memory%20Efficiency>`__.
+> -#. `Performance, Scalability, Response Time, and
+> -   Reliability <#Performance,%20Scalability,%20Response%20Time,%20and%20Reliability>`__.
+> +#. `Configuration`_
+> +#. `Firmware Interface`_
+> +#. `Early Boot`_
+> +#. `Interrupts and NMIs`_
+> +#. `Loadable Modules`_
+> +#. `Hotplug CPU`_
+> +#. `Scheduler and RCU`_
+> +#. `Tracing and RCU`_
+> +#. `Energy Efficiency`_
+> +#. `Scheduling-Clock Interrupts and RCU`_
+> +#. `Memory Efficiency`_
+> +#. `Performance, Scalability, Response Time, and Reliability`_
+>  
+>  This list is probably incomplete, but it does give a feel for the most
+>  notable Linux-kernel complications. Each of the following sections
+> @@ -2344,10 +2332,10 @@ implementations, non-preemptible and preemptible. The other four flavors
+>  are listed below, with requirements for each described in a separate
+>  section.
+>  
+> -#. `Bottom-Half Flavor (Historical) <#Bottom-Half%20Flavor>`__
+> -#. `Sched Flavor (Historical) <#Sched%20Flavor>`__
+> -#. `Sleepable RCU <#Sleepable%20RCU>`__
+> -#. `Tasks RCU <#Tasks%20RCU>`__
+> +#. `Bottom-Half Flavor (Historical)`_
+> +#. `Sched Flavor (Historical)`_
+> +#. `Sleepable RCU`_
+> +#. `Tasks RCU`_
+>  
+>  Bottom-Half Flavor (Historical)
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-							Thanx, Paul
+Sounds a lot better to me.
 
+Reviewed-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+
+
+Thanks,
+Mauro
