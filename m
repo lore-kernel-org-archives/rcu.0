@@ -1,95 +1,169 @@
-Return-Path: <SRS0=Tqm2=V3=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=275B=V4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E39E7C32750
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A4C9C32750
+	for <rcu@archiver.kernel.org>; Wed, 31 Jul 2019 00:05:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B6F332087F
-	for <rcu@archiver.kernel.org>; Tue, 30 Jul 2019 23:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1564531031;
-	bh=eAlf5bCuPFyOwqZ++7/dcq+8Zj8j2R0TzPAh5qW1I6E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=GVDf0p7PyYGqs5e/GJhtj0L7c0kICk3nnSkxmg3I45pKhZHIx1WTj/cEEgh0YbeZs
-	 Egu8W2gDm4K9duxOwNcSFZhXCwv8pZr9u8AJafQJ+Naj2/0SRUqTq3gRVKj5PSqyNO
-	 gObluogXBIUnUAYbkcc3By8PGGAiP40zC/9iySUs=
+	by mail.kernel.org (Postfix) with ESMTP id 11DB32089E
+	for <rcu@archiver.kernel.org>; Wed, 31 Jul 2019 00:05:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbfG3X5L (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Jul 2019 19:57:11 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:53250 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727981AbfG3X5L (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Jul 2019 19:57:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-        From:Date:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=nLImo0QgwL+GI9wIFh3eNs6gA530BwbjFLbIxMV0sgM=; b=UyzNtt6hMaJlEFALNVMK37+eL
-        IeDCrq8WQwsFoFUx64vo2U6MqAkxcbrr9Eru4tWqLNk4g2zBXuCGaAOXMh1HqNeOFKt26G00rlT+q
-        //SWtsnmkrlqiGIG0ymlcauv81B6avDidcg8u0kKFC7lPWRf30qKL9n+2ukjOMebyEl7fWG4hjyw3
-        GQlGLkPNU7ebwsZA9RPrx8evZdvq6ImJXI2ijuwIlJ3KvSHc5ho/+0PIHRYfjV5O8P+MI4/lG2VSt
-        tTXSWHXog5jHG6qOCpkySpzfYfe0Tb1UfnUlpksCDmvPdDqzZKBckhcjbGZuV4dkBk0Ni3mjTg+La
-        9h9+2d7JQ==;
-Received: from [177.157.101.143] (helo=coco.lan)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hsbzS-0006uA-Cm; Tue, 30 Jul 2019 23:57:10 +0000
-Date:   Tue, 30 Jul 2019 20:57:04 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
+        id S1728148AbfGaAF3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jul 2019 20:05:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16066 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728130AbfGaAF3 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 30 Jul 2019 20:05:29 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6V01q89190037;
+        Tue, 30 Jul 2019 20:04:56 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u2wspcfup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jul 2019 20:04:56 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6V039Iv194200;
+        Tue, 30 Jul 2019 20:04:56 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u2wspcfue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Jul 2019 20:04:56 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6V00Ydw031364;
+        Wed, 31 Jul 2019 00:04:55 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 2u0e85uqab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Jul 2019 00:04:55 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6V04sRd11993638
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 31 Jul 2019 00:04:54 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77CDEB2067;
+        Wed, 31 Jul 2019 00:04:54 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43ADBB206A;
+        Wed, 31 Jul 2019 00:04:54 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.181.16])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 31 Jul 2019 00:04:54 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 63D3516C0485; Tue, 30 Jul 2019 17:04:55 -0700 (PDT)
+Date:   Tue, 30 Jul 2019 17:04:55 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3 3/3] docs: rcu: Increase toctree to 3
-Message-ID: <20190730205704.2bd7b45c@coco.lan>
-In-Reply-To: <20190730231030.27510-4-joel@joelfernandes.org>
-References: <20190730231030.27510-1-joel@joelfernandes.org>
-        <20190730231030.27510-4-joel@joelfernandes.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 25/26] docs: rcu: convert some articles from html to
+ ReST
+Message-ID: <20190731000455.GA11465@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
+References: <cover.1564145354.git.mchehab+samsung@kernel.org>
+ <8444797277eea7be474f40625bb190775a9cee33.1564145354.git.mchehab+samsung@kernel.org>
+ <20190730212250.GJ14271@linux.ibm.com>
+ <20190730185040.3fbc44ca@coco.lan>
+ <20190730233720.GL14271@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190730233720.GL14271@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-30_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907300244
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Em Tue, 30 Jul 2019 19:10:30 -0400
-"Joel Fernandes (Google)" <joel@joelfernandes.org> escreveu:
-
-> These documents are long and have various sections. Provide a good
-> toc nesting level.
+On Tue, Jul 30, 2019 at 04:37:20PM -0700, Paul E. McKenney wrote:
+> On Tue, Jul 30, 2019 at 06:50:51PM -0300, Mauro Carvalho Chehab wrote:
+> > Em Tue, 30 Jul 2019 14:22:50 -0700
+> > "Paul E. McKenney" <paulmck@linux.ibm.com> escreveu:
+> > 
+> > > On Fri, Jul 26, 2019 at 09:51:35AM -0300, Mauro Carvalho Chehab wrote:
+> > > > There are 4 RCU articles that are written on html format.
+> > > > 
+> > > > The way they are, they can't be part of the Linux Kernel
+> > > > documentation body nor share the styles and pdf output.
+> > > > 
+> > > > So, convert them to ReST format.
+> > > > 
+> > > > This way, make htmldocs and make pdfdocs will produce a
+> > > > documentation output that will be like the original ones, but
+> > > > will be part of the Linux Kernel documentation body.
+> > > > 
+> > > > Part of the conversion was done with the help of pandoc, but
+> > > > the result had some broken things that had to be manually
+> > > > fixed.
+> > > > 
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>  
+> > > 
+> > > I am having some trouble applying these, at least in part due to UTF-8
+> > > sequences, for example double left quotation mark.  These end up being
+> > > "=E2=80=9C", with a few space characters turned into "=20".
+> > > 
+> > > Any advice on how to apply these?
+> > 
+> > Didn't notice it ended with UTF-8 chars. It is probably because it came
+> > from the html conversion.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  Documentation/RCU/index.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Or maybe there are some email issues somewhere along the way.
 > 
-> diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-> index 94427dc1f23d..5c99185710fa 100644
-> --- a/Documentation/RCU/index.rst
-> +++ b/Documentation/RCU/index.rst
-> @@ -5,7 +5,7 @@ RCU concepts
->  ============
->  
->  .. toctree::
-> -   :maxdepth: 1
-> +   :maxdepth: 3
+> > I guess it shouldn't hurt keeping those, but if you prefer I can find 
+> > some time later to replace them.
+> > 
+> > > Should I just pull commits from somewhere?
+> > 
+> > Yeah, if you prefer, you can pull from this branch:
+> > 
+> > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=rcu-v1
+> > 
+> > It has just two patches: the RCU and tools/memory-model ones.
+> > 
+> > It is based on v5.3-rc2.
+> 
+> And that does apply, thank you!
 
-Makes sense to me.
+And "make htmldocs" does produce real HTML!  At first glance anyway,
+quite impressive.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+However, "make pdfdocs" gives me this complaint:
 
-Thanks,
-Mauro
+	! Dimension too large.
+	\color@b@x ... #3}\kern \fboxsep }\dimen@ \ht \z@ 
+							  \advance \dimen@ \fboxsep ...
+	l.5092 \end{sphinxVerbatim}
+
+This appears to come from Documentation/output/latex/RCU.tex.
+There is nevertheless an RCU.pdf in this directory.  It is not
+bad, but has a figure full of XML on PDF page 21.  And a few later
+on as well.
+
+On the HTML side, the quick quizzes have immediately visible answers,
+which defeats the purpose.  The original HTML used a white font,
+so that you selected the answer with your mouse to make it visible.
+Can something similar be done with Sphinx?  Another approach is to
+gather the answers into a separate file and link to them.
+
+I believe that Joel already noted that internal links are not working.
+The external links that I tried work just fine, though.  As do the
+links from the table of contents.
+
+							Thanx, Paul
