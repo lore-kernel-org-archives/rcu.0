@@ -2,116 +2,100 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7095C433FF
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 20:14:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97FADC433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:01:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B837C20838
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 20:14:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64463206B8
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:01:56 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WsX9h6v0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbfHAUOk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 16:14:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59774 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726667AbfHAUOk (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 16:14:40 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71KCSxH072518;
-        Thu, 1 Aug 2019 16:14:38 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u448nx01q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 16:14:38 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71K5EKT015700;
-        Thu, 1 Aug 2019 20:14:37 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04wdc.us.ibm.com with ESMTP id 2u0e85vxkp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 20:14:37 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71KEYP99700048
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Aug 2019 20:14:34 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5AEABB205F;
-        Thu,  1 Aug 2019 20:14:34 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3EB68B2065;
-        Thu,  1 Aug 2019 20:14:34 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Aug 2019 20:14:34 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 6EE4A16C5D7D; Thu,  1 Aug 2019 13:14:35 -0700 (PDT)
-Date:   Thu, 1 Aug 2019 13:14:35 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/9] Apply new rest conversion patches to /dev branch
-Message-ID: <20190801201435.GQ5913@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190801181411.96429-1-joel@joelfernandes.org>
- <20190801195832.GP5913@linux.ibm.com>
- <CAEXW_YQ-JnuZGj7zUtmvY0Cn4swoHXoR6UD=iPKw56N55CL3-Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQ-JnuZGj7zUtmvY0Cn4swoHXoR6UD=iPKw56N55CL3-Q@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-01_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908010212
+        id S1732848AbfHAVB4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 17:01:56 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40177 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbfHAVBz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 17:01:55 -0400
+Received: by mail-io1-f65.google.com with SMTP id h6so22285638iom.7;
+        Thu, 01 Aug 2019 14:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hYk1p4XO50YHWglK7WQv5FDba8WVu0jGxZbnBmYxT0U=;
+        b=WsX9h6v0sWIw9UZqgWKwYoxbHzXP+O8GZHjEmu+fHjKraZiFxmywfBPowTassSYhrO
+         DZ+idaDNIsCqcPfR2dmLfLbFOSJlCCW+y+T32uR6n4SViSofTXsO4znvyykajmEsiELz
+         +TmZel3pzTimGJ2dvG0+8/J49RnFZcMEuy7ONdHdSh+046juGbhrhrvuIvPlagsuweff
+         xQE+KvsPYM7hRG9PquDIfUWD2LM7oIQR4qtFHyfprMjb5c7PkGCIhMr/JMvGzBTNa2jb
+         +4yIHF+1L1rTltWHsj1U3ES9fe8I80SbJp10bJD7A8mf1Co9qbNhfr+TDLhmpIZJT8Yf
+         8HbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hYk1p4XO50YHWglK7WQv5FDba8WVu0jGxZbnBmYxT0U=;
+        b=qPV66XewVwGQ3qNewkHPh+2jyeS1eCUgJu0IJSZzn97/DrF4rROPI8iXGo8pbBEhNk
+         pN+EHuy0B1ZtDA3j8ZZyUfooCvCN+y3Uicvq1sS2DFC1XxfhJ5Htn4mxtgPYBiCEU40/
+         0Wt1nHURAhcGNRvZxI/yw6PR/p1TU24GYVD8XbEXPBocRAzxyNErFo1PNw33oIo/oJdE
+         79ZhAKT0d+cE6qSwhf9WuZY8/Z9SpUNzvdQVFmt8WqawAC2XY60pscQMxcuNaJxR459r
+         1Hp5+35Qan7xr3FdfFyemSt5BTN5brnvroPXyJsqO/XFBSv8UIwHytior1imTNVJRkiq
+         IWQA==
+X-Gm-Message-State: APjAAAW9EmqElH/rSasCzmP6u7gIV/g+0u0eapNvGQUjTJThdYiboMsU
+        wXiaaU8duh44Pii6JMJxvRfoXIEpvYVkdw==
+X-Google-Smtp-Source: APXvYqx1qXNn4zrShRhEW4FJxoqRTY2+moF4vrJlebUUd+k14iJhk2BPtqeX3DTrTf/z245SC8LW2g==
+X-Received: by 2002:a5d:9642:: with SMTP id d2mr96884249ios.278.1564693314390;
+        Thu, 01 Aug 2019 14:01:54 -0700 (PDT)
+Received: from oc2825805254.ibm.com ([32.97.110.51])
+        by smtp.gmail.com with ESMTPSA id s2sm51429162ioj.8.2019.08.01.14.01.52
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Aug 2019 14:01:53 -0700 (PDT)
+From:   Ethan Hansen <1ethanhansen@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, paulmck@linux.ibm.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, Ethan Hansen <1ethanhansen@gmail.com>
+Subject: [PATCH tip/core/rcu 1/1] rcu: Remove unused function rcutorture_record_progress
+Date:   Thu,  1 Aug 2019 14:00:40 -0700
+Message-Id: <1564693240-13363-1-git-send-email-1ethanhansen@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 01, 2019 at 04:04:15PM -0400, Joel Fernandes wrote:
-> On Thu, Aug 1, 2019 at 3:58 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> >
-> > On Thu, Aug 01, 2019 at 02:14:02PM -0400, Joel Fernandes (Google) wrote:
-> > > This series fixes the rcu/dev branch so it can apply the new ReST conversion patches.
-> > >
-> > > Patches based on "00ec8f46465e  rcu/nohz: Make multi_cpu_stop() enable tick on
-> > > all online CPUs"
-> > >
-> > > The easiest was to do this is to revert the patches that conflict and then
-> > > applying the doc patches, and then applying them again. But in the
-> > > re-application, we convert the documentation
-> > >
-> > > No manual fix ups were done in this process, other than to documentation.
-> >
-> > Ah, I was expecting that you would forward-port the conversion, but
-> > yes, that could be painful and error prone.
-> >
-> > But given that there are some dependencies on these patches, could you
-> > please use the following alternative procedure for the patches that
-> > touch both code and documentation?
-> >
-> > o       Revert only the documentation portion of each commit.  I will
-> >         then merge the partial reverts with the original commits.
-> >
-> > o       Apply the documentation conversion.
-> >
-> > o       Reapply the documentation portions on top of the conversion.
-> 
-> Sure, this would be better. I will do this in the evening and send it
-> to you. Thanks,
+The function rcutorture_record_progress is declared in rcu.h,
+but is never used. Remove rcutorture_record_progress to clean code.
 
-Very good, looking forward to seeing it!
+Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
+---
+ kernel/rcu/rcu.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-The smoke tests of the rebase onto v5.3-rc2 passed, so on to create
-the usual branches.  Yes, this will complicate merging of the partial
-reverts, but there will be the need to apply review comments and the
-like anyway, so not really a net increase in complexity.  ;-)
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 8fd4f82..aeec70f 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -455,7 +455,6 @@ enum rcutorture_type {
+ #if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
+ void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
+ 			    unsigned long *gp_seq);
+-void rcutorture_record_progress(unsigned long vernum);
+ void do_trace_rcu_torture_read(const char *rcutorturename,
+ 			       struct rcu_head *rhp,
+ 			       unsigned long secs,
+@@ -468,7 +467,6 @@ static inline void rcutorture_get_gp_data(enum rcutorture_type test_type,
+ 	*flags = 0;
+ 	*gp_seq = 0;
+ }
+-static inline void rcutorture_record_progress(unsigned long vernum) { }
+ #ifdef CONFIG_RCU_TRACE
+ void do_trace_rcu_torture_read(const char *rcutorturename,
+ 			       struct rcu_head *rhp,
+-- 
+1.8.3.1
 
-							Thanx, Paul
