@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81647C433FF
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88164C433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:38:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5F5C5206A2
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:38:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 63876206A2
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:38:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389801AbfHAWi3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 18:38:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51450 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389791AbfHAWi2 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:38:28 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71Mb3mm143607;
+        id S2389827AbfHAWik (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 18:38:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29204 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389795AbfHAWi3 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:38:29 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71MbGqN021142;
         Thu, 1 Aug 2019 18:37:49 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u48hagxsd-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u460eeapu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 01 Aug 2019 18:37:49 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71Mbnc9145022;
-        Thu, 1 Aug 2019 18:37:49 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u48hagxrv-1
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71MbmWB022545;
+        Thu, 1 Aug 2019 18:37:48 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u460eeaph-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 01 Aug 2019 18:37:48 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71MZPHR024026;
-        Thu, 1 Aug 2019 22:37:47 GMT
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71MZVla016206;
+        Thu, 1 Aug 2019 22:37:48 GMT
 Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma05wdc.us.ibm.com with ESMTP id 2u0e85w6h8-1
+        by ppma03wdc.us.ibm.com with ESMTP id 2u0e85w60n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 22:37:47 +0000
+        Thu, 01 Aug 2019 22:37:48 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71Mblta54067656
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71MblPp39453000
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 1 Aug 2019 22:37:47 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1935EB2079;
+        by IMSVA (Postfix) with ESMTP id 73468B206C;
         Thu,  1 Aug 2019 22:37:47 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFD7EB2077;
-        Thu,  1 Aug 2019 22:37:46 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5DA3DB2079;
+        Thu,  1 Aug 2019 22:37:47 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Aug 2019 22:37:46 +0000 (GMT)
+        Thu,  1 Aug 2019 22:37:47 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 55DB016C9A4A; Thu,  1 Aug 2019 15:37:48 -0700 (PDT)
+        id 7265616C9A52; Thu,  1 Aug 2019 15:37:48 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -63,9 +63,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 05/12] rcu: Add destroy_work_on_stack() to match INIT_WORK_ONSTACK()
-Date:   Thu,  1 Aug 2019 15:37:40 -0700
-Message-Id: <20190801223747.15560-5-paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 10/12] rcu: Remove redundant "if" condition from rcu_gp_is_expedited()
+Date:   Thu,  1 Aug 2019 15:37:45 -0700
+Message-Id: <20190801223747.15560-10-paulmck@linux.ibm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190801223708.GA14862@linux.ibm.com>
 References: <20190801223708.GA14862@linux.ibm.com>
@@ -82,47 +82,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The synchronize_rcu_expedited() function has an INIT_WORK_ONSTACK(),
-but lacks the corresponding destroy_work_on_stack().  This commit
-therefore adds destroy_work_on_stack().
+Because rcu_expedited_nesting is initialized to 1 and not decremented
+until just before init is spawned, rcu_expedited_nesting is guaranteed
+to be non-zero whenever rcu_scheduler_active == RCU_SCHEDULER_INIT.
+This commit therefore removes this redundant "if" equality test.
 
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-Acked-by: Andrea Arcangeli <aarcange@redhat.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree_exp.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/update.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index af7e7b9c86af..513b403b683b 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -792,6 +792,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 249517058b13..64e9cc8609e7 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -136,8 +136,7 @@ static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
   */
- void synchronize_rcu_expedited(void)
+ bool rcu_gp_is_expedited(void)
  {
-+	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
- 	struct rcu_exp_work rew;
- 	struct rcu_node *rnp;
- 	unsigned long s;
-@@ -817,7 +818,7 @@ void synchronize_rcu_expedited(void)
- 		return;  /* Someone else did our work for us. */
- 
- 	/* Ensure that load happens before action based on it. */
--	if (unlikely(rcu_scheduler_active == RCU_SCHEDULER_INIT)) {
-+	if (unlikely(boottime)) {
- 		/* Direct call during scheduler init and early_initcalls(). */
- 		rcu_exp_sel_wait_wake(s);
- 	} else {
-@@ -835,5 +836,8 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
-+
-+	if (likely(!boottime))
-+		destroy_work_on_stack(&rew.rew_work);
+-	return rcu_expedited || atomic_read(&rcu_expedited_nesting) ||
+-	       rcu_scheduler_active == RCU_SCHEDULER_INIT;
++	return rcu_expedited || atomic_read(&rcu_expedited_nesting);
  }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+ EXPORT_SYMBOL_GPL(rcu_gp_is_expedited);
+ 
 -- 
 2.17.1
 
