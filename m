@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE76C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C827C19759
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:09:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7C3C82083B
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:09:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7AFD4206B8
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:09:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390308AbfHAXIy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 19:08:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23302 "EHLO
+        id S2390398AbfHAXJ3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 19:09:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16642 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730790AbfHAXIx (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 19:08:53 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71N7kH1118307;
-        Thu, 1 Aug 2019 19:08:13 -0400
+        by vger.kernel.org with ESMTP id S2388033AbfHAXIy (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 19:08:54 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71N7Dgb084087;
+        Thu, 1 Aug 2019 19:08:14 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u488ka6uf-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u460ef3hf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Aug 2019 19:08:14 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71N7rOu085384;
+        Thu, 1 Aug 2019 19:08:13 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u460ef3gs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 01 Aug 2019 19:08:13 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71N8CWn119869;
-        Thu, 1 Aug 2019 19:08:12 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2u488ka6tx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 19:08:12 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71N53Bd013053;
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71N4xGh021252;
         Thu, 1 Aug 2019 23:08:12 GMT
 Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02wdc.us.ibm.com with ESMTP id 2u0e85w7am-1
+        by ppma03dal.us.ibm.com with ESMTP id 2u0e8799se-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 01 Aug 2019 23:08:12 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71N8BMq39715162
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71N8BEr43909542
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 1 Aug 2019 23:08:11 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4EB0AB2076;
+        by IMSVA (Postfix) with ESMTP id 8C827B206B;
         Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2ECC3B206E;
+        by IMSVA (Postfix) with ESMTP id 78BEBB2072;
         Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 5FD8716C9A55; Thu,  1 Aug 2019 16:08:12 -0700 (PDT)
+        id 73A1716C9A58; Thu,  1 Aug 2019 16:08:12 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -63,9 +63,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 14/18] rcu/nocb: Remove obsolete nocb_gp_head and nocb_gp_tail fields
-Date:   Thu,  1 Aug 2019 16:08:06 -0700
-Message-Id: <20190801230810.21570-14-paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 17/18] rcu/nocb: Use build-time no-CBs check in rcu_pending()
+Date:   Thu,  1 Aug 2019 16:08:09 -0700
+Message-Id: <20190801230810.21570-17-paulmck@linux.ibm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190801230744.GA19115@linux.ibm.com>
 References: <20190801230744.GA19115@linux.ibm.com>
@@ -82,28 +82,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Currently, rcu_pending() invokes rcu_segcblist_is_offloaded() even
+in CONFIG_RCU_NOCB_CPU=n kernels, which cannot possibly be offloaded.
+Given that rcu_pending() is on a fastpath, it makes sense to check for
+CONFIG_RCU_NOCB_CPU=y before invoking rcu_segcblist_is_offloaded().
+This commit therefore makes this change.
+
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 6e4cf7de303f..c12e85c12310 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -201,10 +201,8 @@ struct rcu_data {
- 	struct timer_list nocb_timer;	/* Enforce finite deferral. */
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 14939273d120..fb6b80aa34f6 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2773,7 +2773,8 @@ static int rcu_pending(void)
+ 	/* Has RCU gone idle with this CPU needing another grace period? */
+ 	if (!rcu_gp_in_progress() &&
+ 	    rcu_segcblist_is_enabled(&rdp->cblist) &&
+-	    !rcu_segcblist_is_offloaded(&rdp->cblist) &&
++	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
++	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
+ 	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+ 		return 1;
  
- 	/* The following fields are used by GP kthread, hence own cacheline. */
--	struct rcu_head *nocb_gp_head ____cacheline_internodealigned_in_smp;
--					/* CBs waiting for GP. */
--	struct rcu_head **nocb_gp_tail;
--	bool nocb_gp_sleep;		/* Is the nocb GP thread asleep? */
-+	bool nocb_gp_sleep ____cacheline_internodealigned_in_smp;
-+					/* Is the nocb GP thread asleep? */
- 	struct swait_queue_head nocb_gp_wq; /* For nocb kthreads to sleep on. */
- 	bool nocb_cb_sleep;		/* Is the nocb CB thread asleep? */
- 	struct task_struct *nocb_cb_kthread;
 -- 
 2.17.1
 
