@@ -2,63 +2,63 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF5BC32753
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D532C19759
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7427420838
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A0EE2087E
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="oGFr/Yx9"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FI9pCSok"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389245AbfHAVjq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 17:39:46 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:34736 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389237AbfHAVjo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 17:39:44 -0400
-Received: by mail-pl1-f181.google.com with SMTP id i2so32786035plt.1
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:39:44 -0700 (PDT)
+        id S2389255AbfHAVjs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 17:39:48 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:45355 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389252AbfHAVjr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 17:39:47 -0400
+Received: by mail-pf1-f193.google.com with SMTP id r1so34796787pfq.12
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pTSTyTo6evUeD9vN87wB9846b+0jKcxNJYQscwXw5sw=;
-        b=oGFr/Yx9DyGhI50VQm1FHg7m80SFWMNbUN+tYT0ynTmdIhVJrx0hDJmrxELW007H7y
-         GwOLFmBgY4U68waEvukrSObbPl1mqmmiKjjYscKkfeOKtDeiM8gx2IpJk0Jn9eeV/hzO
-         3kgpe7tzM4srhjNeWUHuzLe+K39ZGNnmbeuBw=
+        bh=sa7dl9/Bg+B6qij2R03P065SrXCEeaEiOhF+kfqmyI8=;
+        b=FI9pCSokvG3H6vsTXt0B9KmGnGubyGFBgM4M1njVQMJ1DkURP0wkrBj0v5Zf8ZAvel
+         MOQTYfkUS5uRh5kds8LdXiYK3I0guUC0sS75de4twfoQc/KegraznSl5+vlDd6fvZe5g
+         7jfAW0tAXw38d2tVrj70mIl8J9M459YIsXjck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pTSTyTo6evUeD9vN87wB9846b+0jKcxNJYQscwXw5sw=;
-        b=uNahFN8VvAqFa4AoGpMF226sFXkvEBuJIVquJQF2XJtuNferD0O7u8MbsvwWGU7sRo
-         pZHPZ1X5SV2LGZm4Lo6FTthehfMHM4uKfhuQ+56YQsvxx1Y6OaxW8jACb0N/0qJnW911
-         eNsAVozD0Ye2VUTxlN+RTGG96Wu2GliqSk2KYsx8r9Di3pW9240iIC+oAqcNfqa9L4DB
-         vQ802ETLk2PpU90ltl4SgJxaJG8orwL+xFctJLwXP6dlxxRks4pzK3cWclWvJgkJav3r
-         D9NaoYmtqwOlGrDY38a04Ss5UFCg92gb6JLg7QOAEpJw8S1Hl+J6V2+1Lpr0niCAikmL
-         fgDg==
-X-Gm-Message-State: APjAAAXXkNBWBPrKBbazSaaEaH7PiTNjLmxx1f7Jqg0sCTsDo9yBBcfN
-        OEhGzxUuddbV8TRAcG7EJCU=
-X-Google-Smtp-Source: APXvYqzlQW8pav1BVOJ8PWWMEYeSP1jsupHMeXiJzvHjoTgxYZ4mUSAJ8/P90V7PJA24mKYNwKGBug==
-X-Received: by 2002:a17:902:d70a:: with SMTP id w10mr121131011ply.251.1564695583663;
-        Thu, 01 Aug 2019 14:39:43 -0700 (PDT)
+        bh=sa7dl9/Bg+B6qij2R03P065SrXCEeaEiOhF+kfqmyI8=;
+        b=KViK1XskjEesp0+aIftDWqCQwpH+hRjsfNGjeOYolvcfF5Sta/k3yxUK3aK35cxReV
+         liH4KojyHL7wxSa26zHiS3lngRu00iE3P/EL7Noo56KmKcqTDlyApidZ2QxGjc2amlhv
+         xBwtfcvuOaqU+Ez2vwq/MKZCqKu9un9StwN2R0pCusNRRcNgw80/GEyMo+hoYI1Vbiyq
+         GMP1YS3E2YI3gUzp1D0bVIAoUS0b05AtYKhoIrDUCmjPYo2MZ2lW2ho2getMY36HJ4lk
+         vucYpu5md+MZPDDp5VwiYibEwkXGNy1LpHG5MajCiEYjhVsefHqN9VRAQljYDg0f8kon
+         av8Q==
+X-Gm-Message-State: APjAAAULCorK26w7C6YOz6VjOeYjroCYsjfrLcxWDGHHQu+lUBUedgxF
+        +8xH0REoq5ukAV3fqDGF/G0=
+X-Google-Smtp-Source: APXvYqweHt9TEHKnVR54CT5pPpsfDW2i7AM+lKCqk704wd5AiCNzUY2F4eYlA45raVZ3uF9Aon7qVQ==
+X-Received: by 2002:a62:1883:: with SMTP id 125mr55694381pfy.178.1564695587051;
+        Thu, 01 Aug 2019 14:39:47 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id r61sm5940423pjb.7.2019.08.01.14.39.42
+        by smtp.gmail.com with ESMTPSA id r61sm5940423pjb.7.2019.08.01.14.39.45
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 14:39:42 -0700 (PDT)
+        Thu, 01 Aug 2019 14:39:46 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: ['PATCH v2' 5/7] docs: rcu: Increase toctree to 3
-Date:   Thu,  1 Aug 2019 17:39:20 -0400
-Message-Id: <20190801213922.158860-6-joel@joelfernandes.org>
+Subject: ['PATCH v2' 7/7] Restore docs "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
+Date:   Thu,  1 Aug 2019 17:39:22 -0400
+Message-Id: <20190801213922.158860-8-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190801213922.158860-1-joel@joelfernandes.org>
 References: <20190801213922.158860-1-joel@joelfernandes.org>
@@ -69,27 +69,83 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-These documents are long and have various sections. Provide a good
-toc nesting level.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+This restores docs back in ReST format.
 ---
- Documentation/RCU/index.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../RCU/Design/Requirements/Requirements.rst  | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-index 94427dc1f23d..5c99185710fa 100644
---- a/Documentation/RCU/index.rst
-+++ b/Documentation/RCU/index.rst
-@@ -5,7 +5,7 @@ RCU concepts
- ============
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 0b222469d7ce..fd5e2cbc4935 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -1691,6 +1691,7 @@ follows:
+ #. `Hotplug CPU`_
+ #. `Scheduler and RCU`_
+ #. `Tracing and RCU`_
++#. `Accesses to User Memory and RCU`_
+ #. `Energy Efficiency`_
+ #. `Scheduling-Clock Interrupts and RCU`_
+ #. `Memory Efficiency`_
+@@ -2004,6 +2005,59 @@ where RCU readers execute in environments in which tracing cannot be
+ used. The tracing folks both located the requirement and provided the
+ needed fix, so this surprise requirement was relatively painless.
  
- .. toctree::
--   :maxdepth: 1
-+   :maxdepth: 3
++Accesses to User Memory and RCU
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The kernel needs to access user-space memory, for example, to access data
++referenced by system-call parameters.  The ``get_user()`` macro does this job.
++
++However, user-space memory might well be paged out, which means that
++``get_user()`` might well page-fault and thus block while waiting for the
++resulting I/O to complete.  It would be a very bad thing for the compiler to
++reorder a ``get_user()`` invocation into an RCU read-side critical section.
++
++For example, suppose that the source code looked like this:
++
++  ::
++
++       1 rcu_read_lock();
++       2 p = rcu_dereference(gp);
++       3 v = p->value;
++       4 rcu_read_unlock();
++       5 get_user(user_v, user_p);
++       6 do_something_with(v, user_v);
++
++The compiler must not be permitted to transform this source code into
++the following:
++
++  ::
++
++       1 rcu_read_lock();
++       2 p = rcu_dereference(gp);
++       3 get_user(user_v, user_p); // BUG: POSSIBLE PAGE FAULT!!!
++       4 v = p->value;
++       5 rcu_read_unlock();
++       6 do_something_with(v, user_v);
++
++If the compiler did make this transformation in a ``CONFIG_PREEMPT=n`` kernel
++build, and if ``get_user()`` did page fault, the result would be a quiescent
++state in the middle of an RCU read-side critical section.  This misplaced
++quiescent state could result in line 4 being a use-after-free access,
++which could be bad for your kernel's actuarial statistics.  Similar examples
++can be constructed with the call to ``get_user()`` preceding the
++``rcu_read_lock()``.
++
++Unfortunately, ``get_user()`` doesn't have any particular ordering properties,
++and in some architectures the underlying ``asm`` isn't even marked
++``volatile``.  And even if it was marked ``volatile``, the above access to
++``p->value`` is not volatile, so the compiler would not have any reason to keep
++those two accesses in order.
++
++Therefore, the Linux-kernel definitions of ``rcu_read_lock()`` and
++``rcu_read_unlock()`` must act as compiler barriers, at least for outermost
++instances of ``rcu_read_lock()`` and ``rcu_read_unlock()`` within a nested set
++of RCU read-side critical sections.
++
+ Energy Efficiency
+ ~~~~~~~~~~~~~~~~~
  
-    rcu
-    listRCU
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
