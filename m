@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 382D8C19759
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55B21C32754
 	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:50:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 09CBA2080C
+	by mail.kernel.org (Postfix) with ESMTP id 34EE02084C
 	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:50:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390063AbfHAWui (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S2390047AbfHAWui (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 1 Aug 2019 18:50:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14616 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390047AbfHAWuh (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:50:37 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71MlEAv034002
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57436 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390049AbfHAWui (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:50:38 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71Ml9xL134325
         for <rcu@vger.kernel.org>; Thu, 1 Aug 2019 18:50:36 -0400
-Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u48mgs2e0-1
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u48609w4r-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
         for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 18:50:36 -0400
 Received: from localhost
-        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Thu, 1 Aug 2019 23:50:35 +0100
-Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
-        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Thu, 1 Aug 2019 23:50:36 +0100
+Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 1 Aug 2019 23:50:30 +0100
+        Thu, 1 Aug 2019 23:50:29 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71MoTgl15663600
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71MoSA549349080
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 1 Aug 2019 22:50:29 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F1594B206C;
+        by IMSVA (Postfix) with ESMTP id E2E9FB207E;
         Thu,  1 Aug 2019 22:50:28 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CCD26B2079;
+        by IMSVA (Postfix) with ESMTP id C596AB2073;
         Thu,  1 Aug 2019 22:50:28 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
         Thu,  1 Aug 2019 22:50:28 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id DF9ED16C9A54; Thu,  1 Aug 2019 15:50:29 -0700 (PDT)
+        id D699116C9A56; Thu,  1 Aug 2019 15:50:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,20 +57,20 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 10/11] rcu/nocb: Rename rcu_nocb_leader_stride kernel boot parameter
-Date:   Thu,  1 Aug 2019 15:50:27 -0700
+Subject: [PATCH tip/core/rcu 08/11] rcu/nocb: Rename rcu_organize_nocb_kthreads() local variable
+Date:   Thu,  1 Aug 2019 15:50:25 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190801225009.GA17155@linux.ibm.com>
 References: <20190801225009.GA17155@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19080122-0060-0000-0000-00000367718D
+x-cbid: 19080122-0052-0000-0000-000003E775D7
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00011535; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01240738; UDB=6.00654297; IPR=6.01022163;
+ PH=3.00000004; SC=3.00000287; SDB=6.01240736; UDB=6.00654296; IPR=6.01022160;
  MB=3.00028000; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-01 22:50:34
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19080122-0061-0000-0000-00004A627D3F
-Message-Id: <20190801225028.18225-10-paulmck@linux.ibm.com>
+x-cbparentid: 19080122-0053-0000-0000-000061EE7D59
+Message-Id: <20190801225028.18225-8-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-01_09:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
@@ -83,73 +83,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit changes the name of the rcu_nocb_leader_stride kernel
-boot parameter to rcu_nocb_gp_stride in order to account for the new
-distinction between callback and grace-period no-CBs kthreads.
+This commit renames rdp_leader to rdp_gp in order to account for the
+new distinction between callback and grace-period no-CBs kthreads.
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 13 +++++++------
- kernel/rcu/tree_plugin.h                        |  8 ++++----
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ kernel/rcu/tree_plugin.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f3fcd6140ee1..79b983bedcaa 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3837,12 +3837,13 @@
- 			RCU_BOOST is not set, valid values are 0-99 and
- 			the default is zero (non-realtime operation).
- 
--	rcutree.rcu_nocb_leader_stride= [KNL]
--			Set the number of NOCB kthread groups, which
--			defaults to the square root of the number of
--			CPUs.  Larger numbers reduces the wakeup overhead
--			on the per-CPU grace-period kthreads, but increases
--			that same overhead on each group's leader.
-+	rcutree.rcu_nocb_gp_stride= [KNL]
-+			Set the number of NOCB callback kthreads in
-+			each group, which defaults to the square root
-+			of the number of CPUs.	Larger numbers reduce
-+			the wakeup overhead on the global grace-period
-+			kthread, but increases that same overhead on
-+			each group's NOCB grace-period kthread.
- 
- 	rcutree.qhimark= [KNL]
- 			Set threshold of queued RCU callbacks beyond which
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index be065aacd63b..80b27a9f306d 100644
+index e6581a51ff9a..0af36e98e70f 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2126,8 +2126,8 @@ static void __init rcu_spawn_nocb_kthreads(void)
- }
- 
- /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
--static int rcu_nocb_leader_stride = -1;
--module_param(rcu_nocb_leader_stride, int, 0444);
-+static int rcu_nocb_gp_stride = -1;
-+module_param(rcu_nocb_gp_stride, int, 0444);
- 
- /*
-  * Initialize GP-CB relationships for all no-CBs CPU.
-@@ -2135,7 +2135,7 @@ module_param(rcu_nocb_leader_stride, int, 0444);
- static void __init rcu_organize_nocb_kthreads(void)
- {
- 	int cpu;
--	int ls = rcu_nocb_leader_stride;
-+	int ls = rcu_nocb_gp_stride;
+@@ -2138,7 +2138,7 @@ static void __init rcu_organize_nocb_kthreads(void)
+ 	int ls = rcu_nocb_leader_stride;
  	int nl = 0;  /* Next GP kthread. */
  	struct rcu_data *rdp;
- 	struct rcu_data *rdp_gp = NULL;  /* Suppress misguided gcc warn. */
-@@ -2145,7 +2145,7 @@ static void __init rcu_organize_nocb_kthreads(void)
- 		return;
- 	if (ls == -1) {
- 		ls = int_sqrt(nr_cpu_ids);
--		rcu_nocb_leader_stride = ls;
-+		rcu_nocb_gp_stride = ls;
- 	}
+-	struct rcu_data *rdp_leader = NULL;  /* Suppress misguided gcc warn. */
++	struct rcu_data *rdp_gp = NULL;  /* Suppress misguided gcc warn. */
+ 	struct rcu_data *rdp_prev = NULL;
  
- 	/*
+ 	if (!cpumask_available(rcu_nocb_mask))
+@@ -2159,10 +2159,10 @@ static void __init rcu_organize_nocb_kthreads(void)
+ 			/* New GP kthread, set up for CBs & next GP. */
+ 			nl = DIV_ROUND_UP(rdp->cpu + 1, ls) * ls;
+ 			rdp->nocb_gp_rdp = rdp;
+-			rdp_leader = rdp;
++			rdp_gp = rdp;
+ 		} else {
+ 			/* Another CB kthread, link to previous GP kthread. */
+-			rdp->nocb_gp_rdp = rdp_leader;
++			rdp->nocb_gp_rdp = rdp_gp;
+ 			rdp_prev->nocb_next_cb_rdp = rdp;
+ 		}
+ 		rdp_prev = rdp;
 -- 
 2.17.1
 
