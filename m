@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F498C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CECE6C19759
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:43:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7B93E206A2
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:43:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD779206A2
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 22:43:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389966AbfHAWnr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 18:43:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389970AbfHAWnm (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:43:42 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71MfekP023464;
+        id S2389961AbfHAWnk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 18:43:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25612 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389943AbfHAWnj (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 18:43:39 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71MfhYU047534;
         Thu, 1 Aug 2019 18:43:01 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u48mgrvdb-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u46duwh8b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 01 Aug 2019 18:43:01 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71Mfw3f024004;
-        Thu, 1 Aug 2019 18:43:00 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u48mgrvct-1
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x71Mg3Dh048229;
+        Thu, 1 Aug 2019 18:43:01 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u46duwh7y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 18:43:00 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71MeiaL023094;
-        Thu, 1 Aug 2019 22:42:59 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma02dal.us.ibm.com with ESMTP id 2u0e85xg18-1
+        Thu, 01 Aug 2019 18:43:01 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x71Megm7026839;
+        Thu, 1 Aug 2019 22:43:00 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 2u0e8795m3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Aug 2019 22:42:59 +0000
+        Thu, 01 Aug 2019 22:43:00 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71MgwfD13042592
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71MgxU852691310
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Aug 2019 22:42:58 GMT
+        Thu, 1 Aug 2019 22:42:59 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C34AFB206C;
-        Thu,  1 Aug 2019 22:42:58 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 2B99BB2075;
+        Thu,  1 Aug 2019 22:42:59 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE8F5B2076;
-        Thu,  1 Aug 2019 22:42:58 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 18476B2076;
+        Thu,  1 Aug 2019 22:42:59 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Aug 2019 22:42:58 +0000 (GMT)
+        Thu,  1 Aug 2019 22:42:59 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 16A0C16C9A4A; Thu,  1 Aug 2019 15:43:00 -0700 (PDT)
+        id 2353716C9A4E; Thu,  1 Aug 2019 15:43:00 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 4/8] rcu/sync: Remove custom check for RCU readers
-Date:   Thu,  1 Aug 2019 15:42:54 -0700
-Message-Id: <20190801224258.16679-4-paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 7/8] x86/pci: Pass lockdep condition to pcm_mmcfg_list iterator
+Date:   Thu,  1 Aug 2019 15:42:57 -0700
+Message-Id: <20190801224258.16679-7-paulmck@linux.ibm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190801224240.GA16092@linux.ibm.com>
 References: <20190801224240.GA16092@linux.ibm.com>
@@ -85,35 +85,48 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-The rcu/sync code currently does a special check for being in an RCU
-read-side critical section.  With RCU consolidating flavors and the
-generic helper added earlier in this series, this check is no longer need.
-This commit switches to the generic helper, saving a couple of lines
-of code.
+The pcm_mmcfg_list is traversed by list_for_each_entry_rcu() outside
+of an RCU read-side critical section, which is safe because the
+pci_mmcfg_lock is held.  This commit therefore adds a lockdep expression
+to list_for_each_entry_rcu() in order t avoid lockdep warnings.
 
-Cc: Oleg Nesterov <oleg@redhat.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- include/linux/rcu_sync.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/x86/pci/mmconfig-shared.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcu_sync.h b/include/linux/rcu_sync.h
-index 9b83865d24f9..0027d4c8087c 100644
---- a/include/linux/rcu_sync.h
-+++ b/include/linux/rcu_sync.h
-@@ -31,9 +31,7 @@ struct rcu_sync {
-  */
- static inline bool rcu_sync_is_idle(struct rcu_sync *rsp)
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 7389db538c30..6fa42e9c4e6f 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -29,6 +29,7 @@
+ static bool pci_mmcfg_running_state;
+ static bool pci_mmcfg_arch_init_failed;
+ static DEFINE_MUTEX(pci_mmcfg_lock);
++#define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+ 
+ LIST_HEAD(pci_mmcfg_list);
+ 
+@@ -54,7 +55,7 @@ static void list_add_sorted(struct pci_mmcfg_region *new)
+ 	struct pci_mmcfg_region *cfg;
+ 
+ 	/* keep list sorted by segment and starting bus number */
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list) {
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held()) {
+ 		if (cfg->segment > new->segment ||
+ 		    (cfg->segment == new->segment &&
+ 		     cfg->start_bus >= new->start_bus)) {
+@@ -118,7 +119,7 @@ struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int bus)
  {
--	RCU_LOCKDEP_WARN(!rcu_read_lock_held() &&
--			 !rcu_read_lock_bh_held() &&
--			 !rcu_read_lock_sched_held(),
-+	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
- 			 "suspicious rcu_sync_is_idle() usage");
- 	return !READ_ONCE(rsp->gp_state); /* GP_IDLE */
- }
+ 	struct pci_mmcfg_region *cfg;
+ 
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list)
++	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list, pci_mmcfg_lock_held())
+ 		if (cfg->segment == segment &&
+ 		    cfg->start_bus <= bus && bus <= cfg->end_bus)
+ 			return cfg;
 -- 
 2.17.1
 
