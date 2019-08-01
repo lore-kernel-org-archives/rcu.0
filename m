@@ -2,62 +2,62 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FF55C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C02AC433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A64120838
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D9468217F5
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="nBrxjn75"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NQH0KqyW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbfHASOZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 14:14:25 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:42939 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388140AbfHASOY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 14:14:24 -0400
-Received: by mail-pg1-f195.google.com with SMTP id t132so34638382pgb.9
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:14:23 -0700 (PDT)
+        id S2388195AbfHASOb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 14:14:31 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:38331 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388145AbfHASOb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 14:14:31 -0400
+Received: by mail-pl1-f169.google.com with SMTP id az7so32539902plb.5
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=f+BxR7sgupqFNFsF6whB+9OD2NMD7De9osDVjHbwXcU=;
-        b=nBrxjn75LtFDovBKlvujdSzDIqFTnYnKqMzoIIGfdwMY6pin4mrRSv9EROguIzJm9v
-         3sxyTaKJACf+hvrY7j1If7ybN4E0FPzN+jKQI5aFxo51OaxszlDsGseDNg19SitKrpw6
-         jL1ESgsmq/fc4Fptc2cfmHMNRkAUtCFkVKcWI=
+        bh=pTSTyTo6evUeD9vN87wB9846b+0jKcxNJYQscwXw5sw=;
+        b=NQH0KqyW9HA6J8qu3jcP/EcZP9+Dt9SdZyCsiW/AH/W8wqz+USQvcaQfYUzlzSfbgR
+         Ij1IN+7e4qXHO9NTK5EEep7/oiPPG9WvtR5+dlme1r519lqOFVLuY+ufmMd87n1H7ibc
+         r8gKQ77iXmZcx7oiwKNwdqgzKpHPds6DiX+Vw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=f+BxR7sgupqFNFsF6whB+9OD2NMD7De9osDVjHbwXcU=;
-        b=lwFnEbc4CRMsBZWM4LdPxX7t3krYjPkL6NLlRmVwDb4WwKRFesBYSWNypaqQOlvoOV
-         yiStDG+ZX/wqFYRV0xN/MYADRShiYReUxa1iAe2GbEB0zqzurkgrvsJaXnaX9e7FvjUJ
-         x5y5r39p777yQINGh6OB3bLjIFrHfHDVkDPtZ2ibwMVKcXFm/YkFiznR0Het08dHbAH3
-         ZHpOUaEvj+4/JjOpWgOr6vq2b3Jk8fPl5qYBGb+7FlGGSqXV237kP3PKBL91Gb3DP9PR
-         X0oCSBKYAKo/zc2wV97NjBAWDzdCSL6ex/g7bW9UDeDVVcHxaXG/Cx1JqmXicJabdngy
-         bgnw==
-X-Gm-Message-State: APjAAAXvsUuNSlgNw8hobcTenSPk5cdw/c6m1cUTH83jA6zRaEOyP0pR
-        HFZSTkR1Sge8EC3u9cvME0s=
-X-Google-Smtp-Source: APXvYqwmr0ZgWy4mD1JEgltW5Ika+j9T4KD+zCYhlU88jAAxRt7h5z3DofXMga4NoK9mfguzLrs03Q==
-X-Received: by 2002:a63:724f:: with SMTP id c15mr123242414pgn.257.1564683263062;
-        Thu, 01 Aug 2019 11:14:23 -0700 (PDT)
+        bh=pTSTyTo6evUeD9vN87wB9846b+0jKcxNJYQscwXw5sw=;
+        b=VlB6Y/dDnWcGNCVOERZPgnoonxZ6Zfq8mlvuTfY299lTKg84yqsfdlYE9LkCIxNL4N
+         GITh90f47Ns6ComE5oZ+LF4ca883JBYWufYnIy37PQGuAFBYeuIw15K75jLGpHSredFv
+         vHZwEcvhs4GOkvGMvFVjmO8Leg8BrFasSkfzO0RWhJDK/LFQ5X4m2QzwCZUrvPlFlz5i
+         DY30oV1LtQ5SdfuR5VUhF4tKw3EiKwXF7fBI3FEriqTOsFJzgO7WBUv9y7SiuxFqqfyU
+         vWIUuSXjMV5DqSfyxucJIPtpEkeGPIAAiTappbFgRy98iw+agXbMVlPkIQy3rBkh1S28
+         93xQ==
+X-Gm-Message-State: APjAAAXAoQIjrUEpy959KXym9gCDXaKrWdX1ffkhPdYb3BNzqnESg2vD
+        gIDr/I+9m1wF4IL3BUcNtNQ=
+X-Google-Smtp-Source: APXvYqwU+ZiW94iwKYYnEkVtZjmggBfKvTHyujaf8wwby2Y6JxMZ4Hc6tBu7MfZDlVzlfwfMSP9z2Q==
+X-Received: by 2002:a17:902:be12:: with SMTP id r18mr121322215pls.341.1564683270622;
+        Thu, 01 Aug 2019 11:14:30 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g8sm82089165pgk.1.2019.08.01.11.14.21
+        by smtp.gmail.com with ESMTPSA id g8sm82089165pgk.1.2019.08.01.11.14.28
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 11:14:22 -0700 (PDT)
+        Thu, 01 Aug 2019 11:14:29 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: [PATCH 3/9] Revert "treewide: Rename rcu_dereference_raw_notrace() to _check()"
-Date:   Thu,  1 Aug 2019 14:14:05 -0400
-Message-Id: <20190801181411.96429-4-joel@joelfernandes.org>
+Subject: [PATCH 6/9] docs: rcu: Increase toctree to 3
+Date:   Thu,  1 Aug 2019 14:14:08 -0400
+Message-Id: <20190801181411.96429-7-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190801181411.96429-1-joel@joelfernandes.org>
 References: <20190801181411.96429-1-joel@joelfernandes.org>
@@ -68,129 +68,27 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This reverts commit 355e9972da81e803bbb825b76106ae9b358caf8e.
----
- Documentation/RCU/Design/Requirements/Requirements.html | 2 +-
- arch/powerpc/include/asm/kvm_book3s_64.h                | 2 +-
- include/linux/rculist.h                                 | 6 +++---
- include/linux/rcupdate.h                                | 2 +-
- kernel/trace/ftrace_internal.h                          | 8 ++++----
- kernel/trace/trace.c                                    | 4 ++--
- 6 files changed, 12 insertions(+), 12 deletions(-)
+These documents are long and have various sections. Provide a good
+toc nesting level.
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
-index bdbc84f1b949..5a9238a2883c 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.html
-+++ b/Documentation/RCU/Design/Requirements/Requirements.html
-@@ -2512,7 +2512,7 @@ disabled across the entire RCU read-side critical section.
- <p>
- It is possible to use tracing on RCU code, but tracing itself
- uses RCU.
--For this reason, <tt>rcu_dereference_raw_check()</tt>
-+For this reason, <tt>rcu_dereference_raw_notrace()</tt>
- is provided for use by tracing, which avoids the destructive
- recursion that could otherwise ensue.
- This API is also used by virtualization in some architectures,
-diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
-index 04b2b927bb5a..bb7c8cc77f1a 100644
---- a/arch/powerpc/include/asm/kvm_book3s_64.h
-+++ b/arch/powerpc/include/asm/kvm_book3s_64.h
-@@ -535,7 +535,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
-  */
- static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
- {
--	return rcu_dereference_raw_check(kvm->memslots[0]);
-+	return rcu_dereference_raw_notrace(kvm->memslots[0]);
- }
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ Documentation/RCU/index.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
+index 94427dc1f23d..5c99185710fa 100644
+--- a/Documentation/RCU/index.rst
++++ b/Documentation/RCU/index.rst
+@@ -5,7 +5,7 @@ RCU concepts
+ ============
  
- extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 932296144131..e91ec9ddcd30 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -622,7 +622,7 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
-  * as long as the traversal is guarded by rcu_read_lock().
-  */
- #define hlist_for_each_entry_rcu(pos, head, member)			\
--	for (pos = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),\
-+	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
- 			typeof(*(pos)), member);			\
- 		pos;							\
- 		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
-@@ -642,10 +642,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
-  * not do any RCU debugging or tracing.
-  */
- #define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
--	for (pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_first_rcu(head)),\
-+	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
- 			typeof(*(pos)), member);			\
- 		pos;							\
--		pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_next_rcu(\
-+		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
- 			&(pos)->member)), typeof(*(pos)), member))
+ .. toctree::
+-   :maxdepth: 1
++   :maxdepth: 3
  
- /**
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index bfcafbc1e301..8f7167478c1d 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -476,7 +476,7 @@ do {									      \
-  * The no-tracing version of rcu_dereference_raw() must not call
-  * rcu_read_lock_held().
-  */
--#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
-+#define rcu_dereference_raw_notrace(p) __rcu_dereference_check((p), 1, __rcu)
- 
- /**
-  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
-diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
-index 0456e0a3dab1..0515a2096f90 100644
---- a/kernel/trace/ftrace_internal.h
-+++ b/kernel/trace/ftrace_internal.h
-@@ -6,22 +6,22 @@
- 
- /*
-  * Traverse the ftrace_global_list, invoking all entries.  The reason that we
-- * can use rcu_dereference_raw_check() is that elements removed from this list
-+ * can use rcu_dereference_raw_notrace() is that elements removed from this list
-  * are simply leaked, so there is no need to interact with a grace-period
-- * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
-+ * mechanism.  The rcu_dereference_raw_notrace() calls are needed to handle
-  * concurrent insertions into the ftrace_global_list.
-  *
-  * Silly Alpha and silly pointer-speculation compiler optimizations!
-  */
- #define do_for_each_ftrace_op(op, list)			\
--	op = rcu_dereference_raw_check(list);			\
-+	op = rcu_dereference_raw_notrace(list);			\
- 	do
- 
- /*
-  * Optimized for just a single item in the list (as that is the normal case).
-  */
- #define while_for_each_ftrace_op(op)				\
--	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
-+	while (likely(op = rcu_dereference_raw_notrace((op)->next)) &&	\
- 	       unlikely((op) != &ftrace_list_end))
- 
- extern struct ftrace_ops __rcu *ftrace_ops_list;
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 642474b26ba7..525a97fbbc60 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2642,10 +2642,10 @@ static void ftrace_exports(struct ring_buffer_event *event)
- 
- 	preempt_disable_notrace();
- 
--	export = rcu_dereference_raw_check(ftrace_exports_list);
-+	export = rcu_dereference_raw_notrace(ftrace_exports_list);
- 	while (export) {
- 		trace_process_export(export, event);
--		export = rcu_dereference_raw_check(export->next);
-+		export = rcu_dereference_raw_notrace(export->next);
- 	}
- 
- 	preempt_enable_notrace();
+    rcu
+    listRCU
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
