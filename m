@@ -6,48 +6,48 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A86D6C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91405C433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:08:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 878542080C
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:08:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B2AD2080C
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 23:08:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390249AbfHAXIT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 19:08:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390238AbfHAXIT (ORCPT
+        id S1732828AbfHAXIe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 19:08:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18378 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390236AbfHAXIT (ORCPT
         <rfc822;rcu@vger.kernel.org>); Thu, 1 Aug 2019 19:08:19 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71N7DGT040238
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x71N7DsV084083
         for <rcu@vger.kernel.org>; Thu, 1 Aug 2019 19:08:18 -0400
-Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u475rvh5x-1
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u460ef3k5-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
         for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 19:08:18 -0400
 Received: from localhost
-        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
         Fri, 2 Aug 2019 00:08:17 +0100
-Received: from b01cxnp22036.gho.pok.ibm.com (9.57.198.26)
-        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
         Fri, 2 Aug 2019 00:08:12 +0100
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71N8Aoq13107718
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x71N8BPp50921970
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 1 Aug 2019 23:08:11 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D759FB206A;
-        Thu,  1 Aug 2019 23:08:10 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 345DBB2071;
+        Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B887BB2066;
-        Thu,  1 Aug 2019 23:08:10 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 1743BB2064;
+        Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Aug 2019 23:08:10 +0000 (GMT)
+        Thu,  1 Aug 2019 23:08:11 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 2631416C9A47; Thu,  1 Aug 2019 16:08:12 -0700 (PDT)
+        id 31A9016C9A4C; Thu,  1 Aug 2019 16:08:12 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -57,84 +57,72 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 04/18] rcu/nocb: Make rcutree_migrate_callbacks() start at leaf rcu_node structure
-Date:   Thu,  1 Aug 2019 16:07:56 -0700
+Subject: [PATCH tip/core/rcu 06/18] rcu/nocb: Remove deferred wakeup checks for extended quiescent states
+Date:   Thu,  1 Aug 2019 16:07:58 -0700
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190801230744.GA19115@linux.ibm.com>
 References: <20190801230744.GA19115@linux.ibm.com>
 X-TM-AS-GCONF: 00
-x-cbid: 19080123-0064-0000-0000-0000040579E2
+x-cbid: 19080123-0060-0000-0000-000003677264
 X-IBM-SpamModules-Scores: 
 X-IBM-SpamModules-Versions: BY=3.00011535; HX=3.00000242; KW=3.00000007;
  PH=3.00000004; SC=3.00000287; SDB=6.01240744; UDB=6.00654300; IPR=6.01022168;
  MB=3.00028000; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-01 23:08:16
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19080123-0065-0000-0000-00003E81FC30
-Message-Id: <20190801230810.21570-4-paulmck@linux.ibm.com>
+x-cbparentid: 19080123-0061-0000-0000-00004A6288AB
+Message-Id: <20190801230810.21570-6-paulmck@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-01_09:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=980 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=904 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1906280000 definitions=main-1908010244
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Because rcutree_migrate_callbacks() is invoked infrequently and because
-an exact snapshot of the grace-period state might save some callbacks a
-second trip through a grace period, this function has used the root
-rcu_node structure.  However, this safe-second-trip optimization
-happens only if rcutree_migrate_callbacks() races with grace-period
-initialization, so it is not worth the added mental load.  This commit
-therefore makes rcutree_migrate_callbacks() start with the leaf rcu_node
-structures, as is done elsewhere.
+The idea behind the checks for extended quiescent states at the end of
+__call_rcu_nocb() is to handle cases where call_rcu() is invoked directly
+from within an extended quiescent state, for example, from the idle loop.
+However, this will result in a timer-mediated deferred wakeup, which
+will cause the needed wakeup to happen within a jiffy or thereabouts.
+There should be no forward-progress concerns, and if there are, the proper
+response is to exit the extended quiescent state while executing the
+endless blast of call_rcu() invocations, for example, using RCU_NONIDLE().
+Given the more realistic case of an isolated call_rcu() invocation, there
+should be no problem.
+
+This commit therefore removes the checks for invoking call_rcu() within
+an extended quiescent state for on no-CBs CPUs.
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/rcu/tree_plugin.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 969ba292a669..ea479d81da7f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3157,8 +3157,8 @@ void rcutree_migrate_callbacks(int cpu)
- {
- 	unsigned long flags;
- 	struct rcu_data *my_rdp;
-+	struct rcu_node *my_rnp;
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp_root = rcu_get_root();
- 	bool needwake;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index fc6133eed50a..9936a66b80bb 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1709,16 +1709,6 @@ static bool __call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				   -atomic_long_read(&rdp->nocb_q_count_lazy),
+ 				   -rcu_get_n_cbs_nocb_cpu(rdp));
  
- 	if (rcu_segcblist_is_offloaded(&rdp->cblist) ||
-@@ -3167,18 +3167,19 @@ void rcutree_migrate_callbacks(int cpu)
+-	/*
+-	 * If called from an extended quiescent state with interrupts
+-	 * disabled, invoke the RCU core in order to allow the idle-entry
+-	 * deferred-wakeup check to function.
+-	 */
+-	if (irqs_disabled_flags(flags) &&
+-	    !rcu_is_watching() &&
+-	    cpu_online(smp_processor_id()))
+-		invoke_rcu_core();
+-
+ 	return true;
+ }
  
- 	local_irq_save(flags);
- 	my_rdp = this_cpu_ptr(&rcu_data);
-+	my_rnp = my_rdp->mynode;
- 	if (rcu_nocb_adopt_orphan_cbs(my_rdp, rdp, flags)) {
- 		local_irq_restore(flags);
- 		return;
- 	}
--	raw_spin_lock_rcu_node(rnp_root); /* irqs already disabled. */
-+	raw_spin_lock_rcu_node(my_rnp); /* irqs already disabled. */
- 	/* Leverage recent GPs and set GP for new callbacks. */
--	needwake = rcu_advance_cbs(rnp_root, rdp) ||
--		   rcu_advance_cbs(rnp_root, my_rdp);
-+	needwake = rcu_advance_cbs(my_rnp, rdp) ||
-+		   rcu_advance_cbs(my_rnp, my_rdp);
- 	rcu_segcblist_merge(&my_rdp->cblist, &rdp->cblist);
- 	WARN_ON_ONCE(rcu_segcblist_empty(&my_rdp->cblist) !=
- 		     !rcu_segcblist_n_cbs(&my_rdp->cblist));
--	raw_spin_unlock_irqrestore_rcu_node(rnp_root, flags);
-+	raw_spin_unlock_irqrestore_rcu_node(my_rnp, flags);
- 	if (needwake)
- 		rcu_gp_kthread_wake();
- 	WARN_ONCE(rcu_segcblist_n_cbs(&rdp->cblist) != 0 ||
 -- 
 2.17.1
 
