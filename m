@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9859AC19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A2BCC433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 61522206B8
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F2A49206B8
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:39:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NQQjvORh"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fUH1mN4l"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389194AbfHAVjj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 17:39:39 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:38708 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbfHAVjg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 17:39:36 -0400
-Received: by mail-pg1-f195.google.com with SMTP id f5so26092298pgu.5
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:39:35 -0700 (PDT)
+        id S2389218AbfHAVji (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 17:39:38 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45186 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389194AbfHAVjh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 17:39:37 -0400
+Received: by mail-pg1-f194.google.com with SMTP id o13so34894414pgp.12
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kT6d62v3IkstWdOxiS46a/cLyvcRbEdBparblNqkUuo=;
-        b=NQQjvORho9kJQQ2IzD8WqRk3/pXGXfIdnxH+fkC6qgXk0sSN2OtDUpI6sa7OKd/0nW
-         XeKn9c4Zjgw+uT9+Y12kI0VVIkflkSeL06HubY6fxQluDH3CQ9AiaIqI/fFnCZU40iIR
-         Rq3cFbzm2ldhmVJWIlFT86ZdK82S/+ceQXsNo=
+        bh=j1AX7G3AAA/tnytpSfFq4pjKq9dl/+OLzsU5jY2FLns=;
+        b=fUH1mN4lHJMjpaL1kjdx1lHZT36m9b6BMD4Gl1dmubDENPnm+M+MkiBof3mL3UEMsp
+         iipMUkx3xodxQr8C52NiqF7E0jDaa/oWQ5sWoxTrFhOKRRGm7Ka35odiZuVUTnbF03bf
+         EvxU3yYEI5/OcwcRbMBqPXefdQjysPkG0u+vc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kT6d62v3IkstWdOxiS46a/cLyvcRbEdBparblNqkUuo=;
-        b=aHYFD4tUL/Xx9liSF2oH1qGjHsvCS2Jsijm+m39el2mZGR4ObXeBTsjx4DX30HTbWx
-         3lYFzqTR80zRljaTOFKrpUATTLGHkDOlBrk/8SIawZoSxTrz23+oWdn5YeOe+c2NQkgN
-         HAayxLizQ3HQcER92yN2jqSOa+Oc61nYEXNV2T9NWoUkOPnUfp/A14hKF3EPDNKX11bU
-         WwV9i6d7mjzxmyCaNH54usNlmM7ZyxBdPIaoj0lGI9lH4qso4garFKraSjeGHEcBnlLn
-         X9VWbUQMXxz27t9bvlCW1ONYqbh4QVJZPiyV43D/yp0N9HMUmYxX0Q1ccO2Voou844ha
-         nYEQ==
-X-Gm-Message-State: APjAAAXaTfwD3eyqqIiXoj0xLA/pveMb8xSJvGUg9M7GKaE04HVVgz7M
-        dPXZAJn86OmoJ3FFYaMAfYsGCF0q
-X-Google-Smtp-Source: APXvYqxBuvaOwDQOmLSNT5ONs6xK/VAALi6FxYdPhMhSXB3Y0JXx8OUA04+SKQ+wyjGbiig18TeUSA==
-X-Received: by 2002:a62:e20b:: with SMTP id a11mr56432547pfi.0.1564695575463;
-        Thu, 01 Aug 2019 14:39:35 -0700 (PDT)
+        bh=j1AX7G3AAA/tnytpSfFq4pjKq9dl/+OLzsU5jY2FLns=;
+        b=XSgRWD3UxB12kchEKpLTfMbAjZHutIgN+wFWKOPBHqFq82Vk0Yw2A3djMBYSvSPRlQ
+         2hwB554Xj072BeK/4BbfP62EKaOjjwUFxh7NSmCIiuNBUpVjPE44Kvy5Aba3lJi/ftJT
+         lraE9d8u+00iSIJRGDVaaYPQXkYnm7K6ezPGC23Jg+V2YPxNbg1UbBR4psVW3OwCkrFB
+         L8ioTkhe7mPk1xG9z+Mebm48iuFskhUzAWhnZ5dH7oXjrnOuj7pTUQbkxTo7CvPgGlJM
+         ITdsGO3xyimoY8s46LcyGgMUzaTjejrmoH7BktvpxeXGxOTsx5RaNqmL+M5fx8+QPmgh
+         s7jw==
+X-Gm-Message-State: APjAAAVXSK/LGdD0dzWQLB10f4goXVQsxFvb+in/86RdFS8C+ixpXHfz
+        ChAlPCnAFxKLEobgRKU1Rak=
+X-Google-Smtp-Source: APXvYqzB7FRx1tbmLcs7nIQjZpO/6ZD37WRqE4ps6X/Hr62Fpl8GIMaZ8AD2W3JMZWVAt26KSaevtA==
+X-Received: by 2002:a63:6bc5:: with SMTP id g188mr91160409pgc.225.1564695577078;
+        Thu, 01 Aug 2019 14:39:37 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id r61sm5940423pjb.7.2019.08.01.14.39.33
+        by smtp.gmail.com with ESMTPSA id r61sm5940423pjb.7.2019.08.01.14.39.35
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 14:39:34 -0700 (PDT)
+        Thu, 01 Aug 2019 14:39:36 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: ['PATCH v2' 1/7] Revert docs from "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
-Date:   Thu,  1 Aug 2019 17:39:16 -0400
-Message-Id: <20190801213922.158860-2-joel@joelfernandes.org>
+Subject: ['PATCH v2' 2/7] Revert docs from "treewide: Rename rcu_dereference_raw_notrace() to _check()"
+Date:   Thu,  1 Aug 2019 17:39:17 -0400
+Message-Id: <20190801213922.158860-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190801213922.158860-1-joel@joelfernandes.org>
 References: <20190801213922.158860-1-joel@joelfernandes.org>
@@ -69,100 +69,24 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This reverts docs from commit d6b9cd7dc8e041ee83cb1362fce59a3cdb1f2709.
+This reverts docs from commit 355e9972da81e803bbb825b76106ae9b358caf8e.
 ---
- .../RCU/Design/Requirements/Requirements.html | 71 -------------------
- 1 file changed, 71 deletions(-)
+ Documentation/RCU/Design/Requirements/Requirements.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
-index 467251f7fef6..bdbc84f1b949 100644
+index bdbc84f1b949..5a9238a2883c 100644
 --- a/Documentation/RCU/Design/Requirements/Requirements.html
 +++ b/Documentation/RCU/Design/Requirements/Requirements.html
-@@ -2129,8 +2129,6 @@ Some of the relevant points of interest are as follows:
- <li>	<a href="#Hotplug CPU">Hotplug CPU</a>.
- <li>	<a href="#Scheduler and RCU">Scheduler and RCU</a>.
- <li>	<a href="#Tracing and RCU">Tracing and RCU</a>.
--<li>	<a href="#Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a>.
- <li>	<a href="#Energy Efficiency">Energy Efficiency</a>.
- <li>	<a href="#Scheduling-Clock Interrupts and RCU">
- 	Scheduling-Clock Interrupts and RCU</a>.
-@@ -2523,75 +2521,6 @@ cannot be used.
- The tracing folks both located the requirement and provided the
- needed fix, so this surprise requirement was relatively painless.
- 
--<h3><a name="Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a></h3>
--
--<p>
--The kernel needs to access user-space memory, for example, to access
--data referenced by system-call parameters.
--The <tt>get_user()</tt> macro does this job.
--
--<p>
--However, user-space memory might well be paged out, which means
--that <tt>get_user()</tt> might well page-fault and thus block while
--waiting for the resulting I/O to complete.
--It would be a very bad thing for the compiler to reorder
--a <tt>get_user()</tt> invocation into an RCU read-side critical
--section.
--For example, suppose that the source code looked like this:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 v = p-&gt;value;
-- 4 rcu_read_unlock();
-- 5 get_user(user_v, user_p);
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--The compiler must not be permitted to transform this source code into
--the following:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 get_user(user_v, user_p); // BUG: POSSIBLE PAGE FAULT!!!
-- 4 v = p-&gt;value;
-- 5 rcu_read_unlock();
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--If the compiler did make this transformation in a
--<tt>CONFIG_PREEMPT=n</tt> kernel build, and if <tt>get_user()</tt> did
--page fault, the result would be a quiescent state in the middle
--of an RCU read-side critical section.
--This misplaced quiescent state could result in line&nbsp;4 being
--a use-after-free access, which could be bad for your kernel's
--actuarial statistics.
--Similar examples can be constructed with the call to <tt>get_user()</tt>
--preceding the <tt>rcu_read_lock()</tt>.
--
--<p>
--Unfortunately, <tt>get_user()</tt> doesn't have any particular
--ordering properties, and in some architectures the underlying <tt>asm</tt>
--isn't even marked <tt>volatile</tt>.
--And even if it was marked <tt>volatile</tt>, the above access to
--<tt>p-&gt;value</tt> is not volatile, so the compiler would not have any
--reason to keep those two accesses in order.
--
--<p>
--Therefore, the Linux-kernel definitions of <tt>rcu_read_lock()</tt>
--and <tt>rcu_read_unlock()</tt> must act as compiler barriers,
--at least for outermost instances of <tt>rcu_read_lock()</tt> and
--<tt>rcu_read_unlock()</tt> within a nested set of RCU read-side critical
--sections.
--
- <h3><a name="Energy Efficiency">Energy Efficiency</a></h3>
- 
+@@ -2512,7 +2512,7 @@ disabled across the entire RCU read-side critical section.
  <p>
+ It is possible to use tracing on RCU code, but tracing itself
+ uses RCU.
+-For this reason, <tt>rcu_dereference_raw_check()</tt>
++For this reason, <tt>rcu_dereference_raw_notrace()</tt>
+ is provided for use by tracing, which avoids the destructive
+ recursion that could otherwise ensue.
+ This API is also used by virtualization in some architectures,
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
