@@ -2,91 +2,72 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47860C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D26FC19759
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:41:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 15A7320838
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1EA7F20838
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 21:41:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="bAFcHM5K"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NSZQCYCZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389259AbfHAVju (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 17:39:50 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45894 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389243AbfHAVjq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 17:39:46 -0400
-Received: by mail-pl1-f195.google.com with SMTP id y8so32779328plr.12
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:39:45 -0700 (PDT)
+        id S1730283AbfHAVls (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 17:41:48 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38184 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbfHAVls (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 17:41:48 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h28so51346641lfj.5
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 14:41:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UPjVOzxIWhoZ3jLWyfF8eHht0ZmcYW+YAayCLY421Ko=;
-        b=bAFcHM5KTORiEFTKFSUQ+5+sIca8SaUzn3leRYT0Ei0ZsrKsFvUA3lZffQDpSAr2Jm
-         hoTvRZneyQdSX03A734GsBP04VvIfBKL47LtsWwrikydtYva+Lj1KaRVdAl2Jkolz5l+
-         o2YP/pVjOZ0XtkfyBMnV2BXHm5sdfjQFsMCT0=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wy5NJcQ2NTEJIuX16bOQiS1WPonz/S5C/OXL6ClZM8E=;
+        b=NSZQCYCZlvdefAiOE6lkVFKH/0MfWEwsNqY1dvxclHpGH/1Ij8ZFhbDtHkbxPrbUJh
+         Vs0FMC9vuUdWZoosLb5rHh6Kzlee6CeTvVxfDidOhK/sQBA6iUDzereRrAsmpvemrV6d
+         2vwzsLgn5YE1nDj57dyRroFW1t4hh45IFXQho=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UPjVOzxIWhoZ3jLWyfF8eHht0ZmcYW+YAayCLY421Ko=;
-        b=kcgv3oNtigHvxHao/piriRXDcEE5QUFTjMqK1HyrktN7uGjrsin20Hup8Ru89Z06hU
-         2GepMz16afPNzeWF7gYmEwR7WIp/QJuShPmWzmbCyoAkERo9sUoz3KprL8DJrM999Cd9
-         zINCqRq29GUtCYUSqf7ua4X1uPxYnoFoEHxwj66qBBLmp9J11VAE6c+5x6hQDjaJncrY
-         03Whbcj5HjCMGovQAsWbarM8bCtzPvqX0Lh8mmBIFPu29OM5QLttgt6y16bpSSR7jruh
-         NQoR80R8Sy2ZAHoKt7hw1gOX56A0S4IEplffc9AP+7O+0P49/09jOF9zdP7QirZn+/yW
-         fUHA==
-X-Gm-Message-State: APjAAAXS8YuWkhYtJ6a7QfJkol79ydigeKtVMmuQXT1vx/mf7TvSK1Ew
-        o7QcDnYVhkcZ+nOfq+em3rE=
-X-Google-Smtp-Source: APXvYqwzpOdKb1CkE9Av2YhdeBi81Sd7MLH0rkz7iJzyrLqIuBXqJGuSO49DxQvQP0BohWXdHyZ/6g==
-X-Received: by 2002:a17:902:e4:: with SMTP id a91mr31494499pla.150.1564695585474;
-        Thu, 01 Aug 2019 14:39:45 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id r61sm5940423pjb.7.2019.08.01.14.39.43
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 14:39:44 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: ['PATCH v2' 6/7] Restore docs "treewide: Rename rcu_dereference_raw_notrace() to _check()"
-Date:   Thu,  1 Aug 2019 17:39:21 -0400
-Message-Id: <20190801213922.158860-7-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
-In-Reply-To: <20190801213922.158860-1-joel@joelfernandes.org>
-References: <20190801213922.158860-1-joel@joelfernandes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wy5NJcQ2NTEJIuX16bOQiS1WPonz/S5C/OXL6ClZM8E=;
+        b=bJRxJc9i//Fc2u4zb1hiiNg1sakuFYa+SkroO+qKhiNsw0ftZ2asph+H5+FQYMyion
+         4Qdz6nAjIBnNesRURSD5M/SdetJXuiCpuv533QkGinDrMS2OeOsplrwky6UERwul2Y5J
+         Ow3IayOzUfUemZWnbQ0LIMqdd4zoT6/c5jbbiebXb8esfPbI2x5k4hObqPopYZNXRuFv
+         RZly41BmfCPPUJZqnMaCEpl+1jLsUEwkbCAAU8yzjMzvJU6o0z/W/1DH2Hc7S7cxg0qN
+         4vrR1C0sk8BMGc6rJ4H/5Snp2tgejXp7Mvw8yZQVT/X2/h03xbQK6/3dkp//en5T1Vhs
+         /7WA==
+X-Gm-Message-State: APjAAAV7bVIR1mZmi47gmDqy4oVD6HPVzjvMjcovj2INY8rtQZw21BRX
+        95VPY6now5xD0c9hW31Xqrw5fznI1uhHYYvzdNE=
+X-Google-Smtp-Source: APXvYqz0uWsugdX3fasAhfKy/3p7tlWt0iLS1cZzwqJhKhd7WGC+IFaUB1uXnZBg/lNKzSSt3dH08bmMCbjfDTHiTeo=
+X-Received: by 2002:ac2:5a44:: with SMTP id r4mr27941899lfn.118.1564695706755;
+ Thu, 01 Aug 2019 14:41:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190801213922.158860-1-joel@joelfernandes.org>
+In-Reply-To: <20190801213922.158860-1-joel@joelfernandes.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 1 Aug 2019 17:41:35 -0400
+Message-ID: <CAEXW_YTp0UxtYGb5qZfVEpotfYvcYfjYj5Ob1M93Uidju6GxOw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Doc updates to /dev branch
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This restores docs back in ReST format.
----
- Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Aug 1, 2019 at 5:39 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> This series fixes the rcu/dev branch with the new ReST conversion patches.
+>
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index a33b5fb331b4..0b222469d7ce 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -1997,7 +1997,7 @@ Tracing and RCU
- ~~~~~~~~~~~~~~~
- 
- It is possible to use tracing on RCU code, but tracing itself uses RCU.
--For this reason, ``rcu_dereference_raw_notrace()`` is provided for use
-+For this reason, ``rcu_dereference_raw_check()`` is provided for use
- by tracing, which avoids the destructive recursion that could otherwise
- ensue. This API is also used by virtualization in some architectures,
- where RCU readers execute in environments in which tracing cannot be
--- 
-2.22.0.770.g0f2c4a37fd-goog
-
+And as always, the patch 3/7 made it only to patchwork ;-)
+https://lore.kernel.org/patchwork/patch/1109660/
