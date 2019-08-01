@@ -2,62 +2,62 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71408C32753
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CFAAC433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 40F7E21726
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23CB121726
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:14:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kkkRj548"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VabVNgdy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388150AbfHASO3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 14:14:29 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:43232 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388179AbfHASO3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 14:14:29 -0400
-Received: by mail-pf1-f193.google.com with SMTP id i189so34534543pfg.10
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:14:29 -0700 (PDT)
+        id S2388203AbfHASOd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 14:14:33 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43999 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388196AbfHASOd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 14:14:33 -0400
+Received: by mail-pg1-f193.google.com with SMTP id r22so7044032pgk.10
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:14:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q2qplkPoUTr5hGBgTaNkezKbmSuibZ+H7u6PV+xZWyg=;
-        b=kkkRj5483kvN0OGCd84m8wYkvxWsTeqc3DF7e/2UMz14rO0m5kc0aREWsp4D758rGy
-         CmonRvUHiy/Hj/k3kQUQT7Kk5ABQfOBeIEIqQXFGDFMDrO/yn4+jqE4HL7hIPm0Df2s/
-         5jAJcsbKewFPxj8Ujpw52ReIKHtoGELK8Wjxo=
+        bh=SMoKIvzU7SGDzv+dfWl+OsxgZj4/x/JQB4odRYODuPQ=;
+        b=VabVNgdyVNxtWaL1BNmduYnPkYBOmdH6UIdMCOApVFDpeMxer77abQ/nb6gonRHrZ/
+         oBqNnIcqL14P7nZsLeNsTpVTTKn1sy4r6iJl6/K9nmoZFHOGZfCNzyttKQ/uOuVoslAt
+         lkgLZUv0QNH1xlm0ty0avWd7kcud1XcjSoQOE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q2qplkPoUTr5hGBgTaNkezKbmSuibZ+H7u6PV+xZWyg=;
-        b=byKwaZtZfrK5qgsnw9e9zoDLWfSMQ0nxHwI3lK3d6iAC2r6s1UmQASPk99Xaz8OqX8
-         hKWqdUdmzgqaL8lS9slJGAdVtsHRfTdyqWPMYk86enUQFhJq8Z7PJlfkx9aSWheLNS1t
-         RkAYh/knLyN/HFk6j5X2oY9dAvYGE5Au+5y4dCuDXsQMDxq+mehM0oKsNntDTKh5wU6Q
-         jymrHGHhAxClUNvFkQiUl7SZsHkcdJk3cdN67l1iTSCJxOk3cejo0Xxw+yWAbzIcqUIv
-         UsCpk4PL+YchjKE7T9FwxDFbAa2e2354R4/4w0XpncfqCHKWdyqlFRcg+cnqtttpJxwL
-         Xpjw==
-X-Gm-Message-State: APjAAAV3N58FTcR8cS5ju1skeBIBQDBFazhBxe15aU4RuSJ1JZAzpRKC
-        F2EqPJMoN55mpqaYKVTVMFc=
-X-Google-Smtp-Source: APXvYqxNzg/CRUYh81VDqVvQcbxl2vPxofG2UiTJT6q1L2GMiVpgheDmUza/buJJSUwD7uxPQcQ9nw==
-X-Received: by 2002:a65:528d:: with SMTP id y13mr32187980pgp.120.1564683268772;
-        Thu, 01 Aug 2019 11:14:28 -0700 (PDT)
+        bh=SMoKIvzU7SGDzv+dfWl+OsxgZj4/x/JQB4odRYODuPQ=;
+        b=kN0jGxGy339AKDNNqDleqSYg2RGnEkcMn8c/6XoSV3yY0Ka5ItspFBtv54a06zB6ue
+         Gvg6KwbS1gH6kixq7wbkhhee69n+w4V5YYzGjjsdyieSZc/epwDHjBGYUGhoBFbf9tOA
+         zJDVjcbBgSqWOmRWYOWDN04CWGzNqQySFE5VdcMJjwZ0Fkki2HDqC/xMYKUJjJLvUuaP
+         8rWTks2FghGGGo7LRHRPgyr7gZOT1utSKluOjcKNmm3I5W3i5obUIY8AZHZXnTQjG0QN
+         eu6aVPevsqcbrV2RyvR40eDEhRwih4AWT4XlozC0x3NGYgdfOcG5b7HoDpj4IizhfojV
+         GVmg==
+X-Gm-Message-State: APjAAAXd36fx/PNW+fh6Hx910vuB2jYVQ+jvKTzpaqskWGAOVzVEVckN
+        kSSautyX/w3fLLPfOMh1/jQ=
+X-Google-Smtp-Source: APXvYqyQQmkSwKJS1cVIb4raUBaBnCl5g1ZtptIjJ+VfBjYB1Y/Y5NsoLhSKZItM0+Bt9oKzIZnV3w==
+X-Received: by 2002:a17:90a:d593:: with SMTP id v19mr97223pju.1.1564683272233;
+        Thu, 01 Aug 2019 11:14:32 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g8sm82089165pgk.1.2019.08.01.11.14.27
+        by smtp.gmail.com with ESMTPSA id g8sm82089165pgk.1.2019.08.01.11.14.30
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 11:14:28 -0700 (PDT)
+        Thu, 01 Aug 2019 11:14:31 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: [PATCH 5/9] docs: rcu: Correct links referring to titles
-Date:   Thu,  1 Aug 2019 14:14:07 -0400
-Message-Id: <20190801181411.96429-6-joel@joelfernandes.org>
+Subject: [PATCH 7/9] Revert "Revert "treewide: Rename rcu_dereference_raw_notrace() to _check()""
+Date:   Thu,  1 Aug 2019 14:14:09 -0400
+Message-Id: <20190801181411.96429-8-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
 In-Reply-To: <20190801181411.96429-1-joel@joelfernandes.org>
 References: <20190801181411.96429-1-joel@joelfernandes.org>
@@ -68,178 +68,129 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Mauro's auto conversion broken these links, fix them.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+This reverts commit 61d814760f1d2dffdc8db636f70bbef07c30acd5.
 ---
- .../Tree-RCU-Memory-Ordering.rst              | 17 ++--
- .../RCU/Design/Requirements/Requirements.rst  | 90 ++++++++-----------
- 2 files changed, 47 insertions(+), 60 deletions(-)
+ Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
+ arch/powerpc/include/asm/kvm_book3s_64.h               | 2 +-
+ include/linux/rculist.h                                | 6 +++---
+ include/linux/rcupdate.h                               | 2 +-
+ kernel/trace/ftrace_internal.h                         | 8 ++++----
+ kernel/trace/trace.c                                   | 4 ++--
+ 6 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 1011b5db1b3d..248b1222f918 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -230,15 +230,14 @@ Tree RCU Grace Period Memory Ordering Components
- Tree RCU's grace-period memory-ordering guarantee is provided by a
- number of RCU components:
- 
--#. `Callback Registry <#Callback%20Registry>`__
--#. `Grace-Period Initialization <#Grace-Period%20Initialization>`__
--#. `Self-Reported Quiescent
--   States <#Self-Reported%20Quiescent%20States>`__
--#. `Dynamic Tick Interface <#Dynamic%20Tick%20Interface>`__
--#. `CPU-Hotplug Interface <#CPU-Hotplug%20Interface>`__
--#. `Forcing Quiescent States <Forcing%20Quiescent%20States>`__
--#. `Grace-Period Cleanup <Grace-Period%20Cleanup>`__
--#. `Callback Invocation <Callback%20Invocation>`__
-+#. `Callback Registry`_
-+#. `Grace-Period Initialization`_
-+#. `Self-Reported Quiescent States`_
-+#. `Dynamic Tick Interface`_
-+#. `CPU-Hotplug Interface`_
-+#. `Forcing Quiescent States`_
-+#. `Grace-Period Cleanup`_
-+#. `Callback Invocation`_
- 
- Each of the following section looks at the corresponding component in
- detail.
 diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 876e0038bb58..a33b5fb331b4 100644
+index a33b5fb331b4..0b222469d7ce 100644
 --- a/Documentation/RCU/Design/Requirements/Requirements.rst
 +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -36,16 +36,14 @@ technologies in interesting new ways.
- All that aside, here are the categories of currently known RCU
- requirements:
+@@ -1997,7 +1997,7 @@ Tracing and RCU
+ ~~~~~~~~~~~~~~~
  
--#. `Fundamental Requirements <#Fundamental%20Requirements>`__
--#. `Fundamental Non-Requirements <#Fundamental%20Non-Requirements>`__
--#. `Parallelism Facts of Life <#Parallelism%20Facts%20of%20Life>`__
--#. `Quality-of-Implementation
--   Requirements <#Quality-of-Implementation%20Requirements>`__
--#. `Linux Kernel Complications <#Linux%20Kernel%20Complications>`__
--#. `Software-Engineering
--   Requirements <#Software-Engineering%20Requirements>`__
--#. `Other RCU Flavors <#Other%20RCU%20Flavors>`__
--#. `Possible Future Changes <#Possible%20Future%20Changes>`__
-+#. `Fundamental Requirements`_
-+#. `Fundamental Non-Requirements`_
-+#. `Parallelism Facts of Life`_
-+#. `Quality-of-Implementation Requirements`_
-+#. `Linux Kernel Complications`_
-+#. `Software-Engineering Requirements`_
-+#. `Other RCU Flavors`_
-+#. `Possible Future Changes`_
+ It is possible to use tracing on RCU code, but tracing itself uses RCU.
+-For this reason, ``rcu_dereference_raw_notrace()`` is provided for use
++For this reason, ``rcu_dereference_raw_check()`` is provided for use
+ by tracing, which avoids the destructive recursion that could otherwise
+ ensue. This API is also used by virtualization in some architectures,
+ where RCU readers execute in environments in which tracing cannot be
+diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
+index bb7c8cc77f1a..04b2b927bb5a 100644
+--- a/arch/powerpc/include/asm/kvm_book3s_64.h
++++ b/arch/powerpc/include/asm/kvm_book3s_64.h
+@@ -535,7 +535,7 @@ static inline void note_hpte_modification(struct kvm *kvm,
+  */
+ static inline struct kvm_memslots *kvm_memslots_raw(struct kvm *kvm)
+ {
+-	return rcu_dereference_raw_notrace(kvm->memslots[0]);
++	return rcu_dereference_raw_check(kvm->memslots[0]);
+ }
  
- This is followed by a `summary <#Summary>`__, however, the answers to
- each quick quiz immediately follows the quiz. Select the big white space
-@@ -57,13 +55,11 @@ Fundamental Requirements
- RCU's fundamental requirements are the closest thing RCU has to hard
- mathematical requirements. These are:
+ extern void kvmppc_mmu_debugfs_init(struct kvm *kvm);
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index e91ec9ddcd30..932296144131 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -622,7 +622,7 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * as long as the traversal is guarded by rcu_read_lock().
+  */
+ #define hlist_for_each_entry_rcu(pos, head, member)			\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
++	for (pos = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+ 		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
+@@ -642,10 +642,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+  * not do any RCU debugging or tracing.
+  */
+ #define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
+-	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
++	for (pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_first_rcu(head)),\
+ 			typeof(*(pos)), member);			\
+ 		pos;							\
+-		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
++		pos = hlist_entry_safe(rcu_dereference_raw_check(hlist_next_rcu(\
+ 			&(pos)->member)), typeof(*(pos)), member))
  
--#. `Grace-Period Guarantee <#Grace-Period%20Guarantee>`__
--#. `Publish-Subscribe Guarantee <#Publish-Subscribe%20Guarantee>`__
--#. `Memory-Barrier Guarantees <#Memory-Barrier%20Guarantees>`__
--#. `RCU Primitives Guaranteed to Execute
--   Unconditionally <#RCU%20Primitives%20Guaranteed%20to%20Execute%20Unconditionally>`__
--#. `Guaranteed Read-to-Write
--   Upgrade <#Guaranteed%20Read-to-Write%20Upgrade>`__
-+#. `Grace-Period Guarantee`_
-+#. `Publish/Subscribe Guarantee`_
-+#. `Memory-Barrier Guarantees`_
-+#. `RCU Primitives Guaranteed to Execute Unconditionally`_
-+#. `Guaranteed Read-to-Write Upgrade`_
+ /**
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 8f7167478c1d..bfcafbc1e301 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -476,7 +476,7 @@ do {									      \
+  * The no-tracing version of rcu_dereference_raw() must not call
+  * rcu_read_lock_held().
+  */
+-#define rcu_dereference_raw_notrace(p) __rcu_dereference_check((p), 1, __rcu)
++#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
  
- Grace-Period Guarantee
- ~~~~~~~~~~~~~~~~~~~~~~
-@@ -689,16 +685,11 @@ infinitely long, however, the following sections list a few
- non-guarantees that have caused confusion. Except where otherwise noted,
- these non-guarantees were premeditated.
+ /**
+  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 0515a2096f90..0456e0a3dab1 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -6,22 +6,22 @@
  
--#. `Readers Impose Minimal
--   Ordering <#Readers%20Impose%20Minimal%20Ordering>`__
--#. `Readers Do Not Exclude
--   Updaters <#Readers%20Do%20Not%20Exclude%20Updaters>`__
--#. `Updaters Only Wait For Old
--   Readers <#Updaters%20Only%20Wait%20For%20Old%20Readers>`__
--#. `Grace Periods Don't Partition Read-Side Critical
--   Sections <#Grace%20Periods%20Don't%20Partition%20Read-Side%20Critical%20Sections>`__
--#. `Read-Side Critical Sections Don't Partition Grace
--   Periods <#Read-Side%20Critical%20Sections%20Don't%20Partition%20Grace%20Periods>`__
-+#. `Readers Impose Minimal Ordering`_
-+#. `Readers Do Not Exclude Updaters`_
-+#. `Updaters Only Wait For Old Readers`_
-+#. `Grace Periods Don't Partition Read-Side Critical Sections`_
-+#. `Read-Side Critical Sections Don't Partition Grace Periods`_
+ /*
+  * Traverse the ftrace_global_list, invoking all entries.  The reason that we
+- * can use rcu_dereference_raw_notrace() is that elements removed from this list
++ * can use rcu_dereference_raw_check() is that elements removed from this list
+  * are simply leaked, so there is no need to interact with a grace-period
+- * mechanism.  The rcu_dereference_raw_notrace() calls are needed to handle
++ * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+  * concurrent insertions into the ftrace_global_list.
+  *
+  * Silly Alpha and silly pointer-speculation compiler optimizations!
+  */
+ #define do_for_each_ftrace_op(op, list)			\
+-	op = rcu_dereference_raw_notrace(list);			\
++	op = rcu_dereference_raw_check(list);			\
+ 	do
  
- Readers Impose Minimal Ordering
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -1056,11 +1047,11 @@ it would likely be subject to limitations that would make it
- inappropriate for industrial-strength production use. Classes of
- quality-of-implementation requirements are as follows:
+ /*
+  * Optimized for just a single item in the list (as that is the normal case).
+  */
+ #define while_for_each_ftrace_op(op)				\
+-	while (likely(op = rcu_dereference_raw_notrace((op)->next)) &&	\
++	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
+ 	       unlikely((op) != &ftrace_list_end))
  
--#. `Specialization <#Specialization>`__
--#. `Performance and Scalability <#Performance%20and%20Scalability>`__
--#. `Forward Progress <#Forward%20Progress>`__
--#. `Composability <#Composability>`__
--#. `Corner Cases <#Corner%20Cases>`__
-+#. `Specialization`_
-+#. `Performance and Scalability`_
-+#. `Forward Progress`_
-+#. `Composability`_
-+#. `Corner Cases`_
+ extern struct ftrace_ops __rcu *ftrace_ops_list;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 525a97fbbc60..642474b26ba7 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2642,10 +2642,10 @@ static void ftrace_exports(struct ring_buffer_event *event)
  
- These classes is covered in the following sections.
+ 	preempt_disable_notrace();
  
-@@ -1692,21 +1683,18 @@ The Linux kernel provides an interesting environment for all kinds of
- software, including RCU. Some of the relevant points of interest are as
- follows:
+-	export = rcu_dereference_raw_notrace(ftrace_exports_list);
++	export = rcu_dereference_raw_check(ftrace_exports_list);
+ 	while (export) {
+ 		trace_process_export(export, event);
+-		export = rcu_dereference_raw_notrace(export->next);
++		export = rcu_dereference_raw_check(export->next);
+ 	}
  
--#. `Configuration <#Configuration>`__.
--#. `Firmware Interface <#Firmware%20Interface>`__.
--#. `Early Boot <#Early%20Boot>`__.
--#. `Interrupts and non-maskable interrupts
--   (NMIs) <#Interrupts%20and%20NMIs>`__.
--#. `Loadable Modules <#Loadable%20Modules>`__.
--#. `Hotplug CPU <#Hotplug%20CPU>`__.
--#. `Scheduler and RCU <#Scheduler%20and%20RCU>`__.
--#. `Tracing and RCU <#Tracing%20and%20RCU>`__.
--#. `Energy Efficiency <#Energy%20Efficiency>`__.
--#. `Scheduling-Clock Interrupts and
--   RCU <#Scheduling-Clock%20Interrupts%20and%20RCU>`__.
--#. `Memory Efficiency <#Memory%20Efficiency>`__.
--#. `Performance, Scalability, Response Time, and
--   Reliability <#Performance,%20Scalability,%20Response%20Time,%20and%20Reliability>`__.
-+#. `Configuration`_
-+#. `Firmware Interface`_
-+#. `Early Boot`_
-+#. `Interrupts and NMIs`_
-+#. `Loadable Modules`_
-+#. `Hotplug CPU`_
-+#. `Scheduler and RCU`_
-+#. `Tracing and RCU`_
-+#. `Energy Efficiency`_
-+#. `Scheduling-Clock Interrupts and RCU`_
-+#. `Memory Efficiency`_
-+#. `Performance, Scalability, Response Time, and Reliability`_
- 
- This list is probably incomplete, but it does give a feel for the most
- notable Linux-kernel complications. Each of the following sections
-@@ -2344,10 +2332,10 @@ implementations, non-preemptible and preemptible. The other four flavors
- are listed below, with requirements for each described in a separate
- section.
- 
--#. `Bottom-Half Flavor (Historical) <#Bottom-Half%20Flavor>`__
--#. `Sched Flavor (Historical) <#Sched%20Flavor>`__
--#. `Sleepable RCU <#Sleepable%20RCU>`__
--#. `Tasks RCU <#Tasks%20RCU>`__
-+#. `Bottom-Half Flavor (Historical)`_
-+#. `Sched Flavor (Historical)`_
-+#. `Sleepable RCU`_
-+#. `Tasks RCU`_
- 
- Bottom-Half Flavor (Historical)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	preempt_enable_notrace();
 -- 
 2.22.0.770.g0f2c4a37fd-goog
 
