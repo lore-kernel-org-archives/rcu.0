@@ -2,230 +2,71 @@ Return-Path: <SRS0=/vWc=V5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA979C19759
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:15:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95CF1C433FF
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:38:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 85FE720644
-	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:15:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5CBA62080C
+	for <rcu@archiver.kernel.org>; Thu,  1 Aug 2019 18:38:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fO4UiudJ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="etmtCIar"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388144AbfHASOV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Aug 2019 14:14:21 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36362 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388051AbfHASOV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Aug 2019 14:14:21 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r7so34532383pfl.3
-        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:14:20 -0700 (PDT)
+        id S1730581AbfHASiR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Aug 2019 14:38:17 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:44108 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728851AbfHASiQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Aug 2019 14:38:16 -0400
+Received: by mail-lj1-f194.google.com with SMTP id k18so70363947ljc.11
+        for <rcu@vger.kernel.org>; Thu, 01 Aug 2019 11:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Bi7DhQ5yFa9gdtz6q03hD/81+WCPHg2ZwPjp55qICY0=;
-        b=fO4UiudJ9OPBgpVdBS/EVuSW3M31sA5bIBv0f7GHYLZ6KkmIIADDCqXDEx3XnUFCLs
-         A3gewf6NuVtUkKSTx+re3DkJTvrn6JSlXBhDjVLXvFCTzKOgDCZI/6Hg/xw46wW5lXry
-         dq5lHUiLros4HmkHn68n0nJHv1qIsk3wowRHE=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YRm0VZw0+vdPfuqKlyvMVmBBDH4QPYqnMrDhSJUTODc=;
+        b=etmtCIarLpwD+He3nYQPx7WMrIItIUgF4WO27z/NtvDv+MRz2APxEgRTZD2hkOpuve
+         3yc4ZvTFru2Y3nncQvXfwcWxMWeDmXilO7ffYdXfaCqTyZTN7zW6y4Ot5jBEzkRDwF3p
+         Ke+I+G5YvZN2IekOO1h+1NM69qLjvXzIEFqa0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Bi7DhQ5yFa9gdtz6q03hD/81+WCPHg2ZwPjp55qICY0=;
-        b=DAb0jay30st4aXW/jRkXlia5myHwsPnjBOmKRkudEdDYe+zPqAIZ3AcsHbvYEbw0NE
-         d1i/8KmEN8WL8pw5y9euO/5vZhzjyG24vwEiXIftrTmnVN2tyUYcmxoxtw7n9/bMjnKI
-         xJcObX411q2+pjnFAuGWD78mnC3IfWzbl+FsRfBgF1Z7HJHEu1u1sMQ1T1XosmKqJvyx
-         yGBYf37ny4BtlF1Wz6jofPtCO92uTLPHJw75m2lcTrNJnvOxfi8sgv5AOWDC46pr7nPa
-         5Ab7ukhKSbOFy/QXOPOsuO4x7+f+kaTi6kvW0uEK37r36EOQPLbbmz26c5OfloE9nZJm
-         5lpw==
-X-Gm-Message-State: APjAAAVuEMreGPXB9LmAQUAY1F+bnKGA2BtRJ+vaXEJOAEofGCro7QpU
-        u1nQoGJx/8e0i7DKaziBrDE=
-X-Google-Smtp-Source: APXvYqx8IMpZeuWjlPp//DQHV1o08Drpy+nyYs9KCBr1edQSTruxWAMtgwZ97clPwroBcOKdeS3d/Q==
-X-Received: by 2002:a63:58c:: with SMTP id 134mr125709836pgf.106.1564683259886;
-        Thu, 01 Aug 2019 11:14:19 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g8sm82089165pgk.1.2019.08.01.11.14.18
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 11:14:19 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org
-Subject: [PATCH 1/9] Revert "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
-Date:   Thu,  1 Aug 2019 14:14:03 -0400
-Message-Id: <20190801181411.96429-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
-In-Reply-To: <20190801181411.96429-1-joel@joelfernandes.org>
-References: <20190801181411.96429-1-joel@joelfernandes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YRm0VZw0+vdPfuqKlyvMVmBBDH4QPYqnMrDhSJUTODc=;
+        b=Fx+pYBov0+xN3jM7QjyqT9lLUeOB2B/mIA6GZ1KCHA/SXBZUV1Y3P2Zbd6saYRT32g
+         Efmuj3Dp8Cvowjz3mBCqT4GHQWPGyBSUl34j8XxzpfQUwopmkMPpeHnVU/VCFCyjZT8z
+         YlRDY9MEHWlsOlDt7Zfgwp2Smj4CAAVnxWz8WlvLnvwyhNl1Fs5O28DjR3uwWZ8ugFu+
+         8Qu4rjFpuLbgyXTWRJL0IVNywOvPZTswFij5KYqZxqD91SoLux33RyWaHKR4ee6Afoyq
+         dOKrM1/LqB8GfE+xvK4CZ1Qx2//SZSWu8BFHcIprqd8TlziYBCsomSOHHt1nfEOgwVVd
+         TIkw==
+X-Gm-Message-State: APjAAAVlsm9/XTV0HEZG69BLh1BalSdlW5oAzYSjH/Y9dUOm5aKcM5c3
+        dc5X9mYZOuRAfUR0VMqJSjg8e6alLRbEXtEr/mE=
+X-Google-Smtp-Source: APXvYqxiLgQc8yPSTvJJx1FN+yxZtvmHJa7Lew80a6w0JtLdvF5G6zzrVnklvhIoaraZOUirmH8zn+vON1NcelEoDBs=
+X-Received: by 2002:a2e:301a:: with SMTP id w26mr67530395ljw.76.1564684694917;
+ Thu, 01 Aug 2019 11:38:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190801181411.96429-1-joel@joelfernandes.org>
+In-Reply-To: <20190801181411.96429-1-joel@joelfernandes.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 1 Aug 2019 14:38:03 -0400
+Message-ID: <CAEXW_YRHtQB+9aVSK3Db1x_417=JvOnwtctte_r8WTS8+20EAw@mail.gmail.com>
+Subject: Re: [PATCH 0/9] Apply new rest conversion patches to /dev branch
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This reverts commit d6b9cd7dc8e041ee83cb1362fce59a3cdb1f2709.
----
- .../RCU/Design/Requirements/Requirements.html | 71 -------------------
- kernel/rcu/tree_plugin.h                      | 11 +++
- 2 files changed, 11 insertions(+), 71 deletions(-)
+On Thu, Aug 1, 2019 at 2:14 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> This series fixes the rcu/dev branch so it can apply the new ReST conversion patches.
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
-index 467251f7fef6..bdbc84f1b949 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.html
-+++ b/Documentation/RCU/Design/Requirements/Requirements.html
-@@ -2129,8 +2129,6 @@ Some of the relevant points of interest are as follows:
- <li>	<a href="#Hotplug CPU">Hotplug CPU</a>.
- <li>	<a href="#Scheduler and RCU">Scheduler and RCU</a>.
- <li>	<a href="#Tracing and RCU">Tracing and RCU</a>.
--<li>	<a href="#Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a>.
- <li>	<a href="#Energy Efficiency">Energy Efficiency</a>.
- <li>	<a href="#Scheduling-Clock Interrupts and RCU">
- 	Scheduling-Clock Interrupts and RCU</a>.
-@@ -2523,75 +2521,6 @@ cannot be used.
- The tracing folks both located the requirement and provided the
- needed fix, so this surprise requirement was relatively painless.
- 
--<h3><a name="Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a></h3>
--
--<p>
--The kernel needs to access user-space memory, for example, to access
--data referenced by system-call parameters.
--The <tt>get_user()</tt> macro does this job.
--
--<p>
--However, user-space memory might well be paged out, which means
--that <tt>get_user()</tt> might well page-fault and thus block while
--waiting for the resulting I/O to complete.
--It would be a very bad thing for the compiler to reorder
--a <tt>get_user()</tt> invocation into an RCU read-side critical
--section.
--For example, suppose that the source code looked like this:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 v = p-&gt;value;
-- 4 rcu_read_unlock();
-- 5 get_user(user_v, user_p);
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--The compiler must not be permitted to transform this source code into
--the following:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 get_user(user_v, user_p); // BUG: POSSIBLE PAGE FAULT!!!
-- 4 v = p-&gt;value;
-- 5 rcu_read_unlock();
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--If the compiler did make this transformation in a
--<tt>CONFIG_PREEMPT=n</tt> kernel build, and if <tt>get_user()</tt> did
--page fault, the result would be a quiescent state in the middle
--of an RCU read-side critical section.
--This misplaced quiescent state could result in line&nbsp;4 being
--a use-after-free access, which could be bad for your kernel's
--actuarial statistics.
--Similar examples can be constructed with the call to <tt>get_user()</tt>
--preceding the <tt>rcu_read_lock()</tt>.
--
--<p>
--Unfortunately, <tt>get_user()</tt> doesn't have any particular
--ordering properties, and in some architectures the underlying <tt>asm</tt>
--isn't even marked <tt>volatile</tt>.
--And even if it was marked <tt>volatile</tt>, the above access to
--<tt>p-&gt;value</tt> is not volatile, so the compiler would not have any
--reason to keep those two accesses in order.
--
--<p>
--Therefore, the Linux-kernel definitions of <tt>rcu_read_lock()</tt>
--and <tt>rcu_read_unlock()</tt> must act as compiler barriers,
--at least for outermost instances of <tt>rcu_read_lock()</tt> and
--<tt>rcu_read_unlock()</tt> within a nested set of RCU read-side critical
--sections.
--
- <h3><a name="Energy Efficiency">Energy Efficiency</a></h3>
- 
- <p>
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 379cb7e50a62..e1491d262892 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -288,6 +288,7 @@ void rcu_note_context_switch(bool preempt)
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp;
- 
-+	barrier(); /* Avoid RCU read-side critical sections leaking down. */
- 	trace_rcu_utilization(TPS("Start context switch"));
- 	lockdep_assert_irqs_disabled();
- 	WARN_ON_ONCE(!preempt && t->rcu_read_lock_nesting > 0);
-@@ -330,6 +331,7 @@ void rcu_note_context_switch(bool preempt)
- 	if (rdp->exp_deferred_qs)
- 		rcu_report_exp_rdp(rdp);
- 	trace_rcu_utilization(TPS("End context switch"));
-+	barrier(); /* Avoid RCU read-side critical sections leaking up. */
- }
- EXPORT_SYMBOL_GPL(rcu_note_context_switch);
- 
-@@ -813,6 +815,11 @@ static void rcu_qs(void)
-  * dyntick-idle quiescent state visible to other CPUs, which will in
-  * some cases serve for expedited as well as normal grace periods.
-  * Either way, register a lightweight quiescent state.
-+ *
-+ * The barrier() calls are redundant in the common case when this is
-+ * called externally, but just in case this is called from within this
-+ * file.
-+ *
-  */
- void rcu_all_qs(void)
- {
-@@ -827,12 +834,14 @@ void rcu_all_qs(void)
- 		return;
- 	}
- 	this_cpu_write(rcu_data.rcu_urgent_qs, false);
-+	barrier(); /* Avoid RCU read-side critical sections leaking down. */
- 	if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
- 		local_irq_save(flags);
- 		rcu_momentary_dyntick_idle();
- 		local_irq_restore(flags);
- 	}
- 	rcu_qs();
-+	barrier(); /* Avoid RCU read-side critical sections leaking up. */
- 	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(rcu_all_qs);
-@@ -842,6 +851,7 @@ EXPORT_SYMBOL_GPL(rcu_all_qs);
-  */
- void rcu_note_context_switch(bool preempt)
- {
-+	barrier(); /* Avoid RCU read-side critical sections leaking down. */
- 	trace_rcu_utilization(TPS("Start context switch"));
- 	rcu_qs();
- 	/* Load rcu_urgent_qs before other flags. */
-@@ -854,6 +864,7 @@ void rcu_note_context_switch(bool preempt)
- 		rcu_tasks_qs(current);
- out:
- 	trace_rcu_utilization(TPS("End context switch"));
-+	barrier(); /* Avoid RCU read-side critical sections leaking up. */
- }
- EXPORT_SYMBOL_GPL(rcu_note_context_switch);
- 
--- 
-2.22.0.770.g0f2c4a37fd-goog
-
+Weirdly enough, Patch 4/9 did not get received by the archive, but
+patchwork did pick it up:
+https://lore.kernel.org/patchwork/patch/1109574/
