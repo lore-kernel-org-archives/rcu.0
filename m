@@ -2,129 +2,155 @@ Return-Path: <SRS0=3nIp=WD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7686C32751
-	for <rcu@archiver.kernel.org>; Wed,  7 Aug 2019 23:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C13A4C32751
+	for <rcu@archiver.kernel.org>; Wed,  7 Aug 2019 23:42:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9C5C52173C
-	for <rcu@archiver.kernel.org>; Wed,  7 Aug 2019 23:27:19 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xbs82/Kp"
+	by mail.kernel.org (Postfix) with ESMTP id 9BA2820880
+	for <rcu@archiver.kernel.org>; Wed,  7 Aug 2019 23:42:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730045AbfHGX1T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Aug 2019 19:27:19 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:39979 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729960AbfHGX1T (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Aug 2019 19:27:19 -0400
-Received: by mail-ot1-f68.google.com with SMTP id l15so53969926oth.7;
-        Wed, 07 Aug 2019 16:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ptsN0pKGjspYax7sMd3DV0UE0ign/6FOn3Xkm6nIgtg=;
-        b=Xbs82/Kp6Uslw87FjoUjS/yMLoEwH3/2IopZZ5p+CSpU2BT9X50Ygg616F/IkmCKsW
-         +5LbBzbmyNmgFtL+s8QWbFcDhhaYLlRBd6W6jAduJREoZD4jMjRknCBe1juE6J1r2Cg+
-         k4VOtdrmAqVF7Y0G6C9ANPEFsM3trFFKi9AiYviRUIb2lnVPiqCcrougqW/yR4pjpNSd
-         rZkdDhyLZYeS82QviPS+Uq785jLoKr2av9yu6IyIVWL7ayRZum72kLRpk7HpmD8fzNpk
-         b/slvFNXz0Ek+Xc/PBDL2JvB8dL6/RS19Wk5S4c6euo5BRG6S6uMA4m79uodSh+VTDa8
-         iA+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ptsN0pKGjspYax7sMd3DV0UE0ign/6FOn3Xkm6nIgtg=;
-        b=sAQsi3FmBZ0BQKHgT+A5Ob8e2b2sE9BflxZadZSS8xX9qGMX0G0EdMWgoL30bil4Bo
-         XZMlIit3knhbmme/C8M2bl7fhBQZgXewD4kZf2PvDCdFkM4vr+gmOMuGNMX1zTMgz9CZ
-         lURzhNYaeSdg+b5ll4o2a3bbYYWiU2yuuEpKB3inUXlumtMX22yy9qFLEHWhiKIDpNWq
-         xPkwpBZFqGU54wX187e1202s0l+dIQ8T5LqbEyHI5IScLnZD8vDhVLCzKA1G8IR/CZAf
-         /EVa0/G+kL57orwZt2bP1WY//4KGhXHdPNI4D1ipbyY+rL//GzanUt4y+7P5XkRjioHF
-         T97w==
-X-Gm-Message-State: APjAAAUrBRdutW981My2UGKQg5qPc6tuVC7d0S3NALj9Xk6oW4F6mCa7
-        DyUF9WdzdLAUs6ugHGusOTQFY+3RbUA=
-X-Google-Smtp-Source: APXvYqyVZSqqaua3CweR97UPjnwSDQ9AOTAtfEPrrcS06k/L985nKuwRM1MfcgL6vmYKo0vh8eJZyA==
-X-Received: by 2002:a6b:7909:: with SMTP id i9mr11646977iop.8.1565220437747;
-        Wed, 07 Aug 2019 16:27:17 -0700 (PDT)
-Received: from oc2825805254.ibm.com ([32.97.110.54])
-        by smtp.gmail.com with ESMTPSA id b14sm103425056iod.33.2019.08.07.16.27.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Aug 2019 16:27:17 -0700 (PDT)
-From:   Ethan Hansen <1ethanhansen@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        paulmck@linux.ibm.com, josh@joshtriplett.org, rostedt@goodmis.org,
+        id S2388849AbfHGXmB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Aug 2019 19:42:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49378 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388412AbfHGXmB (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 7 Aug 2019 19:42:01 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77NadUW158861;
+        Wed, 7 Aug 2019 19:41:27 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u87072xr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Aug 2019 19:41:27 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x77NdCMP164069;
+        Wed, 7 Aug 2019 19:41:26 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2u87072xqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Aug 2019 19:41:26 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x77Ne7Xr030667;
+        Wed, 7 Aug 2019 23:41:25 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01dal.us.ibm.com with ESMTP id 2u51w7b4sc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Aug 2019 23:41:25 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x77NfPBl44957986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Aug 2019 23:41:25 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B3C6B2065;
+        Wed,  7 Aug 2019 23:41:25 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F1940B205F;
+        Wed,  7 Aug 2019 23:41:24 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Aug 2019 23:41:24 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 08E1A16C9A4E; Wed,  7 Aug 2019 16:41:26 -0700 (PDT)
+Date:   Wed, 7 Aug 2019 16:41:25 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Ethan Hansen <1ethanhansen@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, Ethan Hansen <1ethanhansen@gmail.com>
-Subject: [PATCH tip/core/rcu 1/1] rcu: Remove unused variable rcu_perf_writer_state
-Date:   Wed,  7 Aug 2019 16:26:55 -0700
-Message-Id: <1565220415-3070-1-git-send-email-1ethanhansen@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/1] rcu: Remove unused variable
+ rcu_perf_writer_state
+Message-ID: <20190807234125.GK28441@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
+References: <1565220415-3070-1-git-send-email-1ethanhansen@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1565220415-3070-1-git-send-email-1ethanhansen@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908070208
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The variable rcu_perf_writer_state is declared and initialized,
-but is never actually referenced. Remove it to clean code.
+On Wed, Aug 07, 2019 at 04:26:55PM -0700, Ethan Hansen wrote:
+> The variable rcu_perf_writer_state is declared and initialized,
+> but is never actually referenced. Remove it to clean code.
+> 
+> Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
 
-Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
----
- kernel/rcu/rcuperf.c | 8 --------
- 1 file changed, 8 deletions(-)
+Good eyes, thank you!  One question below.
 
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index 5a879d0..ff02936 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -109,7 +109,6 @@
- static unsigned long b_rcu_perf_writer_finished;
- static DEFINE_PER_CPU(atomic_t, n_async_inflight);
- 
--static int rcu_perf_writer_state;
- #define RTWS_INIT		0
- #define RTWS_ASYNC		1
- #define RTWS_BARRIER		2
-@@ -404,25 +403,20 @@ static void rcu_perf_async_cb(struct rcu_head *rhp)
- 			if (!rhp)
- 				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
- 			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
--				rcu_perf_writer_state = RTWS_ASYNC;
- 				atomic_inc(this_cpu_ptr(&n_async_inflight));
- 				cur_ops->async(rhp, rcu_perf_async_cb);
- 				rhp = NULL;
- 			} else if (!kthread_should_stop()) {
--				rcu_perf_writer_state = RTWS_BARRIER;
- 				cur_ops->gp_barrier();
- 				goto retry;
- 			} else {
- 				kfree(rhp); /* Because we are stopping. */
- 			}
- 		} else if (gp_exp) {
--			rcu_perf_writer_state = RTWS_EXP_SYNC;
- 			cur_ops->exp_sync();
- 		} else {
--			rcu_perf_writer_state = RTWS_SYNC;
- 			cur_ops->sync();
- 		}
--		rcu_perf_writer_state = RTWS_IDLE;
- 		t = ktime_get_mono_fast_ns();
- 		*wdp = t - *wdp;
- 		i_max = i;
-@@ -463,10 +457,8 @@ static void rcu_perf_async_cb(struct rcu_head *rhp)
- 		rcu_perf_wait_shutdown();
- 	} while (!torture_must_stop());
- 	if (gp_async) {
--		rcu_perf_writer_state = RTWS_BARRIER;
- 		cur_ops->gp_barrier();
- 	}
--	rcu_perf_writer_state = RTWS_STOPPING;
- 	writer_n_durations[me] = i_max;
- 	torture_kthread_stopping("rcu_perf_writer");
- 	return 0;
--- 
-1.8.3.1
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/rcuperf.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+> index 5a879d0..ff02936 100644
+> --- a/kernel/rcu/rcuperf.c
+> +++ b/kernel/rcu/rcuperf.c
+> @@ -109,7 +109,6 @@
+>  static unsigned long b_rcu_perf_writer_finished;
+>  static DEFINE_PER_CPU(atomic_t, n_async_inflight);
+>  
+> -static int rcu_perf_writer_state;
+>  #define RTWS_INIT		0
+>  #define RTWS_ASYNC		1
+>  #define RTWS_BARRIER		2
+
+Does removing this variable also mean that the RTWS_* C preprocessor
+macros are now unused?
+
+> @@ -404,25 +403,20 @@ static void rcu_perf_async_cb(struct rcu_head *rhp)
+>  			if (!rhp)
+>  				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+>  			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
+> -				rcu_perf_writer_state = RTWS_ASYNC;
+>  				atomic_inc(this_cpu_ptr(&n_async_inflight));
+>  				cur_ops->async(rhp, rcu_perf_async_cb);
+>  				rhp = NULL;
+>  			} else if (!kthread_should_stop()) {
+> -				rcu_perf_writer_state = RTWS_BARRIER;
+>  				cur_ops->gp_barrier();
+>  				goto retry;
+>  			} else {
+>  				kfree(rhp); /* Because we are stopping. */
+>  			}
+>  		} else if (gp_exp) {
+> -			rcu_perf_writer_state = RTWS_EXP_SYNC;
+>  			cur_ops->exp_sync();
+>  		} else {
+> -			rcu_perf_writer_state = RTWS_SYNC;
+>  			cur_ops->sync();
+>  		}
+> -		rcu_perf_writer_state = RTWS_IDLE;
+>  		t = ktime_get_mono_fast_ns();
+>  		*wdp = t - *wdp;
+>  		i_max = i;
+> @@ -463,10 +457,8 @@ static void rcu_perf_async_cb(struct rcu_head *rhp)
+>  		rcu_perf_wait_shutdown();
+>  	} while (!torture_must_stop());
+>  	if (gp_async) {
+> -		rcu_perf_writer_state = RTWS_BARRIER;
+>  		cur_ops->gp_barrier();
+>  	}
+> -	rcu_perf_writer_state = RTWS_STOPPING;
+>  	writer_n_durations[me] = i_max;
+>  	torture_kthread_stopping("rcu_perf_writer");
+>  	return 0;
+> -- 
+> 1.8.3.1
+> 
