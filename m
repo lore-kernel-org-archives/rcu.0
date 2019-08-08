@@ -2,34 +2,34 @@ Return-Path: <SRS0=c+fI=WE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD80CC433FF
-	for <rcu@archiver.kernel.org>; Thu,  8 Aug 2019 09:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C52C0650F
+	for <rcu@archiver.kernel.org>; Thu,  8 Aug 2019 10:27:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AC5A421479
-	for <rcu@archiver.kernel.org>; Thu,  8 Aug 2019 09:54:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2E5A2173E
+	for <rcu@archiver.kernel.org>; Thu,  8 Aug 2019 10:27:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731485AbfHHJyB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Aug 2019 05:54:01 -0400
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:35912 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730747AbfHHJyB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Aug 2019 05:54:01 -0400
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.52 with ESMTP; 8 Aug 2019 18:53:58 +0900
-X-Original-SENDERIP: 156.147.1.126
+        id S2389950AbfHHK1j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Aug 2019 06:27:39 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:41807 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389933AbfHHK1j (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Aug 2019 06:27:39 -0400
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.51 with ESMTP; 8 Aug 2019 19:27:36 +0900
+X-Original-SENDERIP: 156.147.1.127
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 8 Aug 2019 18:53:58 +0900
+        by 156.147.1.127 with ESMTP; 8 Aug 2019 19:27:36 +0900
 X-Original-SENDERIP: 10.177.222.33
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Thu, 8 Aug 2019 18:52:32 +0900
+Date:   Thu, 8 Aug 2019 19:26:10 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
         linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
         max.byungchul.park@gmail.com, kernel-team@android.com,
         kernel-team@lge.com, Davidlohr Bueso <dave@stgolabs.net>,
@@ -39,105 +39,77 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
  batching
-Message-ID: <20190808095232.GA30401@X58A-UD3R>
+Message-ID: <20190808102610.GA7227@X58A-UD3R>
 References: <20190806212041.118146-1-joel@joelfernandes.org>
  <20190806235631.GU28441@linux.ibm.com>
  <20190807094504.GB169551@google.com>
- <20190807175215.GE28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190807175215.GE28441@linux.ibm.com>
+In-Reply-To: <20190807094504.GB169551@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 10:52:15AM -0700, Paul E. McKenney wrote:
-> On Wed, Aug 07, 2019 at 05:45:04AM -0400, Joel Fernandes wrote:
-> > On Tue, Aug 06, 2019 at 04:56:31PM -0700, Paul E. McKenney wrote:
-> > > On Tue, Aug 06, 2019 at 05:20:40PM -0400, Joel Fernandes (Google) wrote:
+On Wed, Aug 07, 2019 at 05:45:04AM -0400, Joel Fernandes wrote:
+> On Tue, Aug 06, 2019 at 04:56:31PM -0700, Paul E. McKenney wrote:
+
+[snip]
+
+> > On Tue, Aug 06, 2019 at 05:20:40PM -0400, Joel Fernandes (Google) wrote:
+> > Of course, I am hoping that a later patch uses an array of pointers built
+> > at kfree_rcu() time, similar to Rao's patch (with or without kfree_bulk)
+> > in order to reduce per-object cache-miss overhead.  This would make it
+> > easier for callback invocation to keep up with multi-CPU kfree_rcu()
+> > floods.
 > 
-> [ . . . ]
-> 
-> > > > +	for (; head; head = next) {
-> > > > +		next = head->next;
-> > > > +		head->next = NULL;
-> > > > +		__call_rcu(head, head->func, -1, 1);
-> > > 
-> > > We need at least a cond_resched() here.  200,000 times through this loop
-> > > in a PREEMPT=n kernel might not always be pretty.  Except that this is
-> > > invoked directly from kfree_rcu() which might be invoked with interrupts
-> > > disabled, which precludes calls to cond_resched().  So the realtime guys
-> > > are not going to be at all happy with this loop.
-> > 
-> > Ok, will add this here.
-> > 
-> > > And this loop could be avoided entirely by having a third rcu_head list
-> > > in the kfree_rcu_cpu structure.  Yes, some of the batches would exceed
-> > > KFREE_MAX_BATCH, but given that they are invoked from a workqueue, that
-> > > should be OK, or at least more OK than queuing 200,000 callbacks with
-> > > interrupts disabled.  (If it turns out not to be OK, an array of rcu_head
-> > > pointers can be used to reduce the probability of oversized batches.)
-> > > This would also mean that the equality comparisons with KFREE_MAX_BATCH
-> > > need to become greater-or-equal comparisons or some such.
-> > 
-> > Yes, certainly we can do these kinds of improvements after this patch, and
-> > then add more tests to validate the improvements.
-> 
-> Out of pity for people bisecting, we need this fixed up front.
-> 
-> My suggestion is to just allow ->head to grow until ->head_free becomes
-> available.  That way you are looping with interrupts and preemption
-> enabled in workqueue context, which is much less damaging than doing so
-> with interrupts disabled, and possibly even from hard-irq context.
+> I think Byungchul tried an experiment with array of pointers and wasn't
+> immediately able to see a benefit. Perhaps his patch needs a bit more polish
+> or another test-case needed to show benefit due to cache-misses, and the perf
+> tool could be used to show if cache misses were reduced. For this initial
+> pass, we decided to keep it without the array optimization.
 
-Agree.
+I'm still seeing no improvement with kfree_bulk().
 
-Or after introducing another limit like KFREE_MAX_BATCH_FORCE(>=
-KFREE_MAX_BATCH):
+I've been thinking I could see improvement with kfree_bulk() because:
 
-1. Try to drain it on hitting KFREE_MAX_BATCH as it does.
+   1. As you guys said, the number of cache misses will be reduced.
+   2. We can save (N - 1) irq-disable instructions while N kfrees.
+   3. As Joel said, saving/restoring CPU status that kfree() does inside
+      is not required.
 
-   On success: Same as now.
-   On fail: let ->head grow and drain if possible, until reaching to
-            KFREE_MAX_BATCH_FORCE.
+But even with the following patch applied, the result was same as just
+batching test. We might need to get kmalloc objects from random
+addresses to maximize the result when using kfree_bulk() and this is
+even closer to real practical world too.
 
-3. On hitting KFREE_MAX_BATCH_FORCE, give up batching but handle one by
-   one from now on to prevent too many pending requests from being
-   queued for batching work.
+And the second and third reasons doesn't seem to work as much as I
+expected.
 
-This way, we can avoid both:
-
-1. too many requests being queued and
-2. __call_rcu() bunch of requests within a single kfree_rcu().
+Do you have any idea? Or what do you think about it?
 
 Thanks,
 Byungchul
 
-> 
-> But please feel free to come up with a better solution!
-> 
-> [ . . . ]
-> 
-> > > > @@ -3459,6 +3645,8 @@ void __init rcu_init(void)
-> > > >  {
-> > > >  	int cpu;
-> > > >  
-> > > > +	kfree_rcu_batch_init();
-> > > 
-> > > What happens if someone does a kfree_rcu() before this point?  It looks
-> > > like it should work, but have you tested it?
-> > > 
-> > > >  	rcu_early_boot_tests();
-> > > 
-> > > For example, by testing it in rcu_early_boot_tests() and moving the
-> > > call to kfree_rcu_batch_init() here.
-> > 
-> > I have not tried to do the kfree_rcu() this early. I will try it out.
-> 
-> Yeah, well, call_rcu() this early came as a surprise to me back in the
-> day, so...  ;-)
-> 
-> 							Thanx, Paul
+-----8<-----
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index 988e1ae..6f2ab06 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -651,10 +651,10 @@ struct kfree_obj {
+ 				return -ENOMEM;
+ 		}
+ 
+-		for (i = 0; i < kfree_alloc_num; i++) {
+-			if (!kfree_no_batch) {
+-				kfree_rcu(alloc_ptrs[i], rh);
+-			} else {
++		if (!kfree_no_batch) {
++			kfree_bulk(kfree_alloc_num, (void **)alloc_ptrs);
++		} else {
++			for (i = 0; i < kfree_alloc_num; i++) {
+ 				rcu_callback_t cb;
+ 
+ 				cb = (rcu_callback_t)(unsigned long)offsetof(struct kfree_obj, rh);
