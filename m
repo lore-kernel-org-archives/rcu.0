@@ -2,273 +2,190 @@ Return-Path: <SRS0=m0PJ=WF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF583C31E40
-	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 16:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E9FAC433FF
+	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 16:52:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9DF97214C6
-	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 16:33:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CCE42086A
+	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 16:52:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406775AbfHIQd4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Aug 2019 12:33:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31140 "EHLO
+        id S2407405AbfHIQwD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Aug 2019 12:52:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57358 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407432AbfHIQdx (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 9 Aug 2019 12:33:53 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79GXXbC037092
-        for <rcu@vger.kernel.org>; Fri, 9 Aug 2019 12:33:52 -0400
-Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2u9a8m67uj-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Fri, 09 Aug 2019 12:33:52 -0400
-Received: from localhost
-        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Fri, 9 Aug 2019 17:33:50 +0100
-Received: from b01cxnp23032.gho.pok.ibm.com (9.57.198.27)
-        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 9 Aug 2019 17:33:46 +0100
+        by vger.kernel.org with ESMTP id S1726157AbfHIQwD (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 9 Aug 2019 12:52:03 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79Glbk5010243;
+        Fri, 9 Aug 2019 12:51:21 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u9c4x9bfn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Aug 2019 12:51:21 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x79GmKHt013029;
+        Fri, 9 Aug 2019 12:51:20 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2u9c4x9bf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Aug 2019 12:51:20 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x79GnX88016163;
+        Fri, 9 Aug 2019 16:51:19 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 2u51w7fdv2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Aug 2019 16:51:19 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x79GXjOj24052074
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x79GpIUv52232612
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Aug 2019 16:33:45 GMT
+        Fri, 9 Aug 2019 16:51:18 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6461DB2067;
-        Fri,  9 Aug 2019 16:33:45 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id BC20EB2064;
+        Fri,  9 Aug 2019 16:51:18 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B21EB205F;
-        Fri,  9 Aug 2019 16:33:45 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 85255B205F;
+        Fri,  9 Aug 2019 16:51:18 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Aug 2019 16:33:45 +0000 (GMT)
+        Fri,  9 Aug 2019 16:51:18 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id CD4A816C9A29; Fri,  9 Aug 2019 09:33:46 -0700 (PDT)
-Date:   Fri, 9 Aug 2019 09:33:46 -0700
+        id 2AEAD16C35AF; Fri,  9 Aug 2019 09:51:20 -0700 (PDT)
+Date:   Fri, 9 Aug 2019 09:51:20 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
-        max.byungchul.park@gmail.com, kernel-team@android.com,
-        kernel-team@lge.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
- batching
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 14/14] rcu/nohz: Make multi_cpu_stop()
+ enable tick on all online CPUs
+Message-ID: <20190809165120.GA5668@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <20190806212041.118146-1-joel@joelfernandes.org>
- <20190806235631.GU28441@linux.ibm.com>
- <20190807094504.GB169551@google.com>
- <20190807175215.GE28441@linux.ibm.com>
- <20190808095232.GA30401@X58A-UD3R>
- <20190808125607.GB261256@google.com>
- <20190808233014.GA184373@google.com>
- <20190809151619.GD28441@linux.ibm.com>
- <20190809153924.GB211412@google.com>
+References: <20190804144835.GB2386@hirez.programming.kicks-ass.net>
+ <20190804184159.GC28441@linux.ibm.com>
+ <20190805080531.GH2349@hirez.programming.kicks-ass.net>
+ <20190805145448.GI28441@linux.ibm.com>
+ <20190805155024.GK2332@hirez.programming.kicks-ass.net>
+ <20190805174800.GK28441@linux.ibm.com>
+ <20190806180824.GA28448@linux.ibm.com>
+ <20190807214131.GA15124@linux.ibm.com>
+ <20190808203541.GA8160@linux.ibm.com>
+ <20190808213012.GA28773@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809153924.GB211412@google.com>
+In-Reply-To: <20190808213012.GA28773@linux.ibm.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19080916-0060-0000-0000-0000036B59CE
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011575; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01244392; UDB=6.00656519; IPR=6.01025874;
- MB=3.00028109; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-09 16:33:50
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19080916-0061-0000-0000-00004A7D3341
-Message-Id: <20190809163346.GF28441@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-09_05:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908090162
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908090165
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 11:39:24AM -0400, Joel Fernandes wrote:
-> On Fri, Aug 09, 2019 at 08:16:19AM -0700, Paul E. McKenney wrote:
-> > On Thu, Aug 08, 2019 at 07:30:14PM -0400, Joel Fernandes wrote:
-> [snip]
-> > > > But I could make it something like:
-> > > > 1. Letting ->head grow if ->head_free busy
-> > > > 2. If head_free is busy, then just queue/requeue the monitor to try again.
+On Thu, Aug 08, 2019 at 02:30:12PM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 08, 2019 at 01:35:41PM -0700, Paul E. McKenney wrote:
+> > On Wed, Aug 07, 2019 at 02:41:31PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Aug 06, 2019 at 11:08:24AM -0700, Paul E. McKenney wrote:
+> > > > On Mon, Aug 05, 2019 at 10:48:00AM -0700, Paul E. McKenney wrote:
+> > > > > On Mon, Aug 05, 2019 at 05:50:24PM +0200, Peter Zijlstra wrote:
+> > > > > > On Mon, Aug 05, 2019 at 07:54:48AM -0700, Paul E. McKenney wrote:
+> > > > > > 
+> > > > > > > > Right; so clearly we're not understanding what's happening. That seems
+> > > > > > > > like a requirement for actually doing a patch.
+> > > > > > > 
+> > > > > > > Almost but not quite.  It is a requirement for a patch *that* *is*
+> > > > > > > *supposed* *to* *be* *a* *fix*.  If you are trying to prohibit me from
+> > > > > > > writing experimental patches, please feel free to take a long walk on
+> > > > > > > a short pier.
+> > > > > > > 
+> > > > > > > Understood???
+> > > > > > 
+> > > > > > Ah, my bad, I thought you were actually proposing this as an actual
+> > > > > > patch. I now see that is my bad, I'd overlooked the RFC part.
+> > > > > 
+> > > > > No problem!
+> > > > > 
+> > > > > And of course adding tracing decreases the frequency and duration of
+> > > > > the multi_cpu_stop().  Re-running with shorter-duration triggering.  ;-)
 > > > > 
-> > > > This would even improve performance, but will still risk going out of memory.
+> > > > And I did eventually get a good trace.  If I am interpreting this trace
+> > > > correctly, the torture_-135 task didn't get around to attempting to wake
+> > > > up all of the CPUs.  I will try again, but this time with the sched_switch
+> > > > trace event enabled.
+> > > > 
+> > > > As a side note, enabling ftrace from the command line seems to interact
+> > > > badly with turning tracing off and on in the kernel, so I eventually
+> > > > resorted to trace_printk() in the functions of interest.  The trace
+> > > > output is below, followed by the current diagnostic patch.  Please note
+> > > > that I am -not- using the desperation hammer-the-scheduler patches.
+> > > > 
+> > > > More as I learn more!
 > > > 
-> > > It seems I can indeed hit an out of memory condition once I changed it to
-> > > "letting list grow" (diff is below which applies on top of this patch) while
-> > > at the same time removing the schedule_timeout(2) and replacing it with
-> > > cond_resched() in the rcuperf test.  I think the reason is the rcuperf test
-> > > starves the worker threads that are executing in workqueue context after a
-> > > grace period and those are unable to get enough CPU time to kfree things fast
-> > > enough. But I am not fully sure about it and need to test/trace more to
-> > > figure out why this is happening.
+> > > And of course I forgot to dump out the online CPUs, so I really had no
+> > > idea whether or not all the CPUs were accounted for.  I added tracing
+> > > to dump out the online CPUs at the beginning of __stop_cpus() and then
+> > > reworked it a few times to get the problem to happen in reasonable time.
+> > > Please see below for the resulting annotated trace.
 > > > 
-> > > If I add back the schedule_uninterruptibe_timeout(2) call, the out of memory
-> > > situation goes away.
+> > > I was primed to expect a lost IPI, perhaps due to yet another qemu bug,
+> > > but all the migration threads are running within about 2 milliseconds.
+> > > It is then almost two minutes(!) until the next trace message.
 > > > 
-> > > Clearly we need to do more work on this patch.
+> > > Looks like time to (very carefully!) instrument multi_cpu_stop().
 > > > 
-> > > In the regular kfree_rcu_no_batch() case, I don't hit this issue. I believe
-> > > that since the kfree is happening in softirq context in the _no_batch() case,
-> > > it fares better. The question then I guess is how do we run the rcu_work in a
-> > > higher priority context so it is not starved and runs often enough. I'll
-> > > trace more.
-> > > 
-> > > Perhaps I can also lower the priority of the rcuperf threads to give the
-> > > worker thread some more room to run and see if anything changes. But I am not
-> > > sure then if we're preparing the code for the real world with such
-> > > modifications.
-> > > 
-> > > Any thoughts?
+> > > Of course, if you have any ideas, please do not keep them a secret!
 > > 
-> > Several!  With luck, perhaps some are useful.  ;-)
+> > Functionally, multi_cpu_stop() is working fine, according to the trace
+> > below (search for a line beginning with TAB).  But somehow CPU 2 took
+> > almost three -minutes- to do one iteration of the loop.  The prime suspect
+> > in that loop is cpu_relax() due to the hypervisor having an opportunity
+> > to do something at that point.  The commentary below (again, search for
+> > a line beginning with TAB) gives my analysis.
 > > 
-> > o	Increase the memory via kvm.sh "--memory 1G" or more.  The
-> > 	default is "--memory 500M".
-> 
-> Thanks, this definitely helped.
-> 
-> > o	Leave a CPU free to run things like the RCU grace-period kthread.
-> > 	You might also need to bind that kthread to that CPU.
+> > Of course, if I am correct, it should be possible to catch cpu_relax()
+> > in the act.  That is the next step, give or take the Heisenbuggy nature
+> > of this beast.
 > > 
-> > o	Alternatively, use the "rcutree.kthread_prio=" boot parameter to
-> > 	boost the RCU kthreads to real-time priority.  This won't do
-> > 	anything for ksoftirqd, though.
-> 
-> I will try these as well.
-> 
+> > Another thing for me to try is to run longer with !NO_HZ_FULL, just in
+> > case the earlier runs just got lucky.
 > > 
-> > o	Along with the above boot parameter, use "rcutree.use_softirq=0"
-> > 	to cause RCU to use kthreads instead of softirq.  (You might well
-> > 	find issues in priority setting as well, but might as well find
-> > 	them now if so!)
+> > Thoughts?
 > 
-> Doesn't think one actually reduce the priority of the core RCU work? softirq
-> will always have higher priority than any there. So wouldn't that have the
-> effect of not reclaiming things fast enough? (Or, in my case not scheduling
-> the rcu_work which does the reclaim).
+> And it really can happen:
+> 
+> [ 1881.467922] migratio-33      4...1 1879530317us : stop_machine_yield: cpu_relax() took 756140 ms
+> 
+> The previous timestamp was 1123391100us, so the cpu_relax() is almost
+> exactly the full delay.
+> 
+> But another instance stalled for many minutes without a ten-second
+> cpu_relax().  So it is not just cpu_relax() causing trouble.  I could
+> rationalize that vCPU preemption being at fault...
+> 
+> And my diagnostic patch is below, just in case I am doing something
+> stupid with that.
 
-For low kfree_rcu() loads, yes, it increases overhead due to the need
-for context switches instead of softirq running at the tail end of an
-interrupt.  But for high kfree_rcu() loads, it gets you realtime priority
-(in conjunction with "rcutree.kthread_prio=", that is).
+I did a 12-hour run with the same configuration except for leaving out the
+"nohz_full=1-7" kernel parameter without problems (aside from the RCU CPU
+stall warnings due to the ftrace_dump() at the end of the run -- isn't
+there some way to clear the ftrace buffer without actually printing it?).
 
-> > o	With any of the above, invoke rcu_momentary_dyntick_idle() along
-> > 	with cond_resched() in your kfree_rcu() loop.  This simulates
-> > 	a trip to userspace for nohz_full CPUs, so if this helps for
-> > 	non-nohz_full CPUs, adjustments to the kernel might be called for.
-> 
-> Ok, will try it.
-> 
-> Save these bullet points for future reference! ;-)  thanks,
-
-I guess this is helping me to prepare for Plumbers.  ;-)
+My next step is to do an over-the-weekend run with the same configuration,
+then a similar run with more recent kernel and qemu but with the
+"nohz_full=1-7".  If both of those pass, I will consider this to be a
+KVM/qemu bug that has since been fixed.
 
 							Thanx, Paul
-
->  - Joel
-> 
-> 
-> > 
-> > Probably others, but this should do for a start.
-> > 
-> > 							Thanx, Paul
-> > 
-> > > thanks,
-> > > 
-> > >  - Joel
-> > > 
-> > > ---8<-----------------------
-> > > 
-> > > >From 098d62e5a1b84a11139236c9b1f59e7f32289b40 Mon Sep 17 00:00:00 2001
-> > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > Date: Thu, 8 Aug 2019 16:29:58 -0400
-> > > Subject: [PATCH] Let list grow
-> > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  kernel/rcu/rcuperf.c |  2 +-
-> > >  kernel/rcu/tree.c    | 52 +++++++++++++++++++-------------------------
-> > >  2 files changed, 23 insertions(+), 31 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> > > index 34658760da5e..7dc831db89ae 100644
-> > > --- a/kernel/rcu/rcuperf.c
-> > > +++ b/kernel/rcu/rcuperf.c
-> > > @@ -654,7 +654,7 @@ kfree_perf_thread(void *arg)
-> > >  			}
-> > >  		}
-> > >  
-> > > -		schedule_timeout_uninterruptible(2);
-> > > +		cond_resched();
-> > >  	} while (!torture_must_stop() && ++l < kfree_loops);
-> > >  
-> > >  	kfree(alloc_ptrs);
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index bdbd483606ce..bab77220d8ac 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2595,7 +2595,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
-> > >  
-> > >  
-> > >  /* Maximum number of jiffies to wait before draining batch */
-> > > -#define KFREE_DRAIN_JIFFIES 50
-> > > +#define KFREE_DRAIN_JIFFIES (HZ / 20)
-> > >  
-> > >  /*
-> > >   * Maximum number of kfree(s) to batch, if limit is hit
-> > > @@ -2684,27 +2684,19 @@ static void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krc,
-> > >  {
-> > >  	struct rcu_head *head, *next;
-> > >  
-> > > -	/* It is time to do bulk reclaim after grace period */
-> > > -	krc->monitor_todo = false;
-> > > +	/* It is time to do bulk reclaim after grace period. */
-> > >  	if (queue_kfree_rcu_work(krc)) {
-> > >  		spin_unlock_irqrestore(&krc->lock, flags);
-> > >  		return;
-> > >  	}
-> > >  
-> > > -	/*
-> > > -	 * Use non-batch regular call_rcu for kfree_rcu in case things are too
-> > > -	 * busy and batching of kfree_rcu could not be used.
-> > > -	 */
-> > > -	head = krc->head;
-> > > -	krc->head = NULL;
-> > > -	krc->kfree_batch_len = 0;
-> > > -	spin_unlock_irqrestore(&krc->lock, flags);
-> > > -
-> > > -	for (; head; head = next) {
-> > > -		next = head->next;
-> > > -		head->next = NULL;
-> > > -		__call_rcu(head, head->func, -1, 1);
-> > > +	/* Previous batch did not get free yet, let us try again soon. */
-> > > +	if (krc->monitor_todo == false) {
-> > > +		schedule_delayed_work_on(smp_processor_id(),
-> > > +				&krc->monitor_work,  KFREE_DRAIN_JIFFIES/4);
-> > > +		krc->monitor_todo = true;
-> > >  	}
-> > > +	spin_unlock_irqrestore(&krc->lock, flags);
-> > >  }
-> > >  
-> > >  /*
-> > > -- 
-> > > 2.23.0.rc1.153.gdeed80330f-goog
-> > > 
-> > 
-> 
-
