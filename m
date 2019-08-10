@@ -1,186 +1,228 @@
-Return-Path: <SRS0=m0PJ=WF=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=4nbA=WG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE541C433FF
-	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 21:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5317BC31E40
+	for <rcu@archiver.kernel.org>; Sat, 10 Aug 2019 02:42:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A3F55208C3
-	for <rcu@archiver.kernel.org>; Fri,  9 Aug 2019 21:36:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E1F221743
+	for <rcu@archiver.kernel.org>; Sat, 10 Aug 2019 02:42:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="oLqPhtdY"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FnLYxeje"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbfHIVgr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Aug 2019 17:36:47 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42278 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbfHIVgr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Aug 2019 17:36:47 -0400
-Received: by mail-pg1-f196.google.com with SMTP id t132so46456468pgb.9
-        for <rcu@vger.kernel.org>; Fri, 09 Aug 2019 14:36:46 -0700 (PDT)
+        id S1726896AbfHJCmh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Aug 2019 22:42:37 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:34408 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726843AbfHJCmh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Aug 2019 22:42:37 -0400
+Received: by mail-pf1-f195.google.com with SMTP id b13so46990603pfo.1
+        for <rcu@vger.kernel.org>; Fri, 09 Aug 2019 19:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=/aPM+dGjqbF/twu7tNDtqtaJN6yd/7yU4c7+a2/cJxw=;
-        b=oLqPhtdYAogfpwokAq0y9xZzUtFmKpJVD7GORU7Y4b6sAwR117XaTK37RJPo12PHgG
-         qW5oZhdXQwmz8EjCib2Jicn1UEeY/E3wpbNYGGOsDL2BO+1m+vLZ0446PwAulggiJOUA
-         0zL4giNtUJtQSiAlNsOGQC2p+AoSkGKRWBVLU=
+        bh=cN2BKNTTIR5ZUApm11Gd7dsomDl+MPoDIlmutBIQJJk=;
+        b=FnLYxejejnrWFaItaSxb0+ngXX4ZbpnHXTXj+7RB/Vtn3fpX1nNU1evZ7FtcGCdho9
+         vvG2OEGHLN5EXJ7gZW5J4tDJXRXO7VuQSIsDZ7Z8EkfiK1Y6b0W2d/XYpytnFhGyQGvE
+         a5FuWf7x49CujHt4wRzi7Z6GhMrIJiULe1cao=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/aPM+dGjqbF/twu7tNDtqtaJN6yd/7yU4c7+a2/cJxw=;
-        b=eK8bkDn2yxT54upSN9LOLqR1lNbvNpoOKnRD1zvYwHloJ63DKxKMFxRmCHQ8MI+fgp
-         uleFiOjLyJZXyvKcg2J866BSrBwNJu40K4ecREjFIBS9nQCT9bHPiKRH9KaeKe3RzW/k
-         L9S2At0ydSgL+w6qQ9miCWLMn5dnriKg7c7eDxtGb4oXFYNwAyjueCYqlRP63Eil/nMW
-         Q52LsuI07i/Z+2bKefrrG0Imo6BUkA2a5MOvEBFJZeGgcQBfb94t9I2wy2KDGU22mfbn
-         N8lm/YLIm/6Crtap10es8FJ9qGidIMHqHqKJYvaubaT6FsUa/aQKJ3/2LtCGByEiAFnm
-         wLew==
-X-Gm-Message-State: APjAAAUO/grUwIjfmzDBR2BPcwB72TZSzKTGUB518zqJh1/89MSzB6D/
-        oV+YXC/S7k0/RUghFJHHi4pjQw==
-X-Google-Smtp-Source: APXvYqyhTj+wnZ2r/4zniW+vG+t30nHJkSlUrAs/aUpsNA6Acpb/Z+cqyKSnfKeMhAu4WJlr1McazA==
-X-Received: by 2002:a62:3895:: with SMTP id f143mr23417327pfa.116.1565386605846;
-        Fri, 09 Aug 2019 14:36:45 -0700 (PDT)
+        bh=cN2BKNTTIR5ZUApm11Gd7dsomDl+MPoDIlmutBIQJJk=;
+        b=iEbzaVB2H92P0qEljwchKi0cSwl2gwqBzTXB7tPJIeRGdM9IkKhnQrwgRKRun+Zo0a
+         dxlUSrwYfi9pd035uCoVwRVbPvcugicV0048VpW+4xYPmCsiojX1MNFFPhlbdCGjqUv6
+         wkqnnqSlRkOGaQ2pEDW9PGkfFKAnYmfOsu3NSUiznuoxbwcfdbbf2eu/uPRNr1C3vpda
+         Kqrtwc/obzi4yt/f9fUyZBqGAfASzbIQH9VLfoD4LTc6ZLOXqt6xPPAf8wd3E6Shl/Wm
+         VtIJc6ffFIrqs88lytt3gbqKWEqPHKXBLNK9ov/7996wCV+Jk9TS9zujlwmTCrRZahqQ
+         Hhkw==
+X-Gm-Message-State: APjAAAUyoA8c4XeIFBaTMFtG2B9XdgZY2UfS+VI87zgxoDekFo+EnKbm
+        1a/E2Bk73a0uR/5dGf1l5Bby+Q==
+X-Google-Smtp-Source: APXvYqzUdjhImPr/fW5noawGuY8xMGnEMaPX12PCHh/IgnS5p2p/4oJe1+O3Nl7BXOSsYDA0h70Hxw==
+X-Received: by 2002:a62:e815:: with SMTP id c21mr25760214pfi.244.1565404955863;
+        Fri, 09 Aug 2019 19:42:35 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a10sm5050392pfl.159.2019.08.09.14.36.44
+        by smtp.gmail.com with ESMTPSA id d14sm118496455pfo.154.2019.08.09.19.42.33
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 09 Aug 2019 14:36:45 -0700 (PDT)
-Date:   Fri, 9 Aug 2019 17:36:43 -0400
+        Fri, 09 Aug 2019 19:42:34 -0700 (PDT)
+Date:   Fri, 9 Aug 2019 22:42:32 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <byungchul.park@lge.com>,
-        linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
-        max.byungchul.park@gmail.com, kernel-team@android.com,
-        kernel-team@lge.com, Davidlohr Bueso <dave@stgolabs.net>,
+Cc:     linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
+        max.byungchul.park@gmail.com, byungchul.park@lge.com,
+        kernel-team@android.com, kernel-team@lge.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
  batching
-Message-ID: <20190809213643.GG255533@google.com>
-References: <20190807094504.GB169551@google.com>
+Message-ID: <20190810024232.GA183658@google.com>
+References: <20190806212041.118146-1-joel@joelfernandes.org>
+ <20190806235631.GU28441@linux.ibm.com>
+ <20190807094504.GB169551@google.com>
  <20190807175215.GE28441@linux.ibm.com>
- <20190808095232.GA30401@X58A-UD3R>
- <20190808125607.GB261256@google.com>
- <20190808233014.GA184373@google.com>
- <20190809151619.GD28441@linux.ibm.com>
- <20190809153924.GB211412@google.com>
- <20190809163346.GF28441@linux.ibm.com>
- <20190809202226.GC255533@google.com>
- <20190809204217.GN28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809204217.GN28441@linux.ibm.com>
+In-Reply-To: <20190807175215.GE28441@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 01:42:17PM -0700, Paul E. McKenney wrote:
-> > Also, I can go back to 500M if I just keep KFREE_DRAIN_JIFFIES at HZ/50. So I
-> > am quite happy about that. I think I can declare that the "let list grow
-> > indefinitely" design works quite well even with an insanely heavily loaded
-> > case of every CPU in a 16CPU system with 500M memory, indefinitely doing
-> > kfree_rcu()in a tight loop with appropriate cond_resched(). And I am like
-> > thinking - wow how does this stuff even work at such insane scales :-D
-> 
-> A lot of work by a lot of people over a long period of time.  On their
-> behalf, I thank you for the implied compliment.  So once this patch gets
-> in, perhaps you will have complimented yourself as well.  ;-)
-> 
-> But more work is needed, and will continue to be as new workloads,
-> compiler optimizations, and hardware appears.  And it would be good to
-> try this on a really big system at some point.
-
-Cool!
-
-> > > > > o	Along with the above boot parameter, use "rcutree.use_softirq=0"
-> > > > > 	to cause RCU to use kthreads instead of softirq.  (You might well
-> > > > > 	find issues in priority setting as well, but might as well find
-> > > > > 	them now if so!)
-> > > > 
-> > > > Doesn't think one actually reduce the priority of the core RCU work? softirq
-> > > > will always have higher priority than any there. So wouldn't that have the
-> > > > effect of not reclaiming things fast enough? (Or, in my case not scheduling
-> > > > the rcu_work which does the reclaim).
+On Wed, Aug 07, 2019 at 10:52:15AM -0700, Paul E. McKenney wrote:
+[snip] 
+> > > > @@ -3459,6 +3645,8 @@ void __init rcu_init(void)
+> > > >  {
+> > > >  	int cpu;
+> > > >  
+> > > > +	kfree_rcu_batch_init();
 > > > 
-> > > For low kfree_rcu() loads, yes, it increases overhead due to the need
-> > > for context switches instead of softirq running at the tail end of an
-> > > interrupt.  But for high kfree_rcu() loads, it gets you realtime priority
-> > > (in conjunction with "rcutree.kthread_prio=", that is).
-> > 
-> > I meant for high kfree_rcu() loads, a softirq context executing RCU callback
-> > is still better from the point of view of the callback running because the
-> > softirq will run above all else (higher than the highest priority task) so
-> > use_softirq=0 would be a down grade from that perspective if something higher
-> > than rcutree.kthread_prio is running on the CPU. So unless kthread_prio is
-> > set to the highest prio, then softirq running would work better. Did I miss
-> > something?
-> 
-> Under heavy load, softirq stops running at the tail end of interrupts and
-> is instead run within the context of a per-CPU ksoftirqd kthread.  At normal
-> SCHED_OTHER priority.
-
-Ah, yes. Agreed!
-
-> > > > > o	With any of the above, invoke rcu_momentary_dyntick_idle() along
-> > > > > 	with cond_resched() in your kfree_rcu() loop.  This simulates
-> > > > > 	a trip to userspace for nohz_full CPUs, so if this helps for
-> > > > > 	non-nohz_full CPUs, adjustments to the kernel might be called for.
-> > 
-> > I did not try this yet. But I am thinking why would this help in nohz_idle
-> > case? In nohz_idle we already have the tick active when CPU is idle. I guess
-> > it is because there may be a long time that elapses before
-> > rcu_data.rcu_need_heavy_qs == true ?
-> 
-> Under your heavy rcuperf load, none of the CPUs would ever be idle.  Nor
-> would they every be in nohz_full userspace context, either.
-
-Sorry I made a typo, I meant 'tick active when CPU is non-idle for NOHZ_IDLE
-systems' above.
-
-> In contrast, a heavy duty userspace-driven workload would transition to
-> and from userspace for each kfree_rcu(), and that would increment the
-> dyntick-idle count on each transition to and from userspace.  Adding the
-> rcu_momentary_dyntick_idle() emulates a pair of such transitions.
-
-But even if we're in kernel mode and not transitioning, I thought the FQS
-loop (rcu_implicit_dynticks_qs() function) would set need_heavy_qs to true at
-2 * jiffies_to_sched_qs.
-
-Hmm, I forgot that jiffies_to_sched_qs can be quite large I guess. You're
-right, we could call rcu_momentary_dyntick_idle() in advance before waiting
-for FQS loop to do the setting of need_heavy_qs.
-
-Or, am I missing something with the rcu_momentary_dyntick_idle() point you
-made?
-
-thanks,
-
- - Joel
-
-
-> 
-> 							Thanx, Paul
-> 
-> > > > Ok, will try it.
-> > > > 
-> > > > Save these bullet points for future reference! ;-)  thanks,
+> > > What happens if someone does a kfree_rcu() before this point?  It looks
+> > > like it should work, but have you tested it?
 > > > 
-> > > I guess this is helping me to prepare for Plumbers.  ;-)
+> > > >  	rcu_early_boot_tests();
+> > > 
+> > > For example, by testing it in rcu_early_boot_tests() and moving the
+> > > call to kfree_rcu_batch_init() here.
 > > 
-> > :-)
-> > 
-> > thanks, Paul!
-> > 
-> >  - Joel
-> > 
+> > I have not tried to do the kfree_rcu() this early. I will try it out.
 > 
+> Yeah, well, call_rcu() this early came as a surprise to me back in the
+> day, so...  ;-)
+
+I actually did get surprised as well!
+
+It appears the timers are not fully initialized so the really early
+kfree_rcu() call from rcu_init() does cause a splat about an initialized
+timer spinlock (even though future kfree_rcu()s and the system are working
+fine all the way into the torture tests).
+
+I think to resolve this, we can just not do batching until early_initcall,
+during which I have an initialization function which switches batching on.
+From that point it is safe.
+
+Below is the diff on top of this patch, I think this should be good but let
+me know if anything looks odd to you. I tested it and it works.
+
+have a great weekend! thanks,
+-Joel
+
+---8<-----------------------
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index a09ef81a1a4f..358f5c065fa4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2634,6 +2634,7 @@ struct kfree_rcu_cpu {
+ };
+ 
+ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
++int kfree_rcu_batching_ready;
+ 
+ /*
+  * This function is invoked in workqueue context after a grace period.
+@@ -2742,6 +2743,17 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 		spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
++/*
++ * This version of kfree_call_rcu does not do batching of kfree_rcu() requests.
++ * Used only by rcuperf torture test for comparison with kfree_rcu_batch()
++ * or during really early init.
++ */
++void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
++{
++	__call_rcu(head, func, -1, 1);
++}
++EXPORT_SYMBOL_GPL(kfree_call_rcu_nobatch);
++
+ /*
+  * Queue a request for lazy invocation of kfree() after a grace period.
+  *
+@@ -2764,6 +2775,10 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
+ 	bool monitor_todo;
++	static int once;
++
++	if (!READ_ONCE(kfree_rcu_batching_ready))
++		return kfree_call_rcu_nobatch(head, func);
+ 
+ 	local_irq_save(flags);
+ 	krcp = this_cpu_ptr(&krc);
+@@ -2794,16 +2809,6 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ }
+ EXPORT_SYMBOL_GPL(kfree_call_rcu);
+ 
+-/*
+- * This version of kfree_call_rcu does not do batching of kfree_rcu() requests.
+- * Used only by rcuperf torture test for comparison with kfree_rcu_batch().
+- */
+-void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
+-{
+-	__call_rcu(head, func, -1, 1);
+-}
+-EXPORT_SYMBOL_GPL(kfree_call_rcu_nobatch);
+-
+ /*
+  * During early boot, any blocking grace-period wait automatically
+  * implies a grace period.  Later on, this is never the case for PREEMPT.
+@@ -3650,17 +3655,6 @@ static void __init rcu_dump_rcu_node_tree(void)
+ 	pr_cont("\n");
+ }
+ 
+-void kfree_rcu_batch_init(void)
+-{
+-	int cpu;
+-
+-	for_each_possible_cpu(cpu) {
+-		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-		spin_lock_init(&krcp->lock);
+-		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-	}
+-}
+-
+ struct workqueue_struct *rcu_gp_wq;
+ struct workqueue_struct *rcu_par_gp_wq;
+ 
+@@ -3668,8 +3662,6 @@ void __init rcu_init(void)
+ {
+ 	int cpu;
+ 
+-	kfree_rcu_batch_init();
+-
+ 	rcu_early_boot_tests();
+ 
+ 	rcu_bootup_announce();
+@@ -3700,6 +3692,21 @@ void __init rcu_init(void)
+ 	srcu_init();
+ }
+ 
++static int __init kfree_rcu_batch_init(void)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu) {
++		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
++		spin_lock_init(&krcp->lock);
++		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
++	}
++
++	WRITE_ONCE(kfree_rcu_batching_ready, 1);
++	return 0;
++}
++early_initcall(kfree_rcu_batch_init);
++
+ #include "tree_stall.h"
+ #include "tree_exp.h"
+ #include "tree_plugin.h"
