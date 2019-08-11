@@ -2,309 +2,90 @@ Return-Path: <SRS0=Ms3y=WH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 159E3C433FF
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 10:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73982C0650F
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 18:08:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A415620880
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 10:38:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35DDC208C2
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 18:08:56 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TPV0Djid"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbfHKKik (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 11 Aug 2019 06:38:40 -0400
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:45960 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725810AbfHKKij (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 11 Aug 2019 06:38:39 -0400
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.52 with ESMTP; 11 Aug 2019 19:38:35 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.151 with ESMTP; 11 Aug 2019 19:38:35 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Sun, 11 Aug 2019 19:37:06 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rao Shoaib <rao.shoaib@oracle.com>, kernel-team@android.com,
-        kernel-team <kernel-team@lge.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
- batching
-Message-ID: <20190811103706.GC9486@X58A-UD3R>
-References: <20190806212041.118146-1-joel@joelfernandes.org>
- <20190806235631.GU28441@linux.ibm.com>
- <20190807094504.GB169551@google.com>
- <20190807175215.GE28441@linux.ibm.com>
- <20190808095232.GA30401@X58A-UD3R>
- <20190808125607.GB261256@google.com>
- <CANrsvRPU_u6oKpjZ1368Evto+1hGboNYeOuMdbdzaOfXhSO=5g@mail.gmail.com>
- <20190808180916.GP28441@linux.ibm.com>
- <20190811083626.GA9486@X58A-UD3R>
+        id S1726155AbfHKSIz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 11 Aug 2019 14:08:55 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:40300 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbfHKSIz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 11 Aug 2019 14:08:55 -0400
+Received: by mail-pl1-f174.google.com with SMTP id a93so46950561pla.7
+        for <rcu@vger.kernel.org>; Sun, 11 Aug 2019 11:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=yoil/RKMpuTQtV0AuHtgcT4DJJJTGHvWfHVxacKKIPQ=;
+        b=TPV0DjidjA+QPcpAzhWnSfI1imS442Shi6ALfnTxcwjuqPw4QFwHFPpkxndlYyT9Pv
+         WpeP0YUxfyKdd8PaIyqJaZ323XpdqLUdrqKy3XMf0ofy8p+TUu5ltzEN6EVkx8D6QiS7
+         cPw4+KlrDYD+X9EliOTzUPvzemBe88Zq/42b4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=yoil/RKMpuTQtV0AuHtgcT4DJJJTGHvWfHVxacKKIPQ=;
+        b=ageYUIA2PrV8SmQnr6vWgv6tbpf+5g5MhIg1CgqZFQCvhAGPRMJobC0cKRf0KHcPY8
+         RSIVy7rDZhjLxdb4selP8vBtUigpBaUwRe78S22sHbBHAG5DOLiKdjM/hKtx49bVbG3e
+         atganDpzeT/YcfDhTKJEUO8EfAdhN6LrQ/0MkpFnuk/WxGPmfCbRegxM+jCKAVpkEPPT
+         ek502D4hQ41slTqhbMJSy9CMBPjFWNdL3WU3C04+DD6gHS3FRt2+hb9FdwRXbtwprGIk
+         uUMNLhNjL1H1wW4S9JFazwlJKKaKEhDlM1wJ0fl8iyivaF/5GpVbrXqP4ipPAFWmVR9E
+         Af7w==
+X-Gm-Message-State: APjAAAW9+IRbyw16zzk8kBNVbLbvu1PFn9Zk0dv8UIwVVkWlK50CWh+S
+        HsDB+K6SokwsDwG7ysKNjpsEN0dGsHU=
+X-Google-Smtp-Source: APXvYqzMElb3bWQTvP7jQzpA8oHcGPdNHZvOMri2/9ydad0U+S+elnvIdgtZ//KqrpIY8iVWDlkL1A==
+X-Received: by 2002:a17:902:aa09:: with SMTP id be9mr28512655plb.52.1565546934488;
+        Sun, 11 Aug 2019 11:08:54 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id x24sm100126430pgl.84.2019.08.11.11.08.53
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 11 Aug 2019 11:08:53 -0700 (PDT)
+Date:   Sun, 11 Aug 2019 14:08:52 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     rcu@vger.kernel.org, paulmck@linux.ibm.com
+Subject: need_heavy_qs flag for PREEMPT=y kernels
+Message-ID: <20190811180852.GA128944@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190811083626.GA9486@X58A-UD3R>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 05:36:26PM +0900, Byungchul Park wrote:
-> On Thu, Aug 08, 2019 at 11:09:16AM -0700, Paul E. McKenney wrote:
-> > On Thu, Aug 08, 2019 at 11:23:17PM +0900, Byungchul Park wrote:
-> > > On Thu, Aug 8, 2019 at 9:56 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > On Thu, Aug 08, 2019 at 06:52:32PM +0900, Byungchul Park wrote:
-> > > > > On Wed, Aug 07, 2019 at 10:52:15AM -0700, Paul E. McKenney wrote:
-> > > > > > > > On Tue, Aug 06, 2019 at 05:20:40PM -0400, Joel Fernandes (Google) wrote:
-> > > > > > [ . . . ]
-> > > > > > > > > +     for (; head; head = next) {
-> > > > > > > > > +             next = head->next;
-> > > > > > > > > +             head->next = NULL;
-> > > > > > > > > +             __call_rcu(head, head->func, -1, 1);
-> > > > > > > >
-> > > > > > > > We need at least a cond_resched() here.  200,000 times through this loop
-> > > > > > > > in a PREEMPT=n kernel might not always be pretty.  Except that this is
-> > > > > > > > invoked directly from kfree_rcu() which might be invoked with interrupts
-> > > > > > > > disabled, which precludes calls to cond_resched().  So the realtime guys
-> > > > > > > > are not going to be at all happy with this loop.
-> > > > > > >
-> > > > > > > Ok, will add this here.
-> > > > > > >
-> > > > > > > > And this loop could be avoided entirely by having a third rcu_head list
-> > > > > > > > in the kfree_rcu_cpu structure.  Yes, some of the batches would exceed
-> > > > > > > > KFREE_MAX_BATCH, but given that they are invoked from a workqueue, that
-> > > > > > > > should be OK, or at least more OK than queuing 200,000 callbacks with
-> > > > > > > > interrupts disabled.  (If it turns out not to be OK, an array of rcu_head
-> > > > > > > > pointers can be used to reduce the probability of oversized batches.)
-> > > > > > > > This would also mean that the equality comparisons with KFREE_MAX_BATCH
-> > > > > > > > need to become greater-or-equal comparisons or some such.
-> > > > > > >
-> > > > > > > Yes, certainly we can do these kinds of improvements after this patch, and
-> > > > > > > then add more tests to validate the improvements.
-> > > > > >
-> > > > > > Out of pity for people bisecting, we need this fixed up front.
-> > > > > >
-> > > > > > My suggestion is to just allow ->head to grow until ->head_free becomes
-> > > > > > available.  That way you are looping with interrupts and preemption
-> > > > > > enabled in workqueue context, which is much less damaging than doing so
-> > > > > > with interrupts disabled, and possibly even from hard-irq context.
-> > > > >
-> > > > > Agree.
-> > > > >
-> > > > > Or after introducing another limit like KFREE_MAX_BATCH_FORCE(>=
-> > > > > KFREE_MAX_BATCH):
-> > > > >
-> > > > > 1. Try to drain it on hitting KFREE_MAX_BATCH as it does.
-> > > > >
-> > > > >    On success: Same as now.
-> > > > >    On fail: let ->head grow and drain if possible, until reaching to
-> > > > >             KFREE_MAX_BATCH_FORCE.
-> > > 
-> > > I should've explain this in more detail. This actually mean:
-> > > 
-> > > On fail: Let ->head grow and queue rcu_work when ->head_free == NULL,
-> > >          until reaching to _FORCE.
-> > > 
-> > > > > 3. On hitting KFREE_MAX_BATCH_FORCE, give up batching but handle one by
-> > > > >    one from now on to prevent too many pending requests from being
-> > > > >    queued for batching work.
-> > > 
-> > > This mean:
-> > > 
-> > > 3. On hitting KFREE_MAX_BATCH_FORCE, give up batching requests to be added
-> > >    from now on but instead handle one by one to prevent too many
-> > > pending requests
-> 
-> Oh! I'm sorry for the weird formatted mail that I wrote with another
-> mail client than the one I usually use, outside of office.
-> 
-> > >    from being queued. Of course, the requests already having been
-> > > queued in ->head
-> > >    so far should be handled by rcu_work when it's possible which can
-> > > be checked by
-> > >    the monitor or kfree_rcu() inside every call.
-> > 
-> > But does this really help?  After all, the reason we have piled up a
-> > large number of additional callbacks is likely because the grace period
-> > is taking a long time, or because a huge number of callbacks has been
-> > queued up.  Sure, these callbacks might get a head start on the following
-> > grace period, but at the expense of still retaining the kfree_rcu()
-> > special cases in rcu_do_batch().
-> 
-> Now, I just can see what you want to get with this work. Then we'd
-> better avoid that kind of exception as much as possible.
-> 
-> > Another potential issue is interaction with rcu_barrier().  Currently,
-> > rcu_barrier() waits for memory passed to prior kfree_rcu() calls to be
-> > freed.  This is useful to allow a large amount of memory be be completely
-> > freed before allocating large amounts more memory.  With the earlier
-> > version of the patch, an rcu_barrier() followed by a flush_workqueue().
-> > But #3 above would reorder the objects so that this approach might not
-> > wait for everything.
-> 
-> It doesn't matter by making the queue operated in FIFO manner though,
-> so as to guarantee the order.
+Hi Paul, everyone,
 
-This's not that important until it really matters but *just* in case of
-lack of explanation how what I suggested works:
+I noticed on reading code that the need_heavy_qs check and
+rcu_momentary_dyntick_idle() is only called for !PREEMPT kernels. Don't we
+need to call this for PREEMPT kernels for the benefit of nohz_full CPUs?
 
-1. Mainline code:
+Consider the following events:
+1. Kernel is PREEMPT=y configuration.
+2. CPU 2 is a nohz_full CPU running only a single task and the tick is off.
+3. CPU 2 is running only in kernel mode and does not enter user mode or idle.
+4. Grace period thread running on CPU 3 enter the fqs loop.
+5. Enough time passes and it sets the need_heavy_qs for CPU2.
+6. CPU 2 is still in kernel mode but does cond_resched().
+7. cond_resched() does not call rcu_momentary_dyntick_idle() because PREEMPT=y.
 
-   ---> time goes by (or sequence of kfree_rcu()s)
-   A B C D E F G H I J K L M N O P Q R ...
-   | | | | | | | | | | | | | | | | | |
-   * * * * * * * * * * * * * * * * * *
-   where * means requesting to RCU gp.
+Is 7. not calling rcu_momentary_dyntick_idle() a lost opportunity for the FQS
+loop to detect that the CPU has crossed a quiescent point?
 
-2. With current patch:
+Is this done so that cond_resched() is fast for PREEMPT=y kernels?
 
-   ---> time goes by (or sequence of kfree_rcu()s)
-   ABCD(batching) EFGHIJKLMNOPQR(batching) ...
-      |                        |
-      *                        *
-   where * means requesting to RCU gp.
+thanks,
 
-3. What I was talking about:
+ - Joel
 
-   1) 'A' ~ 'H' have been queued into ->head and ->head_free is not
-      available yet.
 
-   ---> time goes by (or sequence of kfree_rcu()s)
-   ABCD(batching) EFGH(pending)
-      |
-      *
-   where * means requesting to RCU gp.
-
-   2) 'I' was just queued into ->head and ->head_free is still not
-      available.
-
-   ABCD(batching) E FGHI(pending)
-      |           |
-      *           *
-   where * means requesting to RCU gp.
-
-   3) 'J' was just queued into ->head and ->head_free is still not
-      available.
-
-   ABCD(batching) E F GHIJ(pending) ...
-      |           | |
-      *           * *
-   where * means requesting to RCU gp.
-
-   3) GHIJ was successfully requested for RCU gp and MLMN have been
-      queued into ->head and go on...
-
-   ABCD(batching) E F GHIJ(batching) KLMN(pending) ...
-      |           | |    |
-      *           * *    *
-   where * means requesting to RCU gp.
-
-This explanation doesn't mean I want to use this way right away but just
-for explaining how what I suggested works better.
-
-Thanks,
-Byungchul
-
-> But now that we can see letting the list just grow works well, we don't
-> have to consider this one at the moment. Let's consider this method
-> again once we face the problem in the future by any chance.
-> 
-> > We should therefore just let the second list grow.  If experience shows
-> > a need for callbacks to be sent up more quickly, it should be possible
-> > to provide an additional list, so that two lists on a given CPU can both
-> > be waiting for a grace period at the same time.
-> 
-> Or the third and fourth list might be needed in some system. But let's
-> talk about it later too.
-> 
-> > > > I also agree. But this _FORCE thing will still not solve the issue Paul is
-> > > > raising which is doing this loop possibly in irq disabled / hardirq context.
-> > > 
-> > > I added more explanation above. What I suggested is a way to avoid not
-> > > only heavy
-> > > work within the irq-disabled region of a single kfree_rcu() but also
-> > > too many requests
-> > > to be queued into ->head.
-> > 
-> > But let's start simple, please!
-> 
-> Yes. The simpler, the better.
-> 
-> > > > We can't even cond_resched() here. In fact since _FORCE is larger, it will be
-> > > > even worse. Consider a real-time system with a lot of memory, in this case
-> > > > letting ->head grow large is Ok, but looping for long time in IRQ disabled
-> > > > would not be Ok.
-> > > 
-> > > Please check the explanation above.
-> > > 
-> > > > But I could make it something like:
-> > > > 1. Letting ->head grow if ->head_free busy
-> > > > 2. If head_free is busy, then just queue/requeue the monitor to try again.
-> > > 
-> > > This is exactly what Paul said. The problem with this is ->head can grow too
-> > > much. That's why I suggested the above one.
-> > 
-> > It can grow quite large, but how do you know that limiting its size will
-> > really help?  Sure, you have limited the size, but does that really do
-> 
-> To decide the size, we might have to refer to how much pressure on
-> memory and RCU there are at that moment and adjust it on runtime.
-> 
-> > anything for the larger problem of extreme kfree_rcu() rates on the one
-> > hand and a desire for more efficient handling of kfree_rcu() on the other?
-> 
-> Assuming current RCU logic handles extremly high rate well which is
-> anyway true, my answer is *yes*, because batching anyway has pros and
-> cons. One of major cons is there must be inevitable kfree_rcu() requests
-> that not even request to RCU. By allowing only the size of batching, the
-> situation can be mitigated.
-> 
-> I just answered to you. But again, let's talk about it later once we
-> face the problem as you said.
-> 
-> Thanks,
-> Byungchul
-> 
-> > 							Thanx, Paul
-> > 
-> > > > This would even improve performance, but will still risk going out of memory.
-> > > >
-> > > > Thoughts?
-> > > >
-> > > > thanks,
-> > > >
-> > > >  - Joel
-> > > >
-> > > > >
-> > > > > This way, we can avoid both:
-> > > > >
-> > > > > 1. too many requests being queued and
-> > > > > 2. __call_rcu() bunch of requests within a single kfree_rcu().
-> > > > >
-> > > > > Thanks,
-> > > > > Byungchul
-> > > > >
-> > > > > >
-> > > > > > But please feel free to come up with a better solution!
-> > > > > >
-> > > > > > [ . . . ]
-> > > 
-> > > 
-> > > 
-> > > -- 
-> > > Thanks,
-> > > Byungchul
-> > > 
