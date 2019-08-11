@@ -6,262 +6,159 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C8DC41514
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 02:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B3FC433FF
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 02:27:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 59272208C4
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 02:02:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 124CF20880
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 02:27:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="go8bkkMf"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="s7M110bx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbfHKCB7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 10 Aug 2019 22:01:59 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:40120 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbfHKCB7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 10 Aug 2019 22:01:59 -0400
-Received: by mail-pf1-f193.google.com with SMTP id p184so48016783pfp.7
-        for <rcu@vger.kernel.org>; Sat, 10 Aug 2019 19:01:58 -0700 (PDT)
+        id S1726469AbfHKC1C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 10 Aug 2019 22:27:02 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33374 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbfHKC1C (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 10 Aug 2019 22:27:02 -0400
+Received: by mail-pf1-f194.google.com with SMTP id g2so48039435pfq.0
+        for <rcu@vger.kernel.org>; Sat, 10 Aug 2019 19:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=AeFtgYQQ60iUyXKAlfN71O4/ntVJzJDm/WOo9iKCvJk=;
-        b=go8bkkMfoX3wpqMblSJ0Gbz1sxvwuCUio1BAuBcVpKbyNjaksnBCiPRijm27BFVTXX
-         H7Iq8srLU+7Jw3j5DVLANRzlrC6hfWFGWk/y6EPEPoQyWXz/Wlw216Cs5rQC1mUc6cY0
-         /fEL+kfrS5p92WaIZpA6onS5OvsitB8GaeDas=
+        bh=sSdzyR3+jYPF/gjOoTrNU8w81mqUq5doextlSL/xXQ4=;
+        b=s7M110bxdXziQG6liQpM/xp6bqiW8h9v45zpZw5HEmfR/k1v4bsiREzdcS2T5WUeXb
+         aeEnhuMIBpEMM+8nw0JIVpnmZFeBmyB70tIguxc4Va4t55IhIm+MLdiCHwXkm1nfmrZ1
+         bhTA+8SSS4ODDqq8aSie+HE+jp17gN5F96iAk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AeFtgYQQ60iUyXKAlfN71O4/ntVJzJDm/WOo9iKCvJk=;
-        b=ieiWeebyVtFrpoEaogIeHXJf8g7/O4IDJ7GgrD6G59m34ZbiuPibNTKL8MNCyYvg30
-         NSpSsQ+mslFES7PcxKlNFVbhYtjIxPbNs7o6rlr64gMMWTrns/IdR/HWwOBCIIi05f0t
-         KjJTjiaj80YODbwoYW8VFyuGEtfLFI+IF56TmMhccedPslypEafwOunOWdXH8i22YW2T
-         vmg2yR5bXYenR91EpUBQlm3iJFOygNTw/5SFo1tR6BimSqKbXa3UlK1OO9SIgBaqbalJ
-         k3pZpah/i+mbxXBkqb4mm8kkyiHwVSCS4gWGBSZozsLRsY2J3/VftVsHkehZ/bnvTJAa
-         3O+Q==
-X-Gm-Message-State: APjAAAXwNjCa8AHpaQC9MD8bIsQsnjHS9pX3EMtX/blwHmMPjDveoo38
-        e/ZP2xV6uE9Ogc6X8jeNq9oK3w==
-X-Google-Smtp-Source: APXvYqyACFwVqBVsp+ONZvLP/JTRRTx2xkIMb5JkHRIkh9E0eaORbXs/ShwBQBaJdA0XRS2kmudVlg==
-X-Received: by 2002:a17:90a:ad86:: with SMTP id s6mr17262543pjq.42.1565488918001;
-        Sat, 10 Aug 2019 19:01:58 -0700 (PDT)
+        bh=sSdzyR3+jYPF/gjOoTrNU8w81mqUq5doextlSL/xXQ4=;
+        b=NFU0H6Z6Qi2Ij1H65MqjYxnTK+mYej9hHfsRhKstHMcNcyqOIrmiMQd6CBmYD0ZSPS
+         ux9yTPW7c5z7tQ8og20qACl3lyEkjo+DX/DoLYkDIxVZppCH6p15WG2rOosDzLKDfFTz
+         kQZ5xKH47AH32jYxr6QTj3FP+AgozoG/JPzShxkp9xah0Rm3rQmStoY/p7+g613/0d5p
+         n+IJXgv91T/fyxHmWv+UghXKihiyiYSvPjcr9mzWJWojjXc7Omesi4m/FNn4OSLVAuJE
+         /APBWMxyNr/dSbFu8SIEtT1r3Ujs+F479RFRxEG+X4qK2+Fy83w4IIvoQuY9/EJG73wr
+         Wr7Q==
+X-Gm-Message-State: APjAAAX0xlBbplgOoCXbBE6XFl31e2HqmO/D/2NbWOQUn4SxtTmgv9dK
+        2ejpKB7qiHU2VCfANnBNO+icag==
+X-Google-Smtp-Source: APXvYqzC/mcnzr4WKGyOHvssnZpmX5fEBua0B7RkotLurKRAGOH8XY5yucbXkdQbIh/f2j9+JC/mrw==
+X-Received: by 2002:a17:90a:ae12:: with SMTP id t18mr17482911pjq.32.1565490421214;
+        Sat, 10 Aug 2019 19:27:01 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id f205sm250383pfa.161.2019.08.10.19.01.55
+        by smtp.gmail.com with ESMTPSA id o32sm9183003pje.9.2019.08.10.19.26.59
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 10 Aug 2019 19:01:56 -0700 (PDT)
-Date:   Sat, 10 Aug 2019 22:01:54 -0400
+        Sat, 10 Aug 2019 19:27:00 -0700 (PDT)
+Date:   Sat, 10 Aug 2019 22:26:58 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, max.byungchul.park@gmail.com,
-        byungchul.park@lge.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
-        kernel-team@lge.com, Lai Jiangshan <jiangshanlai@gmail.com>,
+Cc:     linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
+        max.byungchul.park@gmail.com, byungchul.park@lge.com,
+        kernel-team@android.com, kernel-team@lge.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC v1 2/2] rcuperf: Add kfree_rcu performance Tests
-Message-ID: <20190811020154.GA74292@google.com>
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Message-ID: <20190811022658.GA177703@google.com>
 References: <20190806212041.118146-1-joel@joelfernandes.org>
- <20190806212041.118146-2-joel@joelfernandes.org>
- <20190807002915.GV28441@linux.ibm.com>
+ <20190806235631.GU28441@linux.ibm.com>
+ <20190807094504.GB169551@google.com>
+ <20190807175215.GE28441@linux.ibm.com>
+ <20190810024232.GA183658@google.com>
+ <20190810033814.GP28441@linux.ibm.com>
+ <20190810042037.GA175783@google.com>
+ <20190810182446.GT28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190807002915.GV28441@linux.ibm.com>
+In-Reply-To: <20190810182446.GT28441@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 06, 2019 at 05:29:15PM -0700, Paul E. McKenney wrote:
-> On Tue, Aug 06, 2019 at 05:20:41PM -0400, Joel Fernandes (Google) wrote:
-> > This test runs kfree_rcu in a loop to measure performance of the new
-> > kfree_rcu, with and without patch.
+On Sat, Aug 10, 2019 at 11:24:46AM -0700, Paul E. McKenney wrote:
+> On Sat, Aug 10, 2019 at 12:20:37AM -0400, Joel Fernandes wrote:
+> > On Fri, Aug 09, 2019 at 08:38:14PM -0700, Paul E. McKenney wrote:
+> > > On Fri, Aug 09, 2019 at 10:42:32PM -0400, Joel Fernandes wrote:
+> > > > On Wed, Aug 07, 2019 at 10:52:15AM -0700, Paul E. McKenney wrote:
+> > > > [snip] 
+> > > > > > > > @@ -3459,6 +3645,8 @@ void __init rcu_init(void)
+> > > > > > > >  {
+> > > > > > > >  	int cpu;
+> > > > > > > >  
+> > > > > > > > +	kfree_rcu_batch_init();
+> > > > > > > 
+> > > > > > > What happens if someone does a kfree_rcu() before this point?  It looks
+> > > > > > > like it should work, but have you tested it?
+> > > > > > > 
+> > > > > > > >  	rcu_early_boot_tests();
+> > > > > > > 
+> > > > > > > For example, by testing it in rcu_early_boot_tests() and moving the
+> > > > > > > call to kfree_rcu_batch_init() here.
+> > > > > > 
+> > > > > > I have not tried to do the kfree_rcu() this early. I will try it out.
+> > > > > 
+> > > > > Yeah, well, call_rcu() this early came as a surprise to me back in the
+> > > > > day, so...  ;-)
+> > > > 
+> > > > I actually did get surprised as well!
+> > > > 
+> > > > It appears the timers are not fully initialized so the really early
+> > > > kfree_rcu() call from rcu_init() does cause a splat about an initialized
+> > > > timer spinlock (even though future kfree_rcu()s and the system are working
+> > > > fine all the way into the torture tests).
+> > > > 
+> > > > I think to resolve this, we can just not do batching until early_initcall,
+> > > > during which I have an initialization function which switches batching on.
+> > > > >From that point it is safe.
+> > > 
+> > > Just go ahead and batch, but don't bother with the timer until
+> > > after single-threaded boot is done.  For example, you could check
+> > > rcu_scheduler_active similar to how sync_rcu_exp_select_cpus() does.
+> > > (See kernel/rcu/tree_exp.h.)
 > > 
-> > To see improvement, run with boot parameters:
-> > rcuperf.kfree_loops=2000 rcuperf.kfree_alloc_num=100 rcuperf.perf_type=kfree
-> > 
-> > Without patch, test runs in 6.9 seconds.
-> > With patch, test runs in 6.1 seconds (+13% improvement)
-> > 
-> > If it is desired to run the test but with the traditional (non-batched)
-> > kfree_rcu, for example to compare results, then you could pass along the
-> > rcuperf.kfree_no_batch=1 boot parameter.
+> > Cool, that works nicely and I tested it. Actually I made it such that we
+> > don't need to batch even, before the scheduler is up. I don't see any benefit
+> > of that unless we can see a kfree_rcu() flood happening that early at boot
+> > which seems highly doubtful as a real world case.
 > 
-> You lost me on this one.  You ran two runs, with rcuperf.kfree_no_batch=1
-> and without?  Or you ran this patch both with and without the earlier
-> patch, and could have run with the patch and rcuperf.kfree_no_batch=1?
+> The benefit is removing the kfree_rcu() special cases from the innards
+> of RCU, for example, in rcu_do_batch().  Another benefit is removing the
+> current restriction on the position of the rcu_head structure within the
+> enclosing data structure.
 > 
-> If the latter, it would be good to try all three.
-
-Did this in new patch, will post shortly.
-
-[snip]
-> > +torture_param(int, kfree_nthreads, -1, "Number of RCU reader threads");
-> > +torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done by a thread");
-> > +torture_param(int, kfree_alloc_size, 16,  "Size of each allocation");
+> So it would be good to avoid the current kfree_rcu() special casing within
+> RCU itself.
 > 
-> Is this used?  How does it relate to KFREE_OBJ_BYTES?
+> Or are you using some trick that avoids both the batching and the current
+> kfree_rcu() special casing?
 
-It is not used, I removed it.
+Oh. I see what you mean. Would it be Ok with you to have that be a follow up
+patch?  I am not getting rid (yet) of the special casing in rcu_do_batch in
+this patch, but can do that in another patch.
 
-> > +torture_param(int, kfree_loops, 10, "Size of each allocation");
-> 
-> I suspect that this kfree_loops string is out of date.
+For now I am just doing something like the following in kfree_call_rcu(). I
+was almost about to hit send on the v1 and I have been testing this a lot so
+I'll post it anyway; and we can discuss more about this point on that.
 
-Updated, thanks.
-
-> > +torture_param(int, kfree_no_batch, 0, "Use the non-batching (slower) version of kfree_rcu");
-> 
-> All of these need to be added to kernel-parameters.txt.  Along with
-> any added by the earlier patch, for that matter.
-
-Will do.
-
-> > +static struct task_struct **kfree_reader_tasks;
-> > +static int kfree_nrealthreads;
-> > +static atomic_t n_kfree_perf_thread_started;
-> > +static atomic_t n_kfree_perf_thread_ended;
-> > +
-> > +#define KFREE_OBJ_BYTES 8
-> > +
-> > +struct kfree_obj {
-> > +	char kfree_obj[KFREE_OBJ_BYTES];
-> > +	struct rcu_head rh;
-> > +};
-> > +
-> > +void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func);
-> > +
-> > +static int
-> > +kfree_perf_thread(void *arg)
-> > +{
-> > +	int i, l = 0;
-> 
-> It is really easy to confuse "l" and "1" in some fonts, so please use
-> a different name.  (From the "showing my age" department:  On typical
-> 1970s typewriters, there was no numeral "1" -- you typed the letter
-> "l" instead, thus anticipating at least the first digit of "1337".)
-
-Change l to loops ;). I did see typewriters around in my childhood, I thought
-they were pretty odd machines :-D. I am sure my daughter will think the same
-about land-line phones :-D
-
-> > +	long me = (long)arg;
-> > +	struct kfree_obj **alloc_ptrs;
-> > +	u64 start_time, end_time;
-> > +
-> > +	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
-> > +	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-> > +	set_user_nice(current, MAX_NICE);
-> > +	atomic_inc(&n_kfree_perf_thread_started);
-> > +
-> > +	alloc_ptrs = (struct kfree_obj **)kmalloc(sizeof(struct kfree_obj *) * kfree_alloc_num,
-> > +						  GFP_KERNEL);
-> > +	if (!alloc_ptrs)
-> > +		return -ENOMEM;
-> > +
-> > +	start_time = ktime_get_mono_fast_ns();
-> 
-> Don't you want to announce that you started here rather than above in
-> order to avoid (admittedly slight) measurement inaccuracies?
-
-Yes, in revised patch I am announcing here.
-
-> > +	do {
-> > +		for (i = 0; i < kfree_alloc_num; i++) {
-> > +			alloc_ptrs[i] = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-> > +			if (!alloc_ptrs[i])
-> > +				return -ENOMEM;
-> > +		}
-> > +
-> > +		for (i = 0; i < kfree_alloc_num; i++) {
-> > +			if (!kfree_no_batch) {
-> > +				kfree_rcu(alloc_ptrs[i], rh);
-> > +			} else {
-> > +				rcu_callback_t cb;
-> > +
-> > +				cb = (rcu_callback_t)(unsigned long)offsetof(struct kfree_obj, rh);
-> > +				kfree_call_rcu_nobatch(&(alloc_ptrs[i]->rh), cb);
-> > +			}
-> > +		}
-> > +
-> > +		schedule_timeout_uninterruptible(2);
-> 
-> Why the two-jiffy wait in the middle of a timed test?  Yes, you need
-> a cond_resched() and maybe more here, but a two-jiffy wait?  I don't
-> see how this has any chance of getting valid measurements.
-> 
-> What am I missing here?
-
-Replace it with cond_resched() as we discussed.
-
-> > +	} while (!torture_must_stop() && ++l < kfree_loops);
-> > +
-> > +	kfree(alloc_ptrs);
-> > +
-> > +	if (atomic_inc_return(&n_kfree_perf_thread_ended) >= kfree_nrealthreads) {
-> > +		end_time = ktime_get_mono_fast_ns();
-> 
-> Don't we want to capture the end time before the kfree()?
-
-Fixed.
-
-> > +		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d\n",
-> > +		       (unsigned long long)(end_time - start_time), kfree_loops);
-> > +		if (shutdown) {
-> > +			smp_mb(); /* Assign before wake. */
-> > +			wake_up(&shutdown_wq);
-> > +		}
-> > +	}
-> > +
-> > +	torture_kthread_stopping("kfree_perf_thread");
-> > +	return 0;
-> > +}
-> > +
-> > +static void
-> > +kfree_perf_cleanup(void)
-> > +{
-> > +	int i;
-> > +
-> > +	if (torture_cleanup_begin())
-> > +		return;
-> > +
-> > +	if (kfree_reader_tasks) {
-> > +		for (i = 0; i < kfree_nrealthreads; i++)
-> > +			torture_stop_kthread(kfree_perf_thread,
-> > +					     kfree_reader_tasks[i]);
-> > +		kfree(kfree_reader_tasks);
-> > +	}
-> > +
-> > +	torture_cleanup_end();
-> > +}
-> > +
-> > +/*
-> > + * shutdown kthread.  Just waits to be awakened, then shuts down system.
-> > + */
-> > +static int
-> > +kfree_perf_shutdown(void *arg)
-> > +{
-> > +	do {
-> > +		wait_event(shutdown_wq,
-> > +			   atomic_read(&n_kfree_perf_thread_ended) >=
-> > +			   kfree_nrealthreads);
-> > +	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
-> > +
-> > +	smp_mb(); /* Wake before output. */
-> > +
-> > +	kfree_perf_cleanup();
-> > +	kernel_power_off();
-> > +	return -EINVAL;
-> > +}
-> 
-> Is there some way to avoid (almost) duplicating rcu_perf_shutdown()?
-
-At the moment, I don't see a good way to do this without passing in function
-pointers or using macros which I think would look uglier than the above
-addition. Sorry.
++void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++{
++       unsigned long flags;
++       struct kfree_rcu_cpu *krcp;
++       bool monitor_todo;
++
++       /* kfree_call_rcu() batching requires timers to be up. If the scheduler
++        * is not yet up, just skip batching and do non-batched kfree_call_rcu().
++        */
++       if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
++               return kfree_call_rcu_nobatch(head, func);
++
 
 thanks,
 
