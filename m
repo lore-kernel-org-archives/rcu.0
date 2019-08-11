@@ -2,31 +2,31 @@ Return-Path: <SRS0=Ms3y=WH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 439BFC0650F
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 08:51:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 159E3C433FF
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 10:38:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0A0B82085B
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 08:51:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A415620880
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 10:38:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbfHKIvW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 11 Aug 2019 04:51:22 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:34300 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbfHKIvW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 11 Aug 2019 04:51:22 -0400
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 11 Aug 2019 17:51:20 +0900
-X-Original-SENDERIP: 156.147.1.125
+        id S1725990AbfHKKik (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 11 Aug 2019 06:38:40 -0400
+Received: from lgeamrelo12.lge.com ([156.147.23.52]:45960 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725810AbfHKKij (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 11 Aug 2019 06:38:39 -0400
+Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
+        by 156.147.23.52 with ESMTP; 11 Aug 2019 19:38:35 +0900
+X-Original-SENDERIP: 156.147.1.151
 X-Original-MAILFROM: byungchul.park@lge.com
 Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.125 with ESMTP; 11 Aug 2019 17:51:20 +0900
+        by 156.147.1.151 with ESMTP; 11 Aug 2019 19:38:35 +0900
 X-Original-SENDERIP: 10.177.222.33
 X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Sun, 11 Aug 2019 17:49:50 +0900
+Date:   Sun, 11 Aug 2019 19:37:06 +0900
 From:   Byungchul Park <byungchul.park@lge.com>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
@@ -41,7 +41,7 @@ Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
         rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
  batching
-Message-ID: <20190811084950.GB9486@X58A-UD3R>
+Message-ID: <20190811103706.GC9486@X58A-UD3R>
 References: <20190806212041.118146-1-joel@joelfernandes.org>
  <20190806235631.GU28441@linux.ibm.com>
  <20190807094504.GB169551@google.com>
@@ -158,8 +158,62 @@ On Sun, Aug 11, 2019 at 05:36:26PM +0900, Byungchul Park wrote:
 > It doesn't matter by making the queue operated in FIFO manner though,
 > so as to guarantee the order.
 
-I only explained about the re-order problem but yes, we need to come up
-with how to deal with the synchronization with rcu_barrier() as you said.
+This's not that important until it really matters but *just* in case of
+lack of explanation how what I suggested works:
+
+1. Mainline code:
+
+   ---> time goes by (or sequence of kfree_rcu()s)
+   A B C D E F G H I J K L M N O P Q R ...
+   | | | | | | | | | | | | | | | | | |
+   * * * * * * * * * * * * * * * * * *
+   where * means requesting to RCU gp.
+
+2. With current patch:
+
+   ---> time goes by (or sequence of kfree_rcu()s)
+   ABCD(batching) EFGHIJKLMNOPQR(batching) ...
+      |                        |
+      *                        *
+   where * means requesting to RCU gp.
+
+3. What I was talking about:
+
+   1) 'A' ~ 'H' have been queued into ->head and ->head_free is not
+      available yet.
+
+   ---> time goes by (or sequence of kfree_rcu()s)
+   ABCD(batching) EFGH(pending)
+      |
+      *
+   where * means requesting to RCU gp.
+
+   2) 'I' was just queued into ->head and ->head_free is still not
+      available.
+
+   ABCD(batching) E FGHI(pending)
+      |           |
+      *           *
+   where * means requesting to RCU gp.
+
+   3) 'J' was just queued into ->head and ->head_free is still not
+      available.
+
+   ABCD(batching) E F GHIJ(pending) ...
+      |           | |
+      *           * *
+   where * means requesting to RCU gp.
+
+   3) GHIJ was successfully requested for RCU gp and MLMN have been
+      queued into ->head and go on...
+
+   ABCD(batching) E F GHIJ(batching) KLMN(pending) ...
+      |           | |    |
+      *           * *    *
+   where * means requesting to RCU gp.
+
+This explanation doesn't mean I want to use this way right away but just
+for explaining how what I suggested works better.
 
 Thanks,
 Byungchul
