@@ -6,62 +6,82 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05925C433FF
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 23:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25275C0650F
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 23:35:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A30AC2084C
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 23:30:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E294020820
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 23:35:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbfHKXaZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 11 Aug 2019 19:30:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61702 "EHLO
+        id S1725855AbfHKXfr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 11 Aug 2019 19:35:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61676 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725855AbfHKXaZ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sun, 11 Aug 2019 19:30:25 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7BNR112055996;
-        Sun, 11 Aug 2019 19:30:22 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2uatsuask7-1
+        by vger.kernel.org with ESMTP id S1725730AbfHKXfr (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 11 Aug 2019 19:35:47 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7BNVhHA135977;
+        Sun, 11 Aug 2019 19:35:03 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uatghk9x5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 11 Aug 2019 19:30:22 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7BNU4MQ012937;
-        Sun, 11 Aug 2019 23:30:21 GMT
+        Sun, 11 Aug 2019 19:35:03 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7BNZ37A143945;
+        Sun, 11 Aug 2019 19:35:03 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uatghk9ws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 11 Aug 2019 19:35:03 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7BNTmnU027667;
+        Sun, 11 Aug 2019 23:35:02 GMT
 Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 2u9nj617aa-1
+        by ppma04dal.us.ibm.com with ESMTP id 2u9nj6b7p7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 11 Aug 2019 23:30:21 +0000
+        Sun, 11 Aug 2019 23:35:02 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7BNUL1C36766110
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7BNZ1J128967272
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 11 Aug 2019 23:30:21 GMT
+        Sun, 11 Aug 2019 23:35:01 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7B57FB205F;
-        Sun, 11 Aug 2019 23:30:21 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 8C2F7B2066;
+        Sun, 11 Aug 2019 23:35:01 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4790BB2065;
-        Sun, 11 Aug 2019 23:30:21 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 55A84B205F;
+        Sun, 11 Aug 2019 23:35:01 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.85.138.198])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sun, 11 Aug 2019 23:30:21 +0000 (GMT)
+        Sun, 11 Aug 2019 23:35:01 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 189D716C1B1A; Sun, 11 Aug 2019 16:30:24 -0700 (PDT)
-Date:   Sun, 11 Aug 2019 16:30:24 -0700
+        id 26D9416C1B1A; Sun, 11 Aug 2019 16:35:04 -0700 (PDT)
+Date:   Sun, 11 Aug 2019 16:35:04 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu <rcu@vger.kernel.org>
-Subject: Re: need_heavy_qs flag for PREEMPT=y kernels
-Message-ID: <20190811233024.GZ28441@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
+        max.byungchul.park@gmail.com, byungchul.park@lge.com,
+        kernel-team@android.com, kernel-team@lge.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Message-ID: <20190811233504.GA28441@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <20190811180852.GA128944@google.com>
- <CAEXW_YSbGCSLVrqD-_pDO5KJzLR2goYt8otOd65hWPQtZGkGUA@mail.gmail.com>
- <20190811211646.GY28441@linux.ibm.com>
- <20190811212505.GB128944@google.com>
+References: <20190806212041.118146-1-joel@joelfernandes.org>
+ <20190806235631.GU28441@linux.ibm.com>
+ <20190807094504.GB169551@google.com>
+ <20190807175215.GE28441@linux.ibm.com>
+ <20190810024232.GA183658@google.com>
+ <20190810033814.GP28441@linux.ibm.com>
+ <20190810042037.GA175783@google.com>
+ <20190810182446.GT28441@linux.ibm.com>
+ <20190811022658.GA177703@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190811212505.GB128944@google.com>
+In-Reply-To: <20190811022658.GA177703@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-11_12:,,
@@ -70,97 +90,99 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorit
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908110262
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908110263
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 05:25:05PM -0400, Joel Fernandes wrote:
-> On Sun, Aug 11, 2019 at 02:16:46PM -0700, Paul E. McKenney wrote:
-> > On Sun, Aug 11, 2019 at 02:34:08PM -0400, Joel Fernandes wrote:
-> > > On Sun, Aug 11, 2019 at 2:08 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > Hi Paul, everyone,
-> > > >
-> > > > I noticed on reading code that the need_heavy_qs check and
-> > > > rcu_momentary_dyntick_idle() is only called for !PREEMPT kernels. Don't we
-> > > > need to call this for PREEMPT kernels for the benefit of nohz_full CPUs?
-> > > >
-> > > > Consider the following events:
-> > > > 1. Kernel is PREEMPT=y configuration.
-> > > > 2. CPU 2 is a nohz_full CPU running only a single task and the tick is off.
-> > > > 3. CPU 2 is running only in kernel mode and does not enter user mode or idle.
-> > > > 4. Grace period thread running on CPU 3 enter the fqs loop.
-> > > > 5. Enough time passes and it sets the need_heavy_qs for CPU2.
-> > > > 6. CPU 2 is still in kernel mode but does cond_resched().
-> > > > 7. cond_resched() does not call rcu_momentary_dyntick_idle() because PREEMPT=y.
-> > > >
-> > > > Is 7. not calling rcu_momentary_dyntick_idle() a lost opportunity for the FQS
-> > > > loop to detect that the CPU has crossed a quiescent point?
-> > > >
-> > > > Is this done so that cond_resched() is fast for PREEMPT=y kernels?
+On Sat, Aug 10, 2019 at 10:26:58PM -0400, Joel Fernandes wrote:
+> On Sat, Aug 10, 2019 at 11:24:46AM -0700, Paul E. McKenney wrote:
+> > On Sat, Aug 10, 2019 at 12:20:37AM -0400, Joel Fernandes wrote:
+> > > On Fri, Aug 09, 2019 at 08:38:14PM -0700, Paul E. McKenney wrote:
+> > > > On Fri, Aug 09, 2019 at 10:42:32PM -0400, Joel Fernandes wrote:
+> > > > > On Wed, Aug 07, 2019 at 10:52:15AM -0700, Paul E. McKenney wrote:
+> > > > > [snip] 
+> > > > > > > > > @@ -3459,6 +3645,8 @@ void __init rcu_init(void)
+> > > > > > > > >  {
+> > > > > > > > >  	int cpu;
+> > > > > > > > >  
+> > > > > > > > > +	kfree_rcu_batch_init();
+> > > > > > > > 
+> > > > > > > > What happens if someone does a kfree_rcu() before this point?  It looks
+> > > > > > > > like it should work, but have you tested it?
+> > > > > > > > 
+> > > > > > > > >  	rcu_early_boot_tests();
+> > > > > > > > 
+> > > > > > > > For example, by testing it in rcu_early_boot_tests() and moving the
+> > > > > > > > call to kfree_rcu_batch_init() here.
+> > > > > > > 
+> > > > > > > I have not tried to do the kfree_rcu() this early. I will try it out.
+> > > > > > 
+> > > > > > Yeah, well, call_rcu() this early came as a surprise to me back in the
+> > > > > > day, so...  ;-)
+> > > > > 
+> > > > > I actually did get surprised as well!
+> > > > > 
+> > > > > It appears the timers are not fully initialized so the really early
+> > > > > kfree_rcu() call from rcu_init() does cause a splat about an initialized
+> > > > > timer spinlock (even though future kfree_rcu()s and the system are working
+> > > > > fine all the way into the torture tests).
+> > > > > 
+> > > > > I think to resolve this, we can just not do batching until early_initcall,
+> > > > > during which I have an initialization function which switches batching on.
+> > > > > >From that point it is safe.
+> > > > 
+> > > > Just go ahead and batch, but don't bother with the timer until
+> > > > after single-threaded boot is done.  For example, you could check
+> > > > rcu_scheduler_active similar to how sync_rcu_exp_select_cpus() does.
+> > > > (See kernel/rcu/tree_exp.h.)
 > > > 
-> > > Oh, so I take it this bit of code in rcu_implicit_dynticks_qs(), with
-> > > the accompanying comments, takes care of the scenario I describe?
-> > > Another way could be just call rcu_momentary_dyntick_idle() during
-> > > cond_resched() for nohz_full CPUs? Is that pricey?
-> > >         /*
-> > >          * NO_HZ_FULL CPUs can run in-kernel without rcu_sched_clock_irq!
-> > >          * The above code handles this, but only for straight cond_resched().
-> > >          * And some in-kernel loops check need_resched() before calling
-> > >          * cond_resched(), which defeats the above code for CPUs that are
-> > >          * running in-kernel with scheduling-clock interrupts disabled.
-> > >          * So hit them over the head with the resched_cpu() hammer!
-> > >          */
-> > >         if (tick_nohz_full_cpu(rdp->cpu) &&
-> > >                    time_after(jiffies,
-> > >                               READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
-> > >                 resched_cpu(rdp->cpu);
-> > >                 WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> > >         }
+> > > Cool, that works nicely and I tested it. Actually I made it such that we
+> > > don't need to batch even, before the scheduler is up. I don't see any benefit
+> > > of that unless we can see a kfree_rcu() flood happening that early at boot
+> > > which seems highly doubtful as a real world case.
 > > 
-> > Yes, for NO_HZ_FULL=y&&PREEMPT=y kernels.
+> > The benefit is removing the kfree_rcu() special cases from the innards
+> > of RCU, for example, in rcu_do_batch().  Another benefit is removing the
+> > current restriction on the position of the rcu_head structure within the
+> > enclosing data structure.
+> > 
+> > So it would be good to avoid the current kfree_rcu() special casing within
+> > RCU itself.
+> > 
+> > Or are you using some trick that avoids both the batching and the current
+> > kfree_rcu() special casing?
 > 
-> Actually, I was only referring to the case of NO_HZ_FULL=y being the
-> troublesome one (i.e. rcu_need_heavy_qs flag would have no effect).
+> Oh. I see what you mean. Would it be Ok with you to have that be a follow up
+> patch?  I am not getting rid (yet) of the special casing in rcu_do_batch in
+> this patch, but can do that in another patch.
+
+I am OK having that in another patch, and I will be looking over yours
+and Byungchul's two patches tomorrow.  If they look OK, I will queue them.
+
+However, I won't send them upstream without a follow-on patch that gets
+rid of the kfree_rcu() special casing within rcu_do_batch() and perhaps
+elsewhere.  This follow-on patch would of course also need to change rcuperf
+appropriately.
+
+> For now I am just doing something like the following in kfree_call_rcu(). I
+> was almost about to hit send on the v1 and I have been testing this a lot so
+> I'll post it anyway; and we can discuss more about this point on that.
 > 
-> For NO_HZ_FULL=n, I have full confidence the scheduler tick will notice
-> rcu_urgent_qs and do a reschedule. The ensuing softirq then does the needful
-> to help end the grace period.
+> +void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> +{
+> +       unsigned long flags;
+> +       struct kfree_rcu_cpu *krcp;
+> +       bool monitor_todo;
+> +
+> +       /* kfree_call_rcu() batching requires timers to be up. If the scheduler
+> +        * is not yet up, just skip batching and do non-batched kfree_call_rcu().
+> +        */
+> +       if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
+> +               return kfree_call_rcu_nobatch(head, func);
+> +
 
-Whew!
-
-That confidence was not at all apparent in your initial email.
-
-> > Your thought of including rcu_momentary_dyntick_idle() would function
-> > correctly, but would cause performance issues.  Even adding additional
-> > compares and branches in that hot codepath is visible to 0day test robot!
-> > So adding a read-modify-write atomic operation to that code path would
-> > get attention of the wrong kind.  ;-)
-> 
-> But wouldn't these performance issues also be visible with
-> NO_HZ_FULL=y && PREEMPT=n?
-
-In PREEMPT=n, cond_resched() already has a check, and with quite a bit
-of care it is possible to introduce another.
-
->                             Why is PREEMPT=n made an exception?
-
-The exception is actually CONFIG_NO_HZ_FULL=y && CONFIG_PREEMPT=y.
-In that case, we can rely on neither the scheduling-clock interrupt
-nor on cond_resched().  In the other three cases, we have one or both.
-
->                                                                 Is it that
-> 0day doesn't test this combination much? :-D
-
-Might be, but it sure tests the other combinations!
-
-Next question:  Why does rcu_implicit_dynticks_qs() check only for
-tick_nohz_full_cpu() and not also IS_ENABLED(CONFIG_PREEMPT)?  After
-all, a nohz_full CPU in a !CONFIG_PREEMPT kernel should be able to
-rely on cond_resched(), right?
-
-Should this change?  Why or why not?
+As a stopgap until the follow-on patch, this looks fine.
 
 							Thanx, Paul
