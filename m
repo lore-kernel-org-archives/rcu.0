@@ -7,53 +7,54 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A919C0650F
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 22:11:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD394C0650F
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 22:11:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F3D232084D
-	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 22:11:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DFF82084D
+	for <rcu@archiver.kernel.org>; Sun, 11 Aug 2019 22:11:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LxPn+Le8"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="t0+nutC8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbfHKWLc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 11 Aug 2019 18:11:32 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42446 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbfHKWLb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 11 Aug 2019 18:11:31 -0400
-Received: by mail-pl1-f193.google.com with SMTP id ay6so47181189plb.9
-        for <rcu@vger.kernel.org>; Sun, 11 Aug 2019 15:11:31 -0700 (PDT)
+        id S1726640AbfHKWLe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 11 Aug 2019 18:11:34 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43239 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbfHKWLe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 11 Aug 2019 18:11:34 -0400
+Received: by mail-pf1-f195.google.com with SMTP id v12so969062pfn.10
+        for <rcu@vger.kernel.org>; Sun, 11 Aug 2019 15:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qG6w/v4rW/drGrqs6yUqiBqNPa9XU08YuLl86izhqNc=;
-        b=LxPn+Le8eqzU5KKEY65t0GCxNFrE9AW+SNsvBueI+tBYps6fhuqMVAQa0A/nf/JXQb
-         v2qAw5F974OED/j2g4yc/OB55GwuXvT2GH/5F0WpRwK8aTnFXinwvFNzG4mxlN+cbrhT
-         vqRePySZk3eRMBcu6T24hZV+fwW8rugvLaZMw=
+        bh=2kegUaQhH1NdMe3t6o5OANPxzXkbHQxn9BuZ0TfmzAU=;
+        b=t0+nutC8qLWyX4diz234fSW3j0q8DJ2Ojb/HLeuzs6/vjy/hNCFm1uuGD1gee/xvTY
+         FO0sGQJn9LxIqqYmrx4XspDRTzNPyiug6M3xGM37LHQ6JzDiBibqGi6BHPVGg1edZqj1
+         6wel7OcLXZlGKZIdQhNYXcNprjq27yOLrgFyA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qG6w/v4rW/drGrqs6yUqiBqNPa9XU08YuLl86izhqNc=;
-        b=VS0cle7oKlOxEb5KlbgoU36t/5trJswj0lXJmOg/9X/hsuaHX3pUVM2PqjcfUiGFJF
-         qdbVmeWUNVexhMCL9xVYRvrh+qpjA1h4c7PouvX3Ver1Zxa8+GGeAAVZ/bUT8tK5lK6j
-         sbclv/sNHlfzyBaREUqelwSbkUtvf705f8u9K0bK0WzKk1fnfPG6nQnhT7VQfoi+WWWt
-         XPal0s3jekv5DPZrbk7wHx3h6h2ApkgllK8voml47NwYk0gocurQPkuh1/ECXcFgW4El
-         ylxhsNtT5pgLo+8H557DMgWZlZxMfSDM8YnOa+kkiAFXIMBLV38NuoIFxKNRuY91thjz
-         9Usw==
-X-Gm-Message-State: APjAAAVl8fSXwhMTti6pVZV1O/gRdSagGCqC+/JPcu8u62zUZlgNhIQ7
-        /BGOxl0NvMuNG47tkVwBEYn7jQ==
-X-Google-Smtp-Source: APXvYqz7AGfV2NJYXMolpML3Fs4JLGqvL7P3yYvhZ8O12EtndIT/TOTdXQUNnsEKVAL/HHKJmrNROg==
-X-Received: by 2002:a17:902:5983:: with SMTP id p3mr20650916pli.232.1565561491275;
-        Sun, 11 Aug 2019 15:11:31 -0700 (PDT)
+        bh=2kegUaQhH1NdMe3t6o5OANPxzXkbHQxn9BuZ0TfmzAU=;
+        b=rSg1xCSFNIPs2kwnRRrmQNLYyNAO7fKsjv4CG3FpBWTGCWHlN6/5zuTX8WfIaUmQWN
+         NKWdUoME+inKy8/vz3SDgO0hzkrKVJ3YBvzq7KKEnGGhMyLDcQHVNtkcBCYZrEdV6QL9
+         uOXks0HoQITOoo453MFEX5ubp3/bUBLknF8zvH4Ma85rpiUVdoAR8Q+sKOo+68i5nGw8
+         LJ7nxTPHBfr43cnMIrlH6pKXfSYyysqa1am6cx9/kl2sqH2EWvZc6+yCIdKPXpekIDNB
+         I0yJEHoovzaBXZTR1be3EVa0ID/843D2vHnoXfEy52mee4JbeZmOHorYScDXSFSJWMG3
+         d01Q==
+X-Gm-Message-State: APjAAAXY5qefGmDohu7bQe00cGhY3mWFUsLXdz/KA8DSga6N/hBVyOy9
+        fFkuJ8OTdgtZmHzsbGQoIyzn8Q==
+X-Google-Smtp-Source: APXvYqzxOGU+kMZtej1bkrVYNiZUGwRmFwlMB28pTDrFdj62NfG83GLxpsdqNbhzSFv5Skcae4h3/w==
+X-Received: by 2002:a65:6401:: with SMTP id a1mr27650830pgv.42.1565561493573;
+        Sun, 11 Aug 2019 15:11:33 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id n10sm31376428pgv.67.2019.08.11.15.11.29
+        by smtp.gmail.com with ESMTPSA id n10sm31376428pgv.67.2019.08.11.15.11.31
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 11 Aug 2019 15:11:30 -0700 (PDT)
+        Sun, 11 Aug 2019 15:11:32 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        kbuild test robot <lkp@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -63,9 +64,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 2/3] doc: Update documentation about list_for_each_entry_rcu (v1)
-Date:   Sun, 11 Aug 2019 18:11:10 -0400
-Message-Id: <20190811221111.99401-2-joel@joelfernandes.org>
+Subject: [PATCH 3/3] driver/core: Fix build error when SRCU and lockdep disabled
+Date:   Sun, 11 Aug 2019 18:11:11 -0400
+Message-Id: <20190811221111.99401-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
 In-Reply-To: <20190811221111.99401-1-joel@joelfernandes.org>
 References: <20190811221111.99401-1-joel@joelfernandes.org>
@@ -76,65 +77,37 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This patch updates the documentation with information about
-usage of lockdep with list_for_each_entry_rcu().
+Properly check if lockdep lock checking is disabled at config time. If
+so, then lock_is_held() is undefined so don't do any checking.
 
+This fix is similar to the pattern used in srcu_read_lock_held().
+
+Link: https://lore.kernel.org/lkml/201908080026.WSAFx14k%25lkp@intel.com/
+Fixes: c9e4d3a2fee8 ("acpi: Use built-in RCU list checking for acpi_ioremaps list")
+Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- Documentation/RCU/lockdep.txt   | 15 +++++++++++----
- Documentation/RCU/whatisRCU.txt |  9 ++++++++-
- 2 files changed, 19 insertions(+), 5 deletions(-)
+This patch is based on the -rcu dev branch.
 
-diff --git a/Documentation/RCU/lockdep.txt b/Documentation/RCU/lockdep.txt
-index da51d3068850..3d967df3a801 100644
---- a/Documentation/RCU/lockdep.txt
-+++ b/Documentation/RCU/lockdep.txt
-@@ -96,7 +96,14 @@ other flavors of rcu_dereference().  On the other hand, it is illegal
- to use rcu_dereference_protected() if either the RCU-protected pointer
- or the RCU-protected data that it points to can change concurrently.
+ drivers/base/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 32cf83d1c744..fe25cf690562 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -99,7 +99,11 @@ void device_links_read_unlock(int not_used)
  
--There are currently only "universal" versions of the rcu_assign_pointer()
--and RCU list-/tree-traversal primitives, which do not (yet) check for
--being in an RCU read-side critical section.  In the future, separate
--versions of these primitives might be created.
-+Similar to rcu_dereference_protected, The RCU list and hlist traversal
-+primitives also check for whether there are called from within a reader
-+section. However, an optional lockdep expression can be passed to them as
-+the last argument in case they are called under other non-RCU protection.
-+
-+For example, the workqueue for_each_pwq() macro is implemented as follows.
-+It is safe to call for_each_pwq() outside a reader section but under protection
-+of wq->mutex:
-+#define for_each_pwq(pwq, wq)
-+	list_for_each_entry_rcu((pwq), &(wq)->pwqs, pwqs_node,
-+				lock_is_held(&(wq->mutex).dep_map))
-diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.txt
-index 17f48319ee16..cdd2a3e10e40 100644
---- a/Documentation/RCU/whatisRCU.txt
-+++ b/Documentation/RCU/whatisRCU.txt
-@@ -290,7 +290,7 @@ rcu_dereference()
- 	at any time, including immediately after the rcu_dereference().
- 	And, again like rcu_assign_pointer(), rcu_dereference() is
- 	typically used indirectly, via the _rcu list-manipulation
--	primitives, such as list_for_each_entry_rcu().
-+	primitives, such as list_for_each_entry_rcu() [2].
- 
- 	[1] The variant rcu_dereference_protected() can be used outside
- 	of an RCU read-side critical section as long as the usage is
-@@ -305,6 +305,13 @@ rcu_dereference()
- 	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
- 	and the API's code comments for more details and example usage.
- 
-+	[2] In case the list_for_each_entry_rcu() primitive is intended
-+	to be used outside of an RCU reader section such as when
-+	protected by a lock, then an additional lockdep expression can be
-+	passed as the last argument to it so that RCU lockdep checking code
-+	knows that the dereference of the list pointers are safe. If the
-+	indicated protection is not provided, a lockdep splat is emitted.
-+
- The following diagram shows how each API communicates among the
- reader, updater, and reclaimer.
+ int device_links_read_lock_held(void)
+ {
+-	return lock_is_held(&device_links_lock);
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	return lock_is_held(&(device_links_lock.dep_map));
++#else
++	return 1;
++#endif
+ }
+ #endif /* !CONFIG_SRCU */
  
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
-
