@@ -2,107 +2,188 @@ Return-Path: <SRS0=P5Uu=WI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 931A1C31E40
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 05:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 377FFC433FF
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 10:12:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 57B432087B
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 05:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1565586180;
-	bh=dkXz6e/E5uuKCjklSsio9Wi/z0A/ofiJ0WK3lYOv9I0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=GOvaczGrWS8vc+H8iYkKq5urXXB4Akl+4qvKbj1Oc/IlzneQlh4QiCL+JYZ5LZ0W7
-	 QMniLPFZSduOWM6SqKKRsiKEWX0YJiaxIe/+J8APk/sJ7EvtxCJqQvTEXAk+90CZiP
-	 M7UjH3c+e3hGGzbyG9pqGpq7WdfiSdv/ACp/2RyA=
+	by mail.kernel.org (Postfix) with ESMTP id 0A207214C6
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 10:12:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbfHLFDA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Aug 2019 01:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbfHLFDA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Aug 2019 01:03:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49A7320842;
-        Mon, 12 Aug 2019 05:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565586178;
-        bh=dkXz6e/E5uuKCjklSsio9Wi/z0A/ofiJ0WK3lYOv9I0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fT8rKH3ZfEKa3aaCJ3w/qjJiTZogdSB366BUTlCy64cqkbHQjl/vPdnjNhGwe2rwq
-         Of+b8YNEsxtk4PrxSPLAjYq78YQY/NCTMajihlv/b0Es50X/F+xy/V951fFSFDauQy
-         jrIxTuXD6NzDJOHkwIOpOBm/SB28M2sirMimZZ+Y=
-Date:   Mon, 12 Aug 2019 07:02:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        id S1727844AbfHLKMZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Aug 2019 06:12:25 -0400
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:45413 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727841AbfHLKMZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Aug 2019 06:12:25 -0400
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.53 with ESMTP; 12 Aug 2019 19:12:22 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.127 with ESMTP; 12 Aug 2019 19:12:22 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Mon, 12 Aug 2019 19:10:52 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Byungchul Park <max.byungchul.park@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rao Shoaib <rao.shoaib@oracle.com>, kernel-team@android.com,
+        kernel-team <kernel-team@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 3/3] driver/core: Fix build error when SRCU and lockdep
- disabled
-Message-ID: <20190812050256.GC5834@kroah.com>
-References: <20190811221111.99401-1-joel@joelfernandes.org>
- <20190811221111.99401-3-joel@joelfernandes.org>
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Message-ID: <20190812101052.GA10478@X58A-UD3R>
+References: <20190806235631.GU28441@linux.ibm.com>
+ <20190807094504.GB169551@google.com>
+ <20190807175215.GE28441@linux.ibm.com>
+ <20190808095232.GA30401@X58A-UD3R>
+ <20190808125607.GB261256@google.com>
+ <CANrsvRPU_u6oKpjZ1368Evto+1hGboNYeOuMdbdzaOfXhSO=5g@mail.gmail.com>
+ <20190808180916.GP28441@linux.ibm.com>
+ <20190811083626.GA9486@X58A-UD3R>
+ <20190811084950.GB9486@X58A-UD3R>
+ <20190811234939.GC28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190811221111.99401-3-joel@joelfernandes.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190811234939.GC28441@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 06:11:11PM -0400, Joel Fernandes (Google) wrote:
-> Properly check if lockdep lock checking is disabled at config time. If
-> so, then lock_is_held() is undefined so don't do any checking.
+On Sun, Aug 11, 2019 at 04:49:39PM -0700, Paul E. McKenney wrote:
+> Maybe.  Note well that I said "potential issue".  When I checked a few
+> years ago, none of the uses of rcu_barrier() cared about kfree_rcu().
+> They cared instead about call_rcu() callbacks that accessed code or data
+> that was going to disappear soon, for example, due to module unload or
+> filesystem unmount.
 > 
-> This fix is similar to the pattern used in srcu_read_lock_held().
+> So it -might- be that rcu_barrier() can stay as it is, but with changes
+> as needed to documentation.
 > 
-> Link: https://lore.kernel.org/lkml/201908080026.WSAFx14k%25lkp@intel.com/
-> Fixes: c9e4d3a2fee8 ("acpi: Use built-in RCU list checking for acpi_ioremaps list")
+> It also -might- be, maybe now or maybe some time in the future, that
+> there will need to be a kfree_rcu_barrier() or some such.  But if so,
+> let's not create it until it is needed.  For one thing, it is reasonably
+> likely that something other than a kfree_rcu_barrier() would really
+> be what was needed.  After all, the main point would be to make sure
+> that the old memory really was freed before allocating new memory.
 
-What tree is this commit in?
+Now I fully understand what you meant thanks to you. Thank you for
+explaining it in detail.
 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> This patch is based on the -rcu dev branch.
+> But if the system had ample memory, why wait?  In that case you don't
+> really need to wait for all the old memory to be freed, but rather for
+> sufficient memory to be available for allocation.
 
-Ah...
+Agree. Totally make sense.
 
->  drivers/base/core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+Thanks,
+Byungchul
+
 > 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 32cf83d1c744..fe25cf690562 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -99,7 +99,11 @@ void device_links_read_unlock(int not_used)
->  
->  int device_links_read_lock_held(void)
->  {
-> -	return lock_is_held(&device_links_lock);
-> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> +	return lock_is_held(&(device_links_lock.dep_map));
-> +#else
-> +	return 1;
-> +#endif
-
-return 1?  So the lock is always held?
-
-confused,
-
-greg k-h
+> 							Thanx, Paul
+> 
+> > Thanks,
+> > Byungchul
+> > 
+> > > But now that we can see letting the list just grow works well, we don't
+> > > have to consider this one at the moment. Let's consider this method
+> > > again once we face the problem in the future by any chance.
+> > > 
+> > > > We should therefore just let the second list grow.  If experience shows
+> > > > a need for callbacks to be sent up more quickly, it should be possible
+> > > > to provide an additional list, so that two lists on a given CPU can both
+> > > > be waiting for a grace period at the same time.
+> > > 
+> > > Or the third and fourth list might be needed in some system. But let's
+> > > talk about it later too.
+> > > 
+> > > > > > I also agree. But this _FORCE thing will still not solve the issue Paul is
+> > > > > > raising which is doing this loop possibly in irq disabled / hardirq context.
+> > > > > 
+> > > > > I added more explanation above. What I suggested is a way to avoid not
+> > > > > only heavy
+> > > > > work within the irq-disabled region of a single kfree_rcu() but also
+> > > > > too many requests
+> > > > > to be queued into ->head.
+> > > > 
+> > > > But let's start simple, please!
+> > > 
+> > > Yes. The simpler, the better.
+> > > 
+> > > > > > We can't even cond_resched() here. In fact since _FORCE is larger, it will be
+> > > > > > even worse. Consider a real-time system with a lot of memory, in this case
+> > > > > > letting ->head grow large is Ok, but looping for long time in IRQ disabled
+> > > > > > would not be Ok.
+> > > > > 
+> > > > > Please check the explanation above.
+> > > > > 
+> > > > > > But I could make it something like:
+> > > > > > 1. Letting ->head grow if ->head_free busy
+> > > > > > 2. If head_free is busy, then just queue/requeue the monitor to try again.
+> > > > > 
+> > > > > This is exactly what Paul said. The problem with this is ->head can grow too
+> > > > > much. That's why I suggested the above one.
+> > > > 
+> > > > It can grow quite large, but how do you know that limiting its size will
+> > > > really help?  Sure, you have limited the size, but does that really do
+> > > 
+> > > To decide the size, we might have to refer to how much pressure on
+> > > memory and RCU there are at that moment and adjust it on runtime.
+> > > 
+> > > > anything for the larger problem of extreme kfree_rcu() rates on the one
+> > > > hand and a desire for more efficient handling of kfree_rcu() on the other?
+> > > 
+> > > Assuming current RCU logic handles extremly high rate well which is
+> > > anyway true, my answer is *yes*, because batching anyway has pros and
+> > > cons. One of major cons is there must be inevitable kfree_rcu() requests
+> > > that not even request to RCU. By allowing only the size of batching, the
+> > > situation can be mitigated.
+> > > 
+> > > I just answered to you. But again, let's talk about it later once we
+> > > face the problem as you said.
+> > > 
+> > > Thanks,
+> > > Byungchul
+> > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > > This would even improve performance, but will still risk going out of memory.
+> > > > > >
+> > > > > > Thoughts?
+> > > > > >
+> > > > > > thanks,
+> > > > > >
+> > > > > >  - Joel
+> > > > > >
+> > > > > > >
+> > > > > > > This way, we can avoid both:
+> > > > > > >
+> > > > > > > 1. too many requests being queued and
+> > > > > > > 2. __call_rcu() bunch of requests within a single kfree_rcu().
+> > > > > > >
+> > > > > > > Thanks,
+> > > > > > > Byungchul
+> > > > > > >
+> > > > > > > >
+> > > > > > > > But please feel free to come up with a better solution!
+> > > > > > > >
+> > > > > > > > [ . . . ]
+> > > > > 
+> > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > Thanks,
+> > > > > Byungchul
+> > > > > 
