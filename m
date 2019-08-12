@@ -2,134 +2,170 @@ Return-Path: <SRS0=P5Uu=WI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D174C31E40
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 13:03:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A009C31E40
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 13:08:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 32DC320842
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 13:03:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D2A3D20684
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 13:08:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PwGI0wkw"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XuHwYpVy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbfHLNDO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Aug 2019 09:03:14 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39032 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728813AbfHLNDN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Aug 2019 09:03:13 -0400
-Received: by mail-pf1-f193.google.com with SMTP id f17so45669515pfn.6
-        for <rcu@vger.kernel.org>; Mon, 12 Aug 2019 06:03:13 -0700 (PDT)
+        id S1728750AbfHLNIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Aug 2019 09:08:12 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:35333 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbfHLNIL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Aug 2019 09:08:11 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n4so7726666pgv.2
+        for <rcu@vger.kernel.org>; Mon, 12 Aug 2019 06:08:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=9PGFo0IOTBF0bIx7y/QxiVY31P4bvTcKQoBfJqZTG+w=;
-        b=PwGI0wkwa6ZBvzJS2WowZtgp5DVi7QPH+BrB9p0HCfQcxpdzKqQgPTHdIAl3D1o9Ui
-         UwguTSYRYWuAd3qrqhfjY+51MrRtaJizalVxHqxwXrlJqDBvavY40TWKCBgS4IeFRTPK
-         AfF57tOE8WhINap7lLBY+lYVRyduY9cx0H4rc=
+        bh=0+d7JiE4ALvh+vozWgQX9WRuAWwlUlbg0HRlo3FMVKM=;
+        b=XuHwYpVy4YKDtkBncgZgarepVoaPreVCKt5pefACP+j1hsGxvnUD3UAc7zX6MEHqRz
+         sSvzKE9SEErpR8GuW7cCSDvttY5W8YiCTLbu+Io2+tbPcN87ElV3LqukcHrdDGUv9vtT
+         DCaNaiazekE/y9Ng3AM/qvYGjeWum23ndyYDg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9PGFo0IOTBF0bIx7y/QxiVY31P4bvTcKQoBfJqZTG+w=;
-        b=ljDtD7AXhzc/wIKpE67ESGiA9LZ7u0rh/HlVMHO32jfpzgt5d3MehYTIe3m6+Nlgij
-         Bz7yBY4zgq9XOzNu53r+iH4o4Ydg8/FiMsonOWvmCY9r8dekN3mc3EZ08L00WIA5bIJb
-         qcmfNOGyM473oumyzphuMI37B3QJrMHvWKuogAZX/oNU9Htr9tl4DsfOKNh1bcDB5Oib
-         LXpqX1F5Fh0fQIB+KH+qx8BMLz2rGdeVAywrbi20gmOJxFqVgVbwB9BTgACIJCgpSEH0
-         ca5I1SFtaxXQO6YPpTCVmjpb6z8idpTJO2/fppskZ7x7iFQ79SJ6qSw2Hjjj/dL0MGjc
-         1aZA==
-X-Gm-Message-State: APjAAAWktIjf7tKZcLjCeYXXULCi0KB2EylvNkp3ZV41/57JPxWSZGuJ
-        9QS5lrf7w+91V9tWexOQXThb2w==
-X-Google-Smtp-Source: APXvYqyz6EmE0iTkl3gZlNovk6A/dv0bMJdkggbBqQc3eqErF9H/OyeJ1CsBomxTPL6iok8vEgG0pQ==
-X-Received: by 2002:a17:90a:ec07:: with SMTP id l7mr18571059pjy.39.1565614992605;
-        Mon, 12 Aug 2019 06:03:12 -0700 (PDT)
+        bh=0+d7JiE4ALvh+vozWgQX9WRuAWwlUlbg0HRlo3FMVKM=;
+        b=Y+9SamJr2gXS6zIAt5fbvdknzDZMrbnuIL+ocUCmqD46ZmFqFAxd1l8d56vVJp7rOE
+         gEZxbGhf/rFAsneTbusiq7W02OLPC6PUWAN4gNhytwN8I8Rdq4PTuH7Blj9YWzybD7+w
+         yfLSa4t7hEm0F3yobIrD0cpTZECkl89XB4ovNBxXdIBNohpXmlv88VsmcWEBpc59QSHy
+         LOjX7Eh5Xu1KBfh7YTQDlSRhnciCBfO8a0ExD2TBONbYPBRk1N5BOTXAFugqja3CcHnV
+         KmXPXA7LEb9VImHKZhjs79pH8xUqh7qgZkwXugQDr/fg0Qse/1awrkLIZoJOkNs1n39Z
+         IlNA==
+X-Gm-Message-State: APjAAAVYNOMUL6F4jvBu2h2RvNG9/ZHFeBFg62n1wTQRMWEyy0JfnzDQ
+        y9ZKdlaFMXnkolC+snkIk8dsPg==
+X-Google-Smtp-Source: APXvYqwzwSNMzkoGkoKrM7gC6Kss7FrU3+9YPzxEYeGpsPCnpjpC2W6CZwZrbnKkmicR5H8Ki5UIqA==
+X-Received: by 2002:a17:90a:a896:: with SMTP id h22mr1309321pjq.1.1565615291134;
+        Mon, 12 Aug 2019 06:08:11 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id o3sm25222103pje.1.2019.08.12.06.03.11
+        by smtp.gmail.com with ESMTPSA id v14sm113161991pfm.164.2019.08.12.06.08.09
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 12 Aug 2019 06:03:11 -0700 (PDT)
-Date:   Mon, 12 Aug 2019 09:03:10 -0400
+        Mon, 12 Aug 2019 06:08:10 -0700 (PDT)
+Date:   Mon, 12 Aug 2019 09:08:09 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     linux-kernel@vger.kernel.org, Rao Shoaib <rao.shoaib@oracle.com>,
+        max.byungchul.park@gmail.com, kernel-team@android.com,
+        kernel-team@lge.com, Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 3/3] driver/core: Fix build error when SRCU and lockdep
- disabled
-Message-ID: <20190812130310.GA27552@google.com>
-References: <20190811221111.99401-1-joel@joelfernandes.org>
- <20190811221111.99401-3-joel@joelfernandes.org>
- <20190812050256.GC5834@kroah.com>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 1/2] rcu/tree: Add basic support for kfree_rcu batching
+Message-ID: <20190812130809.GB27552@google.com>
+References: <20190811024957.233650-1-joel@joelfernandes.org>
+ <20190812102917.GA10624@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812050256.GC5834@kroah.com>
+In-Reply-To: <20190812102917.GA10624@X58A-UD3R>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 07:02:56AM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Aug 11, 2019 at 06:11:11PM -0400, Joel Fernandes (Google) wrote:
-> > Properly check if lockdep lock checking is disabled at config time. If
-> > so, then lock_is_held() is undefined so don't do any checking.
-> > 
-> > This fix is similar to the pattern used in srcu_read_lock_held().
-> > 
-> > Link: https://lore.kernel.org/lkml/201908080026.WSAFx14k%25lkp@intel.com/
-> > Fixes: c9e4d3a2fee8 ("acpi: Use built-in RCU list checking for acpi_ioremaps list")
-> 
-> What tree is this commit in?
-> 
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> > This patch is based on the -rcu dev branch.
-> 
-> Ah...
-> 
-> >  drivers/base/core.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 32cf83d1c744..fe25cf690562 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -99,7 +99,11 @@ void device_links_read_unlock(int not_used)
+On Mon, Aug 12, 2019 at 07:29:17PM +0900, Byungchul Park wrote:
+[snip]
+> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > index 8e727f57d814..383f2481750f 100644
+> > --- a/include/linux/rcutiny.h
+> > +++ b/include/linux/rcutiny.h
+> > @@ -39,6 +39,11 @@ static inline void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  	call_rcu(head, func);
+> >  }
 > >  
-> >  int device_links_read_lock_held(void)
-> >  {
-> > -	return lock_is_held(&device_links_lock);
-> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > +	return lock_is_held(&(device_links_lock.dep_map));
-> > +#else
-> > +	return 1;
-> > +#endif
+> > +static inline void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
+> > +{
+> > +	call_rcu(head, func);
+> > +}
+> > +
+> >  void rcu_qs(void);
+> >  
+> >  static inline void rcu_softirq_qs(void)
+> > diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+> > index 735601ac27d3..7e38b39ec634 100644
+> > --- a/include/linux/rcutree.h
+> > +++ b/include/linux/rcutree.h
+> > @@ -34,6 +34,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
+> >  
+> >  void synchronize_rcu_expedited(void);
+> >  void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
+> > +void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func);
+> >  
+> >  void rcu_barrier(void);
+> >  bool rcu_eqs_special_set(int cpu);
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index a14e5fbbea46..102a5f606d78 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2593,17 +2593,204 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  }
+> >  EXPORT_SYMBOL_GPL(call_rcu);
+> >  
+> > +
+> > +/* Maximum number of jiffies to wait before draining a batch. */
+> > +#define KFREE_DRAIN_JIFFIES (HZ / 50)
 > 
-> return 1?  So the lock is always held?
+> JFYI, I also can see oom with a larger value of this. I hope this magic
+> value works well for all kind of systems.
 
-This is just the pattern of an assert that is disabled, so that
-false-positives don't happen if lockdep is disabled.
+It seems to work well in my testing. I am glad you could not perceive OOMs at
+this value, either.
 
-So say someone writes a statement like:
-WARN_ON_ONCE(!device_links_read_lock_held());
+> > - * Queue an RCU callback for lazy invocation after a grace period.
+> > - * This will likely be later named something like "call_rcu_lazy()",
+> > - * but this change will require some way of tagging the lazy RCU
+> > - * callbacks in the list of pending callbacks. Until then, this
+> > - * function may only be called from __kfree_rcu().
+> > + * Maximum number of kfree(s) to batch, if this limit is hit then the batch of
+> > + * kfree(s) is queued for freeing after a grace period, right away.
+> >   */
+> > -void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > +struct kfree_rcu_cpu {
+> > +	/* The rcu_work node for queuing work with queue_rcu_work(). The work
+> > +	 * is done after a grace period.
+> > +	 */
+> > +	struct rcu_work rcu_work;
+> > +
+> > +	/* The list of objects being queued in a batch but are not yet
+> > +	 * scheduled to be freed.
+> > +	 */
+> > +	struct rcu_head *head;
+> > +
+> > +	/* The list of objects that have now left ->head and are queued for
+> > +	 * freeing after a grace period.
+> > +	 */
+> > +	struct rcu_head *head_free;
+> > +
+> > +	/* Protect concurrent access to this structure. */
+> > +	spinlock_t lock;
+> > +
+> > +	/* The delayed work that flushes ->head to ->head_free incase ->head
+> > +	 * did not reach a length of KFREE_MAX_BATCH within KFREE_DRAIN_JIFFIES.
+> > +	 * In case flushing cannot be done if RCU is busy, then ->head just
+> > +	 * continues to grow beyond KFREE_MAX_BATCH and we retry flushing later.
+> 
+> Minor one. We don't use KFREE_MAX_BATCH anymore.
 
-Since lockdep is disabled, we cannot check whether lock is held or not. Yet,
-we don't want false positives by reporting that the lock is not held. In this
-case, it is better to report that the lock is held to suppress
-false-positives.  srcu_read_lock_held() also follows the same pattern.
+Sorry for leaving these KFREE_MAX_BATCH comments stale, I cleaned up many of
+them already but some where still left behind. I will fix these in the v3.
 
-thanks,
+thanks for review!
 
  - Joel
 
+[snip]
