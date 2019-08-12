@@ -2,100 +2,106 @@ Return-Path: <SRS0=P5Uu=WI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6782C31E40
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 20:42:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B2AFC31E40
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 21:02:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 95BEC20684
-	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 20:42:08 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Xe1HCglz"
+	by mail.kernel.org (Postfix) with ESMTP id DF605216F4
+	for <rcu@archiver.kernel.org>; Mon, 12 Aug 2019 21:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1565643760;
+	bh=HdtES/JZD1pzNL+NsSsjAHI5TprD4NtHrngjAEp3k+o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=XFOlWRXmqy3U76NZk2v5Cel+cK51qsCDws/Oz1fBU4RL1UIyUVtHli2B6WqkEfyua
+	 voKqTNveH1QEOYmUWTOIV9WHEnGLK9lGp13oy0Y6lOhGJDIYQTzmJfJmEAPPU1lU6U
+	 l15FjuGK3/vb5sOUQqPBp4in6xXoJDWDcTpYMAus=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbfHLUmI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Aug 2019 16:42:08 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39021 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbfHLUmI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Aug 2019 16:42:08 -0400
-Received: by mail-pl1-f193.google.com with SMTP id z3so1502958pln.6
-        for <rcu@vger.kernel.org>; Mon, 12 Aug 2019 13:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HB3fJfLK4PnVLPAunkiBcGzstN0wP/veN+x35xEeTW4=;
-        b=Xe1HCglzqQ/jt0qNR/aglTK1b4gWyuldTqcJGOCn2p8MviY8GjAePqFA8W6qXYNWwh
-         2cixQe7Xk+CMRlinmlShEIITwIG+/yKYjpZ4tXo+xdxjqX6r2AXuhjY1AXgfF/+pPLpt
-         3H4FA7FbPHHMEjZxSLeUZCOeIzQH+QoS9hGTM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HB3fJfLK4PnVLPAunkiBcGzstN0wP/veN+x35xEeTW4=;
-        b=F0+CP3dsYywK3O1PPiI+QqJX3Az2mbtZciR631RZcgxFtIWfH0GXuq14+kFwqWMBAH
-         GZ7nefgUUQZHbEaRhEaqhD8xZMMdlj20QzB09Xlln3TLDB/PaGhufD5Bg04wswMbfMU5
-         URqHJ7U6B8YQqZAQ2N+Ze4H+iQ84WE9LJN2K3uyGbeXu3BLGABDow6wFe4F0hXx9k7n8
-         AC5+YE9MnnLIXkDCrocl7dlKuMQ7598oYKY5yv4aSeBRUiHPEu+k0CphqSNgvAiKRFbR
-         6HqA3S+r7Notzqop1NH6zTaQxmrdOJ5fS+XyvPN57GOXmQBPSk+pCxxBFMMkaYUws/X3
-         qtfg==
-X-Gm-Message-State: APjAAAV72HO/wwAikotZhrQxwXqM0BBDLJISSW0yyotbsl0pBmu78oqP
-        uBf7sgfyAZBx3VlMi9ZTvclNvw==
-X-Google-Smtp-Source: APXvYqzPYpjVmv8OPuJ7/zhwmE1fv9Mj7f2m91Oz+OJyXmJx2LhgvftlfMirHjQRBKJSR4vGQbrjbw==
-X-Received: by 2002:a17:902:1004:: with SMTP id b4mr23932384pla.340.1565642527441;
-        Mon, 12 Aug 2019 13:42:07 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a4sm2991210pfi.55.2019.08.12.13.42.06
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 12 Aug 2019 13:42:06 -0700 (PDT)
-Date:   Mon, 12 Aug 2019 16:42:05 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
+        id S1727188AbfHLVCh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Aug 2019 17:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726663AbfHLVCg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Aug 2019 17:02:36 -0400
+Received: from localhost (lfbn-ncy-1-174-150.w83-194.abo.wanadoo.fr [83.194.254.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA0B32085A;
+        Mon, 12 Aug 2019 21:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565643756;
+        bh=HdtES/JZD1pzNL+NsSsjAHI5TprD4NtHrngjAEp3k+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NNKF9aJHlZemAWlWGbShw4TAXTCEfxdZNNALki5iJ5Sz9Wfy/YHKc6Xg3rRxjM4fY
+         10NGl/e8Lo6wKNpuDaKkLZj0kMSuv5wdxZw9a2AzzyPK34JhJ2kp8XJ3I0xi4M5/K/
+         NEQRJ4vf48M6gfmSQLM/hmcAogTFQitQai5IBKRE=
+Date:   Mon, 12 Aug 2019 23:02:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 2/3] doc: Update documentation about
- list_for_each_entry_rcu (v1)
-Message-ID: <20190812204205.GA48751@google.com>
-References: <20190811221111.99401-1-joel@joelfernandes.org>
- <20190811221111.99401-2-joel@joelfernandes.org>
- <20190812202241.GP28441@linux.ibm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 14/14] rcu/nohz: Make multi_cpu_stop()
+ enable tick on all online CPUs
+Message-ID: <20190812210232.GA3648@lenoir>
+References: <20190802151435.GA1081@linux.ibm.com>
+ <20190802151501.13069-14-paulmck@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812202241.GP28441@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190802151501.13069-14-paulmck@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 01:22:41PM -0700, Paul E. McKenney wrote:
-> On Sun, Aug 11, 2019 at 06:11:10PM -0400, Joel Fernandes (Google) wrote:
-> > This patch updates the documentation with information about
-> > usage of lockdep with list_for_each_entry_rcu().
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Fri, Aug 02, 2019 at 08:15:01AM -0700, Paul E. McKenney wrote:
+> The multi_cpu_stop() function relies on the scheduler to gain control from
+> whatever is running on the various online CPUs, including any nohz_full
+> CPUs running long loops in kernel-mode code.  Lack of the scheduler-clock
+> interrupt on such CPUs can delay multi_cpu_stop() for several minutes
+> and can also result in RCU CPU stall warnings.  This commit therefore
+> causes multi_cpu_stop() to enable the scheduler-clock interrupt on all
+> online CPUs.
 > 
-> Thank you!!!
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> ---
+>  kernel/stop_machine.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> I queued this for v5.5 with the following wordsmithing.  Please check
-> to make sure that I didn't mess anything up.
+> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> index b4f83f7bdf86..a2659f61ed92 100644
+> --- a/kernel/stop_machine.c
+> +++ b/kernel/stop_machine.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/smpboot.h>
+>  #include <linux/atomic.h>
+>  #include <linux/nmi.h>
+> +#include <linux/tick.h>
+>  #include <linux/sched/wake_q.h>
+>  
+>  /*
+> @@ -187,15 +188,19 @@ static int multi_cpu_stop(void *data)
+>  {
+>  	struct multi_stop_data *msdata = data;
+>  	enum multi_stop_state curstate = MULTI_STOP_NONE;
+> -	int cpu = smp_processor_id(), err = 0;
+> +	int cpu, err = 0;
+>  	const struct cpumask *cpumask;
+>  	unsigned long flags;
+>  	bool is_active;
+>  
+> +	for_each_online_cpu(cpu)
+> +		tick_nohz_dep_set_cpu(cpu, TICK_DEP_MASK_RCU);
 
-Yes, this looks great to me. thanks!
+Looks like it's not the right fix but, should you ever need to set an
+all-CPUs (system wide) tick dependency in the future, you can use tick_set_dep().
 
-Also, I will send out the other drivers/core patch of this series in a bit
-with Steve's suggestion.
-
- - Joel
-
-[snip]
+Thanks.
