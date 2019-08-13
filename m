@@ -6,100 +6,104 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 875A0C31E40
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 02:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF883C433FF
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 05:31:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 604702067D
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 02:51:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B490420651
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 05:31:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbfHMCvB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Aug 2019 22:51:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50098 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726453AbfHMCvB (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 12 Aug 2019 22:51:01 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7D2llCK142409;
-        Mon, 12 Aug 2019 22:50:59 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ubg6hg6kt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Aug 2019 22:50:59 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7D2oBr9003683;
-        Tue, 13 Aug 2019 02:50:58 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma02wdc.us.ibm.com with ESMTP id 2u9nj62bf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Aug 2019 02:50:58 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7D2ovOd51380506
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 02:50:57 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9145B2064;
-        Tue, 13 Aug 2019 02:50:57 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89864B205F;
-        Tue, 13 Aug 2019 02:50:57 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.80.215.124])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Aug 2019 02:50:57 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 3BC6116C0AC3; Mon, 12 Aug 2019 19:50:57 -0700 (PDT)
-Date:   Mon, 12 Aug 2019 19:50:57 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1725820AbfHMFb2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Aug 2019 01:31:28 -0400
+Received: from lgeamrelo11.lge.com ([156.147.23.51]:34352 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbfHMFb2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Aug 2019 01:31:28 -0400
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.51 with ESMTP; 13 Aug 2019 14:31:25 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: byungchul.park@lge.com
+Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
+        by 156.147.1.127 with ESMTP; 13 Aug 2019 14:31:25 +0900
+X-Original-SENDERIP: 10.177.222.33
+X-Original-MAILFROM: byungchul.park@lge.com
+Date:   Tue, 13 Aug 2019 14:29:54 +0900
+From:   Byungchul Park <byungchul.park@lge.com>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org
-Subject: Re: need_heavy_qs flag for PREEMPT=y kernels
-Message-ID: <20190813025057.GY28441@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <20190811180852.GA128944@google.com>
- <20190811211318.GX28441@linux.ibm.com>
- <20190812032142.GA171001@google.com>
- <20190812035306.GE28441@linux.ibm.com>
- <20190812212013.GB48751@google.com>
- <20190812230138.GS28441@linux.ibm.com>
- <20190813010249.GA129011@google.com>
- <20190813022726.GW28441@linux.ibm.com>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rao Shoaib <rao.shoaib@oracle.com>, kernel-team@android.com,
+        kernel-team <kernel-team@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Message-ID: <20190813052954.GA18373@X58A-UD3R>
+References: <20190807175215.GE28441@linux.ibm.com>
+ <20190808095232.GA30401@X58A-UD3R>
+ <20190808125607.GB261256@google.com>
+ <CANrsvRPU_u6oKpjZ1368Evto+1hGboNYeOuMdbdzaOfXhSO=5g@mail.gmail.com>
+ <20190808180916.GP28441@linux.ibm.com>
+ <20190811083626.GA9486@X58A-UD3R>
+ <20190811084950.GB9486@X58A-UD3R>
+ <20190811234939.GC28441@linux.ibm.com>
+ <20190812101052.GA10478@X58A-UD3R>
+ <20190812131234.GC27552@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190813022726.GW28441@linux.ibm.com>
+In-Reply-To: <20190812131234.GC27552@google.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_09:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=727 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908130029
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 07:27:26PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 12, 2019 at 09:02:49PM -0400, Joel Fernandes wrote:
-> > On Mon, Aug 12, 2019 at 04:01:38PM -0700, Paul E. McKenney wrote:
-
-[ . . . ]
-
-> > Instead of checking dynticks_nmi_nesting == 2 in rcu_nmi_exit_common(), can
-> > we do the tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU)  from
-> > rcu_nmi_enter_common() ? We could add this code there, under the "if
-> > (rcu_dynticks_curr_cpu_in_eqs())".
+On Mon, Aug 12, 2019 at 09:12:34AM -0400, Joel Fernandes wrote:
+> On Mon, Aug 12, 2019 at 07:10:52PM +0900, Byungchul Park wrote:
+> > On Sun, Aug 11, 2019 at 04:49:39PM -0700, Paul E. McKenney wrote:
+> > > Maybe.  Note well that I said "potential issue".  When I checked a few
+> > > years ago, none of the uses of rcu_barrier() cared about kfree_rcu().
+> > > They cared instead about call_rcu() callbacks that accessed code or data
+> > > that was going to disappear soon, for example, due to module unload or
+> > > filesystem unmount.
+> > > 
+> > > So it -might- be that rcu_barrier() can stay as it is, but with changes
+> > > as needed to documentation.
 > 
-> It might well make sense to do this on entry, especially if doing so
-> might safe an instruction or two.  It won't make the tick happen much
-> faster, given that interrupts are disabled throughout the handler.
-> 
-> > I will test this patch tomorrow and let you know how it goes.
-> 
-> No need, it dies horribly and quickly with rcutorture.  Not exactly
-> a surprise.  ;-)
+> Right, we should update the docs. Byungchul, do you mind sending a patch that
+> documents the rcu_barrier() behavior?
 
-And also not a surprise, due to a laughably stupid mistake...
+Are you trying to give me the chance? I feel thankful. It doens't matter
+to try it at the moment though, I can't follow-up until September. I'd
+better do that in Septamber or give it up this time.
 
-							Thanx, Paul
+Thanks,
+Byungchul
+
+> > > It also -might- be, maybe now or maybe some time in the future, that
+> > > there will need to be a kfree_rcu_barrier() or some such.  But if so,
+> > > let's not create it until it is needed.  For one thing, it is reasonably
+> > > likely that something other than a kfree_rcu_barrier() would really
+> > > be what was needed.  After all, the main point would be to make sure
+> > > that the old memory really was freed before allocating new memory.
+> > 
+> > Now I fully understand what you meant thanks to you. Thank you for
+> > explaining it in detail.
+> > 
+> > > But if the system had ample memory, why wait?  In that case you don't
+> > > really need to wait for all the old memory to be freed, but rather for
+> > > sufficient memory to be available for allocation.
+> > 
+> > Agree. Totally make sense.
+> 
+> Agreed, all makes sense.
+> 
+> thanks,
+> 
+>  - Joel
+> 
+> [snip]
