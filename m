@@ -2,100 +2,115 @@ Return-Path: <SRS0=0MOJ=WJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3BCDC433FF
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 08:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A119BC433FF
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 12:30:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AA04720679
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 08:33:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75D9A206C2
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 12:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1565685187;
-	bh=unpmMBhs4Ryw1cerppIFvtapYPS35xYcBeAoCDolA6w=;
+	s=default; t=1565699429;
+	bh=0I7ATeXt7w4ddB3YVDDEftjVJR5fs+9vPsJx53S8d+w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=i0P2dLRhrp+34rEJa8qvQFcTp41Nd1BfPiucQ/i14v76jsfuY5gL9lq86P5DoVgbp
-	 HV1rlGs52wm5xtpY+TU3rkRlfcJR1HDb1SMmEqHykAxDwYy8oCOHwlq82PsrAseQev
-	 /nyXtXbwt0Q0lNiAO1HxOKz4jYwjhC4vULr+LhtM=
+	b=TeiS+W/4Uw3+uERgOrIIrA7a5cHtzpMzk5MEqumG7MVdO2QjqmCAU3eGsDwFJEsaS
+	 NeVikC1puYqGjxYiahBkaMJvPlIxW1zuUc5T/fK7cCeVUSudfzqey9lSbcDgpNbsEk
+	 nTOqrettirwUvTpqnE/MogJULSX84aUTBPcDqbSA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbfHMIdH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Aug 2019 04:33:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50356 "EHLO mail.kernel.org"
+        id S1727036AbfHMMaY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Aug 2019 08:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbfHMIdH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Aug 2019 04:33:07 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726903AbfHMMaX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Aug 2019 08:30:23 -0400
+Received: from localhost (lfbn-ncy-1-174-150.w83-194.abo.wanadoo.fr [83.194.254.150])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A41620663;
-        Tue, 13 Aug 2019 08:33:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D76BC2067D;
+        Tue, 13 Aug 2019 12:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565685186;
-        bh=unpmMBhs4Ryw1cerppIFvtapYPS35xYcBeAoCDolA6w=;
+        s=default; t=1565699422;
+        bh=0I7ATeXt7w4ddB3YVDDEftjVJR5fs+9vPsJx53S8d+w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WqrCGZiwPT5XJfLodebKxXSJPKmci2x2fwZGH36KLg7TF4/ErOQsgXAxSmwpQMb4W
-         /8CtB7mhub9VGftPo7SpT8b1cK2f5l/j1A4H7LKGYd5eKMldbAKdzQSpiHANqtgiYf
-         PYe/ar6YQ1VZMDRfqa1J+cpLiLimW4AePBBWOokU=
-Date:   Tue, 13 Aug 2019 09:32:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     akpm@linux-foundation.org, sedat.dilek@gmail.com,
-        jpoimboe@redhat.com, yhs@fb.com, miguel.ojeda.sandonis@gmail.com,
-        clang-built-linux@googlegroups.com,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Ming Lei <ming.lei@redhat.com>,
-        Dou Liyang <douliyangs@gmail.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 14/16] include/linux: prefer __section from
- compiler_attributes.h
-Message-ID: <20190813083257.nnsxf5khnqagl46s@willie-the-truck>
-References: <20190812215052.71840-1-ndesaulniers@google.com>
- <20190812215052.71840-14-ndesaulniers@google.com>
+        b=CXaUJivcYneepu+r62Nj97SyLpXnMF3NsnHndVCZnCIAzKlhdtJOJC8rkpvs8Fgpw
+         SVEyqmXrj70RmcwiWCnvw6T4GiOAjTTgsaMQ5vKMlng59cppq6uXmu4kV0pb9OfdDb
+         +6nw0O3mriBV+sb0SDiYaqQ7oi0yh/RXYnsJKEyk=
+Date:   Tue, 13 Aug 2019 14:30:19 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 14/14] rcu/nohz: Make multi_cpu_stop()
+ enable tick on all online CPUs
+Message-ID: <20190813123016.GA11455@lenoir>
+References: <20190802151435.GA1081@linux.ibm.com>
+ <20190802151501.13069-14-paulmck@linux.ibm.com>
+ <20190812210232.GA3648@lenoir>
+ <20190812232316.GT28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812215052.71840-14-ndesaulniers@google.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190812232316.GT28441@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 02:50:47PM -0700, Nick Desaulniers wrote:
-> Link: https://github.com/ClangBuiltLinux/linux/issues/619
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
+On Mon, Aug 12, 2019 at 04:23:16PM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 12, 2019 at 11:02:33PM +0200, Frederic Weisbecker wrote:
+> > On Fri, Aug 02, 2019 at 08:15:01AM -0700, Paul E. McKenney wrote:
+> > Looks like it's not the right fix but, should you ever need to set an
+> > all-CPUs (system wide) tick dependency in the future, you can use tick_set_dep().
+> 
+> Indeed, I have dropped this patch, but I now do something similar in
+> RCU's CPU-hotplug notifiers.  Which does have an effect, especially on
+> the system that isn't subject to the insane-latency cpu_relax().
+> 
+> Plus I am having to put a similar workaround into RCU's quiescent-state
+> forcing logic.
+> 
+> But how should this really be done?
+> 
+> Isn't there some sort of monitoring of nohz_full CPUs for accounting
+> purposes?  If so, would it make sense for this monitoring to check for
+> long-duration kernel execution and enable the tick in this case?  The
+> RCU dyntick machinery can be used to remotely detect the long-duration
+> kernel execution using something like the following:
+> 
+> 	int nohz_in_kernel_snap = rcu_dynticks_snap_cpu(cpu);
+> 
+> 	...
+> 
+> 	if (rcu_dynticks_in_eqs_cpu(cpu, nohz_in_kernel_snap)
+> 		nohz_in_kernel_snap = rcu_dynticks_snap_cpu(cpu);
+> 	else
+> 		/* Turn on the tick! */
+> 
+> I would supply rcu_dynticks_snap_cpu() and rcu_dynticks_in_eqs_cpu(),
+> which would be simple wrappers around RCU's private rcu_dynticks_snap()
+> and rcu_dynticks_in_eqs() functions.
+> 
+> Would this make sense as a general solution, or am I missing a corner
+> case or three?
 
--ENOCOMMITMESSAGE
+Oh I see. Until now we considered than running into the kernel (between user/guest/idle)
+is supposed to be short but there can be specific places where it doesn't apply.
 
-Otherwise, patch looks good to me.
+I'm wondering if, more than just providing wrappers, this shouldn't be entirely
+driven by RCU using the tick_set_dep_cpu()/tick_clear_dep_cpu() at appropriate timings.
 
-Will
+I don't want to sound like I'm trying to put all the work on you :p  It's just that
+the tick shouldn't know much about RCU, it's rather RCU that is a client for the tick and
+is probably better suited to determine when a CPU becomes annoying with its extended grace
+period.
+
+Arming a CPU timer could also be an alternative to tick_set_dep_cpu() for that.
+
+What do you think?
