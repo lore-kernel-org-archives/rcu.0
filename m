@@ -2,109 +2,158 @@ Return-Path: <SRS0=0MOJ=WJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42398C31E40
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 01:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5161C31E40
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 01:34:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1137F20665
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 01:05:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D71320665
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 01:34:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Mv241Fhb"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pqX+AsGx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbfHMBF2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Aug 2019 21:05:28 -0400
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:45014 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbfHMBF2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Aug 2019 21:05:28 -0400
-Received: by mail-pg1-f172.google.com with SMTP id i18so50352362pgl.11
-        for <rcu@vger.kernel.org>; Mon, 12 Aug 2019 18:05:28 -0700 (PDT)
+        id S1726498AbfHMBeF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Aug 2019 21:34:05 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40264 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbfHMBeE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Aug 2019 21:34:04 -0400
+Received: by mail-lf1-f66.google.com with SMTP id b17so75590184lff.7
+        for <rcu@vger.kernel.org>; Mon, 12 Aug 2019 18:34:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qKDtRrj8VSA0AxTKmeWFFvgiD7uTonCobI1vWS2Oa24=;
-        b=Mv241FhbNqODnmgbBHKpokjGwoA0ZA2DLfDRJnJGl1/Fo4TiGuXXkE7hQG0C4OsZb3
-         42o8l9VPl1/SSH47hrtWpR4TsJxQaR0adyBnkQCxIY7QHqU4QjaZNrAyB4BcE2RfYQX3
-         cUMTJ1gggVu8mQrZYUNL9wvtewVVIjYMrhfYQ=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xhOMsZgraPbofDXHGlEAPblhYgeF7xROTk8w4FSX/Q8=;
+        b=pqX+AsGxsOOmro0DhzbCC8yIL18XGXrlTdxb1jh2O7AQ4Zpxtc3qR66hu/oqhESsq7
+         lruMije3Zt2EqNSnR5czmrGtEA4wnN5fIAo2BEK7CYe5z3SQ4bs1oCx/sSg8LmGpwP6Q
+         RCNhUECyMsRJmV5xsX8q48Aq7xOvj0C7qZw6s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qKDtRrj8VSA0AxTKmeWFFvgiD7uTonCobI1vWS2Oa24=;
-        b=drO+9fM5byAe9disq16CosEg37RIQr7maN1BGB05iAgJqub1gOG68d6951LrbFKYMi
-         p34Jz3nx4XgJ/yfRoaBWqaaiE4RZMJehjSLlm2xxfBcQjmi8ffHbFwYNPxLV+1nnPGqP
-         AowD/ZlyynmOF5mJqYsJZAV8ay3BauPV+rX4szHdjS/vLc86qZATshtuX1+t5G2BZC4K
-         Eu+FWQKd60ohpA2zIOW8ObmFfPnj/hW0IdS3so8aoBlxxpiI1N+Wk9AkNsPEdpTndx6t
-         zDQg+OfPRJll6y5zjtYFZU91SgmbFT2zJNv/oNtWcvs/6ccH6xWpCtxbUVYBaUFZUy/M
-         VJhg==
-X-Gm-Message-State: APjAAAUTdJvXeAGSTPq4YLyv7rEqSPH4TA4wlCLueQ98i9erdpBq4c0P
-        mhZIhcGe5LN1wlJvconY6t45+2hdYMg=
-X-Google-Smtp-Source: APXvYqy+4vu3quu56fOnYCKxkR9ImMB7DR2raLLo9n4l3tA6ML/FY2VBqoKnDxqvoSlB5D3o5MYGJw==
-X-Received: by 2002:a65:430b:: with SMTP id j11mr32045818pgq.383.1565658327681;
-        Mon, 12 Aug 2019 18:05:27 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 67sm817885pjo.29.2019.08.12.18.05.26
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 12 Aug 2019 18:05:26 -0700 (PDT)
-Date:   Mon, 12 Aug 2019 21:05:25 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     rcu@vger.kernel.org
-Subject: Re: need_heavy_qs flag for PREEMPT=y kernels
-Message-ID: <20190813010525.GB129011@google.com>
-References: <20190811180852.GA128944@google.com>
- <20190811211318.GX28441@linux.ibm.com>
- <20190812032142.GA171001@google.com>
- <20190812035306.GE28441@linux.ibm.com>
- <20190812212013.GB48751@google.com>
- <20190812230138.GS28441@linux.ibm.com>
- <20190813010249.GA129011@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xhOMsZgraPbofDXHGlEAPblhYgeF7xROTk8w4FSX/Q8=;
+        b=OWj8mPWH/pd8dhYgMZ1Yb4nf6DzGnA3PeATKwGnCqmCzQp+RL2KX6CsWwAC6cbSJdU
+         GnhneAFtnKfJD4GIqP6BNNN3bGVWy1stFLJZ/BEa2jOD/pmHK5xuy9yb2EWp7xczTerQ
+         9+TlVK7x7k58oSIaMOcfO4+vvUaWSiN88zwi0ilCSIJNGbfAAJLU7WXp4dypbSWjKiYy
+         6zooGZgVz0wk2YLZdHQJBbz1OuGHyRT3wRs97z6JwldEEymptiFRzLDiIiUfaK9dW5jJ
+         hay0bBKwiU8qNTKRnf6HL22VUlvy3y2Ip8rjj+6wCI/iEuliUA7f4oBLsC3uPq1eD998
+         l+cg==
+X-Gm-Message-State: APjAAAWihSVQdIuZBDhHYs6J/ctu6H/2AaiMqVCZer64tF/6vqOtslLP
+        I3huLnOsmBmZTairRSpPJ6bRLqEmIQYVatf47NaZpg==
+X-Google-Smtp-Source: APXvYqywVV126qBkpvCj9wilDgs7/ubL/o2+AGR81L9EPWfdcToV8DH6PE+74TIUSlJiAqOlP4zxXU+RTHhqUSv+3kY=
+X-Received: by 2002:ac2:5394:: with SMTP id g20mr22731532lfh.112.1565660042882;
+ Mon, 12 Aug 2019 18:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190813010249.GA129011@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190802151435.GA1081@linux.ibm.com> <20190802151501.13069-14-paulmck@linux.ibm.com>
+ <20190812210232.GA3648@lenoir> <20190812232316.GT28441@linux.ibm.com>
+In-Reply-To: <20190812232316.GT28441@linux.ibm.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 12 Aug 2019 21:33:51 -0400
+Message-ID: <CAEXW_YRm6cBp-J3tPeRH+Jx=38LaAtNoCM9f0FeFG+ZBZKBH6w@mail.gmail.com>
+Subject: Re: [PATCH RFC tip/core/rcu 14/14] rcu/nohz: Make multi_cpu_stop()
+ enable tick on all online CPUs
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dipankar <dipankar@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        Peter Zilstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 09:02:49PM -0400, Joel Fernandes wrote:
-[snip]
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8c494a692728..ad906d6a74fb 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -651,6 +651,12 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
-> >  	 */
-> >  	if (rdp->dynticks_nmi_nesting != 1) {
-> >  		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
-> > +		if (tick_nohz_full_cpu(rdp->cpu) &&
-> > +		    rdp->dynticks_nmi_nesting == 2 &&
-> > +		    rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
-> > +			rdp->rcu_forced_tick = true;
-> > +			tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU);
-> > +		}
-> 
-> 
-> Instead of checking dynticks_nmi_nesting == 2 in rcu_nmi_exit_common(), can
-> we do the tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU)  from
-> rcu_nmi_enter_common() ? We could add this code there, under the "if
-> (rcu_dynticks_curr_cpu_in_eqs())".
+On Mon, Aug 12, 2019 at 7:23 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+>
+> On Mon, Aug 12, 2019 at 11:02:33PM +0200, Frederic Weisbecker wrote:
+> > On Fri, Aug 02, 2019 at 08:15:01AM -0700, Paul E. McKenney wrote:
+> > > The multi_cpu_stop() function relies on the scheduler to gain control from
+> > > whatever is running on the various online CPUs, including any nohz_full
+> > > CPUs running long loops in kernel-mode code.  Lack of the scheduler-clock
+> > > interrupt on such CPUs can delay multi_cpu_stop() for several minutes
+> > > and can also result in RCU CPU stall warnings.  This commit therefore
+> > > causes multi_cpu_stop() to enable the scheduler-clock interrupt on all
+> > > online CPUs.
+> > >
+> > > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> > > ---
+> > >  kernel/stop_machine.c | 9 ++++++++-
+> > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> > > index b4f83f7bdf86..a2659f61ed92 100644
+> > > --- a/kernel/stop_machine.c
+> > > +++ b/kernel/stop_machine.c
+> > > @@ -20,6 +20,7 @@
+> > >  #include <linux/smpboot.h>
+> > >  #include <linux/atomic.h>
+> > >  #include <linux/nmi.h>
+> > > +#include <linux/tick.h>
+> > >  #include <linux/sched/wake_q.h>
+> > >
+> > >  /*
+> > > @@ -187,15 +188,19 @@ static int multi_cpu_stop(void *data)
+> > >  {
+> > >     struct multi_stop_data *msdata = data;
+> > >     enum multi_stop_state curstate = MULTI_STOP_NONE;
+> > > -   int cpu = smp_processor_id(), err = 0;
+> > > +   int cpu, err = 0;
+> > >     const struct cpumask *cpumask;
+> > >     unsigned long flags;
+> > >     bool is_active;
+> > >
+> > > +   for_each_online_cpu(cpu)
+> > > +           tick_nohz_dep_set_cpu(cpu, TICK_DEP_MASK_RCU);
+> >
+> > Looks like it's not the right fix but, should you ever need to set an
+> > all-CPUs (system wide) tick dependency in the future, you can use tick_set_dep().
+>
+> Indeed, I have dropped this patch, but I now do something similar in
+> RCU's CPU-hotplug notifiers.  Which does have an effect, especially on
+> the system that isn't subject to the insane-latency cpu_relax().
+>
+> Plus I am having to put a similar workaround into RCU's quiescent-state
+> forcing logic.
+>
+> But how should this really be done?
+>
+> Isn't there some sort of monitoring of nohz_full CPUs for accounting
+> purposes?  If so, would it make sense for this monitoring to check for
+> long-duration kernel execution and enable the tick in this case?  The
+> RCU dyntick machinery can be used to remotely detect the long-duration
+> kernel execution using something like the following:
+>
+>         int nohz_in_kernel_snap = rcu_dynticks_snap_cpu(cpu);
+>
+>         ...
+>
+>         if (rcu_dynticks_in_eqs_cpu(cpu, nohz_in_kernel_snap)
+>                 nohz_in_kernel_snap = rcu_dynticks_snap_cpu(cpu);
+>         else
+>                 /* Turn on the tick! */
 
-Actually, the other way. if (!rcu_dynticks_curr_cpu_in_eqs()) then do the
-tick_dep_set_cpu().
+This solution does make sense to me and is simpler than the
+rcu_nmi_exit_common() solution you proposed in the other thread.
+
+Though I am not sure about the intricacies of remotely enabling the
+timer tick for a CPU. But overall, the above solution does seem
+simpler.
 
 thanks,
 
  - Joel
-
