@@ -2,166 +2,158 @@ Return-Path: <SRS0=0MOJ=WJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 754D9C433FF
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 15:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DA97C433FF
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 15:42:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4691D2184D
-	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 15:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1565709961;
-	bh=SucDibVqB1Y6XJo22ADJTrZr/i/5Mo/9zkyEYvRtiyo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=k8Z/xwsxgKF6JJicsKQKP4q7H1gX/t3jSKSGy+Pp/zLt1TZwwog6BNjiuMZARaje7
-	 WkPgySPo3AVBH/ifQLwD3GT+4sk2+tawpzuk7hx3hmg000KEo3Tt4zpn1Q6+s8DcIY
-	 W47we0uLz7oCctj77ewPmPwSJUPeY1QPmjB5N5Og=
+	by mail.kernel.org (Postfix) with ESMTP id E86C0205F4
+	for <rcu@archiver.kernel.org>; Tue, 13 Aug 2019 15:42:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbfHMP0B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Aug 2019 11:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbfHMP0A (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Aug 2019 11:26:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F20FA20663;
-        Tue, 13 Aug 2019 15:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565709959;
-        bh=SucDibVqB1Y6XJo22ADJTrZr/i/5Mo/9zkyEYvRtiyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WDUzqsDwCUvJpPnUro5nrw2rYkWOE7CzVwQ6FTy1etS8EF51sHnkhLMPEqq0ROv4s
-         zElsbAeuayJ7FJRXjRLsTGwhN3xN60ua/oV5CdMCYcFDyCPSZzAY+LdX2vCNO2Ooxf
-         CYV16DXHVpzI/PVCFeMioa0zcbPqdhPHd9ogqzfo=
-Date:   Tue, 13 Aug 2019 17:25:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kbuild test robot <lkp@intel.com>,
+        id S1729802AbfHMPmb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Aug 2019 11:42:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41666 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727697AbfHMPmb (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 13 Aug 2019 11:42:31 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7DFYBgX035146;
+        Tue, 13 Aug 2019 11:41:53 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ubwnsyfk2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Aug 2019 11:41:53 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7DFYcga036076;
+        Tue, 13 Aug 2019 11:41:52 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ubwnsyfgg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Aug 2019 11:41:51 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7DFUFVk023546;
+        Tue, 13 Aug 2019 15:41:46 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma02dal.us.ibm.com with ESMTP id 2u9nj63gvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Aug 2019 15:41:46 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7DFfjEA51577192
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Aug 2019 15:41:45 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CE0CB2064;
+        Tue, 13 Aug 2019 15:41:45 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D07CEB205F;
+        Tue, 13 Aug 2019 15:41:44 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Aug 2019 15:41:44 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id B618D16C12A4; Tue, 13 Aug 2019 08:41:45 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 08:41:45 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rao Shoaib <rao.shoaib@oracle.com>, kernel-team@android.com,
+        kernel-team <kernel-team@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] driver/core: Fix build error when SRCU and lockdep
- disabled
-Message-ID: <20190813152556.GA26138@kroah.com>
-References: <20190812214918.101756-1-joel@joelfernandes.org>
- <20190813060540.GE6670@kroah.com>
- <20190813133905.GA258732@google.com>
- <20190813134014.GB258732@google.com>
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Message-ID: <20190813154145.GE28441@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
+References: <20190808095232.GA30401@X58A-UD3R>
+ <20190808125607.GB261256@google.com>
+ <CANrsvRPU_u6oKpjZ1368Evto+1hGboNYeOuMdbdzaOfXhSO=5g@mail.gmail.com>
+ <20190808180916.GP28441@linux.ibm.com>
+ <20190811083626.GA9486@X58A-UD3R>
+ <20190811084950.GB9486@X58A-UD3R>
+ <20190811234939.GC28441@linux.ibm.com>
+ <20190812101052.GA10478@X58A-UD3R>
+ <20190812131234.GC27552@google.com>
+ <20190813052954.GA18373@X58A-UD3R>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190813134014.GB258732@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190813052954.GA18373@X58A-UD3R>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-13_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908130159
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 09:40:14AM -0400, Joel Fernandes wrote:
-> On Tue, Aug 13, 2019 at 09:39:05AM -0400, Joel Fernandes wrote:
-> [snip] 
-> > > >  drivers/base/core.c | 4 +++-
-> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, Aug 13, 2019 at 02:29:54PM +0900, Byungchul Park wrote:
+> On Mon, Aug 12, 2019 at 09:12:34AM -0400, Joel Fernandes wrote:
+> > On Mon, Aug 12, 2019 at 07:10:52PM +0900, Byungchul Park wrote:
+> > > On Sun, Aug 11, 2019 at 04:49:39PM -0700, Paul E. McKenney wrote:
+> > > > Maybe.  Note well that I said "potential issue".  When I checked a few
+> > > > years ago, none of the uses of rcu_barrier() cared about kfree_rcu().
+> > > > They cared instead about call_rcu() callbacks that accessed code or data
+> > > > that was going to disappear soon, for example, due to module unload or
+> > > > filesystem unmount.
 > > > > 
-> > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > > index 32cf83d1c744..c22271577c84 100644
-> > > > --- a/drivers/base/core.c
-> > > > +++ b/drivers/base/core.c
-> > > > @@ -97,10 +97,12 @@ void device_links_read_unlock(int not_used)
-> > > >  	up_read(&device_links_lock);
-> > > >  }
-> > > >  
-> > > > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > > >  int device_links_read_lock_held(void)
-> > > >  {
-> > > > -	return lock_is_held(&device_links_lock);
-> > > > +	return lock_is_held(&(device_links_lock.dep_map));
-> > > >  }
-> > > > +#endif
-> > > 
-> > > I don't know what the original code looks like here, but I'm guessing
-> > > that some .h file will need to be fixed up as you are just preventing
-> > > this function from ever being present without that option enabled?
+> > > > So it -might- be that rcu_barrier() can stay as it is, but with changes
+> > > > as needed to documentation.
 > > 
-> > No, it doesn't. I already thought about that and it is not an issue. I know
-> > this may be confusing because the patch I am fixing is not yet in mainline
-> > but in -rcu dev branch, however I did CC you on that RCU patch before but
-> > understandably it is not in the series so it was harder to review.
-> > 
-> > Let me explain, the lock checking facility that this patch uses is here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=28875945ba98d1b47a8a706812b6494d165bb0a0
-> > 
-> > If you see, the CONFIG_PROVE_RCU_LIST defines an alternate __list_check_rcu()
-> > which is just a NOOP if CONFIG_PROVE_RCU_LIST=n.
-> > 
-> > CONFIG_PROVE_RCU_LIST depends on CONFIG_PROVE_RCU which is def_bool on
-> > CONFIG_PROVE_LOCKING which selects CONFIG_DEBUG_LOCK_ALLOC.
-> > 
-> > So there cannot be a scenario where CONFIG_PROVE_RCU_LIST is enabled but
-> > CONFIG_DEBUG_LOCK_ALLOC is disabled.
-> > 
-> > To verify this, one could clone the RCU tree's dev branch and do this:
-> > 
-> > Initially PROVE_RCU_LIST is not in config:
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ grep -i prove_rcu .config
-> > 
-> > Neither is DEBUG_LOCK_ALLOC:
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ grep -i debug_lock .config
-> > # CONFIG_DEBUG_LOCK_ALLOC is not set
-> > 
-> > Enable all configs:
-> > joelaf@joelaf:~/repo/linux-master$ ./scripts/config -e CONFIG_RCU_EXPERT
-> > joelaf@joelaf:~/repo/linux-master$ ./scripts/config -e CONFIG_PROVE_LOCKING
-> > joelaf@joelaf:~/repo/linux-master$ ./scripts/config -e CONFIG_PROVE_RCU
-> > joelaf@joelaf:~/repo/linux-master$ ./scripts/config -e CONFIG_PROVE_RCU_LIST
-> > joelaf@joelaf:~/repo/linux-master$ make olddefconfig
-> > 
-> > DEBUG_LOCK_ALLOC shows up:
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ grep -i debug_lock_all .config
-> > CONFIG_DEBUG_LOCK_ALLOC=y
-> > 
-> > So does PROVE_RCU options:
-> > joelaf@joelaf:~/repo/linux-master$ grep -i prove_rcu .config
-> > CONFIG_PROVE_RCU=y
-> > CONFIG_PROVE_RCU_LIST=y
-> > 
-> > Now, force disable DEBUG_LOCK_ALLOC:
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ ./scripts/config -d CONFIG_DEBUG_LOCK_ALLOC
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ make olddefconfig
-> > 
-> > Options are still enabled:
-> > 
-> > joelaf@joelaf:~/repo/linux-master$ grep -i debug_lock .config
-> > CONFIG_DEBUG_LOCK_ALLOC=y
-> > joelaf@joelaf:~/repo/linux-master$ grep -i prove_rcu .config
-> > CONFIG_PROVE_RCU=y
-> > CONFIG_PROVE_RCU_LIST=y
+> > Right, we should update the docs. Byungchul, do you mind sending a patch that
+> > documents the rcu_barrier() behavior?
 > 
-> Also, appreciate if you could Ack the fix ;-)  (assuming the newlines in
-> commit message are fixed).
+> Are you trying to give me the chance? I feel thankful. It doens't matter
+> to try it at the moment though, I can't follow-up until September. I'd
+> better do that in Septamber or give it up this time.
 
-I don't know enough here to ack it, given that I can't even remember the
-original patch...
+Which reminds me...  I recall your asking if the kfree_rcu() patch
+might be sensitive to the exact hardware, but I cannot locate that
+email right off-hand.  This is an excellent question!  When faced with
+floods of kfree_rcu() calls, I would expect some hardware, compiler,
+and kernel-configuration sensitivity.  Which is why it will likely be
+necessary to do a few more improvements over time -- for but one example,
+accumulating callbacks into vectors in order to reduce the number of
+kfree()-time cache misses.
 
-If you think it's ok, that's fine with me, you can deal with the fallout
-if it fails later :)
+							Thanx, Paul
 
-
-thanks,
-
-greg k-h
+> Thanks,
+> Byungchul
+> 
+> > > > It also -might- be, maybe now or maybe some time in the future, that
+> > > > there will need to be a kfree_rcu_barrier() or some such.  But if so,
+> > > > let's not create it until it is needed.  For one thing, it is reasonably
+> > > > likely that something other than a kfree_rcu_barrier() would really
+> > > > be what was needed.  After all, the main point would be to make sure
+> > > > that the old memory really was freed before allocating new memory.
+> > > 
+> > > Now I fully understand what you meant thanks to you. Thank you for
+> > > explaining it in detail.
+> > > 
+> > > > But if the system had ample memory, why wait?  In that case you don't
+> > > > really need to wait for all the old memory to be freed, but rather for
+> > > > sufficient memory to be available for allocation.
+> > > 
+> > > Agree. Totally make sense.
+> > 
+> > Agreed, all makes sense.
+> > 
+> > thanks,
+> > 
+> >  - Joel
+> > 
+> > [snip]
+> 
