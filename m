@@ -2,395 +2,161 @@ Return-Path: <SRS0=j199=WK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B81CDC433FF
-	for <rcu@archiver.kernel.org>; Wed, 14 Aug 2019 16:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A691EC433FF
+	for <rcu@archiver.kernel.org>; Wed, 14 Aug 2019 16:59:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7BA65208C2
-	for <rcu@archiver.kernel.org>; Wed, 14 Aug 2019 16:04:20 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="c5v0Dg6c"
+	by mail.kernel.org (Postfix) with ESMTP id 7CC5B2063F
+	for <rcu@archiver.kernel.org>; Wed, 14 Aug 2019 16:59:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbfHNQET (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Aug 2019 12:04:19 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:43862 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbfHNQET (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Aug 2019 12:04:19 -0400
-Received: by mail-pl1-f195.google.com with SMTP id 4so43879947pld.10
-        for <rcu@vger.kernel.org>; Wed, 14 Aug 2019 09:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jKkCUOsvvsAp5cqlTJIShwZxOPAZ1vEWev262+exywY=;
-        b=c5v0Dg6cZ+1HTY3NzvWh+EVXKtJQfB4sJwEEKiPbrMzOKd2C4K58KIJlmdmWx1kELd
-         myKPk6aQYVo4X7uMeCeQBw/Kxja0efCSA3186EbpTyt+JRZHWoauHtwsPn9GBg9kUz3F
-         vAloYApfhgkqab5QQhfPOGSfyRNv2BKi0KJTM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jKkCUOsvvsAp5cqlTJIShwZxOPAZ1vEWev262+exywY=;
-        b=ojA3LWzcW2Zt4rUMVsiwQF5BrO8x6Kq5IGis8CcicH2fXkPqU0N52MxWdTPGUDUGTD
-         /2spKPJvDIa4Q5zKHvk/5SlRJFxlaEHUXyEiMmRfAohTzo1yqDLKOiu5VQO1GTn1thWl
-         jzqWsWIVz7RNkiysZnW1wguxJiTSqfxHZRX52cUUXJMG4pMyDhlc9hHqZ/dEv8X6zHsz
-         e1viP5imPeEfUvHtmT7axtihi2ETXmKxTBoWaeOqjnHYWwOXffZCkI43qRHYByUP4/ZB
-         BrAHfa8t5W2IAhdQL8rkpKW9gKJAuiQBFhctYn8hyeybUsKE6dOM8+XoiMAgXXxL3hBr
-         jOPw==
-X-Gm-Message-State: APjAAAVxvtuJAC+QsMYydI28OStlmC2ry+LOs6jweJ/VmO7vAfVxbPrD
-        uqN3LsH++jTp3aq7f/e7NyeQ7w==
-X-Google-Smtp-Source: APXvYqwlfU1yZO+5NW0ai8XzCKA202XD9Q8hAvfomrzJMLQszTt0WEwsNyDCOehd2iXgvTBIEX+asQ==
-X-Received: by 2002:a17:902:5a2:: with SMTP id f31mr169283plf.72.1565798657861;
-        Wed, 14 Aug 2019 09:04:17 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q69sm369674pjb.0.2019.08.14.09.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2019 09:04:17 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        byungchul.park@lge.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
-        kernel-team@lge.com, Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1728492AbfHNQ7d (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Aug 2019 12:59:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26202 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728283AbfHNQ7d (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 14 Aug 2019 12:59:33 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7EGrJGM002813
+        for <rcu@vger.kernel.org>; Wed, 14 Aug 2019 12:59:32 -0400
+Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ucp438bt6-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Wed, 14 Aug 2019 12:59:31 -0400
+Received: from localhost
+        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Wed, 14 Aug 2019 17:59:30 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 14 Aug 2019 17:59:26 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7EGxPTa53084526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Aug 2019 16:59:25 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AE31B2064;
+        Wed, 14 Aug 2019 16:59:25 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BD83B205F;
+        Wed, 14 Aug 2019 16:59:25 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Aug 2019 16:59:25 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 1546416C0FD4; Wed, 14 Aug 2019 09:59:27 -0700 (PDT)
+Date:   Wed, 14 Aug 2019 09:59:27 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rao Shoaib <rao.shoaib@oracle.com>, kernel-team@android.com,
+        kernel-team <kernel-team@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        max.byungchul.park@gmail.com,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v4 2/2] rcuperf: Add kfree_rcu() performance Tests
-Date:   Wed, 14 Aug 2019 12:04:11 -0400
-Message-Id: <20190814160411.58591-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-In-Reply-To: <20190814160411.58591-1-joel@joelfernandes.org>
-References: <20190814160411.58591-1-joel@joelfernandes.org>
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH RFC v1 1/2] rcu/tree: Add basic support for kfree_rcu
+ batching
+Reply-To: paulmck@linux.ibm.com
+References: <20190811083626.GA9486@X58A-UD3R>
+ <20190811084950.GB9486@X58A-UD3R>
+ <20190811234939.GC28441@linux.ibm.com>
+ <20190812101052.GA10478@X58A-UD3R>
+ <20190812131234.GC27552@google.com>
+ <20190813052954.GA18373@X58A-UD3R>
+ <20190813154145.GE28441@linux.ibm.com>
+ <20190814001103.GA31884@X58A-UD3R>
+ <20190814025349.GM28441@linux.ibm.com>
+ <20190814034310.GA31272@X58A-UD3R>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190814034310.GA31272@X58A-UD3R>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19081416-0052-0000-0000-000003EAD90F
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011590; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01246775; UDB=6.00657962; IPR=6.01028282;
+ MB=3.00028173; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-14 16:59:29
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081416-0053-0000-0000-00006217D9A1
+Message-Id: <20190814165927.GT28441@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-14_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908140158
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This test runs kfree_rcu in a loop to measure performance of the new
-kfree_rcu batching functionality.
+On Wed, Aug 14, 2019 at 12:43:10PM +0900, Byungchul Park wrote:
+> On Tue, Aug 13, 2019 at 07:53:49PM -0700, Paul E. McKenney wrote:
+> > On Wed, Aug 14, 2019 at 09:11:03AM +0900, Byungchul Park wrote:
+> > > On Tue, Aug 13, 2019 at 08:41:45AM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Aug 13, 2019 at 02:29:54PM +0900, Byungchul Park wrote:
+> > > > > On Mon, Aug 12, 2019 at 09:12:34AM -0400, Joel Fernandes wrote:
+> > > > > > On Mon, Aug 12, 2019 at 07:10:52PM +0900, Byungchul Park wrote:
+> > > > > > > On Sun, Aug 11, 2019 at 04:49:39PM -0700, Paul E. McKenney wrote:
+> > > > > > > > Maybe.  Note well that I said "potential issue".  When I checked a few
+> > > > > > > > years ago, none of the uses of rcu_barrier() cared about kfree_rcu().
+> > > > > > > > They cared instead about call_rcu() callbacks that accessed code or data
+> > > > > > > > that was going to disappear soon, for example, due to module unload or
+> > > > > > > > filesystem unmount.
+> > > > > > > > 
+> > > > > > > > So it -might- be that rcu_barrier() can stay as it is, but with changes
+> > > > > > > > as needed to documentation.
+> > > > > > 
+> > > > > > Right, we should update the docs. Byungchul, do you mind sending a patch that
+> > > > > > documents the rcu_barrier() behavior?
+> > > > > 
+> > > > > Are you trying to give me the chance? I feel thankful. It doens't matter
+> > > > > to try it at the moment though, I can't follow-up until September. I'd
+> > > > > better do that in Septamber or give it up this time.
+> > > > 
+> > > > Which reminds me...  I recall your asking if the kfree_rcu() patch
+> > > > might be sensitive to the exact hardware, but I cannot locate that
+> > > > email right off-hand.  This is an excellent question!  When faced with
+> > > > floods of kfree_rcu() calls, I would expect some hardware, compiler,
+> > > > and kernel-configuration sensitivity.  Which is why it will likely be
+> > > 
+> > > Yes.
+> > > 
+> > > > necessary to do a few more improvements over time -- for but one example,
+> > > > accumulating callbacks into vectors in order to reduce the number of
+> > > > kfree()-time cache misses.
+> > > 
+> > > Yes. That would be a pretty good way to mitigate the problem. I hope
+> > > the simple way we've done works well enough so it would never happen
+> > > though.
+> > > 
+> > > Or I would check the condition of all system resourses e.g. CPU and
+> > > memory and control the bandwith of them, of course only if that actually
+> > > happens.
+> > > 
+> > > Thanks a lot for sharing your opinion on it!
+> > 
+> > Didn't you say earlier that you were getting OOM on your system even
+> > with the patches?  Or did I miss the resolution of that issue?
+> 
+> I said I saw OOM with a *larger* value of KFREE_DRAIN_JIFFIES. It was
+> fine with the patch itself.
 
-The following table shows results when booting with arguments:
-rcuperf.kfree_loops=200000 rcuperf.kfree_alloc_num=1000 rcuperf.kfree_rcu_test=1
+Got it, thank you!
 
-In addition, rcuperf.kfree_no_batch is used to toggle the batching of
-kfree_rcu()s for a test run.
+> Anyway I'm sorry I expressed it in a confusing way.
 
-rcuperf.kfree_no_batch	GPs	time (seconds)
- 0 (default)		1732	15.9
- 1			9133 	14.5
+But what is life without a little confusion?  ;-)
 
-Note that the results are the same for the case:
-1. Patch is not applied and rcuperf.kfree_no_batch=0
-2. Patch is applied     and rcuperf.kfree_no_batch=1
-
-On a 16 CPU system with the above boot parameters, we see that the total
-number of grace periods that elapse during the test drops from 9133 when
-not batching to 1732 when batching (a 5X improvement). The kfree_rcu()
-flood itself slows down a bit when batching, though, as shown. This is
-likely due to rcuperf threads contending with the additional worker
-threads that are now running both before (the monitor) and after (the
-work done to kfree()) the grace period.
-
-Note that the active memory consumption during the kfree_rcu() flood
-does increase to around 300-400MB due to the batching (from around 50MB
-without batching). However, this memory consumption is relatively
-constant and is just an effect of the buffering. In other words, the
-system is able to keep up with the kfree_rcu() load. The memory
-consumption comes down to 200-300MB if KFREE_DRAIN_JIFFIES is
-increased from HZ/50 to HZ/80.
-
-Also, when running the test, please disable CONFIG_DEBUG_PREEMPT and
-CONFIG_PROVE_RCU for realistic comparisons with/without batching.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- .../admin-guide/kernel-parameters.txt         |  17 ++
- kernel/rcu/rcuperf.c                          | 189 +++++++++++++++++-
- 2 files changed, 198 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7ccd158b3894..a9156ca5de24 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3895,6 +3895,23 @@
- 			test until boot completes in order to avoid
- 			interference.
- 
-+	rcuperf.kfree_rcu_test= [KNL]
-+			Set to measure performance of kfree_rcu() flooding.
-+
-+	rcuperf.kfree_nthreads= [KNL]
-+			The number of threads running loops of kfree_rcu().
-+
-+	rcuperf.kfree_alloc_num= [KNL]
-+			Number of allocations and frees done in an iteration.
-+
-+	rcuperf.kfree_loops= [KNL]
-+			Number of loops doing rcuperf.kfree_alloc_num number
-+			of allocations and frees.
-+
-+	rcuperf.kfree_no_batch= [KNL]
-+			Use the non-batching (slower) version of kfree_rcu.
-+			This is useful for comparing with the batched version.
-+
- 	rcuperf.nreaders= [KNL]
- 			Set number of RCU readers.  The value -1 selects
- 			N, where N is the number of CPUs.  A value
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index 7a6890b23c5f..70d6ac19cbff 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -86,6 +86,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
- 	      "Shutdown at end of performance tests.");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
-+torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu perf test?");
- 
- static char *perf_type = "rcu";
- module_param(perf_type, charp, 0444);
-@@ -105,8 +106,8 @@ static atomic_t n_rcu_perf_writer_finished;
- static wait_queue_head_t shutdown_wq;
- static u64 t_rcu_perf_writer_started;
- static u64 t_rcu_perf_writer_finished;
--static unsigned long b_rcu_perf_writer_started;
--static unsigned long b_rcu_perf_writer_finished;
-+static unsigned long b_rcu_gp_test_started;
-+static unsigned long b_rcu_gp_test_finished;
- static DEFINE_PER_CPU(atomic_t, n_async_inflight);
- 
- static int rcu_perf_writer_state;
-@@ -379,10 +380,10 @@ rcu_perf_writer(void *arg)
- 	if (atomic_inc_return(&n_rcu_perf_writer_started) >= nrealwriters) {
- 		t_rcu_perf_writer_started = t;
- 		if (gp_exp) {
--			b_rcu_perf_writer_started =
-+			b_rcu_gp_test_started =
- 				cur_ops->exp_completed() / 2;
- 		} else {
--			b_rcu_perf_writer_started = cur_ops->get_gp_seq();
-+			b_rcu_gp_test_started = cur_ops->get_gp_seq();
- 		}
- 	}
- 
-@@ -435,10 +436,10 @@ rcu_perf_writer(void *arg)
- 				PERFOUT_STRING("Test complete");
- 				t_rcu_perf_writer_finished = t;
- 				if (gp_exp) {
--					b_rcu_perf_writer_finished =
-+					b_rcu_gp_test_finished =
- 						cur_ops->exp_completed() / 2;
- 				} else {
--					b_rcu_perf_writer_finished =
-+					b_rcu_gp_test_finished =
- 						cur_ops->get_gp_seq();
- 				}
- 				if (shutdown) {
-@@ -523,8 +524,8 @@ rcu_perf_cleanup(void)
- 			 t_rcu_perf_writer_finished -
- 			 t_rcu_perf_writer_started,
- 			 ngps,
--			 rcuperf_seq_diff(b_rcu_perf_writer_finished,
--					  b_rcu_perf_writer_started));
-+			 rcuperf_seq_diff(b_rcu_gp_test_finished,
-+					  b_rcu_gp_test_started));
- 		for (i = 0; i < nrealwriters; i++) {
- 			if (!writer_durations)
- 				break;
-@@ -592,6 +593,175 @@ rcu_perf_shutdown(void *arg)
- 	return -EINVAL;
- }
- 
-+/*
-+ * kfree_rcu performance tests: Start a kfree_rcu loop on all CPUs for number
-+ * of iterations and measure total time and number of GP for all iterations to complete.
-+ */
-+
-+torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
-+torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
-+torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-+torture_param(int, kfree_no_batch, 0, "Use the non-batching (slower) version of kfree_rcu.");
-+
-+static struct task_struct **kfree_reader_tasks;
-+static int kfree_nrealthreads;
-+static atomic_t n_kfree_perf_thread_started;
-+static atomic_t n_kfree_perf_thread_ended;
-+
-+struct kfree_obj {
-+	char kfree_obj[8];
-+	struct rcu_head rh;
-+};
-+
-+static int
-+kfree_perf_thread(void *arg)
-+{
-+	int i, loop = 0;
-+	long me = (long)arg;
-+	struct kfree_obj **alloc_ptrs;
-+	u64 start_time, end_time;
-+
-+	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
-+	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-+	set_user_nice(current, MAX_NICE);
-+
-+	alloc_ptrs = (struct kfree_obj **)kmalloc(sizeof(struct kfree_obj *) * kfree_alloc_num,
-+						  GFP_KERNEL);
-+	if (!alloc_ptrs)
-+		return -ENOMEM;
-+
-+	start_time = ktime_get_mono_fast_ns();
-+
-+	if (atomic_inc_return(&n_kfree_perf_thread_started) >= kfree_nrealthreads) {
-+		if (gp_exp)
-+			b_rcu_gp_test_started = cur_ops->exp_completed() / 2;
-+		else
-+			b_rcu_gp_test_started = cur_ops->get_gp_seq();
-+	}
-+
-+	do {
-+		for (i = 0; i < kfree_alloc_num; i++) {
-+			alloc_ptrs[i] = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-+			if (!alloc_ptrs[i])
-+				return -ENOMEM;
-+		}
-+
-+		for (i = 0; i < kfree_alloc_num; i++) {
-+			if (!kfree_no_batch) {
-+				kfree_rcu(alloc_ptrs[i], rh);
-+			} else {
-+				rcu_callback_t cb;
-+
-+				cb = (rcu_callback_t)(unsigned long)offsetof(struct kfree_obj, rh);
-+				kfree_call_rcu_nobatch(&(alloc_ptrs[i]->rh), cb);
-+			}
-+		}
-+
-+		cond_resched();
-+	} while (!torture_must_stop() && ++loop < kfree_loops);
-+
-+	if (atomic_inc_return(&n_kfree_perf_thread_ended) >= kfree_nrealthreads) {
-+		end_time = ktime_get_mono_fast_ns();
-+
-+		if (gp_exp)
-+			b_rcu_gp_test_finished = cur_ops->exp_completed() / 2;
-+		else
-+			b_rcu_gp_test_finished = cur_ops->get_gp_seq();
-+
-+		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld\n",
-+		       (unsigned long long)(end_time - start_time), kfree_loops,
-+		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started));
-+		if (shutdown) {
-+			smp_mb(); /* Assign before wake. */
-+			wake_up(&shutdown_wq);
-+		}
-+	}
-+
-+	kfree(alloc_ptrs);
-+	torture_kthread_stopping("kfree_perf_thread");
-+	return 0;
-+}
-+
-+static void
-+kfree_perf_cleanup(void)
-+{
-+	int i;
-+
-+	if (torture_cleanup_begin())
-+		return;
-+
-+	if (kfree_reader_tasks) {
-+		for (i = 0; i < kfree_nrealthreads; i++)
-+			torture_stop_kthread(kfree_perf_thread,
-+					     kfree_reader_tasks[i]);
-+		kfree(kfree_reader_tasks);
-+	}
-+
-+	torture_cleanup_end();
-+}
-+
-+/*
-+ * shutdown kthread.  Just waits to be awakened, then shuts down system.
-+ */
-+static int
-+kfree_perf_shutdown(void *arg)
-+{
-+	do {
-+		wait_event(shutdown_wq,
-+			   atomic_read(&n_kfree_perf_thread_ended) >=
-+			   kfree_nrealthreads);
-+	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
-+
-+	smp_mb(); /* Wake before output. */
-+
-+	kfree_perf_cleanup();
-+	kernel_power_off();
-+	return -EINVAL;
-+}
-+
-+static int __init
-+kfree_perf_init(void)
-+{
-+	long i;
-+	int firsterr = 0;
-+
-+	kfree_nrealthreads = compute_real(kfree_nthreads);
-+	/* Start up the kthreads. */
-+	if (shutdown) {
-+		init_waitqueue_head(&shutdown_wq);
-+		firsterr = torture_create_kthread(kfree_perf_shutdown, NULL,
-+						  shutdown_task);
-+		if (firsterr)
-+			goto unwind;
-+		schedule_timeout_uninterruptible(1);
-+	}
-+
-+	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
-+			       GFP_KERNEL);
-+	if (kfree_reader_tasks == NULL) {
-+		firsterr = -ENOMEM;
-+		goto unwind;
-+	}
-+
-+	for (i = 0; i < kfree_nrealthreads; i++) {
-+		firsterr = torture_create_kthread(kfree_perf_thread, (void *)i,
-+						  kfree_reader_tasks[i]);
-+		if (firsterr)
-+			goto unwind;
-+	}
-+
-+	while (atomic_read(&n_kfree_perf_thread_started) < kfree_nrealthreads)
-+		schedule_timeout_uninterruptible(1);
-+
-+	torture_init_end();
-+	return 0;
-+
-+unwind:
-+	torture_init_end();
-+	kfree_perf_cleanup();
-+	return firsterr;
-+}
-+
- static int __init
- rcu_perf_init(void)
- {
-@@ -624,6 +794,9 @@ rcu_perf_init(void)
- 	if (cur_ops->init)
- 		cur_ops->init();
- 
-+	if (kfree_rcu_test)
-+		return kfree_perf_init();
-+
- 	nrealwriters = compute_real(nwriters);
- 	nrealreaders = compute_real(nreaders);
- 	atomic_set(&n_rcu_perf_reader_started, 0);
--- 
-2.23.0.rc1.153.gdeed80330f-goog
+							Thanx, Paul
 
