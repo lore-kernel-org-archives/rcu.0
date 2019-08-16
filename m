@@ -2,121 +2,157 @@ Return-Path: <SRS0=HCMS=WM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1141C3A59C
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 17:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9CB6C3A59C
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 17:07:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BF0262077C
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 17:05:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7088420665
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 17:07:19 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="oaP05HQi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbfHPRFE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Aug 2019 13:05:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24010 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726447AbfHPRFE (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 16 Aug 2019 13:05:04 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7GGw09V103371;
-        Fri, 16 Aug 2019 13:05:00 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2udx196k1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Aug 2019 13:05:00 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7GGsaHV030759;
-        Fri, 16 Aug 2019 17:04:59 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01dal.us.ibm.com with ESMTP id 2ucr3qd816-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Aug 2019 17:04:59 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7GH4wv753739792
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Aug 2019 17:04:58 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29AB0B2065;
-        Fri, 16 Aug 2019 17:04:58 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0CBA6B2066;
-        Fri, 16 Aug 2019 17:04:58 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Aug 2019 17:04:57 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id D927116C236B; Fri, 16 Aug 2019 10:04:57 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 10:04:57 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        id S1726690AbfHPRHT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Aug 2019 13:07:19 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42962 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbfHPRHT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Aug 2019 13:07:19 -0400
+Received: by mail-pg1-f194.google.com with SMTP id p3so3230431pgb.9
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 10:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LpUuiFdJ32bsLuaVeOaUL0Sj18GW8SOj2J5Gd+ou2Cw=;
+        b=oaP05HQi1/o/sS5vyxx+usc0U+bhRSL/a0YiS/kKGOh0mjRXmh0AwvW10N5DkvNgBg
+         E/1Z2bYOSj2WVy+3EMKNmnqor/mF4ltvwR0TMhCOZWrYDHws4CSU3Hsj9cYmKx6qk8ww
+         Ux5GaggXWtGv1olsSkZGo5zrZWsa2FeMDJ0Vk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LpUuiFdJ32bsLuaVeOaUL0Sj18GW8SOj2J5Gd+ou2Cw=;
+        b=fq8uBdcIGcnA61V22HGJy6OT9i2g3iR7MSIt+O/v6LEdYalMfPa8jsAo+CuFpjikWS
+         EnQna97ERSvstxLdqgUkEYZrODXtALOfJEbbNewjP5kU05aR+wjvFKxUyOQ8A8DGj5aM
+         TYwdSEDEsmnoTYspPT3cXebNkRnzenwTOq3HfGP7kSvriwxIkfxheE+sqDEgF9+adWlf
+         xsrYvRJHQnVOpOScDyxuzSKRhHOgF/u34sbX1C/juBVs2WXTpCZ16Dgj4OmO5GF00b8y
+         j2/SzwxaGz8ZfOuOqKadi8wFSipNPPVrEmws1YZj2WQtb7iBlnUQon/YaMPReCn7JqqU
+         oGXQ==
+X-Gm-Message-State: APjAAAUxBY1tZpO+J/kWH1s0uppbTod3F6WwZUI+7xA57Vh1eBo+oPr6
+        ZE2u2UIos1QqDgMPCTZBX8B7vw==
+X-Google-Smtp-Source: APXvYqxVrg/FHaQvo7mLZvQMUh944RBZY/Sl56B9/+Ut1+dVPizUCesG/xf6x2ApBTRXSvXuam0GFA==
+X-Received: by 2002:aa7:9293:: with SMTP id j19mr12164537pfa.90.1565975238300;
+        Fri, 16 Aug 2019 10:07:18 -0700 (PDT)
+Received: from localhost ([172.19.216.18])
+        by smtp.gmail.com with ESMTPSA id w9sm6699237pfn.19.2019.08.16.10.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2019 10:07:17 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 13:07:00 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
 Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         frederic@kernel.org
-Subject: Re: [PATCH v2 -rcu dev 2/3] rcu/tree: Fix issue where sometimes
- rcu_urgent_qs is not set on IPI
-Message-ID: <20190816170457.GT28441@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
+Subject: Re: [PATCH -rcu dev 3/3] RFC: rcu/tree: Read dynticks_nmi_nesting in
+ advance
+Message-ID: <20190816170700.GC10481@google.com>
 References: <20190816025311.241257-1-joel@joelfernandes.org>
- <20190816025914.GB242309@google.com>
+ <20190816025311.241257-3-joel@joelfernandes.org>
+ <20190816162404.GB10481@google.com>
+ <20190816165242.GS28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190816025914.GB242309@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908160176
+In-Reply-To: <20190816165242.GS28441@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 10:59:14PM -0400, Joel Fernandes (Google) wrote:
-> Sometimes I see rcu_urgent_qs is not set. This could be when the last
-> IPI was a long time ago, however, the grace period just started. Set
-> rcu_urgent_qs so the tick can indeed not be stopped.
+On Fri, Aug 16, 2019 at 09:52:42AM -0700, Paul E. McKenney wrote:
+> On Fri, Aug 16, 2019 at 12:24:04PM -0400, Joel Fernandes wrote:
+> > On Thu, Aug 15, 2019 at 10:53:11PM -0400, Joel Fernandes (Google) wrote:
+> > > I really cannot explain this patch, but without it, the "else if" block
+> > > just doesn't execute thus causing the tick's dep mask to not be set and
+> > > causes the tick to be turned off.
+> > > 
+> > > I tried various _ONCE() macros but the only thing that works is this
+> > > patch.
+> > > 
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > ---
+> > >  kernel/rcu/tree.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 856d3c9f1955..ac6bcf7614d7 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -802,6 +802,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> > >  {
+> > >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> > >  	long incby = 2;
+> > > +	int dnn = rdp->dynticks_nmi_nesting;
+> > 
+> > I believe the accidental sign extension / conversion from long to int was
+> > giving me an illusion since things started working well. Changing the 'int
+> > dnn' to 'long dnn' gives similar behavior as without this patch! At least I
+> > know now. Please feel free to ignore this particular RFC patch while I debug
+> > this more (over the weekend or early next week). The first 2 patches are
+> > good, just ignore this one.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Ah, good point on the type!  So you were ending up with zero due to the
+> low-order 32 bits of DYNTICK_IRQ_NONIDLE being zero, correct?  If so,
+> the "!rdp->dynticks_nmi_nesting" instead needs to be something like
+> "rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE", which sounds like
+> it is actually worse then the earlier comparison against the constant 2.
+> 
+> Sounds like I should revert the -rcu commit 805a16eaefc3 ("rcu: Force
+> nohz_full tick on upon irq enter instead of exit").
 
-Great catch, queued, thank you!  I updated the commit log as shown below,
-so could you please check to see if I messed anything up?
+I think just using doing " == DYNTICK_IRQ_NONIDLE" as you mentioned should
+make it work. I'll test that soon, thanks!
 
-							Thanx, Paul
+I would prefer not to revert that commit, and just make the above change.
+Just because I feel this is safer. Since the tick is turned off in the IRQ
+exit path, I am a bit worried about timing (does the tick turn off before RCU
+sees the IRQ exit, or after it?). Either way, doing it on IRQ entry makes the
+question irrelevant and immune to future changes in the timing.
 
-------------------------------------------------------------------------
+Would you think the check for the nesting variable is more expensive to do on
+IRQ entry than exit? If so, we could discuss doing it in the exit path,
+otherwise we could doing on entry with just the above change in the equality
+condition.
 
-commit 1f80df1e49b29ccd605882056a0565778e100e9e
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Thu Aug 15 22:59:14 2019 -0400
+thanks,
 
-    rcu/tree: Ensure that ->rcu_urgent_qs is set before resched IPI
-    
-    The RCU-specific resched_cpu() function sends a resched IPI to the
-    specified CPU, which can be used to force the tick on for a given
-    nohz_full CPU.  This is needed when this nohz_full CPU is looping in the
-    kernel while blocking the current grace period.  However, for the tick
-    to actually be forced on in all cases, that CPU's rcu_data structure's
-    ->rcu_urgent_qs flag must be set beforehand.  This commit therefore
-    causes rcu_implicit_dynticks_qs() to set this flag prior to invoking
-    resched_cpu() on a holdout nohz_full CPU.
-    
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+ - Joel
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0512de9ead20..dd0a77bffa7d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1091,6 +1091,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	if (tick_nohz_full_cpu(rdp->cpu) &&
- 		   time_after(jiffies,
- 			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
-+		WRITE_ONCE(*ruqp, true);
- 		resched_cpu(rdp->cpu);
- 		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
- 	}
+> 
+> 								Thanx, Paul
+> 
+> > thanks,
+> > 
+> >  - Joel
+> > 
+> > 
+> > >  
+> > >  	/* Complain about underflow. */
+> > >  	WARN_ON_ONCE(rdp->dynticks_nmi_nesting < 0);
+> > > @@ -826,7 +827,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> > >  
+> > >  		incby = 1;
+> > >  	} else if (tick_nohz_full_cpu(rdp->cpu) &&
+> > > -		   !rdp->dynticks_nmi_nesting &&
+> > > +		   !dnn &&
+> > >  		   rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+> > >  		rdp->rcu_forced_tick = true;
+> > >  		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
+> > > -- 
+> > > 2.23.0.rc1.153.gdeed80330f-goog
+> > > 
+> > 
