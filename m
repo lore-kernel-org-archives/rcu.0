@@ -2,106 +2,106 @@ Return-Path: <SRS0=HCMS=WM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFF27C3A59C
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF72AC3A589
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:58:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B542C2089E
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:53:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F9322086C
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:58:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fn+0WIoH"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="YodcmsOm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbfHPCxl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Aug 2019 22:53:41 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39828 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbfHPCxl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Aug 2019 22:53:41 -0400
-Received: by mail-pf1-f196.google.com with SMTP id f17so2342010pfn.6
-        for <rcu@vger.kernel.org>; Thu, 15 Aug 2019 19:53:41 -0700 (PDT)
+        id S1726506AbfHPC6P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Aug 2019 22:58:15 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:46227 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbfHPC6P (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Aug 2019 22:58:15 -0400
+Received: by mail-pg1-f195.google.com with SMTP id m3so1601557pgv.13
+        for <rcu@vger.kernel.org>; Thu, 15 Aug 2019 19:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vQhzhmYsBEIBgfK9bAXXCgiV+s/eGGEAcUASy+K8Kx8=;
-        b=fn+0WIoH0hb2mJMlDjd6wAjb/WOyqALGh81FXElnV2+KThoCDaOiIEpWLr/jdFFK2h
-         CZDJKXh/TsicRfPYvwDlVufv6EitdexkLe834jFlqA38Z8o+a5C5o/h0mIIB498qllEI
-         v5SOrflJbA7ZdEYbdwgjEoYLGRWruEPQaAJJw=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YtVSxAhqmLmaZlh2TsP7vbj4SsCXa4o14qm4MdzQM3A=;
+        b=YodcmsOmhsDjkCJOgPqbCLZnaJgBGEo+MVJs2tC8NwBzd56aDyXcNWFH+i+H7zCzhv
+         A7LXPj1WbPPuJczkMLkUOBAgyc6SPn8IO3mWnir1sdXkeAlxg1lz7cdNJZBOGquPBSp7
+         9YbjQptJUsoeUs33mfAPYNob6arq0fZcyxGtg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vQhzhmYsBEIBgfK9bAXXCgiV+s/eGGEAcUASy+K8Kx8=;
-        b=q+sq4uR7px3q8SWPYtarJllkSCd4O8BbWewd1BZ3KnW/CmVdx0F41eoVQ3rY2ECeNb
-         vNSBVxpDFYaTQo3F09/IZUnkd/LrEtWRNgSc4Sp2jR++386zeMj/SyQ5KhqPBa5Gz3n8
-         6wHvRkAoKPnrusyb61akuTT4Ka4CTFXNTRfVEuk7PBzIs9ZP4kMJuki9LvyuyGjxYA+v
-         QAf7t8/npfmU8i0rcm8P2B/kcRSNRI6LNxh51fZSQNh8nWeWv8rmGuPDUe0+HEK5v12J
-         3SpLvRKyjguVPv59RIr1m0GqRcOA0cohdRkIXzkbuzg7132tXEIo10oTuLDJXKsIIL+C
-         Wmpg==
-X-Gm-Message-State: APjAAAWKfgCAdZXXEnXJam/bV60KYosATMOSXUfeBTerxt7Z43eQ17rr
-        b6g3faNOEplarbVvo6aBJhlTvw==
-X-Google-Smtp-Source: APXvYqyPbqBdVP9ApqduTOxKTX2oXG6Jifh8f0SezzAVoJ0l7AxIUYxvlZ1OjWtqOkWKH/cX5b4U2g==
-X-Received: by 2002:a63:6f81:: with SMTP id k123mr6067821pgc.12.1565924020785;
-        Thu, 15 Aug 2019 19:53:40 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id v14sm4181258pfm.164.2019.08.15.19.53.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YtVSxAhqmLmaZlh2TsP7vbj4SsCXa4o14qm4MdzQM3A=;
+        b=Zi1Oxkt4Hc1HNZzYQwbHZ5EYzvhRVF7fEqivapvNbMAxhF1VJ4OQKfo8WW6gR1no5p
+         vlII4PHLwdV7oXnmkyCvBW45dp3g8P4GCBFlWxOP0LoHPruo8Akuojw/FTVBjvoLPOF2
+         l0j8cxNaFcqUDal+rYJPgoHPhe9ATIJji9TEem75w3KAc+rXhX9TG5a6WsgA0nsFY8Qt
+         ezFTXy2FK8hFa7qjyeUjyUIPTUuSiJyEG9VeostfdbUNvJS8rpHHmCjUGsqf513SQk4H
+         lnwQ97Ss3FKvIXL0fhopBjXCe0vgDRIF0SbO9wcaIn639iZGmek4pz6G1BaiVkbqRsUT
+         3sjA==
+X-Gm-Message-State: APjAAAVopAvRt1naiU3oXDNFUZxJIGCiE9kRgoaPqnUefIgv2AU9Pidv
+        w/1uAQ76wySykn8WRcwrv/hhcg==
+X-Google-Smtp-Source: APXvYqw4/rZERyh5roKWAxzUuwlbuQc0ChvNdlv9/ntweB0nYScM+MYren8mxvM48laxtRbG0RoQxQ==
+X-Received: by 2002:a62:1808:: with SMTP id 8mr8607111pfy.177.1565924294327;
+        Thu, 15 Aug 2019 19:58:14 -0700 (PDT)
+Received: from localhost ([172.19.216.18])
+        by smtp.gmail.com with ESMTPSA id y16sm4283794pfn.173.2019.08.15.19.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 19:53:40 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        Thu, 15 Aug 2019 19:58:13 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 22:57:56 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
+Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
         frederic@kernel.org
-Subject: [PATCH -rcu dev 3/3] RFC: rcu/tree: Read dynticks_nmi_nesting in advance
-Date:   Thu, 15 Aug 2019 22:53:11 -0400
-Message-Id: <20190816025311.241257-3-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-In-Reply-To: <20190816025311.241257-1-joel@joelfernandes.org>
+Subject: Re: [PATCH -rcu dev 2/3] rcu/tree: Fix issue where sometimes
+ rcu_urgent_qs is not set on IPI
+Message-ID: <20190816025756.GA242309@google.com>
 References: <20190816025311.241257-1-joel@joelfernandes.org>
+ <20190816025311.241257-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190816025311.241257-2-joel@joelfernandes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I really cannot explain this patch, but without it, the "else if" block
-just doesn't execute thus causing the tick's dep mask to not be set and
-causes the tick to be turned off.
+On Thu, Aug 15, 2019 at 10:53:10PM -0400, Joel Fernandes (Google) wrote:
+> Sometimes I see rcu_urgent_qs is not set. This could be when the last
+> IPI was a long time ago, however, the grace period just started. Set
+> rcu_urgent_qs so the tick can indeed be stopped.
+Here I meant:
+                                   not be stopped.
 
-I tried various _ONCE() macros but the only thing that works is this
-patch.
+I will resend the patch as v2.
+thanks,
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ - Joel
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 856d3c9f1955..ac6bcf7614d7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -802,6 +802,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	long incby = 2;
-+	int dnn = rdp->dynticks_nmi_nesting;
- 
- 	/* Complain about underflow. */
- 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting < 0);
-@@ -826,7 +827,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- 
- 		incby = 1;
- 	} else if (tick_nohz_full_cpu(rdp->cpu) &&
--		   !rdp->dynticks_nmi_nesting &&
-+		   !dnn &&
- 		   rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
- 		rdp->rcu_forced_tick = true;
- 		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
--- 
-2.23.0.rc1.153.gdeed80330f-goog
 
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 322b1b57967c..856d3c9f1955 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1091,6 +1091,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+>  	if (tick_nohz_full_cpu(rdp->cpu) &&
+>  		   time_after(jiffies,
+>  			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
+> +		WRITE_ONCE(*ruqp, true);
+>  		resched_cpu(rdp->cpu);
+>  		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+>  	}
+> -- 
+> 2.23.0.rc1.153.gdeed80330f-goog
+> 
