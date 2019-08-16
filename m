@@ -2,97 +2,122 @@ Return-Path: <SRS0=HCMS=WM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F68C3A589
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81B93C3A59C
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 16:24:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CBF1A2086C
-	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 02:59:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 559A520665
+	for <rcu@archiver.kernel.org>; Fri, 16 Aug 2019 16:24:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="gdQSJruo"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MTltNbiV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbfHPC7c (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Aug 2019 22:59:32 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:43358 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbfHPC7c (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Aug 2019 22:59:32 -0400
-Received: by mail-pl1-f193.google.com with SMTP id 4so1829907pld.10
-        for <rcu@vger.kernel.org>; Thu, 15 Aug 2019 19:59:31 -0700 (PDT)
+        id S1726550AbfHPQYX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Aug 2019 12:24:23 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:41848 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbfHPQYW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Aug 2019 12:24:22 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 196so3361123pfz.8
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 09:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=5TOZw4aX2ouYHWL3SPiBVA6qRZbVTxguU44+pODdzqI=;
-        b=gdQSJruoAM1XM+3a/CIqDvm0o6MwERJuLTfpy9OI9EGyi8eqi1yTpNYOYc1pMFygim
-         Mj0B864cQw1184rdHxkBe+b5EoTA7r8bRQv+vewlFkxnjYXVlvmIUEPqYeHeaxcuY2kj
-         DZeEWsiHhMJMcd0pt4KxN4CQTl7VmYJBYI89Q=
+        bh=+FnGUjvDduLwmUWcToVoaAXXHIij4xR404WzOvDXCGc=;
+        b=MTltNbiV9blPzssoSIvlKEyj8GXjlJa+fTvON9N33advNQcU11h1WD1WT/KRbmrvP3
+         vRLBlOKxwF0MBicin2hGRhH5vXXLB2sGtQm4sRn/bAyavToGE2ymMR767zs4j1UNdwy+
+         FyUzJVfIN8v/tO5tRuqG1dY5ILDNrbcyYKzxc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5TOZw4aX2ouYHWL3SPiBVA6qRZbVTxguU44+pODdzqI=;
-        b=e6HYPvjEuKesQZtLekUK9qtEQHCIKJB6rqj2JYw5lKUCsh+lu6QcAleNaYSroC1VJW
-         fFd3wqoBqxF4lT0wX4a8svl+wIsYXp8m0DZvitRy7fYLFyUKoL81BQKg0VAZU+wL5/CD
-         Q2INVwrYPISF2tru8DUR17s6nIh+FRq1B85Y0MXhOspCYc1nMt7rK4cravWZrvD3S1tD
-         ODHhkb2D35V8wKeXl4sesRyzCxDvL4m2WtANziBGxg+dUgYKzcHEzXELwhJwdWdOv/CC
-         fFknu4UGsnc3dlqi8doxqjmX6I7/cTYw9cw6TSTFBeVY5ig/LxjCP7l415BpPqzAwzCv
-         jHpg==
-X-Gm-Message-State: APjAAAWw9v+ZOJBbhXx62svWhkd+aSwEU3tDjBoltvzY8C1wgiR8SM+h
-        IsdVaSnD/uQvPZBI6agRbgz4aA==
-X-Google-Smtp-Source: APXvYqzOsc28s9gVz0EkrhaSrs5/PUB6mUriwSSU1aeKlkoNXVLriuQGGqrLsSQSAAAn3wdPYB2XOg==
-X-Received: by 2002:a17:902:424:: with SMTP id 33mr7238481ple.34.1565924371577;
-        Thu, 15 Aug 2019 19:59:31 -0700 (PDT)
+        bh=+FnGUjvDduLwmUWcToVoaAXXHIij4xR404WzOvDXCGc=;
+        b=Ob0spddqn5PQNymv28f1GzoAgSlu6CM0YW8fxuXaqUA9p45pNhtnADEZ3Mi8QdR5Y/
+         iqwMIKaiAeCcmm+G2R5E+IplNzfnyF3S7ytQBKRgDmhPl3Rk+9mlTg0kQ0QMtEJL4fSC
+         sBe4I2Png4D70gbacJrYekkjLkWFrW2QG+pGZoN9D5x74qnibkwg+4sfo+MpLNzJZSHv
+         /Op6NUgjOJRtN0HbrrD7jhALYHK2T7nt5G0cq3gHi6FelokX3PZrWbbn6kSeJJiKOiWG
+         +VJOg6kB2hoaJf+MMuPz0dbTFmgawrtXHLzL89bxxcij9utaFalEP2gqvAiL573IcWwx
+         g2ow==
+X-Gm-Message-State: APjAAAXXaDmsT2x+YN0H0xEK7Fy/VWDzHDKeVtaMVPnPlGs97cnlGDWK
+        0tnK0tIHYVyR0I0FURdnfd9nK4S7be0=
+X-Google-Smtp-Source: APXvYqzJmE/VBzfM7dTcmo0WjYgJ+PK/5UhEbZvqR0WC+cO/22WibiU0WDBTKE49AWeUGONok8bFbg==
+X-Received: by 2002:a62:cdc3:: with SMTP id o186mr11699752pfg.168.1565972662164;
+        Fri, 16 Aug 2019 09:24:22 -0700 (PDT)
 Received: from localhost ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id v184sm3378377pgd.34.2019.08.15.19.59.30
+        by smtp.gmail.com with ESMTPSA id k3sm1538327pjo.3.2019.08.16.09.24.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 19:59:30 -0700 (PDT)
-Date:   Thu, 15 Aug 2019 22:59:14 -0400
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        frederic@kernel.org
-Subject: [PATCH v2 -rcu dev 2/3] rcu/tree: Fix issue where sometimes
- rcu_urgent_qs is not set on IPI
-Message-ID: <20190816025914.GB242309@google.com>
+        Fri, 16 Aug 2019 09:24:21 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 12:24:04 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     rcu@vger.kernel.org, frederic@kernel.org
+Subject: Re: [PATCH -rcu dev 3/3] RFC: rcu/tree: Read dynticks_nmi_nesting in
+ advance
+Message-ID: <20190816162404.GB10481@google.com>
 References: <20190816025311.241257-1-joel@joelfernandes.org>
+ <20190816025311.241257-3-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190816025311.241257-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
+In-Reply-To: <20190816025311.241257-3-joel@joelfernandes.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Sometimes I see rcu_urgent_qs is not set. This could be when the last
-IPI was a long time ago, however, the grace period just started. Set
-rcu_urgent_qs so the tick can indeed not be stopped.
+On Thu, Aug 15, 2019 at 10:53:11PM -0400, Joel Fernandes (Google) wrote:
+> I really cannot explain this patch, but without it, the "else if" block
+> just doesn't execute thus causing the tick's dep mask to not be set and
+> causes the tick to be turned off.
+> 
+> I tried various _ONCE() macros but the only thing that works is this
+> patch.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 856d3c9f1955..ac6bcf7614d7 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -802,6 +802,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+>  {
+>  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  	long incby = 2;
+> +	int dnn = rdp->dynticks_nmi_nesting;
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 1 +
- 1 file changed, 1 insertion(+)
+I believe the accidental sign extension / conversion from long to int was
+giving me an illusion since things started working well. Changing the 'int
+dnn' to 'long dnn' gives similar behavior as without this patch! At least I
+know now. Please feel free to ignore this particular RFC patch while I debug
+this more (over the weekend or early next week). The first 2 patches are
+good, just ignore this one.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 322b1b57967c..856d3c9f1955 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1091,6 +1091,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	if (tick_nohz_full_cpu(rdp->cpu) &&
- 		   time_after(jiffies,
- 			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
-+		WRITE_ONCE(*ruqp, true);
- 		resched_cpu(rdp->cpu);
- 		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
- 	}
--- 
-2.23.0.rc1.153.gdeed80330f-goog
+thanks,
 
+ - Joel
+
+
+>  
+>  	/* Complain about underflow. */
+>  	WARN_ON_ONCE(rdp->dynticks_nmi_nesting < 0);
+> @@ -826,7 +827,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+>  
+>  		incby = 1;
+>  	} else if (tick_nohz_full_cpu(rdp->cpu) &&
+> -		   !rdp->dynticks_nmi_nesting &&
+> +		   !dnn &&
+>  		   rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+>  		rdp->rcu_forced_tick = true;
+>  		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
+> -- 
+> 2.23.0.rc1.153.gdeed80330f-goog
+> 
