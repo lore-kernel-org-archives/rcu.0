@@ -2,161 +2,114 @@ Return-Path: <SRS0=/cn9=WN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55612C3A59B
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 05:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30CB8C3A59B
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 21:42:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 099EE2133F
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 05:53:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="cB47Bb4r"
+	by mail.kernel.org (Postfix) with ESMTP id 070E620578
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 21:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbfHQFxs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Aug 2019 01:53:48 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45271 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725784AbfHQFxs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Aug 2019 01:53:48 -0400
-Received: by mail-pl1-f194.google.com with SMTP id y8so3299363plr.12
-        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 22:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iF1d/XucEfTZBKbZNeVNe2rlZZm7hfnL8VoxPV7mfrs=;
-        b=cB47Bb4rnd6z0pZ3KLPUCVyuTUj5PHum8fUBgfOrDHW6sjSZs109jNX4k6geJstPP3
-         eGuJYxyQE4qkZG4yTgwEElWDP6XSjxJxVAPWruAQALOp39weBVoAaTHIiCfi/6aW36jd
-         pL0WfuhSCh8uf5nLPuAT68K6wSOhxHsN4Ymm4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iF1d/XucEfTZBKbZNeVNe2rlZZm7hfnL8VoxPV7mfrs=;
-        b=AUrhgiCJ33DvP1vTJclusHZlH3jvTxlYZb+HndDEONLiYQp5o/LvdkVGfPq2HP/Gk9
-         7D94FmOWM9P6FN4epRlr8rIlkHJEMwtt63lRBJfpFT56MbIeGz6G6QYzAl8bCJdRzNO/
-         e6yPW9bjSExuqyUQgKr9fOvDfHV10ANWFUi/eGML2XQrEpUP8JV3ilOkphMZqJAyGU/B
-         EuB6tl4nN2df/6+gdHzeOwC66GV5JiO/Lv+yEoWJTIP3RbmX1hplmoatdF5AOYBEtkFO
-         LiuKjojIKFHCYjhp+GpGUvGY8VuVX6O37+pp2bZkCy+3T2zX6awRRpfz4Sevzax37yvP
-         hTCA==
-X-Gm-Message-State: APjAAAXykEzyeMJJC89hP8hKCp4ZSUQ7XIM47OxSQryJLFoDDqDXSBNX
-        JGERqPXkdYkqZNaHRuu8/1juNg==
-X-Google-Smtp-Source: APXvYqz2lfmYpZuJnBqQg+aZNL/ns18BABfPrDtNxRGURxTiWR9Ghm48SUA3n3gfjEdkAO7cKoEepA==
-X-Received: by 2002:a17:902:ff05:: with SMTP id f5mr12236863plj.116.1566021227286;
-        Fri, 16 Aug 2019 22:53:47 -0700 (PDT)
-Received: from localhost ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id y11sm7841397pfb.119.2019.08.16.22.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 22:53:46 -0700 (PDT)
-Date:   Sat, 17 Aug 2019 01:53:29 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        kernel-team <kernel-team@lge.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Byungchul Park <max.byungchul.park@gmail.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
- batching
-Message-ID: <20190817055329.GA151631@google.com>
-References: <20190814160411.58591-1-joel@joelfernandes.org>
- <20190816164330.GA8320@linux.ibm.com>
- <20190816174429.GE10481@google.com>
- <20190816191629.GW28441@linux.ibm.com>
- <CAEXW_YTSJaKzWGC5nTbOuoQ6dxO4_uYW6=ttTJY6FWGb5rcB6Q@mail.gmail.com>
- <20190817035637.GY28441@linux.ibm.com>
- <20190817043024.GA137383@google.com>
- <20190817052023.GA28441@linux.ibm.com>
+        id S1726390AbfHQVm1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Aug 2019 17:42:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44402 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726372AbfHQVm1 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sat, 17 Aug 2019 17:42:27 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7HLgJQo070110;
+        Sat, 17 Aug 2019 17:42:20 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ueagrykqm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 17 Aug 2019 17:42:20 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7HLdlMV021950;
+        Sat, 17 Aug 2019 21:42:17 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 2ue9760hdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 17 Aug 2019 21:42:17 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7HLgHQ636438384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 17 Aug 2019 21:42:17 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03038B2065;
+        Sat, 17 Aug 2019 21:42:17 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6CAEB205F;
+        Sat, 17 Aug 2019 21:42:16 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.201.199])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sat, 17 Aug 2019 21:42:16 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id BE05416C1700; Sat, 17 Aug 2019 14:42:17 -0700 (PDT)
+Date:   Sat, 17 Aug 2019 14:42:17 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@sifive.com>,
+        rcu@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH -rcu/dev] Please squash: fixup! rcu/tree: Add basic
+ support for kfree_rcu() batching
+Message-ID: <20190817214217.GD28441@linux.ibm.com>
+Reply-To: paulmck@linux.ibm.com
+References: <20190817042211.137149-1-joel@joelfernandes.org>
+ <alpine.DEB.2.21.9999.1908162131490.18249@viisi.sifive.com>
+ <20190817044308.GA139754@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190817052023.GA28441@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190817044308.GA139754@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-17_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908170237
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 10:20:23PM -0700, Paul E. McKenney wrote:
-> On Sat, Aug 17, 2019 at 12:30:24AM -0400, Joel Fernandes wrote:
-> > On Fri, Aug 16, 2019 at 08:56:37PM -0700, Paul E. McKenney wrote:
-> > > On Fri, Aug 16, 2019 at 09:32:23PM -0400, Joel Fernandes wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > On Fri, Aug 16, 2019 at 3:16 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
-> > > > > > > Hello, Joel,
-> > > > > > >
-> > > > > > > I reworked the commit log as follows, but was then unsuccessful in
-> > > > > > > working out which -rcu commit to apply it to.  Could you please
-> > > > > > > tell me what commit to apply this to?  (Once applied, git cherry-pick
-> > > > > > > is usually pretty good about handling minor conflicts.)
-> > > > > >
-> > > > > > It was originally based on v5.3-rc2
-> > > > > >
-> > > > > > I was able to apply it just now to the rcu -dev branch and I pushed it here:
-> > > > > > https://github.com/joelagnel/linux-kernel.git (branch paul-dev)
-> > > > > >
-> > > > > > Let me know if any other issues, thanks for the change log rework!
-> > > > >
-> > > > > Pulled and cherry-picked, thank you!
-> > > > >
-> > > > > Just for grins, I also  pushed out a from-joel.2019.08.16a showing the
-> > > > > results of the pull.  If you pull that branch, then run something like
-> > > > > "gitk v5.3-rc2..", and then do the same with branch "dev", comparing the
-> > > > > two might illustrate some of the reasons for the current restrictions
-> > > > > on pull requests and trees subject to rebase.
-> > > > 
-> > > > Right, I did the compare and see what you mean. I guess sending any
-> > > > future pull requests against Linux -next would be the best option?
+On Sat, Aug 17, 2019 at 12:43:08AM -0400, Joel Fernandes wrote:
+> On Fri, Aug 16, 2019 at 09:38:54PM -0700, Paul Walmsley wrote:
+> > On Sat, 17 Aug 2019, Joel Fernandes (Google) wrote:
+> > 
+> > > xchg() on a bool is causing issues on riscv and arm32.
+> > 
+> > Indeed, it seems best not to use xchg() on any type that's not 32 bits 
+> > long or that's not the CPU's native word size.  Probably we should update 
+> > the documentation.
+> 
+> I would endorse any such documentation effort ;-)
+> 
+> > > Please squash this into the -rcu dev branch to resolve the issue.
 > > > 
-> > > Hmmm...  You really want to send some pull requests, don't you?  ;-)
+> > > Please squash this fix.
+
+Done, please see below for updated version.
+
+> > > Fixes: -rcu dev commit 3cbd3aa7d9c7bdf ("rcu/tree: Add basic support for kfree_rcu() batching")
+> > > 
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > > 
-> > I would be lying if I said I don't have the itch to ;-)
-> > 
-> > > Suppose you had sent that pull request against Linux -next or v5.2
-> > > or wherever.  What would happen next, given the high probability of a
-> > > conflict with someone else's patch?  What would the result look like?
-> > 
-> > One hopes that the tools are able to automatically resolve the resolution,
-> > however adequate re-inspection of the resulting code and testing it would be
-> > needed in either case, to ensure the conflict resolution (whether manual or
-> > automatic) happened correctly.
-> 
-> I didn't ask you to hope.  I instead asked you what tell me what would
-> actually happen.  ;-)
-> 
-> You could actually try this by randomly grouping the patches in -rcu
-> (say, placing every third patch into one of three groups), generating
-> separate pull requests, and then merging the pull requests together.
-> Then you wouldn't have to hope.  You could instead look at it in (say)
-> gitk after the pieces were put together.
+> > Link: https://lore.kernel.org/lkml/alpine.DEB.2.21.9999.1908161931110.32497@viisi.sifive.com/T/#me9956f66cb611b95d26ae92700e1d901f46e8c59
+> > Reviewed-by: Paul Walmsley <paul.walmsley@sifive.com>
 
-So you take whatever is worked on in 'dev' and create separate branches out
-of them, then merge them together later?
+I added the link, thank you Paul!  If you meant the Reviewed-by to apply
+to the entire kfree_rcu() patch, I will of course be very happy to apply
+that as well.
 
-I have seen you doing these tricks and would love to get ideas from your
-experiences on these.
+> Thanks Paul! And nice to meet you again after many years ;-) Glad to see you
+> working on riscv.
 
-> > IIUC, this usually depends on the maintainer's preference on which branch to
-> > send patches against.
-> > 
-> > Are you saying -rcu's dev branch is still the best option to send patches
-> > against, even though it is rebased often?
-> 
-> Sounds like we might need to discuss this face to face.
+What Joel said!  ;-)
 
-Yes, let us talk for sure at plumbers, thank you so much!
-
-(Also I sent a patch just now to fix that xchg() issue).
-
- - Joel
-
+							Thanx, Paul
