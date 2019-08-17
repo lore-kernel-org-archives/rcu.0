@@ -2,125 +2,134 @@ Return-Path: <SRS0=/cn9=WN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B3C3C3A59D
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 03:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 816C0C3A59B
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 03:56:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4AD5C2133F
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 03:10:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="FUAskgYN"
+	by mail.kernel.org (Postfix) with ESMTP id 5D9AE2173B
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 03:56:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbfHQDKV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Aug 2019 23:10:21 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:44134 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbfHQDKV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Aug 2019 23:10:21 -0400
-Received: by mail-io1-f67.google.com with SMTP id j4so10166904iop.11
-        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 20:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=jfgOUdM4DedenoDs7mkNiP9MH22kvTM4l0nUgH2b6uE=;
-        b=FUAskgYNph7NlMVKSpFjZv0uSx+nRz0FxF0/ARpCUnmzGymlpn+1s5IepB10Np1YvP
-         v1JwwgKCEeWDn7G6fiXzH5QdUN8ix4ONScugUwQNwZfL2+1yMsSNmDXjxtNO/RAlla4F
-         BQHVJ3cgAlYW12MA0j7gJ+/YJWYdjwnMaohaNGAbzcsNkt05YwjBzHrG2Ya9w/gKgAGE
-         QToxk3ss8dTD6ACTGsq9BtBsQZvLrPMIDkuwPGBVp1o59vJ/1W8gzy085pSuN7Mtq743
-         YQdbSLB/kr8aBcLFhJ0hoJm6ma+IGqZmvc7W3oj5efz34603zdWk++RSkw1xxj9WqonV
-         /agw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=jfgOUdM4DedenoDs7mkNiP9MH22kvTM4l0nUgH2b6uE=;
-        b=pRCKuHANyTIVapC8eONCWhzC/wOAEJ6t2wMib1/8NMnewqFb4Ie/n0khRTGrOBCFZc
-         qZjJCFEFhm+zqxdONxSLwIKH74r+jIPHZKrXTlMbo2eMnfWLVSIxKVz6Nl07cruFS53S
-         kva8QM7pA1D3eaRdfVxAFpIeCkfEjL5QG4cinBDIv/fjxOCvYhtlq5S3QCRzYCnFRAD2
-         PRwDOchBJJfMyhJ3quyYlGlln7I6AwKyYS66ul0U7Yqoq4CJOOmsyF5XfXeQZK4DyKRI
-         Xc4guQbJs518bEdOAQauK3Zv5PubLDQtP8Gcut8KhT217Md6egUEN9+uEGdDikZxM3Ll
-         Pb6g==
-X-Gm-Message-State: APjAAAWwjgxvclpiFBdD15qNNO5/GnYcgAHhex5G3JRN9Lfg61lV1zb5
-        zOK1KuHQtv6V18rVFleEOO0uDg==
-X-Google-Smtp-Source: APXvYqy0KvQpXvX3njzYxm7Z+Wa5tKbp+RV6UdAs8L/2cysMnnbuUcopIVRMyIOY/MPtLuJHgW3FFg==
-X-Received: by 2002:a02:caa8:: with SMTP id e8mr14264856jap.67.1566011420500;
-        Fri, 16 Aug 2019 20:10:20 -0700 (PDT)
-Received: from localhost (c-73-95-159-87.hsd1.co.comcast.net. [73.95.159.87])
-        by smtp.gmail.com with ESMTPSA id n22sm6379414iob.37.2019.08.16.20.10.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 20:10:19 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 20:10:19 -0700 (PDT)
-From:   Paul Walmsley <paul.walmsley@sifive.com>
-X-X-Sender: paulw@viisi.sifive.com
+        id S1725938AbfHQD4q (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Aug 2019 23:56:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57506 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725832AbfHQD4p (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 16 Aug 2019 23:56:45 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7H3uebk127684
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 23:56:44 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ue5sje8h0-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 23:56:44 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Sat, 17 Aug 2019 04:56:43 +0100
+Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Sat, 17 Aug 2019 04:56:38 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7H3ucRO50987336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 17 Aug 2019 03:56:38 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB276B2064;
+        Sat, 17 Aug 2019 03:56:37 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9440B205F;
+        Sat, 17 Aug 2019 03:56:37 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.201.199])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sat, 17 Aug 2019 03:56:37 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 8FDB616C1E47; Fri, 16 Aug 2019 20:56:37 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 20:56:37 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
 To:     Joel Fernandes <joel@joelfernandes.org>
-cc:     kbuild test robot <lkp@intel.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, atishp04@gmail.com,
-        rcu@vger.kernel.org, paulmck@linux.ibm.com, kbuild-all@01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [rcu:from-joel.2019.08.16a 143/172] kernel/rcu/tree.c:2808:6:
- note: in expansion of macro 'xchg'
-In-Reply-To: <20190817010902.GB89926@google.com>
-Message-ID: <alpine.DEB.2.21.9999.1908161931110.32497@viisi.sifive.com>
-References: <20190817010902.GB89926@google.com>
-User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        kernel-team <kernel-team@lge.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, rcu <rcu@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
+ batching
+Reply-To: paulmck@linux.ibm.com
+References: <20190814160411.58591-1-joel@joelfernandes.org>
+ <20190816164330.GA8320@linux.ibm.com>
+ <20190816174429.GE10481@google.com>
+ <20190816191629.GW28441@linux.ibm.com>
+ <CAEXW_YTSJaKzWGC5nTbOuoQ6dxO4_uYW6=ttTJY6FWGb5rcB6Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YTSJaKzWGC5nTbOuoQ6dxO4_uYW6=ttTJY6FWGb5rcB6Q@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19081703-0060-0000-0000-0000036D4002
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011602; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01247944; UDB=6.00658668; IPR=6.01029458;
+ MB=3.00028210; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-17 03:56:42
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081703-0061-0000-0000-00004A94AE71
+Message-Id: <20190817035637.GY28441@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-17_01:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908170040
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 16 Aug 2019, Joel Fernandes wrote:
-
-> On Sat, Aug 17, 2019 at 05:10:59AM +0800, kbuild test robot wrote:
-> > tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu.git from-joel.2019.08.16a
-> > head:   01b0e4d3e0ac279b295bc06a3591f0b810b9908f
-> > commit: bda80ba9decc7a32413e88d2f070de180c4b76ab [143/172] rcu/tree: Add basic support for kfree_rcu() batching
-> > config: riscv-defconfig (attached as .config)
-> > compiler: riscv64-linux-gcc (GCC) 7.4.0
-> > reproduce:
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         git checkout bda80ba9decc7a32413e88d2f070de180c4b76ab
-> >         # save the attached .config to linux build tree
-> >         GCC_VERSION=7.4.0 make.cross ARCH=riscv 
+On Fri, Aug 16, 2019 at 09:32:23PM -0400, Joel Fernandes wrote:
+> Hi Paul,
 > 
-> This seems to be a riscv issue:
+> On Fri, Aug 16, 2019 at 3:16 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+> > > > Hello, Joel,
+> > > >
+> > > > I reworked the commit log as follows, but was then unsuccessful in
+> > > > working out which -rcu commit to apply it to.  Could you please
+> > > > tell me what commit to apply this to?  (Once applied, git cherry-pick
+> > > > is usually pretty good about handling minor conflicts.)
+> > >
+> > > It was originally based on v5.3-rc2
+> > >
+> > > I was able to apply it just now to the rcu -dev branch and I pushed it here:
+> > > https://github.com/joelagnel/linux-kernel.git (branch paul-dev)
+> > >
+> > > Let me know if any other issues, thanks for the change log rework!
+> >
+> > Pulled and cherry-picked, thank you!
+> >
+> > Just for grins, I also  pushed out a from-joel.2019.08.16a showing the
+> > results of the pull.  If you pull that branch, then run something like
+> > "gitk v5.3-rc2..", and then do the same with branch "dev", comparing the
+> > two might illustrate some of the reasons for the current restrictions
+> > on pull requests and trees subject to rebase.
 > 
-> A call to '__compiletime_assert_2792' declared with attribute error:
-> BUILD_BUG failed
-> 
-> Could riscv folks take a look at it? Why is using xchg() causing issues? The
-> xchg() is being done on a bool.
+> Right, I did the compare and see what you mean. I guess sending any
+> future pull requests against Linux -next would be the best option?
 
-sizeof(bool) = 1, and the only xchg() implementation that's currently 
-present on all RISC-V in Linux is usable only on 32-bit types.  SPARC, 
-Microblaze, C-SKY, and Hexagon all look like they have the same 
-limitation.  You'll probably see similar build breakage for those 
-platforms too.
+Hmmm...  You really want to send some pull requests, don't you?  ;-)
 
-MIPS, OpenRISC, Xtensa, and SuperH have compatibility functions for the 
-8-bit and 16-bit cases.  We could add those for RISC-V.  However, they'll 
-be slower than the 4- and 8-byte cases.  This is both because there's more 
-code involved, and because there's an increased risk of false-sharing.
+Suppose you had sent that pull request against Linux -next or v5.2
+or wherever.  What would happen next, given the high probability of a
+conflict with someone else's patch?  What would the result look like?
 
-Can you use a u32 instead for xchg/cmpxchg operations like struct 
-kfree_rcu_cpu.monitor_todo that are intended to be cross-platform?  Based 
-on a cursory glance through the tree, it looks like there's only one 
-cross-platform driver that uses 'true' or 'false' with the kernel 
-xchg/cmpxchg, and it uses an int as the underlying data type.
+							Thanx, Paul
 
-I suppose one could typedef "xchg_bool" on a per-architecture basis, to be 
-smallest type that makes sense to use in an xchg() or cmpxchg().  That 
-might save some memory on architectures that have a fast 1-byte 
-xchg()/cmpxchg().  But given the lack of users in the tree, I'm not sure 
-it's worth the effort.
-
-
-- Paul
