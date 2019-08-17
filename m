@@ -2,406 +2,105 @@ Return-Path: <SRS0=/cn9=WN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FAKE_REPLY_C,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD7EEC3A59D
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 01:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D36C3A59D
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 01:32:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 83A852086C
-	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 01:09:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E06A21721
+	for <rcu@archiver.kernel.org>; Sat, 17 Aug 2019 01:32:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wrQm8l2z"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Fv/d7xHK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbfHQBJU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Aug 2019 21:09:20 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:45663 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbfHQBJU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Aug 2019 21:09:20 -0400
-Received: by mail-pl1-f196.google.com with SMTP id y8so3107949plr.12
-        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 18:09:20 -0700 (PDT)
+        id S1725832AbfHQBcj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Aug 2019 21:32:39 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43602 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbfHQBcg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Aug 2019 21:32:36 -0400
+Received: by mail-lj1-f196.google.com with SMTP id h15so6801725ljg.10
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2019 18:32:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=Nw8sIrcbXePpoXqbxn2w57JuxDWLCYGdjwm8kAL1qaU=;
-        b=wrQm8l2zXsZAoL6zSZnHUgnW5Ige8qSUAKuCufQiMUq49cxUQIXURZUg7BMDZxlu7e
-         EW6oibivCIlXdIYPH1eXQ4JcYH0I7bWs2GihlyVbay5c3xxo/q/UPAneOrrHn+w4715W
-         vPmSCW+1l8SrBl3KqBiCfpR9LmgkWAlYm/fKw=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aHBSgVtbyrH7bBR6euG6hAkhNuTFa6ViU5ynAtyXjDc=;
+        b=Fv/d7xHKFOOhbqVgF/o21Bh1Hdl2CtcIoYZ9wPIWJfMNHlbv1NhwHhITS9Yaq2Em7S
+         9DhdAr5A3Ug3IlssVUk2s3Gx3v2mb6GMQ/kZ36dXtYgArRMkSIL9aUB1EmyepecCmll9
+         ogetUAIGa0jPUBez3Mmv7tVLRhpInvbADfrh8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Nw8sIrcbXePpoXqbxn2w57JuxDWLCYGdjwm8kAL1qaU=;
-        b=mEtS+tHqidgv52jJ1nW6eXyvAYaC6VFjKX3eSDsVqE2oEU7BCFIhsSZgDaNwijhGuc
-         ODUR7VMp7bFg52fL0rC/Re9BghVrt2eScpqobuWtyZgv9/m5acM8BQzRYaP00sf6yNud
-         BIoFQloBnEh6httVQFxzSU+tFdwztJRPku30ThBbYH1qvP8TW3EmRrD9xnFXurkhCat8
-         nNPFBiQ+/L9Lhqd3qyLoNi2hrRBDAZgHAQUVZN/kQrMMU+WRqpI1rIAMp9u18uV5OhCB
-         QkrUnvo4ZmE0TBuFeMJI0lIsePK73EhQXYnoPebeiw54C4mziD937VXMKkJpEALIIGdz
-         NiZA==
-X-Gm-Message-State: APjAAAVzHXS9s3fg9Y9n/vkFYc5e8o89Jhq9er3weg/n37KXT9mO5Uek
-        tK77zfM5SRCi2MToOAPr9a7uAg==
-X-Google-Smtp-Source: APXvYqxctdRLdTj4ZQcrZSJ0aenAZDN3tgYRaDFJzjASozmg3h2ltgowSK2I9473HWmjaSQWEw4DoQ==
-X-Received: by 2002:a17:902:e389:: with SMTP id ch9mr11861221plb.23.1566004159463;
-        Fri, 16 Aug 2019 18:09:19 -0700 (PDT)
-Received: from localhost ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id b14sm6367468pga.20.2019.08.16.18.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 18:09:18 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 21:09:02 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     kbuild test robot <lkp@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, atishp04@gmail.com,
-        rcu@vger.kernel.org, paulmck@linux.ibm.com
-Cc:     kbuild-all@01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:from-joel.2019.08.16a 143/172] kernel/rcu/tree.c:2808:6:
- note: in expansion of macro 'xchg'
-Message-ID: <20190817010902.GB89926@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aHBSgVtbyrH7bBR6euG6hAkhNuTFa6ViU5ynAtyXjDc=;
+        b=Xl2554Swn/usNnAnMdNH0AZAO7XvHWa6MVKVPWWVzq7D2ihTGDcpy7bA21eLzt9emk
+         Z2YLau8x0E9Dm0YRuDjfNifCSJ+N8+Tthqn2HkqAe/Fd3F2cxaiepHHvCcaTEhHyNS9V
+         TcipV2LhpDwo17j2uT4v4pvKT3VIHOUT14bpEatnCndVqCyxqn7n4PTyOaxrl+sytSPW
+         zLJEuQuaIelNhaekQjF4X3tH1l54bBgp2bFzyHYyIo+ZD1jQu+lKSzu5KgfLIsSRoYsp
+         NquzOEpv6C85F0KfU9ZtJm2Y5ZZCMbH7hrOJ3k050zM8R7mA0hcZfmkpnixbmMAMTrMF
+         sNDA==
+X-Gm-Message-State: APjAAAV1s33ixWKir5lkQKrwWRc+lE/4eul3MtQS9XaOKHXzPsq30K7p
+        n7iXh+/veoci5d1pfETw43Frt7Cs5gpagiRjXsZMoA==
+X-Google-Smtp-Source: APXvYqz44jJ0slF1oFo0hbcPkbHA8WFv38ynrt7Ruo/kP6XTloz/kjFVDiSKV2i0SiVFLFWSgsG52DewRobQZmUBo+s=
+X-Received: by 2002:a2e:b0cb:: with SMTP id g11mr6828481ljl.76.1566005554663;
+ Fri, 16 Aug 2019 18:32:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201908170558.4JoZrC3p%lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190814160411.58591-1-joel@joelfernandes.org>
+ <20190816164330.GA8320@linux.ibm.com> <20190816174429.GE10481@google.com> <20190816191629.GW28441@linux.ibm.com>
+In-Reply-To: <20190816191629.GW28441@linux.ibm.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 16 Aug 2019 21:32:23 -0400
+Message-ID: <CAEXW_YTSJaKzWGC5nTbOuoQ6dxO4_uYW6=ttTJY6FWGb5rcB6Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu() batching
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        kernel-team <kernel-team@lge.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <max.byungchul.park@gmail.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, rcu <rcu@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Resending with more folks added.
+Hi Paul,
 
-On Sat, Aug 17, 2019 at 05:10:59AM +0800, kbuild test robot wrote:
-> tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu.git from-joel.2019.08.16a
-> head:   01b0e4d3e0ac279b295bc06a3591f0b810b9908f
-> commit: bda80ba9decc7a32413e88d2f070de180c4b76ab [143/172] rcu/tree: Add basic support for kfree_rcu() batching
-> config: riscv-defconfig (attached as .config)
-> compiler: riscv64-linux-gcc (GCC) 7.4.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout bda80ba9decc7a32413e88d2f070de180c4b76ab
->         # save the attached .config to linux build tree
->         GCC_VERSION=7.4.0 make.cross ARCH=riscv 
+On Fri, Aug 16, 2019 at 3:16 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+> > > Hello, Joel,
+> > >
+> > > I reworked the commit log as follows, but was then unsuccessful in
+> > > working out which -rcu commit to apply it to.  Could you please
+> > > tell me what commit to apply this to?  (Once applied, git cherry-pick
+> > > is usually pretty good about handling minor conflicts.)
+> >
+> > It was originally based on v5.3-rc2
+> >
+> > I was able to apply it just now to the rcu -dev branch and I pushed it here:
+> > https://github.com/joelagnel/linux-kernel.git (branch paul-dev)
+> >
+> > Let me know if any other issues, thanks for the change log rework!
+>
+> Pulled and cherry-picked, thank you!
+>
+> Just for grins, I also  pushed out a from-joel.2019.08.16a showing the
+> results of the pull.  If you pull that branch, then run something like
+> "gitk v5.3-rc2..", and then do the same with branch "dev", comparing the
+> two might illustrate some of the reasons for the current restrictions
+> on pull requests and trees subject to rebase.
 
-This seems to be a riscv issue:
-
-A call to '__compiletime_assert_2792' declared with attribute error:
-BUILD_BUG failed
-
-Could riscv folks take a look at it? Why is using xchg() causing issues? The
-xchg() is being done on a bool.
+Right, I did the compare and see what you mean. I guess sending any
+future pull requests against Linux -next would be the best option?
 
 thanks,
 
  - Joel
-
-
-> If you fix the issue, kindly add following tag
-> Reported-by: kbuild test robot <lkp@intel.com>
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
->    In file included from arch/riscv/include/asm/atomic.h:19:0,
->                     from include/linux/atomic.h:7,
->                     from include/linux/spinlock.h:445,
->                     from kernel/rcu/tree.c:23:
->    kernel/rcu/tree.c: In function 'kfree_rcu_monitor':
-> >> arch/riscv/include/asm/cmpxchg.h:140:2: warning: '__ret' is used uninitialized in this function [-Wuninitialized]
->      __ret;        \
->      ^~~~~
->    arch/riscv/include/asm/cmpxchg.h:121:21: note: '__ret' was declared here
->      __typeof__(*(ptr)) __ret;     \
->                         ^
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
-> >> kernel/rcu/tree.c:2808:6: note: in expansion of macro 'xchg'
->      if (xchg(&krcp->monitor_todo, false))
->          ^~~~
->    In file included from include/linux/kernel.h:11:0,
->                     from kernel/rcu/tree.c:21:
-> >> include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2808' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
-> >> kernel/rcu/tree.c:2808:6: note: in expansion of macro 'xchg'
->      if (xchg(&krcp->monitor_todo, false))
->          ^~~~
->    In function 'kfree_rcu_drain_unlock',
->        inlined from 'kfree_rcu_monitor' at kernel/rcu/tree.c:2809:3:
->    include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2792' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel/rcu/tree.c:2792:7: note: in expansion of macro 'xchg'
->      if (!xchg(&krcp->monitor_todo, true))
->           ^~~~
->    kernel/rcu/tree.c: In function 'kfree_call_rcu':
-> >> kernel/rcu/tree.c:2860:5: warning: '__ret' may be used uninitialized in this function [-Wmaybe-uninitialized]
->      if (!xchg(&krcp->monitor_todo, true))
->         ^
->    In file included from include/linux/kernel.h:11:0,
->                     from kernel/rcu/tree.c:21:
->    include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2860' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel/rcu/tree.c:2860:7: note: in expansion of macro 'xchg'
->      if (!xchg(&krcp->monitor_todo, true))
->           ^~~~
-> --
->    In file included from arch/riscv/include/asm/atomic.h:19:0,
->                     from include/linux/atomic.h:7,
->                     from include/linux/spinlock.h:445,
->                     from kernel//rcu/tree.c:23:
->    kernel//rcu/tree.c: In function 'kfree_rcu_monitor':
-> >> arch/riscv/include/asm/cmpxchg.h:140:2: warning: '__ret' is used uninitialized in this function [-Wuninitialized]
->      __ret;        \
->      ^~~~~
->    arch/riscv/include/asm/cmpxchg.h:121:21: note: '__ret' was declared here
->      __typeof__(*(ptr)) __ret;     \
->                         ^
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel//rcu/tree.c:2808:6: note: in expansion of macro 'xchg'
->      if (xchg(&krcp->monitor_todo, false))
->          ^~~~
->    In file included from include/linux/kernel.h:11:0,
->                     from kernel//rcu/tree.c:21:
-> >> include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2808' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel//rcu/tree.c:2808:6: note: in expansion of macro 'xchg'
->      if (xchg(&krcp->monitor_todo, false))
->          ^~~~
->    In function 'kfree_rcu_drain_unlock',
->        inlined from 'kfree_rcu_monitor' at kernel//rcu/tree.c:2809:3:
->    include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2792' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel//rcu/tree.c:2792:7: note: in expansion of macro 'xchg'
->      if (!xchg(&krcp->monitor_todo, true))
->           ^~~~
->    kernel//rcu/tree.c: In function 'kfree_call_rcu':
->    kernel//rcu/tree.c:2860:5: warning: '__ret' may be used uninitialized in this function [-Wmaybe-uninitialized]
->      if (!xchg(&krcp->monitor_todo, true))
->         ^
->    In file included from include/linux/kernel.h:11:0,
->                     from kernel//rcu/tree.c:21:
->    include/linux/compiler.h:350:38: error: call to '__compiletime_assert_2860' declared with attribute error: BUILD_BUG failed
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->                                          ^
->    include/linux/compiler.h:331:4: note: in definition of macro '__compiletime_assert'
->        prefix ## suffix();    \
->        ^~~~~~
->    include/linux/compiler.h:350:2: note: in expansion of macro '_compiletime_assert'
->      _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
->      ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->     #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                         ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->     #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
->                         ^~~~~~~~~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:138:3: note: in expansion of macro 'BUILD_BUG'
->       BUILD_BUG();      \
->       ^~~~~~~~~
-> >> arch/riscv/include/asm/cmpxchg.h:146:23: note: in expansion of macro '__xchg'
->      (__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr))); \
->                           ^~~~~~
->    kernel//rcu/tree.c:2860:7: note: in expansion of macro 'xchg'
->      if (!xchg(&krcp->monitor_todo, true))
->           ^~~~
-> 
-> vim +/xchg +2808 kernel/rcu/tree.c
-> 
->   2776	
->   2777	static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
->   2778					   unsigned long flags)
->   2779	{
->   2780		/* Flush ->head to ->head_free, all objects on ->head_free will be
->   2781		 * kfree'd after a grace period.
->   2782		 */
->   2783		if (queue_kfree_rcu_work(krcp)) {
->   2784			/* Success! Our job is done here. */
->   2785			spin_unlock_irqrestore(&krcp->lock, flags);
->   2786			return;
->   2787		}
->   2788	
->   2789		/* Previous batch that was queued to RCU did not get free yet, let us
->   2790		 * try again soon.
->   2791		 */
-> > 2792		if (!xchg(&krcp->monitor_todo, true))
->   2793			schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
->   2794		spin_unlock_irqrestore(&krcp->lock, flags);
->   2795	}
->   2796	
->   2797	/*
->   2798	 * This function is invoked after the KFREE_DRAIN_JIFFIES timeout has elapsed,
->   2799	 * and it drains the specified kfree_rcu_cpu structure's ->head list.
->   2800	 */
->   2801	static void kfree_rcu_monitor(struct work_struct *work)
->   2802	{
->   2803		unsigned long flags;
->   2804		struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
->   2805							 monitor_work.work);
->   2806	
->   2807		spin_lock_irqsave(&krcp->lock, flags);
-> > 2808		if (xchg(&krcp->monitor_todo, false))
->   2809			kfree_rcu_drain_unlock(krcp, flags);
->   2810		else
->   2811			spin_unlock_irqrestore(&krcp->lock, flags);
->   2812	}
->   2813	
->   2814	/*
->   2815	 * This version of kfree_call_rcu does not do batching of kfree_rcu() requests.
->   2816	 * Used only by rcuperf torture test for comparison with kfree_rcu_batch().
->   2817	 */
->   2818	void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
->   2819	{
->   2820		__call_rcu(head, func, 1);
->   2821	}
->   2822	EXPORT_SYMBOL_GPL(kfree_call_rcu_nobatch);
->   2823	
->   2824	/*
->   2825	 * Queue a request for lazy invocation of kfree() after a grace period.
->   2826	 *
->   2827	 * Each kfree_call_rcu() request is added to a batch. The batch will be drained
->   2828	 * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch
->   2829	 * will be kfree'd in workqueue context. This allows us to:
->   2830	 *
->   2831	 * 1. Batch requests together to reduce the number of grace periods during
->   2832	 * heavy kfree_rcu() load.
->   2833	 *
->   2834	 * 2. In the future, makes it possible to use kfree_bulk() on a large number of
->   2835	 * kfree_rcu() requests thus reducing the per-object overhead of kfree() and
->   2836	 * also reducing cache misses.
->   2837	 */
->   2838	void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->   2839	{
->   2840		unsigned long flags;
->   2841		struct kfree_rcu_cpu *krcp;
->   2842	
->   2843		/* kfree_call_rcu() batching requires timers to be up. If the scheduler
->   2844		 * is not yet up, just skip batching and do the non-batched version.
->   2845		 */
->   2846		if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
->   2847			return kfree_call_rcu_nobatch(head, func);
->   2848	
->   2849		head->func = func;
->   2850	
->   2851		local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
->   2852		krcp = this_cpu_ptr(&krc);
->   2853		spin_lock(&krcp->lock);
->   2854	
->   2855		/* Queue the kfree but don't yet schedule the batch. */
->   2856		head->next = krcp->head;
->   2857		krcp->head = head;
->   2858	
->   2859		/* Schedule monitor for timely drain after KFREE_DRAIN_JIFFIES. */
-> > 2860		if (!xchg(&krcp->monitor_todo, true))
->   2861			schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
->   2862	
->   2863		spin_unlock(&krcp->lock);
->   2864		local_irq_restore(flags);
->   2865	}
->   2866	EXPORT_SYMBOL_GPL(kfree_call_rcu);
->   2867	
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
-
