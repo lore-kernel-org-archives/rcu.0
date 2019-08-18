@@ -2,130 +2,154 @@ Return-Path: <SRS0=mwIH=WO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93E0CC3A589
-	for <rcu@archiver.kernel.org>; Sun, 18 Aug 2019 21:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A4CCC3A589
+	for <rcu@archiver.kernel.org>; Sun, 18 Aug 2019 22:12:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 631D121852
-	for <rcu@archiver.kernel.org>; Sun, 18 Aug 2019 21:50:07 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="sFx1qyWs"
+	by mail.kernel.org (Postfix) with ESMTP id 6432C2186A
+	for <rcu@archiver.kernel.org>; Sun, 18 Aug 2019 22:12:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbfHRVuH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 18 Aug 2019 17:50:07 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33607 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbfHRVuG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 18 Aug 2019 17:50:06 -0400
-Received: by mail-pl1-f196.google.com with SMTP id go14so4505809plb.0
-        for <rcu@vger.kernel.org>; Sun, 18 Aug 2019 14:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=Wg9JME0FWTs1tYyJ3nmuvph2mMJv0VgG1hoJmiI+89Y=;
-        b=sFx1qyWsXacdqGPc0XPcx/uSYdMTruibrn5pboJKb0GPUIVxMWLd6yd09zXGovBFEI
-         31vFPeXRk7jCScWKtdivUBw6ciSCob0vEGXgbXo08y2aals0woz+GXdP4HIl1/QQlsRa
-         bzBo2BdvaV+I3u+DQVQGNIMPMYPA97ZyNigQw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=Wg9JME0FWTs1tYyJ3nmuvph2mMJv0VgG1hoJmiI+89Y=;
-        b=EvB56//7zsKBYLU4HMEhl5mb4t7SHASobiCNJcWyBF6C7ciHbuDQlPQf4uivsGydeu
-         cjHoe6WD32TtErDjkw5mxeS3b6Kkxr1VreHMKd1bfezOke0ZAOiCet5n8mFDlA1uqMfq
-         Qv8dEPyOa0sAZCc+/OruudwNQb8LVVaolQx8Bv9zdHsE9Ba7GffwGT+GTS9xMH9TCIPD
-         3vimuhsPIRkyY3M9coD+ZrWhoJTfywD9xZ+XnZieR48w/7WYIBtiNHNVrRj/O70yxgi4
-         y3VZWRr8MYRuWCmu3WVgNdG9JdzZY0CZeW0yF97IURmHIx8Y2HxQVdFubdAaVtsy9nPL
-         bf+Q==
-X-Gm-Message-State: APjAAAUdRHQf7eSo3dtca0Xey/Gvxc18M05gh/yBpqhFCQp0CKBhhcUu
-        91zxJdooZFqN287R5FD4TZO9kzB0mGE=
-X-Google-Smtp-Source: APXvYqzdnZqbCZQxwGZmMxdNNdL2R6VE2UIUjJOX/DEW15dQCctAiH1YCOyh6z0/ZGjPA6AXwR46cw==
-X-Received: by 2002:a17:902:822:: with SMTP id 31mr1685767plk.343.1566165006033;
-        Sun, 18 Aug 2019 14:50:06 -0700 (PDT)
-Received: from localhost ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id f12sm12543645pgo.85.2019.08.18.14.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Aug 2019 14:50:05 -0700 (PDT)
-Date:   Sun, 18 Aug 2019 17:49:48 -0400
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        id S1726162AbfHRWMP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 18 Aug 2019 18:12:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726088AbfHRWMP (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 18 Aug 2019 18:12:15 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7IMC6Yk139510
+        for <rcu@vger.kernel.org>; Sun, 18 Aug 2019 18:12:13 -0400
+Received: from e12.ny.us.ibm.com (e12.ny.us.ibm.com [129.33.205.202])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufc1ycrt7-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Sun, 18 Aug 2019 18:12:13 -0400
+Received: from localhost
+        by e12.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Sun, 18 Aug 2019 23:12:12 +0100
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e12.ny.us.ibm.com (146.89.104.199) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Sun, 18 Aug 2019 23:12:08 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7IMC8Yp55050550
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 18 Aug 2019 22:12:08 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A0F0B2090;
+        Sun, 18 Aug 2019 22:12:08 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD092B208D;
+        Sun, 18 Aug 2019 22:12:07 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.85.201.199])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 18 Aug 2019 22:12:07 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 54DCA16C11AE; Sun, 18 Aug 2019 15:12:10 -0700 (PDT)
+Date:   Sun, 18 Aug 2019 15:12:10 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [RFC v2] rcu/tree: Try to invoke_rcu_core() if in_irq() during unlock
-Message-ID: <20190818214948.GA134430@google.com>
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC v2] rcu/tree: Try to invoke_rcu_core() if in_irq() during
+ unlock
+Reply-To: paulmck@linux.ibm.com
+References: <20190818214948.GA134430@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190818214948.GA134430@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19081822-0060-0000-0000-0000036D6FE8
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011613; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01248783; UDB=6.00659172; IPR=6.01030300;
+ MB=3.00028225; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-18 22:12:10
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081822-0061-0000-0000-00004A9950DD
+Message-Id: <20190818221210.GP28441@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-18_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908180245
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When we're in hard interrupt context in rcu_read_unlock_special(), we
-can still benefit from invoke_rcu_core() doing wake ups of rcuc
-threads when the !use_softirq parameter is passed.  This is safe
-to do so because:
+On Sun, Aug 18, 2019 at 05:49:48PM -0400, Joel Fernandes (Google) wrote:
+> When we're in hard interrupt context in rcu_read_unlock_special(), we
+> can still benefit from invoke_rcu_core() doing wake ups of rcuc
+> threads when the !use_softirq parameter is passed.  This is safe
+> to do so because:
+> 
+> 1. We avoid the scheduler deadlock issues thanks to the deferred_qs bit
+> introduced in commit 23634ebc1d94 ("rcu: Check for wakeup-safe
+> conditions in rcu_read_unlock_special()") by checking for the same in
+> this patch.
+> 
+> 2. in_irq() implies in_interrupt() which implies raising softirq will
+> not do any wake ups.
+> 
+> The rcuc thread which is awakened will run when the interrupt returns.
+> 
+> We also honor 25102de ("rcu: Only do rcu_read_unlock_special() wakeups
+> if expedited") thus doing the rcuc awakening only when none of the
+> following are true:
+>   1. Critical section is blocking an expedited GP.
+>   2. A nohz_full CPU.
+> If neither of these cases are true (exp == false), then the "else" block
+> will run to do the irq_work stuff.
+> 
+> This commit is based on a partial revert of d143b3d1cd89 ("rcu: Simplify
+> rcu_read_unlock_special() deferred wakeups") with an additional in_irq()
+> check added.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-1. We avoid the scheduler deadlock issues thanks to the deferred_qs bit
-introduced in commit 23634ebc1d94 ("rcu: Check for wakeup-safe
-conditions in rcu_read_unlock_special()") by checking for the same in
-this patch.
+OK, I will bite...  If it is safe to wake up an rcuc kthread, why
+is it not safe to do raise_softirq()?
 
-2. in_irq() implies in_interrupt() which implies raising softirq will
-not do any wake ups.
+And from the nit department, looks like some whitespace damage on the
+comments.
 
-The rcuc thread which is awakened will run when the interrupt returns.
+							Thanx, Paul
 
-We also honor 25102de ("rcu: Only do rcu_read_unlock_special() wakeups
-if expedited") thus doing the rcuc awakening only when none of the
-following are true:
-  1. Critical section is blocking an expedited GP.
-  2. A nohz_full CPU.
-If neither of these cases are true (exp == false), then the "else" block
-will run to do the irq_work stuff.
-
-This commit is based on a partial revert of d143b3d1cd89 ("rcu: Simplify
-rcu_read_unlock_special() deferred wakeups") with an additional in_irq()
-check added.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
----
-v1->v2: Some minor character encoding issues in changelog corrected.
-
-Note that I am still testing this patch, but I sent an early RFC for your
-feedback. Thanks!
-
- kernel/rcu/tree_plugin.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 2defc7fe74c3..f4b3055026dc 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -621,6 +621,11 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 			// Using softirq, safe to awaken, and we get
- 			// no help from enabling irqs, unlike bh/preempt.
- 			raise_softirq_irqoff(RCU_SOFTIRQ);
-+		} else if (exp && in_irq() && !use_softirq &&
-+			   !t->rcu_read_unlock_special.b.deferred_qs) {
-+			// Safe to awaken rcuc kthread which will be
-+                       // scheduled in from the interrupt return path.
-+			invoke_rcu_core();
- 		} else {
- 			// Enabling BH or preempt does reschedule, so...
- 			// Also if no expediting or NO_HZ_FULL, slow is OK.
--- 
-2.23.0.rc1.153.gdeed80330f-goog
+> ---
+> v1->v2: Some minor character encoding issues in changelog corrected.
+> 
+> Note that I am still testing this patch, but I sent an early RFC for your
+> feedback. Thanks!
+> 
+>  kernel/rcu/tree_plugin.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 2defc7fe74c3..f4b3055026dc 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -621,6 +621,11 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			// Using softirq, safe to awaken, and we get
+>  			// no help from enabling irqs, unlike bh/preempt.
+>  			raise_softirq_irqoff(RCU_SOFTIRQ);
+> +		} else if (exp && in_irq() && !use_softirq &&
+> +			   !t->rcu_read_unlock_special.b.deferred_qs) {
+> +			// Safe to awaken rcuc kthread which will be
+> +                       // scheduled in from the interrupt return path.
+> +			invoke_rcu_core();
+>  		} else {
+>  			// Enabling BH or preempt does reschedule, so...
+>  			// Also if no expediting or NO_HZ_FULL, slow is OK.
+> -- 
+> 2.23.0.rc1.153.gdeed80330f-goog
+> 
 
