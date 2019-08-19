@@ -2,71 +2,67 @@ Return-Path: <SRS0=jzWG=WP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88B33C3A5A0
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C5B5C3A5A0
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 64C7D206C1
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:41:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 518982070D
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:46:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbfHSOlJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Aug 2019 10:41:09 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31742 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726211AbfHSOlJ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 19 Aug 2019 10:41:09 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JEceEm163784;
-        Mon, 19 Aug 2019 10:41:06 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ufwbm920t-1
+        id S1726769AbfHSOqe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Aug 2019 10:46:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6316 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbfHSOqd (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 19 Aug 2019 10:46:33 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JEg6Q0072985;
+        Mon, 19 Aug 2019 10:46:31 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufwf1h3g2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Aug 2019 10:41:05 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7JEdo6H022996;
-        Mon, 19 Aug 2019 14:41:05 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 2ue976egka-1
+        Mon, 19 Aug 2019 10:46:30 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7JEj3P9020340;
+        Mon, 19 Aug 2019 14:46:29 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02dal.us.ibm.com with ESMTP id 2ue9761xyv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Aug 2019 14:41:04 +0000
+        Mon, 19 Aug 2019 14:46:29 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JEf4Q515139790
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JEkS6t42008916
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Aug 2019 14:41:04 GMT
+        Mon, 19 Aug 2019 14:46:28 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1CE1AB205F;
-        Mon, 19 Aug 2019 14:41:04 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 45AB9B2065;
+        Mon, 19 Aug 2019 14:46:28 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00952B2066;
-        Mon, 19 Aug 2019 14:41:03 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 17E82B205F;
+        Mon, 19 Aug 2019 14:46:28 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Aug 2019 14:41:03 +0000 (GMT)
+        Mon, 19 Aug 2019 14:46:28 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 082CF16C17BA; Mon, 19 Aug 2019 07:41:08 -0700 (PDT)
-Date:   Mon, 19 Aug 2019 07:41:08 -0700
+        id 1DA0216C17BA; Mon, 19 Aug 2019 07:46:32 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 07:46:32 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH -rcu dev 3/3] RFC: rcu/tree: Read dynticks_nmi_nesting in
- advance
-Message-ID: <20190819144107.GV28441@linux.ibm.com>
+Subject: Re: [PATCH -rcu dev 1/3] rcu/tree: tick_dep_set/clear_cpu should
+ accept bits instead of masks
+Message-ID: <20190819144632.GW28441@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
 References: <20190816025311.241257-1-joel@joelfernandes.org>
- <20190816025311.241257-3-joel@joelfernandes.org>
- <20190816162404.GB10481@google.com>
- <20190816165242.GS28441@linux.ibm.com>
- <20190819125907.GD27088@lenoir>
- <20190819142208.GA117378@google.com>
+ <20190819123837.GC27088@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190819142208.GA117378@google.com>
+In-Reply-To: <20190819123837.GC27088@lenoir>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
@@ -75,61 +71,114 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorit
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190165
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908190166
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 10:22:08AM -0400, Joel Fernandes wrote:
-> On Mon, Aug 19, 2019 at 02:59:08PM +0200, Frederic Weisbecker wrote:
-> > On Fri, Aug 16, 2019 at 09:52:42AM -0700, Paul E. McKenney wrote:
-> > > On Fri, Aug 16, 2019 at 12:24:04PM -0400, Joel Fernandes wrote:
-> > > > On Thu, Aug 15, 2019 at 10:53:11PM -0400, Joel Fernandes (Google) wrote:
-> > > > > I really cannot explain this patch, but without it, the "else if" block
-> > > > > just doesn't execute thus causing the tick's dep mask to not be set and
-> > > > > causes the tick to be turned off.
-> > > > > 
-> > > > > I tried various _ONCE() macros but the only thing that works is this
-> > > > > patch.
-> > > > > 
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 3 ++-
-> > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 856d3c9f1955..ac6bcf7614d7 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -802,6 +802,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
-> > > > >  {
-> > > > >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-> > > > >  	long incby = 2;
-> > > > > +	int dnn = rdp->dynticks_nmi_nesting;
-> > > > 
-> > > > I believe the accidental sign extension / conversion from long to int was
-> > > > giving me an illusion since things started working well. Changing the 'int
-> > > > dnn' to 'long dnn' gives similar behavior as without this patch! At least I
-> > > > know now. Please feel free to ignore this particular RFC patch while I debug
-> > > > this more (over the weekend or early next week). The first 2 patches are
-> > > > good, just ignore this one.
-> > > 
-> > > Ah, good point on the type!  So you were ending up with zero due to the
-> > > low-order 32 bits of DYNTICK_IRQ_NONIDLE being zero, correct?  If so,
-> > > the "!rdp->dynticks_nmi_nesting" instead needs to be something like
-> > > "rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE", which sounds like
-> > > it is actually worse then the earlier comparison against the constant 2.
-> > > 
-> > > Sounds like I should revert the -rcu commit 805a16eaefc3 ("rcu: Force
-> > > nohz_full tick on upon irq enter instead of exit").
+On Mon, Aug 19, 2019 at 02:38:38PM +0200, Frederic Weisbecker wrote:
+> On Thu, Aug 15, 2019 at 10:53:09PM -0400, Joel Fernandes (Google) wrote:
+> > This commit fixes the issue.
 > > 
-> > I can't find that patch so all I can say so far is that its title doesn't
-> > inspire me much. Do you still need that change for some reason?
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree.c | 29 +++++++++++++++++------------
+> >  1 file changed, 17 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 0512de9ead20..322b1b57967c 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -829,7 +829,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> >  		   !rdp->dynticks_nmi_nesting &&
+> >  		   rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+> >  		rdp->rcu_forced_tick = true;
+> > -		tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU);
+> > +		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
 > 
-> No we don't need it. Paul's dev branch fixed it by checking DYNTICK_IRQ_NONIDLE:
-> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=227482fd4f3ede0502b586da28a59971dfbac0b0
+> Did I suggest you to use the _MASK_ value? That was a bit mean.
+> Sorry for all that lost debugging time :-(
 
-Ah, so you have tested reverting this?  If so, thank you very much!
+At some point, I should have looked at the other calls to these
+functions.  :-/
+
+But would the following patch make sense?  This would not help for (say)
+use of TICK_MASK_BIT_POSIX_TIMER instead of TICK_DEP_BIT_POSIX_TIMER, but
+would help for any new values that might be added later on.  And currently
+for TICK_DEP_MASK_CLOCK_UNSTABLE and TICK_DEP_MASK_RCU.
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/include/linux/tick.h b/include/linux/tick.h
+index 39eb44564058..4ed788ce5762 100644
+--- a/include/linux/tick.h
++++ b/include/linux/tick.h
+@@ -111,6 +111,7 @@ enum tick_dep_bits {
+ 	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
+ 	TICK_DEP_BIT_RCU		= 4
+ };
++#define TICK_DEP_BIT_MAX TICK_DEP_BIT_RCU
+ 
+ #define TICK_DEP_MASK_NONE		0
+ #define TICK_DEP_MASK_POSIX_TIMER	(1 << TICK_DEP_BIT_POSIX_TIMER)
+@@ -215,24 +216,28 @@ extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
+  */
+ static inline void tick_dep_set(enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_set(bit);
+ }
+ 
+ static inline void tick_dep_clear(enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_clear(bit);
+ }
+ 
+ static inline void tick_dep_set_cpu(int cpu, enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_cpu(cpu))
+ 		tick_nohz_dep_set_cpu(cpu, bit);
+ }
+ 
+ static inline void tick_dep_clear_cpu(int cpu, enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_cpu(cpu))
+ 		tick_nohz_dep_clear_cpu(cpu, bit);
+ }
+@@ -240,24 +245,28 @@ static inline void tick_dep_clear_cpu(int cpu, enum tick_dep_bits bit)
+ static inline void tick_dep_set_task(struct task_struct *tsk,
+ 				     enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_set_task(tsk, bit);
+ }
+ static inline void tick_dep_clear_task(struct task_struct *tsk,
+ 				       enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_clear_task(tsk, bit);
+ }
+ static inline void tick_dep_set_signal(struct signal_struct *signal,
+ 				       enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_set_signal(signal, bit);
+ }
+ static inline void tick_dep_clear_signal(struct signal_struct *signal,
+ 					 enum tick_dep_bits bit)
+ {
++	WARN_ON_ONCE(bit > TICK_DEP_BIT_MAX);
+ 	if (tick_nohz_full_enabled())
+ 		tick_nohz_dep_clear_signal(signal, bit);
+ }
