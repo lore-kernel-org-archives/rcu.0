@@ -2,173 +2,93 @@ Return-Path: <SRS0=jzWG=WP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC10C3A589
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 02:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F25E6C3A59D
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 12:10:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5BA6221852
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 02:29:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB2D62085A
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 12:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1566216600;
+	bh=bh51bW1sgw6I5c7IbhmxikuMMxmM+9E0xrPRJfmGoLQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=aCRwGPyZcnYRq5sNbwolFcY/hX3HEmeQvTvUEyfNCakvvexdllV5dHPaoQ9eSSVm1
+	 v6K000qubkKJw3JumVDnjunmpxqUaqdyDF5tbaAESoMoAEUSKu52kiJKgigIF4Nyrh
+	 Z5RPTHFqW1KElY88DzSABVJY9OFYZJNvuq9mrm70=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbfHSC3b (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 18 Aug 2019 22:29:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54978 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726139AbfHSC3b (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sun, 18 Aug 2019 22:29:31 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7J2QqKc082752
-        for <rcu@vger.kernel.org>; Sun, 18 Aug 2019 22:29:30 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufeymew15-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Sun, 18 Aug 2019 22:29:30 -0400
-Received: from localhost
-        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 19 Aug 2019 03:29:29 +0100
-Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
-        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 19 Aug 2019 03:29:26 +0100
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7J2TPGJ51249522
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Aug 2019 02:29:25 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FE0BB2064;
-        Mon, 19 Aug 2019 02:29:25 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BB24B2065;
-        Mon, 19 Aug 2019 02:29:25 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.201.199])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Aug 2019 02:29:25 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id EB73D16C13AF; Sun, 18 Aug 2019 19:29:27 -0700 (PDT)
-Date:   Sun, 18 Aug 2019 19:29:27 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC v2] rcu/tree: Try to invoke_rcu_core() if in_irq() during
- unlock
-Reply-To: paulmck@linux.ibm.com
-References: <20190818214948.GA134430@google.com>
- <20190818221210.GP28441@linux.ibm.com>
- <20190818223230.GA143857@google.com>
- <20190818223511.GB143857@google.com>
- <20190818233135.GQ28441@linux.ibm.com>
- <20190818233839.GA160903@google.com>
- <20190819012153.GR28441@linux.ibm.com>
- <20190819014143.GB160903@google.com>
- <20190819014623.GC160903@google.com>
+        id S1727068AbfHSMKA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Aug 2019 08:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726477AbfHSMKA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Aug 2019 08:10:00 -0400
+Received: from localhost (lfbn-ncy-1-174-150.w83-194.abo.wanadoo.fr [83.194.254.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B18120851;
+        Mon, 19 Aug 2019 12:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566216599;
+        bh=bh51bW1sgw6I5c7IbhmxikuMMxmM+9E0xrPRJfmGoLQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vapP8NGodVtOd40Be++epa25XgLsbkQhZOBamtoW+0L2q2mwiZ8pne0qfZL7dow2J
+         NrnVmGa6o3Lr91YCnt7nKv++0EQ7G8gm2z2ktrgVh6WahYE555zehZXnASf+4BjRBR
+         RP3yZ8/H26XqyF86Y7x0HBvqUng3FnVt9gGO+qtY=
+Date:   Mon, 19 Aug 2019 14:09:57 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: need_heavy_qs flag for PREEMPT=y kernels
+Message-ID: <20190819120955.GA27088@lenoir>
+References: <20190811180852.GA128944@google.com>
+ <20190811211318.GX28441@linux.ibm.com>
+ <20190812032142.GA171001@google.com>
+ <20190812035306.GE28441@linux.ibm.com>
+ <20190812212013.GB48751@google.com>
+ <20190812230138.GS28441@linux.ibm.com>
+ <20190813010249.GA129011@google.com>
+ <20190815171714.GA1023@linux.ibm.com>
+ <20190815200432.GB23194@google.com>
+ <20190815203107.GL28441@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190819014623.GC160903@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-x-cbid: 19081902-2213-0000-0000-000003BD00A5
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011613; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01248860; UDB=6.00659224; IPR=6.01030386;
- MB=3.00028226; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 02:29:28
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081902-2214-0000-0000-00005FB215AD
-Message-Id: <20190819022927.GS28441@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190026
+In-Reply-To: <20190815203107.GL28441@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 18, 2019 at 09:46:23PM -0400, Joel Fernandes wrote:
-> On Sun, Aug 18, 2019 at 09:41:43PM -0400, Joel Fernandes wrote:
-> > On Sun, Aug 18, 2019 at 06:21:53PM -0700, Paul E. McKenney wrote:
-> [snip]
-> > > > > Also, your commit log's point #2 is "in_irq() implies in_interrupt()
-> > > > > which implies raising softirq will not do any wake ups."  This mention
-> > > > > of softirq seems a bit odd, given that we are going to wake up a rcuc
-> > > > > kthread.  Of course, this did nothing to quell my suspicions.  ;-)
-> > > > 
-> > > > Yes, I should delete this #2 from the changelog since it is not very relevant
-> > > > (I feel now). My point with #2 was that even if were to raise a softirq
-> > > > (which we are not), a scheduler wakeup of ksoftirqd is impossible in this
-> > > > path anyway since in_irq() implies in_interrupt().
-> > > 
-> > > Please!  Could you also add a first-principles explanation of why
-> > > the added condition is immune from scheduler deadlocks?
-> > 
-> > Sure I can add an example in the change log, however I was thinking of this
-> > example which you mentioned:
-> > https://lore.kernel.org/lkml/20190627173831.GW26519@linux.ibm.com/
-> > 
-> > 	previous_reader()
-> > 	{
-> > 		rcu_read_lock();
-> > 		do_something(); /* Preemption happened here. */
-> > 		local_irq_disable(); /* Cannot be the scheduler! */
-> > 		do_something_else();
-> > 		rcu_read_unlock();  /* Must defer QS, task still queued. */
-> > 		do_some_other_thing();
-> > 		local_irq_enable();
-> > 	}
-> > 
-> > 	current_reader() /* QS from previous_reader() is still deferred. */
-> > 	{
-> > 		local_irq_disable();  /* Might be the scheduler. */
-> > 		do_whatever();
-> > 		rcu_read_lock();
-> > 		do_whatever_else();
-> > 		rcu_read_unlock();  /* Must still defer reporting QS. */
-> > 		do_whatever_comes_to_mind();
-> > 		local_irq_enable();
-> > 	}
-> > 
-> > One modification of the example could be, previous_reader() could also do:
-> > 	previous_reader()
-> > 	{
-> > 		rcu_read_lock();
-> > 		do_something_that_takes_really_long(); /* causes need_qs in
-> > 							  the unlock_special_union to be set */
-> > 		local_irq_disable(); /* Cannot be the scheduler! */
-> > 		do_something_else();
-> > 		rcu_read_unlock();  /* Must defer QS, task still queued. */
-> > 		do_some_other_thing();
-> > 		local_irq_enable();
-> > 	}
+On Thu, Aug 15, 2019 at 01:31:07PM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 15, 2019 at 04:04:32PM -0400, Joel Fernandes wrote:
+> > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> > index be9707f68024..e697c7a2ce67 100644
+> > --- a/kernel/time/tick-sched.c
+> > +++ b/kernel/time/tick-sched.c
+> > @@ -198,6 +198,10 @@ static bool check_tick_dependency(atomic_t *dep)
+> >  		return true;
+> >  	}
+> >  
+> > +	if (val & TICK_DEP_MASK_CLOCK_RCU) {
+> > +		return true;
+> > +	}
+> > +
+> >  	return false;
+> >  }
 > 
-> The point you were making in that thread being, current_reader() ->
-> rcu_read_unlock() -> rcu_read_unlock_special() would not do any wakeups
-> because previous_reader() sets the deferred_qs bit.
+> That one is not in my tree, either.  Frederic, should I add this to
+> your patch?  For that matter, may I add your Signed-off-by as well?
+> Your original is in my -rcu tree at:
 > 
-> Anyway, I will add all of this into the changelog.
+> 0cb41806c799 ("EXP nohz: Add TICK_DEP_BIT_RCU")
 
-Examples are good, but what makes it so that there are no examples of
-its being unsafe?
+Of course, thanks!
 
-And a few questions along the way, some quick quiz, some more serious.
-Would it be safe if it checked in_interrupt() instead of in_irq()?
-If not, should the in_interrupt() in the "if" condition preceding the
-added "else if" be changed to in_irq()?  Would it make sense to add an
-"|| !irqs_were_disabled" do your new "else if" condition?  Would the
-body of the "else if" actually be executed in current mainline?
-
-In an attempt to be at least a little constructive, I am doing some
-testing of this patch overnight, along with a WARN_ON_ONCE() to see if
-that invoke_rcu_core() is ever reached.
-
-							Thanx, Paul
-
+> 
+> I am testing Joel's suggested addition now.
+> 
+> 							Thanx, Paul
