@@ -2,284 +2,259 @@ Return-Path: <SRS0=jzWG=WP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E234DC3A5A2
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 18:05:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74F84C3A5A0
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 19:33:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AF18022CEB
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 18:05:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 354A4206C1
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 19:33:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+MZ7iZz"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="K2RzJH19"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbfHSSFp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Aug 2019 14:05:45 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33487 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbfHSSFo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Aug 2019 14:05:44 -0400
-Received: by mail-wr1-f66.google.com with SMTP id u16so9670171wrr.0;
-        Mon, 19 Aug 2019 11:05:41 -0700 (PDT)
+        id S1728379AbfHSTdq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Aug 2019 15:33:46 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40407 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728348AbfHSTdq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Aug 2019 15:33:46 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w16so1755172pfn.7
+        for <rcu@vger.kernel.org>; Mon, 19 Aug 2019 12:33:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=SXhIQ/zc6wcO31VB7m35TYOSZfJd3fuQtKqpuHQk6I0=;
-        b=i+MZ7iZzhhKrS0wKdC9ZjNt0uqL0zeNMGp2J/4dPy8L/RtXFu2dK66cMbLOx+4nR4g
-         unjTiOAHY5GspaS05xo9sz0MTzXPCUQepPeG5cbKWsSFWjWM9RwUgUEl/6pzQTVZtAPK
-         VdMU712bEzc4tkS0gh+zNB2Qa2uj0pYe0W2MKK5I5YPVkVNP4GJVf4r04DBwvr0/O1hN
-         w8dwLpIJtWMvUpYhqBia2EyrfEdKYwIAtkJZx+HOr/6g2xjdJPy0mHH8L3J5Bz4uRHBF
-         p2ef2r4mMTslI6zanvJjFPnFAtbWvUJr8zLUr7JyVUPbgq9UFvE7rAKdH3+2y36nTLPt
-         EVDQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6E9zSLLO501q21mTP5/9cKKSAch0JWUVBipaWr+OyYU=;
+        b=K2RzJH19mob2v+1kZsGcEwNbvWSA61D/DF633myB6GaeeA0PStyrHVVbnh9/PM4etj
+         YjRTbP5TkS+1pm+ufNo8jO+3ILeqxUM/4LFedmUQ8OLmCLYpr7fyLB8AL6aRcqcZ2s3i
+         FKCYAyfQH2zIBK4pePQ7zItBdxaYWyxT+nGPc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=SXhIQ/zc6wcO31VB7m35TYOSZfJd3fuQtKqpuHQk6I0=;
-        b=jtUCSH3kz/R7Zwj4SIM/jlfGoMW74U6rKY06ZNEhMNOTX9YT0ItE+aqUWuCfolPQru
-         b067yUwpIWrmkqd8enhpZuG5y0dgERu/6XWo1VlNi7M1kFCFbmQjO6t3PM4rXr76ailn
-         Imk37vc7tSAwM6Cf/afZLWaqc8GYs+I/bic13aF/XaxZ9YxnRfUiVpW7Kgu/C1+diuqI
-         mWqcsSOuozZMruLrNBYKp/2T0FWiYXsFt13xt1HGmrw7kz8b+AvakevAClfyZ33VmSfK
-         +0muonKekTBTU4ZmBnIcdLHD9GSflUfHUMs1MrGZwGozSFoeD/ltvMMhb7jxlpxAeNnr
-         lZ3w==
-X-Gm-Message-State: APjAAAVYZh1/SzYSJCqi4YCabG92T+971gIZovpbpZ9Mx4kRRSGaN5J3
-        FaJJSDpIoq/HLx62+sio2uC0S4eK/2kQ8pZAkcc=
-X-Google-Smtp-Source: APXvYqwb9JdefcGqvn4K0lUJgZCDMh5rLV3HCH8AME/JfNncC9b10FlzmlaHTKIBo2GAskS3+l27Mf4t9o060Wilk6U=
-X-Received: by 2002:a5d:4101:: with SMTP id l1mr30649034wrp.202.1566237940836;
- Mon, 19 Aug 2019 11:05:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190812215052.71840-1-ndesaulniers@google.com> <20190812215052.71840-14-ndesaulniers@google.com>
-In-Reply-To: <20190812215052.71840-14-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 19 Aug 2019 20:05:28 +0200
-Message-ID: <CA+icZUVQ9ZBcrVskN3xOdgZ2Y7UJL_jyGY5LhoHHR7uxESmdmQ@mail.gmail.com>
-Subject: Re: [PATCH 14/16] include/linux: prefer __section from compiler_attributes.h
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     akpm@linux-foundation.org, jpoimboe@redhat.com, yhs@fb.com,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6E9zSLLO501q21mTP5/9cKKSAch0JWUVBipaWr+OyYU=;
+        b=sN/v6kpYFPCfDMmxYMWTtjvxX37xpzXX5Fq7mwUl0lhYOSOPrQU6qPVtn4UOeXOGrC
+         hc1PIoYWjc1QszMEVhcVhmmWVTDAyAn+wOoIM/6MlexJCdZR9xgmY5kB2kNPzzFCIo+L
+         flm9u2CW7SFl49SUaJRqs7/MoolA+EoPi6EAO0lfcNGMLcgj3gyb/MNkWhPpbGDCHr+l
+         CP+p4QLOyFwTrYrJjbPSlsI2GFaF+Gm6+fcvkD1w9w+JqxPkHmYEwaW5Pm6eqEEf/vGm
+         xqd5Qks2DcOcvgZfBL1+7fts2MT2hi6vVM/8RW1chbCYMPoTmomSrRcxwiFtovamBUdG
+         3tTw==
+X-Gm-Message-State: APjAAAVzEpJPLJZ8BMHY8ecaAHxdUe7UWSVVQouklOksVT3Yxi62yl0Q
+        onq4TOrtaDIzig7YInRmlkWGZg==
+X-Google-Smtp-Source: APXvYqyeMwEuBy6WpEG+P2TIPbWO/9H7HJd2vZ6OEH4sUdgqbo6RgX2gS2A73a4w0IBurBWsISt4sw==
+X-Received: by 2002:a17:90a:a013:: with SMTP id q19mr22203868pjp.64.1566243225512;
+        Mon, 19 Aug 2019 12:33:45 -0700 (PDT)
+Received: from localhost ([172.19.216.18])
+        by smtp.gmail.com with ESMTPSA id 81sm18152999pfx.111.2019.08.19.12.33.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Aug 2019 12:33:44 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 15:33:27 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+        kernel-team@lge.com, Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Ming Lei <ming.lei@redhat.com>,
-        Dou Liyang <douliyangs@gmail.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        max.byungchul.park@gmail.com, Rao Shoaib <rao.shoaib@oracle.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v4 2/2] rcuperf: Add kfree_rcu() performance Tests
+Message-ID: <20190819193327.GF117548@google.com>
+References: <20190814160411.58591-1-joel@joelfernandes.org>
+ <20190814160411.58591-2-joel@joelfernandes.org>
+ <20190814225850.GZ28441@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190814225850.GZ28441@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 11:53 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/619
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Wed, Aug 14, 2019 at 03:58:50PM -0700, Paul E. McKenney wrote:
+> On Wed, Aug 14, 2019 at 12:04:11PM -0400, Joel Fernandes (Google) wrote:
+> > This test runs kfree_rcu in a loop to measure performance of the new
+> > kfree_rcu batching functionality.
+> 
+> kfree_rcu().
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> [ Linux v5.3-rc5 ]
+Fixed.
 
-Patchset "for-5.3/x86-section-name-escaping" (5 patches):
+> > The following table shows results when booting with arguments:
+> > rcuperf.kfree_loops=200000 rcuperf.kfree_alloc_num=1000 rcuperf.kfree_rcu_test=1
+> > 
+> > In addition, rcuperf.kfree_no_batch is used to toggle the batching of
+> > kfree_rcu()s for a test run.
+> > 
+> > rcuperf.kfree_no_batch	GPs	time (seconds)
+> >  0 (default)		1732	15.9
+> >  1			9133 	14.5
+> > 
+> > Note that the results are the same for the case:
+> > 1. Patch is not applied and rcuperf.kfree_no_batch=0
+> > 2. Patch is applied     and rcuperf.kfree_no_batch=1
+> > 
+> > On a 16 CPU system with the above boot parameters, we see that the total
+> > number of grace periods that elapse during the test drops from 9133 when
+> > not batching to 1732 when batching (a 5X improvement). The kfree_rcu()
+> > flood itself slows down a bit when batching, though, as shown. This is
+> > likely due to rcuperf threads contending with the additional worker
+> > threads that are now running both before (the monitor) and after (the
+> > work done to kfree()) the grace period.
+> 
+> Another possibility is that the batching approach is resulting in a
+> greater number of objects waiting to be freed (noted below), and it
+> takes the extra 1.4 seconds to catch up.  How would you decide which
+> effect is the most important?  (Your path of least resistance is to
+> remove the speculation.)
 
-compiler_attributes.h: add note about __section
-include/linux/compiler.h: remove unused KENTRY macro
-include/linux: prefer __section from compiler_attributes.h
-include/asm-generic: prefer __section from compiler_attributes.h
-x86: prefer __section from compiler_attributes.h
+I will remove the speculation since the slightly extra time is understandable
+and not concerning. I hope we agree on that.
 
-Thanks.
+> > Note that the active memory consumption during the kfree_rcu() flood
+> > does increase to around 300-400MB due to the batching (from around 50MB
+> > without batching). However, this memory consumption is relatively
+> > constant and is just an effect of the buffering. In other words, the
+> > system is able to keep up with the kfree_rcu() load. The memory
+> > consumption comes down to 200-300MB if KFREE_DRAIN_JIFFIES is
+> > increased from HZ/50 to HZ/80.
+> > 
+> > Also, when running the test, please disable CONFIG_DEBUG_PREEMPT and
+> > CONFIG_PROVE_RCU for realistic comparisons with/without batching.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Looks pretty close, just a very few issues needing fixing below.
 
-- Sedat -
+Thanks!
 
-> ---
->  include/linux/cache.h       | 6 +++---
->  include/linux/compiler.h    | 8 ++++----
->  include/linux/cpu.h         | 2 +-
->  include/linux/export.h      | 2 +-
->  include/linux/init_task.h   | 4 ++--
->  include/linux/interrupt.h   | 5 ++---
->  include/linux/sched/debug.h | 2 +-
->  include/linux/srcutree.h    | 2 +-
->  8 files changed, 15 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/cache.h b/include/linux/cache.h
-> index 750621e41d1c..3f4df9eef1e1 100644
-> --- a/include/linux/cache.h
-> +++ b/include/linux/cache.h
-> @@ -28,7 +28,7 @@
->   * but may get written to during init, so can't live in .rodata (via "const").
->   */
->  #ifndef __ro_after_init
-> -#define __ro_after_init __attribute__((__section__(".data..ro_after_init")))
-> +#define __ro_after_init __section(.data..ro_after_init)
->  #endif
->
->  #ifndef ____cacheline_aligned
-> @@ -45,8 +45,8 @@
->
->  #ifndef __cacheline_aligned
->  #define __cacheline_aligned                                    \
-> -  __attribute__((__aligned__(SMP_CACHE_BYTES),                 \
-> -                __section__(".data..cacheline_aligned")))
-> +       __aligned(SMP_CACHE_BYTES)                              \
-> +       __section(.data..cacheline_aligned)
->  #endif /* __cacheline_aligned */
->
->  #ifndef __cacheline_aligned_in_smp
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index f0fd5636fddb..5e88e7e33abe 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -24,7 +24,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
->                         long ______r;                                   \
->                         static struct ftrace_likely_data                \
->                                 __aligned(4)                            \
-> -                               __section("_ftrace_annotated_branch")   \
-> +                               __section(_ftrace_annotated_branch)     \
->                                 ______f = {                             \
->                                 .data.func = __func__,                  \
->                                 .data.file = __FILE__,                  \
-> @@ -60,7 +60,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
->  #define __trace_if_value(cond) ({                      \
->         static struct ftrace_branch_data                \
->                 __aligned(4)                            \
-> -               __section("_ftrace_branch")             \
-> +               __section(_ftrace_branch)               \
->                 __if_trace = {                          \
->                         .func = __func__,               \
->                         .file = __FILE__,               \
-> @@ -118,7 +118,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
->         ".popsection\n\t"
->
->  /* Annotate a C jump table to allow objtool to follow the code flow */
-> -#define __annotate_jump_table __section(".rodata..c_jump_table")
-> +#define __annotate_jump_table __section(.rodata..c_jump_table)
->
->  #else
->  #define annotate_reachable()
-> @@ -298,7 +298,7 @@ unsigned long read_word_at_a_time(const void *addr)
->   * visible to the compiler.
->   */
->  #define __ADDRESSABLE(sym) \
-> -       static void * __section(".discard.addressable") __used \
-> +       static void * __section(.discard.addressable) __used \
->                 __PASTE(__addressable_##sym, __LINE__) = (void *)&sym;
->
->  /**
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index fcb1386bb0d4..186bbd79d6ce 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -166,7 +166,7 @@ void cpu_startup_entry(enum cpuhp_state state);
->  void cpu_idle_poll_ctrl(bool enable);
->
->  /* Attach to any functions which should be considered cpuidle. */
-> -#define __cpuidle      __attribute__((__section__(".cpuidle.text")))
-> +#define __cpuidle      __section(.cpuidle.text)
->
->  bool cpu_in_idle(unsigned long pc);
->
-> diff --git a/include/linux/export.h b/include/linux/export.h
-> index fd8711ed9ac4..808c1a0c2ef9 100644
-> --- a/include/linux/export.h
-> +++ b/include/linux/export.h
-> @@ -104,7 +104,7 @@ struct kernel_symbol {
->   * discarded in the final link stage.
->   */
->  #define __ksym_marker(sym)     \
-> -       static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
-> +       static int __ksym_marker_##sym[0] __section(.discard.ksym) __used
->
->  #define __EXPORT_SYMBOL(sym, sec)                              \
->         __ksym_marker(sym);                                     \
-> diff --git a/include/linux/init_task.h b/include/linux/init_task.h
-> index 6049baa5b8bc..50139505da34 100644
-> --- a/include/linux/init_task.h
-> +++ b/include/linux/init_task.h
-> @@ -51,12 +51,12 @@ extern struct cred init_cred;
->
->  /* Attach to the init_task data structure for proper alignment */
->  #ifdef CONFIG_ARCH_TASK_STRUCT_ON_STACK
-> -#define __init_task_data __attribute__((__section__(".data..init_task")))
-> +#define __init_task_data __section(.data..init_task)
->  #else
->  #define __init_task_data /**/
->  #endif
->
->  /* Attach to the thread_info data structure for proper alignment */
-> -#define __init_thread_info __attribute__((__section__(".data..init_thread_info")))
-> +#define __init_thread_info __section(.data..init_thread_info)
->
->  #endif
-> diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-> index 5b8328a99b2a..29debfe4dd0f 100644
-> --- a/include/linux/interrupt.h
-> +++ b/include/linux/interrupt.h
-> @@ -741,8 +741,7 @@ extern int arch_early_irq_init(void);
->  /*
->   * We want to know which function is an entrypoint of a hardirq or a softirq.
->   */
-> -#define __irq_entry             __attribute__((__section__(".irqentry.text")))
-> -#define __softirq_entry  \
-> -       __attribute__((__section__(".softirqentry.text")))
-> +#define __irq_entry    __section(.irqentry.text)
-> +#define __softirq_entry        __section(.softirqentry.text)
->
->  #endif
-> diff --git a/include/linux/sched/debug.h b/include/linux/sched/debug.h
-> index 95fb9e025247..e17b66221fdd 100644
-> --- a/include/linux/sched/debug.h
-> +++ b/include/linux/sched/debug.h
-> @@ -42,7 +42,7 @@ extern void proc_sched_set_task(struct task_struct *p);
->  #endif
->
->  /* Attach to any functions which should be ignored in wchan output. */
-> -#define __sched                __attribute__((__section__(".sched.text")))
-> +#define __sched                __section(.sched.text)
->
->  /* Linker adds these: start and end of __sched functions */
->  extern char __sched_text_start[], __sched_text_end[];
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..9de652f4e1bd 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -124,7 +124,7 @@ struct srcu_struct {
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         is_static struct srcu_struct name;                              \
->         struct srcu_struct * const __srcu_struct_##name                 \
-> -               __section("___srcu_struct_ptrs") = &name
-> +               __section(___srcu_struct_ptrs) = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);      \
-> --
-> 2.23.0.rc1.153.gdeed80330f-goog
->
+> > ---
+> >  .../admin-guide/kernel-parameters.txt         |  17 ++
+> >  kernel/rcu/rcuperf.c                          | 189 +++++++++++++++++-
+> >  2 files changed, 198 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 7ccd158b3894..a9156ca5de24 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -3895,6 +3895,23 @@
+> >  			test until boot completes in order to avoid
+> >  			interference.
+> >  
+> > +	rcuperf.kfree_rcu_test= [KNL]
+> > +			Set to measure performance of kfree_rcu() flooding.
+> > +
+> > +	rcuperf.kfree_nthreads= [KNL]
+> > +			The number of threads running loops of kfree_rcu().
+> > +
+> > +	rcuperf.kfree_alloc_num= [KNL]
+> > +			Number of allocations and frees done in an iteration.
+> > +
+> > +	rcuperf.kfree_loops= [KNL]
+> > +			Number of loops doing rcuperf.kfree_alloc_num number
+> > +			of allocations and frees.
+> > +
+> > +	rcuperf.kfree_no_batch= [KNL]
+> > +			Use the non-batching (slower) version of kfree_rcu.
+> > +			This is useful for comparing with the batched version.
+> 
+> I suggest s/slower/more efficient/ given that the batching takes more
+> wall-clock time than does the no-batching.
+
+I think you mean, slower -> less efficient (due to taking up more grace
+period cycles per second in the no batching case). I will update it
+accordingly.
+
+[snip]
+> > @@ -592,6 +593,175 @@ rcu_perf_shutdown(void *arg)
+> >  	return -EINVAL;
+> >  }
+> >  
+> > +/*
+> > + * kfree_rcu performance tests: Start a kfree_rcu loop on all CPUs for number
+> > + * of iterations and measure total time and number of GP for all iterations to complete.
+> > + */
+> > +
+> > +torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+> > +torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+> > +torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
+> > +torture_param(int, kfree_no_batch, 0, "Use the non-batching (slower) version of kfree_rcu.");
+> > +
+> > +static struct task_struct **kfree_reader_tasks;
+> > +static int kfree_nrealthreads;
+> > +static atomic_t n_kfree_perf_thread_started;
+> > +static atomic_t n_kfree_perf_thread_ended;
+> > +
+> > +struct kfree_obj {
+> > +	char kfree_obj[8];
+> > +	struct rcu_head rh;
+> > +};
+> 
+> (Aside from above, no need to change this part of the patch, at least not
+> that I know of at the moment.)
+> 
+> 24 bytes on a 64-bit system, 16 on a 32-bit system.  So there might
+> have been 10 million extra objects awaiting free in the batching case
+> given the 400M-50M=350M excess for the batching approach.  If freeing
+> each object took about 100ns, that could account for the additional
+> wall-clock time for the batching approach.
+
+Makes sense, and this comes down to 200-220MB range with the additional list.
+
+> > +	set_user_nice(current, MAX_NICE);
+> > +
+> > +	alloc_ptrs = (struct kfree_obj **)kmalloc(sizeof(struct kfree_obj *) * kfree_alloc_num,
+> > +						  GFP_KERNEL);
+> > +	if (!alloc_ptrs)
+> > +		return -ENOMEM;
+> > +
+> > +	start_time = ktime_get_mono_fast_ns();
+> > +
+> > +	if (atomic_inc_return(&n_kfree_perf_thread_started) >= kfree_nrealthreads) {
+> > +		if (gp_exp)
+> > +			b_rcu_gp_test_started = cur_ops->exp_completed() / 2;
+> > +		else
+> > +			b_rcu_gp_test_started = cur_ops->get_gp_seq();
+> > +	}
+> > +
+> > +	do {
+> > +		for (i = 0; i < kfree_alloc_num; i++) {
+> > +			alloc_ptrs[i] = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
+> > +			if (!alloc_ptrs[i])
+> > +				return -ENOMEM;
+> > +		}
+> > +
+> > +		for (i = 0; i < kfree_alloc_num; i++) {
+> > +			if (!kfree_no_batch) {
+> > +				kfree_rcu(alloc_ptrs[i], rh);
+> > +			} else {
+> > +				rcu_callback_t cb;
+> > +
+> > +				cb = (rcu_callback_t)(unsigned long)offsetof(struct kfree_obj, rh);
+> > +				kfree_call_rcu_nobatch(&(alloc_ptrs[i]->rh), cb);
+> > +			}
+> > +		}
+> 
+> The point of allocating a large batch and then kfree_rcu()ing them in a
+> loop is to defeat the per-CPU pool optimization?  Either way, a comment
+> would be very good!
+
+It was a reasoning like this, added it as a comment:
+
+	/* While measuring kfree_rcu() time, we also end up measuring kmalloc()
+	 * time. So the strategy here is to do a few (kfree_alloc_num) number
+	 * of kmalloc() and kfree_rcu() every loop so that the current loop's
+	 * deferred kfree()ing overlaps with the next loop's kmalloc().
+	 */
+
+Will post it soon with other patches on top of -rcu dev.
+
+thanks,
+
+ - Joel
+
