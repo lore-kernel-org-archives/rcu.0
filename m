@@ -2,185 +2,136 @@ Return-Path: <SRS0=jzWG=WP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C409C3A5A0
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B039C3A5A0
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:40:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 113A520651
-	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:33:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 660D5206C1
+	for <rcu@archiver.kernel.org>; Mon, 19 Aug 2019 14:40:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbfHSOdT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Aug 2019 10:33:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41742 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726261AbfHSOdS (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 19 Aug 2019 10:33:18 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JEX0cS029713
-        for <rcu@vger.kernel.org>; Mon, 19 Aug 2019 10:33:18 -0400
-Received: from e14.ny.us.ibm.com (e14.ny.us.ibm.com [129.33.205.204])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ufwjx85wk-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Mon, 19 Aug 2019 10:33:17 -0400
-Received: from localhost
-        by e14.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
-        Mon, 19 Aug 2019 15:33:14 +0100
-Received: from b01cxnp23033.gho.pok.ibm.com (9.57.198.28)
-        by e14.ny.us.ibm.com (146.89.104.201) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 19 Aug 2019 15:33:11 +0100
+        id S1726661AbfHSOkZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Aug 2019 10:40:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41248 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726261AbfHSOkZ (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 19 Aug 2019 10:40:25 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JEbGVY014829;
+        Mon, 19 Aug 2019 10:40:21 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ufwdf0vy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Aug 2019 10:40:21 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7JEdqUW023028;
+        Mon, 19 Aug 2019 14:40:20 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03dal.us.ibm.com with ESMTP id 2ue976egf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Aug 2019 14:40:20 +0000
 Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JEXAFu49086838
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JEeJx251642700
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Aug 2019 14:33:10 GMT
+        Mon, 19 Aug 2019 14:40:20 GMT
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D03BB2066;
-        Mon, 19 Aug 2019 14:33:10 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id E51ECB2066;
+        Mon, 19 Aug 2019 14:40:19 +0000 (GMT)
 Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 707A2B2065;
-        Mon, 19 Aug 2019 14:33:10 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id C8319B2067;
+        Mon, 19 Aug 2019 14:40:19 +0000 (GMT)
 Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
         by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Aug 2019 14:33:10 +0000 (GMT)
+        Mon, 19 Aug 2019 14:40:19 +0000 (GMT)
 Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 75F5416C17BA; Mon, 19 Aug 2019 07:33:14 -0700 (PDT)
-Date:   Mon, 19 Aug 2019 07:33:14 -0700
+        id CD40816C17BA; Mon, 19 Aug 2019 07:40:23 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 07:40:23 -0700
 From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC v2] rcu/tree: Try to invoke_rcu_core() if in_irq() during
- unlock
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH -rcu dev 3/3] RFC: rcu/tree: Read dynticks_nmi_nesting in
+ advance
+Message-ID: <20190819144023.GU28441@linux.ibm.com>
 Reply-To: paulmck@linux.ibm.com
-References: <20190818221210.GP28441@linux.ibm.com>
- <20190818223230.GA143857@google.com>
- <20190818223511.GB143857@google.com>
- <20190818233135.GQ28441@linux.ibm.com>
- <20190818233839.GA160903@google.com>
- <20190819012153.GR28441@linux.ibm.com>
- <20190819014143.GB160903@google.com>
- <20190819014623.GC160903@google.com>
- <20190819022927.GS28441@linux.ibm.com>
- <20190819125757.GA6946@linux.ibm.com>
+References: <20190816025311.241257-1-joel@joelfernandes.org>
+ <20190816025311.241257-3-joel@joelfernandes.org>
+ <20190816162404.GB10481@google.com>
+ <20190816165242.GS28441@linux.ibm.com>
+ <20190819125907.GD27088@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190819125757.GA6946@linux.ibm.com>
+In-Reply-To: <20190819125907.GD27088@lenoir>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-TM-AS-GCONF: 00
-x-cbid: 19081914-0052-0000-0000-000003EC4E72
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011618; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01249099; UDB=6.00659367; IPR=6.01030626;
- MB=3.00028231; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-19 14:33:13
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081914-0053-0000-0000-000062262091
-Message-Id: <20190819143314.GT28441@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190164
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908190165
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 05:57:57AM -0700, Paul E. McKenney wrote:
-> On Sun, Aug 18, 2019 at 07:29:27PM -0700, Paul E. McKenney wrote:
-> > On Sun, Aug 18, 2019 at 09:46:23PM -0400, Joel Fernandes wrote:
-> > > On Sun, Aug 18, 2019 at 09:41:43PM -0400, Joel Fernandes wrote:
-> > > > On Sun, Aug 18, 2019 at 06:21:53PM -0700, Paul E. McKenney wrote:
-> > > [snip]
-> > > > > > > Also, your commit log's point #2 is "in_irq() implies in_interrupt()
-> > > > > > > which implies raising softirq will not do any wake ups."  This mention
-> > > > > > > of softirq seems a bit odd, given that we are going to wake up a rcuc
-> > > > > > > kthread.  Of course, this did nothing to quell my suspicions.  ;-)
-> > > > > > 
-> > > > > > Yes, I should delete this #2 from the changelog since it is not very relevant
-> > > > > > (I feel now). My point with #2 was that even if were to raise a softirq
-> > > > > > (which we are not), a scheduler wakeup of ksoftirqd is impossible in this
-> > > > > > path anyway since in_irq() implies in_interrupt().
-> > > > > 
-> > > > > Please!  Could you also add a first-principles explanation of why
-> > > > > the added condition is immune from scheduler deadlocks?
+On Mon, Aug 19, 2019 at 02:59:08PM +0200, Frederic Weisbecker wrote:
+> On Fri, Aug 16, 2019 at 09:52:42AM -0700, Paul E. McKenney wrote:
+> > On Fri, Aug 16, 2019 at 12:24:04PM -0400, Joel Fernandes wrote:
+> > > On Thu, Aug 15, 2019 at 10:53:11PM -0400, Joel Fernandes (Google) wrote:
+> > > > I really cannot explain this patch, but without it, the "else if" block
+> > > > just doesn't execute thus causing the tick's dep mask to not be set and
+> > > > causes the tick to be turned off.
 > > > > 
-> > > > Sure I can add an example in the change log, however I was thinking of this
-> > > > example which you mentioned:
-> > > > https://lore.kernel.org/lkml/20190627173831.GW26519@linux.ibm.com/
+> > > > I tried various _ONCE() macros but the only thing that works is this
+> > > > patch.
 > > > > 
-> > > > 	previous_reader()
-> > > > 	{
-> > > > 		rcu_read_lock();
-> > > > 		do_something(); /* Preemption happened here. */
-> > > > 		local_irq_disable(); /* Cannot be the scheduler! */
-> > > > 		do_something_else();
-> > > > 		rcu_read_unlock();  /* Must defer QS, task still queued. */
-> > > > 		do_some_other_thing();
-> > > > 		local_irq_enable();
-> > > > 	}
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > ---
+> > > >  kernel/rcu/tree.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
 > > > > 
-> > > > 	current_reader() /* QS from previous_reader() is still deferred. */
-> > > > 	{
-> > > > 		local_irq_disable();  /* Might be the scheduler. */
-> > > > 		do_whatever();
-> > > > 		rcu_read_lock();
-> > > > 		do_whatever_else();
-> > > > 		rcu_read_unlock();  /* Must still defer reporting QS. */
-> > > > 		do_whatever_comes_to_mind();
-> > > > 		local_irq_enable();
-> > > > 	}
-> > > > 
-> > > > One modification of the example could be, previous_reader() could also do:
-> > > > 	previous_reader()
-> > > > 	{
-> > > > 		rcu_read_lock();
-> > > > 		do_something_that_takes_really_long(); /* causes need_qs in
-> > > > 							  the unlock_special_union to be set */
-> > > > 		local_irq_disable(); /* Cannot be the scheduler! */
-> > > > 		do_something_else();
-> > > > 		rcu_read_unlock();  /* Must defer QS, task still queued. */
-> > > > 		do_some_other_thing();
-> > > > 		local_irq_enable();
-> > > > 	}
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 856d3c9f1955..ac6bcf7614d7 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -802,6 +802,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> > > >  {
+> > > >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> > > >  	long incby = 2;
+> > > > +	int dnn = rdp->dynticks_nmi_nesting;
 > > > 
-> > > The point you were making in that thread being, current_reader() ->
-> > > rcu_read_unlock() -> rcu_read_unlock_special() would not do any wakeups
-> > > because previous_reader() sets the deferred_qs bit.
-> > > 
-> > > Anyway, I will add all of this into the changelog.
+> > > I believe the accidental sign extension / conversion from long to int was
+> > > giving me an illusion since things started working well. Changing the 'int
+> > > dnn' to 'long dnn' gives similar behavior as without this patch! At least I
+> > > know now. Please feel free to ignore this particular RFC patch while I debug
+> > > this more (over the weekend or early next week). The first 2 patches are
+> > > good, just ignore this one.
 > > 
-> > Examples are good, but what makes it so that there are no examples of
-> > its being unsafe?
+> > Ah, good point on the type!  So you were ending up with zero due to the
+> > low-order 32 bits of DYNTICK_IRQ_NONIDLE being zero, correct?  If so,
+> > the "!rdp->dynticks_nmi_nesting" instead needs to be something like
+> > "rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE", which sounds like
+> > it is actually worse then the earlier comparison against the constant 2.
 > > 
-> > And a few questions along the way, some quick quiz, some more serious.
-> > Would it be safe if it checked in_interrupt() instead of in_irq()?
-> > If not, should the in_interrupt() in the "if" condition preceding the
-> > added "else if" be changed to in_irq()?  Would it make sense to add an
-> > "|| !irqs_were_disabled" do your new "else if" condition?  Would the
-> > body of the "else if" actually be executed in current mainline?
-> > 
-> > In an attempt to be at least a little constructive, I am doing some
-> > testing of this patch overnight, along with a WARN_ON_ONCE() to see if
-> > that invoke_rcu_core() is ever reached.
+> > Sounds like I should revert the -rcu commit 805a16eaefc3 ("rcu: Force
+> > nohz_full tick on upon irq enter instead of exit").
 > 
-> And that WARN_ON_ONCE() never triggered in two-hour rcutorture runs of
-> TREE01, TREE02, TREE03, and TREE09.  (These are the TREE variants in
-> CFLIST that have CONFIG_PREEMPT=y.)
-> 
-> This of course raises other questions.  But first, do you see that code
-> executing in your testing?
+> I can't find that patch so all I can say so far is that its title doesn't
+> inspire me much. Do you still need that change for some reason?
 
-Never mind!  Idiot here forgot the "--bootargs rcutree.use_softirq"...
+It is in -rcu branch dev, but has been rebased.  The current version
+is 227482fd4f3e ("rcu: Force nohz_full tick on upon irq enter instead
+of exit").
+
+It is not yet clear to me whether this is needed or not.  I -think- that
+it is not, but without it, it is possible that some chain of events would
+result in the rcu_data structure's ->rcu_urgent_qs field being cleared
+before the interrupt-exit code could sample it, which might possibly
+result in the tick remaining off.
 
 							Thanx, Paul
-
