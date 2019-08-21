@@ -2,58 +2,55 @@ Return-Path: <SRS0=fRmI=WR=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6664C3A59E
-	for <rcu@archiver.kernel.org>; Wed, 21 Aug 2019 15:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1169C3A59E
+	for <rcu@archiver.kernel.org>; Wed, 21 Aug 2019 15:40:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A2245206BA
-	for <rcu@archiver.kernel.org>; Wed, 21 Aug 2019 15:26:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="diuOugQ3"
+	by mail.kernel.org (Postfix) with ESMTP id 9A81E22DA7
+	for <rcu@archiver.kernel.org>; Wed, 21 Aug 2019 15:40:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729530AbfHUP05 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Aug 2019 11:26:57 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:36499 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728476AbfHUP05 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Aug 2019 11:26:57 -0400
-Received: by mail-pl1-f194.google.com with SMTP id f19so1513647plr.3
-        for <rcu@vger.kernel.org>; Wed, 21 Aug 2019 08:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f66f7evZfjkexG93o+hTzCxQL7jcHjoGTmjCrvuOhSc=;
-        b=diuOugQ3W+1+KVPbgPHXT9BgGxfGt1UFCnZHIk8FSytswqczUS3CSXwtlXtxdfKR4r
-         xj2o7yrMFN9tuX3xODchVfzl6uNRRSG7Xq1hri9TuCtiJl2rnF8RXwrWJor2WvhFjgST
-         L1wQA1Lm9IFoxE+kXiHnh4FOvYCayc0xJpnaw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f66f7evZfjkexG93o+hTzCxQL7jcHjoGTmjCrvuOhSc=;
-        b=NsGJhZo5SFlboW3slF/pbUY0zFFO5O4ozajmczhwEWW/AlAgkWbDi5Fq/kcnnbCFpm
-         0vulKlIroA7VQgl4EhjKAJQ6iHRvDzkpc7JjKCsabH1UDZb29TtckzGAEAiAVQfE/oFb
-         toae27EdAHRVpegmggADQz0TYRuucbanHcOWm2DKBrC74iM+d+gkLgMNqvX2r4GyKJH9
-         GFhJBlMigjXke+7SIGp2z18qUSloCn1ygfKKIPY7QHEIgmvS12HT7lj+Qc6Bo7oCr3wW
-         czP6DxuM82zD+nvc3PFXZFTtcaYNw4fgfIyjKE2N+iikmaK8Hm7n7RLR0L4KrTZ96EP2
-         9byQ==
-X-Gm-Message-State: APjAAAU5mRhiz06bDgG+bMNW8W4+sVbELM4SnIhMaKa8RX2CMFXbBDkX
-        cy9IqJc/kA+xwTQ2wOLSprSaIYMzIXA=
-X-Google-Smtp-Source: APXvYqyj8pjIhVtbQIUXkvXiwyrAeIPRfYNCkg+19nxQTKzyp2ZZRYB8ArysWArxhNikckg/tSgTMQ==
-X-Received: by 2002:a17:902:a40d:: with SMTP id p13mr19223259plq.92.1566401216056;
-        Wed, 21 Aug 2019 08:26:56 -0700 (PDT)
-Received: from localhost ([172.19.216.18])
-        by smtp.gmail.com with ESMTPSA id j6sm317887pje.11.2019.08.21.08.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2019 08:26:55 -0700 (PDT)
-Date:   Wed, 21 Aug 2019 11:26:38 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+        id S1727037AbfHUPkF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Aug 2019 11:40:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39410 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726857AbfHUPkF (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 21 Aug 2019 11:40:05 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7LFMjpg173853
+        for <rcu@vger.kernel.org>; Wed, 21 Aug 2019 11:40:03 -0400
+Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uh85fj1j4-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <rcu@vger.kernel.org>; Wed, 21 Aug 2019 11:40:03 -0400
+Received: from localhost
+        by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <rcu@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Wed, 21 Aug 2019 16:40:02 +0100
+Received: from b01cxnp22033.gho.pok.ibm.com (9.57.198.23)
+        by e11.ny.us.ibm.com (146.89.104.198) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 21 Aug 2019 16:39:57 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7LFdvqp55116286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Aug 2019 15:39:57 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE65BB205F;
+        Wed, 21 Aug 2019 15:39:56 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1D6FB206B;
+        Wed, 21 Aug 2019 15:39:56 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Aug 2019 15:39:56 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 7475E16C1775; Wed, 21 Aug 2019 08:39:57 -0700 (PDT)
+Date:   Wed, 21 Aug 2019 08:39:57 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -61,7 +58,7 @@ Cc:     linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [RFC v2] rcu/tree: Try to invoke_rcu_core() if in_irq() during
  unlock
-Message-ID: <20190821152638.GF147977@google.com>
+Reply-To: paulmck@linux.ibm.com
 References: <20190818233839.GA160903@google.com>
  <20190819012153.GR28441@linux.ibm.com>
  <20190819014143.GB160903@google.com>
@@ -76,7 +73,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190821145617.GD147977@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19082115-2213-0000-0000-000003BE7B08
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011629; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01250048; UDB=6.00659949; IPR=6.01031602;
+ MB=3.00028262; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-21 15:40:00
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082115-2214-0000-0000-00005FB84B03
+Message-Id: <20190821153957.GG28441@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908210162
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -188,7 +201,9 @@ On Wed, Aug 21, 2019 at 10:56:17AM -0400, Joel Fernandes wrote:
 > > Otherwise seems all readers happen in process context AFAICS.
 > 
 > Which is the default setting for that, so that's not the issue.
-> 
+
+Yep!
+
 > I think one reason could be, in_irq() is false when the timer callback
 > executes, since the timer callback is executing after a grace-period. The
 > stack is as follows:
@@ -212,30 +227,19 @@ On Wed, Aug 21, 2019 at 10:56:17AM -0400, Joel Fernandes wrote:
 > [   20.553361]  => kthread
 > [   20.553361]  => ret_from_fork
 
-Oops! wrong stack trace, this is the one where it shows that the timer handler
-is running from softirq, not hardirq. Both the rcu_torture_timer() and
-rcu_torture_timer_cb() run from softirq context. ftrace confirms:
+Well, it is rcu_read_lock() and rcu_read_unlock() that matters
+for this case rather than the callback.  But yes, given in_irq(),
+rcu_read_lock() and rcu_read_unlock() would need to have executed
+from a hardware interrupt handler.  And would need to get one of the
+->rcu_read_lock_special bits set somehow.
 
-[   27.949671] rcu_tort-182     8..s1 7268705us : <stack trace>
-[   27.949671]  => __ftrace_trace_stack
-[   27.949671]  => rcu_torture_timer
-[   27.949671]  => call_timer_fn
-[   27.949671]  => run_timer_softirq
-[   27.949671]  => __do_softirq
-[   27.949671]  => irq_exit
-[   27.949671]  => smp_apic_timer_interrupt
-[   27.949671]  => apic_timer_interrupt
-[   27.949671]  => rcutorture_one_extend
-[   27.949671]  => rcu_torture_one_read
-[   27.949671]  => rcu_torture_reader
-[   27.949671]  => kthread
-[   27.949671]  => ret_from_fork
+But you can use smp_call_function() to invoke a function that runs in
+hardware interrupt handler context, and you can do this within either
+rcuperf or rcutorture.
 
-So looks like torture testing modifications are called for, to run them in
-hard interrupt context as well to provide this additional coverage.. Or am I
-way off in the woods?
+And yes, this line of reasoning did inform at least some of my skepticism
+surrounding your initial patch, in case you were wondering about some
+of my earlier questions.  ;-)
 
-thanks,
-
- - Joel
+							Thanx, Paul
 
