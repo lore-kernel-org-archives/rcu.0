@@ -2,118 +2,112 @@ Return-Path: <SRS0=2gBX=WU=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CABA3C3A59E
-	for <rcu@archiver.kernel.org>; Sat, 24 Aug 2019 12:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01BBBC3A59E
+	for <rcu@archiver.kernel.org>; Sat, 24 Aug 2019 12:52:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A0D1121670
-	for <rcu@archiver.kernel.org>; Sat, 24 Aug 2019 12:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1566648072;
-	bh=JxOU0IXr725WPeNcBzmrDiNn1P8kfgcczMoe1Pv7mFA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=oEZNgNlPxnsYS3v/4FbUk9gOl89tYLh5KDsf/FVDcCfPdmPTfb/YGAfz1m088TkmR
-	 lrBOnLaFNoIqKin2px64gdCo7h/isZxbs3HkVK472ohccDP3WDJwcQd3tvkuzLvXuV
-	 l9UDwYiHEsL519NwSsNChkIo/iCGWKsaKB+VjAI0=
+	by mail.kernel.org (Postfix) with ESMTP id CA2F621670
+	for <rcu@archiver.kernel.org>; Sat, 24 Aug 2019 12:52:08 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mjNQ/LdS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbfHXMBI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 24 Aug 2019 08:01:08 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36908 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbfHXMBI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 24 Aug 2019 08:01:08 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z11so10955591wrt.4;
-        Sat, 24 Aug 2019 05:01:06 -0700 (PDT)
+        id S1728111AbfHXMwA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 24 Aug 2019 08:52:00 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42794 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727779AbfHXMwA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 24 Aug 2019 08:52:00 -0400
+Received: by mail-lj1-f194.google.com with SMTP id l14so11221456ljj.9;
+        Sat, 24 Aug 2019 05:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SLvUTMTiJDzyjwMeur1g+ElZX7+zQugB4EfcBCyQFro=;
-        b=hxnDbR2cTu69lc1mV4YcBS7fMxAa8+YOdlWviSz8oib2QLORRoLRifTkhqQQFBlvbf
-         1eSKyo6cHNEqua5Sr0tnI+fx2vGexhgY7ZOM5rnxXzwa1r8+Te0JX7Z5VO9Bb7OjeDjR
-         FJ4GRKvKmzTPpmTu+c1KfTm2lZbxbTzbmg1tdM2y62Ooce1q1aHxfaJV2XPHD6L1O0NR
-         lI1JmDR6kMS+r5b8SNaahk6w6birWbRnNm0A7jj1eSjiRzcZdsWVDkdTjxsPWXJK239m
-         v85+4rznTA1GJc+lUJf7SgioZhWP8/px5g51jNPS50Mmm/0TJeu0GZ7dAqzyB7cTPgYY
-         Q9KQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YWjQDcR3SyjBjxbrtuLUq15ebNFkva/QIGban7v8NSc=;
+        b=mjNQ/LdS0aYAyb0aqPuW5wdN3YlRF/aY6wvqim/K3eNJKoos8w0+Eb2qZjLRMjVA3r
+         e+qpbjYWeUbhENYe9cB3n//mvgqYKl9tfCoSFk1kTkM0eVkKpuMLU/aPXOjTuEuGM76T
+         WYptAt1v6Zux5ZhuEVRY3i5G0DqoysOiTbavafxIiHcYcPYaWKuEvWNdyNgKHriK4xmR
+         50lFPUtc56azVVthFub54oQijZmrJN4MOa0harJ1YioeZyfCVFbMJW/byyynQttQEw1i
+         PPzGJ9gWDniIM2hhmQDLEoaOPcqYrAEeD9KilkLlshJ9CsnbodjQKLDs3op6f7XWb6Hs
+         c4uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SLvUTMTiJDzyjwMeur1g+ElZX7+zQugB4EfcBCyQFro=;
-        b=sA3MKT41fm/6kXdRkflW0w9IBghiEswlUNJURP8ckPfRYg+vsSDrMH/GQRDtJ0Gj6s
-         3sy9jFG0Pf5Vwg7e2UWivXHDY/JyWOGfSBHVTCbWmCLfFJLkkv8znWx5xiXYM/Navouy
-         Ed2LzuNm5W2ppywOAv1ZQO0Hw6gIaV6Pi/DoR0AyQCVwKRSHUsFvcj3lv8/SPzT1WTkk
-         YNAWr3yPBHSiVJh6u7GHqP2Dy5ykOpWALnjepoU096cJqp1vK52HZGd+8KY6r7jkOS5j
-         Lcr6VW1wEuijKYIDroQs5FBS81l/asDU+1RQAuMzKkmMSvKhRgirfs7Pfg9+BEA0lrLr
-         /Z6A==
-X-Gm-Message-State: APjAAAWuMPGnDi+cFpQgERZ6plRaPM9In3Sv4c6O87jNOpDH0b8Zuri1
-        F9WOT7w14t+v5RNaMrRqD3G5z79x
-X-Google-Smtp-Source: APXvYqzxzEo+nhDmQUoJUMEOwekmtW5P8rW2JAiFWV1BHHo1yc+2p0BNUVY3qhApiIp14VxcPBSY2g==
-X-Received: by 2002:adf:cd84:: with SMTP id q4mr10370755wrj.232.1566648066018;
-        Sat, 24 Aug 2019 05:01:06 -0700 (PDT)
-Received: from gmail.com (2E8B0CD5.catv.pool.telekom.hu. [46.139.12.213])
-        by smtp.gmail.com with ESMTPSA id m188sm13605129wmm.32.2019.08.24.05.01.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Aug 2019 05:01:05 -0700 (PDT)
-Date:   Sat, 24 Aug 2019 14:01:02 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, parri.andrea@gmail.com,
-        byungchul.park@lge.com, peterz@infradead.org, mojha@codeaurora.org,
-        ice_yangxiao@163.com, efremov@linux.com, edumazet@google.com
-Subject: Re: [GIT PULL rcu/next + tools/memory-model] RCU and LKMM commits
- for 5.4
-Message-ID: <20190824120102.GA10758@gmail.com>
-References: <20190822151811.GA8894@linux.ibm.com>
- <20190822185429.GA110910@gmail.com>
- <20190822192132.GJ28441@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YWjQDcR3SyjBjxbrtuLUq15ebNFkva/QIGban7v8NSc=;
+        b=O/BvJfcAAypPozbmk4Fvu0FfINTiMJ7xKfCz9zatPiL24Limrp0qlPQGQN7XRDCVak
+         tvbFDxXNFzk145rnSrsy7serVv9Zmj9bpcpczKNIY5zbPr/I1pJgxLa49h1TywWBelTC
+         hbJrXiKFW0/PVdaaRv1FXpOy1vtjqjbBhx48TSlnKbpkEtZDvswm2Gtan/KPGz8Gv5bf
+         QvedXKiEnr8BoY5Qrd5jf+lk2ihO6ZRn/CCIZYLsBVbu+sHFRnZ3PwCCUD7VzqNxKjiI
+         O5oWmQxxrFJIppLSJ+v4EWNcWYk4VXu1YPOFLwLg/AG7gPT7mk9vDA+qRB4xkFDzk8ur
+         cROQ==
+X-Gm-Message-State: APjAAAWwyz4BkZWWRxoCX9oyEY2gvvqz7SyJf/bgVnNUTZelLgaF3/LK
+        hfu7XPZdqoet5cfJ/wI9F9jYjS2r8RHK5fRMe4A=
+X-Google-Smtp-Source: APXvYqyHtw1FTYe9kkYawhnkpb+wecngYXNr30IXM7HV/hlNB81jnyil/sZTAUEmSRyUiWt5CVdf6rHd0I8KkCLnAZk=
+X-Received: by 2002:a2e:9d90:: with SMTP id c16mr5739562ljj.221.1566651117285;
+ Sat, 24 Aug 2019 05:51:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190822192132.GJ28441@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190812215052.71840-1-ndesaulniers@google.com>
+ <20190812215052.71840-14-ndesaulniers@google.com> <20190813083257.nnsxf5khnqagl46s@willie-the-truck>
+In-Reply-To: <20190813083257.nnsxf5khnqagl46s@willie-the-truck>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 24 Aug 2019 14:51:46 +0200
+Message-ID: <CANiq72mXvuVdO2i9gobmh9YeUW4bhe7YnqQc6PaZrbqua1DoYw@mail.gmail.com>
+Subject: Re: [PATCH 14/16] include/linux: prefer __section from compiler_attributes.h
+To:     Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Yonghong Song <yhs@fb.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, Ming Lei <ming.lei@redhat.com>,
+        Dou Liyang <douliyangs@gmail.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sparse@vger.kernel.org, rcu@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, Aug 13, 2019 at 10:33 AM Will Deacon <will@kernel.org> wrote:
+>
+> -ENOCOMMITMESSAGE
+>
+> Otherwise, patch looks good to me.
 
-* Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+Do you want Ack, Review or nothing?
 
-> On Thu, Aug 22, 2019 at 08:54:29PM +0200, Ingo Molnar wrote:
-> 
-> [ . . . ]
-> 
-> > Pulled into tip:core/rcu, thanks a lot Paul!
-> 
-> Thank you!
-> 
-> > The merge commit is a bit non-standard:
-> > 
-> >   07f038a408fb: Merge LKMM and RCU commits
-> > 
-> > but clear enough IMHO. Usually we try to keep this format:
-> > 
-> >   6c06b66e957c: Merge branch 'X' into Y
-> > 
-> > even for internal merge commits.
-> 
-> Please accept my apologies!  How about as shown below?  If this works
-> for you, I will rebase my development commits on top this merge commit
-> in order to make sure I don't revert back to my old format for next
-> merge window.
-
-Looks good - but I don't think we should create a new merge commit just 
-for this.
-
-> Ah, speaking of reminding me...  There is likely to be one more small RCU
-> commit requested by the RISC-V guys.  If testing and review goes well,
-> I will send you a pull request for it by the middle of next week.
-
-Thanks!
-
-	Ingo
+Cheers,
+Miguel
