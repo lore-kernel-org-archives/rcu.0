@@ -2,106 +2,103 @@ Return-Path: <SRS0=tuFC=WX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39FBFC3A5A6
-	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 08:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D6EC3A5A3
+	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 09:36:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 108022173E
-	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 08:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1566894083;
-	bh=J12+v8LGE7E2g0HNfJIg/NUzehxfXpJt2IVybk5yVbk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=HP4BzxgrgvtoCBcjl4mApzQdjozUODUmx/yOeKNfvv9Sy7/ZyUTc1nDTpLeVWhy8X
-	 DhjbgQZUyuVyFrPI9mZ9J0RPI6Y3ltzz/ZqdWwkgcj1iwTlPnDdE62FWR7FLcu1H31
-	 /nBc3b0RbF7XasmdqZfhJ1W1Lth+Oc8GsXVSRx4E=
+	by mail.kernel.org (Postfix) with ESMTP id 6678E21881
+	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 09:36:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729470AbfH0IVT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Aug 2019 04:21:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729414AbfH0IVS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 27 Aug 2019 04:21:18 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 587C1206BA;
-        Tue, 27 Aug 2019 08:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566894077;
-        bh=J12+v8LGE7E2g0HNfJIg/NUzehxfXpJt2IVybk5yVbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xiGuHuOgjLBY0dEcgVizUT+DK4uPzERmdVRV8zd0caQbNyhwBN35YCHUpOR2E7zOk
-         tJ9wcuEwKR4COff7sj3K8jLu99hCSk8I0TL690fiXHUIEm5G9wTqLbOp5FfpLn5mG6
-         ZKAEraz30+qLJK0wI95fKkkwLmdCCq5blOkiiQ/I=
-Date:   Tue, 27 Aug 2019 09:21:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Yonghong Song <yhs@fb.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        id S1729651AbfH0JgX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Aug 2019 05:36:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43062 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbfH0JgX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Aug 2019 05:36:23 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1i2XtT-0001Am-Qo; Tue, 27 Aug 2019 11:36:03 +0200
+Date:   Tue, 27 Aug 2019 11:36:03 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Scott Wood <swood@redhat.com>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Ming Lei <ming.lei@redhat.com>,
-        Dou Liyang <douliyangs@gmail.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 14/16] include/linux: prefer __section from
- compiler_attributes.h
-Message-ID: <20190827082106.mvatxqebpawuh4g5@willie-the-truck>
-References: <20190812215052.71840-1-ndesaulniers@google.com>
- <20190812215052.71840-14-ndesaulniers@google.com>
- <20190813083257.nnsxf5khnqagl46s@willie-the-truck>
- <CANiq72mXvuVdO2i9gobmh9YeUW4bhe7YnqQc6PaZrbqua1DoYw@mail.gmail.com>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] Documentation: Rename rcu_node_context_switch() to
+ rcu_note_context_switch()
+Message-ID: <20190827093603.x2dist7q5e2z36c5@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANiq72mXvuVdO2i9gobmh9YeUW4bhe7YnqQc6PaZrbqua1DoYw@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+User-Agent: NeoMutt/20180716
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Aug 24, 2019 at 02:51:46PM +0200, Miguel Ojeda wrote:
-> On Tue, Aug 13, 2019 at 10:33 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > -ENOCOMMITMESSAGE
-> >
-> > Otherwise, patch looks good to me.
-> 
-> Do you want Ack, Review or nothing?
+While Paul was explaning some RCU magic I noticed a typo in
+rcu_note_context_switch().
+Replace rcu_node_context_switch() with rcu_note_context_switch().
 
-You can add my Ack if a commit message appears.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ .../RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html    | 2 +-
+ Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg         | 2 +-
+ Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg         | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Will
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
+index c64f8d26609fb..54db02b74f636 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
+@@ -481,7 +481,7 @@ section that the grace period must wait on.
+ </table>
+ 
+ <p>If the CPU does a context switch, a quiescent state will be
+-noted by <tt>rcu_node_context_switch()</tt> on the left.
++noted by <tt>rcu_note_context_switch()</tt> on the left.
+ On the other hand, if the CPU takes a scheduler-clock interrupt
+ while executing in usermode, a quiescent state will be noted by
+ <tt>rcu_sched_clock_irq()</tt> on the right.
+diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
+index 2bcd742d6e491..069f6f8371c20 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
++++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
+@@ -3880,7 +3880,7 @@
+          font-style="normal"
+          y="-4418.6582"
+          x="3745.7725"
+-         xml:space="preserve">rcu_node_context_switch()</text>
++         xml:space="preserve">rcu_note_context_switch()</text>
+     </g>
+     <g
+        transform="translate(1881.1886,54048.57)"
+diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
+index 779c9ac31a527..7d6c5f7e505c6 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
++++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
+@@ -753,7 +753,7 @@
+          font-style="normal"
+          y="-4418.6582"
+          x="3745.7725"
+-         xml:space="preserve">rcu_node_context_switch()</text>
++         xml:space="preserve">rcu_note_context_switch()</text>
+     </g>
+     <g
+        transform="translate(3131.2648,-585.6713)"
+-- 
+2.23.0
+
