@@ -2,163 +2,112 @@ Return-Path: <SRS0=tuFC=WX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C304C3A5A3
-	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 16:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 260DDC3A5A3
+	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 19:02:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 254402173E
-	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 16:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1566921790;
-	bh=Wuon1Ne3AM4+fpOK6WFO/oTO3QLSdasSlXHYlRfeXWg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=BVo77lMPvsoo2TOoUpUjMK+j/8WGAxqyYuME2uFi8o/NEppg99rW7sYqXAmr6XU6u
-	 wxyfZb7NvNLfXFCnINDAsfl2p9EqKRFG8eVQx7FKCfmmz+afoWLTXzoWwit6eAEy7t
-	 O9ZQimWSENm3hNVP7tNx37mSLu8BiXsyPycdhyo4=
+	by mail.kernel.org (Postfix) with ESMTP id EAD0A21881
+	for <rcu@archiver.kernel.org>; Tue, 27 Aug 2019 19:02:10 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="N9cq1ZKa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbfH0QDJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Aug 2019 12:03:09 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43356 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725804AbfH0QDJ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 27 Aug 2019 12:03:09 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RFvY7b145430;
-        Tue, 27 Aug 2019 12:02:25 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2un5cxyryn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 12:02:25 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7RFwG8t000842;
-        Tue, 27 Aug 2019 12:02:24 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2un5cxyrxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 12:02:24 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7RFxZr0018609;
-        Tue, 27 Aug 2019 16:02:23 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01wdc.us.ibm.com with ESMTP id 2ujvv68jgf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 16:02:23 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7RG2NDo52756750
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 16:02:23 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AD0FB2064;
-        Tue, 27 Aug 2019 16:02:23 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A39DB205F;
-        Tue, 27 Aug 2019 16:02:23 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Aug 2019 16:02:23 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 9D6E216C2A50; Tue, 27 Aug 2019 09:02:23 -0700 (PDT)
-Date:   Tue, 27 Aug 2019 09:02:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Scott Wood <swood@redhat.com>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S1730913AbfH0TCK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Aug 2019 15:02:10 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:46465 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730465AbfH0TCK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Aug 2019 15:02:10 -0400
+Received: by mail-pg1-f194.google.com with SMTP id m3so13157163pgv.13
+        for <rcu@vger.kernel.org>; Tue, 27 Aug 2019 12:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=message-id:from:to:cc:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=5J5ALFJFkpv7Xs4w8D18Z1Cn1zrt1Xws6/fBk8kZfIE=;
+        b=N9cq1ZKagXv/qFb0Zp04dquOjBGdS+OZo912oiF3DrRIaW7/QgM3OaS785bVYHJulY
+         P8kvZNKvEpQJIYFFRLCgg/N2dY4ccV0yCa9D+CAlyuJ+ODXMK5JVWdqcQar7rN27qbhz
+         LO60YlB8QKon0WNBnt/iwWOBTZdMYnMu75hVQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:to:cc:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=5J5ALFJFkpv7Xs4w8D18Z1Cn1zrt1Xws6/fBk8kZfIE=;
+        b=iuOaz47599crk8gaYYfQPeSMpxOlKTdWz08e699+VaSImCLXCywJhI0STkVUeqhpPM
+         nG1jzJRVIWlM60RIoElXMrNsjvkn+40VZ6nXp8r4YVb24zPL65n2BQDK/+UccQgxeyaT
+         czaaGQLW2gDEdZta2Sk3FicdFDwk3DkwdIIWbJ3o42X6JOGQc3gFLaYn6TB3rig7YYts
+         WN8+3ezXZWJqgCwRzecjiaafNHby1ELkMwK2JBhgRFNN+qJ0c678QiaNI2cojfbEQVdy
+         zmHgytW71TYL2tXDg7f/vYeqIsuf3O2BcF8fOG01pCXWSrIJNF1yqROdoLWVmgmLdRMt
+         zarA==
+X-Gm-Message-State: APjAAAXXGr1lXP6LgatzDLCadpmMNWUlZCGWsjHlbSKTeecNtfAvg83x
+        5RqiJ0W+VQz60LSlKIlVcFfI6AxFee4=
+X-Google-Smtp-Source: APXvYqxBT+d283gfCpdPxzoqArn/obPfgyEpcu41H5D/uIJsObZOcwEz5IH3noZjFM5pE2Q4pX305Q==
+X-Received: by 2002:aa7:946d:: with SMTP id t13mr28543476pfq.121.1566932529765;
+        Tue, 27 Aug 2019 12:02:09 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id k14sm33196pfi.98.2019.08.27.12.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Aug 2019 12:02:08 -0700 (PDT)
+Message-ID: <5d657e30.1c69fb81.54250.01dc@mx.google.com>
+X-Google-Original-Message-ID: 156693247224727@cam.corp.google.com
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        byungchul.park@lge.com, Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] Documentation: Rename rcu_node_context_switch() to
- rcu_note_context_switch()
-Message-ID: <20190827160223.GH26530@linux.ibm.com>
-Reply-To: paulmck@kernel.org
-References: <20190827093603.x2dist7q5e2z36c5@linutronix.de>
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com
+Subject: [PATCH 0/5] kfree_rcu() additions for -rcu
+Date:   Tue, 27 Aug 2019 15:01:54 -0400
+X-Mailer: git-send-email 2.23.0.187.g17f5b7556c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190827093603.x2dist7q5e2z36c5@linutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908270159
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 11:36:03AM +0200, Sebastian Andrzej Siewior wrote:
-> While Paul was explaning some RCU magic I noticed a typo in
-> rcu_note_context_switch().
-> Replace rcu_node_context_switch() with rcu_note_context_switch().
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hi,
 
-Good eyes, queued for v5.5, thank you!
+This is a series on top of the patch "rcu/tree: Add basic support for kfree_rcu() batching".
 
-Sounds like I should explain RCU magic more often, then.  ;-)
+Link: http://lore.kernel.org/r/20190814160411.58591-1-joel@joelfernandes.org
 
-							Thanx, Paul
+It adds performance tests, some clean ups and removal of "lazy" RCU callbacks.
 
-> ---
->  .../RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html    | 2 +-
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg         | 2 +-
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg         | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
-> index c64f8d26609fb..54db02b74f636 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
-> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
-> @@ -481,7 +481,7 @@ section that the grace period must wait on.
->  </table>
->  
->  <p>If the CPU does a context switch, a quiescent state will be
-> -noted by <tt>rcu_node_context_switch()</tt> on the left.
-> +noted by <tt>rcu_note_context_switch()</tt> on the left.
->  On the other hand, if the CPU takes a scheduler-clock interrupt
->  while executing in usermode, a quiescent state will be noted by
->  <tt>rcu_sched_clock_irq()</tt> on the right.
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> index 2bcd742d6e491..069f6f8371c20 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> @@ -3880,7 +3880,7 @@
->           font-style="normal"
->           y="-4418.6582"
->           x="3745.7725"
-> -         xml:space="preserve">rcu_node_context_switch()</text>
-> +         xml:space="preserve">rcu_note_context_switch()</text>
->      </g>
->      <g
->         transform="translate(1881.1886,54048.57)"
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-> index 779c9ac31a527..7d6c5f7e505c6 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-> @@ -753,7 +753,7 @@
->           font-style="normal"
->           y="-4418.6582"
->           x="3745.7725"
-> -         xml:space="preserve">rcu_node_context_switch()</text>
-> +         xml:space="preserve">rcu_note_context_switch()</text>
->      </g>
->      <g
->         transform="translate(3131.2648,-585.6713)"
-> -- 
-> 2.23.0
-> 
+Now that kfree_rcu() is handled separately from call_rcu(), we also get rid of
+kfree "lazy" handling from tree RCU as suggested by Paul which will be unused.
+This also results in a nice negative delta as well.
+
+Joel Fernandes (Google) (5):
+rcu/rcuperf: Add kfree_rcu() performance Tests
+rcu/tree: Add multiple in-flight batches of kfree_rcu work
+rcu/tree: Add support for debug_objects debugging for kfree_rcu()
+rcu: Remove kfree_rcu() special casing and lazy handling
+rcu: Remove kfree_call_rcu_nobatch()
+
+Documentation/RCU/stallwarn.txt               |  13 +-
+.../admin-guide/kernel-parameters.txt         |  13 ++
+include/linux/rcu_segcblist.h                 |   2 -
+include/linux/rcutiny.h                       |   5 -
+include/linux/rcutree.h                       |   1 -
+include/trace/events/rcu.h                    |  32 ++--
+kernel/rcu/rcu.h                              |  27 ---
+kernel/rcu/rcu_segcblist.c                    |  25 +--
+kernel/rcu/rcu_segcblist.h                    |  25 +--
+kernel/rcu/rcuperf.c                          | 173 +++++++++++++++++-
+kernel/rcu/srcutree.c                         |   4 +-
+kernel/rcu/tiny.c                             |  29 ++-
+kernel/rcu/tree.c                             | 145 ++++++++++-----
+kernel/rcu/tree.h                             |   1 -
+kernel/rcu/tree_plugin.h                      |  42 +----
+kernel/rcu/tree_stall.h                       |   6 +-
+16 files changed, 337 insertions(+), 206 deletions(-)
+
+--
+2.23.0.187.g17f5b7556c-goog
+
