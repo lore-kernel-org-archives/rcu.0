@@ -2,57 +2,70 @@ Return-Path: <SRS0=1n6r=WY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB2EBC3A5A1
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 20:35:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AFCDC3A5A1
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 20:46:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8CE7222CF8
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 20:35:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="j0BmqqfF"
+	by mail.kernel.org (Postfix) with ESMTP id 024292189D
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 20:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1567025202;
+	bh=Vp9GJhlKPZJ6sn5fDW45gmN3TG/A2V9LB+lsWb0hdJc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=P/QSdUJYyOIgW42M/qssYQ6UPGpzmI4e7sCY1CkY79nFOu5du/Bb+IwnzWwWbTJX/
+	 3WjQjoSBT9r7STNrpTHkg2ksGjvktvC1rD/A6z810SIFP40aY1kcVCENvMyrqhbZby
+	 W8f46RhEP76Y8ps5h1IAL5fM2xwu0Ksw1RC1s8HY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbfH1UfB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Aug 2019 16:35:01 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34441 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbfH1UfB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Aug 2019 16:35:01 -0400
-Received: by mail-pl1-f194.google.com with SMTP id d3so506700plr.1
-        for <rcu@vger.kernel.org>; Wed, 28 Aug 2019 13:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=upwaiJ61BH1IpIswTLq+2j1brd6YlJwq3xhLh2FJl/Q=;
-        b=j0BmqqfF2dUwzXmcTIDGocquJMKbOF2wEU+8SAdj+xEVuSMZZt2jvoMBCH9qUDV+W4
-         uhp73qjEXaaGHfOJZyoJqtVlxC+xLcYkpu4P4xSXiVYog59x/FImui1wixg9OrquFFcn
-         gpjMbjgO+WQ7poBwG4DFhCjIajmLZEDP1B0ec=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=upwaiJ61BH1IpIswTLq+2j1brd6YlJwq3xhLh2FJl/Q=;
-        b=qnyQK5CYGPUh0Co3VfGFybImEPTWtNUg27nU9j3mnO8ODHXTyQAFKGHZ+p3TjQAWBw
-         co4gBeOosgr6m0/BDcv1VbdSq/+uVfo3BIn4m8Ldu8Dg8kcrc8cJErcQn7etX0nt6YXX
-         imZhNtoAH7+ucGAh5MIcUtcOgG4s/EBu8MIbtlbVEKtICLXw2HpDozhNVaGZEN6ZR7o2
-         wOAmNxtOcDnUbIerOMvVNVOJ4Vy13cnRoLI0GoER13DaNlvnLvXuN+R3Ta9VJmolmY/i
-         0gZ5/5PRKn1bEBAzZIWg/ISxEBuYEdawRF6hCiu5XxxMd+jxl2Cp5qWb5NZL2iwLU4ZA
-         rI7w==
-X-Gm-Message-State: APjAAAUzngE+mfEDp4Ivn80Yg+m2X/zdmil9gVY5DQfXbyuQpwY5/34q
-        m7WJnf3+79SdxGeAIy+3pySHEQ==
-X-Google-Smtp-Source: APXvYqwnZzm4cK0z1wLUekxhHBcwsIiezmmxCb7nn4XUc+uSnyrmAgKCD6uVOWydivR5Imi9QmdyUw==
-X-Received: by 2002:a17:902:a410:: with SMTP id p16mr6220611plq.150.1567024500119;
-        Wed, 28 Aug 2019 13:35:00 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y14sm62881pge.7.2019.08.28.13.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 13:34:59 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 16:34:58 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S1726805AbfH1Uql (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Aug 2019 16:46:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15878 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726400AbfH1Uql (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 28 Aug 2019 16:46:41 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7SKjxDq051985;
+        Wed, 28 Aug 2019 16:46:08 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2unys2a4q0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Aug 2019 16:46:07 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x7SKk563052512;
+        Wed, 28 Aug 2019 16:46:05 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2unys2a4c1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Aug 2019 16:46:04 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7SKYLdl017202;
+        Wed, 28 Aug 2019 20:45:20 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02wdc.us.ibm.com with ESMTP id 2ujvv6r40n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Aug 2019 20:45:20 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7SKjKPV53739936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Aug 2019 20:45:20 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42310B2065;
+        Wed, 28 Aug 2019 20:45:20 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 124DFB205F;
+        Wed, 28 Aug 2019 20:45:20 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Aug 2019 20:45:20 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id CD7D816C1700; Wed, 28 Aug 2019 13:45:21 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 13:45:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -60,64 +73,190 @@ Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         kernel-team@android.com
-Subject: Re: [PATCH 0/5] kfree_rcu() additions for -rcu
-Message-ID: <20190828203458.GA75931@google.com>
-References: <5d657e30.1c69fb81.54250.01dc@mx.google.com>
- <20190828202808.GT26530@linux.ibm.com>
+Subject: Re: [PATCH v2] rcu/tree: Add multiple in-flight batches of kfree_rcu
+ work
+Message-ID: <20190828204521.GU26530@linux.ibm.com>
+Reply-To: paulmck@kernel.org
+References: <5d657e35.1c69fb81.54250.01de@mx.google.com>
+ <20190828140952.258739-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828202808.GT26530@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190828140952.258739-1-joel@joelfernandes.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-28_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908280202
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 01:28:08PM -0700, Paul E. McKenney wrote:
-> On Tue, Aug 27, 2019 at 03:01:54PM -0400, Joel Fernandes (Google) wrote:
-> > Hi,
-> > 
-> > This is a series on top of the patch "rcu/tree: Add basic support for kfree_rcu() batching".
-> > 
-> > Link: http://lore.kernel.org/r/20190814160411.58591-1-joel@joelfernandes.org
-> > 
-> > It adds performance tests, some clean ups and removal of "lazy" RCU callbacks.
-> > 
-> > Now that kfree_rcu() is handled separately from call_rcu(), we also get rid of
-> > kfree "lazy" handling from tree RCU as suggested by Paul which will be unused.
-> > This also results in a nice negative delta as well.
-> > 
-> > Joel Fernandes (Google) (5):
-> > rcu/rcuperf: Add kfree_rcu() performance Tests
-> > rcu/tree: Add multiple in-flight batches of kfree_rcu work
-> > rcu/tree: Add support for debug_objects debugging for kfree_rcu()
-> > rcu: Remove kfree_rcu() special casing and lazy handling
-> > rcu: Remove kfree_call_rcu_nobatch()
-> > 
-> > Documentation/RCU/stallwarn.txt               |  13 +-
-> > .../admin-guide/kernel-parameters.txt         |  13 ++
-> > include/linux/rcu_segcblist.h                 |   2 -
-> > include/linux/rcutiny.h                       |   5 -
-> > include/linux/rcutree.h                       |   1 -
-> > include/trace/events/rcu.h                    |  32 ++--
-> > kernel/rcu/rcu.h                              |  27 ---
-> > kernel/rcu/rcu_segcblist.c                    |  25 +--
-> > kernel/rcu/rcu_segcblist.h                    |  25 +--
-> > kernel/rcu/rcuperf.c                          | 173 +++++++++++++++++-
-> > kernel/rcu/srcutree.c                         |   4 +-
-> > kernel/rcu/tiny.c                             |  29 ++-
-> > kernel/rcu/tree.c                             | 145 ++++++++++-----
-> > kernel/rcu/tree.h                             |   1 -
-> > kernel/rcu/tree_plugin.h                      |  42 +----
-> > kernel/rcu/tree_stall.h                       |   6 +-
-> > 16 files changed, 337 insertions(+), 206 deletions(-)
+On Wed, Aug 28, 2019 at 10:09:52AM -0400, Joel Fernandes (Google) wrote:
+> During testing, it was observed that amount of memory consumed due
+> kfree_rcu() batching is 300-400MB. Previously we had only a single
+> head_free pointer pointing to the list of rcu_head(s) that are to be
+> freed after a grace period. Until this list is drained, we cannot queue
+> any more objects on it since such objects may not be ready to be
+> reclaimed when the worker thread eventually gets to drainin g the
+> head_free list.
 > 
-> Looks like a 131-line positive delta to me.  ;-)
+> We can do better by maintaining multiple lists as done by this patch.
+> Testing shows that memory consumption came down by around 100-150MB with
+> just adding another list. Adding more than 1 additional list did not
+> show any improvement.
 
-Not if you overlook the rcuperf changes which is just test code. :-D ;-)
+Nice!  A few comments below.  Please address them and post a full v3.
+(I am off the next two days, and I guarantee you that upon return I will
+mix and match the wrong patches otherwise!)
 
-thanks,
+> Suggested-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 61 ++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 42 insertions(+), 19 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 4f7c3096d786..5bf8f7e793ea 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2688,28 +2688,37 @@ EXPORT_SYMBOL_GPL(call_rcu);
+>  
+>  /* Maximum number of jiffies to wait before draining a batch. */
+>  #define KFREE_DRAIN_JIFFIES (HZ / 50)
+> +#define KFREE_N_BATCHES 2
+> +
+> +struct kfree_rcu_work {
+> +	/* The rcu_work node for queuing work with queue_rcu_work(). The work
+> +	 * is done after a grace period.
+> +	 */
+> +	struct rcu_work rcu_work;
+> +
+> +	/* The list of objects that have now left ->head and are queued for
+> +	 * freeing after a grace period.
+> +	 */
+> +	struct rcu_head *head_free;
+> +
+> +	struct kfree_rcu_cpu *krcp;
+> +};
+>  
+>  /*
+>   * Maximum number of kfree(s) to batch, if this limit is hit then the batch of
+>   * kfree(s) is queued for freeing after a grace period, right away.
+>   */
+>  struct kfree_rcu_cpu {
+> -	/* The rcu_work node for queuing work with queue_rcu_work(). The work
+> -	 * is done after a grace period.
+> -	 */
+> -	struct rcu_work rcu_work;
+>  
+>  	/* The list of objects being queued in a batch but are not yet
+>  	 * scheduled to be freed.
+>  	 */
+>  	struct rcu_head *head;
+>  
+> -	/* The list of objects that have now left ->head and are queued for
+> -	 * freeing after a grace period.
+> -	 */
+> -	struct rcu_head *head_free;
+> +	/* Pointer to the per-cpu array of kfree_rcu_work structures */
+> +	struct kfree_rcu_work krw_arr[KFREE_N_BATCHES];
+>  
+> -	/* Protect concurrent access to this structure. */
+> +	/* Protect concurrent access to this structure and kfree_rcu_work. */
+>  	spinlock_t lock;
+>  
+>  	/* The delayed work that flushes ->head to ->head_free incase ->head
+> @@ -2730,12 +2739,14 @@ static void kfree_rcu_work(struct work_struct *work)
+>  {
+>  	unsigned long flags;
+>  	struct rcu_head *head, *next;
+> -	struct kfree_rcu_cpu *krcp = container_of(to_rcu_work(work),
+> -					struct kfree_rcu_cpu, rcu_work);
+> +	struct kfree_rcu_work *krwp = container_of(to_rcu_work(work),
+> +					struct kfree_rcu_work, rcu_work);
+> +	struct kfree_rcu_cpu *krcp;
+> +
+> +	krcp = krwp->krcp;
+>  
+>  	spin_lock_irqsave(&krcp->lock, flags);
+> -	head = krcp->head_free;
+> -	krcp->head_free = NULL;
+> +	head = xchg(&krwp->head_free, NULL);
 
- - Joel
+Given that we hold the lock, why the xchg()?  Alternatively, why not
+just acquire the lock in the other places you use xchg()?  This is a
+per-CPU lock, so contention should not be a problem, should it?
 
+>  	spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+>  	/*
+> @@ -2758,19 +2769,28 @@ static void kfree_rcu_work(struct work_struct *work)
+>   */
+>  static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+>  {
+> +	int i = 0;
+> +	struct kfree_rcu_work *krwp = NULL;
+> +
+>  	lockdep_assert_held(&krcp->lock);
+> +	while (i < KFREE_N_BATCHES) {
+> +		if (!krcp->krw_arr[i].head_free) {
+> +			krwp = &(krcp->krw_arr[i]);
+> +			break;
+> +		}
+> +		i++;
+> +	}
+>  
+> -	/* If a previous RCU batch work is already in progress, we cannot queue
+> +	/* If both RCU batches are already in progress, we cannot queue
+>  	 * another one, just refuse the optimization and it will be retried
+>  	 * again in KFREE_DRAIN_JIFFIES time.
+>  	 */
+
+If you are going to remove the traditional first "/*" line of a comment,
+why not go all the way and cut the last one as well?  "//".
+
+> -	if (krcp->head_free)
+> +	if (!krwp)
+>  		return false;
+>  
+> -	krcp->head_free = krcp->head;
+> -	krcp->head = NULL;
+> -	INIT_RCU_WORK(&krcp->rcu_work, kfree_rcu_work);
+> -	queue_rcu_work(system_wq, &krcp->rcu_work);
+> +	krwp->head_free = xchg(&krcp->head, NULL);
+
+This isn't anywhere near a fastpath, so just acquiring the lock is a
+better choice here.
+
+> +	INIT_RCU_WORK(&krwp->rcu_work, kfree_rcu_work);
+> +	queue_rcu_work(system_wq, &krwp->rcu_work);
+>  
+>  	return true;
+>  }
+> @@ -3736,8 +3756,11 @@ static void __init kfree_rcu_batch_init(void)
+>  
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> +		int i = KFREE_N_BATCHES;
+>  
+>  		spin_lock_init(&krcp->lock);
+> +		while (i--)
+> +			krcp->krw_arr[i].krcp = krcp;
+
+This was indeed a nice trick back in the PDP-11 days of 64-kilobyte
+address spaces, so thank you for the nostalgia!  However, a straight-up
+"for" loop is less vulnerable to code being added between the declaration
+of "i" and the "while" loop.
+
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+>  	}
+>  }
+> -- 
+> 2.23.0.187.g17f5b7556c-goog
+> 
