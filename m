@@ -2,113 +2,200 @@ Return-Path: <SRS0=1n6r=WY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6385AC3A5A6
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:48:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 407DAC3A5A1
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 18:26:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3B410217F5
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1567014492;
-	bh=8GZQLEfu4KdTxRtz2C1/HIab9yozYv4ALIIMVqjcjQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=C114GqiogXoaEbvI4IjfBVKXTjx0dg5naxJSMBKRRbM/mTNOYMy2+7MsKGtfPDW1k
-	 rd0S3kjW0/p6G/1d+Ybakc/sZhJhBSixSDMepU+RESo2PjyVWF4yecXC1auxnBoBmB
-	 WpKxPqQJfwbRAN4cbLRocrCngD/RWQ2hG5rT+oS4=
+	by mail.kernel.org (Postfix) with ESMTP id 0DB9920644
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 18:26:23 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="IAgXANXy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbfH1RsL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Aug 2019 13:48:11 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38167 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbfH1RsK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Aug 2019 13:48:10 -0400
-Received: by mail-wr1-f68.google.com with SMTP id e16so687801wro.5;
-        Wed, 28 Aug 2019 10:48:09 -0700 (PDT)
+        id S1726839AbfH1S0X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Aug 2019 14:26:23 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:35682 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbfH1S0W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Aug 2019 14:26:22 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n4so180502pgv.2
+        for <rcu@vger.kernel.org>; Wed, 28 Aug 2019 11:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HvZagx7jvNM6KY8AxfC5tlWqGThqPd8JeCEOU1rlNEY=;
-        b=OvefXXdF67oN1ve7spB9g8oHbJcSYfACOpG8lblvcpBe7Lh7kdShyRKdzgsL910ePa
-         B5Fr92MPfmSf7dl7UHZDNopidSabiq3zZqM3KSWTcxI0BWcljpiZMqmk4PFSfDMHv1rH
-         k6zhx1/jTDVPj9TFLo/ZVyDtpJNH3iRqzQPjv6rCcTgJ6wAeGyNOrlYQ45lyunFZW83l
-         4kwAVMCReFGM3kGeoJp+yqlbV90ALRb/t6Ask5GaT+bo2KbW5/V3vVYJTkAdrdp4iVND
-         GeSQ0LmWWctlFVsTCxgPv+rlE8tIpnaqhTa2k71QmauiXGvKzVojz/+Cawu1Byj8TEFc
-         xolQ==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vZ3/HRnCHQe+XyNK1hE0wDq1hKDWRVGKFXrsRvw+dRA=;
+        b=IAgXANXyGR5PVXWHS79Z4ccBFA5/ChlBzQI2tIFNaEFvyC+hqblWWmrGdXZd5oHoOy
+         hH1e6dt0Bjs1jz6a1FdBbN5uKBj5BgFnBMr5AwB6y0oOCbm7Th6Iz23Qu6YWvQmh+5DB
+         llZld8RlLB2s5PrWT9d6tVazOJrmxr4qmGX8M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HvZagx7jvNM6KY8AxfC5tlWqGThqPd8JeCEOU1rlNEY=;
-        b=bjtTaHK2YrHhg/mS+I05DJWlfsLPQtSei1CBMOTLpVo2iPypgvzgEXhNalLWP2x0Gk
-         9zCr20uiUTLOKiNElrP9VFuaexLf0+GJ4OFwt30RgQaNce2TZsNHmEVJSMe2TcMPY7lF
-         JsrD4EeS4vJ1lavShiUF0MsUqB/qjgX3mj20Q/V7mX7YggLSyzTWjewV/knd98YQscEZ
-         kxW54HXGcmT5hqu/zxQThwyjzFO95j6JDTFV9KOXKNtUVmFWO7k18nrS+53UQA3hDFS7
-         Wcu/ZnKbIN62jHxUUJJ4nMc3ygkaF1jlIhm83DGlrKdKPbsovhgEcOIOoNNLt7wAdsxp
-         HZBA==
-X-Gm-Message-State: APjAAAWdaKA4BMWMLQbv9QKr6EVB02tzfX0YX/iWnwmfeATJqhRXXnlT
-        fk8yKg6S2huExIO/24C9y5I=
-X-Google-Smtp-Source: APXvYqzsgycsBiPbj0M7dIus4k509ElpquCfjEnXq1G43Yk0i2y0vAowaLgwLoA9RbGXk8TpueNRRg==
-X-Received: by 2002:a5d:4589:: with SMTP id p9mr5964621wrq.276.1567014488447;
-        Wed, 28 Aug 2019 10:48:08 -0700 (PDT)
-Received: from gmail.com (2E8B0CD5.catv.pool.telekom.hu. [46.139.12.213])
-        by smtp.gmail.com with ESMTPSA id w7sm4298079wrn.11.2019.08.28.10.48.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vZ3/HRnCHQe+XyNK1hE0wDq1hKDWRVGKFXrsRvw+dRA=;
+        b=TBHf3NPsmbps9wHo29ajVdXOKCYXVod7B8AfZ5wsFKOnkWe5VXUb/AKsj/VqFwMm6W
+         401TDvxvWkjiJyl8GyMJ13eSFOMB3K3sJiuhc1ONtdT162CrUb60qhCh1XNyS3mFGVrk
+         rnoo19BjSxI6Jujsc4sWxeyXldTtZBlBjmtrlX8PyGtym7rRvFEMY9OFNd5vVq8f1Wp0
+         KhIJd72Krvs3ZmES8g+nFRHp4oisYWiLN0A3zO2WI65V3pwxUOpydlKLae0Nh9HsxsVi
+         D6Pn66G12Dw7vqnwLVOIXGwbyGBd3x89FgvhOBBYSaoHEadBs87dbd6GZlGkDdBIFHOh
+         q4Rg==
+X-Gm-Message-State: APjAAAU1uGEHJQ16E/9jn/zoOnW40C3TfbrjslyTGWhBpIzVrCzH+t5Z
+        XEGeIz1RNtcZYTKADG8i/XHJ1g==
+X-Google-Smtp-Source: APXvYqw9hPh56bJPohT8x3/1DCryoAZyRxSsLjKVc6arKocRvaCgWTedb8ZQfqfVEKRAqxtItHbRdA==
+X-Received: by 2002:a63:b20f:: with SMTP id x15mr4779141pge.453.1567016781250;
+        Wed, 28 Aug 2019 11:26:21 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id b30sm7082pfr.117.2019.08.28.11.26.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 10:48:07 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 19:48:05 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-Subject: Re: [GIT PULL rcu/next] Supplementary RCU commits for 5.4
-Message-ID: <20190828174805.GA77166@gmail.com>
-References: <20190828172557.GA30541@linux.ibm.com>
+        Wed, 28 Aug 2019 11:26:20 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org, paulmck@kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] rcu/dyntick-idle: Add better tracing
+Date:   Wed, 28 Aug 2019 14:26:13 -0400
+Message-Id: <20190828182613.37715-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.23.0.187.g17f5b7556c-goog
+In-Reply-To: <20190828001146.GM26530@linux.ibm.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190828172557.GA30541@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+The dyntick-idle traces are a bit confusing. This patch makes it simpler
+and adds some missing cases such as EQS-enter because user vs idle mode.
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
+Following are the changes:
+(1) Add a new context field to trace_rcu_dyntick tracepoint. This
+    context field can be "USER", "IDLE" or "IRQ".
 
-> Hello, Ingo,
-> 
-> This pull request contains the following changes:
-> 
-> 1.	A one-line change that affects only Tiny RCU that is needed
-> 	by the RISC-V guys, courtesy of Christoph Hellwig.
-> 
-> 2.	An update to my email address.	The old one still works, at
-> 	least most of the time.
-> 
-> All of these changes have been subjected to 0day Test Robot and -next
-> testing, and are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
-> 
-> for you to fetch changes up to 049b405029c00f3fd9e4ffa269bdd29b429c4672:
-> 
->   MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org (2019-08-26 16:27:08 -0700)
-> 
-> ----------------------------------------------------------------
-> Christoph Hellwig (1):
->       rcu: Don't include <linux/ktime.h> in rcutiny.h
-> 
-> Paul E. McKenney (1):
->       MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org
-> 
->  MAINTAINERS             | 14 +++++++-------
->  include/linux/rcutiny.h |  2 +-
->  2 files changed, 8 insertions(+), 8 deletions(-)
+(2) Remove the "++=" and "--=" strings and replace them with
+   "StillNonIdle". This is much easier on the eyes, and the -- and ++
+   are easily apparent in the dynticks_nesting counters we are printing
+   anyway.
 
-Pulled, thanks a lot Paul!
+This patch is based on the previous patches to simplify rcu_dyntick
+counters [1] and with these traces, I have verified the counters are
+working properly.
 
-	Ingo
+[1]
+Link: https://lore.kernel.org/patchwork/patch/1120021/
+Link: https://lore.kernel.org/patchwork/patch/1120022/
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ include/trace/events/rcu.h | 13 ++++++++-----
+ kernel/rcu/tree.c          | 17 +++++++++++------
+ 2 files changed, 19 insertions(+), 11 deletions(-)
+
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 66122602bd08..474c1f7e7104 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -449,12 +449,14 @@ TRACE_EVENT_RCU(rcu_fqs,
+  */
+ TRACE_EVENT_RCU(rcu_dyntick,
+ 
+-	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
++	TP_PROTO(const char *polarity, const char *context, long oldnesting,
++		 long newnesting, atomic_t dynticks),
+ 
+-	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
++	TP_ARGS(polarity, context, oldnesting, newnesting, dynticks),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, polarity)
++		__field(const char *, context)
+ 		__field(long, oldnesting)
+ 		__field(long, newnesting)
+ 		__field(int, dynticks)
+@@ -462,14 +464,15 @@ TRACE_EVENT_RCU(rcu_dyntick,
+ 
+ 	TP_fast_assign(
+ 		__entry->polarity = polarity;
++		__entry->context = context;
+ 		__entry->oldnesting = oldnesting;
+ 		__entry->newnesting = newnesting;
+ 		__entry->dynticks = atomic_read(&dynticks);
+ 	),
+ 
+-	TP_printk("%s %lx %lx %#3x", __entry->polarity,
+-		  __entry->oldnesting, __entry->newnesting,
+-		  __entry->dynticks & 0xfff)
++	TP_printk("%s %s %lx %lx %#3x", __entry->polarity,
++		__entry->context, __entry->oldnesting, __entry->newnesting,
++		__entry->dynticks & 0xfff)
+ );
+ 
+ /*
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1465a3e406f8..1a65919ec800 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -570,7 +570,8 @@ static void rcu_eqs_enter(bool user)
+ 	}
+ 
+ 	lockdep_assert_irqs_disabled();
+-	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Start"), (user ? TPS("USER") : TPS("IDLE")),
++			  rdp->dynticks_nesting, 0, rdp->dynticks);
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	do_nocb_deferred_wakeup(rdp);
+@@ -642,15 +643,17 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+ 	 * leave it in non-RCU-idle state.
+ 	 */
+ 	if (rdp->dynticks_nesting != 1) {
+-		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nesting,
+-				  rdp->dynticks_nesting - 2, rdp->dynticks);
++		trace_rcu_dyntick(TPS("StillNonIdle"), TPS("IRQ"),
++				  rdp->dynticks_nesting, rdp->dynticks_nesting - 2,
++				  rdp->dynticks);
+ 		WRITE_ONCE(rdp->dynticks_nesting, /* No store tearing. */
+ 			   rdp->dynticks_nesting - 2);
+ 		return;
+ 	}
+ 
+ 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+-	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Start"), TPS("IRQ"), rdp->dynticks_nesting, 0,
++			  rdp->dynticks);
+ 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid store tearing. */
+ 
+ 	if (irq)
+@@ -733,7 +736,8 @@ static void rcu_eqs_exit(bool user)
+ 	rcu_dynticks_task_exit();
+ 	rcu_dynticks_eqs_exit();
+ 	rcu_cleanup_after_idle();
+-	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
++	trace_rcu_dyntick(TPS("End"), (user ? TPS("USER") : TPS("IDLE")),
++			  rdp->dynticks_nesting, 1, rdp->dynticks);
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	WRITE_ONCE(rdp->dynticks_nesting, 1);
+ 
+@@ -825,7 +829,8 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+ 		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
+ 	}
+ 
+-	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
++	trace_rcu_dyntick(incby == 1 ? TPS("End") : TPS("StillNonIdle"),
++			  TPS("IRQ"),
+ 			  rdp->dynticks_nesting,
+ 			  rdp->dynticks_nesting + incby, rdp->dynticks);
+ 
+-- 
+2.23.0.187.g17f5b7556c-goog
+
