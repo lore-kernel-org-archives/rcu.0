@@ -2,109 +2,113 @@ Return-Path: <SRS0=1n6r=WY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62414C3A5A1
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6385AC3A5A6
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:48:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 359CE214DA
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:26:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B410217F5
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 17:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1567013163;
-	bh=/WgIREJkQrwwjg2dkCfQEKrOY+vrzE8/g2kN/Dagl60=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=uZUxFkajRHDgCHz7xI7vLv7Z5npHGMb7u5Eb+LmnxOWjkieZThTvrwOIXQshTcHmv
-	 l+FQBzi87KqSCVk2RqtNAZyq9IS9D0317uQQOSXwZ77Tv+PQmGxbco9A0RRrcWMnRr
-	 53+xzqBB6xNdPSqUT4FnJf1ae+id0j+Ke/GoHaYQ=
+	s=default; t=1567014492;
+	bh=8GZQLEfu4KdTxRtz2C1/HIab9yozYv4ALIIMVqjcjQ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=C114GqiogXoaEbvI4IjfBVKXTjx0dg5naxJSMBKRRbM/mTNOYMy2+7MsKGtfPDW1k
+	 rd0S3kjW0/p6G/1d+Ybakc/sZhJhBSixSDMepU+RESo2PjyVWF4yecXC1auxnBoBmB
+	 WpKxPqQJfwbRAN4cbLRocrCngD/RWQ2hG5rT+oS4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbfH1R0D (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Aug 2019 13:26:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36636 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbfH1R0C (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 28 Aug 2019 13:26:02 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7SHCBLH018155;
-        Wed, 28 Aug 2019 13:25:58 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2unuxqd0mh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Aug 2019 13:25:57 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7SHF3w6008785;
-        Wed, 28 Aug 2019 17:25:56 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma05wdc.us.ibm.com with ESMTP id 2ujvv776s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Aug 2019 17:25:56 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7SHPu4543450632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Aug 2019 17:25:56 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F370B206E;
-        Wed, 28 Aug 2019 17:25:56 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02358B206C;
-        Wed, 28 Aug 2019 17:25:55 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Aug 2019 17:25:55 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 89BA616C65DC; Wed, 28 Aug 2019 10:25:57 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 10:25:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org
+        id S1726764AbfH1RsL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Aug 2019 13:48:11 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:38167 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726853AbfH1RsK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Aug 2019 13:48:10 -0400
+Received: by mail-wr1-f68.google.com with SMTP id e16so687801wro.5;
+        Wed, 28 Aug 2019 10:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HvZagx7jvNM6KY8AxfC5tlWqGThqPd8JeCEOU1rlNEY=;
+        b=OvefXXdF67oN1ve7spB9g8oHbJcSYfACOpG8lblvcpBe7Lh7kdShyRKdzgsL910ePa
+         B5Fr92MPfmSf7dl7UHZDNopidSabiq3zZqM3KSWTcxI0BWcljpiZMqmk4PFSfDMHv1rH
+         k6zhx1/jTDVPj9TFLo/ZVyDtpJNH3iRqzQPjv6rCcTgJ6wAeGyNOrlYQ45lyunFZW83l
+         4kwAVMCReFGM3kGeoJp+yqlbV90ALRb/t6Ask5GaT+bo2KbW5/V3vVYJTkAdrdp4iVND
+         GeSQ0LmWWctlFVsTCxgPv+rlE8tIpnaqhTa2k71QmauiXGvKzVojz/+Cawu1Byj8TEFc
+         xolQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HvZagx7jvNM6KY8AxfC5tlWqGThqPd8JeCEOU1rlNEY=;
+        b=bjtTaHK2YrHhg/mS+I05DJWlfsLPQtSei1CBMOTLpVo2iPypgvzgEXhNalLWP2x0Gk
+         9zCr20uiUTLOKiNElrP9VFuaexLf0+GJ4OFwt30RgQaNce2TZsNHmEVJSMe2TcMPY7lF
+         JsrD4EeS4vJ1lavShiUF0MsUqB/qjgX3mj20Q/V7mX7YggLSyzTWjewV/knd98YQscEZ
+         kxW54HXGcmT5hqu/zxQThwyjzFO95j6JDTFV9KOXKNtUVmFWO7k18nrS+53UQA3hDFS7
+         Wcu/ZnKbIN62jHxUUJJ4nMc3ygkaF1jlIhm83DGlrKdKPbsovhgEcOIOoNNLt7wAdsxp
+         HZBA==
+X-Gm-Message-State: APjAAAWdaKA4BMWMLQbv9QKr6EVB02tzfX0YX/iWnwmfeATJqhRXXnlT
+        fk8yKg6S2huExIO/24C9y5I=
+X-Google-Smtp-Source: APXvYqzsgycsBiPbj0M7dIus4k509ElpquCfjEnXq1G43Yk0i2y0vAowaLgwLoA9RbGXk8TpueNRRg==
+X-Received: by 2002:a5d:4589:: with SMTP id p9mr5964621wrq.276.1567014488447;
+        Wed, 28 Aug 2019 10:48:08 -0700 (PDT)
+Received: from gmail.com (2E8B0CD5.catv.pool.telekom.hu. [46.139.12.213])
+        by smtp.gmail.com with ESMTPSA id w7sm4298079wrn.11.2019.08.28.10.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2019 10:48:07 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 19:48:05 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-Subject: [GIT PULL rcu/next] Supplementary RCU commits for 5.4
-Message-ID: <20190828172557.GA30541@linux.ibm.com>
-Reply-To: paulmck@kernel.org
+Subject: Re: [GIT PULL rcu/next] Supplementary RCU commits for 5.4
+Message-ID: <20190828174805.GA77166@gmail.com>
+References: <20190828172557.GA30541@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-28_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1034 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=849 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908280169
+In-Reply-To: <20190828172557.GA30541@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Ingo,
 
-This pull request contains the following changes:
+* Paul E. McKenney <paulmck@kernel.org> wrote:
 
-1.	A one-line change that affects only Tiny RCU that is needed
-	by the RISC-V guys, courtesy of Christoph Hellwig.
+> Hello, Ingo,
+> 
+> This pull request contains the following changes:
+> 
+> 1.	A one-line change that affects only Tiny RCU that is needed
+> 	by the RISC-V guys, courtesy of Christoph Hellwig.
+> 
+> 2.	An update to my email address.	The old one still works, at
+> 	least most of the time.
+> 
+> All of these changes have been subjected to 0day Test Robot and -next
+> testing, and are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+> 
+> for you to fetch changes up to 049b405029c00f3fd9e4ffa269bdd29b429c4672:
+> 
+>   MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org (2019-08-26 16:27:08 -0700)
+> 
+> ----------------------------------------------------------------
+> Christoph Hellwig (1):
+>       rcu: Don't include <linux/ktime.h> in rcutiny.h
+> 
+> Paul E. McKenney (1):
+>       MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org
+> 
+>  MAINTAINERS             | 14 +++++++-------
+>  include/linux/rcutiny.h |  2 +-
+>  2 files changed, 8 insertions(+), 8 deletions(-)
 
-2.	An update to my email address.	The old one still works, at
-	least most of the time.
+Pulled, thanks a lot Paul!
 
-All of these changes have been subjected to 0day Test Robot and -next
-testing, and are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
-
-for you to fetch changes up to 049b405029c00f3fd9e4ffa269bdd29b429c4672:
-
-  MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org (2019-08-26 16:27:08 -0700)
-
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      rcu: Don't include <linux/ktime.h> in rcutiny.h
-
-Paul E. McKenney (1):
-      MAINTAINERS: Update from paulmck@linux.ibm.com to paulmck@kernel.org
-
- MAINTAINERS             | 14 +++++++-------
- include/linux/rcutiny.h |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+	Ingo
