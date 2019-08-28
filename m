@@ -2,221 +2,137 @@ Return-Path: <SRS0=1n6r=WY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2FDC3A5A1
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 21:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F76C3A5A1
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 21:43:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 680252339E
-	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 21:42:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A683122DA7
+	for <rcu@archiver.kernel.org>; Wed, 28 Aug 2019 21:43:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="K48LnXHo"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GvhKCTyM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbfH1Vmo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Aug 2019 17:42:44 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:42987 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbfH1Vmo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Aug 2019 17:42:44 -0400
-Received: by mail-pg1-f195.google.com with SMTP id p3so396285pgb.9
-        for <rcu@vger.kernel.org>; Wed, 28 Aug 2019 14:42:43 -0700 (PDT)
+        id S1726941AbfH1VnX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Aug 2019 17:43:23 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:47052 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbfH1VnX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Aug 2019 17:43:23 -0400
+Received: by mail-pf1-f194.google.com with SMTP id q139so591698pfc.13
+        for <rcu@vger.kernel.org>; Wed, 28 Aug 2019 14:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=VHj/7Xc7AZNEtqOsbdv6KAsLFQaEQgnNcSSw1bNmvu8=;
-        b=K48LnXHoeU/Up/JMswu2L8t1RmfEP+y4NouF8fvesMwB6bm0RrUwkGSNzSs5BcLyuo
-         nL1yy+LvneGE27b/JU9hlBesZcsD95pzgt8gaTPYvtHPeHDHMnVii7DOY1Fo5g5uhGlh
-         5ZXEy2eURhdOh5cA9c8l29SK9HcFF3qXaGqNs=
+        bh=RKU7RohOsxj+UeuRYGzxu1eVk2KwAL8JofUsXANZvgs=;
+        b=GvhKCTyM7rCs+C3FlV0YHDhiydpck0aVyWoZoTh8XZFVftltXo/3m2XDAlmmbndBdj
+         0i6xc2C/aKhgb3V29HPhEyfu/qChj380lW+HHT2833a2xvlog+sCSImEOrz86Tfij5+G
+         mcBfuETczxEjNZ+rVt+NVnvJzIY9hk+8OlUo4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VHj/7Xc7AZNEtqOsbdv6KAsLFQaEQgnNcSSw1bNmvu8=;
-        b=psWquXUAxvPWBBYpRDvSqeewmhUmB2iYXAtvR7qt6F5e+/hn8tR99kIX/Tdk1aKcSo
-         SPOlIn2JB0iE0VQIlisRe1vse4oCxH6i3tFWQMHI1MoHB7C0c9gojLrZ3cjQcHLU0DhV
-         eMZ+YrY+KEj5p03QdQyYLJbE97QHN3FR59TkF6nhd7gAk6vIZEqnQ5X+DiN0mTTDShZj
-         s/mGGFag8DV0UtJDXNOqijfWIi302iojnEztvP6nA5ZUgIMMYoQKU1lHWMFLKrvU4IH5
-         hc1rB5RZ8q6XF5nDI7dDkj/rgsCFcli1SZ/t6hsgPvp0uOFzO9R1a/nsC4mab8krpFgb
-         d1Kw==
-X-Gm-Message-State: APjAAAUcQsmlOaV/gaQY2W9Kwy8Wb9pEmz4rT6RH8XozTN/HAYA3/dZA
-        QUVxs5/9fuax/amufZvCAcyOyQ==
-X-Google-Smtp-Source: APXvYqwXUU+GV69dbCTTy88wZb4JUL8Ck6An9gAIkhF3gZBR/nsSnBOcwR8JRO+BofqEZ3y9RwTkLA==
-X-Received: by 2002:a63:3c5:: with SMTP id 188mr5183303pgd.394.1567028563099;
-        Wed, 28 Aug 2019 14:42:43 -0700 (PDT)
+        bh=RKU7RohOsxj+UeuRYGzxu1eVk2KwAL8JofUsXANZvgs=;
+        b=rJcDX8VkA8bumdsMF4I1jnl7i0iZB9CHoCpvutHMh7GCIiMJjp95IbaGQzKDjaQ0R3
+         XZfT7VJQkJnIdUnmDxalEtY7ZSpD6HUlGT8ipicU9GrtBO65hKoF9W52FQJ8qewJx9UO
+         fZvea9UeG8DjDKEvCbddKw00tIp0GRutO2agXOD4MTH+Ng+0mnGqHuhSibfXUH1HccqV
+         h9JQh0XHFc6k+AyNcMsRpyaVbtplvaM2PZ0dkhlNL/LcOk4sqNOV6SnSv8Jb5s0M2UGQ
+         mkfOVuQyPh1qmJKn/rC4rNnF429e0DpaL/DKUhL9PBEr+AeB7pQif8tzE+bFXvKqTIyc
+         Hsww==
+X-Gm-Message-State: APjAAAWAI0ROn123AFARpXWElHx99cFICkF7+ASP7i8V3AOij9R5KFIj
+        zG9RG8oGGRgZ7CdHDfFQn5G5cA==
+X-Google-Smtp-Source: APXvYqyQJ8hU7BxGeoANDn5yV4OoWFaTZeQU7j7N2P6E7SfgqcDNJUvNKcDZG6XX0kYevyW+yypGvw==
+X-Received: by 2002:a63:df06:: with SMTP id u6mr5111636pgg.96.1567028602563;
+        Wed, 28 Aug 2019 14:43:22 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l68sm369626pfl.11.2019.08.28.14.42.41
+        by smtp.gmail.com with ESMTPSA id 4sm319542pfn.118.2019.08.28.14.43.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 14:42:42 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 17:42:41 -0400
+        Wed, 28 Aug 2019 14:43:21 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 17:43:20 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>, kernel-team@android.com,
+Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC v1 2/2] rcu/tree: Remove dynticks_nmi_nesting counter
-Message-ID: <20190828214241.GD75931@google.com>
-References: <5d648897.1c69fb81.5e60a.fc70@mx.google.com>
- <20190828202330.GS26530@linux.ibm.com>
- <20190828210525.GB75931@google.com>
- <20190828211904.GX26530@linux.ibm.com>
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 3/5] rcu/tree: Add support for debug_objects debugging
+ for kfree_rcu()
+Message-ID: <20190828214320.GE75931@google.com>
+References: <5d657e37.1c69fb81.54250.01df@mx.google.com>
+ <20190828213119.GY26530@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828211904.GX26530@linux.ibm.com>
+In-Reply-To: <20190828213119.GY26530@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 02:19:04PM -0700, Paul E. McKenney wrote:
-> On Wed, Aug 28, 2019 at 05:05:25PM -0400, Joel Fernandes wrote:
-> > On Wed, Aug 28, 2019 at 01:23:30PM -0700, Paul E. McKenney wrote:
-> > > On Mon, Aug 26, 2019 at 09:33:54PM -0400, Joel Fernandes (Google) wrote:
-> > > > The dynticks_nmi_nesting counter serves 4 purposes:
-> > > > 
-> > > >       (a) rcu_is_cpu_rrupt_from_idle() needs to be able to detect first
-> > > >           interrupt nesting level.
-> > > > 
-> > > >       (b) We need to detect half-interrupts till we are sure they're not an
-> > > >           issue. However, change the comparison to DYNTICK_IRQ_NONIDLE with 0.
-> > > > 
-> > > >       (c) When a quiescent state report is needed from a nohz_full CPU.
-> > > >           The nesting counter detects we are a first level interrupt.
-> > > > 
-> > > > For (a) we can just use dyntick_nesting == 1 to determine this. Only the
-> > > > outermost interrupt that interrupted an RCU-idle state can set it to 1.
-> > > > 
-> > > > For (b), this warning condition has not occurred for several kernel
-> > > > releases.  But we still keep the warning but change it to use
-> > > > in_interrupt() instead of the nesting counter. In a later year, we can
-> > > > remove the warning.
-> > > > 
-> > > > For (c), the nest check is not really necessary since forced_tick would
-> > > > have been set to true in the outermost interrupt, so the nested/NMI
-> > > > interrupts will check forced_tick anyway, and bail.
-> > > 
-> > > Skipping the commit log and documentation for this pass.
-> > [snip] 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 255cd6835526..1465a3e406f8 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -81,7 +81,6 @@
-> > > >  
-> > > >  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
-> > > >  	.dynticks_nesting = 1,
-> > > > -	.dynticks_nmi_nesting = 0,
-> > > 
-> > > This should be in the previous patch, give or take naming.
-> > 
-> > Done.
-> > 
-> > > >  	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
-> > > >  };
-> > > >  struct rcu_state rcu_state = {
-> > > > @@ -392,15 +391,9 @@ static int rcu_is_cpu_rrupt_from_idle(void)
-> > > >  	/* Check for counter underflows */
-> > > >  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
-> > > >  			 "RCU dynticks_nesting counter underflow!");
-> > > > -	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> > > > -			 "RCU dynticks_nmi_nesting counter underflow/zero!");
-> > > >  
-> > > > -	/* Are we at first interrupt nesting level? */
-> > > > -	if (__this_cpu_read(rcu_data.dynticks_nmi_nesting) != 1)
-> > > > -		return false;
-> > > > -
-> > > > -	/* Does CPU appear to be idle from an RCU standpoint? */
-> > > > -	return __this_cpu_read(rcu_data.dynticks_nesting) == 0;
-> > > > +	/* Are we the outermost interrupt that arrived when RCU was idle? */
-> > > > +	return __this_cpu_read(rcu_data.dynticks_nesting) == 1;
-> > > >  }
-> > > >  
-> > > >  #define DEFAULT_RCU_BLIMIT 10     /* Maximum callbacks per rcu_do_batch ... */
-> > > > @@ -564,11 +557,10 @@ static void rcu_eqs_enter(bool user)
-> > > >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-> > > >  
-> > > >  	/* Entering usermode/idle from interrupt is not handled. These would
-> > > > -	 * mean usermode upcalls or idle entry happened from interrupts. But,
-> > > > -	 * reset the counter if we warn.
-> > > > +	 * mean usermode upcalls or idle exit happened from interrupts. Remove
-> > > > +	 * the warning by 2020.
-> > > >  	 */
-> > > > -	if (WARN_ON_ONCE(rdp->dynticks_nmi_nesting != 0))
-> > > > -		WRITE_ONCE(rdp->dynticks_nmi_nesting, 0);
-> > > > +	WARN_ON_ONCE(in_interrupt());
-> > > 
-> > > And this is a red flag.  Bad things happen should some common code
-> > > that disables BH be invoked from the idle loop.  This might not be
-> > > happening now, but we need to avoid this sort of constraint.
-> > > How about instead merging ->dyntick_nesting into the low-order bits
-> > > of ->dyntick_nmi_nesting?
-> > > 
-> > > Yes, this assumes that we don't enter process level twice, but it should
-> > > be easy to add a WARN_ON() to test for that.  Except that we don't have
-> > > to because there is already this near the end of rcu_eqs_exit():
-> > > 
-> > > 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
-> > > 
-> > > So the low-order bit of the combined counter could indicate process-level
-> > > non-idle, the next three bits could be unused to make interpretation
-> > > of hex printouts easier, and then the rest of the bits could be used in
-> > > the same way as currently.
-> > > 
-> > > This would allow a single read to see the full state, so that 0x1 means
-> > > at process level in the kernel, 0x11 is interrupt (or NMI) from process
-> > > level, 0x10 is interrupt/NMI from idle/user, and so on.
-> > > 
-> > > What am I missing here?  Why wouldn't this work, and without adding yet
-> > > another RCU-imposed constraint on some other subsystem?
-> > 
-> > What about replacing the warning with a WARN_ON_ONCE(in_irq()), would that
-> > address your concern?
-> > 
-> > Also, considering this warning condition is most likely never occurring as we
-> > know it, and we are considering deleting it soon enough, is it really worth
-> > reimplementing the whole mechanism with a complex bit-sharing scheme just
-> > because of the BH-disable condition you mentioned, which likely doesn't
-> > happen today? In my implementation, this is just a simple counter. I feel
-> > combining bits in the same counter will just introduce more complexity that
-> > this patch tries to address/avoid.
-> > 
-> > OTOH, I also don't mind with just deleting the warning altogether if you are
-> > Ok with that.
+On Wed, Aug 28, 2019 at 02:31:19PM -0700, Paul E. McKenney wrote:
+> On Tue, Aug 27, 2019 at 03:01:57PM -0400, Joel Fernandes (Google) wrote:
+> > Make use of RCU's debug_objects debugging support
+> > (CONFIG_DEBUG_OBJECTS_RCU_HEAD) similar to call_rcu() and other flavors.
 > 
-> The big advantage of combining the counters is that all of the state is
-> explicit and visible in one place.  Plus it can be accessed atomically.
-> And it avoids setting a time bomb for some poor guys just trying to get
-> their idle-loop jobs done some time in the dim distant future.
+> Other flavors?  Ah, call_srcu(), rcu_barrier(), and srcu_barrier(),
+> right?
 
-I could try the approach you're suggesting but I didn't actually see an issue
-with the patch in its current state other than the WARN_ON_ONCE which I could
-change to WARN_ON_ONCE(in_irq()) to remove the concern. AFAICS, we don't
-detect "half soft-interrupts" in this code in anyway.
+Yes.
 
-I do feel the approach you're suggesting can be a follow up, these 2 patches
-just focus on deleting dynticks_nmi_nesting counter and we can test this
-approach thoroughly for a release or so.
+> > We queue the object during the kfree_rcu() call and dequeue it during
+> > reclaim.
+> > 
+> > Tested that enabling CONFIG_DEBUG_OBJECTS_RCU_HEAD successfully detects
+> > double kfree_rcu() calls.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> The code looks good!
 
-> Besides, this pair of patches already makes a large change from a
-> conceptual viewpoint.  If we are going to make a large change, let's
-> get our money's worth out of that change!
-
-IMHO, most of the changes are to code comments, the actual code change is
-very little and is just removal of dynticks_nmi_nesting and simplification;
-its not really an introduction of a new mechanism.
-
-thanks,
+thanks, does that mean you'll ack/apply it? :-P
 
  - Joel
 
+> 
+> 							Thanx, Paul
+> 
+> > ---
+> >  kernel/rcu/tree.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 9b9ae4db1c2d..64568f12641d 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2757,6 +2757,7 @@ static void kfree_rcu_work(struct work_struct *work)
+> >  	for (; head; head = next) {
+> >  		next = head->next;
+> >  		/* Could be possible to optimize with kfree_bulk in future */
+> > +		debug_rcu_head_unqueue(head);
+> >  		__rcu_reclaim(rcu_state.name, head);
+> >  		cond_resched_tasks_rcu_qs();
+> >  	}
+> > @@ -2868,6 +2869,13 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
+> >  		return kfree_call_rcu_nobatch(head, func);
+> >  
+> > +	if (debug_rcu_head_queue(head)) {
+> > +		/* Probable double kfree_rcu() */
+> > +		WARN_ONCE(1, "kfree_call_rcu(): Double-freed call. rcu_head %p\n",
+> > +			  head);
+> > +		return;
+> > +	}
+> > +
+> >  	head->func = func;
+> >  
+> >  	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
+> > -- 
+> > 2.23.0.187.g17f5b7556c-goog
+> > 
