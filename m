@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 006C1C3A59F
-	for <rcu@archiver.kernel.org>; Thu, 29 Aug 2019 20:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D00BFC3A59F
+	for <rcu@archiver.kernel.org>; Thu, 29 Aug 2019 21:26:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B65B422CEA
-	for <rcu@archiver.kernel.org>; Thu, 29 Aug 2019 20:56:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D07F2189D
+	for <rcu@archiver.kernel.org>; Thu, 29 Aug 2019 21:26:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wQAjOzxG"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="CpRKjFU+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbfH2U4l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Aug 2019 16:56:41 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34688 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbfH2U4k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Aug 2019 16:56:40 -0400
-Received: by mail-pg1-f195.google.com with SMTP id n9so2245851pgc.1
-        for <rcu@vger.kernel.org>; Thu, 29 Aug 2019 13:56:40 -0700 (PDT)
+        id S1728399AbfH2V0U (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Aug 2019 17:26:20 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46705 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbfH2V0U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Aug 2019 17:26:20 -0400
+Received: by mail-pl1-f193.google.com with SMTP id o3so2173167plb.13
+        for <rcu@vger.kernel.org>; Thu, 29 Aug 2019 14:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=VpoCOiTqt2OXtuTEcfdRivemuSYVHt20AJpr4bHjRMs=;
-        b=wQAjOzxG38j3KShRalpKFUSlN2Pd78hXVqN+9h+m2yA6pPnRI46QIrqs8J0gjfS+Nr
-         W4i9JkH1kpAHAyb9gRQLmiXsdvrmmKmr9jGVak0Ba8JSGCk1WU1Xo1ODb+xrvxP5jnNh
-         KZVLf/gKNC0uoHJU1ZPxRMbddjjBqAzeD3EtM=
+        bh=Ne4fb8rmErhHKddOiLagesqEGyy4GKWd57VmqftMrAE=;
+        b=CpRKjFU+Fp6R1GVUINYMequFSM8Um8fr63tWRRakTxcQeRjOKG+6RgenSV1JtTqFSi
+         psUdRAuIwx3v6J81J+lebdE1PygjlyCctXwOKYkgTy4+5QA/vDvajnNKsnUzqB1+6PBj
+         3OJBGVir/Qu5aDjQFmrL4T/sYuHevyWXWwFaE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VpoCOiTqt2OXtuTEcfdRivemuSYVHt20AJpr4bHjRMs=;
-        b=WUlx0hjAK+I/Qsid4SL1gmweuiuL2It9avvjkPeUEjEwQjmy47lGhaTJWWAPCiQUU2
-         7XoK1x7wJhyEVFvKWPygErvDyBBCOznJeZsuJsS2BmlbTOj7yX/DC741fuGLFpVH2irF
-         rcAyGv5ypz0lKafkuZfDCYJ6RTc/WFRSXAtfDpx7HM2VyEzuq7yM5RVcpCvMwBvacd6N
-         5MM1LXISJsm3DbA7Whq5fBtwaMc8DGBShyqnimxP1Xfs/hzowXrkj/Y2xjs0ChdrAkZy
-         NrI0sOKSfifJfAikd1VFGN92j856DPs3u7FwJL1bgP5vHzIhF1JWoR8MxSTWkJwpgm3H
-         UyIQ==
-X-Gm-Message-State: APjAAAWVQqolvfUhuk0FICQjIa5oXH5fLcqz5GDzLSKqHD+1Gw/ubNuk
-        woC3fCunSi/u3tNHc9lUAkARCSCBSxI=
-X-Google-Smtp-Source: APXvYqztHwoxkUqyVXeIXD9BZ7I5PAuVTbqWub9Vj1FWPwK1+v8pWWCY+5HJwBK5XS9ln01APQCHPQ==
-X-Received: by 2002:a17:90b:907:: with SMTP id bo7mr12095330pjb.107.1567112199751;
-        Thu, 29 Aug 2019 13:56:39 -0700 (PDT)
+        bh=Ne4fb8rmErhHKddOiLagesqEGyy4GKWd57VmqftMrAE=;
+        b=eg1LhFPp7cTUNlj4wwDJ1+5pSV5Oe8w8uPtm7EiX1musJxDK9bSamLXLCLrvH8IYvR
+         zovCG5bOaaZkP8+Jw/a30chEhhjvwg2qDkTiB3NW8Nv93gjE/OogOxSb7Ml26qkm0Uuz
+         1WPUGw2lob/aDQJoO3MiQEK/5ZRjG/x389UNhwUwDz8kI3StaaLPBnNg1sFNPUTodB4e
+         /PTbZ2h9XKcAE23yQVInlIwKRe0XhPLTXMkKHf5JbX9PKIbYorOIK7c9zTSYdRwvQ7je
+         JGB5k9BznGbloQPPQwFD3e8ElWxJLMsiKUdMpnrP4PNjfEEUbpP8GrhqxLQZYKYtpbiT
+         GEBw==
+X-Gm-Message-State: APjAAAVQ+sCUyeplorY4JCk0F5gJxsyIVKZDg2RXmzM7JTdVPA1C6dkD
+        JPgYdwk0wlLStoSrW1gucalbVA==
+X-Google-Smtp-Source: APXvYqzyTJnwYTYKxMPRtDoPHgvzWEYG7ODL1oxifcC9iUay2BnI9eqzjbyA2iG+svfoAf+aQpNifw==
+X-Received: by 2002:a17:902:7d8b:: with SMTP id a11mr12143591plm.306.1567113979260;
+        Thu, 29 Aug 2019 14:26:19 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y13sm3901434pfm.164.2019.08.29.13.56.38
+        by smtp.gmail.com with ESMTPSA id m4sm3178732pgs.71.2019.08.29.14.26.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2019 13:56:38 -0700 (PDT)
-Date:   Thu, 29 Aug 2019 16:56:37 -0400
+        Thu, 29 Aug 2019 14:26:18 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 17:26:17 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
@@ -59,196 +59,129 @@ Cc:     linux-kernel@vger.kernel.org, byungchul.park@lge.com,
         linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/5] rcu/rcuperf: Add kfree_rcu() performance Tests
-Message-ID: <20190829205637.GA162830@google.com>
-References: <5d657e33.1c69fb81.54250.01dd@mx.google.com>
- <20190828211226.GW26530@linux.ibm.com>
+Subject: Re: [PATCH v2] rcu/tree: Add multiple in-flight batches of kfree_rcu
+ work
+Message-ID: <20190829212617.GA183862@google.com>
+References: <5d657e35.1c69fb81.54250.01de@mx.google.com>
+ <20190828140952.258739-1-joel@joelfernandes.org>
+ <20190828204521.GU26530@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828211226.GW26530@linux.ibm.com>
+In-Reply-To: <20190828204521.GU26530@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 02:12:26PM -0700, Paul E. McKenney wrote:
-> On Tue, Aug 27, 2019 at 03:01:55PM -0400, Joel Fernandes (Google) wrote:
-> > This test runs kfree_rcu() in a loop to measure performance of the new
-> > kfree_rcu() batching functionality.
+On Wed, Aug 28, 2019 at 01:45:21PM -0700, Paul E. McKenney wrote:
+> On Wed, Aug 28, 2019 at 10:09:52AM -0400, Joel Fernandes (Google) wrote:
+> > During testing, it was observed that amount of memory consumed due
+> > kfree_rcu() batching is 300-400MB. Previously we had only a single
+> > head_free pointer pointing to the list of rcu_head(s) that are to be
+> > freed after a grace period. Until this list is drained, we cannot queue
+> > any more objects on it since such objects may not be ready to be
+> > reclaimed when the worker thread eventually gets to drainin g the
+> > head_free list.
 > > 
-> > The following table shows results when booting with arguments:
-> > rcuperf.kfree_loops=20000 rcuperf.kfree_alloc_num=8000 rcuperf.kfree_rcu_test=1
-> > 
-> > In addition, rcuperf.kfree_no_batch is used to toggle the batching of
-> > kfree_rcu()s for a test run.
-> > 
-> > patch applied		GPs	time (seconds)
-> >  yes			1732	14.5
-> >  no			9133 	11.5
-> 
-> This is really "rcuperf.kfree_no_batch" rather than "patch applied", right?
-> (Yes, we did discuss this last time around, but this table combined with
-> the prior paragraph is still ambiguous.)  Please make it unambiguous.
-> One way to do that is as follows:
-> 
-> ------------------------------------------------------------------------
-> 
-> The following table shows results when booting with arguments:
-> rcuperf.kfree_loops=20000 rcuperf.kfree_alloc_num=8000 rcuperf.kfree_rcu_test=1  rcuperf.kfree_no_batch=X
-> 
-> rcuperf.kfree_no_batch=X    # Grace Periods	Test Duration (s)
->  X=1 (old behavior)              9133                 11.5
->  X=0 (new behavior)              1732                 14.5
-
-Yes you are right, will fix. The reason I changed it to 'patch applied' is
-because the last patch in the series removes kfree_no_batch. Will fix!
-thanks!
- 
-> > On a 16 CPU system with the above boot parameters, we see that the total
-> > number of grace periods that elapse during the test drops from 9133 when
-> > not batching to 1732 when batching (a 5X improvement). The kfree_rcu()
-> > flood itself slows down a bit when batching, though, as shown.
-> 
-> This last sentence would be more clear as something like: "However,
-> use of batching increases the duration of the kfree_rcu()-flood test."
-> 
-> > Note that the active memory consumption during the kfree_rcu() flood
-> > does increase to around 200-250MB due to the batching (from around 50MB
-> > without batching). However, this memory consumption is relatively
-> > constant. In other words, the system is able to keep up with the
-> > kfree_rcu() load. The memory consumption comes down considerably if
-> > KFREE_DRAIN_JIFFIES is increased from HZ/50 to HZ/80.
-> 
-> That would be a decrease rather than an increase in KFREE_DRAIN_JIFFIES,
-> correct?
-> 
-> This would also be a good place to mention that a later patch will
-> decrease consumption, but that is strictly optional.  However, you did
-> introduce the topic of changing KFREE_DRAIN_JIFFIES, so if a later patch
-> changes this value, this would be an excellent place to mention this.
-
-Fixed.
-
+> > We can do better by maintaining multiple lists as done by this patch.
+> > Testing shows that memory consumption came down by around 100-150MB with
+> > just adding another list. Adding more than 1 additional list did not
+> > show any improvement.
 [snip]
-> > +/*
-> > + * kfree_rcu() performance tests: Start a kfree_rcu() loop on all CPUs for number
-> > + * of iterations and measure total time and number of GP for all iterations to complete.
-> > + */
+> > @@ -2730,12 +2739,14 @@ static void kfree_rcu_work(struct work_struct *work)
+> >  {
+> >  	unsigned long flags;
+> >  	struct rcu_head *head, *next;
+> > -	struct kfree_rcu_cpu *krcp = container_of(to_rcu_work(work),
+> > -					struct kfree_rcu_cpu, rcu_work);
+> > +	struct kfree_rcu_work *krwp = container_of(to_rcu_work(work),
+> > +					struct kfree_rcu_work, rcu_work);
+> > +	struct kfree_rcu_cpu *krcp;
 > > +
-> > +torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
-> > +torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
-> > +torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-> > +torture_param(int, kfree_no_batch, 0, "Use the non-batching (slower) version of kfree_rcu().");
-> > +
-> > +static struct task_struct **kfree_reader_tasks;
-> > +static int kfree_nrealthreads;
-> > +static atomic_t n_kfree_perf_thread_started;
-> > +static atomic_t n_kfree_perf_thread_ended;
-> > +
-> > +struct kfree_obj {
-> > +	char kfree_obj[8];
-> > +	struct rcu_head rh;
-> > +};
-> > +
-> > +static int
-> > +kfree_perf_thread(void *arg)
-> > +{
-> > +	int i, loop = 0;
-> > +	long me = (long)arg;
-> > +	struct kfree_obj *alloc_ptr;
-> > +	u64 start_time, end_time;
-> > +
-> > +	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
-> > +	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-> > +	set_user_nice(current, MAX_NICE);
-> > +
-> > +	start_time = ktime_get_mono_fast_ns();
-> > +
-> > +	if (atomic_inc_return(&n_kfree_perf_thread_started) >= kfree_nrealthreads) {
-> > +		if (gp_exp)
-> > +			b_rcu_gp_test_started = cur_ops->exp_completed() / 2;
+> > +	krcp = krwp->krcp;
+> >  
+> >  	spin_lock_irqsave(&krcp->lock, flags);
+> > -	head = krcp->head_free;
+> > -	krcp->head_free = NULL;
+> > +	head = xchg(&krwp->head_free, NULL);
 > 
-> At some point, it would be good to use the new grace-period
-> sequence-counter functions (rcuperf_seq_diff(), for example) instead of
-> the open-coded division by 2.  I freely admit that you are just copying
-> my obsolete hack in this case, so not needed in this patch.
+> Given that we hold the lock, why the xchg()?  Alternatively, why not
+> just acquire the lock in the other places you use xchg()?  This is a
+> per-CPU lock, so contention should not be a problem, should it?
 
-But I am using rcu_seq_diff() below in the pr_alert().
+I realized I was being silly :(. Was trying to reduce lines of code and hence
+implemented it like that as a one-liner. Locking protocol is not needed or
+intended for that xchg since as pointed, a lock is held.
 
-Anyway, I agree this can be a follow-on since this pattern is borrowed from
-another part of rcuperf. However, I am also confused about the pattern
-itself.
-
-If I understand, you are doing the "/ 2" because expedited_sequence
-progresses by 2 for every expedited batch.
-
-But does rcu_seq_diff() really work on these expedited GP numbers, and will
-it be immune to changes in RCU_SEQ_STATE_MASK? Sorry for the silly questions,
-but admittedly I have not looked too much yet into expedited RCU so I could
-be missing the point.
-
-> > +		else
-> > +			b_rcu_gp_test_finished = cur_ops->get_gp_seq();
+> >  	spin_unlock_irqrestore(&krcp->lock, flags);
+> >  
+> >  	/*
+> > @@ -2758,19 +2769,28 @@ static void kfree_rcu_work(struct work_struct *work)
+> >   */
+> >  static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> >  {
+> > +	int i = 0;
+> > +	struct kfree_rcu_work *krwp = NULL;
 > > +
-> > +		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld\n",
-> > +		       (unsigned long long)(end_time - start_time), kfree_loops,
-> > +		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started));
-> > +		if (shutdown) {
-> > +			smp_mb(); /* Assign before wake. */
-> > +			wake_up(&shutdown_wq);
+> >  	lockdep_assert_held(&krcp->lock);
+> > +	while (i < KFREE_N_BATCHES) {
+> > +		if (!krcp->krw_arr[i].head_free) {
+> > +			krwp = &(krcp->krw_arr[i]);
+> > +			break;
 > > +		}
+> > +		i++;
 > > +	}
-> > +
-> > +	torture_kthread_stopping("kfree_perf_thread");
-> > +	return 0;
-> > +}
-> > +
-> > +static void
-> > +kfree_perf_cleanup(void)
-> > +{
-> > +	int i;
-> > +
-> > +	if (torture_cleanup_begin())
-> > +		return;
-> > +
-> > +	if (kfree_reader_tasks) {
-> > +		for (i = 0; i < kfree_nrealthreads; i++)
-> > +			torture_stop_kthread(kfree_perf_thread,
-> > +					     kfree_reader_tasks[i]);
-> > +		kfree(kfree_reader_tasks);
-> > +	}
-> > +
-> > +	torture_cleanup_end();
-> > +}
-> > +
-> > +/*
-> > + * shutdown kthread.  Just waits to be awakened, then shuts down system.
-> > + */
-> > +static int
-> > +kfree_perf_shutdown(void *arg)
-> > +{
-> > +	do {
-> > +		wait_event(shutdown_wq,
-> > +			   atomic_read(&n_kfree_perf_thread_ended) >=
-> > +			   kfree_nrealthreads);
-> > +	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
-> > +
-> > +	smp_mb(); /* Wake before output. */
-> > +
-> > +	kfree_perf_cleanup();
-> > +	kernel_power_off();
-> > +	return -EINVAL;
+> >  
+> > -	/* If a previous RCU batch work is already in progress, we cannot queue
+> > +	/* If both RCU batches are already in progress, we cannot queue
+> >  	 * another one, just refuse the optimization and it will be retried
+> >  	 * again in KFREE_DRAIN_JIFFIES time.
+> >  	 */
 > 
-> These last four lines should be combined with those of
-> rcu_perf_shutdown().  Actually, you could fold the two functions together
-> with only a pair of arguments and two one-line wrapper functions, which
-> would be even better.
+> If you are going to remove the traditional first "/*" line of a comment,
+> why not go all the way and cut the last one as well?  "//".
 
-But the cleanup() function is different in the 2 cases and will have to be
-passed in as a function pointer. I believe we discussed this last review as
-well.
+Will add the /* in the beginning :)
+
+> > -	if (krcp->head_free)
+> > +	if (!krwp)
+> >  		return false;
+> >  
+> > -	krcp->head_free = krcp->head;
+> > -	krcp->head = NULL;
+> > -	INIT_RCU_WORK(&krcp->rcu_work, kfree_rcu_work);
+> > -	queue_rcu_work(system_wq, &krcp->rcu_work);
+> > +	krwp->head_free = xchg(&krcp->head, NULL);
+> 
+> This isn't anywhere near a fastpath, so just acquiring the lock is a
+> better choice here.
+
+My reasoning was same as above. Will change it to 2 statements since lock is
+already held.
+
+> > +	INIT_RCU_WORK(&krwp->rcu_work, kfree_rcu_work);
+> > +	queue_rcu_work(system_wq, &krwp->rcu_work);
+> >  
+> >  	return true;
+> >  }
+> > @@ -3736,8 +3756,11 @@ static void __init kfree_rcu_batch_init(void)
+> >  
+> >  	for_each_possible_cpu(cpu) {
+> >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> > +		int i = KFREE_N_BATCHES;
+> >  
+> >  		spin_lock_init(&krcp->lock);
+> > +		while (i--)
+> > +			krcp->krw_arr[i].krcp = krcp;
+> 
+> This was indeed a nice trick back in the PDP-11 days of 64-kilobyte
+> address spaces, so thank you for the nostalgia!  However, a straight-up
+> "for" loop is less vulnerable to code being added between the declaration
+> of "i" and the "while" loop.
+
+Ok, will do.
 
 thanks,
 
