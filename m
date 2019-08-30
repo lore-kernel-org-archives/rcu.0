@@ -2,55 +2,55 @@ Return-Path: <SRS0=2/bE=W2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6639C3A5A7
-	for <rcu@archiver.kernel.org>; Fri, 30 Aug 2019 16:36:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 702BDC3A59B
+	for <rcu@archiver.kernel.org>; Fri, 30 Aug 2019 16:37:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B79E2342C
-	for <rcu@archiver.kernel.org>; Fri, 30 Aug 2019 16:36:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 40EC82342C
+	for <rcu@archiver.kernel.org>; Fri, 30 Aug 2019 16:37:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yZYEjORQ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="vM1+9Vta"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbfH3Qgx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Aug 2019 12:36:53 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:44979 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728209AbfH3Qgx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Aug 2019 12:36:53 -0400
-Received: by mail-pf1-f193.google.com with SMTP id c81so4954498pfc.11
-        for <rcu@vger.kernel.org>; Fri, 30 Aug 2019 09:36:52 -0700 (PDT)
+        id S1728176AbfH3Qgt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Aug 2019 12:36:49 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:40537 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728122AbfH3Qgt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Aug 2019 12:36:49 -0400
+Received: by mail-pg1-f196.google.com with SMTP id w10so3804126pgj.7
+        for <rcu@vger.kernel.org>; Fri, 30 Aug 2019 09:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TViz/uEfbOEpUzpTGIb4VAmFAq4QMSx9O81NrsKCuu4=;
-        b=yZYEjORQokx0B2GT1yT24lWUwOnxfga4krCgK+5Q4NbTIhprOYfyP9pUR0j4mqLxZK
-         VrmPj33kz6NcKz4cZ4D7752udnhATqSZRnndrEhCzKgni4d4u5ukv/1A1iyYnB+QX0oA
-         HfLFNkPdbBhYcdJwPwN1qwlT1PhB4SzhJiJrM=
+        bh=6foCHXYvGc/YUv+C7UREe6hicJoeLXUOk4RCFm7CD8U=;
+        b=vM1+9Vtan3m+Dx2GCYwwzu54AD6Ybxe5HZPpHkb++iFYXQsxAreaQngONIGaas9fk1
+         5g9UAXvBQVgfBQ7pRjr9WCno1ofr7z//vfjfwwOkZDjFAZvmj8fAqRfBQnTlsP+K8aMC
+         3F/M8QRJg8K94LQ5q8rYJgSWuAclLWgkdXCFE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TViz/uEfbOEpUzpTGIb4VAmFAq4QMSx9O81NrsKCuu4=;
-        b=rlKEjLNYZlRH6Z+v2MPIbI+KnOAIGneMGcHGaL3Xsl8eNB8sWx/3RljworqO+CiKOe
-         HZsWEpD4E5YaVAdH8jtlaMwgMn6wS0+cfrE7QMDd6/nUPro8GPYinKkoF1ztFPTl3E0L
-         q0WaSm+ap8AkuSD59VOqrpt/SgpuIJxjcEL/ZEoqiep/j9IV0pZj7SCrww1XVGrnYVyt
-         p3mfgXzWBTifVYUMF5zmzY3DAeEpAqatUKRs7W6jS9lI2khlNK5/f3CdCw38H0qYfZt4
-         r++AWzmXGqccMapD+C5H80gABCg9UQHIHguO0YQvzSSiBVLlYdIVZP94FLbTOxIFySVv
-         Eu9w==
-X-Gm-Message-State: APjAAAVB6KwQomBTmPQ1+ym2sCRNxg2QUCbA4g9ZA7ns3TfUY3y0HOFm
-        C2NXTR1Dw6Wu1dTEJ3ZuaLX4sA==
-X-Google-Smtp-Source: APXvYqzMFutjCIXOhhdAJ0KrwGE/+N3XG40IdxseUnqxCDZz1f2DOhSYq+Jce275lA9FhpNDRHxnkg==
-X-Received: by 2002:a62:38d7:: with SMTP id f206mr19357850pfa.102.1567183012573;
-        Fri, 30 Aug 2019 09:36:52 -0700 (PDT)
+        bh=6foCHXYvGc/YUv+C7UREe6hicJoeLXUOk4RCFm7CD8U=;
+        b=jssEsOS8QGou8tU+mMLMp58D8sEu8BVKExeMvHGCN/DXsRSy9uG9/QG1okpESP2fzg
+         j8d7/hEul3JTCpyRGQ/aV+vmPRyJ/cJLWP4y8Vs1V2/vWGM97yu00hmab+zne1Da70tC
+         FkIKBTdj2RKfg5tCx0O0YCydM//xMjk9TD/kbAf+sD88XPrqvedqmORVSXXhpGOrJNXi
+         MhrPmHAfJdJ9xSbf287uEpb393wTqugZ3R0sCtYAIkhRXDfQ9WuhmKFIew+b3ENRfM6T
+         GWBumxwJFR4aRlr2TsUpSQpUzHSdCT91fr93WGAFcBbErH+hTqxyKwC365Dt1pxky4Nh
+         yngw==
+X-Gm-Message-State: APjAAAXQHtEsnFHTsAGco18hzTT3TH/QrJUA35FgNLNOS1Mnsv6AGxR3
+        hna3ly7zxYAuzK6N+YOqDF9dfA==
+X-Google-Smtp-Source: APXvYqyfyCzAysxf821xWN8fbyp1VftaNHPBq9mcl3pQd/MSyGep+IAVXGQIOsVMqA5koDPpakOFog==
+X-Received: by 2002:a63:e907:: with SMTP id i7mr13492018pgh.84.1567183008166;
+        Fri, 30 Aug 2019 09:36:48 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j74sm6114080pje.14.2019.08.30.09.36.50
+        by smtp.gmail.com with ESMTPSA id j74sm6114080pje.14.2019.08.30.09.36.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2019 09:36:51 -0700 (PDT)
+        Fri, 30 Aug 2019 09:36:47 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -59,9 +59,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 -rcu dev 5/5] rcu: Remove kfree_call_rcu_nobatch()
-Date:   Fri, 30 Aug 2019 12:36:33 -0400
-Message-Id: <20190830163633.104099-6-joel@joelfernandes.org>
+Subject: [PATCH v2 -rcu dev 3/5] rcu/tree: Add support for debug_objects debugging for kfree_rcu()
+Date:   Fri, 30 Aug 2019 12:36:31 -0400
+Message-Id: <20190830163633.104099-4-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.23.0.187.g17f5b7556c-goog
 In-Reply-To: <20190830163633.104099-1-joel@joelfernandes.org>
 References: <20190830163633.104099-1-joel@joelfernandes.org>
@@ -72,155 +72,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that kfree_rcu() special casing have been removed from tree RCU,
-remove kfree_call_rcu_nobatch() since it is not needed.
+Make use of RCU's debug_objects debugging support
+(CONFIG_DEBUG_OBJECTS_RCU_HEAD) similar to call_rcu() and other flavors.
+We queue the object during the kfree_rcu() call and dequeue it during
+reclaim.
+
+Tested that enabling CONFIG_DEBUG_OBJECTS_RCU_HEAD successfully detects
+double kfree_rcu() calls.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  4 ---
- include/linux/rcutiny.h                       |  5 ---
- include/linux/rcutree.h                       |  1 -
- kernel/rcu/rcuperf.c                          | 10 +-----
- kernel/rcu/tree.c                             | 34 ++++++++-----------
- 5 files changed, 15 insertions(+), 39 deletions(-)
+ kernel/rcu/tree.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 24fe8aefb12c..56be0e30100b 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3909,10 +3909,6 @@
- 			Number of loops doing rcuperf.kfree_alloc_num number
- 			of allocations and frees.
- 
--	rcuperf.kfree_no_batch= [KNL]
--			Use the non-batching (less efficient) version of kfree_rcu().
--			This is useful for comparing with the batched version.
--
- 	rcuperf.nreaders= [KNL]
- 			Set number of RCU readers.  The value -1 selects
- 			N, where N is the number of CPUs.  A value
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index b7607e2667ae..37b6f0c2b79d 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -39,11 +39,6 @@ static inline void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	call_rcu(head, func);
- }
- 
--static inline void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
--{
--	call_rcu(head, func);
--}
--
- void rcu_qs(void);
- 
- static inline void rcu_softirq_qs(void)
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 961b7e05d141..0b68aa952f8b 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -34,7 +34,6 @@ static inline void rcu_virt_note_context_switch(int cpu)
- 
- void synchronize_rcu_expedited(void);
- void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
--void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func);
- 
- void rcu_barrier(void);
- bool rcu_eqs_special_set(int cpu);
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index c1e25fd10f2a..da94b89cd531 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -593,7 +593,6 @@ rcu_perf_shutdown(void *arg)
- torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
- torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
- torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
--torture_param(int, kfree_no_batch, 0, "Use the non-batching (slower) version of kfree_rcu().");
- 
- static struct task_struct **kfree_reader_tasks;
- static int kfree_nrealthreads;
-@@ -632,14 +631,7 @@ kfree_perf_thread(void *arg)
- 			if (!alloc_ptr)
- 				return -ENOMEM;
- 
--			if (!kfree_no_batch) {
--				kfree_rcu(alloc_ptr, rh);
--			} else {
--				rcu_callback_t cb;
--
--				cb = (rcu_callback_t)(unsigned long)offsetof(struct kfree_obj, rh);
--				kfree_call_rcu_nobatch(&(alloc_ptr->rh), cb);
--			}
-+			kfree_rcu(alloc_ptr, rh);
- 		}
- 
- 		cond_resched();
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cd7bbc74ae20..72550343843f 100644
+index 2e1772469de9..de13805d1bd0 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2770,8 +2770,10 @@ static void kfree_rcu_work(struct work_struct *work)
- 		rcu_lock_acquire(&rcu_callback_map);
- 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
- 
--		/* Could be possible to optimize with kfree_bulk in future */
--		kfree((void *)head - offset);
-+		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset))) {
-+			/* Could be optimized with kfree_bulk() in future. */
-+			kfree((void *)head - offset);
-+		}
- 
- 		rcu_lock_release(&rcu_callback_map);
+@@ -2757,6 +2757,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	for (; head; head = next) {
+ 		next = head->next;
+ 		/* Could be possible to optimize with kfree_bulk in future */
++		debug_rcu_head_unqueue(head);
+ 		__rcu_reclaim(rcu_state.name, head);
  		cond_resched_tasks_rcu_qs();
-@@ -2857,16 +2859,6 @@ static void kfree_rcu_monitor(struct work_struct *work)
  	}
- }
+@@ -2876,6 +2877,13 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
+ 		return kfree_call_rcu_nobatch(head, func);
  
--/*
-- * This version of kfree_call_rcu does not do batching of kfree_rcu() requests.
-- * Used only by rcuperf torture test for comparison with kfree_rcu_batch().
-- */
--void kfree_call_rcu_nobatch(struct rcu_head *head, rcu_callback_t func)
--{
--	__call_rcu(head, func);
--}
--EXPORT_SYMBOL_GPL(kfree_call_rcu_nobatch);
--
- /*
-  * Queue a request for lazy invocation of kfree() after a grace period.
-  *
-@@ -2886,12 +2878,6 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
- 
--	/* kfree_call_rcu() batching requires timers to be up. If the scheduler
--	 * is not yet up, just skip batching and do the non-batched version.
--	 */
--	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
--		return kfree_call_rcu_nobatch(head, func);
--
- 	if (debug_rcu_head_queue(head)) {
- 		/* Probable double kfree_rcu() */
- 		WARN_ONCE(1, "kfree_call_rcu(): Double-freed call. rcu_head %p\n",
-@@ -2910,8 +2896,16 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	krcp->head = head;
- 
- 	/* Schedule monitor for timely drain after KFREE_DRAIN_JIFFIES. */
--	if (!xchg(&krcp->monitor_todo, true))
--		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+	if (!krcp->monitor_todo) {
-+		krcp->monitor_todo = true;
-+		/* Scheduling the monitor requires scheduler/timers to be up,
-+		 * if it is not, just skip it. An eventual kfree_rcu() will
-+		 * kick it again.
-+		 */
-+		if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING) {
-+			schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+		}
++	if (debug_rcu_head_queue(head)) {
++		/* Probable double kfree_rcu() */
++		WARN_ONCE(1, "kfree_call_rcu(): Double-freed call. rcu_head %p\n",
++			  head);
++		return;
 +	}
++
+ 	head->func = func;
  
- 	spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
+ 	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
 -- 
 2.23.0.187.g17f5b7556c-goog
 
