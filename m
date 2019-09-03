@@ -2,78 +2,90 @@ Return-Path: <SRS0=StHt=W6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F311C3A5A8
-	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 07:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ABAC3A5A2
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 16:23:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DB2E6206B8
-	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 07:13:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC5A823431
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 16:23:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eOf6lWVq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EKHkp/aq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbfICHNo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Sep 2019 03:13:44 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42336 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbfICHNo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Sep 2019 03:13:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LfXrvAJ7nQoeTC4iaVaz4jsSr8XCOc8hcyp+iKwf00M=; b=eOf6lWVqK21zIHGXt/TWiBnTs
-        +fN6KCAkxPGpd9nxtFWJ/3assrkapeFAG3RV6G3fABwRmkOq3H6vxIqGOIUQITnkGuFrZjIc1bTmk
-        3ehnqfXXcmhzDv7Yw8kBQtAbEyg0MpGXuMFCWIQ2ykiCy7AlIKoDQ8N41s9WVF7P/HQioY+E/agjp
-        4L3cJUF2FN2YUXDXfI9JrrapycrScQxn+ub0uduaH5wedj2Aqk/ZaDtqRbgx5YmtdvoBNtqwHxO07
-        pmlE3Q+9vWr5fDwa9Mp+I2tr//6Za09Mi4KK4quscbv04fHs+GJ56v0HrHEHmG5e0NlUFYxi/W5tH
-        KICr3qrOg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i530L-0000jr-Cj; Tue, 03 Sep 2019 07:13:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EDE8306010;
-        Tue,  3 Sep 2019 09:12:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 594B529B9FF5D; Tue,  3 Sep 2019 09:13:26 +0200 (CEST)
-Date:   Tue, 3 Sep 2019 09:13:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        aarcange@redhat.com, linux-block@vger.kernel.org,
+        id S1729865AbfICQXK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Sep 2019 12:23:10 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34726 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729692AbfICQXK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:23:10 -0400
+Received: by mail-wr1-f68.google.com with SMTP id s18so18212960wrn.1;
+        Tue, 03 Sep 2019 09:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TepBcnay70WrGmb0WBkOD/Cs9CShXo+TxS9/OGqh6Bw=;
+        b=EKHkp/aqR3DigOCLFd9MIjlOwoKCQetnK8fr3HngH/gmy44B/y+LUfRJnQJYWb6Cvo
+         8mEv5H9vPsNOdeBU6+QazVE8YKbL4Ks0DybjlhHXBqNmcH8loNv9Yp47V1EmvhvpineH
+         M0H4k3nAyfQh480J1dBLjqfa+BSK1wWphJaM2ef0qpf7OjVmdoHnF9SQt+HNNmNQ2at/
+         Y9yU3fbQC4I2CC9fwIX1huaI5p9BHj9JMlCN+EKbXwcPw3B/YI8zycMEkVzAScoOuEf1
+         juB1OBjcPWcL3N+j+VnKYHpHRr34IiVZ//Oo17/9CkRglejFCo2L6hRYuW4uNwWs2/er
+         nO3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TepBcnay70WrGmb0WBkOD/Cs9CShXo+TxS9/OGqh6Bw=;
+        b=mDVJcfuwdqr9YWNQo95DSAOJ4+Ex/BhxIblcdPsGpZaiTdLiwxTzz2CytqX3uKFAR2
+         Nb+1cFSLdQ6ke/4weyXcKVOv6ZmYxaLt9a1+19BqiqyqpBD3IeMz/H5J4AFDrrQB2V8L
+         ZRIChqxmwneojC0p2XJ8YjvSYZbYndzMdZVXTWx5jy8DrNh39/siTdbjcMJqQdSRdLWP
+         mmv8K0h1+NwBB6bh0okcO1wsgzjRaIJO8r4zSokJfV9XtrngHbduyLnnC8AgRA3fL/7B
+         yPrQtP+0zGI40kYAqfIRLG0tgiGJH5KSI/k3y2BEc3Ppe9c3UqAyGd5DVXZCB3mIandd
+         w3jA==
+X-Gm-Message-State: APjAAAVLWd0HzAOeDMGD4VPlBZ+XbQv39sRli68MmFYHiXbRJTmOcI+w
+        quzTu1s7bYyn7+7Vbs3bMw==
+X-Google-Smtp-Source: APXvYqwx0bJ6xnL9cz14xzE50FT6ThicgK4OWReQhuR8YKvDLg+VcrlLQG0HKsV1CSwULWCwxVvs1A==
+X-Received: by 2002:adf:f20f:: with SMTP id p15mr8540655wro.17.1567527788037;
+        Tue, 03 Sep 2019 09:23:08 -0700 (PDT)
+Received: from avx2 ([46.53.254.228])
+        by smtp.gmail.com with ESMTPSA id c74sm11892wme.46.2019.09.03.09.23.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Sep 2019 09:23:07 -0700 (PDT)
+Date:   Tue, 3 Sep 2019 19:23:03 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        dm-devel@redhat.com, axboe@kernel.dk
-Subject: Re: [dm-devel] [PATCH] sched: make struct task_struct::state 32-bit
-Message-ID: <20190903071326.GV2369@hirez.programming.kicks-ass.net>
+        linux-block@vger.kernel.org, dm-devel@redhat.com, axboe@kernel.dk,
+        aarcange@redhat.com
+Subject: Re: [PATCH] sched: make struct task_struct::state 32-bit
+Message-ID: <20190903162303.GA2173@avx2>
 References: <20190902210558.GA23013@avx2>
- <20190903065155.GA28322@infradead.org>
+ <7b94004e-4a65-462b-cd6b-5cbd23d607bf@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190903065155.GA28322@infradead.org>
+In-Reply-To: <7b94004e-4a65-462b-cd6b-5cbd23d607bf@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 11:51:55PM -0700, Christoph Hellwig wrote:
-> On Tue, Sep 03, 2019 at 12:05:58AM +0300, Alexey Dobriyan wrote:
-> > 32-bit accesses are shorter than 64-bit accesses on x86_64.
-> > Nothing uses 64-bitness of ->state.
-> > 
-> > Space savings are ~2KB on F30 kernel config.
+On Tue, Sep 03, 2019 at 12:02:38AM +0100, Valentin Schneider wrote:
+> struct task_struct {
+> 	struct thread_info         thread_info;          /*     0    24 */
+> 	volatile int               state;                /*    24     4 */
 > 
-> I guess we'd save even more when moving from a volatile to
-> WRITE_ONCE/READ_ONCE..
+> 	/* XXX 4 bytes hole, try to pack */
+> 
+> 	void *                     stack;                /*    32     8 */
+> 
+> Though seeing as this is also the boundary of the randomized layout we can't
+> really do much better without changing the boundary itself. So much for
+> cacheline use :/
 
-I doubt it; pretty much all accesses really should be using that.
-
-Not saying we shouldn't maybe do that; but that's going to be massive
-churn.
+Cacheline use of task_struct is pretty hopeless because of all the ifdefs.
