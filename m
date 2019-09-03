@@ -2,85 +2,102 @@ Return-Path: <SRS0=StHt=W6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6094FC3A5A2
-	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 17:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C415C3A5A2
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 18:19:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 374D421897
-	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 17:29:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6374F21897
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 18:19:25 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXrN3Q7P"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbfICR3K (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Sep 2019 13:29:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:41538 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728571AbfICR3J (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Sep 2019 13:29:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52AB3360;
-        Tue,  3 Sep 2019 10:29:09 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3302E3F59C;
-        Tue,  3 Sep 2019 10:29:08 -0700 (PDT)
-Subject: Re: [PATCH] sched: make struct task_struct::state 32-bit
-To:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        id S1729932AbfICSTZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Sep 2019 14:19:25 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41121 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727667AbfICSTZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Sep 2019 14:19:25 -0400
+Received: by mail-wr1-f68.google.com with SMTP id j16so18513385wrr.8;
+        Tue, 03 Sep 2019 11:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ty/2ohLAJ+2sCNPsz6Mg9g82ZAcXCLPeRSTUh8dn1AM=;
+        b=iXrN3Q7PNVG79k4/QPwtJd360wJBFRowaCrtFARluncD92iaxPMac9rPX4B8Hxlta6
+         u/egCzq2FHk7WjWNT5OjHCutDCAyvbBIMEMQuj8Uk4fIXVLKHzupt38V5eoEGLwnfxwW
+         SqBXpSsY/Zq0zJG1z5wQjb1fmAE3V7w/wzzAZ519iQse6X2qAu5JHAI73GwS2t32czqK
+         aEyRcgYkrUFclz9SJ+tw3xs2406lVI/hppCdyT62DYo33sOUME/5kqeaSlong/0UwJNK
+         BC39yQeVjmmfS/aYtMtAzcaVCNQrjnTBP1j/Srlo1GRn0raysle8n1hJupyIU46tYxsy
+         mumA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ty/2ohLAJ+2sCNPsz6Mg9g82ZAcXCLPeRSTUh8dn1AM=;
+        b=a6O2CJbylSxcnI+FXxqhwa20+OHPsux9nxODLJNNpuay+BzEp2CtZmXl7SFujkVyWi
+         +wxStXpQZ3lXgo1jDDXUbi82x0mTyjaovM4MCjRTmb8DY2he1Djhyk3oHJBcM2f3c/tn
+         iCf5LKPDelXH3cwLhSBmWDjtATYWaroP8sqqgG9VR9GX5Agigvgqs8aZupwk7Ta3VYcm
+         jW9GuvERyDCL5Mjm4a+mUMrCtKqU/RyajS/UWrJpXAWCMTOiO4EZm1WxNGv/qczsY20P
+         yJDYsRUmTJ6RX7Lj+I53qQw9RjZhx0phgoOr+Jk8VLt2vkdONSJ+QGzZ7gg1y12nE5SA
+         Tkmg==
+X-Gm-Message-State: APjAAAUnnXk44zLvxTQ7eMwbEZ19Iz/5dgOZ9j/xfJr8ua8JOv5exYNU
+        x9swyvR/O6uND2suTcHmww==
+X-Google-Smtp-Source: APXvYqxlHBA49WV+BHVeO2PilKn9QU1HiFxpBtiAo0xzOr9c+REPpHiXHtdsI/PxDenk0UyGl0Lj6A==
+X-Received: by 2002:adf:fad0:: with SMTP id a16mr1790618wrs.195.1567534762701;
+        Tue, 03 Sep 2019 11:19:22 -0700 (PDT)
+Received: from avx2 ([46.53.254.228])
+        by smtp.gmail.com with ESMTPSA id t14sm19292468wrs.58.2019.09.03.11.19.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Sep 2019 11:19:22 -0700 (PDT)
+Date:   Tue, 3 Sep 2019 21:19:20 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         linux-block@vger.kernel.org, dm-devel@redhat.com, axboe@kernel.dk,
         aarcange@redhat.com
+Subject: Re: [PATCH] sched: make struct task_struct::state 32-bit
+Message-ID: <20190903181920.GA22358@avx2>
 References: <20190902210558.GA23013@avx2>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <d8ad0be1-4ed7-df74-d415-2b1c9a44bac7@arm.com>
-Date:   Tue, 3 Sep 2019 18:29:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <d8ad0be1-4ed7-df74-d415-2b1c9a44bac7@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20190902210558.GA23013@avx2>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <d8ad0be1-4ed7-df74-d415-2b1c9a44bac7@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 02/09/2019 22:05, Alexey Dobriyan wrote:
-> 32-bit accesses are shorter than 64-bit accesses on x86_64.
-> Nothing uses 64-bitness of ->state.
-> 
-> Space savings are ~2KB on F30 kernel config.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
-> 
->  arch/ia64/kernel/perfmon.c   |    4 ++--
->  block/blk-mq.c               |    2 +-
->  drivers/md/dm.c              |    4 ++--
->  fs/userfaultfd.c             |    2 +-
->  include/linux/sched.h        |    6 +++---
->  include/linux/sched/debug.h  |    2 +-
->  include/linux/sched/signal.h |    2 +-
->  kernel/freezer.c             |    2 +-
->  kernel/kthread.c             |    4 ++--
->  kernel/locking/mutex.c       |    6 +++---
->  kernel/locking/semaphore.c   |    2 +-
->  kernel/rcu/rcutorture.c      |    4 ++--
->  kernel/rcu/tree_stall.h      |    6 +++---
->  kernel/sched/core.c          |    8 ++++----
->  lib/syscall.c                |    2 +-
->  15 files changed, 28 insertions(+), 28 deletions(-)
-> 
+On Tue, Sep 03, 2019 at 06:29:06PM +0100, Valentin Schneider wrote:
+> On 02/09/2019 22:05, Alexey Dobriyan wrote:
+> > 32-bit accesses are shorter than 64-bit accesses on x86_64.
+> > Nothing uses 64-bitness of ->state.
 
-It looks like you missed a few places. There's a long prev_state in
-sched/core.c::finish_task_switch() for instance.
+> It looks like you missed a few places. There's a long prev_state in
+> sched/core.c::finish_task_switch() for instance.
+> 
+> I suppose that's where coccinelle oughta help but I'm really not fluent
+> in that. Is there a way to make it match p.state accesses with p task_struct?
+> And if so, can we make it change the type of the variable being read from
+> / written to?
 
-I suppose that's where coccinelle oughta help but I'm really not fluent
-in that. Is there a way to make it match p.state accesses with p task_struct?
-And if so, can we make it change the type of the variable being read from
-/ written to?
+Coccinelle is interesting: basic
 
-How did you come up with this changeset, did you pickaxe for some regexp?
+	- foo
+	+ bar
 
-[...]
+doesn't find "foo" in function arguments.
+
+I'm scared of coccinelle.
+
+> How did you come up with this changeset, did you pickaxe for some regexp?
+
+No, manually, backtracking up to the call chain.
+Maybe I missed a few places.
