@@ -1,92 +1,64 @@
-Return-Path: <SRS0=pkU6=W5=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=StHt=W6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17F05C3A59E
-	for <rcu@archiver.kernel.org>; Mon,  2 Sep 2019 23:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2940C3A5A8
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 06:52:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DF567216C8
-	for <rcu@archiver.kernel.org>; Mon,  2 Sep 2019 23:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9D9E23401
+	for <rcu@archiver.kernel.org>; Tue,  3 Sep 2019 06:52:02 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D0b65z2+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbfIBXCu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Sep 2019 19:02:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:58592 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726775AbfIBXCu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Sep 2019 19:02:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82626344;
-        Mon,  2 Sep 2019 16:02:49 -0700 (PDT)
-Received: from [10.0.2.15] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2D2563F59C;
-        Mon,  2 Sep 2019 16:02:48 -0700 (PDT)
-Subject: Re: [PATCH] sched: make struct task_struct::state 32-bit
-To:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-block@vger.kernel.org, dm-devel@redhat.com, axboe@kernel.dk,
-        aarcange@redhat.com
+        id S1726481AbfICGv6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Sep 2019 02:51:58 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:46744 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbfICGv6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Sep 2019 02:51:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=on1uS5ivzDuDh9bGgt6qOTnzv59PRDx52jliN2T4+Mo=; b=D0b65z2+nz0bUijDBcAL7blia
+        KGLhVDc4Bdpo5lTzExmOhVr6xcJ2Q+FEcYmgis7Z+mT3YXjEKHrdOE6xtmUosvth6cQmx351LlTdX
+        Oie7o3eEP0PPc3WI2mZgGxxG+SIeSAg4YcnUPvAbSEaU3tM2CKCOt3mPf//OU3S/2b4EyCcExd5iE
+        MVatl0Xr+stxlGWhhU1eIa3vDxYN2DMNOU/2dDuWoopMnSmuO6xBYiS8tGW/ui5HecpjB3+/EYHJJ
+        7mBAXGBk124z43eTlwevOFs8Xwhu/p8WDiozAB2gIVMbf6UFZKqvb2b33/tNQ3haEPeGPhb8ip4VS
+        l59g+y2lA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1i52fT-0007ew-Ft; Tue, 03 Sep 2019 06:51:55 +0000
+Date:   Mon, 2 Sep 2019 23:51:55 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, aarcange@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, dm-devel@redhat.com, axboe@kernel.dk
+Subject: Re: [dm-devel] [PATCH] sched: make struct task_struct::state 32-bit
+Message-ID: <20190903065155.GA28322@infradead.org>
 References: <20190902210558.GA23013@avx2>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <7b94004e-4a65-462b-cd6b-5cbd23d607bf@arm.com>
-Date:   Tue, 3 Sep 2019 00:02:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20190902210558.GA23013@avx2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
-
-On 02/09/2019 22:05, Alexey Dobriyan wrote:
+On Tue, Sep 03, 2019 at 12:05:58AM +0300, Alexey Dobriyan wrote:
 > 32-bit accesses are shorter than 64-bit accesses on x86_64.
 > Nothing uses 64-bitness of ->state.
 > 
 > Space savings are ~2KB on F30 kernel config.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
 
-Interestingly this has been volatile long since forever (or 2002, which is
-my take on "forever" given the history tree), although the task states
-seem to have never gone above 0x1000 (the current TASK_STATE_MAX).
-
-[...]
-
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -643,7 +643,7 @@ struct task_struct {
->  	struct thread_info		thread_info;
->  #endif
->  	/* -1 unrunnable, 0 runnable, >0 stopped: */
-> -	volatile long			state;
-> +	volatile int			state;
-
-This leads to having some padding after this field (w/o randomization):
-
-struct task_struct {
-	struct thread_info         thread_info;          /*     0    24 */
-	volatile int               state;                /*    24     4 */
-
-	/* XXX 4 bytes hole, try to pack */
-
-	void *                     stack;                /*    32     8 */
-
-Though seeing as this is also the boundary of the randomized layout we can't
-really do much better without changing the boundary itself. So much for
-cacheline use :/
-
-Anyway, task_struct doesn't shrink but we can cut some corners in the asm,
-I guess that's fine?
-
-[...]
+I guess we'd save even more when moving from a volatile to
+WRITE_ONCE/READ_ONCE..
