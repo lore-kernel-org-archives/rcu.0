@@ -2,280 +2,168 @@ Return-Path: <SRS0=c+0x=XA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 949CDC43331
-	for <rcu@archiver.kernel.org>; Thu,  5 Sep 2019 15:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69400C43331
+	for <rcu@archiver.kernel.org>; Thu,  5 Sep 2019 15:52:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 00F8220828
-	for <rcu@archiver.kernel.org>; Thu,  5 Sep 2019 15:36:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC5FB206B8
+	for <rcu@archiver.kernel.org>; Thu,  5 Sep 2019 15:52:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FOr5MvNl"
+	dkim=pass (1024-bit key) header.d=web.de header.i=@web.de header.b="DssZJuMT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387917AbfIEPgX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Sep 2019 11:36:23 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44790 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727915AbfIEPgW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Sep 2019 11:36:22 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q21so1978738pfn.11
-        for <rcu@vger.kernel.org>; Thu, 05 Sep 2019 08:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oz4xoyPwNaIP7AESzYzRXfh3q2vCz0AWFVJrbEEnQvQ=;
-        b=FOr5MvNl2syTkS/I0BiFKy58jHmHt8SUO4Qb0s/XL8UoYTAtHpAgesg22S5lH3tbGa
-         OFklWdtOb0pyqGaZGFHdZo262y7OUJDGgdeaoGML+gpfg2y+CJk+ML6U52W4/CgTXcBT
-         ww0rBPu5luC/3IbxlMbvhchjzQuYY5lR0ZV6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oz4xoyPwNaIP7AESzYzRXfh3q2vCz0AWFVJrbEEnQvQ=;
-        b=NnkCz7eWL6DUpjjidQQ70D7PdMyxZWg1tWOqhy7XTPAtktZT0kVmqE+gZPri3LmnCq
-         O9ZoxYcG91F+vChTa1fc9QkPjI0cgn66CRvrCFld6cON1iy/z/7Re8QIh07hfWyeoaSX
-         tEEge3x7R6xrS0tmq0YPZzOVKN9wqpjUSOTyHwJ+SIyDbjOXaKBOY3fRIEGAsmxWkmsZ
-         umDrD3dKMtYDXt+gv8Q5PrJV4VJQjTbjQBIyP5nwc/y4tK0xv3iZ44xgn3DjSDKS9dCQ
-         uhdDK5vngM0tx5CrDLhp4hc1H2+/Aio12pg6/TV8YpkFRe0D16ui1NY4e6I0/v+uBM7l
-         QBGA==
-X-Gm-Message-State: APjAAAW+UiObp8m75FBmza4Shh7pAzD0OG0OJrnki0LXxZzry32iK1sX
-        4Lyycp1YpwCONpq4Is5np90N7e0G/xU=
-X-Google-Smtp-Source: APXvYqynC7MUAAxaKGAPLXgVnufocyRmmLk75dKcmlawBQVI9e9Hn1UmZPCIjuHC6z2lw4lMSlZAOg==
-X-Received: by 2002:a63:e5a:: with SMTP id 26mr3606853pgo.3.1567697781629;
-        Thu, 05 Sep 2019 08:36:21 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y28sm3386814pfq.48.2019.09.05.08.36.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2019 08:36:21 -0700 (PDT)
-Date:   Thu, 5 Sep 2019 11:36:20 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH -rcu dev 1/2] Revert b8c17e6664c4 ("rcu: Maintain special
- bits at bottom of ->dynticks counter")
-Message-ID: <20190905153620.GG26466@google.com>
-References: <20190830162348.192303-1-joel@joelfernandes.org>
- <20190903200249.GD4125@linux.ibm.com>
- <20190904045910.GC144846@google.com>
- <20190904101210.GM4125@linux.ibm.com>
- <20190904135420.GB240514@google.com>
- <20190904231308.GB4125@linux.ibm.com>
+        id S1731294AbfIEPwL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Sep 2019 11:52:11 -0400
+Received: from mout.web.de ([212.227.17.11]:48929 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730518AbfIEPwK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Sep 2019 11:52:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1567698707;
+        bh=YjuLJQHXe/uLAFFIxg5br08ZQG/pMiCw9MBbSYeF1LI=;
+        h=X-UI-Sender-Class:To:Cc:References:Subject:From:Date:In-Reply-To;
+        b=DssZJuMT3vVoRg9i0dPDI8G/z/slGUOwalkshjOEhUvku5fhpCytr2KlV4uPRwqFS
+         J+3LvJp7E9PawdODXyyNhBgtUL9AMFcMV+d3R9hgUAV1hXFcCoR7doKNVNCGHCW5Ze
+         b9X3fP5fDZlIaynhiWya+cwxcQBu8sOU85daSZq0=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.131.221]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Mfq6i-1hl5PC39YC-00NAFl; Thu, 05
+ Sep 2019 17:51:46 +0200
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <a43fe392-bd6a-71f5-8611-c6b764ba56c3@arm.com>
+Subject: Re: sched: make struct task_struct::state 32-bit
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <7e3e784c-e8e6-f9ba-490f-ec3bf956d96b@web.de>
+Date:   Thu, 5 Sep 2019 17:51:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190904231308.GB4125@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a43fe392-bd6a-71f5-8611-c6b764ba56c3@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:g1fZROSW3lXKaILymBFMmRcQTT5baPT1MsjWb0TQESOyAvUUvsY
+ o38v6NffEH63/AkL9owRXjp34pYQGnnpvDwgL9b0MCZN99KgYldNw69i54QfgCIu4GuRrUw
+ n1pWdcsF7NcuXYtY1PYHI0uPhqFwoEI6dbjXNI4CZ4Usct8FnXCPwjrdYFbPVW9IlO1K7Aw
+ gmB8z7Br/InXsN3BWKttA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U98YLqIcjsQ=:3OqYxrpcGir0q/CR4CPk6j
+ fLYNbOZZ2jko5KCNdZEvYdqIjpQC+xrzdXA64WbEFdX6cBoUlnHW4Jf8AXPKryMMX4csJUZdu
+ x63lrvL+nJtr9mUR4e84zQ/H+tNotYhCX1iIar3wL+gOM9OXcq3Iz2+ekAmq06L1bi5xHWHlC
+ ++H3wfJWXdK/y25XmqsfV+2ojGQE7gsDA9IlPZnCUOK+z5ueDpnT1TSWML/T1/6m266c7f9dg
+ 79pCgQRmOeUW/k0j+SUN9cBik60shRLUXPyfvQE7z6JTuEjs7QPWeokjIQtSFQ0w65uj1+dlQ
+ XpKKglRAh4Kz5C+pYvIjXt4GvD4FOCtI0T5j2fZkg6LZe8vddgoyJdb3NKhm2yI7mN10izYOe
+ JOdF49+O+1fw/KFbU0qYUweUDLqNYsCkxYKqfND8KLZVNHI2syKdNmFrl84tLICEmT753T7h+
+ lxwCzZsnYutAo62l/LsNcSq46hDXosV5o+nsjEO5eeC8vuVo8Ypdc6zSxRcKQCv6N1stgxpyE
+ 9+43N/YgLwm7am/KUqPQrJnQrFp7C3VJbYGamHg7pVIeH1+giNZLWUKiu/f3Fy3CD9Zwi3jWZ
+ wmBDF+lCOVOiofwYu+lHSLeHkJ1C4wGoxUhjRHWeLXbbMAAMyXUcfz9buHx5MhiULUeGKRy7F
+ 8TPSTdoBfmQhvD0v8nTwAKkkmzDEb9n5JXzQiJq32HHruIpCDAtpPwnm30kUPa12li9/Lrr20
+ lqJRByVmGv5/OSHYBgF7s1K5VCz+MxBWHADFmYZRkvyNb/1FtSh3EbqwPOQny7LXYeNxVFPMU
+ ZgxRuJCKGSi+k7VgdW1uQ3sh7QUVCPVmSnVA7UP/xLabtMNCKrgvLh5tPNfQan3QaBfdequYi
+ c+EO6lLRcGDoQYzkBQsCupoGudt7Rv6ovqmj9jsfy/B9+Vj42TjbEqgi7HYSNiIXGY4NKoKpz
+ 747P70qC9pmY8w6Vo53RUAHaPqxt7WKZTouqxZa/5bf160XCuLNB2xLGUfVieq79uS/bp9j9X
+ XOE1sHKDJGSnRrYOQmQn92XKVMuokioIKhOCbL9FKLOwW5xOJYKz3+QrdQFSO7iHK3CCeO5h1
+ KF8fp+zTR70aaWCw6CFrKyLEDAg4E/AoRUpJPfL4YustHBxNUUlNs0EPNaIvRrMCe3fgiwPqP
+ 2BEHq6i5l1inDrnIz9ZhoSv76QhTEpjdLamxtETQGL8hpEPx4kYXXWRIEGg2n8jreIT06Kz/t
+ gpfgFPtzHMDzREYn8
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 04:13:08PM -0700, Paul E. McKenney wrote:
-> On Wed, Sep 04, 2019 at 09:54:20AM -0400, Joel Fernandes wrote:
-> > On Wed, Sep 04, 2019 at 03:12:10AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Sep 04, 2019 at 12:59:10AM -0400, Joel Fernandes wrote:
-> > > > On Tue, Sep 03, 2019 at 01:02:49PM -0700, Paul E. McKenney wrote:
-> 
-> [ . . . ]
-> 
-> > > If this task gets delayed betweentimes, rcu_implicit_dynticks_qs() would
-> > > fail to set .rcu_need_heavy_qs because it saw it already being set,
-> > > even though the corresponding ->dynticks update had already happened.
-> > > (It might be a new grace period, given that the old grace period might
-> > > have ended courtesy of the atomic_add_return().)
-> > 
-> > Makes sense and I agree.
-> > 
-> > Also, I would really appreciate if you can correct the nits in the above
-> > patch we're reviewing, and apply them (if you can).
-> > I think, there are only 2 changes left:
-> > - rename special to seq.
-> > - reorder the rcu_need_heavy_qs write.
-> > 
-> >  On a related point, when I was working on the NOHZ_FULL testing I noticed a
-> >  weird issue where rcu_urgent_qs was reset but rcu_need_heavy_qs was still
-> >  set indefinitely. I am a bit afraid our hints are not being cleared
-> >  appropriately and I believe I fixed a similar issue a few months ago. I
-> >  would rather have them cleared once they are no longer needed.  What do you
-> >  think about the below patch? I did not submit it yet because I was working
-> >  on other patches. 
-> > 
-> > ---8<-----------------------
-> > 
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > Subject: [RFC] rcu/tree: Reset CPU hints when reporting a quiescent state
-> > 
-> > While tracing, I am seeing cases where need_heavy_qs is still set even
-> > though urgent_qs was cleared, after a quiescent state is reported. One
-> > such case is when the softirq reports that a CPU has passed quiescent
-> > state.
-> > 
-> > Previously in 671a63517cf9 ("rcu: Avoid unnecessary softirq when system
-> > is idle"), I had fixed a bug where core_needs_qs was not being cleared.
-> > I worry we keep running into similar situations. Let us just add a
-> > function to clear hints and call it from all relevant places to make the
-> > code more robust and avoid such stale hints which could in theory at
-> > least, cause false hints after the quiescent state was already reported.
-> > 
-> > Tested overnight with rcutorture running for 60 minutes on all
-> > configurations of RCU.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/rcu/tree.c | 17 ++++++++++++++++-
-> >  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> Excellent point!  But how about if we combine it with the existing
-> disabling of the scheduler tick, perhaps something like the following?
-> 
-> Note that the FQS clearing can come from some other CPU, hence the added
-> {READ,WRITE}_ONCE() calls.  The call is moved down in rcu_report_qs_rdp()
-> because something would have had to clear the bit to prevent execution
-> from getting there, and I believe that the other bit-clearing events
-> have calls to rcu_disable_urgency_upon_qs().  (But I easily could have
-> missed something!)
+> @funcmatch@
+> identifier func;
+> identifier p;
+> identifier state_var;
+> @@
+>
+>   func(..., struct task_struct *p, ...
+> -      , long state_var
+> +      , int state_var
+>        ,...)
+> {
+> 	...
+> }
+=E2=80=A6
+> Which seems to be doing roughly what I want.
 
-Is there any harm just clearing it earlier in rcu_report_qs_rdp()? If no,
-then let us just play it safe and do it that way (clear earlier in
-rcu_report_qs_rdp())?
+Can a transformation approach like the following work also
+for your software?
 
-> I am OK leaving RCU urgency set on offline CPUs, hence clearing things
-> at online time.
+@replacement@
 
-Got it, probably this point can be added to the commit message.
+identifier func, p, state_var;
 
-Added more comments below but otherwise it looks good to me:
+@@
 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 68ebf0eb64c8..2b74b6c94086 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -827,7 +827,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
->  		incby = 1;
->  	} else if (tick_nohz_full_cpu(rdp->cpu) &&
->  		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
-> -		   rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
-> +		   READ_ONCE(rdp->rcu_urgent_qs) && !rdp->rcu_forced_tick) {
->  		rdp->rcu_forced_tick = true;
->  		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
->  	}
-> @@ -892,11 +892,15 @@ void rcu_irq_enter_irqson(void)
->  }
->  
->  /*
-> - * If the scheduler-clock interrupt was enabled on a nohz_full CPU
-> - * in order to get to a quiescent state, disable it.
-> + * If any sort of urgency was applied to the current CPU (for example,
-> + * the scheduler-clock interrupt was enabled on a nohz_full CPU) in order
-> + * to get to a quiescent state, disable it.
->   */
-> -void rcu_disable_tick_upon_qs(struct rcu_data *rdp)
-> +void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
->  {
-> +	WRITE_ONCE(rdp->core_needs_qs, false);
-> +	WRITE_ONCE(rdp->rcu_urgent_qs, false);
-> +	WRITE_ONCE(rdp->rcu_need_heavy_qs, false);
+ func(...,
+      struct task_struct *p,
+      ...
+,
+-     long
++     int
+      state_var
+,
+      ...)
 
-Better to put a comment here saying _ONCE is needed to avoid data-races with
-the FQS loop? Just so if anyone thinks why we are using _ONCE().
+ {
 
-And I am guessing the __this_cpu_read(rcu_data.core_needs_qs) in
-rcu_flavor_sched_clock_irq() implies READ_ONCE() so no need READ_ONCE()
-there right?
+ ...
 
->  	if (tick_nohz_full_cpu(rdp->cpu) && rdp->rcu_forced_tick) {
->  		tick_dep_clear_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
->  		rdp->rcu_forced_tick = false;
-> @@ -1417,7 +1421,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
->  		trace_rcu_grace_period(rcu_state.name, rnp->gp_seq, TPS("cpustart"));
->  		need_gp = !!(rnp->qsmask & rdp->grpmask);
->  		rdp->cpu_no_qs.b.norm = need_gp;
-> -		rdp->core_needs_qs = need_gp;
-> +		WRITE_ONCE(rdp->core_needs_qs, need_gp);
->  		zero_cpu_stall_ticks(rdp);
->  	}
->  	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
-> @@ -1987,7 +1991,6 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
->  		return;
->  	}
->  	mask = rdp->grpmask;
-> -	rdp->core_needs_qs = false;
->  	if ((rnp->qsmask & mask) == 0) {
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	} else {
-> @@ -1998,7 +2001,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
->  		if (!offloaded)
->  			needwake = rcu_accelerate_cbs(rnp, rdp);
->  
-> -		rcu_disable_tick_upon_qs(rdp);
-> +		rcu_disable_urgency_upon_qs(rdp);
->  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
->  		/* ^^^ Released rnp->lock */
->  		if (needwake)
-> @@ -2022,7 +2025,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
->  	 * Does this CPU still need to do its part for current grace period?
->  	 * If no, return and let the other CPUs do their part as well.
->  	 */
-> -	if (!rdp->core_needs_qs)
-> +	if (!READ_ONCE(rdp->core_needs_qs))
->  		return;
->  
->  	/*
-> @@ -2316,7 +2319,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->  				rdp = per_cpu_ptr(&rcu_data, cpu);
->  				if (f(rdp)) {
->  					mask |= bit;
-> -					rcu_disable_tick_upon_qs(rdp);
-> +					rcu_disable_urgency_upon_qs(rdp);
->  				}
->  			}
->  		}
-> @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
->  		return 0;
->  
->  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
-> +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
->  		return 1;
->  
->  	/* Does this CPU have callbacks ready to invoke? */
-> @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
->  	rdp->gp_seq = rnp->gp_seq;
->  	rdp->gp_seq_needed = rnp->gp_seq;
->  	rdp->cpu_no_qs.b.norm = true;
-> -	rdp->core_needs_qs = false;
+ }
 
-How about calling the new hint-clearing function here as well? Just for
-robustness and consistency purposes?
 
-thanks,
 
- - Joel
-
->  	rdp->rcu_iw_pending = false;
->  	rdp->rcu_iw_gp_seq = rnp->gp_seq - 1;
->  	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
-> @@ -3359,7 +3361,7 @@ void rcu_cpu_starting(unsigned int cpu)
->  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
->  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
->  	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
-> -		rcu_disable_tick_upon_qs(rdp);
-> +		rcu_disable_urgency_upon_qs(rdp);
->  		/* Report QS -after- changing ->qsmaskinitnext! */
->  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
->  	} else {
+Regards,
+Markus
