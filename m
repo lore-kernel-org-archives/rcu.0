@@ -2,56 +2,55 @@ Return-Path: <SRS0=ZUOr=XB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B88FDC43331
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 00:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D439C43331
+	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:08:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CC282206BB
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 00:01:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 748CF2082C
+	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:08:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="tSx9f2PU"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VLvmoojX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390254AbfIFABl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Sep 2019 20:01:41 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:47094 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388626AbfIFABk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Sep 2019 20:01:40 -0400
-Received: by mail-pf1-f193.google.com with SMTP id q5so2984836pfg.13
-        for <rcu@vger.kernel.org>; Thu, 05 Sep 2019 17:01:40 -0700 (PDT)
+        id S2405685AbfIFPIJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Sep 2019 11:08:09 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:40426 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730480AbfIFPII (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Sep 2019 11:08:08 -0400
+Received: by mail-pl1-f195.google.com with SMTP id y10so3274864pll.7
+        for <rcu@vger.kernel.org>; Fri, 06 Sep 2019 08:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=epYRiGY84qXK7GGA5K8+13R8pbG5DXRbtlScN8UK0uY=;
-        b=tSx9f2PUH0CE2VSpTipizpffhVMsYtEVJotgIbdNb4zaZs2G0wsBHBYPlMn8uM3GqY
-         PjpO8FBq33zk4Msd+vPYmG0ZFg452CCU+HiGo7XeSMvzPNSo6KciXQ6igGHRivwTduY6
-         Kx2fxxYDxE6NBXkdEcv/IL8obcYszBGB5Cq9g=
+        bh=oVHfTdbxKLJ5v5N1xW6pGtg6rMnkx2Mfh0JbO5nAoq0=;
+        b=VLvmoojXoWu+ExmbEtPLQnb9eZcNChHfR8Sa4u3CvPNycWWiB++Bfn6EWnNjpPViXE
+         TTi6/FeLfR6W0WHN6i2x7778P/7i8Eex1Dx8ZiF2WNzi7hSrGAJfVG/h3bhKMtwIbzGJ
+         pFpo4oB6laCOO2rk92ednevhKDYFWLvrAGyiU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=epYRiGY84qXK7GGA5K8+13R8pbG5DXRbtlScN8UK0uY=;
-        b=IdK1IYE5PsuOtNyYCezehKv0wwqMyyMd24/zKQ8GRVo3LuZGXpqtmBYCAEx94AuNI/
-         IgxF8X3SYGPpc6qtUfYjVkWkIuQOCyJa+PPMso94rlB/ge3lWKu/dB3k5YoYBGNvS1zv
-         wQlSFF0MBY2GXfmljj+Q7QT1ubNdM7C0gia4I1L8Y1smMM39sBbG8BnOH9VZ5mLb1/A4
-         iU5MQv5hJvprmcgNR27p9kvcpJLfbqpaTAfxfovKjRgXZFMonZuQ+eX7jojatemyk1dA
-         qbIY3lcnLunXuchRE2jwMyi/SZvuZKe+BtWmB8yZ/j3WO31v0wsLozo5500KuBCZcYOk
-         A5IQ==
-X-Gm-Message-State: APjAAAV0PGDBhU+YkdQLAC5eX2VIQcO2egVFRRvWOHdvtxIEsIv/I0M2
-        NEeB524wJpFFfLD0b+bFA6irEOgDHpY=
-X-Google-Smtp-Source: APXvYqwCE57UVmIe+qdJTfI/ljoCGv7WQDe3DQb2RsRor/OsqZbObvNFP+gpLoL+1vpvanafKGjlIw==
-X-Received: by 2002:a63:4823:: with SMTP id v35mr5584402pga.138.1567728099807;
-        Thu, 05 Sep 2019 17:01:39 -0700 (PDT)
+        bh=oVHfTdbxKLJ5v5N1xW6pGtg6rMnkx2Mfh0JbO5nAoq0=;
+        b=YIIbd0pP66nMJEU5MRRL5EKSOezuf5DdCatMW869UpSOVxsa2ueQruycmz12LkmfRE
+         OAfnkHpzrhpq6OshbJZX+41oKgRx5HYbKvuPzWbIzkrDpqjb40xlDR4nxAw7goKwd1YY
+         HLDSi/tHPctnzKIJ4Rre2dmKsqm3lgCXuHzkzNJm/x1zysBMY/JDnEWezGWN+axmxj2l
+         xJYPCrG3jetYFjgbi6ELYwnoyO5Tjgw/mxSfir7dUzG25aaRwoKOaGKhsCTBG/Bhwivj
+         eTTO8dw+di7ziLoTolr21rY34SY/gjOULgTu423aVEXi189pcnNWziYZ9JnHfK4O69J+
+         goCA==
+X-Gm-Message-State: APjAAAV/2lKJazQHtv1E+Yc8f0TWV+6nbrt4halqWuMJR7KakHcE9pMf
+        4gV7g2i/XL7AQsGhslyyJdD1iA==
+X-Google-Smtp-Source: APXvYqyEIYgxl07/EE/D/mWfxa4+GpZlwXt4yAIpcq3VJaOPWzjxgVUg6dHAQLA8NPgxdi1DeTs9Kg==
+X-Received: by 2002:a17:902:7792:: with SMTP id o18mr9158609pll.73.1567782488192;
+        Fri, 06 Sep 2019 08:08:08 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g18sm5807819pgm.9.2019.09.05.17.01.38
+        by smtp.gmail.com with ESMTPSA id b126sm7611169pfb.110.2019.09.06.08.08.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2019 17:01:38 -0700 (PDT)
-Date:   Thu, 5 Sep 2019 20:01:37 -0400
+        Fri, 06 Sep 2019 08:08:07 -0700 (PDT)
+Date:   Fri, 6 Sep 2019 11:08:06 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -66,7 +65,7 @@ Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Yafang Shao <laoar.shao@gmail.com>
 Subject: Re: [PATCH -rcu dev 1/2] Revert b8c17e6664c4 ("rcu: Maintain special
  bits at bottom of ->dynticks counter")
-Message-ID: <20190906000137.GA224720@google.com>
+Message-ID: <20190906150806.GA11355@google.com>
 References: <20190830162348.192303-1-joel@joelfernandes.org>
  <20190903200249.GD4125@linux.ibm.com>
  <20190904045910.GC144846@google.com>
@@ -75,153 +74,53 @@ References: <20190830162348.192303-1-joel@joelfernandes.org>
  <20190904231308.GB4125@linux.ibm.com>
  <20190905153620.GG26466@google.com>
  <20190905164329.GT4125@linux.ibm.com>
+ <20190906000137.GA224720@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190905164329.GT4125@linux.ibm.com>
+In-Reply-To: <20190906000137.GA224720@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 05, 2019 at 09:43:29AM -0700, Paul E. McKenney wrote:
-> On Thu, Sep 05, 2019 at 11:36:20AM -0400, Joel Fernandes wrote:
-> > On Wed, Sep 04, 2019 at 04:13:08PM -0700, Paul E. McKenney wrote:
-> > > On Wed, Sep 04, 2019 at 09:54:20AM -0400, Joel Fernandes wrote:
-> > > > On Wed, Sep 04, 2019 at 03:12:10AM -0700, Paul E. McKenney wrote:
-> > > > > On Wed, Sep 04, 2019 at 12:59:10AM -0400, Joel Fernandes wrote:
-> > > > > > On Tue, Sep 03, 2019 at 01:02:49PM -0700, Paul E. McKenney wrote:
+On Thu, Sep 05, 2019 at 08:01:37PM -0400, Joel Fernandes wrote:
+[snip] 
+> > > > @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
+> > > >  		return 0;
+> > > >  
+> > > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+> > > > -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
+> > > > +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
+> > > >  		return 1;
+> > > >  
+> > > >  	/* Does this CPU have callbacks ready to invoke? */
+> > > > @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+> > > >  	rdp->gp_seq = rnp->gp_seq;
+> > > >  	rdp->gp_seq_needed = rnp->gp_seq;
+> > > >  	rdp->cpu_no_qs.b.norm = true;
+> > > > -	rdp->core_needs_qs = false;
 > > > 
-> > > [ . . . ]
-> > > 
-> > > > > If this task gets delayed betweentimes, rcu_implicit_dynticks_qs() would
-> > > > > fail to set .rcu_need_heavy_qs because it saw it already being set,
-> > > > > even though the corresponding ->dynticks update had already happened.
-> > > > > (It might be a new grace period, given that the old grace period might
-> > > > > have ended courtesy of the atomic_add_return().)
-> > > > 
-> > > > Makes sense and I agree.
-> > > > 
-> > > > Also, I would really appreciate if you can correct the nits in the above
-> > > > patch we're reviewing, and apply them (if you can).
-> > > > I think, there are only 2 changes left:
-> > > > - rename special to seq.
-> > > > - reorder the rcu_need_heavy_qs write.
-> > > > 
-> > > >  On a related point, when I was working on the NOHZ_FULL testing I noticed a
-> > > >  weird issue where rcu_urgent_qs was reset but rcu_need_heavy_qs was still
-> > > >  set indefinitely. I am a bit afraid our hints are not being cleared
-> > > >  appropriately and I believe I fixed a similar issue a few months ago. I
-> > > >  would rather have them cleared once they are no longer needed.  What do you
-> > > >  think about the below patch? I did not submit it yet because I was working
-> > > >  on other patches. 
-> > > > 
-> > > > ---8<-----------------------
-> > > > 
-> > > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > > Subject: [RFC] rcu/tree: Reset CPU hints when reporting a quiescent state
-> > > > 
-> > > > While tracing, I am seeing cases where need_heavy_qs is still set even
-> > > > though urgent_qs was cleared, after a quiescent state is reported. One
-> > > > such case is when the softirq reports that a CPU has passed quiescent
-> > > > state.
-> > > > 
-> > > > Previously in 671a63517cf9 ("rcu: Avoid unnecessary softirq when system
-> > > > is idle"), I had fixed a bug where core_needs_qs was not being cleared.
-> > > > I worry we keep running into similar situations. Let us just add a
-> > > > function to clear hints and call it from all relevant places to make the
-> > > > code more robust and avoid such stale hints which could in theory at
-> > > > least, cause false hints after the quiescent state was already reported.
-> > > > 
-> > > > Tested overnight with rcutorture running for 60 minutes on all
-> > > > configurations of RCU.
-> > > > 
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > ---
-> > > >  kernel/rcu/tree.c | 17 ++++++++++++++++-
-> > > >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > > 
-> > > Excellent point!  But how about if we combine it with the existing
-> > > disabling of the scheduler tick, perhaps something like the following?
-> > > 
-> > > Note that the FQS clearing can come from some other CPU, hence the added
-> > > {READ,WRITE}_ONCE() calls.  The call is moved down in rcu_report_qs_rdp()
-> > > because something would have had to clear the bit to prevent execution
-> > > from getting there, and I believe that the other bit-clearing events
-> > > have calls to rcu_disable_urgency_upon_qs().  (But I easily could have
-> > > missed something!)
+> > > How about calling the new hint-clearing function here as well? Just for
+> > > robustness and consistency purposes?
 > > 
-> > Is there any harm just clearing it earlier in rcu_report_qs_rdp()? If no,
-> > then let us just play it safe and do it that way (clear earlier in
-> > rcu_report_qs_rdp())?
+> > This and the next function are both called during a CPU-hotplug online
+> > operation, so there is little robustness or consistency to be had by
+> > doing it twice.
 > 
-> Maybe...
+> Ok, sorry I missed you are clearing it below in the next function. That's
+> fine with me.
 > 
-> But given that missing a path doesn't cause a major failure (too-short
-> grace period, for example), I am more inclined to find the paths and
-> fix them as needed.  Especially given that my ignorance of any path to
-> a quiescent state likely hides a serious bug.
+> This patch looks good to me and I am Ok with merging of these changes into
+> the original patch with my authorship as you mentioned. Or if you wanted to
+> be author, that's fine too :)
 
-Ok that's fine.
+Paul, does it make sense to clear these urgency hints in rcu_qs() as well?
+After all, we are clearing atleast one urgency hint there: the
+rcu_read_unlock_special::need_qs bit.
 
-> > And I am guessing the __this_cpu_read(rcu_data.core_needs_qs) in
-> > rcu_flavor_sched_clock_irq() implies READ_ONCE() so no need READ_ONCE()
-> > there right?
-> 
-> Assembly in x86.  Not so much on other architectures, though.  ;-)
-> See raw_cpu_generic_read().
-
-Interesting. That one seems like a plain access, I wonder why it does not use
-READ_ONCE() in there or volatile accesses.
-
-> > > @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
-> > >  		return 0;
-> > >  
-> > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
-> > > +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
-> > >  		return 1;
-> > >  
-> > >  	/* Does this CPU have callbacks ready to invoke? */
-> > > @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
-> > >  	rdp->gp_seq = rnp->gp_seq;
-> > >  	rdp->gp_seq_needed = rnp->gp_seq;
-> > >  	rdp->cpu_no_qs.b.norm = true;
-> > > -	rdp->core_needs_qs = false;
-> > 
-> > How about calling the new hint-clearing function here as well? Just for
-> > robustness and consistency purposes?
-> 
-> This and the next function are both called during a CPU-hotplug online
-> operation, so there is little robustness or consistency to be had by
-> doing it twice.
-
-Ok, sorry I missed you are clearing it below in the next function. That's
-fine with me.
-
-This patch looks good to me and I am Ok with merging of these changes into
-the original patch with my authorship as you mentioned. Or if you wanted to
-be author, that's fine too :)
-
-Let me know anything else needed with it, thanks!
+thanks,
 
  - Joel
 
-
-> > thanks,
-> > 
-> >  - Joel
-> > 
-> > >  	rdp->rcu_iw_pending = false;
-> > >  	rdp->rcu_iw_gp_seq = rnp->gp_seq - 1;
-> > >  	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
-> > > @@ -3359,7 +3361,7 @@ void rcu_cpu_starting(unsigned int cpu)
-> > >  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
-> > >  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
-> > >  	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
-> > > -		rcu_disable_tick_upon_qs(rdp);
-> > > +		rcu_disable_urgency_upon_qs(rdp);
-> > >  		/* Report QS -after- changing ->qsmaskinitnext! */
-> > >  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
-> > >  	} else {
