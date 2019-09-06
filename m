@@ -2,57 +2,69 @@ Return-Path: <SRS0=ZUOr=XB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D439C43331
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE03DC43331
+	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:22:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 748CF2082C
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:08:09 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VLvmoojX"
+	by mail.kernel.org (Postfix) with ESMTP id 8A0602070C
+	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 15:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1567783341;
+	bh=19EqPnpW+mFIMN8hcSb0u0kXQTG9OAPQOVKMGcWp+bU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=kDZBhEdPPWT1Wi3opWxBRbbedkgeqJ7SRy0O7TQABXKbwNsThwRFBoCfPpMFaaqYl
+	 AKzzWCLhK6h7X51Mu9qrthw7KNeovDULSGNpJM/rGNCOnboF3gV8P2QQtJAD36jTTb
+	 UG433sgs0jY/nMyLWLa89qFPwjPq1GWhga4pqmDU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405685AbfIFPIJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Sep 2019 11:08:09 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:40426 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730480AbfIFPII (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Sep 2019 11:08:08 -0400
-Received: by mail-pl1-f195.google.com with SMTP id y10so3274864pll.7
-        for <rcu@vger.kernel.org>; Fri, 06 Sep 2019 08:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oVHfTdbxKLJ5v5N1xW6pGtg6rMnkx2Mfh0JbO5nAoq0=;
-        b=VLvmoojXoWu+ExmbEtPLQnb9eZcNChHfR8Sa4u3CvPNycWWiB++Bfn6EWnNjpPViXE
-         TTi6/FeLfR6W0WHN6i2x7778P/7i8Eex1Dx8ZiF2WNzi7hSrGAJfVG/h3bhKMtwIbzGJ
-         pFpo4oB6laCOO2rk92ednevhKDYFWLvrAGyiU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oVHfTdbxKLJ5v5N1xW6pGtg6rMnkx2Mfh0JbO5nAoq0=;
-        b=YIIbd0pP66nMJEU5MRRL5EKSOezuf5DdCatMW869UpSOVxsa2ueQruycmz12LkmfRE
-         OAfnkHpzrhpq6OshbJZX+41oKgRx5HYbKvuPzWbIzkrDpqjb40xlDR4nxAw7goKwd1YY
-         HLDSi/tHPctnzKIJ4Rre2dmKsqm3lgCXuHzkzNJm/x1zysBMY/JDnEWezGWN+axmxj2l
-         xJYPCrG3jetYFjgbi6ELYwnoyO5Tjgw/mxSfir7dUzG25aaRwoKOaGKhsCTBG/Bhwivj
-         eTTO8dw+di7ziLoTolr21rY34SY/gjOULgTu423aVEXi189pcnNWziYZ9JnHfK4O69J+
-         goCA==
-X-Gm-Message-State: APjAAAV/2lKJazQHtv1E+Yc8f0TWV+6nbrt4halqWuMJR7KakHcE9pMf
-        4gV7g2i/XL7AQsGhslyyJdD1iA==
-X-Google-Smtp-Source: APXvYqyEIYgxl07/EE/D/mWfxa4+GpZlwXt4yAIpcq3VJaOPWzjxgVUg6dHAQLA8NPgxdi1DeTs9Kg==
-X-Received: by 2002:a17:902:7792:: with SMTP id o18mr9158609pll.73.1567782488192;
-        Fri, 06 Sep 2019 08:08:08 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id b126sm7611169pfb.110.2019.09.06.08.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2019 08:08:07 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 11:08:06 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S1726968AbfIFPWV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Sep 2019 11:22:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36360 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726097AbfIFPWV (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 6 Sep 2019 11:22:21 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x86FCIuA027193;
+        Fri, 6 Sep 2019 11:21:38 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uuqcdqaar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Sep 2019 11:21:38 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x86FCXgB030046;
+        Fri, 6 Sep 2019 11:21:37 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uuqcdqa9v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Sep 2019 11:21:37 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x86FA9xa031922;
+        Fri, 6 Sep 2019 15:21:36 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02dal.us.ibm.com with ESMTP id 2uqgh7wv7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Sep 2019 15:21:36 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x86FLZqn35455330
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Sep 2019 15:21:35 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C8FAB2067;
+        Fri,  6 Sep 2019 15:21:35 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E713B2064;
+        Fri,  6 Sep 2019 15:21:35 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.70.82.154])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Sep 2019 15:21:35 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 6D8A216C2C84; Fri,  6 Sep 2019 08:21:44 -0700 (PDT)
+Date:   Fri, 6 Sep 2019 08:21:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Ingo Molnar <mingo@redhat.com>,
@@ -65,7 +77,8 @@ Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Yafang Shao <laoar.shao@gmail.com>
 Subject: Re: [PATCH -rcu dev 1/2] Revert b8c17e6664c4 ("rcu: Maintain special
  bits at bottom of ->dynticks counter")
-Message-ID: <20190906150806.GA11355@google.com>
+Message-ID: <20190906152144.GF4051@linux.ibm.com>
+Reply-To: paulmck@kernel.org
 References: <20190830162348.192303-1-joel@joelfernandes.org>
  <20190903200249.GD4125@linux.ibm.com>
  <20190904045910.GC144846@google.com>
@@ -75,52 +88,65 @@ References: <20190830162348.192303-1-joel@joelfernandes.org>
  <20190905153620.GG26466@google.com>
  <20190905164329.GT4125@linux.ibm.com>
  <20190906000137.GA224720@google.com>
+ <20190906150806.GA11355@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190906000137.GA224720@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190906150806.GA11355@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-06_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1034 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909060161
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 05, 2019 at 08:01:37PM -0400, Joel Fernandes wrote:
-[snip] 
-> > > > @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
-> > > >  		return 0;
-> > > >  
-> > > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > > -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
-> > > > +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
-> > > >  		return 1;
-> > > >  
-> > > >  	/* Does this CPU have callbacks ready to invoke? */
-> > > > @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
-> > > >  	rdp->gp_seq = rnp->gp_seq;
-> > > >  	rdp->gp_seq_needed = rnp->gp_seq;
-> > > >  	rdp->cpu_no_qs.b.norm = true;
-> > > > -	rdp->core_needs_qs = false;
+On Fri, Sep 06, 2019 at 11:08:06AM -0400, Joel Fernandes wrote:
+> On Thu, Sep 05, 2019 at 08:01:37PM -0400, Joel Fernandes wrote:
+> [snip] 
+> > > > > @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
+> > > > >  		return 0;
+> > > > >  
+> > > > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+> > > > > -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
+> > > > > +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
+> > > > >  		return 1;
+> > > > >  
+> > > > >  	/* Does this CPU have callbacks ready to invoke? */
+> > > > > @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+> > > > >  	rdp->gp_seq = rnp->gp_seq;
+> > > > >  	rdp->gp_seq_needed = rnp->gp_seq;
+> > > > >  	rdp->cpu_no_qs.b.norm = true;
+> > > > > -	rdp->core_needs_qs = false;
+> > > > 
+> > > > How about calling the new hint-clearing function here as well? Just for
+> > > > robustness and consistency purposes?
 > > > 
-> > > How about calling the new hint-clearing function here as well? Just for
-> > > robustness and consistency purposes?
+> > > This and the next function are both called during a CPU-hotplug online
+> > > operation, so there is little robustness or consistency to be had by
+> > > doing it twice.
 > > 
-> > This and the next function are both called during a CPU-hotplug online
-> > operation, so there is little robustness or consistency to be had by
-> > doing it twice.
+> > Ok, sorry I missed you are clearing it below in the next function. That's
+> > fine with me.
+> > 
+> > This patch looks good to me and I am Ok with merging of these changes into
+> > the original patch with my authorship as you mentioned. Or if you wanted to
+> > be author, that's fine too :)
 > 
-> Ok, sorry I missed you are clearing it below in the next function. That's
-> fine with me.
-> 
-> This patch looks good to me and I am Ok with merging of these changes into
-> the original patch with my authorship as you mentioned. Or if you wanted to
-> be author, that's fine too :)
+> Paul, does it make sense to clear these urgency hints in rcu_qs() as well?
+> After all, we are clearing atleast one urgency hint there: the
+> rcu_read_unlock_special::need_qs bit.
 
-Paul, does it make sense to clear these urgency hints in rcu_qs() as well?
-After all, we are clearing atleast one urgency hint there: the
-rcu_read_unlock_special::need_qs bit.
+We certainly don't want to turn off the scheduling-clock interrupt until
+after the quiescent state has been reported to the RCU core.  And it might
+still be useful to have a heavy quiescent state because the grace-period
+kthread can detect that.  Just in case the CPU that just called rcu_qs()
+is slow about actually reporting that quiescent state to the RCU core.
 
-thanks,
-
- - Joel
-
+							Thanx, Paul
