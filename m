@@ -1,4 +1,4 @@
-Return-Path: <SRS0=ZUOr=XB=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=IFjw=XC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D9C0C43331
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 17:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45330C43331
+	for <rcu@archiver.kernel.org>; Sat,  7 Sep 2019 17:28:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2328D20838
-	for <rcu@archiver.kernel.org>; Fri,  6 Sep 2019 17:26:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 15BF2208C3
+	for <rcu@archiver.kernel.org>; Sat,  7 Sep 2019 17:28:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="g+kiLp3a"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uWDzucdH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388746AbfIFR0q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Sep 2019 13:26:46 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34347 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388563AbfIFR0p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Sep 2019 13:26:45 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r12so4963417pfh.1
-        for <rcu@vger.kernel.org>; Fri, 06 Sep 2019 10:26:45 -0700 (PDT)
+        id S2392991AbfIGR23 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 7 Sep 2019 13:28:29 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33498 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729074AbfIGR23 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 7 Sep 2019 13:28:29 -0400
+Received: by mail-pl1-f194.google.com with SMTP id t11so4672932plo.0
+        for <rcu@vger.kernel.org>; Sat, 07 Sep 2019 10:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=tjTFPsf2DNxsjE2a8i9G461OudiUTTXZgFUmeTRYsOE=;
-        b=g+kiLp3az9CyjTc6pxcyGvJcUmtfHu6/Pb78/cJdv6XEo9ckaguTCF/9/EagFdvnCo
-         jPUDiZuxJze1xG/wj0Xrk0SxtxbYayWzf2xgBvWqusIPD8xk2NMphiwZmc1tkOkghM4r
-         JgbY4nksDcpfoiJWmk9B7Sx0dn15waEhL5iHg=
+        bh=VMtjPGOdBDNMSIWoOR2Jy+5ztqnKRKLnJKcdOUQ0Uo0=;
+        b=uWDzucdHh9f5dWoXdgiMfCz2PUHCfbUtdDcvcVaEKQDlXsSkmfPsYyGqQGtUbeAmhQ
+         3JjecK33Vzk0FEiGc+8cfDTZdh7qjdai+d4NkEB3HGGmkgmjDZLTqhI7CRo195LdLXMC
+         mJNKMuPFU6kBARJKbDIMhw+qqhH307aYwgFMU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tjTFPsf2DNxsjE2a8i9G461OudiUTTXZgFUmeTRYsOE=;
-        b=htL7uTY0khYPvNrAT9I1IG1t58t4f0kI1YueMMUm55PwKdPy6PR9tZ0NIR2JO1swU5
-         HejTQEC8quELmgN6yCOJgDZDHDdNp0MaWTcnVafJPVsNbYeSCKnAN3wwBbEjLue3YlkA
-         Q05+2n1dHn957ytS0eDcA+3QkFhPzfz6itoKAE5r8sI8FVrmajER7dsbdODRlpYKRjdq
-         9M/Ajed03l3MGTEJYSvqy1O7wE00gh9gjEQT3D+hEBkEEdTzOJcvC0iJW+u2SUdkXJAU
-         YGHrSIsifY75PVrO2CDrLaXcH46G5BCCUplZKiYerYqVuvvIkvzfhAMcKJ+F642li7ca
-         s09w==
-X-Gm-Message-State: APjAAAWXIT0bB8zbz9zAZR0scc5m3gwtkR0ojnGMz1ZiYDWh7l1hYsnp
-        uJ9RtOERjSlwbbtnfmXkP7Y3Jg==
-X-Google-Smtp-Source: APXvYqxUjh8vYhfUkzzHghKc6iGyrAQB8idr1czO4uE7him1Zaxi0rWcC03ts8w3NLYgI4Sk7bXGFQ==
-X-Received: by 2002:a62:52d0:: with SMTP id g199mr12269924pfb.120.1567790804635;
-        Fri, 06 Sep 2019 10:26:44 -0700 (PDT)
+        bh=VMtjPGOdBDNMSIWoOR2Jy+5ztqnKRKLnJKcdOUQ0Uo0=;
+        b=ueJEkOqlw99KjbJE+zYiIbs7xlMZ+D+Zh4XdI20+ODgY+Ou1BJGr62jsgAgFvhQAeI
+         lDI793ku4PB67uz+uy/WKIbWx2YIySZcnvnCqprzPi8dL/lFaDwVi2NbAk/Tzms0ghRv
+         nPGZ1K7pRJ9JrBqH++xgPDFK4JL/PoliMrbE9XBH6HwyQbx528UGTCvzxXfJkuBFdVtv
+         opgk08TLniy0Na+UmK/HOKlLOQfCaUfuV1kOtUSNbJLuYwVdnaVpsfiqTbP4NlreBI7j
+         WHirEA2DifcVRErkgyzdoAgv0urMUv+AvON02CA5FyzdorEpubG2rz9pyr7xBTA7XpN7
+         zxpw==
+X-Gm-Message-State: APjAAAW3RqBQJsSg0CZK7ulbFXBu5OEnFT3r8/bTVrx0nqaJsS3bHnC6
+        /T75VTwj9jIFSWVHNmn3zAZNIA==
+X-Google-Smtp-Source: APXvYqy+cUdlaLzvn7EWIPj8DLl7PJEY2fbVER0nb3tI22DfVfBIABGAonQc3z2FwhwiTMY9VWU89A==
+X-Received: by 2002:a17:902:748b:: with SMTP id h11mr15469399pll.269.1567877308213;
+        Sat, 07 Sep 2019 10:28:28 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a12sm4974891pgv.48.2019.09.06.10.26.42
+        by smtp.gmail.com with ESMTPSA id y192sm14400330pfg.141.2019.09.07.10.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2019 10:26:43 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 13:26:42 -0400
+        Sat, 07 Sep 2019 10:28:27 -0700 (PDT)
+Date:   Sat, 7 Sep 2019 13:28:26 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -65,7 +65,7 @@ Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Yafang Shao <laoar.shao@gmail.com>
 Subject: Re: [PATCH -rcu dev 1/2] Revert b8c17e6664c4 ("rcu: Maintain special
  bits at bottom of ->dynticks counter")
-Message-ID: <20190906172642.GB40876@google.com>
+Message-ID: <20190907172826.GA245761@google.com>
 References: <20190904135420.GB240514@google.com>
  <20190904231308.GB4125@linux.ibm.com>
  <20190905153620.GG26466@google.com>
@@ -142,18 +142,27 @@ On Fri, Sep 06, 2019 at 10:16:47AM -0700, Paul E. McKenney wrote:
 > > Or do you mean ->core_needs_qs? If so, I feel the FQS loop should clear it as
 > > I think your patch does, since the FQS loop is essentially doing heavy-weight
 > > RCU core processing right?
-> > 
+
+Took another look, rcu_read_unlock_special::need_qs is not cleared from FQS
+loop. It is only set. So I did not follow what you meant. You probably were
+concerned with some other hint being cleared in the FQS loop. No urgency on
+this but do let me know what you meant (whenever after LPC etc).
+
 > > Also, where does FQS loop clear rdp.cpu_no_qs? Shouldn't it clear that as
 > > well for the dyntick-idle CPUs?
 > 
 > Synchronization?
 
-Didn't follow. Probably I am asking silly questions. There's too many hints
-so it is confusing. I will trace this out later and study it more.
+I think you here you meant that we don't want to acquire rdp's locks so we
+can't easily clear cpu_no_qs. But why not use WRITE_ONCE() to clear it, like
+we are doing for the other hints?  I just felt idle CPU can't do this
+clearing so the FQS loop (GP thread) should do it on its behalf.
 
-Doing by best,  ;-)
+Anyway, since you were going to squash the hint clearing with the other patch
+as you mentioned in this thread, let me know once you have the squashed patch
+for futher review/tracing/testing (after LPC, conferences, whenever. No rush!).
 
-thanks,
+Thanks, Paul!!
 
  - Joel
 
