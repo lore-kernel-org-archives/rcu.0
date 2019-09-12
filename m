@@ -1,168 +1,240 @@
-Return-Path: <SRS0=IFjw=XC=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ZIv9=XH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45330C43331
-	for <rcu@archiver.kernel.org>; Sat,  7 Sep 2019 17:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5314EC4CEC7
+	for <rcu@archiver.kernel.org>; Thu, 12 Sep 2019 21:38:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 15BF2208C3
-	for <rcu@archiver.kernel.org>; Sat,  7 Sep 2019 17:28:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13FC22084D
+	for <rcu@archiver.kernel.org>; Thu, 12 Sep 2019 21:38:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uWDzucdH"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Lj+PkIdA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392991AbfIGR23 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 7 Sep 2019 13:28:29 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33498 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbfIGR23 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 7 Sep 2019 13:28:29 -0400
-Received: by mail-pl1-f194.google.com with SMTP id t11so4672932plo.0
-        for <rcu@vger.kernel.org>; Sat, 07 Sep 2019 10:28:28 -0700 (PDT)
+        id S1728630AbfILVip (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Sep 2019 17:38:45 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34353 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbfILVip (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Sep 2019 17:38:45 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n9so14166305pgc.1
+        for <rcu@vger.kernel.org>; Thu, 12 Sep 2019 14:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=VMtjPGOdBDNMSIWoOR2Jy+5ztqnKRKLnJKcdOUQ0Uo0=;
-        b=uWDzucdHh9f5dWoXdgiMfCz2PUHCfbUtdDcvcVaEKQDlXsSkmfPsYyGqQGtUbeAmhQ
-         3JjecK33Vzk0FEiGc+8cfDTZdh7qjdai+d4NkEB3HGGmkgmjDZLTqhI7CRo195LdLXMC
-         mJNKMuPFU6kBARJKbDIMhw+qqhH307aYwgFMU=
+        bh=T0n1rQXOCr5k4sXETp/07X1OnsstRokhftrJYTFQPJM=;
+        b=Lj+PkIdA+iKPVsKCgd0EoDIHkJpo/2uzZFcmWFb5Zp+cWgdWWudapJGJOfqdrcwNvz
+         xHdDNzF3t570VSOX2TmmjTVARQEjMhnON0Yan8L3EpDekJ1Oltnk+uNcvUyryJMdn6qd
+         KXe9QrHijlzTeRHh+1RbH32IkomP7XTXRukq0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VMtjPGOdBDNMSIWoOR2Jy+5ztqnKRKLnJKcdOUQ0Uo0=;
-        b=ueJEkOqlw99KjbJE+zYiIbs7xlMZ+D+Zh4XdI20+ODgY+Ou1BJGr62jsgAgFvhQAeI
-         lDI793ku4PB67uz+uy/WKIbWx2YIySZcnvnCqprzPi8dL/lFaDwVi2NbAk/Tzms0ghRv
-         nPGZ1K7pRJ9JrBqH++xgPDFK4JL/PoliMrbE9XBH6HwyQbx528UGTCvzxXfJkuBFdVtv
-         opgk08TLniy0Na+UmK/HOKlLOQfCaUfuV1kOtUSNbJLuYwVdnaVpsfiqTbP4NlreBI7j
-         WHirEA2DifcVRErkgyzdoAgv0urMUv+AvON02CA5FyzdorEpubG2rz9pyr7xBTA7XpN7
-         zxpw==
-X-Gm-Message-State: APjAAAW3RqBQJsSg0CZK7ulbFXBu5OEnFT3r8/bTVrx0nqaJsS3bHnC6
-        /T75VTwj9jIFSWVHNmn3zAZNIA==
-X-Google-Smtp-Source: APXvYqy+cUdlaLzvn7EWIPj8DLl7PJEY2fbVER0nb3tI22DfVfBIABGAonQc3z2FwhwiTMY9VWU89A==
-X-Received: by 2002:a17:902:748b:: with SMTP id h11mr15469399pll.269.1567877308213;
-        Sat, 07 Sep 2019 10:28:28 -0700 (PDT)
+        bh=T0n1rQXOCr5k4sXETp/07X1OnsstRokhftrJYTFQPJM=;
+        b=NU+3JdhnmswcVru5lx1BFMN2LY/4EvBSfBiOY+HxijfvGDwZ7UgzYC7GSeIz8hrsiq
+         7LNXwp4ilUbRCF8ZuCGbKqfWiNz6O9p5e4eN+0onUfHYVPQx5HPXnpaU9+VAjxi57yo3
+         csR5fgt7SjMRMfi/NGA3v23zQkkd5WaRZ8xmZ5YyixoaxQqvxD913rQtTUdWMiI/7Kao
+         ZrdfEfkatMIVfylTtFM8GUwqNAVPPnP8roIlAwI960sO8OGGi6HQC0CHPm0QDpaur/l2
+         xoVFZwb/mPYfFzuV5+K24IcJXW6U6DxytGlErrsf/Qmm1XVpFuS2u3NMd1SRPgA0r4Ef
+         Tolw==
+X-Gm-Message-State: APjAAAWZopKyF+xj/UljB/8JW2SfF5kMroKgOTC0w6WFkLAtxKFuvphh
+        f7RkMd9JnHXIrGyJ3mDIuC/wAQ==
+X-Google-Smtp-Source: APXvYqyScjKIQlC4hvFLWu4xhuXi3/8FV6iiQ3uZe6FT3Zi2LMPsK5iWncI+1tlidW92PwQWPlE0Kg==
+X-Received: by 2002:a17:90a:cb01:: with SMTP id z1mr917535pjt.96.1568324324469;
+        Thu, 12 Sep 2019 14:38:44 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y192sm14400330pfg.141.2019.09.07.10.28.27
+        by smtp.gmail.com with ESMTPSA id b26sm10670396pfd.61.2019.09.12.14.38.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Sep 2019 10:28:27 -0700 (PDT)
-Date:   Sat, 7 Sep 2019 13:28:26 -0400
+        Thu, 12 Sep 2019 14:38:43 -0700 (PDT)
+Date:   Thu, 12 Sep 2019 17:38:43 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH -rcu dev 1/2] Revert b8c17e6664c4 ("rcu: Maintain special
- bits at bottom of ->dynticks counter")
-Message-ID: <20190907172826.GA245761@google.com>
-References: <20190904135420.GB240514@google.com>
- <20190904231308.GB4125@linux.ibm.com>
- <20190905153620.GG26466@google.com>
- <20190905164329.GT4125@linux.ibm.com>
- <20190906000137.GA224720@google.com>
- <20190906150806.GA11355@google.com>
- <20190906152144.GF4051@linux.ibm.com>
- <20190906152753.GA18734@linux.ibm.com>
- <20190906165751.GA40876@google.com>
- <20190906171646.GI4051@linux.ibm.com>
+To:     Scott Wood <swood@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH RT v3 4/5] rcu: Disable use_softirq on PREEMPT_RT
+Message-ID: <20190912213843.GA150506@google.com>
+References: <20190911165729.11178-1-swood@redhat.com>
+ <20190911165729.11178-5-swood@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190906171646.GI4051@linux.ibm.com>
+In-Reply-To: <20190911165729.11178-5-swood@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 10:16:47AM -0700, Paul E. McKenney wrote:
-> On Fri, Sep 06, 2019 at 12:57:51PM -0400, Joel Fernandes wrote:
-> > On Fri, Sep 06, 2019 at 08:27:53AM -0700, Paul E. McKenney wrote:
-> > > On Fri, Sep 06, 2019 at 08:21:44AM -0700, Paul E. McKenney wrote:
-> > > > On Fri, Sep 06, 2019 at 11:08:06AM -0400, Joel Fernandes wrote:
-> > > > > On Thu, Sep 05, 2019 at 08:01:37PM -0400, Joel Fernandes wrote:
-> > > > > [snip] 
-> > > > > > > > > @@ -3004,7 +3007,7 @@ static int rcu_pending(void)
-> > > > > > > > >  		return 0;
-> > > > > > > > >  
-> > > > > > > > >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > > > > > > > -	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
-> > > > > > > > > +	if (READ_ONCE(rdp->core_needs_qs) && !rdp->cpu_no_qs.b.norm)
-> > > > > > > > >  		return 1;
-> > > > > > > > >  
-> > > > > > > > >  	/* Does this CPU have callbacks ready to invoke? */
-> > > > > > > > > @@ -3244,7 +3247,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
-> > > > > > > > >  	rdp->gp_seq = rnp->gp_seq;
-> > > > > > > > >  	rdp->gp_seq_needed = rnp->gp_seq;
-> > > > > > > > >  	rdp->cpu_no_qs.b.norm = true;
-> > > > > > > > > -	rdp->core_needs_qs = false;
-> > > > > > > > 
-> > > > > > > > How about calling the new hint-clearing function here as well? Just for
-> > > > > > > > robustness and consistency purposes?
-> > > > > > > 
-> > > > > > > This and the next function are both called during a CPU-hotplug online
-> > > > > > > operation, so there is little robustness or consistency to be had by
-> > > > > > > doing it twice.
-> > > > > > 
-> > > > > > Ok, sorry I missed you are clearing it below in the next function. That's
-> > > > > > fine with me.
-> > > > > > 
-> > > > > > This patch looks good to me and I am Ok with merging of these changes into
-> > > > > > the original patch with my authorship as you mentioned. Or if you wanted to
-> > > > > > be author, that's fine too :)
-> > > > > 
-> > > > > Paul, does it make sense to clear these urgency hints in rcu_qs() as well?
-> > > > > After all, we are clearing atleast one urgency hint there: the
-> > > > > rcu_read_unlock_special::need_qs bit.
-> > 
-> > Makes sense.
-> > 
-> > > > We certainly don't want to turn off the scheduling-clock interrupt until
-> > > > after the quiescent state has been reported to the RCU core.  And it might
-> > > > still be useful to have a heavy quiescent state because the grace-period
-> > > > kthread can detect that.  Just in case the CPU that just called rcu_qs()
-> > > > is slow about actually reporting that quiescent state to the RCU core.
-> > > 
-> > > Hmmm...  Should ->need_qs ever be cleared from FQS to begin with?
-> > 
-> > I did not see the FQS loop clearing ->need_qs in the rcu_read_unlock_special
-> > union after looking for a few minutes. Could you clarify which path this?
-> > 
-> > Or do you mean ->core_needs_qs? If so, I feel the FQS loop should clear it as
-> > I think your patch does, since the FQS loop is essentially doing heavy-weight
-> > RCU core processing right?
+Hi Scott,
 
-Took another look, rcu_read_unlock_special::need_qs is not cleared from FQS
-loop. It is only set. So I did not follow what you meant. You probably were
-concerned with some other hint being cleared in the FQS loop. No urgency on
-this but do let me know what you meant (whenever after LPC etc).
+Would you mind CC'ing rcu@vger.kernel.org on RCU related patches? I added it
+for this time.
 
-> > Also, where does FQS loop clear rdp.cpu_no_qs? Shouldn't it clear that as
-> > well for the dyntick-idle CPUs?
+On Wed, Sep 11, 2019 at 05:57:28PM +0100, Scott Wood wrote:
+> Besides restoring behavior that used to be default on RT, this avoids
+> a deadlock on scheduler locks:
 > 
-> Synchronization?
+> [  136.894657] 039: ============================================
+> [  136.900401] 039: WARNING: possible recursive locking detected
+> [  136.906146] 039: 5.2.9-rt3.dbg+ #174 Tainted: G            E
+> [  136.912152] 039: --------------------------------------------
+> [  136.917896] 039: rcu_torture_rea/13474 is trying to acquire lock:
+> [  136.923990] 039: 000000005f25146d
+> [  136.927310] 039:  (
+> [  136.929414] 039: &p->pi_lock
+> [  136.932303] 039: ){-...}
+> [  136.934840] 039: , at: try_to_wake_up+0x39/0x920
+> [  136.939461] 039:
+> but task is already holding lock:
+> [  136.944425] 039: 000000005f25146d
+> [  136.947745] 039:  (
+> [  136.949852] 039: &p->pi_lock
+> [  136.952738] 039: ){-...}
+> [  136.955274] 039: , at: try_to_wake_up+0x39/0x920
+> [  136.959895] 039:
+> other info that might help us debug this:
+> [  136.965555] 039:  Possible unsafe locking scenario:
+> 
+> [  136.970608] 039:        CPU0
+> [  136.973493] 039:        ----
+> [  136.976378] 039:   lock(
+> [  136.978918] 039: &p->pi_lock
+> [  136.981806] 039: );
+> [  136.983911] 039:   lock(
+> [  136.986451] 039: &p->pi_lock
+> [  136.989336] 039: );
+> [  136.991444] 039:
+>  *** DEADLOCK ***
+> 
+> [  136.995194] 039:  May be due to missing lock nesting notation
+> 
+> [  137.001115] 039: 3 locks held by rcu_torture_rea/13474:
+> [  137.006341] 039:  #0:
+> [  137.008707] 039: 000000005f25146d
+> [  137.012024] 039:  (
+> [  137.014131] 039: &p->pi_lock
+> [  137.017015] 039: ){-...}
+> [  137.019558] 039: , at: try_to_wake_up+0x39/0x920
+> [  137.024175] 039:  #1:
+> [  137.026540] 039: 0000000011c8e51d
+> [  137.029859] 039:  (
+> [  137.031966] 039: &rq->lock
+> [  137.034679] 039: ){-...}
+> [  137.037217] 039: , at: try_to_wake_up+0x241/0x920
+> [  137.041924] 039:  #2:
+> [  137.044291] 039: 00000000098649b9
+> [  137.047610] 039:  (
+> [  137.049714] 039: rcu_read_lock
+> [  137.052774] 039: ){....}
+> [  137.055314] 039: , at: cpuacct_charge+0x33/0x1e0
+> [  137.059934] 039:
+> stack backtrace:
+> [  137.063425] 039: CPU: 39 PID: 13474 Comm: rcu_torture_rea Kdump: loaded Tainted: G            E     5.2.9-rt3.dbg+ #174
+> [  137.074197] 039: Hardware name: Intel Corporation S2600BT/S2600BT, BIOS SE5C620.86B.01.00.0763.022420181017 02/24/2018
+> [  137.084886] 039: Call Trace:
+> [  137.087773] 039:  <IRQ>
+> [  137.090226] 039:  dump_stack+0x5e/0x8b
+> [  137.093997] 039:  __lock_acquire+0x725/0x1100
+> [  137.098358] 039:  lock_acquire+0xc0/0x240
+> [  137.102374] 039:  ? try_to_wake_up+0x39/0x920
+> [  137.106737] 039:  _raw_spin_lock_irqsave+0x47/0x90
+> [  137.111534] 039:  ? try_to_wake_up+0x39/0x920
+> [  137.115910] 039:  try_to_wake_up+0x39/0x920
+> [  137.120098] 039:  rcu_read_unlock_special+0x65/0xb0
+> [  137.124977] 039:  __rcu_read_unlock+0x5d/0x70
+> [  137.129337] 039:  cpuacct_charge+0xd9/0x1e0
+> [  137.133522] 039:  ? cpuacct_charge+0x33/0x1e0
+> [  137.137880] 039:  update_curr+0x14b/0x420
+> [  137.141894] 039:  enqueue_entity+0x42/0x370
+> [  137.146080] 039:  enqueue_task_fair+0xa9/0x490
+> [  137.150528] 039:  activate_task+0x5a/0xf0
+> [  137.154539] 039:  ttwu_do_activate+0x4e/0x90
+> [  137.158813] 039:  try_to_wake_up+0x277/0x920
+> [  137.163086] 039:  irq_exit+0xb6/0xf0
+> [  137.166661] 039:  smp_apic_timer_interrupt+0xe3/0x3a0
+> [  137.171714] 039:  apic_timer_interrupt+0xf/0x20
+> [  137.176249] 039:  </IRQ>
+> [  137.178785] 039: RIP: 0010:__schedule+0x0/0x8e0
+> [  137.183319] 039: Code: 00 02 48 89 43 20 e8 0f 5a 00 00 48 8d 7b 28 e8 86 f2 fd ff 31 c0 5b 5d 41 5c c3 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <55> 48 89 e5 41 57 41 56 49 c7 c6 c0 ca 1e 00 41 55 41 89 fd 41 54
+> [  137.202498] 039: RSP: 0018:ffffc9005835fbc0 EFLAGS: 00000246
+> [  137.208158] 039:  ORIG_RAX: ffffffffffffff13
+> [  137.212428] 039: RAX: 0000000000000000 RBX: ffff8897c3e1bb00 RCX: 0000000000000001
+> [  137.219994] 039: RDX: 0000000080004008 RSI: 0000000000000006 RDI: 0000000000000001
+> [  137.227560] 039: RBP: ffff8897c3e1bb00 R08: 0000000000000000 R09: 0000000000000000
+> [  137.235126] 039: R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff81001fd1
+> [  137.242694] 039: R13: 0000000000000044 R14: 0000000000000000 R15: ffffc9005835fcac
+> [  137.250259] 039:  ? ___preempt_schedule+0x16/0x18
+> [  137.254969] 039:  preempt_schedule_common+0x32/0x80
+> [  137.259846] 039:  ___preempt_schedule+0x16/0x18
+> [  137.264379] 039:  rcutorture_one_extend+0x33a/0x510 [rcutorture]
+> [  137.270397] 039:  rcu_torture_one_read+0x18c/0x450 [rcutorture]
+> [  137.276334] 039:  rcu_torture_reader+0xac/0x1f0 [rcutorture]
+> [  137.281998] 039:  ? rcu_torture_reader+0x1f0/0x1f0 [rcutorture]
+> [  137.287920] 039:  kthread+0x106/0x140
+> [  137.291591] 039:  ? rcu_torture_one_read+0x450/0x450 [rcutorture]
+> [  137.297681] 039:  ? kthread_bind+0x10/0x10
+> [  137.301783] 039:  ret_from_fork+0x3a/0x50
+> 
+> Signed-off-by: Scott Wood <swood@redhat.com>
+> ---
+> The prohibition on use_softirq should be able to be dropped once RT gets
+> the latest RCU code, but the question of what use_softirq should default
+> to on PREEMPT_RT remains.
+> 
+> v3: Use IS_ENABLED
 
-I think you here you meant that we don't want to acquire rdp's locks so we
-can't easily clear cpu_no_qs. But why not use WRITE_ONCE() to clear it, like
-we are doing for the other hints?  I just felt idle CPU can't do this
-clearing so the FQS loop (GP thread) should do it on its behalf.
+Out of curiosity, does PREEMPT_RT use the NOCB callback offloading? If no,
+should it use it? IIUC, that does make the work the softirq have to do less
+work since the callbacks are executed in threaded context.
 
-Anyway, since you were going to squash the hint clearing with the other patch
-as you mentioned in this thread, let me know once you have the squashed patch
-for futher review/tracing/testing (after LPC, conferences, whenever. No rush!).
+If yes, can RT tolerate use_softirq=false and what could a realistic softirq
+running/completion time be that PREEMPT_RT can tolerate? I guess that can be
+answered by running rcuperf on PREEMPT_RT with a NOCB configuration and
+measuring softirq worst-case start/completion times.
 
-Thanks, Paul!!
+I could run these tests myself but I am vacation for the next week or so.
+
+thanks,
 
  - Joel
 
+
+> ---
+>  kernel/rcu/tree.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index fc8b00c61b32..ee0a5ec2c30f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -98,9 +98,14 @@ struct rcu_state rcu_state = {
+>  /* Dump rcu_node combining tree at boot to verify correct setup. */
+>  static bool dump_tree;
+>  module_param(dump_tree, bool, 0444);
+> -/* By default, use RCU_SOFTIRQ instead of rcuc kthreads. */
+> -static bool use_softirq = 1;
+> +/*
+> + * By default, use RCU_SOFTIRQ instead of rcuc kthreads.
+> + * But, avoid RCU_SOFTIRQ on PREEMPT_RT due to pi/rq deadlocks.
+> + */
+> +static bool use_softirq = !IS_ENABLED(CONFIG_PREEMPT_RT_FULL);
+> +#ifdef CONFIG_PREEMPT_RT_FULL
+>  module_param(use_softirq, bool, 0444);
+> +#endif
+>  /* Control rcu_node-tree auto-balancing at boot time. */
+>  static bool rcu_fanout_exact;
+>  module_param(rcu_fanout_exact, bool, 0444);
+> -- 
+> 1.8.3.1
+> 
