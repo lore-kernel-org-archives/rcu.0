@@ -1,61 +1,31 @@
-Return-Path: <SRS0=ZIv9=XH=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=8wu+=XM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E53EC4CEC7
-	for <rcu@archiver.kernel.org>; Thu, 12 Sep 2019 22:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C327BC4CECD
+	for <rcu@archiver.kernel.org>; Tue, 17 Sep 2019 09:32:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D35602084D
-	for <rcu@archiver.kernel.org>; Thu, 12 Sep 2019 22:20:09 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="aB6FI72F"
+	by mail.kernel.org (Postfix) with ESMTP id 999A820862
+	for <rcu@archiver.kernel.org>; Tue, 17 Sep 2019 09:32:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbfILWTp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Sep 2019 18:19:45 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:36236 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbfILWTp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Sep 2019 18:19:45 -0400
-Received: by mail-pl1-f193.google.com with SMTP id f19so12355042plr.3
-        for <rcu@vger.kernel.org>; Thu, 12 Sep 2019 15:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VYcaD0CgRaK6iDJ2VeDVxMN7Qlt4v9GgR7dsZ3QROoA=;
-        b=aB6FI72FYFUB6TYj52LB9VxYzjcfuAlJ5r2flFNdTbRg4p1IaVUcTZm3lsv1Vk3MFj
-         d3KPmw3cMHf2xPzsSICJHsynW5UpzDwugYamm6crgk2QXrW+TxfqcPLM4n6CjNHfUsp/
-         gj7eIriG93QDFxaXCjJyW4Dc9tdfuI3kqStOk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VYcaD0CgRaK6iDJ2VeDVxMN7Qlt4v9GgR7dsZ3QROoA=;
-        b=hKfQ9D65acPQrbkqzptm50hSjmy4RewxqESRXBHbsFat76XWoNuHj3d1KIWe8/jxYK
-         ioAeICvMmb+m9HdtMmrT6mZQVC4ikok6FWxFKNNmgnEvt0Ls4uNliT5EOL4ZdnhTMM8B
-         20FS9p/hQZ8WTLsIRl0Hhw0P4/HLp1wG7crSur76s1Q0RTYEZrf/nQ5jUiuKvHROBu62
-         5NQDf7M1phJCPvyAsNsDPWl9VYiAT02TeNSD3JpOyv3i86rKaZl2cuvNrpuF0aa6lwtT
-         LjRChNZ+pA7yxeblTcAvZWevkx9ZaoLDuunTBx0jiTKRLzrMRP6AQAPr+l6mceCeYtbg
-         4jmg==
-X-Gm-Message-State: APjAAAXhPFrtkhP+dUawFSgCbymIeM6ulR2S2P5lac41EehAiynezJkX
-        fuKj5G2xRBv0AWW3e7/L2Pgo/Q==
-X-Google-Smtp-Source: APXvYqxEIAKiH7VoObg5pPCE1OSWvWVPGgLO5md2J4MB25LnCgnALkNSrNECU0GFs+pMubwA5uSWNg==
-X-Received: by 2002:a17:902:8302:: with SMTP id bd2mr46615100plb.9.1568326782713;
-        Thu, 12 Sep 2019 15:19:42 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 132sm1673199pgg.52.2019.09.12.15.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2019 15:19:42 -0700 (PDT)
-Date:   Thu, 12 Sep 2019 18:19:41 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Scott Wood <swood@redhat.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        id S1727547AbfIQJcI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Sep 2019 05:32:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41075 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbfIQJcI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Sep 2019 05:32:08 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1iA9pv-0008Su-Ah; Tue, 17 Sep 2019 11:31:51 +0200
+Date:   Tue, 17 Sep 2019 11:31:51 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Scott Wood <swood@redhat.com>, linux-rt-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         "Paul E . McKenney" <paulmck@linux.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -63,93 +33,58 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Juri Lelli <juri.lelli@redhat.com>,
         Clark Williams <williams@redhat.com>, rcu@vger.kernel.org
 Subject: Re: [PATCH RT v3 4/5] rcu: Disable use_softirq on PREEMPT_RT
-Message-ID: <20190912221941.GD150506@google.com>
+Message-ID: <20190917093151.7duyhvrax7hq43le@linutronix.de>
 References: <20190911165729.11178-1-swood@redhat.com>
  <20190911165729.11178-5-swood@redhat.com>
  <20190912213843.GA150506@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20190912213843.GA150506@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: NeoMutt/20180716
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 05:38:43PM -0400, Joel Fernandes wrote:
-> Hi Scott,
-> 
-> Would you mind CC'ing rcu@vger.kernel.org on RCU related patches? I added it
-> for this time.
-> 
-> On Wed, Sep 11, 2019 at 05:57:28PM +0100, Scott Wood wrote:
-> > Besides restoring behavior that used to be default on RT, this avoids
-> > a deadlock on scheduler locks:
-[snip]
-> > [  136.995194] 039:  May be due to missing lock nesting notation
-> > 
-> > [  137.001115] 039: 3 locks held by rcu_torture_rea/13474:
-> > [  137.006341] 039:  #0:
-> > [  137.008707] 039: 000000005f25146d
-> > [  137.012024] 039:  (
-> > [  137.014131] 039: &p->pi_lock
-> > [  137.017015] 039: ){-...}
-> > [  137.019558] 039: , at: try_to_wake_up+0x39/0x920
-> > [  137.024175] 039:  #1:
-> > [  137.026540] 039: 0000000011c8e51d
-> > [  137.029859] 039:  (
-> > [  137.031966] 039: &rq->lock
-> > [  137.034679] 039: ){-...}
-> > [  137.037217] 039: , at: try_to_wake_up+0x241/0x920
-> > [  137.041924] 039:  #2:
-> > [  137.044291] 039: 00000000098649b9
-> > [  137.047610] 039:  (
-> > [  137.049714] 039: rcu_read_lock
-> > [  137.052774] 039: ){....}
-> > [  137.055314] 039: , at: cpuacct_charge+0x33/0x1e0
-> > [  137.059934] 039:
-> > stack backtrace:
-> > [  137.063425] 039: CPU: 39 PID: 13474 Comm: rcu_torture_rea Kdump: loaded Tainted: G            E     5.2.9-rt3.dbg+ #174
-> > [  137.074197] 039: Hardware name: Intel Corporation S2600BT/S2600BT, BIOS SE5C620.86B.01.00.0763.022420181017 02/24/2018
-> > [  137.084886] 039: Call Trace:
-> > [  137.087773] 039:  <IRQ>
-> > [  137.090226] 039:  dump_stack+0x5e/0x8b
-> > [  137.093997] 039:  __lock_acquire+0x725/0x1100
-> > [  137.098358] 039:  lock_acquire+0xc0/0x240
-> > [  137.102374] 039:  ? try_to_wake_up+0x39/0x920
-> > [  137.106737] 039:  _raw_spin_lock_irqsave+0x47/0x90
-> > [  137.111534] 039:  ? try_to_wake_up+0x39/0x920
-> > [  137.115910] 039:  try_to_wake_up+0x39/0x920
-> > [  137.120098] 039:  rcu_read_unlock_special+0x65/0xb0
-> > [  137.124977] 039:  __rcu_read_unlock+0x5d/0x70
-> > [  137.129337] 039:  cpuacct_charge+0xd9/0x1e0
-> > [  137.133522] 039:  ? cpuacct_charge+0x33/0x1e0
-> > [  137.137880] 039:  update_curr+0x14b/0x420
-> > [  137.141894] 039:  enqueue_entity+0x42/0x370
-> > [  137.146080] 039:  enqueue_task_fair+0xa9/0x490
-> > [  137.150528] 039:  activate_task+0x5a/0xf0
-> > [  137.154539] 039:  ttwu_do_activate+0x4e/0x90
-> > [  137.158813] 039:  try_to_wake_up+0x277/0x920
-> > [  137.163086] 039:  irq_exit+0xb6/0xf0
-[snip]
-> > Signed-off-by: Scott Wood <swood@redhat.com>
-> > ---
+On 2019-09-12 17:38:43 [-0400], Joel Fernandes wrote:
 > > The prohibition on use_softirq should be able to be dropped once RT gets
 > > the latest RCU code, but the question of what use_softirq should default
 > > to on PREEMPT_RT remains.
 > > 
 > > v3: Use IS_ENABLED
-> 
+
+I'm going to pick it up.
+
 > Out of curiosity, does PREEMPT_RT use the NOCB callback offloading? If no,
 > should it use it? IIUC, that does make the work the softirq have to do less
 > work since the callbacks are executed in threaded context.
-> 
+
+It can use it, it is recommended to do so and to move those threads out
+of the CPU(s) that are dedicated for RT workload. But then there are
+those with a single CPU.
+
 > If yes, can RT tolerate use_softirq=false and what could a realistic softirq
+> running/completion time be that PREEMPT_RT can tolerate? I guess that can be
+> answered by running rcuperf on PREEMPT_RT with a NOCB configuration and
+> measuring softirq worst-case start/completion times.
 
-s/use_softirq=false/use_softirq=true/
+It depends. RT as of now. The softirq can be preempted this includes the
+RCU softirq. That means that a wakeup of a high priority RT task can
+preempt the RCU softirq. So this might not be an issue.
+the softirq takes a global per-CPU lock which means we can only have one
+softirq vector running at a time (we used to have the possibility of
+multiple vectors running in parallel but that is gone now). So this
+enforces the behaviour we have in !RT as of today.  If you rely on
+"timely" executed softirq then long running RCU-softirq might be bad for
+you. But so is everything else that might cause long running softirqs.
 
-thanks,
+What I don't know is how RCU-boosting and preempted softirq works.
 
- - Joel
+> I could run these tests myself but I am vacation for the next week or so.
+> 
+> thanks,
+> 
+>  - Joel
 
+Sebastian
