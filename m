@@ -2,109 +2,96 @@ Return-Path: <SRS0=tYxx=XS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE481C32755
-	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 14:29:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA05BC4CEC4
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 16:14:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C33DD20867
-	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 14:29:39 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="p+BtS+Cq"
+	by mail.kernel.org (Postfix) with ESMTP id 94F2F20B7C
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 16:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1569255247;
+	bh=5Bu5JajfHxIPKIuW/hfxIoOLm6DlnN9YhqTiX1zuKVE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=Z93U+DwHXwZKrZ9pBN5XwnzDZpUBULtbkPiJbb80jRGC21tQjEW4Tfr/zYJTuR902
+	 WShV3tLElkbRjZQ0lPL3jaATyrybOjhY+lV2+6Ri3J4E5ELBimL67TNjZpo8qZOZat
+	 oOT9XC4rmilmrfoNtVj16/nu4T7YcpQEFNgW7tZk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439884AbfIWO3g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Sep 2019 10:29:36 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59254 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407299AbfIWO3g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Sep 2019 10:29:36 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NEIeL0102769;
-        Mon, 23 Sep 2019 14:28:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=q5TJ75p55cKVn+qFcqXUsCLG1Wf/7eC+Ue1ViO1Q42c=;
- b=p+BtS+CqyxQjrnq4MQcvate3UyrpnBNh6AHYOGpkNCKCOucPkYDOS866v0J+SOSbrDj2
- lqcYmWf4qTUxwpeZjH4Xd9kk2ggannIyp23Ev5M4KnLEAaFvJBfpgSZKoO+km4NIMWTz
- Liau1kqyj1A64T1yXmbufVZZwTk5TFyjkrCgAdqHuTLGB9RiIFNhJjJQtp2h3b+9R4Vm
- E5UvlGrTMtzAkk8GDzzteog57xCasZNwqOOYQeT7kTtXj0T/Pva/+dZCUtk8Istc3aac
- PEheyeMAi24bkgENf3rFNjaIsbyNbaQH9EAhBIgXEHCK7uMyNtim6g07Vf4rSSQpFQjj WQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2v5cgqq74c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Sep 2019 14:28:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NEJDET129046;
-        Mon, 23 Sep 2019 14:26:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2v5bpgfupy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Sep 2019 14:26:48 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8NEQgVu011155;
-        Mon, 23 Sep 2019 14:26:42 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Sep 2019 07:26:42 -0700
-Date:   Mon, 23 Sep 2019 17:26:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S2388476AbfIWQOH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Sep 2019 12:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388475AbfIWQOH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Sep 2019 12:14:07 -0400
+Received: from paulmck-ThinkPad-P72 (unknown [170.225.9.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAF6B2089F;
+        Mon, 23 Sep 2019 16:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569255246;
+        bh=5Bu5JajfHxIPKIuW/hfxIoOLm6DlnN9YhqTiX1zuKVE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nmyhlCMd6nmYnU9S+Wm1tuJMEFsBCwhtoWCkaHbsxyisQl3NH5d5jJ2p09XMOuu/L
+         3C/cEaE9zcxygK3u36p9X7g/M/IIHmfPRx16KLyPiJobCVbdv6dAOWubEerW/xr4qC
+         U4kvimSUXafphtd/VeuoxEpbtJyhTuAdlAhHOV/s=
+Date:   Mon, 23 Sep 2019 09:14:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
 Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] rcu/nocb: Fix uninitialized variable in nocb_gp_wait()
-Message-ID: <20190923142634.GC31251@mwanda>
+Subject: Re: [PATCH] rcu/nocb: Fix uninitialized variable in nocb_gp_wait()
+Message-ID: <20190923161403.GB7828@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20190923142634.GC31251@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1909230140
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1909230140
+In-Reply-To: <20190923142634.GC31251@mwanda>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We never set this to false.  This probably doesn't affect most people's
-runtime because GCC will automatically initialize it to false at certain
-common optimization levels.  But that behavior is related to a bug in
-GCC and obviously should not be relied on.
+On Mon, Sep 23, 2019 at 05:26:34PM +0300, Dan Carpenter wrote:
+> We never set this to false.  This probably doesn't affect most people's
+> runtime because GCC will automatically initialize it to false at certain
+> common optimization levels.  But that behavior is related to a bug in
+> GCC and obviously should not be relied on.
+> 
+> Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Good catch!  Queued for v5.5, thank you!
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 2defc7fe74c3..fa08d55f7040 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1946,7 +1946,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 	int __maybe_unused cpu = my_rdp->cpu;
- 	unsigned long cur_gp_seq;
- 	unsigned long flags;
--	bool gotcbs;
-+	bool gotcbs = false;
- 	unsigned long j = jiffies;
- 	bool needwait_gp = false; // This prevents actual uninitialized use.
- 	bool needwake;
--- 
-2.20.1
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree_plugin.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 2defc7fe74c3..fa08d55f7040 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1946,7 +1946,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  	int __maybe_unused cpu = my_rdp->cpu;
+>  	unsigned long cur_gp_seq;
+>  	unsigned long flags;
+> -	bool gotcbs;
+> +	bool gotcbs = false;
+>  	unsigned long j = jiffies;
+>  	bool needwait_gp = false; // This prevents actual uninitialized use.
+>  	bool needwake;
+> -- 
+> 2.20.1
+> 
