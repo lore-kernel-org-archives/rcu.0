@@ -2,80 +2,109 @@ Return-Path: <SRS0=tYxx=XS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18FC0C04EBF
-	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 13:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE481C32755
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 14:29:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ED5C7205F4
-	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 13:24:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C33DD20867
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 14:29:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="p+BtS+Cq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406036AbfIWNX5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Sep 2019 09:23:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:42066 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405137AbfIWNX5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Sep 2019 09:23:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07AF61000;
-        Mon, 23 Sep 2019 06:23:57 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A54F53F694;
-        Mon, 23 Sep 2019 06:23:55 -0700 (PDT)
-Subject: Re: sched: make struct task_struct::state 32-bit
-To:     Julia Lawall <julia.lawall@lip6.fr>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        Alexey Dobriyan <adobriyan@gmail.com>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <a43fe392-bd6a-71f5-8611-c6b764ba56c3@arm.com>
- <7e3e784c-e8e6-f9ba-490f-ec3bf956d96b@web.de>
- <0c4dcb91-4830-0013-b8c6-64b9e1ce47d4@arm.com>
- <32d65b15-1855-e7eb-e9c4-81560fab62ea@arm.com>
- <alpine.DEB.2.21.1909231228200.2272@hadrien>
- <d529c390-546e-a8a4-f475-c3ee41f97645@arm.com>
- <alpine.DEB.2.21.1909231340090.2227@hadrien>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <84a9fa83-8048-44c8-3191-07aa63337cfb@arm.com>
-Date:   Mon, 23 Sep 2019 14:23:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2439884AbfIWO3g (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Sep 2019 10:29:36 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59254 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407299AbfIWO3g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Sep 2019 10:29:36 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NEIeL0102769;
+        Mon, 23 Sep 2019 14:28:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=q5TJ75p55cKVn+qFcqXUsCLG1Wf/7eC+Ue1ViO1Q42c=;
+ b=p+BtS+CqyxQjrnq4MQcvate3UyrpnBNh6AHYOGpkNCKCOucPkYDOS866v0J+SOSbrDj2
+ lqcYmWf4qTUxwpeZjH4Xd9kk2ggannIyp23Ev5M4KnLEAaFvJBfpgSZKoO+km4NIMWTz
+ Liau1kqyj1A64T1yXmbufVZZwTk5TFyjkrCgAdqHuTLGB9RiIFNhJjJQtp2h3b+9R4Vm
+ E5UvlGrTMtzAkk8GDzzteog57xCasZNwqOOYQeT7kTtXj0T/Pva/+dZCUtk8Istc3aac
+ PEheyeMAi24bkgENf3rFNjaIsbyNbaQH9EAhBIgXEHCK7uMyNtim6g07Vf4rSSQpFQjj WQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2v5cgqq74c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Sep 2019 14:28:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NEJDET129046;
+        Mon, 23 Sep 2019 14:26:49 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2v5bpgfupy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Sep 2019 14:26:48 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8NEQgVu011155;
+        Mon, 23 Sep 2019 14:26:42 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Sep 2019 07:26:42 -0700
+Date:   Mon, 23 Sep 2019 17:26:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] rcu/nocb: Fix uninitialized variable in nocb_gp_wait()
+Message-ID: <20190923142634.GC31251@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.1909231340090.2227@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909230140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909230140
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 23/09/2019 12:43, Julia Lawall wrote:
->>>> // FIXME: match functions that do something with state_var underneath?
->>>> // How to do recursive rules?
->>>
->>> You want to look at the definitions of called functions?  Coccinelle
->>> doesn't really support that, but there are hackish ways to add that.  How
->>> many function calls would you expect have to be unrolled?
->>>
->>
->> I wouldn't expect more than a handful (~5). I suppose this has to do with
->> injecting some Python/Ocaml code? I have some examples bookmarked but
->> haven't gotten to stare at them long enough.
-> 
-> You can look at iteration.cocci, but it's a bit complex.
-> 
-> You could match definitions of functions that do what you are interested
-> in, then store the names of these functions in a list (python/ocaml), and
-> then look for calls to those functions.  Something like
-> 
-> identifier fn : script:ocaml() { in_my_list fn };
-> 
+We never set this to false.  This probably doesn't affect most people's
+runtime because GCC will automatically initialize it to false at certain
+common optimization levels.  But that behavior is related to a bug in
+GCC and obviously should not be relied on.
 
-That seems promising, will try to have a look when I get some spare cycles.
-Thanks for the pointers!
+Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2defc7fe74c3..fa08d55f7040 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1946,7 +1946,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	int __maybe_unused cpu = my_rdp->cpu;
+ 	unsigned long cur_gp_seq;
+ 	unsigned long flags;
+-	bool gotcbs;
++	bool gotcbs = false;
+ 	unsigned long j = jiffies;
+ 	bool needwait_gp = false; // This prevents actual uninitialized use.
+ 	bool needwake;
+-- 
+2.20.1
+
