@@ -1,139 +1,280 @@
-Return-Path: <SRS0=oYKb=XN=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=tYxx=XS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 914B2C4CEC4
-	for <rcu@archiver.kernel.org>; Wed, 18 Sep 2019 09:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44C5CC04EBF
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 10:26:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 65262218AF
-	for <rcu@archiver.kernel.org>; Wed, 18 Sep 2019 09:58:22 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hkFo0+n7"
+	by mail.kernel.org (Postfix) with ESMTP id 07195206C2
+	for <rcu@archiver.kernel.org>; Mon, 23 Sep 2019 10:26:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbfIRJ6W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Sep 2019 05:58:22 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:44172 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbfIRJ6V (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Sep 2019 05:58:21 -0400
-Received: by mail-lf1-f67.google.com with SMTP id q11so5195137lfc.11;
-        Wed, 18 Sep 2019 02:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Q/vmDNFly4J1uivAFT0W2AkS7owll1FKiHSlevnMsJk=;
-        b=hkFo0+n7Wf7x8vAqxxQVe4zwDImf0yEQRrMKLg0KkpZGweBs90sShq9FtwqDZ3DXSs
-         Q0WL+scZU46CJZv55oluwDGj945KUD9O3WUiEVlfjQolm3SrOg8a/YrtCdJ1/Sh3ERjd
-         A7HO9rGujHZunfjZr+xPN1cpfqqKFkjVfNNg0+te++5aJEd10GF2BBQn4OZ33FcBvu6i
-         OD+m487t7nQT7XtvvU0SYyMmeNnM5SbBy++IQhQO6fVIiA2cRalsGczO47ZXjdPMpt8c
-         aYHBj5IlYB2HVJq6o6pdtlUrxIU9Vv9Q3KaxYWUZFlKgW1iQCAEdb4zZcc8jOXsQtH6v
-         Y0vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q/vmDNFly4J1uivAFT0W2AkS7owll1FKiHSlevnMsJk=;
-        b=hq15VP/t5ZMsc+7D6qBSeaQJyNb1qVOIBCbYLn5MGiHVasy0DCNn5RIBHXHjUFvANo
-         1tqSxrRJXPiFtcKVgMZfgf7C/54UUtKAPR303C6fDjwGSl7IOBbei/GvO2cLqGkqVbGo
-         bu+BJ4y0ybVxwbmG2Yccr8cKGRcx6KipHcD2o9nh0BKFH8HecUdZJwGD0+S4Tok9k+84
-         3+09nKlHmPechZPGw6ueIDmdLpq8SZYZNTBIVU45aWmEWtR0Y9C8jjsOyp7jfYhwip11
-         S0h6/cCiA/AH9MH0yB2kvGbclxzeMPYbGHhmbvRS2assQp4rqB6dfxhEP7tzKowHghuc
-         zRtw==
-X-Gm-Message-State: APjAAAWyin+4Zxnc+USmo6vc55tIi7gLq+fEXE0wwO3rwjmgwG1jmOtp
-        HU2MNSezXgBB3k3UME2bAcA=
-X-Google-Smtp-Source: APXvYqy1bisaEnjLQTM5Y9V9cKKDQsvyDPutwEjsVl4CYMNWC7ax6qBolxaUtdtMU5SjfebT0ucbEA==
-X-Received: by 2002:ac2:593c:: with SMTP id v28mr1608329lfi.11.1568800699282;
-        Wed, 18 Sep 2019 02:58:19 -0700 (PDT)
-Received: from pc636 ([37.139.158.167])
-        by smtp.gmail.com with ESMTPSA id b7sm930059lfp.23.2019.09.18.02.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Sep 2019 02:58:18 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 18 Sep 2019 11:58:11 +0200
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kernel-team@lge.com, Byungchul Park <byungchul.park@lge.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        max.byungchul.park@gmail.com,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
- batching
-Message-ID: <20190918095811.GA25821@pc636>
-References: <20190814160411.58591-1-joel@joelfernandes.org>
+        id S2387851AbfIWK0H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Sep 2019 06:26:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:40214 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728126AbfIWK0H (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Sep 2019 06:26:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BECCE142F;
+        Mon, 23 Sep 2019 03:26:06 -0700 (PDT)
+Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69C883F694;
+        Mon, 23 Sep 2019 03:26:05 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: sched: make struct task_struct::state 32-bit
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@lip6.fr>
+References: <a43fe392-bd6a-71f5-8611-c6b764ba56c3@arm.com>
+ <7e3e784c-e8e6-f9ba-490f-ec3bf956d96b@web.de>
+ <0c4dcb91-4830-0013-b8c6-64b9e1ce47d4@arm.com>
+Message-ID: <32d65b15-1855-e7eb-e9c4-81560fab62ea@arm.com>
+Date:   Mon, 23 Sep 2019 11:26:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190814160411.58591-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0c4dcb91-4830-0013-b8c6-64b9e1ce47d4@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> Recently a discussion about stability and performance of a system
-> involving a high rate of kfree_rcu() calls surfaced on the list [1]
-> which led to another discussion how to prepare for this situation.
+On 05/09/2019 17:52, Valentin Schneider wrote:
+> I actually got rid of the task_struct* parameter and now just match
+> against task_struct.p accesses in the function body, which has the
+> added bonus of not caring about the order of the parameters.
 > 
-> This patch adds basic batching support for kfree_rcu(). It is "basic"
-> because we do none of the slab management, dynamic allocation, code
-> moving or any of the other things, some of which previous attempts did
-> [2]. These fancier improvements can be follow-up patches and there are
-> different ideas being discussed in those regards. This is an effort to
-> start simple, and build up from there. In the future, an extension to
-> use kfree_bulk and possibly per-slab batching could be done to further
-> improve performance due to cache-locality and slab-specific bulk free
-> optimizations. By using an array of pointers, the worker thread
-> processing the work would need to read lesser data since it does not
-> need to deal with large rcu_head(s) any longer.
+> Still not there yet but making progress in the background, hope it's
+> passable entertainment to see me struggle my way there :)
 > 
-> Torture tests follow in the next patch and show improvements of around
-> 5x reduction in number of  grace periods on a 16 CPU system. More
-> details and test data are in that patch.
-> 
-> There is an implication with rcu_barrier() with this patch. Since the
-> kfree_rcu() calls can be batched, and may not be handed yet to the RCU
-> machinery in fact, the monitor may not have even run yet to do the
-> queue_rcu_work(), there seems no easy way of implementing rcu_barrier()
-> to wait for those kfree_rcu()s that are already made. So this means a
-> kfree_rcu() followed by an rcu_barrier() does not imply that memory will
-> be freed once rcu_barrier() returns.
-> 
-> Another implication is higher active memory usage (although not
-> run-away..) until the kfree_rcu() flooding ends, in comparison to
-> without batching. More details about this are in the second patch which
-> adds an rcuperf test.
-> 
-> Finally, in the near future we will get rid of kfree_rcu() special casing
-> within RCU such as in rcu_do_batch and switch everything to just
-> batching. Currently we don't do that since timer subsystem is not yet up
-> and we cannot schedule the kfree_rcu() monitor as the timer subsystem's
-> lock are not initialized. That would also mean getting rid of
-> kfree_call_rcu_nobatch() entirely.
-> 
-Hello, Joel.
 
-First of all thank you for improving it. I also noticed a high pressure
-on RCU-machinery during performing some vmalloc tests when kfree_rcu()
-flood occurred. Therefore i got rid of using kfree_rcu() there.
+Bit of hiatus on my end there. I did play around some more with Coccinelle 
+on the way to/from Plumbers. The main problems I'm facing ATM is "current"
+not being recognized as a task_struct* expression, and the need to 
+"recursively" match task_struct.state modifiers, i.e. catch both functions
+for something like:
 
-I have just a small question related to workloads and performance evaluation.
-Are you aware of any specific workloads which benefit from it for example
-mobile area, etc? I am asking because i think about backporting of it and
-reuse it on our kernel. 
+foo(long state)
+{
+	__foo(state);
+}
 
-Thank you!
+__foo(long state)
+{
+	current->state = state;
+}
 
---
-Vlad Rezki
+
+Here's where I'm at:
+---
+virtual patch
+virtual report
+
+// Match variables that represent task states
+// They can be read from / written to task_struct.state, or be compared
+// to TASK_* values
+@state_access@
+struct task_struct *p;
+// FIXME: current not recognized as task_struct*, fixhack with regexp
+identifier current =~ "^current$";
+identifier task_state =~ "^TASK_";
+identifier state_var;
+position pos;
+@@
+
+(
+  p->state & state_var@pos
+|
+  current->state & state_var@pos
+|
+  p->state | state_var@pos
+|
+  current->state | state_var@pos
+|
+  p->state < state_var@pos
+|
+  current->state < state_var@pos
+|
+  p->state > state_var@pos
+|
+  current->state > state_var@pos
+|
+  state_var@pos = p->state
+|
+  state_var@pos = current->state
+|
+  p->state == state_var@pos
+|
+  current->state == state_var@pos
+|
+  p->state != state_var@pos
+|
+  current->state != state_var@pos
+|
+// FIXME: match functions that do something with state_var underneath?
+// How to do recursive rules?
+  set_current_state(state_var@pos)
+|
+  set_special_state(state_var@pos)
+|
+  signal_pending_state(state_var@pos, p)
+|
+  signal_pending_state(state_var@pos, current)
+|
+  state_var@pos & task_state
+|
+  state_var@pos | task_state
+)
+
+// Fixup local variables
+@depends on patch && state_access@
+identifier state_var = state_access.state_var;
+@@
+(
+- long
++ int
+|
+- unsigned long
++ unsigned int
+)
+state_var;
+
+// Fixup function parameters
+@depends on patch && state_access@
+identifier fn;
+identifier state_var = state_access.state_var;
+@@
+
+fn(...,
+- long state_var
++ int state_var
+,...)
+{
+	...
+}
+
+// FIXME: find a way to squash that with the above?
+// Fixup function parameters
+@depends on patch && state_access@
+identifier fn;
+identifier state_var = state_access.state_var;
+@@
+
+fn(...,
+- unsigned long
++ unsigned int
+state_var
+,...)
+{
+	...
+}
+---
+
+This gives me the following diff on kernel/:
+
+---
+diff -u -p a/locking/mutex.c b/locking/mutex.c
+--- a/locking/mutex.c
++++ b/locking/mutex.c
+@@ -923,7 +923,7 @@ __ww_mutex_add_waiter(struct mutex_waite
+  * Lock a mutex (possibly interruptible), slowpath:
+  */
+ static __always_inline int __sched
+-__mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
++__mutex_lock_common(struct mutex *lock, int state, unsigned int subclass,
+ 		    struct lockdep_map *nest_lock, unsigned long ip,
+ 		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
+ {
+@@ -1097,14 +1097,14 @@ err_early_kill:
+ }
+ 
+ static int __sched
+-__mutex_lock(struct mutex *lock, long state, unsigned int subclass,
++__mutex_lock(struct mutex *lock, int state, unsigned int subclass,
+ 	     struct lockdep_map *nest_lock, unsigned long ip)
+ {
+ 	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, NULL, false);
+ }
+ 
+ static int __sched
+-__ww_mutex_lock(struct mutex *lock, long state, unsigned int subclass,
++__ww_mutex_lock(struct mutex *lock, int state, unsigned int subclass,
+ 		struct lockdep_map *nest_lock, unsigned long ip,
+ 		struct ww_acquire_ctx *ww_ctx)
+ {
+diff -u -p a/locking/semaphore.c b/locking/semaphore.c
+--- a/locking/semaphore.c
++++ b/locking/semaphore.c
+@@ -201,7 +201,7 @@ struct semaphore_waiter {
+  * constant, and thus optimised away by the compiler.  Likewise the
+  * 'timeout' parameter for the cases without timeouts.
+  */
+-static inline int __sched __down_common(struct semaphore *sem, long state,
++static inline int __sched __down_common(struct semaphore *sem, int state,
+ 								long timeout)
+ {
+ 	struct semaphore_waiter waiter;
+diff -u -p a/freezer.c b/freezer.c
+--- a/freezer.c
++++ b/freezer.c
+@@ -64,7 +64,7 @@ bool __refrigerator(bool check_kthr_stop
+ 	/* Hmm, should we be allowed to suspend when there are realtime
+ 	   processes around? */
+ 	bool was_frozen = false;
+-	long save = current->state;
++	int save = current->state;
+ 
+ 	pr_debug("%s entered refrigerator\n", current->comm);
+ 
+diff -u -p a/sched/core.c b/sched/core.c
+--- a/sched/core.c
++++ b/sched/core.c
+@@ -1888,7 +1888,7 @@ out:
+  * smp_call_function() if an IPI is sent by the same process we are
+  * waiting to become inactive.
+  */
+-unsigned long wait_task_inactive(struct task_struct *p, long match_state)
++unsigned long wait_task_inactive(struct task_struct *p, int match_state)
+ {
+ 	int running, queued;
+ 	struct rq_flags rf;
+@@ -3185,7 +3185,7 @@ static struct rq *finish_task_switch(str
+ {
+ 	struct rq *rq = this_rq();
+ 	struct mm_struct *mm = rq->prev_mm;
+-	long prev_state;
++	int prev_state;
+ 
+ 	/*
+ 	 * The previous task will have left us with a preempt_count of 2
+@@ -5964,7 +5964,7 @@ void sched_show_task(struct task_struct
+ EXPORT_SYMBOL_GPL(sched_show_task);
+ 
+ static inline bool
+-state_filter_match(unsigned long state_filter, struct task_struct *p)
++state_filter_match(unsigned int state_filter, struct task_struct *p)
+ {
+ 	/* no filter, everything matches */
+ 	if (!state_filter)
+@@ -5985,7 +5985,7 @@ state_filter_match(unsigned long state_f
+ }
+ 
+ 
+-void show_state_filter(unsigned long state_filter)
++void show_state_filter(unsigned int state_filter)
+ {
+ 	struct task_struct *g, *p;
+ 
+---
