@@ -7,44 +7,46 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9992C432C1
-	for <rcu@archiver.kernel.org>; Tue, 24 Sep 2019 08:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41565C432C1
+	for <rcu@archiver.kernel.org>; Tue, 24 Sep 2019 08:28:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 70DED2146E
-	for <rcu@archiver.kernel.org>; Tue, 24 Sep 2019 08:08:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0CF6B20872
+	for <rcu@archiver.kernel.org>; Tue, 24 Sep 2019 08:28:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=web.de header.i=@web.de header.b="hEEPKBhi"
+	dkim=pass (1024-bit key) header.d=web.de header.i=@web.de header.b="hEr+GJ4R"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438878AbfIXIIS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Sep 2019 04:08:18 -0400
-Received: from mout.web.de ([212.227.15.4]:49247 "EHLO mout.web.de"
+        id S2394972AbfIXI2v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Sep 2019 04:28:51 -0400
+Received: from mout.web.de ([212.227.15.3]:56113 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436523AbfIXIIS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Sep 2019 04:08:18 -0400
+        id S2394923AbfIXI2v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Sep 2019 04:28:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1569312482;
-        bh=5UUB7nBISPCMR8MLkZQo563E2CTK7plA3+JuTrsQPlU=;
+        s=dbaedf251592; t=1569313715;
+        bh=81JZBQpINSCG3/xfWngKEmRt/JYECAlDxcVtcKbD0XQ=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=hEEPKBhivbXBokJZPSixHFQyrwbGDoTQfOUMwaSxHAT+mm73WXm1wk+J0XjHaBXAR
-         fqrJifb6ER1xWqCtVT/c3fxnMrRIIiXiGSno3JlXkqT+FBBRJYFxvjtTrVBz1jpaTx
-         m7kYHgHNuH+TBbxdB1g+/DN4wjPrT5OCjPPvB9DQ=
+        b=hEr+GJ4RlK/hsMoY0C/r5GnM/nsLXtR9L9fV42Ha784ZP0Sc4t/aqOBD/fg1HZiBy
+         i1uVvlHrGPxx/zcQtXq78+Y/KD9WNz/3HPFRjacY9XR1hA/dW7mWt+92f0ke2ko63S
+         4YsFsEvHo/8F4aS94Z36l7FnvuBbDE6nCRyCijAg=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.71.162]) by smtp.web.de (mrweb003
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0M6Dve-1hxcnA2BeE-00yDJX; Tue, 24
- Sep 2019 10:08:02 +0200
+Received: from [192.168.1.2] ([93.131.71.162]) by smtp.web.de (mrweb001
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MfYXz-1iWfm420E7-00P72Z; Tue, 24
+ Sep 2019 10:28:35 +0200
 Subject: Re: sched: make struct task_struct::state 32-bit
 To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
+        Julia Lawall <julia.lawall@lip6.fr>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         Ingo Molnar <mingo@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julia Lawall <julia.lawall@lip6.fr>
+        Peter Zijlstra <peterz@infradead.org>
 References: <a43fe392-bd6a-71f5-8611-c6b764ba56c3@arm.com>
  <7e3e784c-e8e6-f9ba-490f-ec3bf956d96b@web.de>
  <0c4dcb91-4830-0013-b8c6-64b9e1ce47d4@arm.com>
  <32d65b15-1855-e7eb-e9c4-81560fab62ea@arm.com>
+ <alpine.DEB.2.21.1909231228200.2272@hadrien>
+ <d529c390-546e-a8a4-f475-c3ee41f97645@arm.com>
 From:   Markus Elfring <Markus.Elfring@web.de>
 Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
@@ -89,85 +91,67 @@ Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
  Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
  x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
  pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <af969579-116c-fba7-fd32-15a876ac0445@web.de>
-Date:   Tue, 24 Sep 2019 10:07:54 +0200
+Message-ID: <a1491516-a701-8804-8277-75fb5247191a@web.de>
+Date:   Tue, 24 Sep 2019 10:28:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <32d65b15-1855-e7eb-e9c4-81560fab62ea@arm.com>
+In-Reply-To: <d529c390-546e-a8a4-f475-c3ee41f97645@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gdWTto7J1BLMzpuLsjXkxMpm9JPQANR6lT0+Gi8LVIYwwvcnmCB
- wbRC8Aq7YkXsjPF2BrDnR9s/c6qPEEeWSZK/1z0lz52lbZhqTmxMIlxXHOnRhiYfG5sQtoQ
- FwqPHD58FJBBWWLkgBF6+0ELov+JPZgWu/8tcNRcWkjWo+IVraNRuisxGf/B+KkFlahpWIz
- 8h+zWSyzIgQs9I7ijaaeg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:axxi6oXRmys=:x4mHB2rn9HIwxjm/+2t7zx
- F1NrtiZgELzy2ru7iCxdt4NWKcGpGGjPsVpGg8+16qutpm0DWxghSB/AXMPHdJBFv332Hh1Vb
- PT7SQ7NNJ+cIwPLJ5/SCW9E9keRAkmt1EyMCNy2gN91IKJFEswwEJ0MmC7+/cfjfCFsIEp6pJ
- FLKEG3th06O4BcFH8mqUF9Mk4vWFLAyKc4IAj9KPFUt52E88JzUorbGFyke7DxbVSNwlWGRmd
- 335yNlorr+YGfDVj0M7VGzOXfmdyK/rJYLlXc52IO7MSuwslC2MYJTko88PnGyQ+/+QfCyApC
- EntibQqhHBCyVM5ev/ZHr9rVu8zwj57bXWJ699bXDBgazEIswXQyyihh4mbJ4ecIVkoFl6zS/
- cmxBNk4APQ06Nkwb0sN06cnrenzVEypb4td+1BnXd/fC93T0aJEqvSdc+khMwrsfS46p3iBh1
- Dj/iHl0ASgnP7MZxzb3RukBHlJBf6p2O2kKB004Qj2B+0e1dGistXv+swgJ12UOJETuqvAm5l
- qPmCXhUb8nv7iEJcl2Q1sYYlegwEqaVo2Zp9r1fDY1TFN2OurCMZhS9mF/ifkxvL+2XjT4pkq
- jmIC43UcGojXxpC8CMkTJB5B35KhuI0zPlAI8WwIUHGGIou7SrQYfzRxpZJr5Q2rYWNd6LlS1
- wtkwa2yF+Zab/WaSEEdbyG49wgbEzyfLNSPWscRO3DxAVNSSI5NUfgsV8+gf7FvTGFV7Sa70F
- Gb9yZFcwP8MbIsaC7DRzl5OCJ1vqXTurImDFjGp95IRRCW7Qp7Vnegr0rpBQU+FJSxm8ci/U1
- AuG8PMOB6Gf6MZXYSAFURWupW33l69XI9GojX2CvRivO6UaD+tFtqRrQuVzFwFQ0Ok/zs1nuY
- ogEE5QDEKFNi+dWpAnx9GbB1/ThpKJnD7hOGMZCSTnrSYMxUkOnb98c78kYM+RuZWSt0+GgAo
- OpqtSr0JhRztyLJDymLPBkgF6xliV49tYmmc5M+Gv+favKnyfoTs4tEQlR79y/G6fSRHfMHFU
- KB1tngPzCRERXJi5gE/qlFIVq6PQdxebZZXRI+GHpuIECb8p3VI4kFiblW4qezbxEVS77nryq
- IzBd3+9e1OyF3NzrLITHCQ8g3zZCgCqD7XCvxGbTmEfHFB+aFVOnETsmB9L3rRk7kJS2spFvm
- nA1BDxjDD0G0bT53sK5dPzMc/2dAyNrR9YFqfCAKWIzVYKPGNcudBkVPMA2oBfj2TejziW80d
- hoed+CDCFa7ucCxSpJghlOwp/KfxX/t8n/+xfb924K9fDBc4oTMisWxIOUzs=
+X-Provags-ID: V03:K1:+LGehVKc09r1KuvfQbU6UtXN4wMbiGphRgKwWf6E5/pcoBay+CX
+ hxQtIG/AXQEA72ofNH+z/E/IQpI5dOlGwrkTiXGvRXac9WkyaBILSc1Nm7Y6OAR1aZzZvWg
+ nHknsoTJNX0ExTzcE5uNE85trDQdcAC0c4Zi+3Wh4WnEWRN1kWL+oGgg1Dsbvi+YoiGCEiN
+ 8Xi5iXU/pgbViJyNEWwpg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ndp5C+YO2XY=:bEjXmQLpbsDAKujsReYlP8
+ /XjsIU2C+Ky2XLlpzdHutvatEFcllHuXSxRUC/kxW5mVs4L56PKsiWb3Vu/awYqYOSUjCiFtK
+ Tn9ch+XE0/oigNL9MCWTwiVeKf/bl4s1ntlH+QK8zpEvIghww7JM9k0mLUP/MKrAgBcIJGXk6
+ fFTmhQenEdXjTJjJtRE4qykb3cgp25icMONDt+BUgdfLscQDk79gZxs04A0VtoCP21oxIxYNs
+ M9/mqOV9UawZUTzbd0k0GAHBRPp64+TqC8YIhXu9TXcLeBW+PFPqXCCU6kT718VIb3HthvWLr
+ pcnu7HKUmXXdsvpfY0qiNtG3iOxFkdFA2FKJecfLN+VZlHVVbu1yaJ+bJlLebOfFKdwR1q3/r
+ GlEDkuCt+L0BHFMgUge/73z14ZDk7KGwdJm6CykFn741DOBovrJDgDC6RiBotpTVbHtqPWj6V
+ 6NoW29Efn3woO+w1Nrodwj3W7HoDLZej+GyZy6Da8Cl6/cTNegUSGny8MyAoxbCW5gaiEsTb1
+ C55rPTkg/WF4UxWSzF7x3OIUL3wHCVp5oDlCA+m201nBGwmnnLZchCXqmgWJLg9I8zXafKddS
+ RIiiLMh2Va39nInIuOUxk80sTu6FVl9qBr3qCqAy8V5L3QuPhkktVyioTrCVqYVSTRX+I0/mM
+ LGspeNnawObv8ixw0+lwHzH3N//oWVGlZgskvghpDq8vRH0tO/+YYVjrg+prIcLfoZxeWajJi
+ 0EsVGGgtOLIVAPAdh+ge5KNHqK3nxJ8lQG1VvelpOAX1YFrn/BVzG1UI1OzVqVKM4jaEN9b+b
+ qXzH/7M3UTlAYS0GiP26fbg+yd/Fqf0wTsf8YcSc5pOHjyORTLwkRqcVd0r3xa/5VhFf6Yh8N
+ TBayi9AAhDN1fyYMMVDhawHQzU8jy2448GMq4o8ze5kDpw6ZwkfnAHzboUSLwf64eurYTvWQG
+ IkmrpazD352W9fmVxHlN+84kAdiRohhnJS9Rxp0rs21rPduut3yWyVsyA3hV3ttpfbu8V9NJf
+ zF9ou78u4fguhc8JeEJOaj94oMGvFZ4hYceM/9vhku023HywU45SYPKwN1gIpgRkiYdSfZW9s
+ xFIA9iaQArvMJ6HKnkb9sQ8p6CnMAsusNE+Aj4m54WGP/xTrHYIma4f60oFCs2XyX5D7oTDtX
+ MA7L5LzS8o0IhUz/EW1A9YN59hv1REZcUDAt97uYZ8+H/6xx6wYnPxKfVfGQQ35r4f7GWyfDh
+ vWqXuncgK1OxgPp40RuPQf91P3AKVzgbkTbNhqFhA99XjSI7T/vcRzwinywY=
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> // FIXME: current not recognized as task_struct*, fixhack with regexp
-> identifier current =3D~ "^current$";
-
-Would you really like to use a regular expression for finding a single wor=
-d?
-
-
-> identifier state_var;
-> position pos;
-> @@
+>>> identifier task_state =3D~ "^TASK_";
+>>
+>> Are there a lot of options?  You can also enumerate them in {}, ie
+>>
+>> identifier task_state =3D {TASK_BLAH, TASK_BLAHBLAH};
 >
-> (
->   p->state & state_var@pos
-> |
->   current->state & state_var@pos
-> |
+> Around a dozen, can be enumerated easily and is indeed probably better t=
+han
+> a regexp.
 
-I see further opportunities to make such a SmPL disjunction more succinct.
-
-*
-( ( \( p \| current \) ) -> state & state_var@pos
-|
-=E2=80=A6
-
-* How do you think about to work with a SmPL constraint
-  for a metavariable with the type =E2=80=9Cbinary operator=E2=80=9D?
+Can the application of a regular expression be more convenient
+for such an use case?
 
 
->   set_current_state(state_var@pos)
-> |
->   set_special_state(state_var@pos)
+>> You want to look at the definitions of called functions?
+>> Coccinelle doesn't really support that,
 
-| \( set_current_state \| set_special_state \) (state_var@pos)
+I got an other impression.
 
 
-> |
->   signal_pending_state(state_var@pos, p)
-> |
->   signal_pending_state(state_var@pos, current)
+>> but there are hackish ways to add that.
 
-| signal_pending_state(state_var@pos, \( p \| current \) )
-
+How do you think about to discuss corresponding software development chall=
+enges?
 
 Regards,
 Markus
