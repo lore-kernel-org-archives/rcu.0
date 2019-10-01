@@ -1,60 +1,66 @@
-Return-Path: <SRS0=OixC=XZ=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=q7TI=X2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 704AEC32792
-	for <rcu@archiver.kernel.org>; Mon, 30 Sep 2019 20:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A80C352AA
+	for <rcu@archiver.kernel.org>; Tue,  1 Oct 2019 11:27:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 402F9224FE
-	for <rcu@archiver.kernel.org>; Mon, 30 Sep 2019 20:47:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABE5221906
+	for <rcu@archiver.kernel.org>; Tue,  1 Oct 2019 11:27:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="nRXpD4f7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDw821R4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbfI3UrO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Sep 2019 16:47:14 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43236 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbfI3UrN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Sep 2019 16:47:13 -0400
-Received: by mail-pg1-f195.google.com with SMTP id v27so8000574pgk.10
-        for <rcu@vger.kernel.org>; Mon, 30 Sep 2019 13:47:13 -0700 (PDT)
+        id S1726160AbfJAL1O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Oct 2019 07:27:14 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41720 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbfJAL1O (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Oct 2019 07:27:14 -0400
+Received: by mail-lj1-f193.google.com with SMTP id f5so12933441ljg.8;
+        Tue, 01 Oct 2019 04:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Ej+NLOn65SqylH82xQqCy7VCcHeNjBUvrxVEbfvpBwo=;
-        b=nRXpD4f7KWqFbQyFMyCsm1kAi0MDUjJ/OzE5NbdzsMl7Npj1TDqhnMyaNMO76wTz4P
-         kalwczUBiqPNefZ098dmk6+zMm8OhNWOKBFu/zxZcPg9u+XvivmZiqk66jmAjeK1y98J
-         UkOoc8VX83B/EWiMfrD3mzJeuVixZ9PKtJCdk=
+        bh=7yl90eDyUNbyXKN1QXnqy8jV6SoXExUZE/lJxIw9j7w=;
+        b=XDw821R4xQcFLOZdGzsbw4EpnPvm2B1/X0+rEWnX1z2bZtcmrcjd65hrWtP7jm1coS
+         IJip/mZdO5sLBpXRSp8DLf7baNhUmzIKBmQvW5ZLP/xvQcaGnTkxKnE7ixqtaFepq8Om
+         eFiViVSZQI52USKnlMtNwIBOsbMZoizkbWBPsXfhjrfbNOZk7UYBDdJujsQqdUcFoLN0
+         6CiC81ZsmGEaNT/VurrZowKkmAJG4xHzwbJMoaZw8185lWel800cHFtUzaeR9YX/2eTm
+         8BI4LOiHBEpN+gz63cLGCtmUPksYJEWj6nbiEmwcwYomrYIFCcPEE8pycskTXU3prC0I
+         Fgqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ej+NLOn65SqylH82xQqCy7VCcHeNjBUvrxVEbfvpBwo=;
-        b=HD3z7xxeIIfMJeXE9eRaR3evVEVlx9IIZiH4XVpwzx9+Makw8H+GeDz2uYiv/sfdWj
-         3x/V8Tp7Ujj0bsWLgUM/pvsBjvua4JMN3omq9XvVjmVHEz/Emmyd4d7P4mzXkeu9XG0o
-         6yCHNOD7eA6PxngrEQlIA/B23zsSRW4ICHZ2Hb09LFyvwOAvqJ6RoNXYmEEVXpKXQrkV
-         su4zIqnaWHmmGxicDnTrgVHaN/opUWMsJo891dtjCb71v5/oN/a+PkRH9vpv7lnmI7Is
-         WMTJoIqX7LaWsMKLzbztvry6+MR76GBQp2t97NOG6RrwdFiIQmlgLwMK1jkG9iMlvGSJ
-         esFA==
-X-Gm-Message-State: APjAAAXcS+jBOSfdPHqH1dTh+xjh1FRA7NslEULFaic459UGRHjc+bYv
-        yer51tfmqE62e1D4qe9Oc5rWww==
-X-Google-Smtp-Source: APXvYqy7dW2o3ZI1PqcNwk7CVJMuSg+Y4R9Ba2CAdv/Lg7XCe/An85hWd/2CXf4MDHUcB/SJzu1KbA==
-X-Received: by 2002:a17:90a:8c15:: with SMTP id a21mr1083385pjo.99.1569874585032;
-        Mon, 30 Sep 2019 13:16:25 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h2sm22067824pfq.108.2019.09.30.13.16.24
+        bh=7yl90eDyUNbyXKN1QXnqy8jV6SoXExUZE/lJxIw9j7w=;
+        b=ElnMttR4hiAtSb/RZpL/cCyJEvGReCCAg6kHSGA9Yhw9nDgfiNazbhXwPGapkfBI8z
+         lm8u8cGUfbqYr9lGvvVlxqvKm/QR03DyKXyxBu7jrY40n620YQrCkigEj/XiOIJ1zbXP
+         QwiQiA1TkeZJMx62DmAzT8ufKMgmNewQr1arJ/CKAg9XOobBi2g7zFZyblbYErnxnibJ
+         SMeppKAQodDEDu7TB1jf+hAN1YWZlDs0PY9zNRGkl1njq+EUEUkUw9YbfOg47VOOmLBl
+         NYXlDnbHraip+6z5M997lP2Zph/6v5uUMisbMnrpvVv8Q+9wEYpP09QrZoPFMxEOlRj/
+         Rvpw==
+X-Gm-Message-State: APjAAAXOY74I7g/AGhb6czDs/kdZQ81ix1UifhP3tKYiS4zD79yp51cC
+        aEGRAus0O7yl1LrhfkS4CEY=
+X-Google-Smtp-Source: APXvYqxZjU4YbaPUakVbiX1hi3z8kXoJqj1JEZzF7eSS9/uGIKtlvW/tvZiSX5uDbU91DnMtqnIOzA==
+X-Received: by 2002:a05:651c:154:: with SMTP id c20mr15579041ljd.83.1569929232041;
+        Tue, 01 Oct 2019 04:27:12 -0700 (PDT)
+Received: from pc636 ([37.139.158.167])
+        by smtp.gmail.com with ESMTPSA id n2sm3941606ljj.30.2019.10.01.04.27.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2019 13:16:24 -0700 (PDT)
-Date:   Mon, 30 Sep 2019 16:16:23 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kernel-team@lge.com, Byungchul Park <byungchul.park@lge.com>,
+        Tue, 01 Oct 2019 04:27:10 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 1 Oct 2019 13:27:02 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kernel-team@lge.com,
+        Byungchul Park <byungchul.park@lge.com>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -65,91 +71,70 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
         Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
  batching
-Message-ID: <20190930201623.GA134859@google.com>
+Message-ID: <20191001112702.GA22112@pc636>
 References: <20190814160411.58591-1-joel@joelfernandes.org>
  <20190918095811.GA25821@pc636>
+ <20190930201623.GA134859@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190918095811.GA25821@pc636>
+In-Reply-To: <20190930201623.GA134859@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 11:58:11AM +0200, Uladzislau Rezki wrote:
-> > Recently a discussion about stability and performance of a system
-> > involving a high rate of kfree_rcu() calls surfaced on the list [1]
-> > which led to another discussion how to prepare for this situation.
+> > Hello, Joel.
 > > 
-> > This patch adds basic batching support for kfree_rcu(). It is "basic"
-> > because we do none of the slab management, dynamic allocation, code
-> > moving or any of the other things, some of which previous attempts did
-> > [2]. These fancier improvements can be follow-up patches and there are
-> > different ideas being discussed in those regards. This is an effort to
-> > start simple, and build up from there. In the future, an extension to
-> > use kfree_bulk and possibly per-slab batching could be done to further
-> > improve performance due to cache-locality and slab-specific bulk free
-> > optimizations. By using an array of pointers, the worker thread
-> > processing the work would need to read lesser data since it does not
-> > need to deal with large rcu_head(s) any longer.
-> > 
-> > Torture tests follow in the next patch and show improvements of around
-> > 5x reduction in number of  grace periods on a 16 CPU system. More
-> > details and test data are in that patch.
-> > 
-> > There is an implication with rcu_barrier() with this patch. Since the
-> > kfree_rcu() calls can be batched, and may not be handed yet to the RCU
-> > machinery in fact, the monitor may not have even run yet to do the
-> > queue_rcu_work(), there seems no easy way of implementing rcu_barrier()
-> > to wait for those kfree_rcu()s that are already made. So this means a
-> > kfree_rcu() followed by an rcu_barrier() does not imply that memory will
-> > be freed once rcu_barrier() returns.
-> > 
-> > Another implication is higher active memory usage (although not
-> > run-away..) until the kfree_rcu() flooding ends, in comparison to
-> > without batching. More details about this are in the second patch which
-> > adds an rcuperf test.
-> > 
-> > Finally, in the near future we will get rid of kfree_rcu() special casing
-> > within RCU such as in rcu_do_batch and switch everything to just
-> > batching. Currently we don't do that since timer subsystem is not yet up
-> > and we cannot schedule the kfree_rcu() monitor as the timer subsystem's
-> > lock are not initialized. That would also mean getting rid of
-> > kfree_call_rcu_nobatch() entirely.
-> > 
-> Hello, Joel.
+> > First of all thank you for improving it. I also noticed a high pressure
+> > on RCU-machinery during performing some vmalloc tests when kfree_rcu()
+> > flood occurred. Therefore i got rid of using kfree_rcu() there.
 > 
-> First of all thank you for improving it. I also noticed a high pressure
-> on RCU-machinery during performing some vmalloc tests when kfree_rcu()
-> flood occurred. Therefore i got rid of using kfree_rcu() there.
+> Replying a bit late due to overseas conference travel and vacation.
+> 
+> When you say 'high pressure', do you mean memory pressure or just system
+> load?
+> 
+>
+> Memory pressure slightly increases with the kfree_rcu() rework with the
+> benefit of much fewer grace periods.
+> 
+I meant a system load, because of high number of cycles in the kfree_rcu()
+symbol under stressing. But i do not have numbers next to me, because it
+was quite a long time ago. As for memory usage, i understand that.
 
-Replying a bit late due to overseas conference travel and vacation.
+> > I have just a small question related to workloads and performance evaluation.
+> > Are you aware of any specific workloads which benefit from it for example
+> > mobile area, etc? I am asking because i think about backporting of it and
+> > reuse it on our kernel. 
+> 
+> I am not aware of a mobile usecase that benefits but there are server
+> workloads that make system more stable in the face of a kfree_rcu() flood.
+> 
+OK, i got it. I wanted to test it finding out how it could effect mobile
+workloads.
 
-When you say 'high pressure', do you mean memory pressure or just system
-load?
+>
+> For the KVA allocator work, I see it is quite similar to the way binder
+> allocates blocks. See function: binder_alloc_new_buf_locked(). Is there are
+> any chance to reuse any code? For one thing, binder also has an rbtree for
+> allocated blocks for fast lookup of allocated blocks. Does the KVA allocator
+> not have the need for that?
+>
+Well, there is a difference. Actually the free blocks are not sorted by
+the its size like in binder layer, if understand the code correctly.
 
-Memory pressure slightly increases with the kfree_rcu() rework with the
-benefit of much fewer grace periods.
+Instead, i keep them(free blocks) sorted(by start address) in ascending
+order + maintain the augment value(biggest free size in left or right sub-tree)
+for each node, that allows to navigate toward the lowest address and the block
+that definitely suits. So as a result our allocations become sequential
+what is important.
 
-> I have just a small question related to workloads and performance evaluation.
-> Are you aware of any specific workloads which benefit from it for example
-> mobile area, etc? I am asking because i think about backporting of it and
-> reuse it on our kernel. 
+>
+> And, nice LPC presentation! I was there ;)
+> 
+Thanks :)
 
-I am not aware of a mobile usecase that benefits but there are server
-workloads that make system more stable in the face of a kfree_rcu() flood.
-
-For the KVA allocator work, I see it is quite similar to the way binder
-allocates blocks. See function: binder_alloc_new_buf_locked(). Is there are
-any chance to reuse any code? For one thing, binder also has an rbtree for
-allocated blocks for fast lookup of allocated blocks. Does the KVA allocator
-not have the need for that?
-
-And, nice LPC presentation! I was there ;)
-
-thanks,
-
- - Joel
-
+--
+Vlad Rezki
