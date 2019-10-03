@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CB51C10F14
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E462DC4360C
 	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3E9FD222CD
+	by mail.kernel.org (Postfix) with ESMTP id BBCF7222D0
 	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1570067253;
-	bh=yIBjfYOEPsz/21qdYEvppUqb2W8DmvJA4e/0lsedspA=;
+	bh=mWRW6EvmyH/GayqYkmkelp5SJD9Or8+VhvkH9hZvA98=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=VwHbyIjc1HRCTOh4YRIPFprjzrdATi1jajYQnWgd4nL3hgVPkTuyvCEfdznMTorXF
-	 6BV4P3jx8LziLVW7EzjxZcph7guKunRHAG2wTpSL6ooFFDsgVwLUZ6t1Am/eGXlqnk
-	 S2OTtjhcuMXA0mnj8uYJxvJ9+symuC3jfemi4IU8=
+	b=OqyDgp50ampGwn8QEdxyfyWXIQE+2A7l6yfxy61Ry6rZN5V+EwW/C8entqbQBcb8F
+	 wpqhqD/AAdpDJEpOrQNrEvMQxTtTfxEP2Ql6MrEvewaC9tLjWYOwM4Ju/0FmPyfs0k
+	 1DaK3S1DQB2JSFMTHoZEk2cJTYvx/1rPUw/9xYBc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbfJCBrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727484AbfJCBrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 2 Oct 2019 21:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbfJCBrc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727350AbfJCBrc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 2 Oct 2019 21:47:32 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F26CC222C9;
+        by mail.kernel.org (Postfix) with ESMTPSA id A2FC0222C8;
         Thu,  3 Oct 2019 01:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570067252;
-        bh=yIBjfYOEPsz/21qdYEvppUqb2W8DmvJA4e/0lsedspA=;
+        s=default; t=1570067251;
+        bh=mWRW6EvmyH/GayqYkmkelp5SJD9Or8+VhvkH9hZvA98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q5hkVVUsIsfMwE7PphqQTi1wL6wV1QLfD829shr/jZpRfezv2LP7oetf4dC6U7pkD
-         RhhLPEJqtbIVEZZAtABIA5EJqz5onrYsHXDZyvwc9znz18Rk2QG5Po9Rd+JrYK1KWt
-         hrrLPdULeqSC7ytEvRkV6XxyUSIS+SPT5anDQ+Ow=
+        b=TPsFcWiW9hJPLpkoSaeN9DeHb5hzznhInvh9RvQ9crnFUibiu9ZWUYuS7JdEStZXa
+         v374m5SRvasqWkgAuyQMp8Wxv+CaB63uhe+WgBVk5RMPE55gfpjWt76a1ZZSdP6EIB
+         fFIBt5ztJa6Qc2JyAgi/3T900fbTKnQn/7fkLLqQ=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Ethan Hansen <1ethanhansen@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 5/9] rcu: Remove unused variable rcu_perf_writer_state
-Date:   Wed,  2 Oct 2019 18:47:24 -0700
-Message-Id: <20191003014728.13496-5-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 4/9] rcutorture: Emulate dyntick aspect of userspace nohz_full sojourn
+Date:   Wed,  2 Oct 2019 18:47:23 -0700
+Message-Id: <20191003014728.13496-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003014710.GA13323@paulmck-ThinkPad-P72>
 References: <20191003014710.GA13323@paulmck-ThinkPad-P72>
@@ -59,75 +58,80 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Ethan Hansen <1ethanhansen@gmail.com>
+From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 
-The variable rcu_perf_writer_state is declared and initialized,
-but is never actually referenced. Remove it to clean code.
+During an actual call_rcu() flood, there would be frequent trips to
+userspace (in-kernel call_rcu() floods must be otherwise housebroken).
+Userspace execution on nohz_full CPUs implies an RCU dyntick idle/not-idle
+transition pair, so this commit adds emulation of that pair.
 
-Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
-[ ethansen: Also removed unused macros assigned to that variable. ]
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/rcuperf.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ include/linux/rcutiny.h |  1 +
+ kernel/rcu/rcutorture.c | 11 +++++++++++
+ kernel/rcu/tree.c       |  1 +
+ 3 files changed, 13 insertions(+)
 
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index 5a879d0..5f884d5 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -109,15 +109,6 @@ static unsigned long b_rcu_perf_writer_started;
- static unsigned long b_rcu_perf_writer_finished;
- static DEFINE_PER_CPU(atomic_t, n_async_inflight);
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 9bf1dfe..37b6f0c 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -84,6 +84,7 @@ static inline void rcu_scheduler_starting(void) { }
+ #endif /* #else #ifndef CONFIG_SRCU */
+ static inline void rcu_end_inkernel_boot(void) { }
+ static inline bool rcu_is_watching(void) { return true; }
++static inline void rcu_momentary_dyntick_idle(void) { }
  
--static int rcu_perf_writer_state;
--#define RTWS_INIT		0
--#define RTWS_ASYNC		1
--#define RTWS_BARRIER		2
--#define RTWS_EXP_SYNC		3
--#define RTWS_SYNC		4
--#define RTWS_IDLE		5
--#define RTWS_STOPPING		6
--
- #define MAX_MEAS 10000
- #define MIN_MEAS 100
- 
-@@ -404,25 +395,20 @@ rcu_perf_writer(void *arg)
- 			if (!rhp)
- 				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
- 			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
--				rcu_perf_writer_state = RTWS_ASYNC;
- 				atomic_inc(this_cpu_ptr(&n_async_inflight));
- 				cur_ops->async(rhp, rcu_perf_async_cb);
- 				rhp = NULL;
- 			} else if (!kthread_should_stop()) {
--				rcu_perf_writer_state = RTWS_BARRIER;
- 				cur_ops->gp_barrier();
- 				goto retry;
- 			} else {
- 				kfree(rhp); /* Because we are stopping. */
- 			}
- 		} else if (gp_exp) {
--			rcu_perf_writer_state = RTWS_EXP_SYNC;
- 			cur_ops->exp_sync();
- 		} else {
--			rcu_perf_writer_state = RTWS_SYNC;
- 			cur_ops->sync();
- 		}
--		rcu_perf_writer_state = RTWS_IDLE;
- 		t = ktime_get_mono_fast_ns();
- 		*wdp = t - *wdp;
- 		i_max = i;
-@@ -463,10 +449,8 @@ rcu_perf_writer(void *arg)
- 		rcu_perf_wait_shutdown();
- 	} while (!torture_must_stop());
- 	if (gp_async) {
--		rcu_perf_writer_state = RTWS_BARRIER;
- 		cur_ops->gp_barrier();
+ /* Avoid RCU read-side critical sections leaking across. */
+ static inline void rcu_all_qs(void) { barrier(); }
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3c9feca..7dcb2b8 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1759,6 +1759,11 @@ static unsigned long rcu_torture_fwd_prog_cbfree(void)
+ 		kfree(rfcp);
+ 		freed++;
+ 		rcu_torture_fwd_prog_cond_resched(freed);
++		if (tick_nohz_full_enabled()) {
++			local_irq_save(flags);
++			rcu_momentary_dyntick_idle();
++			local_irq_restore(flags);
++		}
  	}
--	rcu_perf_writer_state = RTWS_STOPPING;
- 	writer_n_durations[me] = i_max;
- 	torture_kthread_stopping("rcu_perf_writer");
- 	return 0;
+ 	return freed;
+ }
+@@ -1833,6 +1838,7 @@ static void rcu_torture_fwd_prog_nr(int *tested, int *tested_tries)
+ static void rcu_torture_fwd_prog_cr(void)
+ {
+ 	unsigned long cver;
++	unsigned long flags;
+ 	unsigned long gps;
+ 	int i;
+ 	long n_launders;
+@@ -1891,6 +1897,11 @@ static void rcu_torture_fwd_prog_cr(void)
+ 		}
+ 		cur_ops->call(&rfcp->rh, rcu_torture_fwd_cb_cr);
+ 		rcu_torture_fwd_prog_cond_resched(n_launders + n_max_cbs);
++		if (tick_nohz_full_enabled()) {
++			local_irq_save(flags);
++			rcu_momentary_dyntick_idle();
++			local_irq_restore(flags);
++		}
+ 	}
+ 	stoppedat = jiffies;
+ 	n_launders_cb_snap = READ_ONCE(n_launders_cb);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8110514..5692db5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -375,6 +375,7 @@ static void __maybe_unused rcu_momentary_dyntick_idle(void)
+ 	WARN_ON_ONCE(!(special & RCU_DYNTICK_CTRL_CTR));
+ 	rcu_preempt_deferred_qs(current);
+ }
++EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
+ 
+ /**
+  * rcu_is_cpu_rrupt_from_idle - see if interrupted from idle
 -- 
 2.9.5
 
