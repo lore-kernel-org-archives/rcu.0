@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CC87C47404
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD64C10F14
 	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CDDD1222C2
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C789222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066390;
-	bh=1fqr3ZL8P5GTCI2tqHcwXhg1F5zE+CiEP/Jl//+mNEE=;
+	s=default; t=1570066391;
+	bh=A76Bi9Ms/NtLN24ZvkPBSbMJ+ITUS55B+Nuwsw5rOQ0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=cDjaoTt6phyIW6E/m3C7fg+C3vG9NqsKG9vNe0SwcHwLr5fS4cK+Zr3mJtQckdpQi
-	 h3iYAlLX9HUI4ZfsuNfkKVQoLrQ5z7SGpLajx7WV1yyM+16NNL6X4MJ5D2Uypck4qb
-	 1j1evPJWFJIQbLlLFyD8T21wTlPuXEYIcGpfnvlk=
+	b=uiQM+TpOAf6TKimsF1vPiLjhjUrz3ISzRAoGcvppq6b65dzpoMbeBOLLayylC/fXq
+	 Ro3ZtfYdqj82jUCZPGnA+crnuzDmtriQzTVIi7r1hQUu7UxhiwDk4Kv/05BzBTaR4R
+	 y5HlNxZYd82D4cbFdyAqcBs+ljBIvt+u6chnmpRQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbfJCBdJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:33:09 -0400
+        id S1728214AbfJCBdL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:33:11 -0400
 Received: from mail.kernel.org ([198.145.29.99]:42470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726354AbfJCBdJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:33:09 -0400
+        id S1728185AbfJCBdK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:33:10 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8563D222C6;
-        Thu,  3 Oct 2019 01:33:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82FD62245B;
+        Thu,  3 Oct 2019 01:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066388;
-        bh=1fqr3ZL8P5GTCI2tqHcwXhg1F5zE+CiEP/Jl//+mNEE=;
+        s=default; t=1570066389;
+        bh=A76Bi9Ms/NtLN24ZvkPBSbMJ+ITUS55B+Nuwsw5rOQ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WzY92k2lvoPuC4FnoD7Dhwv8n67xWKGFJje6yqXkujs1LEjBkIymOUlKH12dtJakT
-         YIBHw2v2LNKox/4HobMDxRLiN5DxZk9ct+9iwNQeMDvq+354VhPTC1TmbmaKSAA0tv
-         ufIl5oS1atNzLsC2VTOCyetwZcNLkUWsNg++lAlY=
+        b=pNNrMe4aKN+TzhRDREG6E1ekC8dszc0HexVV0H5GOKWWgIT7HHVFx8j63+vA9kjcc
+         N+LC3q4fRbab8iwUTqCHXY40LmWYJQ55qugUbvn9ArNAEvqVVhn9xMZYfF5XRyeVC+
+         PnauqhuzJzK0EreXxDhEkjmESRvfH41LqQe3hkU8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 5/8] rcu: Remove obsolete descriptions for rcu_barrier tracepoint
-Date:   Wed,  2 Oct 2019 18:33:02 -0700
-Message-Id: <20191003013305.12854-5-paulmck@kernel.org>
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 8/8] rcu: Fix uninitialized variable in nocb_gp_wait()
+Date:   Wed,  2 Oct 2019 18:33:05 -0700
+Message-Id: <20191003013305.12854-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003013243.GA12705@paulmck-ThinkPad-P72>
 References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
@@ -58,26 +59,33 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@linux.ibm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+We never set this to false.  This probably doesn't affect most people's
+runtime because GCC will automatically initialize it to false at certain
+common optimization levels.  But that behavior is related to a bug in
+GCC and obviously should not be relied on.
+
+Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/trace/events/rcu.h | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 694bd04..afa8985 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -713,8 +713,6 @@ TRACE_EVENT_RCU(rcu_torture_read,
-  *	"Begin": rcu_barrier() started.
-  *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
-  *	"Inc1": rcu_barrier() piggyback check counter incremented.
-- *	"OfflineNoCB": rcu_barrier() found callback on never-online CPU
-- *	"OnlineNoCB": rcu_barrier() found online no-CBs CPU.
-  *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
-  *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
-  *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2defc7f..fa08d55 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1946,7 +1946,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	int __maybe_unused cpu = my_rdp->cpu;
+ 	unsigned long cur_gp_seq;
+ 	unsigned long flags;
+-	bool gotcbs;
++	bool gotcbs = false;
+ 	unsigned long j = jiffies;
+ 	bool needwait_gp = false; // This prevents actual uninitialized use.
+ 	bool needwake;
 -- 
 2.9.5
 
