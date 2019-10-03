@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B547BC4CED1
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53057C4360C
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 83190222C2
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2111F21A4C
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066104;
-	bh=1oxtnqcyc0aQduAT7zIp0CCwaXuzoorNsS63/IorYpo=;
+	s=default; t=1570066119;
+	bh=r918KxJxCTjLYvo1S0is29B2TP2tE0+EBrtulOmH7NY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=CYYi9eogc/zp47+cJwywIhhOBmPeeOL3FtfLM0KGd4JWvrU/6tDpPJV8dhfQdhJxV
-	 SkTn5/WDQMwwelW3QtkpFvdhL2Dr6Zut+i6RCEbTNAT68DYEa8hNePdrw1pOuYJx2t
-	 jslsDBzKXsXt1nQ30ihXFRxbxdkDi1BOEHC0kQrU=
+	b=T94Zq++Qhfd8iwpNg5rQeRvsHaoGUFRIrvKx3pU2BhG3w337TFbRhKylrq2U2WuY/
+	 2ngBFV3UqreFB3nojyds7vKpglEl6hdeoDPPCrdUV/bUmgRriJtfxMSqLOyXvM/xNn
+	 OB33ENeCY6ozaH1DkBoVQ69e6ryD+fRhEg4W5gVw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbfJCB2X (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40926 "EHLO mail.kernel.org"
+        id S1727953AbfJCB2h (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:28:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727613AbfJCB2X (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:28:23 -0400
+        id S1727587AbfJCB2W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:28:22 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D2A3222C8;
-        Thu,  3 Oct 2019 01:28:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B09B8222CD;
+        Thu,  3 Oct 2019 01:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066102;
-        bh=1oxtnqcyc0aQduAT7zIp0CCwaXuzoorNsS63/IorYpo=;
+        s=default; t=1570066101;
+        bh=r918KxJxCTjLYvo1S0is29B2TP2tE0+EBrtulOmH7NY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Edmf4+xyn+tZPsl8zPtl1E0W4iuoLLxn8D+tmKu1FgBNIfyuVk5vJiRV4oKAyhdh5
-         zb6TucHOptFrROb84xt78VsOIw4yzaYzks18dZXgBKT4fSzfxGHGjY+h2BDr+PjwB8
-         J0bbYKMmlZz4Vk+t8NEV0pbYQT00JmotEdZ1g8E8=
+        b=jY32C+ICdxo04jN1txh1S5ED+EgHQDxvoAt2DXC/uIOAfxnj2M4wZKbqmT9Bt1Wcm
+         ovuP7Gz182OdH+YNnFhPD80368OSNX4t7uVB80ej1K/5sPI2z13TLIr4EPC52Pw8FM
+         4Q9BNhh9VqOm7xEwp96giaZwxMZ3aa0BPPwNhum8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 9/9] Documentation: Rename rcu_node_context_switch() to rcu_note_context_switch()
-Date:   Wed,  2 Oct 2019 18:28:15 -0700
-Message-Id: <20191003012815.12639-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 8/9] doc: Update list_for_each_entry_rcu() documentation
+Date:   Wed,  2 Oct 2019 18:28:14 -0700
+Message-Id: <20191003012815.12639-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003012741.GA12456@paulmck-ThinkPad-P72>
 References: <20191003012741.GA12456@paulmck-ThinkPad-P72>
@@ -59,59 +58,73 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-While Paul was explaining some RCU magic I noticed a typo in
-rcu_note_context_switch().  As a result, this commit replaces
-rcu_node_context_switch() with rcu_note_context_switch().
+This commit updates the documentation with information about
+usage of lockdep with list_for_each_entry_rcu().
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+[ paulmck: Wordsmithing. ]
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst | 2 +-
- Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg               | 2 +-
- Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg               | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/RCU/lockdep.txt   | 18 ++++++++++++++----
+ Documentation/RCU/whatisRCU.txt | 10 +++++++++-
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 248b1222..1a8b129 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -423,7 +423,7 @@ wait on.
- +-----------------------------------------------------------------------+
+diff --git a/Documentation/RCU/lockdep.txt b/Documentation/RCU/lockdep.txt
+index da51d30..89db949e 100644
+--- a/Documentation/RCU/lockdep.txt
++++ b/Documentation/RCU/lockdep.txt
+@@ -96,7 +96,17 @@ other flavors of rcu_dereference().  On the other hand, it is illegal
+ to use rcu_dereference_protected() if either the RCU-protected pointer
+ or the RCU-protected data that it points to can change concurrently.
  
- If the CPU does a context switch, a quiescent state will be noted by
--``rcu_node_context_switch()`` on the left. On the other hand, if the CPU
-+``rcu_note_context_switch()`` on the left. On the other hand, if the CPU
- takes a scheduler-clock interrupt while executing in usermode, a
- quiescent state will be noted by ``rcu_sched_clock_irq()`` on the right.
- Either way, the passage through a quiescent state will be noted in a
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-index 2bcd742..069f6f8 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-@@ -3880,7 +3880,7 @@
-          font-style="normal"
-          y="-4418.6582"
-          x="3745.7725"
--         xml:space="preserve">rcu_node_context_switch()</text>
-+         xml:space="preserve">rcu_note_context_switch()</text>
-     </g>
-     <g
-        transform="translate(1881.1886,54048.57)"
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-index 779c9ac..7d6c5f7 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-qs.svg
-@@ -753,7 +753,7 @@
-          font-style="normal"
-          y="-4418.6582"
-          x="3745.7725"
--         xml:space="preserve">rcu_node_context_switch()</text>
-+         xml:space="preserve">rcu_note_context_switch()</text>
-     </g>
-     <g
-        transform="translate(3131.2648,-585.6713)"
+-There are currently only "universal" versions of the rcu_assign_pointer()
+-and RCU list-/tree-traversal primitives, which do not (yet) check for
+-being in an RCU read-side critical section.  In the future, separate
+-versions of these primitives might be created.
++Like rcu_dereference(), when lockdep is enabled, RCU list and hlist
++traversal primitives check for being called from within an RCU read-side
++critical section.  However, a lockdep expression can be passed to them
++as a additional optional argument.  With this lockdep expression, these
++traversal primitives will complain only if the lockdep expression is
++false and they are called from outside any RCU read-side critical section.
++
++For example, the workqueue for_each_pwq() macro is intended to be used
++either within an RCU read-side critical section or with wq->mutex held.
++It is thus implemented as follows:
++
++	#define for_each_pwq(pwq, wq)
++		list_for_each_entry_rcu((pwq), &(wq)->pwqs, pwqs_node,
++					lock_is_held(&(wq->mutex).dep_map))
+diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.txt
+index 17f4831..58ba05c 100644
+--- a/Documentation/RCU/whatisRCU.txt
++++ b/Documentation/RCU/whatisRCU.txt
+@@ -290,7 +290,7 @@ rcu_dereference()
+ 	at any time, including immediately after the rcu_dereference().
+ 	And, again like rcu_assign_pointer(), rcu_dereference() is
+ 	typically used indirectly, via the _rcu list-manipulation
+-	primitives, such as list_for_each_entry_rcu().
++	primitives, such as list_for_each_entry_rcu() [2].
+ 
+ 	[1] The variant rcu_dereference_protected() can be used outside
+ 	of an RCU read-side critical section as long as the usage is
+@@ -305,6 +305,14 @@ rcu_dereference()
+ 	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
+ 	and the API's code comments for more details and example usage.
+ 
++	[2] If the list_for_each_entry_rcu() instance might be used by
++	update-side code as well as by RCU readers, then an additional
++	lockdep expression can be added to its list of arguments.
++	For example, given an additional "lock_is_held(&mylock)" argument,
++	the RCU lockdep code would complain only if this instance was
++	invoked outside of an RCU read-side critical section and without
++	the protection of mylock.
++
+ The following diagram shows how each API communicates among the
+ reader, updater, and reclaimer.
+ 
 -- 
 2.9.5
 
