@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A67D6C10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CC87C47404
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 700F7222C2
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CDDD1222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066388;
-	bh=p+sP9pdBpS3cdIiTHoO76QDdUeVk+jdXrDWm8n37ulk=;
+	s=default; t=1570066390;
+	bh=1fqr3ZL8P5GTCI2tqHcwXhg1F5zE+CiEP/Jl//+mNEE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=h1DNB8Jr/S/mF2PiwYwuj/A9bxLbr6wFO7UtevnjR6uEDkzRDveeWCgsTQbpjlY3e
-	 v41003zIssXG+aRBbp00Z/nUXeqELFz9+wMElGjBqU0gQ9XEKxlJQopzZcpTJcypPp
-	 r9UglBd8S368Nz0Fchd4EymbUknNu0EgFYgyfHL8=
+	b=cDjaoTt6phyIW6E/m3C7fg+C3vG9NqsKG9vNe0SwcHwLr5fS4cK+Zr3mJtQckdpQi
+	 h3iYAlLX9HUI4ZfsuNfkKVQoLrQ5z7SGpLajx7WV1yyM+16NNL6X4MJ5D2Uypck4qb
+	 1j1evPJWFJIQbLlLFyD8T21wTlPuXEYIcGpfnvlk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbfJCBdI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42346 "EHLO mail.kernel.org"
+        id S1728180AbfJCBdJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbfJCBdI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:33:08 -0400
+        id S1726354AbfJCBdJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:33:09 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32AE2222BE;
-        Thu,  3 Oct 2019 01:33:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8563D222C6;
+        Thu,  3 Oct 2019 01:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066387;
-        bh=p+sP9pdBpS3cdIiTHoO76QDdUeVk+jdXrDWm8n37ulk=;
+        s=default; t=1570066388;
+        bh=1fqr3ZL8P5GTCI2tqHcwXhg1F5zE+CiEP/Jl//+mNEE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eMkDsf4UiL1ocrjHY96+Z3VK/Ai/mHOJGDPkLk32U379Fx7gfkFw0QUKWbZ8Mv0FZ
-         UE2JdidEq5OABU2U82njA3MtDpXoWWHjokVG4VwzZab3IdTsTg1+DZrxz/RREmTUPs
-         E40BhTvgx7jqfZi9lrkXjHQcseFrgaLjqFB/yFeU=
+        b=WzY92k2lvoPuC4FnoD7Dhwv8n67xWKGFJje6yqXkujs1LEjBkIymOUlKH12dtJakT
+         YIBHw2v2LNKox/4HobMDxRLiN5DxZk9ct+9iwNQeMDvq+354VhPTC1TmbmaKSAA0tv
+         ufIl5oS1atNzLsC2VTOCyetwZcNLkUWsNg++lAlY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Ethan Hansen <1ethanhansen@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 1/8] rcu: Remove unused function hlist_bl_del_init_rcu()
-Date:   Wed,  2 Oct 2019 18:32:58 -0700
-Message-Id: <20191003013305.12854-1-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [PATCH tip/core/rcu 5/8] rcu: Remove obsolete descriptions for rcu_barrier tracepoint
+Date:   Wed,  2 Oct 2019 18:33:02 -0700
+Message-Id: <20191003013305.12854-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003013243.GA12705@paulmck-ThinkPad-P72>
 References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
@@ -59,56 +58,26 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Ethan Hansen <1ethanhansen@gmail.com>
+From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 
-The function hlist_bl_del_init_rcu() is declared in rculist_bl.h,
-but never used.  This commit therefore removes it.
-
-Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- include/linux/rculist_bl.h | 28 ----------------------------
- 1 file changed, 28 deletions(-)
+ include/trace/events/rcu.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
-index 66e73ec..0b952d0 100644
---- a/include/linux/rculist_bl.h
-+++ b/include/linux/rculist_bl.h
-@@ -25,34 +25,6 @@ static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
- }
- 
- /**
-- * hlist_bl_del_init_rcu - deletes entry from hash list with re-initialization
-- * @n: the element to delete from the hash list.
-- *
-- * Note: hlist_bl_unhashed() on the node returns true after this. It is
-- * useful for RCU based read lockfree traversal if the writer side
-- * must know if the list entry is still hashed or already unhashed.
-- *
-- * In particular, it means that we can not poison the forward pointers
-- * that may still be used for walking the hash list and we can only
-- * zero the pprev pointer so list_unhashed() will return true after
-- * this.
-- *
-- * The caller must take whatever precautions are necessary (such as
-- * holding appropriate locks) to avoid racing with another
-- * list-mutation primitive, such as hlist_bl_add_head_rcu() or
-- * hlist_bl_del_rcu(), running on this same list.  However, it is
-- * perfectly legal to run concurrently with the _rcu list-traversal
-- * primitives, such as hlist_bl_for_each_entry_rcu().
-- */
--static inline void hlist_bl_del_init_rcu(struct hlist_bl_node *n)
--{
--	if (!hlist_bl_unhashed(n)) {
--		__hlist_bl_del(n);
--		n->pprev = NULL;
--	}
--}
--
--/**
-  * hlist_bl_del_rcu - deletes entry from hash list without re-initialization
-  * @n: the element to delete from the hash list.
-  *
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 694bd04..afa8985 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -713,8 +713,6 @@ TRACE_EVENT_RCU(rcu_torture_read,
+  *	"Begin": rcu_barrier() started.
+  *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
+  *	"Inc1": rcu_barrier() piggyback check counter incremented.
+- *	"OfflineNoCB": rcu_barrier() found callback on never-online CPU
+- *	"OnlineNoCB": rcu_barrier() found online no-CBs CPU.
+  *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
+  *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
+  *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
 -- 
 2.9.5
 
