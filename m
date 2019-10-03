@@ -4,123 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57978C10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 10:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1352C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 11:43:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3510221D71
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 10:14:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 930552086A
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 11:43:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbfJCKOg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 06:14:36 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37040 "EHLO mx1.redhat.com"
+        id S1730060AbfJCLnX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 07:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbfJCKOg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 06:14:36 -0400
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730027AbfJCLnX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 07:43:23 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 43B42796E9
-        for <rcu@vger.kernel.org>; Thu,  3 Oct 2019 10:14:36 +0000 (UTC)
-Received: by mail-wm1-f69.google.com with SMTP id k184so936359wmk.1
-        for <rcu@vger.kernel.org>; Thu, 03 Oct 2019 03:14:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ia+gGf8D4RKqD3mYHNJW4KBxV39P1F98Z1sPmxgCPUE=;
-        b=kgeQLN2A9AmBaNenJQ2PELoQCUUr7WHSHthK3gwm61dOQVS1PuyTZojc7l0uWyLvDW
-         Vk5TIvNnbEFQwwJ4fx21t34dy55hdLvygrwv4PUNGMO5oQjYajBqC/aXIKRwdqkWaB5O
-         wwYYC5xV47qSyoWG1k6TJV3krBMJgf3eKxCgZlWdPILzs8yySOmSRV5aBTMwEmmeF4NO
-         AVuYQ8p1bCgevKg+nTP7yP44KbNA8ZZEl5u7AatAEQ5Fj+P+gwhKrixHZZFLydOpRXUn
-         UHvIjSbRvM0wufNUSRF8jO0Uz0R3KFmR+ctap1/4MpC0nQ1QtVoTpFfHgPl9LAziyalc
-         yBVA==
-X-Gm-Message-State: APjAAAUEd91c3IZjSpyZheFit9lmN6jl8E+/tUw8nlCxAyghfIkMW1Wy
-        oJS6uP0fBvHjSxjWEk5YY8cqlGDqTID4wJNswilhvJpo7VVFcNO/ThQ5wpm5moKbkFypsvtRjZP
-        9hqZDKPPKT9qO
-X-Received: by 2002:adf:fa86:: with SMTP id h6mr6381170wrr.152.1570097674773;
-        Thu, 03 Oct 2019 03:14:34 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxiL1KyYf7AH8ZuOpHEBO+Sv2DSfWFZnG8bjX9o9BKUHcZpAC6YIg7sjWK9r+jlV/CkD8mV7w==
-X-Received: by 2002:adf:fa86:: with SMTP id h6mr6381135wrr.152.1570097674523;
-        Thu, 03 Oct 2019 03:14:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:b903:6d6f:a447:e464? ([2001:b07:6468:f312:b903:6d6f:a447:e464])
-        by smtp.gmail.com with ESMTPSA id n8sm2851784wma.7.2019.10.03.03.14.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Oct 2019 03:14:33 -0700 (PDT)
-Subject: Re: [PATCH tip/core/rcu 2/9] x86/kvm/pmu: Replace
- rcu_swap_protected() with rcu_replace()
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        by mail.kernel.org (Postfix) with ESMTPSA id 05D0320830;
+        Thu,  3 Oct 2019 11:43:20 +0000 (UTC)
+Date:   Thu, 3 Oct 2019 07:43:19 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
- <20191003014310.13262-2-paulmck@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Openpgp: preference=signencrypt
-Message-ID: <dd735e5f-c326-4b53-1126-98c5e38961d3@redhat.com>
-Date:   Thu, 3 Oct 2019 12:14:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>
+Subject: Re: [PATCH tip/core/rcu 4/8] rcu: Ensure that ->rcu_urgent_qs is
+ set before resched IPI
+Message-ID: <20191003074319.2df342dd@gandalf.local.home>
+In-Reply-To: <20191003013305.12854-4-paulmck@kernel.org>
+References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
+        <20191003013305.12854-4-paulmck@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20191003014310.13262-2-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 03/10/19 03:43, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed,  2 Oct 2019 18:33:01 -0700
+paulmck@kernel.org wrote:
+
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 > 
-> This commit replaces the use of rcu_swap_protected() with the more
-> intuitively appealing rcu_replace() as a step towards removing
-> rcu_swap_protected().
+> The RCU-specific resched_cpu() function sends a resched IPI to the
+> specified CPU, which can be used to force the tick on for a given
+> nohz_full CPU.  This is needed when this nohz_full CPU is looping in the
+> kernel while blocking the current grace period.  However, for the tick
+> to actually be forced on in all cases, that CPU's rcu_data structure's
+> ->rcu_urgent_qs flag must be set beforehand.  This commit therefore  
+> causes rcu_implicit_dynticks_qs() to set this flag prior to invoking
+> resched_cpu() on a holdout nohz_full CPU.
+
+Should this be marked for stable?
+
+-- Steve
+
 > 
-> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: <x86@kernel.org>
-> Cc: <kvm@vger.kernel.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 > ---
->  arch/x86/kvm/pmu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  kernel/rcu/tree.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 46875bb..4c37266 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -416,8 +416,8 @@ int kvm_vm_ioctl_set_pmu_event_filter(struct kvm *kvm, void __user *argp)
->  	*filter = tmp;
->  
->  	mutex_lock(&kvm->lock);
-> -	rcu_swap_protected(kvm->arch.pmu_event_filter, filter,
-> -			   mutex_is_locked(&kvm->lock));
-> +	filter = rcu_replace(kvm->arch.pmu_event_filter, filter,
-> +			     mutex_is_locked(&kvm->lock));
->  	mutex_unlock(&kvm->lock);
->  
->  	synchronize_srcu_expedited(&kvm->srcu);
-> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 8110514..0d83b19 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1073,6 +1073,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+>  	if (tick_nohz_full_cpu(rdp->cpu) &&
+>  		   time_after(jiffies,
+>  			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
+> +		WRITE_ONCE(*ruqp, true);
+>  		resched_cpu(rdp->cpu);
+>  		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+>  	}
 
-Should go without saying, but
-
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Paolo
