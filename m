@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3856C47404
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC09C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CA608222BE
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17390222BE
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066765;
-	bh=KQkSVy0lBRFpixlJVhO54dRUinxcSeVRLqZihn1ksFk=;
+	s=default; t=1570066766;
+	bh=hjspEx7XW0txuViSdE7c/ij+PLwKvCzqr+anBxafuRQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=fCNOIFX9WoF0ApTYa4citgMMy5eiewrM27Cmo3VW5Fqg5NlpHy1h2msqtVy0y/AaD
-	 WLQ0t+tYGHiGuOei/ZzsQlaiJeDdWP8Aew0pa6yEyW72M/BcxZWXQ/C+RFzwozFSbv
-	 To2JNZ4L/77IaeG5vhdfCwwgEBx8VARO6DuSfe9I=
+	b=C53d8n3BEeTgwmZMj2ufPf7625AaDocZBAg88PX7Vbu1zk9rMXNfV5nEiGeXZORll
+	 cxXZJF51DHm4P4ymA7Jy+gfd/enR2yYEX/byDVy9REWVcjNN/ulTyA3OBSfMKijeFL
+	 2URcQNIN+h7TLjbHpcI2xHNfOQ0DVlWOHNuJZV0g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727613AbfJCBjW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:39:22 -0400
+        id S1728496AbfJCBjJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:39:09 -0400
 Received: from mail.kernel.org ([198.145.29.99]:44818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727428AbfJCBjK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:39:10 -0400
+        id S1728312AbfJCBjJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:39:09 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E826222C2;
-        Thu,  3 Oct 2019 01:39:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE4C2222CD;
+        Thu,  3 Oct 2019 01:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066749;
-        bh=KQkSVy0lBRFpixlJVhO54dRUinxcSeVRLqZihn1ksFk=;
+        s=default; t=1570066748;
+        bh=hjspEx7XW0txuViSdE7c/ij+PLwKvCzqr+anBxafuRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AikMfF/nL9n7EgI97lF3Gkc1YfeUNd9w8VG/l/0ZdsCiBpqdsT/pH4Ypp860psKEg
-         zCUQfAQN8ocVqpQtC3lnFOWwehen5Yx2EuU4nHjF6NlI/So2eB4NT5PyUJgDPw5MCu
-         puGGnTx9UKKrautQY17pVP+dHeaG6qzCCQku57T8=
+        b=g4E2AiR+oG4qEtghFzgPeeYM40B2lDX7vlL7yvAUoh6V9PC8VCoXb4Gak8783BrI7
+         MaPHvpMe8WkS1bCBirdEORE37L8Fcduwm9itw1bKI4m8z9qf7QO7BEktMz7+uCZOHz
+         eBqfsxLmy+Sy7bH4FR+0Ju+C0DwlZcZAw8GNW7XM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 12/12] rcu: Make kernel-mode nohz_full CPUs invoke the RCU core processing
-Date:   Wed,  2 Oct 2019 18:39:03 -0700
-Message-Id: <20191003013903.13079-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/12] rcu: Force tick on for nohz_full CPUs not reaching quiescent states
+Date:   Wed,  2 Oct 2019 18:38:59 -0700
+Message-Id: <20191003013903.13079-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003013834.GA12927@paulmck-ThinkPad-P72>
 References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
@@ -60,64 +60,157 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 
-If a nohz_full CPU is idle or executing in userspace, it makes good sense
-to keep it out of RCU core processing.  After all, the RCU grace-period
-kthread can see its quiescent states and all of its callbacks are
-offloaded, so there is nothing for RCU core processing to do.
+CPUs running for long time periods in the kernel in nohz_full mode
+might leave the scheduling-clock interrupt disabled for then full
+duration of their in-kernel execution.  This can (among other things)
+delay grace periods.  This commit therefore forces the tick back on
+for any nohz_full CPU that is failing to pass through a quiescent state
+upon return from interrupt, which the resched_cpu() will induce.
 
-However, if a nohz_full CPU is executing in kernel space, the RCU
-grace-period kthread cannot do anything for it, so such a CPU must report
-its own quiescent states.  This commit therefore makes nohz_full CPUs
-skip RCU core processing only if the scheduler-clock interrupt caught
-them in idle or in userspace.
-
+Reported-by: Joel Fernandes <joel@joelfernandes.org>
+[ paulmck: Clear ->rcu_forced_tick as reported by Joel Fernandes testing. ]
+[ paulmck: Apply Joel Fernandes TICK_DEP_MASK_RCU->TICK_DEP_BIT_RCU fix. ]
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/rcu/tree.c | 38 +++++++++++++++++++++++++++++++-------
+ kernel/rcu/tree.h |  1 +
+ 2 files changed, 32 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1b250d4..9ffe503 100644
+index 74bf5c65..621cc06 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -496,7 +496,7 @@ module_param_cb(jiffies_till_next_fqs, &next_fqs_jiffies_ops, &jiffies_till_next
- module_param(rcu_kick_kthreads, bool, 0644);
+@@ -650,6 +650,12 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+ 	 */
+ 	if (rdp->dynticks_nmi_nesting != 1) {
+ 		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
++		if (tick_nohz_full_cpu(rdp->cpu) &&
++		    rdp->dynticks_nmi_nesting == 2 &&
++		    rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
++			rdp->rcu_forced_tick = true;
++			tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU);
++		}
+ 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+ 			   rdp->dynticks_nmi_nesting - 2);
+ 		return;
+@@ -885,6 +891,18 @@ void rcu_irq_enter_irqson(void)
+ 	local_irq_restore(flags);
+ }
  
- static void force_qs_rnp(int (*f)(struct rcu_data *rdp));
--static int rcu_pending(void);
-+static int rcu_pending(int user);
++/*
++ * If the scheduler-clock interrupt was enabled on a nohz_full CPU
++ * in order to get to a quiescent state, disable it.
++ */
++void rcu_disable_tick_upon_qs(struct rcu_data *rdp)
++{
++	if (tick_nohz_full_cpu(rdp->cpu) && rdp->rcu_forced_tick) {
++		tick_dep_clear_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
++		rdp->rcu_forced_tick = false;
++	}
++}
++
+ /**
+  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+  *
+@@ -1979,6 +1997,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+ 		if (!offloaded)
+ 			needwake = rcu_accelerate_cbs(rnp, rdp);
  
- /*
-  * Return the number of RCU GPs completed thus far for debug & stats.
-@@ -2270,7 +2270,7 @@ void rcu_sched_clock_irq(int user)
- 		__this_cpu_write(rcu_data.rcu_urgent_qs, false);
- 	}
- 	rcu_flavor_sched_clock_irq(user);
--	if (rcu_pending())
-+	if (rcu_pending(user))
- 		invoke_rcu_core();
++		rcu_disable_tick_upon_qs(rdp);
+ 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+ 		/* ^^^ Released rnp->lock */
+ 		if (needwake)
+@@ -2268,6 +2287,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 	int cpu;
+ 	unsigned long flags;
+ 	unsigned long mask;
++	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
  
- 	trace_rcu_utilization(TPS("End scheduler-tick"));
-@@ -2819,7 +2819,7 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
-  * CPU-local state are performed first.  However, we must check for CPU
-  * stalls first, else we might not get a chance.
-  */
--static int rcu_pending(void)
-+static int rcu_pending(int user)
+ 	rcu_for_each_leaf_node(rnp) {
+@@ -2292,8 +2312,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 		for_each_leaf_node_possible_cpu(rnp, cpu) {
+ 			unsigned long bit = leaf_node_cpu_bit(rnp, cpu);
+ 			if ((rnp->qsmask & bit) != 0) {
+-				if (f(per_cpu_ptr(&rcu_data, cpu)))
++				rdp = per_cpu_ptr(&rcu_data, cpu);
++				if (f(rdp)) {
+ 					mask |= bit;
++					rcu_disable_tick_upon_qs(rdp);
++				}
+ 			}
+ 		}
+ 		if (mask != 0) {
+@@ -2321,7 +2344,7 @@ void rcu_force_quiescent_state(void)
+ 	rnp = __this_cpu_read(rcu_data.mynode);
+ 	for (; rnp != NULL; rnp = rnp->parent) {
+ 		ret = (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) ||
+-		      !raw_spin_trylock(&rnp->fqslock);
++		       !raw_spin_trylock(&rnp->fqslock);
+ 		if (rnp_old != NULL)
+ 			raw_spin_unlock(&rnp_old->fqslock);
+ 		if (ret)
+@@ -2854,7 +2877,7 @@ static void rcu_barrier_callback(struct rcu_head *rhp)
  {
- 	bool gp_in_progress;
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-@@ -2832,8 +2832,8 @@ static int rcu_pending(void)
- 	if (rcu_nocb_need_deferred_wakeup(rdp))
- 		return 1;
- 
--	/* Is this CPU a NO_HZ_FULL CPU that should ignore RCU? */
--	if (rcu_nohz_full_cpu())
-+	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-+	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
- 		return 0;
- 
- 	/* Is the RCU core waiting for a quiescent state from this CPU? */
+ 	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count)) {
+ 		rcu_barrier_trace(TPS("LastCB"), -1,
+-				   rcu_state.barrier_sequence);
++				  rcu_state.barrier_sequence);
+ 		complete(&rcu_state.barrier_completion);
+ 	} else {
+ 		rcu_barrier_trace(TPS("CB"), -1, rcu_state.barrier_sequence);
+@@ -2878,7 +2901,7 @@ static void rcu_barrier_func(void *unused)
+ 	} else {
+ 		debug_rcu_head_unqueue(&rdp->barrier_head);
+ 		rcu_barrier_trace(TPS("IRQNQ"), -1,
+-				   rcu_state.barrier_sequence);
++				  rcu_state.barrier_sequence);
+ 	}
+ 	rcu_nocb_unlock(rdp);
+ }
+@@ -2905,7 +2928,7 @@ void rcu_barrier(void)
+ 	/* Did someone else do our work for us? */
+ 	if (rcu_seq_done(&rcu_state.barrier_sequence, s)) {
+ 		rcu_barrier_trace(TPS("EarlyExit"), -1,
+-				   rcu_state.barrier_sequence);
++				  rcu_state.barrier_sequence);
+ 		smp_mb(); /* caller's subsequent code after above check. */
+ 		mutex_unlock(&rcu_state.barrier_mutex);
+ 		return;
+@@ -2937,11 +2960,11 @@ void rcu_barrier(void)
+ 			continue;
+ 		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
+ 			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+-					   rcu_state.barrier_sequence);
++					  rcu_state.barrier_sequence);
+ 			smp_call_function_single(cpu, rcu_barrier_func, NULL, 1);
+ 		} else {
+ 			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+-					   rcu_state.barrier_sequence);
++					  rcu_state.barrier_sequence);
+ 		}
+ 	}
+ 	put_online_cpus();
+@@ -3167,6 +3190,7 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+ 	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+ 	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
++		rcu_disable_tick_upon_qs(rdp);
+ 		/* Report QS -after- changing ->qsmaskinitnext! */
+ 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+ 	} else {
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index c612f30..055c317 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -181,6 +181,7 @@ struct rcu_data {
+ 	atomic_t dynticks;		/* Even value for idle, else odd. */
+ 	bool rcu_need_heavy_qs;		/* GP old, so heavy quiescent state! */
+ 	bool rcu_urgent_qs;		/* GP old need light quiescent state. */
++	bool rcu_forced_tick;		/* Forced tick to provide QS. */
+ #ifdef CONFIG_RCU_FAST_NO_HZ
+ 	bool all_lazy;			/* All CPU's CBs lazy at idle start? */
+ 	unsigned long last_accelerate;	/* Last jiffy CBs were accelerated. */
 -- 
 2.9.5
 
