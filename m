@@ -2,160 +2,91 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86B5CC4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2CD7C4360C
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:32:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5E00F21A4C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A66B4222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066136;
-	bh=wJKxvWvd7SK3qGvEJLz8xIFla/eoVSIcHC0HLuWfA0Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=BDZNDB7FXZjTb1oeMpiGsMPp6JBsPikz+5n2C2oL7eyV1SUnOj/bFCvD6ZPYFiwpJ
-	 eC7isXOHyQi7aRs9vPTedZA7q6QZjWu5qcnBxXmpThW3zmCGaaNedGFl5bMgBhsUYU
-	 yZUVn5De19ElBZspT2sfHeeod7szB+6JzeYys71o=
+	s=default; t=1570066365;
+	bh=46272hxJR7y25Qsq03fV9SOQaynnC1NPAOanQP3rUCM=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=n27G2EZtqPNc0dYAoTFafiFq35n8omxykcAWrBfS4/QeEQh9uf44Cl/8t17FrA0CX
+	 WhnzpXFRF7se7mgeHteaATmHfdCLWou+9AxfDOyH7YvA+r3mcFZ3jkFCzH6AMKPUqP
+	 bzmI5IbamISMEYH9CZoMYEGj+ifrh3y0tZ0/s90g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbfJCB2U (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40664 "EHLO mail.kernel.org"
+        id S1726393AbfJCBcp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbfJCB2T (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:28:19 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726354AbfJCBcp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:32:45 -0400
+Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15F3D21A4C;
-        Thu,  3 Oct 2019 01:28:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 878A0222BE;
+        Thu,  3 Oct 2019 01:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066098;
-        bh=wJKxvWvd7SK3qGvEJLz8xIFla/eoVSIcHC0HLuWfA0Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1f4DAL63vZdn9mStFKlNJ+6Skm/xAzeDm/1UusSUgbc3m0fJaE6ObOk+b8Q1iy9Ug
-         Ntg/kRfqwG3T1vvfTu9u22VkwKEyiMJ/pvdViVCcpT5XcYUWvaUPqKKLk4clxMQqRm
-         ljx1QMQyWs/6bfhSo+DBXAbfVH0hkN1nP31shS/E=
-From:   paulmck@kernel.org
+        s=default; t=1570066364;
+        bh=46272hxJR7y25Qsq03fV9SOQaynnC1NPAOanQP3rUCM=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=VKczAUItJuzTpPJbeI5VqrbxnmqwS9tiSfD1XJs313j04brtDdvbSKDx59toGp2ud
+         z1CYX49Fuo6OgFVuWHcg8HP7rDiu21Mefo6f3PXPKJRkI10CJsWTqVBQvME9fnhw2y
+         H4phTtc+S8QsqDQ0+rxHP91v2tiokDWRFD3Aft3I=
+Date:   Wed, 2 Oct 2019 18:32:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 1/9] Revert docs from "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
-Date:   Wed,  2 Oct 2019 18:28:07 -0700
-Message-Id: <20191003012815.12639-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20191003012741.GA12456@paulmck-ThinkPad-P72>
-References: <20191003012741.GA12456@paulmck-ThinkPad-P72>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/8] Fixes for v5.5
+Message-ID: <20191003013243.GA12705@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Hello!
 
-This reverts docs from commit d6b9cd7dc8e041ee83cb1362fce59a3cdb1f2709.
+This series provides miscellaneous fixes:
 
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- .../RCU/Design/Requirements/Requirements.html      | 71 ----------------------
- 1 file changed, 71 deletions(-)
+1.	Remove unused function hlist_bl_del_init_rcu(), courtesy of
+	Ethan Hansen.
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.html b/Documentation/RCU/Design/Requirements/Requirements.html
-index 467251f..bdbc84f 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.html
-+++ b/Documentation/RCU/Design/Requirements/Requirements.html
-@@ -2129,8 +2129,6 @@ Some of the relevant points of interest are as follows:
- <li>	<a href="#Hotplug CPU">Hotplug CPU</a>.
- <li>	<a href="#Scheduler and RCU">Scheduler and RCU</a>.
- <li>	<a href="#Tracing and RCU">Tracing and RCU</a>.
--<li>	<a href="#Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a>.
- <li>	<a href="#Energy Efficiency">Energy Efficiency</a>.
- <li>	<a href="#Scheduling-Clock Interrupts and RCU">
- 	Scheduling-Clock Interrupts and RCU</a>.
-@@ -2523,75 +2521,6 @@ cannot be used.
- The tracing folks both located the requirement and provided the
- needed fix, so this surprise requirement was relatively painless.
- 
--<h3><a name="Accesses to User Memory and RCU">
--Accesses to User Memory and RCU</a></h3>
--
--<p>
--The kernel needs to access user-space memory, for example, to access
--data referenced by system-call parameters.
--The <tt>get_user()</tt> macro does this job.
--
--<p>
--However, user-space memory might well be paged out, which means
--that <tt>get_user()</tt> might well page-fault and thus block while
--waiting for the resulting I/O to complete.
--It would be a very bad thing for the compiler to reorder
--a <tt>get_user()</tt> invocation into an RCU read-side critical
--section.
--For example, suppose that the source code looked like this:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 v = p-&gt;value;
-- 4 rcu_read_unlock();
-- 5 get_user(user_v, user_p);
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--The compiler must not be permitted to transform this source code into
--the following:
--
--<blockquote>
--<pre>
-- 1 rcu_read_lock();
-- 2 p = rcu_dereference(gp);
-- 3 get_user(user_v, user_p); // BUG: POSSIBLE PAGE FAULT!!!
-- 4 v = p-&gt;value;
-- 5 rcu_read_unlock();
-- 6 do_something_with(v, user_v);
--</pre>
--</blockquote>
--
--<p>
--If the compiler did make this transformation in a
--<tt>CONFIG_PREEMPT=n</tt> kernel build, and if <tt>get_user()</tt> did
--page fault, the result would be a quiescent state in the middle
--of an RCU read-side critical section.
--This misplaced quiescent state could result in line&nbsp;4 being
--a use-after-free access, which could be bad for your kernel's
--actuarial statistics.
--Similar examples can be constructed with the call to <tt>get_user()</tt>
--preceding the <tt>rcu_read_lock()</tt>.
--
--<p>
--Unfortunately, <tt>get_user()</tt> doesn't have any particular
--ordering properties, and in some architectures the underlying <tt>asm</tt>
--isn't even marked <tt>volatile</tt>.
--And even if it was marked <tt>volatile</tt>, the above access to
--<tt>p-&gt;value</tt> is not volatile, so the compiler would not have any
--reason to keep those two accesses in order.
--
--<p>
--Therefore, the Linux-kernel definitions of <tt>rcu_read_lock()</tt>
--and <tt>rcu_read_unlock()</tt> must act as compiler barriers,
--at least for outermost instances of <tt>rcu_read_lock()</tt> and
--<tt>rcu_read_unlock()</tt> within a nested set of RCU read-side critical
--sections.
--
- <h3><a name="Energy Efficiency">Energy Efficiency</a></h3>
- 
- <p>
--- 
-2.9.5
+2.	Make several rcu_segcblist functions state, courtesy of kbuild
+	test robot.
 
+3.	Convert for_each_wq to use built-in list check, courtesy of
+	Joel Fernandes.
+
+4.	Ensure that ->rcu_urgent_qs is set before resched IPI, courtesy
+	of Joel Fernandes.
+
+5-7.	Update tracepoint descriptions.
+
+8.	Fix uninitialized variable in nocb_gp_wait(), courtesy of
+	Dan Carpenter.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/rculist_bl.h |   28 --------------------------
+ include/trace/events/rcu.h |   47 ++++++++++++++++++++++++---------------------
+ kernel/rcu/rcu_segcblist.c |    6 ++---
+ kernel/rcu/tree.c          |    1 
+ kernel/rcu/tree_plugin.h   |    2 -
+ kernel/workqueue.c         |   10 +--------
+ 6 files changed, 33 insertions(+), 61 deletions(-)
