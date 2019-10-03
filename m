@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CB7CC4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CB51C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2B594222C7
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E9FD222CD
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570067252;
-	bh=FZaEnThzQ0fWwn2NhEycNLE9s5KkE0+/ewlFg3S3uVY=;
+	s=default; t=1570067253;
+	bh=yIBjfYOEPsz/21qdYEvppUqb2W8DmvJA4e/0lsedspA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=lvK5dr/Ays7EJ07qsHvIlt8kGy5lkLz6EgKkYF1kIDlD/E9odabda4p8ys43VUjFs
-	 O/6NIOZ0ILFB82nDzwzbyDSs1E6OVwP+4DPyvJQa5q5LUBlzHP9e8PWLrqNb1fMyjM
-	 +mvseMr3wD834idLUOLgi8aR2k7Ne/sEtnd+u0iY=
+	b=VwHbyIjc1HRCTOh4YRIPFprjzrdATi1jajYQnWgd4nL3hgVPkTuyvCEfdznMTorXF
+	 6BV4P3jx8LziLVW7EzjxZcph7guKunRHAG2wTpSL6ooFFDsgVwLUZ6t1Am/eGXlqnk
+	 S2OTtjhcuMXA0mnj8uYJxvJ9+symuC3jfemi4IU8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbfJCBrb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47628 "EHLO mail.kernel.org"
+        id S1727468AbfJCBrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbfJCBrb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:47:31 -0400
+        id S1726597AbfJCBrc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:47:32 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3670222C2;
-        Thu,  3 Oct 2019 01:47:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F26CC222C9;
+        Thu,  3 Oct 2019 01:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570067250;
-        bh=FZaEnThzQ0fWwn2NhEycNLE9s5KkE0+/ewlFg3S3uVY=;
+        s=default; t=1570067252;
+        bh=yIBjfYOEPsz/21qdYEvppUqb2W8DmvJA4e/0lsedspA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J85OynBCRMll0NDkfKrXvnxUXlFxqvUNSdWQZs+lJsa0UzYkQnfVgheKQ3wx6TGwE
-         8WbNVxXKblVtJKzJJzLASVctMOswletUlcylTDqiLpeW9PVTNXmuaDSdIlezVGTpYE
-         3yojHm+KR9C0qgtY5abkDFwaRZdhtuRyGevTC7vw=
+        b=q5hkVVUsIsfMwE7PphqQTi1wL6wV1QLfD829shr/jZpRfezv2LP7oetf4dC6U7pkD
+         RhhLPEJqtbIVEZZAtABIA5EJqz5onrYsHXDZyvwc9znz18Rk2QG5Po9Rd+JrYK1KWt
+         hrrLPdULeqSC7ytEvRkV6XxyUSIS+SPT5anDQ+Ow=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Ethan Hansen <1ethanhansen@gmail.com>,
         "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 1/9] rcu: Remove unused function rcutorture_record_progress()
-Date:   Wed,  2 Oct 2019 18:47:20 -0700
-Message-Id: <20191003014728.13496-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 5/9] rcu: Remove unused variable rcu_perf_writer_state
+Date:   Wed,  2 Oct 2019 18:47:24 -0700
+Message-Id: <20191003014728.13496-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003014710.GA13323@paulmck-ThinkPad-P72>
 References: <20191003014710.GA13323@paulmck-ThinkPad-P72>
@@ -61,36 +61,73 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Ethan Hansen <1ethanhansen@gmail.com>
 
-The function rcutorture_record_progress() is declared in rcu.h, but is
-never used.  This commit therefore removes rcutorture_record_progress()
-to clean code.
+The variable rcu_perf_writer_state is declared and initialized,
+but is never actually referenced. Remove it to clean code.
 
 Signed-off-by: Ethan Hansen <1ethanhansen@gmail.com>
+[ ethansen: Also removed unused macros assigned to that variable. ]
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/rcu.h | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/rcuperf.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 8fd4f82..aeec70f 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -455,7 +455,6 @@ enum rcutorture_type {
- #if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
- void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
- 			    unsigned long *gp_seq);
--void rcutorture_record_progress(unsigned long vernum);
- void do_trace_rcu_torture_read(const char *rcutorturename,
- 			       struct rcu_head *rhp,
- 			       unsigned long secs,
-@@ -468,7 +467,6 @@ static inline void rcutorture_get_gp_data(enum rcutorture_type test_type,
- 	*flags = 0;
- 	*gp_seq = 0;
- }
--static inline void rcutorture_record_progress(unsigned long vernum) { }
- #ifdef CONFIG_RCU_TRACE
- void do_trace_rcu_torture_read(const char *rcutorturename,
- 			       struct rcu_head *rhp,
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index 5a879d0..5f884d5 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -109,15 +109,6 @@ static unsigned long b_rcu_perf_writer_started;
+ static unsigned long b_rcu_perf_writer_finished;
+ static DEFINE_PER_CPU(atomic_t, n_async_inflight);
+ 
+-static int rcu_perf_writer_state;
+-#define RTWS_INIT		0
+-#define RTWS_ASYNC		1
+-#define RTWS_BARRIER		2
+-#define RTWS_EXP_SYNC		3
+-#define RTWS_SYNC		4
+-#define RTWS_IDLE		5
+-#define RTWS_STOPPING		6
+-
+ #define MAX_MEAS 10000
+ #define MIN_MEAS 100
+ 
+@@ -404,25 +395,20 @@ rcu_perf_writer(void *arg)
+ 			if (!rhp)
+ 				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+ 			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
+-				rcu_perf_writer_state = RTWS_ASYNC;
+ 				atomic_inc(this_cpu_ptr(&n_async_inflight));
+ 				cur_ops->async(rhp, rcu_perf_async_cb);
+ 				rhp = NULL;
+ 			} else if (!kthread_should_stop()) {
+-				rcu_perf_writer_state = RTWS_BARRIER;
+ 				cur_ops->gp_barrier();
+ 				goto retry;
+ 			} else {
+ 				kfree(rhp); /* Because we are stopping. */
+ 			}
+ 		} else if (gp_exp) {
+-			rcu_perf_writer_state = RTWS_EXP_SYNC;
+ 			cur_ops->exp_sync();
+ 		} else {
+-			rcu_perf_writer_state = RTWS_SYNC;
+ 			cur_ops->sync();
+ 		}
+-		rcu_perf_writer_state = RTWS_IDLE;
+ 		t = ktime_get_mono_fast_ns();
+ 		*wdp = t - *wdp;
+ 		i_max = i;
+@@ -463,10 +449,8 @@ rcu_perf_writer(void *arg)
+ 		rcu_perf_wait_shutdown();
+ 	} while (!torture_must_stop());
+ 	if (gp_async) {
+-		rcu_perf_writer_state = RTWS_BARRIER;
+ 		cur_ops->gp_barrier();
+ 	}
+-	rcu_perf_writer_state = RTWS_STOPPING;
+ 	writer_n_durations[me] = i_max;
+ 	torture_kthread_stopping("rcu_perf_writer");
+ 	return 0;
 -- 
 2.9.5
 
