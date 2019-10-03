@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E462DC4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CF51ECE58B
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BBCF7222D0
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33B46222CA
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570067253;
-	bh=mWRW6EvmyH/GayqYkmkelp5SJD9Or8+VhvkH9hZvA98=;
+	s=default; t=1570067254;
+	bh=XdyvM6DTwVT7YnqBoyXQ1xjXhS8PIGQJzupZHFgdfHw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=OqyDgp50ampGwn8QEdxyfyWXIQE+2A7l6yfxy61Ry6rZN5V+EwW/C8entqbQBcb8F
-	 wpqhqD/AAdpDJEpOrQNrEvMQxTtTfxEP2Ql6MrEvewaC9tLjWYOwM4Ju/0FmPyfs0k
-	 1DaK3S1DQB2JSFMTHoZEk2cJTYvx/1rPUw/9xYBc=
+	b=A0jVYH+QpvdbX5V5RR+e0XddyGS91esqbGauwGJ81ASXuPWK6l9YQf8ODXiOWAFqi
+	 YrhueRh7CuTcCnJeBav4/zHWFcS4qgyiRumi0fqbL310NKXf4f6gw6dUx6LWKcggAh
+	 0F1V7TSgvqhYVrnQB7hifQYxC+TKQBXvNGA4Q1TA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727484AbfJCBrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727514AbfJCBrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 2 Oct 2019 21:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47716 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727350AbfJCBrc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:47:32 -0400
+        id S1727431AbfJCBrd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:47:33 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2FC0222C8;
-        Thu,  3 Oct 2019 01:47:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50B45222CB;
+        Thu,  3 Oct 2019 01:47:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570067251;
-        bh=mWRW6EvmyH/GayqYkmkelp5SJD9Or8+VhvkH9hZvA98=;
+        s=default; t=1570067252;
+        bh=XdyvM6DTwVT7YnqBoyXQ1xjXhS8PIGQJzupZHFgdfHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TPsFcWiW9hJPLpkoSaeN9DeHb5hzznhInvh9RvQ9crnFUibiu9ZWUYuS7JdEStZXa
-         v374m5SRvasqWkgAuyQMp8Wxv+CaB63uhe+WgBVk5RMPE55gfpjWt76a1ZZSdP6EIB
-         fFIBt5ztJa6Qc2JyAgi/3T900fbTKnQn/7fkLLqQ=
+        b=MA/VO8FcQ6Y4bgWglxRxt3YCNS51D0evvOR3F4Ib5+AzOgDKmu7NO7VQj2Qs29ac5
+         vEvn5IzZ7BcKi8TAMhuDqDEL89rVKCFC2o0q/Qk4cuVURDilYYvlqj3l8ueCA9ZJYo
+         AfOvBTRmxnxIiWL9q9DesAEbxCHXjt8DPXOvWamw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 4/9] rcutorture: Emulate dyntick aspect of userspace nohz_full sojourn
-Date:   Wed,  2 Oct 2019 18:47:23 -0700
-Message-Id: <20191003014728.13496-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 6/9] rcutorture: Separate warnings for each failure type
+Date:   Wed,  2 Oct 2019 18:47:25 -0700
+Message-Id: <20191003014728.13496-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003014710.GA13323@paulmck-ThinkPad-P72>
 References: <20191003014710.GA13323@paulmck-ThinkPad-P72>
@@ -60,78 +60,48 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 
-During an actual call_rcu() flood, there would be frequent trips to
-userspace (in-kernel call_rcu() floods must be otherwise housebroken).
-Userspace execution on nohz_full CPUs implies an RCU dyntick idle/not-idle
-transition pair, so this commit adds emulation of that pair.
+Currently, each of six different types of failure triggers a
+single WARN_ON_ONCE(), and it is then necessary to stare at the
+rcu_torture_stats(), Reader Pipe, and Reader Batch lines looking for
+inappropriately non-zero values.  This can be annoying and error-prone,
+so this commit provides a separate WARN_ON_ONCE() for each of the
+six error conditions and adds short comments to each to ease error
+identification.
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- include/linux/rcutiny.h |  1 +
- kernel/rcu/rcutorture.c | 11 +++++++++++
- kernel/rcu/tree.c       |  1 +
- 3 files changed, 13 insertions(+)
+ kernel/rcu/rcutorture.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 9bf1dfe..37b6f0c 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -84,6 +84,7 @@ static inline void rcu_scheduler_starting(void) { }
- #endif /* #else #ifndef CONFIG_SRCU */
- static inline void rcu_end_inkernel_boot(void) { }
- static inline bool rcu_is_watching(void) { return true; }
-+static inline void rcu_momentary_dyntick_idle(void) { }
- 
- /* Avoid RCU read-side critical sections leaking across. */
- static inline void rcu_all_qs(void) { barrier(); }
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 3c9feca..7dcb2b8 100644
+index 7dcb2b8..a9e97c3 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1759,6 +1759,11 @@ static unsigned long rcu_torture_fwd_prog_cbfree(void)
- 		kfree(rfcp);
- 		freed++;
- 		rcu_torture_fwd_prog_cond_resched(freed);
-+		if (tick_nohz_full_enabled()) {
-+			local_irq_save(flags);
-+			rcu_momentary_dyntick_idle();
-+			local_irq_restore(flags);
-+		}
- 	}
- 	return freed;
- }
-@@ -1833,6 +1838,7 @@ static void rcu_torture_fwd_prog_nr(int *tested, int *tested_tries)
- static void rcu_torture_fwd_prog_cr(void)
- {
- 	unsigned long cver;
-+	unsigned long flags;
- 	unsigned long gps;
- 	int i;
- 	long n_launders;
-@@ -1891,6 +1897,11 @@ static void rcu_torture_fwd_prog_cr(void)
- 		}
- 		cur_ops->call(&rfcp->rh, rcu_torture_fwd_cb_cr);
- 		rcu_torture_fwd_prog_cond_resched(n_launders + n_max_cbs);
-+		if (tick_nohz_full_enabled()) {
-+			local_irq_save(flags);
-+			rcu_momentary_dyntick_idle();
-+			local_irq_restore(flags);
-+		}
- 	}
- 	stoppedat = jiffies;
- 	n_launders_cb_snap = READ_ONCE(n_launders_cb);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8110514..5692db5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -375,6 +375,7 @@ static void __maybe_unused rcu_momentary_dyntick_idle(void)
- 	WARN_ON_ONCE(!(special & RCU_DYNTICK_CTRL_CTR));
- 	rcu_preempt_deferred_qs(current);
- }
-+EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
+@@ -1442,15 +1442,18 @@ rcu_torture_stats_print(void)
+ 		n_rcu_torture_barrier_error);
  
- /**
-  * rcu_is_cpu_rrupt_from_idle - see if interrupted from idle
+ 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+-	if (atomic_read(&n_rcu_torture_mberror) != 0 ||
+-	    n_rcu_torture_barrier_error != 0 ||
+-	    n_rcu_torture_boost_ktrerror != 0 ||
+-	    n_rcu_torture_boost_rterror != 0 ||
+-	    n_rcu_torture_boost_failure != 0 ||
++	if (atomic_read(&n_rcu_torture_mberror) ||
++	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
++	    n_rcu_torture_boost_rterror || n_rcu_torture_boost_failure ||
+ 	    i > 1) {
+ 		pr_cont("%s", "!!! ");
+ 		atomic_inc(&n_rcu_torture_error);
+-		WARN_ON_ONCE(1);
++		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
++		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
++		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
++		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
++		WARN_ON_ONCE(n_rcu_torture_boost_failure); // RCU boost failed
++		WARN_ON_ONCE(i > 1); // Too-short grace period
+ 	}
+ 	pr_cont("Reader Pipe: ");
+ 	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
 -- 
 2.9.5
 
