@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F637C10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3885DC4360C
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 75329222BE
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01248222BE
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066774;
-	bh=CAee0HkekqhN4kNQWmaAnn8lhpve7s8cW9MrImWDFXc=;
+	s=default; t=1570066776;
+	bh=zQRLMMhHggox8g9yxGynM6uMIk2UKwfjbpNUD5J5KZo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=bDZbPu0/ExzArg6zij9agVQUqjxwWAjS0XA46tv55r9dDfgAQ0a7hbWaeYvd3BaZJ
-	 6WZ5bZt+beqDV8aCo6pRX/uJ5Q5shdoUjou754Hl0DCqRvKpMLVUjCbrwzd6V/glH2
-	 pksxW41ykK+PAPro1thVkDwaP8xx4RVK46kb4+5o=
+	b=ZvCGl3csy1qRCQYPPN89MTW54hoPhBpQkZuGcxxPHO2VBmQ8dbWJ/dbOhUPDgoSdJ
+	 zLcXxMcKI7fMcKvA8ZtrByYMXJMqr5yXSws2O4j2UG8IJibwFcKmdcWinr3oyxk6aC
+	 8wRBe3+O+LY83s2tQLTKI4ufqp61IMaQeBhUlbP0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbfJCBj0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:39:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
+        id S1728729AbfJCBjf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728486AbfJCBjJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:39:09 -0400
+        id S1727975AbfJCBjI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:39:08 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2E4E222CF;
-        Thu,  3 Oct 2019 01:39:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EDA6222CC;
+        Thu,  3 Oct 2019 01:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066749;
-        bh=CAee0HkekqhN4kNQWmaAnn8lhpve7s8cW9MrImWDFXc=;
+        s=default; t=1570066747;
+        bh=zQRLMMhHggox8g9yxGynM6uMIk2UKwfjbpNUD5J5KZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d1XzDlSatGM8IseECc92cX9E17OJKDP2FSFLI83KQCe0p5BCbqmcfl7CGcWQgNu4A
-         3qX5PAr9d2M4LmUMvD9bJpGLay65TNbhCl2ohHYKdXvvjgg50ox35IZwPG+RNDMx9i
-         yNbXdkoRSBra4EpYKR/oZ22bC1fTWwYCYLJ70O5w=
+        b=mjcv7tTtNDAFN8lFN0l1E0SbekHG0/7ZmQeUWPfFpMaySk40u9ZwufH4ln5g2d0q/
+         KGKOs2Swplh9B3X1G9WZ8WMGUiNIs8Gvi0zgmyWaMJit5q9DcxiYMzLjVs/fNQ19sK
+         Nwu5upRrXjn2jaraHAoErqMISjcCqVme7ZbsEsy4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 11/12] rcu: Confine ->core_needs_qs accesses to the corresponding CPU
-Date:   Wed,  2 Oct 2019 18:39:02 -0700
-Message-Id: <20191003013903.13079-11-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/12] stop_machine: Use {READ,WRITE)_ONCE() for multi_cpu_stop() ->state
+Date:   Wed,  2 Oct 2019 18:38:58 -0700
+Message-Id: <20191003013903.13079-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003013834.GA12927@paulmck-ThinkPad-P72>
 References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
@@ -60,71 +60,39 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 
-Commit 671a63517cf9 ("rcu: Avoid unnecessary softirq when system
-is idle") fixed a bug that could result in an indefinite number of
-unnecessary invocations of the RCU_SOFTIRQ handler at the trailing edge
-of a scheduler-clock interrupt.  However, the fix introduced off-CPU
-stores to ->core_needs_qs.  These writes did not conflict with the
-on-CPU stores because the CPU's leaf rcu_node structure's ->lock was
-held across all such stores.  However, the loads from ->core_needs_qs
-were not promoted to READ_ONCE() and, worse yet, the code loading from
-->core_needs_qs was written assuming that it was only ever updated by
-the corresponding CPU.  So operation has been robust, but only by luck.
-This situation is therefore an accident waiting to happen.
-
-This commit therefore takes a different approach.  Instead of clearing
-->core_needs_qs from the grace-period kthread's force-quiescent-state
-processing, it modifies the rcu_pending() function to suppress the
-rcu_sched_clock_irq() function's call to invoke_rcu_core() if there is no
-grace period in progress.  This avoids the infinite needless RCU_SOFTIRQ
-handlers while still keeping all accesses to ->core_needs_qs local to
-the corresponding CPU.
+The multi_stop_data structure's ->state field is updated and read
+concurrently, so this commit replaces the current C-language accesses
+with READ_ONCE() and WRITE_ONCE().
 
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- kernel/rcu/tree.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/stop_machine.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 59527b0..1b250d4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1988,7 +1988,6 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
- 		return;
- 	}
- 	mask = rdp->grpmask;
--	rdp->core_needs_qs = false;
- 	if ((rnp->qsmask & mask) == 0) {
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	} else {
-@@ -2822,6 +2821,7 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
-  */
- static int rcu_pending(void)
- {
-+	bool gp_in_progress;
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
+diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+index 34c4f11..c02c56e 100644
+--- a/kernel/stop_machine.c
++++ b/kernel/stop_machine.c
+@@ -167,7 +167,7 @@ static void set_state(struct multi_stop_data *msdata,
+ 	/* Reset ack counter. */
+ 	atomic_set(&msdata->thread_ack, msdata->num_threads);
+ 	smp_wmb();
+-	msdata->state = newstate;
++	WRITE_ONCE(msdata->state, newstate);
+ }
  
-@@ -2837,7 +2837,8 @@ static int rcu_pending(void)
- 		return 0;
- 
- 	/* Is the RCU core waiting for a quiescent state from this CPU? */
--	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm)
-+	gp_in_progress = rcu_gp_in_progress();
-+	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
- 		return 1;
- 
- 	/* Does this CPU have callbacks ready to invoke? */
-@@ -2845,8 +2846,7 @@ static int rcu_pending(void)
- 		return 1;
- 
- 	/* Has RCU gone idle with this CPU needing another grace period? */
--	if (!rcu_gp_in_progress() &&
--	    rcu_segcblist_is_enabled(&rdp->cblist) &&
-+	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
- 	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
- 	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
- 	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+ /* Last one to ack a state moves to the next state. */
+@@ -210,8 +210,8 @@ static int multi_cpu_stop(void *data)
+ 	do {
+ 		/* Chill out and ensure we re-read multi_stop_state. */
+ 		stop_machine_yield(cpumask);
+-		if (msdata->state != curstate) {
+-			curstate = msdata->state;
++		if (READ_ONCE(msdata->state) != curstate) {
++			curstate = READ_ONCE(msdata->state);
+ 			switch (curstate) {
+ 			case MULTI_STOP_DISABLE_IRQ:
+ 				local_irq_disable();
 -- 
 2.9.5
 
