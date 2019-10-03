@@ -2,98 +2,113 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A8F0C10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C9E3C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:45:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D14B621A4C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:42:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qUV1crH7"
+	by mail.kernel.org (Postfix) with ESMTP id 4DF0A20873
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1570110304;
+	bh=dEF07+o0YwK6wPqO3j1cYpwxNmDA/nwjOQy2BUMZGaQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=nIWDfMIl8gqsrBoxM3XkArCqAIZkPS+m6b8qPCbaSNoxUsZeeUO2DamAjqRTCzQiT
+	 Lc+1fC6A64forqm26QndLJdo9rp0G5TWY6MFvMMXBFJ0d4Ct+iPX1W+qRFb4gxoEA4
+	 Du6H7e5jSEe8H8DdFL9rRw6Am2djiaho2FMzglcA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730186AbfJCNmD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 09:42:03 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:34126 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729655AbfJCNmD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 09:42:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Z4Fbmkp6VSKxSOTmoTLoE7iXbtqotSgieIcrdQiNoGU=; b=qUV1crH7ygkqKhnHi2IVWd+st
-        lXJ7A/lJUBFz85JZLlVJDEsvt/Do5pDrSI/v/MZGzctjy/o+iO6mh7kPrEchwnC7N7ozweNvafw1K
-        8Cah++IsdSrEEb4s0fueywltkwTz5WYtLFdGqLPdGIaqx5CvYiStBUK7T2K+BDwdBKHSjvxEkK0yo
-        mVDv871kS9PrS7lOxVgzS6MFxvd/F2fsII/Z1vT0yPIND0VJG0f3DlOr3hMkrh279beQQjmNhcneR
-        hSpthD0Hz0HZzmpDKsbuU8ZVsBDtPPFhw7TpklhppdFTcIwaM9v0uCw2ED99k57cdCrgjJXqGuKf+
-        FmsVIEkpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iG1MN-0000Ba-AD; Thu, 03 Oct 2019 13:41:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727337AbfJCNpE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 09:45:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbfJCNpD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 09:45:03 -0400
+Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D981D304B4C;
-        Thu,  3 Oct 2019 15:40:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0B8B5201EFE03; Thu,  3 Oct 2019 15:41:32 +0200 (CEST)
-Date:   Thu, 3 Oct 2019 15:41:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDBB720830;
+        Thu,  3 Oct 2019 13:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570110303;
+        bh=dEF07+o0YwK6wPqO3j1cYpwxNmDA/nwjOQy2BUMZGaQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UAXmq1Lpl5mzkFv3ggg4LAQfmbSW4kWk7Kn6igCfIK8YGBeSR4VLCkmhuO0M6oIiD
+         hqlEA2oXr+Bac0fcHHj98DdHveyGviMF+LLVp/lOgZbz2WTkFTgR6kRKzRKWloiTfW
+         RuS6dVmytuQy1V8w6S4Df5vK7Ck1WpNm0lrebj/I=
+Date:   Thu, 3 Oct 2019 06:45:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH tip/core/rcu 1/9] rcu: Upgrade rcu_swap_protected() to
- rcu_replace()
-Message-ID: <20191003134131.GS4536@hirez.programming.kicks-ass.net>
-References: <20191003014310.13262-1-paulmck@kernel.org>
- <20191003014153.GA13156@paulmck-ThinkPad-P72>
- <25408.1570091957@warthog.procyon.org.uk>
- <20191003090850.1e2561b3@gandalf.local.home>
- <20191003133315.GN2689@paulmck-ThinkPad-P72>
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 4/8] rcu: Ensure that ->rcu_urgent_qs is set
+ before resched IPI
+Message-ID: <20191003134501.GP2689@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
+ <20191003013305.12854-4-paulmck@kernel.org>
+ <20191003074319.2df342dd@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003133315.GN2689@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191003074319.2df342dd@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 06:33:15AM -0700, Paul E. McKenney wrote:
-> On Thu, Oct 03, 2019 at 09:08:50AM -0400, Steven Rostedt wrote:
-> > On Thu, 03 Oct 2019 09:39:17 +0100
-> > David Howells <dhowells@redhat.com> wrote:
-> > 
-> > > paulmck@kernel.org wrote:
-> > > 
-> > > > +#define rcu_replace(rcu_ptr, ptr, c)					\
-> > > > +({									\
-> > > > +	typeof(ptr) __tmp = rcu_dereference_protected((rcu_ptr), (c));	\
-> > > > +	rcu_assign_pointer((rcu_ptr), (ptr));				\
-> > > > +	__tmp;								\
-> > > > +})  
-> > > 
-> > > Does it make sense to actually use xchg() if that's supported by the arch?
+On Thu, Oct 03, 2019 at 07:43:19AM -0400, Steven Rostedt wrote:
+> On Wed,  2 Oct 2019 18:33:01 -0700
+> paulmck@kernel.org wrote:
 > 
-> Historically, xchg() has been quite a bit slower than a pair of assignment
-> statements, in part due to the strong memory ordering guaranteed by
-> xchg().  Has that changed?  If so, then, agreed, it might make sense to
-> use xchg().
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > 
+> > The RCU-specific resched_cpu() function sends a resched IPI to the
+> > specified CPU, which can be used to force the tick on for a given
+> > nohz_full CPU.  This is needed when this nohz_full CPU is looping in the
+> > kernel while blocking the current grace period.  However, for the tick
+> > to actually be forced on in all cases, that CPU's rcu_data structure's
+> > ->rcu_urgent_qs flag must be set beforehand.  This commit therefore  
+> > causes rcu_implicit_dynticks_qs() to set this flag prior to invoking
+> > resched_cpu() on a holdout nohz_full CPU.
+> 
+> Should this be marked for stable?
 
-Nope, still the case. xchg() is an atomic op with full ordering.
+Not unless and until people are actually running into this.  NO_HZ_FULL
+has left the tick off for in-kernel loops on nohz_full CPUs for almost
+ten years now, and as far as I know, without complaint.
+
+So from what I am seeing, the risk of backporting far exceeds the benefit.
+
+							Thanx, Paul
+
+> -- Steve
+> 
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> > ---
+> >  kernel/rcu/tree.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 8110514..0d83b19 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1073,6 +1073,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+> >  	if (tick_nohz_full_cpu(rdp->cpu) &&
+> >  		   time_after(jiffies,
+> >  			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
+> > +		WRITE_ONCE(*ruqp, true);
+> >  		resched_cpu(rdp->cpu);
+> >  		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+> >  	}
+> 
