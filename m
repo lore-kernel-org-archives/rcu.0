@@ -2,214 +2,109 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45EBBC10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 19:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8123AC32792
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 20:58:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 10A61207FF
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 19:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51A68215EA
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 20:58:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="beEbyjRH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TUELeMGj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbfJCTOO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 15:14:14 -0400
-Received: from mail.efficios.com ([167.114.142.138]:60432 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbfJCTOO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 15:14:14 -0400
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id A458233B6C7;
-        Thu,  3 Oct 2019 15:14:12 -0400 (EDT)
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id 2VPmRjdUR16r; Thu,  3 Oct 2019 15:14:12 -0400 (EDT)
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id EFB6B33B6C0;
-        Thu,  3 Oct 2019 15:14:11 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com EFB6B33B6C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1570130052;
-        bh=7io7uSdeeE/pgtuBYIIMb2OgPbrbl38vwPbZaO6HFvw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=beEbyjRH8RDU1ayL22FADOwMgSZr7sHigxFMjXI2qgq8/UCvEKQUz0BAu0ma4VSvH
-         ElPhCIJKfqloIbzwqUaoYvSl+CEHYWIryWQIgbiSFMZpkJ5+OS0shtOszfU4hrmLBY
-         jYqCOd7595Fh6TTom8wsBPKfTS3G9e2H2NNipLmsUaxy25yvbX0GC0tN02TLH+bxZJ
-         ShGjKH2aMkcnnvYeFhHRCrhYpqir8/Kl9yvc40l/H9QyVN1Rl9fWVdWN6u1DcuNw7A
-         091bRHxp6Ou1eohY9EJy7NTbFvVu2hFX17GjUDpbGzGcO/Z1Q1oiLEbz3v6ak39k3I
-         XSWRvWk/KNzvg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id pJzSuz6dVofd; Thu,  3 Oct 2019 15:14:11 -0400 (EDT)
-Received: from mail02.efficios.com (mail02.efficios.com [167.114.142.138])
-        by mail.efficios.com (Postfix) with ESMTP id D0F9B33B6B3;
-        Thu,  3 Oct 2019 15:14:11 -0400 (EDT)
-Date:   Thu, 3 Oct 2019 15:14:11 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dipankar <dipankar@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        Martin <martin.petersen@oracle.com>
-Message-ID: <996944932.1292.1570130051686.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20191003190919.GA2689@paulmck-ThinkPad-P72>
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72> <20191003014310.13262-1-paulmck@kernel.org> <644598334.955.1570120530976.JavaMail.zimbra@efficios.com> <20191003165220.GZ2689@paulmck-ThinkPad-P72> <618064891.1049.1570123274780.JavaMail.zimbra@efficios.com> <20191003190919.GA2689@paulmck-ThinkPad-P72>
-Subject: Re: [PATCH tip/core/rcu 1/9] rcu: Upgrade rcu_swap_protected() to
- rcu_replace()
+        id S1729566AbfJCU60 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 16:58:26 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38407 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728503AbfJCU6Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 16:58:25 -0400
+Received: by mail-qt1-f193.google.com with SMTP id j31so5622079qta.5;
+        Thu, 03 Oct 2019 13:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WIrZFzsJy4iycGCbOe0uKReizu+dGey8/8JfUByM3aY=;
+        b=TUELeMGj1bnZp0T6dXOObTKSWjB6GhVTk1U3pAbRQWpYvWEnGpJn32dyCPfgJp8vBY
+         1ItpjtUQhm0H3CCe2Q19Udml9dQVWGhA+H+RMyxdiHETM4e+fjkgK6Z2BrCxgJUcRMuW
+         /HhwXEwBK9x2MqZ+rntfhF7v3koRfj6cB8IwDJ0mRXXx6h4OCkFkM9ya1El9wHBPYSQq
+         Vxl577u3dj6cBqUM6718XQugrH3kn+KenZdor2eb5QxyGE2BEDOX8Shg80PpCs+zbf/g
+         KEEJmaVWe0lTBDGZ4vVvdPNxyKCVwhhHBZ1F+EyGNCwvtiJTHEqZTgZFoMTtjZ9QfD56
+         6mKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WIrZFzsJy4iycGCbOe0uKReizu+dGey8/8JfUByM3aY=;
+        b=ihub32iBSiCoT4JbmcCrGH8o0bHTTQMhyFe68U8A0g12dXGmwlVLJNQG0kQH7e/p52
+         K6A7QANMjYihVkgDa2QTmjXgk9vX/8O0FDMt/UJdDvxQebSVCR+n4Y1czid6LKC+TTgZ
+         z2KOXzfyKQ5v9YAdj3edg1+p8L66E0rB/SwYRelXbpi4qIVyXhQl2vrqYLpy5F+SZK0c
+         Sz3DMnTMwqhUo+RTOjFnSXoBjAGhpVaZlAl1NjoUGCFfLUNX9HyynhpORzvV2w2kngaj
+         n/t10mRlBCCYqtmUOmVRs1IwBcW5Kxdm8AyBD3KGk23k8T+pEOtfLIXwOC1+iQUJ0wz8
+         bLeA==
+X-Gm-Message-State: APjAAAUNkStSpLb6aih7weDxR52VY/NbnI1D5uwpygOUbBG2v2e/nHVn
+        05tIj1c43NVXcE/LEu6uARPso1BFXO37urN8Uq0=
+X-Google-Smtp-Source: APXvYqx8pJ3WWpgB3HKjBdeqRnKtSmk9B7++9MNYZYl5YXKOTp5N2c7zor6mXaH+z8duvvJ7CrD6z/1c6qd6N82m9Zk=
+X-Received: by 2002:a0c:9846:: with SMTP id e6mr10462518qvd.114.1570136304688;
+ Thu, 03 Oct 2019 13:58:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.142.138]
-X-Mailer: Zimbra 8.8.15_GA_3847 (ZimbraWebClient - FF69 (Linux)/8.8.15_GA_3847)
-Thread-Topic: Upgrade rcu_swap_protected() to rcu_replace()
-Thread-Index: ag42kyaxnP9eCqmhEy53O9DecrsO8A==
+References: <20191003014153.GA13156@paulmck-ThinkPad-P72> <20191003014310.13262-6-paulmck@kernel.org>
+ <CAEf4BzaBuktutCZr2ZUC6b-XK_JJ7prWZmO-5Yew2tVp5DxbBA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaBuktutCZr2ZUC6b-XK_JJ7prWZmO-5Yew2tVp5DxbBA@mail.gmail.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Thu, 3 Oct 2019 13:58:13 -0700
+Message-ID: <CAPhsuW6vFwhhYngbftZk4NrSJ+qQx3F6ChUCm=n16HDK-N9vMg@mail.gmail.com>
+Subject: Re: [PATCH tip/core/rcu 6/9] bpf/cgroup: Replace rcu_swap_protected()
+ with rcu_replace()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>, dhowells@redhat.com,
+        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Oct 3, 2019, at 3:09 PM, paulmck paulmck@kernel.org wrote:
+On Thu, Oct 3, 2019 at 10:43 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Oct 2, 2019 at 6:45 PM <paulmck@kernel.org> wrote:
+> >
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> >
+> > This commit replaces the use of rcu_swap_protected() with the more
+> > intuitively appealing rcu_replace() as a step towards removing
+> > rcu_swap_protected().
+> >
+> > Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
+> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Cc: Yonghong Song <yhs@fb.com>
+> > Cc: <netdev@vger.kernel.org>
+> > Cc: <bpf@vger.kernel.org>
+> > ---
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> On Thu, Oct 03, 2019 at 01:21:14PM -0400, Mathieu Desnoyers wrote:
->> ----- On Oct 3, 2019, at 12:52 PM, paulmck paulmck@kernel.org wrote:
->> 
->> > On Thu, Oct 03, 2019 at 12:35:30PM -0400, Mathieu Desnoyers wrote:
->> >> ----- On Oct 2, 2019, at 9:43 PM, paulmck paulmck@kernel.org wrote:
->> >> 
->> >> > From: "Paul E. McKenney" <paulmck@kernel.org>
->> >> > 
->> >> > Although the rcu_swap_protected() macro follows the example of swap(),
->> >> > the interactions with RCU make its update of its argument somewhat
->> >> > counter-intuitive.  This commit therefore introduces an rcu_replace()
->> >> > that returns the old value of the RCU pointer instead of doing the
->> >> > argument update.  Once all the uses of rcu_swap_protected() are updated
->> >> > to instead use rcu_replace(), rcu_swap_protected() will be removed.
->> >> 
->> >> We expose the rcu_xchg_pointer() API in liburcu (Userspace RCU) project.
->> >> Any reason for not going that way and keep the kernel and user-space RCU
->> >> APIs alike ?
->> >> 
->> >> It's of course fine if they diverge, but we might want to at least consider
->> >> if using the same API name would be OK.
->> > 
->> > Different semantics.  An rcu_xchg_pointer() allows concurrent updates,
->> > and rcu_replace() does not.
->> > 
->> > But yes, if someone needs the concurrent updates, rcu_xchg_pointer()
->> > would certainly be my choice for the name.
->> 
->> Then considering that its assignment counterpart is "rcu_assign_pointer()"
->> (and not "rcu_assign()"), would "rcu_replace_pointer()" be less ambiguous
->> about its intended use ?
-> 
-> The sequence was rcu_swap_protected() -> rcu_swap() -> rcu_replace().
-> Because that rcu_replace(), unlike rcu_swap_protected(), returns a
-> value, the shorter name is valuable.
-> 
-> Maybe we should have used rcu_assign() instead of rcu_assign_pointer(),
-> but there is no point in that sort of change at this late date!
-
-I agree that having both the "rcu_" prefix and the "_pointer" suffix is
-somewhat redundant. Indeed it's not a worthwhile change for a pre-existing
-API, but it is welcome for a new API.
-
-Thanks!
-
-Mathieu
-
-> 
->							Thanx, Paul
-> 
->> Thanks,
->> 
->> Mathieu
->> 
->> 
->> > 
->> >							Thanx, Paul
->> > 
->> >> Thanks,
->> >> 
->> >> Mathieu
->> >> 
->> >> 
->> >> > 
->> >> > Link:
->> >> > https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
->> >> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
->> >> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->> >> > Cc: Bart Van Assche <bart.vanassche@wdc.com>
->> >> > Cc: Christoph Hellwig <hch@lst.de>
->> >> > Cc: Hannes Reinecke <hare@suse.de>
->> >> > Cc: Johannes Thumshirn <jthumshirn@suse.de>
->> >> > Cc: Shane M Seymour <shane.seymour@hpe.com>
->> >> > Cc: Martin K. Petersen <martin.petersen@oracle.com>
->> >> > ---
->> >> > include/linux/rcupdate.h | 18 ++++++++++++++++++
->> >> > 1 file changed, 18 insertions(+)
->> >> > 
->> >> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->> >> > index 75a2ede..3b73287 100644
->> >> > --- a/include/linux/rcupdate.h
->> >> > +++ b/include/linux/rcupdate.h
->> >> > @@ -383,6 +383,24 @@ do {									      \
->> >> > } while (0)
->> >> > 
->> >> > /**
->> >> > + * rcu_replace() - replace an RCU pointer, returning its old value
->> >> > + * @rcu_ptr: RCU pointer, whose old value is returned
->> >> > + * @ptr: regular pointer
->> >> > + * @c: the lockdep conditions under which the dereference will take place
->> >> > + *
->> >> > + * Perform a replacement, where @rcu_ptr is an RCU-annotated
->> >> > + * pointer and @c is the lockdep argument that is passed to the
->> >> > + * rcu_dereference_protected() call used to read that pointer.  The old
->> >> > + * value of @rcu_ptr is returned, and @rcu_ptr is set to @ptr.
->> >> > + */
->> >> > +#define rcu_replace(rcu_ptr, ptr, c)					\
->> >> > +({									\
->> >> > +	typeof(ptr) __tmp = rcu_dereference_protected((rcu_ptr), (c));	\
->> >> > +	rcu_assign_pointer((rcu_ptr), (ptr));				\
->> >> > +	__tmp;								\
->> >> > +})
->> >> > +
->> >> > +/**
->> >> >  * rcu_swap_protected() - swap an RCU and a regular pointer
->> >> >  * @rcu_ptr: RCU pointer
->> >> >  * @ptr: regular pointer
->> >> > --
->> >> > 2.9.5
->> >> 
->> >> --
->> >> Mathieu Desnoyers
->> >> EfficiOS Inc.
->> > > http://www.efficios.com
->> 
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
-> > http://www.efficios.com
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Acked-by: Song Liu <songliubraving@fb.com>
