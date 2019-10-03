@@ -2,113 +2,101 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C9E3C10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C6B5C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:58:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4DF0A20873
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:45:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5D622133F
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 13:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570110304;
-	bh=dEF07+o0YwK6wPqO3j1cYpwxNmDA/nwjOQy2BUMZGaQ=;
+	s=default; t=1570111087;
+	bh=l1Q8lHXuoN3TJqBllSFbScMN9RwGTZhbVho5omx4P/0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=nIWDfMIl8gqsrBoxM3XkArCqAIZkPS+m6b8qPCbaSNoxUsZeeUO2DamAjqRTCzQiT
-	 Lc+1fC6A64forqm26QndLJdo9rp0G5TWY6MFvMMXBFJ0d4Ct+iPX1W+qRFb4gxoEA4
-	 Du6H7e5jSEe8H8DdFL9rRw6Am2djiaho2FMzglcA=
+	b=rXJSHvMN5VgcebbO9REqoUf9s/+OsnnFWGYgOkSkjXlPin3Mv7uirUoocddMu0311
+	 23VqDiB8Eq8D67/nGosT+W82a/qrtpiNtuqnr8vqZDjFhRsCoU/iDmo3DOY/Fxzf+X
+	 pFjIpp2R7hsThfykNngKRJ8IgZ6NUV2Z8S9FM+XU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbfJCNpE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 09:45:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        id S1727368AbfJCN6G (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 09:58:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbfJCNpD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 09:45:03 -0400
+        id S1725907AbfJCN6G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 09:58:06 -0400
 Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDBB720830;
-        Thu,  3 Oct 2019 13:45:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A73020865;
+        Thu,  3 Oct 2019 13:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570110303;
-        bh=dEF07+o0YwK6wPqO3j1cYpwxNmDA/nwjOQy2BUMZGaQ=;
+        s=default; t=1570111085;
+        bh=l1Q8lHXuoN3TJqBllSFbScMN9RwGTZhbVho5omx4P/0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UAXmq1Lpl5mzkFv3ggg4LAQfmbSW4kWk7Kn6igCfIK8YGBeSR4VLCkmhuO0M6oIiD
-         hqlEA2oXr+Bac0fcHHj98DdHveyGviMF+LLVp/lOgZbz2WTkFTgR6kRKzRKWloiTfW
-         RuS6dVmytuQy1V8w6S4Df5vK7Ck1WpNm0lrebj/I=
-Date:   Thu, 3 Oct 2019 06:45:01 -0700
+        b=LA26TD21ueBZ3XwCFg+wA8fztaYSGZU2is/9B+0cZxU6cnA16Zl9z4pmd7gqO+izz
+         DN/tmGHUX/6DzwTPV8RIYhIovfAkcfZi2odqadsQ5vFgrFF1J8o2LNyklJ3IRAm3zd
+         gBjEfEE30Gd72478SVO2c+M6l9HuU6cW0TjnjOcE=
+Date:   Thu, 3 Oct 2019 06:58:04 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 4/8] rcu: Ensure that ->rcu_urgent_qs is set
- before resched IPI
-Message-ID: <20191003134501.GP2689@paulmck-ThinkPad-P72>
+        josh@joshtriplett.org, tglx@linutronix.de, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Bart Van Assche <bart.vanassche@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Shane M Seymour <shane.seymour@hpe.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH tip/core/rcu 1/9] rcu: Upgrade rcu_swap_protected() to
+ rcu_replace()
+Message-ID: <20191003135804.GU2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
- <20191003013305.12854-4-paulmck@kernel.org>
- <20191003074319.2df342dd@gandalf.local.home>
+References: <20191003014310.13262-1-paulmck@kernel.org>
+ <20191003014153.GA13156@paulmck-ThinkPad-P72>
+ <25408.1570091957@warthog.procyon.org.uk>
+ <20191003090850.1e2561b3@gandalf.local.home>
+ <20191003133315.GN2689@paulmck-ThinkPad-P72>
+ <20191003134131.GS4536@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003074319.2df342dd@gandalf.local.home>
+In-Reply-To: <20191003134131.GS4536@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 07:43:19AM -0400, Steven Rostedt wrote:
-> On Wed,  2 Oct 2019 18:33:01 -0700
-> paulmck@kernel.org wrote:
-> 
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+On Thu, Oct 03, 2019 at 03:41:31PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 03, 2019 at 06:33:15AM -0700, Paul E. McKenney wrote:
+> > On Thu, Oct 03, 2019 at 09:08:50AM -0400, Steven Rostedt wrote:
+> > > On Thu, 03 Oct 2019 09:39:17 +0100
+> > > David Howells <dhowells@redhat.com> wrote:
+> > > 
+> > > > paulmck@kernel.org wrote:
+> > > > 
+> > > > > +#define rcu_replace(rcu_ptr, ptr, c)					\
+> > > > > +({									\
+> > > > > +	typeof(ptr) __tmp = rcu_dereference_protected((rcu_ptr), (c));	\
+> > > > > +	rcu_assign_pointer((rcu_ptr), (ptr));				\
+> > > > > +	__tmp;								\
+> > > > > +})  
+> > > > 
+> > > > Does it make sense to actually use xchg() if that's supported by the arch?
 > > 
-> > The RCU-specific resched_cpu() function sends a resched IPI to the
-> > specified CPU, which can be used to force the tick on for a given
-> > nohz_full CPU.  This is needed when this nohz_full CPU is looping in the
-> > kernel while blocking the current grace period.  However, for the tick
-> > to actually be forced on in all cases, that CPU's rcu_data structure's
-> > ->rcu_urgent_qs flag must be set beforehand.  This commit therefore  
-> > causes rcu_implicit_dynticks_qs() to set this flag prior to invoking
-> > resched_cpu() on a holdout nohz_full CPU.
+> > Historically, xchg() has been quite a bit slower than a pair of assignment
+> > statements, in part due to the strong memory ordering guaranteed by
+> > xchg().  Has that changed?  If so, then, agreed, it might make sense to
+> > use xchg().
 > 
-> Should this be marked for stable?
+> Nope, still the case. xchg() is an atomic op with full ordering.
 
-Not unless and until people are actually running into this.  NO_HZ_FULL
-has left the tick off for in-kernel loops on nohz_full CPUs for almost
-ten years now, and as far as I know, without complaint.
-
-So from what I am seeing, the risk of backporting far exceeds the benefit.
+OK, let's stick with the pair of assignments, then.  ;-)
 
 							Thanx, Paul
-
-> -- Steve
-> 
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-> > ---
-> >  kernel/rcu/tree.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8110514..0d83b19 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1073,6 +1073,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
-> >  	if (tick_nohz_full_cpu(rdp->cpu) &&
-> >  		   time_after(jiffies,
-> >  			      READ_ONCE(rdp->last_fqs_resched) + jtsq * 3)) {
-> > +		WRITE_ONCE(*ruqp, true);
-> >  		resched_cpu(rdp->cpu);
-> >  		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> >  	}
-> 
