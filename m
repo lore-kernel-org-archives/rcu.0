@@ -2,107 +2,103 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8395C4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5D0C4360C
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:38:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8BE61222BE
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:33:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3201C222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066413;
-	bh=0O6/KxBqWs9ZFW/AB5xNVcImW8d46jKwPeTl36k/sPQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=fmlcG89BJvE+am7GcfQrAmzGeSLZP4CnJYENNSJ7vtRY2cbCkpjMaeOBusS2srExX
-	 kt+o0YmlP5qW/Yp2vr2w5ah6EEvXN2bsk1qLovFEnjz6PmWbXxZ1eSowimPBFLRp1h
-	 WCfv6x84t7UIzL5tmTuW2KNxsR2aBm6U9w5ePIjg=
+	s=default; t=1570066717;
+	bh=DWFzTLVMJ2lb38P7yieK3u1L5vc+qIiH05ds6lWnZzw=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=tniN8WBjW3be9lzLAx1mVomxtbARbTiHN3iHkn17kg2ebxo+LvBilK6IGw1sPosgI
+	 M59ZexdtDlE4y/XVlVWy0NyVGk+u797rUYxtirIuM39DgVmmYRWlZeNpRRNAvsfMHE
+	 IUBNZcf6hfVR/jNF8N4Bql30J/wncwPZnfaGm0Ns=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbfJCBdI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42386 "EHLO mail.kernel.org"
+        id S1725799AbfJCBih (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726354AbfJCBdI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:33:08 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726376AbfJCBig (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:38:36 -0400
+Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8572D222C3;
-        Thu,  3 Oct 2019 01:33:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09D2B222BE;
+        Thu,  3 Oct 2019 01:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066387;
-        bh=0O6/KxBqWs9ZFW/AB5xNVcImW8d46jKwPeTl36k/sPQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gNKRvF/EroRe3cuQmy2yWLeVaMSY+josLwMxAV183QsuV/aNuHcqj3nx1oa75RGds
-         wJDLRW226CIZqDE99oDuqQeltguJvL0bzbQfWl7DI0m0BqcMT2NbcEV1+K+WfBVnvO
-         xyxX/cYyPgnY71aPLCMbNRy4esPT8Ipwio1Y1cSs=
-From:   paulmck@kernel.org
+        s=default; t=1570066716;
+        bh=DWFzTLVMJ2lb38P7yieK3u1L5vc+qIiH05ds6lWnZzw=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=RgAdjpzCpZRxcbGDm7spmnQjPhCIxojSHwBTS/Mgs2wRxmqYMF22xm8gUZFZvAjG8
+         3PSxnG1UTQ8BCzO8aSSMPN0NG6EtXkOxl/d5k1cDPtEt1eijmhWJj3cqVYwF0cvr+W
+         E1qdwEU7o/z4xLN06YUPI1XTQzPKg61Idnibocrw=
+Date:   Wed, 2 Oct 2019 18:38:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        kbuild test robot <lkp@intel.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 2/8] rcu: Several rcu_segcblist functions can be static
-Date:   Wed,  2 Oct 2019 18:32:59 -0700
-Message-Id: <20191003013305.12854-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20191003013243.GA12705@paulmck-ThinkPad-P72>
-References: <20191003013243.GA12705@paulmck-ThinkPad-P72>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/12] NO_HZ fixes for v5.5
+Message-ID: <20191003013834.GA12927@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: kbuild test robot <lkp@intel.com>
+Hello!
 
-None of rcu_segcblist_set_len(), rcu_segcblist_add_len(), or
-rcu_segcblist_xchg_len() are used outside of kernel/rcu/rcu_segcblist.c.
-This commit therefore makes them static.
+This series contains various fixes for NO_HZ and NO_HZ_FULL problems,
+including re-enabling the tick during long-term kernel-mode execution.
 
-Fixes: ab2ef5c7b4d1 ("rcu/nocb: Atomic ->len field in rcu_segcblist structure")
-Signed-off-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- kernel/rcu/rcu_segcblist.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+1.	Add TICK_DEP_BIT_RCU (which allows RCU-specific tick re-enabling),
+	courtesy of Frederic Weisbecker.
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 495c58c..cbc87b8 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -88,7 +88,7 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
- }
- 
- /* Set the length of an rcu_segcblist structure. */
--void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-+static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	atomic_long_set(&rsclp->len, v);
-@@ -104,7 +104,7 @@ void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-  * This increase is fully ordered with respect to the callers accesses
-  * both before and after.
-  */
--void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-+static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	smp_mb__before_atomic(); /* Up to the caller! */
-@@ -134,7 +134,7 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
-  * with the actual number of callbacks on the structure.  This exchange is
-  * fully ordered with respect to the callers accesses both before and after.
-  */
--long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
-+static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	return atomic_long_xchg(&rsclp->len, v);
--- 
-2.9.5
+2.	Export tick start/stop functions for rcutorture.
 
+3.	Force on tick when invoking lots of callbacks.
+
+4.	Force on tick for rcutorture readers and callback flooders.
+
+5.	Provide RCU quiescent state in multi_cpu_stop().
+
+6.	Make CPU-hotplug removal operations enable tick.
+
+7.	Use {READ,WRITE)_ONCE() for multi_cpu_stop() ->state.
+
+8.	Force tick on for nohz_full CPUs not reaching quiescent states.
+
+9.	Force nohz_full tick on upon irq enter instead of exit.
+
+10.	Reset CPU hints when reporting a quiescent state, courtesy of
+	Joel Fernandes.
+
+11.	Confine ->core_needs_qs accesses to the corresponding CPU.
+
+12.	Make kernel-mode nohz_full CPUs invoke the RCU core processing.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/rcutree.h      |    1 
+ include/linux/tick.h         |    7 ++
+ include/trace/events/timer.h |    3 -
+ kernel/rcu/rcutorture.c      |   20 +++++---
+ kernel/rcu/tree.c            |  105 ++++++++++++++++++++++++++++++-------------
+ kernel/rcu/tree.h            |    1 
+ kernel/stop_machine.c        |    7 +-
+ kernel/time/tick-sched.c     |   11 ++++
+ 8 files changed, 114 insertions(+), 41 deletions(-)
