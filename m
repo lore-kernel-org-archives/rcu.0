@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 700BEC4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 083DAC47404
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:43:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 42898222C2
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:43:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA150222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570067022;
-	bh=pecg14+rqKCe9+MU1znEqt1dgbZQC6DApkD13yS7z0k=;
+	s=default; t=1570067030;
+	bh=vJactgM3M2ccX7Qs5sz0+VAKv+twysNQWUyUR3pB7oQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=qeV1uSULML96uFsgpDTFBn37FIr6cI7oC26qkhyvC4qVclWw2bQd0+FvKk+Dql3we
-	 TKQKxQMHvAyRYFOk0Q3EG6zpPsMAhhGg43NlUdhi9BCYOTIVRMFY8PyaQD2dh7uJFO
-	 BQq0tf3jVN4djvFyOKTgm+9wsn0Qjj8o3XPxT6kM=
+	b=1fblk6RoVsaEbg0wLyXz1L7jht+nWeb2MOgZRYcNBDhf1At6CCy3SP75sk+qqxIJh
+	 Tpz0M72b/+1aiUVQgePTZAo+zvDNZ273V2Mu3Sx+Hi15rot9I+vTNm2RG7YzZZFv88
+	 ERscCcrrQtNJpjjCoLR6ocFN+kUNZTs4ZvdOoj1U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbfJCBnN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:43:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46392 "EHLO mail.kernel.org"
+        id S1728272AbfJCBnq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:43:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbfJCBnN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:43:13 -0400
+        id S1726364AbfJCBnM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:43:12 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78982222CA;
+        by mail.kernel.org (Postfix) with ESMTPSA id 16B52222C6;
         Thu,  3 Oct 2019 01:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1570066992;
-        bh=pecg14+rqKCe9+MU1znEqt1dgbZQC6DApkD13yS7z0k=;
+        bh=vJactgM3M2ccX7Qs5sz0+VAKv+twysNQWUyUR3pB7oQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aR9o0x1NHONIbxPoNOj8+Ux2ZBnn1MPxi/Eaxd2edaSTIw39ipumC3Ndu4BXSFyag
-         7fSr1WKYBdYOcypMBAqTPl1y4f/M7W09FmEOoeFeg1kOl/FnKZ/PvU9nzUhm//Smok
-         Za9vci8Sk49LJWA2iNQ8Knf/e7tHAtyDSW+QF1uQ=
+        b=HUiGVvKyZr1aow3e8Bar+GnMPXkDxlGJVKuQwD++B2faft524sFpkWCjhyGlatxNc
+         m+ApIIqFWfp3SXG55n9nOJjt383I5KBFYF8VbHSUl0dB6uIXiMT+K5YeIVUny//ZSE
+         Q2ux/Zo6uD2Q3EXPFgYdMJlcRPc69VPK5Sr6qWoU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,20 +47,20 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH tip/core/rcu 3/9] drivers/gpu: Replace rcu_swap_protected() with rcu_replace()
-Date:   Wed,  2 Oct 2019 18:43:04 -0700
-Message-Id: <20191003014310.13262-3-paulmck@kernel.org>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH tip/core/rcu 2/9] x86/kvm/pmu: Replace rcu_swap_protected() with rcu_replace()
+Date:   Wed,  2 Oct 2019 18:43:03 -0700
+Message-Id: <20191003014310.13262-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003014153.GA13156@paulmck-ThinkPad-P72>
 References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -75,32 +75,33 @@ rcu_swap_protected().
 Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
 Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Cc: <intel-gfx@lists.freedesktop.org>
-Cc: <dri-devel@lists.freedesktop.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: <x86@kernel.org>
+Cc: <kvm@vger.kernel.org>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/pmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_context.c b/drivers/gpu/drm/i915/gem/i915_gem_context.c
-index 1cdfe05..c5c22c4 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_context.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_context.c
-@@ -1629,7 +1629,7 @@ set_engines(struct i915_gem_context *ctx,
- 		i915_gem_context_set_user_engines(ctx);
- 	else
- 		i915_gem_context_clear_user_engines(ctx);
--	rcu_swap_protected(ctx->engines, set.engines, 1);
-+	set.engines = rcu_replace(ctx->engines, set.engines, 1);
- 	mutex_unlock(&ctx->engines_mutex);
+diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+index 46875bb..4c37266 100644
+--- a/arch/x86/kvm/pmu.c
++++ b/arch/x86/kvm/pmu.c
+@@ -416,8 +416,8 @@ int kvm_vm_ioctl_set_pmu_event_filter(struct kvm *kvm, void __user *argp)
+ 	*filter = tmp;
  
- 	call_rcu(&set.engines->rcu, free_engines_rcu);
+ 	mutex_lock(&kvm->lock);
+-	rcu_swap_protected(kvm->arch.pmu_event_filter, filter,
+-			   mutex_is_locked(&kvm->lock));
++	filter = rcu_replace(kvm->arch.pmu_event_filter, filter,
++			     mutex_is_locked(&kvm->lock));
+ 	mutex_unlock(&kvm->lock);
+ 
+ 	synchronize_srcu_expedited(&kvm->srcu);
 -- 
 2.9.5
 
