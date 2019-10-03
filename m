@@ -2,72 +2,104 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB8EC32792
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F84CC10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:53:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BD7D7217D7
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02E5F2086A
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:53:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbfJCIjZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 04:39:25 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:50896 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbfJCIjZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 04:39:25 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C4E4E1DB0;
-        Thu,  3 Oct 2019 08:39:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-125-72.rdu2.redhat.com [10.10.125.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EB1B5D9DC;
-        Thu,  3 Oct 2019 08:39:18 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20191003014310.13262-1-paulmck@kernel.org>
-References: <20191003014310.13262-1-paulmck@kernel.org> <20191003014153.GA13156@paulmck-ThinkPad-P72>
-To:     paulmck@kernel.org
-Cc:     dhowells@redhat.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH tip/core/rcu 1/9] rcu: Upgrade rcu_swap_protected() to rcu_replace()
+        id S1728806AbfJCIxQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 04:53:16 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:32873 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727357AbfJCIxQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 04:53:16 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 60so1619772otu.0;
+        Thu, 03 Oct 2019 01:53:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n4OuXWkCcYZn6iGz6yGmnFOFRK47tt+Gizjfc+eM7TQ=;
+        b=hoZf6awo+2ZGQgfftoSqBZ9JDOl0ZMSsCd7t59jSSXJ9PwEiiefpmui+A8SYuDnezf
+         i8j3gYXkGGrYgOPG0632lB8YyAfjNtLNSQsogtBgW/HLqtguhr61R7wgouchfmx1Kj7X
+         lHr4ztxmHYrVEBEYZ+4C1Qfnqv5jd2kbyM/yoJm53JJ8rySQyPaCZKIde8mXM5/8eMoo
+         OLYuG7KfxAj3MPjVit6FtDnOyOUKNcDNaeCqHbDxmk0xRd9y4+QdHKkD39cmAdAnK0lS
+         K3P5xOiNrJpUVSpHkvQ74NZ3xNa9RIcuJtFAsgI7y4vja7XVTJwFXqtGvIy1BKEBCaMC
+         vHuw==
+X-Gm-Message-State: APjAAAVzzxlWeCrNCzf9DJFz7UC6vdodRT7LiTvxmrzxvPAZij2V4ET8
+        je2u90zbCyrNpAHf71I+vSzMWDwsj2SxQ5UBLBM=
+X-Google-Smtp-Source: APXvYqwbdMbTKx/DAhkGzzchLDJAEOUh/Gil0KvV2Aj9xDuPK1uPz5XIRULAFZrTUlVNXEHJQrqLZFkRq/H2lMnHb4k=
+X-Received: by 2002:a9d:730d:: with SMTP id e13mr5825697otk.145.1570092795050;
+ Thu, 03 Oct 2019 01:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <25407.1570091957.1@warthog.procyon.org.uk>
-Date:   Thu, 03 Oct 2019 09:39:17 +0100
-Message-ID: <25408.1570091957@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.71]); Thu, 03 Oct 2019 08:39:25 +0000 (UTC)
+References: <20191003014710.GA13323@paulmck-ThinkPad-P72> <20191003014728.13496-9-paulmck@kernel.org>
+In-Reply-To: <20191003014728.13496-9-paulmck@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 3 Oct 2019 10:53:03 +0200
+Message-ID: <CAMuHMdW5+RSp6iycmyPnYPv+xHr5tNY7U3w-BVrWqz4BR2Dd7w@mail.gmail.com>
+Subject: Re: [PATCH tip/core/rcu 9/9] rcu: Suppress levelspread uninitialized messages
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, dipankar@in.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-paulmck@kernel.org wrote:
+Hi Paul,
 
-> +#define rcu_replace(rcu_ptr, ptr, c)					\
-> +({									\
-> +	typeof(ptr) __tmp = rcu_dereference_protected((rcu_ptr), (c));	\
-> +	rcu_assign_pointer((rcu_ptr), (ptr));				\
-> +	__tmp;								\
-> +})
+On Thu, Oct 3, 2019 at 3:49 AM <paulmck@kernel.org> wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+>
+> New tools bring new warnings, and with v5.3 comes:
 
-Does it make sense to actually use xchg() if that's supported by the arch?
+According to the kisskb build logs, it happens with gcc 4.6.3 only ;-)
 
-David
+> kernel/rcu/srcutree.c: warning: 'levelspread[<U aa0>]' may be used uninitialized in this function [-Wuninitialized]:  => 121:34
+>
+> This commit suppresses this warning by initializing the full array
+> to INT_MIN, which will result in failures should any out-of-bounds
+> references appear.
+>
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+Thanks for your patch!
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+(for the initialization loop, not for the actual INT_MIN value)
+
+Unfortunately I don't have a gcc-4.6.3 Linux cross-compiler anymore.
+I tried with msp430-gcc-4.6.3 and some hackery to get it to compile,
+but that didn't let me reproduce the warning.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
