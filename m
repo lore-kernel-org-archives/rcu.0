@@ -2,123 +2,81 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E2DC10F14
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 17:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053FFC10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 18:06:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9A1F320830
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 17:25:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B6F6520679
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 18:06:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="face39Zi"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P33VuDoP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731650AbfJCRZm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 13:25:42 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36635 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390881AbfJCRVu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:21:50 -0400
-Received: by mail-qt1-f195.google.com with SMTP id o12so4699988qtf.3;
-        Thu, 03 Oct 2019 10:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h5Rim9i4R2dtqePdDLpMCbY7rNwA6OH+nyEYI7LKahs=;
-        b=face39Zit5ry5Kv5MEk6wx4lT9nUPV/Qw7+B489XY4veUQ8Vg1354MpUcaarHInvO1
-         aEzb6pTQwv9J9IvU8iaZzbfOuYaNy9AWHG5qsRqVP2rR54qVMbGeueL2E/3PgqTc4MXR
-         ERYhWFZjcnZZ/O7s7ZxeaayQozjcO04gBOE/16ykGd3/zHrsTlW8iQme/sniIEngN3iJ
-         03xPKJsMjHyvHH9hSqX25xoaOz2boH7cgLVicayHXn2As2h41G5rhsna0OLOKET9aJLB
-         qSvFRZlxtr6FK0tcZQp0sH5NOthVXZtUhKxno5yWREXFDOzZpgs27BgDPFKAdTCJ1bIO
-         jpSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h5Rim9i4R2dtqePdDLpMCbY7rNwA6OH+nyEYI7LKahs=;
-        b=I4EpVSL9YNC+Lu7aJw9cSEOw36qC7eK7ZkKES5NcoXXjnXeyNKqUUKml1dtLwsHEtK
-         IYYEBqMZGMSx4y9IR9jrhT8sxzj12ZtxaYxIzfldrJczoAKB4izga/LishtIiW2tlMp2
-         2w3RmI/LnFv/eV5bDd1Qh+lbc6tTQam6XIp5y4Ews41WAAQJ4lwaEYVVwL99hH3ayB21
-         ANrxuO6FNHy3NHY8lFM75YUz3HPLiANPtBGDMQX/7wMOCn6PyVIeEFwZMv7ooffcXPmp
-         8rOwY5kjEfIJRFVvzWeVsk4qMZhiLR+aQ3Wtle2s0h5ubX6jhbihycF87+chumURS/QJ
-         kZKA==
-X-Gm-Message-State: APjAAAXg17UfeBrmBIhZAm6pUQIM1AcQ85PC45jWAlbAKCSukqrZB0nt
-        ZSC0pmgDCd1UXZs8RBB/eTZfASEXc/nnj3jOjKFODxGSUbE=
-X-Google-Smtp-Source: APXvYqz4TrdMivyXDTK0GQ13yFmR3JItdHh5McZQkymTQsopcQ3vLgBQWOsNamCBOfIzbAPoIMHO57B910EUdBEE4mk=
-X-Received: by 2002:aed:2726:: with SMTP id n35mr10864628qtd.171.1570123309206;
- Thu, 03 Oct 2019 10:21:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72> <20191003014310.13262-6-paulmck@kernel.org>
-In-Reply-To: <20191003014310.13262-6-paulmck@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Oct 2019 10:21:38 -0700
-Message-ID: <CAEf4BzaBuktutCZr2ZUC6b-XK_JJ7prWZmO-5Yew2tVp5DxbBA@mail.gmail.com>
-Subject: Re: [PATCH tip/core/rcu 6/9] bpf/cgroup: Replace rcu_swap_protected()
- with rcu_replace()
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        id S1730473AbfJCSGP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Oct 2019 14:06:15 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:56726 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730357AbfJCSGP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 14:06:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=WyPRuVAU5nKXtdZnfXrEV/Yh6ZzXoc85gldhc3aCFNI=; b=P33VuDoPb42L4/QiPVmsXeS/G
+        +3bGheY/Sn22ZPzTNTT3Nkp8pZ4m8ruzt95pRoiZzZHenNRuwel5FM0O/RTLQ0OHX4t5EzwoK/QhL
+        Iw4Odkd1AzUeOy7cmzLdcglIUeBs/dBXTxTpgWZ5pAhlK4hDlYlWLW8+cALuhvXDtb58pDZFuPHS3
+        1U7xo0lVDUuJIEEq2eKsX72xgwxsuooZGd/q5fGnnP212jIEuvtARm86PtCHdTWSBmMc3Ic+Xet1W
+        kJsr5zpeRnPCBPJOSp0ShE7iG1hQhV+J5/gFGqj5fGnTztCx3Iqn+iAByDHGtz720edoJPsrSY/cf
+        hNRkXv53A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iG5Tn-0003ae-Ke; Thu, 03 Oct 2019 18:05:31 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 674389802BF; Thu,  3 Oct 2019 20:05:28 +0200 (CEST)
+Date:   Thu, 3 Oct 2019 20:05:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>, David Howells <dhowells@redhat.com>,
+        paulmck@kernel.org, rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dipankar <dipankar@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>, dhowells@redhat.com,
-        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
-        oleg@redhat.com, Joel Fernandes <joel@joelfernandes.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Bart Van Assche <bart.vanassche@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Shane M Seymour <shane.seymour@hpe.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH tip/core/rcu 1/9] rcu: Upgrade rcu_swap_protected() to
+ rcu_replace()
+Message-ID: <20191003180528.GH4643@worktop.programming.kicks-ass.net>
+References: <20191003014310.13262-1-paulmck@kernel.org>
+ <20191003014153.GA13156@paulmck-ThinkPad-P72>
+ <25408.1570091957@warthog.procyon.org.uk>
+ <20191003090850.1e2561b3@gandalf.local.home>
+ <561448323.948.1570120298211.JavaMail.zimbra@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <561448323.948.1570120298211.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 6:45 PM <paulmck@kernel.org> wrote:
->
-> From: "Paul E. McKenney" <paulmck@kernel.org>
->
-> This commit replaces the use of rcu_swap_protected() with the more
-> intuitively appealing rcu_replace() as a step towards removing
-> rcu_swap_protected().
->
-> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
+On Thu, Oct 03, 2019 at 12:31:38PM -0400, Mathieu Desnoyers wrote:
+> We might want to consider simply using xchg() here.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  kernel/bpf/cgroup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index ddd8add..06a0657 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -180,8 +180,8 @@ static void activate_effective_progs(struct cgroup *cgrp,
->                                      enum bpf_attach_type type,
->                                      struct bpf_prog_array *old_array)
->  {
-> -       rcu_swap_protected(cgrp->bpf.effective[type], old_array,
-> -                          lockdep_is_held(&cgroup_mutex));
-> +       old_array = rcu_replace(cgrp->bpf.effective[type], old_array,
-> +                               lockdep_is_held(&cgroup_mutex));
->         /* free prog array after grace period, since __cgroup_bpf_run_*()
->          * might be still walking the array
->          */
-> --
-> 2.9.5
->
+As stated elsewhere, xchg() is an atomic op with full ordering, IOW it
+is stupid expensive for what needs to be done.
