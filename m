@@ -2,102 +2,73 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60EE9C4360C
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99A78C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:38:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2EE25222C0
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:48:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570067280;
-	bh=4aOPyTJph2xYG0MK69zyCvwxb5I4yf1354D3Ac5DoPE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ZKBi5Xkk31V3w2TGzTfcsgP1YnFwEmZeQ098EDOcYwN+HJmhbmw1BedV5g0o62kdh
-	 16KQPD3f5l0e0pFuZErf7f4e43OMcSmDVotdkVDIzO0XzhLzeT9TBHQgK4Rfa9/FLe
-	 JEEgJvIASbrd+AUu7R5TlcC9jtSE14cX0ab+qcJ0=
+	by mail.kernel.org (Postfix) with ESMTP id 7774C215EA
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 08:38:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbfJCBr7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
+        id S1727611AbfJCIiW convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Thu, 3 Oct 2019 04:38:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:54422 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727273AbfJCBrc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:47:32 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726523AbfJCIiV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Oct 2019 04:38:21 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3CB8222C4;
-        Thu,  3 Oct 2019 01:47:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570067251;
-        bh=4aOPyTJph2xYG0MK69zyCvwxb5I4yf1354D3Ac5DoPE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ram4/adO9JSNrRigaxHPNB9ZBuARLCuLgvClsrX3waXCbMmiD1v8HWl5dHQk8FTUx
-         yrXLXY9ZOx4CMoeGbu3FTMhU/PWCH3vPs4z20Hei/1rDVUZYVzcSU/SFxrTsOGgXjU
-         qQLbWSMRhPJM/Q+0cy9QSakgnz74adwYyZJKpGkY=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        by mx1.redhat.com (Postfix) with ESMTPS id 2B3C43C93A;
+        Thu,  3 Oct 2019 08:38:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-125-72.rdu2.redhat.com [10.10.125.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 732965D6A7;
+        Thu,  3 Oct 2019 08:38:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20191003014310.13262-5-paulmck@kernel.org>
+References: <20191003014310.13262-5-paulmck@kernel.org> <20191003014153.GA13156@paulmck-ThinkPad-P72>
+To:     paulmck@kernel.org
+Cc:     dhowells@redhat.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 2/9] locktorture: Replace strncmp() with str_has_prefix()
-Date:   Wed,  2 Oct 2019 18:47:21 -0700
-Message-Id: <20191003014728.13496-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20191003014710.GA13323@paulmck-ThinkPad-P72>
-References: <20191003014710.GA13323@paulmck-ThinkPad-P72>
+        rostedt@goodmis.org, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH tip/core/rcu 5/9] fs/afs: Replace rcu_swap_protected() with rcu_replace()
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <25321.1570091894.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8BIT
+Date:   Thu, 03 Oct 2019 09:38:14 +0100
+Message-ID: <25322.1570091894@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Thu, 03 Oct 2019 08:38:21 +0000 (UTC)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+paulmck@kernel.org wrote:
 
-The strncmp() function is error-prone because it is easy to get the
-length wrong, especially if the string is subject to change, especially
-given the need to account for the terminating nul byte.  This commit
-therefore substitutes the newly introduced str_has_prefix(), which
-does not require a separately specified length.
+> This commit replaces the use of rcu_swap_protected() with the more
+> intuitively appealing rcu_replace() as a step towards removing
+> rcu_swap_protected().
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- kernel/locking/locktorture.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yay!
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index c513031..8dd9002 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -889,16 +889,16 @@ static int __init lock_torture_init(void)
- 		cxt.nrealwriters_stress = 2 * num_online_cpus();
- 
- #ifdef CONFIG_DEBUG_MUTEXES
--	if (strncmp(torture_type, "mutex", 5) == 0)
-+	if (str_has_prefix(torture_type, "mutex"))
- 		cxt.debug_lock = true;
- #endif
- #ifdef CONFIG_DEBUG_RT_MUTEXES
--	if (strncmp(torture_type, "rtmutex", 7) == 0)
-+	if (str_has_prefix(torture_type, "rtmutex"))
- 		cxt.debug_lock = true;
- #endif
- #ifdef CONFIG_DEBUG_SPINLOCK
--	if ((strncmp(torture_type, "spin", 4) == 0) ||
--	    (strncmp(torture_type, "rw_lock", 7) == 0))
-+	if ((str_has_prefix(torture_type, "spin")) ||
-+	    (str_has_prefix(torture_type, "rw_lock")))
- 		cxt.debug_lock = true;
- #endif
- 
--- 
-2.9.5
+> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: <linux-afs@lists.infradead.org>
+> Cc: <linux-kernel@vger.kernel.org>
 
+Acked-by: David Howells <dhowells@redhat.com>
