@@ -2,103 +2,94 @@ Return-Path: <SRS0=7Ubr=X4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 695DEC47404
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6E7C10F14
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:41:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 368F2222C4
-	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:39:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57137222C2
+	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570066785;
-	bh=UjqYB5SekydtulNhxTwjwTsMjjV+WrUsz39ttMq5r5c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=IXChtE2HdKktff+zOwKJVRE8oDZ+Rbu3fLD58LywUQmr5bq2QEoSL697M+W4qRfyo
-	 z1Hxvt58gxk2/wjD2pduT8Tc7NK85ep0EcAIsy+Qu7/PjXc3KOg8pH5NdKRLFco0KA
-	 ipUZI2sJzKBLQWiAPSqMYGHLnc6xZhupGvEDi19o=
+	s=default; t=1570066916;
+	bh=bzqrGPwyvYmyxv4cMeaBL5r00na4FxhLczouqFPG5Fc=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=xnu6iyxWAQL2MxABB4P++1YGuqJL6dze0MPMJoxUztfRCYSzyjAGsA9F1uAL3UJUo
+	 aULtYShkpK34rM3EP5jBSJMwqFSFMs51S31t44QYXHx9oj0WYbPIF7ySB11ZvCjJhm
+	 gSYAeAjXzgS8yrxTwzpsP1O9o1ZA63hBCmTZhHT4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbfJCBjH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Oct 2019 21:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44768 "EHLO mail.kernel.org"
+        id S1726523AbfJCBl4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Oct 2019 21:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727428AbfJCBjH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Oct 2019 21:39:07 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725799AbfJCBl4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Oct 2019 21:41:56 -0400
+Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CC5D222C6;
-        Thu,  3 Oct 2019 01:39:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDE28222BE;
+        Thu,  3 Oct 2019 01:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066746;
-        bh=UjqYB5SekydtulNhxTwjwTsMjjV+WrUsz39ttMq5r5c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UdlIhIBfxLXG1/Gci9lQXshyutXy6tcvMTqXJwxcW6SXALee+xO+qD3WAiy2qvC9o
-         LzyAksRVj2fFAIn5liyKEzEtFtVTU6vUuaZDz/c+e88sFwyeR3S2Y++QMctC/sQi7l
-         +lsjJmWjj1oY54bZsOJDwXZQuQ3ON7dIc33O68R0=
-From:   paulmck@kernel.org
+        s=default; t=1570066915;
+        bh=bzqrGPwyvYmyxv4cMeaBL5r00na4FxhLczouqFPG5Fc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=QhjP1X3vwPFLuxkX2H+tbj8Ufauau79bS4svw1wkRtCEC7yzCd31Yf8PReBKbKASS
+         E3M9IAjoRvU13CVH5DEepuvBaB+MAc/m3irRsmqzEFc7T/Zbn7j/XddWcgNqzxyYh4
+         yNI2vuhIieOlIlUbwDa08b9aMgdhOwvucj0bXtdI=
+Date:   Wed, 2 Oct 2019 18:41:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 03/12] rcu: Force on tick when invoking lots of callbacks
-Date:   Wed,  2 Oct 2019 18:38:54 -0700
-Message-Id: <20191003013903.13079-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20191003013834.GA12927@paulmck-ThinkPad-P72>
-References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/9] Replace rcu_swap_protected() for v5.5
+Message-ID: <20191003014153.GA13156@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@linux.ibm.com>
+Hello!
 
-Callback invocation can run for a significant time period, and within
-CONFIG_NO_HZ_FULL=y kernels, this period will be devoid of scheduler-clock
-interrupts.  In-kernel execution without such interrupts can cause all
-manner of malfunction, with RCU CPU stall warnings being but one result.
+This series replaces uses of rcu_swap_protected() with rcu_replace().
+A later patch will remove rcu_swap_protected().
 
-This commit therefore forces scheduling-clock interrupts on whenever more
-than a few RCU callbacks are invoked.  Because offloaded callback invocation
-can be preempted, this forcing is withdrawn on each context switch.  This
-in turn requires that the loop invoking RCU callbacks reiterate the forcing
-periodically.
+1.	Upgrade rcu_swap_protected() to rcu_replace().
 
-[ paulmck: Apply Joel Fernandes TICK_DEP_MASK_RCU->TICK_DEP_BIT_RCU fix. ]
-Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
----
- kernel/rcu/tree.c | 4 ++++
- 1 file changed, 4 insertions(+)
+2-9.	Replace calls to rcu_swap_protected() with rcu_replace().
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8110514..db673ae 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2151,6 +2151,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
- 	/* Invoke callbacks. */
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_dep_set_task(current, TICK_DEP_BIT_RCU);
- 	rhp = rcu_cblist_dequeue(&rcl);
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		debug_rcu_head_unqueue(rhp);
-@@ -2217,6 +2219,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Re-invoke RCU core processing if there are callbacks remaining. */
- 	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
- 		invoke_rcu_core();
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-+		tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
- }
- 
- /*
--- 
-2.9.5
+							Thanx, Paul
 
+------------------------------------------------------------------------
+
+ arch/x86/kvm/pmu.c                          |    4 ++--
+ drivers/gpu/drm/i915/gem/i915_gem_context.c |    2 +-
+ drivers/scsi/scsi.c                         |    4 ++--
+ drivers/scsi/scsi_sysfs.c                   |    8 ++++----
+ fs/afs/vl_list.c                            |    4 ++--
+ include/linux/rcupdate.h                    |   18 ++++++++++++++++++
+ kernel/bpf/cgroup.c                         |    4 ++--
+ net/core/dev.c                              |    4 ++--
+ net/core/sock_reuseport.c                   |    4 ++--
+ net/netfilter/nf_tables_api.c               |    5 +++--
+ net/sched/act_api.c                         |    2 +-
+ net/sched/act_csum.c                        |    4 ++--
+ net/sched/act_ct.c                          |    2 +-
+ net/sched/act_ctinfo.c                      |    4 ++--
+ net/sched/act_ife.c                         |    2 +-
+ net/sched/act_mirred.c                      |    4 ++--
+ net/sched/act_mpls.c                        |    2 +-
+ net/sched/act_police.c                      |    6 +++---
+ net/sched/act_skbedit.c                     |    4 ++--
+ net/sched/act_tunnel_key.c                  |    4 ++--
+ net/sched/act_vlan.c                        |    2 +-
+ 21 files changed, 56 insertions(+), 37 deletions(-)
