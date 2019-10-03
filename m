@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93CECC47404
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D122EC10F14
 	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6067521A4C
+	by mail.kernel.org (Postfix) with ESMTP id 995DF21A4C
 	for <rcu@archiver.kernel.org>; Thu,  3 Oct 2019 01:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1570066135;
-	bh=1lJv91vKKrdKjRgdRQor94squQr610oBJvHIaY9YZCY=;
+	bh=jYb6PLJxKNd9LF++H/PLSDwTIf7b8iJz+MMZGyL3Qok=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=j7Lz8RkU3FxPB9kkJY5jQNEHx24M3+biKrp8ifwwHiWj2WqjPufGMTbod8VU2jKCm
-	 zy6TMGqsPqWhz1n3UGcsPgxETC2pKzlGf8CCC+F4fhcvh7395aHtweX4PET/3DYdpu
-	 pz+3YjHKhIZ2QlZF+XH/QsKV7kzaCWEtYSzSurFs=
+	b=fv617fBfqwcZCyLdj8W/VfyzV0pM4jKzgH2+uetWhvzNA+m6wlVjsjoljsfvqSY/c
+	 Rbsfjpccn9wVMqUtTKzDf9VcBeyj60TbFqdRMhlBDXnjBNgY3v03bkk6+lTYcNdvXk
+	 1nl8Err0WsbQH6T04OsTeOqaH2OoaOVfKtufad48=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727548AbfJCB2W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727514AbfJCB2W (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 2 Oct 2019 21:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40826 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:40866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727488AbfJCB2V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727501AbfJCB2V (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 2 Oct 2019 21:28:21 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2990222D3;
-        Thu,  3 Oct 2019 01:28:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1019E222CC;
+        Thu,  3 Oct 2019 01:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570066100;
-        bh=1lJv91vKKrdKjRgdRQor94squQr610oBJvHIaY9YZCY=;
+        s=default; t=1570066101;
+        bh=jYb6PLJxKNd9LF++H/PLSDwTIf7b8iJz+MMZGyL3Qok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dZkc4rNBPwjMsc5gXiEFqScyzrjIWuzlcH6z9qI1U529plG/6k4ac0EPIZMV1xARv
-         JctoBvy+pIzGhnSlYBzxjcReXLXlxm2vKb/HZUB0UQSwOxnCFl4EgwyaMeaLXFWI11
-         rEGGpm+3QbZhZAhqPO3MHnDLx+raeJfP5fy6VoDk=
+        b=By5Yfaw16RvX/et3M4fexhD6Znk37fXohUBQpsrwPOL5HeRTSpdSWaI9gMvP7uJs7
+         qUuBtWewhhfS+xbjcVOLJZRBUqbmkvwEIdjiDhPftl17vA58Y+mQSWK0Q4TpKlPifB
+         LLXo2WEbB3sLCyiZnvHgNIv+NChQH18KjnR9ItB0=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E . McKenney" <paulmck@linux.ibm.com>
-Subject: [PATCH tip/core/rcu 5/9] docs: rcu: Increase toctree to 3
-Date:   Wed,  2 Oct 2019 18:28:11 -0700
-Message-Id: <20191003012815.12639-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 6/9] Restore docs "treewide: Rename rcu_dereference_raw_notrace() to _check()"
+Date:   Wed,  2 Oct 2019 18:28:12 -0700
+Message-Id: <20191003012815.12639-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191003012741.GA12456@paulmck-ThinkPad-P72>
 References: <20191003012741.GA12456@paulmck-ThinkPad-P72>
@@ -60,28 +60,26 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-These documents are long and have various sections. Provide a good
-toc nesting level.
+This restores docs back in ReST format.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 ---
- Documentation/RCU/index.rst | 2 +-
+ Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-index 94427dc..5c99185 100644
---- a/Documentation/RCU/index.rst
-+++ b/Documentation/RCU/index.rst
-@@ -5,7 +5,7 @@ RCU concepts
- ============
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index a33b5fb..0b22246 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -1997,7 +1997,7 @@ Tracing and RCU
+ ~~~~~~~~~~~~~~~
  
- .. toctree::
--   :maxdepth: 1
-+   :maxdepth: 3
- 
-    rcu
-    listRCU
+ It is possible to use tracing on RCU code, but tracing itself uses RCU.
+-For this reason, ``rcu_dereference_raw_notrace()`` is provided for use
++For this reason, ``rcu_dereference_raw_check()`` is provided for use
+ by tracing, which avoids the destructive recursion that could otherwise
+ ensue. This API is also used by virtualization in some architectures,
+ where RCU readers execute in environments in which tracing cannot be
 -- 
 2.9.5
 
