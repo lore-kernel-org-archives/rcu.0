@@ -6,134 +6,127 @@ X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79539C47404
-	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 16:37:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2FCCC4360C
+	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 17:20:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 510CD20873
-	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 16:37:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 846352084D
+	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 17:20:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="uIXjn9Ir"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="DLw0gUoD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbfJDQhf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Oct 2019 12:37:35 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:37959 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbfJDQhf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Oct 2019 12:37:35 -0400
-Received: by mail-pf1-f196.google.com with SMTP id h195so4222202pfe.5
-        for <rcu@vger.kernel.org>; Fri, 04 Oct 2019 09:37:34 -0700 (PDT)
+        id S1730070AbfJDRUl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Oct 2019 13:20:41 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37558 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729291AbfJDRUl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Oct 2019 13:20:41 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y5so4289354pfo.4
+        for <rcu@vger.kernel.org>; Fri, 04 Oct 2019 10:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=0r+kspBGzbwJkofAXeQf0YDo6d6pCh/LPA05isPo7WU=;
-        b=uIXjn9Ir1OYKzJYjCzrOVOb8dIi2FsiUWqNhm4g+dp/YQvmkp+PrZR8CFq7q3Wyu/V
-         kMGEsLoqbf71gPWG+oWxtCozyVJN4sJota9i3g9dA7f5ySdYXqDsnttiAVa83+Y1Y2Px
-         soNPvfO4bb2CLCSvI3iM+/Z0ZeLMBNZzOu5c0=
+        bh=CFABRMz1edgqMZrdkcJ5grQHuov7IQWx4KDvNWdkveo=;
+        b=DLw0gUoDjdWvEBBUV5C8SsFx2SjR7VbPltgBwhUofYZDeym6mWGlcy4pzCTH99BHOv
+         kKM6IrnZhzr87BifF8O22/Xjqa10WR/Uyac9x7SQG4iz4uVReP6nlGz+d6b0T+xjQvPL
+         Z11qFIqBDxRwx+WWICguoP64fiLb15pZr6PQo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0r+kspBGzbwJkofAXeQf0YDo6d6pCh/LPA05isPo7WU=;
-        b=FGqguP/f6vsOKxExvHx6UFjuwXdyHgPiKo3JHjmNqvkG/wibedYtJA1i6bjtaC3UyY
-         K4owleJv2Ln1SNqHE6AZ6XVJFfvruV7k+rjIvhbSUBoFhX/WIaud7f9TXMrHgO+n41MR
-         I1TmbaqaMjMIpuUdUCx4KwU57LYDUy2I/0yzc3nZo+VaBBfY0fYj7CPhWkWE6JITAKih
-         hf1WlzmhcOMXbllotCktTKb65kmFuZA5cGG51gIpvntQWA63s9i/E1e6B6uA3Lud0jdg
-         lyLxM4tLpqByEajceFMgotLKDp43IaHOfx3ROPkWQ5cD+G4UX92tiTmpn4SJtP9yYcxc
-         nHSg==
-X-Gm-Message-State: APjAAAWM1/9HjUQWaVy6DSOLe4ub4zMaEF9Sd2ytKzWDZeL6PHgsaycr
-        Il/1QhVf/XgIkmBxTbdd2caYWg==
-X-Google-Smtp-Source: APXvYqzoIYcxcnOAbtt+ZaZsgwY212u0mOxjh1mQapxZ7B4qp2hF8VvvsbvLx+NkKjoBOkq/nzNAiw==
-X-Received: by 2002:a62:7684:: with SMTP id r126mr17569821pfc.26.1570207054408;
-        Fri, 04 Oct 2019 09:37:34 -0700 (PDT)
+        bh=CFABRMz1edgqMZrdkcJ5grQHuov7IQWx4KDvNWdkveo=;
+        b=oTSp1CWaWu9MEDDo/UOL3r0ITVrLKDMP72PHKLLQqMzDmidpKtz2By0JsQmyPBpPF9
+         Ko+Kf9BJi17oTTfvxBHw1ysh371//X2tylvVVGN2fVfIlvndla7pVm71qyWlMSz9+1VI
+         ewPvYo5eAquXOK4HSdv22LY3Or1OnP66Xk1i0AHpnVE7scebSltaFaCq6dZxMxIDDvDF
+         EIwUnnXZUY8HMqdG1oirXW/Zi3fSH8xDn1CvA3IIycyUSZDbirQI+AsHRCO4IUkZ+RzZ
+         R45Lui6Vmz5KeYcFAqDx0r1WmkU0yMRiD0SSME/TQvd8p/5YXFAQfJCyb4ztub0IT79z
+         khxQ==
+X-Gm-Message-State: APjAAAViLwMqXXO78fB0KIgwMoxPbRE1DT0qPsR+lSvCvPIiRXOugiKz
+        yh3N2jWqzzeNdLISTHVSzxGOrQ==
+X-Google-Smtp-Source: APXvYqwFCmRx7gnHvoTWyC7aMhsw0IcKe/Dj+u7BUgTEzw2ALpPH5rZ3jH7F7dZ7Yuhc2QYnthap5Q==
+X-Received: by 2002:a62:a509:: with SMTP id v9mr17803603pfm.180.1570209640112;
+        Fri, 04 Oct 2019 10:20:40 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id e14sm6907332pjt.8.2019.10.04.09.37.33
+        by smtp.gmail.com with ESMTPSA id j22sm8832861pgg.16.2019.10.04.10.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 09:37:33 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 12:37:32 -0400
+        Fri, 04 Oct 2019 10:20:39 -0700 (PDT)
+Date:   Fri, 4 Oct 2019 13:20:38 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, bristot@redhat.com,
-        peterz@infradead.org, paulmck@kernel.org, rcu@vger.kernel.org,
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kernel-team@lge.com, Byungchul Park <byungchul.park@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        max.byungchul.park@gmail.com,
         "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] Remove GP_REPLAY state from rcu_sync
-Message-ID: <20191004163732.GA253167@google.com>
-References: <20191004145741.118292-1-joel@joelfernandes.org>
- <20191004154102.GA20945@redhat.com>
+Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
+ batching
+Message-ID: <20191004172038.GG253167@google.com>
+References: <20190814160411.58591-1-joel@joelfernandes.org>
+ <20190918095811.GA25821@pc636>
+ <20190930201623.GA134859@google.com>
+ <20191001112702.GA22112@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191004154102.GA20945@redhat.com>
+In-Reply-To: <20191001112702.GA22112@pc636>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Oleg,
-
-On Fri, Oct 04, 2019 at 05:41:03PM +0200, Oleg Nesterov wrote:
-> On 10/04, Joel Fernandes (Google) wrote:
+On Tue, Oct 01, 2019 at 01:27:02PM +0200, Uladzislau Rezki wrote:
+[snip] 
+> > > I have just a small question related to workloads and performance evaluation.
+> > > Are you aware of any specific workloads which benefit from it for example
+> > > mobile area, etc? I am asking because i think about backporting of it and
+> > > reuse it on our kernel. 
+> > 
+> > I am not aware of a mobile usecase that benefits but there are server
+> > workloads that make system more stable in the face of a kfree_rcu() flood.
+> > 
+> OK, i got it. I wanted to test it finding out how it could effect mobile
+> workloads.
+> 
 > >
-> > But this is not always true if you consider the following events:
-> 
-> I'm afraid I missed your point, but...
-> 
-> > ---------------------->
-> > GP num         111111     22222222222222222222222222222222233333333
-> > GP state  i    e     p    x                 r              rx     i
-> > CPU0 :         rse	  rsx
-> > CPU1 :                         rse     rsx
-> > CPU2 :                                         rse     rsx
+> > For the KVA allocator work, I see it is quite similar to the way binder
+> > allocates blocks. See function: binder_alloc_new_buf_locked(). Is there are
+> > any chance to reuse any code? For one thing, binder also has an rbtree for
+> > allocated blocks for fast lookup of allocated blocks. Does the KVA allocator
+> > not have the need for that?
 > >
-> > Here, we had 3 grace periods that elapsed, 1 for the rcu_sync_enter(),
-> > and 2 for the rcu_sync_exit(s).
+> Well, there is a difference. Actually the free blocks are not sorted by
+> the its size like in binder layer, if understand the code correctly.
 > 
-> But this is fine?
-> 
-> We only need to ensure that we have a full GP pass between the "last"
-> rcu_sync_exit() and GP_XXX -> GP_IDLE transition.
-> 
-> > However, we had 3 rcu_sync_exit()s, not 2. In other words, the
-> > rcu_sync_exit() got batched.
-> >
-> > So my point here is, rcu_sync_exit() does not really always cause a new
-> > GP to happen
-> 
-> See above, it should not.
+> Instead, i keep them(free blocks) sorted(by start address) in ascending
+> order + maintain the augment value(biggest free size in left or right sub-tree)
+> for each node, that allows to navigate toward the lowest address and the block
+> that definitely suits. So as a result our allocations become sequential
+> what is important.
 
-Ok, I understand now. The point is to wait for a full GP, not necessarily
-start a new one on each exit.
+Right, I realized this after sending the email that binder and kva sort
+differently though they both try to use free sizes during the allocation.
 
-> > Then what is the point of the GP_REPLAY state at all if it does not
-> > always wait for a new GP?
-> 
-> Again, I don't understand... GP_REPLAY ensures that we will have a full GP
-> before rcu_sync_func() sets GP_IDLE, note that it does another "recursive"
-> call_rcu() if it sees GP_REPLAY.
-
-Ok, got it.
-
-> > Taking a step back, why did we intend to have
-> > to wait for a new GP if another rcu_sync_exit() comes while one is still
-> > in progress?
-> 
-> To ensure that if another CPU sees rcu_sync_is_idle() (GP_IDLE) after you
-> do rcu_sync_exit(), then it must also see all memory changes you did before
-> rcu_sync_exit().
-
-Would this not be better implemented using memory barriers, than starting new
-grace periods just for memory ordering? A memory barrier is lighter than
-having to go through a grace period. So something like: if the state is
-already GP_EXIT, then rcu_sync_exit() issues a memory barrier instead of
-replaying. But if state is GP_PASSED, then wait for a grace period. Or, do
-you see a situation where this will not work?
+Would you have any papers, which survey various rb-tree based allocator
+algorithms and their tradeoffs? I am interested in studying these more
+especially in relation to the binder driver. Would also be nice to make
+contributions to papers surveying both these allocators to describe the state
+of the art.
 
 thanks,
 
  - Joel
 
+
+> >
+> > And, nice LPC presentation! I was there ;)
+> > 
+> Thanks :)
+> 
+> --
+> Vlad Rezki
