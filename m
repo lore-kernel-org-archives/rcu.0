@@ -2,104 +2,206 @@ Return-Path: <SRS0=JxeY=X5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE62CC10F14
-	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 02:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20210C47404
+	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 14:57:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8575C207FF
-	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 02:11:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E81C22084D
+	for <rcu@archiver.kernel.org>; Fri,  4 Oct 2019 14:57:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HyeGMiSo"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="rHRl2+0W"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730417AbfJDCLM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Oct 2019 22:11:12 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:34808 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730272AbfJDCLL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Oct 2019 22:11:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9429W0q056974;
-        Fri, 4 Oct 2019 02:09:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=8FXA0zgZoIW7W0Aa4N8qSvofqWT8uPjI9bd0eZsFQYo=;
- b=HyeGMiSoRNxqiiYAwQ/TW6dEe9h8314AVISrwnAulCy3Lm7Ryd9WUOD633pWVHm2hyI0
- elmpW5ZwRXsUG7cXMAxtEN3GvEGPsf2eJjZE4uvrkdY48iVPsJe2F9JwTRecmo2u+tBb
- M8DsTTsgXvSMjlVRt8Q+nvwVFK9QxGodEmGUcJbIUEK1jzpppG159unfC7BoaW0HKGWQ
- JfF7TUvTPx70gLfEOhv7HVnUSG3h49OtatR92VmdjuFT2Jf6/bFztx345DfvVZFTK3PD
- ul4du3cNzY7xNflQ2SuTfKBf3vko3lCXNnchv+nZ0r3HA4Z9a2+5JqsbfV8M5Z9UMvxo TQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2va05s83x0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Oct 2019 02:09:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9429FBv124671;
-        Fri, 4 Oct 2019 02:09:43 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2vdt3nr1tj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Oct 2019 02:09:43 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9429a6k020968;
-        Fri, 4 Oct 2019 02:09:38 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Oct 2019 19:09:35 -0700
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH tip/core/rcu 4/9] drivers/scsi: Replace rcu_swap_protected() with rcu_replace()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
-        <20191003014310.13262-4-paulmck@kernel.org>
-Date:   Thu, 03 Oct 2019 22:09:31 -0400
-In-Reply-To: <20191003014310.13262-4-paulmck@kernel.org> (paulmck@kernel.org's
-        message of "Wed, 2 Oct 2019 18:43:05 -0700")
-Message-ID: <yq1zhihqn1g.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+        id S2389387AbfJDO5t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Oct 2019 10:57:49 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36281 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389132AbfJDO5t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Oct 2019 10:57:49 -0400
+Received: by mail-pg1-f195.google.com with SMTP id 23so3916581pgk.3
+        for <rcu@vger.kernel.org>; Fri, 04 Oct 2019 07:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w2obvvD0YQZHLEq7fGZQtKqybBtTNFyX7qrcoUNkcuk=;
+        b=rHRl2+0WeuRHpPB43fer0wtZz/voElxZMtstXIZ3hcmNuzWRZgK4eVFDJ3Q81Z2Sqb
+         Un7WPlI4qOfGUn1c8LB+Egj32h+XnRx6kv0yULoLdwsm2mhUGZeSZ3s8B5sIR9F2lyWs
+         vhSDEQ3ns/7NluK3dqLsKxVEYMuplU/HMAET0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w2obvvD0YQZHLEq7fGZQtKqybBtTNFyX7qrcoUNkcuk=;
+        b=CLYR6ul9aN9vlaGWPP2p5vVZfeW/LM59OEyR2ugjb49IgxpXRrm09mBYsJH6YgPFX+
+         A4emphY+5U21n56JdQIoIIo6dvdtSl6wGFuV4UkFRzjAK0HzWsnM342XLd42taWOk5mq
+         qJUFnIF6IRdo208DYbGd9kUc0jy3TrLMtayybUIEjZy6n5E1+JJCNR/CwWucizLzogxV
+         SaJ3LS+V0mnF/Y4LoCkgtKNbcUM/WZ2VMMXCfMG3B5b7lxjb4JsqWFsERQjR/i5hCLld
+         A383rmnLampP9d6/6d9TU8uLGBYKrZ1p8Knlj0vHj1/q0CNF0Us+xMb1rXm6+dmh4ahs
+         WE6A==
+X-Gm-Message-State: APjAAAUDGJ7/JsiC2bsWms9AnkpAeCPTShU2dLSlbfU6v/UDeUxiUOGZ
+        0z8We/Ib950VMZtU4t0KUmzYjw==
+X-Google-Smtp-Source: APXvYqxqwEnceOEYdh5DBFB0KF+DIUkAYdTThezgyrXfVcZlONzVqeYt0nML7MKsm0YzbNjpmsYzAw==
+X-Received: by 2002:a63:1e16:: with SMTP id e22mr16011959pge.413.1570201068335;
+        Fri, 04 Oct 2019 07:57:48 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id w134sm7668359pfd.4.2019.10.04.07.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Oct 2019 07:57:47 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>, bristot@redhat.com,
+        peterz@infradead.org, oleg@redhat.com, paulmck@kernel.org,
+        rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] Remove GP_REPLAY state from rcu_sync
+Date:   Fri,  4 Oct 2019 10:57:41 -0400
+Message-Id: <20191004145741.118292-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9399 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=717
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910040015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9399 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=804 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910040015
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: Joel Fernandes <joel@joelfernandes.org>
 
-Paul,
+Please consider this is an RFC for discussion only. Just want to discuss
+why the GP_REPLAY state is needed at all.
 
-No objections from me.
+Here's the intention AFAICS:
+When rcu_sync_exit() has happened, the gp_state changes to GP_EXIT while
+we wait for a grace period before transitioning to GP_IDLE. In the
+meanwhile, if we receive another rcu_sync_exit(), then we want to wait
+for another GP to account for that.
 
-> +	vpd_pg80 = rcu_replace(sdev->vpd_pg80, vpd_pg80,
-> +			       lockdep_is_held(&sdev->inquiry_mutex));
-> +	vpd_pg83 = rcu_replace(sdev->vpd_pg83, vpd_pg83,
-> +			       lockdep_is_held(&sdev->inquiry_mutex));
+Drawing some timing diagrams, it looks like this:
 
-Just a heads-up that we have added a couple of additional VPD pages so
-my 5.5 tree will need additional calls to be updated to rcu_replace().
+Legend:
+rse = rcu_sync_enter
+rsx = rcu_sync_exit
+i = GP_IDLE
+x = GP_EXIT
+r = GP_REPLAY
+e = GP_ENTER
+p = GP_PASSED
+rx = GP_REPLAY changes to GP_EXIT
 
+GP num = The GP we are one.
+
+note: A GP passes between the states:
+  e and p
+  x and i
+  x and rx
+  rx and i
+
+In a simple case, the timing and states look like:
+time
+---------------------->
+GP num         1111111    2222222
+GP state  i    e     p    x     i
+CPU0 :         rse	  rsx
+
+However we can enter the replay state like this:
+time
+---------------------->
+GP num         1111111    2222222222222222222223333333
+GP state  i    e     p    x              r     rx    i
+CPU0 :         rse	  rsx
+CPU1 :                         rse     rsx
+
+Due to the second rse + rsx, we had to wait for another GP.
+
+I believe the rationale is, if another rsx happens, another GP has to
+happen.
+
+But this is not always true if you consider the following events:
+
+time
+---------------------->
+GP num         111111     22222222222222222222222222222222233333333
+GP state  i    e     p    x                 r              rx     i
+CPU0 :         rse	  rsx
+CPU1 :                         rse     rsx
+CPU2 :                                         rse     rsx
+
+Here, we had 3 grace periods that elapsed, 1 for the rcu_sync_enter(),
+and 2 for the rcu_sync_exit(s).
+
+However, we had 3 rcu_sync_exit()s, not 2. In other words, the
+rcu_sync_exit() got batched.
+
+So my point here is, rcu_sync_exit() does not really always cause a new
+GP to happen and we can end up having the rcu_sync_exit()s as batched
+and sharing the same grace period.
+
+Then what is the point of the GP_REPLAY state at all if it does not
+always wait for a new GP?  Taking a step back, why did we intend to have
+to wait for a new GP if another rcu_sync_exit() comes while one is still
+in progress?
+
+Cc: bristot@redhat.com
+Cc: peterz@infradead.org
+Cc: oleg@redhat.com
+Cc: paulmck@kernel.org
+Cc: rcu@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/sync.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+index d4558ab7a07d..4f3aad67992c 100644
+--- a/kernel/rcu/sync.c
++++ b/kernel/rcu/sync.c
+@@ -10,7 +10,7 @@
+ #include <linux/rcu_sync.h>
+ #include <linux/sched.h>
+ 
+-enum { GP_IDLE = 0, GP_ENTER, GP_PASSED, GP_EXIT, GP_REPLAY };
++enum { GP_IDLE = 0, GP_ENTER, GP_PASSED, GP_EXIT };
+ 
+ #define	rss_lock	gp_wait.lock
+ 
+@@ -85,13 +85,6 @@ static void rcu_sync_func(struct rcu_head *rhp)
+ 		 */
+ 		WRITE_ONCE(rsp->gp_state, GP_PASSED);
+ 		wake_up_locked(&rsp->gp_wait);
+-	} else if (rsp->gp_state == GP_REPLAY) {
+-		/*
+-		 * A new rcu_sync_exit() has happened; requeue the callback to
+-		 * catch a later GP.
+-		 */
+-		WRITE_ONCE(rsp->gp_state, GP_EXIT);
+-		rcu_sync_call(rsp);
+ 	} else {
+ 		/*
+ 		 * We're at least a GP after the last rcu_sync_exit(); eveybody
+@@ -167,16 +160,13 @@ void rcu_sync_enter(struct rcu_sync *rsp)
+  */
+ void rcu_sync_exit(struct rcu_sync *rsp)
+ {
+-	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_IDLE);
+-	WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0);
++	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) < GP_PASSED);
+ 
+ 	spin_lock_irq(&rsp->rss_lock);
+ 	if (!--rsp->gp_count) {
+ 		if (rsp->gp_state == GP_PASSED) {
+ 			WRITE_ONCE(rsp->gp_state, GP_EXIT);
+ 			rcu_sync_call(rsp);
+-		} else if (rsp->gp_state == GP_EXIT) {
+-			WRITE_ONCE(rsp->gp_state, GP_REPLAY);
+ 		}
+ 	}
+ 	spin_unlock_irq(&rsp->rss_lock);
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.23.0.581.g78d2f28ef7-goog
+
