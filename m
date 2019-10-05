@@ -2,110 +2,124 @@ Return-Path: <SRS0=IBla=X6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42FADC4740A
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:16:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 509F8C4740A
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:42:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 17597222C8
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:16:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2557E22477
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570292171;
-	bh=eqnryWtzabgZzM7uNXAO12dttpuheq0j+RkDpfvQTto=;
+	s=default; t=1570293737;
+	bh=0IjufT6jSKEMpep9FAXN5Dd37rK1JuJ8DqvWyKI29Bg=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=TuRZhI/trjFoZGS93yN39f9BzoqUqvXXsBx86FrqOuVwf5c5F+K8x5QCinGcyYGo0
-	 riC7rXzfMKXBIGgevsP0uz+oBxaTJP6hG5TOlY9LXfWlefAt7PtPIM/5N334fLt7k2
-	 ZiQ+rhqpAxiHEwEx8zCJ/BPPIG2D7yGwP6GNAqJs=
+	b=gG3OyJgABR7Vtcx4LtSWE8PPlRnVdK2HTf2ZlHjlsC13EvmvdwhOIEDsQ5glHrYGB
+	 qnUT6swcQ6o8sL8dRdRXpyeI5OsO8L+cxXhFX5NsLUU5BAOE5ix70pmNNJPkMguKW0
+	 HmRpO3AH6f0gM8rdKzqdtcfq6NdLLWsumNyn99G8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbfJEQQK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Oct 2019 12:16:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39004 "EHLO mail.kernel.org"
+        id S1729083AbfJEQmQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Oct 2019 12:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728101AbfJEQQK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Oct 2019 12:16:10 -0400
+        id S1726285AbfJEQmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Oct 2019 12:42:16 -0400
 Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A754120862;
-        Sat,  5 Oct 2019 16:16:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95ACD22475;
+        Sat,  5 Oct 2019 16:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570292169;
-        bh=eqnryWtzabgZzM7uNXAO12dttpuheq0j+RkDpfvQTto=;
+        s=default; t=1570293735;
+        bh=0IjufT6jSKEMpep9FAXN5Dd37rK1JuJ8DqvWyKI29Bg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QjucN5lc/gzfxGIgPsljQW0GS6FHdu1CwpKXYK7mTFlpz/AfwWyzp6UklxFWg+5Vk
-         Xc8Z5D9joQ9RinxnLFFi7Ka8Wx67MCKOXmgTZj51GWKXZoxCobrVSZJx++J2KOr3H2
-         FCMH2XaJaFOTg049hKtoBFuon7x665OQve2NGngc=
-Date:   Sat, 5 Oct 2019 09:16:08 -0700
+        b=r1VIV/pSNbhV7SmQkcEOvBjs6+w/6WdcDyB38D3oR2YDgZcuCHgCryf9I0wK0AxJ+
+         jjUXJwYQT09klEQr++n/vjR0tNTlWUwKJlfUGKH5UMUxKCYXVWP7pujU6nGY6PvgTh
+         I3D6ZLlQ8aQYO9J1z0HgEVfY35wmM5q+E3nul53s=
+Date:   Sat, 5 Oct 2019 09:42:14 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, dipankar@in.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH tip/core/rcu 9/9] rcu: Suppress levelspread uninitialized
- messages
-Message-ID: <20191005161608.GH2689@paulmck-ThinkPad-P72>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 03/12] rcu: Force on tick when invoking lots
+ of callbacks
+Message-ID: <20191005164214.GI2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191003014710.GA13323@paulmck-ThinkPad-P72>
- <20191003014728.13496-9-paulmck@kernel.org>
- <CAMuHMdW5+RSp6iycmyPnYPv+xHr5tNY7U3w-BVrWqz4BR2Dd7w@mail.gmail.com>
+References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
+ <20191003013903.13079-3-paulmck@kernel.org>
+ <20191003140955.GA27003@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW5+RSp6iycmyPnYPv+xHr5tNY7U3w-BVrWqz4BR2Dd7w@mail.gmail.com>
+In-Reply-To: <20191003140955.GA27003@lenoir>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 10:53:03AM +0200, Geert Uytterhoeven wrote:
-> Hi Paul,
+On Thu, Oct 03, 2019 at 04:10:52PM +0200, Frederic Weisbecker wrote:
+> On Wed, Oct 02, 2019 at 06:38:54PM -0700, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@linux.ibm.com>
+> > 
+> > Callback invocation can run for a significant time period, and within
+> > CONFIG_NO_HZ_FULL=y kernels, this period will be devoid of scheduler-clock
+> > interrupts.  In-kernel execution without such interrupts can cause all
+> > manner of malfunction, with RCU CPU stall warnings being but one result.
+> > 
+> > This commit therefore forces scheduling-clock interrupts on whenever more
+> > than a few RCU callbacks are invoked.  Because offloaded callback invocation
+> > can be preempted, this forcing is withdrawn on each context switch.  This
+> > in turn requires that the loop invoking RCU callbacks reiterate the forcing
+> > periodically.
+> > 
+> > [ paulmck: Apply Joel Fernandes TICK_DEP_MASK_RCU->TICK_DEP_BIT_RCU fix. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
+> > ---
+> >  kernel/rcu/tree.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 8110514..db673ae 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2151,6 +2151,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  
+> >  	/* Invoke callbacks. */
+> > +	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
 > 
-> On Thu, Oct 3, 2019 at 3:49 AM <paulmck@kernel.org> wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> >
-> > New tools bring new warnings, and with v5.3 comes:
+> No need for the IS_ENABLED(), the API takes care of that.
 > 
-> According to the kisskb build logs, it happens with gcc 4.6.3 only ;-)
+> > +		tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+> >  	rhp = rcu_cblist_dequeue(&rcl);
+> >  	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+> >  		debug_rcu_head_unqueue(rhp);
+> > @@ -2217,6 +2219,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >  	/* Re-invoke RCU core processing if there are callbacks remaining. */
+> >  	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
+> >  		invoke_rcu_core();
+> > +	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
 > 
-> > kernel/rcu/srcutree.c: warning: 'levelspread[<U aa0>]' may be used uninitialized in this function [-Wuninitialized]:  => 121:34
-> >
-> > This commit suppresses this warning by initializing the full array
-> > to INT_MIN, which will result in failures should any out-of-bounds
-> > references appear.
-> >
-> > Reported-by: Michael Ellerman <mpe@ellerman.id.au>
-> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Thanks for your patch!
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> (for the initialization loop, not for the actual INT_MIN value)
+> Same here.
 
-Applied, thank you!
-
-> Unfortunately I don't have a gcc-4.6.3 Linux cross-compiler anymore.
-> I tried with msp430-gcc-4.6.3 and some hackery to get it to compile,
-> but that didn't let me reproduce the warning.
-
-OK, please let me know when gcc-4.6.3 is old enough that this patch
-should be reverted.  Or just submit the revert at that point, as the
-case may be.  ;-)
+Good catches!  Applied, thank you!
 
 							Thanx, Paul
+
+> Thanks.
+> 
+> > +		tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
+> >  }
+> >  
+> >  /*
+> > -- 
+> > 2.9.5
+> > 
