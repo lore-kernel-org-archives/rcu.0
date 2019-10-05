@@ -2,44 +2,43 @@ Return-Path: <SRS0=IBla=X6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 509F8C4740A
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7813DC4740A
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:52:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2557E22477
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:42:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4274F2245A
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 16:52:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570293737;
-	bh=0IjufT6jSKEMpep9FAXN5Dd37rK1JuJ8DqvWyKI29Bg=;
+	s=default; t=1570294379;
+	bh=/tJUC4aaSSDDFBbs7QrXLa4qZx9OsDdvlcydVNqJvzc=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=gG3OyJgABR7Vtcx4LtSWE8PPlRnVdK2HTf2ZlHjlsC13EvmvdwhOIEDsQ5glHrYGB
-	 qnUT6swcQ6o8sL8dRdRXpyeI5OsO8L+cxXhFX5NsLUU5BAOE5ix70pmNNJPkMguKW0
-	 HmRpO3AH6f0gM8rdKzqdtcfq6NdLLWsumNyn99G8=
+	b=ssvb/MadUqnDc1tA06gHL+Irn7MCYF28RLdIjx3SybtKuym3FvTXmDDsPDg4JELZ3
+	 b35QM+WSCfAkMF0XXNGc4uzNzAAHQsZaAL89xSarfX4OSR/ud6gAgiEwx/CgL44iY0
+	 1CiG2XGZjK7eJeIPhdIPzBqMKJNvRaCHofRtHdNo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbfJEQmQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Oct 2019 12:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45534 "EHLO mail.kernel.org"
+        id S2387450AbfJEQw7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Oct 2019 12:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbfJEQmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Oct 2019 12:42:16 -0400
+        id S1728499AbfJEQw6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Oct 2019 12:52:58 -0400
 Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95ACD22475;
-        Sat,  5 Oct 2019 16:42:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D9A322459;
+        Sat,  5 Oct 2019 16:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570293735;
-        bh=0IjufT6jSKEMpep9FAXN5Dd37rK1JuJ8DqvWyKI29Bg=;
+        s=default; t=1570294378;
+        bh=/tJUC4aaSSDDFBbs7QrXLa4qZx9OsDdvlcydVNqJvzc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r1VIV/pSNbhV7SmQkcEOvBjs6+w/6WdcDyB38D3oR2YDgZcuCHgCryf9I0wK0AxJ+
-         jjUXJwYQT09klEQr++n/vjR0tNTlWUwKJlfUGKH5UMUxKCYXVWP7pujU6nGY6PvgTh
-         I3D6ZLlQ8aQYO9J1z0HgEVfY35wmM5q+E3nul53s=
-Date:   Sat, 5 Oct 2019 09:42:14 -0700
+        b=R+AjC0yfsPIG540KxndAw5QDsq7CzmKxx2e6Sg/dFdtezE2GoEyYhSk/ZrpzcFE5B
+         jbFMcxe8VXDi4OzzlQaz4F4jEZV2YVqjPjDpYIrngZoL7kwp/RnVkQB261TBp8JtJM
+         eyTpkKLookilGNICtUuQrsO6gK1KvdqKix7rIZro=
+Date:   Sat, 5 Oct 2019 09:52:56 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -48,78 +47,42 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 03/12] rcu: Force on tick when invoking lots
- of callbacks
-Message-ID: <20191005164214.GI2689@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH tip/core/rcu 04/12] rcutorture: Force on tick for readers
+ and callback flooders
+Message-ID: <20191005165256.GJ2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
- <20191003013903.13079-3-paulmck@kernel.org>
- <20191003140955.GA27003@lenoir>
+ <20191003013903.13079-4-paulmck@kernel.org>
+ <20191003141457.GA27555@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003140955.GA27003@lenoir>
+In-Reply-To: <20191003141457.GA27555@lenoir>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 04:10:52PM +0200, Frederic Weisbecker wrote:
-> On Wed, Oct 02, 2019 at 06:38:54PM -0700, paulmck@kernel.org wrote:
+On Thu, Oct 03, 2019 at 04:14:58PM +0200, Frederic Weisbecker wrote:
+> On Wed, Oct 02, 2019 at 06:38:55PM -0700, paulmck@kernel.org wrote:
 > > From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 > > 
-> > Callback invocation can run for a significant time period, and within
-> > CONFIG_NO_HZ_FULL=y kernels, this period will be devoid of scheduler-clock
-> > interrupts.  In-kernel execution without such interrupts can cause all
-> > manner of malfunction, with RCU CPU stall warnings being but one result.
+> > Readers and callback flooders in the rcutorture stress-test suite run for
+> > extended time periods by design.  They do take pains to relinquish the
+> > CPU from time to time, but in some cases this relies on the scheduler
+> > being active, which in turn relies on the scheduler-clock interrupt
+> > firing from time to time.
 > > 
-> > This commit therefore forces scheduling-clock interrupts on whenever more
-> > than a few RCU callbacks are invoked.  Because offloaded callback invocation
-> > can be preempted, this forcing is withdrawn on each context switch.  This
-> > in turn requires that the loop invoking RCU callbacks reiterate the forcing
-> > periodically.
+> > This commit therefore forces scheduling-clock interrupts within
+> > these loops.  While in the area, this commit also prevents
+> > rcu_torture_reader()'s occasional timed sleeps from delaying shutdown.
 > > 
 > > [ paulmck: Apply Joel Fernandes TICK_DEP_MASK_RCU->TICK_DEP_BIT_RCU fix. ]
 > > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
-> > ---
-> >  kernel/rcu/tree.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8110514..db673ae 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2151,6 +2151,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
-> >  	rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  
-> >  	/* Invoke callbacks. */
-> > +	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
 > 
-> No need for the IS_ENABLED(), the API takes care of that.
-> 
-> > +		tick_dep_set_task(current, TICK_DEP_BIT_RCU);
-> >  	rhp = rcu_cblist_dequeue(&rcl);
-> >  	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
-> >  		debug_rcu_head_unqueue(rhp);
-> > @@ -2217,6 +2219,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
-> >  	/* Re-invoke RCU core processing if there are callbacks remaining. */
-> >  	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
-> >  		invoke_rcu_core();
-> > +	if (IS_ENABLED(CONFIG_NO_HZ_FULL))
-> 
-> Same here.
+> You can also remove all the IS_ENABLED here.
 
-Good catches!  Applied, thank you!
+Again, good catch and fixed, thank you!
 
 							Thanx, Paul
-
-> Thanks.
-> 
-> > +		tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
-> >  }
-> >  
-> >  /*
-> > -- 
-> > 2.9.5
-> > 
