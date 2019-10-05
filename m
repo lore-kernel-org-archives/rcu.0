@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABD64C47404
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 17:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03D96C47404
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 17:21:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7923F222C8
-	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 17:17:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB824222C8
+	for <rcu@archiver.kernel.org>; Sat,  5 Oct 2019 17:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570295860;
-	bh=B07W4I3WgUNHxtJGxr5YZWY6gh+o546/XEfwQmXK+y8=;
+	s=default; t=1570296092;
+	bh=P+A+B/vAX7FWF7rY8J0O5Q3WyY/wMB/KN9IVikAAJEM=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=PbAxIZRIvw6Dkl4IaNAjcmww6z7J+SJpHTk7oZUv4LUaNGTNZ93U3o2+bjF3LILaC
-	 FQ/iHzgqfeszbkqBb2WE75Zsi6qzQIMdCU0fJqZVo2x2WKmSNJAO8eUCeCZu697Joh
-	 xwNwLJ9RyQCeQPVe3Du3O1T0d2jBRPWbTK2Dtk04=
+	b=TGzeZy4vFJpjMR76gl0xQigOdy36Lad3rXUlO76s8RzS6PjIfRdmjsrENTFDKOXZD
+	 WNrZl1cYYynTqG8wjJVbRY+UrvI1wdl9SRPpGzHkS9gmPt3+Cbm0U07Mg6HnSMylZX
+	 7ieSVRpGD+G6HXTdkK+CKPEr2xdv4mqUFL5f5gmA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbfJERRk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Oct 2019 13:17:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53132 "EHLO mail.kernel.org"
+        id S1726318AbfJERVc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Oct 2019 13:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727466AbfJERRk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Oct 2019 13:17:40 -0400
+        id S1725826AbfJERVc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Oct 2019 13:21:32 -0400
 Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64CAC222C0;
-        Sat,  5 Oct 2019 17:17:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E859222C0;
+        Sat,  5 Oct 2019 17:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570295858;
-        bh=B07W4I3WgUNHxtJGxr5YZWY6gh+o546/XEfwQmXK+y8=;
+        s=default; t=1570296091;
+        bh=P+A+B/vAX7FWF7rY8J0O5Q3WyY/wMB/KN9IVikAAJEM=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IndVB5aCE6VB1XE3ZANgzNHVYkyJ7+DfCLdji0SxXVKToxcvEuse8tt0rzPoap89B
-         BgAnTDlWY5eejxpzfPWrKMFkZtWwj4GDPpvW62cm7020MiGQ2oYhBst+rFhhc5M4+4
-         wUzMKkq+Ucb/juZlr9el1ZbzDcr6Xg1VxSVTXv5I=
-Date:   Sat, 5 Oct 2019 10:17:37 -0700
+        b=W71fxnXlylJd5Hi9X5SDa0MZfJO2tCUu5VfPVuuOY3ZFB4WgVSRmjEUbHusiher1B
+         qwtIwwqRW3YhTxgk0SJhcn+MyrdcEvQ2K9asEZcwpUHLm9VBdEh9G9OS4SI39a31/Q
+         SgngeuJJh3wC6ZvLIL0Rbj5lIvn2PVubgrd9OcP0=
+Date:   Sat, 5 Oct 2019 10:21:29 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -48,122 +48,61 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 06/12] rcu: Make CPU-hotplug removal
- operations enable tick
-Message-ID: <20191005171737.GK2689@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH tip/core/rcu 08/12] rcu: Force tick on for nohz_full CPUs
+ not reaching quiescent states
+Message-ID: <20191005172129.GL2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20191003013834.GA12927@paulmck-ThinkPad-P72>
- <20191003013903.13079-6-paulmck@kernel.org>
- <20191003143408.GB27555@lenoir>
+ <20191003013903.13079-8-paulmck@kernel.org>
+ <20191003145054.GC27555@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003143408.GB27555@lenoir>
+In-Reply-To: <20191003145054.GC27555@lenoir>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 04:34:09PM +0200, Frederic Weisbecker wrote:
-> On Wed, Oct 02, 2019 at 06:38:57PM -0700, paulmck@kernel.org wrote:
+On Thu, Oct 03, 2019 at 04:50:55PM +0200, Frederic Weisbecker wrote:
+> On Wed, Oct 02, 2019 at 06:38:59PM -0700, paulmck@kernel.org wrote:
 > > From: "Paul E. McKenney" <paulmck@linux.ibm.com>
 > > 
-> > CPU-hotplug removal operations run the multi_cpu_stop() function, which
-> > relies on the scheduler to gain control from whatever is running on the
-> > various online CPUs, including any nohz_full CPUs running long loops in
-> > kernel-mode code.  Lack of the scheduler-clock interrupt on such CPUs
-> > can delay multi_cpu_stop() for several minutes and can also result in
-> > RCU CPU stall warnings.  This commit therefore causes CPU-hotplug removal
-> > operations to enable the scheduler-clock interrupt on all online CPUs.
-> 
-> So, like Peter said back then, there must be an issue in the scheduler
-> such as a missing or mishandled preemption point.
-
-Fair enough, but this is useful in the meantime.
-
+> > CPUs running for long time periods in the kernel in nohz_full mode
+> > might leave the scheduling-clock interrupt disabled for then full
+> > duration of their in-kernel execution.  This can (among other things)
+> > delay grace periods.  This commit therefore forces the tick back on
+> > for any nohz_full CPU that is failing to pass through a quiescent state
+> > upon return from interrupt, which the resched_cpu() will induce.
+> > 
+> > Reported-by: Joel Fernandes <joel@joelfernandes.org>
+> > [ paulmck: Clear ->rcu_forced_tick as reported by Joel Fernandes testing. ]
 > > [ paulmck: Apply Joel Fernandes TICK_DEP_MASK_RCU->TICK_DEP_BIT_RCU fix. ]
 > > Signed-off-by: Paul E. McKenney <paulmck@linux.ibm.com>
 > > ---
-> >  kernel/rcu/tree.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
+> >  kernel/rcu/tree.c | 38 +++++++++++++++++++++++++++++++-------
+> >  kernel/rcu/tree.h |  1 +
+> >  2 files changed, 32 insertions(+), 7 deletions(-)
 > > 
 > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index f708d54..74bf5c65 100644
+> > index 74bf5c65..621cc06 100644
 > > --- a/kernel/rcu/tree.c
 > > +++ b/kernel/rcu/tree.c
-> > @@ -2091,6 +2091,7 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
-> >   */
-> >  int rcutree_dead_cpu(unsigned int cpu)
-> >  {
-> > +	int c;
-> >  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> >  
-> > @@ -2101,6 +2102,10 @@ int rcutree_dead_cpu(unsigned int cpu)
-> >  	rcu_boost_kthread_setaffinity(rnp, -1);
-> >  	/* Do any needed no-CB deferred wakeups from this CPU. */
-> >  	do_nocb_deferred_wakeup(per_cpu_ptr(&rcu_data, cpu));
-> > +
-> > +	// Stop-machine done, so allow nohz_full to disable tick.
-> > +	for_each_online_cpu(c)
-> > +		tick_dep_clear_cpu(c, TICK_DEP_BIT_RCU);
+> > @@ -650,6 +650,12 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+> >  	 */
+> >  	if (rdp->dynticks_nmi_nesting != 1) {
+> >  		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
+> > +		if (tick_nohz_full_cpu(rdp->cpu) &&
+> > +		    rdp->dynticks_nmi_nesting == 2 &&
+> > +		    rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+> > +			rdp->rcu_forced_tick = true;
+> > +			tick_dep_set_cpu(rdp->cpu, TICK_DEP_MASK_RCU);
 > 
-> Just use tick_dep_clear() without for_each_online_cpu().
-> 
-> >  	return 0;
-> >  }
-> >  
-> > @@ -3074,6 +3079,7 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoing)
-> >   */
-> >  int rcutree_online_cpu(unsigned int cpu)
-> >  {
-> > +	int c;
-> >  	unsigned long flags;
-> >  	struct rcu_data *rdp;
-> >  	struct rcu_node *rnp;
-> > @@ -3087,6 +3093,10 @@ int rcutree_online_cpu(unsigned int cpu)
-> >  		return 0; /* Too early in boot for scheduler work. */
-> >  	sync_sched_exp_online_cleanup(cpu);
-> >  	rcutree_affinity_setting(cpu, -1);
-> > +
-> > +	// Stop-machine done, so allow nohz_full to disable tick.
-> > +	for_each_online_cpu(c)
-> > +		tick_dep_clear_cpu(c, TICK_DEP_BIT_RCU);
-> 
-> Same here.
-> 
-> >  	return 0;
-> >  }
-> >  
-> > @@ -3096,6 +3106,7 @@ int rcutree_online_cpu(unsigned int cpu)
-> >   */
-> >  int rcutree_offline_cpu(unsigned int cpu)
-> >  {
-> > +	int c;
-> >  	unsigned long flags;
-> >  	struct rcu_data *rdp;
-> >  	struct rcu_node *rnp;
-> > @@ -3107,6 +3118,10 @@ int rcutree_offline_cpu(unsigned int cpu)
-> >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  
-> >  	rcutree_affinity_setting(cpu, cpu);
-> > +
-> > +	// nohz_full CPUs need the tick for stop-machine to work quickly
-> > +	for_each_online_cpu(c)
-> > +		tick_dep_set_cpu(c, TICK_DEP_BIT_RCU);
-> 
-> And here you only need tick_dep_set() without for_each_online_cpu().
+> I understand rdp->cpu is always smp_processor_id() here, right? Because calling
+> tick_dep_set_cpu() to a remote CPU while in NMI wouldn't be safe. It would warn anyway.
 
-Thank you!  I applied all three simplifications.
+Yes, this is always invoked on the CPU whose ID is rdp->cpu, but thank
+you for checking!
 
 							Thanx, Paul
-
-> Thanks.
-> 
-> >  	return 0;
-> >  }
-> >  
-> > -- 
-> > 2.9.5
-> > 
