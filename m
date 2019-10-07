@@ -1,101 +1,161 @@
-Return-Path: <SRS0=1TYV=X7=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=xd98=YA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6991AC4360C
-	for <rcu@archiver.kernel.org>; Sun,  6 Oct 2019 23:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 986D6C4360C
+	for <rcu@archiver.kernel.org>; Mon,  7 Oct 2019 01:26:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3EFF720867
-	for <rcu@archiver.kernel.org>; Sun,  6 Oct 2019 23:44:54 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="EFW2CMar"
+	by mail.kernel.org (Postfix) with ESMTP id 65A7320867
+	for <rcu@archiver.kernel.org>; Mon,  7 Oct 2019 01:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1570411591;
+	bh=dUotA+P87ysoK24x7r6omXg7VFgeTiHhAGJxMxkb8LY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=asv8MA8bybq98EVzbx5/A3+TU01uYfuuCR3ja11f7U1r8kFZoP6MG2T7psHUKd6yU
+	 4issfMrLhkGcatiNuoCC4XSHtIz1sd/FnPjwjWmudlySGvRhmu71WLSlr7XsJhQA7C
+	 ZsINcx3BEuG8FcKgSy6UH1/b4k2ht/3LWZgyCluI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbfJFXoy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 6 Oct 2019 19:44:54 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:40370 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbfJFXox (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 6 Oct 2019 19:44:53 -0400
-Received: by mail-pf1-f194.google.com with SMTP id x127so7463306pfb.7
-        for <rcu@vger.kernel.org>; Sun, 06 Oct 2019 16:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Db+NewJuq9xBTnsJpKUfmZtRSZSczRlD9ss2URKSPvE=;
-        b=EFW2CMarDNX+CDe08d7d90jUqxBgJ56dXrrUtVA64eKS5W/s2PyGt/ioG/268jMG5/
-         FLV580dtnZjzj1R1HBDlOibXUCU1aRlZ3g3BjTN6Mkym1711Pehv33aswmesnwT2EJav
-         a4LzCXz2nwKX+sdUSStIGsXwsDpxMeybzcEiQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Db+NewJuq9xBTnsJpKUfmZtRSZSczRlD9ss2URKSPvE=;
-        b=YqgA+rtHFDYnH5zNJwzOo3csxiudGdUgB0B/rWGZUdMP5oZ+K+8NyWJMxi5E7/FmCI
-         neWTSN8oG8gwCTZwpw8/KYvMrfREzuK48XS0UZrdSxPEZkLFmLXGM4qhfDrXWGLU0raa
-         dkwrjBrbhgYl0tu10mYThVLpWGBKIPbDmrVp25Cocra8dHXZUBcYd915NGszdqw9TDxN
-         8T4aSctCQtnSpeG+x46V8OX1Pp8MjcWNYcZx8wKSD0pE30MrLOPw9lXCjI2gSQ+NrSpN
-         /UJowelnTSme88PaWjw8r3hsZbe29cNW5LDqUc78owh8xNE3ricML4z/BuyUy4lIcswn
-         pDMw==
-X-Gm-Message-State: APjAAAV2Z3n0EKcHOkNrS2YsEfYuyOCJCOePF+pzTjLevnJtnddkIyha
-        ptkkoVFsWhVPGrqktlUsGEjQ7A==
-X-Google-Smtp-Source: APXvYqyiCQIPrme0B2WFaLqwuh9sQyceaZD5oJjwPK2yC9iskOqxsWWOyRaFgUdY6BnXQ8AVqw8oNg==
-X-Received: by 2002:a62:db84:: with SMTP id f126mr30458639pfg.25.1570405492270;
-        Sun, 06 Oct 2019 16:44:52 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y36sm2033543pgk.66.2019.10.06.16.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Oct 2019 16:44:51 -0700 (PDT)
-Date:   Sun, 6 Oct 2019 19:44:50 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        id S1726741AbfJGB0b (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 6 Oct 2019 21:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726661AbfJGB0a (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 6 Oct 2019 21:26:30 -0400
+Received: from paulmck-ThinkPad-P72 (unknown [12.12.162.101])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4852220862;
+        Mon,  7 Oct 2019 01:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570411589;
+        bh=dUotA+P87ysoK24x7r6omXg7VFgeTiHhAGJxMxkb8LY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IS+CKxcup5jzrqDy8WvOw5ZNz5Y5+Tz2020qvv7Ik5LowgDsB0+zWhV4JnPOWvhgC
+         3lPVh1//OpIZ92x6WWwsd7ADOrYZRAT8MwjPYbKbA1Q7jM5DcrKQpF01d3TDMadTzC
+         7iSxg7EFiM0xtqcbq1N5ECr77O47CYiGEWi7GFnI=
+Date:   Sun, 6 Oct 2019 18:26:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stefan Reiter <stefan@pimaker.at>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rculist: Describe variadic macro argument in a
- Sphinx-compatible way
-Message-ID: <20191006234450.GA2711@google.com>
-References: <20191004215402.28008-1-j.neuschaefer@gmx.net>
- <20191004222439.GR2689@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH] rcu/nocb: Fix dump_tree hierarchy print always active
+Message-ID: <20191007012625.GA23446@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191004194854.11352-1-stefan@pimaker.at>
+ <20191004222402.GQ2689@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191004222439.GR2689@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191004222402.GQ2689@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 03:24:39PM -0700, Paul E. McKenney wrote:
-> On Fri, Oct 04, 2019 at 11:54:02PM +0200, Jonathan Neuschäfer wrote:
-> > Without this patch, Sphinx shows "variable arguments" as the description
-> > of the cond argument, rather than the intended description, and prints
-> > the following warnings:
+On Fri, Oct 04, 2019 at 03:24:02PM -0700, Paul E. McKenney wrote:
+> On Fri, Oct 04, 2019 at 07:49:10PM +0000, Stefan Reiter wrote:
+> > Commit 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if
+> > dump_tree") added print statements to rcu_organize_nocb_kthreads for
+> > debugging, but incorrectly guarded them, causing the function to always
+> > spew out its message.
 > > 
-> > ./include/linux/rculist.h:374: warning: Excess function parameter 'cond' description in 'list_for_each_entry_rcu'
-> > ./include/linux/rculist.h:651: warning: Excess function parameter 'cond' description in 'hlist_for_each_entry_rcu'
+> > This patch fixes it by guarding both pr_alert statements with dump_tree,
+> > while also changing the second pr_alert to a pr_cont, to print the
+> > hierarchy in a single line (assuming that's how it was supposed to
+> > work).
 > > 
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> > Fixes: 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if dump_tree")
+> > Signed-off-by: Stefan Reiter <stefan@pimaker.at>
 > 
-> Applied for testing and review, thank you!
-> 
-> Joel, does this look sane to you?
+> Queued for testing and review, thank you!
 
-Sorry for late reply due to weekend. Yes, looks good to me.
+And here is an updated version to make the special case of a nocb GP
+kthread having no other nocb CB kthreads look less strange.  Does this
+work for you?
 
-thanks,
+							Thanx, Paul
 
- - Joel
+------------------------------------------------------------------------
 
+commit e6223b0705369750990c32ddc80251942e61be30
+Author: Stefan Reiter <stefan@pimaker.at>
+Date:   Fri Oct 4 19:49:10 2019 +0000
+
+    rcu/nocb: Fix dump_tree hierarchy print always active
+    
+    Commit 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if
+    dump_tree") added print statements to rcu_organize_nocb_kthreads for
+    debugging, but incorrectly guarded them, causing the function to always
+    spew out its message.
+    
+    This patch fixes it by guarding both pr_alert statements with dump_tree,
+    while also changing the second pr_alert to a pr_cont, to print the
+    hierarchy in a single line (assuming that's how it was supposed to
+    work).
+    
+    Fixes: 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if dump_tree")
+    Signed-off-by: Stefan Reiter <stefan@pimaker.at>
+    [ paulmck: Make single-nocbs-CPU GP kthreads look less erroneous. ]
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index d5334e4..d43f4e0 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2295,6 +2295,8 @@ static void __init rcu_organize_nocb_kthreads(void)
+ {
+ 	int cpu;
+ 	bool firsttime = true;
++	bool gotnocbs = false;
++	bool gotnocbscbs = true;
+ 	int ls = rcu_nocb_gp_stride;
+ 	int nl = 0;  /* Next GP kthread. */
+ 	struct rcu_data *rdp;
+@@ -2317,21 +2319,31 @@ static void __init rcu_organize_nocb_kthreads(void)
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+ 		if (rdp->cpu >= nl) {
+ 			/* New GP kthread, set up for CBs & next GP. */
++			gotnocbs = true;
+ 			nl = DIV_ROUND_UP(rdp->cpu + 1, ls) * ls;
+ 			rdp->nocb_gp_rdp = rdp;
+ 			rdp_gp = rdp;
+-			if (!firsttime && dump_tree)
+-				pr_cont("\n");
+-			firsttime = false;
+-			pr_alert("%s: No-CB GP kthread CPU %d:", __func__, cpu);
++			if (dump_tree) {
++				if (!firsttime)
++					pr_cont("%s\n", gotnocbscbs
++							? "" : " (self only)");
++				gotnocbscbs = false;
++				firsttime = false;
++				pr_alert("%s: No-CB GP kthread CPU %d:",
++					 __func__, cpu);
++			}
+ 		} else {
+ 			/* Another CB kthread, link to previous GP kthread. */
++			gotnocbscbs = true;
+ 			rdp->nocb_gp_rdp = rdp_gp;
+ 			rdp_prev->nocb_next_cb_rdp = rdp;
+-			pr_alert(" %d", cpu);
++			if (dump_tree)
++				pr_cont(" %d", cpu);
+ 		}
+ 		rdp_prev = rdp;
+ 	}
++	if (gotnocbs && dump_tree)
++		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
+ }
+ 
+ /*
