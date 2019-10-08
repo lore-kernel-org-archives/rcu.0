@@ -2,114 +2,139 @@ Return-Path: <SRS0=on7E=YB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89816C10F14
-	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 14:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 338BFC4360C
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 16:23:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6947520673
-	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 14:16:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06590206C2
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 16:23:18 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ebhgc7zR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbfJHOQS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Oct 2019 10:16:18 -0400
-Received: from correo.us.es ([193.147.175.20]:52202 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbfJHOQR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Oct 2019 10:16:17 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 581FBA0AEE7
-        for <rcu@vger.kernel.org>; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 4ACFBCA0F2
-        for <rcu@vger.kernel.org>; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 3FF8BDA8E8; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 859A4DA7B6;
-        Tue,  8 Oct 2019 16:16:09 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 08 Oct 2019 16:16:09 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 1DFE742EF4E3;
-        Tue,  8 Oct 2019 16:16:09 +0200 (CEST)
-Date:   Tue, 8 Oct 2019 16:16:11 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH tip/core/rcu 8/9] net/netfilter: Replace
- rcu_swap_protected() with rcu_replace()
-Message-ID: <20191008141611.usmxb5vzoxc36wqw@salvia>
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
- <20191003014310.13262-8-paulmck@kernel.org>
+        id S1726320AbfJHQXR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Oct 2019 12:23:17 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:44346 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbfJHQXR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Oct 2019 12:23:17 -0400
+Received: by mail-lf1-f67.google.com with SMTP id q12so7478095lfc.11;
+        Tue, 08 Oct 2019 09:23:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vDv1klytpHASOjBcro99P7afE55WHuXFHU2DQg71q6U=;
+        b=Ebhgc7zR/tw4LmSQ1R97WhArExCdPVSs73g4xH80QiHQyrPAGGoDnvWPBAUFBAMVJT
+         jakVmtMcQdoFpNJwkX17F3VE0q+DbakIfWBZKfWkd+niMBC676hc0T7rgr63z/Hii2Iu
+         w/AkBhGZMwNpFVcx8ic1VUep6eoIYsy6qtnAREGQa3+WPLRVgCglLf3BH1riV3sw7wK2
+         s8loCOSjsImnSEu+UUrM0pvX9kRzGxPJzOBLE3mx6toNxXM4GXq0e8ZPtvJ2uaahC+Oz
+         SGWWqo7wzmKbu2gQpo+XVrpAQGQh16IBg1uHE3vERDU1wKGrOtA7Ru+T4dd9pjc99r8f
+         CVnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vDv1klytpHASOjBcro99P7afE55WHuXFHU2DQg71q6U=;
+        b=R99T4P1DgUFxinGcyOrYwesCCYr4vzWhv9GY84UoAwbAp6wVFlUnURjta2gUZ9b85w
+         syVqLf74XrJCku2CsMdHuWI1J08waNnOTO2AobfTpFHPm2tGRCo4RSO8pe6AZVp9cxBE
+         KUqpJMZ3W8AHzuPpT5CbWNFh8W09I6DoOanKTKYvoggSrvQHWkBQPrsLs+OgCMW+gt5K
+         VkQ+X/5FNXZbS4vzKnO4s+nZWRiK/5mXCCA6e+fYsrTbqjO06ca+nSFICPxxakBlwukA
+         koNkG2IZHhFUEXe0ACugDV90Z2gipdRZXWBX8aehy+C+YKxeu7jwv/lUEPU5c11RDkS8
+         J8Ug==
+X-Gm-Message-State: APjAAAWM3Q+TzuxkMRMNMyZyzRrcjn+wmMqea9KSHnOVnhsPeCM19qSK
+        N9Sq8/oPD7TgvjD/VtStC2o=
+X-Google-Smtp-Source: APXvYqyLg1WX/oRFKmjXO7odTv9bLIpjPd9EZHh2nzwYBQsvoGnshtigNv07Z0M7s1VISFwYDRowLQ==
+X-Received: by 2002:ac2:51a7:: with SMTP id f7mr20302175lfk.119.1570551794933;
+        Tue, 08 Oct 2019 09:23:14 -0700 (PDT)
+Received: from pc636 ([37.139.158.167])
+        by smtp.gmail.com with ESMTPSA id d28sm3877793lfq.88.2019.10.08.09.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Oct 2019 09:23:14 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 8 Oct 2019 18:23:06 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kernel-team@lge.com,
+        Byungchul Park <byungchul.park@lge.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        max.byungchul.park@gmail.com,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
+ batching
+Message-ID: <20191008162306.GA5901@pc636>
+References: <20190814160411.58591-1-joel@joelfernandes.org>
+ <20190918095811.GA25821@pc636>
+ <20190930201623.GA134859@google.com>
+ <20191001112702.GA22112@pc636>
+ <20191004172038.GG253167@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003014310.13262-8-paulmck@kernel.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20191004172038.GG253167@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 06:43:09PM -0700, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Fri, Oct 04, 2019 at 01:20:38PM -0400, Joel Fernandes wrote:
+> On Tue, Oct 01, 2019 at 01:27:02PM +0200, Uladzislau Rezki wrote:
+> [snip] 
+> > > > I have just a small question related to workloads and performance evaluation.
+> > > > Are you aware of any specific workloads which benefit from it for example
+> > > > mobile area, etc? I am asking because i think about backporting of it and
+> > > > reuse it on our kernel. 
+> > > 
+> > > I am not aware of a mobile usecase that benefits but there are server
+> > > workloads that make system more stable in the face of a kfree_rcu() flood.
+> > > 
+> > OK, i got it. I wanted to test it finding out how it could effect mobile
+> > workloads.
+> > 
+> > >
+> > > For the KVA allocator work, I see it is quite similar to the way binder
+> > > allocates blocks. See function: binder_alloc_new_buf_locked(). Is there are
+> > > any chance to reuse any code? For one thing, binder also has an rbtree for
+> > > allocated blocks for fast lookup of allocated blocks. Does the KVA allocator
+> > > not have the need for that?
+> > >
+> > Well, there is a difference. Actually the free blocks are not sorted by
+> > the its size like in binder layer, if understand the code correctly.
+> > 
+> > Instead, i keep them(free blocks) sorted(by start address) in ascending
+> > order + maintain the augment value(biggest free size in left or right sub-tree)
+> > for each node, that allows to navigate toward the lowest address and the block
+> > that definitely suits. So as a result our allocations become sequential
+> > what is important.
 > 
-> This commit replaces the use of rcu_swap_protected() with the more
-> intuitively appealing rcu_replace() as a step towards removing
-> rcu_swap_protected().
+> Right, I realized this after sending the email that binder and kva sort
+> differently though they both try to use free sizes during the allocation.
 > 
-> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-> Cc: Florian Westphal <fw@strlen.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: <netfilter-devel@vger.kernel.org>
-> Cc: <coreteam@netfilter.org>
-> Cc: <netdev@vger.kernel.org>
+> Would you have any papers, which survey various rb-tree based allocator
+> algorithms and their tradeoffs? I am interested in studying these more
+> especially in relation to the binder driver. Would also be nice to make
+> contributions to papers surveying both these allocators to describe the state
+> of the art.
+> 
+So far i have not had any paper with different kind of comparison. But
+that is interested for sure, especially to analyze the model for example
+based on B-Tree, so when we can fully utilize a cache performance.
+Because regular binary trees are just pointer chasing.
 
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+As for binder driver and its allocator, is it O(lognN) complexity? Is
+there any bottleneck in its implementation?
 
-> ---
->  net/netfilter/nf_tables_api.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> index d481f9b..8499baf 100644
-> --- a/net/netfilter/nf_tables_api.c
-> +++ b/net/netfilter/nf_tables_api.c
-> @@ -1461,8 +1461,9 @@ static void nft_chain_stats_replace(struct nft_trans *trans)
->  	if (!nft_trans_chain_stats(trans))
->  		return;
->  
-> -	rcu_swap_protected(chain->stats, nft_trans_chain_stats(trans),
-> -			   lockdep_commit_lock_is_held(trans->ctx.net));
-> +	nft_trans_chain_stats(trans) =
-> +		rcu_replace(chain->stats, nft_trans_chain_stats(trans),
-> +			    lockdep_commit_lock_is_held(trans->ctx.net));
->  
->  	if (!nft_trans_chain_stats(trans))
->  		static_branch_inc(&nft_counters_enabled);
-> -- 
-> 2.9.5
-> 
+Thanks!
+
+--
+Vlad Rezki
