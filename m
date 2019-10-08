@@ -2,122 +2,114 @@ Return-Path: <SRS0=on7E=YB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD127C4360C
-	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 13:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89816C10F14
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 14:16:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B739820815
-	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 13:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570540383;
-	bh=6C1HT7Hwuk66VyyK5prFO+ijNSykLia8L0KvWsOuPnQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=op7+svTqf1/KX71PKsOMMh84OcvBfBOclhjJkzkJdioPQduTWKMWCrrRNwFta81fE
-	 w5PJiFUjTD9QPCyfc5ZkL/leYU8PyMN3CLexjGRwF0ygZdVU6GAfL+VdcHxHaIfaEb
-	 ZJpsyDPiaNuIYqb3pzBGwr6tCTFPgKGUqsKsl2U4=
+	by mail.kernel.org (Postfix) with ESMTP id 6947520673
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 14:16:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730974AbfJHNNA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Oct 2019 09:13:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51340 "EHLO mail.kernel.org"
+        id S1726333AbfJHOQS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Oct 2019 10:16:18 -0400
+Received: from correo.us.es ([193.147.175.20]:52202 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730317AbfJHNNA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Oct 2019 09:13:00 -0400
-Received: from paulmck-ThinkPad-P72 (unknown [12.12.162.101])
+        id S1725962AbfJHOQR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Oct 2019 10:16:17 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 581FBA0AEE7
+        for <rcu@vger.kernel.org>; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4ACFBCA0F2
+        for <rcu@vger.kernel.org>; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 3FF8BDA8E8; Tue,  8 Oct 2019 16:16:12 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 859A4DA7B6;
+        Tue,  8 Oct 2019 16:16:09 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 08 Oct 2019 16:16:09 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D3C42070B;
-        Tue,  8 Oct 2019 13:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570540379;
-        bh=6C1HT7Hwuk66VyyK5prFO+ijNSykLia8L0KvWsOuPnQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WaJCh8iLf0y38iGS1Bc0RD4wGkA3zVBPwAK95dw1l9/1dJExMQFOjl+5FkRdYBOn6
-         DiTPS8Q8vTg4aggaRMlZDx0O6DbH4X8+xOYeOgXYksFIgxoFyIIKg2O2QiCdEvRgDt
-         e4fymIVKS3db8QWsMAQ4LXcDnq8EyPGmer1uLcJ8=
-Date:   Tue, 8 Oct 2019 06:12:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, elver@google.com,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Avoid to modify mask_ofl_ipi in
- sync_rcu_exp_select_node_cpus()
-Message-ID: <20191008131258.GU2689@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191008050145.4041702-1-boqun.feng@gmail.com>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 1DFE742EF4E3;
+        Tue,  8 Oct 2019 16:16:09 +0200 (CEST)
+Date:   Tue, 8 Oct 2019 16:16:11 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH tip/core/rcu 8/9] net/netfilter: Replace
+ rcu_swap_protected() with rcu_replace()
+Message-ID: <20191008141611.usmxb5vzoxc36wqw@salvia>
+References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
+ <20191003014310.13262-8-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191008050145.4041702-1-boqun.feng@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191003014310.13262-8-paulmck@kernel.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 01:01:40PM +0800, Boqun Feng wrote:
-> "mask_ofl_ipi" is used for iterate CPUs which IPIs are needed to send
-> to, however in the IPI sending loop, "mask_ofl_ipi" along with another
-> variable "mask_ofl_test" might also get modified to record which CPU's
-> quiesent state can be reported by sync_rcu_exp_select_node_cpus(). Two
-> variables seems to be redundant for such a propose, so this patch clean
-> things a little by solely using "mask_ofl_test" for recording and
-> "mask_ofl_ipi" for iteration. This would improve the readibility of the
-> IPI sending loop in sync_rcu_exp_select_node_cpus().
+On Wed, Oct 02, 2019 at 06:43:09PM -0700, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> This commit replaces the use of rcu_swap_protected() with the more
+> intuitively appealing rcu_replace() as a step towards removing
+> rcu_swap_protected().
+> 
+> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+> Cc: Florian Westphal <fw@strlen.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: <netfilter-devel@vger.kernel.org>
+> Cc: <coreteam@netfilter.org>
+> Cc: <netdev@vger.kernel.org>
 
-Queued for further review and testing, thank you!!!
-
-							Thanx, Paul
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
 > ---
->  kernel/rcu/tree_exp.h | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+>  net/netfilter/nf_tables_api.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 69c5aa64fcfd..212470018752 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -387,10 +387,10 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
->  		}
->  		ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
->  		put_cpu();
-> -		if (!ret) {
-> -			mask_ofl_ipi &= ~mask;
-> +		/* The CPU responses the IPI, and will report QS itself */
-> +		if (!ret)
->  			continue;
-> -		}
-> +
->  		/* Failed, raced with CPU hotplug operation. */
->  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  		if ((rnp->qsmaskinitnext & mask) &&
-> @@ -401,13 +401,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
->  			schedule_timeout_uninterruptible(1);
->  			goto retry_ipi;
->  		}
-> -		/* CPU really is offline, so we can ignore it. */
-> -		if (!(rnp->expmask & mask))
-> -			mask_ofl_ipi &= ~mask;
-> +		/* CPU really is offline, and we need its QS to pass GP. */
-> +		if (rnp->expmask & mask)
-> +			mask_ofl_test |= mask;
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	}
->  	/* Report quiescent states for those that went offline. */
-> -	mask_ofl_test |= mask_ofl_ipi;
->  	if (mask_ofl_test)
->  		rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
->  }
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index d481f9b..8499baf 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -1461,8 +1461,9 @@ static void nft_chain_stats_replace(struct nft_trans *trans)
+>  	if (!nft_trans_chain_stats(trans))
+>  		return;
+>  
+> -	rcu_swap_protected(chain->stats, nft_trans_chain_stats(trans),
+> -			   lockdep_commit_lock_is_held(trans->ctx.net));
+> +	nft_trans_chain_stats(trans) =
+> +		rcu_replace(chain->stats, nft_trans_chain_stats(trans),
+> +			    lockdep_commit_lock_is_held(trans->ctx.net));
+>  
+>  	if (!nft_trans_chain_stats(trans))
+>  		static_branch_inc(&nft_counters_enabled);
 > -- 
-> 2.23.0
+> 2.9.5
 > 
