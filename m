@@ -1,165 +1,283 @@
-Return-Path: <SRS0=xd98=YA=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=on7E=YB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCF86C47404
-	for <rcu@archiver.kernel.org>; Mon,  7 Oct 2019 17:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58087C47404
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 00:11:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9077D20684
-	for <rcu@archiver.kernel.org>; Mon,  7 Oct 2019 17:56:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 113D52133F
+	for <rcu@archiver.kernel.org>; Tue,  8 Oct 2019 00:11:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=pimaker.at header.i=@pimaker.at header.b="Y3iJ/ujK"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="D4nVAL5z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbfJGR4p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Oct 2019 13:56:45 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:60810 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729189AbfJGR4o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Oct 2019 13:56:44 -0400
-Date:   Mon, 07 Oct 2019 17:56:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pimaker.at;
-        s=protonmail; t=1570471001;
-        bh=eJ5MtFPu12WNiGiJIVRCOx1RxauP5/FllS4pi3PUTgM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
-         Feedback-ID:From;
-        b=Y3iJ/ujK5shcW6Sp0D4soqPfLnJZZ8E1QXenxGeuHROf8XPjzKZjCi03sF7Ms2B/D
-         Tl70Og8IYZs4x9QoUVbSviwnom0xIxNfacQY+3cg2Hv1f4PbKgrd/x7SWjj7zlAcZK
-         IRCCM/psXA6hwaCx+zsvldGxIAUvcFBpBaHYFOZ4=
-To:     paulmck@kernel.org
-From:   Stefan <stefan@pimaker.at>
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Reply-To: Stefan <stefan@pimaker.at>
-Subject: Re: [PATCH] rcu/nocb: Fix dump_tree hierarchy print always active
-Message-ID: <d74644c4-9bdc-a21c-acc2-a8f525863064@pimaker.at>
-In-Reply-To: <20191007012625.GA23446@paulmck-ThinkPad-P72>
-References: <20191004194854.11352-1-stefan@pimaker.at>
- <20191004222402.GQ2689@paulmck-ThinkPad-P72>
- <20191007012625.GA23446@paulmck-ThinkPad-P72>
-Feedback-ID: ue9Y3QtBlktHf6EEpXP3zzomX_ELv4nrMskJ1DJAqtnBErUqnmreyaap-KHUztlMofpS6GrkVvbLJ97c2ByOFQ==:Ext:ProtonMail
+        id S1729588AbfJHALe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Oct 2019 20:11:34 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33139 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729529AbfJHALe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Oct 2019 20:11:34 -0400
+Received: by mail-pg1-f194.google.com with SMTP id i76so2047942pgc.0
+        for <rcu@vger.kernel.org>; Mon, 07 Oct 2019 17:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oxoj/fYhlKK3/P4XHK5UtXLqr7WXZrzF+Ef7LGLgHa0=;
+        b=D4nVAL5z+RBfyCEHf5aUfffUMESLMAyY47bWnqM0Ct5U4P6QSfDDh2+cl9Uo2ukT7u
+         qK79u23lxJjEVGXHxAV6a4DOKwITyQTlM6qHP8WAZK1k53SITUDV+Acnnhwa9ZYzSV8x
+         zphJNbhw337khuCgkEWCwG1bqakhNhIaGlta0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oxoj/fYhlKK3/P4XHK5UtXLqr7WXZrzF+Ef7LGLgHa0=;
+        b=Pmng0+7u5zPCMr4LsghBQiUAbuBzgCY7XzWQa1ZkqNNhiJO5bpjun9ZhyomzXUzECT
+         TBYLseZVG3ybC2W9xGkfBviZy6Vhqfg70M4od7Jmj7EspEbkfuQORr4rT/Qwf10SVBrx
+         ZOCA50pyV18sGIRhRiSmHo9Hvg/cSpcCC9+ZnyfWVEpzqQyVk55S8Nvg35yjijjWd0R6
+         uE9YbdjgmEukAiZF55R/o0ppJ9oeyCR+oA55vJXg1ej1zWLWHeWj0orpOd9UGtL3Odqn
+         y4ds9HK3+q5ZGNB7dyhTuhoM7K8KYPDC1T9pO7vl6v3ECCp41LTe7vMznzcVKpg5akBF
+         6+yQ==
+X-Gm-Message-State: APjAAAWLcACtN/1PyeiSYtZLuKbmXV2+D25fjxz7+BovfCj2jfevm1q8
+        eizdr0/wSz8TvmaXo3RhzqDKwQ==
+X-Google-Smtp-Source: APXvYqxN7kke0KFWColdVVtlzeO7vBKRl8Eqf1lL3SkMCFO4u4evhFLnKs+DxkJ7ES3KeEIXDc3qaw==
+X-Received: by 2002:aa7:8dd5:: with SMTP id j21mr1184614pfr.182.1570493493060;
+        Mon, 07 Oct 2019 17:11:33 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id y7sm15752644pfn.142.2019.10.07.17.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2019 17:11:32 -0700 (PDT)
+Date:   Mon, 7 Oct 2019 20:11:31 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Marco Elver <elver@google.com>,
+        syzbot <syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com>,
+        paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, a@unstable.cc,
+        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
+        LKML <linux-kernel@vger.kernel.org>, mareklindner@neomailbox.ch,
+        netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KCSAN: data-race in find_next_bit / rcu_report_exp_cpu_mult
+Message-ID: <20191008001131.GB255532@google.com>
+References: <000000000000604e8905944f211f@google.com>
+ <CANpmjNNmSOagbTpffHr4=Yedckx9Rm2NuGqC9UqE+AOz5f1-ZQ@mail.gmail.com>
+ <20191007134304.GA2609633@tardis>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191007134304.GA2609633@tardis>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 07/10/2019 03:26, Paul E. McKenney wrote:
->=20
-> On Fri, Oct 04, 2019 at 03:24:02PM -0700, Paul E. McKenney wrote:
->> On Fri, Oct 04, 2019 at 07:49:10PM +0000, Stefan Reiter wrote:
->>> Commit 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if
->>> dump_tree") added print statements to rcu_organize_nocb_kthreads for
->>> debugging, but incorrectly guarded them, causing the function to always
->>> spew out its message.
->>>
->>> This patch fixes it by guarding both pr_alert statements with dump_tree=
-,
->>> while also changing the second pr_alert to a pr_cont, to print the
->>> hierarchy in a single line (assuming that's how it was supposed to
->>> work).
->>>
->>> Fixes: 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if dump_t=
-ree")
->>> Signed-off-by: Stefan Reiter <stefan@pimaker.at>
->>
->> Queued for testing and review, thank you!
->=20
-> And here is an updated version to make the special case of a nocb GP
-> kthread having no other nocb CB kthreads look less strange.  Does this
-> work for you?
+On Mon, Oct 07, 2019 at 09:43:04PM +0800, Boqun Feng wrote:
+> Hi Marco,
 
-Tested just now, works for me. Thanks for the additional fix!
+Hi Boqun, Steve and Paul, fun times!
 
->=20
-> =09=09=09=09=09=09=09Thanx, Paul
->=20
-> ------------------------------------------------------------------------
->=20
-> commit e6223b0705369750990c32ddc80251942e61be30
-> Author: Stefan Reiter <stefan@pimaker.at>
-> Date:   Fri Oct 4 19:49:10 2019 +0000
->=20
->      rcu/nocb: Fix dump_tree hierarchy print always active
->=20
->      Commit 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if
->      dump_tree") added print statements to rcu_organize_nocb_kthreads for
->      debugging, but incorrectly guarded them, causing the function to alw=
-ays
->      spew out its message.
->=20
->      This patch fixes it by guarding both pr_alert statements with dump_t=
-ree,
->      while also changing the second pr_alert to a pr_cont, to print the
->      hierarchy in a single line (assuming that's how it was supposed to
->      work).
->=20
->      Fixes: 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if dum=
-p_tree")
->      Signed-off-by: Stefan Reiter <stefan@pimaker.at>
->      [ paulmck: Make single-nocbs-CPU GP kthreads look less erroneous. ]
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->=20
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index d5334e4..d43f4e0 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -2295,6 +2295,8 @@ static void __init rcu_organize_nocb_kthreads(void)
->   {
->   =09int cpu;
->   =09bool firsttime =3D true;
-> +=09bool gotnocbs =3D false;
-> +=09bool gotnocbscbs =3D true;
->   =09int ls =3D rcu_nocb_gp_stride;
->   =09int nl =3D 0;  /* Next GP kthread. */
->   =09struct rcu_data *rdp;
-> @@ -2317,21 +2319,31 @@ static void __init rcu_organize_nocb_kthreads(voi=
-d)
->   =09=09rdp =3D per_cpu_ptr(&rcu_data, cpu);
->   =09=09if (rdp->cpu >=3D nl) {
->   =09=09=09/* New GP kthread, set up for CBs & next GP. */
-> +=09=09=09gotnocbs =3D true;
->   =09=09=09nl =3D DIV_ROUND_UP(rdp->cpu + 1, ls) * ls;
->   =09=09=09rdp->nocb_gp_rdp =3D rdp;
->   =09=09=09rdp_gp =3D rdp;
-> -=09=09=09if (!firsttime && dump_tree)
-> -=09=09=09=09pr_cont("\n");
-> -=09=09=09firsttime =3D false;
-> -=09=09=09pr_alert("%s: No-CB GP kthread CPU %d:", __func__, cpu);
-> +=09=09=09if (dump_tree) {
-> +=09=09=09=09if (!firsttime)
-> +=09=09=09=09=09pr_cont("%s\n", gotnocbscbs
-> +=09=09=09=09=09=09=09? "" : " (self only)");
-> +=09=09=09=09gotnocbscbs =3D false;
-> +=09=09=09=09firsttime =3D false;
-> +=09=09=09=09pr_alert("%s: No-CB GP kthread CPU %d:",
-> +=09=09=09=09=09 __func__, cpu);
-> +=09=09=09}
->   =09=09} else {
->   =09=09=09/* Another CB kthread, link to previous GP kthread. */
-> +=09=09=09gotnocbscbs =3D true;
->   =09=09=09rdp->nocb_gp_rdp =3D rdp_gp;
->   =09=09=09rdp_prev->nocb_next_cb_rdp =3D rdp;
-> -=09=09=09pr_alert(" %d", cpu);
-> +=09=09=09if (dump_tree)
-> +=09=09=09=09pr_cont(" %d", cpu);
->   =09=09}
->   =09=09rdp_prev =3D rdp;
->   =09}
-> +=09if (gotnocbs && dump_tree)
-> +=09=09pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
->   }
->=20
->   /*
->=20
+Marco, good catch ;-)
 
+Some comments below:
+
+> On Mon, Oct 07, 2019 at 12:04:16PM +0200, Marco Elver wrote:
+> > +RCU maintainers
+> > This might be a data-race in RCU itself.
+> > 
+> > On Mon, 7 Oct 2019 at 12:01, syzbot
+> > <syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following crash on:
+> > >
+> > > HEAD commit:    b4bd9343 x86, kcsan: Enable KCSAN for x86
+> > > git tree:       https://github.com/google/ktsan.git kcsan
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=11edb20d600000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0906aa620713d80
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=134336b86f728d6e55a0
+> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > >
+> > > Unfortunately, I don't have any reproducer for this crash yet.
+> > >
+> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > Reported-by: syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com
+> > >
+> > > ==================================================================
+> > > BUG: KCSAN: data-race in find_next_bit / rcu_report_exp_cpu_mult
+> > >
+> > > write to 0xffffffff85a7f140 of 8 bytes by task 7 on cpu 0:
+> > >   rcu_report_exp_cpu_mult+0x4f/0xa0 kernel/rcu/tree_exp.h:244
+> > >   rcu_report_exp_rdp+0x6c/0x90 kernel/rcu/tree_exp.h:254
+> > >   rcu_preempt_deferred_qs_irqrestore+0x3bb/0x580 kernel/rcu/tree_plugin.h:475
+> > >   rcu_read_unlock_special+0xec/0x370 kernel/rcu/tree_plugin.h:659
+> > >   __rcu_read_unlock+0xcf/0xe0 kernel/rcu/tree_plugin.h:394
+> > >   rcu_read_unlock include/linux/rcupdate.h:645 [inline]
+> > >   batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:411 [inline]
+> > >   batadv_nc_worker+0x13a/0x390 net/batman-adv/network-coding.c:718
+> > >   process_one_work+0x3d4/0x890 kernel/workqueue.c:2269
+> > >   worker_thread+0xa0/0x800 kernel/workqueue.c:2415
+> > >   kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+> > >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+> > >
+> > > read to 0xffffffff85a7f140 of 8 bytes by task 7251 on cpu 1:
+> > >   _find_next_bit lib/find_bit.c:39 [inline]
+> > >   find_next_bit+0x57/0xe0 lib/find_bit.c:70
+> > >   sync_rcu_exp_select_node_cpus+0x28e/0x510 kernel/rcu/tree_exp.h:375
+> 
+> This is the second for_each_leaf_node_cpu_mask() loop in
+> sync_rcu_exp_select_node_cpus(), the first loop is for collecting which
+> CPU blocks current grace period (IOW, which CPU need to be sent an IPI
+> to), and the second loop does the real work of sending IPI. The first
+> loop is protected by proper lock (rcu node lock), so there is no race
+> there. But the second one can't hold rcu node lock, because the IPI
+> handler (rcu_exp_handler) needs to acquire the same lock, so rcu node
+> lock has to be dropped before the second loop to avoid deadlock.
+> 
+> Now for the racy find_next_bit() on rnp->expmask:
+> 
+> 1) if an extra bit appears: it's OK since there is checking on whether
+> the bit exists in mask_ofl_ipi (the result of the first loop).
+> 
+> 2) if a bit is missing: it will be problematic, because the second loop
+> will skip the CPU, and the rest of the code will treat the CPU as
+> offline but hasn't reported a quesient state, and the
+> rcu_report_exp_cpu_mult() will report the qs for it, even though the CPU
+> may currenlty run inside a RCU read-side critical section.
+> 
+> Note both "appears" and "missing" means some intermediate state of a
+> plain unset for expmask contributed by compiler magic.
+> 
+> Please see below for a compile-test-only patch:
+> 
+> > >   sync_rcu_exp_select_cpus+0x30c/0x590 kernel/rcu/tree_exp.h:439
+> > >   rcu_exp_sel_wait_wake kernel/rcu/tree_exp.h:575 [inline]
+> > >   wait_rcu_exp_gp+0x25/0x40 kernel/rcu/tree_exp.h:589
+> > >   process_one_work+0x3d4/0x890 kernel/workqueue.c:2269
+> > >   worker_thread+0xa0/0x800 kernel/workqueue.c:2415
+> > >   kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+> > >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+> > >
+> > > Reported by Kernel Concurrency Sanitizer on:
+> > > CPU: 1 PID: 7251 Comm: kworker/1:4 Not tainted 5.3.0+ #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> > > Google 01/01/2011
+> > > Workqueue: rcu_gp wait_rcu_exp_gp
+> > > ==================================================================
+> > >
+> > >
+> 
+> Regards,
+> Boqun
+> 
+> ------------------->8
+> Subject: [PATCH] rcu: exp: Avoid race on lockless rcu_node::expmask loop
+> 
+> KCSAN reported an issue:
+> 
+> | BUG: KCSAN: data-race in find_next_bit / rcu_report_exp_cpu_mult
+> |
+> | write to 0xffffffff85a7f140 of 8 bytes by task 7 on cpu 0:
+> |   rcu_report_exp_cpu_mult+0x4f/0xa0 kernel/rcu/tree_exp.h:244
+> |   rcu_report_exp_rdp+0x6c/0x90 kernel/rcu/tree_exp.h:254
+> |   rcu_preempt_deferred_qs_irqrestore+0x3bb/0x580 kernel/rcu/tree_plugin.h:475
+> |   rcu_read_unlock_special+0xec/0x370 kernel/rcu/tree_plugin.h:659
+> |   __rcu_read_unlock+0xcf/0xe0 kernel/rcu/tree_plugin.h:394
+> |   rcu_read_unlock include/linux/rcupdate.h:645 [inline]
+> |   batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:411 [inline]
+> |   batadv_nc_worker+0x13a/0x390 net/batman-adv/network-coding.c:718
+> |   process_one_work+0x3d4/0x890 kernel/workqueue.c:2269
+> |   worker_thread+0xa0/0x800 kernel/workqueue.c:2415
+> |   kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+> |   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+> |
+> | read to 0xffffffff85a7f140 of 8 bytes by task 7251 on cpu 1:
+> |   _find_next_bit lib/find_bit.c:39 [inline]
+> |   find_next_bit+0x57/0xe0 lib/find_bit.c:70
+> |   sync_rcu_exp_select_node_cpus+0x28e/0x510 kernel/rcu/tree_exp.h:375
+> |   sync_rcu_exp_select_cpus+0x30c/0x590 kernel/rcu/tree_exp.h:439
+> |   rcu_exp_sel_wait_wake kernel/rcu/tree_exp.h:575 [inline]
+> |   wait_rcu_exp_gp+0x25/0x40 kernel/rcu/tree_exp.h:589
+> |   process_one_work+0x3d4/0x890 kernel/workqueue.c:2269
+> |   worker_thread+0xa0/0x800 kernel/workqueue.c:2415
+> |   kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+> |   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+> 
+> The root cause of this is the second for_each_leaf_node_cpu_mask() loop
+> in sync_rcu_exp_select_node_cpus() accesses the rcu_node::expmask
+> without holding rcu_node's lock. This is by design, because the second
+> loop may issue IPIs to other CPUs, and the IPI handler (rcu_exp_handler)
+> may acquire the same rcu_node's lock. So the rcu_node's lock has to be
+> dropped before the second loop.
+> 
+> The problem will occur when the normal unsetting of rcu_node::expmask
+> results into some intermediate state (because it's a plain access),
+> where an extra bit gets zeroed. The second loop will skip the
+> corrensponding CPU, but treat it as offline and in quesient state. This
+> will cause trouble because that CPU may be in a RCU read-side critical
+> section.
+> 
+> To fix this, take a snapshot of mask_ofl_ipi, and make the second loop
+> iterate on the snapshot's bits, as a result, the find_next_bit() of the
+> second loop doesn't access any variables that may get changed in
+> parallel, so the race is avoided.
+> 
+> Reported-by: syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  kernel/rcu/tree_exp.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index af7e7b9c86af..7f3e19d0275e 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -335,6 +335,7 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+>  	unsigned long flags;
+>  	unsigned long mask_ofl_test;
+>  	unsigned long mask_ofl_ipi;
+> +	unsigned long mask_ofl_ipi_snap;
+>  	int ret;
+>  	struct rcu_exp_work *rewp =
+>  		container_of(wp, struct rcu_exp_work, rew_work);
+> @@ -371,13 +372,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+>  		rnp->exp_tasks = rnp->blkd_tasks.next;
+>  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  
+> +	mask_ofl_ipi_snap = mask_ofl_ipi;
+>  	/* IPI the remaining CPUs for expedited quiescent state. */
+> -	for_each_leaf_node_cpu_mask(rnp, cpu, rnp->expmask) {
+> +	for_each_leaf_node_cpu_mask(rnp, cpu, mask_ofl_ipi_snap) {
+
+This looks good to me. Just a nit, I prefer if the comment to IPI the
+remaining CPUs is before the assignment to mask_ofl_ipi_snap since the
+new assignment is done for consumption by the for_each..(..) loop itself.
+
+Steve's patch looks good as well and I was thinking along the same lines but
+Boqun's patch is slightly better because he doesn't need to snapshot exp_mask
+inside the locked section.
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
+
+ - Joel
+
+>  		unsigned long mask = leaf_node_cpu_bit(rnp, cpu);
+>  		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+>  
+> -		if (!(mask_ofl_ipi & mask))
+> -			continue;
+>  retry_ipi:
+>  		if (rcu_dynticks_in_eqs_since(rdp, rdp->exp_dynticks_snap)) {
+>  			mask_ofl_test |= mask;
+> -- 
+> 2.23.0
+> 
