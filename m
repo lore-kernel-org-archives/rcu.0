@@ -7,114 +7,124 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02463ECE58D
-	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD56C47404
+	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:44:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CC26C218DE
-	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:37:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 31B45218AC
+	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:44:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570635426;
-	bh=edf3a7Xyb4Ic5cpCpe6yHS1CA/n0vMcGLXMOlQSiBDg=;
+	s=default; t=1570635892;
+	bh=455RXi27qe5dtbw0NFBsN3pauhdn6Ix/HhbI3M5wM2g=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=M2GD+93weDl8vJCvmdThq1n8uPPFoY0JigbX8WKwueVVlKh5E5utWgnLbsGxFUrx7
-	 UC4zZiXV9ewiRKv415Vz1103cFaBcMhDYvBjJdMxZBSnMuVL4oyskGUrqu0IyOfwyd
-	 dK+BN6pv5RPDGpkdxaItKXEKriQFhW/eK6xeSZoQ=
+	b=KdBpZ137N/kGuKpelgsxyteCG6Y+cMRAQ4ThDvmAZRy/fhtnupltBSozsEixCVEPG
+	 /wYl7IIrK5nuf7n7j1DvJizJi+tV0obWu6/XHi79MkDkADAYOduUQsV1dj1okcOoYU
+	 cG1/kGxgd6VsDmIYQkNzLjNJLk3fGPVHm1aJ8MYc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730503AbfJIPhG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Oct 2019 11:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
+        id S1730955AbfJIPow (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Oct 2019 11:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729742AbfJIPhG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Oct 2019 11:37:06 -0400
-Received: from paulmck-ThinkPad-P72 (mobile-166-137-176-109.mycingular.net [166.137.176.109])
+        id S1729865AbfJIPov (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Oct 2019 11:44:51 -0400
+Received: from paulmck-ThinkPad-P72 (mobile-166-170-42-80.mycingular.net [166.170.42.80])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 304D9218AC;
-        Wed,  9 Oct 2019 15:37:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B83521848;
+        Wed,  9 Oct 2019 15:44:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570635425;
-        bh=edf3a7Xyb4Ic5cpCpe6yHS1CA/n0vMcGLXMOlQSiBDg=;
+        s=default; t=1570635891;
+        bh=455RXi27qe5dtbw0NFBsN3pauhdn6Ix/HhbI3M5wM2g=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UsVnXzAIzR9JpLCn6O++S2Alq32z1XzoL7CfrtrT9iC2Bo0HNdbEOUmEWiXGhZKgx
-         vjuRbLjOI8qbqYcp1pQ0CB6If1Fac/28dbE+e+Ue4pYPQwx/LyYIhkw4YIJkL6+Phr
-         UKrIppp5CAM5RiV5D4NOZtnRaAveBHLwVySAldQg=
-Date:   Wed, 9 Oct 2019 08:36:59 -0700
+        b=xvmErgJ7fXy0Wft7hYtVrXfw/mgp7QIKTEqAy05R82xhaI4tPhOmyrWmjAUgcxOx0
+         LTuKTu4J9eUYQglGb3BLs7MfawbYTL8KhNYO5PP6erRGv+ER1fvlC8m4IErh6l1GTA
+         hjLWN224KvRXH+IAViwCzchyBz1mios+nG6XDtdI=
+Date:   Wed, 9 Oct 2019 08:44:46 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH tip/core/rcu 8/9] net/netfilter: Replace
- rcu_swap_protected() with rcu_replace()
-Message-ID: <20191009153659.GA30521@paulmck-ThinkPad-P72>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        elver@google.com, Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Avoid to modify mask_ofl_ipi in
+ sync_rcu_exp_select_node_cpus()
+Message-ID: <20191009154446.GA2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
- <20191003014310.13262-8-paulmck@kernel.org>
- <20191008141611.usmxb5vzoxc36wqw@salvia>
+References: <20191008050145.4041702-1-boqun.feng@gmail.com>
+ <20191008163028.GA136151@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191008141611.usmxb5vzoxc36wqw@salvia>
+In-Reply-To: <20191008163028.GA136151@google.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 04:16:11PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Oct 02, 2019 at 06:43:09PM -0700, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Oct 08, 2019 at 12:30:28PM -0400, Joel Fernandes wrote:
+> On Tue, Oct 08, 2019 at 01:01:40PM +0800, Boqun Feng wrote:
+> > "mask_ofl_ipi" is used for iterate CPUs which IPIs are needed to send
+> > to, however in the IPI sending loop, "mask_ofl_ipi" along with another
+> > variable "mask_ofl_test" might also get modified to record which CPU's
+> > quiesent state can be reported by sync_rcu_exp_select_node_cpus(). Two
+> > variables seems to be redundant for such a propose, so this patch clean
+> > things a little by solely using "mask_ofl_test" for recording and
+> > "mask_ofl_ipi" for iteration. This would improve the readibility of the
+> > IPI sending loop in sync_rcu_exp_select_node_cpus().
 > > 
-> > This commit replaces the use of rcu_swap_protected() with the more
-> > intuitively appealing rcu_replace() as a step towards removing
-> > rcu_swap_protected().
-> > 
-> > Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-> > Cc: Florian Westphal <fw@strlen.de>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: <netfilter-devel@vger.kernel.org>
-> > Cc: <coreteam@netfilter.org>
-> > Cc: <netdev@vger.kernel.org>
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
 > 
-> Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 Applied, thank you!
 
 							Thanx, Paul
 
-> > ---
-> >  net/netfilter/nf_tables_api.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> thanks,
+> 
+>  - Joel
+> 
+> >  kernel/rcu/tree_exp.h | 13 ++++++-------
+> >  1 file changed, 6 insertions(+), 7 deletions(-)
 > > 
-> > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> > index d481f9b..8499baf 100644
-> > --- a/net/netfilter/nf_tables_api.c
-> > +++ b/net/netfilter/nf_tables_api.c
-> > @@ -1461,8 +1461,9 @@ static void nft_chain_stats_replace(struct nft_trans *trans)
-> >  	if (!nft_trans_chain_stats(trans))
-> >  		return;
-> >  
-> > -	rcu_swap_protected(chain->stats, nft_trans_chain_stats(trans),
-> > -			   lockdep_commit_lock_is_held(trans->ctx.net));
-> > +	nft_trans_chain_stats(trans) =
-> > +		rcu_replace(chain->stats, nft_trans_chain_stats(trans),
-> > +			    lockdep_commit_lock_is_held(trans->ctx.net));
-> >  
-> >  	if (!nft_trans_chain_stats(trans))
-> >  		static_branch_inc(&nft_counters_enabled);
+> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > index 69c5aa64fcfd..212470018752 100644
+> > --- a/kernel/rcu/tree_exp.h
+> > +++ b/kernel/rcu/tree_exp.h
+> > @@ -387,10 +387,10 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> >  		}
+> >  		ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
+> >  		put_cpu();
+> > -		if (!ret) {
+> > -			mask_ofl_ipi &= ~mask;
+> > +		/* The CPU responses the IPI, and will report QS itself */
+> > +		if (!ret)
+> >  			continue;
+> > -		}
+> > +
+> >  		/* Failed, raced with CPU hotplug operation. */
+> >  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> >  		if ((rnp->qsmaskinitnext & mask) &&
+> > @@ -401,13 +401,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> >  			schedule_timeout_uninterruptible(1);
+> >  			goto retry_ipi;
+> >  		}
+> > -		/* CPU really is offline, so we can ignore it. */
+> > -		if (!(rnp->expmask & mask))
+> > -			mask_ofl_ipi &= ~mask;
+> > +		/* CPU really is offline, and we need its QS to pass GP. */
+> > +		if (rnp->expmask & mask)
+> > +			mask_ofl_test |= mask;
+> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >  	}
+> >  	/* Report quiescent states for those that went offline. */
+> > -	mask_ofl_test |= mask_ofl_ipi;
+> >  	if (mask_ofl_test)
+> >  		rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
+> >  }
 > > -- 
-> > 2.9.5
+> > 2.23.0
 > > 
