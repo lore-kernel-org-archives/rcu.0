@@ -7,124 +7,141 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD56C47404
-	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:44:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EDD9C47404
+	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:45:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 31B45218AC
-	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:44:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D722221848
+	for <rcu@archiver.kernel.org>; Wed,  9 Oct 2019 15:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570635892;
-	bh=455RXi27qe5dtbw0NFBsN3pauhdn6Ix/HhbI3M5wM2g=;
+	s=default; t=1570635954;
+	bh=6VNczijm7dR3WIsRcl2V0xeLyKxkwaweQslIMAwrUNg=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=KdBpZ137N/kGuKpelgsxyteCG6Y+cMRAQ4ThDvmAZRy/fhtnupltBSozsEixCVEPG
-	 /wYl7IIrK5nuf7n7j1DvJizJi+tV0obWu6/XHi79MkDkADAYOduUQsV1dj1okcOoYU
-	 cG1/kGxgd6VsDmIYQkNzLjNJLk3fGPVHm1aJ8MYc=
+	b=I5FopieVAGz/C0pH1JsO8u/IGtmv69kt0dRO6ZmXJB++SUcQlP9h4FITRD1m6D8S4
+	 EKWIeuOkM3Esb5kOnLmXmF4xXqFt4v3LFSoPnf1Wu/PhSSuydeTYUuy3BRmc3jvH2X
+	 U8G31I6E/nLt1F3A/Os1yWNA4ykIAFNz5Jka9uY8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbfJIPow (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Oct 2019 11:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43086 "EHLO mail.kernel.org"
+        id S1729865AbfJIPpy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Oct 2019 11:45:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729865AbfJIPov (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Oct 2019 11:44:51 -0400
-Received: from paulmck-ThinkPad-P72 (mobile-166-170-42-80.mycingular.net [166.170.42.80])
+        id S1729644AbfJIPpy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Oct 2019 11:45:54 -0400
+Received: from paulmck-ThinkPad-P72 (mobile-166-177-250-63.mycingular.net [166.177.250.63])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B83521848;
-        Wed,  9 Oct 2019 15:44:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA7642053B;
+        Wed,  9 Oct 2019 15:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570635891;
-        bh=455RXi27qe5dtbw0NFBsN3pauhdn6Ix/HhbI3M5wM2g=;
+        s=default; t=1570635953;
+        bh=6VNczijm7dR3WIsRcl2V0xeLyKxkwaweQslIMAwrUNg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=xvmErgJ7fXy0Wft7hYtVrXfw/mgp7QIKTEqAy05R82xhaI4tPhOmyrWmjAUgcxOx0
-         LTuKTu4J9eUYQglGb3BLs7MfawbYTL8KhNYO5PP6erRGv+ER1fvlC8m4IErh6l1GTA
-         hjLWN224KvRXH+IAViwCzchyBz1mios+nG6XDtdI=
-Date:   Wed, 9 Oct 2019 08:44:46 -0700
+        b=v7CCczIwHTfOtyskNZ9whMMqCgEuT6J742xrfO3eWKtCAeGyj/PFDBQSHQArMVL7H
+         gSHa1HZbPwxI9yp+yeHsi7W8Xem7m4u8shw59SwThvyQbxe3JGCYTZL+fNo6/E7KlU
+         jgIXuqhP1hHxTObV1SjeKahIO69NH+UWtERbQ95g=
+Date:   Wed, 9 Oct 2019 08:45:48 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-        elver@google.com, Josh Triplett <josh@joshtriplett.org>,
+To:     Marco Elver <elver@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
 Subject: Re: [PATCH] rcu: Avoid to modify mask_ofl_ipi in
  sync_rcu_exp_select_node_cpus()
-Message-ID: <20191009154446.GA2689@paulmck-ThinkPad-P72>
+Message-ID: <20191009154548.GB2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20191008050145.4041702-1-boqun.feng@gmail.com>
  <20191008163028.GA136151@google.com>
+ <CANpmjNP0Vt4i7nWXPd2g4vaqkE3J2K1M_BiEMrtGqVcRE8khtw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191008163028.GA136151@google.com>
+In-Reply-To: <CANpmjNP0Vt4i7nWXPd2g4vaqkE3J2K1M_BiEMrtGqVcRE8khtw@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 12:30:28PM -0400, Joel Fernandes wrote:
-> On Tue, Oct 08, 2019 at 01:01:40PM +0800, Boqun Feng wrote:
-> > "mask_ofl_ipi" is used for iterate CPUs which IPIs are needed to send
-> > to, however in the IPI sending loop, "mask_ofl_ipi" along with another
-> > variable "mask_ofl_test" might also get modified to record which CPU's
-> > quiesent state can be reported by sync_rcu_exp_select_node_cpus(). Two
-> > variables seems to be redundant for such a propose, so this patch clean
-> > things a little by solely using "mask_ofl_test" for recording and
-> > "mask_ofl_ipi" for iteration. This would improve the readibility of the
-> > IPI sending loop in sync_rcu_exp_select_node_cpus().
-> > 
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
+On Tue, Oct 08, 2019 at 06:35:45PM +0200, Marco Elver wrote:
+> On Tue, 8 Oct 2019 at 18:30, Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Tue, Oct 08, 2019 at 01:01:40PM +0800, Boqun Feng wrote:
+> > > "mask_ofl_ipi" is used for iterate CPUs which IPIs are needed to send
+> > > to, however in the IPI sending loop, "mask_ofl_ipi" along with another
+> > > variable "mask_ofl_test" might also get modified to record which CPU's
+> > > quiesent state can be reported by sync_rcu_exp_select_node_cpus(). Two
+> > > variables seems to be redundant for such a propose, so this patch clean
+> > > things a little by solely using "mask_ofl_test" for recording and
+> > > "mask_ofl_ipi" for iteration. This would improve the readibility of the
+> > > IPI sending loop in sync_rcu_exp_select_node_cpus().
+> > >
+> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > ---
+> >
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > thanks,
+> >
+> >  - Joel
 > 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Acked-by: Marco Elver <elver@google.com>
+> 
+> If this is the official patch for the fix to the KCSAN reported
+> data-race, it'd be great to include the tag:
+> Reported-by: syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com
+> so the bot knows this was fixed.
 
-Applied, thank you!
+I applied your Acked-by to both patches, but please let me know if you
+intended something else.  Either way, thank you both for finding this
+and for your testing!
 
 							Thanx, Paul
 
-> thanks,
+> Thanks!
+> -- Marco
 > 
->  - Joel
-> 
-> >  kernel/rcu/tree_exp.h | 13 ++++++-------
-> >  1 file changed, 6 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > index 69c5aa64fcfd..212470018752 100644
-> > --- a/kernel/rcu/tree_exp.h
-> > +++ b/kernel/rcu/tree_exp.h
-> > @@ -387,10 +387,10 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> >  		}
-> >  		ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
-> >  		put_cpu();
-> > -		if (!ret) {
-> > -			mask_ofl_ipi &= ~mask;
-> > +		/* The CPU responses the IPI, and will report QS itself */
-> > +		if (!ret)
-> >  			continue;
-> > -		}
-> > +
-> >  		/* Failed, raced with CPU hotplug operation. */
-> >  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> >  		if ((rnp->qsmaskinitnext & mask) &&
-> > @@ -401,13 +401,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
-> >  			schedule_timeout_uninterruptible(1);
-> >  			goto retry_ipi;
-> >  		}
-> > -		/* CPU really is offline, so we can ignore it. */
-> > -		if (!(rnp->expmask & mask))
-> > -			mask_ofl_ipi &= ~mask;
-> > +		/* CPU really is offline, and we need its QS to pass GP. */
-> > +		if (rnp->expmask & mask)
-> > +			mask_ofl_test |= mask;
-> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  	}
-> >  	/* Report quiescent states for those that went offline. */
-> > -	mask_ofl_test |= mask_ofl_ipi;
-> >  	if (mask_ofl_test)
-> >  		rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
-> >  }
-> > -- 
-> > 2.23.0
-> > 
+> > >  kernel/rcu/tree_exp.h | 13 ++++++-------
+> > >  1 file changed, 6 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > > index 69c5aa64fcfd..212470018752 100644
+> > > --- a/kernel/rcu/tree_exp.h
+> > > +++ b/kernel/rcu/tree_exp.h
+> > > @@ -387,10 +387,10 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > >               }
+> > >               ret = smp_call_function_single(cpu, rcu_exp_handler, NULL, 0);
+> > >               put_cpu();
+> > > -             if (!ret) {
+> > > -                     mask_ofl_ipi &= ~mask;
+> > > +             /* The CPU responses the IPI, and will report QS itself */
+> > > +             if (!ret)
+> > >                       continue;
+> > > -             }
+> > > +
+> > >               /* Failed, raced with CPU hotplug operation. */
+> > >               raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> > >               if ((rnp->qsmaskinitnext & mask) &&
+> > > @@ -401,13 +401,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
+> > >                       schedule_timeout_uninterruptible(1);
+> > >                       goto retry_ipi;
+> > >               }
+> > > -             /* CPU really is offline, so we can ignore it. */
+> > > -             if (!(rnp->expmask & mask))
+> > > -                     mask_ofl_ipi &= ~mask;
+> > > +             /* CPU really is offline, and we need its QS to pass GP. */
+> > > +             if (rnp->expmask & mask)
+> > > +                     mask_ofl_test |= mask;
+> > >               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > >       }
+> > >       /* Report quiescent states for those that went offline. */
+> > > -     mask_ofl_test |= mask_ofl_ipi;
+> > >       if (mask_ofl_test)
+> > >               rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
+> > >  }
+> > > --
+> > > 2.23.0
+> > >
