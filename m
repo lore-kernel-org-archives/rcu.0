@@ -1,193 +1,93 @@
-Return-Path: <SRS0=98G1=YD=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=C2sj=YE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DAD8C4360C
-	for <rcu@archiver.kernel.org>; Thu, 10 Oct 2019 03:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFA1C47404
+	for <rcu@archiver.kernel.org>; Fri, 11 Oct 2019 17:09:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0ABA7218DE
-	for <rcu@archiver.kernel.org>; Thu, 10 Oct 2019 03:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1570676926;
-	bh=SJDqa0XQ8PdlsODmYo3N8u85qF3dUXq8O5FOKsqgHyc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=MsQDr+V4DBafZ/bBjlDFIR28S467bg9swGymr4mmmCjEI9k+Z7EjgpL3wM1vS5rM+
-	 SS6mA6lsWqsL3sWSJfyngFzgfIFyw5tvhYZ6X03+aTh533ylX9ejnT+RnZSa200vaS
-	 puz29LZkNbO98jbli1J5Wf7uDr8j0jBo3TMVDg2A=
+	by mail.kernel.org (Postfix) with ESMTP id 7E99D206A1
+	for <rcu@archiver.kernel.org>; Fri, 11 Oct 2019 17:09:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbfJJDIp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Oct 2019 23:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbfJJDIp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Oct 2019 23:08:45 -0400
-Received: from paulmck-ThinkPad-P72 (unknown [12.12.162.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9239420650;
-        Thu, 10 Oct 2019 03:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570676924;
-        bh=SJDqa0XQ8PdlsODmYo3N8u85qF3dUXq8O5FOKsqgHyc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=0PwYQfX5xZeASc8Kl+Bk0hXaqGBi+ZTFqIdRqJpCNt8+3vxaSG8AnEYtQTPhxjqSs
-         WXUnRYWpsGjosXhc8clJ7bPEq7nkUqhRGtklv4tB1WFDTg0T5seigOgzEZbIxv4Iw3
-         3MZrXEtPjtE6jQXNsz6GtWi9eoQDVZe6mJovgnpw=
-Date:   Wed, 9 Oct 2019 20:08:39 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel@vger.kernel.org,
+        id S1728431AbfJKRJJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Oct 2019 13:09:09 -0400
+Received: from imap1.codethink.co.uk ([176.9.8.82]:40872 "EHLO
+        imap1.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbfJKRJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Oct 2019 13:09:09 -0400
+Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
+        by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
+        id 1iIyOv-0002WN-J8; Fri, 11 Oct 2019 18:08:25 +0100
+Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
+        (envelope-from <ben@rainbowdash.codethink.co.uk>)
+        id 1iIyOv-0007sJ-5L; Fri, 11 Oct 2019 18:08:25 +0100
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     linux-kernel@lists.codethink.co.uk
+Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix data-race due to atomic_t copy-by-value
-Message-ID: <20191010030838.GC2689@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191009155743.202142-1-elver@google.com>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: add declarations of undeclared items
+Date:   Fri, 11 Oct 2019 18:08:24 +0100
+Message-Id: <20191011170824.30228-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191009155743.202142-1-elver@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 05:57:43PM +0200, Marco Elver wrote:
-> This fixes a data-race where `atomic_t dynticks` is copied by value. The
-> copy is performed non-atomically, resulting in a data-race if `dynticks`
-> is updated concurrently.
-> 
-> This data-race was found with KCSAN:
-> ==================================================================
-> BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
-> 
-> write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
->  atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
->  rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
->  dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
->  force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
->  rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
->  rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
->  rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
->  kthread+0x1b5/0x200 kernel/kthread.c:255
->  <snip>
-> 
-> read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
->  rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
->  rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
->  irq_enter+0x5/0x50 kernel/softirq.c:347
->  <snip>
-> 
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> Workqueue: kblockd blk_mq_run_work_fn
-> ==================================================================
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
+The rcu_state, rcu_rnp_online_cpus and rcu_dynticks_curr_cpu_in_eqs
+do not have declarations in a header. Add these to remove the
+following sparse warnings:
 
-Good catch, queued for review and testing.
+kernel/rcu/tree.c:87:18: warning: symbol 'rcu_state' was not declared. Should it be static?
+kernel/rcu/tree.c:191:15: warning: symbol 'rcu_rnp_online_cpus' was not declared. Should it be static?
+kernel/rcu/tree.c:297:6: warning: symbol 'rcu_dynticks_curr_cpu_in_eqs' was not declared. Should it be static?
 
-							Thanx, Paul
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+---
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/rcu/tree.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: rcu@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  include/trace/events/rcu.h |  4 ++--
->  kernel/rcu/tree.c          | 11 ++++++-----
->  2 files changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 694bd040cf51..fdd31c5fd126 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
->   */
->  TRACE_EVENT_RCU(rcu_dyntick,
->  
-> -	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
-> +	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
->  
->  	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
->  
-> @@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
->  		__entry->polarity = polarity;
->  		__entry->oldnesting = oldnesting;
->  		__entry->newnesting = newnesting;
-> -		__entry->dynticks = atomic_read(&dynticks);
-> +		__entry->dynticks = dynticks;
->  	),
->  
->  	TP_printk("%s %lx %lx %#3x", __entry->polarity,
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 81105141b6a8..62e59596a30a 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
->  	}
->  
->  	lockdep_assert_irqs_disabled();
-> -	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
-> +	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
->  	rdp = this_cpu_ptr(&rcu_data);
->  	do_nocb_deferred_wakeup(rdp);
-> @@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
->  	 * leave it in non-RCU-idle state.
->  	 */
->  	if (rdp->dynticks_nmi_nesting != 1) {
-> -		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
-> +		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
-> +				  atomic_read(&rdp->dynticks));
->  		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
->  			   rdp->dynticks_nmi_nesting - 2);
->  		return;
->  	}
->  
->  	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
-> -	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
-> +	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
->  	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
->  
->  	if (irq)
-> @@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
->  	rcu_dynticks_task_exit();
->  	rcu_dynticks_eqs_exit();
->  	rcu_cleanup_after_idle();
-> -	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
-> +	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
->  	WRITE_ONCE(rdp->dynticks_nesting, 1);
->  	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
-> @@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
->  	}
->  	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
->  			  rdp->dynticks_nmi_nesting,
-> -			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
-> +			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
->  	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
->  		   rdp->dynticks_nmi_nesting + incby);
->  	barrier();
-> -- 
-> 2.23.0.581.g78d2f28ef7-goog
-> 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index c612f306fe89..1f88351b9014 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -352,6 +352,8 @@ struct rcu_state {
+ 						/*  GP pre-initialization. */
+ };
+ 
++extern struct rcu_state rcu_state;
++
+ /* Values for rcu_state structure's gp_flags field. */
+ #define RCU_GP_FLAG_INIT 0x1	/* Need grace-period initialization. */
+ #define RCU_GP_FLAG_FQS  0x2	/* Need grace-period quiescent-state forcing. */
+@@ -472,3 +474,7 @@ static void rcu_iw_handler(struct irq_work *iwp);
+ static void check_cpu_stall(struct rcu_data *rdp);
+ static void rcu_check_gp_start_stall(struct rcu_node *rnp, struct rcu_data *rdp,
+ 				     const unsigned long gpssdelay);
++
++extern unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp);
++extern bool rcu_dynticks_curr_cpu_in_eqs(void);
++
+-- 
+2.23.0
+
