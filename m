@@ -1,93 +1,155 @@
-Return-Path: <SRS0=C2sj=YE=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=E/U2=YF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFA1C47404
-	for <rcu@archiver.kernel.org>; Fri, 11 Oct 2019 17:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 783E3C4360C
+	for <rcu@archiver.kernel.org>; Sat, 12 Oct 2019 04:44:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7E99D206A1
-	for <rcu@archiver.kernel.org>; Fri, 11 Oct 2019 17:09:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F13221850
+	for <rcu@archiver.kernel.org>; Sat, 12 Oct 2019 04:44:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1570855474;
+	bh=MkqAlmdFP2Vhrv7Ya67GXlWLTIGAEz0C/tsVdTgZ+wY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=00zmgpb2L/+/j5xUtCGX6xpQPPgWgU16kZPLX1JVgup70ZvNMkoj3Q3FgQfFj43oA
+	 g6h2/WZFlseOb48lZnDL2ovFZxe54KmU9PvZEGb8NxXVB62p7pSqgwV4m/m4lm1ZCW
+	 t4+Plf+fSIx4OPmHKIZ0Jye/s+YiqlLre7XvfX5k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbfJKRJJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Oct 2019 13:09:09 -0400
-Received: from imap1.codethink.co.uk ([176.9.8.82]:40872 "EHLO
-        imap1.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728086AbfJKRJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Oct 2019 13:09:09 -0400
-Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
-        by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
-        id 1iIyOv-0002WN-J8; Fri, 11 Oct 2019 18:08:25 +0100
-Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
-        (envelope-from <ben@rainbowdash.codethink.co.uk>)
-        id 1iIyOv-0007sJ-5L; Fri, 11 Oct 2019 18:08:25 +0100
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     linux-kernel@lists.codethink.co.uk
-Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S1726391AbfJLEoe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 12 Oct 2019 00:44:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725855AbfJLEod (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 12 Oct 2019 00:44:33 -0400
+Received: from paulmck-ThinkPad-P72 (unknown [216.9.110.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 785992087E;
+        Sat, 12 Oct 2019 04:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570855472;
+        bh=MkqAlmdFP2Vhrv7Ya67GXlWLTIGAEz0C/tsVdTgZ+wY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=0V/XMNKeTUHIVffrraUAfoYyzTUzZo9CiDygXamHmz4s6FNIixRb/4E1S5GXM/j7X
+         yJabQ2dfvc8kRHfJBN5habrOfkZ+6zQZkU+R52TKqMPo9+9ybUi8OWgE1Hy3Ey7Hs9
+         B/y+LP8n1ThGvfTzweGNQmYnWRFdGRh89hE3UMJ4=
+Date:   Fri, 11 Oct 2019 21:44:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@lists.codethink.co.uk,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: add declarations of undeclared items
-Date:   Fri, 11 Oct 2019 18:08:24 +0100
-Message-Id: <20191011170824.30228-1-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.23.0
+Subject: Re: [PATCH] rcu: add declarations of undeclared items
+Message-ID: <20191012044430.GG2689@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191011170824.30228-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191011170824.30228-1-ben.dooks@codethink.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcu_state, rcu_rnp_online_cpus and rcu_dynticks_curr_cpu_in_eqs
-do not have declarations in a header. Add these to remove the
-following sparse warnings:
+On Fri, Oct 11, 2019 at 06:08:24PM +0100, Ben Dooks wrote:
+> The rcu_state, rcu_rnp_online_cpus and rcu_dynticks_curr_cpu_in_eqs
+> do not have declarations in a header. Add these to remove the
+> following sparse warnings:
+> 
+> kernel/rcu/tree.c:87:18: warning: symbol 'rcu_state' was not declared. Should it be static?
+> kernel/rcu/tree.c:191:15: warning: symbol 'rcu_rnp_online_cpus' was not declared. Should it be static?
+> kernel/rcu/tree.c:297:6: warning: symbol 'rcu_dynticks_curr_cpu_in_eqs' was not declared. Should it be static?
+> 
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 
-kernel/rcu/tree.c:87:18: warning: symbol 'rcu_state' was not declared. Should it be static?
-kernel/rcu/tree.c:191:15: warning: symbol 'rcu_rnp_online_cpus' was not declared. Should it be static?
-kernel/rcu/tree.c:297:6: warning: symbol 'rcu_dynticks_curr_cpu_in_eqs' was not declared. Should it be static?
+Good catch!
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- kernel/rcu/tree.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+However, these guys (plus one more) are actually used only in the
+kernel/rcu/tree.o translation unit, so they can be marked static.
+I made this change as shown below with your Reported-by.
 
+Seem reasonable?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 02995691aa76f3e52599d4f9d9d1ab23c3574f32
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Oct 11 21:40:09 2019 -0700
+
+    rcu: Mark non-global functions and variables as static
+    
+    Each of rcu_state, rcu_rnp_online_cpus(), rcu_dynticks_curr_cpu_in_eqs(),
+    and rcu_dynticks_snap() are used only in the kernel/rcu/tree.o translation
+    unit, and may thus be marked static.  This commit therefore makes this
+    change.
+    
+    Reported-by: Ben Dooks <ben.dooks@codethink.co.uk>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b18fa3d..278798e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -85,7 +85,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+ 	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
+ 	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
+ };
+-struct rcu_state rcu_state = {
++static struct rcu_state rcu_state = {
+ 	.level = { &rcu_state.node[0] },
+ 	.gp_state = RCU_GP_IDLE,
+ 	.gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
+@@ -189,7 +189,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
+  * held, but the bit corresponding to the current CPU will be stable
+  * in most contexts.
+  */
+-unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
++static unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
+ {
+ 	return READ_ONCE(rnp->qsmaskinitnext);
+ }
+@@ -295,7 +295,7 @@ static void rcu_dynticks_eqs_online(void)
+  *
+  * No ordering, as we are sampling CPU-local information.
+  */
+-bool rcu_dynticks_curr_cpu_in_eqs(void)
++static bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 
+@@ -306,7 +306,7 @@ bool rcu_dynticks_curr_cpu_in_eqs(void)
+  * Snapshot the ->dynticks counter with full ordering so as to allow
+  * stable comparison of this counter with past and future snapshots.
+  */
+-int rcu_dynticks_snap(struct rcu_data *rdp)
++static int rcu_dynticks_snap(struct rcu_data *rdp)
+ {
+ 	int snap = atomic_add_return(0, &rdp->dynticks);
+ 
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index c612f306fe89..1f88351b9014 100644
+index 1540542..f8e6c70 100644
 --- a/kernel/rcu/tree.h
 +++ b/kernel/rcu/tree.h
-@@ -352,6 +352,8 @@ struct rcu_state {
- 						/*  GP pre-initialization. */
- };
+@@ -402,8 +402,6 @@ static const char *tp_rcu_varname __used __tracepoint_string = rcu_name;
+ #define RCU_NAME rcu_name
+ #endif /* #else #ifdef CONFIG_TRACING */
  
-+extern struct rcu_state rcu_state;
-+
- /* Values for rcu_state structure's gp_flags field. */
- #define RCU_GP_FLAG_INIT 0x1	/* Need grace-period initialization. */
- #define RCU_GP_FLAG_FQS  0x2	/* Need grace-period quiescent-state forcing. */
-@@ -472,3 +474,7 @@ static void rcu_iw_handler(struct irq_work *iwp);
- static void check_cpu_stall(struct rcu_data *rdp);
- static void rcu_check_gp_start_stall(struct rcu_node *rnp, struct rcu_data *rdp,
- 				     const unsigned long gpssdelay);
-+
-+extern unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp);
-+extern bool rcu_dynticks_curr_cpu_in_eqs(void);
-+
--- 
-2.23.0
-
+-int rcu_dynticks_snap(struct rcu_data *rdp);
+-
+ /* Forward declarations for tree_plugin.h */
+ static void rcu_bootup_announce(void);
+ static void rcu_qs(void);
