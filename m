@@ -2,275 +2,208 @@ Return-Path: <SRS0=Owwk=YH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 964A4C4CECE
-	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 18:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D9FECE58E
+	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 19:23:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 699A52067B
-	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 18:48:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C54C121721
+	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 19:23:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FINe/Hky"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L5DLuXwj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732214AbfJNSsf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Oct 2019 14:48:35 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:33051 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731998AbfJNSsf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Oct 2019 14:48:35 -0400
-Received: by mail-pl1-f195.google.com with SMTP id d22so8399987pls.0
-        for <rcu@vger.kernel.org>; Mon, 14 Oct 2019 11:48:34 -0700 (PDT)
+        id S1731607AbfJNTXX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Oct 2019 15:23:23 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40693 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732239AbfJNTXW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Oct 2019 15:23:22 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k9so14702562oib.7
+        for <rcu@vger.kernel.org>; Mon, 14 Oct 2019 12:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sjM15tTgKj3X6UIGIKv9yo7y4Z0++2yHpJVAwICI39U=;
-        b=FINe/HkyYgzCZMpzzJa0VdHcrhwqPEOVm8IYAmsjZctp7jETjAd66xmj9RZqGvrPmj
-         H+FXIhIyR9JSZsKbgRmxWh8p28fI2KaUWsusFrvNmbNdsTSE3WiaTc27SDDPElkItf6I
-         z/5s0o92bcyT34XUr1rDgKnW/+LXvtxg1VAP8=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fe8V3WPh91ge7SfOH9HpoY+KfdQyjz/N53J28iGvI2s=;
+        b=L5DLuXwjUqbbCtuaYcOives97MnwdQB39I9EjhHI/9l5mS917lU1PD+QRoLsT5jEQj
+         XH/X4Xa6HWnYK+n7BN0ruSIUKqvWtru2VlWU8/6I0ZH35vqOzwgk5FOEZ0DpDU4PROj/
+         K42/BI/Xifzyedo7kHKJLd+u4hqcDttu0QVQ9bOhMiLjpToGD//Lc7EQFJPRCXk1TbrQ
+         IFzt+acEr1vtABYpCl8WSBpfSBCerqNLMN/TTrHIU/wlrKtyzrmrHTw6L0116q9k/s/w
+         GG8BsOFWjT3U7hu/Q/1mVqgM+ZhlbI3Res1iz7Ys1lL2uRGtQzbXfApFbtLu0f3iJyG9
+         YDyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sjM15tTgKj3X6UIGIKv9yo7y4Z0++2yHpJVAwICI39U=;
-        b=Dyf4SLq/q/EgE5Ys4TOdEdOTAqrqThhbPls4haCUFs9kneWMlwpp49IPTGpi2wsJjd
-         hAz9LSTH7OPgYPQVF6Z4mN07dioUI5O4JhBq/ljycoKlLmSggNMyO2AjmLRUekRnyYpE
-         x+MnRr9upotJfR7BmVhkDvJSv1clndb4ICLKcCuryEbKUjnj6KlQtAdittotoopod4Fn
-         BihqkRW0QB2pPH6cPt7sKnEPak5H9zJdF+7Xjlsejg86X0gd2S5L1UOSBlkBIx/WWh9B
-         FiH6Q8gWWJKHwcVB3cEo08Yj3qPKkjZ6CeviRZGxHfLauNSRlaJu/wiVQdmYmjPQ9KPb
-         4sWQ==
-X-Gm-Message-State: APjAAAUdvDDutIJEuW+W4b8BvnFwrqog7DDZ/EHQtGeed8hlxXOtPFES
-        GL4l8J15qBECpm5Fhe3eaTa9eg==
-X-Google-Smtp-Source: APXvYqzR872QIebmrMRQzexybPQBLDCvqPQOvZpwTZP2NY+lIhk2vjsBWna0jd+hGgKFRTdxl/i3zA==
-X-Received: by 2002:a17:902:aa91:: with SMTP id d17mr30610336plr.69.1571078913729;
-        Mon, 14 Oct 2019 11:48:33 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j26sm18406495pgl.38.2019.10.14.11.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Oct 2019 11:48:33 -0700 (PDT)
-Date:   Mon, 14 Oct 2019 14:48:32 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fe8V3WPh91ge7SfOH9HpoY+KfdQyjz/N53J28iGvI2s=;
+        b=f3/71yfp5niPdT/+8kHwa/Vq6jzqRmBq6Kg+q5/fVylZa5GX6SADnf8LAg4gZKhOb1
+         T2f8ytDKifmbKniD9CsH/cT8mOebQKM/qs2oDDpJ63PLu3H73tpBbp1xeULuE4vOKWS6
+         q0AK974ItriArhCfkxl/ZO2CoSzEFt/lXQ3V1n3talA+M6HfFY6mMlf5lA6CQN4HATSn
+         MUWWh3QWHGzipcfEc1+AYIOTDWwZ+bT73tOV5kL+0BRK8YSZlCDIzuzwOI3BB6fxitXN
+         7vClDC7fPQDFT9crOSwdGusgKFn74ceEuJjMrXcSW0O1wEfIUZZGx4LOQv2FLSx4trPU
+         22xg==
+X-Gm-Message-State: APjAAAXvCo45Q7VzBLzLY3TpYt6DSk+H0anBjiLQoruiEvgHwtAoZKlN
+        9cz08rvtsS+qJUzHIlBfT8c112x82Fk+5ES//l338Q==
+X-Google-Smtp-Source: APXvYqwlmHX67AJHXbc7vL/TbWSF5KyscS3/zvQGK3+cqixMYl2ihXiC3eNPBF8CYUFwmBAJx7DT/CyRkDRVfv22PBA=
+X-Received: by 2002:a05:6808:4b:: with SMTP id v11mr25732948oic.70.1571080999447;
+ Mon, 14 Oct 2019 12:23:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <5da2509f.1c69fb81.bb59c.b8e2SMTPIN_ADDED_BROKEN@mx.google.com> <20191014180039.GA89937@google.com>
+In-Reply-To: <20191014180039.GA89937@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 14 Oct 2019 21:23:07 +0200
+Message-ID: <CANpmjNOD2A1EdGpZNnSRcNRxXim=m1qBAmwtdm3J-B_UFJ4zjg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Fix data-race due to atomic_t copy-by-value
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Sterba <dsterba@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] rcu: make PREEMPT_RCU to be a decoration of TREE_RCU
-Message-ID: <20191014184832.GA125935@google.com>
-References: <20191013125959.3280-1-laijs@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191013125959.3280-1-laijs@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Dmitry Vyukov <dvyukov@google.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Oct 13, 2019 at 12:59:57PM +0000, Lai Jiangshan wrote:
-> Currently PREEMPT_RCU and TREE_RCU are "contrary" configs
-> when they can't be both on. But PREEMPT_RCU is actually a kind
-> of TREE_RCU in the implementation. It seams to be appropriate
-> to make PREEMPT_RCU to be a decorative option of TREE_RCU.
-> 
+On Mon, 14 Oct 2019 at 20:00, Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> On Wed, Oct 09, 2019 at 05:57:43PM +0200, Marco Elver wrote:
+> > This fixes a data-race where `atomic_t dynticks` is copied by value. The
+> > copy is performed non-atomically, resulting in a data-race if `dynticks`
+> > is updated concurrently.
+> >
+> > This data-race was found with KCSAN:
+> > ==================================================================
+> > BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
+> >
+> > write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
+> >  atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
+> >  rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
+> >  dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
+> >  force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
+> >  rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
+> >  rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
+> >  rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
+> >  kthread+0x1b5/0x200 kernel/kthread.c:255
+> >  <snip>
+> >
+> > read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
+> >  rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
+> >  rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
+> >  irq_enter+0x5/0x50 kernel/softirq.c:347
+> >  <snip>
+> >
+> > Reported by Kernel Concurrency Sanitizer on:
+> > CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> > Workqueue: kblockd blk_mq_run_work_fn
+> > ==================================================================
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+>
+> I believe Paul has already queued this, but anyway I have reviewed it as well
+> and it LGTM.
+>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Looks like a nice simplification and so far I could not poke any holes in the
-code...
+Thank you! As an aside, I was wondering if there is a way to disallow
+copy-by-value for certain structs, such as atomic_t (in the absence of
+constructors). Presumably that'd be useful to have here to just let
+the type-system prevent similar cases in future.
 
-I am in support of this patch for further review and testing. Thanks!
+Thanks,
+-- Marco
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
-
-> Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  include/linux/rcupdate.h   |  4 ++--
->  include/trace/events/rcu.h |  4 ++--
->  kernel/rcu/Kconfig         | 13 +++++++------
->  kernel/rcu/Makefile        |  1 -
->  kernel/rcu/rcu.h           |  2 +-
->  kernel/rcu/update.c        |  2 +-
->  kernel/sysctl.c            |  2 +-
->  7 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 75a2eded7aa2..1eee9f6c27f9 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -167,7 +167,7 @@ do { \
->   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
->   */
->  
-> -#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
-> +#if defined(CONFIG_TREE_RCU)
->  #include <linux/rcutree.h>
->  #elif defined(CONFIG_TINY_RCU)
->  #include <linux/rcutiny.h>
-> @@ -583,7 +583,7 @@ do {									      \
->   * read-side critical section that would block in a !PREEMPT kernel.
->   * But if you want the full story, read on!
->   *
-> - * In non-preemptible RCU implementations (TREE_RCU and TINY_RCU),
-> + * In non-preemptible RCU implementations (pure TREE_RCU and TINY_RCU),
->   * it is illegal to block while in an RCU read-side critical section.
->   * In preemptible RCU implementations (PREEMPT_RCU) in CONFIG_PREEMPTION
->   * kernel builds, RCU read-side critical sections may be preempted,
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 694bd040cf51..1ce15c5be4c8 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -41,7 +41,7 @@ TRACE_EVENT(rcu_utilization,
->  	TP_printk("%s", __entry->s)
->  );
->  
-> -#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
-> +#if defined(CONFIG_TREE_RCU)
->  
->  /*
->   * Tracepoint for grace-period events.  Takes a string identifying the
-> @@ -425,7 +425,7 @@ TRACE_EVENT_RCU(rcu_fqs,
->  		  __entry->cpu, __entry->qsevent)
->  );
->  
-> -#endif /* #if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU) */
-> +#endif /* #if defined(CONFIG_TREE_RCU) */
->  
->  /*
->   * Tracepoint for dyntick-idle entry/exit events.  These take a string
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index 7644eda17d62..0303934e6ef0 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -7,7 +7,7 @@ menu "RCU Subsystem"
->  
->  config TREE_RCU
->  	bool
-> -	default y if !PREEMPTION && SMP
-> +	default y if SMP
->  	help
->  	  This option selects the RCU implementation that is
->  	  designed for very large SMP system with hundreds or
-> @@ -17,6 +17,7 @@ config TREE_RCU
->  config PREEMPT_RCU
->  	bool
->  	default y if PREEMPTION
-> +	select TREE_RCU
->  	help
->  	  This option selects the RCU implementation that is
->  	  designed for very large SMP systems with hundreds or
-> @@ -78,7 +79,7 @@ config TASKS_RCU
->  	  user-mode execution as quiescent states.
->  
->  config RCU_STALL_COMMON
-> -	def_bool ( TREE_RCU || PREEMPT_RCU )
-> +	def_bool TREE_RCU
->  	help
->  	  This option enables RCU CPU stall code that is common between
->  	  the TINY and TREE variants of RCU.  The purpose is to allow
-> @@ -86,13 +87,13 @@ config RCU_STALL_COMMON
->  	  making these warnings mandatory for the tree variants.
->  
->  config RCU_NEED_SEGCBLIST
-> -	def_bool ( TREE_RCU || PREEMPT_RCU || TREE_SRCU )
-> +	def_bool ( TREE_RCU || TREE_SRCU )
->  
->  config RCU_FANOUT
->  	int "Tree-based hierarchical RCU fanout value"
->  	range 2 64 if 64BIT
->  	range 2 32 if !64BIT
-> -	depends on (TREE_RCU || PREEMPT_RCU) && RCU_EXPERT
-> +	depends on TREE_RCU && RCU_EXPERT
->  	default 64 if 64BIT
->  	default 32 if !64BIT
->  	help
-> @@ -112,7 +113,7 @@ config RCU_FANOUT_LEAF
->  	int "Tree-based hierarchical RCU leaf-level fanout value"
->  	range 2 64 if 64BIT
->  	range 2 32 if !64BIT
-> -	depends on (TREE_RCU || PREEMPT_RCU) && RCU_EXPERT
-> +	depends on TREE_RCU && RCU_EXPERT
->  	default 16
->  	help
->  	  This option controls the leaf-level fanout of hierarchical
-> @@ -187,7 +188,7 @@ config RCU_BOOST_DELAY
->  
->  config RCU_NOCB_CPU
->  	bool "Offload RCU callback processing from boot-selected CPUs"
-> -	depends on TREE_RCU || PREEMPT_RCU
-> +	depends on TREE_RCU
->  	depends on RCU_EXPERT || NO_HZ_FULL
->  	default n
->  	help
-> diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-> index 020e8b6a644b..82d5fba48b2f 100644
-> --- a/kernel/rcu/Makefile
-> +++ b/kernel/rcu/Makefile
-> @@ -9,6 +9,5 @@ obj-$(CONFIG_TINY_SRCU) += srcutiny.o
->  obj-$(CONFIG_RCU_TORTURE_TEST) += rcutorture.o
->  obj-$(CONFIG_RCU_PERF_TEST) += rcuperf.o
->  obj-$(CONFIG_TREE_RCU) += tree.o
-> -obj-$(CONFIG_PREEMPT_RCU) += tree.o
->  obj-$(CONFIG_TINY_RCU) += tiny.o
->  obj-$(CONFIG_RCU_NEED_SEGCBLIST) += rcu_segcblist.o
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index 8fd4f82c9b3d..4149ba76824f 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -452,7 +452,7 @@ enum rcutorture_type {
->  	INVALID_RCU_FLAVOR
->  };
->  
-> -#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
-> +#if defined(CONFIG_TREE_RCU)
->  void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
->  			    unsigned long *gp_seq);
->  void rcutorture_record_progress(unsigned long vernum);
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index 1861103662db..34a7452b25fd 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -435,7 +435,7 @@ struct debug_obj_descr rcuhead_debug_descr = {
->  EXPORT_SYMBOL_GPL(rcuhead_debug_descr);
->  #endif /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
->  
-> -#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU) || defined(CONFIG_RCU_TRACE)
-> +#if defined(CONFIG_TREE_RCU) || defined(CONFIG_RCU_TRACE)
->  void do_trace_rcu_torture_read(const char *rcutorturename, struct rcu_head *rhp,
->  			       unsigned long secs,
->  			       unsigned long c_old, unsigned long c)
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 00fcea236eba..2ace158a4d72 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -1268,7 +1268,7 @@ static struct ctl_table kern_table[] = {
->  		.proc_handler	= proc_do_static_key,
->  	},
->  #endif
-> -#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
-> +#if defined(CONFIG_TREE_RCU)
->  	{
->  		.procname	= "panic_on_rcu_stall",
->  		.data		= &sysctl_panic_on_rcu_stall,
-> -- 
-> 2.20.1
-> 
+> thanks,
+>
+>  - Joel
+>
+>
+> > ---
+> >  include/trace/events/rcu.h |  4 ++--
+> >  kernel/rcu/tree.c          | 11 ++++++-----
+> >  2 files changed, 8 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> > index 694bd040cf51..fdd31c5fd126 100644
+> > --- a/include/trace/events/rcu.h
+> > +++ b/include/trace/events/rcu.h
+> > @@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
+> >   */
+> >  TRACE_EVENT_RCU(rcu_dyntick,
+> >
+> > -     TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
+> > +     TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
+> >
+> >       TP_ARGS(polarity, oldnesting, newnesting, dynticks),
+> >
+> > @@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
+> >               __entry->polarity = polarity;
+> >               __entry->oldnesting = oldnesting;
+> >               __entry->newnesting = newnesting;
+> > -             __entry->dynticks = atomic_read(&dynticks);
+> > +             __entry->dynticks = dynticks;
+> >       ),
+> >
+> >       TP_printk("%s %lx %lx %#3x", __entry->polarity,
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 81105141b6a8..62e59596a30a 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
+> >       }
+> >
+> >       lockdep_assert_irqs_disabled();
+> > -     trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
+> > +     trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+> >       WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> >       rdp = this_cpu_ptr(&rcu_data);
+> >       do_nocb_deferred_wakeup(rdp);
+> > @@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+> >        * leave it in non-RCU-idle state.
+> >        */
+> >       if (rdp->dynticks_nmi_nesting != 1) {
+> > -             trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
+> > +             trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
+> > +                               atomic_read(&rdp->dynticks));
+> >               WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+> >                          rdp->dynticks_nmi_nesting - 2);
+> >               return;
+> >       }
+> >
+> >       /* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+> > -     trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
+> > +     trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+> >       WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+> >
+> >       if (irq)
+> > @@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
+> >       rcu_dynticks_task_exit();
+> >       rcu_dynticks_eqs_exit();
+> >       rcu_cleanup_after_idle();
+> > -     trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
+> > +     trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+> >       WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> >       WRITE_ONCE(rdp->dynticks_nesting, 1);
+> >       WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+> > @@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> >       }
+> >       trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
+> >                         rdp->dynticks_nmi_nesting,
+> > -                       rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
+> > +                       rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+> >       WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
+> >                  rdp->dynticks_nmi_nesting + incby);
+> >       barrier();
+> > --
+> > 2.23.0.581.g78d2f28ef7-goog
+> >
+> >
