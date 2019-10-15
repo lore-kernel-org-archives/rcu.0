@@ -1,65 +1,49 @@
-Return-Path: <SRS0=Owwk=YH=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=PYsX=YI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D9FECE58E
-	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 19:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35EC1ECE58C
+	for <rcu@archiver.kernel.org>; Tue, 15 Oct 2019 01:40:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C54C121721
-	for <rcu@archiver.kernel.org>; Mon, 14 Oct 2019 19:23:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L5DLuXwj"
+	by mail.kernel.org (Postfix) with ESMTP id 09D9821835
+	for <rcu@archiver.kernel.org>; Tue, 15 Oct 2019 01:40:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1571103653;
+	bh=R1ax1zsWYAvkPrP01kPj8dcw5zoIPP9CQn6nTx74Phw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=pwABzY4CGd6S/KB4mszU9IfCa/JBMoejYuPPXE13LLMUyvXefXaO3Jw0xP61c4W6/
+	 nVhZ76lJNma1+AbYKkxO6a9DzClerahx9ZBpt9uZdhbmejEOCrRzej0cCDPERPQ+cZ
+	 JGrwRyH9cKdgvDrjJqlykISJyR7RmwUg5AN1QG00=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731607AbfJNTXX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Oct 2019 15:23:23 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40693 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732239AbfJNTXW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Oct 2019 15:23:22 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k9so14702562oib.7
-        for <rcu@vger.kernel.org>; Mon, 14 Oct 2019 12:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fe8V3WPh91ge7SfOH9HpoY+KfdQyjz/N53J28iGvI2s=;
-        b=L5DLuXwjUqbbCtuaYcOives97MnwdQB39I9EjhHI/9l5mS917lU1PD+QRoLsT5jEQj
-         XH/X4Xa6HWnYK+n7BN0ruSIUKqvWtru2VlWU8/6I0ZH35vqOzwgk5FOEZ0DpDU4PROj/
-         K42/BI/Xifzyedo7kHKJLd+u4hqcDttu0QVQ9bOhMiLjpToGD//Lc7EQFJPRCXk1TbrQ
-         IFzt+acEr1vtABYpCl8WSBpfSBCerqNLMN/TTrHIU/wlrKtyzrmrHTw6L0116q9k/s/w
-         GG8BsOFWjT3U7hu/Q/1mVqgM+ZhlbI3Res1iz7Ys1lL2uRGtQzbXfApFbtLu0f3iJyG9
-         YDyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fe8V3WPh91ge7SfOH9HpoY+KfdQyjz/N53J28iGvI2s=;
-        b=f3/71yfp5niPdT/+8kHwa/Vq6jzqRmBq6Kg+q5/fVylZa5GX6SADnf8LAg4gZKhOb1
-         T2f8ytDKifmbKniD9CsH/cT8mOebQKM/qs2oDDpJ63PLu3H73tpBbp1xeULuE4vOKWS6
-         q0AK974ItriArhCfkxl/ZO2CoSzEFt/lXQ3V1n3talA+M6HfFY6mMlf5lA6CQN4HATSn
-         MUWWh3QWHGzipcfEc1+AYIOTDWwZ+bT73tOV5kL+0BRK8YSZlCDIzuzwOI3BB6fxitXN
-         7vClDC7fPQDFT9crOSwdGusgKFn74ceEuJjMrXcSW0O1wEfIUZZGx4LOQv2FLSx4trPU
-         22xg==
-X-Gm-Message-State: APjAAAXvCo45Q7VzBLzLY3TpYt6DSk+H0anBjiLQoruiEvgHwtAoZKlN
-        9cz08rvtsS+qJUzHIlBfT8c112x82Fk+5ES//l338Q==
-X-Google-Smtp-Source: APXvYqwlmHX67AJHXbc7vL/TbWSF5KyscS3/zvQGK3+cqixMYl2ihXiC3eNPBF8CYUFwmBAJx7DT/CyRkDRVfv22PBA=
-X-Received: by 2002:a05:6808:4b:: with SMTP id v11mr25732948oic.70.1571080999447;
- Mon, 14 Oct 2019 12:23:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <5da2509f.1c69fb81.bb59c.b8e2SMTPIN_ADDED_BROKEN@mx.google.com> <20191014180039.GA89937@google.com>
-In-Reply-To: <20191014180039.GA89937@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 14 Oct 2019 21:23:07 +0200
-Message-ID: <CANpmjNOD2A1EdGpZNnSRcNRxXim=m1qBAmwtdm3J-B_UFJ4zjg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Fix data-race due to atomic_t copy-by-value
+        id S1726453AbfJOBkw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Oct 2019 21:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726132AbfJOBkw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Oct 2019 21:40:52 -0400
+Received: from paulmck-ThinkPad-P72 (unknown [76.14.14.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1AAA2089C;
+        Tue, 15 Oct 2019 01:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571103651;
+        bh=R1ax1zsWYAvkPrP01kPj8dcw5zoIPP9CQn6nTx74Phw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=198G0W5IzKDD7NrNwQwlatA/Y0vFEsu7U4S5V8ldd5M6HCXrHZ0jG9UVfm1tN6Nsx
+         oFl/PLipMRNnQFdJAtHuNhaqeCzk2IujaCOP6EZkdfpeB8t6VZ/NP+/6onV4KNjkAo
+         QaeyT+6mHKZwgtFR0E7SO10A89iO55bfSSUqkndY=
+Date:   Mon, 14 Oct 2019 18:40:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+Cc:     Marco Elver <elver@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -67,23 +51,31 @@ Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] rcu: Fix data-race due to atomic_t copy-by-value
+Message-ID: <20191015014048.GJ2689@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <5da2509f.1c69fb81.bb59c.b8e2SMTPIN_ADDED_BROKEN@mx.google.com>
+ <20191014180039.GA89937@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191014180039.GA89937@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 14 Oct 2019 at 20:00, Joel Fernandes <joel@joelfernandes.org> wrote:
->
+On Mon, Oct 14, 2019 at 02:00:39PM -0400, Joel Fernandes wrote:
 > On Wed, Oct 09, 2019 at 05:57:43PM +0200, Marco Elver wrote:
 > > This fixes a data-race where `atomic_t dynticks` is copied by value. The
 > > copy is performed non-atomically, resulting in a data-race if `dynticks`
 > > is updated concurrently.
-> >
+> > 
 > > This data-race was found with KCSAN:
 > > ==================================================================
 > > BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
-> >
+> > 
 > > write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
 > >  atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
 > >  rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
@@ -94,44 +86,42 @@ On Mon, 14 Oct 2019 at 20:00, Joel Fernandes <joel@joelfernandes.org> wrote:
 > >  rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
 > >  kthread+0x1b5/0x200 kernel/kthread.c:255
 > >  <snip>
-> >
+> > 
 > > read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
 > >  rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
 > >  rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
 > >  irq_enter+0x5/0x50 kernel/softirq.c:347
 > >  <snip>
-> >
+> > 
 > > Reported by Kernel Concurrency Sanitizer on:
 > > CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
 > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
 > > Workqueue: kblockd blk_mq_run_work_fn
 > > ==================================================================
-> >
+> > 
 > > Signed-off-by: Marco Elver <elver@google.com>
->
+> 
 > I believe Paul has already queued this, but anyway I have reviewed it as well
 > and it LGTM.
->
+
+It is still in the development portion, so it is still mutable.  ;-)
+
 > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Thank you! As an aside, I was wondering if there is a way to disallow
-copy-by-value for certain structs, such as atomic_t (in the absence of
-constructors). Presumably that'd be useful to have here to just let
-the type-system prevent similar cases in future.
+Applied, thank you both!
 
-Thanks,
--- Marco
+							Thanx, Paul
 
 > thanks,
->
+> 
 >  - Joel
->
->
+> 
+> 
 > > ---
 > >  include/trace/events/rcu.h |  4 ++--
 > >  kernel/rcu/tree.c          | 11 ++++++-----
 > >  2 files changed, 8 insertions(+), 7 deletions(-)
-> >
+> > 
 > > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
 > > index 694bd040cf51..fdd31c5fd126 100644
 > > --- a/include/trace/events/rcu.h
@@ -139,71 +129,71 @@ Thanks,
 > > @@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
 > >   */
 > >  TRACE_EVENT_RCU(rcu_dyntick,
-> >
-> > -     TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
-> > +     TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
-> >
-> >       TP_ARGS(polarity, oldnesting, newnesting, dynticks),
-> >
+> >  
+> > -	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
+> > +	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
+> >  
+> >  	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
+> >  
 > > @@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
-> >               __entry->polarity = polarity;
-> >               __entry->oldnesting = oldnesting;
-> >               __entry->newnesting = newnesting;
-> > -             __entry->dynticks = atomic_read(&dynticks);
-> > +             __entry->dynticks = dynticks;
-> >       ),
-> >
-> >       TP_printk("%s %lx %lx %#3x", __entry->polarity,
+> >  		__entry->polarity = polarity;
+> >  		__entry->oldnesting = oldnesting;
+> >  		__entry->newnesting = newnesting;
+> > -		__entry->dynticks = atomic_read(&dynticks);
+> > +		__entry->dynticks = dynticks;
+> >  	),
+> >  
+> >  	TP_printk("%s %lx %lx %#3x", __entry->polarity,
 > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 > > index 81105141b6a8..62e59596a30a 100644
 > > --- a/kernel/rcu/tree.c
 > > +++ b/kernel/rcu/tree.c
 > > @@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
-> >       }
-> >
-> >       lockdep_assert_irqs_disabled();
-> > -     trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
-> > +     trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
-> >       WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-> >       rdp = this_cpu_ptr(&rcu_data);
-> >       do_nocb_deferred_wakeup(rdp);
+> >  	}
+> >  
+> >  	lockdep_assert_irqs_disabled();
+> > -	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
+> > +	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> >  	rdp = this_cpu_ptr(&rcu_data);
+> >  	do_nocb_deferred_wakeup(rdp);
 > > @@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
-> >        * leave it in non-RCU-idle state.
-> >        */
-> >       if (rdp->dynticks_nmi_nesting != 1) {
-> > -             trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
-> > +             trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
-> > +                               atomic_read(&rdp->dynticks));
-> >               WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
-> >                          rdp->dynticks_nmi_nesting - 2);
-> >               return;
-> >       }
-> >
-> >       /* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
-> > -     trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
-> > +     trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
-> >       WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
-> >
-> >       if (irq)
+> >  	 * leave it in non-RCU-idle state.
+> >  	 */
+> >  	if (rdp->dynticks_nmi_nesting != 1) {
+> > -		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
+> > +		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
+> > +				  atomic_read(&rdp->dynticks));
+> >  		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+> >  			   rdp->dynticks_nmi_nesting - 2);
+> >  		return;
+> >  	}
+> >  
+> >  	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+> > -	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
+> > +	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+> >  	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+> >  
+> >  	if (irq)
 > > @@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
-> >       rcu_dynticks_task_exit();
-> >       rcu_dynticks_eqs_exit();
-> >       rcu_cleanup_after_idle();
-> > -     trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
-> > +     trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
-> >       WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-> >       WRITE_ONCE(rdp->dynticks_nesting, 1);
-> >       WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+> >  	rcu_dynticks_task_exit();
+> >  	rcu_dynticks_eqs_exit();
+> >  	rcu_cleanup_after_idle();
+> > -	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
+> > +	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> >  	WRITE_ONCE(rdp->dynticks_nesting, 1);
+> >  	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
 > > @@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
-> >       }
-> >       trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
-> >                         rdp->dynticks_nmi_nesting,
-> > -                       rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
-> > +                       rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
-> >       WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
-> >                  rdp->dynticks_nmi_nesting + incby);
-> >       barrier();
-> > --
+> >  	}
+> >  	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
+> >  			  rdp->dynticks_nmi_nesting,
+> > -			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
+> > +			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+> >  	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
+> >  		   rdp->dynticks_nmi_nesting + incby);
+> >  	barrier();
+> > -- 
 > > 2.23.0.581.g78d2f28ef7-goog
-> >
-> >
+> > 
+> > 
