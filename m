@@ -2,142 +2,132 @@ Return-Path: <SRS0=y8K2=YJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A83AECE59D
-	for <rcu@archiver.kernel.org>; Wed, 16 Oct 2019 03:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50FD7ECE59D
+	for <rcu@archiver.kernel.org>; Wed, 16 Oct 2019 04:05:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0CF612086A
-	for <rcu@archiver.kernel.org>; Wed, 16 Oct 2019 03:54:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A50120872
+	for <rcu@archiver.kernel.org>; Wed, 16 Oct 2019 04:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1571198050;
-	bh=gNHAvwMGTCIlJRAkHuI/y+TtL9M1c/JkjdEvh8RVg74=;
+	s=default; t=1571198735;
+	bh=bLVt4JROsq+t6v6tIFjTfp1UJXlkovihrqKUyRDZKlM=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=kkrFBLr6Ay1159VUhD4TGZSPw65EX0UBW4eRQ0cJxI30A8o/BsEuEXn4jCSTw974n
-	 BhnKfyc9aTx+9n6ar2xZZWa0aqqbecIksozIYD3cM7KbDLeBxviWXMy1IJl1+om8Ad
-	 uBdU6DPYRnR8jrhUtSY5QcZB7UrzTOGXymYa1xnk=
+	b=ZDhRBdgUd/eDPNI+sK9urGehC2FmqjhVZ48dGIZZscKBC644zlaDyyVmhXIkBXUs1
+	 kqHfTrnHsvv+6dLZP14w8Vs/KsCWfJ0+0gCm6UNX6NTXQaKhPj+QLaWzj0CtH1h8rv
+	 u7+70fTk8s7+aCWmMl+JndNo8a+f/cbONNcsUzJU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388158AbfJPDyJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Oct 2019 23:54:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34080 "EHLO mail.kernel.org"
+        id S1732588AbfJPEFe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Oct 2019 00:05:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388069AbfJPDyJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Oct 2019 23:54:09 -0400
+        id S1727597AbfJPEFe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Oct 2019 00:05:34 -0400
 Received: from paulmck-ThinkPad-P72 (unknown [76.14.14.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E88020854;
-        Wed, 16 Oct 2019 03:54:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C8CC2086A;
+        Wed, 16 Oct 2019 04:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571198048;
-        bh=gNHAvwMGTCIlJRAkHuI/y+TtL9M1c/JkjdEvh8RVg74=;
+        s=default; t=1571198733;
+        bh=bLVt4JROsq+t6v6tIFjTfp1UJXlkovihrqKUyRDZKlM=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lCpxWjrx8I0qfzTWDbLV87Ai4upvnEMtF/O+Ef+/DdlABn8ypKShlTKxCoI/T6kZC
-         /FdIkrhmHl+BK13RwMnTi1HKrxKq6pjlXTu/dk62Sk0kYx1l11+xVJ7WBFY9yFia+C
-         IjWkp65lTvPH/gUDGdlCS5MfVjkgTiBCN/kA2BBI=
-Date:   Tue, 15 Oct 2019 20:54:07 -0700
+        b=twyQH/wyZTfLUHLG+2mqhHLxXCYEaStxfbEb5gwnzUqzP1ZPipvoYvEBJkSl3Yz+b
+         eKbmuoJP+EepB/rjrHqaYDG3B3AFtDP18KJ40S8V19Xn9Anhb6LtcExiP+edYIFgiu
+         UaxbjiuWq6LieqpVAViyCy/Yhq6moit4U9JccuI0=
+Date:   Tue, 15 Oct 2019 21:05:31 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     20191015102402.1978-1-laijs@linux.alibaba.com
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@lists.codethink.co.uk,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 6/7] rcu: rename some CONFIG_PREEMPTION to
- CONFIG_PREEMPT_RCU
-Message-ID: <20191016035407.GB2689@paulmck-ThinkPad-P72>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: rcu_segcblist.c make undeclared items static
+Message-ID: <20191016040531.GD2689@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191015102850.2079-1-laijs@linux.alibaba.com>
- <20191015102850.2079-4-laijs@linux.alibaba.com>
+References: <20191015105524.1676-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191015102850.2079-4-laijs@linux.alibaba.com>
+In-Reply-To: <20191015105524.1676-1-ben.dooks@codethink.co.uk>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 10:28:48AM +0000, Lai Jiangshan wrote:
-> CONFIG_PREEMPTION and CONFIG_PREEMPT_RCU are always identical,
-> but some code depends on CONFIG_PREEMPTION to access to
-> rcu_preempt functionalitis. This patch changes CONFIG_PREEMPTION
-> to CONFIG_PREEMPT_RCU in these cases.
+On Tue, Oct 15, 2019 at 11:55:24AM +0100, Ben Dooks wrote:
+> The following are not used outside the unit they are
+> declared in, so make them static to avoid the following
+> sparse warnings:
 > 
-> Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> kernel/rcu/rcu_segcblist.c:91:6: warning: symbol 'rcu_segcblist_set_len' was not declared. Should it be static?
+> kernel/rcu/rcu_segcblist.c:107:6: warning: symbol 'rcu_segcblist_add_len' was not declared. Should it be static?
+> kernel/rcu/rcu_segcblist.c:137:6: warning: symbol 'rcu_segcblist_xchg_len' was not declared. Should it be static?
+> 
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 
-I believe that this does not cause problems with Sebastian's patch
-"[PATCH 27/34] rcu: Use CONFIG_PREEMPTION where appropriate", but could
-you please check?
+Good catch, but commit 292d1bb2 ("rcu: Several rcu_segcblist functions
+can be static") beat you to it by a month or two.  This commit is still
+in -rcu, but will be part of my pull request in a couple of weeks.
+
+See -rcu branch "dev":
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/tree.c       | 4 ++--
->  kernel/rcu/tree_stall.h | 6 +++---
->  2 files changed, 5 insertions(+), 5 deletions(-)
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: rcu@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  kernel/rcu/rcu_segcblist.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 7db5ea06a9ed..81eb64fcf5ab 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1926,7 +1926,7 @@ rcu_report_unblock_qs_rnp(struct rcu_node *rnp, unsigned long flags)
->  	struct rcu_node *rnp_p;
->  
->  	raw_lockdep_assert_held_rcu_node(rnp);
-> -	if (WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPTION)) ||
-> +	if (WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT_RCU)) ||
->  	    WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)) ||
->  	    rnp->qsmask != 0) {
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> @@ -2294,7 +2294,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->  		mask = 0;
->  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  		if (rnp->qsmask == 0) {
-> -			if (!IS_ENABLED(CONFIG_PREEMPTION) ||
-> +			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
->  			    rcu_preempt_blocked_readers_cgp(rnp)) {
->  				/*
->  				 * No point in scanning bits because they
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 0b75426ebb3e..55f9b84790d3 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -163,7 +163,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
->  //
->  // Printing RCU CPU stall warnings
->  
-> -#ifdef CONFIG_PREEMPTION
-> +#ifdef CONFIG_PREEMPT_RCU
->  
->  /*
->   * Dump detailed information for all tasks blocking the current RCU
-> @@ -215,7 +215,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
->  	return ndetected;
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 495c58ce1640..cbc87b804db9 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -88,7 +88,7 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
 >  }
 >  
-> -#else /* #ifdef CONFIG_PREEMPTION */
-> +#else /* #ifdef CONFIG_PREEMPT_RCU */
->  
->  /*
->   * Because preemptible RCU does not exist, we never have to check for
-> @@ -233,7 +233,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+>  /* Set the length of an rcu_segcblist structure. */
+> -void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+> +static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
 >  {
->  	return 0;
->  }
-> -#endif /* #else #ifdef CONFIG_PREEMPTION */
-> +#endif /* #else #ifdef CONFIG_PREEMPT_RCU */
->  
->  /*
->   * Dump stacks of all tasks running on stalled CPUs.  First try using
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	atomic_long_set(&rsclp->len, v);
+> @@ -104,7 +104,7 @@ void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+>   * This increase is fully ordered with respect to the callers accesses
+>   * both before and after.
+>   */
+> -void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+> +static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+>  {
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	smp_mb__before_atomic(); /* Up to the caller! */
+> @@ -134,7 +134,7 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
+>   * with the actual number of callbacks on the structure.  This exchange is
+>   * fully ordered with respect to the callers accesses both before and after.
+>   */
+> -long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
+> +static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
+>  {
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	return atomic_long_xchg(&rsclp->len, v);
 > -- 
-> 2.20.1
+> 2.23.0
 > 
