@@ -2,103 +2,122 @@ Return-Path: <SRS0=2+8b=YO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81323CA9EAD
-	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA78CA9EAE
+	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:49:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5A64F218BA
-	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:14:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9F2121A4A
+	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1571618991;
+	bh=QR09s6vtpFYE53JDOxSGUtkXPL4lrs4CX2UWNH0WmKM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=iXvGKtVO4TYgC789m5ao24ywJavsil+069RntCVs/z4OUbdTZs7UGiS8Mab6+nMrW
+	 N7t3yCnsQ3omYzjKJzKTTGjmHqPzThTVeAuQmZ1OKtEcGc2r1/NOlqD7WlHW8BgDXc
+	 9/rWKLwGgPllOmwiey3bF0IhUYc7PyYlI1DBGsxE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbfJUAOG convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Sun, 20 Oct 2019 20:14:06 -0400
-Received: from mxszcu.zte.com.cn ([210.21.236.131]:30260 "EHLO mxct.zte.com.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726576AbfJUAOG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 20 Oct 2019 20:14:06 -0400
-X-Greylist: delayed 949 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Oct 2019 20:14:05 EDT
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id DA3A3E7E4B382DB64841;
-        Mon, 21 Oct 2019 07:58:04 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id x9KNvpgJ066673;
-        Mon, 21 Oct 2019 07:57:51 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2019102107473211-44142 ;
-          Mon, 21 Oct 2019 07:47:32 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     paulmck@kernel.org
+        id S1726641AbfJUAtv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 20 Oct 2019 20:49:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726597AbfJUAtv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 20 Oct 2019 20:49:51 -0400
+Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FDE3218BA;
+        Mon, 21 Oct 2019 00:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571618990;
+        bh=QR09s6vtpFYE53JDOxSGUtkXPL4lrs4CX2UWNH0WmKM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dQQvIa5qK0T9YKeOi/rFNl7iXlGyHKTs5lKnSip0dBTVk+hu6ROqBptLZy566ki38
+         PhbQL8eKY9j3cyTR6HEmnieoNdu8n3mUxk0VxlEy68TN55AZJtPUVmt8lMO0v/sOK/
+         cLEQk9EoUzqvFB+gjv1g7lBYV0UiJc6ELCtKhXP8=
+Date:   Sun, 20 Oct 2019 17:49:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yi Wang <wang.yi59@zte.com.cn>
 Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, up2wing@gmail.com, wang.liang82@zte.com.cn
-Subject: [PATCH] rcu/rcu_segcblist: fix -Wmissing-prototypes warnings
-Date:   Mon, 21 Oct 2019 07:49:55 +0800
-Message-Id: <1571615395-3657-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
+        up2wing@gmail.com, wang.liang82@zte.com.cn
+Subject: Re: [PATCH] rcu/rcu_segcblist: fix -Wmissing-prototypes warnings
+Message-ID: <20191021004949.GN2588@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1571615395-3657-1-git-send-email-wang.yi59@zte.com.cn>
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2019-10-21 07:47:32,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2019-10-21 07:57:52
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-MAIL: mse-fl2.zte.com.cn x9KNvpgJ066673
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1571615395-3657-1-git-send-email-wang.yi59@zte.com.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We get these warnings when build kernel W=1:
-kernel/rcu/rcu_segcblist.c:91:6: warning: no previous prototype for ‘rcu_segcblist_set_len’ [-Wmissing-prototypes]
-kernel/rcu/rcu_segcblist.c:107:6: warning: no previous prototype for ‘rcu_segcblist_add_len’ [-Wmissing-prototypes]
-kernel/rcu/rcu_segcblist.c:137:6: warning: no previous prototype for ‘rcu_segcblist_xchg_len’ [-Wmissing-prototypes]
+On Mon, Oct 21, 2019 at 07:49:55AM +0800, Yi Wang wrote:
+> We get these warnings when build kernel W=1:
+> kernel/rcu/rcu_segcblist.c:91:6: warning: no previous prototype for ‘rcu_segcblist_set_len’ [-Wmissing-prototypes]
+> kernel/rcu/rcu_segcblist.c:107:6: warning: no previous prototype for ‘rcu_segcblist_add_len’ [-Wmissing-prototypes]
+> kernel/rcu/rcu_segcblist.c:137:6: warning: no previous prototype for ‘rcu_segcblist_xchg_len’ [-Wmissing-prototypes]
+> 
+> Commit eda669a6a2c5 ("rcu/nocb: Atomic ->len field in rcu_segcblist
+> structure") introduced this, and make the functions static to fix
+> them.
+> 
+> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
 
-Commit eda669a6a2c5 ("rcu/nocb: Atomic ->len field in rcu_segcblist
-structure") introduced this, and make the functions static to fix
-them.
+Good catch!
 
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
----
- kernel/rcu/rcu_segcblist.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+However, both Ben Dooks, commit 292d1bb2 ("rcu: Several rcu_segcblist
+functions can be static"), and ultimately the kbuild test robot beat
+you to it.  This commit is still in -rcu, but will be part of my pull
+request to -tip in a couple of weeks.
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 495c58c..cbc87b8 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -88,7 +88,7 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
- }
- 
- /* Set the length of an rcu_segcblist structure. */
--void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-+static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	atomic_long_set(&rsclp->len, v);
-@@ -104,7 +104,7 @@ void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-  * This increase is fully ordered with respect to the callers accesses
-  * both before and after.
-  */
--void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-+static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	smp_mb__before_atomic(); /* Up to the caller! */
-@@ -134,7 +134,7 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
-  * with the actual number of callbacks on the structure.  This exchange is
-  * fully ordered with respect to the callers accesses both before and after.
-  */
--long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
-+static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	return atomic_long_xchg(&rsclp->len, v);
--- 
-1.8.3.1
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/rcu_segcblist.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 495c58c..cbc87b8 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -88,7 +88,7 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
+>  }
+>  
+>  /* Set the length of an rcu_segcblist structure. */
+> -void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+> +static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+>  {
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	atomic_long_set(&rsclp->len, v);
+> @@ -104,7 +104,7 @@ void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+>   * This increase is fully ordered with respect to the callers accesses
+>   * both before and after.
+>   */
+> -void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+> +static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+>  {
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	smp_mb__before_atomic(); /* Up to the caller! */
+> @@ -134,7 +134,7 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
+>   * with the actual number of callbacks on the structure.  This exchange is
+>   * fully ordered with respect to the callers accesses both before and after.
+>   */
+> -long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
+> +static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
+>  {
+>  #ifdef CONFIG_RCU_NOCB_CPU
+>  	return atomic_long_xchg(&rsclp->len, v);
+> -- 
+> 1.8.3.1
+> 
