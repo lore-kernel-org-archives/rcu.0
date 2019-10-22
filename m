@@ -1,123 +1,107 @@
-Return-Path: <SRS0=2+8b=YO=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=q/fb=YP=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA78CA9EAE
-	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E730FCA9EA0
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:11:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C9F2121A4A
-	for <rcu@archiver.kernel.org>; Mon, 21 Oct 2019 00:49:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7CC021872
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1571618991;
-	bh=QR09s6vtpFYE53JDOxSGUtkXPL4lrs4CX2UWNH0WmKM=;
+	s=default; t=1571771500;
+	bh=BFpmJVp3g4mnzmJQ78mDOW+D/tMEALdCEUwJdQzpiH8=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=iXvGKtVO4TYgC789m5ao24ywJavsil+069RntCVs/z4OUbdTZs7UGiS8Mab6+nMrW
-	 N7t3yCnsQ3omYzjKJzKTTGjmHqPzThTVeAuQmZ1OKtEcGc2r1/NOlqD7WlHW8BgDXc
-	 9/rWKLwGgPllOmwiey3bF0IhUYc7PyYlI1DBGsxE=
+	b=crBVMsg7fx/qmnJocerVdiCGh7FfNGtQ+47L0pfgS3lbSR1nSRpnBJ+lKIDsnBNNZ
+	 vxMCOQyqzLtxFQyHWRqDf4mjqWwqCZ+oKbGhj8esKcSJxpyA65FZJl0QJ4qkaLC2ZV
+	 YhunvJ4oBYwzzr2w+62LPQzfaHRhDWHLqmXla5zA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbfJUAtv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 20 Oct 2019 20:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45654 "EHLO mail.kernel.org"
+        id S1732797AbfJVTLk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Oct 2019 15:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbfJUAtv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 20 Oct 2019 20:49:51 -0400
-Received: from paulmck-ThinkPad-P72 (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1731436AbfJVTLk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Oct 2019 15:11:40 -0400
+Received: from paulmck-ThinkPad-P72 (rrcs-50-75-166-42.nys.biz.rr.com [50.75.166.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FDE3218BA;
-        Mon, 21 Oct 2019 00:49:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4702221783;
+        Tue, 22 Oct 2019 19:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571618990;
-        bh=QR09s6vtpFYE53JDOxSGUtkXPL4lrs4CX2UWNH0WmKM=;
+        s=default; t=1571771499;
+        bh=BFpmJVp3g4mnzmJQ78mDOW+D/tMEALdCEUwJdQzpiH8=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dQQvIa5qK0T9YKeOi/rFNl7iXlGyHKTs5lKnSip0dBTVk+hu6ROqBptLZy566ki38
-         PhbQL8eKY9j3cyTR6HEmnieoNdu8n3mUxk0VxlEy68TN55AZJtPUVmt8lMO0v/sOK/
-         cLEQk9EoUzqvFB+gjv1g7lBYV0UiJc6ELCtKhXP8=
-Date:   Sun, 20 Oct 2019 17:49:49 -0700
+        b=QWhr4Lnw3yx89gw8D9fogOsu1cchslGv8jz8NV5GsGR3SMIZ0puHpimuKHlGxSRTG
+         SS639wk7K5YmSbaBtsG4Ldpt8yEuvzD/Z721UZ8JO9RXsj5mpKIAYvbY5c/ia5EyUN
+         3RiNvvaNGf4JPjpX7YR8JvYHKg53jbL/I0sDp+2M=
+Date:   Tue, 22 Oct 2019 12:11:36 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yi Wang <wang.yi59@zte.com.cn>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        up2wing@gmail.com, wang.liang82@zte.com.cn
-Subject: Re: [PATCH] rcu/rcu_segcblist: fix -Wmissing-prototypes warnings
-Message-ID: <20191021004949.GN2588@paulmck-ThinkPad-P72>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH v2 tip/core/rcu 0/10] Replace rcu_swap_protected() for v5.5
+Message-ID: <20191022191136.GA25627@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <1571615395-3657-1-git-send-email-wang.yi59@zte.com.cn>
+References: <20191003014153.GA13156@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1571615395-3657-1-git-send-email-wang.yi59@zte.com.cn>
+In-Reply-To: <20191003014153.GA13156@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 07:49:55AM +0800, Yi Wang wrote:
-> We get these warnings when build kernel W=1:
-> kernel/rcu/rcu_segcblist.c:91:6: warning: no previous prototype for ‘rcu_segcblist_set_len’ [-Wmissing-prototypes]
-> kernel/rcu/rcu_segcblist.c:107:6: warning: no previous prototype for ‘rcu_segcblist_add_len’ [-Wmissing-prototypes]
-> kernel/rcu/rcu_segcblist.c:137:6: warning: no previous prototype for ‘rcu_segcblist_xchg_len’ [-Wmissing-prototypes]
-> 
-> Commit eda669a6a2c5 ("rcu/nocb: Atomic ->len field in rcu_segcblist
-> structure") introduced this, and make the functions static to fix
-> them.
-> 
-> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+Hello!
 
-Good catch!
+This series replaces uses of rcu_swap_protected() with rcu_replace().
+A later patch will remove rcu_swap_protected().
 
-However, both Ben Dooks, commit 292d1bb2 ("rcu: Several rcu_segcblist
-functions can be static"), and ultimately the kbuild test robot beat
-you to it.  This commit is still in -rcu, but will be part of my pull
-request to -tip in a couple of weeks.
+1.      Upgrade rcu_swap_protected() to rcu_replace().
+
+2-10.    Replace calls to rcu_swap_protected() with rcu_replace().
+
+Changes from v1:
+
+o	Added security/safesetid patch.
+
+o	Changed the name from rcu_replace() to rcu_replace_pointer()
+	based on feedback from Ingo Molnar.
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/rcu_segcblist.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 495c58c..cbc87b8 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -88,7 +88,7 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
->  }
->  
->  /* Set the length of an rcu_segcblist structure. */
-> -void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-> +static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
->  {
->  #ifdef CONFIG_RCU_NOCB_CPU
->  	atomic_long_set(&rsclp->len, v);
-> @@ -104,7 +104,7 @@ void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
->   * This increase is fully ordered with respect to the callers accesses
->   * both before and after.
->   */
-> -void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-> +static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
->  {
->  #ifdef CONFIG_RCU_NOCB_CPU
->  	smp_mb__before_atomic(); /* Up to the caller! */
-> @@ -134,7 +134,7 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
->   * with the actual number of callbacks on the structure.  This exchange is
->   * fully ordered with respect to the callers accesses both before and after.
->   */
-> -long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
-> +static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
->  {
->  #ifdef CONFIG_RCU_NOCB_CPU
->  	return atomic_long_xchg(&rsclp->len, v);
-> -- 
-> 1.8.3.1
-> 
+------------------------------------------------------------------------
+
+ arch/x86/kvm/pmu.c                          |    4 ++--
+ drivers/gpu/drm/i915/gem/i915_gem_context.c |    2 +-
+ drivers/scsi/scsi.c                         |    4 ++--
+ drivers/scsi/scsi_sysfs.c                   |    8 ++++----
+ fs/afs/vl_list.c                            |    4 ++--
+ include/linux/rcupdate.h                    |   18 ++++++++++++++++++
+ kernel/bpf/cgroup.c                         |    4 ++--
+ net/core/dev.c                              |    4 ++--
+ net/core/sock_reuseport.c                   |    4 ++--
+ net/netfilter/nf_tables_api.c               |    5 +++--
+ net/sched/act_api.c                         |    2 +-
+ net/sched/act_csum.c                        |    4 ++--
+ net/sched/act_ct.c                          |    3 ++-
+ net/sched/act_ctinfo.c                      |    4 ++--
+ net/sched/act_ife.c                         |    2 +-
+ net/sched/act_mirred.c                      |    4 ++--
+ net/sched/act_mpls.c                        |    2 +-
+ net/sched/act_police.c                      |    6 +++---
+ net/sched/act_sample.c                      |    4 ++--
+ net/sched/act_skbedit.c                     |    4 ++--
+ net/sched/act_tunnel_key.c                  |    4 ++--
+ net/sched/act_vlan.c                        |    2 +-
+ security/safesetid/securityfs.c             |    4 ++--
+ 23 files changed, 61 insertions(+), 41 deletions(-)
