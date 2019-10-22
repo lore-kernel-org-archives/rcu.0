@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92733CA9EA0
-	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D5ACA9EB7
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:12:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 610DE218AE
-	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:12:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8D7DF21872
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1571771572;
-	bh=h6lApnQoH4yeAnt+863Onqkxe9q1Vrdvkyfiparmxl8=;
+	s=default; t=1571771578;
+	bh=xvqU+DkqSwLSkL389M85X3LHYTzrsH2JRYG7WtqfMbE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=DXL8r5oBzkRH445hSSrWw/StvC0YnD4qbE5h/l+P2SJtED8c83+BADbzVNJV5MgBE
-	 5ir+pteuYmjpgOM70gDfhwqY230eKSrfvthKT1CUDeCOzn18+LmpIW8ziLMtA4CT47
-	 Rj86DmwNNUVTz3OItFGDVJ/d5F3dEP73hW1Qi6ew=
+	b=if6nGZsa61UujEWn4wdeXK/5H+tTUL/krMJ4bK4NWi/ADHUmTHHBQZPdch3ORzBBA
+	 QubvfsmP8NGut5kLtfB9S+etBzxMgMUH2bH07qHUR4lk9CFgBSSZFbPq+jV6A+d1cr
+	 kZ/gwKqcXvzheYJnsO04JRlZKY3E+DqzjFxPAAzg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388823AbfJVTMv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Oct 2019 15:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
+        id S1733019AbfJVTMe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Oct 2019 15:12:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733029AbfJVTMf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Oct 2019 15:12:35 -0400
+        id S1732990AbfJVTMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Oct 2019 15:12:31 -0400
 Received: from localhost.localdomain (rrcs-50-75-166-42.nys.biz.rr.com [50.75.166.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFC4621925;
-        Tue, 22 Oct 2019 19:12:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9992F222C2;
+        Tue, 22 Oct 2019 19:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571771554;
-        bh=h6lApnQoH4yeAnt+863Onqkxe9q1Vrdvkyfiparmxl8=;
+        s=default; t=1571771550;
+        bh=xvqU+DkqSwLSkL389M85X3LHYTzrsH2JRYG7WtqfMbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QSQdChrx2xCJVCgmc3ZIuW5sMYO4c5xYW9i/zxPQ5EKpxbt5Ysqzc+2hs2IT1yfVS
-         q7BLNoQ8M0H/AVQZJKW0qtqppzRMae3AIXDxq7ywjpxd69IdaDpVUJgQaFh78xzAKh
-         M6w6pV3AfHezs2jvBVi5DOmy1yFhHs8dHfsAQNtE=
+        b=h+ekN0hJzMU6y7DMOH26WIIjasFP1wEm2W7tmFmXMVmVnWIFEjzWc+3aEMLt1aJLf
+         uqCIUtizCEUE9vYjvYO4kaIuK3ZWvUaYAB/ltFiGNOqUe5QlCYsLhrkYcTPdQ/WfCa
+         hcbWtgPXvvD4um8tPHqzLemVfgPOVJ1XTi4u6pqU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,14 +47,13 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH tip/core/rcu 08/10] net/netfilter: Replace rcu_swap_protected() with rcu_replace()
-Date:   Tue, 22 Oct 2019 12:12:13 -0700
-Message-Id: <20191022191215.25781-8-paulmck@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH tip/core/rcu 06/10] bpf/cgroup: Replace rcu_swap_protected() with rcu_replace()
+Date:   Tue, 22 Oct 2019 12:12:11 -0700
+Message-Id: <20191022191215.25781-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191022191136.GA25627@paulmck-ThinkPad-P72>
 References: <20191022191136.GA25627@paulmck-ThinkPad-P72>
@@ -73,33 +72,33 @@ Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta
 Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 [ paulmck: From rcu_replace() to rcu_replace_pointer() per Ingo Molnar. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: <netfilter-devel@vger.kernel.org>
-Cc: <coreteam@netfilter.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
 Cc: <netdev@vger.kernel.org>
+Cc: <bpf@vger.kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/bpf/cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index d481f9b..3379974 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1461,8 +1461,9 @@ static void nft_chain_stats_replace(struct nft_trans *trans)
- 	if (!nft_trans_chain_stats(trans))
- 		return;
- 
--	rcu_swap_protected(chain->stats, nft_trans_chain_stats(trans),
--			   lockdep_commit_lock_is_held(trans->ctx.net));
-+	nft_trans_chain_stats(trans) =
-+		rcu_replace_pointer(chain->stats, nft_trans_chain_stats(trans),
-+				    lockdep_commit_lock_is_held(trans->ctx.net));
- 
- 	if (!nft_trans_chain_stats(trans))
- 		static_branch_inc(&nft_counters_enabled);
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index ddd8add..c684cf4 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -180,8 +180,8 @@ static void activate_effective_progs(struct cgroup *cgrp,
+ 				     enum bpf_attach_type type,
+ 				     struct bpf_prog_array *old_array)
+ {
+-	rcu_swap_protected(cgrp->bpf.effective[type], old_array,
+-			   lockdep_is_held(&cgroup_mutex));
++	old_array = rcu_replace_pointer(cgrp->bpf.effective[type], old_array,
++					lockdep_is_held(&cgroup_mutex));
+ 	/* free prog array after grace period, since __cgroup_bpf_run_*()
+ 	 * might be still walking the array
+ 	 */
 -- 
 2.9.5
 
