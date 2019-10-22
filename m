@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87628CA9EB7
-	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C84CA9EA0
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:13:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5B07621872
-	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:13:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91B9921872
+	for <rcu@archiver.kernel.org>; Tue, 22 Oct 2019 19:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1571771580;
-	bh=tUhpaitMuoRbduLSgEqFovdvLBjMXkIUbwLYs5P9r5U=;
+	s=default; t=1571771582;
+	bh=NK1shrnB6RXACQmIToR2eAdSTsYyqi7EfbzoHBlz3kE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=QI2/nfjswMith+ZzJQBoFJHRPADUfH66xVZ/QrCqueT+lwot9SRYleUmfH7rUJmd8
-	 mOhKPgSVy6ZLvDxwBeh7CQOhHaB4obbPLr1RtkiQ0LyI38sL0xmgnI21+Trl60QzPK
-	 deo1qZavLMI3fZQoc34p/OY4Ts+bLnKYRi1t2sXI=
+	b=R8dQjGeS2EbxoPVTvBUoXU1dc1c3L3QTIp9RtYxJN9sCYCq5hFEVggphTmMryDMy5
+	 YKD/gla86itdCL/Z7K5eN4mBYJBRTrDhZrSSPyXNjfm+ZxsO1boWVgh9BDw3rhRB1h
+	 /ZXz9n4kIqBisxk9tDPi0GenVS+lzuPlPs97F1Ig=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733009AbfJVTMd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Oct 2019 15:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43706 "EHLO mail.kernel.org"
+        id S1732972AbfJVTM3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Oct 2019 15:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732903AbfJVTMd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Oct 2019 15:12:33 -0400
+        id S1732960AbfJVTM1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Oct 2019 15:12:27 -0400
 Received: from localhost.localdomain (rrcs-50-75-166-42.nys.biz.rr.com [50.75.166.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDA3421D71;
-        Tue, 22 Oct 2019 19:12:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23DD121872;
+        Tue, 22 Oct 2019 19:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571771552;
-        bh=tUhpaitMuoRbduLSgEqFovdvLBjMXkIUbwLYs5P9r5U=;
+        s=default; t=1571771546;
+        bh=NK1shrnB6RXACQmIToR2eAdSTsYyqi7EfbzoHBlz3kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7QtZqijRRS/LJjdLOMKOOMGrCcTiPqrYAKaIY+gOdm94A9J2viGhlesoc9JwM9k8
-         xyab/CbLUFn0vjcSzMqFn3Rk4qz8Hd+GH17svYO4bWHeODusQyZwrtN9AHYII8TpMZ
-         S9/BWIqe9JHcWvIBZlEXYbFRrS+RP3Wzw55EOmcQ=
+        b=SUpRZkNozB0RJAm3MGvuAjFVVOn+KxxVuGRNznokxXvR/WahJ0ftDqSYZ5/+OmMUH
+         rFJJ7DJuALzjWIluBdaA1zThESMt85t6Sy0V4EYQ05JCfbK0BKRphZ9IVUxtL1X3ac
+         ROdbp79PVROJlZhyi5NKFY65XDBkshw2H+8+Z5Xc=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
@@ -47,14 +47,11 @@ Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Subject: [PATCH tip/core/rcu 07/10] net/core: Replace rcu_swap_protected() with rcu_replace()
-Date:   Tue, 22 Oct 2019 12:12:12 -0700
-Message-Id: <20191022191215.25781-7-paulmck@kernel.org>
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH tip/core/rcu 04/10] drivers/scsi: Replace rcu_swap_protected() with rcu_replace()
+Date:   Tue, 22 Oct 2019 12:12:09 -0700
+Message-Id: <20191022191215.25781-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191022191136.GA25627@paulmck-ThinkPad-P72>
 References: <20191022191136.GA25627@paulmck-ThinkPad-P72>
@@ -73,48 +70,49 @@ Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta
 Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 [ paulmck: From rcu_replace() to rcu_replace_pointer() per Ingo Molnar. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jiri Pirko <jiri@mellanox.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Ido Schimmel <idosch@mellanox.com>
-Cc: Petr Machata <petrm@mellanox.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: <netdev@vger.kernel.org>
+Acked-by: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: <linux-scsi@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
 ---
- net/core/dev.c            | 4 ++--
- net/core/sock_reuseport.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/scsi.c       | 4 ++--
+ drivers/scsi/scsi_sysfs.c | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index bf3ed41..c5d8882 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1288,8 +1288,8 @@ int dev_set_alias(struct net_device *dev, const char *alias, size_t len)
- 	}
+diff --git a/drivers/scsi/scsi.c b/drivers/scsi/scsi.c
+index 1f5b5c8..7a1b6c7 100644
+--- a/drivers/scsi/scsi.c
++++ b/drivers/scsi/scsi.c
+@@ -434,8 +434,8 @@ static void scsi_update_vpd_page(struct scsi_device *sdev, u8 page,
+ 		return;
  
- 	mutex_lock(&ifalias_mutex);
--	rcu_swap_protected(dev->ifalias, new_alias,
--			   mutex_is_locked(&ifalias_mutex));
-+	new_alias = rcu_replace_pointer(dev->ifalias, new_alias,
-+					mutex_is_locked(&ifalias_mutex));
- 	mutex_unlock(&ifalias_mutex);
+ 	mutex_lock(&sdev->inquiry_mutex);
+-	rcu_swap_protected(*sdev_vpd_buf, vpd_buf,
+-			   lockdep_is_held(&sdev->inquiry_mutex));
++	vpd_buf = rcu_replace_pointer(*sdev_vpd_buf, vpd_buf,
++				      lockdep_is_held(&sdev->inquiry_mutex));
+ 	mutex_unlock(&sdev->inquiry_mutex);
  
- 	if (new_alias)
-diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-index f3ceec9..f19f179 100644
---- a/net/core/sock_reuseport.c
-+++ b/net/core/sock_reuseport.c
-@@ -356,8 +356,8 @@ int reuseport_detach_prog(struct sock *sk)
- 	spin_lock_bh(&reuseport_lock);
- 	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
- 					  lockdep_is_held(&reuseport_lock));
--	rcu_swap_protected(reuse->prog, old_prog,
--			   lockdep_is_held(&reuseport_lock));
-+	old_prog = rcu_replace_pointer(reuse->prog, old_prog,
-+				       lockdep_is_held(&reuseport_lock));
- 	spin_unlock_bh(&reuseport_lock);
+ 	if (vpd_buf)
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index 64c96c7..5adfcab 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -466,10 +466,10 @@ static void scsi_device_dev_release_usercontext(struct work_struct *work)
+ 	sdev->request_queue = NULL;
  
- 	if (!old_prog)
+ 	mutex_lock(&sdev->inquiry_mutex);
+-	rcu_swap_protected(sdev->vpd_pg80, vpd_pg80,
+-			   lockdep_is_held(&sdev->inquiry_mutex));
+-	rcu_swap_protected(sdev->vpd_pg83, vpd_pg83,
+-			   lockdep_is_held(&sdev->inquiry_mutex));
++	vpd_pg80 = rcu_replace_pointer(sdev->vpd_pg80, vpd_pg80,
++				       lockdep_is_held(&sdev->inquiry_mutex));
++	vpd_pg83 = rcu_replace_pointer(sdev->vpd_pg83, vpd_pg83,
++				       lockdep_is_held(&sdev->inquiry_mutex));
+ 	mutex_unlock(&sdev->inquiry_mutex);
+ 
+ 	if (vpd_pg83)
 -- 
 2.9.5
 
