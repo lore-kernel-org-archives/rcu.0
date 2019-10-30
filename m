@@ -1,214 +1,266 @@
-Return-Path: <SRS0=ZCzh=YW=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=NwoZ=YX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4721CCA9EAE
-	for <rcu@archiver.kernel.org>; Tue, 29 Oct 2019 10:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAE1FCA9EC5
+	for <rcu@archiver.kernel.org>; Wed, 30 Oct 2019 11:52:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0FBBF2087F
-	for <rcu@archiver.kernel.org>; Tue, 29 Oct 2019 10:06:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7F20C2080F
+	for <rcu@archiver.kernel.org>; Wed, 30 Oct 2019 11:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572343568;
-	bh=FMbuBN1oCdTYjXZWl1ed/CoUuwWzBee+m6QmA4X1wnQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=JWwkAr5WWi7MJYvDmYP+NGaD0mzcPUDRDaS/3pFgaen8eIT9J3ly1ybJ5fIFEBDpU
-	 9pLgABn/+qOu1DT7t3SCdRyMbtEsEf+/aLsKza6/qeazCJA3gZLdHMyFDkTAnqE+sU
-	 mpJHrgoXZR61eqeW8OSQCzrys+1f0d+guZ07OI1w=
+	s=default; t=1572436326;
+	bh=IvB9WaMgABgRUtIw6oX6tMl7t4hkqeqx/FZY3rIjcTg=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=2fp6ypBLDV7hbqloZEOT06pxvq7KfO16GxBLJ36KNzn1MaCIniy9ljzFGQop/8GhJ
+	 yUtxKLXiKcp0IWx56KbkOtM/9BxcCI6gK5KuD0ILuNbAHJky1O5M92Lrsts0QPW4Yn
+	 SR5gfmkZcrqil0VippAoWwBNWShfUhnYe1ooMuPQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbfJ2KGH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Oct 2019 06:06:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55300 "EHLO mail.kernel.org"
+        id S1726359AbfJ3LwG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Oct 2019 07:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727578AbfJ2KGH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Oct 2019 06:06:07 -0400
+        id S1726065AbfJ3LwG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Oct 2019 07:52:06 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F16EE2087F;
-        Tue, 29 Oct 2019 10:06:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 515DC204FD;
+        Wed, 30 Oct 2019 11:52:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572343566;
-        bh=FMbuBN1oCdTYjXZWl1ed/CoUuwWzBee+m6QmA4X1wnQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J6aDAZx4xqFMpkILuT9p6FzEtCKmEPbnIGD+C6pge10/Ms6Q0paV9BBE/RFW0qSYg
-         yLb4VqSYUMjDwubtIlvojneMZvdd1Z5kDgjEQb9zJX0eZoHaejuY0HfS7znCHey88W
-         HvsNnFg64Cyma4wDEPnewh+5iccuUnaQN6Kff8bA=
+        s=default; t=1572436324;
+        bh=IvB9WaMgABgRUtIw6oX6tMl7t4hkqeqx/FZY3rIjcTg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=iIIi71vX7QfYWMgwNXvIcD+0ccAO0XmsByrOjGXr9OtaIYNyTOOM2K/RkY/WIqIgl
+         pf9TcBWidxEjURwAxsWcKJLauBAoUeolbz0RivWFsNd0l5bWoooxk1zXdLPmDoBNTZ
+         m8iDJVLR6m59ryEUtByqLHRu1Rf9tjEuEcBC+Jds=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C4F163521071; Tue, 29 Oct 2019 03:06:05 -0700 (PDT)
-Date:   Tue, 29 Oct 2019 03:06:05 -0700
+        id 1E6603521071; Wed, 30 Oct 2019 04:52:04 -0700 (PDT)
+Date:   Wed, 30 Oct 2019 04:52:04 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     madhuparnabhowmik04@gmail.com
-Cc:     paulmck@kernel.org, joel@joelfernandes.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] Documentation: RCU: NMI-RCU: Converted NMI-RCU.txt to
- NMI-RCU.rst.
-Message-ID: <20191029100605.GI20975@paulmck-ThinkPad-P72>
+To:     mingo@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, mchehab+samsung@kernel.org,
+        bigeasy@linutronix.de, dan.carpenter@oracle.com,
+        frederic@kernel.org, 1ethanhansen@gmail.com, hslester96@gmail.com,
+        linuxball@gmail.com, stern@rowland.harvard.edu,
+        sfr@canb.auug.org.au, James.Bottomley@HansenPartnership.com,
+        martin.petersen@oracle.com
+Subject: [GIT PULL rcu/next + tools/memory-model] RCU and LKMM commits for 5.5
+Message-ID: <20191030115204.GA26510@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191028214252.17580-1-madhuparnabhowmik04@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191028214252.17580-1-madhuparnabhowmik04@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 03:12:52AM +0530, madhuparnabhowmik04@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> 
-> This patch converts NMI-RCU from txt to rst format.
-> Also adds NMI-RCU in the index.rst file.
-> 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Hello, Ingo,
 
-Applied for further review, thank you!  Assuming review goes well,
-I will be pushing this for v5.6 (not the upcoming merge window, but
-the one after it).
+This pull request contains the following changes:
 
-							Thanx, Paul
+1.	Documentation updates.
 
-> ---
->  .../RCU/{NMI-RCU.txt => NMI-RCU.rst}          | 53 ++++++++++---------
->  Documentation/RCU/index.rst                   |  1 +
->  2 files changed, 29 insertions(+), 25 deletions(-)
->  rename Documentation/RCU/{NMI-RCU.txt => NMI-RCU.rst} (73%)
-> 
-> diff --git a/Documentation/RCU/NMI-RCU.txt b/Documentation/RCU/NMI-RCU.rst
-> similarity index 73%
-> rename from Documentation/RCU/NMI-RCU.txt
-> rename to Documentation/RCU/NMI-RCU.rst
-> index 881353fd5bff..da5861f6a433 100644
-> --- a/Documentation/RCU/NMI-RCU.txt
-> +++ b/Documentation/RCU/NMI-RCU.rst
-> @@ -1,4 +1,7 @@
-> +.. _NMI_rcu_doc:
-> +
->  Using RCU to Protect Dynamic NMI Handlers
-> +=========================================
->  
->  
->  Although RCU is usually used to protect read-mostly data structures,
-> @@ -9,7 +12,7 @@ work in "arch/x86/oprofile/nmi_timer_int.c" and in
->  "arch/x86/kernel/traps.c".
->  
->  The relevant pieces of code are listed below, each followed by a
-> -brief explanation.
-> +brief explanation.::
->  
->  	static int dummy_nmi_callback(struct pt_regs *regs, int cpu)
->  	{
-> @@ -18,12 +21,12 @@ brief explanation.
->  
->  The dummy_nmi_callback() function is a "dummy" NMI handler that does
->  nothing, but returns zero, thus saying that it did nothing, allowing
-> -the NMI handler to take the default machine-specific action.
-> +the NMI handler to take the default machine-specific action.::
->  
->  	static nmi_callback_t nmi_callback = dummy_nmi_callback;
->  
->  This nmi_callback variable is a global function pointer to the current
-> -NMI handler.
-> +NMI handler.::
->  
->  	void do_nmi(struct pt_regs * regs, long error_code)
->  	{
-> @@ -53,11 +56,12 @@ anyway.  However, in practice it is a good documentation aid, particularly
->  for anyone attempting to do something similar on Alpha or on systems
->  with aggressive optimizing compilers.
->  
-> -Quick Quiz:  Why might the rcu_dereference_sched() be necessary on Alpha,
-> -	     given that the code referenced by the pointer is read-only?
-> +Quick Quiz:
-> +		Why might the rcu_dereference_sched() be necessary on Alpha, given that the code referenced by the pointer is read-only?
->  
-> +:ref:`Answer to Quick Quiz <answer_quick_quiz_NMI>`
->  
-> -Back to the discussion of NMI and RCU...
-> +Back to the discussion of NMI and RCU...::
->  
->  	void set_nmi_callback(nmi_callback_t callback)
->  	{
-> @@ -68,7 +72,7 @@ The set_nmi_callback() function registers an NMI handler.  Note that any
->  data that is to be used by the callback must be initialized up -before-
->  the call to set_nmi_callback().  On architectures that do not order
->  writes, the rcu_assign_pointer() ensures that the NMI handler sees the
-> -initialized values.
-> +initialized values::
->  
->  	void unset_nmi_callback(void)
->  	{
-> @@ -82,7 +86,7 @@ up any data structures used by the old NMI handler until execution
->  of it completes on all other CPUs.
->  
->  One way to accomplish this is via synchronize_rcu(), perhaps as
-> -follows:
-> +follows::
->  
->  	unset_nmi_callback();
->  	synchronize_rcu();
-> @@ -98,24 +102,23 @@ to free up the handler's data as soon as synchronize_rcu() returns.
->  Important note: for this to work, the architecture in question must
->  invoke nmi_enter() and nmi_exit() on NMI entry and exit, respectively.
->  
-> +.. _answer_quick_quiz_NMI:
->  
-> -Answer to Quick Quiz
-> -
-> -	Why might the rcu_dereference_sched() be necessary on Alpha, given
-> -	that the code referenced by the pointer is read-only?
-> +Answer to Quick Quiz:
-> +	Why might the rcu_dereference_sched() be necessary on Alpha, given that the code referenced by the pointer is read-only?
->  
-> -	Answer: The caller to set_nmi_callback() might well have
-> -		initialized some data that is to be used by the new NMI
-> -		handler.  In this case, the rcu_dereference_sched() would
-> -		be needed, because otherwise a CPU that received an NMI
-> -		just after the new handler was set might see the pointer
-> -		to the new NMI handler, but the old pre-initialized
-> -		version of the handler's data.
-> +	The caller to set_nmi_callback() might well have
-> +	initialized some data that is to be used by the new NMI
-> +	handler.  In this case, the rcu_dereference_sched() would
-> +	be needed, because otherwise a CPU that received an NMI
-> +	just after the new handler was set might see the pointer
-> +	to the new NMI handler, but the old pre-initialized
-> +	version of the handler's data.
->  
-> -		This same sad story can happen on other CPUs when using
-> -		a compiler with aggressive pointer-value speculation
-> -		optimizations.
-> +	This same sad story can happen on other CPUs when using
-> +	a compiler with aggressive pointer-value speculation
-> +	optimizations.
->  
-> -		More important, the rcu_dereference_sched() makes it
-> -		clear to someone reading the code that the pointer is
-> -		being protected by RCU-sched.
-> +	More important, the rcu_dereference_sched() makes it
-> +	clear to someone reading the code that the pointer is
-> +	being protected by RCU-sched.
-> diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-> index 8d20d44f8fd4..627128c230dc 100644
-> --- a/Documentation/RCU/index.rst
-> +++ b/Documentation/RCU/index.rst
-> @@ -10,6 +10,7 @@ RCU concepts
->     arrayRCU
->     rcu
->     listRCU
-> +   NMI-RCU
->     UP
->  
->     Design/Memory-Ordering/Tree-RCU-Memory-Ordering
-> -- 
-> 2.17.1
-> 
+	https://lore.kernel.org/lkml/20191003012741.GA12456@paulmck-ThinkPad-P72
+
+2.	Miscellaneous fixes.
+
+	https://lore.kernel.org/lkml/20191003013243.GA12705@paulmck-ThinkPad-P72
+
+3.	Dynamic tick (nohz) updates, perhaps most notably changes to
+	force the tick on when needed due to lengthy in-kernel execution
+	on CPUs on which RCU is waiting.
+
+	https://lore.kernel.org/lkml/20191003013834.GA12927@paulmck-ThinkPad-P72
+
+4.	Replace rcu_swap_protected() with rcu_prepace_pointer().
+
+	https://lore.kernel.org/lkml/20191022191136.GA25627@paulmck-ThinkPad-P72
+
+	NOTE: Commit 81db81f82993 ("drivers/scsi: Replace
+	rcu_swap_protected() with rcu_replace()") conflicts with the
+	SCSI tree's d188b0675b21 ("scsi: core: Add sysfs attributes for
+	VPD pages 0h and 89h"), as noted by Stephen Rothwell here:
+
+	https://lore.kernel.org/lkml/20191029150826.38c26ef8@canb.auug.org.au
+
+	Stephen's fixup looks good both to me and to Martin Peterson:
+
+	https://lore.kernel.org/lkml/yq1pnif6ne7.fsf@oracle.com
+
+5.	Torture-test updates.
+
+	https://lore.kernel.org/lkml/20191003014710.GA13323@paulmck-ThinkPad-P72
+
+6.	Linux-kernel memory consistency model updates.
+
+	https://lore.kernel.org/lkml/20191003001039.GA8027@paulmck-ThinkPad-P72
+
+All of these have been subjected to the kbuild test robot and -next
+testing, and are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+
+for you to fetch changes up to 8e655478739142a2df879907d14977721ab36c9f:
+
+  Merge branches 'doc.2019.10.29a', 'fixes.2019.10.29a', 'nohz.2019.10.28a', 'replace.2019.10.28a', 'torture.2019.10.05a' and 'lkmm.2019.10.05a' into HEAD (2019-10-29 02:49:25 -0700)
+
+These changes decrease the size of the kernel by about 500 lines, mostly
+due to .rst files being more compact than the original .html files.
+The net savings would have been greater except for the addition of some
+much-needed LKMM documentation.
+
+----------------------------------------------------------------
+Alan Stern (4):
+      tools/memory-model: Fix data race detection for unordered store and load
+      tools/memory-model/Documentation: Fix typos in explanation.txt
+      tools/memory-model/Documentation: Put redefinition of rcu-fence into explanation.txt
+      tools/memory-model/Documentation: Add plain accesses and data races to explanation.txt
+
+Chuhong Yuan (1):
+      locktorture: Replace strncmp() with str_has_prefix()
+
+Dan Carpenter (1):
+      rcu: Fix uninitialized variable in nocb_gp_wait()
+
+Ethan Hansen (2):
+      rcu: Remove unused function rcutorture_record_progress()
+      rcu: Remove unused variable rcu_perf_writer_state
+
+Frederic Weisbecker (1):
+      nohz: Add TICK_DEP_BIT_RCU
+
+Joel Fernandes (Google) (8):
+      rcu: Reset CPU hints when reporting a quiescent state
+      Revert docs from "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
+      Revert docs from "treewide: Rename rcu_dereference_raw_notrace() to _check()"
+      docs: rcu: Correct links referring to titles
+      docs: rcu: Increase toctree to 3
+      Restore docs "treewide: Rename rcu_dereference_raw_notrace() to _check()"
+      Restore docs "rcu: Restore barrier() to rcu_read_lock() and rcu_read_unlock()"
+      doc: Update list_for_each_entry_rcu() documentation
+
+Mauro Carvalho Chehab (1):
+      docs: rcu: convert some articles from html to ReST
+
+Paul E. McKenney (32):
+      rcu: Remove unused function hlist_bl_del_init_rcu()
+      time: Export tick start/stop functions for rcutorture
+      rcu: Force on tick when invoking lots of callbacks
+      rcutorture: Force on tick for readers and callback flooders
+      stop_machine: Provide RCU quiescent state in multi_cpu_stop()
+      rcu: Make CPU-hotplug removal operations enable tick
+      rcutorture: Emulate dyntick aspect of userspace nohz_full sojourn
+      rcutorture: Remove CONFIG_HOTPLUG_CPU=n from scenarios
+      rcutorture: Separate warnings for each failure type
+      rcutorture: Make in-kernel-loop testing more brutal
+      rcu: Upgrade rcu_swap_protected() to rcu_replace()
+      x86/kvm/pmu: Replace rcu_swap_protected() with rcu_replace()
+      drm/i915: Replace rcu_swap_protected() with rcu_replace()
+      drivers/scsi: Replace rcu_swap_protected() with rcu_replace()
+      fs/afs: Replace rcu_swap_protected() with rcu_replace()
+      bpf/cgroup: Replace rcu_swap_protected() with rcu_replace()
+      net/core: Replace rcu_swap_protected() with rcu_replace()
+      net/netfilter: Replace rcu_swap_protected() with rcu_replace()
+      net/sched: Replace rcu_swap_protected() with rcu_replace()
+      security/safesetid: Replace rcu_swap_protected() with rcu_replace()
+      rcu: Force tick on for nohz_full CPUs not reaching quiescent states
+      rcu: Force nohz_full tick on upon irq enter instead of exit
+      rcu: Confine ->core_needs_qs accesses to the corresponding CPU
+      rcu: Make kernel-mode nohz_full CPUs invoke the RCU core processing
+      rcu: Several rcu_segcblist functions can be static
+      workqueue: Convert for_each_wq to use built-in list check
+      rcu: Ensure that ->rcu_urgent_qs is set before resched IPI
+      rcu: Remove obsolete descriptions for rcu_barrier tracepoint
+      rcu: Update descriptions for rcu_nocb_wake tracepoint
+      rcu: Update descriptions for rcu_future_grace_period tracepoint
+      rcu: Suppress levelspread uninitialized messages
+      Merge branches 'doc.2019.10.29a', 'fixes.2019.10.29a', 'nohz.2019.10.28a', 'replace.2019.10.28a', 'torture.2019.10.05a' and 'lkmm.2019.10.05a' into HEAD
+
+Sebastian Andrzej Siewior (1):
+      Documentation: Rename rcu_node_context_switch() to rcu_note_context_switch()
+
+Wolfgang M. Reimer (1):
+      locking: locktorture: Do not include rwlock.h directly
+
+ .../Design/Data-Structures/Data-Structures.html    | 1391 --------
+ .../RCU/Design/Data-Structures/Data-Structures.rst | 1163 +++++++
+ .../Expedited-Grace-Periods.html                   |  668 ----
+ .../Expedited-Grace-Periods.rst                    |  521 +++
+ .../Design/Memory-Ordering/Tree-RCU-Diagram.html   |    9 -
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.html  |  704 ----
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |  624 ++++
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg      |    2 +-
+ .../RCU/Design/Memory-Ordering/TreeRCU-qs.svg      |    2 +-
+ .../RCU/Design/Requirements/Requirements.html      | 3401 --------------------
+ .../RCU/Design/Requirements/Requirements.rst       | 2704 ++++++++++++++++
+ Documentation/RCU/index.rst                        |    7 +-
+ Documentation/RCU/lockdep.txt                      |   18 +-
+ Documentation/RCU/whatisRCU.txt                    |   14 +-
+ arch/x86/kvm/pmu.c                                 |    4 +-
+ drivers/gpu/drm/i915/gem/i915_gem_context.c        |    2 +-
+ drivers/scsi/scsi.c                                |    4 +-
+ drivers/scsi/scsi_sysfs.c                          |    8 +-
+ fs/afs/vl_list.c                                   |    4 +-
+ include/linux/rculist_bl.h                         |   28 -
+ include/linux/rcupdate.h                           |   18 +
+ include/linux/rcutiny.h                            |    1 +
+ include/linux/rcutree.h                            |    1 +
+ include/linux/tick.h                               |    7 +-
+ include/trace/events/rcu.h                         |   47 +-
+ include/trace/events/timer.h                       |    3 +-
+ kernel/bpf/cgroup.c                                |    4 +-
+ kernel/locking/locktorture.c                       |    9 +-
+ kernel/rcu/rcu.h                                   |    4 +-
+ kernel/rcu/rcu_segcblist.c                         |    6 +-
+ kernel/rcu/rcuperf.c                               |   16 -
+ kernel/rcu/rcutorture.c                            |   44 +-
+ kernel/rcu/tree.c                                  |   73 +-
+ kernel/rcu/tree.h                                  |    1 +
+ kernel/rcu/tree_plugin.h                           |    2 +-
+ kernel/stop_machine.c                              |    1 +
+ kernel/time/tick-sched.c                           |   11 +
+ kernel/workqueue.c                                 |   10 +-
+ net/core/dev.c                                     |    4 +-
+ net/core/sock_reuseport.c                          |    4 +-
+ net/netfilter/nf_tables_api.c                      |    5 +-
+ net/sched/act_api.c                                |    2 +-
+ net/sched/act_csum.c                               |    4 +-
+ net/sched/act_ct.c                                 |    3 +-
+ net/sched/act_ctinfo.c                             |    4 +-
+ net/sched/act_ife.c                                |    2 +-
+ net/sched/act_mirred.c                             |    4 +-
+ net/sched/act_mpls.c                               |    2 +-
+ net/sched/act_police.c                             |    6 +-
+ net/sched/act_sample.c                             |    4 +-
+ net/sched/act_skbedit.c                            |    4 +-
+ net/sched/act_tunnel_key.c                         |    4 +-
+ net/sched/act_vlan.c                               |    2 +-
+ security/safesetid/securityfs.c                    |    4 +-
+ tools/memory-model/Documentation/explanation.txt   |  602 +++-
+ tools/memory-model/linux-kernel.cat                |    2 +-
+ .../selftests/rcutorture/configs/rcu/TASKS03       |    3 -
+ .../selftests/rcutorture/configs/rcu/TREE02        |    3 -
+ .../selftests/rcutorture/configs/rcu/TREE04        |    3 -
+ .../selftests/rcutorture/configs/rcu/TREE06        |    3 -
+ .../selftests/rcutorture/configs/rcu/TREE08        |    3 -
+ .../selftests/rcutorture/configs/rcu/TREE09        |    3 -
+ .../selftests/rcutorture/configs/rcu/TRIVIAL       |    3 -
+ .../selftests/rcutorture/doc/TREE_RCU-kconfig.txt  |    1 -
+ 64 files changed, 5830 insertions(+), 6390 deletions(-)
+ delete mode 100644 Documentation/RCU/Design/Data-Structures/Data-Structures.html
+ create mode 100644 Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+ delete mode 100644 Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.html
+ create mode 100644 Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+ delete mode 100644 Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Diagram.html
+ delete mode 100644 Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html
+ create mode 100644 Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+ delete mode 100644 Documentation/RCU/Design/Requirements/Requirements.html
+ create mode 100644 Documentation/RCU/Design/Requirements/Requirements.rst
