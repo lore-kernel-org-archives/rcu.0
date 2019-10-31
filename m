@@ -7,22 +7,22 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DF60CA9ECB
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41ADFC47E49
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:08:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DE9E12086D
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:08:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18F7E2086D
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:08:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbfJaKIi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Oct 2019 06:08:38 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60654 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726864AbfJaKIi (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 06:08:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04391;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TgmAXpl_1572516509;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgmAXpl_1572516509)
+        id S1727402AbfJaKIo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Oct 2019 06:08:44 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:35721 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727250AbfJaKIn (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 06:08:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TgmAXqe_1572516512;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgmAXqe_1572516512)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 31 Oct 2019 18:08:29 +0800
+          Thu, 31 Oct 2019 18:08:32 +0800
 From:   Lai Jiangshan <laijs@linux.alibaba.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -32,9 +32,9 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 01/11] rcu: avoid leaking exp_deferred_qs into next GP
-Date:   Thu, 31 Oct 2019 10:07:56 +0000
-Message-Id: <20191031100806.1326-2-laijs@linux.alibaba.com>
+Subject: [PATCH 05/11] rcu: clean all rcu_read_unlock_special after report qs
+Date:   Thu, 31 Oct 2019 10:08:00 +0000
+Message-Id: <20191031100806.1326-6-laijs@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191031100806.1326-1-laijs@linux.alibaba.com>
 References: <20191031100806.1326-1-laijs@linux.alibaba.com>
@@ -45,57 +45,41 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If exp_deferred_qs is incorrectly set and leaked to the next
-exp GP, it may cause the next GP to be incorrectly prematurely
-completed.
+rcu_preempt_deferred_qs_irqrestore() is always called when
+->rcu_read_lock_nesting <= 0 and there is nothing to prevent it
+from reporting qs if needed which means ->rcu_read_unlock_special
+is better to be clearred after the function. But in some cases,
+it leaves exp_hint (for example, after rcu_note_context_switch()),
+which is harmess since it is just a hint, but it may also intruduce
+unneeded rcu_read_unlock_special() later.
+
+The new code write to exp_hint without WRITE_ONCE() since the
+writing is protected by irq.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/rcu/tree_exp.h | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index a0e1e51c51c2..6dec21909b30 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -603,6 +603,18 @@ static void rcu_exp_handler(void *unused)
- 	struct rcu_node *rnp = rdp->mynode;
- 	struct task_struct *t = current;
- 
-+	/*
-+	 * Note that there is a large group of race conditions that
-+	 * can have caused this quiescent state to already have been
-+	 * reported, so we really do need to check ->expmask first.
-+	 */
-+	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	if (!(rnp->expmask & rdp->grpmask)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		return;
-+	}
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+
- 	/*
- 	 * First, the common case of not being in an RCU read-side
- 	 * critical section.  If also enabled or idle, immediately
-@@ -628,17 +640,10 @@ static void rcu_exp_handler(void *unused)
- 	 * a future context switch.  Either way, if the expedited
- 	 * grace period is still waiting on this CPU, set ->deferred_qs
- 	 * so that the eventual quiescent state will be reported.
--	 * Note that there is a large group of race conditions that
--	 * can have caused this quiescent state to already have been
--	 * reported, so we really do need to check ->expmask.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 9fe8138ed3c3..bb3bcdb5c9b8 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -439,6 +439,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 	 * t->rcu_read_unlock_special cannot change.
  	 */
- 	if (t->rcu_read_lock_nesting > 0) {
--		raw_spin_lock_irqsave_rcu_node(rnp, flags);
--		if (rnp->expmask & rdp->grpmask) {
--			rdp->exp_deferred_qs = true;
--			t->rcu_read_unlock_special.b.exp_hint = true;
--		}
--		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		rdp->exp_deferred_qs = true;
-+		WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+ 	special = t->rcu_read_unlock_special;
++	t->rcu_read_unlock_special.b.exp_hint = false;
+ 	t->rcu_read_unlock_special.b.deferred_qs = false;
+ 	if (special.b.need_qs) {
+ 		rcu_qs();
+@@ -626,7 +627,6 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 		local_irq_restore(flags);
  		return;
  	}
+-	WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, false);
+ 	rcu_preempt_deferred_qs_irqrestore(t, flags);
+ }
  
 -- 
 2.20.1
