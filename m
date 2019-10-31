@@ -7,22 +7,22 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F39CA9ECE
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71348CA9ECF
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 06F4020873
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E56B2086D
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbfJaKIu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Oct 2019 06:08:50 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:9713 "EHLO
+        id S1727418AbfJaKIt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Oct 2019 06:08:49 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:61424 "EHLO
         out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727415AbfJaKIt (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 06:08:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04391;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TgluWgs_1572516516;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgluWgs_1572516516)
+        by vger.kernel.org with ESMTP id S1727283AbfJaKIo (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 06:08:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TgmBgRY_1572516511;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgmBgRY_1572516511)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 31 Oct 2019 18:08:36 +0800
+          Thu, 31 Oct 2019 18:08:32 +0800
 From:   Lai Jiangshan <laijs@linux.alibaba.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -32,9 +32,9 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 10/11] rcu: clear the special.b.need_qs in rcu_note_context_switch()
-Date:   Thu, 31 Oct 2019 10:08:05 +0000
-Message-Id: <20191031100806.1326-11-laijs@linux.alibaba.com>
+Subject: [PATCH 04/11] rcu: cleanup rcu_preempt_deferred_qs()
+Date:   Thu, 31 Oct 2019 10:07:59 +0000
+Message-Id: <20191031100806.1326-5-laijs@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191031100806.1326-1-laijs@linux.alibaba.com>
 References: <20191031100806.1326-1-laijs@linux.alibaba.com>
@@ -45,40 +45,41 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It is better to clear the special.b.need_qs when it is
-replaced by special.b.blocked or it is really fulfill its
-goal in rcu_preempt_deferred_qs_irqrestore().
+Don't need to set ->rcu_read_lock_nesting negative, irq-protected
+rcu_preempt_deferred_qs_irqrestore() doesn't expect
+->rcu_read_lock_nesting to be negative to work, it even
+doesn't access to ->rcu_read_lock_nesting any more.
 
-It makes rcu_qs() easier to be understood, and also prepares for
-the percpu rcu_preempt_depth patch, which reqires rcu_special
-bits to be clearred in irq-disable context.
+It is true that NMI over rcu_preempt_deferred_qs_irqrestore()
+may access to ->rcu_read_lock_nesting, but it is still safe
+since rcu_read_unlock_special() can protect itself from NMI.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/rcu/tree_plugin.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/tree_plugin.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 81cacf637865..21bb04fec0d2 100644
+index 82595db04eec..9fe8138ed3c3 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -264,8 +264,6 @@ static void rcu_qs(void)
- 				       __this_cpu_read(rcu_data.gp_seq),
- 				       TPS("cpuqs"));
- 		__this_cpu_write(rcu_data.cpu_no_qs.b.norm, false);
--		barrier(); /* Coordinate with rcu_flavor_sched_clock_irq(). */
--		WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, false);
- 	}
+@@ -555,16 +555,11 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ static void rcu_preempt_deferred_qs(struct task_struct *t)
+ {
+ 	unsigned long flags;
+-	bool couldrecurse = t->rcu_read_lock_nesting >= 0;
+ 
+ 	if (!rcu_preempt_need_deferred_qs(t))
+ 		return;
+-	if (couldrecurse)
+-		t->rcu_read_lock_nesting -= RCU_NEST_BIAS;
+ 	local_irq_save(flags);
+ 	rcu_preempt_deferred_qs_irqrestore(t, flags);
+-	if (couldrecurse)
+-		t->rcu_read_lock_nesting += RCU_NEST_BIAS;
  }
  
-@@ -297,6 +295,7 @@ void rcu_note_context_switch(bool preempt)
- 		/* Possibly blocking in an RCU read-side critical section. */
- 		rnp = rdp->mynode;
- 		raw_spin_lock_rcu_node(rnp);
-+		t->rcu_read_unlock_special.b.need_qs = false;
- 		t->rcu_read_unlock_special.b.blocked = true;
- 		t->rcu_blocked_node = rnp;
- 
+ /*
 -- 
 2.20.1
 
