@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90327CA9ECB
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 13:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8052DCA9ECB
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 14:10:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 632272086D
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 13:52:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53CBB2086D
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 14:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572529955;
-	bh=IvK8ua/CzhbWFAV9u+JUslEhWgIdcSDnR6QJTc4yF1o=;
+	s=default; t=1572531058;
+	bh=fVcJ1YoHP/ebgQ+YPr6vqVO+Ngjo3zOd7mH3hAZcT+M=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=Y3WMtUx0Hw+ds12hMbaJUp2GAGhwfPBMDcQVlHh3j1BaeziQMDMk/+Zr3EJumzGPE
-	 t5L274y4xxApios06IiUTbT+aTJvAzeVh5DMWxvBkCVP0bhUi97XsQ6y0uwzgsG8tk
-	 NBu802BGP0AaK41aoxix+hDI5wFMduxxFyX4EZ9g=
+	b=ez1FHX7KqV7RNC2Hoqy5GxNlq3U/0JQi2mTW4sCGIPa1mwlpNdqLGzSYU0iUZ9v/S
+	 mtw26UkK5tIpb+7xMHm+HeoeaEzxgOI/Hm6i7veyHpVyEZjHVPMrG5zYju/jUMhEGD
+	 ShlUO+iLSiemruv75f+aMJopHFRROfFOdEjSqcwc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbfJaNwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Oct 2019 09:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45614 "EHLO mail.kernel.org"
+        id S1726765AbfJaOK6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Oct 2019 10:10:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727511AbfJaNwe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Oct 2019 09:52:34 -0400
+        id S1726506AbfJaOK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 31 Oct 2019 10:10:57 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4475E2080F;
-        Thu, 31 Oct 2019 13:52:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 114352080F;
+        Thu, 31 Oct 2019 14:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572529954;
-        bh=IvK8ua/CzhbWFAV9u+JUslEhWgIdcSDnR6QJTc4yF1o=;
+        s=default; t=1572531057;
+        bh=fVcJ1YoHP/ebgQ+YPr6vqVO+Ngjo3zOd7mH3hAZcT+M=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sczk0SXkjh6o9TdylfsUT5/fq9kZJTYsTwsemViasT9SJvcMMm4ks90PFHKeGKZf7
-         aV7BCUOpL3f9vUEMR/Awm6EOBSXrQRx5aac9Mj7Io85yWYsGTBDUTXsHRyWxAsRrPl
-         W/nMs6JctRxlVN8VLUooacTM9cXb3Vn/E+TY2WgA=
+        b=lP06XwrLn3KR3FJCfDPcInfOUe/R4MEnV5PxQyqOCo9oKtgUb4HGqpX0wx9YJf5Sy
+         q39pJht5ZhQOMaSqnpUEHoCJxlb/C7ABB8vfO4sy5CH2GaEaigj8vGOSll+xRzLgKm
+         TTAXtLEufUpJBcegc+8WdQwkaXe+w9sKJ8Spe9ec=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 14399352041F; Thu, 31 Oct 2019 06:52:34 -0700 (PDT)
-Date:   Thu, 31 Oct 2019 06:52:34 -0700
+        id C437A3520744; Thu, 31 Oct 2019 07:10:56 -0700 (PDT)
+Date:   Thu, 31 Oct 2019 07:10:56 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Lai Jiangshan <laijs@linux.alibaba.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -50,80 +50,63 @@ Cc:     linux-kernel@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu: clean up rcu_preempt_deferred_qs_irqrestore()
-Message-ID: <20191031135234.GQ20975@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH 04/11] rcu: cleanup rcu_preempt_deferred_qs()
+Message-ID: <20191031141056.GR20975@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20191031100806.1326-1-laijs@linux.alibaba.com>
- <20191031100806.1326-4-laijs@linux.alibaba.com>
+ <20191031100806.1326-5-laijs@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191031100806.1326-4-laijs@linux.alibaba.com>
+In-Reply-To: <20191031100806.1326-5-laijs@linux.alibaba.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 31, 2019 at 10:07:58AM +0000, Lai Jiangshan wrote:
-> Remove several unneeded return.
+On Thu, Oct 31, 2019 at 10:07:59AM +0000, Lai Jiangshan wrote:
+> Don't need to set ->rcu_read_lock_nesting negative, irq-protected
+> rcu_preempt_deferred_qs_irqrestore() doesn't expect
+> ->rcu_read_lock_nesting to be negative to work, it even
+> doesn't access to ->rcu_read_lock_nesting any more.
 > 
-> It doesn't need to return earlier after every code block.
-> The code protects itself and be safe to fall through because
-> every code block has its own condition tests.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  kernel/rcu/tree_plugin.h | 14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 59ef10da1e39..82595db04eec 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -439,19 +439,10 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->  	 * t->rcu_read_unlock_special cannot change.
->  	 */
->  	special = t->rcu_read_unlock_special;
-> -	rdp = this_cpu_ptr(&rcu_data);
-> -	if (!special.s && !rdp->exp_deferred_qs) {
-> -		local_irq_restore(flags);
-> -		return;
-> -	}
+> It is true that NMI over rcu_preempt_deferred_qs_irqrestore()
+> may access to ->rcu_read_lock_nesting, but it is still safe
+> since rcu_read_unlock_special() can protect itself from NMI.
 
-The point of this check is the common case of this function being invoked
-when both fields are zero, avoiding the below redundant store and all the
-extra checks of subfields of special.
-
-Or are you saying that current compilers figure all this out?
+Hmmm...  Testing identified the need for this one.  But I will wait for
+your responses on the earlier patches before going any further through
+this series.
 
 							Thanx, Paul
 
->  	t->rcu_read_unlock_special.b.deferred_qs = false;
->  	if (special.b.need_qs) {
->  		rcu_qs();
->  		t->rcu_read_unlock_special.b.need_qs = false;
-> -		if (!t->rcu_read_unlock_special.s && !rdp->exp_deferred_qs) {
-> -			local_irq_restore(flags);
-> -			return;
-> -		}
->  	}
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  kernel/rcu/tree_plugin.h | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 82595db04eec..9fe8138ed3c3 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -555,16 +555,11 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>  static void rcu_preempt_deferred_qs(struct task_struct *t)
+>  {
+>  	unsigned long flags;
+> -	bool couldrecurse = t->rcu_read_lock_nesting >= 0;
 >  
->  	/*
-> @@ -460,12 +451,9 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->  	 * tasks are handled when removing the task from the
->  	 * blocked-tasks list below.
->  	 */
-> +	rdp = this_cpu_ptr(&rcu_data);
->  	if (rdp->exp_deferred_qs) {
->  		rcu_report_exp_rdp(rdp);
-> -		if (!t->rcu_read_unlock_special.s) {
-> -			local_irq_restore(flags);
-> -			return;
-> -		}
->  	}
+>  	if (!rcu_preempt_need_deferred_qs(t))
+>  		return;
+> -	if (couldrecurse)
+> -		t->rcu_read_lock_nesting -= RCU_NEST_BIAS;
+>  	local_irq_save(flags);
+>  	rcu_preempt_deferred_qs_irqrestore(t, flags);
+> -	if (couldrecurse)
+> -		t->rcu_read_lock_nesting += RCU_NEST_BIAS;
+>  }
 >  
->  	/* Clean up if blocked during RCU read-side critical section. */
+>  /*
 > -- 
 > 2.20.1
 > 
