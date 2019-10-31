@@ -2,91 +2,134 @@ Return-Path: <SRS0=Hr/h=YY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D5A6CA9ECE
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95717CA9ECB
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 13:43:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 74ABA2086D
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 10:09:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D3272086D
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 13:43:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1572529433;
+	bh=WqBmGuQ22zyx3KiRZwkz6aUzuxvyUDv0RjHtVTHbCYo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=RjyXNyRrazBDUSH0nwfgj9PiEdavv7TBXO97kxKhQTHl4SxPUaW/UpURWZ3aZxWAd
+	 DKNLeHfzGABaiacm9v1rt9XO+Kqc+ynh7yJJvT4syXzGAM+WMWKjW9QNLQ6TUm3i2h
+	 NBW/qJD9WnhzvUUPRS9kY9rNo/QXynTtXpm+NcGs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbfJaKJd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Oct 2019 06:09:33 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:40391 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727281AbfJaKIi (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 06:08:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Tgm6rf8_1572516513;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tgm6rf8_1572516513)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 31 Oct 2019 18:08:33 +0800
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S1726803AbfJaNnx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Oct 2019 09:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726728AbfJaNnx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 31 Oct 2019 09:43:53 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4B462080F;
+        Thu, 31 Oct 2019 13:43:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572529431;
+        bh=WqBmGuQ22zyx3KiRZwkz6aUzuxvyUDv0RjHtVTHbCYo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bmZAcj9oPoAQd05R+j8ST5/4cXbkHNbls6hUEH+DRpmUQstOea5TGHZZS2iEyYiY4
+         Tq75B0aS18/eseStHZgggTuUDJ1vYeyLDhW1lCreOeXpu75WW8d0YG84H1yXcqOSjq
+         LgBWSqO82qNM/VM4zhotVcxTZ6PlBSJL66SnonSg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 654ED352041F; Thu, 31 Oct 2019 06:43:51 -0700 (PDT)
+Date:   Thu, 31 Oct 2019 06:43:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 06/11] rcu: clear t->rcu_read_unlock_special in one go
-Date:   Thu, 31 Oct 2019 10:08:01 +0000
-Message-Id: <20191031100806.1326-7-laijs@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191031100806.1326-1-laijs@linux.alibaba.com>
+Subject: Re: [PATCH 01/11] rcu: avoid leaking exp_deferred_qs into next GP
+Message-ID: <20191031134351.GO20975@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20191031100806.1326-1-laijs@linux.alibaba.com>
+ <20191031100806.1326-2-laijs@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191031100806.1326-2-laijs@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Clearing t->rcu_read_unlock_special in one go makes the code
-more clearly.
+On Thu, Oct 31, 2019 at 10:07:56AM +0000, Lai Jiangshan wrote:
+> If exp_deferred_qs is incorrectly set and leaked to the next
+> exp GP, it may cause the next GP to be incorrectly prematurely
+> completed.
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- kernel/rcu/tree_plugin.h | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Could you please provide the sequence of events leading to a such a
+failure?
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index bb3bcdb5c9b8..e612c77dc446 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -420,6 +420,7 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
-  * Report deferred quiescent states.  The deferral time can
-  * be quite short, for example, in the case of the call from
-  * rcu_read_unlock_special().
-+ * t->rcu_read_unlock_special is cleared after called.
-  */
- static void
- rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-@@ -439,11 +440,9 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	 * t->rcu_read_unlock_special cannot change.
- 	 */
- 	special = t->rcu_read_unlock_special;
--	t->rcu_read_unlock_special.b.exp_hint = false;
--	t->rcu_read_unlock_special.b.deferred_qs = false;
-+	t->rcu_read_unlock_special.s = 0;
- 	if (special.b.need_qs) {
- 		rcu_qs();
--		t->rcu_read_unlock_special.b.need_qs = false;
- 	}
- 
- 	/*
-@@ -459,8 +458,6 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 
- 	/* Clean up if blocked during RCU read-side critical section. */
- 	if (special.b.blocked) {
--		t->rcu_read_unlock_special.b.blocked = false;
--
- 		/*
- 		 * Remove this task from the list it blocked on.  The task
- 		 * now remains queued on the rcu_node corresponding to the
--- 
-2.20.1
+Also, did you provoke such a failure in testing?  If so, an upgrade
+to rcutorture would be good, so please tell me what you did to make
+the failure happen.
 
+I do like the reduction in state space, but I am a bit concerned about
+the potential increase in contention on rnp->lock.  Thoughts?
+
+							Thanx, Paul
+
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  kernel/rcu/tree_exp.h | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index a0e1e51c51c2..6dec21909b30 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -603,6 +603,18 @@ static void rcu_exp_handler(void *unused)
+>  	struct rcu_node *rnp = rdp->mynode;
+>  	struct task_struct *t = current;
+>  
+> +	/*
+> +	 * Note that there is a large group of race conditions that
+> +	 * can have caused this quiescent state to already have been
+> +	 * reported, so we really do need to check ->expmask first.
+> +	 */
+> +	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +	if (!(rnp->expmask & rdp->grpmask)) {
+> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +		return;
+> +	}
+> +	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +
+>  	/*
+>  	 * First, the common case of not being in an RCU read-side
+>  	 * critical section.  If also enabled or idle, immediately
+> @@ -628,17 +640,10 @@ static void rcu_exp_handler(void *unused)
+>  	 * a future context switch.  Either way, if the expedited
+>  	 * grace period is still waiting on this CPU, set ->deferred_qs
+>  	 * so that the eventual quiescent state will be reported.
+> -	 * Note that there is a large group of race conditions that
+> -	 * can have caused this quiescent state to already have been
+> -	 * reported, so we really do need to check ->expmask.
+>  	 */
+>  	if (t->rcu_read_lock_nesting > 0) {
+> -		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> -		if (rnp->expmask & rdp->grpmask) {
+> -			rdp->exp_deferred_qs = true;
+> -			t->rcu_read_unlock_special.b.exp_hint = true;
+> -		}
+> -		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +		rdp->exp_deferred_qs = true;
+> +		WRITE_ONCE(t->rcu_read_unlock_special.b.exp_hint, true);
+>  		return;
+>  	}
+>  
+> -- 
+> 2.20.1
+> 
