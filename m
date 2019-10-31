@@ -2,119 +2,157 @@ Return-Path: <SRS0=Hr/h=YY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A49B0CA9ECB
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 15:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30189CA9ECB
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 15:14:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 783CA2087E
-	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 15:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572534441;
-	bh=4U/ETnIzLhw19X4wyTeVNcJAT/xQDEsJ+bOoWVhUIU8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=K0Zd+zNxgI3HsYxHld2gSw6UCfsnQ3CGqcEQoazpRu6KFNdhqjd1P8m6POniBcuh1
-	 5b4SVZhv6SHXFo0gzZy3kp9W4UR5DS4Vbisi1CadDvmEVieuY0KjGkaopOlaMcxzoC
-	 W2mHZRPEiDaJISeH6lcDzO2ClxB2NcAq4lD1wq48=
+	by mail.kernel.org (Postfix) with ESMTP id 0CA902083E
+	for <rcu@archiver.kernel.org>; Thu, 31 Oct 2019 15:14:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbfJaPHV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Oct 2019 11:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727511AbfJaPHV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Oct 2019 11:07:21 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30E472083E;
-        Thu, 31 Oct 2019 15:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572534440;
-        bh=4U/ETnIzLhw19X4wyTeVNcJAT/xQDEsJ+bOoWVhUIU8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=xeGBtlkuHRQz83nm/iwqpVgdCBKqcyiuyA/p1N3/cqYMDB6cU8e1hFK9PJloi9F3Q
-         jgO9+sNUcxddj2oYTBA73U/VDu5cvJ2UNrEUH4FVkfO548Lef1RVM0EIzlD0KakmC6
-         DQQCW4ldi3SnAF0FfGDxDIUyaSzuEn1eRwLkUIOc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EF2913520744; Thu, 31 Oct 2019 08:07:19 -0700 (PDT)
-Date:   Thu, 31 Oct 2019 08:07:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
+        id S1727589AbfJaPOk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Oct 2019 11:14:40 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:1547 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727511AbfJaPOk (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 31 Oct 2019 11:14:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TgnJPtZ_1572534863;
+Received: from 192.168.2.229(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgnJPtZ_1572534863)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 31 Oct 2019 23:14:24 +0800
+Subject: Re: [PATCH 02/11] rcu: fix bug when rcu_exp_handler() in nested
+ interrupt
+To:     paulmck@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 04/11] rcu: cleanup rcu_preempt_deferred_qs()
-Message-ID: <20191031150719.GU20975@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
 References: <20191031100806.1326-1-laijs@linux.alibaba.com>
- <20191031100806.1326-5-laijs@linux.alibaba.com>
- <20191031141056.GR20975@paulmck-ThinkPad-P72>
- <1b5cf860-3d4a-954c-09ac-6383b38da4cf@linux.alibaba.com>
+ <20191031100806.1326-3-laijs@linux.alibaba.com>
+ <20191031134731.GP20975@paulmck-ThinkPad-P72>
+ <20191031143119.GA15954@paulmck-ThinkPad-P72>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <6b621228-4cab-6e2c-9912-cddc56ad6775@linux.alibaba.com>
+Date:   Thu, 31 Oct 2019 23:14:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20191031143119.GA15954@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1b5cf860-3d4a-954c-09ac-6383b38da4cf@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 31, 2019 at 10:35:22PM +0800, Lai Jiangshan wrote:
-> On 2019/10/31 10:10 下午, Paul E. McKenney wrote:
-> > On Thu, Oct 31, 2019 at 10:07:59AM +0000, Lai Jiangshan wrote:
-> > > Don't need to set ->rcu_read_lock_nesting negative, irq-protected
-> > > rcu_preempt_deferred_qs_irqrestore() doesn't expect
-> > > ->rcu_read_lock_nesting to be negative to work, it even
-> > > doesn't access to ->rcu_read_lock_nesting any more.
-> > > 
-> > > It is true that NMI over rcu_preempt_deferred_qs_irqrestore()
-> > > may access to ->rcu_read_lock_nesting, but it is still safe
-> > > since rcu_read_unlock_special() can protect itself from NMI.
-> > 
-> > Hmmm...  Testing identified the need for this one.  But I will wait for
-> > your responses on the earlier patches before going any further through
-> > this series.
+
+
+On 2019/10/31 10:31 下午, Paul E. McKenney wrote:
+> On Thu, Oct 31, 2019 at 06:47:31AM -0700, Paul E. McKenney wrote:
+>> On Thu, Oct 31, 2019 at 10:07:57AM +0000, Lai Jiangshan wrote:
+>>> These is a possible bug (although which I can't triger yet)
+>>> since 2015 8203d6d0ee78
+>>> (rcu: Use single-stage IPI algorithm for RCU expedited grace period)
+>>>
+>>>   rcu_read_unlock()
+>>>    ->rcu_read_lock_nesting = -RCU_NEST_BIAS;
+>>>    interrupt(); // before or after rcu_read_unlock_special()
+>>>     rcu_read_lock()
+>>>      fetch some rcu protected pointers
+>>>      // exp GP starts in other cpu.
+>>>      some works
+>>>      NESTED interrupt for rcu_exp_handler();
 > 
-> Hmmm... I was wrong, it should be after patch7 to avoid
-> the scheduler deadlock.
+> Also, which platforms support nested interrupts?  Last I knew, this was
+> prohibited.
+> 
+>>>        report exp qs! BUG!
+>>
+>> Why would a quiescent state for the expedited grace period be reported
+>> here?  This CPU is still in an RCU read-side critical section, isn't it?
+> 
+> And I now see what you were getting at here.  Yes, the current code
+> assumes that interrupt-disabled regions, like hardware interrupt
+> handlers, cannot be interrupted.  But if interrupt-disabled regions such
+> as hardware interrupt handlers can be interrupted (as opposed to being
+> NMIed), wouldn't that break a whole lot of stuff all over the place in
+> the kernel?  So that sounds like an arch bug to me.
+> 
 
-I was wondering about that.  ;-)
+I don't know when I started always assuming hardware interrupt
+handler can be nested by (other) interrupt. I can't find any
+documents say Linux don't allow nested interrupt handler.
+Google search suggests the opposite.
 
-							Thanx, Paul
+grep -rIni nested Documentation/memory-barriers.txt Documentation/x86/
+It still have some words about nested interrupt handler.
 
-> > > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > > ---
-> > >   kernel/rcu/tree_plugin.h | 5 -----
-> > >   1 file changed, 5 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > index 82595db04eec..9fe8138ed3c3 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -555,16 +555,11 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
-> > >   static void rcu_preempt_deferred_qs(struct task_struct *t)
-> > >   {
-> > >   	unsigned long flags;
-> > > -	bool couldrecurse = t->rcu_read_lock_nesting >= 0;
-> > >   	if (!rcu_preempt_need_deferred_qs(t))
-> > >   		return;
-> > > -	if (couldrecurse)
-> > > -		t->rcu_read_lock_nesting -= RCU_NEST_BIAS;
-> > >   	local_irq_save(flags);
-> > >   	rcu_preempt_deferred_qs_irqrestore(t, flags);
-> > > -	if (couldrecurse)
-> > > -		t->rcu_read_lock_nesting += RCU_NEST_BIAS;
-> > >   }
-> > >   /*
-> > > -- 
-> > > 2.20.1
-> > > 
+The whole patchset doesn't depend on this patch, and actually
+it is reverted later in the patchset. Dropping this patch
+can be an option for next round.
+
+thanks
+Lai
+
+> 							Thanx, Paul
+> 
+>>>      // exp GP completes and pointers are freed in other cpu
+>>>      some works with the pointers. BUG
+>>>     rcu_read_unlock();
+>>>    ->rcu_read_lock_nesting = 0;
+>>>
+>>> Although rcu_sched_clock_irq() can be in nested interrupt,
+>>> there is no such similar bug since special.b.need_qs
+>>> can only be set when ->rcu_read_lock_nesting > 0
+>>>
+>>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>>> ---
+>>>   kernel/rcu/tree_exp.h    | 5 +++--
+>>>   kernel/rcu/tree_plugin.h | 9 ++++++---
+>>>   2 files changed, 9 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+>>> index 6dec21909b30..c0d06bce35ea 100644
+>>> --- a/kernel/rcu/tree_exp.h
+>>> +++ b/kernel/rcu/tree_exp.h
+>>> @@ -664,8 +664,9 @@ static void rcu_exp_handler(void *unused)
+>>>   	 * Otherwise, force a context switch after the CPU enables everything.
+>>>   	 */
+>>>   	rdp->exp_deferred_qs = true;
+>>> -	if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
+>>> -	    WARN_ON_ONCE(rcu_dynticks_curr_cpu_in_eqs())) {
+>>> +	if (rcu_preempt_need_deferred_qs(t) &&
+>>> +	    (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
+>>> +	    WARN_ON_ONCE(rcu_dynticks_curr_cpu_in_eqs()))) {
+>>>   		rcu_preempt_deferred_qs(t);
+>>>   	} else {
+>>>   		set_tsk_need_resched(t);
+>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+>>> index d4c482490589..59ef10da1e39 100644
+>>> --- a/kernel/rcu/tree_plugin.h
+>>> +++ b/kernel/rcu/tree_plugin.h
+>>> @@ -549,9 +549,12 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>>>    */
+>>>   static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+>>>   {
+>>> -	return (__this_cpu_read(rcu_data.exp_deferred_qs) ||
+>>> -		READ_ONCE(t->rcu_read_unlock_special.s)) &&
+>>> -	       t->rcu_read_lock_nesting <= 0;
+>>> +	return (__this_cpu_read(rcu_data.exp_deferred_qs) &&
+>>> +		(!t->rcu_read_lock_nesting ||
+>>> +		 t->rcu_read_lock_nesting == -RCU_NEST_BIAS))
+>>> +		||
+>>> +		(READ_ONCE(t->rcu_read_unlock_special.s) &&
+>>> +		 t->rcu_read_lock_nesting <= 0);
+>>>   }
+>>>   
+>>>   /*
+>>> -- 
+>>> 2.20.1
+>>>
