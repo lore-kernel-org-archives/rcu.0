@@ -6,24 +6,25 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73476CA9ECF
-	for <rcu@archiver.kernel.org>; Fri,  1 Nov 2019 15:32:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC9B7CA9ECF
+	for <rcu@archiver.kernel.org>; Fri,  1 Nov 2019 15:47:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 522AF20650
-	for <rcu@archiver.kernel.org>; Fri,  1 Nov 2019 15:32:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9A71F21734
+	for <rcu@archiver.kernel.org>; Fri,  1 Nov 2019 15:47:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbfKAPcx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 1 Nov 2019 11:32:53 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16687 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727100AbfKAPcx (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 1 Nov 2019 11:32:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TgwtKF2_1572622352;
-Received: from 192.168.2.229(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgwtKF2_1572622352)
+        id S1728998AbfKAPr1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 1 Nov 2019 11:47:27 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:53778 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726720AbfKAPr0 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 1 Nov 2019 11:47:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07487;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TgwtlFB_1572623238;
+Received: from 192.168.2.229(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TgwtlFB_1572623238)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 01 Nov 2019 23:32:34 +0800
+          Fri, 01 Nov 2019 23:47:20 +0800
 Subject: Re: [PATCH 11/11] x86,rcu: use percpu rcu_preempt_depth
-To:     paulmck@kernel.org, Peter Zijlstra <peterz@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
@@ -59,14 +60,13 @@ References: <20191031100806.1326-1-laijs@linux.alibaba.com>
  <20191031100806.1326-12-laijs@linux.alibaba.com>
  <20191101125816.GD17910@paulmck-ThinkPad-P72>
  <20191101131315.GY4131@hirez.programming.kicks-ass.net>
- <20191101143036.GM20975@paulmck-ThinkPad-P72>
 From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <06b15cfa-620f-d6b1-61d1-8ddfba74a2c8@linux.alibaba.com>
-Date:   Fri, 1 Nov 2019 23:32:32 +0800
+Message-ID: <75f29fff-d8f1-d7be-88b5-fdfcc09c48c7@linux.alibaba.com>
+Date:   Fri, 1 Nov 2019 23:47:18 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
  Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191101143036.GM20975@paulmck-ThinkPad-P72>
+In-Reply-To: <20191101131315.GY4131@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,121 +77,68 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2019/11/1 10:30 下午, Paul E. McKenney wrote:
-> On Fri, Nov 01, 2019 at 02:13:15PM +0100, Peter Zijlstra wrote:
->> On Fri, Nov 01, 2019 at 05:58:16AM -0700, Paul E. McKenney wrote:
->>> On Thu, Oct 31, 2019 at 10:08:06AM +0000, Lai Jiangshan wrote:
->>>> +/* We mask the RCU_NEED_SPECIAL bit so that it return real depth */
->>>> +static __always_inline int rcu_preempt_depth(void)
->>>> +{
->>>> +	return raw_cpu_read_4(__rcu_preempt_depth) & ~RCU_NEED_SPECIAL;
->>>
->>> Why not raw_cpu_generic_read()?
->>>
->>> OK, OK, I get that raw_cpu_read_4() translates directly into an "mov"
->>> instruction on x86, but given that x86 percpu_from_op() is able to
->>> adjust based on operand size, why doesn't something like raw_cpu_read()
->>> also have an x86-specific definition that adjusts based on operand size?
+On 2019/11/1 9:13 下午, Peter Zijlstra wrote:
+> On Fri, Nov 01, 2019 at 05:58:16AM -0700, Paul E. McKenney wrote:
+>> On Thu, Oct 31, 2019 at 10:08:06AM +0000, Lai Jiangshan wrote:
+>>> +/* We mask the RCU_NEED_SPECIAL bit so that it return real depth */
+>>> +static __always_inline int rcu_preempt_depth(void)
+>>> +{
+>>> +	return raw_cpu_read_4(__rcu_preempt_depth) & ~RCU_NEED_SPECIAL;
 >>
->> The reason for preempt.h was header recursion hell.
-> 
-> Fair enough, being as that is also the reason for _rcu_read_lock()
-> not being inlined.  :-/
-> 
->>>> +}
->>>> +
->>>> +static __always_inline void rcu_preempt_depth_set(int pc)
->>>> +{
->>>> +	int old, new;
->>>> +
->>>> +	do {
->>>> +		old = raw_cpu_read_4(__rcu_preempt_depth);
->>>> +		new = (old & RCU_NEED_SPECIAL) |
->>>> +			(pc & ~RCU_NEED_SPECIAL);
->>>> +	} while (raw_cpu_cmpxchg_4(__rcu_preempt_depth, old, new) != old);
->>>
->>> Ummm...
->>>
->>> OK, as you know, I have long wanted _rcu_read_lock() to be inlineable.
->>> But are you -sure- that an x86 cmpxchg is faster than a function call
->>> and return?  I have strong doubts on that score.
+>> Why not raw_cpu_generic_read()?
 >>
->> This is a regular CMPXCHG instruction, not a LOCK prefixed one, and that
->> should make all the difference
+>> OK, OK, I get that raw_cpu_read_4() translates directly into an "mov"
+>> instruction on x86, but given that x86 percpu_from_op() is able to
+>> adjust based on operand size, why doesn't something like raw_cpu_read()
+>> also have an x86-specific definition that adjusts based on operand size?
 > 
-> Yes, understood, but this is also adding some arithmetic, a comparison,
-> and a conditional branch.  Are you -sure- that this is cheaper than
-> an unconditional call and return?
+> The reason for preempt.h was header recursion hell.
 
-rcu_preempt_depth_set() is used only for exit_rcu().
-The performance doesn't matter here. And since RCU_NEED_SPECIAL
-bit is allowed to lost in exit_rcu(), rcu_preempt_depth_set()
-can be a single raw_cpu_write_4() if the performance is matter.
-
-(This complex code is copied from preempt.h and I can't expect
-how will rcu_preempt_depth_set() be used in the feture
-so I keep it unchanged.)
-
-
-+static __always_inline void rcu_preempt_depth_inc(void)
-+{
-+	raw_cpu_add_4(__rcu_preempt_depth, 1);
-+}
-
-This one is for read_read_lock(). ONE instruction.
-
-+
-+static __always_inline bool rcu_preempt_depth_dec_and_test(void)
-+{
-+	return GEN_UNARY_RMWcc("decl", __rcu_preempt_depth, e, 
-__percpu_arg([var]));
-+}
-
-This one is for read_read_unlock() which will be 2 instructions
-("decl" and "je"), which is the same as preempt_enable().
-
-In news days, preempt_disable() is discouraged unless it is
-really necessary and rcu is always encouraged. Low overhead
-read_read_[un]lock() is essential.
-
-
-> 
->>> Plus multiplying the x86-specific code by 26 doesn't look good.
->>>
->>> And the RCU read-side nesting depth really is a per-task thing.  Copying
->>> it to and from the task at context-switch time might make sense if we
->>> had a serious optimization, but it does not appear that we do.
-
-Once upon a time, __preempt_count is also being copied to and from the
-task at context-switch, and worked well.
-
->>>
->>> You original patch some years back, ill-received though it was at the
->>> time, is looking rather good by comparison.  Plus it did not require
->>> architecture-specific code!
->>
->> Right, so the per-cpu preempt_count code relies on the preempt_count
->> being invariant over context switches. That means we never have to
->> save/restore the thing.
->>
->> For (preemptible) rcu, this is 'obviously' not the case.
->>
->> That said, I've not looked over this patch series, I only got 1 actual
->> patch, not the whole series, and I've not had time to go dig out the
->> rest..
-> 
-> I have taken a couple of the earlier patches in the series.
-> 
-> Perhaps inlining these things is instead a job for the long anticipated
-> GCC LTO?  ;-)
-
-Adding a kenerl/offset.c and some Mafefile stuff will help inlining
-these things. But I don't think Linus will happy with introducing
-kenerl/offset.c. There will be 3 instructions for rcu_read_lock()
-and 5 for rcu_read_unlock(), which doesn't taste so delicious.
-
-Moving rcu_read_lock_nesting to struct thread_info is another
-possible way. The number of instructions is also 3 and 5.
+Oh, I didn't notice. May we can use raw_cpu_generic_read
+for rcu here, I will have a try.
 
 Thanks
-Lai
+Lai.
+
+> 
+>>> +}
+>>> +
+>>> +static __always_inline void rcu_preempt_depth_set(int pc)
+>>> +{
+>>> +	int old, new;
+>>> +
+>>> +	do {
+>>> +		old = raw_cpu_read_4(__rcu_preempt_depth);
+>>> +		new = (old & RCU_NEED_SPECIAL) |
+>>> +			(pc & ~RCU_NEED_SPECIAL);
+>>> +	} while (raw_cpu_cmpxchg_4(__rcu_preempt_depth, old, new) != old);
+>>
+>> Ummm...
+>>
+>> OK, as you know, I have long wanted _rcu_read_lock() to be inlineable.
+>> But are you -sure- that an x86 cmpxchg is faster than a function call
+>> and return?  I have strong doubts on that score.
+> 
+> This is a regular CMPXCHG instruction, not a LOCK prefixed one, and that
+> should make all the difference
+> 
+>> Plus multiplying the x86-specific code by 26 doesn't look good.
+>>
+>> And the RCU read-side nesting depth really is a per-task thing.  Copying
+>> it to and from the task at context-switch time might make sense if we
+>> had a serious optimization, but it does not appear that we do.
+>>
+>> You original patch some years back, ill-received though it was at the
+>> time, is looking rather good by comparison.  Plus it did not require
+>> architecture-specific code!
+> 
+> Right, so the per-cpu preempt_count code relies on the preempt_count
+> being invariant over context switches. That means we never have to
+> save/restore the thing.
+> 
+> For (preemptible) rcu, this is 'obviously' not the case.
+> 
+> That said, I've not looked over this patch series, I only got 1 actual
+> patch, not the whole series, and I've not had time to go dig out the
+> rest..
+> 
