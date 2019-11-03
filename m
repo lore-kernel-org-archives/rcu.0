@@ -2,185 +2,138 @@ Return-Path: <SRS0=apcl=Y3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B17B6CA9EC7
-	for <rcu@archiver.kernel.org>; Sun,  3 Nov 2019 02:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB58CA9ED0
+	for <rcu@archiver.kernel.org>; Sun,  3 Nov 2019 04:33:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8472720679
-	for <rcu@archiver.kernel.org>; Sun,  3 Nov 2019 02:01:59 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZeCNK9eH"
+	by mail.kernel.org (Postfix) with ESMTP id 9A951214D8
+	for <rcu@archiver.kernel.org>; Sun,  3 Nov 2019 04:33:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbfKCCB7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 2 Nov 2019 22:01:59 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45394 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbfKCCB6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 2 Nov 2019 22:01:58 -0400
-Received: by mail-qk1-f195.google.com with SMTP id q70so14241823qke.12;
-        Sat, 02 Nov 2019 19:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OtWw9pnB10IoNSgX++YxasocwBeAuCD6teI4D7Wy2nQ=;
-        b=ZeCNK9eHU+qs8XbzbOfB/mq0rbZ/ZHWIXZCAwkRvIWjLdpcSt4mTbX06t0J3/60QWd
-         T4dryz74XDJt7xT6SFiZM0Yasky/W/Ak8PE4Z8nnNSjDpenpyHcZ6x+DZqxvpIrcSbXK
-         9W4PcHG7FkFWg9HfWFpiMvusMfY4BQeCefTI7iESGwKa50PtnWoveU29zjUO3sr9wGOh
-         JnZn+N3UAxziz/UM/YFaIqBXb70dxEJPnPhx04oxn1xwuwgvWtQHXZ9eA6Sl/YMcD5i9
-         A0cGWtnlPvs5ZAr4PkgHPPUUdPi1nGZ7MiVtPBpWx1KAKGHAJtxf7W9jaCMuz8orodmF
-         xNRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OtWw9pnB10IoNSgX++YxasocwBeAuCD6teI4D7Wy2nQ=;
-        b=c7BlP8fowZjvc6p8l6eJDU9n5tADdC6tRfrEzf+E+f3YlL+35vxtALBkzNGeDD+arD
-         RWQyJa6j1jEOGDI7Kkgl9yWD33Ggt8PaMUsRtaNuJaj2b6ETc+Y82TS3QEWe8kkRE7EA
-         blViz+5jy+mfQqo21+vgq3b/u6eul6UdAivON9LypoMoZd/mxKqHuAdNr32wR9wYPT5s
-         piCqez+rcYzO5MOJNVl8xjajj+sLW+F7/X6i5aPcM9FVUS5l6aa1jR6eciZvEbC2JzNF
-         upGa6pgVHPydrn5q1Fvwqr42w6XQIA3VkMJiDhmil921ylDgxG3qhzXVQPETUP1qHNii
-         nRSw==
-X-Gm-Message-State: APjAAAVj3yVQI6x9Ma0LHxu5ahqyEaEs2xObS4qoQbrc6CuSEJw5+Vrn
-        XcHGcM2mO/dZOe3ys/oItAvUnJQ7v34=
-X-Google-Smtp-Source: APXvYqz/xTF/ZlAuH+N9dRgWOytt2YzniwjmUmF/m6uRK2E4ro8wPMuzqnIOSRCCUCJvksQ7logOiw==
-X-Received: by 2002:a37:6d41:: with SMTP id i62mr16712408qkc.211.1572746517256;
-        Sat, 02 Nov 2019 19:01:57 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id m10sm6540392qkk.125.2019.11.02.19.01.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 02 Nov 2019 19:01:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 77AF7213F4;
-        Sat,  2 Nov 2019 22:01:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 02 Nov 2019 22:01:55 -0400
-X-ME-Sender: <xms:EjW-XSJKlyqIGXCrC7kWGZBpBSRMiO3QXZWUsZ1iX7KEDwC0094ERw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddutddgtdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesghdtreertdervdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucfkphepud
-    dtuddrkeeirdegjedrvddttdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
-    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
-    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
-    mhgvnecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:EjW-XV-8I48HCfSa66-XzlhI7EyRHuDR-eO_8ugaAl8LItY6_l8asQ>
-    <xmx:EjW-XZKybzI-ww6QckjHkSX9EnyHSw5DM0hAOyI461wzLwEZ1Fukrw>
-    <xmx:EjW-XUE5waL_3UZmK_W5qxxbq_4rGhe13zC5ufEIUqAuS16VKE46Dw>
-    <xmx:EzW-Xb3-25HPRccxY3Qkthv__I3eOE-IgfTaEj5tW550Krab6Sh37g>
-Received: from localhost (unknown [101.86.47.200])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 310A080059;
-        Sat,  2 Nov 2019 22:01:53 -0400 (EDT)
-Date:   Sun, 3 Nov 2019 10:01:50 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
+        id S1726277AbfKCEd0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 3 Nov 2019 00:33:26 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55998 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726236AbfKCEdZ (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 3 Nov 2019 00:33:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0Th17ejG_1572755596;
+Received: from 192.168.2.229(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Th17ejG_1572755596)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 03 Nov 2019 12:33:18 +0800
+Subject: Re: [PATCH V2 7/7] x86,rcu: use percpu rcu_preempt_depth
+To:     Borislav Petkov <bp@alien8.de>
 Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH V2 2/7] rcu: cleanup rcu_preempt_deferred_qs()
-Message-ID: <20191103020150.GA23770@tardis>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Jann Horn <jannh@google.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Yuyang Du <duyuyang@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Dmitry V. Levin" <ldv@altlinux.org>, rcu@vger.kernel.org
 References: <20191102124559.1135-1-laijs@linux.alibaba.com>
- <20191102124559.1135-3-laijs@linux.alibaba.com>
+ <20191102124559.1135-8-laijs@linux.alibaba.com>
+ <20191102163005.GA11705@nazgul.tnic>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <4e1922ae-c56a-d1cf-db10-e73f3a62a27b@linux.alibaba.com>
+Date:   Sun, 3 Nov 2019 12:33:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <20191102124559.1135-3-laijs@linux.alibaba.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20191102163005.GA11705@nazgul.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jiangshan,
-
-
-I haven't checked the correctness of this patch carefully, but..
+On 2019/11/3 12:30 上午, Borislav Petkov wrote:
+> Resending again because your mail has the craziest header:
+> 
+> Reply-To: 20191101162109.GN20975@paulmck-ThinkPad-P72
+> 
+> and hitting Reply-to-all creates only confusion. WTF?
 
 
-On Sat, Nov 02, 2019 at 12:45:54PM +0000, Lai Jiangshan wrote:
-> Don't need to set ->rcu_read_lock_nesting negative, irq-protected
-> rcu_preempt_deferred_qs_irqrestore() doesn't expect
-> ->rcu_read_lock_nesting to be negative to work, it even
-> doesn't access to ->rcu_read_lock_nesting any more.
+Sorry, I send the emails via git send-email with the wrong
+argument "--reply-to", it should have been "--in-reply-to".
 
-rcu_preempt_deferred_qs_irqrestore() will report RCU qs, and may
-eventually call swake_up() or its friends to wake up, say, the gp
-kthread, and the wake up functions could go into the scheduler code
-path which might have RCU read-side critical section in it, IOW,
-accessing ->rcu_read_lock_nesting.
+> 
+> On Sat, Nov 02, 2019 at 12:45:59PM +0000, Lai Jiangshan wrote:
+>> Convert x86 to use a per-cpu rcu_preempt_depth. The reason for doing so
+>> is that accessing per-cpu variables is a lot cheaper than accessing
+>> task_struct or thread_info variables.
+>>
+>> We need to save/restore the actual rcu_preempt_depth when switch.
+>> We also place the per-cpu rcu_preempt_depth close to __preempt_count
+>> and current_task variable.
+>>
+>> Using the idea of per-cpu __preempt_count.
+>>
+>> No function call when using rcu_read_[un]lock().
+>> Single instruction for rcu_read_lock().
+>> 2 instructions for fast path of rcu_read_unlock().
+>>
+>> CC: Peter Zijlstra <peterz@infradead.org>
+>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>> ---
+>>   arch/x86/Kconfig                         |  2 +
+>>   arch/x86/include/asm/rcu_preempt_depth.h | 87 ++++++++++++++++++++++++
+>>   arch/x86/kernel/cpu/common.c             |  7 ++
+>>   arch/x86/kernel/process_32.c             |  2 +
+>>   arch/x86/kernel/process_64.c             |  2 +
+>>   include/linux/rcupdate.h                 | 24 +++++++
+>>   init/init_task.c                         |  2 +-
+>>   kernel/fork.c                            |  2 +-
+>>   kernel/rcu/Kconfig                       |  3 +
+>>   kernel/rcu/tree_exp.h                    |  2 +
+>>   kernel/rcu/tree_plugin.h                 | 37 +++++++---
+>>   11 files changed, 158 insertions(+), 12 deletions(-)
+>>   create mode 100644 arch/x86/include/asm/rcu_preempt_depth.h
+>>
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index d6e1faa28c58..af9fedc0fdc4 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -18,6 +18,7 @@ config X86_32
+>>   	select MODULES_USE_ELF_REL
+>>   	select OLD_SIGACTION
+>>   	select GENERIC_VDSO_32
+>> +	select ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> 
+> WTF is a "DEEPTH"?
+> 
 
-Again, haven't checked closely, but this argument in the commit log
-seems untrue.
+Sorry, bad English.
 
-Regards,
-Boqun
-
->=20
-> It is true that NMI over rcu_preempt_deferred_qs_irqrestore()
-> may access to ->rcu_read_lock_nesting, but it is still safe
-> since rcu_read_unlock_special() can protect itself from NMI.
->=20
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  kernel/rcu/tree_plugin.h | 5 -----
->  1 file changed, 5 deletions(-)
->=20
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index aba5896d67e3..2fab8be2061f 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -552,16 +552,11 @@ static bool rcu_preempt_need_deferred_qs(struct tas=
-k_struct *t)
->  static void rcu_preempt_deferred_qs(struct task_struct *t)
->  {
->  	unsigned long flags;
-> -	bool couldrecurse =3D t->rcu_read_lock_nesting >=3D 0;
-> =20
->  	if (!rcu_preempt_need_deferred_qs(t))
->  		return;
-> -	if (couldrecurse)
-> -		t->rcu_read_lock_nesting -=3D RCU_NEST_BIAS;
->  	local_irq_save(flags);
->  	rcu_preempt_deferred_qs_irqrestore(t, flags);
-> -	if (couldrecurse)
-> -		t->rcu_read_lock_nesting +=3D RCU_NEST_BIAS;
->  }
-> =20
->  /*
-> --=20
-> 2.20.1
->=20
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAl2+NQcACgkQSXnow7UH
-+rgDxwf9G5kWC0JEq0CJjzKt4Nb9XnKiLk78qm0uXcSTbHCEdlZXHFOyBss91GMN
-I8ZcH53f3xi4HJo7b/zKw6Cj9VB0Wr+Daylhya2QLbQfnq3sz1f89zWOlkoKXGIE
-I8F3veP1+2o4IJdzmdd046X5BoBFlBUENlHyWA3zfLtOFAoE7C5zBmOy+wND0nb6
-f6AxckADeRMCSJBuFheWvvKu4LeppbN/32alTDEtFTAhGQotk2/+wFVN8tVIcYfT
-N5HTRsOXdcgZrN4WNQSBk1+YUV/r9CYUOJxss9EChK6N6jlSG5o0auIRQhHlxilF
-KCl8YsvEjLyCORMQWZUzD1/CAYgjyg==
-=oLcF
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
