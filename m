@@ -2,94 +2,67 @@ Return-Path: <SRS0=8dNv=Y4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 298B7CA9EB5
-	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 15:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C63CA9EB5
+	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 15:15:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 00A5B21744
-	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 15:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572879816;
-	bh=PgT8W6DftwnfwmGNL6dHObxLdmfDGv/U93yvXSQ/GmA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=G/mR1YmpiaQ/WWT+zVwZa166SvnvvayvrGt533foT7PL+a3YlpqaxMNGjYFGog3hO
-	 C4DWwsCq3i+uG+DD1NWIcs8bKqQAJWjbwWVZzXTNNQMiVT7BMUGAbvnjBk0zhr5JDm
-	 dgiO52d6GkjZzmHPH2rfWbZtz7Vz66mJ+dFF/6Ck=
+	by mail.kernel.org (Postfix) with ESMTP id BF3EC20663
+	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 15:15:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbfKDPDc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Nov 2019 10:03:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58436 "EHLO mail.kernel.org"
+        id S1728999AbfKDPPn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Nov 2019 10:15:43 -0500
+Received: from mga07.intel.com ([134.134.136.100]:54743 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727788AbfKDPDc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Nov 2019 10:03:32 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [109.144.216.141])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 535AB20659;
-        Mon,  4 Nov 2019 15:03:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572879810;
-        bh=PgT8W6DftwnfwmGNL6dHObxLdmfDGv/U93yvXSQ/GmA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=didDH6wfhWoEueBvV+kpDeLGrNZpzDEiT8R3wgovEhJ+9TYYxPCcEx6in8MlVSZal
-         aKOtmgrtocgCI9iIwNO1qsAeb51/JxAj4daou2d8IISESH7oei6HiDgqTHpLZud/zl
-         lHMhOkdNJ3IljwboHJIpLiM9oGu1dcdV3sYymlgQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5A33D3520B56; Mon,  4 Nov 2019 07:03:28 -0800 (PST)
-Date:   Mon, 4 Nov 2019 07:03:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Amol Grover <frextrite@gmail.com>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        id S1727796AbfKDPPn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Nov 2019 10:15:43 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Nov 2019 07:15:41 -0800
+X-IronPort-AV: E=Sophos;i="5.68,267,1569308400"; 
+   d="scan'208";a="195481925"
+Received: from jnikula-mobl3.fi.intel.com (HELO localhost) ([10.237.66.161])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Nov 2019 07:15:36 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Amol Grover <frextrite@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] Documentation: RCU: whatisRCU: Fix formatting for
- section 2
-Message-ID: <20191104150328.GZ20975@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191104133315.GA14499@workstation-kernel-dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH] Documentation: RCU: whatisRCU: Fix formatting for section 2
 In-Reply-To: <20191104133315.GA14499@workstation-kernel-dev>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20191104133315.GA14499@workstation-kernel-dev>
+Date:   Mon, 04 Nov 2019 17:15:34 +0200
+Message-ID: <87pni77jvt.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 07:03:15PM +0530, Amol Grover wrote:
+On Mon, 04 Nov 2019, Amol Grover <frextrite@gmail.com> wrote:
 > Convert RCU API method text to sub-headings and
 > add hyperlink and superscript to 2 literary notes
 > under rcu_dereference() section
-> 
+>
 > Signed-off-by: Amol Grover <frextrite@gmail.com>
-
-Good stuff, but Phong Tran beat you to it.  If you are suggesting
-changes to that patch, please send a reply to her email, which
-may be found here:
-
-https://lore.kernel.org/lkml/20191030233128.14997-1-tranmanphong@gmail.com/
-
-There are several options for replying to this email listed at the
-bottom of that web page.
-
-							Thanx, Paul
-
 > ---
 >  Documentation/RCU/whatisRCU.rst | 34 +++++++++++++++++++++++++++------
 >  1 file changed, 28 insertions(+), 6 deletions(-)
-> 
+>
 > diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
 > index ae40c8bcc56c..3cf6e17d0065 100644
 > --- a/Documentation/RCU/whatisRCU.rst
@@ -162,6 +135,15 @@ bottom of that web page.
 > +	primitives, such as list_for_each_entry_rcu() |entry_2|.
 > +
 > +.. |cs_1| raw:: html
+
+Please don't use raw. It's ugly and error prone. We have some raw output
+for latex, but this would be the first for html.
+
+What are you trying to achieve?
+
+BR,
+Jani.
+
 > +
 > +	<a href="#cs"><sup>[1]</sup></a>
 > +
@@ -198,6 +180,6 @@ bottom of that web page.
 >  
 >  The following diagram shows how each API communicates among the
 >  reader, updater, and reclaimer.
-> -- 
-> 2.20.1
-> 
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
