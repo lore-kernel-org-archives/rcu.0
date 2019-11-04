@@ -2,28 +2,28 @@ Return-Path: <SRS0=8dNv=Y4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54C42CA9EA0
-	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 11:41:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76381CA9EA0
+	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 12:10:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 34D272184C
-	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 11:41:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DCC3217F5
+	for <rcu@archiver.kernel.org>; Mon,  4 Nov 2019 12:10:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbfKDLla (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Nov 2019 06:41:30 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56996 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726441AbfKDLla (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 4 Nov 2019 06:41:30 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0ThBi2ca_1572867681;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0ThBi2ca_1572867681)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 04 Nov 2019 19:41:22 +0800
-Subject: Re: [PATCH V2 7/7] x86,rcu: use percpu rcu_preempt_depth
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+        id S1727267AbfKDMK4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Nov 2019 07:10:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37212 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbfKDMKz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Nov 2019 07:10:55 -0500
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1iRbAx-0005Ym-MN; Mon, 04 Nov 2019 13:09:39 +0100
+Date:   Mon, 4 Nov 2019 13:09:39 +0100
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
 Cc:     linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -56,83 +56,55 @@ Cc:     linux-kernel@vger.kernel.org,
         Andrea Arcangeli <aarcange@redhat.com>,
         Al Viro <viro@zeniv.linux.org.uk>,
         "Dmitry V. Levin" <ldv@altlinux.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH V2 7/7] x86,rcu: use percpu rcu_preempt_depth
+Message-ID: <20191104120939.5e4hdcoat2v4jxov@linutronix.de>
 References: <20191102124559.1135-1-laijs@linux.alibaba.com>
  <20191102124559.1135-8-laijs@linux.alibaba.com>
  <20191104092519.nukaz5qmgiskzafi@linutronix.de>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <4878ccfd-7a4e-4f84-9bc3-1d477e077587@linux.alibaba.com>
-Date:   Mon, 4 Nov 2019 19:41:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+ <4878ccfd-7a4e-4f84-9bc3-1d477e077587@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20191104092519.nukaz5qmgiskzafi@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4878ccfd-7a4e-4f84-9bc3-1d477e077587@linux.alibaba.com>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2019/11/4 5:25 下午, Sebastian Andrzej Siewior wrote:
-> On 2019-11-02 12:45:59 [+0000], Lai Jiangshan wrote:
->> Convert x86 to use a per-cpu rcu_preempt_depth. The reason for doing so
->> is that accessing per-cpu variables is a lot cheaper than accessing
->> task_struct or thread_info variables.
+On 2019-11-04 19:41:20 [+0800], Lai Jiangshan wrote:
+> > Is there a benchmark saying how much we gain from this?
 > 
-> Is there a benchmark saying how much we gain from this?
-
-Hello
-
-Maybe I can write a tight loop for testing, but I don't
-think anyone will be interesting in it.
-
-I'm also trying to find some good real tests. I need
-some suggestions here.
-
+> Hello
 > 
->> We need to save/restore the actual rcu_preempt_depth when switch.
->> We also place the per-cpu rcu_preempt_depth close to __preempt_count
->> and current_task variable.
->>
->> Using the idea of per-cpu __preempt_count.
->>
->> No function call when using rcu_read_[un]lock().
->> Single instruction for rcu_read_lock().
->> 2 instructions for fast path of rcu_read_unlock().
+> Maybe I can write a tight loop for testing, but I don't
+> think anyone will be interesting in it.
 > 
-> I think these were not inlined due to the header requirements.
+> I'm also trying to find some good real tests. I need
+> some suggestions here.
 
-objdump -D -S kernel/workqueue.o shows (selected fractions):
+There is rcutorture but I don't know how much of performance test this
+is, Paul would know.
 
+A micro benchmark is one thing. Any visible changes in userland to
+workloads like building a kernel or hackbench? 
 
-         raw_cpu_add_4(__rcu_preempt_depth, 1);
-      d8f:       65 ff 05 00 00 00 00    incl   %gs:0x0(%rip)        # 
-d96 <work_busy+0x16>
+I don't argue that incrementing a per-CPU variable is more efficient
+than reading a per-CPU variable, adding an offset and then incrementing
+it. I was just curious to see if there are any numbers on it.
 
-......
-
-
-         return GEN_UNARY_RMWcc("decl", __rcu_preempt_depth, e, 
-__percpu_arg([var]));
-      dd8:       65 ff 0d 00 00 00 00    decl   %gs:0x0(%rip)        # 
-ddf <work_busy+0x5f>
-         if (unlikely(rcu_preempt_depth_dec_and_test()))
-      ddf:       74 26                   je     e07 <work_busy+0x87>
-
-......
-
-                 rcu_read_unlock_special();
-      e07:       e8 00 00 00 00          callq  e0c <work_busy+0x8c>
-
+> > > No function call when using rcu_read_[un]lock().
+> > > Single instruction for rcu_read_lock().
+> > > 2 instructions for fast path of rcu_read_unlock().
+> > 
+> > I think these were not inlined due to the header requirements.
 > 
-> Boris pointed one thing, there is also DEFINE_PERCPU_RCU_PREEMP_DEPTH.
-> 
+> objdump -D -S kernel/workqueue.o shows (selected fractions):
 
-Thanks for pointing out.
+That was not what I meant. To inline current rcu_read_lock() would mean
+to include definition for struct task_struct (and everything down the
+road) in the rcu headers which isn't working.
 
-Best regards
-Lai
+> Best regards
+> Lai
 
+Sebastian
