@@ -2,126 +2,133 @@ Return-Path: <SRS0=SmTh=Y5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A35C17498
-	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 14:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CAA9C5DF62
+	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 16:20:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B6288217F5
-	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 14:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572965582;
-	bh=/qxjKSaaMxd+k55WNb6gcOlBmeut+IImNUiGTDGkApE=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:List-ID:From;
-	b=U2GSfyjhpMmZqvY6LTxAcXC7gv7zmZx7a2rutoFGzV+dXwxzM81zqz/ryakdkReqK
-	 T0GiXrmjo55ZnutNot6Au9byLh+DDLlsZdxP4FcQaoj1bxRzsiIEppcf1EZTGG73cm
-	 OYC6bSdzdC12p2nGehhOHta/zoFXeGI0K55svKVQ=
+	by mail.kernel.org (Postfix) with ESMTP id 33A412087E
+	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 16:20:44 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z2Z8MtYG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731028AbfKEOxC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Nov 2019 09:53:02 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:44015 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbfKEOxC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Nov 2019 09:53:02 -0500
-Received: by mail-io1-f68.google.com with SMTP id c11so22874057iom.10
-        for <rcu@vger.kernel.org>; Tue, 05 Nov 2019 06:53:01 -0800 (PST)
+        id S2389907AbfKEQUo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Nov 2019 11:20:44 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33522 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389760AbfKEQUn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Nov 2019 11:20:43 -0500
+Received: by mail-pf1-f194.google.com with SMTP id c184so15906638pfb.0;
+        Tue, 05 Nov 2019 08:20:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+KOXusQ0gMsjPIECI8aJtEVaJzR/S8atj/RIpKomKHE=;
-        b=DBW1WPJxUMXrfv7VGwMYcFnk0qqQqtdg00M0Uec/ovJOKDOAhr0OFfig9xaYTtvdTA
-         fao7BC6uzWRQfSL8Gp1wX/pGlJGTbcnPTT/fOK7bVzH1ZXkPBjkzULXtIn7Lzj8Rqh3o
-         +Ve7M2LvNirX/loRVDz2W6eYTr2OGZBpm8NwA=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZPVzr1zF8FoSavwzywDNDMaLZfpRZ21grLGFJWRaQIU=;
+        b=Z2Z8MtYGi373NNAWDZz42HeMuGe7BEJkMfI30Qyj50jQnSlcVYc85z4f4nH35KIcru
+         pFYdzrPtkPxWJaIeXkHw3mhsE/OLQSxoZglyhJDnmpZn7/e0OeIqCItP1vDMu5LY02hD
+         O8Ip8VY7PnkU9Ng0mb/VQl/+vzlPrAsaEMCrvVEf7YQ2k8rs0XYkEfBd2g9frV8GrmWR
+         gHC0yGQ0H58nS/5AB5+QnzwWZst5eY5+8whiffDUVTASowbRXKWalL11eiUUNojm+XCe
+         85qU152zCeNNi/J/AIaBFW7vL9ZEoMkJ1uBEgNu+j4mZEoLZLZxVev0j/Jlb9/7We7MK
+         Ckuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+KOXusQ0gMsjPIECI8aJtEVaJzR/S8atj/RIpKomKHE=;
-        b=jp4z9zHAfsl9WOb0D9ZlKHOAcyTrYOIATw7PM7EXH9q5V6o4sPZoXDWo+35Np/1yXY
-         Fhh3hR01qSVLMMX8jwVBiI9HH02wbTkcy2boWf1ONkeTKbUElH6eNyHj3NDGwEdFWo/a
-         jyOT6kO3r9b9M3CPICHEsccWlkBb28/1Pm1BGJfXLw/CBuKZk/bh4404RacwFai0kFRU
-         uM0ezzeAeP//R5tya3k5wObfzOVUDf6iS76PgjdrVZA7g4bLVhYKiajVZMYcqUk5KEgL
-         HOoqmWQZOHUYPEAiPkQHi5Gba2wIKaTJFobRjeqq9YHRDA3vCDcVJiNkMKUrT1ZjINs/
-         G1MA==
-X-Gm-Message-State: APjAAAVLI0vMe7eoEbtEfFbOD7EzNC6pLLWtc+ISBJ7KSevWIpgl4g1w
-        Yg/B04ko0LhX3ZLtvmCqmITf4Q==
-X-Google-Smtp-Source: APXvYqz5HA2yCc0jWmXskaxybqR69b3WXB8Liclq5ymEdXWCL+pK+LjplQc9EZ95TvV3xrmGZYm64A==
-X-Received: by 2002:a5d:8987:: with SMTP id m7mr29268311iol.104.1572965581116;
-        Tue, 05 Nov 2019 06:53:01 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f8sm2796434ilg.58.2019.11.05.06.52.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Nov 2019 06:53:00 -0800 (PST)
-Subject: Re: [PATCH] Documentation: RCU: whatisRCU: Fix formatting for section
- 2
-To:     paulmck@kernel.org, Amol Grover <frextrite@gmail.com>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZPVzr1zF8FoSavwzywDNDMaLZfpRZ21grLGFJWRaQIU=;
+        b=Vj8L02A1McMsNW5pr2nuqAnz5pfM0NZIdvU/L5BDPx42jN/NhAayGdBj24/aC523GH
+         4zfmbnYTmdAe6eYH++W0qqnmOyFIWGE5Gke199Woaj/rPsXIoyUoHmpLFoSRGIotTEhA
+         YGVfCTX4OtOmo79OzW72mXI9mtpO7Xx5l/eNrAMRH0rTHIRSyrz9HxCGR5Vev+vivBix
+         ImmWnRyb40A2Ey7EAu3dM9uLKzp6roKAKHIeiDBGfPJZRAd/n36qmjqZc3n9r6eiWSOB
+         UJxvF3eAVVPjSjUwQicg09Ex1EGVdUVgsGdpV4pwAw86/DjXfheQSf3epWkaC7Lc7Hqx
+         bqVg==
+X-Gm-Message-State: APjAAAXp6PGh7frt1Olm92VPxpuZAf+W4NMiliMRfFpAxNkp+wSLt2rE
+        JxWp0xdL9kKYv7mFp2vSXqg=
+X-Google-Smtp-Source: APXvYqyFwAsiCDt6AGENcB7yeqqnr/v5aOegQz2usIGj2+tHe7XeVZpvQBweyYpsJ6cneMn6zCf/zw==
+X-Received: by 2002:a63:f94f:: with SMTP id q15mr17430362pgk.412.1572970841275;
+        Tue, 05 Nov 2019 08:20:41 -0800 (PST)
+Received: from workstation ([139.5.253.184])
+        by smtp.gmail.com with ESMTPSA id f2sm17765272pfg.48.2019.11.05.08.20.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2019 08:20:39 -0800 (PST)
+Date:   Tue, 5 Nov 2019 21:50:32 +0530
+From:   Amol Grover <frextrite@gmail.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     paulmck@kernel.org, Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Documentation: RCU: whatisRCU: Fix formatting for
+ section 2
+Message-ID: <20191105162032.GA10619@workstation>
 References: <20191104133315.GA14499@workstation-kernel-dev>
  <20191104150328.GZ20975@paulmck-ThinkPad-P72>
  <20191104171641.GA15217@workstation-kernel-dev>
  <20191104194528.GJ20975@paulmck-ThinkPad-P72>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <dc5570d4-26bf-59ab-76bb-79490dde2369@linuxfoundation.org>
-Date:   Tue, 5 Nov 2019 07:52:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <dc5570d4-26bf-59ab-76bb-79490dde2369@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20191104194528.GJ20975@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc5570d4-26bf-59ab-76bb-79490dde2369@linuxfoundation.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Amol,
-
-On 11/4/19 12:45 PM, Paul E. McKenney wrote:
-> On Mon, Nov 04, 2019 at 10:46:41PM +0530, Amol Grover wrote:
->> On Mon, Nov 04, 2019 at 07:03:28AM -0800, Paul E. McKenney wrote:
->>> On Mon, Nov 04, 2019 at 07:03:15PM +0530, Amol Grover wrote:
->>>> Convert RCU API method text to sub-headings and
->>>> add hyperlink and superscript to 2 literary notes
->>>> under rcu_dereference() section
->>>>
->>>> Signed-off-by: Amol Grover <frextrite@gmail.com>
->>>
->>> Good stuff, but Phong Tran beat you to it.  If you are suggesting
->>> changes to that patch, please send a reply to her email, which
->>> may be found here:
->>>
-
-Please do a review and send comments and suggestions in an email
-instead of a patch.
-
->>> https://lore.kernel.org/lkml/20191030233128.14997-1-tranmanphong@gmail.com/
->>>
->>> There are several options for replying to this email listed at the
->>> bottom of that web page.
->>
->> Thank you Paul! And that is correct, I was suggesting changes to
->> that patch. However, since that patch was already integrated into
->> the `dev` branch, I mistakenly believed this patch could be sent
->> independently. Sorry for the trouble, I'll re-send the patch the
->> correct way.
+On Tue, Nov 05, 2019 at 07:52:59AM -0700, Shuah Khan wrote:
+> Hi Amol,
 > 
+> On 11/4/19 12:45 PM, Paul E. McKenney wrote:
+> > On Mon, Nov 04, 2019 at 10:46:41PM +0530, Amol Grover wrote:
+> > > On Mon, Nov 04, 2019 at 07:03:28AM -0800, Paul E. McKenney wrote:
+> > > > On Mon, Nov 04, 2019 at 07:03:15PM +0530, Amol Grover wrote:
+> > > > > Convert RCU API method text to sub-headings and
+> > > > > add hyperlink and superscript to 2 literary notes
+> > > > > under rcu_dereference() section
+> > > > > 
+> > > > > Signed-off-by: Amol Grover <frextrite@gmail.com>
+> > > > 
+> > > > Good stuff, but Phong Tran beat you to it.  If you are suggesting
+> > > > changes to that patch, please send a reply to her email, which
+> > > > may be found here:
+> > > > 
+> 
+> Please do a review and send comments and suggestions in an email
+> instead of a patch.
 
-Please drop your patch and do a review for the patch as suggested by
-Paul. This should have been a review and not a patch on top.
+Hi Shuah,
 
-thanks,
--- Shuah
+Sure thing! I'll do a review and send in the suggestions.
+
+> 
+> > > > https://lore.kernel.org/lkml/20191030233128.14997-1-tranmanphong@gmail.com/
+> > > > 
+> > > > There are several options for replying to this email listed at the
+> > > > bottom of that web page.
+> > > 
+> > > Thank you Paul! And that is correct, I was suggesting changes to
+> > > that patch. However, since that patch was already integrated into
+> > > the `dev` branch, I mistakenly believed this patch could be sent
+> > > independently. Sorry for the trouble, I'll re-send the patch the
+> > > correct way.
+> > 
+> 
+> Please drop your patch and do a review for the patch as suggested by
+> Paul. This should have been a review and not a patch on top.
+
+Noted. Will definitely keep this in mind the next time.
+
+Thank you
+Amol
+
+> 
+> thanks,
+> -- Shuah
