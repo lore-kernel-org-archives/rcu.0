@@ -8,166 +8,252 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0769ECA9ED9
-	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 07:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B57ACA9ED9
+	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 07:41:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C071020717
-	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 07:33:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34034217F4
+	for <rcu@archiver.kernel.org>; Tue,  5 Nov 2019 07:41:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d3HPrMC7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qZzkZyE1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387627AbfKEHdt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Nov 2019 02:33:49 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37974 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387484AbfKEHdt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Nov 2019 02:33:49 -0500
-Received: by mail-pf1-f193.google.com with SMTP id c13so14520229pfp.5;
-        Mon, 04 Nov 2019 23:33:48 -0800 (PST)
+        id S2387835AbfKEHlb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Nov 2019 02:41:31 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35524 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387739AbfKEHla (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Nov 2019 02:41:30 -0500
+Received: by mail-pg1-f194.google.com with SMTP id q22so5827653pgk.2;
+        Mon, 04 Nov 2019 23:41:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=EkRYu0Ekf5R2bAPpf2M/JWgiEhUz2V6dE5+p9ovzqsg=;
-        b=d3HPrMC75mRX351XBI/x/rQuJGxRTDxpBbKEGhWDBVyK2zxOn0eoqWVxyUqmcbr+9C
-         73Skipj6XHhgaJTp/Vy4rVRAE7U5Z6WnHenkPSZQqMox5hjC4DxlxEHkjiFWnlyA/xWW
-         UH9+G+C3+ytczurXKdx+v6DHkfKk4mQ2IX2up1xcBo/q5eDV+LuHmMXKTAfGcflTiyKg
-         AVKtdDrleO1ZGJTb8OhAXVeN4XhZcp8FaxFJqL/oDfRdn7mhrBywU60UdftPFiU5q6Fe
-         BN9HcIAhxug2GRnXwoz3vDSrBKyvl9KcQmJOredL1QikFFPG/P+lb539ip7YvwqZA9Ay
-         Smwg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W2zddU/B1a5MKj7SSLvG7RFNvyGYHZRuMDoUQXdbRqQ=;
+        b=qZzkZyE1HiXlbCSt0PiO9hGsmkhfs5unRma3wteShKeM26WuW6cbrRGmvuaZeCXgDg
+         18PfVkT9AgJw7JlGaX9H6kNPSYHnBEThaoizoRR9Bh6VT44EMU98147x8tLvNSamupRE
+         HsXzr2ByfYc2mT8MwW/jyAkjKwoWx5GuKLc4keMQrsIasXxu2t7LWtz4hdGaBJnLU1dT
+         kfoDFfVe/N6tivPBLvFko3mIzV9LnS/HUDaWW+eIuKIQ/bQ5Q1OOu2O1HoVqLJD2+eSl
+         fqkVp0UQs6nhQc2BTpqHXz1HK+Ju+une5HX5FOQgEZJDvsyohGGmfyAtJ4odvWLFBbV5
+         6pGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=EkRYu0Ekf5R2bAPpf2M/JWgiEhUz2V6dE5+p9ovzqsg=;
-        b=regL58PhW2oy0HhsE+S/INpo7jcVqOUMaxTRnmqfSmL+V35bpG+5L8zQy6QSUkgr1Q
-         mAIyfTNyMAM+9JNyGi+pZmgZwpjIi5EGcTsC30mOt7CbxPy9ktQIp2Z6AgiMier24/wk
-         PjfOP50m7GsRq4QZLJS06t5IqzB/v3a3gvb9lDDii08N/QyAtTyNNmX6ThRgSODR30Ja
-         gnHAo32ZQo9Rdf55s3FoLGzhD7phbHesR0t9hL8iAm/slm1zVr0BC0chXWaeN73XU+sB
-         XejPq7ZGxBh2AU5tQIg8vDW5UnpJ7zyZ59y/OklMOJ3rHwCtr1EkpsJH7pn8h5aEUe02
-         iVIw==
-X-Gm-Message-State: APjAAAXppaMyO4WgWIrDybi5tFxxer4cWhDG/+BsZe+eKtzj5LO9OCU9
-        E/BXAZSbcnbH/pyhs76IhnM=
-X-Google-Smtp-Source: APXvYqwQ4vOxO6VPaaSag5ZJl4fhRn/9AbcTHJw1a6Md4uNaoeUjlBZIMOfvPZujEWUvbPl62b0ZhQ==
-X-Received: by 2002:a63:7158:: with SMTP id b24mr34646870pgn.153.1572939228246;
-        Mon, 04 Nov 2019 23:33:48 -0800 (PST)
-Received: from workstation-kernel-dev ([139.5.253.184])
-        by smtp.gmail.com with ESMTPSA id b9sm19581266pfp.77.2019.11.04.23.33.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W2zddU/B1a5MKj7SSLvG7RFNvyGYHZRuMDoUQXdbRqQ=;
+        b=CsuFrReXrGv6jVJXNZUenE0b4BMTXVlK728S92PcS5I2yzbXAswdK3hQ5r6ETvP5Nk
+         2f8T3SlA5mey66INUkkdHk4OSWI8yHngwvCyuvt8e1eBeu0P8mhvudJ9JJ4Qey2+T42J
+         Ra1SdiuI3XFNW1vxrP1ste6S5K4JdtYx408BtH/aJj3XqJkRuvTsrcnDOOVGi7DSoV+3
+         rIIHi6GvEWtKokfojWxqWAY+vmqIVpv38vxHNWiN+sWyeZ7jmarIFJVZiU2/sWcYaLK/
+         tmIf0x3o6NHNH94cGT/hn80Ia/yS2xvs0zV3WkjqTYUy+nqHtTbOIF+kzp41wyBsfv9/
+         VA4A==
+X-Gm-Message-State: APjAAAWZu15ZMP/Q/dj4pSJHwOdt5i40XJOVN9aXrBksGaav9FYZBqhm
+        JSRrGMNIk2ddasw8Krj6afA=
+X-Google-Smtp-Source: APXvYqwG4YhxvYggrOVRxWspyP7ZCmf6Y80j1PQDitKOjLmeMMYthSpBmDn/wEdHyO/4X8IdUVerzA==
+X-Received: by 2002:a17:90a:5898:: with SMTP id j24mr4622473pji.7.1572939689571;
+        Mon, 04 Nov 2019 23:41:29 -0800 (PST)
+Received: from workstation ([139.5.253.184])
+        by smtp.gmail.com with ESMTPSA id j7sm6496104pjz.12.2019.11.04.23.41.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2019 23:33:47 -0800 (PST)
-Date:   Tue, 5 Nov 2019 13:03:40 +0530
+        Mon, 04 Nov 2019 23:41:29 -0800 (PST)
+Date:   Tue, 5 Nov 2019 13:11:22 +0530
 From:   Amol Grover <frextrite@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Phong Tran <tranmanphong@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH v2] Documentation: RCU: whatisRCU: Fix formatting for section
- 2
-Message-ID: <20191105073340.GA3682@workstation-kernel-dev>
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] Documentation: RCU: whatisRCU: Fix formatting for
+ section 2
+Message-ID: <20191105074122.GA5136@workstation>
+References: <20191104133315.GA14499@workstation-kernel-dev>
+ <87pni77jvt.fsf@intel.com>
+ <20191104173156.GA15267@workstation-kernel-dev>
+ <87a79ayhvx.fsf@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87a79ayhvx.fsf@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Convert RCU API methods text to sub-headings and
-add footnote linking to 2 literary notes
-under rcu_dereference() section for improved UX
+On Tue, Nov 05, 2019 at 08:08:50AM +0200, Jani Nikula wrote:
+> On Mon, 04 Nov 2019, Amol Grover <frextrite@gmail.com> wrote:
+> > On Mon, Nov 04, 2019 at 05:15:34PM +0200, Jani Nikula wrote:
+> >> On Mon, 04 Nov 2019, Amol Grover <frextrite@gmail.com> wrote:
+> >> > Convert RCU API method text to sub-headings and
+> >> > add hyperlink and superscript to 2 literary notes
+> >> > under rcu_dereference() section
+> >> >
+> >> > Signed-off-by: Amol Grover <frextrite@gmail.com>
+> >> > ---
+> >> >  Documentation/RCU/whatisRCU.rst | 34 +++++++++++++++++++++++++++------
+> >> >  1 file changed, 28 insertions(+), 6 deletions(-)
+> >> >
+> >> > diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+> >> > index ae40c8bcc56c..3cf6e17d0065 100644
+> >> > --- a/Documentation/RCU/whatisRCU.rst
+> >> > +++ b/Documentation/RCU/whatisRCU.rst
+> >> > @@ -150,6 +150,7 @@ later.  See the kernel docbook documentation for more info, or look directly
+> >> >  at the function header comments.
+> >> >  
+> >> >  rcu_read_lock()
+> >> > +^^^^^^^^^^^^^^^
+> >> >  
+> >> >  	void rcu_read_lock(void);
+> >> >  
+> >> > @@ -164,6 +165,7 @@ rcu_read_lock()
+> >> >  	longer-term references to data structures.
+> >> >  
+> >> >  rcu_read_unlock()
+> >> > +^^^^^^^^^^^^^^^^^
+> >> >  
+> >> >  	void rcu_read_unlock(void);
+> >> >  
+> >> > @@ -172,6 +174,7 @@ rcu_read_unlock()
+> >> >  	read-side critical sections may be nested and/or overlapping.
+> >> >  
+> >> >  synchronize_rcu()
+> >> > +^^^^^^^^^^^^^^^^^
+> >> >  
+> >> >  	void synchronize_rcu(void);
+> >> >  
+> >> > @@ -225,6 +228,7 @@ synchronize_rcu()
+> >> >  	checklist.txt for some approaches to limiting the update rate.
+> >> >  
+> >> >  rcu_assign_pointer()
+> >> > +^^^^^^^^^^^^^^^^^^^^
+> >> >  
+> >> >  	void rcu_assign_pointer(p, typeof(p) v);
+> >> >  
+> >> > @@ -245,6 +249,7 @@ rcu_assign_pointer()
+> >> >  	the _rcu list-manipulation primitives such as list_add_rcu().
+> >> >  
+> >> >  rcu_dereference()
+> >> > +^^^^^^^^^^^^^^^^^
+> >> >  
+> >> >  	typeof(p) rcu_dereference(p);
+> >> >  
+> >> > @@ -279,8 +284,10 @@ rcu_dereference()
+> >> >  	if an update happened while in the critical section, and incur
+> >> >  	unnecessary overhead on Alpha CPUs.
+> >> >  
+> >> > +.. _back_to_1:
+> >> > +
+> >> >  	Note that the value returned by rcu_dereference() is valid
+> >> > -	only within the enclosing RCU read-side critical section [1].
+> >> > +	only within the enclosing RCU read-side critical section |cs_1|.
+> >> >  	For example, the following is -not- legal::
+> >> >  
+> >> >  		rcu_read_lock();
+> >> > @@ -298,15 +305,27 @@ rcu_dereference()
+> >> >  	it was acquired is just as illegal as doing so with normal
+> >> >  	locking.
+> >> >  
+> >> > +.. _back_to_2:
+> >> > +
+> >> >  	As with rcu_assign_pointer(), an important function of
+> >> >  	rcu_dereference() is to document which pointers are protected by
+> >> >  	RCU, in particular, flagging a pointer that is subject to changing
+> >> >  	at any time, including immediately after the rcu_dereference().
+> >> >  	And, again like rcu_assign_pointer(), rcu_dereference() is
+> >> >  	typically used indirectly, via the _rcu list-manipulation
+> >> > -	primitives, such as list_for_each_entry_rcu() [2].
+> >> > +	primitives, such as list_for_each_entry_rcu() |entry_2|.
+> >> > +
+> >> > +.. |cs_1| raw:: html
+> >> 
+> >> Please don't use raw. It's ugly and error prone. We have some raw output
+> >> for latex, but this would be the first for html.
+> >> 
+> >> What are you trying to achieve?
+> >
+> > Hi Jani,
+> > While going through the documentation I encountered a few footnotes (numbers
+> > [1] and [2]) which referenced the actual footnote somewhere below the text.
+> > They were particularly not straight-forward to find hence I decided to
+> > link them to the footnote text which could be done using inline markup.
+> > Then I tried to make them more appealing by converting to super-scripts
+> > (the way they look like in books and websites). However, nested inline 
+> > markup is not yet possible in reST hence I went with the html way to 
+> > achieve the same. Too much?
+> 
+> I suggest you use rst footnote markup. It's less of an eye sore in the
+> rst source, but provides you with the links in the generated output. And
+> typically would be superscript. In particular "autonumber labels" might
+> fit the bill. [1][2]
+> 
+> BR,
+> Jani.
+> 
+> 
+> [1] http://docutils.sourceforge.net/docs/user/rst/quickref.html#footnotes
+> [2] http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#footnotes
+> 
+> 
+> >
+> > Thank you
+> > Amol
+> >
+> >> 
+> >> BR,
+> >> Jani.
+> >> 
+> >> > +
+> >> > +	<a href="#cs"><sup>[1]</sup></a>
+> >> > +
+> >> > +.. |entry_2| raw:: html
+> >> >  
+> >> > -	[1] The variant rcu_dereference_protected() can be used outside
+> >> > +	<a href="#entry"><sup>[2]</sup></a>
+> >> > +
+> >> > +.. _cs:
+> >> > +
+> >> > +	\ :sup:`[1]`\  The variant rcu_dereference_protected() can be used outside
+> >> >  	of an RCU read-side critical section as long as the usage is
+> >> >  	protected by locks acquired by the update-side code.  This variant
+> >> >  	avoids the lockdep warning that would happen when using (for
+> >> > @@ -317,15 +336,18 @@ rcu_dereference()
+> >> >  	a lockdep expression to indicate which locks must be acquired
+> >> >  	by the caller. If the indicated protection is not provided,
+> >> >  	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
+> >> > -	and the API's code comments for more details and example usage.
+> >> > +	and the API's code comments for more details and example usage. :ref:`back <back_to_1>`
+> >> > +
+> >> > +
+> >> > +.. _entry:
+> >> >  
+> >> > -	[2] If the list_for_each_entry_rcu() instance might be used by
+> >> > +	\ :sup:`[2]`\  If the list_for_each_entry_rcu() instance might be used by
+> >> >  	update-side code as well as by RCU readers, then an additional
+> >> >  	lockdep expression can be added to its list of arguments.
+> >> >  	For example, given an additional "lock_is_held(&mylock)" argument,
+> >> >  	the RCU lockdep code would complain only if this instance was
+> >> >  	invoked outside of an RCU read-side critical section and without
+> >> > -	the protection of mylock.
+> >> > +	the protection of mylock. :ref:`back <back_to_2>`
+> >> >  
+> >> >  The following diagram shows how each API communicates among the
+> >> >  reader, updater, and reclaimer.
+> >> 
+> >> -- 
+> >> Jani Nikula, Intel Open Source Graphics Center
+> 
+> -- 
+> Jani Nikula, Intel Open Source Graphics Center
 
-Signed-off-by: Amol Grover <frextrite@gmail.com>
----
- Documentation/RCU/whatisRCU.rst | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Thank you for the feedback Paul and Jani! Sent the updated
+patch at
+https://lore.kernel.org/lkml/20191105073340.GA3682@workstation-kernel-dev/
+with the requested changes.
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index ae40c8bcc56c..4c6f1f595757 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -150,6 +150,7 @@ later.  See the kernel docbook documentation for more info, or look directly
- at the function header comments.
- 
- rcu_read_lock()
-+^^^^^^^^^^^^^^^
- 
- 	void rcu_read_lock(void);
- 
-@@ -164,6 +165,7 @@ rcu_read_lock()
- 	longer-term references to data structures.
- 
- rcu_read_unlock()
-+^^^^^^^^^^^^^^^^^
- 
- 	void rcu_read_unlock(void);
- 
-@@ -172,6 +174,7 @@ rcu_read_unlock()
- 	read-side critical sections may be nested and/or overlapping.
- 
- synchronize_rcu()
-+^^^^^^^^^^^^^^^^^
- 
- 	void synchronize_rcu(void);
- 
-@@ -225,6 +228,7 @@ synchronize_rcu()
- 	checklist.txt for some approaches to limiting the update rate.
- 
- rcu_assign_pointer()
-+^^^^^^^^^^^^^^^^^^^^
- 
- 	void rcu_assign_pointer(p, typeof(p) v);
- 
-@@ -245,6 +249,7 @@ rcu_assign_pointer()
- 	the _rcu list-manipulation primitives such as list_add_rcu().
- 
- rcu_dereference()
-+^^^^^^^^^^^^^^^^^
- 
- 	typeof(p) rcu_dereference(p);
- 
-@@ -280,7 +285,7 @@ rcu_dereference()
- 	unnecessary overhead on Alpha CPUs.
- 
- 	Note that the value returned by rcu_dereference() is valid
--	only within the enclosing RCU read-side critical section [1].
-+	only within the enclosing RCU read-side critical section [1]_.
- 	For example, the following is -not- legal::
- 
- 		rcu_read_lock();
-@@ -304,9 +309,9 @@ rcu_dereference()
- 	at any time, including immediately after the rcu_dereference().
- 	And, again like rcu_assign_pointer(), rcu_dereference() is
- 	typically used indirectly, via the _rcu list-manipulation
--	primitives, such as list_for_each_entry_rcu() [2].
-+	primitives, such as list_for_each_entry_rcu() [2]_.
- 
--	[1] The variant rcu_dereference_protected() can be used outside
-+..	[1] The variant rcu_dereference_protected() can be used outside
- 	of an RCU read-side critical section as long as the usage is
- 	protected by locks acquired by the update-side code.  This variant
- 	avoids the lockdep warning that would happen when using (for
-@@ -319,7 +324,8 @@ rcu_dereference()
- 	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
- 	and the API's code comments for more details and example usage.
- 
--	[2] If the list_for_each_entry_rcu() instance might be used by
-+
-+..	[2] If the list_for_each_entry_rcu() instance might be used by
- 	update-side code as well as by RCU readers, then an additional
- 	lockdep expression can be added to its list of arguments.
- 	For example, given an additional "lock_is_held(&mylock)" argument,
--- 
-2.20.1
-
+Thank you
+Amol
