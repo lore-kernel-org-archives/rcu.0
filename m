@@ -7,796 +7,469 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD0D5C5DF63
-	for <rcu@archiver.kernel.org>; Wed,  6 Nov 2019 17:00:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D95EDC5DF63
+	for <rcu@archiver.kernel.org>; Wed,  6 Nov 2019 17:13:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7048D21882
-	for <rcu@archiver.kernel.org>; Wed,  6 Nov 2019 17:00:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 933A12187F
+	for <rcu@archiver.kernel.org>; Wed,  6 Nov 2019 17:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1573059600;
-	bh=WEuhDTEd0AchChks+c9bPU16ZJ/xdAEd3z3suZkbNjw=;
+	s=default; t=1573060415;
+	bh=f7PRcMCKDTNQzmP+eAkNmLHozWUCuZ4U3jTEE9Ajcp0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=FvieQwy1VmcngujGhKGbZMWScTb8r8Wit5eabJz9y6fXxc6/ZQnz4fjTgZxxDE+Ih
-	 u/36yLiJDCImsC22ioat4JriMo7ZjfJHxDWV+T03XYdTSGuEtgja109xhNEv2ZLWTm
-	 stW9EZBCVMQ2CHO8kwR0LMQxnoluuoWms61foN8U=
+	b=qvRu/1y0A7mRdAr83KYGXwWgugPRKgEoOEOq3YTLBtq42ozzR6zL1F0IVilkYHquY
+	 WdbpInUMubGLoyE/FC6ZQeuUGyxmLp4jRIcee8OTvmwY+lDZwy5P7niEPpJUt3dHYx
+	 8AgaITuOfxktSot/yCCPPUWB+UDXGBycVAjyuygg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732268AbfKFRAA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Nov 2019 12:00:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57150 "EHLO mail.kernel.org"
+        id S1732176AbfKFRNf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Nov 2019 12:13:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727894AbfKFRAA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Nov 2019 12:00:00 -0500
+        id S1727894AbfKFRNf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Nov 2019 12:13:35 -0500
 Received: from paulmck-ThinkPad-P72.home (unknown [109.144.215.213])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA62B2187F;
-        Wed,  6 Nov 2019 16:59:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 160F521848;
+        Wed,  6 Nov 2019 17:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573059597;
-        bh=WEuhDTEd0AchChks+c9bPU16ZJ/xdAEd3z3suZkbNjw=;
+        s=default; t=1573060413;
+        bh=f7PRcMCKDTNQzmP+eAkNmLHozWUCuZ4U3jTEE9Ajcp0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SaXNN2J7mFDmHyGHaIXoCm1N0j3uFR70LgG9p6wgyReoroybxsOB20N4lQwrsaVMl
-         HMxznzpqnsa2MzLHEMbEq95McMrvzB54xw42GiHJb0m1LgbKYfDa4CiX054k0zKxwR
-         E8LJd01JG2jzIzyg1LgBERD2Smig55vEwTj5Izd8=
+        b=GdqbSKrJzCILELi/B+JpAVFME8uHZkqxrNsy7cAobOjb7Kf390djZ8qCSX1oSK9Ru
+         4BlEToFILKOmzGeRu93K5yH5T+ev3vzhbZRzfDGhFudPzkGukA2ygHCsHxDGD94fgt
+         Y8XTlxdZwV9MtGJV2+m7SnxaK/lBmhLWFVOtQb68=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B781A3520B54; Wed,  6 Nov 2019 08:59:53 -0800 (PST)
-Date:   Wed, 6 Nov 2019 08:59:53 -0800
+        id 2F2BC3520B54; Wed,  6 Nov 2019 09:13:31 -0800 (PST)
+Date:   Wed, 6 Nov 2019 09:13:31 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Amol Grover <frextrite@gmail.com>
-Cc:     Phong Tran <tranmanphong@gmail.com>, linux-doc@vger.kernel.org,
-        corbet@lwn.net, jiangshanlai@gmail.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        joel@joelfernandes.org,
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phong Tran <tranmanphong@gmail.com>,
         Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: Re: [PATCH] doc: Convert whatisRCU.txt to .rst
-Message-ID: <20191106165953.GF20975@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH] Documentation: RCU: rcubarrier: Convert to reST
+Message-ID: <20191106171331.GH20975@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20191106094523.GA1245@workstation-kernel-dev>
- <20191106130950.13446-1-tranmanphong@gmail.com>
- <20191106151824.GA5956@workstation-kernel-dev>
+References: <20191106165617.GA12205@workstation-kernel-dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191106151824.GA5956@workstation-kernel-dev>
+In-Reply-To: <20191106165617.GA12205@workstation-kernel-dev>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 08:48:24PM +0530, Amol Grover wrote:
-> On Wed, Nov 06, 2019 at 08:09:50PM +0700, Phong Tran wrote:
-> > This commit updates whatisRCU.txt to the new .rst format.
-> > This change includes:
-> > 
-> > - Formatting bullet lists
-> > - Adding literal blocks
-> > - Links from table of contents to corresponding sections
-> > - Links to external documents
-> > - Reformat quick quizzes
-> > 
-> > Signed-off-by: Phong Tran <tranmanphong@gmail.com>
-> > Tested-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> > [ tranmanphong: Apply Amol Grover feedback. ]
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Wed, Nov 06, 2019 at 10:26:17PM +0530, Amol Grover wrote:
+> Convert rcubarrier.txt to rcubarrier.rst and
+> add it to index.rst
 > 
-> Hey Phong,
-> Tested it, everything is perfect!
-> Reviewed-by: Amol Grover <frextrite@gmail.com>
+> Format file according to reST
+> - Add headings and sub-headings
+> - Add code segments
+> - Add cross-references to quizes and answers
+> 
+> Signed-off-by: Amol Grover <frextrite@gmail.com>
 
-I replaced the commit in -rcu with this one, including Amol's
-Reviewed-by.  Thank you all!
+Thank you, Amol!
+
+Phong and Madhuparna, could you please look at this one?  I will hold
+off queuing it for a couple of days to allow you to look it over.
 
 							Thanx, Paul
 
-> Thanks
-> Amol
+> ---
+>  Documentation/RCU/index.rst                   |   1 +
+>  .../RCU/{rcubarrier.txt => rcubarrier.rst}    | 220 ++++++++++--------
+>  2 files changed, 125 insertions(+), 96 deletions(-)
+>  rename Documentation/RCU/{rcubarrier.txt => rcubarrier.rst} (73%)
 > 
-> > ---
-> >  Documentation/RCU/index.rst                   |   1 +
-> >  .../RCU/{whatisRCU.txt => whatisRCU.rst}      | 284 +++++++++++-------
-> >  2 files changed, 178 insertions(+), 107 deletions(-)
-> >  rename Documentation/RCU/{whatisRCU.txt => whatisRCU.rst} (84%)
-> > 
-> > diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-> > index 627128c230dc..b9b11481c727 100644
-> > --- a/Documentation/RCU/index.rst
-> > +++ b/Documentation/RCU/index.rst
-> > @@ -8,6 +8,7 @@ RCU concepts
-> >     :maxdepth: 3
-> >  
-> >     arrayRCU
-> > +   whatisRCU
-> >     rcu
-> >     listRCU
-> >     NMI-RCU
-> > diff --git a/Documentation/RCU/whatisRCU.txt b/Documentation/RCU/whatisRCU.rst
-> > similarity index 84%
-> > rename from Documentation/RCU/whatisRCU.txt
-> > rename to Documentation/RCU/whatisRCU.rst
-> > index 58ba05c4d97f..2f6f6ebbc8b0 100644
-> > --- a/Documentation/RCU/whatisRCU.txt
-> > +++ b/Documentation/RCU/whatisRCU.rst
-> > @@ -1,15 +1,18 @@
-> > +.. _whatisrcu_doc:
-> > +
-> >  What is RCU?  --  "Read, Copy, Update"
-> > +======================================
-> >  
-> >  Please note that the "What is RCU?" LWN series is an excellent place
-> >  to start learning about RCU:
-> >  
-> > -1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
-> > -2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
-> > -3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
-> > -4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
-> > -	2010 Big API Table           http://lwn.net/Articles/419086/
-> > -5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
-> > -	2014 Big API Table           http://lwn.net/Articles/609973/
-> > +| 1.	What is RCU, Fundamentally?  http://lwn.net/Articles/262464/
-> > +| 2.	What is RCU? Part 2: Usage   http://lwn.net/Articles/263130/
-> > +| 3.	RCU part 3: the RCU API      http://lwn.net/Articles/264090/
-> > +| 4.	The RCU API, 2010 Edition    http://lwn.net/Articles/418853/
-> > +| 	2010 Big API Table           http://lwn.net/Articles/419086/
-> > +| 5.	The RCU API, 2014 Edition    http://lwn.net/Articles/609904/
-> > +|	2014 Big API Table           http://lwn.net/Articles/609973/
-> >  
-> >  
-> >  What is RCU?
-> > @@ -24,14 +27,21 @@ the experience has been that different people must take different paths
-> >  to arrive at an understanding of RCU.  This document provides several
-> >  different paths, as follows:
-> >  
-> > -1.	RCU OVERVIEW
-> > -2.	WHAT IS RCU'S CORE API?
-> > -3.	WHAT ARE SOME EXAMPLE USES OF CORE RCU API?
-> > -4.	WHAT IF MY UPDATING THREAD CANNOT BLOCK?
-> > -5.	WHAT ARE SOME SIMPLE IMPLEMENTATIONS OF RCU?
-> > -6.	ANALOGY WITH READER-WRITER LOCKING
-> > -7.	FULL LIST OF RCU APIs
-> > -8.	ANSWERS TO QUICK QUIZZES
-> > +:ref:`1.	RCU OVERVIEW <1_whatisRCU>`
-> > +
-> > +:ref:`2.	WHAT IS RCU'S CORE API? <2_whatisRCU>`
-> > +
-> > +:ref:`3.	WHAT ARE SOME EXAMPLE USES OF CORE RCU API? <3_whatisRCU>`
-> > +
-> > +:ref:`4.	WHAT IF MY UPDATING THREAD CANNOT BLOCK? <4_whatisRCU>`
-> > +
-> > +:ref:`5.	WHAT ARE SOME SIMPLE IMPLEMENTATIONS OF RCU? <5_whatisRCU>`
-> > +
-> > +:ref:`6.	ANALOGY WITH READER-WRITER LOCKING <6_whatisRCU>`
-> > +
-> > +:ref:`7.	FULL LIST OF RCU APIs <7_whatisRCU>`
-> > +
-> > +:ref:`8.	ANSWERS TO QUICK QUIZZES <8_whatisRCU>`
-> >  
-> >  People who prefer starting with a conceptual overview should focus on
-> >  Section 1, though most readers will profit by reading this section at
-> > @@ -49,8 +59,10 @@ everything, feel free to read the whole thing -- but if you are really
-> >  that type of person, you have perused the source code and will therefore
-> >  never need this document anyway.  ;-)
-> >  
-> > +.. _1_whatisRCU:
-> >  
-> >  1.  RCU OVERVIEW
-> > +----------------
-> >  
-> >  The basic idea behind RCU is to split updates into "removal" and
-> >  "reclamation" phases.  The removal phase removes references to data items
-> > @@ -116,8 +128,10 @@ So how the heck can a reclaimer tell when a reader is done, given
-> >  that readers are not doing any sort of synchronization operations???
-> >  Read on to learn about how RCU's API makes this easy.
-> >  
-> > +.. _2_whatisRCU:
-> >  
-> >  2.  WHAT IS RCU'S CORE API?
-> > +---------------------------
-> >  
-> >  The core RCU API is quite small:
-> >  
-> > @@ -136,7 +150,7 @@ later.  See the kernel docbook documentation for more info, or look directly
-> >  at the function header comments.
-> >  
-> >  rcu_read_lock()
-> > -
-> > +^^^^^^^^^^^^^^^
-> >  	void rcu_read_lock(void);
-> >  
-> >  	Used by a reader to inform the reclaimer that the reader is
-> > @@ -150,7 +164,7 @@ rcu_read_lock()
-> >  	longer-term references to data structures.
-> >  
-> >  rcu_read_unlock()
-> > -
-> > +^^^^^^^^^^^^^^^^^
-> >  	void rcu_read_unlock(void);
-> >  
-> >  	Used by a reader to inform the reclaimer that the reader is
-> > @@ -158,15 +172,15 @@ rcu_read_unlock()
-> >  	read-side critical sections may be nested and/or overlapping.
-> >  
-> >  synchronize_rcu()
-> > -
-> > +^^^^^^^^^^^^^^^^^
-> >  	void synchronize_rcu(void);
-> >  
-> >  	Marks the end of updater code and the beginning of reclaimer
-> >  	code.  It does this by blocking until all pre-existing RCU
-> >  	read-side critical sections on all CPUs have completed.
-> > -	Note that synchronize_rcu() will -not- necessarily wait for
-> > +	Note that synchronize_rcu() will **not** necessarily wait for
-> >  	any subsequent RCU read-side critical sections to complete.
-> > -	For example, consider the following sequence of events:
-> > +	For example, consider the following sequence of events::
-> >  
-> >  	         CPU 0                  CPU 1                 CPU 2
-> >  	     ----------------- ------------------------- ---------------
-> > @@ -182,7 +196,7 @@ synchronize_rcu()
-> >  	any that begin after synchronize_rcu() is invoked.
-> >  
-> >  	Of course, synchronize_rcu() does not necessarily return
-> > -	-immediately- after the last pre-existing RCU read-side critical
-> > +	**immediately** after the last pre-existing RCU read-side critical
-> >  	section completes.  For one thing, there might well be scheduling
-> >  	delays.  For another thing, many RCU implementations process
-> >  	requests in batches in order to improve efficiencies, which can
-> > @@ -211,10 +225,10 @@ synchronize_rcu()
-> >  	checklist.txt for some approaches to limiting the update rate.
-> >  
-> >  rcu_assign_pointer()
-> > -
-> > +^^^^^^^^^^^^^^^^^^^^
-> >  	void rcu_assign_pointer(p, typeof(p) v);
-> >  
-> > -	Yes, rcu_assign_pointer() -is- implemented as a macro, though it
-> > +	Yes, rcu_assign_pointer() **is** implemented as a macro, though it
-> >  	would be cool to be able to declare a function in this manner.
-> >  	(Compiler experts will no doubt disagree.)
-> >  
-> > @@ -231,7 +245,7 @@ rcu_assign_pointer()
-> >  	the _rcu list-manipulation primitives such as list_add_rcu().
-> >  
-> >  rcu_dereference()
-> > -
-> > +^^^^^^^^^^^^^^^^^
-> >  	typeof(p) rcu_dereference(p);
-> >  
-> >  	Like rcu_assign_pointer(), rcu_dereference() must be implemented
-> > @@ -248,13 +262,13 @@ rcu_dereference()
-> >  
-> >  	Common coding practice uses rcu_dereference() to copy an
-> >  	RCU-protected pointer to a local variable, then dereferences
-> > -	this local variable, for example as follows:
-> > +	this local variable, for example as follows::
-> >  
-> >  		p = rcu_dereference(head.next);
-> >  		return p->data;
-> >  
-> >  	However, in this case, one could just as easily combine these
-> > -	into one statement:
-> > +	into one statement::
-> >  
-> >  		return rcu_dereference(head.next)->data;
-> >  
-> > @@ -266,8 +280,8 @@ rcu_dereference()
-> >  	unnecessary overhead on Alpha CPUs.
-> >  
-> >  	Note that the value returned by rcu_dereference() is valid
-> > -	only within the enclosing RCU read-side critical section [1].
-> > -	For example, the following is -not- legal:
-> > +	only within the enclosing RCU read-side critical section [1]_.
-> > +	For example, the following is **not** legal::
-> >  
-> >  		rcu_read_lock();
-> >  		p = rcu_dereference(head.next);
-> > @@ -290,9 +304,9 @@ rcu_dereference()
-> >  	at any time, including immediately after the rcu_dereference().
-> >  	And, again like rcu_assign_pointer(), rcu_dereference() is
-> >  	typically used indirectly, via the _rcu list-manipulation
-> > -	primitives, such as list_for_each_entry_rcu() [2].
-> > +	primitives, such as list_for_each_entry_rcu() [2]_.
-> >  
-> > -	[1] The variant rcu_dereference_protected() can be used outside
-> > +.. 	[1] The variant rcu_dereference_protected() can be used outside
-> >  	of an RCU read-side critical section as long as the usage is
-> >  	protected by locks acquired by the update-side code.  This variant
-> >  	avoids the lockdep warning that would happen when using (for
-> > @@ -305,7 +319,7 @@ rcu_dereference()
-> >  	a lockdep splat is emitted.  See Documentation/RCU/Design/Requirements/Requirements.rst
-> >  	and the API's code comments for more details and example usage.
-> >  
-> > -	[2] If the list_for_each_entry_rcu() instance might be used by
-> > +.. 	[2] If the list_for_each_entry_rcu() instance might be used by
-> >  	update-side code as well as by RCU readers, then an additional
-> >  	lockdep expression can be added to its list of arguments.
-> >  	For example, given an additional "lock_is_held(&mylock)" argument,
-> > @@ -315,6 +329,7 @@ rcu_dereference()
-> >  
-> >  The following diagram shows how each API communicates among the
-> >  reader, updater, and reclaimer.
-> > +::
-> >  
-> >  
-> >  	    rcu_assign_pointer()
-> > @@ -375,12 +390,16 @@ c.	RCU applied to scheduler and interrupt/NMI-handler tasks.
-> >  Again, most uses will be of (a).  The (b) and (c) cases are important
-> >  for specialized uses, but are relatively uncommon.
-> >  
-> > +.. _3_whatisRCU:
-> >  
-> >  3.  WHAT ARE SOME EXAMPLE USES OF CORE RCU API?
-> > +-----------------------------------------------
-> >  
-> >  This section shows a simple use of the core RCU API to protect a
-> >  global pointer to a dynamically allocated structure.  More-typical
-> > -uses of RCU may be found in listRCU.txt, arrayRCU.txt, and NMI-RCU.txt.
-> > +uses of RCU may be found in :ref:`listRCU.rst <list_rcu_doc>`,
-> > +:ref:`arrayRCU.rst <array_rcu_doc>`, and :ref:`NMI-RCU.rst <NMI_rcu_doc>`.
-> > +::
-> >  
-> >  	struct foo {
-> >  		int a;
-> > @@ -440,40 +459,43 @@ uses of RCU may be found in listRCU.txt, arrayRCU.txt, and NMI-RCU.txt.
-> >  
-> >  So, to sum up:
-> >  
-> > -o	Use rcu_read_lock() and rcu_read_unlock() to guard RCU
-> > +-	Use rcu_read_lock() and rcu_read_unlock() to guard RCU
-> >  	read-side critical sections.
-> >  
-> > -o	Within an RCU read-side critical section, use rcu_dereference()
-> > +-	Within an RCU read-side critical section, use rcu_dereference()
-> >  	to dereference RCU-protected pointers.
-> >  
-> > -o	Use some solid scheme (such as locks or semaphores) to
-> > +-	Use some solid scheme (such as locks or semaphores) to
-> >  	keep concurrent updates from interfering with each other.
-> >  
-> > -o	Use rcu_assign_pointer() to update an RCU-protected pointer.
-> > +-	Use rcu_assign_pointer() to update an RCU-protected pointer.
-> >  	This primitive protects concurrent readers from the updater,
-> > -	-not- concurrent updates from each other!  You therefore still
-> > +	**not** concurrent updates from each other!  You therefore still
-> >  	need to use locking (or something similar) to keep concurrent
-> >  	rcu_assign_pointer() primitives from interfering with each other.
-> >  
-> > -o	Use synchronize_rcu() -after- removing a data element from an
-> > -	RCU-protected data structure, but -before- reclaiming/freeing
-> > +-	Use synchronize_rcu() **after** removing a data element from an
-> > +	RCU-protected data structure, but **before** reclaiming/freeing
-> >  	the data element, in order to wait for the completion of all
-> >  	RCU read-side critical sections that might be referencing that
-> >  	data item.
-> >  
-> >  See checklist.txt for additional rules to follow when using RCU.
-> > -And again, more-typical uses of RCU may be found in listRCU.txt,
-> > -arrayRCU.txt, and NMI-RCU.txt.
-> > +And again, more-typical uses of RCU may be found in :ref:`listRCU.rst
-> > +<list_rcu_doc>`, :ref:`arrayRCU.rst <array_rcu_doc>`, and :ref:`NMI-RCU.rst
-> > +<NMI_rcu_doc>`.
-> >  
-> > +.. _4_whatisRCU:
-> >  
-> >  4.  WHAT IF MY UPDATING THREAD CANNOT BLOCK?
-> > +--------------------------------------------
-> >  
-> >  In the example above, foo_update_a() blocks until a grace period elapses.
-> >  This is quite simple, but in some cases one cannot afford to wait so
-> >  long -- there might be other high-priority work to be done.
-> >  
-> >  In such cases, one uses call_rcu() rather than synchronize_rcu().
-> > -The call_rcu() API is as follows:
-> > +The call_rcu() API is as follows::
-> >  
-> >  	void call_rcu(struct rcu_head * head,
-> >  		      void (*func)(struct rcu_head *head));
-> > @@ -481,7 +503,7 @@ The call_rcu() API is as follows:
-> >  This function invokes func(head) after a grace period has elapsed.
-> >  This invocation might happen from either softirq or process context,
-> >  so the function is not permitted to block.  The foo struct needs to
-> > -have an rcu_head structure added, perhaps as follows:
-> > +have an rcu_head structure added, perhaps as follows::
-> >  
-> >  	struct foo {
-> >  		int a;
-> > @@ -490,7 +512,7 @@ have an rcu_head structure added, perhaps as follows:
-> >  		struct rcu_head rcu;
-> >  	};
-> >  
-> > -The foo_update_a() function might then be written as follows:
-> > +The foo_update_a() function might then be written as follows::
-> >  
-> >  	/*
-> >  	 * Create a new struct foo that is the same as the one currently
-> > @@ -520,7 +542,7 @@ The foo_update_a() function might then be written as follows:
-> >  		call_rcu(&old_fp->rcu, foo_reclaim);
-> >  	}
-> >  
-> > -The foo_reclaim() function might appear as follows:
-> > +The foo_reclaim() function might appear as follows::
-> >  
-> >  	void foo_reclaim(struct rcu_head *rp)
-> >  	{
-> > @@ -544,7 +566,7 @@ namely foo_reclaim().
-> >  The summary of advice is the same as for the previous section, except
-> >  that we are now using call_rcu() rather than synchronize_rcu():
-> >  
-> > -o	Use call_rcu() -after- removing a data element from an
-> > +-	Use call_rcu() **after** removing a data element from an
-> >  	RCU-protected data structure in order to register a callback
-> >  	function that will be invoked after the completion of all RCU
-> >  	read-side critical sections that might be referencing that
-> > @@ -552,14 +574,16 @@ o	Use call_rcu() -after- removing a data element from an
-> >  
-> >  If the callback for call_rcu() is not doing anything more than calling
-> >  kfree() on the structure, you can use kfree_rcu() instead of call_rcu()
-> > -to avoid having to write your own callback:
-> > +to avoid having to write your own callback::
-> >  
-> >  	kfree_rcu(old_fp, rcu);
-> >  
-> >  Again, see checklist.txt for additional rules governing the use of RCU.
-> >  
-> > +.. _5_whatisRCU:
-> >  
-> >  5.  WHAT ARE SOME SIMPLE IMPLEMENTATIONS OF RCU?
-> > +------------------------------------------------
-> >  
-> >  One of the nice things about RCU is that it has extremely simple "toy"
-> >  implementations that are a good first step towards understanding the
-> > @@ -579,7 +603,7 @@ more details on the current implementation as of early 2004.
-> >  
-> >  
-> >  5A.  "TOY" IMPLEMENTATION #1: LOCKING
-> > -
-> > +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >  This section presents a "toy" RCU implementation that is based on
-> >  familiar locking primitives.  Its overhead makes it a non-starter for
-> >  real-life use, as does its lack of scalability.  It is also unsuitable
-> > @@ -591,7 +615,7 @@ you allow nested rcu_read_lock() calls, you can deadlock.
-> >  However, it is probably the easiest implementation to relate to, so is
-> >  a good starting point.
-> >  
-> > -It is extremely simple:
-> > +It is extremely simple::
-> >  
-> >  	static DEFINE_RWLOCK(rcu_gp_mutex);
-> >  
-> > @@ -614,7 +638,7 @@ It is extremely simple:
-> >  
-> >  [You can ignore rcu_assign_pointer() and rcu_dereference() without missing
-> >  much.  But here are simplified versions anyway.  And whatever you do,
-> > -don't forget about them when submitting patches making use of RCU!]
-> > +don't forget about them when submitting patches making use of RCU!]::
-> >  
-> >  	#define rcu_assign_pointer(p, v) \
-> >  	({ \
-> > @@ -647,18 +671,23 @@ that the only thing that can block rcu_read_lock() is a synchronize_rcu().
-> >  But synchronize_rcu() does not acquire any locks while holding rcu_gp_mutex,
-> >  so there can be no deadlock cycle.
-> >  
-> > -Quick Quiz #1:	Why is this argument naive?  How could a deadlock
-> > +.. _quiz_1:
-> > +
-> > +Quick Quiz #1:
-> > +		Why is this argument naive?  How could a deadlock
-> >  		occur when using this algorithm in a real-world Linux
-> >  		kernel?  How could this deadlock be avoided?
-> >  
-> > +:ref:`Answers to Quick Quiz <8_whatisRCU>`
-> >  
-> >  5B.  "TOY" EXAMPLE #2: CLASSIC RCU
-> > -
-> > +^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >  This section presents a "toy" RCU implementation that is based on
-> >  "classic RCU".  It is also short on performance (but only for updates) and
-> >  on features such as hotplug CPU and the ability to run in CONFIG_PREEMPT
-> >  kernels.  The definitions of rcu_dereference() and rcu_assign_pointer()
-> >  are the same as those shown in the preceding section, so they are omitted.
-> > +::
-> >  
-> >  	void rcu_read_lock(void) { }
-> >  
-> > @@ -683,14 +712,14 @@ CPU in turn.  The run_on() primitive can be implemented straightforwardly
-> >  in terms of the sched_setaffinity() primitive.  Of course, a somewhat less
-> >  "toy" implementation would restore the affinity upon completion rather
-> >  than just leaving all tasks running on the last CPU, but when I said
-> > -"toy", I meant -toy-!
-> > +"toy", I meant **toy**!
-> >  
-> >  So how the heck is this supposed to work???
-> >  
-> >  Remember that it is illegal to block while in an RCU read-side critical
-> >  section.  Therefore, if a given CPU executes a context switch, we know
-> >  that it must have completed all preceding RCU read-side critical sections.
-> > -Once -all- CPUs have executed a context switch, then -all- preceding
-> > +Once **all** CPUs have executed a context switch, then **all** preceding
-> >  RCU read-side critical sections will have completed.
-> >  
-> >  So, suppose that we remove a data item from its structure and then invoke
-> > @@ -698,19 +727,32 @@ synchronize_rcu().  Once synchronize_rcu() returns, we are guaranteed
-> >  that there are no RCU read-side critical sections holding a reference
-> >  to that data item, so we can safely reclaim it.
-> >  
-> > -Quick Quiz #2:	Give an example where Classic RCU's read-side
-> > -		overhead is -negative-.
-> > +.. _quiz_2:
-> > +
-> > +Quick Quiz #2:
-> > +		Give an example where Classic RCU's read-side
-> > +		overhead is **negative**.
-> > +
-> > +:ref:`Answers to Quick Quiz <8_whatisRCU>`
-> >  
-> > -Quick Quiz #3:  If it is illegal to block in an RCU read-side
-> > +.. _quiz_3:
-> > +
-> > +Quick Quiz #3:
-> > +		If it is illegal to block in an RCU read-side
-> >  		critical section, what the heck do you do in
-> >  		PREEMPT_RT, where normal spinlocks can block???
-> >  
-> > +:ref:`Answers to Quick Quiz <8_whatisRCU>`
-> > +
-> > +.. _6_whatisRCU:
-> >  
-> >  6.  ANALOGY WITH READER-WRITER LOCKING
-> > +--------------------------------------
-> >  
-> >  Although RCU can be used in many different ways, a very common use of
-> >  RCU is analogous to reader-writer locking.  The following unified
-> >  diff shows how closely related RCU and reader-writer locking can be.
-> > +::
-> >  
-> >  	@@ -5,5 +5,5 @@ struct el {
-> >  	 	int data;
-> > @@ -762,7 +804,7 @@ diff shows how closely related RCU and reader-writer locking can be.
-> >  		return 0;
-> >  	 }
-> >  
-> > -Or, for those who prefer a side-by-side listing:
-> > +Or, for those who prefer a side-by-side listing::
-> >  
-> >   1 struct el {                          1 struct el {
-> >   2   struct list_head list;             2   struct list_head list;
-> > @@ -774,40 +816,44 @@ Or, for those who prefer a side-by-side listing:
-> >   8 rwlock_t listmutex;                  8 spinlock_t listmutex;
-> >   9 struct el head;                      9 struct el head;
-> >  
-> > - 1 int search(long key, int *result)    1 int search(long key, int *result)
-> > - 2 {                                    2 {
-> > - 3   struct list_head *lp;              3   struct list_head *lp;
-> > - 4   struct el *p;                      4   struct el *p;
-> > - 5                                      5
-> > - 6   read_lock(&listmutex);             6   rcu_read_lock();
-> > - 7   list_for_each_entry(p, head, lp) { 7   list_for_each_entry_rcu(p, head, lp) {
-> > - 8     if (p->key == key) {             8     if (p->key == key) {
-> > - 9       *result = p->data;             9       *result = p->data;
-> > -10       read_unlock(&listmutex);      10       rcu_read_unlock();
-> > -11       return 1;                     11       return 1;
-> > -12     }                               12     }
-> > -13   }                                 13   }
-> > -14   read_unlock(&listmutex);          14   rcu_read_unlock();
-> > -15   return 0;                         15   return 0;
-> > -16 }                                   16 }
-> > -
-> > - 1 int delete(long key)                 1 int delete(long key)
-> > - 2 {                                    2 {
-> > - 3   struct el *p;                      3   struct el *p;
-> > - 4                                      4
-> > - 5   write_lock(&listmutex);            5   spin_lock(&listmutex);
-> > - 6   list_for_each_entry(p, head, lp) { 6   list_for_each_entry(p, head, lp) {
-> > - 7     if (p->key == key) {             7     if (p->key == key) {
-> > - 8       list_del(&p->list);            8       list_del_rcu(&p->list);
-> > - 9       write_unlock(&listmutex);      9       spin_unlock(&listmutex);
-> > -                                       10       synchronize_rcu();
-> > -10       kfree(p);                     11       kfree(p);
-> > -11       return 1;                     12       return 1;
-> > -12     }                               13     }
-> > -13   }                                 14   }
-> > -14   write_unlock(&listmutex);         15   spin_unlock(&listmutex);
-> > -15   return 0;                         16   return 0;
-> > -16 }                                   17 }
-> > +::
-> > +
-> > +  1 int search(long key, int *result)    1 int search(long key, int *result)
-> > +  2 {                                    2 {
-> > +  3   struct list_head *lp;              3   struct list_head *lp;
-> > +  4   struct el *p;                      4   struct el *p;
-> > +  5                                      5
-> > +  6   read_lock(&listmutex);             6   rcu_read_lock();
-> > +  7   list_for_each_entry(p, head, lp) { 7   list_for_each_entry_rcu(p, head, lp) {
-> > +  8     if (p->key == key) {             8     if (p->key == key) {
-> > +  9       *result = p->data;             9       *result = p->data;
-> > + 10       read_unlock(&listmutex);      10       rcu_read_unlock();
-> > + 11       return 1;                     11       return 1;
-> > + 12     }                               12     }
-> > + 13   }                                 13   }
-> > + 14   read_unlock(&listmutex);          14   rcu_read_unlock();
-> > + 15   return 0;                         15   return 0;
-> > + 16 }                                   16 }
-> > +
-> > +::
-> > +
-> > +  1 int delete(long key)                 1 int delete(long key)
-> > +  2 {                                    2 {
-> > +  3   struct el *p;                      3   struct el *p;
-> > +  4                                      4
-> > +  5   write_lock(&listmutex);            5   spin_lock(&listmutex);
-> > +  6   list_for_each_entry(p, head, lp) { 6   list_for_each_entry(p, head, lp) {
-> > +  7     if (p->key == key) {             7     if (p->key == key) {
-> > +  8       list_del(&p->list);            8       list_del_rcu(&p->list);
-> > +  9       write_unlock(&listmutex);      9       spin_unlock(&listmutex);
-> > +                                        10       synchronize_rcu();
-> > + 10       kfree(p);                     11       kfree(p);
-> > + 11       return 1;                     12       return 1;
-> > + 12     }                               13     }
-> > + 13   }                                 14   }
-> > + 14   write_unlock(&listmutex);         15   spin_unlock(&listmutex);
-> > + 15   return 0;                         16   return 0;
-> > + 16 }                                   17 }
-> >  
-> >  Either way, the differences are quite small.  Read-side locking moves
-> >  to rcu_read_lock() and rcu_read_unlock, update-side locking moves from
-> > @@ -825,15 +871,17 @@ delete() can now block.  If this is a problem, there is a callback-based
-> >  mechanism that never blocks, namely call_rcu() or kfree_rcu(), that can
-> >  be used in place of synchronize_rcu().
-> >  
-> > +.. _7_whatisRCU:
-> >  
-> >  7.  FULL LIST OF RCU APIs
-> > +-------------------------
-> >  
-> >  The RCU APIs are documented in docbook-format header comments in the
-> >  Linux-kernel source code, but it helps to have a full list of the
-> >  APIs, since there does not appear to be a way to categorize them
-> >  in docbook.  Here is the list, by category.
-> >  
-> > -RCU list traversal:
-> > +RCU list traversal::
-> >  
-> >  	list_entry_rcu
-> >  	list_first_entry_rcu
-> > @@ -854,7 +902,7 @@ RCU list traversal:
-> >  	hlist_bl_first_rcu
-> >  	hlist_bl_for_each_entry_rcu
-> >  
-> > -RCU pointer/list update:
-> > +RCU pointer/list udate::
-> >  
-> >  	rcu_assign_pointer
-> >  	list_add_rcu
-> > @@ -876,7 +924,9 @@ RCU pointer/list update:
-> >  	hlist_bl_del_rcu
-> >  	hlist_bl_set_first_rcu
-> >  
-> > -RCU:	Critical sections	Grace period		Barrier
-> > +RCU::
-> > +
-> > +	Critical sections	Grace period		Barrier
-> >  
-> >  	rcu_read_lock		synchronize_net		rcu_barrier
-> >  	rcu_read_unlock		synchronize_rcu
-> > @@ -885,7 +935,9 @@ RCU:	Critical sections	Grace period		Barrier
-> >  	rcu_dereference_check	kfree_rcu
-> >  	rcu_dereference_protected
-> >  
-> > -bh:	Critical sections	Grace period		Barrier
-> > +bh::
-> > +
-> > +	Critical sections	Grace period		Barrier
-> >  
-> >  	rcu_read_lock_bh	call_rcu		rcu_barrier
-> >  	rcu_read_unlock_bh	synchronize_rcu
-> > @@ -896,7 +948,9 @@ bh:	Critical sections	Grace period		Barrier
-> >  	rcu_dereference_bh_protected
-> >  	rcu_read_lock_bh_held
-> >  
-> > -sched:	Critical sections	Grace period		Barrier
-> > +sched::
-> > +
-> > +	Critical sections	Grace period		Barrier
-> >  
-> >  	rcu_read_lock_sched	call_rcu		rcu_barrier
-> >  	rcu_read_unlock_sched	synchronize_rcu
-> > @@ -910,7 +964,9 @@ sched:	Critical sections	Grace period		Barrier
-> >  	rcu_read_lock_sched_held
-> >  
-> >  
-> > -SRCU:	Critical sections	Grace period		Barrier
-> > +SRCU::
-> > +
-> > +	Critical sections	Grace period		Barrier
-> >  
-> >  	srcu_read_lock		call_srcu		srcu_barrier
-> >  	srcu_read_unlock	synchronize_srcu
-> > @@ -918,13 +974,14 @@ SRCU:	Critical sections	Grace period		Barrier
-> >  	srcu_dereference_check
-> >  	srcu_read_lock_held
-> >  
-> > -SRCU:	Initialization/cleanup
-> > +SRCU: Initialization/cleanup::
-> > +
-> >  	DEFINE_SRCU
-> >  	DEFINE_STATIC_SRCU
-> >  	init_srcu_struct
-> >  	cleanup_srcu_struct
-> >  
-> > -All:  lockdep-checked RCU-protected pointer access
-> > +All: lockdep-checked RCU-protected pointer access::
-> >  
-> >  	rcu_access_pointer
-> >  	rcu_dereference_raw
-> > @@ -974,15 +1031,19 @@ g.	Otherwise, use RCU.
-> >  Of course, this all assumes that you have determined that RCU is in fact
-> >  the right tool for your job.
-> >  
-> > +.. _8_whatisRCU:
-> >  
-> >  8.  ANSWERS TO QUICK QUIZZES
-> > +----------------------------
-> >  
-> > -Quick Quiz #1:	Why is this argument naive?  How could a deadlock
-> > +Quick Quiz #1:
-> > +		Why is this argument naive?  How could a deadlock
-> >  		occur when using this algorithm in a real-world Linux
-> >  		kernel?  [Referring to the lock-based "toy" RCU
-> >  		algorithm.]
-> >  
-> > -Answer:		Consider the following sequence of events:
-> > +Answer:
-> > +		Consider the following sequence of events:
-> >  
-> >  		1.	CPU 0 acquires some unrelated lock, call it
-> >  			"problematic_lock", disabling irq via
-> > @@ -1021,10 +1082,14 @@ Answer:		Consider the following sequence of events:
-> >  		approach where tasks in RCU read-side critical sections
-> >  		cannot be blocked by tasks executing synchronize_rcu().
-> >  
-> > -Quick Quiz #2:	Give an example where Classic RCU's read-side
-> > -		overhead is -negative-.
-> > +:ref:`Back to Quick Quiz #1 <quiz_1>`
-> > +
-> > +Quick Quiz #2:
-> > +		Give an example where Classic RCU's read-side
-> > +		overhead is **negative**.
-> >  
-> > -Answer:		Imagine a single-CPU system with a non-CONFIG_PREEMPT
-> > +Answer:
-> > +		Imagine a single-CPU system with a non-CONFIG_PREEMPT
-> >  		kernel where a routing table is used by process-context
-> >  		code, but can be updated by irq-context code (for example,
-> >  		by an "ICMP REDIRECT" packet).	The usual way of handling
-> > @@ -1046,11 +1111,15 @@ Answer:		Imagine a single-CPU system with a non-CONFIG_PREEMPT
-> >  		even the theoretical possibility of negative overhead for
-> >  		a synchronization primitive is a bit unexpected.  ;-)
-> >  
-> > -Quick Quiz #3:  If it is illegal to block in an RCU read-side
-> > +:ref:`Back to Quick Quiz #2 <quiz_2>`
-> > +
-> > +Quick Quiz #3:
-> > +		If it is illegal to block in an RCU read-side
-> >  		critical section, what the heck do you do in
-> >  		PREEMPT_RT, where normal spinlocks can block???
-> >  
-> > -Answer:		Just as PREEMPT_RT permits preemption of spinlock
-> > +Answer:
-> > +		Just as PREEMPT_RT permits preemption of spinlock
-> >  		critical sections, it permits preemption of RCU
-> >  		read-side critical sections.  It also permits
-> >  		spinlocks blocking while in RCU read-side critical
-> > @@ -1069,6 +1138,7 @@ Answer:		Just as PREEMPT_RT permits preemption of spinlock
-> >  		Besides, how does the computer know what pizza parlor
-> >  		the human being went to???
-> >  
-> > +:ref:`Back to Quick Quiz #3 <quiz_3>`
-> >  
-> >  ACKNOWLEDGEMENTS
-> >  
-> > -- 
-> > 2.20.1
-> > 
+> diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
+> index c81d0e4fd999..81a0a1e5f767 100644
+> --- a/Documentation/RCU/index.rst
+> +++ b/Documentation/RCU/index.rst
+> @@ -8,6 +8,7 @@ RCU concepts
+>     :maxdepth: 3
+>  
+>     arrayRCU
+> +   rcubarrier
+>     rcu_dereference
+>     whatisRCU
+>     rcu
+> diff --git a/Documentation/RCU/rcubarrier.txt b/Documentation/RCU/rcubarrier.rst
+> similarity index 73%
+> rename from Documentation/RCU/rcubarrier.txt
+> rename to Documentation/RCU/rcubarrier.rst
+> index a2782df69732..1aa9ed1d1b5b 100644
+> --- a/Documentation/RCU/rcubarrier.txt
+> +++ b/Documentation/RCU/rcubarrier.rst
+> @@ -1,4 +1,7 @@
+> +.. _rcu_barrier:
+> +
+>  RCU and Unloadable Modules
+> +==========================
+>  
+>  [Originally published in LWN Jan. 14, 2007: http://lwn.net/Articles/217484/]
+>  
+> @@ -21,7 +24,7 @@ given that readers might well leave absolutely no trace of their
+>  presence? There is a synchronize_rcu() primitive that blocks until all
+>  pre-existing readers have completed. An updater wishing to delete an
+>  element p from a linked list might do the following, while holding an
+> -appropriate lock, of course:
+> +appropriate lock, of course::
+>  
+>  	list_del_rcu(p);
+>  	synchronize_rcu();
+> @@ -32,13 +35,13 @@ primitive must be used instead. This primitive takes a pointer to an
+>  rcu_head struct placed within the RCU-protected data structure and
+>  another pointer to a function that may be invoked later to free that
+>  structure. Code to delete an element p from the linked list from IRQ
+> -context might then be as follows:
+> +context might then be as follows::
+>  
+>  	list_del_rcu(p);
+>  	call_rcu(&p->rcu, p_callback);
+>  
+>  Since call_rcu() never blocks, this code can safely be used from within
+> -IRQ context. The function p_callback() might be defined as follows:
+> +IRQ context. The function p_callback() might be defined as follows::
+>  
+>  	static void p_callback(struct rcu_head *rp)
+>  	{
+> @@ -49,6 +52,7 @@ IRQ context. The function p_callback() might be defined as follows:
+>  
+>  
+>  Unloading Modules That Use call_rcu()
+> +-------------------------------------
+>  
+>  But what if p_callback is defined in an unloadable module?
+>  
+> @@ -69,10 +73,11 @@ in realtime kernels in order to avoid excessive scheduling latencies.
+>  
+>  
+>  rcu_barrier()
+> +-------------
+>  
+>  We instead need the rcu_barrier() primitive.  Rather than waiting for
+>  a grace period to elapse, rcu_barrier() waits for all outstanding RCU
+> -callbacks to complete.  Please note that rcu_barrier() does -not- imply
+> +callbacks to complete.  Please note that rcu_barrier() does **not** imply
+>  synchronize_rcu(), in particular, if there are no RCU callbacks queued
+>  anywhere, rcu_barrier() is within its rights to return immediately,
+>  without waiting for a grace period to elapse.
+> @@ -89,78 +94,78 @@ module uses multiple flavors of call_rcu(), then it must also use multiple
+>  flavors of rcu_barrier() when unloading that module.  For example, if
+>  it uses call_rcu(), call_srcu() on srcu_struct_1, and call_srcu() on
+>  srcu_struct_2(), then the following three lines of code will be required
+> -when unloading:
+> +when unloading::
+>  
+>   1 rcu_barrier();
+>   2 srcu_barrier(&srcu_struct_1);
+>   3 srcu_barrier(&srcu_struct_2);
+>  
+>  The rcutorture module makes use of rcu_barrier() in its exit function
+> -as follows:
+> +as follows::
+>  
+> - 1 static void
+> - 2 rcu_torture_cleanup(void)
+> - 3 {
+> - 4   int i;
+> + 1  static void
+> + 2  rcu_torture_cleanup(void)
+> + 3  {
+> + 4    int i;
+>   5
+> - 6   fullstop = 1;
+> - 7   if (shuffler_task != NULL) {
+> + 6    fullstop = 1;
+> + 7    if (shuffler_task != NULL) {
+>   8     VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
+>   9     kthread_stop(shuffler_task);
+> -10   }
+> -11   shuffler_task = NULL;
+> -12
+> -13   if (writer_task != NULL) {
+> -14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
+> -15     kthread_stop(writer_task);
+> -16   }
+> -17   writer_task = NULL;
+> -18
+> -19   if (reader_tasks != NULL) {
+> -20     for (i = 0; i < nrealreaders; i++) {
+> -21       if (reader_tasks[i] != NULL) {
+> -22         VERBOSE_PRINTK_STRING(
+> -23           "Stopping rcu_torture_reader task");
+> -24         kthread_stop(reader_tasks[i]);
+> -25       }
+> -26       reader_tasks[i] = NULL;
+> -27     }
+> -28     kfree(reader_tasks);
+> -29     reader_tasks = NULL;
+> -30   }
+> -31   rcu_torture_current = NULL;
+> -32
+> -33   if (fakewriter_tasks != NULL) {
+> -34     for (i = 0; i < nfakewriters; i++) {
+> -35       if (fakewriter_tasks[i] != NULL) {
+> -36         VERBOSE_PRINTK_STRING(
+> -37           "Stopping rcu_torture_fakewriter task");
+> -38         kthread_stop(fakewriter_tasks[i]);
+> -39       }
+> -40       fakewriter_tasks[i] = NULL;
+> -41     }
+> -42     kfree(fakewriter_tasks);
+> -43     fakewriter_tasks = NULL;
+> -44   }
+> -45
+> -46   if (stats_task != NULL) {
+> -47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
+> -48     kthread_stop(stats_task);
+> -49   }
+> -50   stats_task = NULL;
+> -51
+> -52   /* Wait for all RCU callbacks to fire. */
+> -53   rcu_barrier();
+> -54
+> -55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
+> -56
+> -57   if (cur_ops->cleanup != NULL)
+> -58     cur_ops->cleanup();
+> -59   if (atomic_read(&n_rcu_torture_error))
+> -60     rcu_torture_print_module_parms("End of test: FAILURE");
+> -61   else
+> -62     rcu_torture_print_module_parms("End of test: SUCCESS");
+> -63 }
+> + 10   }
+> + 11   shuffler_task = NULL;
+> + 12
+> + 13   if (writer_task != NULL) {
+> + 14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
+> + 15     kthread_stop(writer_task);
+> + 16   }
+> + 17   writer_task = NULL;
+> + 18
+> + 19   if (reader_tasks != NULL) {
+> + 20     for (i = 0; i < nrealreaders; i++) {
+> + 21       if (reader_tasks[i] != NULL) {
+> + 22         VERBOSE_PRINTK_STRING(
+> + 23           "Stopping rcu_torture_reader task");
+> + 24         kthread_stop(reader_tasks[i]);
+> + 25       }
+> + 26       reader_tasks[i] = NULL;
+> + 27     }
+> + 28     kfree(reader_tasks);
+> + 29     reader_tasks = NULL;
+> + 30   }
+> + 31   rcu_torture_current = NULL;
+> + 32
+> + 33   if (fakewriter_tasks != NULL) {
+> + 34     for (i = 0; i < nfakewriters; i++) {
+> + 35       if (fakewriter_tasks[i] != NULL) {
+> + 36         VERBOSE_PRINTK_STRING(
+> + 37           "Stopping rcu_torture_fakewriter task");
+> + 38         kthread_stop(fakewriter_tasks[i]);
+> + 39       }
+> + 40       fakewriter_tasks[i] = NULL;
+> + 41     }
+> + 42     kfree(fakewriter_tasks);
+> + 43     fakewriter_tasks = NULL;
+> + 44   }
+> + 45
+> + 46   if (stats_task != NULL) {
+> + 47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
+> + 48     kthread_stop(stats_task);
+> + 49   }
+> + 50   stats_task = NULL;
+> + 51
+> + 52   /* Wait for all RCU callbacks to fire. */
+> + 53   rcu_barrier();
+> + 54
+> + 55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
+> + 56
+> + 57   if (cur_ops->cleanup != NULL)
+> + 58     cur_ops->cleanup();
+> + 59   if (atomic_read(&n_rcu_torture_error))
+> + 60     rcu_torture_print_module_parms("End of test: FAILURE");
+> + 61   else
+> + 62     rcu_torture_print_module_parms("End of test: SUCCESS");
+> + 63 }
+>  
+>  Line 6 sets a global variable that prevents any RCU callbacks from
+>  re-posting themselves. This will not be necessary in most cases, since
+> @@ -176,9 +181,14 @@ for any pre-existing callbacks to complete.
+>  Then lines 55-62 print status and do operation-specific cleanup, and
+>  then return, permitting the module-unload operation to be completed.
+>  
+> -Quick Quiz #1: Is there any other situation where rcu_barrier() might
+> +.. _rcubarrier_quiz_1:
+> +
+> +Quick Quiz #1:
+> +	Is there any other situation where rcu_barrier() might
+>  	be required?
+>  
+> +:ref:`Answer to Quick Quiz #1 <answer_rcubarrier_quiz_1>`
+> +
+>  Your module might have additional complications. For example, if your
+>  module invokes call_rcu() from timers, you will need to first cancel all
+>  the timers, and only then invoke rcu_barrier() to wait for any remaining
+> @@ -188,11 +198,12 @@ Of course, if you module uses call_rcu(), you will need to invoke
+>  rcu_barrier() before unloading.  Similarly, if your module uses
+>  call_srcu(), you will need to invoke srcu_barrier() before unloading,
+>  and on the same srcu_struct structure.  If your module uses call_rcu()
+> --and- call_srcu(), then you will need to invoke rcu_barrier() -and-
+> +-and- call_srcu(), then you will need to invoke rcu_barrier() **and**
+>  srcu_barrier().
+>  
+>  
+>  Implementing rcu_barrier()
+> +--------------------------
+>  
+>  Dipankar Sarma's implementation of rcu_barrier() makes use of the fact
+>  that RCU callbacks are never reordered once queued on one of the per-CPU
+> @@ -200,19 +211,19 @@ queues. His implementation queues an RCU callback on each of the per-CPU
+>  callback queues, and then waits until they have all started executing, at
+>  which point, all earlier RCU callbacks are guaranteed to have completed.
+>  
+> -The original code for rcu_barrier() was as follows:
+> +The original code for rcu_barrier() was as follows::
+>  
+> - 1 void rcu_barrier(void)
+> - 2 {
+> - 3   BUG_ON(in_interrupt());
+> - 4   /* Take cpucontrol mutex to protect against CPU hotplug */
+> - 5   mutex_lock(&rcu_barrier_mutex);
+> - 6   init_completion(&rcu_barrier_completion);
+> - 7   atomic_set(&rcu_barrier_cpu_count, 0);
+> - 8   on_each_cpu(rcu_barrier_func, NULL, 0, 1);
+> - 9   wait_for_completion(&rcu_barrier_completion);
+> -10   mutex_unlock(&rcu_barrier_mutex);
+> -11 }
+> + 1  void rcu_barrier(void)
+> + 2  {
+> + 3    BUG_ON(in_interrupt());
+> + 4    /* Take cpucontrol mutex to protect against CPU hotplug */
+> + 5    mutex_lock(&rcu_barrier_mutex);
+> + 6    init_completion(&rcu_barrier_completion);
+> + 7    atomic_set(&rcu_barrier_cpu_count, 0);
+> + 8    on_each_cpu(rcu_barrier_func, NULL, 0, 1);
+> + 9    wait_for_completion(&rcu_barrier_completion);
+> + 10   mutex_unlock(&rcu_barrier_mutex);
+> + 11 }
+>  
+>  Line 3 verifies that the caller is in process context, and lines 5 and 10
+>  use rcu_barrier_mutex to ensure that only one rcu_barrier() is using the
+> @@ -226,18 +237,18 @@ This code was rewritten in 2008 and several times thereafter, but this
+>  still gives the general idea.
+>  
+>  The rcu_barrier_func() runs on each CPU, where it invokes call_rcu()
+> -to post an RCU callback, as follows:
+> +to post an RCU callback, as follows::
+>  
+> - 1 static void rcu_barrier_func(void *notused)
+> - 2 {
+> - 3 int cpu = smp_processor_id();
+> - 4 struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
+> - 5 struct rcu_head *head;
+> + 1  static void rcu_barrier_func(void *notused)
+> + 2  {
+> + 3    int cpu = smp_processor_id();
+> + 4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
+> + 5    struct rcu_head *head;
+>   6
+> - 7 head = &rdp->barrier;
+> - 8 atomic_inc(&rcu_barrier_cpu_count);
+> - 9 call_rcu(head, rcu_barrier_callback);
+> -10 }
+> + 7    head = &rdp->barrier;
+> + 8    atomic_inc(&rcu_barrier_cpu_count);
+> + 9    call_rcu(head, rcu_barrier_callback);
+> + 10 }
+>  
+>  Lines 3 and 4 locate RCU's internal per-CPU rcu_data structure,
+>  which contains the struct rcu_head that needed for the later call to
+> @@ -248,20 +259,25 @@ the current CPU's queue.
+>  
+>  The rcu_barrier_callback() function simply atomically decrements the
+>  rcu_barrier_cpu_count variable and finalizes the completion when it
+> -reaches zero, as follows:
+> +reaches zero, as follows::
+>  
+>   1 static void rcu_barrier_callback(struct rcu_head *notused)
+>   2 {
+> - 3 if (atomic_dec_and_test(&rcu_barrier_cpu_count))
+> - 4 complete(&rcu_barrier_completion);
+> + 3   if (atomic_dec_and_test(&rcu_barrier_cpu_count))
+> + 4     complete(&rcu_barrier_completion);
+>   5 }
+>  
+> -Quick Quiz #2: What happens if CPU 0's rcu_barrier_func() executes
+> +.. _rcubarrier_quiz_2:
+> +
+> +Quick Quiz #2:
+> +	What happens if CPU 0's rcu_barrier_func() executes
+>  	immediately (thus incrementing rcu_barrier_cpu_count to the
+>  	value one), but the other CPU's rcu_barrier_func() invocations
+>  	are delayed for a full grace period? Couldn't this result in
+>  	rcu_barrier() returning prematurely?
+>  
+> +:ref:`Answer to Quick Quiz #2 <answer_rcubarrier_quiz_2>`
+> +
+>  The current rcu_barrier() implementation is more complex, due to the need
+>  to avoid disturbing idle CPUs (especially on battery-powered systems)
+>  and the need to minimally disturb non-idle CPUs in real-time systems.
+> @@ -269,6 +285,7 @@ However, the code above illustrates the concepts.
+>  
+>  
+>  rcu_barrier() Summary
+> +---------------------
+>  
+>  The rcu_barrier() primitive has seen relatively little use, since most
+>  code using RCU is in the core kernel rather than in modules. However, if
+> @@ -277,8 +294,12 @@ so that your module may be safely unloaded.
+>  
+>  
+>  Answers to Quick Quizzes
+> +------------------------
+> +
+> +.. _answer_rcubarrier_quiz_1:
+>  
+> -Quick Quiz #1: Is there any other situation where rcu_barrier() might
+> +Quick Quiz #1:
+> +	Is there any other situation where rcu_barrier() might
+>  	be required?
+>  
+>  Answer: Interestingly enough, rcu_barrier() was not originally
+> @@ -292,7 +313,12 @@ Answer: Interestingly enough, rcu_barrier() was not originally
+>  	implementing rcutorture, and found that rcu_barrier() solves
+>  	this problem as well.
+>  
+> -Quick Quiz #2: What happens if CPU 0's rcu_barrier_func() executes
+> +:ref:`Back to Quick Quiz #1 <rcubarrier_quiz_1>`
+> +
+> +.. _answer_rcubarrier_quiz_2:
+> +
+> +Quick Quiz #2:
+> +	What happens if CPU 0's rcu_barrier_func() executes
+>  	immediately (thus incrementing rcu_barrier_cpu_count to the
+>  	value one), but the other CPU's rcu_barrier_func() invocations
+>  	are delayed for a full grace period? Couldn't this result in
+> @@ -323,3 +349,5 @@ Answer: This cannot happen. The reason is that on_each_cpu() has its last
+>  	is to add an rcu_read_lock() before line 8 of rcu_barrier()
+>  	and an rcu_read_unlock() after line 8 of this same function. If
+>  	you can think of a better change, please let me know!
+> +
+> +:ref:`Back to Quick Quiz #2 <rcubarrier_quiz_2>`
+> -- 
+> 2.20.1
+> 
