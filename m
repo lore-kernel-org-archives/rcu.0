@@ -1,434 +1,910 @@
-Return-Path: <SRS0=jCHr=Y7=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=FBWE=ZA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB17C5DF60
-	for <rcu@archiver.kernel.org>; Thu,  7 Nov 2019 14:29:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 377F8FA372C
+	for <rcu@archiver.kernel.org>; Fri,  8 Nov 2019 08:39:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 415122187F
-	for <rcu@archiver.kernel.org>; Thu,  7 Nov 2019 14:29:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1573136970;
-	bh=0sL7l/n0UDIQqcSLSKAXeHYslytegyv9hyEW/zqifKw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=H733UJ3W7CI9PtG7WT4jiN2Q1Hyg1gtSL+CrrQm41vNFPDfEg3tT2E5qUU3gC1V2z
-	 +LFEn8d1FU8E+uXP7VBDe61/HiGhknPj0FMhhkeB29PzrlB+VN1x2/9dJr10wkb+vC
-	 dzBwnlO0lXhhmy7wD+YQL1t/1v6C2hrSTuP9qWi0=
+	by mail.kernel.org (Postfix) with ESMTP id EB0E32178F
+	for <rcu@archiver.kernel.org>; Fri,  8 Nov 2019 08:39:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbfKGO3a (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Nov 2019 09:29:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41770 "EHLO mail.kernel.org"
+        id S1726987AbfKHIjP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Nov 2019 03:39:15 -0500
+Received: from mx1.redhat.com ([209.132.183.28]:40144 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbfKGO33 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Nov 2019 09:29:29 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [109.144.209.93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725975AbfKHIjP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Nov 2019 03:39:15 -0500
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6E29207FA;
-        Thu,  7 Nov 2019 14:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573136968;
-        bh=0sL7l/n0UDIQqcSLSKAXeHYslytegyv9hyEW/zqifKw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ff5mXt2/umhb4Dwu0Qc4TMI7f9X0seNPD3COwUR8CsP5nbpU/Q8A7WrzCNzp5JsTi
-         boUZE9IVwsLrd8M/IWdRLwW1GBzQrUQnTRTb5N9ku/bcOqeEeM4LhiTwMlKEUIdg4n
-         zIRdEGSPo2UQ3dL82YI+z0L1lJ0xE3hc3El0NtWc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EBD1435227FC; Thu,  7 Nov 2019 06:29:25 -0800 (PST)
-Date:   Thu, 7 Nov 2019 06:29:25 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Phong Tran <tranmanphong@gmail.com>
-Cc:     Amol Grover <frextrite@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: Re: [PATCH v2] Documentation: RCU: rcubarrier: Convert to reST
-Message-ID: <20191107142925.GO20975@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191107063241.GA2234@workstation-kernel-dev>
- <3d3bf2ea-b8af-e561-a631-fb9205973e99@gmail.com>
+        by mx1.redhat.com (Postfix) with ESMTPS id 456FE859FE
+        for <rcu@vger.kernel.org>; Fri,  8 Nov 2019 08:39:14 +0000 (UTC)
+Received: by mail-wr1-f71.google.com with SMTP id h7so2560375wrb.2
+        for <rcu@vger.kernel.org>; Fri, 08 Nov 2019 00:39:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELkX8zzfirKZe/iDLYRYBQbBfCtfyZBM0Ju0Ov04XEY=;
+        b=DKHe/frF4v6Yu9T0WX1PoWxGPqAmjKs0m4g9nOEbTko9RZ3vb2ly2rFcNV810P7UMh
+         j6xKqYlOuESHi5OzUZsfBx1Jv/fkq/tHNHgu/CHXXskq/mL+5aUlWKNSZKmef7ZxPTeW
+         FLpbUjs11tOiy5HtMfKQz/KDhbTeYh8Pcj8jaFhXlAvzJ4gO9Iudpb0kehUBtaEatUSH
+         KP+ZkuXYx8Nb7VoCYGH9Ws6gpQPpS1+Xl9Pfbh8xpnFpjxjEKHzKadV5CgUMZFxz6iPu
+         CYR88TABEHH7TawXQ/Bt186d7dWyPjWygeyEYOxlqKKX3XVOetiJOo/c2BncoeucRxBe
+         L6zA==
+X-Gm-Message-State: APjAAAWbqZTH0/VYAeKojWFaHJ7nkrYGFpemeTPGCTnjwpkrOAJJgFRH
+        JSM8bPuZ+e7OoLa6jql4T9/fjIcmk7WPfLSj/OvDDsDeru7RIwGwZHpwvV+yQ08bG8g2kGRcyk7
+        k1Ga6XUJgF34c
+X-Received: by 2002:a1c:10a:: with SMTP id 10mr7117303wmb.17.1573202352665;
+        Fri, 08 Nov 2019 00:39:12 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzq1hcDR+ajdusbut3cUNJtVQ7EfsFshzb44AA0PcpyYLQzW2UOj/e6zG9cRK+0dmeNaik0VQ==
+X-Received: by 2002:a1c:10a:: with SMTP id 10mr7117257wmb.17.1573202351847;
+        Fri, 08 Nov 2019 00:39:11 -0800 (PST)
+Received: from localhost.localdomain.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id z6sm5954122wro.18.2019.11.08.00.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Nov 2019 00:39:10 -0800 (PST)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <sds@tycho.nsa.gov>, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Sekletar <msekleta@redhat.com>
+Subject: [PATCH v3] selinux: cache the SID -> context string translation
+Date:   Fri,  8 Nov 2019 09:39:09 +0100
+Message-Id: <20191108083909.658-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d3bf2ea-b8af-e561-a631-fb9205973e99@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 07, 2019 at 08:58:18PM +0700, Phong Tran wrote:
-> On 11/7/19 1:32 PM, Amol Grover wrote:
-> > Convert rcubarrier.txt to rcubarrier.rst and
-> > add it to index.rst
-> > 
-> > Format file according to reST
-> > - Add headings and sub-headings
-> > - Add code segments
-> > - Add cross-references to quizes and answers
-> 
-> Tested-by: Phong Tran <tranmanphong@gmail.com>
+Translating a context struct to string can be quite slow, especially if
+the context has a lot of category bits set. This can cause quite
+noticeable performance impact in situations where the translation needs
+to be done repeatedly. A common example is a UNIX datagram socket with
+the SO_PASSSEC option enabled, which is used e.g. by systemd-journald
+when receiving log messages via datagram socket. This scenario can be
+reproduced with:
 
-Applied, thank you both!
+    cat /dev/urandom | base64 | logger &
+    timeout 30s perf record -p $(pidof systemd-journald) -a -g
+    kill %1
+    perf report -g none --pretty raw | grep security_secid_to_secctx
 
-							Thanx, Paul
+Before the caching introduced by this patch, computing the context
+string (security_secid_to_secctx() function) takes up ~65% of
+systemd-journald's CPU time (assuming a context with 1024 categories
+set and Fedora x86_64 release kernel configs). After this patch
+(assuming near-perfect cache hit ratio) this overhead is reduced to just
+~2%.
 
-> > Signed-off-by: Amol Grover <frextrite@gmail.com>
-> > ---
-> >   Documentation/RCU/index.rst                   |   1 +
-> >   .../RCU/{rcubarrier.txt => rcubarrier.rst}    | 222 ++++++++++--------
-> >   2 files changed, 126 insertions(+), 97 deletions(-)
-> >   rename Documentation/RCU/{rcubarrier.txt => rcubarrier.rst} (72%)
-> > 
-> > diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
-> > index c81d0e4fd999..81a0a1e5f767 100644
-> > --- a/Documentation/RCU/index.rst
-> > +++ b/Documentation/RCU/index.rst
-> > @@ -8,6 +8,7 @@ RCU concepts
-> >      :maxdepth: 3
-> >      arrayRCU
-> > +   rcubarrier
-> >      rcu_dereference
-> >      whatisRCU
-> >      rcu
-> > diff --git a/Documentation/RCU/rcubarrier.txt b/Documentation/RCU/rcubarrier.rst
-> > similarity index 72%
-> > rename from Documentation/RCU/rcubarrier.txt
-> > rename to Documentation/RCU/rcubarrier.rst
-> > index a2782df69732..f64f4413a47c 100644
-> > --- a/Documentation/RCU/rcubarrier.txt
-> > +++ b/Documentation/RCU/rcubarrier.rst
-> > @@ -1,4 +1,7 @@
-> > +.. _rcu_barrier:
-> > +
-> >   RCU and Unloadable Modules
-> > +==========================
-> >   [Originally published in LWN Jan. 14, 2007: http://lwn.net/Articles/217484/]
-> > @@ -21,7 +24,7 @@ given that readers might well leave absolutely no trace of their
-> >   presence? There is a synchronize_rcu() primitive that blocks until all
-> >   pre-existing readers have completed. An updater wishing to delete an
-> >   element p from a linked list might do the following, while holding an
-> > -appropriate lock, of course:
-> > +appropriate lock, of course::
-> >   	list_del_rcu(p);
-> >   	synchronize_rcu();
-> > @@ -32,13 +35,13 @@ primitive must be used instead. This primitive takes a pointer to an
-> >   rcu_head struct placed within the RCU-protected data structure and
-> >   another pointer to a function that may be invoked later to free that
-> >   structure. Code to delete an element p from the linked list from IRQ
-> > -context might then be as follows:
-> > +context might then be as follows::
-> >   	list_del_rcu(p);
-> >   	call_rcu(&p->rcu, p_callback);
-> >   Since call_rcu() never blocks, this code can safely be used from within
-> > -IRQ context. The function p_callback() might be defined as follows:
-> > +IRQ context. The function p_callback() might be defined as follows::
-> >   	static void p_callback(struct rcu_head *rp)
-> >   	{
-> > @@ -49,6 +52,7 @@ IRQ context. The function p_callback() might be defined as follows:
-> >   Unloading Modules That Use call_rcu()
-> > +-------------------------------------
-> >   But what if p_callback is defined in an unloadable module?
-> > @@ -69,10 +73,11 @@ in realtime kernels in order to avoid excessive scheduling latencies.
-> >   rcu_barrier()
-> > +-------------
-> >   We instead need the rcu_barrier() primitive.  Rather than waiting for
-> >   a grace period to elapse, rcu_barrier() waits for all outstanding RCU
-> > -callbacks to complete.  Please note that rcu_barrier() does -not- imply
-> > +callbacks to complete.  Please note that rcu_barrier() does **not** imply
-> >   synchronize_rcu(), in particular, if there are no RCU callbacks queued
-> >   anywhere, rcu_barrier() is within its rights to return immediately,
-> >   without waiting for a grace period to elapse.
-> > @@ -88,79 +93,79 @@ must match the flavor of rcu_barrier() with that of call_rcu().  If your
-> >   module uses multiple flavors of call_rcu(), then it must also use multiple
-> >   flavors of rcu_barrier() when unloading that module.  For example, if
-> >   it uses call_rcu(), call_srcu() on srcu_struct_1, and call_srcu() on
-> > -srcu_struct_2(), then the following three lines of code will be required
-> > -when unloading:
-> > +srcu_struct_2, then the following three lines of code will be required
-> > +when unloading::
-> >    1 rcu_barrier();
-> >    2 srcu_barrier(&srcu_struct_1);
-> >    3 srcu_barrier(&srcu_struct_2);
-> >   The rcutorture module makes use of rcu_barrier() in its exit function
-> > -as follows:
-> > +as follows::
-> > - 1 static void
-> > - 2 rcu_torture_cleanup(void)
-> > - 3 {
-> > - 4   int i;
-> > + 1  static void
-> > + 2  rcu_torture_cleanup(void)
-> > + 3  {
-> > + 4    int i;
-> >    5
-> > - 6   fullstop = 1;
-> > - 7   if (shuffler_task != NULL) {
-> > + 6    fullstop = 1;
-> > + 7    if (shuffler_task != NULL) {
-> >    8     VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
-> >    9     kthread_stop(shuffler_task);
-> > -10   }
-> > -11   shuffler_task = NULL;
-> > -12
-> > -13   if (writer_task != NULL) {
-> > -14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
-> > -15     kthread_stop(writer_task);
-> > -16   }
-> > -17   writer_task = NULL;
-> > -18
-> > -19   if (reader_tasks != NULL) {
-> > -20     for (i = 0; i < nrealreaders; i++) {
-> > -21       if (reader_tasks[i] != NULL) {
-> > -22         VERBOSE_PRINTK_STRING(
-> > -23           "Stopping rcu_torture_reader task");
-> > -24         kthread_stop(reader_tasks[i]);
-> > -25       }
-> > -26       reader_tasks[i] = NULL;
-> > -27     }
-> > -28     kfree(reader_tasks);
-> > -29     reader_tasks = NULL;
-> > -30   }
-> > -31   rcu_torture_current = NULL;
-> > -32
-> > -33   if (fakewriter_tasks != NULL) {
-> > -34     for (i = 0; i < nfakewriters; i++) {
-> > -35       if (fakewriter_tasks[i] != NULL) {
-> > -36         VERBOSE_PRINTK_STRING(
-> > -37           "Stopping rcu_torture_fakewriter task");
-> > -38         kthread_stop(fakewriter_tasks[i]);
-> > -39       }
-> > -40       fakewriter_tasks[i] = NULL;
-> > -41     }
-> > -42     kfree(fakewriter_tasks);
-> > -43     fakewriter_tasks = NULL;
-> > -44   }
-> > -45
-> > -46   if (stats_task != NULL) {
-> > -47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
-> > -48     kthread_stop(stats_task);
-> > -49   }
-> > -50   stats_task = NULL;
-> > -51
-> > -52   /* Wait for all RCU callbacks to fire. */
-> > -53   rcu_barrier();
-> > -54
-> > -55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
-> > -56
-> > -57   if (cur_ops->cleanup != NULL)
-> > -58     cur_ops->cleanup();
-> > -59   if (atomic_read(&n_rcu_torture_error))
-> > -60     rcu_torture_print_module_parms("End of test: FAILURE");
-> > -61   else
-> > -62     rcu_torture_print_module_parms("End of test: SUCCESS");
-> > -63 }
-> > + 10   }
-> > + 11   shuffler_task = NULL;
-> > + 12
-> > + 13   if (writer_task != NULL) {
-> > + 14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
-> > + 15     kthread_stop(writer_task);
-> > + 16   }
-> > + 17   writer_task = NULL;
-> > + 18
-> > + 19   if (reader_tasks != NULL) {
-> > + 20     for (i = 0; i < nrealreaders; i++) {
-> > + 21       if (reader_tasks[i] != NULL) {
-> > + 22         VERBOSE_PRINTK_STRING(
-> > + 23           "Stopping rcu_torture_reader task");
-> > + 24         kthread_stop(reader_tasks[i]);
-> > + 25       }
-> > + 26       reader_tasks[i] = NULL;
-> > + 27     }
-> > + 28     kfree(reader_tasks);
-> > + 29     reader_tasks = NULL;
-> > + 30   }
-> > + 31   rcu_torture_current = NULL;
-> > + 32
-> > + 33   if (fakewriter_tasks != NULL) {
-> > + 34     for (i = 0; i < nfakewriters; i++) {
-> > + 35       if (fakewriter_tasks[i] != NULL) {
-> > + 36         VERBOSE_PRINTK_STRING(
-> > + 37           "Stopping rcu_torture_fakewriter task");
-> > + 38         kthread_stop(fakewriter_tasks[i]);
-> > + 39       }
-> > + 40       fakewriter_tasks[i] = NULL;
-> > + 41     }
-> > + 42     kfree(fakewriter_tasks);
-> > + 43     fakewriter_tasks = NULL;
-> > + 44   }
-> > + 45
-> > + 46   if (stats_task != NULL) {
-> > + 47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
-> > + 48     kthread_stop(stats_task);
-> > + 49   }
-> > + 50   stats_task = NULL;
-> > + 51
-> > + 52   /* Wait for all RCU callbacks to fire. */
-> > + 53   rcu_barrier();
-> > + 54
-> > + 55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
-> > + 56
-> > + 57   if (cur_ops->cleanup != NULL)
-> > + 58     cur_ops->cleanup();
-> > + 59   if (atomic_read(&n_rcu_torture_error))
-> > + 60     rcu_torture_print_module_parms("End of test: FAILURE");
-> > + 61   else
-> > + 62     rcu_torture_print_module_parms("End of test: SUCCESS");
-> > + 63 }
-> >   Line 6 sets a global variable that prevents any RCU callbacks from
-> >   re-posting themselves. This will not be necessary in most cases, since
-> > @@ -176,9 +181,14 @@ for any pre-existing callbacks to complete.
-> >   Then lines 55-62 print status and do operation-specific cleanup, and
-> >   then return, permitting the module-unload operation to be completed.
-> > -Quick Quiz #1: Is there any other situation where rcu_barrier() might
-> > +.. _rcubarrier_quiz_1:
-> > +
-> > +Quick Quiz #1:
-> > +	Is there any other situation where rcu_barrier() might
-> >   	be required?
-> > +:ref:`Answer to Quick Quiz #1 <answer_rcubarrier_quiz_1>`
-> > +
-> >   Your module might have additional complications. For example, if your
-> >   module invokes call_rcu() from timers, you will need to first cancel all
-> >   the timers, and only then invoke rcu_barrier() to wait for any remaining
-> > @@ -188,11 +198,12 @@ Of course, if you module uses call_rcu(), you will need to invoke
-> >   rcu_barrier() before unloading.  Similarly, if your module uses
-> >   call_srcu(), you will need to invoke srcu_barrier() before unloading,
-> >   and on the same srcu_struct structure.  If your module uses call_rcu()
-> > --and- call_srcu(), then you will need to invoke rcu_barrier() -and-
-> > +**and** call_srcu(), then you will need to invoke rcu_barrier() **and**
-> >   srcu_barrier().
-> >   Implementing rcu_barrier()
-> > +--------------------------
-> >   Dipankar Sarma's implementation of rcu_barrier() makes use of the fact
-> >   that RCU callbacks are never reordered once queued on one of the per-CPU
-> > @@ -200,19 +211,19 @@ queues. His implementation queues an RCU callback on each of the per-CPU
-> >   callback queues, and then waits until they have all started executing, at
-> >   which point, all earlier RCU callbacks are guaranteed to have completed.
-> > -The original code for rcu_barrier() was as follows:
-> > +The original code for rcu_barrier() was as follows::
-> > - 1 void rcu_barrier(void)
-> > - 2 {
-> > - 3   BUG_ON(in_interrupt());
-> > - 4   /* Take cpucontrol mutex to protect against CPU hotplug */
-> > - 5   mutex_lock(&rcu_barrier_mutex);
-> > - 6   init_completion(&rcu_barrier_completion);
-> > - 7   atomic_set(&rcu_barrier_cpu_count, 0);
-> > - 8   on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-> > - 9   wait_for_completion(&rcu_barrier_completion);
-> > -10   mutex_unlock(&rcu_barrier_mutex);
-> > -11 }
-> > + 1  void rcu_barrier(void)
-> > + 2  {
-> > + 3    BUG_ON(in_interrupt());
-> > + 4    /* Take cpucontrol mutex to protect against CPU hotplug */
-> > + 5    mutex_lock(&rcu_barrier_mutex);
-> > + 6    init_completion(&rcu_barrier_completion);
-> > + 7    atomic_set(&rcu_barrier_cpu_count, 0);
-> > + 8    on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-> > + 9    wait_for_completion(&rcu_barrier_completion);
-> > + 10   mutex_unlock(&rcu_barrier_mutex);
-> > + 11 }
-> >   Line 3 verifies that the caller is in process context, and lines 5 and 10
-> >   use rcu_barrier_mutex to ensure that only one rcu_barrier() is using the
-> > @@ -226,18 +237,18 @@ This code was rewritten in 2008 and several times thereafter, but this
-> >   still gives the general idea.
-> >   The rcu_barrier_func() runs on each CPU, where it invokes call_rcu()
-> > -to post an RCU callback, as follows:
-> > +to post an RCU callback, as follows::
-> > - 1 static void rcu_barrier_func(void *notused)
-> > - 2 {
-> > - 3 int cpu = smp_processor_id();
-> > - 4 struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
-> > - 5 struct rcu_head *head;
-> > + 1  static void rcu_barrier_func(void *notused)
-> > + 2  {
-> > + 3    int cpu = smp_processor_id();
-> > + 4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
-> > + 5    struct rcu_head *head;
-> >    6
-> > - 7 head = &rdp->barrier;
-> > - 8 atomic_inc(&rcu_barrier_cpu_count);
-> > - 9 call_rcu(head, rcu_barrier_callback);
-> > -10 }
-> > + 7    head = &rdp->barrier;
-> > + 8    atomic_inc(&rcu_barrier_cpu_count);
-> > + 9    call_rcu(head, rcu_barrier_callback);
-> > + 10 }
-> >   Lines 3 and 4 locate RCU's internal per-CPU rcu_data structure,
-> >   which contains the struct rcu_head that needed for the later call to
-> > @@ -248,20 +259,25 @@ the current CPU's queue.
-> >   The rcu_barrier_callback() function simply atomically decrements the
-> >   rcu_barrier_cpu_count variable and finalizes the completion when it
-> > -reaches zero, as follows:
-> > +reaches zero, as follows::
-> >    1 static void rcu_barrier_callback(struct rcu_head *notused)
-> >    2 {
-> > - 3 if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-> > - 4 complete(&rcu_barrier_completion);
-> > + 3   if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-> > + 4     complete(&rcu_barrier_completion);
-> >    5 }
-> > -Quick Quiz #2: What happens if CPU 0's rcu_barrier_func() executes
-> > +.. _rcubarrier_quiz_2:
-> > +
-> > +Quick Quiz #2:
-> > +	What happens if CPU 0's rcu_barrier_func() executes
-> >   	immediately (thus incrementing rcu_barrier_cpu_count to the
-> >   	value one), but the other CPU's rcu_barrier_func() invocations
-> >   	are delayed for a full grace period? Couldn't this result in
-> >   	rcu_barrier() returning prematurely?
-> > +:ref:`Answer to Quick Quiz #2 <answer_rcubarrier_quiz_2>`
-> > +
-> >   The current rcu_barrier() implementation is more complex, due to the need
-> >   to avoid disturbing idle CPUs (especially on battery-powered systems)
-> >   and the need to minimally disturb non-idle CPUs in real-time systems.
-> > @@ -269,6 +285,7 @@ However, the code above illustrates the concepts.
-> >   rcu_barrier() Summary
-> > +---------------------
-> >   The rcu_barrier() primitive has seen relatively little use, since most
-> >   code using RCU is in the core kernel rather than in modules. However, if
-> > @@ -277,8 +294,12 @@ so that your module may be safely unloaded.
-> >   Answers to Quick Quizzes
-> > +------------------------
-> > +
-> > +.. _answer_rcubarrier_quiz_1:
-> > -Quick Quiz #1: Is there any other situation where rcu_barrier() might
-> > +Quick Quiz #1:
-> > +	Is there any other situation where rcu_barrier() might
-> >   	be required?
-> >   Answer: Interestingly enough, rcu_barrier() was not originally
-> > @@ -292,7 +313,12 @@ Answer: Interestingly enough, rcu_barrier() was not originally
-> >   	implementing rcutorture, and found that rcu_barrier() solves
-> >   	this problem as well.
-> > -Quick Quiz #2: What happens if CPU 0's rcu_barrier_func() executes
-> > +:ref:`Back to Quick Quiz #1 <rcubarrier_quiz_1>`
-> > +
-> > +.. _answer_rcubarrier_quiz_2:
-> > +
-> > +Quick Quiz #2:
-> > +	What happens if CPU 0's rcu_barrier_func() executes
-> >   	immediately (thus incrementing rcu_barrier_cpu_count to the
-> >   	value one), but the other CPU's rcu_barrier_func() invocations
-> >   	are delayed for a full grace period? Couldn't this result in
-> > @@ -323,3 +349,5 @@ Answer: This cannot happen. The reason is that on_each_cpu() has its last
-> >   	is to add an rcu_read_lock() before line 8 of rcu_barrier()
-> >   	and an rcu_read_unlock() after line 8 of this same function. If
-> >   	you can think of a better change, please let me know!
-> > +
-> > +:ref:`Back to Quick Quiz #2 <rcubarrier_quiz_2>`
-> > 
+This patch addresses the issue by caching a certain number (compile-time
+configurable) of recently used context strings to speed up repeated
+translations of the same context, while using only a small amount of
+memory.
+
+The cache is integrated into the existing sidtab table by adding a field
+to each entry, which when not NULL contains an RCU-protected pointer to
+a cache entry containing the cached string. The cache entries are kept
+in a linked list sorted according to how recently they were used. On a
+cache miss when the cache is full, the least recently used entry is
+removed to make space for the new entry.
+
+The patch migrates security_sid_to_context_core() to use the cache (also
+a few other functions where it was possible without too much fuss, but
+these mostly use the translation for logging in case of error, which is
+rare).
+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1733259
+Cc: Michal Sekletar <msekleta@redhat.com>
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+---
+
+Changes in v3:
+ - add rcu@vger.kernel.org and Paul McKenney to Cc for review of the RCU
+   logic
+ - add __rcu annotation to the cache entry pointer (sidtab.c now passes
+   sparse checks with C=1)
+
+Changes in v2:
+ - skip sidtab_sid2str_put() when in non-task context to prevent
+   deadlock while avoiding the need to lock the spinlock with
+   irqsave/-restore (which is slower)
+
+ security/selinux/Kconfig       |  11 ++
+ security/selinux/ss/services.c | 138 +++++++++++++++----------
+ security/selinux/ss/sidtab.c   | 179 +++++++++++++++++++++++++++------
+ security/selinux/ss/sidtab.h   |  58 +++++++++--
+ 4 files changed, 294 insertions(+), 92 deletions(-)
+
+diff --git a/security/selinux/Kconfig b/security/selinux/Kconfig
+index 5711689deb6a..35fe8878cf1c 100644
+--- a/security/selinux/Kconfig
++++ b/security/selinux/Kconfig
+@@ -85,3 +85,14 @@ config SECURITY_SELINUX_CHECKREQPROT_VALUE
+ 	  via /selinux/checkreqprot if authorized by policy.
+ 
+ 	  If you are unsure how to answer this question, answer 0.
++
++config SECURITY_SELINUX_SID2STR_CACHE_SIZE
++	int "NSA SELinux SID to context string translation cache size"
++	depends on SECURITY_SELINUX
++	default 256
++	help
++	  This option defines the size of the internal SID -> context string
++	  cache, which improves the performance of context to string
++	  conversion.  Setting this option to 0 disables the cache completely.
++
++	  If unsure, keep the default value.
+diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+index 3a29e7c24ba9..b6dda5261166 100644
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -91,6 +91,12 @@ static int context_struct_to_string(struct policydb *policydb,
+ 				    char **scontext,
+ 				    u32 *scontext_len);
+ 
++static int sidtab_entry_to_string(struct policydb *policydb,
++				  struct sidtab *sidtab,
++				  struct sidtab_entry *entry,
++				  char **scontext,
++				  u32 *scontext_len);
++
+ static void context_struct_compute_av(struct policydb *policydb,
+ 				      struct context *scontext,
+ 				      struct context *tcontext,
+@@ -716,20 +722,21 @@ static void context_struct_compute_av(struct policydb *policydb,
+ }
+ 
+ static int security_validtrans_handle_fail(struct selinux_state *state,
+-					   struct context *ocontext,
+-					   struct context *ncontext,
+-					   struct context *tcontext,
++					   struct sidtab_entry *oentry,
++					   struct sidtab_entry *nentry,
++					   struct sidtab_entry *tentry,
+ 					   u16 tclass)
+ {
+ 	struct policydb *p = &state->ss->policydb;
++	struct sidtab *sidtab = state->ss->sidtab;
+ 	char *o = NULL, *n = NULL, *t = NULL;
+ 	u32 olen, nlen, tlen;
+ 
+-	if (context_struct_to_string(p, ocontext, &o, &olen))
++	if (sidtab_entry_to_string(p, sidtab, oentry, &o, &olen))
+ 		goto out;
+-	if (context_struct_to_string(p, ncontext, &n, &nlen))
++	if (sidtab_entry_to_string(p, sidtab, nentry, &n, &nlen))
+ 		goto out;
+-	if (context_struct_to_string(p, tcontext, &t, &tlen))
++	if (sidtab_entry_to_string(p, sidtab, tentry, &t, &tlen))
+ 		goto out;
+ 	audit_log(audit_context(), GFP_ATOMIC, AUDIT_SELINUX_ERR,
+ 		  "op=security_validate_transition seresult=denied"
+@@ -751,9 +758,9 @@ static int security_compute_validatetrans(struct selinux_state *state,
+ {
+ 	struct policydb *policydb;
+ 	struct sidtab *sidtab;
+-	struct context *ocontext;
+-	struct context *ncontext;
+-	struct context *tcontext;
++	struct sidtab_entry *oentry;
++	struct sidtab_entry *nentry;
++	struct sidtab_entry *tentry;
+ 	struct class_datum *tclass_datum;
+ 	struct constraint_node *constraint;
+ 	u16 tclass;
+@@ -779,24 +786,24 @@ static int security_compute_validatetrans(struct selinux_state *state,
+ 	}
+ 	tclass_datum = policydb->class_val_to_struct[tclass - 1];
+ 
+-	ocontext = sidtab_search(sidtab, oldsid);
+-	if (!ocontext) {
++	oentry = sidtab_search_entry(sidtab, oldsid);
++	if (!oentry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 			__func__, oldsid);
+ 		rc = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	ncontext = sidtab_search(sidtab, newsid);
+-	if (!ncontext) {
++	nentry = sidtab_search_entry(sidtab, newsid);
++	if (!nentry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 			__func__, newsid);
+ 		rc = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	tcontext = sidtab_search(sidtab, tasksid);
+-	if (!tcontext) {
++	tentry = sidtab_search_entry(sidtab, tasksid);
++	if (!tentry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 			__func__, tasksid);
+ 		rc = -EINVAL;
+@@ -805,15 +812,16 @@ static int security_compute_validatetrans(struct selinux_state *state,
+ 
+ 	constraint = tclass_datum->validatetrans;
+ 	while (constraint) {
+-		if (!constraint_expr_eval(policydb, ocontext, ncontext,
+-					  tcontext, constraint->expr)) {
++		if (!constraint_expr_eval(policydb, &oentry->context,
++					  &nentry->context, &tentry->context,
++					  constraint->expr)) {
+ 			if (user)
+ 				rc = -EPERM;
+ 			else
+ 				rc = security_validtrans_handle_fail(state,
+-								     ocontext,
+-								     ncontext,
+-								     tcontext,
++								     oentry,
++								     nentry,
++								     tentry,
+ 								     tclass);
+ 			goto out;
+ 		}
+@@ -855,7 +863,7 @@ int security_bounded_transition(struct selinux_state *state,
+ {
+ 	struct policydb *policydb;
+ 	struct sidtab *sidtab;
+-	struct context *old_context, *new_context;
++	struct sidtab_entry *old_entry, *new_entry;
+ 	struct type_datum *type;
+ 	int index;
+ 	int rc;
+@@ -869,16 +877,16 @@ int security_bounded_transition(struct selinux_state *state,
+ 	sidtab = state->ss->sidtab;
+ 
+ 	rc = -EINVAL;
+-	old_context = sidtab_search(sidtab, old_sid);
+-	if (!old_context) {
++	old_entry = sidtab_search_entry(sidtab, old_sid);
++	if (!old_entry) {
+ 		pr_err("SELinux: %s: unrecognized SID %u\n",
+ 		       __func__, old_sid);
+ 		goto out;
+ 	}
+ 
+ 	rc = -EINVAL;
+-	new_context = sidtab_search(sidtab, new_sid);
+-	if (!new_context) {
++	new_entry = sidtab_search_entry(sidtab, new_sid);
++	if (!new_entry) {
+ 		pr_err("SELinux: %s: unrecognized SID %u\n",
+ 		       __func__, new_sid);
+ 		goto out;
+@@ -886,10 +894,10 @@ int security_bounded_transition(struct selinux_state *state,
+ 
+ 	rc = 0;
+ 	/* type/domain unchanged */
+-	if (old_context->type == new_context->type)
++	if (old_entry->context.type == new_entry->context.type)
+ 		goto out;
+ 
+-	index = new_context->type;
++	index = new_entry->context.type;
+ 	while (true) {
+ 		type = policydb->type_val_to_struct[index - 1];
+ 		BUG_ON(!type);
+@@ -901,7 +909,7 @@ int security_bounded_transition(struct selinux_state *state,
+ 
+ 		/* @newsid is bounded by @oldsid */
+ 		rc = 0;
+-		if (type->bounds == old_context->type)
++		if (type->bounds == old_entry->context.type)
+ 			break;
+ 
+ 		index = type->bounds;
+@@ -912,10 +920,10 @@ int security_bounded_transition(struct selinux_state *state,
+ 		char *new_name = NULL;
+ 		u32 length;
+ 
+-		if (!context_struct_to_string(policydb, old_context,
+-					      &old_name, &length) &&
+-		    !context_struct_to_string(policydb, new_context,
+-					      &new_name, &length)) {
++		if (!sidtab_entry_to_string(policydb, sidtab, old_entry,
++					    &old_name, &length) &&
++		    !sidtab_entry_to_string(policydb, sidtab, new_entry,
++					    &new_name, &length)) {
+ 			audit_log(audit_context(),
+ 				  GFP_ATOMIC, AUDIT_SELINUX_ERR,
+ 				  "op=security_bounded_transition "
+@@ -1255,6 +1263,23 @@ static int context_struct_to_string(struct policydb *p,
+ 	return 0;
+ }
+ 
++static int sidtab_entry_to_string(struct policydb *p,
++				  struct sidtab *sidtab,
++				  struct sidtab_entry *entry,
++				  char **scontext, u32 *scontext_len)
++{
++	int rc = sidtab_sid2str_get(sidtab, entry, scontext, scontext_len);
++
++	if (rc != -ENOENT)
++		return rc;
++
++	rc = context_struct_to_string(p, &entry->context, scontext,
++				      scontext_len);
++	if (!rc && scontext)
++		sidtab_sid2str_put(sidtab, entry, *scontext, *scontext_len);
++	return rc;
++}
++
+ #include "initial_sid_to_string.h"
+ 
+ const char *security_get_initial_sid_context(u32 sid)
+@@ -1271,7 +1296,7 @@ static int security_sid_to_context_core(struct selinux_state *state,
+ {
+ 	struct policydb *policydb;
+ 	struct sidtab *sidtab;
+-	struct context *context;
++	struct sidtab_entry *entry;
+ 	int rc = 0;
+ 
+ 	if (scontext)
+@@ -1302,21 +1327,23 @@ static int security_sid_to_context_core(struct selinux_state *state,
+ 	read_lock(&state->ss->policy_rwlock);
+ 	policydb = &state->ss->policydb;
+ 	sidtab = state->ss->sidtab;
++
+ 	if (force)
+-		context = sidtab_search_force(sidtab, sid);
++		entry = sidtab_search_entry_force(sidtab, sid);
+ 	else
+-		context = sidtab_search(sidtab, sid);
+-	if (!context) {
++		entry = sidtab_search_entry(sidtab, sid);
++	if (!entry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 			__func__, sid);
+ 		rc = -EINVAL;
+ 		goto out_unlock;
+ 	}
+-	if (only_invalid && !context->len)
+-		rc = 0;
+-	else
+-		rc = context_struct_to_string(policydb, context, scontext,
+-					      scontext_len);
++	if (only_invalid && !entry->context.len)
++		goto out_unlock;
++
++	rc = sidtab_entry_to_string(policydb, sidtab, entry, scontext,
++				    scontext_len);
++
+ out_unlock:
+ 	read_unlock(&state->ss->policy_rwlock);
+ out:
+@@ -1574,19 +1601,20 @@ int security_context_to_sid_force(struct selinux_state *state,
+ 
+ static int compute_sid_handle_invalid_context(
+ 	struct selinux_state *state,
+-	struct context *scontext,
+-	struct context *tcontext,
++	struct sidtab_entry *sentry,
++	struct sidtab_entry *tentry,
+ 	u16 tclass,
+ 	struct context *newcontext)
+ {
+ 	struct policydb *policydb = &state->ss->policydb;
++	struct sidtab *sidtab = state->ss->sidtab;
+ 	char *s = NULL, *t = NULL, *n = NULL;
+ 	u32 slen, tlen, nlen;
+ 	struct audit_buffer *ab;
+ 
+-	if (context_struct_to_string(policydb, scontext, &s, &slen))
++	if (sidtab_entry_to_string(policydb, sidtab, sentry, &s, &slen))
+ 		goto out;
+-	if (context_struct_to_string(policydb, tcontext, &t, &tlen))
++	if (sidtab_entry_to_string(policydb, sidtab, tentry, &t, &tlen))
+ 		goto out;
+ 	if (context_struct_to_string(policydb, newcontext, &n, &nlen))
+ 		goto out;
+@@ -1645,7 +1673,8 @@ static int security_compute_sid(struct selinux_state *state,
+ 	struct policydb *policydb;
+ 	struct sidtab *sidtab;
+ 	struct class_datum *cladatum = NULL;
+-	struct context *scontext = NULL, *tcontext = NULL, newcontext;
++	struct context *scontext, *tcontext, newcontext;
++	struct sidtab_entry *sentry, *tentry;
+ 	struct role_trans *roletr = NULL;
+ 	struct avtab_key avkey;
+ 	struct avtab_datum *avdatum;
+@@ -1682,21 +1711,24 @@ static int security_compute_sid(struct selinux_state *state,
+ 	policydb = &state->ss->policydb;
+ 	sidtab = state->ss->sidtab;
+ 
+-	scontext = sidtab_search(sidtab, ssid);
+-	if (!scontext) {
++	sentry = sidtab_search_entry(sidtab, ssid);
++	if (!sentry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 		       __func__, ssid);
+ 		rc = -EINVAL;
+ 		goto out_unlock;
+ 	}
+-	tcontext = sidtab_search(sidtab, tsid);
+-	if (!tcontext) {
++	tentry = sidtab_search_entry(sidtab, tsid);
++	if (!tentry) {
+ 		pr_err("SELinux: %s:  unrecognized SID %d\n",
+ 		       __func__, tsid);
+ 		rc = -EINVAL;
+ 		goto out_unlock;
+ 	}
+ 
++	scontext = &sentry->context;
++	tcontext = &tentry->context;
++
+ 	if (tclass && tclass <= policydb->p_classes.nprim)
+ 		cladatum = policydb->class_val_to_struct[tclass - 1];
+ 
+@@ -1797,10 +1829,8 @@ static int security_compute_sid(struct selinux_state *state,
+ 
+ 	/* Check the validity of the context. */
+ 	if (!policydb_context_isvalid(policydb, &newcontext)) {
+-		rc = compute_sid_handle_invalid_context(state, scontext,
+-							tcontext,
+-							tclass,
+-							&newcontext);
++		rc = compute_sid_handle_invalid_context(state, sentry, tentry,
++							tclass, &newcontext);
+ 		if (rc)
+ 			goto out_unlock;
+ 	}
+diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
+index 7d49994e8d5f..568069be922c 100644
+--- a/security/selinux/ss/sidtab.c
++++ b/security/selinux/ss/sidtab.c
+@@ -9,6 +9,8 @@
+  */
+ #include <linux/errno.h>
+ #include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/rcupdate.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/spinlock.h>
+@@ -17,6 +19,14 @@
+ #include "security.h"
+ #include "sidtab.h"
+ 
++struct sidtab_str_cache {
++	struct rcu_head rcu_member;
++	struct list_head lru_member;
++	struct sidtab_entry *parent;
++	u32 len;
++	char str[];
++};
++
+ int sidtab_init(struct sidtab *s)
+ {
+ 	u32 i;
+@@ -34,24 +44,33 @@ int sidtab_init(struct sidtab *s)
+ 	s->convert = NULL;
+ 
+ 	spin_lock_init(&s->lock);
++
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++	s->cache_free_slots = CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE;
++	INIT_LIST_HEAD(&s->cache_lru_list);
++	spin_lock_init(&s->cache_lock);
++#endif
+ 	return 0;
+ }
+ 
+ int sidtab_set_initial(struct sidtab *s, u32 sid, struct context *context)
+ {
+-	struct sidtab_isid_entry *entry;
++	struct sidtab_isid_entry *isid;
+ 	int rc;
+ 
+ 	if (sid == 0 || sid > SECINITSID_NUM)
+ 		return -EINVAL;
+ 
+-	entry = &s->isids[sid - 1];
++	isid = &s->isids[sid - 1];
+ 
+-	rc = context_cpy(&entry->context, context);
++	rc = context_cpy(&isid->entry.context, context);
+ 	if (rc)
+ 		return rc;
+ 
+-	entry->set = 1;
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++	isid->entry.cache = NULL;
++#endif
++	isid->set = 1;
+ 	return 0;
+ }
+ 
+@@ -88,7 +107,8 @@ static int sidtab_alloc_roots(struct sidtab *s, u32 level)
+ 	return 0;
+ }
+ 
+-static struct context *sidtab_do_lookup(struct sidtab *s, u32 index, int alloc)
++static struct sidtab_entry *sidtab_do_lookup(struct sidtab *s, u32 index,
++					     int alloc)
+ {
+ 	union sidtab_entry_inner *entry;
+ 	u32 level, capacity_shift, leaf_index = index / SIDTAB_LEAF_ENTRIES;
+@@ -125,10 +145,16 @@ static struct context *sidtab_do_lookup(struct sidtab *s, u32 index, int alloc)
+ 		if (!entry->ptr_leaf)
+ 			return NULL;
+ 	}
+-	return &entry->ptr_leaf->entries[index % SIDTAB_LEAF_ENTRIES].context;
++	return &entry->ptr_leaf->entries[index % SIDTAB_LEAF_ENTRIES];
++}
++
++/* use when you know that there is enough entries */
++static struct context *sidtab_lookup_unsafe(struct sidtab *s, u32 index)
++{
++	return &sidtab_do_lookup(s, index, 0)->context;
+ }
+ 
+-static struct context *sidtab_lookup(struct sidtab *s, u32 index)
++static struct sidtab_entry *sidtab_lookup(struct sidtab *s, u32 index)
+ {
+ 	/* read entries only after reading count */
+ 	u32 count = smp_load_acquire(&s->count);
+@@ -139,33 +165,34 @@ static struct context *sidtab_lookup(struct sidtab *s, u32 index)
+ 	return sidtab_do_lookup(s, index, 0);
+ }
+ 
+-static struct context *sidtab_lookup_initial(struct sidtab *s, u32 sid)
++static struct sidtab_entry *sidtab_lookup_initial(struct sidtab *s, u32 sid)
+ {
+-	return s->isids[sid - 1].set ? &s->isids[sid - 1].context : NULL;
++	return s->isids[sid - 1].set ? &s->isids[sid - 1].entry : NULL;
+ }
+ 
+-static struct context *sidtab_search_core(struct sidtab *s, u32 sid, int force)
++static struct sidtab_entry *sidtab_search_core(struct sidtab *s, u32 sid,
++					       int force)
+ {
+-	struct context *context;
+-
+ 	if (sid != 0) {
++		struct sidtab_entry *entry;
++
+ 		if (sid > SECINITSID_NUM)
+-			context = sidtab_lookup(s, sid - (SECINITSID_NUM + 1));
++			entry = sidtab_lookup(s, sid - (SECINITSID_NUM + 1));
+ 		else
+-			context = sidtab_lookup_initial(s, sid);
+-		if (context && (!context->len || force))
+-			return context;
++			entry = sidtab_lookup_initial(s, sid);
++		if (entry && (!entry->context.len || force))
++			return entry;
+ 	}
+ 
+ 	return sidtab_lookup_initial(s, SECINITSID_UNLABELED);
+ }
+ 
+-struct context *sidtab_search(struct sidtab *s, u32 sid)
++struct sidtab_entry *sidtab_search_entry(struct sidtab *s, u32 sid)
+ {
+ 	return sidtab_search_core(s, sid, 0);
+ }
+ 
+-struct context *sidtab_search_force(struct sidtab *s, u32 sid)
++struct sidtab_entry *sidtab_search_entry_force(struct sidtab *s, u32 sid)
+ {
+ 	return sidtab_search_core(s, sid, 1);
+ }
+@@ -230,7 +257,7 @@ static int sidtab_rcache_search(struct sidtab *s, struct context *context,
+ 		if (v >= SIDTAB_MAX)
+ 			continue;
+ 
+-		if (context_cmp(sidtab_do_lookup(s, v, 0), context)) {
++		if (context_cmp(sidtab_lookup_unsafe(s, v), context)) {
+ 			sidtab_rcache_update(s, v, i);
+ 			*index = v;
+ 			return 0;
+@@ -245,7 +272,7 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
+ 	unsigned long flags;
+ 	u32 count, count_locked, level, pos;
+ 	struct sidtab_convert_params *convert;
+-	struct context *dst, *dst_convert;
++	struct sidtab_entry *dst, *dst_convert;
+ 	int rc;
+ 
+ 	rc = sidtab_rcache_search(s, context, index);
+@@ -273,7 +300,7 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
+ 
+ 	/* if count has changed before we acquired the lock, then catch up */
+ 	while (count < count_locked) {
+-		if (context_cmp(sidtab_do_lookup(s, count, 0), context)) {
++		if (context_cmp(sidtab_lookup_unsafe(s, count), context)) {
+ 			sidtab_rcache_push(s, count);
+ 			*index = count;
+ 			rc = 0;
+@@ -293,7 +320,7 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
+ 	if (!dst)
+ 		goto out_unlock;
+ 
+-	rc = context_cpy(dst, context);
++	rc = context_cpy(&dst->context, context);
+ 	if (rc)
+ 		goto out_unlock;
+ 
+@@ -305,13 +332,14 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
+ 		rc = -ENOMEM;
+ 		dst_convert = sidtab_do_lookup(convert->target, count, 1);
+ 		if (!dst_convert) {
+-			context_destroy(dst);
++			context_destroy(&dst->context);
+ 			goto out_unlock;
+ 		}
+ 
+-		rc = convert->func(context, dst_convert, convert->args);
++		rc = convert->func(context, &dst_convert->context,
++				   convert->args);
+ 		if (rc) {
+-			context_destroy(dst);
++			context_destroy(&dst->context);
+ 			goto out_unlock;
+ 		}
+ 
+@@ -341,9 +369,9 @@ int sidtab_context_to_sid(struct sidtab *s, struct context *context, u32 *sid)
+ 	u32 i;
+ 
+ 	for (i = 0; i < SECINITSID_NUM; i++) {
+-		struct sidtab_isid_entry *entry = &s->isids[i];
++		struct sidtab_isid_entry *isid = &s->isids[i];
+ 
+-		if (entry->set && context_cmp(context, &entry->context)) {
++		if (isid->set && context_cmp(context, &isid->entry.context)) {
+ 			*sid = i + 1;
+ 			return 0;
+ 		}
+@@ -453,6 +481,14 @@ int sidtab_convert(struct sidtab *s, struct sidtab_convert_params *params)
+ 	return rc;
+ }
+ 
++static void sidtab_destroy_entry(struct sidtab_entry *entry)
++{
++	context_destroy(&entry->context);
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++	kfree(rcu_dereference_raw(entry->cache));
++#endif
++}
++
+ static void sidtab_destroy_tree(union sidtab_entry_inner entry, u32 level)
+ {
+ 	u32 i;
+@@ -473,7 +509,7 @@ static void sidtab_destroy_tree(union sidtab_entry_inner entry, u32 level)
+ 			return;
+ 
+ 		for (i = 0; i < SIDTAB_LEAF_ENTRIES; i++)
+-			context_destroy(&node->entries[i].context);
++			sidtab_destroy_entry(&node->entries[i]);
+ 		kfree(node);
+ 	}
+ }
+@@ -484,7 +520,7 @@ void sidtab_destroy(struct sidtab *s)
+ 
+ 	for (i = 0; i < SECINITSID_NUM; i++)
+ 		if (s->isids[i].set)
+-			context_destroy(&s->isids[i].context);
++			sidtab_destroy_entry(&s->isids[i].entry);
+ 
+ 	level = SIDTAB_MAX_LEVEL;
+ 	while (level && !s->roots[level].ptr_inner)
+@@ -492,3 +528,88 @@ void sidtab_destroy(struct sidtab *s)
+ 
+ 	sidtab_destroy_tree(s->roots[level], level);
+ }
++
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++
++void sidtab_sid2str_put(struct sidtab *s, struct sidtab_entry *entry,
++			const char *str, u32 str_len)
++{
++	struct sidtab_str_cache *cache, *victim;
++
++	/* do not cache invalid contexts */
++	if (entry->context.len)
++		return;
++
++	/*
++	 * Skip the put operation when in non-task context to avoid the need
++	 * to disable interrupts while holding s->cache_lock.
++	 */
++	if (!in_task())
++		return;
++
++	spin_lock(&s->cache_lock);
++
++	cache = rcu_dereference_raw(entry->cache);
++	if (cache) {
++		/* entry in cache - just bump to he head of LRU list */
++		list_move(&cache->lru_member, &s->cache_lru_list);
++		goto out_unlock;
++	}
++
++	cache = kmalloc(sizeof(struct sidtab_str_cache) + str_len, GFP_ATOMIC);
++	if (!cache)
++		goto out_unlock;
++
++	if (s->cache_free_slots == 0) {
++		/* pop a cache entry from the tail and free it */
++		victim = container_of(s->cache_lru_list.prev,
++				      struct sidtab_str_cache, lru_member);
++		list_del(&victim->lru_member);
++		kfree_rcu(victim, rcu_member);
++		rcu_assign_pointer(victim->parent->cache, NULL);
++	} else {
++		s->cache_free_slots--;
++	}
++	cache->parent = entry;
++	cache->len = str_len;
++	memcpy(cache->str, str, str_len);
++	rcu_head_init(&cache->rcu_member);
++	list_add(&cache->lru_member, &s->cache_lru_list);
++
++	rcu_assign_pointer(entry->cache, cache);
++
++out_unlock:
++	spin_unlock(&s->cache_lock);
++}
++
++int sidtab_sid2str_get(struct sidtab *s, struct sidtab_entry *entry,
++		       char **out, u32 *out_len)
++{
++	struct sidtab_str_cache *cache;
++	int rc = 0;
++
++	if (entry->context.len)
++		return -ENOENT; /* do not cache invalid contexts */
++
++	rcu_read_lock();
++
++	cache = rcu_dereference(entry->cache);
++	if (!cache) {
++		rc = -ENOENT;
++	} else {
++		*out_len = cache->len;
++		if (out) {
++			*out = kmemdup(cache->str, cache->len, GFP_ATOMIC);
++			if (!*out)
++				rc = -ENOMEM;
++		}
++	}
++
++	rcu_read_unlock();
++
++	if (!rc && out)
++		sidtab_sid2str_put(s, entry, *out, *out_len);
++	return rc;
++}
++
++#endif /* CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0 */
+diff --git a/security/selinux/ss/sidtab.h b/security/selinux/ss/sidtab.h
+index 1f4763141aa1..5fe67a0c307b 100644
+--- a/security/selinux/ss/sidtab.h
++++ b/security/selinux/ss/sidtab.h
+@@ -16,13 +16,13 @@
+ 
+ #include "context.h"
+ 
+-struct sidtab_entry_leaf {
++struct sidtab_entry {
+ 	struct context context;
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++	struct sidtab_str_cache __rcu *cache;
++#endif
+ };
+ 
+-struct sidtab_node_inner;
+-struct sidtab_node_leaf;
+-
+ union sidtab_entry_inner {
+ 	struct sidtab_node_inner *ptr_inner;
+ 	struct sidtab_node_leaf  *ptr_leaf;
+@@ -38,7 +38,7 @@ union sidtab_entry_inner {
+ 	(SIDTAB_NODE_ALLOC_SHIFT - size_to_shift(sizeof(union sidtab_entry_inner)))
+ #define SIDTAB_INNER_ENTRIES ((size_t)1 << SIDTAB_INNER_SHIFT)
+ #define SIDTAB_LEAF_ENTRIES \
+-	(SIDTAB_NODE_ALLOC_SIZE / sizeof(struct sidtab_entry_leaf))
++	(SIDTAB_NODE_ALLOC_SIZE / sizeof(struct sidtab_entry))
+ 
+ #define SIDTAB_MAX_BITS 32
+ #define SIDTAB_MAX U32_MAX
+@@ -48,7 +48,7 @@ union sidtab_entry_inner {
+ 		     SIDTAB_INNER_SHIFT)
+ 
+ struct sidtab_node_leaf {
+-	struct sidtab_entry_leaf entries[SIDTAB_LEAF_ENTRIES];
++	struct sidtab_entry entries[SIDTAB_LEAF_ENTRIES];
+ };
+ 
+ struct sidtab_node_inner {
+@@ -57,7 +57,7 @@ struct sidtab_node_inner {
+ 
+ struct sidtab_isid_entry {
+ 	int set;
+-	struct context context;
++	struct sidtab_entry entry;
+ };
+ 
+ struct sidtab_convert_params {
+@@ -83,6 +83,13 @@ struct sidtab {
+ 	struct sidtab_convert_params *convert;
+ 	spinlock_t lock;
+ 
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++	/* SID -> context string cache */
++	u32 cache_free_slots;
++	struct list_head cache_lru_list;
++	spinlock_t cache_lock;
++#endif
++
+ 	/* reverse lookup cache - access atomically via {READ|WRITE}_ONCE() */
+ 	u32 rcache[SIDTAB_RCACHE_SIZE];
+ 
+@@ -92,8 +99,22 @@ struct sidtab {
+ 
+ int sidtab_init(struct sidtab *s);
+ int sidtab_set_initial(struct sidtab *s, u32 sid, struct context *context);
+-struct context *sidtab_search(struct sidtab *s, u32 sid);
+-struct context *sidtab_search_force(struct sidtab *s, u32 sid);
++struct sidtab_entry *sidtab_search_entry(struct sidtab *s, u32 sid);
++struct sidtab_entry *sidtab_search_entry_force(struct sidtab *s, u32 sid);
++
++static inline struct context *sidtab_search(struct sidtab *s, u32 sid)
++{
++	struct sidtab_entry *entry = sidtab_search_entry(s, sid);
++
++	return entry ? &entry->context : NULL;
++}
++
++static inline struct context *sidtab_search_force(struct sidtab *s, u32 sid)
++{
++	struct sidtab_entry *entry = sidtab_search_entry_force(s, sid);
++
++	return entry ? &entry->context : NULL;
++}
+ 
+ int sidtab_convert(struct sidtab *s, struct sidtab_convert_params *params);
+ 
+@@ -101,6 +122,25 @@ int sidtab_context_to_sid(struct sidtab *s, struct context *context, u32 *sid);
+ 
+ void sidtab_destroy(struct sidtab *s);
+ 
++#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
++void sidtab_sid2str_put(struct sidtab *s, struct sidtab_entry *entry,
++			const char *str, u32 str_len);
++int sidtab_sid2str_get(struct sidtab *s, struct sidtab_entry *entry,
++		       char **out, u32 *out_len);
++#else
++static inline void sidtab_sid2str_put(struct sidtab *s,
++				      struct sidtab_entry *entry,
++				      const char *str, u32 str_len)
++{
++}
++static inline int sidtab_sid2str_get(struct sidtab *s,
++				     struct sidtab_entry *entry,
++				     char **out, u32 *out_len)
++{
++	return -ENOENT;
++}
++#endif /* CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0 */
++
+ #endif	/* _SS_SIDTAB_H_ */
+ 
+ 
+-- 
+2.21.0
+
