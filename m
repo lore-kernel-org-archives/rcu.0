@@ -2,136 +2,146 @@ Return-Path: <SRS0=8pCx=ZE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D183CC17447
-	for <rcu@archiver.kernel.org>; Tue, 12 Nov 2019 00:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE909C17447
+	for <rcu@archiver.kernel.org>; Tue, 12 Nov 2019 01:28:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A5F1621872
-	for <rcu@archiver.kernel.org>; Tue, 12 Nov 2019 00:03:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C4dSANX8"
+	by mail.kernel.org (Postfix) with ESMTP id CEA9A2184C
+	for <rcu@archiver.kernel.org>; Tue, 12 Nov 2019 01:28:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbfKLADZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Nov 2019 19:03:25 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:53078 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbfKLADY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Nov 2019 19:03:24 -0500
-Received: by mail-wm1-f68.google.com with SMTP id l1so1174060wme.2;
-        Mon, 11 Nov 2019 16:03:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2hJz4lCOfkMCCr9Ga5SGhhISRmp/Zo6cNfw+JBvPD4=;
-        b=C4dSANX8A3Iqlp5SW3GLXjgDjn6AiIxum5KhabRQL0u9+NJELsKHGj45sobE7NfEbN
-         u09hSXCRTmpfvoFaIdgeRH9JioWuWwZo39JSTIcjveLJvfCZ18V2+RmkwGFj0zRo1GZS
-         UFhbxkdk0trUCPfP6M06Ml6LPigGLiBsfI4rhSsMYsMgAOK8jrqY+kSDFQugU6BjJJnO
-         KKYfpEvemBg8cKUSiM2PpHRF7in5UmfSoRGNUJ0pMctheHk9e5mpVKp2LLyqOB7/QmxK
-         Fp6sClwwusxFR4fYG5BCCaP5kRxadtysU3j2fd3qGQbh7N0SYdongW+pWHgW9yDZp90U
-         kIhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2hJz4lCOfkMCCr9Ga5SGhhISRmp/Zo6cNfw+JBvPD4=;
-        b=gNw+5hVql963DpB4dm4vx32fhJmTWKwzubYzB6ugupvSkq7UXdCbNtJqfFHEKDL4dr
-         362Yhjm9i3FZvARiMo/RCPqUvS/ytkaMoxNz7eg4CbXlsOcHSbSEnswNyldkIBuh6br3
-         4sN5UhUtCNLs/F2neOXIv15oAej3sbPvxxP5jvlmCRWulAkLA88eox5jaAjE2chCAoKH
-         GHpr+fXQIpisXEnwHFMintsralm+/NAp/4/Vp+2VeulW12vMYrpGnIFVnRddu3ozsnqx
-         zq8JZS9fbrsFOL1Q6rX51f9EO66S6UbgzAXKDoJlly/0F4K1LP8IjQWkRemc30UyoCPe
-         yDIA==
-X-Gm-Message-State: APjAAAVxCOVZdKEXYolozw9IdMvH+oAzq3zZgUlptjBr8D6dSKAEFDPa
-        tRofvxg9ciaR/RxD8XpWXln/IHZRNbMAjk9Nr1A=
-X-Google-Smtp-Source: APXvYqx3qSAucNJ8c2QmwKh+XFtnsSnVSsWogTf4eRg+5fTby7qdsdZaAXPlJz2/DRqoC7NEHbalVcg4b1liF2DPg2w=
-X-Received: by 2002:a1c:6405:: with SMTP id y5mr1369685wmb.175.1573517002088;
- Mon, 11 Nov 2019 16:03:22 -0800 (PST)
+        id S1726995AbfKLB2o (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Nov 2019 20:28:44 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:34795 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727571AbfKLB2o (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 11 Nov 2019 20:28:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07487;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Thqw6v2_1573522118;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Thqw6v2_1573522118)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 12 Nov 2019 09:28:39 +0800
+Subject: Re: [PATCH V2 2/7] rcu: cleanup rcu_preempt_deferred_qs()
+To:     paulmck@kernel.org
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20191102124559.1135-1-laijs@linux.alibaba.com>
+ <20191102124559.1135-3-laijs@linux.alibaba.com>
+ <20191103020150.GA23770@tardis>
+ <7489f817-adaf-275b-b19d-18ad248b071f@linux.alibaba.com>
+ <20191104145539.GY20975@paulmck-ThinkPad-P72>
+ <e820852f-87ca-f974-2245-99833205e270@linux.alibaba.com>
+ <20191105071911.GL20975@paulmck-ThinkPad-P72>
+ <20191111143238.GA13306@paulmck-ThinkPad-P72>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <cbded276-6770-25a0-2975-2c087872a38e@linux.alibaba.com>
+Date:   Tue, 12 Nov 2019 09:28:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20191111181122.28083-1-madhuparnabhowmik04@gmail.com>
-In-Reply-To: <20191111181122.28083-1-madhuparnabhowmik04@gmail.com>
-From:   Phong Tran <tranmanphong@gmail.com>
-Date:   Tue, 12 Nov 2019 07:03:10 +0700
-Message-ID: <CAD3AR6E486EAJ5EW_Wr4qiPeZU_M7TnDTC0g-CB+=6ob9Ru6mQ@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH] Documentation: RCU: whatisRCU:
- Updated full list of RCU API
-To:     Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, mchehab@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191111143238.GA13306@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 1:12 AM <madhuparnabhowmik04@gmail.com> wrote:
->
-> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
->
-> This patch updates the list of RCU API in whatisRCU.rst.
->
 
-Tested-by: Phong Tran <tranmanphong@gmail.com>
 
->
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> ---
->  Documentation/RCU/whatisRCU.rst | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index 2f6f6ebbc8b0..c7f147b8034f 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -884,11 +884,14 @@ in docbook.  Here is the list, by category.
->  RCU list traversal::
->
->         list_entry_rcu
-> +       list_entry_lockless
->         list_first_entry_rcu
->         list_next_rcu
->         list_for_each_entry_rcu
->         list_for_each_entry_continue_rcu
->         list_for_each_entry_from_rcu
-> +       list_first_or_null_rcu
-> +       list_next_or_null_rcu
->         hlist_first_rcu
->         hlist_next_rcu
->         hlist_pprev_rcu
-> @@ -902,7 +905,7 @@ RCU list traversal::
->         hlist_bl_first_rcu
->         hlist_bl_for_each_entry_rcu
->
-> -RCU pointer/list udate::
-> +RCU pointer/list update::
->
->         rcu_assign_pointer
->         list_add_rcu
-> @@ -912,10 +915,12 @@ RCU pointer/list udate::
->         hlist_add_behind_rcu
->         hlist_add_before_rcu
->         hlist_add_head_rcu
-> +       hlist_add_tail_rcu
->         hlist_del_rcu
->         hlist_del_init_rcu
->         hlist_replace_rcu
-> -       list_splice_init_rcu()
-> +       list_splice_init_rcu
-> +       list_splice_tail_init_rcu
->         hlist_nulls_del_init_rcu
->         hlist_nulls_del_rcu
->         hlist_nulls_add_head_rcu
-> --
-> 2.17.1
->
-> _______________________________________________
-> Linux-kernel-mentees mailing list
-> Linux-kernel-mentees@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+On 2019/11/11 10:32 下午, Paul E. McKenney wrote:
+> On Mon, Nov 04, 2019 at 11:19:11PM -0800, Paul E. McKenney wrote:
+>> On Tue, Nov 05, 2019 at 10:09:15AM +0800, Lai Jiangshan wrote:
+>>> On 2019/11/4 10:55 下午, Paul E. McKenney wrote:
+>>>> On Sun, Nov 03, 2019 at 01:01:21PM +0800, Lai Jiangshan wrote:
+>>>>>
+>>>>>
+>>>>> On 2019/11/3 10:01 上午, Boqun Feng wrote:
+>>>>>> Hi Jiangshan,
+>>>>>>
+>>>>>>
+>>>>>> I haven't checked the correctness of this patch carefully, but..
+>>>>>>
+>>>>>>
+>>>>>> On Sat, Nov 02, 2019 at 12:45:54PM +0000, Lai Jiangshan wrote:
+>>>>>>> Don't need to set ->rcu_read_lock_nesting negative, irq-protected
+>>>>>>> rcu_preempt_deferred_qs_irqrestore() doesn't expect
+>>>>>>> ->rcu_read_lock_nesting to be negative to work, it even
+>>>>>>> doesn't access to ->rcu_read_lock_nesting any more.
+>>>>>>
+>>>>>> rcu_preempt_deferred_qs_irqrestore() will report RCU qs, and may
+>>>>>> eventually call swake_up() or its friends to wake up, say, the gp
+>>>>>> kthread, and the wake up functions could go into the scheduler code
+>>>>>> path which might have RCU read-side critical section in it, IOW,
+>>>>>> accessing ->rcu_read_lock_nesting.
+>>>>>
+>>>>> Sure, thank you for pointing it out.
+>>>>>
+>>>>> I should rewrite the changelog in next round. Like this:
+>>>>>
+>>>>> rcu: cleanup rcu_preempt_deferred_qs()
+>>>>>
+>>>>> IRQ-protected rcu_preempt_deferred_qs_irqrestore() itself doesn't
+>>>>> expect ->rcu_read_lock_nesting to be negative to work.
+>>>>>
+>>>>> There might be RCU read-side critical section in it (from wakeup()
+>>>>> or so), 1711d15bf5ef(rcu: Clear ->rcu_read_unlock_special only once)
+>>>>> will ensure that ->rcu_read_unlock_special is zero and these RCU
+>>>>> read-side critical sections will not call rcu_read_unlock_special().
+>>>>>
+>>>>> Thanks
+>>>>> Lai
+>>>>>
+>>>>> ===
+>>>>> PS: Were 1711d15bf5ef(rcu: Clear ->rcu_read_unlock_special only once)
+>>>>> not applied earlier, it will be protected by previous patch (patch1)
+>>>>> in this series
+>>>>> "rcu: use preempt_count to test whether scheduler locks is held"
+>>>>> when rcu_read_unlock_special() is called.
+>>>>
+>>>> This one in -rcu, you mean?
+>>>>
+>>>> 5c5d9065e4eb ("rcu: Clear ->rcu_read_unlock_special only once")
+>>>
+>>> Yes, but the commit ID is floating in the tree.
+>>
+>> Indeed, that part of -rcu is subject to rebase, and will continue
+>> to be until about v5.5-rc5 or thereabouts.
+>>
+>> https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/rcutodo.html
+>>
+>> My testing of your full stack should be complete by this coming Sunday
+>> morning, Pacific Time.
+> 
+> And you will be happy to hear that it ran the full time without errors.
+> 
+> Good show!!!
+> 
+> My next step is to look much more carefully at the remaining patches,
+> checking my first impressions.  This will take a few days.
+> 
+
+Hi, All
+
+I'm still asking for more comments.
+
+By now, I have received some precious comments, mainly due to my
+stupid naming mistakes and a misleading changelog. I should have
+updated all these with a new series patches. But I hope I
+can polish more in the new patchset with more suggestions from
+valuable comments, especially in x86,scheduler,percpu and rcu
+areas.
+
+I'm very obliged to hear anything.
+
+Thanks
+Lai
