@@ -2,209 +2,149 @@ Return-Path: <SRS0=84Qu=ZH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C16DC43141
-	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 15:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B940C432C3
+	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 16:53:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3A5BC2072A
-	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 15:37:07 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="Q9zs6O59"
+	by mail.kernel.org (Postfix) with ESMTP id 327E12073C
+	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 16:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1573836832;
+	bh=iqa2VgMhrt2aB+p1sb2tJk0Xa1Bpa8AmODLk3wv8qjo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=NBYTRFkXbLiP6ZWxa0F+xIhmcbH+4cR8o8jQyWSYRMri3Ow5acR2JYh7qecIeXhde
+	 2h2olEIUF/A5HDhyZFuOTKLQZaqVXFaD9ddHqbI/8snxrrLmBdB9vDSSBr0L1dW41R
+	 VpzFeTeu6OPzxIK3km1ZG4rN26l871m5LRCiOk1Y=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbfKOPhG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 15 Nov 2019 10:37:06 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:33431 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727564AbfKOPhG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 15 Nov 2019 10:37:06 -0500
-Received: by mail-lj1-f193.google.com with SMTP id t5so11169839ljk.0
-        for <rcu@vger.kernel.org>; Fri, 15 Nov 2019 07:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q4CS/Wze+L8OwF05/nD8VCaricfA1ZEuBlqqqQ5obWM=;
-        b=Q9zs6O59rpnfXObvdCaCTcp0jZWgC6Byu/VVbmKONCMw6kxvtDRi59knKfKa2BR2Ik
-         DeWfbmyVQKEyBgJSM94GvDaU4o4VtWcBCvi/dL0/JVIApoWqUdf0v/eU5rkvrsd5YhKX
-         O7Kdzl5NicrqKHO1GJEPDS3LLdUzvcSN+ernXIr/YeIPd7j7cZ+jFq3fD7dpXr992fDW
-         nF2wZhdunNQ6OGqp55Wf5E9rXYpE3v4YInxE4IebCj+fG3jCV+IjCfd5QFO9dLQDQU0m
-         EL+KQx92o/Pco6xjP5YTiooqRt/5AWZieoIz9PSygRf+uJ8N4A1/qF4fJt0mvXITKhYT
-         1aew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q4CS/Wze+L8OwF05/nD8VCaricfA1ZEuBlqqqQ5obWM=;
-        b=DiICHy0NUpPRrEHYylerwwv+MxzlXUuJF1Gd2ktTnpZ79DFU13adDDoNXGW6BOZ7kz
-         NjVz0QkgF7V5cdrCVs1bL8Lrb5zVmVsYqD164iz16GfVzf4CkkHyDhVzqniITVLJI1jK
-         aciLktTxmYCGLU7PscXPd+wYcbCLtR3+Cp63+IkDE3hDOWgrSXBjP00LLH/7ttty7rU3
-         bj1f7Ld+belSkRlHKmtFDyZMhcqbSgMiVHu6dOChlpHw5a8WDq64tlvgzYbSC9ryRkYy
-         JKBdP0e2uihVNBY7+uZnsCNlryllSM/PmCNzQ0tMNtQBJxzjFUHIaH9yl3zwjkA58ck1
-         cTGg==
-X-Gm-Message-State: APjAAAXFEMXx4uo6NE30CVUSfNXgMSEOEIbeNlHVekkSRWN35chdtGUB
-        AiGMEZK2Riyg+eVLX/J60jqvZQNyJKXCVcD6eyDDr2Y=
-X-Google-Smtp-Source: APXvYqzr/hwcxkX0NSjaY/7tIWxLNyeVio/tuoykAuHnars5P0RDd5TzNDSkKTC0kUUBfe38PGz0lQIoRJ9fdJbJRio=
-X-Received: by 2002:a2e:95c5:: with SMTP id y5mr11909602ljh.184.1573832223224;
- Fri, 15 Nov 2019 07:37:03 -0800 (PST)
+        id S1727684AbfKOQxw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 15 Nov 2019 11:53:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727528AbfKOQxv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 15 Nov 2019 11:53:51 -0500
+Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC5332072A;
+        Fri, 15 Nov 2019 16:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573836831;
+        bh=iqa2VgMhrt2aB+p1sb2tJk0Xa1Bpa8AmODLk3wv8qjo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GQkkwKerfikMRcMW73319WJPScvBJwOJ7xz2tGoYpCSVwAKeDl3ssWmn6bDsG8UnD
+         rOkTc3CdBLY4LTOMTGAFhS6hNy1UafxPrnXsqntB96AeH1CN/wAJy/jMQkxhXy3brH
+         LSOEEAVQ4UAjeJwJqNdaSehbl6DjknEZHC41YBXs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 51DA735207BD; Fri, 15 Nov 2019 08:53:50 -0800 (PST)
+Date:   Fri, 15 Nov 2019 08:53:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH V2 1/7] rcu: use preempt_count to test whether scheduler
+ locks is held
+Message-ID: <20191115165350.GV2865@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191102124559.1135-1-laijs@linux.alibaba.com>
+ <20191102124559.1135-2-laijs@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20191111154004.1790-1-omosnace@redhat.com> <CAHC9VhSqmHJqxK3xm9Jo+iu7eJao=L6CLpp4UQEGbUGM8puudw@mail.gmail.com>
- <CAFqZXNvKD16h_T+w8OhAsxJTdr_gLv8B0=LjSmKGKkOLjam3DQ@mail.gmail.com>
-In-Reply-To: <CAFqZXNvKD16h_T+w8OhAsxJTdr_gLv8B0=LjSmKGKkOLjam3DQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 15 Nov 2019 10:36:52 -0500
-Message-ID: <CAHC9VhTGYWs+k2vRYFnHU7-mUXfDDop7CGaKAthv4Gds0A54zw@mail.gmail.com>
-Subject: Re: [PATCH v4] selinux: cache the SID -> context string translation
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michal Sekletar <msekleta@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191102124559.1135-2-laijs@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 15, 2019 at 9:50 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Fri, Nov 15, 2019 at 1:42 AM Paul Moore <paul@paul-moore.com> wrote:
-> > On Mon, Nov 11, 2019 at 10:40 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > Translating a context struct to string can be quite slow, especially if
-> > > the context has a lot of category bits set. This can cause quite
-> > > noticeable performance impact in situations where the translation needs
-> > > to be done repeatedly. A common example is a UNIX datagram socket with
-> > > the SO_PASSSEC option enabled, which is used e.g. by systemd-journald
-> > > when receiving log messages via datagram socket. This scenario can be
-> > > reproduced with:
-> > >
-> > >     cat /dev/urandom | base64 | logger &
-> > >     timeout 30s perf record -p $(pidof systemd-journald) -a -g
-> > >     kill %1
-> > >     perf report -g none --pretty raw | grep security_secid_to_secctx
-> > >
-> > > Before the caching introduced by this patch, computing the context
-> > > string (security_secid_to_secctx() function) takes up ~65% of
-> > > systemd-journald's CPU time (assuming a context with 1024 categories
-> > > set and Fedora x86_64 release kernel configs). After this patch
-> > > (assuming near-perfect cache hit ratio) this overhead is reduced to just
-> > > ~2%.
-> > >
-> > > This patch addresses the issue by caching a certain number (compile-time
-> > > configurable) of recently used context strings to speed up repeated
-> > > translations of the same context, while using only a small amount of
-> > > memory.
-> > >
-> > > The cache is integrated into the existing sidtab table by adding a field
-> > > to each entry, which when not NULL contains an RCU-protected pointer to
-> > > a cache entry containing the cached string. The cache entries are kept
-> > > in a linked list sorted according to how recently they were used. On a
-> > > cache miss when the cache is full, the least recently used entry is
-> > > removed to make space for the new entry.
-> > >
-> > > The patch migrates security_sid_to_context_core() to use the cache (also
-> > > a few other functions where it was possible without too much fuss, but
-> > > these mostly use the translation for logging in case of error, which is
-> > > rare).
-> > >
-> > > Link: https://bugzilla.redhat.com/show_bug.cgi?id=1733259
-> > > Cc: Michal Sekletar <msekleta@redhat.com>
-> > > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> > > ---
-> > >
-> > > Changes in v4:
-> > >  - use rcu_dereference_protected() instead of rcu_dereference_raw() in
-> > >    sidtab_sid2str_put()
-> > >  - fix typo in comment
-> > >  - remove unnecessary rcu_head_init() call
-> > >
-> > > Changes in v3:
-> > >  - add rcu@vger.kernel.org and Paul McKenney to Cc for review of the RCU
-> > >    logic
-> > >  - add __rcu annotation to the cache entry pointer (sidtab.c now passes
-> > >    sparse checks with C=1)
-> > >
-> > > Changes in v2:
-> > >  - skip sidtab_sid2str_put() when in non-task context to prevent
-> > >    deadlock while avoiding the need to lock the spinlock with
-> > >    irqsave/-restore (which is slower)
-> > >
-> > >  security/selinux/Kconfig       |  11 ++
-> > >  security/selinux/ss/services.c | 138 +++++++++++++++----------
-> > >  security/selinux/ss/sidtab.c   | 179 +++++++++++++++++++++++++++------
-> > >  security/selinux/ss/sidtab.h   |  58 +++++++++--
-> > >  4 files changed, 294 insertions(+), 92 deletions(-)
-> >
-> > ...
-> >
-> > > diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
-> > > index 7d49994e8d5f..6d6ce1c43b49 100644
-> > > --- a/security/selinux/ss/sidtab.c
-> > > +++ b/security/selinux/ss/sidtab.c
-> > > @@ -492,3 +528,88 @@ void sidtab_destroy(struct sidtab *s)
-> > >
-> > >         sidtab_destroy_tree(s->roots[level], level);
-> > >  }
-> > > +
-> > > +#if CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE > 0
-> > > +
-> > > +void sidtab_sid2str_put(struct sidtab *s, struct sidtab_entry *entry,
-> > > +                       const char *str, u32 str_len)
-> > > +{
-> > > +       struct sidtab_str_cache *cache, *victim;
-> > > +
-> > > +       /* do not cache invalid contexts */
-> > > +       if (entry->context.len)
-> > > +               return;
-> > > +
-> > > +       /*
-> > > +        * Skip the put operation when in non-task context to avoid the need
-> > > +        * to disable interrupts while holding s->cache_lock.
-> > > +        */
-> > > +       if (!in_task())
-> > > +               return;
-> > > +
-> > > +       spin_lock(&s->cache_lock);
-> > > +
-> > > +       cache = rcu_dereference_protected(entry->cache,
-> > > +                                         lockdep_is_held(&s->cache_lock));
-> > > +       if (cache) {
-> > > +               /* entry in cache - just bump to the head of LRU list */
-> > > +               list_move(&cache->lru_member, &s->cache_lru_list);
-> > > +               goto out_unlock;
-> > > +       }
-> > > +
-> > > +       cache = kmalloc(sizeof(struct sidtab_str_cache) + str_len, GFP_ATOMIC);
-> > > +       if (!cache)
-> > > +               goto out_unlock;
-> > > +
-> > > +       if (s->cache_free_slots == 0) {
-> > > +               /* pop a cache entry from the tail and free it */
-> > > +               victim = container_of(s->cache_lru_list.prev,
-> > > +                                     struct sidtab_str_cache, lru_member);
-> > > +               list_del(&victim->lru_member);
-> > > +               kfree_rcu(victim, rcu_member);
-> >
-> > We could move the kfree_rcu() down to after we drop the spinlock,
-> > right?  It's likely not a big deal, but since the whole point of this
-> > patch is performance improvements it seems like it might be nice. ;)
->
-> I could be wrong, but I think kfree_rcu() just (always?) appends the
-> object to the RCU list and defers the deallocation for later (and that
-> should be pretty quick). But actually... since the kfree_rcu() is not
-> called under RCU read lock here, I should at least move it below the
-> next line, which still dereferences "victim". And at that point I
-> could move it all the way after spin_unlock() as you suggest...
+On Sat, Nov 02, 2019 at 12:45:53PM +0000, Lai Jiangshan wrote:
+> Ever since preemption was introduced to linux kernel,
+> irq disabled spinlocks are always held with preemption
+> disabled. One of the reason is that sometimes we need
+> to use spin_unlock() which will do preempt_enable()
+> to unlock the irq disabled spinlock with keeping irq
+> disabled. So preempt_count can be used to test whether
+> scheduler locks is possible held.
+> 
+> CC: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Yes, the bulk of the work is handled later once it is safe to free the
-memory, but that doesn't mean work doesn't still happen :)
+Again, your point that RCU flavor consolidation allows some
+simplifications is an excellent one, so thank you again.
 
-It's definitely a nitpicky thing, but since we are already at -rc7 and
-this isn't a bug-fix, this was always going to land in selinux/next
-after the upcoming merge window so we've got time for a respin.
+And sorry to be slow, but the interaction with the rest of RCU must
+be taken into account.  Therefore, doing this patch series justice
+does require some time.
 
--- 
-paul moore
-www.paul-moore.com
+> ---
+>  kernel/rcu/tree_plugin.h | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 0982e9886103..aba5896d67e3 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -603,10 +603,14 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  		      tick_nohz_full_cpu(rdp->cpu);
+>  		// Need to defer quiescent state until everything is enabled.
+>  		if (irqs_were_disabled && use_softirq &&
+> -		    (in_interrupt() ||
+> -		     (exp && !t->rcu_read_unlock_special.b.deferred_qs))) {
+> +		    (in_interrupt() || (exp && !preempt_bh_were_disabled))) {
+
+My concern here is that this relies on a side-effect of the _irq locking
+primitives.  What if someone similar to you comes along and is able to
+show significant performance benefits from making raw_spin_lock_irqsave()
+and friends leave preempt_count alone?  After all, these primitives
+disable interrupts, so the bits in preempt_count can be argued to have
+no effect.
+
+But this patch is not central to simplifying __rcu_read_unlock().
+Plus RCU now re-enables the scheduler clock tick on nohz_full CPUs that
+are blocking normal grace periods, which gives additional flexibility
+on this code path -- one of the big concerns when this was written was
+that in a PREEMPT=y kernel, a nohz_full CPU spinning in kernel code might
+never pass through a quiescent state.  And expedited grace periods need
+to be fast on average, not worst case.
+
+So another approach might be to:
+
+1.	Simplfy the above expression to only do raise_softirq_irqoff()
+	if we are actually in an interrupt handler.
+
+2.	Make expedited grace periods re-enable the scheduler-clock
+	interrupt on CPUs that are slow to pass through quiescent states.
+	(Taking care to disable them again, which might require
+	coordination with the similar logic in normal grace periods.)
+
+As a second step, it might still be possible to continue using
+raise_softirq_irqoff() in some of the non-interrupt-handler cases
+involving __rcu_read_unlock() with interrupts disabled.
+
+Thoughts?
+
+						Thanx, Paul
+
+>  			// Using softirq, safe to awaken, and we get
+>  			// no help from enabling irqs, unlike bh/preempt.
+> +			// in_interrupt(): raise_softirq_irqoff() is
+> +			// guaranteed not to not do wakeup
+> +			// !preempt_bh_were_disabled: scheduler locks cannot
+> +			// be held, since spinlocks are always held with
+> +			// preempt_disable(), so the wakeup will be safe.
+>  			raise_softirq_irqoff(RCU_SOFTIRQ);
+>  		} else {
+>  			// Enabling BH or preempt does reschedule, so...
+> -- 
+> 2.20.1
+> 
