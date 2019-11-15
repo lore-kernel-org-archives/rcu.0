@@ -2,111 +2,139 @@ Return-Path: <SRS0=84Qu=ZH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DDA2C432C3
-	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 16:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F73C432C3
+	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 17:28:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1250F2073C
-	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 16:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1573836934;
-	bh=JwmTtgTdpzqkRqSYYY977gdsPXkgEyQ8SYEGJsHifzE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=i+gUNQUsuVJ7x0gji7ln66TqYI8UF4zk53kYaHHltFDHSzFDyDnfWj58T2XOpsP2z
-	 AJ5XSyznAOMiq+wx4/wibjJisKvy6nhXldye9zDdHzbMNpZehEyElQue4SfdGUkJPn
-	 CJV+18SyDmTqKTpIZOSrlEZHSOwIY9ozo2Xle+3Q=
+	by mail.kernel.org (Postfix) with ESMTP id A97E22073B
+	for <rcu@archiver.kernel.org>; Fri, 15 Nov 2019 17:28:29 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="Z0MqtVeP";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="HDl9BTrw"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbfKOQzd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 15 Nov 2019 11:55:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727548AbfKOQzd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 15 Nov 2019 11:55:33 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.141])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727577AbfKOR23 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 15 Nov 2019 12:28:29 -0500
+Received: from smtp.codeaurora.org ([198.145.29.96]:35704 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727543AbfKOR23 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 15 Nov 2019 12:28:29 -0500
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+        id 4F5E260C5F; Fri, 15 Nov 2019 17:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1573838908;
+        bh=GYmPEXvxT/OZTdh5b9aiAB0ZpYeDWC04SZk0qHLp/Mw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Z0MqtVeP25YA3RWwYJuXDiDOJaL9g/YVjgZeNP2fdXgA6VLvKcQl7pVYDck5gp4M9
+         1Bdp3CxRFGZLc66NaM+LKvQLEoJeGg0olhCjwpCVLt5vr9RY6VYO5DSCft4piSRMcG
+         4QOn9MPfygh5mjf/co0cULH15h1n4bsIVTxP0mko=
+Received: from neeraju-linux.qualcomm.com (blr-c-bdr-fw-01_globalnat_allzones-outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8CDF20730;
-        Fri, 15 Nov 2019 16:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573836932;
-        bh=JwmTtgTdpzqkRqSYYY977gdsPXkgEyQ8SYEGJsHifzE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=zYR8sZLbjZRYzSHuTsPRIvU9WS3cB/r97043HkewttwdIUSC0b4Aedur/qexHj9QB
-         sSmVA1YBj1k2w4mX1PyjgY+INtUOjFUNMRlGdi7hMlXdYVkzlNGA/ZWJ8FxGoKkKnf
-         Jn8Z/UPQq2xZ0ZbpQNxcVAEFiFNWyebQKqGtMU0o=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 72A4235207BD; Fri, 15 Nov 2019 08:55:32 -0800 (PST)
-Date:   Fri, 15 Nov 2019 08:55:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH V2 2/7] rcu: cleanup rcu_preempt_deferred_qs()
-Message-ID: <20191115165532.GW2865@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191102124559.1135-1-laijs@linux.alibaba.com>
- <20191102124559.1135-3-laijs@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191102124559.1135-3-laijs@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        (Authenticated sender: neeraju@smtp.codeaurora.org)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 454D560C5F;
+        Fri, 15 Nov 2019 17:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1573838907;
+        bh=GYmPEXvxT/OZTdh5b9aiAB0ZpYeDWC04SZk0qHLp/Mw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HDl9BTrwU0aaxOsxtqXaV9gYmuXQmv3mMqX2L3UMwzhRmVOCeOYM8JkiULr30s1s2
+         Ij23qONg3YLc1gwUi7eHut+tny0850fcR6Zq9MPmsL/fyatmbZ9uxKKnF5GANMG8ol
+         jXfMxBxnKM6ktm8ImHdqLhMK15e+J4FAMsQS+jCg=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 454D560C5F
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@linux.vnet.ibm.com, josh@joshtriplett.org,
+        joel@joelfernandes.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        pkondeti@codeaurora.org, prsood@codeaurora.org,
+        gkohli@codeaurora.org, Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Fix missed wakeup of exp_wq waiters
+Date:   Fri, 15 Nov 2019 22:58:14 +0530
+Message-Id: <1573838894-23027-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Nov 02, 2019 at 12:45:54PM +0000, Lai Jiangshan wrote:
-> Don't need to set ->rcu_read_lock_nesting negative, irq-protected
-> rcu_preempt_deferred_qs_irqrestore() doesn't expect
-> ->rcu_read_lock_nesting to be negative to work, it even
-> doesn't access to ->rcu_read_lock_nesting any more.
-> 
-> It is true that NMI over rcu_preempt_deferred_qs_irqrestore()
-> may access to ->rcu_read_lock_nesting, but it is still safe
-> since rcu_read_unlock_special() can protect itself from NMI.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+For the tasks waiting in exp_wq inside exp_funnel_lock(),
+there is a chance that they might be indefinitely blocked
+in below scenario:
 
-And given some form of patch #1, this one should be fine.  But some
-long-term maintainable form of patch #1 clearly must come first.
+1. There is a task waiting on exp sequence 0b'100' inside
+   exp_funnel_lock().
 
-						Thanx, Paul
+   _synchronize_rcu_expedited()
+     s = 0b'100
+     exp_funnel_lock()
+       wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3]
 
-> ---
->  kernel/rcu/tree_plugin.h | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index aba5896d67e3..2fab8be2061f 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -552,16 +552,11 @@ static bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->  static void rcu_preempt_deferred_qs(struct task_struct *t)
->  {
->  	unsigned long flags;
-> -	bool couldrecurse = t->rcu_read_lock_nesting >= 0;
->  
->  	if (!rcu_preempt_need_deferred_qs(t))
->  		return;
-> -	if (couldrecurse)
-> -		t->rcu_read_lock_nesting -= RCU_NEST_BIAS;
->  	local_irq_save(flags);
->  	rcu_preempt_deferred_qs_irqrestore(t, flags);
-> -	if (couldrecurse)
-> -		t->rcu_read_lock_nesting += RCU_NEST_BIAS;
->  }
->  
->  /*
-> -- 
-> 2.20.1
-> 
+2. The Exp GP completes and task (task1) holding exp_mutex queues
+   worker and schedules out.
+
+   _synchronize_rcu_expedited()
+     s = 0b'100
+     queue_work(rcu_gp_wq, &rew.rew_work)
+       wake_up_worker()
+         schedule()
+
+3. kworker A picks up the queued work and completes the exp gp
+   sequence.
+
+   rcu_exp_wait_wake()
+     rcu_exp_wait_wake()
+       rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence is incremented
+                               // to 0b'100'
+
+4. task1 does not enter wait queue, as sync_exp_work_done() returns true,
+   and releases exp_mutex.
+
+   wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
+     sync_exp_work_done(rsp, s));
+   mutex_unlock(&rsp->exp_mutex);
+
+5. Next exp GP completes, and sequence number is incremented:
+
+   rcu_exp_wait_wake()
+     rcu_exp_wait_wake()
+       rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence = 0b'200'
+
+6. As kworker A uses current expedited_sequence, it wakes up workers
+   from wrong wait queue index - it should have worken wait queue
+   corresponding to 0b'100' sequence, but wakes up the ones for
+   0b'200' sequence. This results in task at step 1 indefinitely blocked.
+
+   rcu_exp_wait_wake()
+     wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rsp->expedited_sequence) & 0x3]);
+
+Fix this by using the correct sequence number for wake_up_all() inside
+rcu_exp_wait_wake().
+
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+---
+ kernel/rcu/tree_exp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index e4b77d3..28979d3 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -557,7 +557,7 @@ static void rcu_exp_wait_wake(unsigned long s)
+ 			spin_unlock(&rnp->exp_lock);
+ 		}
+ 		smp_mb(); /* All above changes before wakeup. */
+-		wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rcu_state.expedited_sequence) & 0x3]);
++		wake_up_all(&rnp->exp_wq[rcu_seq_ctr(s) & 0x3]);
+ 	}
+ 	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("endwake"));
+ 	mutex_unlock(&rcu_state.exp_wake_mutex);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
+
