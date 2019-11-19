@@ -1,1095 +1,550 @@
-Return-Path: <SRS0=IPKE=ZK=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Pai7=ZL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59CA0C432C0
-	for <rcu@archiver.kernel.org>; Mon, 18 Nov 2019 21:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86340C432C0
+	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 01:59:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 10090222EF
-	for <rcu@archiver.kernel.org>; Mon, 18 Nov 2019 21:46:24 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uarp2+C9"
+	by mail.kernel.org (Postfix) with ESMTP id 3FB86222F2
+	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 01:59:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbfKRVqX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 18 Nov 2019 16:46:23 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:43630 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726717AbfKRVqX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 18 Nov 2019 16:46:23 -0500
-Received: by mail-lf1-f67.google.com with SMTP id l14so8436823lfh.10
-        for <rcu@vger.kernel.org>; Mon, 18 Nov 2019 13:46:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HIyv0p+iLjFbFERkP2qg4JcVm0HpuPqFGjdUEW4KPRA=;
-        b=Uarp2+C9LhYWEHHrC98hwQMxCYClMUmYsdS03a4mgpcV5AUG/0poqtecCCJWGfO9u6
-         9HrbqFjJhNnjOftYyPLQ6B/8zOC4cI10OaLITYaAwZA9jPBNgM6dpRLE4W6R+d6hvmqj
-         qrb0E449UTs1xXAG3hE6/OPjdUkxLbmJsVcDLpb31sLbmbbPoxXz4uceN5tQEKVnzVsa
-         raPePj6jn9UfxhMkowUJTmQSAl4O8nzzZmwrP8aV8xd1jOxv7fryc4mrmGz2KkCkpdwP
-         QKWbgQCblGTiD2OFfL5A42cKL33PKUaliy/uh/78dBVlbHWe+JGac7INhmAt8Bf134Wi
-         ZPyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HIyv0p+iLjFbFERkP2qg4JcVm0HpuPqFGjdUEW4KPRA=;
-        b=m8xpNnyUvwR/NKg4l1oytISpTalMubjY4goYFskSJpmbIve1vX5WRt64NzkI0Hk7Qq
-         coaU+xcPzw3PTmSmhutza2hgtAoxgzpMiID0O9ycuM3wYcHaMGaYrNMpRuf3mhoh7oqX
-         DkAkCgA2AmMTaIxUEX0/3q7b2xR6oB9uaO3XKQQYxjBD4b/PMuaM34U3VafpWmE+9tH4
-         r6tWkZEuV2/ZSNkrQbkDZJudPbBHrYqC2cvqYPHFqmSq829z+VVfXmyGbxumN38KBAde
-         L924n/xu2n6ldDQMtVw5p1k8p6QRn6fjVmlmkkRg1JYM9+hI3vPXyC+zO3hF6DXCsjVv
-         kwLA==
-X-Gm-Message-State: APjAAAW84a8rLbAY7L0pzuVmsDNIH9s2WbRaRrg5BIKLADGvjChudxWU
-        lpsIlPcY67mSt5d20degkjgUEcKYQ//NvRZR3ZYqPQ==
-X-Google-Smtp-Source: APXvYqzbpcStm7/CI/v36qoK36ONvdV7nkgrhqyVF0cXJYY8sIhlF46XOOYTb7HoCD4LbRYOElCbibhQbn+39iRwC+o=
-X-Received: by 2002:a19:7510:: with SMTP id y16mr1126567lfe.24.1574113578347;
- Mon, 18 Nov 2019 13:46:18 -0800 (PST)
+        id S1727014AbfKSB7N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 18 Nov 2019 20:59:13 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55823 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726761AbfKSB7M (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 18 Nov 2019 20:59:12 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TiWO9gf_1574128743;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TiWO9gf_1574128743)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 19 Nov 2019 09:59:05 +0800
+Subject: Re: [PATCH V2 7/7] x86,rcu: use percpu rcu_preempt_depth
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Jann Horn <jannh@google.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Yuyang Du <duyuyang@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Dmitry V. Levin" <ldv@altlinux.org>, rcu@vger.kernel.org
+References: <20191102124559.1135-1-laijs@linux.alibaba.com>
+ <20191102124559.1135-8-laijs@linux.alibaba.com>
+ <20191116154821.GE2865@paulmck-ThinkPad-P72>
+ <4680b6f5-02d2-1d76-0b67-a5d3d9b36200@linux.alibaba.com>
+ <20191118145953.GK2889@paulmck-ThinkPad-P72>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <3dd0fa56-68b9-c179-95db-f110e47f53b7@linux.alibaba.com>
+Date:   Tue, 19 Nov 2019 09:59:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20191118122150.198992-1-jeffv@google.com> <cc62d79d-0932-8aa1-0e8b-6ede31a02df7@tycho.nsa.gov>
-In-Reply-To: <cc62d79d-0932-8aa1-0e8b-6ede31a02df7@tycho.nsa.gov>
-From:   Jeffrey Vander Stoep <jeffv@google.com>
-Date:   Mon, 18 Nov 2019 22:46:06 +0100
-Message-ID: <CABXk95Bu_nOGaBFrEjvy6_6NFRFYS7oLt6vtL-a1B-oDc6m7Mg@mail.gmail.com>
-Subject: Re: [PATCH v7] selinux: sidtab: reverse lookup hash table
-To:     Stephen Smalley <sds@tycho.nsa.gov>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Will Deacon <will@kernel.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org, Jovana Knezevic <jovanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191118145953.GK2889@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It's complaining that it's given an object instead of a pointer to the
-object. I don't know if there's a good way to fix that since the
-objects are defined in an array and we're then (re) using them in the
-hashtable. I'll remove the annotation.
 
-On Mon, Nov 18, 2019 at 3:00 PM Stephen Smalley <sds@tycho.nsa.gov> wrote:
->
-> On 11/18/19 7:21 AM, Jeff Vander Stoep wrote:
-> > This replaces the reverse table lookup and reverse cache with a
-> > hashtable which improves cache-miss reverse-lookup times from
-> > O(n) to O(1)* and maintains the same performance as a reverse
-> > cache hit.
-> >
-> > This reduces the time needed to add a new sidtab entry from ~500us
-> > to 5us on a Pixel 3 when there are ~10,000 sidtab entries.
-> >
-> > The implementation uses the kernel's generic hashtable API,
-> > It uses the context's string represtation as the hash source,
-> > and the kernels generic string hashing algorithm full_name_hash()
-> > to reduce the string to a 32 bit value.
-> >
-> > This change also maintains the improvement introduced in
-> > commit ee1a84fdfeed ("selinux: overhaul sidtab to fix bug and improve
-> > performance") which removed the need to keep the current sidtab
-> > locked during policy reload. It does however introduce periodic
-> > locking of the target sidtab while converting the hashtable. Sidtab
-> > entries are never modified or removed, so the context struct stored
-> > in the sid_to_context tree can also be used for the context_to_sid
-> > hashtable to reduce memory usage.
-> >
-> > This bug was reported by:
-> > - On the selinux bug tracker.
-> >    BUG: kernel softlockup due to too many SIDs/contexts #37
-> >    https://github.com/SELinuxProject/selinux-kernel/issues/37
-> > - Jovana Knezevic on Android's bugtracker.
-> >    Bug: 140252993
-> >    "During multi-user performance testing, we create and remove users
-> >    many times. selinux_android_restorecon_pkgdir goes from 1ms to over
-> >    20ms after about 200 user creations and removals. Accumulated over
-> >    ~280 packages, that adds a significant time to user creation,
-> >    making perf benchmarks unreliable."
-> >
-> > * Hashtable lookup is only O(1) when n < the number of buckets.
-> >
-> > Changes in V2:
-> > -The hashtable uses sidtab_entry_leaf objects directly so these
-> > objects are shared between the sid_to_context lookup tree and the
-> > context_to_sid hashtable. This simplifies memory allocation and
-> > was suggested by Ondrej Mosnacek.
-> > -The new sidtab hash stats file in selinuxfs has been moved out of
-> > the avc dir and into a new "ss" dir.
-> >
-> > V3:
-> > -Add lock nesting notation.
-> >
-> > V4/V5:
-> > -Moved to *_rcu variants of the various hashtable functions
-> > as suggested by Will Deacon.
-> > -Naming/spelling fixups.
-> >
-> > V6
-> > -Remove nested locking. Use lock of active sidtab to gate
-> > access to the new sidtab.
-> > -Remove use of rcu_head/kfree_rcu(), they're unnecessary because
-> > hashtable objects are never removed when read/add operations are
-> > occurring. Why is this safe? Quoting Ondrej Mosnacek from the
-> > selinux mailing list:
-> > "It is not visible in this patch, but the sidtab (along with other
-> > policy-lifetime structures) is protected by a big fat read-write lock.
-> > The only places where sidtab_destroy() is called are (a) error paths
-> > when initializing a new sidtab (here the sidtab isn't shared yet, so
-> > no race) and (b) when freeing the old sidtab during policy reload - in
-> > this case it is happening after a policy write-locked critical
-> > section, which had removed the old sidtab pointer from the shared
-> > structures, so at that point all sidtab readers will already be
-> > accessing the new sidtab and the old one is visible only by the thread
-> > doing the destruction."
-> >
-> > V7
-> > -Change format of /sys/fs/selinux/ss/sidtab_hash_stats to match
-> > /sys/fs/selinux/avc/hash_stats.
-> > -Add __rcu annotation to rcu pointers.
-> > -Test with CONFIG_SPARSE_RCU_POINTER and CONFIG_PROVE_RCU.
-> > -Add rcu@vger.kernel.org and Paul McKenney to Cc for review of the
-> > RCU logic.
->
-> With the __rcu annotation, I get the following warnings upon make C=2
-> security/selinux/ss/sidtab.o:
->
->    CHECK   security/selinux/ss/sidtab.c
-> security/selinux/ss/sidtab.c:192:41: warning: incorrect type in return
-> expression (different modifiers)
-> security/selinux/ss/sidtab.c:192:41:    expected struct sidtab_entry_leaf *
-> security/selinux/ss/sidtab.c:192:41:    got struct sidtab_entry_leaf
-> [noderef] *
-> security/selinux/ss/sidtab.c:369:68: warning: incorrect type in argument
-> 1 (different modifiers)
-> security/selinux/ss/sidtab.c:369:68:    expected struct context *oldc
-> security/selinux/ss/sidtab.c:369:68:    got struct context [noderef] *
-> security/selinux/ss/sidtab.c:370:68: warning: incorrect type in argument
-> 2 (different modifiers)
-> security/selinux/ss/sidtab.c:370:68:    expected struct context *newc
-> security/selinux/ss/sidtab.c:370:68:    got struct context [noderef] *
-> security/selinux/ss/sidtab.c:462:55: warning: incorrect type in argument
-> 1 (different modifiers)
-> security/selinux/ss/sidtab.c:462:55:    expected struct context *c
-> security/selinux/ss/sidtab.c:462:55:    got struct context [noderef] *
->
-> >
-> > Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
-> > Reported-by: Stephen Smalley <sds@tycho.nsa.gov>
-> > Reported-by: Jovana Knezevic <jovanak@google.com>
-> > ---
-> >   security/selinux/Kconfig            |  12 ++
-> >   security/selinux/include/security.h |   1 +
-> >   security/selinux/selinuxfs.c        |  65 +++++++
-> >   security/selinux/ss/context.h       |  11 +-
-> >   security/selinux/ss/policydb.c      |   5 +
-> >   security/selinux/ss/services.c      |  83 +++++++--
-> >   security/selinux/ss/services.h      |   4 +-
-> >   security/selinux/ss/sidtab.c        | 263 ++++++++++++++--------------
-> >   security/selinux/ss/sidtab.h        |  18 +-
-> >   9 files changed, 300 insertions(+), 162 deletions(-)
-> >
-> > diff --git a/security/selinux/Kconfig b/security/selinux/Kconfig
-> > index 5711689deb6a..c9e576c430c2 100644
-> > --- a/security/selinux/Kconfig
-> > +++ b/security/selinux/Kconfig
-> > @@ -85,3 +85,15 @@ config SECURITY_SELINUX_CHECKREQPROT_VALUE
-> >         via /selinux/checkreqprot if authorized by policy.
-> >
-> >         If you are unsure how to answer this question, answer 0.
-> > +
-> > +config SECURITY_SELINUX_SIDTAB_HASH_BITS
-> > +     int "NSA SELinux sidtab hashtable size"
-> > +     depends on SECURITY_SELINUX
-> > +     range 8 13
-> > +     default 9
-> > +     help
-> > +       This option sets the number of buckets used in the sidtab hashtable
-> > +       to 2^SECURITY_SELINUX_SIDTAB_HASH_BITS buckets. The number of hash
-> > +       collisions may be viewed at /sys/fs/selinux/ss/sidtab_hash_stats. If
-> > +       chain lengths are high (e.g. > 20) then selecting a higher value here
-> > +       will ensure that lookups times are short and stable.
-> > diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-> > index ae840634e3c7..8c0dbbd076c6 100644
-> > --- a/security/selinux/include/security.h
-> > +++ b/security/selinux/include/security.h
-> > @@ -395,5 +395,6 @@ extern int selinux_nlmsg_lookup(u16 sclass, u16 nlmsg_type, u32 *perm);
-> >   extern void avtab_cache_init(void);
-> >   extern void ebitmap_cache_init(void);
-> >   extern void hashtab_cache_init(void);
-> > +extern int security_sidtab_hash_stats(struct selinux_state *state, char *page);
-> >
-> >   #endif /* _SELINUX_SECURITY_H_ */
-> > diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
-> > index ee94fa469c29..dd7bb1f1dc99 100644
-> > --- a/security/selinux/selinuxfs.c
-> > +++ b/security/selinux/selinuxfs.c
-> > @@ -1482,6 +1482,32 @@ static ssize_t sel_read_avc_hash_stats(struct file *filp, char __user *buf,
-> >       return length;
-> >   }
-> >
-> > +static ssize_t sel_read_sidtab_hash_stats(struct file *filp, char __user *buf,
-> > +                                     size_t count, loff_t *ppos)
-> > +{
-> > +     struct selinux_fs_info *fsi = file_inode(filp)->i_sb->s_fs_info;
-> > +     struct selinux_state *state = fsi->state;
-> > +     char *page;
-> > +     ssize_t length;
-> > +
-> > +     page = (char *)__get_free_page(GFP_KERNEL);
-> > +     if (!page)
-> > +             return -ENOMEM;
-> > +
-> > +     length = security_sidtab_hash_stats(state, page);
-> > +     if (length >= 0)
-> > +             length = simple_read_from_buffer(buf, count, ppos, page,
-> > +                                             length);
-> > +     free_page((unsigned long)page);
-> > +
-> > +     return length;
-> > +}
-> > +
-> > +static const struct file_operations sel_sidtab_hash_stats_ops = {
-> > +     .read           = sel_read_sidtab_hash_stats,
-> > +     .llseek         = generic_file_llseek,
-> > +};
-> > +
-> >   static const struct file_operations sel_avc_cache_threshold_ops = {
-> >       .read           = sel_read_avc_cache_threshold,
-> >       .write          = sel_write_avc_cache_threshold,
-> > @@ -1599,6 +1625,37 @@ static int sel_make_avc_files(struct dentry *dir)
-> >       return 0;
-> >   }
-> >
-> > +static int sel_make_ss_files(struct dentry *dir)
-> > +{
-> > +     struct super_block *sb = dir->d_sb;
-> > +     struct selinux_fs_info *fsi = sb->s_fs_info;
-> > +     int i;
-> > +     static struct tree_descr files[] = {
-> > +             { "sidtab_hash_stats", &sel_sidtab_hash_stats_ops, S_IRUGO },
-> > +     };
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(files); i++) {
-> > +             struct inode *inode;
-> > +             struct dentry *dentry;
-> > +
-> > +             dentry = d_alloc_name(dir, files[i].name);
-> > +             if (!dentry)
-> > +                     return -ENOMEM;
-> > +
-> > +             inode = sel_make_inode(dir->d_sb, S_IFREG|files[i].mode);
-> > +             if (!inode) {
-> > +                     dput(dentry);
-> > +                     return -ENOMEM;
-> > +             }
-> > +
-> > +             inode->i_fop = files[i].ops;
-> > +             inode->i_ino = ++fsi->last_ino;
-> > +             d_add(dentry, inode);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   static ssize_t sel_read_initcon(struct file *file, char __user *buf,
-> >                               size_t count, loff_t *ppos)
-> >   {
-> > @@ -1963,6 +2020,14 @@ static int sel_fill_super(struct super_block *sb, struct fs_context *fc)
-> >       }
-> >
-> >       ret = sel_make_avc_files(dentry);
-> > +
-> > +     dentry = sel_make_dir(sb->s_root, "ss", &fsi->last_ino);
-> > +     if (IS_ERR(dentry)) {
-> > +             ret = PTR_ERR(dentry);
-> > +             goto err;
-> > +     }
-> > +
-> > +     ret = sel_make_ss_files(dentry);
-> >       if (ret)
-> >               goto err;
-> >
-> > diff --git a/security/selinux/ss/context.h b/security/selinux/ss/context.h
-> > index 513e67f48878..3ba044fe02ed 100644
-> > --- a/security/selinux/ss/context.h
-> > +++ b/security/selinux/ss/context.h
-> > @@ -31,6 +31,7 @@ struct context {
-> >       u32 len;        /* length of string in bytes */
-> >       struct mls_range range;
-> >       char *str;      /* string representation if context cannot be mapped. */
-> > +     u32 hash;       /* a hash of the string representation */
-> >   };
-> >
-> >   static inline void mls_context_init(struct context *c)
-> > @@ -168,12 +169,13 @@ static inline int context_cpy(struct context *dst, struct context *src)
-> >               kfree(dst->str);
-> >               return rc;
-> >       }
-> > +     dst->hash = src->hash;
-> >       return 0;
-> >   }
-> >
-> >   static inline void context_destroy(struct context *c)
-> >   {
-> > -     c->user = c->role = c->type = 0;
-> > +     c->user = c->role = c->type = c->hash = 0;
-> >       kfree(c->str);
-> >       c->str = NULL;
-> >       c->len = 0;
-> > @@ -182,6 +184,8 @@ static inline void context_destroy(struct context *c)
-> >
-> >   static inline int context_cmp(struct context *c1, struct context *c2)
-> >   {
-> > +     if (c1->hash && c2->hash && (c1->hash != c2->hash))
-> > +             return 0;
-> >       if (c1->len && c2->len)
-> >               return (c1->len == c2->len && !strcmp(c1->str, c2->str));
-> >       if (c1->len || c2->len)
-> > @@ -192,5 +196,10 @@ static inline int context_cmp(struct context *c1, struct context *c2)
-> >               mls_context_cmp(c1, c2));
-> >   }
-> >
-> > +static inline unsigned int context_compute_hash(const char *s)
-> > +{
-> > +     return full_name_hash(NULL, s, strlen(s));
-> > +}
-> > +
-> >   #endif      /* _SS_CONTEXT_H_ */
-> >
-> > diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-> > index e20624a68f5d..e369b0092cdf 100644
-> > --- a/security/selinux/ss/policydb.c
-> > +++ b/security/selinux/ss/policydb.c
-> > @@ -878,6 +878,11 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
-> >                       sidtab_destroy(s);
-> >                       goto out;
-> >               }
-> > +             rc = context_add_hash(p, &c->context[0]);
-> > +             if (rc) {
-> > +                     sidtab_destroy(s);
-> > +                     goto out;
-> > +             }
-> >
-> >               rc = sidtab_set_initial(s, c->sid[0], &c->context[0]);
-> >               if (rc) {
-> > diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-> > index 3a29e7c24ba9..689dff4e756f 100644
-> > --- a/security/selinux/ss/services.c
-> > +++ b/security/selinux/ss/services.c
-> > @@ -1257,6 +1257,17 @@ static int context_struct_to_string(struct policydb *p,
-> >
-> >   #include "initial_sid_to_string.h"
-> >
-> > +int security_sidtab_hash_stats(struct selinux_state *state, char *page)
-> > +{
-> > +     int rc;
-> > +
-> > +     read_lock(&state->ss->policy_rwlock);
-> > +     rc = sidtab_hash_stats(state->ss->sidtab, page);
-> > +     read_unlock(&state->ss->policy_rwlock);
-> > +
-> > +     return rc;
-> > +}
-> > +
-> >   const char *security_get_initial_sid_context(u32 sid)
-> >   {
-> >       if (unlikely(sid > SECINITSID_NUM))
-> > @@ -1384,6 +1395,8 @@ static int string_to_context_struct(struct policydb *pol,
-> >       int rc = 0;
-> >
-> >       context_init(ctx);
-> > +     /* hash the string before it gets mutated */
-> > +     ctx->hash = context_compute_hash(scontext);
-> >
-> >       /* Parse the security context. */
-> >
-> > @@ -1449,6 +1462,42 @@ static int string_to_context_struct(struct policydb *pol,
-> >       return rc;
-> >   }
-> >
-> > +int context_add_hash(struct policydb *policydb,
-> > +                  struct context *context)
-> > +{
-> > +     int rc;
-> > +     char *str;
-> > +     int len;
-> > +
-> > +     if (context->str) {
-> > +             context->hash = context_compute_hash(context->str);
-> > +     } else {
-> > +             rc = context_struct_to_string(policydb, context,
-> > +                                           &str, &len);
-> > +             if (rc)
-> > +                     return rc;
-> > +             context->hash = context_compute_hash(str);
-> > +             kfree(str);
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static int context_struct_to_sid(struct selinux_state *state,
-> > +                              struct context *context, u32 *sid)
-> > +{
-> > +     int rc;
-> > +     struct sidtab *sidtab = state->ss->sidtab;
-> > +     struct policydb *policydb = &state->ss->policydb;
-> > +
-> > +     if (!context->hash) {
-> > +             rc = context_add_hash(policydb, context);
-> > +             if (rc)
-> > +                     return rc;
-> > +     }
-> > +
-> > +     return sidtab_context_to_sid(sidtab, context, sid);
-> > +}
-> > +
-> >   static int security_context_to_sid_core(struct selinux_state *state,
-> >                                       const char *scontext, u32 scontext_len,
-> >                                       u32 *sid, u32 def_sid, gfp_t gfp_flags,
-> > @@ -1501,7 +1550,7 @@ static int security_context_to_sid_core(struct selinux_state *state,
-> >               str = NULL;
-> >       } else if (rc)
-> >               goto out_unlock;
-> > -     rc = sidtab_context_to_sid(sidtab, &context, sid);
-> > +     rc = context_struct_to_sid(state, &context, sid);
-> >       context_destroy(&context);
-> >   out_unlock:
-> >       read_unlock(&state->ss->policy_rwlock);
-> > @@ -1805,7 +1854,7 @@ static int security_compute_sid(struct selinux_state *state,
-> >                       goto out_unlock;
-> >       }
-> >       /* Obtain the sid for the context. */
-> > -     rc = sidtab_context_to_sid(sidtab, &newcontext, out_sid);
-> > +     rc = context_struct_to_sid(state, &newcontext, out_sid);
-> >   out_unlock:
-> >       read_unlock(&state->ss->policy_rwlock);
-> >       context_destroy(&newcontext);
-> > @@ -2026,6 +2075,10 @@ static int convert_context(struct context *oldc, struct context *newc, void *p)
-> >                       goto bad;
-> >       }
-> >
-> > +     rc = context_add_hash(args->newp, newc);
-> > +     if (rc)
-> > +             goto bad;
-> > +
-> >       return 0;
-> >   bad:
-> >       /* Map old representation to string and save it. */
-> > @@ -2273,8 +2326,7 @@ int security_port_sid(struct selinux_state *state,
-> >
-> >       if (c) {
-> >               if (!c->sid[0]) {
-> > -                     rc = sidtab_context_to_sid(sidtab,
-> > -                                                &c->context[0],
-> > +                     rc = context_struct_to_sid(state, &c->context[0],
-> >                                                  &c->sid[0]);
-> >                       if (rc)
-> >                               goto out;
-> > @@ -2367,8 +2419,7 @@ int security_ib_endport_sid(struct selinux_state *state,
-> >
-> >       if (c) {
-> >               if (!c->sid[0]) {
-> > -                     rc = sidtab_context_to_sid(sidtab,
-> > -                                                &c->context[0],
-> > +                     rc = context_struct_to_sid(state, &c->context[0],
-> >                                                  &c->sid[0]);
-> >                       if (rc)
-> >                               goto out;
-> > @@ -2409,13 +2460,11 @@ int security_netif_sid(struct selinux_state *state,
-> >
-> >       if (c) {
-> >               if (!c->sid[0] || !c->sid[1]) {
-> > -                     rc = sidtab_context_to_sid(sidtab,
-> > -                                               &c->context[0],
-> > -                                               &c->sid[0]);
-> > +                     rc = context_struct_to_sid(state, &c->context[0],
-> > +                                                &c->sid[0]);
-> >                       if (rc)
-> >                               goto out;
-> > -                     rc = sidtab_context_to_sid(sidtab,
-> > -                                                &c->context[1],
-> > +                     rc = context_struct_to_sid(state, &c->context[1],
-> >                                                  &c->sid[1]);
-> >                       if (rc)
-> >                               goto out;
-> > @@ -2594,7 +2643,7 @@ int security_get_user_sids(struct selinux_state *state,
-> >                                                &usercon))
-> >                               continue;
-> >
-> > -                     rc = sidtab_context_to_sid(sidtab, &usercon, &sid);
-> > +                     rc = context_struct_to_sid(state, &usercon, &sid);
-> >                       if (rc)
-> >                               goto out_unlock;
-> >                       if (mynel < maxnel) {
-> > @@ -2665,7 +2714,6 @@ static inline int __security_genfs_sid(struct selinux_state *state,
-> >                                      u32 *sid)
-> >   {
-> >       struct policydb *policydb = &state->ss->policydb;
-> > -     struct sidtab *sidtab = state->ss->sidtab;
-> >       int len;
-> >       u16 sclass;
-> >       struct genfs *genfs;
-> > @@ -2700,7 +2748,7 @@ static inline int __security_genfs_sid(struct selinux_state *state,
-> >               goto out;
-> >
-> >       if (!c->sid[0]) {
-> > -             rc = sidtab_context_to_sid(sidtab, &c->context[0], &c->sid[0]);
-> > +             rc = context_struct_to_sid(state, &c->context[0], &c->sid[0]);
-> >               if (rc)
-> >                       goto out;
-> >       }
-> > @@ -2763,7 +2811,7 @@ int security_fs_use(struct selinux_state *state, struct super_block *sb)
-> >       if (c) {
-> >               sbsec->behavior = c->v.behavior;
-> >               if (!c->sid[0]) {
-> > -                     rc = sidtab_context_to_sid(sidtab, &c->context[0],
-> > +                     rc = context_struct_to_sid(state, &c->context[0],
-> >                                                  &c->sid[0]);
-> >                       if (rc)
-> >                               goto out;
-> > @@ -3019,8 +3067,7 @@ int security_sid_mls_copy(struct selinux_state *state,
-> >                       goto out_unlock;
-> >               }
-> >       }
-> > -
-> > -     rc = sidtab_context_to_sid(sidtab, &newcon, new_sid);
-> > +     rc = context_struct_to_sid(state, &newcon, new_sid);
-> >   out_unlock:
-> >       read_unlock(&state->ss->policy_rwlock);
-> >       context_destroy(&newcon);
-> > @@ -3613,7 +3660,7 @@ int security_netlbl_secattr_to_sid(struct selinux_state *state,
-> >               if (!mls_context_isvalid(policydb, &ctx_new))
-> >                       goto out_free;
-> >
-> > -             rc = sidtab_context_to_sid(sidtab, &ctx_new, sid);
-> > +             rc = context_struct_to_sid(state, &ctx_new, sid);
-> >               if (rc)
-> >                       goto out_free;
-> >
-> > diff --git a/security/selinux/ss/services.h b/security/selinux/ss/services.h
-> > index 9a36de860368..fc40640a9725 100644
-> > --- a/security/selinux/ss/services.h
-> > +++ b/security/selinux/ss/services.h
-> > @@ -8,7 +8,7 @@
-> >   #define _SS_SERVICES_H_
-> >
-> >   #include "policydb.h"
-> > -#include "sidtab.h"
-> > +#include "context.h"
-> >
-> >   /* Mapping for a single class */
-> >   struct selinux_mapping {
-> > @@ -39,4 +39,6 @@ void services_compute_xperms_drivers(struct extended_perms *xperms,
-> >   void services_compute_xperms_decision(struct extended_perms_decision *xpermd,
-> >                                       struct avtab_node *node);
-> >
-> > +int context_add_hash(struct policydb *policydb, struct context *context);
-> > +
-> >   #endif      /* _SS_SERVICES_H_ */
-> > diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
-> > index 7d49994e8d5f..97d6fedeff68 100644
-> > --- a/security/selinux/ss/sidtab.c
-> > +++ b/security/selinux/ss/sidtab.c
-> > @@ -17,26 +17,43 @@
-> >   #include "security.h"
-> >   #include "sidtab.h"
-> >
-> > +#define index_to_sid(index) (index + SECINITSID_NUM + 1)
-> > +#define sid_to_index(sid) (sid - (SECINITSID_NUM + 1))
-> > +
-> >   int sidtab_init(struct sidtab *s)
-> >   {
-> >       u32 i;
-> >
-> >       memset(s->roots, 0, sizeof(s->roots));
-> >
-> > -     /* max count is SIDTAB_MAX so valid index is always < SIDTAB_MAX */
-> > -     for (i = 0; i < SIDTAB_RCACHE_SIZE; i++)
-> > -             s->rcache[i] = SIDTAB_MAX;
-> > -
-> >       for (i = 0; i < SECINITSID_NUM; i++)
-> >               s->isids[i].set = 0;
-> >
-> >       s->count = 0;
-> >       s->convert = NULL;
-> > +     hash_init(s->context_to_sid);
-> >
-> >       spin_lock_init(&s->lock);
-> >       return 0;
-> >   }
-> >
-> > +static u32 context_to_sid(struct sidtab *s, struct context *context)
-> > +{
-> > +     struct sidtab_entry_leaf *entry;
-> > +     u32 sid = 0;
-> > +
-> > +     rcu_read_lock();
-> > +     hash_for_each_possible_rcu(s->context_to_sid, entry, list,
-> > +                                context->hash) {
-> > +             if (context_cmp(&entry->context, context)) {
-> > +                     sid = entry->sid;
-> > +                     break;
-> > +             }
-> > +     }
-> > +     rcu_read_unlock();
-> > +     return sid;
-> > +}
-> > +
-> >   int sidtab_set_initial(struct sidtab *s, u32 sid, struct context *context)
-> >   {
-> >       struct sidtab_isid_entry *entry;
-> > @@ -47,14 +64,60 @@ int sidtab_set_initial(struct sidtab *s, u32 sid, struct context *context)
-> >
-> >       entry = &s->isids[sid - 1];
-> >
-> > -     rc = context_cpy(&entry->context, context);
-> > +     rc = context_cpy(&entry->leaf.context, context);
-> >       if (rc)
-> >               return rc;
-> >
-> >       entry->set = 1;
-> > +
-> > +     /*
-> > +      * Multiple initial sids may map to the same context. Check that this
-> > +      * context is not already represented in the context_to_sid hashtable
-> > +      * to avoid duplicate entries and long linked lists upon hash
-> > +      * collision.
-> > +      */
-> > +     if (!context_to_sid(s, context)) {
-> > +             entry->leaf.sid = sid;
-> > +             hash_add(s->context_to_sid, &entry->leaf.list, context->hash);
-> > +     }
-> > +
-> >       return 0;
-> >   }
-> >
-> > +int sidtab_hash_stats(struct sidtab *sidtab, char *page)
-> > +{
-> > +     int i;
-> > +     int chain_len = 0;
-> > +     int slots_used = 0;
-> > +     int entries = 0;
-> > +     int max_chain_len = 0;
-> > +     int cur_bucket = 0;
-> > +     struct sidtab_entry_leaf *entry;
-> > +
-> > +     rcu_read_lock();
-> > +     hash_for_each_rcu(sidtab->context_to_sid, i, entry, list) {
-> > +             entries++;
-> > +             if (i == cur_bucket) {
-> > +                     chain_len++;
-> > +                     if (chain_len == 1)
-> > +                             slots_used++;
-> > +             } else {
-> > +                     cur_bucket = i;
-> > +                     if (chain_len > max_chain_len)
-> > +                             max_chain_len = chain_len;
-> > +                     chain_len = 0;
-> > +             }
-> > +     }
-> > +     rcu_read_unlock();
-> > +
-> > +     if (chain_len > max_chain_len)
-> > +             max_chain_len = chain_len;
-> > +
-> > +     return scnprintf(page, PAGE_SIZE, "entries: %d\nbuckets used: %d/%d\n"
-> > +                      "longest chain: %d\n", entries,
-> > +                      slots_used, SIDTAB_HASH_BUCKETS, max_chain_len);
-> > +}
-> > +
-> >   static u32 sidtab_level_from_count(u32 count)
-> >   {
-> >       u32 capacity = SIDTAB_LEAF_ENTRIES;
-> > @@ -88,7 +151,8 @@ static int sidtab_alloc_roots(struct sidtab *s, u32 level)
-> >       return 0;
-> >   }
-> >
-> > -static struct context *sidtab_do_lookup(struct sidtab *s, u32 index, int alloc)
-> > +static struct sidtab_entry_leaf *sidtab_do_lookup(struct sidtab *s, u32 index,
-> > +                                               int alloc)
-> >   {
-> >       union sidtab_entry_inner *entry;
-> >       u32 level, capacity_shift, leaf_index = index / SIDTAB_LEAF_ENTRIES;
-> > @@ -125,7 +189,7 @@ static struct context *sidtab_do_lookup(struct sidtab *s, u32 index, int alloc)
-> >               if (!entry->ptr_leaf)
-> >                       return NULL;
-> >       }
-> > -     return &entry->ptr_leaf->entries[index % SIDTAB_LEAF_ENTRIES].context;
-> > +     return &entry->ptr_leaf->entries[index % SIDTAB_LEAF_ENTRIES];
-> >   }
-> >
-> >   static struct context *sidtab_lookup(struct sidtab *s, u32 index)
-> > @@ -136,12 +200,12 @@ static struct context *sidtab_lookup(struct sidtab *s, u32 index)
-> >       if (index >= count)
-> >               return NULL;
-> >
-> > -     return sidtab_do_lookup(s, index, 0);
-> > +     return &sidtab_do_lookup(s, index, 0)->context;
-> >   }
-> >
-> >   static struct context *sidtab_lookup_initial(struct sidtab *s, u32 sid)
-> >   {
-> > -     return s->isids[sid - 1].set ? &s->isids[sid - 1].context : NULL;
-> > +     return s->isids[sid - 1].set ? &s->isids[sid - 1].leaf.context : NULL;
-> >   }
-> >
-> >   static struct context *sidtab_search_core(struct sidtab *s, u32 sid, int force)
-> > @@ -150,7 +214,7 @@ static struct context *sidtab_search_core(struct sidtab *s, u32 sid, int force)
-> >
-> >       if (sid != 0) {
-> >               if (sid > SECINITSID_NUM)
-> > -                     context = sidtab_lookup(s, sid - (SECINITSID_NUM + 1));
-> > +                     context = sidtab_lookup(s, sid_to_index(sid));
-> >               else
-> >                       context = sidtab_lookup_initial(s, sid);
-> >               if (context && (!context->len || force))
-> > @@ -170,117 +234,30 @@ struct context *sidtab_search_force(struct sidtab *s, u32 sid)
-> >       return sidtab_search_core(s, sid, 1);
-> >   }
-> >
-> > -static int sidtab_find_context(union sidtab_entry_inner entry,
-> > -                            u32 *pos, u32 count, u32 level,
-> > -                            struct context *context, u32 *index)
-> > -{
-> > -     int rc;
-> > -     u32 i;
-> > -
-> > -     if (level != 0) {
-> > -             struct sidtab_node_inner *node = entry.ptr_inner;
-> > -
-> > -             i = 0;
-> > -             while (i < SIDTAB_INNER_ENTRIES && *pos < count) {
-> > -                     rc = sidtab_find_context(node->entries[i],
-> > -                                              pos, count, level - 1,
-> > -                                              context, index);
-> > -                     if (rc == 0)
-> > -                             return 0;
-> > -                     i++;
-> > -             }
-> > -     } else {
-> > -             struct sidtab_node_leaf *node = entry.ptr_leaf;
-> > -
-> > -             i = 0;
-> > -             while (i < SIDTAB_LEAF_ENTRIES && *pos < count) {
-> > -                     if (context_cmp(&node->entries[i].context, context)) {
-> > -                             *index = *pos;
-> > -                             return 0;
-> > -                     }
-> > -                     (*pos)++;
-> > -                     i++;
-> > -             }
-> > -     }
-> > -     return -ENOENT;
-> > -}
-> > -
-> > -static void sidtab_rcache_update(struct sidtab *s, u32 index, u32 pos)
-> > -{
-> > -     while (pos > 0) {
-> > -             WRITE_ONCE(s->rcache[pos], READ_ONCE(s->rcache[pos - 1]));
-> > -             --pos;
-> > -     }
-> > -     WRITE_ONCE(s->rcache[0], index);
-> > -}
-> > -
-> > -static void sidtab_rcache_push(struct sidtab *s, u32 index)
-> > -{
-> > -     sidtab_rcache_update(s, index, SIDTAB_RCACHE_SIZE - 1);
-> > -}
-> > -
-> > -static int sidtab_rcache_search(struct sidtab *s, struct context *context,
-> > -                             u32 *index)
-> > -{
-> > -     u32 i;
-> > -
-> > -     for (i = 0; i < SIDTAB_RCACHE_SIZE; i++) {
-> > -             u32 v = READ_ONCE(s->rcache[i]);
-> > -
-> > -             if (v >= SIDTAB_MAX)
-> > -                     continue;
-> > -
-> > -             if (context_cmp(sidtab_do_lookup(s, v, 0), context)) {
-> > -                     sidtab_rcache_update(s, v, i);
-> > -                     *index = v;
-> > -                     return 0;
-> > -             }
-> > -     }
-> > -     return -ENOENT;
-> > -}
-> > -
-> > -static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
-> > -                              u32 *index)
-> > +int sidtab_context_to_sid(struct sidtab *s, struct context *context,
-> > +                       u32 *sid)
-> >   {
-> >       unsigned long flags;
-> > -     u32 count, count_locked, level, pos;
-> > +     u32 count;
-> >       struct sidtab_convert_params *convert;
-> > -     struct context *dst, *dst_convert;
-> > +     struct sidtab_entry_leaf *dst, *dst_convert;
-> >       int rc;
-> >
-> > -     rc = sidtab_rcache_search(s, context, index);
-> > -     if (rc == 0)
-> > -             return 0;
-> > -
-> > -     /* read entries only after reading count */
-> > -     count = smp_load_acquire(&s->count);
-> > -     level = sidtab_level_from_count(count);
-> > -
-> > -     pos = 0;
-> > -     rc = sidtab_find_context(s->roots[level], &pos, count, level,
-> > -                              context, index);
-> > -     if (rc == 0) {
-> > -             sidtab_rcache_push(s, *index);
-> > +     *sid = context_to_sid(s, context);
-> > +     if (*sid)
-> >               return 0;
-> > -     }
-> >
-> >       /* lock-free search failed: lock, re-search, and insert if not found */
-> >       spin_lock_irqsave(&s->lock, flags);
-> >
-> > +     rc = 0;
-> > +     *sid = context_to_sid(s, context);
-> > +     if (*sid)
-> > +             goto out_unlock;
-> > +
-> > +     /* read entries only after reading count */
-> > +     count = smp_load_acquire(&s->count);
-> >       convert = s->convert;
-> > -     count_locked = s->count;
-> > -     level = sidtab_level_from_count(count_locked);
-> > -
-> > -     /* if count has changed before we acquired the lock, then catch up */
-> > -     while (count < count_locked) {
-> > -             if (context_cmp(sidtab_do_lookup(s, count, 0), context)) {
-> > -                     sidtab_rcache_push(s, count);
-> > -                     *index = count;
-> > -                     rc = 0;
-> > -                     goto out_unlock;
-> > -             }
-> > -             ++count;
-> > -     }
-> >
-> >       /* bail out if we already reached max entries */
-> >       rc = -EOVERFLOW;
-> > @@ -293,7 +270,9 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
-> >       if (!dst)
-> >               goto out_unlock;
-> >
-> > -     rc = context_cpy(dst, context);
-> > +     dst->sid = index_to_sid(count);
-> > +
-> > +     rc = context_cpy(&dst->context, context);
-> >       if (rc)
-> >               goto out_unlock;
-> >
-> > @@ -305,29 +284,32 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
-> >               rc = -ENOMEM;
-> >               dst_convert = sidtab_do_lookup(convert->target, count, 1);
-> >               if (!dst_convert) {
-> > -                     context_destroy(dst);
-> > +                     context_destroy(&dst->context);
-> >                       goto out_unlock;
-> >               }
-> >
-> > -             rc = convert->func(context, dst_convert, convert->args);
-> > +             rc = convert->func(context, &dst_convert->context,
-> > +                             convert->args);
-> >               if (rc) {
-> > -                     context_destroy(dst);
-> > +                     context_destroy(&dst->context);
-> >                       goto out_unlock;
-> >               }
-> > -
-> > -             /* at this point we know the insert won't fail */
-> > +             dst_convert->sid = index_to_sid(count);
-> >               convert->target->count = count + 1;
-> > +
-> > +             hash_add_rcu(convert->target->context_to_sid,
-> > +                             &dst_convert->list, dst_convert->context.hash);
-> >       }
-> >
-> >       if (context->len)
-> >               pr_info("SELinux:  Context %s is not valid (left unmapped).\n",
-> >                       context->str);
-> >
-> > -     sidtab_rcache_push(s, count);
-> > -     *index = count;
-> > +     *sid = index_to_sid(count);
-> >
-> > -     /* write entries before writing new count */
-> > +     /* Write entries before updating count. */
-> >       smp_store_release(&s->count, count + 1);
-> > +     hash_add_rcu(s->context_to_sid, &dst->list, dst->context.hash);
-> >
-> >       rc = 0;
-> >   out_unlock:
-> > @@ -335,25 +317,19 @@ static int sidtab_reverse_lookup(struct sidtab *s, struct context *context,
-> >       return rc;
-> >   }
-> >
-> > -int sidtab_context_to_sid(struct sidtab *s, struct context *context, u32 *sid)
-> > +static void sidtab_convert_hashtable(struct sidtab *s, u32 count)
-> >   {
-> > -     int rc;
-> > +     struct sidtab_entry_leaf *entry;
-> >       u32 i;
-> >
-> > -     for (i = 0; i < SECINITSID_NUM; i++) {
-> > -             struct sidtab_isid_entry *entry = &s->isids[i];
-> > +     for (i = 0; i < count; i++) {
-> > +             entry = sidtab_do_lookup(s, i, 0);
-> > +             entry->sid = index_to_sid(i);
-> >
-> > -             if (entry->set && context_cmp(context, &entry->context)) {
-> > -                     *sid = i + 1;
-> > -                     return 0;
-> > -             }
-> > -     }
-> > +             hash_add_rcu(s->context_to_sid, &entry->list,
-> > +                             entry->context.hash);
-> >
-> > -     rc = sidtab_reverse_lookup(s, context, sid);
-> > -     if (rc)
-> > -             return rc;
-> > -     *sid += SECINITSID_NUM + 1;
-> > -     return 0;
-> > +     }
-> >   }
-> >
-> >   static int sidtab_convert_tree(union sidtab_entry_inner *edst,
-> > @@ -400,6 +376,7 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
-> >               }
-> >               cond_resched();
-> >       }
-> > +
-> >       return 0;
-> >   }
-> >
-> > @@ -435,7 +412,7 @@ int sidtab_convert(struct sidtab *s, struct sidtab_convert_params *params)
-> >       /* enable live convert of new entries */
-> >       s->convert = params;
-> >
-> > -     /* we can safely do the rest of the conversion outside the lock */
-> > +     /* we can safely convert the tree outside the lock */
-> >       spin_unlock_irqrestore(&s->lock, flags);
-> >
-> >       pr_info("SELinux:  Converting %u SID table entries...\n", count);
-> > @@ -449,8 +426,17 @@ int sidtab_convert(struct sidtab *s, struct sidtab_convert_params *params)
-> >               spin_lock_irqsave(&s->lock, flags);
-> >               s->convert = NULL;
-> >               spin_unlock_irqrestore(&s->lock, flags);
-> > +             return rc;
-> >       }
-> > -     return rc;
-> > +     /*
-> > +      * The hashtable can also be modified in sidtab_context_to_sid()
-> > +      * so we must re-acquire the lock here.
-> > +      */
-> > +     spin_lock_irqsave(&s->lock, flags);
-> > +     sidtab_convert_hashtable(params->target, count);
-> > +     spin_unlock_irqrestore(&s->lock, flags);
-> > +
-> > +     return 0;
-> >   }
-> >
-> >   static void sidtab_destroy_tree(union sidtab_entry_inner entry, u32 level)
-> > @@ -484,11 +470,16 @@ void sidtab_destroy(struct sidtab *s)
-> >
-> >       for (i = 0; i < SECINITSID_NUM; i++)
-> >               if (s->isids[i].set)
-> > -                     context_destroy(&s->isids[i].context);
-> > +                     context_destroy(&s->isids[i].leaf.context);
-> >
-> >       level = SIDTAB_MAX_LEVEL;
-> >       while (level && !s->roots[level].ptr_inner)
-> >               --level;
-> >
-> >       sidtab_destroy_tree(s->roots[level], level);
-> > +     /*
-> > +      * The context_to_sid hashtable's objects are all shared
-> > +      * with the isids array and context tree, and so don't need
-> > +      * to be cleaned up here.
-> > +      */
-> >   }
-> > diff --git a/security/selinux/ss/sidtab.h b/security/selinux/ss/sidtab.h
-> > index 1f4763141aa1..27e68babc1b8 100644
-> > --- a/security/selinux/ss/sidtab.h
-> > +++ b/security/selinux/ss/sidtab.h
-> > @@ -13,11 +13,14 @@
-> >
-> >   #include <linux/spinlock_types.h>
-> >   #include <linux/log2.h>
-> > +#include <linux/hashtable.h>
-> >
-> >   #include "context.h"
-> >
-> >   struct sidtab_entry_leaf {
-> > +     u32 sid;
-> >       struct context context;
-> > +     struct hlist_node list;
-> >   };
-> >
-> >   struct sidtab_node_inner;
-> > @@ -48,7 +51,7 @@ union sidtab_entry_inner {
-> >                    SIDTAB_INNER_SHIFT)
-> >
-> >   struct sidtab_node_leaf {
-> > -     struct sidtab_entry_leaf entries[SIDTAB_LEAF_ENTRIES];
-> > +     struct sidtab_entry_leaf __rcu entries[SIDTAB_LEAF_ENTRIES];
-> >   };
-> >
-> >   struct sidtab_node_inner {
-> > @@ -57,7 +60,7 @@ struct sidtab_node_inner {
-> >
-> >   struct sidtab_isid_entry {
-> >       int set;
-> > -     struct context context;
-> > +     struct sidtab_entry_leaf leaf;
-> >   };
-> >
-> >   struct sidtab_convert_params {
-> > @@ -66,7 +69,8 @@ struct sidtab_convert_params {
-> >       struct sidtab *target;
-> >   };
-> >
-> > -#define SIDTAB_RCACHE_SIZE 3
-> > +#define SIDTAB_HASH_BITS CONFIG_SECURITY_SELINUX_SIDTAB_HASH_BITS
-> > +#define SIDTAB_HASH_BUCKETS (1 << SIDTAB_HASH_BITS)
-> >
-> >   struct sidtab {
-> >       /*
-> > @@ -83,11 +87,11 @@ struct sidtab {
-> >       struct sidtab_convert_params *convert;
-> >       spinlock_t lock;
-> >
-> > -     /* reverse lookup cache - access atomically via {READ|WRITE}_ONCE() */
-> > -     u32 rcache[SIDTAB_RCACHE_SIZE];
-> > -
-> >       /* index == SID - 1 (no entry for SECSID_NULL) */
-> >       struct sidtab_isid_entry isids[SECINITSID_NUM];
-> > +
-> > +     /* Hash table for fast reverse context-to-sid lookups. */
-> > +     DECLARE_HASHTABLE(context_to_sid, SIDTAB_HASH_BITS);
-> >   };
-> >
-> >   int sidtab_init(struct sidtab *s);
-> > @@ -101,6 +105,8 @@ int sidtab_context_to_sid(struct sidtab *s, struct context *context, u32 *sid);
-> >
-> >   void sidtab_destroy(struct sidtab *s);
-> >
-> > +int sidtab_hash_stats(struct sidtab *sidtab, char *page);
-> > +
-> >   #endif      /* _SS_SIDTAB_H_ */
-> >
-> >
-> >
->
+
+On 2019/11/18 10:59 下午, Paul E. McKenney wrote:
+> On Mon, Nov 18, 2019 at 10:02:50AM +0800, Lai Jiangshan wrote:
+>>
+>>
+>> On 2019/11/16 11:48 下午, Paul E. McKenney wrote:
+>>> On Sat, Nov 02, 2019 at 12:45:59PM +0000, Lai Jiangshan wrote:
+>>>> Convert x86 to use a per-cpu rcu_preempt_depth. The reason for doing so
+>>>> is that accessing per-cpu variables is a lot cheaper than accessing
+>>>> task_struct or thread_info variables.
+>>>>
+>>>> We need to save/restore the actual rcu_preempt_depth when switch.
+>>>> We also place the per-cpu rcu_preempt_depth close to __preempt_count
+>>>> and current_task variable.
+>>>>
+>>>> Using the idea of per-cpu __preempt_count.
+>>>>
+>>>> No function call when using rcu_read_[un]lock().
+>>>> Single instruction for rcu_read_lock().
+>>>> 2 instructions for fast path of rcu_read_unlock().
+>>>>
+>>>> CC: Peter Zijlstra <peterz@infradead.org>
+>>>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>>>
+>>> Wouldn't putting RCU's nesting-depth counter in task info be just as fast,
+>>> just as nice for #include/inlining, and a lot less per-architecture code?
+>>>
+>>> Or am I missing some issue with the task-info approach?
+>>
+>> struct thread_info itself is per-architecture definition.
+>> All the arches would have to be touched if RCU's nesting-depth counter
+>> is put int struct thread_info. Though the inlining functions can be
+>> defined in include/asm-generic/ so that it serves for all arches
+>> and X86 can have its own implementation in arch/x86/include/asm/.
+> 
+> True enough.
+> 
+> But doesn't the per-CPU code require per-architecture changes to copy
+> to and from the per-CPU variable?  If that code simpler and smaller than
+> the thread_info access code, I will be -very- surprised.
+> 
+
+The per-CPU code is not simpler. And my code touch X86 ONLY so that
+it requires an additional CONFIG and some more "#if" in rcu code
+which adds little more complicity.
+
+As far as I understand, the rcu_read_lock_nesting can only be possible
+put in per CPU in X86, not possible in other ARCHs.
+
+Putting the rcu_read_lock_nesting in struct thread_info and putting
+the inlining functions in include/asm-generic/ are OK for me. It will
+be a good-shaped framework and reduce function calls, and still allow
+x86 has its own implementation.
+
+The framework will only be more appealing when the x86 percpu
+rcu_read_lock_nesting is implemented. This series implements
+the x86 percpu rcu_read_lock_nesting first and avoid touch too much
+files. The framework can be implemented later
+
+Thanks
+Lai
+
+
+> 
+> 							Thanx, Paul
+> 
+>>>> ---
+>>>>    arch/x86/Kconfig                         |  2 +
+>>>>    arch/x86/include/asm/rcu_preempt_depth.h | 87 ++++++++++++++++++++++++
+>>>>    arch/x86/kernel/cpu/common.c             |  7 ++
+>>>>    arch/x86/kernel/process_32.c             |  2 +
+>>>>    arch/x86/kernel/process_64.c             |  2 +
+>>>>    include/linux/rcupdate.h                 | 24 +++++++
+>>>>    init/init_task.c                         |  2 +-
+>>>>    kernel/fork.c                            |  2 +-
+>>>>    kernel/rcu/Kconfig                       |  3 +
+>>>>    kernel/rcu/tree_exp.h                    |  2 +
+>>>>    kernel/rcu/tree_plugin.h                 | 37 +++++++---
+>>>>    11 files changed, 158 insertions(+), 12 deletions(-)
+>>>>    create mode 100644 arch/x86/include/asm/rcu_preempt_depth.h
+>>>>
+>>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>>> index d6e1faa28c58..af9fedc0fdc4 100644
+>>>> --- a/arch/x86/Kconfig
+>>>> +++ b/arch/x86/Kconfig
+>>>> @@ -18,6 +18,7 @@ config X86_32
+>>>>    	select MODULES_USE_ELF_REL
+>>>>    	select OLD_SIGACTION
+>>>>    	select GENERIC_VDSO_32
+>>>> +	select ARCH_HAVE_RCU_PREEMPT_DEEPTH
+>>>>    config X86_64
+>>>>    	def_bool y
+>>>> @@ -31,6 +32,7 @@ config X86_64
+>>>>    	select NEED_DMA_MAP_STATE
+>>>>    	select SWIOTLB
+>>>>    	select ARCH_HAS_SYSCALL_WRAPPER
+>>>> +	select ARCH_HAVE_RCU_PREEMPT_DEEPTH
+>>>>    config FORCE_DYNAMIC_FTRACE
+>>>>    	def_bool y
+>>>> diff --git a/arch/x86/include/asm/rcu_preempt_depth.h b/arch/x86/include/asm/rcu_preempt_depth.h
+>>>> new file mode 100644
+>>>> index 000000000000..88010ad59c20
+>>>> --- /dev/null
+>>>> +++ b/arch/x86/include/asm/rcu_preempt_depth.h
+>>>> @@ -0,0 +1,87 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef __ASM_RCU_PREEMPT_DEPTH_H
+>>>> +#define __ASM_RCU_PREEMPT_DEPTH_H
+>>>> +
+>>>> +#include <asm/rmwcc.h>
+>>>> +#include <asm/percpu.h>
+>>>> +
+>>>> +#ifdef CONFIG_PREEMPT_RCU
+>>>> +DECLARE_PER_CPU(int, __rcu_preempt_depth);
+>>>> +
+>>>> +/*
+>>>> + * We use the RCU_NEED_SPECIAL bit as an inverted need_special
+>>>> + * such that a decrement hitting 0 means we can and should do
+>>>> + * rcu_read_unlock_special().
+>>>> + */
+>>>> +#define RCU_NEED_SPECIAL	0x80000000
+>>>> +
+>>>> +#define INIT_RCU_PREEMPT_DEPTH	(RCU_NEED_SPECIAL)
+>>>> +
+>>>> +/* We mask the RCU_NEED_SPECIAL bit so that it return real depth */
+>>>> +static __always_inline int rcu_preempt_depth(void)
+>>>> +{
+>>>> +	return raw_cpu_read_4(__rcu_preempt_depth) & ~RCU_NEED_SPECIAL;
+>>>> +}
+>>>> +
+>>>> +static __always_inline void rcu_preempt_depth_set(int pc)
+>>>> +{
+>>>> +	int old, new;
+>>>> +
+>>>> +	do {
+>>>> +		old = raw_cpu_read_4(__rcu_preempt_depth);
+>>>> +		new = (old & RCU_NEED_SPECIAL) |
+>>>> +			(pc & ~RCU_NEED_SPECIAL);
+>>>> +	} while (raw_cpu_cmpxchg_4(__rcu_preempt_depth, old, new) != old);
+>>>> +}
+>>>> +
+>>>> +/*
+>>>> + * We fold the RCU_NEED_SPECIAL bit into the rcu_preempt_depth such that
+>>>> + * rcu_read_unlock() can decrement and test for needing to do special
+>>>> + * with a single instruction.
+>>>> + *
+>>>> + * We invert the actual bit, so that when the decrement hits 0 we know
+>>>> + * both it just exited the outmost rcu_read_lock() critical section and
+>>>> + * we need to do specail (the bit is cleared) if it doesn't need to be
+>>>> + * deferred.
+>>>> + */
+>>>> +
+>>>> +static inline void set_rcu_preempt_need_special(void)
+>>>> +{
+>>>> +	raw_cpu_and_4(__rcu_preempt_depth, ~RCU_NEED_SPECIAL);
+>>>> +}
+>>>> +
+>>>> +/*
+>>>> + * irq needs to be disabled for clearing any bits of ->rcu_read_unlock_special
+>>>> + * and calling this function. Otherwise it may clear the work done
+>>>> + * by set_rcu_preempt_need_special() in interrupt.
+>>>> + */
+>>>> +static inline void clear_rcu_preempt_need_special(void)
+>>>> +{
+>>>> +	raw_cpu_or_4(__rcu_preempt_depth, RCU_NEED_SPECIAL);
+>>>> +}
+>>>> +
+>>>> +static __always_inline void rcu_preempt_depth_inc(void)
+>>>> +{
+>>>> +	raw_cpu_add_4(__rcu_preempt_depth, 1);
+>>>> +}
+>>>> +
+>>>> +static __always_inline bool rcu_preempt_depth_dec_and_test(void)
+>>>> +{
+>>>> +	return GEN_UNARY_RMWcc("decl", __rcu_preempt_depth, e, __percpu_arg([var]));
+>>>> +}
+>>>> +
+>>>> +/* must be macros to avoid header recursion hell */
+>>>> +#define save_restore_rcu_preempt_depth(prev_p, next_p) do {				\
+>>>> +		prev_p->rcu_read_lock_nesting = this_cpu_read(__rcu_preempt_depth);	\
+>>>> +		this_cpu_write(__rcu_preempt_depth, next_p->rcu_read_lock_nesting);	\
+>>>> +	} while (0)
+>>>> +
+>>>> +#define DEFINE_PERCPU_RCU_PREEMP_DEPTH						\
+>>>> +	DEFINE_PER_CPU(int, __rcu_preempt_depth) = INIT_RCU_PREEMPT_DEPTH;	\
+>>>> +	EXPORT_PER_CPU_SYMBOL(__rcu_preempt_depth)
+>>>> +#else /* #ifdef CONFIG_PREEMPT_RCU */
+>>>> +#define save_restore_rcu_preempt_depth(prev_p, next_p) do {} while (0)
+>>>> +#define DEFINE_PERCPU_RCU_PREEMP_DEPTH	/* empty */
+>>>> +#endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+>>>> +
+>>>> +#endif /* __ASM_RCU_PREEMPT_DEPTH_H */
+>>>> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+>>>> index 9ae7d1bcd4f4..0151737e196c 100644
+>>>> --- a/arch/x86/kernel/cpu/common.c
+>>>> +++ b/arch/x86/kernel/cpu/common.c
+>>>> @@ -46,6 +46,7 @@
+>>>>    #include <asm/asm.h>
+>>>>    #include <asm/bugs.h>
+>>>>    #include <asm/cpu.h>
+>>>> +#include <asm/rcu_preempt_depth.h>
+>>>>    #include <asm/mce.h>
+>>>>    #include <asm/msr.h>
+>>>>    #include <asm/pat.h>
+>>>> @@ -1633,6 +1634,9 @@ DEFINE_PER_CPU(unsigned int, irq_count) __visible = -1;
+>>>>    DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
+>>>>    EXPORT_PER_CPU_SYMBOL(__preempt_count);
+>>>> +/* close to __preempt_count */
+>>>> +DEFINE_PERCPU_RCU_PREEMP_DEPTH;
+>>>> +
+>>>>    /* May not be marked __init: used by software suspend */
+>>>>    void syscall_init(void)
+>>>>    {
+>>>> @@ -1690,6 +1694,9 @@ EXPORT_PER_CPU_SYMBOL(current_task);
+>>>>    DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
+>>>>    EXPORT_PER_CPU_SYMBOL(__preempt_count);
+>>>> +/* close to __preempt_count */
+>>>> +DEFINE_PERCPU_RCU_PREEMP_DEPTH;
+>>>> +
+>>>>    /*
+>>>>     * On x86_32, vm86 modifies tss.sp0, so sp0 isn't a reliable way to find
+>>>>     * the top of the kernel stack.  Use an extra percpu variable to track the
+>>>> diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+>>>> index b8ceec4974fe..ab1f20353663 100644
+>>>> --- a/arch/x86/kernel/process_32.c
+>>>> +++ b/arch/x86/kernel/process_32.c
+>>>> @@ -51,6 +51,7 @@
+>>>>    #include <asm/cpu.h>
+>>>>    #include <asm/syscalls.h>
+>>>>    #include <asm/debugreg.h>
+>>>> +#include <asm/rcu_preempt_depth.h>
+>>>>    #include <asm/switch_to.h>
+>>>>    #include <asm/vm86.h>
+>>>>    #include <asm/resctrl_sched.h>
+>>>> @@ -290,6 +291,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+>>>>    	if (prev->gs | next->gs)
+>>>>    		lazy_load_gs(next->gs);
+>>>> +	save_restore_rcu_preempt_depth(prev_p, next_p);
+>>>>    	this_cpu_write(current_task, next_p);
+>>>>    	switch_fpu_finish(next_fpu);
+>>>> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+>>>> index af64519b2695..2e1c6e829d30 100644
+>>>> --- a/arch/x86/kernel/process_64.c
+>>>> +++ b/arch/x86/kernel/process_64.c
+>>>> @@ -50,6 +50,7 @@
+>>>>    #include <asm/ia32.h>
+>>>>    #include <asm/syscalls.h>
+>>>>    #include <asm/debugreg.h>
+>>>> +#include <asm/rcu_preempt_depth.h>
+>>>>    #include <asm/switch_to.h>
+>>>>    #include <asm/xen/hypervisor.h>
+>>>>    #include <asm/vdso.h>
+>>>> @@ -559,6 +560,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+>>>>    	x86_fsgsbase_load(prev, next);
+>>>> +	save_restore_rcu_preempt_depth(prev_p, next_p);
+>>>>    	/*
+>>>>    	 * Switch the PDA and FPU contexts.
+>>>>    	 */
+>>>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+>>>> index a35daab95d14..0d2abf08b694 100644
+>>>> --- a/include/linux/rcupdate.h
+>>>> +++ b/include/linux/rcupdate.h
+>>>> @@ -41,6 +41,29 @@ void synchronize_rcu(void);
+>>>>    #ifdef CONFIG_PREEMPT_RCU
+>>>> +#ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH
+>>>> +#include <asm/rcu_preempt_depth.h>
+>>>> +
+>>>> +#ifndef CONFIG_PROVE_LOCKING
+>>>> +extern void rcu_read_unlock_special(void);
+>>>> +
+>>>> +static inline void __rcu_read_lock(void)
+>>>> +{
+>>>> +	rcu_preempt_depth_inc();
+>>>> +}
+>>>> +
+>>>> +static inline void __rcu_read_unlock(void)
+>>>> +{
+>>>> +	if (unlikely(rcu_preempt_depth_dec_and_test()))
+>>>> +		rcu_read_unlock_special();
+>>>> +}
+>>>> +#else
+>>>> +void __rcu_read_lock(void);
+>>>> +void __rcu_read_unlock(void);
+>>>> +#endif
+>>>> +
+>>>> +#else /* #ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+>>>> +#define INIT_RCU_PREEMPT_DEPTH (0)
+>>>>    void __rcu_read_lock(void);
+>>>>    void __rcu_read_unlock(void);
+>>>> @@ -51,6 +74,7 @@ void __rcu_read_unlock(void);
+>>>>     * types of kernel builds, the rcu_read_lock() nesting depth is unknowable.
+>>>>     */
+>>>>    #define rcu_preempt_depth() (current->rcu_read_lock_nesting)
+>>>> +#endif /* #else #ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+>>>>    #else /* #ifdef CONFIG_PREEMPT_RCU */
+>>>> diff --git a/init/init_task.c b/init/init_task.c
+>>>> index 9e5cbe5eab7b..0a91e38fba37 100644
+>>>> --- a/init/init_task.c
+>>>> +++ b/init/init_task.c
+>>>> @@ -130,7 +130,7 @@ struct task_struct init_task
+>>>>    	.perf_event_list = LIST_HEAD_INIT(init_task.perf_event_list),
+>>>>    #endif
+>>>>    #ifdef CONFIG_PREEMPT_RCU
+>>>> -	.rcu_read_lock_nesting = 0,
+>>>> +	.rcu_read_lock_nesting = INIT_RCU_PREEMPT_DEPTH,
+>>>>    	.rcu_read_unlock_special.s = 0,
+>>>>    	.rcu_node_entry = LIST_HEAD_INIT(init_task.rcu_node_entry),
+>>>>    	.rcu_blocked_node = NULL,
+>>>> diff --git a/kernel/fork.c b/kernel/fork.c
+>>>> index f9572f416126..7368d4ccb857 100644
+>>>> --- a/kernel/fork.c
+>>>> +++ b/kernel/fork.c
+>>>> @@ -1665,7 +1665,7 @@ init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
+>>>>    static inline void rcu_copy_process(struct task_struct *p)
+>>>>    {
+>>>>    #ifdef CONFIG_PREEMPT_RCU
+>>>> -	p->rcu_read_lock_nesting = 0;
+>>>> +	p->rcu_read_lock_nesting = INIT_RCU_PREEMPT_DEPTH;
+>>>>    	p->rcu_read_unlock_special.s = 0;
+>>>>    	p->rcu_blocked_node = NULL;
+>>>>    	INIT_LIST_HEAD(&p->rcu_node_entry);
+>>>> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+>>>> index 1cc940fef17c..d2ecca49a1a4 100644
+>>>> --- a/kernel/rcu/Kconfig
+>>>> +++ b/kernel/rcu/Kconfig
+>>>> @@ -14,6 +14,9 @@ config TREE_RCU
+>>>>    	  thousands of CPUs.  It also scales down nicely to
+>>>>    	  smaller systems.
+>>>> +config ARCH_HAVE_RCU_PREEMPT_DEEPTH
+>>>> +	def_bool n
+>>>> +
+>>>>    config PREEMPT_RCU
+>>>>    	bool
+>>>>    	default y if PREEMPTION
+>>>> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+>>>> index dcb2124203cf..f919881832d4 100644
+>>>> --- a/kernel/rcu/tree_exp.h
+>>>> +++ b/kernel/rcu/tree_exp.h
+>>>> @@ -588,6 +588,7 @@ static void wait_rcu_exp_gp(struct work_struct *wp)
+>>>>    }
+>>>>    #ifdef CONFIG_PREEMPT_RCU
+>>>> +static inline void set_rcu_preempt_need_special(void);
+>>>>    /*
+>>>>     * Remote handler for smp_call_function_single().  If there is an
+>>>> @@ -637,6 +638,7 @@ static void rcu_exp_handler(void *unused)
+>>>>    		if (rnp->expmask & rdp->grpmask) {
+>>>>    			rdp->exp_deferred_qs = true;
+>>>>    			t->rcu_read_unlock_special.b.exp_hint = true;
+>>>> +			set_rcu_preempt_need_special();
+>>>>    		}
+>>>>    		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>>>    		return;
+>>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+>>>> index e16c3867d2ff..e6774a7ab16b 100644
+>>>> --- a/kernel/rcu/tree_plugin.h
+>>>> +++ b/kernel/rcu/tree_plugin.h
+>>>> @@ -82,7 +82,7 @@ static void __init rcu_bootup_announce_oddness(void)
+>>>>    #ifdef CONFIG_PREEMPT_RCU
+>>>>    static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
+>>>> -static void rcu_read_unlock_special(struct task_struct *t);
+>>>> +void rcu_read_unlock_special(void);
+>>>>    /*
+>>>>     * Tell them what RCU they are running.
+>>>> @@ -298,6 +298,7 @@ void rcu_note_context_switch(bool preempt)
+>>>>    		t->rcu_read_unlock_special.b.need_qs = false;
+>>>>    		t->rcu_read_unlock_special.b.blocked = true;
+>>>>    		t->rcu_blocked_node = rnp;
+>>>> +		set_rcu_preempt_need_special();
+>>>>    		/*
+>>>>    		 * Verify the CPU's sanity, trace the preemption, and
+>>>> @@ -345,6 +346,7 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+>>>>    /* Bias and limit values for ->rcu_read_lock_nesting. */
+>>>>    #define RCU_NEST_PMAX (INT_MAX / 2)
+>>>> +#ifndef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH
+>>>>    static inline void rcu_preempt_depth_inc(void)
+>>>>    {
+>>>>    	current->rcu_read_lock_nesting++;
+>>>> @@ -352,7 +354,12 @@ static inline void rcu_preempt_depth_inc(void)
+>>>>    static inline bool rcu_preempt_depth_dec_and_test(void)
+>>>>    {
+>>>> -	return --current->rcu_read_lock_nesting == 0;
+>>>> +	if (--current->rcu_read_lock_nesting == 0) {
+>>>> +		/* check speical after dec ->rcu_read_lock_nesting */
+>>>> +		barrier();
+>>>> +		return READ_ONCE(current->rcu_read_unlock_special.s);
+>>>> +	}
+>>>> +	return 0;
+>>>>    }
+>>>>    static inline void rcu_preempt_depth_set(int val)
+>>>> @@ -360,6 +367,12 @@ static inline void rcu_preempt_depth_set(int val)
+>>>>    	current->rcu_read_lock_nesting = val;
+>>>>    }
+>>>> +static inline void clear_rcu_preempt_need_special(void) {}
+>>>> +static inline void set_rcu_preempt_need_special(void) {}
+>>>> +
+>>>> +#endif /* #ifndef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+>>>> +
+>>>> +#if !defined(CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH) || defined (CONFIG_PROVE_LOCKING)
+>>>>    /*
+>>>>     * Preemptible RCU implementation for rcu_read_lock().
+>>>>     * Just increment ->rcu_read_lock_nesting, shared state will be updated
+>>>> @@ -383,18 +396,16 @@ EXPORT_SYMBOL_GPL(__rcu_read_lock);
+>>>>     */
+>>>>    void __rcu_read_unlock(void)
+>>>>    {
+>>>> -	struct task_struct *t = current;
+>>>> -
+>>>>    	if (rcu_preempt_depth_dec_and_test()) {
+>>>> -		barrier();  /* critical section before exit code. */
+>>>> -		if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+>>>> -			rcu_read_unlock_special(t);
+>>>> +		rcu_read_unlock_special();
+>>>>    	}
+>>>>    	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+>>>> -		WARN_ON_ONCE(rcu_preempt_depth() < 0);
+>>>> +		WARN_ON_ONCE(rcu_preempt_depth() < 0 ||
+>>>> +			     rcu_preempt_depth() > RCU_NEST_PMAX);
+>>>>    	}
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(__rcu_read_unlock);
+>>>> +#endif /* #if !defined(CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH) || defined (CONFIG_PROVE_LOCKING) */
+>>>>    /*
+>>>>     * Advance a ->blkd_tasks-list pointer to the next entry, instead
+>>>> @@ -449,6 +460,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>>>>    		return;
+>>>>    	}
+>>>>    	t->rcu_read_unlock_special.s = 0;
+>>>> +	clear_rcu_preempt_need_special();
+>>>>    	if (special.b.need_qs)
+>>>>    		rcu_qs();
+>>>> @@ -579,8 +591,9 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+>>>>     * notify RCU core processing or task having blocked during the RCU
+>>>>     * read-side critical section.
+>>>>     */
+>>>> -static void rcu_read_unlock_special(struct task_struct *t)
+>>>> +void rcu_read_unlock_special(void)
+>>>>    {
+>>>> +	struct task_struct *t = current;
+>>>>    	unsigned long flags;
+>>>>    	bool preempt_bh_were_disabled =
+>>>>    			!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+>>>> @@ -631,6 +644,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>>>>    	}
+>>>>    	rcu_preempt_deferred_qs_irqrestore(t, flags);
+>>>>    }
+>>>> +EXPORT_SYMBOL_GPL(rcu_read_unlock_special);
+>>>>    /*
+>>>>     * Check that the list of blocked tasks for the newly completed grace
+>>>> @@ -694,8 +708,10 @@ static void rcu_flavor_sched_clock_irq(int user)
+>>>>    	    __this_cpu_read(rcu_data.core_needs_qs) &&
+>>>>    	    __this_cpu_read(rcu_data.cpu_no_qs.b.norm) &&
+>>>>    	    !t->rcu_read_unlock_special.b.need_qs &&
+>>>> -	    time_after(jiffies, rcu_state.gp_start + HZ))
+>>>> +	    time_after(jiffies, rcu_state.gp_start + HZ)) {
+>>>>    		t->rcu_read_unlock_special.b.need_qs = true;
+>>>> +		set_rcu_preempt_need_special();
+>>>> +	}
+>>>>    }
+>>>>    /*
+>>>> @@ -714,6 +730,7 @@ void exit_rcu(void)
+>>>>    		rcu_preempt_depth_set(1);
+>>>>    		barrier();
+>>>>    		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
+>>>> +		set_rcu_preempt_need_special();
+>>>>    	} else if (unlikely(rcu_preempt_depth())) {
+>>>>    		rcu_preempt_depth_set(1);
+>>>>    	} else {
+>>>> -- 
+>>>> 2.20.1
+>>>>
