@@ -2,375 +2,580 @@ Return-Path: <SRS0=Pai7=ZL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E2B7C432C0
-	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 20:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75F94C432C0
+	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 21:14:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1EC2B2245B
-	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 20:06:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2730B2245B
+	for <rcu@archiver.kernel.org>; Tue, 19 Nov 2019 21:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1574194010;
-	bh=oOR3xoDEd61VO83z0i0lJWUDVV9QhU+6xRo0b8q/Z1E=;
+	s=default; t=1574198086;
+	bh=L4d/T8G7GCGsd15Ba7/IGdOoXrui6FFL70NHQq209/g=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=T5aFvuCyz9Z/XVICoQK9XdruPUdC478vH9yNJoMRHBJxyjQ1YZJxI9TxNh8zNYbav
-	 JUV080kCrirtR6ptAGASsBAHhUbd0YY1yM7WUl1quWmcx6VZz3ygAqO5UmxW0BCkER
-	 pmqrRZQsB5jI/8DPxLnugCIFLr043ATmKHtHY3Q8=
+	b=k0JTyFrV7M0Xb6QxO2Ipbh4sZLhg1txt0/ZbJy17WlQ0u18ycIEyLXYI2RWyg/Ya6
+	 u1c5XtX8ClntjfnERZ4qHGgw06cO5NaEnIe/NcZuD7d1YBRpEegAlb/8mzpVDlHSLA
+	 LBWGicqCi25BWD0ItEkB7zxzT6F8vErejJ1ASeAg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbfKSUGt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Nov 2019 15:06:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47150 "EHLO mail.kernel.org"
+        id S1726892AbfKSVOq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Nov 2019 16:14:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727359AbfKSUGt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Nov 2019 15:06:49 -0500
+        id S1726874AbfKSVOp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Nov 2019 16:14:45 -0500
 Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.135])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 144BD222B6;
-        Tue, 19 Nov 2019 20:06:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACBDF2240D;
+        Tue, 19 Nov 2019 21:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574194008;
-        bh=oOR3xoDEd61VO83z0i0lJWUDVV9QhU+6xRo0b8q/Z1E=;
+        s=default; t=1574198083;
+        bh=L4d/T8G7GCGsd15Ba7/IGdOoXrui6FFL70NHQq209/g=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SqSd2+nI0S0UOki6k304DV42zOH+iXG2rLh+gWRKMn24CKksr5ckzGJHL9KOBhk3F
-         jDbAsFjH096oS654B9dM+uofndWEtpAfgB4qR3/6qse9cfpZI28ahOSx9EOoWacPKm
-         KgTqK6BkA11ekTQ2ft9PSxb4cDYFI6OJ4N/vT11o=
+        b=2lXRgV52he+Y4tNPXxroelI53BTRhxBw5y817Vv81X0NColWOk1B3DZdSgHV5bzOt
+         chf76i4ieG0t5BYizE5M1yn2yjWLmdK20SKq8XES9+ZXYCy6CQg9auATjDFcAtgBvl
+         eiy+H/6b9V7BYlIWyYzvFmdLX61Z/hBKuEWUQbGU=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A61433520FA7; Tue, 19 Nov 2019 12:06:47 -0800 (PST)
-Date:   Tue, 19 Nov 2019 12:06:47 -0800
+        id 479BF3520FA7; Tue, 19 Nov 2019 13:14:43 -0800 (PST)
+Date:   Tue, 19 Nov 2019 13:14:43 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, joel@joelfernandes.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        pkondeti@codeaurora.org, prsood@codeaurora.org,
-        gkohli@codeaurora.org
-Subject: Re: [PATCH] rcu: Fix missed wakeup of exp_wq waiters
-Message-ID: <20191119200647.GC2889@paulmck-ThinkPad-P72>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Jann Horn <jannh@google.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Yuyang Du <duyuyang@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Dmitry V. Levin" <ldv@altlinux.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH V2 7/7] x86,rcu: use percpu rcu_preempt_depth
+Message-ID: <20191119211443.GH2889@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <1573838894-23027-1-git-send-email-neeraju@codeaurora.org>
- <20191117213624.GB2889@paulmck-ThinkPad-P72>
- <0101016e7dd7b824-50600058-ab5e-44d8-8d24-94cf095f1783-000000@us-west-2.amazonses.com>
- <20191118150856.GN2889@paulmck-ThinkPad-P72>
- <0101016e7f644106-90b40f19-ba9e-4974-bdbe-1062b52222a2-000000@us-west-2.amazonses.com>
- <20191118172401.GO2889@paulmck-ThinkPad-P72>
- <0101016e81ba8865-028ac62b-3fcd-481b-b657-be8519c4edf5-000000@us-west-2.amazonses.com>
- <20191119040533.GS2889@paulmck-ThinkPad-P72>
- <0101016e8278f225-9df7f507-2b6d-45e4-9c4d-d37141a1c5c6-000000@us-west-2.amazonses.com>
- <20191119150931.GX2889@paulmck-ThinkPad-P72>
+References: <20191102124559.1135-1-laijs@linux.alibaba.com>
+ <20191102124559.1135-8-laijs@linux.alibaba.com>
+ <20191116154821.GE2865@paulmck-ThinkPad-P72>
+ <4680b6f5-02d2-1d76-0b67-a5d3d9b36200@linux.alibaba.com>
+ <20191118145953.GK2889@paulmck-ThinkPad-P72>
+ <3dd0fa56-68b9-c179-95db-f110e47f53b7@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20191119150931.GX2889@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3dd0fa56-68b9-c179-95db-f110e47f53b7@linux.alibaba.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 07:09:31AM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 19, 2019 at 07:03:14AM +0000, Neeraj Upadhyay wrote:
-> > Hi Paul,
-> > 
-> > On 11/19/2019 9:35 AM, Paul E. McKenney wrote:
-> > > On Tue, Nov 19, 2019 at 03:35:15AM +0000, Neeraj Upadhyay wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > On 11/18/2019 10:54 PM, Paul E. McKenney wrote:
-> > > > > On Mon, Nov 18, 2019 at 04:41:47PM +0000, Neeraj Upadhyay wrote:
-> > > > > > Hi Paul,
-> > > > > > 
-> > > > > > 
-> > > > > > On 11/18/2019 8:38 PM, Paul E. McKenney wrote:
-> > > > > > > On Mon, Nov 18, 2019 at 09:28:39AM +0000, Neeraj Upadhyay wrote:
-> > > > > > > > Hi Paul,
-> > > > > > > > 
-> > > > > > > > On 11/18/2019 3:06 AM, Paul E. McKenney wrote:
-> > > > > > > > > On Fri, Nov 15, 2019 at 10:58:14PM +0530, Neeraj Upadhyay wrote:
-> > > > > > > > > > For the tasks waiting in exp_wq inside exp_funnel_lock(),
-> > > > > > > > > > there is a chance that they might be indefinitely blocked
-> > > > > > > > > > in below scenario:
-> > > > > > > > > > 
-> > > > > > > > > > 1. There is a task waiting on exp sequence 0b'100' inside
-> > > > > > > > > >        exp_funnel_lock().
-> > > > > > > > > > 
-> > > > > > > > > >        _synchronize_rcu_expedited()
-> > > > > > > > > 
-> > > > > > > > > This symbol went away a few versions back, but let's see how this
-> > > > > > > > > plays out in current -rcu.
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Sorry; for us this problem is observed on 4.19 stable version; I had
-> > > > > > > > checked against the -rcu code, and the relevant portions were present
-> > > > > > > > there.
-> > > > > > > > 
-> > > > > > > > > >          s = 0b'100
-> > > > > > > > > >          exp_funnel_lock()
-> > > > > > > > > >            wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3]
-> > > > > > > > > 
-> > > > > > > > > All of the above could still happen if the expedited grace
-> > > > > > > > > period number was zero (or a bit less) when that task invoked
-> > > > > > > > 
-> > > > > > > > Yes
-> > > > > > > > 
-> > > > > > > > > synchronize_rcu_expedited().  What is the relation, if any,
-> > > > > > > > > between this task and "task1" below?  Seems like you want them to
-> > > > > > > > > be different tasks.
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > This task is the one which is waiting for the expedited sequence, which
-> > > > > > > > "task1" completes ("task1" holds the exp_mutex for it). "task1" would
-> > > > > > > > wake up this task, on exp GP completion.
-> > > > > > > > 
-> > > > > > > > > Does this task actually block, or is it just getting ready
-> > > > > > > > > to block?  Seems like you need it to have actually blocked.
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Yes, it actually blocked in wait queue.
-> > > > > > > > 
-> > > > > > > > > > 2. The Exp GP completes and task (task1) holding exp_mutex queues
-> > > > > > > > > >        worker and schedules out.
-> > > > > > > > > 
-> > > > > > > > > "The Exp GP" being the one that was initiated when the .expedited_sequence
-> > > > > > > > > counter was zero, correct?  (Looks that way below.)
-> > > > > > > > > 
-> > > > > > > > Yes, correct.
-> > > > > > > > 
-> > > > > > > > > >        _synchronize_rcu_expedited()
-> > > > > > > > > >          s = 0b'100
-> > > > > > > > > >          queue_work(rcu_gp_wq, &rew.rew_work)
-> > > > > > > > > >            wake_up_worker()
-> > > > > > > > > >              schedule()
-> > > > > > > > > > 
-> > > > > > > > > > 3. kworker A picks up the queued work and completes the exp gp
-> > > > > > > > > >        sequence.
-> > > > > > > > > > 
-> > > > > > > > > >        rcu_exp_wait_wake()
-> > > > > > > > > >          rcu_exp_wait_wake()
-> > > > > > > > > >            rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence is incremented
-> > > > > > > > > >                                    // to 0b'100'
-> > > > > > > > > > 
-> > > > > > > > > > 4. task1 does not enter wait queue, as sync_exp_work_done() returns true,
-> > > > > > > > > >        and releases exp_mutex.
-> > > > > > > > > > 
-> > > > > > > > > >        wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
-> > > > > > > > > >          sync_exp_work_done(rsp, s));
-> > > > > > > > > >        mutex_unlock(&rsp->exp_mutex);
-> > > > > > > > > 
-> > > > > > > > > So task1 is the one that initiated the expedited grace period that
-> > > > > > > > > started when .expedited_sequence was zero, right?
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Yes, right.
-> > > > > > > > 
-> > > > > > > > > > 5. Next exp GP completes, and sequence number is incremented:
-> > > > > > > > > > 
-> > > > > > > > > >        rcu_exp_wait_wake()
-> > > > > > > > > >          rcu_exp_wait_wake()
-> > > > > > > > > >            rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence = 0b'200'
-> > > > > > > > > > 
-> > > > > > > > > > 6. As kworker A uses current expedited_sequence, it wakes up workers
-> > > > > > > > > >        from wrong wait queue index - it should have worken wait queue
-> > > > > > > > > >        corresponding to 0b'100' sequence, but wakes up the ones for
-> > > > > > > > > >        0b'200' sequence. This results in task at step 1 indefinitely blocked.
-> > > > > > > > > > 
-> > > > > > > > > >        rcu_exp_wait_wake()
-> > > > > > > > > >          wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rsp->expedited_sequence) & 0x3]);
-> > > > > > > > > 
-> > > > > > > > > So the issue is that the next expedited RCU grace period might
-> > > > > > > > > have completed before the completion of the wakeups for the previous
-> > > > > > > > > expedited RCU grace period, correct?  Then expedited grace periods have
-> > > > > > > > 
-> > > > > > > > Yes. Actually from the ftraces, I saw that next expedited RCU grace
-> > > > > > > > period completed while kworker A was in D state, while waiting for
-> > > > > > > > exp_wake_mutex. This led to kworker A using sequence 2 (instead of 1) for
-> > > > > > > > its wake_up_all() call; so, task (point 1) was never woken up, as it was
-> > > > > > > > waiting on wq index 1.
-> > > > > > > > 
-> > > > > > > > > to have stopped to prevent any future wakeup from happening, correct?
-> > > > > > > > > (Which would make it harder for rcutorture to trigger this, though it
-> > > > > > > > > really does have code that attempts to trigger this sort of thing.)
-> > > > > > > > > 
-> > > > > > > > > Is this theoretical in nature, or have you actually triggered it?
-> > > > > > > > > If actually triggered, what did you do to make this happen?
-> > > > > > > > 
-> > > > > > > > This issue, we had seen previously - 1 instance in May 2018 (on 4.9 kernel),
-> > > > > > > > another instance in Nov 2018 (on 4.14 kernel), in our customer reported
-> > > > > > > > issues. Both instances were in downstream drivers and we didn't have RCU
-> > > > > > > > traces. Now 2 days back, it was reported on 4.19 kernel, with RCU traces
-> > > > > > > > enabled, where it was observed in suspend scenario, where we are observing
-> > > > > > > > "DPM device timeout" [1], as scsi device is stuck in
-> > > > > > > > _synchronize_rcu_expedited().
-> > > > > > > > 
-> > > > > > > > schedule+0x70/0x90
-> > > > > > > > _synchronize_rcu_expedited+0x590/0x5f8
-> > > > > > > > synchronize_rcu+0x50/0xa0
-> > > > > > > > scsi_device_quiesce+0x50/0x120
-> > > > > > > > scsi_bus_suspend+0x70/0xe8
-> > > > > > > > dpm_run_callback+0x148/0x388
-> > > > > > > > __device_suspend+0x430/0x8a8
-> > > > > > > > 
-> > > > > > > > [1]
-> > > > > > > > https://github.com/torvalds/linux/blob/master/drivers/base/power/main.c#L489
-> > > > > > > > 
-> > > > > > > > > What have you done to test the change?
-> > > > > > > > > 
-> > > > > > > > 
-> > > > > > > > I have given this for testing; will share the results . Current analysis
-> > > > > > > > and patch is based on going through ftrace and code review.
-> > > > > > > 
-> > > > > > > OK, very good.  Please include the failure information in the changelog
-> > > > > > > of the next version of this patch.
-> > > > 
-> > > > Done.
-> > > > 
-> > > > > > > 
-> > > > > > > I prefer your original patch, that just uses "s", over the one below
-> > > > > > > that moves the rcu_exp_gp_seq_end().  The big advantage of your original
-> > > > > > > patch is that it allow more concurrency between a consecutive pair of
-> > > > > > > expedited RCU grace periods.  Plus it would not be easy to convince
-> > > > > > > myself that moving rcu_exp_gp_seq_end() down is safe, so your original
-> > > > > > > is also conceptually simpler with a more manageable state space.
-> > > > 
-> > > > The reason for highlighting the alternate approach of doing gp end inside
-> > > > exp_wake_mutex is the requirement of 3 wqs. Now, this is a theoretical case;
-> > > > please correct me if I am wrong here:
-> > > > 
-> > > > 1. task0 holds exp_wake_mutex, and is preempted.
-> > > 
-> > > Presumably after it has awakened the kthread that initiated the prior
-> > > expedited grace period (the one with seq number = -4).
-> > > 
-> > > > 2. task1 initiates new GP (current seq number = 0).
-> > > 
-> > > Yes, this can happen.
-> > > 
-> > > > 3. task1 queues worker kworker1 and schedules out.
-> > > 
-> > > And thus still holds .exp_mutex, but yes.
-> > > 
-> > > > 4. kworker1 sets exp GP to 1 and waits on exp_wake_mutex
-> > > 
-> > > And thus cannot yet have awakened task1.
-> > > 
-> > > > 5. task1 releases exp mutex, w/o entering waitq.
-> > > 
-> > > So I do not believe that we can get to #5.  What am I missing here?
-> > > 
-> > 
-> > As mentioned in this patch, task1 could have scheduled out after queuing
-> > work:
-> > 
-> > queue_work(rcu_gp_wq, &rew.rew_work)
-> >            wake_up_worker()
-> >              schedule()
-> > 
-> > kworker1 runs and picks up this queued work, and sets exp GP to 1 and waits
-> > on exp_wake_mutex.
-> > 
-> > task1 gets scheduled in and checks sync_exp_work_done(rsp, s), which return
-> > true and it does not enter wait queue and releases exp_mutex.
-> > 
-> > wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
-> >          sync_exp_work_done(rsp, s));
+On Tue, Nov 19, 2019 at 09:59:03AM +0800, Lai Jiangshan wrote:
 > 
-> Well, I have certainly given enough people a hard time about missing the
-> didn't-actually-sleep case, so good show on finding one in my code!  ;-)
 > 
-> Which also explains why deferring the rcu_exp_gp_seq_end() is safe:
-> The .exp_mutex won't be released until after it happens, and the
-> next manipulation of the sequence number cannot happen until after
-> .exp_mutex is next acquired.
+> On 2019/11/18 10:59 下午, Paul E. McKenney wrote:
+> > On Mon, Nov 18, 2019 at 10:02:50AM +0800, Lai Jiangshan wrote:
+> > > 
+> > > 
+> > > On 2019/11/16 11:48 下午, Paul E. McKenney wrote:
+> > > > On Sat, Nov 02, 2019 at 12:45:59PM +0000, Lai Jiangshan wrote:
+> > > > > Convert x86 to use a per-cpu rcu_preempt_depth. The reason for doing so
+> > > > > is that accessing per-cpu variables is a lot cheaper than accessing
+> > > > > task_struct or thread_info variables.
+> > > > > 
+> > > > > We need to save/restore the actual rcu_preempt_depth when switch.
+> > > > > We also place the per-cpu rcu_preempt_depth close to __preempt_count
+> > > > > and current_task variable.
+> > > > > 
+> > > > > Using the idea of per-cpu __preempt_count.
+> > > > > 
+> > > > > No function call when using rcu_read_[un]lock().
+> > > > > Single instruction for rcu_read_lock().
+> > > > > 2 instructions for fast path of rcu_read_unlock().
+> > > > > 
+> > > > > CC: Peter Zijlstra <peterz@infradead.org>
+> > > > > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> > > > 
+> > > > Wouldn't putting RCU's nesting-depth counter in task info be just as fast,
+> > > > just as nice for #include/inlining, and a lot less per-architecture code?
+> > > > 
+> > > > Or am I missing some issue with the task-info approach?
+> > > 
+> > > struct thread_info itself is per-architecture definition.
+> > > All the arches would have to be touched if RCU's nesting-depth counter
+> > > is put int struct thread_info. Though the inlining functions can be
+> > > defined in include/asm-generic/ so that it serves for all arches
+> > > and X86 can have its own implementation in arch/x86/include/asm/.
+> > 
+> > True enough.
+> > 
+> > But doesn't the per-CPU code require per-architecture changes to copy
+> > to and from the per-CPU variable?  If that code simpler and smaller than
+> > the thread_info access code, I will be -very- surprised.
 > 
-> Good catch!  And keep up the good work!!!
+> The per-CPU code is not simpler. And my code touch X86 ONLY so that
+> it requires an additional CONFIG and some more "#if" in rcu code
+> which adds little more complicity.
+> 
+> As far as I understand, the rcu_read_lock_nesting can only be possible
+> put in per CPU in X86, not possible in other ARCHs.
+> 
+> Putting the rcu_read_lock_nesting in struct thread_info and putting
+> the inlining functions in include/asm-generic/ are OK for me. It will
+> be a good-shaped framework and reduce function calls, and still allow
+> x86 has its own implementation.
 
-And here is the commit corresponding to your earlier patch.  Please let
-me know of any needed adjustments.
+In addition, even for x86, the struct thread_info approach would avoid
+adding more instructions to the context-switch path.
+
+> The framework will only be more appealing when the x86 percpu
+> rcu_read_lock_nesting is implemented. This series implements
+> the x86 percpu rcu_read_lock_nesting first and avoid touch too much
+> files. The framework can be implemented later
+
+If I remember correctly, you mentioned earlier that the struct
+thread_info approach was just as few instructions for rcu_read_lock()
+and rcu_read_unlock() as is the per-CPU approach.  If that is the
+case, and if the struct thread_info approach avoids adding code to the
+context-switch path, why would the x86 maintainers be at all happy with
+the per-CPU approach?  What am I missing here?
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit 3ec440b52831eea172061c5db3d2990b22904863
-Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-Date:   Tue Nov 19 11:50:52 2019 -0800
-
-    rcu: Allow only one expedited GP to run concurrently with wakeups
-    
-    The current expedited RCU grace-period code expects that a task
-    requesting an expedited grace period cannot awaken until that grace
-    period has reached the wakeup phase.  However, it is possible for a long
-    preemption to result in the waiting task never sleeping.  For example,
-    consider the following sequence of events:
-    
-    1.      Task A starts an expedited grace period by invoking
-            synchronize_rcu_expedited().  It proceeds normally up to the
-            wait_event() near the end of that function, and is then preempted
-            (or interrupted or whatever).
-    
-    2.      The expedited grace period completes, and a kworker task starts
-            the awaken phase, having incremented the counter and acquired
-            the rcu_state structure's .exp_wake_mutex.  This kworker task
-            is then preempted or interrupted or whatever.
-    
-    3.      Task A resumes and enters wait_event(), which notes that the
-            expedited grace period has completed, and thus doesn't sleep.
-    
-    4.      Task B starts an expedited grace period exactly as did Task A,
-            complete with the preemption (or whatever delay) just before
-            the call to wait_event().
-    
-    5.      The expedited grace period completes, and another kworker
-            task starts the awaken phase, having incremented the counter.
-            However, it blocks when attempting to acquire the rcu_state
-            structure's .exp_wake_mutex because step 2's kworker task has
-            not yet released it.
-    
-    6.      Steps 4 and 5 repeat, resulting in overflow of the rcu_node
-            structure's ->exp_wq[] array.
-    
-    In theory, this is harmless.  Tasks waiting on the various ->exp_wq[]
-    array will just be spuriously awakened, but they will just sleep again
-    on noting that the rcu_state structure's ->expedited_sequence value has
-    not advanced far enough.
-    
-    In practice, this wastes CPU time and is an accident waiting to happen.
-    This commit therefore moves the rcu_exp_gp_seq_end() call that officially
-    ends the expedited grace period (along with associate tracing) until
-    after the ->exp_wake_mutex has been acquired.  This prevents Task A from
-    awakening prematurely, thus preventing more than one expedited grace
-    period from being in flight during a previous expedited grace period's
-    wakeup phase.
-    
-    Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-    [ paulmck: Added updated comment. ]
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 4433d00a..8840729 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -539,14 +539,13 @@ static void rcu_exp_wait_wake(unsigned long s)
- 	struct rcu_node *rnp;
- 
- 	synchronize_sched_expedited_wait();
--	rcu_exp_gp_seq_end();
--	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("end"));
- 
--	/*
--	 * Switch over to wakeup mode, allowing the next GP, but -only- the
--	 * next GP, to proceed.
--	 */
-+	// Switch over to wakeup mode, allowing the next GP to proceed.
-+	// End the previous grace period only after acquiring the mutex
-+	// to ensure that only one GP runs concurrently with wakeups.
- 	mutex_lock(&rcu_state.exp_wake_mutex);
-+	rcu_exp_gp_seq_end();
-+	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("end"));
- 
- 	rcu_for_each_node_breadth_first(rnp) {
- 		if (ULONG_CMP_LT(READ_ONCE(rnp->exp_seq_rq), s)) {
+> Thanks
+> Lai
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > > > ---
+> > > > >    arch/x86/Kconfig                         |  2 +
+> > > > >    arch/x86/include/asm/rcu_preempt_depth.h | 87 ++++++++++++++++++++++++
+> > > > >    arch/x86/kernel/cpu/common.c             |  7 ++
+> > > > >    arch/x86/kernel/process_32.c             |  2 +
+> > > > >    arch/x86/kernel/process_64.c             |  2 +
+> > > > >    include/linux/rcupdate.h                 | 24 +++++++
+> > > > >    init/init_task.c                         |  2 +-
+> > > > >    kernel/fork.c                            |  2 +-
+> > > > >    kernel/rcu/Kconfig                       |  3 +
+> > > > >    kernel/rcu/tree_exp.h                    |  2 +
+> > > > >    kernel/rcu/tree_plugin.h                 | 37 +++++++---
+> > > > >    11 files changed, 158 insertions(+), 12 deletions(-)
+> > > > >    create mode 100644 arch/x86/include/asm/rcu_preempt_depth.h
+> > > > > 
+> > > > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > > > > index d6e1faa28c58..af9fedc0fdc4 100644
+> > > > > --- a/arch/x86/Kconfig
+> > > > > +++ b/arch/x86/Kconfig
+> > > > > @@ -18,6 +18,7 @@ config X86_32
+> > > > >    	select MODULES_USE_ELF_REL
+> > > > >    	select OLD_SIGACTION
+> > > > >    	select GENERIC_VDSO_32
+> > > > > +	select ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> > > > >    config X86_64
+> > > > >    	def_bool y
+> > > > > @@ -31,6 +32,7 @@ config X86_64
+> > > > >    	select NEED_DMA_MAP_STATE
+> > > > >    	select SWIOTLB
+> > > > >    	select ARCH_HAS_SYSCALL_WRAPPER
+> > > > > +	select ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> > > > >    config FORCE_DYNAMIC_FTRACE
+> > > > >    	def_bool y
+> > > > > diff --git a/arch/x86/include/asm/rcu_preempt_depth.h b/arch/x86/include/asm/rcu_preempt_depth.h
+> > > > > new file mode 100644
+> > > > > index 000000000000..88010ad59c20
+> > > > > --- /dev/null
+> > > > > +++ b/arch/x86/include/asm/rcu_preempt_depth.h
+> > > > > @@ -0,0 +1,87 @@
+> > > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > > +#ifndef __ASM_RCU_PREEMPT_DEPTH_H
+> > > > > +#define __ASM_RCU_PREEMPT_DEPTH_H
+> > > > > +
+> > > > > +#include <asm/rmwcc.h>
+> > > > > +#include <asm/percpu.h>
+> > > > > +
+> > > > > +#ifdef CONFIG_PREEMPT_RCU
+> > > > > +DECLARE_PER_CPU(int, __rcu_preempt_depth);
+> > > > > +
+> > > > > +/*
+> > > > > + * We use the RCU_NEED_SPECIAL bit as an inverted need_special
+> > > > > + * such that a decrement hitting 0 means we can and should do
+> > > > > + * rcu_read_unlock_special().
+> > > > > + */
+> > > > > +#define RCU_NEED_SPECIAL	0x80000000
+> > > > > +
+> > > > > +#define INIT_RCU_PREEMPT_DEPTH	(RCU_NEED_SPECIAL)
+> > > > > +
+> > > > > +/* We mask the RCU_NEED_SPECIAL bit so that it return real depth */
+> > > > > +static __always_inline int rcu_preempt_depth(void)
+> > > > > +{
+> > > > > +	return raw_cpu_read_4(__rcu_preempt_depth) & ~RCU_NEED_SPECIAL;
+> > > > > +}
+> > > > > +
+> > > > > +static __always_inline void rcu_preempt_depth_set(int pc)
+> > > > > +{
+> > > > > +	int old, new;
+> > > > > +
+> > > > > +	do {
+> > > > > +		old = raw_cpu_read_4(__rcu_preempt_depth);
+> > > > > +		new = (old & RCU_NEED_SPECIAL) |
+> > > > > +			(pc & ~RCU_NEED_SPECIAL);
+> > > > > +	} while (raw_cpu_cmpxchg_4(__rcu_preempt_depth, old, new) != old);
+> > > > > +}
+> > > > > +
+> > > > > +/*
+> > > > > + * We fold the RCU_NEED_SPECIAL bit into the rcu_preempt_depth such that
+> > > > > + * rcu_read_unlock() can decrement and test for needing to do special
+> > > > > + * with a single instruction.
+> > > > > + *
+> > > > > + * We invert the actual bit, so that when the decrement hits 0 we know
+> > > > > + * both it just exited the outmost rcu_read_lock() critical section and
+> > > > > + * we need to do specail (the bit is cleared) if it doesn't need to be
+> > > > > + * deferred.
+> > > > > + */
+> > > > > +
+> > > > > +static inline void set_rcu_preempt_need_special(void)
+> > > > > +{
+> > > > > +	raw_cpu_and_4(__rcu_preempt_depth, ~RCU_NEED_SPECIAL);
+> > > > > +}
+> > > > > +
+> > > > > +/*
+> > > > > + * irq needs to be disabled for clearing any bits of ->rcu_read_unlock_special
+> > > > > + * and calling this function. Otherwise it may clear the work done
+> > > > > + * by set_rcu_preempt_need_special() in interrupt.
+> > > > > + */
+> > > > > +static inline void clear_rcu_preempt_need_special(void)
+> > > > > +{
+> > > > > +	raw_cpu_or_4(__rcu_preempt_depth, RCU_NEED_SPECIAL);
+> > > > > +}
+> > > > > +
+> > > > > +static __always_inline void rcu_preempt_depth_inc(void)
+> > > > > +{
+> > > > > +	raw_cpu_add_4(__rcu_preempt_depth, 1);
+> > > > > +}
+> > > > > +
+> > > > > +static __always_inline bool rcu_preempt_depth_dec_and_test(void)
+> > > > > +{
+> > > > > +	return GEN_UNARY_RMWcc("decl", __rcu_preempt_depth, e, __percpu_arg([var]));
+> > > > > +}
+> > > > > +
+> > > > > +/* must be macros to avoid header recursion hell */
+> > > > > +#define save_restore_rcu_preempt_depth(prev_p, next_p) do {				\
+> > > > > +		prev_p->rcu_read_lock_nesting = this_cpu_read(__rcu_preempt_depth);	\
+> > > > > +		this_cpu_write(__rcu_preempt_depth, next_p->rcu_read_lock_nesting);	\
+> > > > > +	} while (0)
+> > > > > +
+> > > > > +#define DEFINE_PERCPU_RCU_PREEMP_DEPTH						\
+> > > > > +	DEFINE_PER_CPU(int, __rcu_preempt_depth) = INIT_RCU_PREEMPT_DEPTH;	\
+> > > > > +	EXPORT_PER_CPU_SYMBOL(__rcu_preempt_depth)
+> > > > > +#else /* #ifdef CONFIG_PREEMPT_RCU */
+> > > > > +#define save_restore_rcu_preempt_depth(prev_p, next_p) do {} while (0)
+> > > > > +#define DEFINE_PERCPU_RCU_PREEMP_DEPTH	/* empty */
+> > > > > +#endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+> > > > > +
+> > > > > +#endif /* __ASM_RCU_PREEMPT_DEPTH_H */
+> > > > > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> > > > > index 9ae7d1bcd4f4..0151737e196c 100644
+> > > > > --- a/arch/x86/kernel/cpu/common.c
+> > > > > +++ b/arch/x86/kernel/cpu/common.c
+> > > > > @@ -46,6 +46,7 @@
+> > > > >    #include <asm/asm.h>
+> > > > >    #include <asm/bugs.h>
+> > > > >    #include <asm/cpu.h>
+> > > > > +#include <asm/rcu_preempt_depth.h>
+> > > > >    #include <asm/mce.h>
+> > > > >    #include <asm/msr.h>
+> > > > >    #include <asm/pat.h>
+> > > > > @@ -1633,6 +1634,9 @@ DEFINE_PER_CPU(unsigned int, irq_count) __visible = -1;
+> > > > >    DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
+> > > > >    EXPORT_PER_CPU_SYMBOL(__preempt_count);
+> > > > > +/* close to __preempt_count */
+> > > > > +DEFINE_PERCPU_RCU_PREEMP_DEPTH;
+> > > > > +
+> > > > >    /* May not be marked __init: used by software suspend */
+> > > > >    void syscall_init(void)
+> > > > >    {
+> > > > > @@ -1690,6 +1694,9 @@ EXPORT_PER_CPU_SYMBOL(current_task);
+> > > > >    DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
+> > > > >    EXPORT_PER_CPU_SYMBOL(__preempt_count);
+> > > > > +/* close to __preempt_count */
+> > > > > +DEFINE_PERCPU_RCU_PREEMP_DEPTH;
+> > > > > +
+> > > > >    /*
+> > > > >     * On x86_32, vm86 modifies tss.sp0, so sp0 isn't a reliable way to find
+> > > > >     * the top of the kernel stack.  Use an extra percpu variable to track the
+> > > > > diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+> > > > > index b8ceec4974fe..ab1f20353663 100644
+> > > > > --- a/arch/x86/kernel/process_32.c
+> > > > > +++ b/arch/x86/kernel/process_32.c
+> > > > > @@ -51,6 +51,7 @@
+> > > > >    #include <asm/cpu.h>
+> > > > >    #include <asm/syscalls.h>
+> > > > >    #include <asm/debugreg.h>
+> > > > > +#include <asm/rcu_preempt_depth.h>
+> > > > >    #include <asm/switch_to.h>
+> > > > >    #include <asm/vm86.h>
+> > > > >    #include <asm/resctrl_sched.h>
+> > > > > @@ -290,6 +291,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+> > > > >    	if (prev->gs | next->gs)
+> > > > >    		lazy_load_gs(next->gs);
+> > > > > +	save_restore_rcu_preempt_depth(prev_p, next_p);
+> > > > >    	this_cpu_write(current_task, next_p);
+> > > > >    	switch_fpu_finish(next_fpu);
+> > > > > diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+> > > > > index af64519b2695..2e1c6e829d30 100644
+> > > > > --- a/arch/x86/kernel/process_64.c
+> > > > > +++ b/arch/x86/kernel/process_64.c
+> > > > > @@ -50,6 +50,7 @@
+> > > > >    #include <asm/ia32.h>
+> > > > >    #include <asm/syscalls.h>
+> > > > >    #include <asm/debugreg.h>
+> > > > > +#include <asm/rcu_preempt_depth.h>
+> > > > >    #include <asm/switch_to.h>
+> > > > >    #include <asm/xen/hypervisor.h>
+> > > > >    #include <asm/vdso.h>
+> > > > > @@ -559,6 +560,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+> > > > >    	x86_fsgsbase_load(prev, next);
+> > > > > +	save_restore_rcu_preempt_depth(prev_p, next_p);
+> > > > >    	/*
+> > > > >    	 * Switch the PDA and FPU contexts.
+> > > > >    	 */
+> > > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > > > index a35daab95d14..0d2abf08b694 100644
+> > > > > --- a/include/linux/rcupdate.h
+> > > > > +++ b/include/linux/rcupdate.h
+> > > > > @@ -41,6 +41,29 @@ void synchronize_rcu(void);
+> > > > >    #ifdef CONFIG_PREEMPT_RCU
+> > > > > +#ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> > > > > +#include <asm/rcu_preempt_depth.h>
+> > > > > +
+> > > > > +#ifndef CONFIG_PROVE_LOCKING
+> > > > > +extern void rcu_read_unlock_special(void);
+> > > > > +
+> > > > > +static inline void __rcu_read_lock(void)
+> > > > > +{
+> > > > > +	rcu_preempt_depth_inc();
+> > > > > +}
+> > > > > +
+> > > > > +static inline void __rcu_read_unlock(void)
+> > > > > +{
+> > > > > +	if (unlikely(rcu_preempt_depth_dec_and_test()))
+> > > > > +		rcu_read_unlock_special();
+> > > > > +}
+> > > > > +#else
+> > > > > +void __rcu_read_lock(void);
+> > > > > +void __rcu_read_unlock(void);
+> > > > > +#endif
+> > > > > +
+> > > > > +#else /* #ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+> > > > > +#define INIT_RCU_PREEMPT_DEPTH (0)
+> > > > >    void __rcu_read_lock(void);
+> > > > >    void __rcu_read_unlock(void);
+> > > > > @@ -51,6 +74,7 @@ void __rcu_read_unlock(void);
+> > > > >     * types of kernel builds, the rcu_read_lock() nesting depth is unknowable.
+> > > > >     */
+> > > > >    #define rcu_preempt_depth() (current->rcu_read_lock_nesting)
+> > > > > +#endif /* #else #ifdef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+> > > > >    #else /* #ifdef CONFIG_PREEMPT_RCU */
+> > > > > diff --git a/init/init_task.c b/init/init_task.c
+> > > > > index 9e5cbe5eab7b..0a91e38fba37 100644
+> > > > > --- a/init/init_task.c
+> > > > > +++ b/init/init_task.c
+> > > > > @@ -130,7 +130,7 @@ struct task_struct init_task
+> > > > >    	.perf_event_list = LIST_HEAD_INIT(init_task.perf_event_list),
+> > > > >    #endif
+> > > > >    #ifdef CONFIG_PREEMPT_RCU
+> > > > > -	.rcu_read_lock_nesting = 0,
+> > > > > +	.rcu_read_lock_nesting = INIT_RCU_PREEMPT_DEPTH,
+> > > > >    	.rcu_read_unlock_special.s = 0,
+> > > > >    	.rcu_node_entry = LIST_HEAD_INIT(init_task.rcu_node_entry),
+> > > > >    	.rcu_blocked_node = NULL,
+> > > > > diff --git a/kernel/fork.c b/kernel/fork.c
+> > > > > index f9572f416126..7368d4ccb857 100644
+> > > > > --- a/kernel/fork.c
+> > > > > +++ b/kernel/fork.c
+> > > > > @@ -1665,7 +1665,7 @@ init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
+> > > > >    static inline void rcu_copy_process(struct task_struct *p)
+> > > > >    {
+> > > > >    #ifdef CONFIG_PREEMPT_RCU
+> > > > > -	p->rcu_read_lock_nesting = 0;
+> > > > > +	p->rcu_read_lock_nesting = INIT_RCU_PREEMPT_DEPTH;
+> > > > >    	p->rcu_read_unlock_special.s = 0;
+> > > > >    	p->rcu_blocked_node = NULL;
+> > > > >    	INIT_LIST_HEAD(&p->rcu_node_entry);
+> > > > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > > > > index 1cc940fef17c..d2ecca49a1a4 100644
+> > > > > --- a/kernel/rcu/Kconfig
+> > > > > +++ b/kernel/rcu/Kconfig
+> > > > > @@ -14,6 +14,9 @@ config TREE_RCU
+> > > > >    	  thousands of CPUs.  It also scales down nicely to
+> > > > >    	  smaller systems.
+> > > > > +config ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> > > > > +	def_bool n
+> > > > > +
+> > > > >    config PREEMPT_RCU
+> > > > >    	bool
+> > > > >    	default y if PREEMPTION
+> > > > > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> > > > > index dcb2124203cf..f919881832d4 100644
+> > > > > --- a/kernel/rcu/tree_exp.h
+> > > > > +++ b/kernel/rcu/tree_exp.h
+> > > > > @@ -588,6 +588,7 @@ static void wait_rcu_exp_gp(struct work_struct *wp)
+> > > > >    }
+> > > > >    #ifdef CONFIG_PREEMPT_RCU
+> > > > > +static inline void set_rcu_preempt_need_special(void);
+> > > > >    /*
+> > > > >     * Remote handler for smp_call_function_single().  If there is an
+> > > > > @@ -637,6 +638,7 @@ static void rcu_exp_handler(void *unused)
+> > > > >    		if (rnp->expmask & rdp->grpmask) {
+> > > > >    			rdp->exp_deferred_qs = true;
+> > > > >    			t->rcu_read_unlock_special.b.exp_hint = true;
+> > > > > +			set_rcu_preempt_need_special();
+> > > > >    		}
+> > > > >    		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> > > > >    		return;
+> > > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > > > index e16c3867d2ff..e6774a7ab16b 100644
+> > > > > --- a/kernel/rcu/tree_plugin.h
+> > > > > +++ b/kernel/rcu/tree_plugin.h
+> > > > > @@ -82,7 +82,7 @@ static void __init rcu_bootup_announce_oddness(void)
+> > > > >    #ifdef CONFIG_PREEMPT_RCU
+> > > > >    static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
+> > > > > -static void rcu_read_unlock_special(struct task_struct *t);
+> > > > > +void rcu_read_unlock_special(void);
+> > > > >    /*
+> > > > >     * Tell them what RCU they are running.
+> > > > > @@ -298,6 +298,7 @@ void rcu_note_context_switch(bool preempt)
+> > > > >    		t->rcu_read_unlock_special.b.need_qs = false;
+> > > > >    		t->rcu_read_unlock_special.b.blocked = true;
+> > > > >    		t->rcu_blocked_node = rnp;
+> > > > > +		set_rcu_preempt_need_special();
+> > > > >    		/*
+> > > > >    		 * Verify the CPU's sanity, trace the preemption, and
+> > > > > @@ -345,6 +346,7 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+> > > > >    /* Bias and limit values for ->rcu_read_lock_nesting. */
+> > > > >    #define RCU_NEST_PMAX (INT_MAX / 2)
+> > > > > +#ifndef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH
+> > > > >    static inline void rcu_preempt_depth_inc(void)
+> > > > >    {
+> > > > >    	current->rcu_read_lock_nesting++;
+> > > > > @@ -352,7 +354,12 @@ static inline void rcu_preempt_depth_inc(void)
+> > > > >    static inline bool rcu_preempt_depth_dec_and_test(void)
+> > > > >    {
+> > > > > -	return --current->rcu_read_lock_nesting == 0;
+> > > > > +	if (--current->rcu_read_lock_nesting == 0) {
+> > > > > +		/* check speical after dec ->rcu_read_lock_nesting */
+> > > > > +		barrier();
+> > > > > +		return READ_ONCE(current->rcu_read_unlock_special.s);
+> > > > > +	}
+> > > > > +	return 0;
+> > > > >    }
+> > > > >    static inline void rcu_preempt_depth_set(int val)
+> > > > > @@ -360,6 +367,12 @@ static inline void rcu_preempt_depth_set(int val)
+> > > > >    	current->rcu_read_lock_nesting = val;
+> > > > >    }
+> > > > > +static inline void clear_rcu_preempt_need_special(void) {}
+> > > > > +static inline void set_rcu_preempt_need_special(void) {}
+> > > > > +
+> > > > > +#endif /* #ifndef CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH */
+> > > > > +
+> > > > > +#if !defined(CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH) || defined (CONFIG_PROVE_LOCKING)
+> > > > >    /*
+> > > > >     * Preemptible RCU implementation for rcu_read_lock().
+> > > > >     * Just increment ->rcu_read_lock_nesting, shared state will be updated
+> > > > > @@ -383,18 +396,16 @@ EXPORT_SYMBOL_GPL(__rcu_read_lock);
+> > > > >     */
+> > > > >    void __rcu_read_unlock(void)
+> > > > >    {
+> > > > > -	struct task_struct *t = current;
+> > > > > -
+> > > > >    	if (rcu_preempt_depth_dec_and_test()) {
+> > > > > -		barrier();  /* critical section before exit code. */
+> > > > > -		if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
+> > > > > -			rcu_read_unlock_special(t);
+> > > > > +		rcu_read_unlock_special();
+> > > > >    	}
+> > > > >    	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+> > > > > -		WARN_ON_ONCE(rcu_preempt_depth() < 0);
+> > > > > +		WARN_ON_ONCE(rcu_preempt_depth() < 0 ||
+> > > > > +			     rcu_preempt_depth() > RCU_NEST_PMAX);
+> > > > >    	}
+> > > > >    }
+> > > > >    EXPORT_SYMBOL_GPL(__rcu_read_unlock);
+> > > > > +#endif /* #if !defined(CONFIG_ARCH_HAVE_RCU_PREEMPT_DEEPTH) || defined (CONFIG_PROVE_LOCKING) */
+> > > > >    /*
+> > > > >     * Advance a ->blkd_tasks-list pointer to the next entry, instead
+> > > > > @@ -449,6 +460,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> > > > >    		return;
+> > > > >    	}
+> > > > >    	t->rcu_read_unlock_special.s = 0;
+> > > > > +	clear_rcu_preempt_need_special();
+> > > > >    	if (special.b.need_qs)
+> > > > >    		rcu_qs();
+> > > > > @@ -579,8 +591,9 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+> > > > >     * notify RCU core processing or task having blocked during the RCU
+> > > > >     * read-side critical section.
+> > > > >     */
+> > > > > -static void rcu_read_unlock_special(struct task_struct *t)
+> > > > > +void rcu_read_unlock_special(void)
+> > > > >    {
+> > > > > +	struct task_struct *t = current;
+> > > > >    	unsigned long flags;
+> > > > >    	bool preempt_bh_were_disabled =
+> > > > >    			!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+> > > > > @@ -631,6 +644,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+> > > > >    	}
+> > > > >    	rcu_preempt_deferred_qs_irqrestore(t, flags);
+> > > > >    }
+> > > > > +EXPORT_SYMBOL_GPL(rcu_read_unlock_special);
+> > > > >    /*
+> > > > >     * Check that the list of blocked tasks for the newly completed grace
+> > > > > @@ -694,8 +708,10 @@ static void rcu_flavor_sched_clock_irq(int user)
+> > > > >    	    __this_cpu_read(rcu_data.core_needs_qs) &&
+> > > > >    	    __this_cpu_read(rcu_data.cpu_no_qs.b.norm) &&
+> > > > >    	    !t->rcu_read_unlock_special.b.need_qs &&
+> > > > > -	    time_after(jiffies, rcu_state.gp_start + HZ))
+> > > > > +	    time_after(jiffies, rcu_state.gp_start + HZ)) {
+> > > > >    		t->rcu_read_unlock_special.b.need_qs = true;
+> > > > > +		set_rcu_preempt_need_special();
+> > > > > +	}
+> > > > >    }
+> > > > >    /*
+> > > > > @@ -714,6 +730,7 @@ void exit_rcu(void)
+> > > > >    		rcu_preempt_depth_set(1);
+> > > > >    		barrier();
+> > > > >    		WRITE_ONCE(t->rcu_read_unlock_special.b.blocked, true);
+> > > > > +		set_rcu_preempt_need_special();
+> > > > >    	} else if (unlikely(rcu_preempt_depth())) {
+> > > > >    		rcu_preempt_depth_set(1);
+> > > > >    	} else {
+> > > > > -- 
+> > > > > 2.20.1
+> > > > > 
