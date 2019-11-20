@@ -2,396 +2,143 @@ Return-Path: <SRS0=YOvC=ZM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FORGED_MUA_MOZILLA,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C7B1C432C0
-	for <rcu@archiver.kernel.org>; Wed, 20 Nov 2019 05:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54863C33C9A
+	for <rcu@archiver.kernel.org>; Wed, 20 Nov 2019 15:35:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1BE4A2245B
-	for <rcu@archiver.kernel.org>; Wed, 20 Nov 2019 05:09:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 271D4206CB
+	for <rcu@archiver.kernel.org>; Wed, 20 Nov 2019 15:35:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="K832Pr5y";
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="MbstP1k6"
+	dkim=pass (2048-bit key) header.d=tycho.nsa.gov header.i=@tycho.nsa.gov header.b="P6DRL/oM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbfKTFJG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Nov 2019 00:09:06 -0500
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:36550
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726841AbfKTFJG (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 20 Nov 2019 00:09:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1574226545;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=ciTpF/WtHPkJCiOyqN05f4uCTiq2KPI9Va3UT0Q3dgo=;
-        b=K832Pr5yYm44yfYZwnGZreAYxvZhopWN6XhjPPXKJtOCeVzj5GlJF78T8BZCCP8D
-        KByDDf0GsR2fI+lh1vnug5525cbPEMjZKGc9hpuT6R1B4I+OH5poiLGPfxhBiOatFpA
-        jp4SiTSb6aPW+l2cNnH1Nh1VARBMF5dzlkPP/AEA=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1574226545;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=ciTpF/WtHPkJCiOyqN05f4uCTiq2KPI9Va3UT0Q3dgo=;
-        b=MbstP1k60eRxwh1hCbztcYTEgOtARZhSfXp6SRTwO+iXAq8png8M0f+ei2Pr9VBL
-        awg+LUYHkP+LkcT26vFN6YVczo6I2ELRZuLUtKAG759G7yowzijipr0opuefmJ/+KuH
-        abtAolJn7I6kcUXHPvttK8kXVF1rlv381gigf7DA=
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 779B4C4479D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu: Fix missed wakeup of exp_wq waiters
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, joel@joelfernandes.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        pkondeti@codeaurora.org, prsood@codeaurora.org,
-        gkohli@codeaurora.org
-References: <1573838894-23027-1-git-send-email-neeraju@codeaurora.org>
- <20191117213624.GB2889@paulmck-ThinkPad-P72>
- <0101016e7dd7b824-50600058-ab5e-44d8-8d24-94cf095f1783-000000@us-west-2.amazonses.com>
- <20191118150856.GN2889@paulmck-ThinkPad-P72>
- <0101016e7f644106-90b40f19-ba9e-4974-bdbe-1062b52222a2-000000@us-west-2.amazonses.com>
- <20191118172401.GO2889@paulmck-ThinkPad-P72>
- <0101016e81ba8865-028ac62b-3fcd-481b-b657-be8519c4edf5-000000@us-west-2.amazonses.com>
- <20191119040533.GS2889@paulmck-ThinkPad-P72>
- <0101016e8278f225-9df7f507-2b6d-45e4-9c4d-d37141a1c5c6-000000@us-west-2.amazonses.com>
- <20191119150931.GX2889@paulmck-ThinkPad-P72>
- <20191119200647.GC2889@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <0101016e8736cba6-70a3f878-11e5-446b-97ac-20e857e8d22f-000000@us-west-2.amazonses.com>
-Date:   Wed, 20 Nov 2019 05:09:05 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1728014AbfKTPfo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Nov 2019 10:35:44 -0500
+Received: from UHIL19PA40.eemsg.mail.mil ([214.24.21.199]:44664 "EHLO
+        UHIL19PA40.eemsg.mail.mil" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727928AbfKTPfn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 Nov 2019 10:35:43 -0500
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 Nov 2019 10:35:43 EST
+X-EEMSG-check-017: 50252330|UHIL19PA40_ESA_OUT06.csd.disa.mil
+X-IronPort-AV: E=Sophos;i="5.69,222,1571702400"; 
+   d="scan'208";a="50252330"
+Received: from emsm-gh1-uea11.ncsc.mil ([214.29.60.3])
+  by UHIL19PA40.eemsg.mail.mil with ESMTP/TLS/DHE-RSA-AES256-SHA256; 20 Nov 2019 15:28:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tycho.nsa.gov; i=@tycho.nsa.gov; q=dns/txt;
+  s=tycho.nsa.gov; t=1574263713; x=1605799713;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=SbonHAnJ65ofoJGSPztdBnhiqK+qDwU/5hUGN93Jeiw=;
+  b=P6DRL/oM82D31nXN10/RnZ3dcJRSsuTJnyFKM5QfsVvUcIJkqtSaElep
+   LNdEa/9XSPHMzsAi0J5lgvmOnAW9UKdHmALO7xmCKkXy9imCXpJJ6a8Sv
+   G/Esb+ufPg+mJdayrn86vsHbS0CQTXPdEGpws79hg4LAAlQsS+OfNdCHI
+   3gIBPb8Chl3LHmHQudtdmfMUWTpmoyXKFMJ8XlTanUtGTIdh4UqTNCvsU
+   QqUti9QSNzEuinypc3+qZ7jh9Mxy7sJZIKgS93Nf6mAt5WNUtmjKJUlHq
+   WavCjbL4uZN/xCDebUHm9063g35wopgdLolsssej/tfYdJ9+ey333IMXh
+   A==;
+X-IronPort-AV: E=Sophos;i="5.69,222,1571702400"; 
+   d="scan'208";a="35774017"
+IronPort-PHdr: =?us-ascii?q?9a23=3AqI7KQRVBRCbj8kIN7jKsyLGYakTV8LGtZVwlr6?=
+ =?us-ascii?q?E/grcLSJyIuqrYZRWGvadThVPEFb/W9+hDw7KP9fy5AipZvM7K7ypKWacPfi?=
+ =?us-ascii?q?dNsd8RkQ0kDZzNImzAB9muURYHGt9fXkRu5XCxPBsdMs//Y1rPvi/6tmZKSV?=
+ =?us-ascii?q?3wOgVvO+v6BJPZgdip2OCu4Z3TZBhDiCagbb9oIxi6sAvcutMLjYZiNqo9xR?=
+ =?us-ascii?q?nErmVVcOlK2G1kIk6ekQzh7cmq5p5j9CpQu/Ml98FeVKjxYro1Q79FAjk4Km?=
+ =?us-ascii?q?45/MLkuwXNQguJ/XscT34ZkgFUDAjf7RH1RYn+vy3nvedgwiaaPMn2TbcpWT?=
+ =?us-ascii?q?S+6qpgVRHlhDsbOzM/7WrakdJ7gr5Frx29phx/24/Ub5+TNPpiZaPWYNcWSX?=
+ =?us-ascii?q?NcUspNSyBNB4WxYIUVD+oFIO1WsY/zqVUTphe6HAWhBOfixjpOi3Tr36M1zv?=
+ =?us-ascii?q?4hHBnb0gI+EdIAsHfaotv7O6gdU++60KbGwC7fb/5Uwzrx9JTEfx4jrPyKQL?=
+ =?us-ascii?q?l+cdDRyU4qFw7dk1uQtZLqPyuV1usTtWiQ8vduVee1hG4jrwF+vDiuzdorh4?=
+ =?us-ascii?q?nSm40V0UvJ9Tl5wYkpJd24T1R3Ydi/EJRKrS2aOIx2Qt07TmxupS00yaUGtI?=
+ =?us-ascii?q?amcCUFx5kr3R7SZ+Gdf4SW7R/vSvydLSp+iXl4YrywnQyy/lKlyuDkU8m010?=
+ =?us-ascii?q?tFoTRdn9nXs3ANywTT6s+aSvth5kuh2SiA1wTU6uxcPUA7j7DbK588wr4rjJ?=
+ =?us-ascii?q?YTrUTCETP2mEXxlqOWcFkr+vO05Oj9Z7Xmp5ucO5d1igH4LKsuhtSyDfk3Pw?=
+ =?us-ascii?q?UBRWSW+fmw2Kf98UD2XrlGlOA6nrHcsJ/AJMQboqC5AxVS0oYm8xu/FCqp0M?=
+ =?us-ascii?q?8DkHkbLFNKZBKHj4/zN1HIO/D3F+2zg1urkDd13/zGJKHuAo3RLnjfl7fsZb?=
+ =?us-ascii?q?h8609YyAo31t1f5IxbCqsHIP3tXk/9rtvYDgU2Mwas2eboFM191p8CWWKIGq?=
+ =?us-ascii?q?KZK73dsVuJ5uIpPumNa5QYuCjyK/c7/f7il3w5lkEHfamvw5QXbGq0HvN8I0?=
+ =?us-ascii?q?WWeXDsmMsOEX8WvgoiS+znkFmCUT9VZ3avUKMw/zI7B5y8DYfFWI+thKeM3D?=
+ =?us-ascii?q?m0HpJIfGBKEFOMHmnyd4WCRfgMbDieIsh7kjwLTbKhUZMu1QmytA/mzLpqNv?=
+ =?us-ascii?q?TU+iwCtZLkz9V05vPclRcz9TxqFcid12CNT2dpnmIHXTM227p/oUNnxlee0q?=
+ =?us-ascii?q?hym+ZYGsBL5/NVTgc6MobRz+h7C9D0RwLAcc6FSFi9Qtq7Hz4xUMw+w9sVbk?=
+ =?us-ascii?q?ZjFNWtkArD0zCpA7ALjbyLAoI78qbG03j2PcZ9xG7M1LM9gFk+XstPKWqmi7?=
+ =?us-ascii?q?Zl9wfPGo7EiFuZl6m0eqQGxiLN93mMzXCIvE5GVA58S6LFXWoQZhiekdOs2U?=
+ =?us-ascii?q?LGS/eCBL0sNQ0JndGDLq9iadDzi1hCAvD5N4KNTXi2njKLGRuQxr6KJLHvcm?=
+ =?us-ascii?q?EZ0TSVXFMIiCgP7H2GMk44HS7nrGXAWm89XWnzal/hpLEt4EiwSVU5mkTTMh?=
+ =?us-ascii?q?xs?=
+X-IPAS-Result: =?us-ascii?q?A2BQAAA1WtVd/wHyM5BlGgEBAQEBAQEBAQMBAQEBEQEBA?=
+ =?us-ascii?q?QICAQEBAYF+gXQsgUABMoRUj1ABAQEBAQEGgREliWaRQwkBAQEBAQEBAQE0A?=
+ =?us-ascii?q?QIBAYRAAoInJDgTAhABAQEEAQEBAQEFAwEBbIVDgjspAYJtAQUjFUEQCxgCA?=
+ =?us-ascii?q?iYCAlcGDQgBAYJfP4JTJbAugTKFToM2gUiBDiiMFhh4gQeBOAyCXz6EL4Mmg?=
+ =?us-ascii?q?l4Ell5GlwqCNYI3kxIGG4I+jCOLMy2qOCKBWCsIAhgIIQ+DKE8RFIdtAQiNN?=
+ =?us-ascii?q?CMDgTUBAYsnKoIWAQE?=
+Received: from tarius.tycho.ncsc.mil ([144.51.242.1])
+  by emsm-gh1-uea11.NCSC.MIL with ESMTP; 20 Nov 2019 15:28:32 +0000
+Received: from moss-pluto.infosec.tycho.ncsc.mil (moss-pluto [192.168.25.131])
+        by tarius.tycho.ncsc.mil (8.14.4/8.14.4) with ESMTP id xAKFSV1v032640;
+        Wed, 20 Nov 2019 10:28:32 -0500
+Subject: Re: [RFC PATCH 1/2] selinux: Don't call avc_compute_av() from RCU
+ path walk
+To:     Will Deacon <will@kernel.org>
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        linuxfs <linux-fsdevel@vger.kernel.org>, rcu@vger.kernel.org
+References: <20191119184057.14961-1-will@kernel.org>
+ <20191119184057.14961-2-will@kernel.org>
+ <5e51f9a5-ba76-a42d-fc2b-9255f8544859@tycho.nsa.gov>
+ <20191120131229.GA21500@willie-the-truck>
+From:   Stephen Smalley <sds@tycho.nsa.gov>
+Message-ID: <d8dbd290-0ffa-271f-0268-5e9148e7ee9b@tycho.nsa.gov>
+Date:   Wed, 20 Nov 2019 10:28:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191119200647.GC2889@paulmck-ThinkPad-P72>
+In-Reply-To: <20191120131229.GA21500@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SES-Outgoing: 2019.11.20-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 11/20/2019 1:36 AM, Paul E. McKenney wrote:
-> On Tue, Nov 19, 2019 at 07:09:31AM -0800, Paul E. McKenney wrote:
->> On Tue, Nov 19, 2019 at 07:03:14AM +0000, Neeraj Upadhyay wrote:
->>> Hi Paul,
->>>
->>> On 11/19/2019 9:35 AM, Paul E. McKenney wrote:
->>>> On Tue, Nov 19, 2019 at 03:35:15AM +0000, Neeraj Upadhyay wrote:
->>>>> Hi Paul,
->>>>>
->>>>> On 11/18/2019 10:54 PM, Paul E. McKenney wrote:
->>>>>> On Mon, Nov 18, 2019 at 04:41:47PM +0000, Neeraj Upadhyay wrote:
->>>>>>> Hi Paul,
->>>>>>>
->>>>>>>
->>>>>>> On 11/18/2019 8:38 PM, Paul E. McKenney wrote:
->>>>>>>> On Mon, Nov 18, 2019 at 09:28:39AM +0000, Neeraj Upadhyay wrote:
->>>>>>>>> Hi Paul,
->>>>>>>>>
->>>>>>>>> On 11/18/2019 3:06 AM, Paul E. McKenney wrote:
->>>>>>>>>> On Fri, Nov 15, 2019 at 10:58:14PM +0530, Neeraj Upadhyay wrote:
->>>>>>>>>>> For the tasks waiting in exp_wq inside exp_funnel_lock(),
->>>>>>>>>>> there is a chance that they might be indefinitely blocked
->>>>>>>>>>> in below scenario:
->>>>>>>>>>>
->>>>>>>>>>> 1. There is a task waiting on exp sequence 0b'100' inside
->>>>>>>>>>>         exp_funnel_lock().
->>>>>>>>>>>
->>>>>>>>>>>         _synchronize_rcu_expedited()
->>>>>>>>>>
->>>>>>>>>> This symbol went away a few versions back, but let's see how this
->>>>>>>>>> plays out in current -rcu.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Sorry; for us this problem is observed on 4.19 stable version; I had
->>>>>>>>> checked against the -rcu code, and the relevant portions were present
->>>>>>>>> there.
->>>>>>>>>
->>>>>>>>>>>           s = 0b'100
->>>>>>>>>>>           exp_funnel_lock()
->>>>>>>>>>>             wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3]
->>>>>>>>>>
->>>>>>>>>> All of the above could still happen if the expedited grace
->>>>>>>>>> period number was zero (or a bit less) when that task invoked
->>>>>>>>>
->>>>>>>>> Yes
->>>>>>>>>
->>>>>>>>>> synchronize_rcu_expedited().  What is the relation, if any,
->>>>>>>>>> between this task and "task1" below?  Seems like you want them to
->>>>>>>>>> be different tasks.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> This task is the one which is waiting for the expedited sequence, which
->>>>>>>>> "task1" completes ("task1" holds the exp_mutex for it). "task1" would
->>>>>>>>> wake up this task, on exp GP completion.
->>>>>>>>>
->>>>>>>>>> Does this task actually block, or is it just getting ready
->>>>>>>>>> to block?  Seems like you need it to have actually blocked.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Yes, it actually blocked in wait queue.
->>>>>>>>>
->>>>>>>>>>> 2. The Exp GP completes and task (task1) holding exp_mutex queues
->>>>>>>>>>>         worker and schedules out.
->>>>>>>>>>
->>>>>>>>>> "The Exp GP" being the one that was initiated when the .expedited_sequence
->>>>>>>>>> counter was zero, correct?  (Looks that way below.)
->>>>>>>>>>
->>>>>>>>> Yes, correct.
->>>>>>>>>
->>>>>>>>>>>         _synchronize_rcu_expedited()
->>>>>>>>>>>           s = 0b'100
->>>>>>>>>>>           queue_work(rcu_gp_wq, &rew.rew_work)
->>>>>>>>>>>             wake_up_worker()
->>>>>>>>>>>               schedule()
->>>>>>>>>>>
->>>>>>>>>>> 3. kworker A picks up the queued work and completes the exp gp
->>>>>>>>>>>         sequence.
->>>>>>>>>>>
->>>>>>>>>>>         rcu_exp_wait_wake()
->>>>>>>>>>>           rcu_exp_wait_wake()
->>>>>>>>>>>             rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence is incremented
->>>>>>>>>>>                                     // to 0b'100'
->>>>>>>>>>>
->>>>>>>>>>> 4. task1 does not enter wait queue, as sync_exp_work_done() returns true,
->>>>>>>>>>>         and releases exp_mutex.
->>>>>>>>>>>
->>>>>>>>>>>         wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
->>>>>>>>>>>           sync_exp_work_done(rsp, s));
->>>>>>>>>>>         mutex_unlock(&rsp->exp_mutex);
->>>>>>>>>>
->>>>>>>>>> So task1 is the one that initiated the expedited grace period that
->>>>>>>>>> started when .expedited_sequence was zero, right?
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Yes, right.
->>>>>>>>>
->>>>>>>>>>> 5. Next exp GP completes, and sequence number is incremented:
->>>>>>>>>>>
->>>>>>>>>>>         rcu_exp_wait_wake()
->>>>>>>>>>>           rcu_exp_wait_wake()
->>>>>>>>>>>             rcu_exp_gp_seq_end(rsp) // rsp->expedited_sequence = 0b'200'
->>>>>>>>>>>
->>>>>>>>>>> 6. As kworker A uses current expedited_sequence, it wakes up workers
->>>>>>>>>>>         from wrong wait queue index - it should have worken wait queue
->>>>>>>>>>>         corresponding to 0b'100' sequence, but wakes up the ones for
->>>>>>>>>>>         0b'200' sequence. This results in task at step 1 indefinitely blocked.
->>>>>>>>>>>
->>>>>>>>>>>         rcu_exp_wait_wake()
->>>>>>>>>>>           wake_up_all(&rnp->exp_wq[rcu_seq_ctr(rsp->expedited_sequence) & 0x3]);
->>>>>>>>>>
->>>>>>>>>> So the issue is that the next expedited RCU grace period might
->>>>>>>>>> have completed before the completion of the wakeups for the previous
->>>>>>>>>> expedited RCU grace period, correct?  Then expedited grace periods have
->>>>>>>>>
->>>>>>>>> Yes. Actually from the ftraces, I saw that next expedited RCU grace
->>>>>>>>> period completed while kworker A was in D state, while waiting for
->>>>>>>>> exp_wake_mutex. This led to kworker A using sequence 2 (instead of 1) for
->>>>>>>>> its wake_up_all() call; so, task (point 1) was never woken up, as it was
->>>>>>>>> waiting on wq index 1.
->>>>>>>>>
->>>>>>>>>> to have stopped to prevent any future wakeup from happening, correct?
->>>>>>>>>> (Which would make it harder for rcutorture to trigger this, though it
->>>>>>>>>> really does have code that attempts to trigger this sort of thing.)
->>>>>>>>>>
->>>>>>>>>> Is this theoretical in nature, or have you actually triggered it?
->>>>>>>>>> If actually triggered, what did you do to make this happen?
->>>>>>>>>
->>>>>>>>> This issue, we had seen previously - 1 instance in May 2018 (on 4.9 kernel),
->>>>>>>>> another instance in Nov 2018 (on 4.14 kernel), in our customer reported
->>>>>>>>> issues. Both instances were in downstream drivers and we didn't have RCU
->>>>>>>>> traces. Now 2 days back, it was reported on 4.19 kernel, with RCU traces
->>>>>>>>> enabled, where it was observed in suspend scenario, where we are observing
->>>>>>>>> "DPM device timeout" [1], as scsi device is stuck in
->>>>>>>>> _synchronize_rcu_expedited().
->>>>>>>>>
->>>>>>>>> schedule+0x70/0x90
->>>>>>>>> _synchronize_rcu_expedited+0x590/0x5f8
->>>>>>>>> synchronize_rcu+0x50/0xa0
->>>>>>>>> scsi_device_quiesce+0x50/0x120
->>>>>>>>> scsi_bus_suspend+0x70/0xe8
->>>>>>>>> dpm_run_callback+0x148/0x388
->>>>>>>>> __device_suspend+0x430/0x8a8
->>>>>>>>>
->>>>>>>>> [1]
->>>>>>>>> https://github.com/torvalds/linux/blob/master/drivers/base/power/main.c#L489
->>>>>>>>>
->>>>>>>>>> What have you done to test the change?
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> I have given this for testing; will share the results . Current analysis
->>>>>>>>> and patch is based on going through ftrace and code review.
->>>>>>>>
->>>>>>>> OK, very good.  Please include the failure information in the changelog
->>>>>>>> of the next version of this patch.
->>>>>
->>>>> Done.
->>>>>
->>>>>>>>
->>>>>>>> I prefer your original patch, that just uses "s", over the one below
->>>>>>>> that moves the rcu_exp_gp_seq_end().  The big advantage of your original
->>>>>>>> patch is that it allow more concurrency between a consecutive pair of
->>>>>>>> expedited RCU grace periods.  Plus it would not be easy to convince
->>>>>>>> myself that moving rcu_exp_gp_seq_end() down is safe, so your original
->>>>>>>> is also conceptually simpler with a more manageable state space.
->>>>>
->>>>> The reason for highlighting the alternate approach of doing gp end inside
->>>>> exp_wake_mutex is the requirement of 3 wqs. Now, this is a theoretical case;
->>>>> please correct me if I am wrong here:
->>>>>
->>>>> 1. task0 holds exp_wake_mutex, and is preempted.
->>>>
->>>> Presumably after it has awakened the kthread that initiated the prior
->>>> expedited grace period (the one with seq number = -4).
->>>>
->>>>> 2. task1 initiates new GP (current seq number = 0).
->>>>
->>>> Yes, this can happen.
->>>>
->>>>> 3. task1 queues worker kworker1 and schedules out.
->>>>
->>>> And thus still holds .exp_mutex, but yes.
->>>>
->>>>> 4. kworker1 sets exp GP to 1 and waits on exp_wake_mutex
->>>>
->>>> And thus cannot yet have awakened task1.
->>>>
->>>>> 5. task1 releases exp mutex, w/o entering waitq.
->>>>
->>>> So I do not believe that we can get to #5.  What am I missing here?
->>>>
->>>
->>> As mentioned in this patch, task1 could have scheduled out after queuing
->>> work:
->>>
->>> queue_work(rcu_gp_wq, &rew.rew_work)
->>>             wake_up_worker()
->>>               schedule()
->>>
->>> kworker1 runs and picks up this queued work, and sets exp GP to 1 and waits
->>> on exp_wake_mutex.
->>>
->>> task1 gets scheduled in and checks sync_exp_work_done(rsp, s), which return
->>> true and it does not enter wait queue and releases exp_mutex.
->>>
->>> wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
->>>           sync_exp_work_done(rsp, s));
+On 11/20/19 8:12 AM, Will Deacon wrote:
+> Hi Stephen,
+> 
+> Thanks for the quick reply.
+> 
+> On Tue, Nov 19, 2019 at 01:59:40PM -0500, Stephen Smalley wrote:
+>> On 11/19/19 1:40 PM, Will Deacon wrote:
+>>> 'avc_compute_av()' can block, so we carefully exit the RCU read-side
+>>> critical section before calling it in 'avc_has_perm_noaudit()'.
+>>> Unfortunately, if we're calling from the VFS layer on the RCU path walk
+>>> via 'selinux_inode_permission()' then we're still actually in an RCU
+>>> read-side critical section and must not block.
 >>
->> Well, I have certainly given enough people a hard time about missing the
->> didn't-actually-sleep case, so good show on finding one in my code!  ;-)
->>
->> Which also explains why deferring the rcu_exp_gp_seq_end() is safe:
->> The .exp_mutex won't be released until after it happens, and the
->> next manipulation of the sequence number cannot happen until after
->> .exp_mutex is next acquired.
->>
->> Good catch!  And keep up the good work!!!
+>> avc_compute_av() should never block AFAIK. The blocking concern was with
+>> slow_avc_audit(), and even that appears dubious to me. That seems to be more
+>> about misuse of d_find_alias in dump_common_audit_data() than anything.
 > 
-> And here is the commit corresponding to your earlier patch.  Please let
-> me know of any needed adjustments.
+> Apologies, I lost track of GFP_ATOMIC when I reading the code and didn't
+> think it was propagated down to all of the potential allocations and
+> string functions. Having looked at it again, I can't see where it blocks.
 > 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 3ec440b52831eea172061c5db3d2990b22904863
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Tue Nov 19 11:50:52 2019 -0800
-> 
->      rcu: Allow only one expedited GP to run concurrently with wakeups
->      
->      The current expedited RCU grace-period code expects that a task
->      requesting an expedited grace period cannot awaken until that grace
->      period has reached the wakeup phase.  However, it is possible for a long
->      preemption to result in the waiting task never sleeping.  For example,
->      consider the following sequence of events:
->      
->      1.      Task A starts an expedited grace period by invoking
->              synchronize_rcu_expedited().  It proceeds normally up to the
->              wait_event() near the end of that function, and is then preempted
->              (or interrupted or whatever).
->      
->      2.      The expedited grace period completes, and a kworker task starts
->              the awaken phase, having incremented the counter and acquired
->              the rcu_state structure's .exp_wake_mutex.  This kworker task
->              is then preempted or interrupted or whatever.
->      
->      3.      Task A resumes and enters wait_event(), which notes that the
->              expedited grace period has completed, and thus doesn't sleep.
->      
->      4.      Task B starts an expedited grace period exactly as did Task A,
->              complete with the preemption (or whatever delay) just before
->              the call to wait_event().
->      
->      5.      The expedited grace period completes, and another kworker
->              task starts the awaken phase, having incremented the counter.
->              However, it blocks when attempting to acquire the rcu_state
->              structure's .exp_wake_mutex because step 2's kworker task has
->              not yet released it.
->      
->      6.      Steps 4 and 5 repeat, resulting in overflow of the rcu_node
->              structure's ->exp_wq[] array.
->      
->      In theory, this is harmless.  Tasks waiting on the various ->exp_wq[]
->      array will just be spuriously awakened, but they will just sleep again
->      on noting that the rcu_state structure's ->expedited_sequence value has
->      not advanced far enough.
->      
->      In practice, this wastes CPU time and is an accident waiting to happen.
->      This commit therefore moves the rcu_exp_gp_seq_end() call that officially
->      ends the expedited grace period (along with associate tracing) until
->      after the ->exp_wake_mutex has been acquired.  This prevents Task A from
->      awakening prematurely, thus preventing more than one expedited grace
->      period from being in flight during a previous expedited grace period's
->      wakeup phase.
->      
+> Might be worth a comment in avc_compute_av(), because the temporary
+> dropping of rcu_read_lock() looks really dodgy when we could be running
+> on the RCU path walk path anyway.
 
-I am not sure, if a "fixes" tag is required for it.
+I don't think that's a problem but I'll defer to the fsdevel and rcu 
+folks.  The use of RCU within the SELinux AVC long predates the 
+introduction of RCU path walk, and the rcu_read_lock()/unlock() pairs 
+inside the AVC are not related in any way to RCU path walk.  Hopefully 
+they don't break it.  The SELinux security server (i.e. 
+security_compute_av() and the rest of security/selinux/ss/*) internally 
+has its own locking for its data structures, primarily the policy 
+rwlock.  There was also a patch long ago to convert use of that policy 
+rwlock to RCU but it didn't seem justified at the time.  We are 
+interested in revisiting that however.  That would introduce its own set 
+of rcu_read_lock/unlock pairs inside of security_compute_av() as well.
 
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      [ paulmck: Added updated comment. ]
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 4433d00a..8840729 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -539,14 +539,13 @@ static void rcu_exp_wait_wake(unsigned long s)
->   	struct rcu_node *rnp;
->   
->   	synchronize_sched_expedited_wait();
-> -	rcu_exp_gp_seq_end();
-> -	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("end"));
->   
-> -	/*
-> -	 * Switch over to wakeup mode, allowing the next GP, but -only- the
-> -	 * next GP, to proceed.
-> -	 */
-> +	// Switch over to wakeup mode, allowing the next GP to proceed.
-> +	// End the previous grace period only after acquiring the mutex
-> +	// to ensure that only one GP runs concurrently with wakeups.
-Should comment style be changed to below?
-
-/* Switch over to wakeup mode, allowing the next GP to proceed.
-  * End the previous grace period only after acquiring the mutex
-  * to ensure that only one GP runs concurrently with wakeups.
-  */
-
-
->   	mutex_lock(&rcu_state.exp_wake_mutex);
-> +	rcu_exp_gp_seq_end();
-> +	trace_rcu_exp_grace_period(rcu_state.name, s, TPS("end"));
->   
->   	rcu_for_each_node_breadth_first(rnp) {
->   		if (ULONG_CMP_LT(READ_ONCE(rnp->exp_seq_rq), s)) {
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
