@@ -1,170 +1,117 @@
-Return-Path: <SRS0=ISlT=ZW=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=e3Tt=ZX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19D87C432C3
-	for <rcu@archiver.kernel.org>; Sat, 30 Nov 2019 16:33:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AF1C432C0
+	for <rcu@archiver.kernel.org>; Sun,  1 Dec 2019 03:51:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E1EFD20725
-	for <rcu@archiver.kernel.org>; Sat, 30 Nov 2019 16:33:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8A59206DC
+	for <rcu@archiver.kernel.org>; Sun,  1 Dec 2019 03:51:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a21HWsp6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaXUxc/i"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbfK3Qdu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 30 Nov 2019 11:33:50 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33537 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727101AbfK3Qdt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 30 Nov 2019 11:33:49 -0500
-Received: by mail-pf1-f196.google.com with SMTP id y206so7503022pfb.0
-        for <rcu@vger.kernel.org>; Sat, 30 Nov 2019 08:33:47 -0800 (PST)
+        id S1727034AbfLADvT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 30 Nov 2019 22:51:19 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39082 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbfLADvT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 30 Nov 2019 22:51:19 -0500
+Received: by mail-pg1-f195.google.com with SMTP id b137so14230525pga.6;
+        Sat, 30 Nov 2019 19:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sDX92yzic9awsGOt0Arz5PBB4ji0tHlZ6E3jmcXbk2o=;
-        b=a21HWsp6J3y1SshPW4FZ8PHxDR2Pyb8FxKqGQ70iODLH8ogAf7us9Qf5Cc39ADneYg
-         3LM8CxBarwiLUMrVp8/5zn6GYhKUKoplMx3XAwtpDgUPRhmMDwTJgWx5DaDMs5ZODCkF
-         0Koqg9Z0F5fN37eiVwx6J/LVKI1L2ybp/VE3Q=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jxgA6dJnA/dGvMRrEelT9MYN+n9ka+vhMkWWG7BgB2M=;
+        b=FaXUxc/ieqHGSyxG54PAJ2Nps9gjPrpA0ofS4jtugNSYRbBvJ3I3XutMBnhsUCI6Iw
+         Vqjxja0IfCnhW1ZQairkzedaSQhySx0ML8uycnBl1Hf/IYCTPDFkxx0xyvad9Bp+HXlt
+         iW1ElX+TIxM1lU3SE0ijXzKbJQkst9KZFJwpotBYNUd6HFO1wDo9q6Khal9ChsuyEgnK
+         FIqI3DFEVis5IOmhK10+k5qjP0+ohsRuLre2WltR00n/NpX51E7qWDhvS2OXI3uLJ3B6
+         HzRe3eQJgJcnRN+iS7+i5yQXK9QbXvRlZmliFGL//uqWn2jVfqCxLEhBHXIW4GX2liZJ
+         mraw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sDX92yzic9awsGOt0Arz5PBB4ji0tHlZ6E3jmcXbk2o=;
-        b=HK9PocV2AP60pam5CxidzNS6Pszz+kIoESsTy2DORx7hAu/S+PK/IZpBm2iJ1qajgt
-         kQDhuiwn5nCp7W17HKJEyRdNYX51jSoLuK2QzBc/h3Sprkz27W58tQ+JE0fEIdneOnDF
-         lhQuSzRD/l6GUcf90a2YKznYsdgv5BIbyWPU+alvPBLgVTBsFEYx7DrY+6SLTGDRWTrV
-         bbxbygomJefYjES5gC2ru1/0GGJKdwccHyAeuVgjGFsZrQ0loLAAnX8Rf96i8ASLGGdD
-         40++l1yWHm9QbRTRFNCLU5QqSw9IFvcnY12f9yAMgLS5wXZKEqPvZ9NWA5CJZZQE1wzf
-         2hKg==
-X-Gm-Message-State: APjAAAVsLPQmdNKh0AwGZ+K13QX724B+ZiDmMCNXRBGQ6hygCTpVdFuB
-        mKJnLozOlIrfYY/qvgfNUJ10ig==
-X-Google-Smtp-Source: APXvYqwqTt8yof5Rq7oEfe7DA4m6uotUBzmpWAjK6VsCDn7Hg55vxGMffuwaoOmN/9h8gfJGaL3TsA==
-X-Received: by 2002:a63:fa04:: with SMTP id y4mr22868658pgh.413.1575131627469;
-        Sat, 30 Nov 2019 08:33:47 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q13sm17769121pjc.4.2019.11.30.08.33.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jxgA6dJnA/dGvMRrEelT9MYN+n9ka+vhMkWWG7BgB2M=;
+        b=czuTFVG94r82Pqn4RgWxFQWyyq2mSthn535y6JIY84zUanLl5sP+dJbLNrazChtxCM
+         7BY8F2T9TIc00WJQXoJADEBehMqLuTRvZS0h4Y8/MayQyHLOuulPls+AszfKqbIiwTXI
+         ZRnv9x+knyB7mQDWhY2DcyKrjeGhndQJPoRRDIWWHlWIA3/5NliW6axP57GmVnm3Brll
+         tCWqhrM9dpjQlWy5S0TH2BFrNheZJO6j/UMyLJs9jcb5+YyicwqAu21qa9C8tZ7pmqoN
+         mTqGAlMKfraoRUOh7TMZps7zElnrDDvxoLf61xJtv5LZISq5WTmjFLi3SzWavO8GgWcK
+         US7g==
+X-Gm-Message-State: APjAAAW4uUuQqiMDOlX3dbhHlV6NSPPF/g5YssEV1pjYE8SvFD0LfbXg
+        5e4RkxzWj5dQPwYU57Hu/IROEFUM
+X-Google-Smtp-Source: APXvYqyCNUMu2NoyX7GVHrnhdhm32U9ViQxb/MYUOONemByuBlp/v9EEuWquWNP9hRCR7JCJbGObQg==
+X-Received: by 2002:a65:6209:: with SMTP id d9mr24775834pgv.22.1575172278134;
+        Sat, 30 Nov 2019 19:51:18 -0800 (PST)
+Received: from debian.net.fpt ([2405:4800:58f7:32f8:99ed:5ecf:a28d:555e])
+        by smtp.gmail.com with ESMTPSA id c12sm3208096pfo.92.2019.11.30.19.51.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Nov 2019 08:33:46 -0800 (PST)
-Date:   Sat, 30 Nov 2019 08:33:44 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rcu@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/2] kernel: add sysctl kernel.nr_taints
-Message-ID: <201911300823.69EAF975E9@keescook>
-References: <157503370645.8187.6335564487789994134.stgit@buzz>
- <157503370887.8187.1663761929323284758.stgit@buzz>
+        Sat, 30 Nov 2019 19:51:17 -0800 (PST)
+From:   Phong Tran <tranmanphong@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, paulmck@kernel.org,
+        joel@joelfernandes.org
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, Phong Tran <tranmanphong@gmail.com>
+Subject: [PATCH] ext4: use rcu API in debug_print_tree
+Date:   Sun,  1 Dec 2019 10:51:07 +0700
+Message-Id: <20191201035107.24355-1-tranmanphong@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <157503370887.8187.1663761929323284758.stgit@buzz>
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 04:21:48PM +0300, Konstantin Khlebnikov wrote:
-> Once taint flag is set it's never cleared. Following taint could be detected
-> only via parsing kernel log messages which are different for each occasion.
-> For repeatable taints like TAINT_MACHINE_CHECK, TAINT_BAD_PAGE, TAINT_DIE,
-> TAINT_WARN, TAINT_LOCKUP it would be good to know count to see their rate.
-> 
-> This patch adds sysctl with vector of counters. One for each taint flag.
-> Counters are non-atomic in favor of simplicity. Exact count doesn't matter.
-> Writing vector of zeroes resets counters.
-> 
-> This is useful for detecting frequent problems with automatic monitoring.
-> 
-> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+struct ext4_sb_info.system_blks was marked __rcu.
+But access the pointer without using RCU lock and dereference.
+Sparse warning with __rcu notation:
 
-I like this, yeah. This would let LKDTM users reset taint counts to
-re-check the same kernel, etc, without explicitly clearing the taint
-flags which always seemed like a bad idea. :)
+block_validity.c:139:29: warning: incorrect type in argument 1 (different address spaces)
+block_validity.c:139:29:    expected struct rb_root const *
+block_validity.c:139:29:    got struct rb_root [noderef] <asn:4> *
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Phong Tran <tranmanphong@gmail.com>
+---
+ fs/ext4/block_validity.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-One nit below...
-
-> ---
->  include/linux/kernel.h |    1 +
->  kernel/panic.c         |    2 ++
->  kernel/sysctl.c        |    9 +++++++++
->  3 files changed, 12 insertions(+)
-> 
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index e8a6808e4f2f..900d02167bbd 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -604,6 +604,7 @@ struct taint_flag {
->  };
->  
->  extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
-> +extern int sysctl_nr_taints[TAINT_FLAGS_COUNT];
->  
->  extern const char hex_asc[];
->  #define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
-> diff --git a/kernel/panic.c b/kernel/panic.c
-> index d7750a45ca8d..a3df00ebcba2 100644
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -39,6 +39,7 @@
->  int panic_on_oops = CONFIG_PANIC_ON_OOPS_VALUE;
->  static unsigned long tainted_mask =
->  	IS_ENABLED(CONFIG_GCC_PLUGIN_RANDSTRUCT) ? (1 << TAINT_RANDSTRUCT) : 0;
-> +int sysctl_nr_taints[TAINT_FLAGS_COUNT];
->  static int pause_on_oops;
->  static int pause_on_oops_flag;
->  static DEFINE_SPINLOCK(pause_on_oops_lock);
-> @@ -434,6 +435,7 @@ void add_taint(unsigned flag, enum lockdep_ok lockdep_ok)
->  		pr_warn("Disabling lock debugging due to kernel taint\n");
->  
->  	set_bit(flag, &tainted_mask);
-> +	sysctl_nr_taints[flag]++;
-
-As long as we're changing this code, how about adding an explicit check
-of "flag" against either ARRAY_SIZE(sysctl_nr_tains) or TAINT_FLAGS_COUNT?
-
-It looks like only 1 caller isn't using a static value, though:
-proc_taint(), so it would catch "overflows" there (it's already bounded
-to the size of tainted_mask, but proc could set "unknown" taint flags).
-
--Kees
-
->  }
->  EXPORT_SYMBOL(add_taint);
->  
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index b6f2f35d0bcf..5d9727556cef 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -553,6 +553,15 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_taint,
->  	},
-> +	{
-> +		.procname	= "nr_taints",
-> +		.data		= &sysctl_nr_taints,
-> +		.maxlen		= sizeof(sysctl_nr_taints),
-> +		.mode		= 0644,
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_ZERO,
-> +	},
->  	{
->  		.procname	= "sysctl_writes_strict",
->  		.data		= &sysctl_writes_strict,
-> 
-
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index d4d4fdfac1a6..1ee04e76bbe0 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -133,10 +133,13 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+ {
+ 	struct rb_node *node;
+ 	struct ext4_system_zone *entry;
++	struct ext4_system_blocks *system_blks;
+ 	int first = 1;
+ 
+ 	printk(KERN_INFO "System zones: ");
+-	node = rb_first(&sbi->system_blks->root);
++	rcu_read_lock();
++	system_blks = rcu_dereference(sbi->system_blks);
++	node = rb_first(&system_blks->root);
+ 	while (node) {
+ 		entry = rb_entry(node, struct ext4_system_zone, node);
+ 		printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
+@@ -144,6 +147,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+ 		first = 0;
+ 		node = rb_next(node);
+ 	}
++	rcu_read_unlock();
+ 	printk(KERN_CONT "\n");
+ }
+ 
 -- 
-Kees Cook
+2.20.1
+
