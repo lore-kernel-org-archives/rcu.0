@@ -7,124 +7,117 @@ X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B970C432C0
-	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:34:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE135C432C0
+	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:35:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EB64920684
-	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:34:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FA0D206E1
+	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:35:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="DlQBanX7"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="hRuf95R5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbfLBXee (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Dec 2019 18:34:34 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:34314 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbfLBXee (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Dec 2019 18:34:34 -0500
-Received: by mail-pl1-f196.google.com with SMTP id h13so767021plr.1
-        for <rcu@vger.kernel.org>; Mon, 02 Dec 2019 15:34:34 -0800 (PST)
+        id S1725919AbfLBXfB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Dec 2019 18:35:01 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:44428 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbfLBXfB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Dec 2019 18:35:01 -0500
+Received: by mail-pj1-f65.google.com with SMTP id w5so553776pjh.11
+        for <rcu@vger.kernel.org>; Mon, 02 Dec 2019 15:35:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Z3rcMZkJZGj62FT1K1YiTzywyH6333nfY23ubK0gAps=;
-        b=DlQBanX7XJUT9sN8nElYX0zHDgV759OWftBOocBhB1kN7kPYUUl/oD2UVC8y2Dk0sz
-         h9Hn455e9FjDObkfMID44wWUG7qhj6n70RPn2JgNrgS39TQ01A/IfJ6v36jTRdVwRFdq
-         vWn/SzPcaUP88D0FOc9ujYpHcYcn1tXqrbIOk=
+        bh=NqtaB9MKOQhSliHwumWMYNqfR+eF1LGGZAxjF3ljDPg=;
+        b=hRuf95R5Q6W5esJSAoe7/lzgpx0Qx+VAvNE1tzQ0cBJ4fEhgxAIRCF1FrGjy7QIa39
+         BqZ7RMIsqyVEki1+/pZIUo3SXoEWrgnGK4poCpb1GtfT1a1AtuQWRBwlBemwyCB3eS9x
+         6A46kaANsw1PWgvxCCt3gUZeNPfJkb0t7JDrA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Z3rcMZkJZGj62FT1K1YiTzywyH6333nfY23ubK0gAps=;
-        b=FtZyVFJY8SgjC3XyHEnxUMmb0hjUB+R+l+NLrYnFAtYR5VHXMkwi0CYD9IoYzELJ8c
-         kD7JJWMyfh35loHihGxUDOGH13ltmT8c+teIh4TKrU5e8PbBLfhpbKmGUNap5+PQTv/G
-         TDJp1jKDiAzy87eNx3RjxwfflWmSI3vPp51BoO0Ao7n0HIGhNolM+4Jal7rjPcca+Pj8
-         dtgdv3gLse0fq6GieEH5luO/h5EKJoGqkPOni64BLw6zkuILmtru6rZWfR0PzA3kd0Ry
-         Rl/h/3TXXV1HsLGgEQj7wPOcGCVek7ZGxQubVco04c3ZFKCF3945ygWwdYy9kgFnniVf
-         RdOg==
-X-Gm-Message-State: APjAAAUgzf9OBRwlydjewOIi7Mu1DNW7MyHZtDCrjwn0z7fcNT9R3xG5
-        G/xaJvIsj9pWHohpsOrP1Sw0Ag==
-X-Google-Smtp-Source: APXvYqxez88BfsSLdu0FphGWimROK+AQJM1Q600m7NCFYfCJF83uF/DiHX9wb+ydfYGeHCbWMkiGHQ==
-X-Received: by 2002:a17:902:54f:: with SMTP id 73mr1882143plf.213.1575329673560;
-        Mon, 02 Dec 2019 15:34:33 -0800 (PST)
+        bh=NqtaB9MKOQhSliHwumWMYNqfR+eF1LGGZAxjF3ljDPg=;
+        b=djHh51OtT1Mp10oIn2XDop67MFnpkDmtL0lkmmwVS9NvDUgLSCJgYUQ/cdbvhuYsOa
+         /XoWzuFSUK4RplfbMqJAFiltl+iDMn6Uyc/SCaNs3R4BCVaIo0wAwDdXmgMgWdedX6nn
+         zIBAnQJM0RRhObouHXIKzbNyBargDCDw0fbDv2OPjd2QCPzTbM+29xDrrYg0IjYCdZO0
+         I+GwDyKzBC1VwSxjUlRJ4/qFFW5tzs0Ueu4cBfKFJVQCy+ub3MIc018FddvVFqKXvQbi
+         hep9zE5gWPA/Eo1OgoxWlrWcyuhHqt2Wpa5D5qc+mbAX8A9hqkyPVwSnLyBlzJVVJGqQ
+         yG3w==
+X-Gm-Message-State: APjAAAUfyKdJqE3eCTzLbRCUzBNgz6KjFHvwUkke9Tn8aL3iDCX9xgPp
+        onCWmqT8kxQWyRuV0+er60b7SA==
+X-Google-Smtp-Source: APXvYqwi12259yJbqYXkvJ9Obbu0PA3rzoi2KUWw1tLwRCP44TS0LXGWkJD+SD/WZ0yQglnk8HAcNA==
+X-Received: by 2002:a17:902:b20c:: with SMTP id t12mr1790521plr.191.1575329700251;
+        Mon, 02 Dec 2019 15:35:00 -0800 (PST)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id f13sm617154pfa.57.2019.12.02.15.34.32
+        by smtp.gmail.com with ESMTPSA id h9sm596572pfo.139.2019.12.02.15.34.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 15:34:32 -0800 (PST)
-Date:   Mon, 2 Dec 2019 18:34:31 -0500
+        Mon, 02 Dec 2019 15:34:59 -0800 (PST)
+Date:   Mon, 2 Dec 2019 18:34:58 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Amol Grover <frextrite@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org,
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Amol Grover <frextrite@gmail.com>, Eric Paris <eparis@redhat.com>,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         Shuah Khan <skhan@linuxfoundation.org>, paulmck@kernel.org,
         rcu@vger.kernel.org, rostedt@kernel.org
 Subject: Re: [PATCH v3] kernel: audit.c: Add __rcu annotation to RCU pointer
-Message-ID: <20191202233431.GM17234@google.com>
+Message-ID: <20191202233458.GN17234@google.com>
 References: <20191201183347.18122-1-frextrite@gmail.com>
  <20191202211915.GF17234@google.com>
- <20191202172639.1c9ad544@gandalf.local.home>
+ <CAHC9VhTTS43aKQojtoBRRipP7TwhaVnK7DAqpFN0J0_FNLY+sw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191202172639.1c9ad544@gandalf.local.home>
+In-Reply-To: <CAHC9VhTTS43aKQojtoBRRipP7TwhaVnK7DAqpFN0J0_FNLY+sw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 05:26:39PM -0500, Steven Rostedt wrote:
-> On Mon, 2 Dec 2019 16:19:15 -0500
-> Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
+On Mon, Dec 02, 2019 at 06:24:29PM -0500, Paul Moore wrote:
+> On Mon, Dec 2, 2019 at 4:19 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 > > Good idea to CC the following on RCU patches:
 > > Paul McKenney
 > > Steven Rostedt
+> > (Any others on the RCU maintainers list).
+> > And, the list: rcu@vger.kernel.org
+> >
+> > Could anyone Ack the patch? Looks safe and straight forward.
 > 
-> I'm fine with this if it doesn't cause any rcu splats with sparse. Not
-> sure if use cases of RCU requires RCU maintainers Cc'd. Although we can
-> usually keep people from misusing it ;-)
+> FWIW, this looks reasonable to me, but I don't see this as a critical
+> fix that needs to go in during the merge window.  Unless I see any
+> objections, I'll plan on merging this into audit/next once the merge
+> window closes.
 
-Yes true :) Thanks for taking a look.
+Sounds good, thanks!
 
  - Joel
 
-> 
-> -- Steve
-> 
-> 
-> > (Any others on the RCU maintainers list).
-> > And, the list: rcu@vger.kernel.org
-> > 
-> > Could anyone Ack the patch? Looks safe and straight forward.
-> > 
+
 > > On Mon, Dec 02, 2019 at 12:03:48AM +0530, Amol Grover wrote:
 > > > Add __rcu annotation to RCU-protected global pointer auditd_conn.
-> > > 
+> > >
 > > > auditd_conn is an RCU-protected global pointer,i.e., accessed
 > > > via RCU methods rcu_dereference() and rcu_assign_pointer(),
 > > > hence it must be annotated with __rcu for sparse to report
 > > > warnings/errors correctly.
-> > > 
+> > >
 > > > Fix multiple instances of the sparse error:
 > > > error: incompatible types in comparison expression
 > > > (different address spaces)
-> > > 
+> > >
 > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > > > Signed-off-by: Amol Grover <frextrite@gmail.com>
 > > > ---
 > > > v3:
 > > > - update changelog to be more descriptive
-> > > 
+> > >
 > > > v2:
 > > > - fix erroneous RCU pointer initialization
-> > >  
+> > >
 > > >  kernel/audit.c | 5 +++--
 > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
+> > >
 > > > diff --git a/kernel/audit.c b/kernel/audit.c
 > > > index da8dc0db5bd3..ff7cfc61f53d 100644
 > > > --- a/kernel/audit.c
@@ -135,17 +128,22 @@ Yes true :) Thanks for taking a look.
 > > >   */
 > > > -static struct auditd_connection {
 > > > +struct auditd_connection {
-> > >  	struct pid *pid;
-> > >  	u32 portid;
-> > >  	struct net *net;
-> > >  	struct rcu_head rcu;
+> > >       struct pid *pid;
+> > >       u32 portid;
+> > >       struct net *net;
+> > >       struct rcu_head rcu;
 > > > -} *auditd_conn = NULL;
 > > > +};
 > > > +static struct auditd_connection __rcu *auditd_conn;
 > > >  static DEFINE_SPINLOCK(auditd_conn_lock);
-> > >  
+> > >
 > > >  /* If audit_rate_limit is non-zero, limit the rate of sending audit records
-> > > -- 
+> > > --
 > > > 2.24.0
-> > >   
+> > >
 > 
+> 
+> 
+> --
+> paul moore
+> www.paul-moore.com
