@@ -1,149 +1,189 @@
-Return-Path: <SRS0=leIl=ZY=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=TREb=ZZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE135C432C0
-	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:35:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E143C43215
+	for <rcu@archiver.kernel.org>; Tue,  3 Dec 2019 00:33:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FA0D206E1
-	for <rcu@archiver.kernel.org>; Mon,  2 Dec 2019 23:35:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 616B2206F0
+	for <rcu@archiver.kernel.org>; Tue,  3 Dec 2019 00:33:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="hRuf95R5"
+	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="FSQPX8B1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbfLBXfB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Dec 2019 18:35:01 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:44428 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbfLBXfB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Dec 2019 18:35:01 -0500
-Received: by mail-pj1-f65.google.com with SMTP id w5so553776pjh.11
-        for <rcu@vger.kernel.org>; Mon, 02 Dec 2019 15:35:00 -0800 (PST)
+        id S1725874AbfLCAdA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Dec 2019 19:33:00 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:41101 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbfLCAdA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Dec 2019 19:33:00 -0500
+Received: by mail-lf1-f68.google.com with SMTP id m30so1374591lfp.8
+        for <rcu@vger.kernel.org>; Mon, 02 Dec 2019 16:32:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NqtaB9MKOQhSliHwumWMYNqfR+eF1LGGZAxjF3ljDPg=;
-        b=hRuf95R5Q6W5esJSAoe7/lzgpx0Qx+VAvNE1tzQ0cBJ4fEhgxAIRCF1FrGjy7QIa39
-         BqZ7RMIsqyVEki1+/pZIUo3SXoEWrgnGK4poCpb1GtfT1a1AtuQWRBwlBemwyCB3eS9x
-         6A46kaANsw1PWgvxCCt3gUZeNPfJkb0t7JDrA=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fCug3Ppc9thpxmAFLjDKLldHZMpAgrzJKJFYoBGj+c8=;
+        b=FSQPX8B16jV7y74bf+KYgX9sBkewBdA5TmeUx3igCbcPHRfcWnz9E6/HF5mIaiNtYK
+         Kc5ZbptClIYnfw6qg+KDcCLrkJjMaJPb6O0qk7YQF2BSv9DSKimjEv4vw84gVuFTGaS7
+         nnP39IrTBN+4dl4hfg4HxvkshPbPrJfGsWnc/j/Jhbsn8Vtvltjknkzhod961is8g+W+
+         iMSXx/cNvhrOt7ekJyDF3ssLBB5MyjBYNzNoLVk7/nKQ2Kpm4Kz+KxEjxEp7leGfePGE
+         mN6PyLRyriKey41IoHP1KGTPZV2TIbdhdGv8t9bjq9J/4cEU0M/QkbB+TYWjDPyAyYdn
+         IUlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NqtaB9MKOQhSliHwumWMYNqfR+eF1LGGZAxjF3ljDPg=;
-        b=djHh51OtT1Mp10oIn2XDop67MFnpkDmtL0lkmmwVS9NvDUgLSCJgYUQ/cdbvhuYsOa
-         /XoWzuFSUK4RplfbMqJAFiltl+iDMn6Uyc/SCaNs3R4BCVaIo0wAwDdXmgMgWdedX6nn
-         zIBAnQJM0RRhObouHXIKzbNyBargDCDw0fbDv2OPjd2QCPzTbM+29xDrrYg0IjYCdZO0
-         I+GwDyKzBC1VwSxjUlRJ4/qFFW5tzs0Ueu4cBfKFJVQCy+ub3MIc018FddvVFqKXvQbi
-         hep9zE5gWPA/Eo1OgoxWlrWcyuhHqt2Wpa5D5qc+mbAX8A9hqkyPVwSnLyBlzJVVJGqQ
-         yG3w==
-X-Gm-Message-State: APjAAAUfyKdJqE3eCTzLbRCUzBNgz6KjFHvwUkke9Tn8aL3iDCX9xgPp
-        onCWmqT8kxQWyRuV0+er60b7SA==
-X-Google-Smtp-Source: APXvYqwi12259yJbqYXkvJ9Obbu0PA3rzoi2KUWw1tLwRCP44TS0LXGWkJD+SD/WZ0yQglnk8HAcNA==
-X-Received: by 2002:a17:902:b20c:: with SMTP id t12mr1790521plr.191.1575329700251;
-        Mon, 02 Dec 2019 15:35:00 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h9sm596572pfo.139.2019.12.02.15.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 15:34:59 -0800 (PST)
-Date:   Mon, 2 Dec 2019 18:34:58 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Amol Grover <frextrite@gmail.com>, Eric Paris <eparis@redhat.com>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>, paulmck@kernel.org,
-        rcu@vger.kernel.org, rostedt@kernel.org
-Subject: Re: [PATCH v3] kernel: audit.c: Add __rcu annotation to RCU pointer
-Message-ID: <20191202233458.GN17234@google.com>
-References: <20191201183347.18122-1-frextrite@gmail.com>
- <20191202211915.GF17234@google.com>
- <CAHC9VhTTS43aKQojtoBRRipP7TwhaVnK7DAqpFN0J0_FNLY+sw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fCug3Ppc9thpxmAFLjDKLldHZMpAgrzJKJFYoBGj+c8=;
+        b=NSDMGojLV+Bro3dvvBe27SpgT8bwqLh4ZD5AlYl0sJ7OcpkofUPukwZWU978YdVmBn
+         X+KJAX1phF0OSNZNs/mqgILpTjGvWicF2eXEaxuVZQkd907DLpwHWYF1czOkC8lp6Ktv
+         e+YuT7Hu3QMMn3Oyy7rxIcosZVicXF774w90YvNe+MPcrPb3nE1uKBWK58HnJCLgZPyv
+         oc4Dsd2+hkJRSTz/rsgjf0Mr0E14YMXczCPHR9UbxLcdhcf5Ejj8mezLRbLOkj/J/NNf
+         nwUamqyyDv5eEzx9vVt55sVRwSRu+n+GlYqKN/Ji9PrALuiGY8jKZa3GK3jgx3F8hOnh
+         wGzQ==
+X-Gm-Message-State: APjAAAVvS4gJ3eISPYVyyXQGK3zsaC7aN9gXMgLaY13uzDj2rCZLHRZI
+        UOtwjPSRfU0pb3uC+SKefLdNRv4T4hFK8BLZgaOg
+X-Google-Smtp-Source: APXvYqzCArUpnJaRFf28mIWkJFV4CgAXhfssQ8Owlv2fld+XKT+wH71zxjQ2cyb07A3Szc6YgoXGv2pwwtsau7CvTGw=
+X-Received: by 2002:a19:6553:: with SMTP id c19mr996691lfj.158.1575333177019;
+ Mon, 02 Dec 2019 16:32:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhTTS43aKQojtoBRRipP7TwhaVnK7DAqpFN0J0_FNLY+sw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191122093306.17335-1-jeffv@google.com>
+In-Reply-To: <20191122093306.17335-1-jeffv@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 2 Dec 2019 19:32:45 -0500
+Message-ID: <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
+Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
+To:     Jeff Vander Stoep <jeffv@google.com>
+Cc:     selinux@vger.kernel.org, omosnace@redhat.com,
+        Stephen Smalley <sds@tycho.nsa.gov>, will@kernel.org,
+        paulmck@kernel.org, rcu@vger.kernel.org,
+        Jovana Knezevic <jovanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 06:24:29PM -0500, Paul Moore wrote:
-> On Mon, Dec 2, 2019 at 4:19 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > Good idea to CC the following on RCU patches:
-> > Paul McKenney
-> > Steven Rostedt
-> > (Any others on the RCU maintainers list).
-> > And, the list: rcu@vger.kernel.org
-> >
-> > Could anyone Ack the patch? Looks safe and straight forward.
-> 
-> FWIW, this looks reasonable to me, but I don't see this as a critical
-> fix that needs to go in during the merge window.  Unless I see any
-> objections, I'll plan on merging this into audit/next once the merge
-> window closes.
+On Fri, Nov 22, 2019 at 4:33 AM Jeff Vander Stoep <jeffv@google.com> wrote:
+> This replaces the reverse table lookup and reverse cache with a
+> hashtable which improves cache-miss reverse-lookup times from
+> O(n) to O(1)* and maintains the same performance as a reverse
+> cache hit.
+>
+> This reduces the time needed to add a new sidtab entry from ~500us
+> to 5us on a Pixel 3 when there are ~10,000 sidtab entries.
+>
+> The implementation uses the kernel's generic hashtable API,
+> It uses the context's string represtation as the hash source,
+> and the kernels generic string hashing algorithm full_name_hash()
+> to reduce the string to a 32 bit value.
+>
+> This change also maintains the improvement introduced in
+> commit ee1a84fdfeed ("selinux: overhaul sidtab to fix bug and improve
+> performance") which removed the need to keep the current sidtab
+> locked during policy reload. It does however introduce periodic
+> locking of the target sidtab while converting the hashtable. Sidtab
+> entries are never modified or removed, so the context struct stored
+> in the sid_to_context tree can also be used for the context_to_sid
+> hashtable to reduce memory usage.
+>
+> This bug was reported by:
+> - On the selinux bug tracker.
+>   BUG: kernel softlockup due to too many SIDs/contexts #37
+>   https://github.com/SELinuxProject/selinux-kernel/issues/37
+> - Jovana Knezevic on Android's bugtracker.
+>   Bug: 140252993
+>   "During multi-user performance testing, we create and remove users
+>   many times. selinux_android_restorecon_pkgdir goes from 1ms to over
+>   20ms after about 200 user creations and removals. Accumulated over
+>   ~280 packages, that adds a significant time to user creation,
+>   making perf benchmarks unreliable."
+>
+> * Hashtable lookup is only O(1) when n < the number of buckets.
+>
+> Changes in V2:
+> -The hashtable uses sidtab_entry_leaf objects directly so these
+> objects are shared between the sid_to_context lookup tree and the
+> context_to_sid hashtable. This simplifies memory allocation and
+> was suggested by Ondrej Mosnacek.
+> -The new sidtab hash stats file in selinuxfs has been moved out of
+> the avc dir and into a new "ss" dir.
+>
+> V3:
+> -Add lock nesting notation.
+>
+> V4/V5:
+> -Moved to *_rcu variants of the various hashtable functions
+> as suggested by Will Deacon.
+> -Naming/spelling fixups.
+>
+> V6
+> -Remove nested locking. Use lock of active sidtab to gate
+> access to the new sidtab.
+> -Remove use of rcu_head/kfree_rcu(), they're unnecessary because
+> hashtable objects are never removed when read/add operations are
+> occurring. Why is this safe? Quoting Ondrej Mosnacek from the
+> selinux mailing list:
+> "It is not visible in this patch, but the sidtab (along with other
+> policy-lifetime structures) is protected by a big fat read-write lock.
+> The only places where sidtab_destroy() is called are (a) error paths
+> when initializing a new sidtab (here the sidtab isn't shared yet, so
+> no race) and (b) when freeing the old sidtab during policy reload - in
+> this case it is happening after a policy write-locked critical
+> section, which had removed the old sidtab pointer from the shared
+> structures, so at that point all sidtab readers will already be
+> accessing the new sidtab and the old one is visible only by the thread
+> doing the destruction."
+>
+> V7
+> -Change format of /sys/fs/selinux/ss/sidtab_hash_stats to match
+> /sys/fs/selinux/avc/hash_stats.
+> -Add __rcu annotation to rcu pointers.
+> -Test with CONFIG_SPARSE_RCU_POINTER and CONFIG_PROVE_RCU.
+> -Add rcu@vger.kernel.org and Paul McKenney to Cc for review of the
+> RCU logic.
+>
+> V8
+> -Removed the __rcu annotation used in V7. The annotation is
+> intended to be applied to pointers to an object, however the
+> objects referenced in the rcu hashtable are allocated in an
+> array.
+> -Fixed bug where multiple SIDs were receiving the same hash
+> due to security_get_user_sids() reusing the same context
+> struct without calling context_init() on it. This bug was
+> discovered and root-caused by Stephen Smalley.
+>
+> V9
+> -Do not compute the hash in string_to_context_struct
+> because this string representation is non-canonical.
+>
+> Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
+> Reported-by: Stephen Smalley <sds@tycho.nsa.gov>
+> Reported-by: Jovana Knezevic <jovanak@google.com>
+> ---
+>  security/selinux/Kconfig            |  12 ++
+>  security/selinux/include/security.h |   1 +
+>  security/selinux/selinuxfs.c        |  65 +++++++
+>  security/selinux/ss/context.h       |  11 +-
+>  security/selinux/ss/policydb.c      |   5 +
+>  security/selinux/ss/services.c      |  96 +++++++---
+>  security/selinux/ss/services.h      |   4 +-
+>  security/selinux/ss/sidtab.c        | 263 ++++++++++++++--------------
+>  security/selinux/ss/sidtab.h        |  16 +-
+>  9 files changed, 306 insertions(+), 167 deletions(-)
 
-Sounds good, thanks!
+Thanks Jeff, as well as everyone else who contributed reviews and feedback.
 
- - Joel
+I've pulled this into a working branch and I'll be merging it with the
+other sidtab patches before posting it to a "next-queue" branch for
+review later this week.  When done, I'll send a note to the list, as
+well as the relevant patch authors; your help in reviewing the merge
+would be greatly appreciated.
 
-
-> > On Mon, Dec 02, 2019 at 12:03:48AM +0530, Amol Grover wrote:
-> > > Add __rcu annotation to RCU-protected global pointer auditd_conn.
-> > >
-> > > auditd_conn is an RCU-protected global pointer,i.e., accessed
-> > > via RCU methods rcu_dereference() and rcu_assign_pointer(),
-> > > hence it must be annotated with __rcu for sparse to report
-> > > warnings/errors correctly.
-> > >
-> > > Fix multiple instances of the sparse error:
-> > > error: incompatible types in comparison expression
-> > > (different address spaces)
-> > >
-> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > Signed-off-by: Amol Grover <frextrite@gmail.com>
-> > > ---
-> > > v3:
-> > > - update changelog to be more descriptive
-> > >
-> > > v2:
-> > > - fix erroneous RCU pointer initialization
-> > >
-> > >  kernel/audit.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/audit.c b/kernel/audit.c
-> > > index da8dc0db5bd3..ff7cfc61f53d 100644
-> > > --- a/kernel/audit.c
-> > > +++ b/kernel/audit.c
-> > > @@ -102,12 +102,13 @@ struct audit_net {
-> > >   * This struct is RCU protected; you must either hold the RCU lock for reading
-> > >   * or the associated spinlock for writing.
-> > >   */
-> > > -static struct auditd_connection {
-> > > +struct auditd_connection {
-> > >       struct pid *pid;
-> > >       u32 portid;
-> > >       struct net *net;
-> > >       struct rcu_head rcu;
-> > > -} *auditd_conn = NULL;
-> > > +};
-> > > +static struct auditd_connection __rcu *auditd_conn;
-> > >  static DEFINE_SPINLOCK(auditd_conn_lock);
-> > >
-> > >  /* If audit_rate_limit is non-zero, limit the rate of sending audit records
-> > > --
-> > > 2.24.0
-> > >
-> 
-> 
-> 
-> --
-> paul moore
-> www.paul-moore.com
+-- 
+paul moore
+www.paul-moore.com
