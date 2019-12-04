@@ -2,114 +2,115 @@ Return-Path: <SRS0=BzNy=Z2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3C3BC43603
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 17:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89CA8C43603
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 20:19:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 768D820803
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 17:44:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56F3F21823
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 20:19:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kZJJDJE+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZ4USlEM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbfLDRou (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Dec 2019 12:44:50 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36341 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbfLDRou (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Dec 2019 12:44:50 -0500
-Received: by mail-pf1-f193.google.com with SMTP id b19so201440pfd.3
-        for <rcu@vger.kernel.org>; Wed, 04 Dec 2019 09:44:49 -0800 (PST)
+        id S1727887AbfLDUTS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Dec 2019 15:19:18 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46014 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbfLDUTS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Dec 2019 15:19:18 -0500
+Received: by mail-pl1-f193.google.com with SMTP id w7so175241plz.12;
+        Wed, 04 Dec 2019 12:19:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F9Qa6Puv7ezBDFINsGITxUb0gdMtfeyJWNm86YFTPaA=;
-        b=kZJJDJE+eSZPXPBjvuRAiamWZtJg0meXDZiJSBQ/OgKPdYcV/vRtTi+g2tm2BMxS4S
-         yBq0QCAF+CWwh5KNJGF5NjXTm2avaYTBI4IJU0omAS7KBFBoripTGSJ1wTpU9lLGF425
-         P7R5G6u4RTAHq59GpetEHVthgwzineIep1X3E=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
+        b=GZ4USlEMGXv34THmiUPdaunV9mU1mXLwjquzOhYT1UTMPxHQXdwfl8TSoecTFZNaLm
+         4gM1RC87AWfGad075jZwJvO8b9Yfm2KDvrnt5mqrmxh4cziVMfaEQBKEZ/0AybZ/xXoz
+         YS2Mfgigc4PcZCQvBCgFFDbxnIj2X2wAh/xCfEH1gdYUlsK+LB1CCoofz+d/jHqQJapf
+         PSpmyHGUncjfB2tcWDiMGG4OP0iI818+PbMGW2MxVg4MIOnTEdaTSctO7ri2XtS2L3JH
+         CHxnyvqr5Q67K1kOmvFRw4AFYG4Y8KSa7KzryXc0iaO7CoEPJC06vXsOsV6+cF/Vys/6
+         0HnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F9Qa6Puv7ezBDFINsGITxUb0gdMtfeyJWNm86YFTPaA=;
-        b=hqQ00seUgJaXl8L9CSXGiqDv1SSUjcta6841Tl3ypvldjR5yD7obicohzQQUswcZkV
-         QizF7Z1LL2nsnb1asD9ZJpF5D9UzRcHSSfIZpy99asU3Ypag47GIkDzBI2eIHtZYcCc5
-         kJagFBjwoITTi79ilrF6eR1kE1nX+mLt9+Pz5fKY09TyFSOhGYOv8puE1S1rsfNYByBL
-         ETHNefHE77bAzIYeSkWeOArPNVRFjhm35s85Hz8xLAuSNj9XtCcrHAo7Z0I++H9iTP2s
-         S49mxoR95rMo+FFpKjAw0rEgUj2A67E1uCCEyciVCVh4fERRG3S/4qkTiqDWVQjcDOBJ
-         wJwg==
-X-Gm-Message-State: APjAAAXQNC3Gp0Mk4oM8dSYCjnOcPXRol8vf00xiJ3DsgTy8m7K9qmdB
-        xXwWhg9Q7NlR2Cqdw19TP7xTbA==
-X-Google-Smtp-Source: APXvYqwgcPT4G/249WAVQBUzpvpK20eSRwudnC4aE++PyedRE5c3ZYx0sSLwuLtcw8WjbZy5uVsoPA==
-X-Received: by 2002:a62:e817:: with SMTP id c23mr4358423pfi.24.1575481489391;
-        Wed, 04 Dec 2019 09:44:49 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id k4sm8512292pfa.25.2019.12.04.09.44.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
+        b=JooPbHXhDENfcvMgteyWBITjg5yWSgxtAcnD6jtkfrvUadnrBaSwJA3rZEpTLeGep1
+         u6nCPtByooDHRB3eW4QZ6HozKDBSZWIZ1+z+FGpMekppWuWg57p6j1LnBzw5UWRAF1O1
+         fiiQRFxR4QiNZwWgAcXk2yEunWNvsn16YD8lR2FdOq4oVH5TPKyIQZYF2if+NyrwsHqZ
+         7CgA0ZX42WdAcb8jj1oLIFDTp97lPGmtXeffGDIymMZXLobhaeqHiJoQcwJE1En4D7DY
+         6U0E5P7TBcRVkq/uD30Gp1gmdSSaE5nZukz7XmhTMff93Yge+QNNEYxJVv+2UzTZo1Ia
+         wB0g==
+X-Gm-Message-State: APjAAAUeLkUNhvCgJcwD/9762IbJ62P45qsOiv81ogtGSeVyBSTkWDRT
+        rs8sP1OXFEOav79MrYlf4yk=
+X-Google-Smtp-Source: APXvYqyym3aLJWp4bkO/UDgkjJGP80l8ErW34GumqKw5caVpvJNp1FIFrFHrA4GfR/q8GtM7lsaqFg==
+X-Received: by 2002:a17:90a:200d:: with SMTP id n13mr5388240pjc.16.1575490756959;
+        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:cdb:9473:3984:ab1:9b44:803])
+        by smtp.gmail.com with ESMTPSA id c2sm8882170pfn.55.2019.12.04.12.19.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2019 09:44:48 -0800 (PST)
-Date:   Wed, 4 Dec 2019 12:44:47 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     madhuparnabhowmik04@gmail.com
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] Include: Linux: rculist_nulls: Add docbook comment
- headers
-Message-ID: <20191204174447.GE34402@google.com>
-References: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
+From:   madhuparnabhowmik04@gmail.com
+To:     clm@fb.com, josef@toxicpanda.com, paulmck@kernel.org,
+        joel@joelfernandes.org
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: [PATCH] fs: btrfs: volumes.h: Annotate rcu_string with __rcu
+Date:   Thu,  5 Dec 2019 01:49:01 +0530
+Message-Id: <20191204201901.22466-1-madhuparnabhowmik04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 05:33:57PM +0530, madhuparnabhowmik04@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> 
-> This patch adds docbook comment headers for hlist_nulls_first_rcu
-> and hlist_nulls_next_rcu in rculist_nulls.h.
-> 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-Thanks. Could you send this to the list? I'd like Paul to review or apply
-this one.
+This patch fixes the following sparse errors in
+fs/btrfs/super.c in function btrfs_show_devname()
 
- - Joel
+fs/btrfs/super.c: error: incompatible types in comparison expression (different address spaces):
+fs/btrfs/super.c:    struct rcu_string [noderef] <asn:4> *
+fs/btrfs/super.c:    struct rcu_string *
 
-> ---
->  include/linux/rculist_nulls.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-> index 517a06f36c7a..d796ef18ec52 100644
-> --- a/include/linux/rculist_nulls.h
-> +++ b/include/linux/rculist_nulls.h
-> @@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
->  	}
->  }
->  
-> +/**
-> + * hlist_nulls_first_rcu - returns the first element of the hash list.
-> + * @head: the head for your list.
-> + */
->  #define hlist_nulls_first_rcu(head) \
->  	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
->  
-> +/**
-> + * hlist_nulls_next_rcu - returns the element of the list next to @node.
-> + * @node: Element of the list.
-> + */
->  #define hlist_nulls_next_rcu(node) \
->  	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
->  
-> -- 
-> 2.17.1
-> 
+The error was because of the following line in function btrfs_show_devname():
+
+if (first_dev)
+       seq_escape(m, rcu_str_deref(first_dev->name), " \t\n\\");
+
+rcu_str_deref is defined in fs/btrfs/rcu-string.h
+
+And first_dev is of type struct btrfs_device.
+
+struct btrfs_device is defined in fs/btrfs/volumes.h
+
+Annotating the member  "struct rcu_string *name "  of struct btrfs_device
+with __rcu fixes the sparse error.
+
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+---
+ fs/btrfs/volumes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index a7da1f3e3627..de7131ee604d 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -64,7 +64,7 @@ struct btrfs_device {
+ 	struct btrfs_fs_devices *fs_devices;
+ 	struct btrfs_fs_info *fs_info;
+ 
+-	struct rcu_string *name;
++	struct rcu_string __rcu *name;
+ 
+ 	u64 generation;
+ 
+-- 
+2.17.1
+
