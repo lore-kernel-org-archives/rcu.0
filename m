@@ -2,219 +2,115 @@ Return-Path: <SRS0=BzNy=Z2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DABDFC43603
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8623DC43603
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:52:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 99FE32073C
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575501946;
-	bh=h9iE1L4oSigLlIJOvTFavcHoI+dJQyu6qEDxeGSyg6A=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=FbvEmjEu0t6tBa7n9OjTfTwYiNENLgEL2Szc/ZR/nRUZe6rEK7hM3AO8VQhUcDiTP
-	 9UA3X+AblLi1GBikaOWAE6XSLAuXnELP1fWQ32AJoEK05wZ9n6MA5o2gAlwbdBMNSz
-	 sXmc0K7JJRbUH10f62A5P63V28G6WOzLKZb9Jhhs=
+	by mail.kernel.org (Postfix) with ESMTP id 5507A2077B
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:52:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="UyR9JWeB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbfLDXZq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Dec 2019 18:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727116AbfLDXZq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Dec 2019 18:25:46 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 644A6206DF;
-        Wed,  4 Dec 2019 23:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575501944;
-        bh=h9iE1L4oSigLlIJOvTFavcHoI+dJQyu6qEDxeGSyg6A=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=fhqDWyZ8aDrj9EK2orxvp+WjgfLj27MhkHCIe28T7kl7FGfTvyky2+8ByDVtLDy2s
-         Tiu6f752p4jUS3xYeMAIRKNMG2CPEkyYLuyrASUNXIXxAKDR/rRLhThvcPqM1Bo8XD
-         fKK/ZP/czxaERj7n+pNnhUQC2dcbtohwtAmrzHck=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2DA8135227BE; Wed,  4 Dec 2019 15:25:44 -0800 (PST)
-Date:   Wed, 4 Dec 2019 15:25:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu] Enable tick for nohz_full CPUs not responding
- to expedited GP
-Message-ID: <20191204232544.GA17061@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1728060AbfLDXwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Dec 2019 18:52:35 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45265 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728100AbfLDXwe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Dec 2019 18:52:34 -0500
+Received: by mail-lj1-f195.google.com with SMTP id d20so1287584ljc.12
+        for <rcu@vger.kernel.org>; Wed, 04 Dec 2019 15:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BgY37x/+7Cql9NNZG79hPhxCQjhuFiHviwcms4LCaiM=;
+        b=UyR9JWeB9nrCzdLV2qA4dvotgBdtU8xShtqsd77nv/IRUQLcA7GyHe+DlMZmP0BWfS
+         soHdg6DlaDpqiq3n4hNv5bo39scYknTSYYjpOgJB+23tKJGgxODHrrQrxavcDa0qinhy
+         ne6IViJAWrUByRqpbZbHZjNaGDOB45pNjKDoBhqrDp97nK2bSAaBK+AmfM0Bx8PP+a6t
+         MUZuqT+GsVCls9CgX7zLFRXh6mdcyyiuK95A6K0EHUXXgI5siHN6g9/W6b7PPShH3m+S
+         hyBHVgtvi0z6/vGEjq9A04cTjoqb0lpvhFn3pRoSpM0w+a8Ko62l39IcL/Q8naGiVjDa
+         UGMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BgY37x/+7Cql9NNZG79hPhxCQjhuFiHviwcms4LCaiM=;
+        b=FilmByZrvKukTF7MQTgLkQqyl4OP9GaRr0oNUYfXFjZgyjJ0ICwqVOoBDMPMBw7K4/
+         mcT5VKu6Y6fS0WJRqJ8Ycv4XtvsgqSHI0hPsyiumvP+/VA+t44ocmxxk9ZHQCYLQmJYI
+         VSrE8DG66vLhhKTJCOJF8FXlSN0xzkfpkH2JCaOpwHAgK3zwjqQFi1qYXw54Ld2RbpaG
+         GmVrl7oJwccFMkZrZayZ1x/Lq4StDsnebI/afwHfiyPbtQ8m25Qt4wvOP4Nar8gKUtfC
+         c5NHNiEu6C8EAYLEOaQIr2miKgGhVVEnujdTTwXi5pjNFmYXGRHAHXivCjEucTyvHAx+
+         3Dyw==
+X-Gm-Message-State: APjAAAWZ3YiEgSM8CU1V2DJPvmUQu7QPknUTOQ+C2bctm7suOGuAolMW
+        sgN3RNC8s7rXBCqePm3kx9nCBWZGDRglQMeEKMg6
+X-Google-Smtp-Source: APXvYqwWgpKbHYRC+2VdIQJLVcuDlKqBe+8g7wH4TyCAyQQ/homvy4q0HI54Q3UL8Bh+GTmuJpRjD8QIR446kh5G35U=
+X-Received: by 2002:a2e:9d9a:: with SMTP id c26mr3670252ljj.225.1575503552423;
+ Wed, 04 Dec 2019 15:52:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
+ <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
+In-Reply-To: <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 4 Dec 2019 18:52:21 -0500
+Message-ID: <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
+Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Jeff Vander Stoep <jeffv@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Jovana Knezevic <jovanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rcu: Enable tick for nohz_full CPUs slow to provide expedited QS
+On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
+> > Thanks Jeff, as well as everyone else who contributed reviews and feedback.
+> >
+> > I've pulled this into a working branch and I'll be merging it with the
+> > other sidtab patches before posting it to a "next-queue" branch for
+> > review later this week.  When done, I'll send a note to the list, as
+> > well as the relevant patch authors; your help in reviewing the merge
+> > would be greatly appreciated.
+>
+> I tried doing the merge on my own here [1], you can use it as a sanity
+> check if we came to the same/similar result. I based it off your
+> existing next-queue, which contains only Jeff's patch at the time of
+> writing. I only build-tested it so far.
 
-An expedited grace period can be stalled by a nohz_full CPU looping
-in kernel context.  This possibility is currently handled by some
-carefully crafted checks in rcu_read_unlock_special() that enlist help
-from ksoftirqd when permitted by the scheduler.  However, it is exactly
-these checks that require the scheduler avoid holding any of its rq or
-pi locks across rcu_read_unlock() without also having held them across
-the entire RCU read-side critical section.
+Thanks, that was a good sanity check.  There are some minor diffs from
+what I ended up with, but nothing substantive that I can see.
 
-It would therefore be very nice if expedited grace periods could
-handle nohz_full CPUs looping in kernel context without such checks.
-This commit therefore adds code to the expedited grace period's wait
-and cleanup code that forces the scheduler-clock interrupt on for CPUs
-that fail to quickly supply a quiescent state.  "Quickly" is currently
-a hard-coded single-jiffy delay.
+Although I'll be honest, the merge wasn't as bad as I thought it would
+be; most of the fuzz was simply due shuffling and renaming of data
+structures, which generally isn't too bad.  Although I'm still
+building the kernel to test it, so let's see if that statement still
+holds (although it looks like it passed Stephen's testing). ;)
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+If you haven't noticed already, the merge currently lives in the
+selinux/next-queue branch; if you notice anything off, feel free to
+send a fixup patch.
 
----
+> Note that there are two whitespace cleanups included in the string
+> cache commit that I intuitively did while resolving the merge
+> conflicts. You might want to move those to the first commit or just
+> ignore them.
 
-This is needed to avoid rcu_read_unlock_special() needing to enter
-the scheduler for the benefit of expedited grace periods on nohz_full
-CPUs, thus enabling more of Lai Jiangshan's patchset.
+When looking at the combined diff between the two sidtab patches and
+comparing it to your merge I did make a few additional small cosmetic
+tweaks.  Assuming the testing goes well, I'll probably go over
+everything one more time to make sure the style looks okay, but today
+I was focusing more on the correctness.
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index 4ed788c..72a2a21 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -109,9 +109,10 @@ enum tick_dep_bits {
- 	TICK_DEP_BIT_PERF_EVENTS	= 1,
- 	TICK_DEP_BIT_SCHED		= 2,
- 	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
--	TICK_DEP_BIT_RCU		= 4
-+	TICK_DEP_BIT_RCU		= 4,
-+	TICK_DEP_BIT_RCU_EXP		= 5
- };
--#define TICK_DEP_BIT_MAX TICK_DEP_BIT_RCU
-+#define TICK_DEP_BIT_MAX TICK_DEP_BIT_RCU_EXP
- 
- #define TICK_DEP_MASK_NONE		0
- #define TICK_DEP_MASK_POSIX_TIMER	(1 << TICK_DEP_BIT_POSIX_TIMER)
-@@ -119,6 +120,7 @@ enum tick_dep_bits {
- #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
- #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
- #define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
-+#define TICK_DEP_MASK_RCU_EXP		(1 << TICK_DEP_BIT_RCU_EXP)
- 
- #ifdef CONFIG_NO_HZ_COMMON
- extern bool tick_nohz_enabled;
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 634c1db..0c87e4c 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -181,6 +181,7 @@ struct rcu_data {
- 	bool rcu_need_heavy_qs;		/* GP old, so heavy quiescent state! */
- 	bool rcu_urgent_qs;		/* GP old need light quiescent state. */
- 	bool rcu_forced_tick;		/* Forced tick to provide QS. */
-+	bool rcu_forced_tick_exp;	/*   ... provide QS to expedited GP. */
- #ifdef CONFIG_RCU_FAST_NO_HZ
- 	unsigned long last_accelerate;	/* Last jiffy CBs were accelerated. */
- 	unsigned long last_advance_all;	/* Last jiffy CBs were all advanced. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 726ba20..6935a9e 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -230,7 +230,9 @@ static void __maybe_unused rcu_report_exp_rnp(struct rcu_node *rnp, bool wake)
- static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
- 				    unsigned long mask, bool wake)
- {
-+	int cpu;
- 	unsigned long flags;
-+	struct rcu_data *rdp;
- 
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	if (!(rnp->expmask & mask)) {
-@@ -238,6 +240,13 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
- 		return;
- 	}
- 	WRITE_ONCE(rnp->expmask, rnp->expmask & ~mask);
-+	for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
-+		rdp = per_cpu_ptr(&rcu_data, cpu);
-+		if (!IS_ENABLED(CONFIG_NO_HZ_FULL) || !rdp->rcu_forced_tick_exp)
-+			continue;
-+		rdp->rcu_forced_tick_exp = false;
-+		tick_dep_clear_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+	}
- 	__rcu_report_exp_rnp(rnp, wake, flags); /* Releases rnp->lock. */
- }
- 
-@@ -450,6 +459,26 @@ static void sync_rcu_exp_select_cpus(void)
- }
- 
- /*
-+ * Wait for the expedited grace period to elapse, within time limit.
-+ * If the time limit is exceeded without the grace period elapsing,
-+ * return false, otherwise return true.
-+ */
-+static bool synchronize_rcu_expedited_wait_once(long tlimit)
-+{
-+	int t;
-+	struct rcu_node *rnp_root = rcu_get_root();
-+
-+	t = swait_event_timeout_exclusive(rcu_state.expedited_wq,
-+					  sync_rcu_exp_done_unlocked(rnp_root),
-+					  tlimit);
-+	// Workqueues should not be signaled.
-+	if (t > 0 || sync_rcu_exp_done_unlocked(rnp_root))
-+		return true;
-+	WARN_ON(t < 0);  /* workqueues should not be signaled. */
-+	return false;
-+}
-+
-+/*
-  * Wait for the expedited grace period to elapse, issuing any needed
-  * RCU CPU stall warnings along the way.
-  */
-@@ -460,22 +489,31 @@ static void synchronize_rcu_expedited_wait(void)
- 	unsigned long jiffies_start;
- 	unsigned long mask;
- 	int ndetected;
-+	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_root = rcu_get_root();
--	int ret;
- 
- 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
- 	jiffies_stall = rcu_jiffies_till_stall_check();
- 	jiffies_start = jiffies;
-+	if (IS_ENABLED(CONFIG_NO_HZ_FULL)) {
-+		if (synchronize_rcu_expedited_wait_once(1))
-+			return;
-+		rcu_for_each_leaf_node(rnp) {
-+			for_each_leaf_node_cpu_mask(rnp, cpu, rnp->expmask) {
-+				rdp = per_cpu_ptr(&rcu_data, cpu);
-+				if (rdp->rcu_forced_tick_exp)
-+					continue;
-+				rdp->rcu_forced_tick_exp = true;
-+				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+			}
-+		}
-+		WARN_ON_ONCE(1);
-+	}
- 
- 	for (;;) {
--		ret = swait_event_timeout_exclusive(
--				rcu_state.expedited_wq,
--				sync_rcu_exp_done_unlocked(rnp_root),
--				jiffies_stall);
--		if (ret > 0 || sync_rcu_exp_done_unlocked(rnp_root))
-+		if (synchronize_rcu_expedited_wait_once(jiffies_stall))
- 			return;
--		WARN_ON(ret < 0);  /* workqueues should not be signaled. */
- 		if (rcu_cpu_stall_suppress)
- 			continue;
- 		panic_on_rcu_stall();
+> [1] https://gitlab.com/omos/linux-public/compare/selinux-next...rebase-selinux-sidtab-string-cache
+
+-- 
+paul moore
+www.paul-moore.com
