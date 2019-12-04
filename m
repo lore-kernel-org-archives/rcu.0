@@ -2,109 +2,114 @@ Return-Path: <SRS0=BzNy=Z2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1ACC43603
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 16:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3C3BC43603
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 17:44:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E9752206DB
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 16:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 768D820803
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 17:44:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GlXe6Q9r"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kZJJDJE+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbfLDQfz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Dec 2019 11:35:55 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:47052 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbfLDQfz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Dec 2019 11:35:55 -0500
-Received: by mail-pl1-f196.google.com with SMTP id k20so3368086pll.13
-        for <rcu@vger.kernel.org>; Wed, 04 Dec 2019 08:35:55 -0800 (PST)
+        id S1728072AbfLDRou (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Dec 2019 12:44:50 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:36341 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbfLDRou (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Dec 2019 12:44:50 -0500
+Received: by mail-pf1-f193.google.com with SMTP id b19so201440pfd.3
+        for <rcu@vger.kernel.org>; Wed, 04 Dec 2019 09:44:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=bO5izEfxsUPUv8T5otbux6mtDyOWMJqdJNoSjjVgl/c=;
-        b=GlXe6Q9rSNMREEg0PMbYTSdbPIDnjfkSDLbQ3Wa7YGN7pXctZlof9E/0gZyGbNTNWR
-         n6Jstsi0ucPZoPRP3fosvInk887zFN+hVI3LHi321kOPXg9QwRyuyHgPaBEDXexEimDq
-         SPAyk4+8cW7fGFj648/w5ZunZiP8v+dteapA4=
+        bh=F9Qa6Puv7ezBDFINsGITxUb0gdMtfeyJWNm86YFTPaA=;
+        b=kZJJDJE+eSZPXPBjvuRAiamWZtJg0meXDZiJSBQ/OgKPdYcV/vRtTi+g2tm2BMxS4S
+         yBq0QCAF+CWwh5KNJGF5NjXTm2avaYTBI4IJU0omAS7KBFBoripTGSJ1wTpU9lLGF425
+         P7R5G6u4RTAHq59GpetEHVthgwzineIep1X3E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bO5izEfxsUPUv8T5otbux6mtDyOWMJqdJNoSjjVgl/c=;
-        b=IyhKSK9OUTQXnMsbhvTBoOG5RGVoDG2oM4r8wruGJHaBR5JP/S5yF0zzIp53VCO00t
-         qieEkYEWoDwvhL8RuKy9zXHmYFMzHVs3iuC9jw5GWJAvHWfx8KAUPeP10rKgfkSrk2Ko
-         waWYQN1UJk2KmGHPrsO3/icv3Q9yjbI6rMRq45n3XruYsauk6GIG9tF5G1W+a9G4KJmA
-         jDoyBgMY626MIz06sEUQ/gHms5MXZhhZGMqJWGy2yw9ki78KkyRHtjnDedP7BPNkA4bj
-         A4J6QEWiJLgETjL5MJVxkSKlWz5ZHLDjTP4XjFVkW4wrkSwKAh3P7LYdQhdGOaGDMlCv
-         O1mA==
-X-Gm-Message-State: APjAAAWyr6D9zfgYT92R/HBD0J0g3eolMddtVo55LvvhxN8p+qnMLE3o
-        VwK9pFlm7v2TBsvl2FGCZ6KCBA==
-X-Google-Smtp-Source: APXvYqxSGyLyUYiiS/+SHbLwAVTmQQ5XcWoLnPWBhsJAaT8jcO37+IiZ/iqNkU51/LPEF2rPVUPiBw==
-X-Received: by 2002:a17:902:8ec8:: with SMTP id x8mr4057799plo.119.1575477354677;
-        Wed, 04 Dec 2019 08:35:54 -0800 (PST)
+        bh=F9Qa6Puv7ezBDFINsGITxUb0gdMtfeyJWNm86YFTPaA=;
+        b=hqQ00seUgJaXl8L9CSXGiqDv1SSUjcta6841Tl3ypvldjR5yD7obicohzQQUswcZkV
+         QizF7Z1LL2nsnb1asD9ZJpF5D9UzRcHSSfIZpy99asU3Ypag47GIkDzBI2eIHtZYcCc5
+         kJagFBjwoITTi79ilrF6eR1kE1nX+mLt9+Pz5fKY09TyFSOhGYOv8puE1S1rsfNYByBL
+         ETHNefHE77bAzIYeSkWeOArPNVRFjhm35s85Hz8xLAuSNj9XtCcrHAo7Z0I++H9iTP2s
+         S49mxoR95rMo+FFpKjAw0rEgUj2A67E1uCCEyciVCVh4fERRG3S/4qkTiqDWVQjcDOBJ
+         wJwg==
+X-Gm-Message-State: APjAAAXQNC3Gp0Mk4oM8dSYCjnOcPXRol8vf00xiJ3DsgTy8m7K9qmdB
+        xXwWhg9Q7NlR2Cqdw19TP7xTbA==
+X-Google-Smtp-Source: APXvYqwgcPT4G/249WAVQBUzpvpK20eSRwudnC4aE++PyedRE5c3ZYx0sSLwuLtcw8WjbZy5uVsoPA==
+X-Received: by 2002:a62:e817:: with SMTP id c23mr4358423pfi.24.1575481489391;
+        Wed, 04 Dec 2019 09:44:49 -0800 (PST)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id k4sm1427100pfk.11.2019.12.04.08.35.53
+        by smtp.gmail.com with ESMTPSA id k4sm8512292pfa.25.2019.12.04.09.44.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2019 08:35:53 -0800 (PST)
-Date:   Wed, 4 Dec 2019 11:35:52 -0500
+        Wed, 04 Dec 2019 09:44:48 -0800 (PST)
+Date:   Wed, 4 Dec 2019 12:44:47 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Amol Grover <frextrite@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: Re: [PATCH] doc: listRCU: Add some more listRCU patterns in the
- kernel
-Message-ID: <20191204163552.GE17404@google.com>
-References: <20191203063941.6981-1-frextrite@gmail.com>
- <20191203064132.38d75348@lwn.net>
- <20191204082412.GA6959@workstation-kernel-dev>
- <20191204074833.44bcc079@lwn.net>
- <20191204153958.GA17404@google.com>
- <20191204084729.184480f3@lwn.net>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Include: Linux: rculist_nulls: Add docbook comment
+ headers
+Message-ID: <20191204174447.GE34402@google.com>
+References: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191204084729.184480f3@lwn.net>
+In-Reply-To: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 08:47:29AM -0700, Jonathan Corbet wrote:
-> On Wed, 4 Dec 2019 10:39:58 -0500
-> Joel Fernandes <joel@joelfernandes.org> wrote:
+On Wed, Dec 04, 2019 at 05:33:57PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 > 
-> > Actually I had asked Amol privately to add the backticks. It appeared
-> > super weird in my browser when some function calls were rendered
-> > monospace while others weren't. Not all functions were successfully
-> > cross referenced for me. May be it is my kernel version?
+> This patch adds docbook comment headers for hlist_nulls_first_rcu
+> and hlist_nulls_next_rcu in rculist_nulls.h.
 > 
-> If you have an example of a failure to cross-reference a function that
-> has kerneldoc comments *that are included in the toctree*, I'd like to see
-> it; that's a bug.
-> 
-> Changing the font on functions without anything to cross-reference to is
-> easy enough and should probably be done; I'll look into it when I get a
-> chance.
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-I tried on a different machine (my work machine) and the cross-referencing is
-working fine. So I am not sure if this could be something related to Sphinx
-version or I had used an older kernel tree before. This kernel tree is
-Linus's master.
-
-thanks,
+Thanks. Could you send this to the list? I'd like Paul to review or apply
+this one.
 
  - Joel
 
+> ---
+>  include/linux/rculist_nulls.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> index 517a06f36c7a..d796ef18ec52 100644
+> --- a/include/linux/rculist_nulls.h
+> +++ b/include/linux/rculist_nulls.h
+> @@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+>  	}
+>  }
+>  
+> +/**
+> + * hlist_nulls_first_rcu - returns the first element of the hash list.
+> + * @head: the head for your list.
+> + */
+>  #define hlist_nulls_first_rcu(head) \
+>  	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
+>  
+> +/**
+> + * hlist_nulls_next_rcu - returns the element of the list next to @node.
+> + * @node: Element of the list.
+> + */
+>  #define hlist_nulls_next_rcu(node) \
+>  	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
+>  
+> -- 
+> 2.17.1
+> 
