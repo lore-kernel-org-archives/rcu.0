@@ -2,115 +2,219 @@ Return-Path: <SRS0=BzNy=Z2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89CA8C43603
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 20:19:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DABDFC43603
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:25:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 56F3F21823
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 20:19:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZ4USlEM"
+	by mail.kernel.org (Postfix) with ESMTP id 99FE32073C
+	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575501946;
+	bh=h9iE1L4oSigLlIJOvTFavcHoI+dJQyu6qEDxeGSyg6A=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=FbvEmjEu0t6tBa7n9OjTfTwYiNENLgEL2Szc/ZR/nRUZe6rEK7hM3AO8VQhUcDiTP
+	 9UA3X+AblLi1GBikaOWAE6XSLAuXnELP1fWQ32AJoEK05wZ9n6MA5o2gAlwbdBMNSz
+	 sXmc0K7JJRbUH10f62A5P63V28G6WOzLKZb9Jhhs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbfLDUTS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Dec 2019 15:19:18 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:46014 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbfLDUTS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Dec 2019 15:19:18 -0500
-Received: by mail-pl1-f193.google.com with SMTP id w7so175241plz.12;
-        Wed, 04 Dec 2019 12:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
-        b=GZ4USlEMGXv34THmiUPdaunV9mU1mXLwjquzOhYT1UTMPxHQXdwfl8TSoecTFZNaLm
-         4gM1RC87AWfGad075jZwJvO8b9Yfm2KDvrnt5mqrmxh4cziVMfaEQBKEZ/0AybZ/xXoz
-         YS2Mfgigc4PcZCQvBCgFFDbxnIj2X2wAh/xCfEH1gdYUlsK+LB1CCoofz+d/jHqQJapf
-         PSpmyHGUncjfB2tcWDiMGG4OP0iI818+PbMGW2MxVg4MIOnTEdaTSctO7ri2XtS2L3JH
-         CHxnyvqr5Q67K1kOmvFRw4AFYG4Y8KSa7KzryXc0iaO7CoEPJC06vXsOsV6+cF/Vys/6
-         0HnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
-        b=JooPbHXhDENfcvMgteyWBITjg5yWSgxtAcnD6jtkfrvUadnrBaSwJA3rZEpTLeGep1
-         u6nCPtByooDHRB3eW4QZ6HozKDBSZWIZ1+z+FGpMekppWuWg57p6j1LnBzw5UWRAF1O1
-         fiiQRFxR4QiNZwWgAcXk2yEunWNvsn16YD8lR2FdOq4oVH5TPKyIQZYF2if+NyrwsHqZ
-         7CgA0ZX42WdAcb8jj1oLIFDTp97lPGmtXeffGDIymMZXLobhaeqHiJoQcwJE1En4D7DY
-         6U0E5P7TBcRVkq/uD30Gp1gmdSSaE5nZukz7XmhTMff93Yge+QNNEYxJVv+2UzTZo1Ia
-         wB0g==
-X-Gm-Message-State: APjAAAUeLkUNhvCgJcwD/9762IbJ62P45qsOiv81ogtGSeVyBSTkWDRT
-        rs8sP1OXFEOav79MrYlf4yk=
-X-Google-Smtp-Source: APXvYqyym3aLJWp4bkO/UDgkjJGP80l8ErW34GumqKw5caVpvJNp1FIFrFHrA4GfR/q8GtM7lsaqFg==
-X-Received: by 2002:a17:90a:200d:: with SMTP id n13mr5388240pjc.16.1575490756959;
-        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:cdb:9473:3984:ab1:9b44:803])
-        by smtp.gmail.com with ESMTPSA id c2sm8882170pfn.55.2019.12.04.12.19.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     clm@fb.com, josef@toxicpanda.com, paulmck@kernel.org,
-        joel@joelfernandes.org
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH] fs: btrfs: volumes.h: Annotate rcu_string with __rcu
-Date:   Thu,  5 Dec 2019 01:49:01 +0530
-Message-Id: <20191204201901.22466-1-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728011AbfLDXZq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Dec 2019 18:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727116AbfLDXZq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Dec 2019 18:25:46 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 644A6206DF;
+        Wed,  4 Dec 2019 23:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575501944;
+        bh=h9iE1L4oSigLlIJOvTFavcHoI+dJQyu6qEDxeGSyg6A=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=fhqDWyZ8aDrj9EK2orxvp+WjgfLj27MhkHCIe28T7kl7FGfTvyky2+8ByDVtLDy2s
+         Tiu6f752p4jUS3xYeMAIRKNMG2CPEkyYLuyrASUNXIXxAKDR/rRLhThvcPqM1Bo8XD
+         fKK/ZP/czxaERj7n+pNnhUQC2dcbtohwtAmrzHck=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2DA8135227BE; Wed,  4 Dec 2019 15:25:44 -0800 (PST)
+Date:   Wed, 4 Dec 2019 15:25:44 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu] Enable tick for nohz_full CPUs not responding
+ to expedited GP
+Message-ID: <20191204232544.GA17061@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+rcu: Enable tick for nohz_full CPUs slow to provide expedited QS
 
-This patch fixes the following sparse errors in
-fs/btrfs/super.c in function btrfs_show_devname()
+An expedited grace period can be stalled by a nohz_full CPU looping
+in kernel context.  This possibility is currently handled by some
+carefully crafted checks in rcu_read_unlock_special() that enlist help
+from ksoftirqd when permitted by the scheduler.  However, it is exactly
+these checks that require the scheduler avoid holding any of its rq or
+pi locks across rcu_read_unlock() without also having held them across
+the entire RCU read-side critical section.
 
-fs/btrfs/super.c: error: incompatible types in comparison expression (different address spaces):
-fs/btrfs/super.c:    struct rcu_string [noderef] <asn:4> *
-fs/btrfs/super.c:    struct rcu_string *
+It would therefore be very nice if expedited grace periods could
+handle nohz_full CPUs looping in kernel context without such checks.
+This commit therefore adds code to the expedited grace period's wait
+and cleanup code that forces the scheduler-clock interrupt on for CPUs
+that fail to quickly supply a quiescent state.  "Quickly" is currently
+a hard-coded single-jiffy delay.
 
-The error was because of the following line in function btrfs_show_devname():
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-if (first_dev)
-       seq_escape(m, rcu_str_deref(first_dev->name), " \t\n\\");
-
-rcu_str_deref is defined in fs/btrfs/rcu-string.h
-
-And first_dev is of type struct btrfs_device.
-
-struct btrfs_device is defined in fs/btrfs/volumes.h
-
-Annotating the member  "struct rcu_string *name "  of struct btrfs_device
-with __rcu fixes the sparse error.
-
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 ---
- fs/btrfs/volumes.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index a7da1f3e3627..de7131ee604d 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -64,7 +64,7 @@ struct btrfs_device {
- 	struct btrfs_fs_devices *fs_devices;
- 	struct btrfs_fs_info *fs_info;
- 
--	struct rcu_string *name;
-+	struct rcu_string __rcu *name;
- 
- 	u64 generation;
- 
--- 
-2.17.1
+This is needed to avoid rcu_read_unlock_special() needing to enter
+the scheduler for the benefit of expedited grace periods on nohz_full
+CPUs, thus enabling more of Lai Jiangshan's patchset.
 
+diff --git a/include/linux/tick.h b/include/linux/tick.h
+index 4ed788c..72a2a21 100644
+--- a/include/linux/tick.h
++++ b/include/linux/tick.h
+@@ -109,9 +109,10 @@ enum tick_dep_bits {
+ 	TICK_DEP_BIT_PERF_EVENTS	= 1,
+ 	TICK_DEP_BIT_SCHED		= 2,
+ 	TICK_DEP_BIT_CLOCK_UNSTABLE	= 3,
+-	TICK_DEP_BIT_RCU		= 4
++	TICK_DEP_BIT_RCU		= 4,
++	TICK_DEP_BIT_RCU_EXP		= 5
+ };
+-#define TICK_DEP_BIT_MAX TICK_DEP_BIT_RCU
++#define TICK_DEP_BIT_MAX TICK_DEP_BIT_RCU_EXP
+ 
+ #define TICK_DEP_MASK_NONE		0
+ #define TICK_DEP_MASK_POSIX_TIMER	(1 << TICK_DEP_BIT_POSIX_TIMER)
+@@ -119,6 +120,7 @@ enum tick_dep_bits {
+ #define TICK_DEP_MASK_SCHED		(1 << TICK_DEP_BIT_SCHED)
+ #define TICK_DEP_MASK_CLOCK_UNSTABLE	(1 << TICK_DEP_BIT_CLOCK_UNSTABLE)
+ #define TICK_DEP_MASK_RCU		(1 << TICK_DEP_BIT_RCU)
++#define TICK_DEP_MASK_RCU_EXP		(1 << TICK_DEP_BIT_RCU_EXP)
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+ extern bool tick_nohz_enabled;
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 634c1db..0c87e4c 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -181,6 +181,7 @@ struct rcu_data {
+ 	bool rcu_need_heavy_qs;		/* GP old, so heavy quiescent state! */
+ 	bool rcu_urgent_qs;		/* GP old need light quiescent state. */
+ 	bool rcu_forced_tick;		/* Forced tick to provide QS. */
++	bool rcu_forced_tick_exp;	/*   ... provide QS to expedited GP. */
+ #ifdef CONFIG_RCU_FAST_NO_HZ
+ 	unsigned long last_accelerate;	/* Last jiffy CBs were accelerated. */
+ 	unsigned long last_advance_all;	/* Last jiffy CBs were all advanced. */
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 726ba20..6935a9e 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -230,7 +230,9 @@ static void __maybe_unused rcu_report_exp_rnp(struct rcu_node *rnp, bool wake)
+ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+ 				    unsigned long mask, bool wake)
+ {
++	int cpu;
+ 	unsigned long flags;
++	struct rcu_data *rdp;
+ 
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	if (!(rnp->expmask & mask)) {
+@@ -238,6 +240,13 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+ 		return;
+ 	}
+ 	WRITE_ONCE(rnp->expmask, rnp->expmask & ~mask);
++	for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
++		rdp = per_cpu_ptr(&rcu_data, cpu);
++		if (!IS_ENABLED(CONFIG_NO_HZ_FULL) || !rdp->rcu_forced_tick_exp)
++			continue;
++		rdp->rcu_forced_tick_exp = false;
++		tick_dep_clear_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
++	}
+ 	__rcu_report_exp_rnp(rnp, wake, flags); /* Releases rnp->lock. */
+ }
+ 
+@@ -450,6 +459,26 @@ static void sync_rcu_exp_select_cpus(void)
+ }
+ 
+ /*
++ * Wait for the expedited grace period to elapse, within time limit.
++ * If the time limit is exceeded without the grace period elapsing,
++ * return false, otherwise return true.
++ */
++static bool synchronize_rcu_expedited_wait_once(long tlimit)
++{
++	int t;
++	struct rcu_node *rnp_root = rcu_get_root();
++
++	t = swait_event_timeout_exclusive(rcu_state.expedited_wq,
++					  sync_rcu_exp_done_unlocked(rnp_root),
++					  tlimit);
++	// Workqueues should not be signaled.
++	if (t > 0 || sync_rcu_exp_done_unlocked(rnp_root))
++		return true;
++	WARN_ON(t < 0);  /* workqueues should not be signaled. */
++	return false;
++}
++
++/*
+  * Wait for the expedited grace period to elapse, issuing any needed
+  * RCU CPU stall warnings along the way.
+  */
+@@ -460,22 +489,31 @@ static void synchronize_rcu_expedited_wait(void)
+ 	unsigned long jiffies_start;
+ 	unsigned long mask;
+ 	int ndetected;
++	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 	struct rcu_node *rnp_root = rcu_get_root();
+-	int ret;
+ 
+ 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
+ 	jiffies_stall = rcu_jiffies_till_stall_check();
+ 	jiffies_start = jiffies;
++	if (IS_ENABLED(CONFIG_NO_HZ_FULL)) {
++		if (synchronize_rcu_expedited_wait_once(1))
++			return;
++		rcu_for_each_leaf_node(rnp) {
++			for_each_leaf_node_cpu_mask(rnp, cpu, rnp->expmask) {
++				rdp = per_cpu_ptr(&rcu_data, cpu);
++				if (rdp->rcu_forced_tick_exp)
++					continue;
++				rdp->rcu_forced_tick_exp = true;
++				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
++			}
++		}
++		WARN_ON_ONCE(1);
++	}
+ 
+ 	for (;;) {
+-		ret = swait_event_timeout_exclusive(
+-				rcu_state.expedited_wq,
+-				sync_rcu_exp_done_unlocked(rnp_root),
+-				jiffies_stall);
+-		if (ret > 0 || sync_rcu_exp_done_unlocked(rnp_root))
++		if (synchronize_rcu_expedited_wait_once(jiffies_stall))
+ 			return;
+-		WARN_ON(ret < 0);  /* workqueues should not be signaled. */
+ 		if (rcu_cpu_stall_suppress)
+ 			continue;
+ 		panic_on_rcu_stall();
