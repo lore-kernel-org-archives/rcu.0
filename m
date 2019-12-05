@@ -2,147 +2,144 @@ Return-Path: <SRS0=MKz8=Z3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A5FC43603
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:08:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C17ADC43603
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:42:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7562B2245C
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:08:54 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="SGFY9Id7"
+	by mail.kernel.org (Postfix) with ESMTP id 8EE0E21835
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575556956;
+	bh=FtTd8bVxAAjI67XfQn8v1CtQq1OrzGzVsHz99P5CJdo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=KW0uk8o/YREJQFEIaO9Z1JGXg8Wp7b8KI6sHAlTzlBirz5a2+OSG6OrksysNMVVds
+	 er+xKFeZkqfAQuJDilBDZkwyD5EkNUp+ZFP6Kqw4D8L9bB2VxbWjB3PerXj+fK62tX
+	 AWWvU+ucSzNSSj6+hVjf6c4WidKFeg31jITeXQtQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbfLEOIy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Dec 2019 09:08:54 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33922 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729489AbfLEOIy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Dec 2019 09:08:54 -0500
-Received: by mail-lf1-f68.google.com with SMTP id l18so2622218lfc.1
-        for <rcu@vger.kernel.org>; Thu, 05 Dec 2019 06:08:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gmDcfySFu4cZhpLYljWttxXox5YE9OQcKuIq/LT/coc=;
-        b=SGFY9Id7W6F+dnLbSC8iZmVwK44Feg5fPR3ZsA+QTXEEJf89ntnrSlRXx8AS+Z3TTD
-         aAhVyosxwNRJc9CV6jKspldBKWJLgNqvorGB4Rgn0nBDLPMQo06Cm+Gd/gKrTVkHPSYT
-         KYv3Ch8BCTlfqdI+h5ZRJxxcfl73B/AoEkbE0wkdCOTBX5KIEhX80uYosEW3isj+3GIk
-         MUf6LQgeEuaeT6hXfR3JtfT1dpOD4k7kvOeLsDdgmuH3KoGLx439+rkCVRrrarsEoO5m
-         81TvLqZZ96VnNq//6rWkSBw5Z/NNi4IDWkWJuvUuoP9+jGt0YYYxsor58v4As3bWRv/3
-         1JNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gmDcfySFu4cZhpLYljWttxXox5YE9OQcKuIq/LT/coc=;
-        b=kZUCWlSCQnp5ARNLWWkSN4WGw1Cb58f7df6NOgY2Al1G7S/eQ9Olu/RtSh9r7gQ0xj
-         H1MTV1NwtJyb7bHu6zvWuRuRIPb0fw/KfluEbCvR9jeuiV7JS/KF7tPZQkY17S96FjjS
-         2TUOyJnlS2LBDH2y8yznSzgAN0zevNrjsawI1kRYepzvMJ+YmxBNeRqCmOacWHWoy3/I
-         dNRpPb8VoDS2XlDaEegk/sl9AG1sSVTdw2FweSJbmijoV28ix2J0Q4YfFLpussU0ujd9
-         YtNuFsK7mDptynLMDGf3s4ymduSt7lA8x20JbfFeLuY5gvHzwPBDw5nXOm6IqE53JIqA
-         12Xw==
-X-Gm-Message-State: APjAAAUEA1eWjfaZ27XlX3Ewb0atS1DfDsiCP3sO4XSoSF+MDnqXCQfR
-        FdUSpnX8FNfMA8VLjngxA2vR40e5W15bajS4bgr3
-X-Google-Smtp-Source: APXvYqxsmozelM1jQBbA3G59cIGm7jWU81K1xtvs8Sq8Y1dS9Yu6I1fHTZA8+YigfeK+zF7Hg//cW84+j6rBp+tzbtk=
-X-Received: by 2002:ac2:428d:: with SMTP id m13mr5535498lfh.64.1575554930642;
- Thu, 05 Dec 2019 06:08:50 -0800 (PST)
+        id S1729187AbfLEOmg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Dec 2019 09:42:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729109AbfLEOmg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Dec 2019 09:42:36 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A57BE21835;
+        Thu,  5 Dec 2019 14:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575556955;
+        bh=FtTd8bVxAAjI67XfQn8v1CtQq1OrzGzVsHz99P5CJdo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=wyB/qcr7cl/TP8lD54Vc7qc5PKSdWWbxLU/jD1ESiCX238PRKuX2vUf5uT872/UqM
+         8v8DKdfIwCLe+OqlL6CjnaicKcl7FMooslC4nu8T0GcDWyRHyoZTnsrWSOhiB6t7do
+         EsVLSL1biRboSkS8IPxWZn4JS7A15urYFkuSF+6k=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7A49E35202C9; Thu,  5 Dec 2019 06:42:35 -0800 (PST)
+Date:   Thu, 5 Dec 2019 06:42:35 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Include: Linux: rculist_nulls: Add docbook comment
+ headers
+Message-ID: <20191205144235.GQ2889@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
+ <20191205002518.GP2889@paulmck-ThinkPad-P72>
+ <CAF65HP1WL2yw8nVZi-j9=eehkUJP-eKUy+w9unFXddmPf7_Hqg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
- <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
- <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com> <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
-In-Reply-To: <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 5 Dec 2019 09:08:38 -0500
-Message-ID: <CAHC9VhSVsmu6hjmUAi2wM6wAkkQnUDx7MM1G8Ln9OLAzwFmz6A@mail.gmail.com>
-Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Jeff Vander Stoep <jeffv@google.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Jovana Knezevic <jovanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF65HP1WL2yw8nVZi-j9=eehkUJP-eKUy+w9unFXddmPf7_Hqg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 5, 2019 at 6:47 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Thu, Dec 5, 2019 at 12:52 AM Paul Moore <paul@paul-moore.com> wrote:
-> > On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
-> > > > Thanks Jeff, as well as everyone else who contributed reviews and feedback.
-> > > >
-> > > > I've pulled this into a working branch and I'll be merging it with the
-> > > > other sidtab patches before posting it to a "next-queue" branch for
-> > > > review later this week.  When done, I'll send a note to the list, as
-> > > > well as the relevant patch authors; your help in reviewing the merge
-> > > > would be greatly appreciated.
+On Thu, Dec 05, 2019 at 11:25:39AM +0530, Madhuparna Bhowmik wrote:
+> On Thu, Dec 5, 2019 at 5:55 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> 
+> > On Wed, Dec 04, 2019 at 05:33:57PM +0530, madhuparnabhowmik04@gmail.com
+> > wrote:
+> > > From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 > > >
-> > > I tried doing the merge on my own here [1], you can use it as a sanity
-> > > check if we came to the same/similar result. I based it off your
-> > > existing next-queue, which contains only Jeff's patch at the time of
-> > > writing. I only build-tested it so far.
+> > > This patch adds docbook comment headers for hlist_nulls_first_rcu
+> > > and hlist_nulls_next_rcu in rculist_nulls.h.
+> > >
+> > > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> > > ---
 > >
-> > Thanks, that was a good sanity check.  There are some minor diffs from
-> > what I ended up with, but nothing substantive that I can see.
+> > Good to see, thank you!  A few grammar nits below -- could you please
+> > update and re-send?
 > >
-> > Although I'll be honest, the merge wasn't as bad as I thought it would
-> > be; most of the fuzz was simply due shuffling and renaming of data
-> > structures, which generally isn't too bad.  Although I'm still
-> > building the kernel to test it, so let's see if that statement still
-> > holds (although it looks like it passed Stephen's testing). ;)
+> > Thank you, I will send the updated patch soon.
+> 
+> 
+> >                                                         Thanx, Paul
 > >
-> > If you haven't noticed already, the merge currently lives in the
-> > selinux/next-queue branch; if you notice anything off, feel free to
-> > send a fixup patch.
->
-> It looks OK semantically when compared to my merge. I only see
-> reordering/comment/whitespace differences.
-
-Thanks for the double check.  Unfortunately my kernel build locks my
-test VM in early boot; it appears to be non-SELinux related and since
-the test build is based on selinux/next+patches (which is based off
-v5.4-rc1) I imagine there might be some unrelated problems in the
-build.  I'm going to rebase my test build to Linus' current and try
-this again.
-
-> > > Note that there are two whitespace cleanups included in the string
-> > > cache commit that I intuitively did while resolving the merge
-> > > conflicts. You might want to move those to the first commit or just
-> > > ignore them.
+> > >  include/linux/rculist_nulls.h | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/include/linux/rculist_nulls.h
+> > b/include/linux/rculist_nulls.h
+> > > index 517a06f36c7a..d796ef18ec52 100644
+> > > --- a/include/linux/rculist_nulls.h
+> > > +++ b/include/linux/rculist_nulls.h
+> > > @@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct
+> > hlist_nulls_node *n)
+> > >       }
+> > >  }
+> > >
+> > > +/**
+> > > + * hlist_nulls_first_rcu - returns the first element of the hash list.
+> > > + * @head: the head for your list.
 > >
-> > When looking at the combined diff between the two sidtab patches and
-> > comparing it to your merge I did make a few additional small cosmetic
-> > tweaks.  Assuming the testing goes well, I'll probably go over
-> > everything one more time to make sure the style looks okay, but today
-> > I was focusing more on the correctness.
->
-> The whitespace misalignment introduced by Jeff's patch is still there
-> in your branch. Personally, I'd prefer that we fix them now rather
-> than deferring it to a future patch, because it seems that no one ever
-> has time to bother sending whitespace fixup patches :) But I'll
-> understand it if you prefer not to touch it more than necessary, so I
-> won't fight about this further.
+> > Could you please say something like "The head of the list."?
+> > Just to keep point of view more consistent through the documentation.
+> >
+> > Sure, I will change it to "head of the list".
+> Moreover, in the rest of the docbook comments in the same file
+> (rculist_nulls.h), "head for your list" is used.
+> So, should I change that as well in a separate patch, such that it is
+> consistent throughout the file?
 
-Like I said, I only quickly scanned the combined diff for style
-problems so it doesn't surprise me that there are still some issues.
-I'll give it a closer look once I can get a kernel build passing all
-the tests.
+Please do!
 
-As an aside, I keep debating doing a big style-fix patch (likely
-automated via astyle or similar, likely with some additional fixes by
-hand, and passed through checkpatch.pl) after one of the -rc1 rebases
-to clean up all these little things that have crept into the code over
-the years.  I dislike the idea of the churn that would likely bring,
-but it should make life a little bit better, and help cut down on the
-trivial "checkpatch patches" we get from time to time (although that
-really hasn't been too bad of an issue).
+						Thanx, Paul
 
--- 
-paul moore
-www.paul-moore.com
+> > > + */
+> > >  #define hlist_nulls_first_rcu(head) \
+> > >       (*((struct hlist_nulls_node __rcu __force **)&(head)->first))
+> > >
+> > > +/**
+> > > + * hlist_nulls_next_rcu - returns the element of the list next to @node.
+> >
+> > Here, could you please change "next to" to "after"?  This removes the
+> > ambiguity where both the prior and the subsequent elements might be
+> > thought of as "next to".
+> >
+> > Sure, I will do it. Thank you for pointing out.
+> 
+> Regards,
+> Madhuparna
+> 
+> 
+> > > + * @node: Element of the list.
+> > > + */
+> > >  #define hlist_nulls_next_rcu(node) \
+> > >       (*((struct hlist_nulls_node __rcu __force **)&(node)->next))
+> > >
+> > > --
+> > > 2.17.1
+> > >
+> >
+> ᐧ
