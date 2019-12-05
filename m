@@ -1,116 +1,115 @@
-Return-Path: <SRS0=BzNy=Z2=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=MKz8=Z3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8623DC43603
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C500C43603
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 00:25:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5507A2077B
-	for <rcu@archiver.kernel.org>; Wed,  4 Dec 2019 23:52:35 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="UyR9JWeB"
+	by mail.kernel.org (Postfix) with ESMTP id 5D38121823
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 00:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575505528;
+	bh=T/Kj7aasoT8tfhY99yWbDoxlX9qhhOFSHcc6kCya+w4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=hdehY/5qIIJCKrlrICkMIL0/15EgytIG5GUxEsfd3igsaGjoMoXeG7QAiVWoD7crP
+	 YcPMrpFJax2MTvPT+mAzRoV8eT7Hc8a4g+U79XPqtWSDYR2M0O+1oVssj03ssia8zh
+	 wEmvWSTgruyPeZ9uhMQy/f/E4CHYVrrOvHXwI5fg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbfLDXwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Dec 2019 18:52:35 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45265 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbfLDXwe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Dec 2019 18:52:34 -0500
-Received: by mail-lj1-f195.google.com with SMTP id d20so1287584ljc.12
-        for <rcu@vger.kernel.org>; Wed, 04 Dec 2019 15:52:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BgY37x/+7Cql9NNZG79hPhxCQjhuFiHviwcms4LCaiM=;
-        b=UyR9JWeB9nrCzdLV2qA4dvotgBdtU8xShtqsd77nv/IRUQLcA7GyHe+DlMZmP0BWfS
-         soHdg6DlaDpqiq3n4hNv5bo39scYknTSYYjpOgJB+23tKJGgxODHrrQrxavcDa0qinhy
-         ne6IViJAWrUByRqpbZbHZjNaGDOB45pNjKDoBhqrDp97nK2bSAaBK+AmfM0Bx8PP+a6t
-         MUZuqT+GsVCls9CgX7zLFRXh6mdcyyiuK95A6K0EHUXXgI5siHN6g9/W6b7PPShH3m+S
-         hyBHVgtvi0z6/vGEjq9A04cTjoqb0lpvhFn3pRoSpM0w+a8Ko62l39IcL/Q8naGiVjDa
-         UGMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BgY37x/+7Cql9NNZG79hPhxCQjhuFiHviwcms4LCaiM=;
-        b=FilmByZrvKukTF7MQTgLkQqyl4OP9GaRr0oNUYfXFjZgyjJ0ICwqVOoBDMPMBw7K4/
-         mcT5VKu6Y6fS0WJRqJ8Ycv4XtvsgqSHI0hPsyiumvP+/VA+t44ocmxxk9ZHQCYLQmJYI
-         VSrE8DG66vLhhKTJCOJF8FXlSN0xzkfpkH2JCaOpwHAgK3zwjqQFi1qYXw54Ld2RbpaG
-         GmVrl7oJwccFMkZrZayZ1x/Lq4StDsnebI/afwHfiyPbtQ8m25Qt4wvOP4Nar8gKUtfC
-         c5NHNiEu6C8EAYLEOaQIr2miKgGhVVEnujdTTwXi5pjNFmYXGRHAHXivCjEucTyvHAx+
-         3Dyw==
-X-Gm-Message-State: APjAAAWZ3YiEgSM8CU1V2DJPvmUQu7QPknUTOQ+C2bctm7suOGuAolMW
-        sgN3RNC8s7rXBCqePm3kx9nCBWZGDRglQMeEKMg6
-X-Google-Smtp-Source: APXvYqwWgpKbHYRC+2VdIQJLVcuDlKqBe+8g7wH4TyCAyQQ/homvy4q0HI54Q3UL8Bh+GTmuJpRjD8QIR446kh5G35U=
-X-Received: by 2002:a2e:9d9a:: with SMTP id c26mr3670252ljj.225.1575503552423;
- Wed, 04 Dec 2019 15:52:32 -0800 (PST)
+        id S1728709AbfLEAZT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Dec 2019 19:25:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728692AbfLEAZT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Dec 2019 19:25:19 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C6F221823;
+        Thu,  5 Dec 2019 00:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575505518;
+        bh=T/Kj7aasoT8tfhY99yWbDoxlX9qhhOFSHcc6kCya+w4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ryvX+ChrgSSB1Io3Gi7dVPJWmmRMoJY7/wQgtM0WahgDcb7IZkre4B1T7fdhsr3Tm
+         VF8Qw6spRW2HMCohpoeq+MH5/VK6x+F+Tf3OpsgsjoeMMRsSMTnTA8BfQb246fKlUL
+         fF5OD8qLXHdSujHPiANYICYblDdT3VPUADY062/M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3EA8E3522922; Wed,  4 Dec 2019 16:25:18 -0800 (PST)
+Date:   Wed, 4 Dec 2019 16:25:18 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Include: Linux: rculist_nulls: Add docbook comment
+ headers
+Message-ID: <20191205002518.GP2889@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
 MIME-Version: 1.0
-References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
- <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
-In-Reply-To: <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 4 Dec 2019 18:52:21 -0500
-Message-ID: <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
-Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Jeff Vander Stoep <jeffv@google.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Jovana Knezevic <jovanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191204120357.11658-1-madhuparnabhowmik04@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
-> > Thanks Jeff, as well as everyone else who contributed reviews and feedback.
-> >
-> > I've pulled this into a working branch and I'll be merging it with the
-> > other sidtab patches before posting it to a "next-queue" branch for
-> > review later this week.  When done, I'll send a note to the list, as
-> > well as the relevant patch authors; your help in reviewing the merge
-> > would be greatly appreciated.
->
-> I tried doing the merge on my own here [1], you can use it as a sanity
-> check if we came to the same/similar result. I based it off your
-> existing next-queue, which contains only Jeff's patch at the time of
-> writing. I only build-tested it so far.
+On Wed, Dec 04, 2019 at 05:33:57PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> 
+> This patch adds docbook comment headers for hlist_nulls_first_rcu
+> and hlist_nulls_next_rcu in rculist_nulls.h.
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> ---
 
-Thanks, that was a good sanity check.  There are some minor diffs from
-what I ended up with, but nothing substantive that I can see.
+Good to see, thank you!  A few grammar nits below -- could you please
+update and re-send?
 
-Although I'll be honest, the merge wasn't as bad as I thought it would
-be; most of the fuzz was simply due shuffling and renaming of data
-structures, which generally isn't too bad.  Although I'm still
-building the kernel to test it, so let's see if that statement still
-holds (although it looks like it passed Stephen's testing). ;)
+							Thanx, Paul
 
-If you haven't noticed already, the merge currently lives in the
-selinux/next-queue branch; if you notice anything off, feel free to
-send a fixup patch.
+>  include/linux/rculist_nulls.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> index 517a06f36c7a..d796ef18ec52 100644
+> --- a/include/linux/rculist_nulls.h
+> +++ b/include/linux/rculist_nulls.h
+> @@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+>  	}
+>  }
+>  
+> +/**
+> + * hlist_nulls_first_rcu - returns the first element of the hash list.
+> + * @head: the head for your list.
 
-> Note that there are two whitespace cleanups included in the string
-> cache commit that I intuitively did while resolving the merge
-> conflicts. You might want to move those to the first commit or just
-> ignore them.
+Could you please say something like "The head of the list."?
+Just to keep point of view more consistent through the documentation.
 
-When looking at the combined diff between the two sidtab patches and
-comparing it to your merge I did make a few additional small cosmetic
-tweaks.  Assuming the testing goes well, I'll probably go over
-everything one more time to make sure the style looks okay, but today
-I was focusing more on the correctness.
+> + */
+>  #define hlist_nulls_first_rcu(head) \
+>  	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
+>  
+> +/**
+> + * hlist_nulls_next_rcu - returns the element of the list next to @node.
 
-> [1] https://gitlab.com/omos/linux-public/compare/selinux-next...rebase-selinux-sidtab-string-cache
+Here, could you please change "next to" to "after"?  This removes the
+ambiguity where both the prior and the subsequent elements might be
+thought of as "next to".
 
--- 
-paul moore
-www.paul-moore.com
+> + * @node: Element of the list.
+> + */
+>  #define hlist_nulls_next_rcu(node) \
+>  	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
+>  
+> -- 
+> 2.17.1
+> 
