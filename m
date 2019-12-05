@@ -2,124 +2,134 @@ Return-Path: <SRS0=MKz8=Z3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5501C43603
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 15:14:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7932DC43603
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 17:41:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 872082464F
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 15:14:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 50F8224648
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 17:41:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iqs3hhxM"
+	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="rbjUHsd+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbfLEPO1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Dec 2019 10:14:27 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46498 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbfLEPO1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Dec 2019 10:14:27 -0500
-Received: by mail-pf1-f196.google.com with SMTP id y14so1740171pfm.13;
-        Thu, 05 Dec 2019 07:14:26 -0800 (PST)
+        id S1730139AbfLERlp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Dec 2019 12:41:45 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:46827 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729711AbfLERlp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Dec 2019 12:41:45 -0500
+Received: by mail-lj1-f195.google.com with SMTP id z17so4500487ljk.13
+        for <rcu@vger.kernel.org>; Thu, 05 Dec 2019 09:41:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4KrZ84UljluamxNF+nH5kh1soJy0EOumBh8z5AiXj1M=;
-        b=Iqs3hhxMyajp6V6jOD9k8vmFZgFnE7RlH5Y5SIFEW8fHtSiT8WMNdMvH4Orv5qsVnY
-         ISzL7S362NFaevFh8wcBCvOnjDMqjeRa3xqLJXIk7QgpiCsap+7/QOAVOCI78pX52ki/
-         1iGqAct3hgHONi8QTfRTdMj/DFNsuBZyY8uIzcLhqDydv1LPSqccgf0eayjyO7lLusS9
-         Jloht0wmQC3Kwcf6ISB50SO/CZsro7ORzKDPuxdt0ItadsFYasg6pYViQvzfHeJm9phH
-         ty6sWpUnWREW4jEYCpVEw8a3W+5Drw2jihWJmNNWDDHx1kTvpoICF8bWE1PV+L42jQfB
-         lpqw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1l0ZCNFvkCCXW1nNKYzmevuG1/94tIufhroE2k0uins=;
+        b=rbjUHsd+NgZ6Eo0amb71FB0ahpUoOxKt0cjgXodsJfiz8whztRAWxynmFZW+YJE3EA
+         VoyWf9LvlBFymtZ1CTEQeQzgNqKO9IDH+IHcozNpwJyPIbQkSazQpRenkQQyfT3qMiSD
+         dllQdgZvOahCmL9n8Upbclc8xMcuNsc3hbt1j7GFCSNbr4DKQxpfldToEvoKorMHjQfv
+         Y+Hlo6d6jpgbsiy5cDEDo/g/HwSOQ965dnBedLTSIcFcyLLqoNjeSaGYzFI5CfPMx5LD
+         XD4dvz9uldLPPMVGM0vZna/uZaMks4BEzYpVeCW6R94nREHntKqxc0IaaYqqR7nZAah7
+         uQ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4KrZ84UljluamxNF+nH5kh1soJy0EOumBh8z5AiXj1M=;
-        b=mcC94QU52K+vywoybxCj4b21/m4KJ2msHyE9aO4dmH7Q4/2CL2Fuk4hF2KFvOyuhTc
-         Vpz6+xJfDvLII/7yth6K6/QoMagAa2j6/JqiZw3ReqiIzohWNCiAmSZsYTWgO1jUcfbr
-         50OsxcKO3tEp77TL2vaNEta2iSWmYId1vPI5BKgC/Fba9Q/1pBuCJ0yy+Bew0vM9562g
-         W8010R3Jh70BDTr5Q7trVchCcYxlfhhdsGZzYrXH61c0M9IrTJMM8aCDVTAXNyKhlImI
-         4RgkRmSebopYhNv58Ufb61Ay0lotGm4Dm2LpxO/6fWBdG+ocLyXZ0WMHnymbQ5cunGxJ
-         PFgA==
-X-Gm-Message-State: APjAAAV/jbx73FHAJl9XCZcXfHA6wEwDAsB/karpx1vO17CceB1kDQkR
-        PhlraicP7GTe0ZRBt30BwXY=
-X-Google-Smtp-Source: APXvYqy/oc7fJO2/PLyS5gTXvu0Yq0ItJ+u+B2pLMSWHPIMKM4VcXxZPSU3Y9Rq9/t32w3QA2avRRg==
-X-Received: by 2002:a63:ec0a:: with SMTP id j10mr7305169pgh.178.1575558866248;
-        Thu, 05 Dec 2019 07:14:26 -0800 (PST)
-Received: from workstation-kernel-dev ([103.211.17.187])
-        by smtp.gmail.com with ESMTPSA id x13sm13397674pfc.171.2019.12.05.07.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2019 07:14:25 -0800 (PST)
-Date:   Thu, 5 Dec 2019 20:44:18 +0530
-From:   Amol Grover <frextrite@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: Re: [PATCH] doc: listRCU: Add some more listRCU patterns in the
- kernel
-Message-ID: <20191205151418.GA3424@workstation-kernel-dev>
-References: <20191203063941.6981-1-frextrite@gmail.com>
- <20191203064132.38d75348@lwn.net>
- <20191204082412.GA6959@workstation-kernel-dev>
- <20191204074833.44bcc079@lwn.net>
- <20191204153958.GA17404@google.com>
- <20191204084729.184480f3@lwn.net>
- <20191204163552.GE17404@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1l0ZCNFvkCCXW1nNKYzmevuG1/94tIufhroE2k0uins=;
+        b=LXohvBkwPFlZsay6oQXtnS6Z49DJeRv2CcJ3FKmT9yY0sJKHwlhfcnekphyRihbglT
+         5Fpf7wzvwMPZSP3z8qL6y/hiohdykET0JrPKITcZk3mcEdHJg5GxgIzgu1vRbTvQxMHI
+         G9yHTUUzvD3gzEPgzYMfA2NuwwBn1JSE88ZiJiB+31NynTTFtUXK97JaRTYZhAG57DzM
+         n+VJvFmIqO5V/6QbR354AnIg6Xj1VZEiNYMqHTLr020fHNyH7BGyoGNHSv+dtsesZxYx
+         t4tSHqA7T4XXlUIPyT7p7lvfC1zHahpT8iOcwz3nuq1Es/WJmqBTqpq2X4zjwZQXfAKC
+         /Zpw==
+X-Gm-Message-State: APjAAAVWwnLeSiTRa1ew2x1lkLHWbsD4/c/tOA4Y1tkpy2mAkZ6rgQw/
+        D10Ryt48GHMBWP3pBFTgv9tSEflaTB1ALdlStPr6
+X-Google-Smtp-Source: APXvYqyYgbs28BlJJILWmpbXmygxma4FhV5XHOkHsK+M+miwEXnRUZpRTRD8oT/FKPAmlksj74bVxhENXzZKLgnNSRY=
+X-Received: by 2002:a2e:3207:: with SMTP id y7mr5433792ljy.57.1575567702435;
+ Thu, 05 Dec 2019 09:41:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191204163552.GE17404@google.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
+ <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
+ <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
+ <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com> <CAHC9VhSVsmu6hjmUAi2wM6wAkkQnUDx7MM1G8Ln9OLAzwFmz6A@mail.gmail.com>
+In-Reply-To: <CAHC9VhSVsmu6hjmUAi2wM6wAkkQnUDx7MM1G8Ln9OLAzwFmz6A@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 5 Dec 2019 12:41:31 -0500
+Message-ID: <CAHC9VhR+hYnLoMkAPuRNJygk+dOoNyhooNuz3Ma=F07b9gh=rA@mail.gmail.com>
+Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Jeff Vander Stoep <jeffv@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Jovana Knezevic <jovanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 11:35:52AM -0500, Joel Fernandes wrote:
-> On Wed, Dec 04, 2019 at 08:47:29AM -0700, Jonathan Corbet wrote:
-> > On Wed, 4 Dec 2019 10:39:58 -0500
-> > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > 
-> > > Actually I had asked Amol privately to add the backticks. It appeared
-> > > super weird in my browser when some function calls were rendered
-> > > monospace while others weren't. Not all functions were successfully
-> > > cross referenced for me. May be it is my kernel version?
-> > 
-> > If you have an example of a failure to cross-reference a function that
-> > has kerneldoc comments *that are included in the toctree*, I'd like to see
-> > it; that's a bug.
-> > 
-> > Changing the font on functions without anything to cross-reference to is
-> > easy enough and should probably be done; I'll look into it when I get a
-> > chance.
-> 
-> I tried on a different machine (my work machine) and the cross-referencing is
-> working fine. So I am not sure if this could be something related to Sphinx
-> version or I had used an older kernel tree before. This kernel tree is
-> Linus's master.
-> 
+On Thu, Dec 5, 2019 at 9:08 AM Paul Moore <paul@paul-moore.com> wrote:
+> Thanks for the double check.  Unfortunately my kernel build locks my
+> test VM in early boot; it appears to be non-SELinux related and since
+> the test build is based on selinux/next+patches (which is based off
+> v5.4-rc1) I imagine there might be some unrelated problems in the
+> build.  I'm going to rebase my test build to Linus' current and try
+> this again.
 
-This is great! I'll remove the "``" from function text and send in the
-updated version. However, should I leave in the "``CONSTANTS``" and
-"``variables``"? They dont' have any kernel docs to be cross-referenced
-with and also make them distinguishable from the normal text.
+Hmm.  I haven't done any debugging yet, but the BPF tests are failing
+(they pass with kernel-5.5.0-0.rc0.git5.1.2.secnext.fc32.x86_64):
 
-Thanks
-Amol
+1..15
+ok 1
+Failed to load BPF prog: Invalid argument
+not ok 2
+#   Failed test at ./test line 68.
+Failed to create BPF map: Permission denied
+ok 3
+Failed to create BPF map: Permission denied
+ok 4
+Failed to create BPF map: Permission denied
+ok 5
+Failed to load BPF prog: Permission denied
+ok 6
+Failed to load BPF prog: Invalid argument
+ok 7
+client: Using a BPF map fd
+client: Connected to server via ./test_sock
+server:  Accepted a connection, receiving message
+client: Sent descriptor, waiting for reply
+server:  Received a descriptor, fd=5, sending back 0
+client: Received reply, code=0
+client: ...This implies the descriptor was received
+ok 8
+Failed to load BPF prog: Invalid argument
+client: Using a BPF prog fd
+client: Connected to server via ./test_sock
+sendmsg: Bad file descriptor
+server:  Accepted a connection, receiving message
+server:  Received no descriptor, sending back 1
+not ok 9
+#   Failed test at ./test line 118.
+Failed to load BPF prog: Invalid argument
+client: Using a BPF prog fd
+connect: Connection refused
+ok 10
+client: Using a BPF map fd
+connect: Connection refused
+ok 11
+ok 12
+Client request_service_provider_fd() failing command BR_FAILED_REPLY, exiting.
+ok 13
+ok 14
+Failed to load BPF prog: Invalid argument
+Client request_service_provider_fd() failing command BR_FAILED_REPLY, exiting.
+ok 15
+# Looks like you failed 2 tests of 15.
 
-> thanks,
-> 
->  - Joel
-> 
+-- 
+paul moore
+www.paul-moore.com
