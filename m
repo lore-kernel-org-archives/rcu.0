@@ -2,104 +2,143 @@ Return-Path: <SRS0=MKz8=Z3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB42C43603
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 06:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61289C3F68F
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 11:47:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5FF9522464
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 06:17:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 362A220675
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 11:47:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MMfoztu/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FF2+15wJ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbfLEGRJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Dec 2019 01:17:09 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36757 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbfLEGRI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Dec 2019 01:17:08 -0500
-Received: by mail-pg1-f196.google.com with SMTP id k3so443139pgc.3;
-        Wed, 04 Dec 2019 22:17:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=acB2hbSrI/zngLNzQkvvnIL+83xSTPG9++dKEaaJLZI=;
-        b=MMfoztu/Me1Emx3utyq1RxfTAtVGJV+pxoVthxAIxzySRn3ULEfJGGm/zQCjbJ+Uc0
-         /w+L5N/X0YRc5D1MQsR3RSK6DcNIWtmze2FRs+dodbN2YDz9y0uQj1m5SempvA6XTH8R
-         4Rpp78ULGV7ENXoC+ZG2Mf+iDZg08Dh1Z6yLPu2d9pry2vs/izzBdoLaUf3yngJAL0h+
-         FrI+rqU7V8l/AQrCUBhUYrrUolSWwRNXKdNszBVfsSb2B1y5ZMGAg5sEdolfpFIxdGg2
-         xH7il97FP/96+E4qqOpChByhMLjhTBgYCKTDUza1d0/SPLdnNAHg+1IOJsUSHov1SVGd
-         FXBw==
+        id S1729099AbfLELr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Dec 2019 06:47:56 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34291 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729165AbfLELrz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Dec 2019 06:47:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575546475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=chwFsbeubzjHSJ81mtEFLRwbt5KooK0OdLtZTlYUR58=;
+        b=FF2+15wJyCULgzG20zVl/VEbz+dBvzsBFMsWVSCu4/U9JaA03w1JqvmZSRMHxyQGw3ji+8
+        +WiHgXtygVlT27zEhbH5sVLzzDYf4GquWVQ3aBLP0LVrhgM2QEu+Ksf0Wwqsq+hfmFDQA5
+        bOvXT4xsgSc9fNUrazGKaSMIxxjVFKk=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-hzKvEhATOnKAXqNzCYCN6w-1; Thu, 05 Dec 2019 06:47:53 -0500
+Received: by mail-oi1-f200.google.com with SMTP id v14so1531153oic.2
+        for <rcu@vger.kernel.org>; Thu, 05 Dec 2019 03:47:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=acB2hbSrI/zngLNzQkvvnIL+83xSTPG9++dKEaaJLZI=;
-        b=DSTYwQ1zhNVAh0uZA7kaVZqDDrllzGIhByrn0yDWwfpQXH5iDSx1XrmJzVXab3w4CV
-         eKwNJ6tTRaI1oMZxIfau+AnfpwtnjUmpqSXwDC0e0+6lRN/qYeWPQ31y0dvwyb5vYYLp
-         gpUaa0Z7sq9Ob5eJ1oNuD1doLmlsDWoA+vnkHEe0sq48blIQM8AoAy9REqdI4s2zWXwb
-         1S16DwNMSXiBOw7FBxirPZ2dW1i7j944hp5wZetGfth05/yNk4HwtXXYp/7lqww4xIqi
-         +msoV1jbCGSCFHN/9tu5aoYxtF1bIqWI8kTOaGJCiWPn6yO2RlYawUSfJU84nh2huZg+
-         O4HA==
-X-Gm-Message-State: APjAAAUmw31pku0bMzoAMiam9tSPK3PCnNQZL8b0betWs3i/T8JDMI0n
-        zliyakysX2cOinjXoBEo1Xw=
-X-Google-Smtp-Source: APXvYqxDr+PpCs5MKoXD6jjM1Uvo4Bh5Yhcs1dGBSTBdmJ4LfNN3nJBH/VQwK2QZZWYCjmV0KlQ69Q==
-X-Received: by 2002:a62:486:: with SMTP id 128mr7409735pfe.236.1575526627809;
-        Wed, 04 Dec 2019 22:17:07 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:cdb:3f28:3984:ab1:9b44:803])
-        by smtp.gmail.com with ESMTPSA id s27sm10564375pfd.88.2019.12.04.22.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2019 22:17:07 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        oel@joelfernandes.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH 3/3] include: linux: rculist_nulls: Add docbook comments
-Date:   Thu,  5 Dec 2019 11:46:49 +0530
-Message-Id: <20191205061649.25339-1-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W8BfNxO/kcge3hbMx8NpfaGHaE7cCw+ugwcJhlXO0/A=;
+        b=X0y4UTuqUZYdag/3iME6e9xBSoos7fHBvPHhxBrAAPbRrQ08Sdegi0vu8uHyPPbqVP
+         RlvHPMkP1T0PmRIdmh2zLxMDDZq7oIxNI/ySivWJUrZ2BfVT8yyWAFpjUbaVHMBL65TL
+         7GGs1n5Zi15gsU7Os24FZ6EqfOgaBY3xjOstLhnN82+AjPfNxpOqVFFbRxbW3QMijfXc
+         bvAqzZ9HsBUgRn3+9d4258ad7DOTv3tUyXmXOMoW19TeG8W/63XgbuqoZUvDJAq3niAA
+         gC9NdF1AcGnonOHkQKzODDeuD9OrUUVk8sbHTs4buxeKBG1AdFniq3jTiP9jjVejnbEU
+         IePA==
+X-Gm-Message-State: APjAAAW7rLMQeEOThSAwxf/muB/e2KQ+oGYI/6ksK8/WQXGh+aPELcZu
+        t5PrrApV66J5y6tu9lBFcxOOH71yc8FfTK7x54jferT4WGj+I4/dw9ucqQ4wv/YxvSKkY0QNS8F
+        J2jeEib+75j5UVcZ89AZunaQFUhhC
+X-Received: by 2002:a05:6808:285:: with SMTP id z5mr1069813oic.127.1575546472594;
+        Thu, 05 Dec 2019 03:47:52 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyk7ASDkRKiytkGLBDW2gc6iBaROV55NyFbBmb5xOf+RClHrxN4psBOeagVCH50wxJU6Nvu47+wJMJv1qBoniM=
+X-Received: by 2002:a05:6808:285:: with SMTP id z5mr1069794oic.127.1575546472307;
+ Thu, 05 Dec 2019 03:47:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
+ <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com> <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
+In-Reply-To: <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Thu, 5 Dec 2019 12:48:07 +0100
+Message-ID: <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
+Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Jeff Vander Stoep <jeffv@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Jovana Knezevic <jovanak@google.com>
+X-MC-Unique: hzKvEhATOnKAXqNzCYCN6w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+On Thu, Dec 5, 2019 at 12:52 AM Paul Moore <paul@paul-moore.com> wrote:
+> On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrot=
+e:
+> > On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > Thanks Jeff, as well as everyone else who contributed reviews and fee=
+dback.
+> > >
+> > > I've pulled this into a working branch and I'll be merging it with th=
+e
+> > > other sidtab patches before posting it to a "next-queue" branch for
+> > > review later this week.  When done, I'll send a note to the list, as
+> > > well as the relevant patch authors; your help in reviewing the merge
+> > > would be greatly appreciated.
+> >
+> > I tried doing the merge on my own here [1], you can use it as a sanity
+> > check if we came to the same/similar result. I based it off your
+> > existing next-queue, which contains only Jeff's patch at the time of
+> > writing. I only build-tested it so far.
+>
+> Thanks, that was a good sanity check.  There are some minor diffs from
+> what I ended up with, but nothing substantive that I can see.
+>
+> Although I'll be honest, the merge wasn't as bad as I thought it would
+> be; most of the fuzz was simply due shuffling and renaming of data
+> structures, which generally isn't too bad.  Although I'm still
+> building the kernel to test it, so let's see if that statement still
+> holds (although it looks like it passed Stephen's testing). ;)
+>
+> If you haven't noticed already, the merge currently lives in the
+> selinux/next-queue branch; if you notice anything off, feel free to
+> send a fixup patch.
 
-This patch adds docbook comment headers for hlist_nulls_first_rcu
-and hlist_nulls_next_rcu in rculist_nulls.h.
+It looks OK semantically when compared to my merge. I only see
+reordering/comment/whitespace differences.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
----
- include/linux/rculist_nulls.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+>
+> > Note that there are two whitespace cleanups included in the string
+> > cache commit that I intuitively did while resolving the merge
+> > conflicts. You might want to move those to the first commit or just
+> > ignore them.
+>
+> When looking at the combined diff between the two sidtab patches and
+> comparing it to your merge I did make a few additional small cosmetic
+> tweaks.  Assuming the testing goes well, I'll probably go over
+> everything one more time to make sure the style looks okay, but today
+> I was focusing more on the correctness.
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index bc8206a8f30e..111a90e98ad3 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
- 	}
- }
- 
-+/**
-+ * hlist_nulls_first_rcu - returns the first element of the hash list.
-+ * @head: the head of the list.
-+ */
- #define hlist_nulls_first_rcu(head) \
- 	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
- 
-+/**
-+ * hlist_nulls_next_rcu - returns the element of the list after @node.
-+ * @node: element of the list.
-+ */
- #define hlist_nulls_next_rcu(node) \
- 	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
- 
--- 
-2.17.1
+The whitespace misalignment introduced by Jeff's patch is still there
+in your branch. Personally, I'd prefer that we fix them now rather
+than deferring it to a future patch, because it seems that no one ever
+has time to bother sending whitespace fixup patches :) But I'll
+understand it if you prefer not to touch it more than necessary, so I
+won't fight about this further.
+
+>
+> > [1] https://gitlab.com/omos/linux-public/compare/selinux-next...rebase-=
+selinux-sidtab-string-cache
+
+--
+Ondrej Mosnacek <omosnace at redhat dot com>
+Software Engineer, Security Technologies
+Red Hat, Inc.
 
