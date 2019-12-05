@@ -2,143 +2,147 @@ Return-Path: <SRS0=MKz8=Z3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61289C3F68F
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 11:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A5FC43603
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:08:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 362A220675
-	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 11:47:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7562B2245C
+	for <rcu@archiver.kernel.org>; Thu,  5 Dec 2019 14:08:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FF2+15wJ"
+	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="SGFY9Id7"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbfLELr4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Dec 2019 06:47:56 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34291 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729165AbfLELrz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Dec 2019 06:47:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575546475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=chwFsbeubzjHSJ81mtEFLRwbt5KooK0OdLtZTlYUR58=;
-        b=FF2+15wJyCULgzG20zVl/VEbz+dBvzsBFMsWVSCu4/U9JaA03w1JqvmZSRMHxyQGw3ji+8
-        +WiHgXtygVlT27zEhbH5sVLzzDYf4GquWVQ3aBLP0LVrhgM2QEu+Ksf0Wwqsq+hfmFDQA5
-        bOvXT4xsgSc9fNUrazGKaSMIxxjVFKk=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-hzKvEhATOnKAXqNzCYCN6w-1; Thu, 05 Dec 2019 06:47:53 -0500
-Received: by mail-oi1-f200.google.com with SMTP id v14so1531153oic.2
-        for <rcu@vger.kernel.org>; Thu, 05 Dec 2019 03:47:53 -0800 (PST)
+        id S1729096AbfLEOIy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Dec 2019 09:08:54 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33922 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729489AbfLEOIy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Dec 2019 09:08:54 -0500
+Received: by mail-lf1-f68.google.com with SMTP id l18so2622218lfc.1
+        for <rcu@vger.kernel.org>; Thu, 05 Dec 2019 06:08:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gmDcfySFu4cZhpLYljWttxXox5YE9OQcKuIq/LT/coc=;
+        b=SGFY9Id7W6F+dnLbSC8iZmVwK44Feg5fPR3ZsA+QTXEEJf89ntnrSlRXx8AS+Z3TTD
+         aAhVyosxwNRJc9CV6jKspldBKWJLgNqvorGB4Rgn0nBDLPMQo06Cm+Gd/gKrTVkHPSYT
+         KYv3Ch8BCTlfqdI+h5ZRJxxcfl73B/AoEkbE0wkdCOTBX5KIEhX80uYosEW3isj+3GIk
+         MUf6LQgeEuaeT6hXfR3JtfT1dpOD4k7kvOeLsDdgmuH3KoGLx439+rkCVRrrarsEoO5m
+         81TvLqZZ96VnNq//6rWkSBw5Z/NNi4IDWkWJuvUuoP9+jGt0YYYxsor58v4As3bWRv/3
+         1JNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W8BfNxO/kcge3hbMx8NpfaGHaE7cCw+ugwcJhlXO0/A=;
-        b=X0y4UTuqUZYdag/3iME6e9xBSoos7fHBvPHhxBrAAPbRrQ08Sdegi0vu8uHyPPbqVP
-         RlvHPMkP1T0PmRIdmh2zLxMDDZq7oIxNI/ySivWJUrZ2BfVT8yyWAFpjUbaVHMBL65TL
-         7GGs1n5Zi15gsU7Os24FZ6EqfOgaBY3xjOstLhnN82+AjPfNxpOqVFFbRxbW3QMijfXc
-         bvAqzZ9HsBUgRn3+9d4258ad7DOTv3tUyXmXOMoW19TeG8W/63XgbuqoZUvDJAq3niAA
-         gC9NdF1AcGnonOHkQKzODDeuD9OrUUVk8sbHTs4buxeKBG1AdFniq3jTiP9jjVejnbEU
-         IePA==
-X-Gm-Message-State: APjAAAW7rLMQeEOThSAwxf/muB/e2KQ+oGYI/6ksK8/WQXGh+aPELcZu
-        t5PrrApV66J5y6tu9lBFcxOOH71yc8FfTK7x54jferT4WGj+I4/dw9ucqQ4wv/YxvSKkY0QNS8F
-        J2jeEib+75j5UVcZ89AZunaQFUhhC
-X-Received: by 2002:a05:6808:285:: with SMTP id z5mr1069813oic.127.1575546472594;
-        Thu, 05 Dec 2019 03:47:52 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyk7ASDkRKiytkGLBDW2gc6iBaROV55NyFbBmb5xOf+RClHrxN4psBOeagVCH50wxJU6Nvu47+wJMJv1qBoniM=
-X-Received: by 2002:a05:6808:285:: with SMTP id z5mr1069794oic.127.1575546472307;
- Thu, 05 Dec 2019 03:47:52 -0800 (PST)
+        bh=gmDcfySFu4cZhpLYljWttxXox5YE9OQcKuIq/LT/coc=;
+        b=kZUCWlSCQnp5ARNLWWkSN4WGw1Cb58f7df6NOgY2Al1G7S/eQ9Olu/RtSh9r7gQ0xj
+         H1MTV1NwtJyb7bHu6zvWuRuRIPb0fw/KfluEbCvR9jeuiV7JS/KF7tPZQkY17S96FjjS
+         2TUOyJnlS2LBDH2y8yznSzgAN0zevNrjsawI1kRYepzvMJ+YmxBNeRqCmOacWHWoy3/I
+         dNRpPb8VoDS2XlDaEegk/sl9AG1sSVTdw2FweSJbmijoV28ix2J0Q4YfFLpussU0ujd9
+         YtNuFsK7mDptynLMDGf3s4ymduSt7lA8x20JbfFeLuY5gvHzwPBDw5nXOm6IqE53JIqA
+         12Xw==
+X-Gm-Message-State: APjAAAUEA1eWjfaZ27XlX3Ewb0atS1DfDsiCP3sO4XSoSF+MDnqXCQfR
+        FdUSpnX8FNfMA8VLjngxA2vR40e5W15bajS4bgr3
+X-Google-Smtp-Source: APXvYqxsmozelM1jQBbA3G59cIGm7jWU81K1xtvs8Sq8Y1dS9Yu6I1fHTZA8+YigfeK+zF7Hg//cW84+j6rBp+tzbtk=
+X-Received: by 2002:ac2:428d:: with SMTP id m13mr5535498lfh.64.1575554930642;
+ Thu, 05 Dec 2019 06:08:50 -0800 (PST)
 MIME-Version: 1.0
 References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
- <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com> <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Thu, 5 Dec 2019 12:48:07 +0100
-Message-ID: <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
+ <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
+ <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com> <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
+In-Reply-To: <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 5 Dec 2019 09:08:38 -0500
+Message-ID: <CAHC9VhSVsmu6hjmUAi2wM6wAkkQnUDx7MM1G8Ln9OLAzwFmz6A@mail.gmail.com>
 Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
-To:     Paul Moore <paul@paul-moore.com>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
 Cc:     Jeff Vander Stoep <jeffv@google.com>,
         SElinux list <selinux@vger.kernel.org>,
         Stephen Smalley <sds@tycho.nsa.gov>,
         Will Deacon <will@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Jovana Knezevic <jovanak@google.com>
-X-MC-Unique: hzKvEhATOnKAXqNzCYCN6w-1
-X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 5, 2019 at 12:52 AM Paul Moore <paul@paul-moore.com> wrote:
-> On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrot=
-e:
-> > On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
-> > > Thanks Jeff, as well as everyone else who contributed reviews and fee=
-dback.
+On Thu, Dec 5, 2019 at 6:47 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Thu, Dec 5, 2019 at 12:52 AM Paul Moore <paul@paul-moore.com> wrote:
+> > On Wed, Dec 4, 2019 at 4:11 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > On Tue, Dec 3, 2019 at 1:33 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > > Thanks Jeff, as well as everyone else who contributed reviews and feedback.
+> > > >
+> > > > I've pulled this into a working branch and I'll be merging it with the
+> > > > other sidtab patches before posting it to a "next-queue" branch for
+> > > > review later this week.  When done, I'll send a note to the list, as
+> > > > well as the relevant patch authors; your help in reviewing the merge
+> > > > would be greatly appreciated.
 > > >
-> > > I've pulled this into a working branch and I'll be merging it with th=
-e
-> > > other sidtab patches before posting it to a "next-queue" branch for
-> > > review later this week.  When done, I'll send a note to the list, as
-> > > well as the relevant patch authors; your help in reviewing the merge
-> > > would be greatly appreciated.
+> > > I tried doing the merge on my own here [1], you can use it as a sanity
+> > > check if we came to the same/similar result. I based it off your
+> > > existing next-queue, which contains only Jeff's patch at the time of
+> > > writing. I only build-tested it so far.
 > >
-> > I tried doing the merge on my own here [1], you can use it as a sanity
-> > check if we came to the same/similar result. I based it off your
-> > existing next-queue, which contains only Jeff's patch at the time of
-> > writing. I only build-tested it so far.
+> > Thanks, that was a good sanity check.  There are some minor diffs from
+> > what I ended up with, but nothing substantive that I can see.
+> >
+> > Although I'll be honest, the merge wasn't as bad as I thought it would
+> > be; most of the fuzz was simply due shuffling and renaming of data
+> > structures, which generally isn't too bad.  Although I'm still
+> > building the kernel to test it, so let's see if that statement still
+> > holds (although it looks like it passed Stephen's testing). ;)
+> >
+> > If you haven't noticed already, the merge currently lives in the
+> > selinux/next-queue branch; if you notice anything off, feel free to
+> > send a fixup patch.
 >
-> Thanks, that was a good sanity check.  There are some minor diffs from
-> what I ended up with, but nothing substantive that I can see.
+> It looks OK semantically when compared to my merge. I only see
+> reordering/comment/whitespace differences.
+
+Thanks for the double check.  Unfortunately my kernel build locks my
+test VM in early boot; it appears to be non-SELinux related and since
+the test build is based on selinux/next+patches (which is based off
+v5.4-rc1) I imagine there might be some unrelated problems in the
+build.  I'm going to rebase my test build to Linus' current and try
+this again.
+
+> > > Note that there are two whitespace cleanups included in the string
+> > > cache commit that I intuitively did while resolving the merge
+> > > conflicts. You might want to move those to the first commit or just
+> > > ignore them.
+> >
+> > When looking at the combined diff between the two sidtab patches and
+> > comparing it to your merge I did make a few additional small cosmetic
+> > tweaks.  Assuming the testing goes well, I'll probably go over
+> > everything one more time to make sure the style looks okay, but today
+> > I was focusing more on the correctness.
 >
-> Although I'll be honest, the merge wasn't as bad as I thought it would
-> be; most of the fuzz was simply due shuffling and renaming of data
-> structures, which generally isn't too bad.  Although I'm still
-> building the kernel to test it, so let's see if that statement still
-> holds (although it looks like it passed Stephen's testing). ;)
->
-> If you haven't noticed already, the merge currently lives in the
-> selinux/next-queue branch; if you notice anything off, feel free to
-> send a fixup patch.
+> The whitespace misalignment introduced by Jeff's patch is still there
+> in your branch. Personally, I'd prefer that we fix them now rather
+> than deferring it to a future patch, because it seems that no one ever
+> has time to bother sending whitespace fixup patches :) But I'll
+> understand it if you prefer not to touch it more than necessary, so I
+> won't fight about this further.
 
-It looks OK semantically when compared to my merge. I only see
-reordering/comment/whitespace differences.
+Like I said, I only quickly scanned the combined diff for style
+problems so it doesn't surprise me that there are still some issues.
+I'll give it a closer look once I can get a kernel build passing all
+the tests.
 
->
-> > Note that there are two whitespace cleanups included in the string
-> > cache commit that I intuitively did while resolving the merge
-> > conflicts. You might want to move those to the first commit or just
-> > ignore them.
->
-> When looking at the combined diff between the two sidtab patches and
-> comparing it to your merge I did make a few additional small cosmetic
-> tweaks.  Assuming the testing goes well, I'll probably go over
-> everything one more time to make sure the style looks okay, but today
-> I was focusing more on the correctness.
+As an aside, I keep debating doing a big style-fix patch (likely
+automated via astyle or similar, likely with some additional fixes by
+hand, and passed through checkpatch.pl) after one of the -rc1 rebases
+to clean up all these little things that have crept into the code over
+the years.  I dislike the idea of the churn that would likely bring,
+but it should make life a little bit better, and help cut down on the
+trivial "checkpatch patches" we get from time to time (although that
+really hasn't been too bad of an issue).
 
-The whitespace misalignment introduced by Jeff's patch is still there
-in your branch. Personally, I'd prefer that we fix them now rather
-than deferring it to a future patch, because it seems that no one ever
-has time to bother sending whitespace fixup patches :) But I'll
-understand it if you prefer not to touch it more than necessary, so I
-won't fight about this further.
-
->
-> > [1] https://gitlab.com/omos/linux-public/compare/selinux-next...rebase-=
-selinux-sidtab-string-cache
-
---
-Ondrej Mosnacek <omosnace at redhat dot com>
-Software Engineer, Security Technologies
-Red Hat, Inc.
-
+-- 
+paul moore
+www.paul-moore.com
