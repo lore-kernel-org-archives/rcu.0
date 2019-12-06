@@ -2,119 +2,144 @@ Return-Path: <SRS0=+k02=Z4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0DE2C43603
-	for <rcu@archiver.kernel.org>; Fri,  6 Dec 2019 15:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8135EC43603
+	for <rcu@archiver.kernel.org>; Fri,  6 Dec 2019 15:08:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9365224670
-	for <rcu@archiver.kernel.org>; Fri,  6 Dec 2019 15:06:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5393B24675
+	for <rcu@archiver.kernel.org>; Fri,  6 Dec 2019 15:08:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MHT26K87"
+	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="UbThqBv0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbfLFPGO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Dec 2019 10:06:14 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:41030 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbfLFPGO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Dec 2019 10:06:14 -0500
-Received: by mail-pf1-f194.google.com with SMTP id s18so3466541pfd.8;
-        Fri, 06 Dec 2019 07:06:13 -0800 (PST)
+        id S1726234AbfLFPIr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Dec 2019 10:08:47 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38871 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbfLFPIr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Dec 2019 10:08:47 -0500
+Received: by mail-lf1-f65.google.com with SMTP id r14so5532025lfm.5
+        for <rcu@vger.kernel.org>; Fri, 06 Dec 2019 07:08:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NOYIo2oX0lmkpQ6gBhcLLsx1plLM1LrdnXjWaPnIOcs=;
-        b=MHT26K87lCwEl81XNb2/7lgyyJ+HGDXqay2wHsbsZ8dRm00ATs1ZlFFyv15xZPFJk9
-         nTFDr6hon+qm1IWzBdl2dwnu5BNv7BFEjw0SncsazwZgtHzfQfAFZ3GJgpPUu03DNPho
-         qdLUwi860CeukpEZCkpGJeE9Feim2dUf5l8uHmHwIDqJlB5Fr9NH/yBlaP6XE1BYVG6x
-         ACcn+2FDx82wMKJ4ZYOxKCxGHpg/Yt5CAOZSriNe6Eplo/gGLLAHWfyP1zfYcM7/q+y2
-         h5w4febplE5KwP7zNw9449T5Z6facbpeD8dG5QTIRaC2bYtPP5GyHzgSMB8Xoq/DEVnU
-         53aw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tDpR9HC0N0LylNs7IQ0staMtQmWQ/+07ieameKSy+BU=;
+        b=UbThqBv0yZmZtyIEKsxCOzqk7hboUOD/OYaUUtZ3TA/d5v0YeDh3ObW9TWy2J0uJos
+         zrekA6/1LYgXyqtu+C5Fv3zWeYG57g6cTcp66wbJ4GsiKm7ZBdSHcmgoWZatSL4uonAG
+         02bcTHUPPEQeMS3XmP8Hh+obGu252d5CE2AR8uwyulCtGpXPGnGg+nU0SUCC6YyBQpx7
+         YtNAcKYHjSl+7MPC9IQI5Gv0y8IU50EPQkmOrBOps/zxI27N6knSsUyVWrmS5iKJb8t7
+         QFs8wBTi5ErjXn9SNdYLNav1K7PPir6xNVr99KlNPn/W9bSG/ohjiGT/ZbTaIl34f58t
+         Gsow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NOYIo2oX0lmkpQ6gBhcLLsx1plLM1LrdnXjWaPnIOcs=;
-        b=A+CY60Yx1Qe4WKYXMKjPPw+WAsX1uHsh772d/UFWJw9DgV0Yw+9VDJ4NK6uym6L+a3
-         kR/mcUBvxJCwNoLUTubLLKhYO9FsVKHB501OmxWj5gtbXL0qa5AtTu41JYhPQbFuPrHa
-         jaCebaJkNBW+OmJvPC5W72yWwCHXBguO0FKgNW/aPQx5z3DzfIN6Zil8ARC6ozrF7h0m
-         bbHGOLy/GiXduwjnAX6uXQNLlBmZ8k9N6ewGsuKV4CRcRenj93sBcfQ2bWE3BqZG2c10
-         YmPUdywsJuqEezoXak7DjRpiq3z+YQIm6Kguc2QTQZ+zZhP1uXKIEbqcF4Ftr05DGz7P
-         /CPQ==
-X-Gm-Message-State: APjAAAUvo/YZu6crFbWaWXCczxEM9R7S4975rLJnYm/gOS+ZOuOFlLuk
-        V/TbcGo35+IpVZi9hi2xjeU=
-X-Google-Smtp-Source: APXvYqy8tpPjWstvqzrovfQv2CmvACSWRIy2k1sQcTmQAbqG08s4QK1DYir2i89I4Ra0SG3Z6TPQYg==
-X-Received: by 2002:a63:d54f:: with SMTP id v15mr4100489pgi.64.1575644772732;
-        Fri, 06 Dec 2019 07:06:12 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:13a2:f129:b905:c312:4008:2416])
-        by smtp.gmail.com with ESMTPSA id j28sm15861041pgb.36.2019.12.06.07.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2019 07:06:12 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     paulmck@kernel.org, rostedt@goodmis.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH] rculist: Add macro list_prev_rcu
-Date:   Fri,  6 Dec 2019 20:35:54 +0530
-Message-Id: <20191206150554.10479-1-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tDpR9HC0N0LylNs7IQ0staMtQmWQ/+07ieameKSy+BU=;
+        b=BHfFECcwIIrMD8c3xcXdScqIpHLQXmk+cQ9na1+HRyFiUoylpfgio+HM5AhsdZ0ixE
+         0MqrCRYeCAYPBwWzoo32nj2r8vabtJbccCXzU9zx3sgWOV/BbqzON9iBAIKlc0av8VI0
+         52+6yQrzR1RpUk8UtR7Bc1moeO1Y/zNBL1jFGLqRhjM9hq8WvQKes15PiwCDdGiM0N35
+         KiVgDqOgPork5yU7xcMVOAq/1RHM8w85JwFSJTinSoPe467xk8wQdgWGZEjm1Akb3h8c
+         T0KlW4AydomaBTNz8mmrsoe/mI5QUPEM21armuhCgycQrgvjjlmBCvfnCWGrc6H4mASt
+         cMOw==
+X-Gm-Message-State: APjAAAWpINnRB3Kmu5STSKCYZvjAxPSiTb9lm6khDjTCO2YQJgoIB3ka
+        lJvsZtJKwhS8yvVRLUOPasPMG3gXVb8qNAI3wdnH
+X-Google-Smtp-Source: APXvYqyHuAf1U6B3Ez7ghdYr9OxWS0HPk1oGXvEPsi/mt9SJ+Vm2vIv8UKN1swaZR7yrZn9ikiGxfgVudfm3pwgUv7A=
+X-Received: by 2002:a19:f514:: with SMTP id j20mr7762466lfb.31.1575644924413;
+ Fri, 06 Dec 2019 07:08:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20191122093306.17335-1-jeffv@google.com> <CAHC9VhQ-piMePyfOeLsrAtgSCG5iWjk9xFbjOvURe3WLD-z89g@mail.gmail.com>
+ <CAFqZXNun_-aWx19UKUMfiYuQuttxCgMOoAczBAddDv3yaCZyxw@mail.gmail.com>
+ <CAHC9VhTwct8daQoXFg4JpHkWUhijQFn8D0Tq=VX989mq3TVfvg@mail.gmail.com>
+ <CAFqZXNvQV+syzOE0CGczzTvi9g65AUT8bdsG0YN6NcHzd5GVHQ@mail.gmail.com>
+ <CAHC9VhSVsmu6hjmUAi2wM6wAkkQnUDx7MM1G8Ln9OLAzwFmz6A@mail.gmail.com>
+ <CAHC9VhR+hYnLoMkAPuRNJygk+dOoNyhooNuz3Ma=F07b9gh=rA@mail.gmail.com>
+ <8257410c-025a-7250-fa78-944289e378bd@tycho.nsa.gov> <CAHC9VhREL17FH0XOUkvegY4yGeQu5p1qLdWEdnwvPw1W+bLfRA@mail.gmail.com>
+ <CAHC9VhQOb5skqQofnrESFuAqfRE1+xq9OD48JcYzq77v0XJsog@mail.gmail.com> <4257992a-e4d8-eff4-3421-61da3376d930@tycho.nsa.gov>
+In-Reply-To: <4257992a-e4d8-eff4-3421-61da3376d930@tycho.nsa.gov>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 6 Dec 2019 10:08:33 -0500
+Message-ID: <CAHC9VhQF_FzbtwF+9Q_u4EiEnNQHc2KkaoPYOCkGnB3F4Xd2JQ@mail.gmail.com>
+Subject: Re: [PATCH v9] selinux: sidtab: reverse lookup hash table
+To:     Stephen Smalley <sds@tycho.nsa.gov>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Jovana Knezevic <jovanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+On Fri, Dec 6, 2019 at 8:45 AM Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> On 12/5/19 7:50 PM, Paul Moore wrote:
+> > On Thu, Dec 5, 2019 at 1:14 PM Paul Moore <paul@paul-moore.com> wrote:
+> >> On Thu, Dec 5, 2019 at 1:10 PM Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> >>> On 12/5/19 12:41 PM, Paul Moore wrote:
+> >>>> Hmm.  I haven't done any debugging yet, but the BPF tests are failing
+> >>>> (they pass with kernel-5.5.0-0.rc0.git5.1.2.secnext.fc32.x86_64):
+> >
+> > ...
+> >
+> >>> They all pass for me (with your next-queue branch, using the
+> >>> selinux-testsuite defconfig fragment merged with the Fedora config).
+> >>
+> >> Oh goodie, I'm special :/
+> >>
+> >> FWIW, my current test kernel is the next-queue branch rebased on top
+> >> of Linus' current tree, using the latest config from the secnext
+> >> kernel builds (Fedora Rawhide + stuff for the test suite).
+> >>
+> >>> The error above doesn't look SELinux-related; it looks like your kernel
+> >>> is rejecting the trivial bpf program used in the test code as being
+> >>> invalid for some reason.
+> >>
+> >> That's where I'm at as well, I'm building an instrumented kernel right
+> >> now to try and track down the source.  I'm sure it is something silly
+> >> like a messed up kernel config or something, but I'd like to
+> >> understand *why*.
+> >
+> > I traced the "./bpf_test -p" failure down to a BTF check in the BPF
+> > verifier, there is a comment in that code block which helpfully reads:
+> > "Either gcc or pahole or kernel are broken.".
+> >
+> >   :/
+> >
+> > The relevant commit is 8580ac9404f6 ("bpf: Process in-kernel BTF"),
+> > and it appears to be new for v5.5; it isn't present in selinux/next or
+> > selinux/next-queue.  Recompiling with CONFIG_DEBUG_INFO_BTF disabled
+> > does allow "./bpf_test -p" to succeed, but I hit other BPF test
+> > failures further along.  For reasons I don't understand, the secnext
+> > kernel builds (which should have this code, and have
+> > CONFIG_DEBUG_INFO_BTF enabled) are not hitting this problem, but that
+> > may be due to differences in the build tools on the two systems
+> > (although they *should* be the same).
+> >
+> > Given that we haven't hit -rc1 yet, and everyone else's builds are
+> > working just fine, I'm going to leave this alone for now.  Whatever
+> > the problems may be, they definitely don't appear to be SELinux
+> > related.
+>
+> I re-based next-queue on top of -linus, enabled CONFIG_DEBUG_INFO_BTF,
+> rebuilt and booted new kernel, did a git clean -fdx in the
+> selinux-testsuite directory, and built/ran the testsuite; bpf tests
+> still passed for me.  This was on F31.
 
-There are instances in the linux kernel where the prev pointer
-of a list is accessed.
-Unlike list_next_rcu, a similar macro for accessing the prev
-pointer was not present.
-Therefore, directly accessing the prev pointer was causing
-sparse errors.
-One such example is the sparse error in fs/nfs/dir.c
+Thanks.  If I had another day to spend on this I'm reasonably
+confident it would end up being the result of some oddity/difference
+in the Rawhide toolchains, or ghosts.  Either way, this seems to be
+both unrelated to the SELinux changes and not something anyone else is
+seeing despite a number of different scenarios.  I still need to go
+through the two patches and cleanup some of the whitespace issues we
+talked about earlier, but barring anything weird happening (see the
+previous ghost comment) I'll merge both of these patches into
+selinux/next when the merge window closes this weekend.
 
-error:
-fs/nfs/dir.c:2353:14: error: incompatible types in comparison expression (different address spaces):
-fs/nfs/dir.c:2353:14:    struct list_head [noderef] <asn:4> *
-fs/nfs/dir.c:2353:14:    struct list_head *
-
-The error is caused due to the following line:
-
-lh = rcu_dereference(nfsi->access_cache_entry_lru.prev);
-
-After adding the macro, this error can be fixed as follows:
-
-lh = rcu_dereference(list_prev_rcu(&nfsi->access_cache_entry_lru));
-
-Therefore, we think there is a need to add this macro to rculist.h.
-
-Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
----
- include/linux/rculist.h | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 4b7ae1bf50b3..49eef8437753 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -40,6 +40,12 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
-  */
- #define list_next_rcu(list)	(*((struct list_head __rcu **)(&(list)->next)))
- 
-+/*
-+ * return the prev pointer of a list_head in an rcu safe
-+ * way, we must not access it directly
-+ */
-+#define list_prev_rcu(list)	(*((struct list_head __rcu **)(&(list)->prev)))
-+
- /*
-  * Check during list traversal that we are within an RCU reader
-  */
 -- 
-2.17.1
-
+paul moore
+www.paul-moore.com
