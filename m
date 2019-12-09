@@ -2,101 +2,101 @@ Return-Path: <SRS0=27do=Z7=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF047C43603
-	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 07:51:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C6A1C43603
+	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 18:33:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 98F1C2071E
-	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 07:51:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N79GCO9l"
+	by mail.kernel.org (Postfix) with ESMTP id 1D0392077B
+	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 18:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575916395;
+	bh=PzahWwtA6K6WkU342K07lvpv8VhPjHQjg5sJaUv03vk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=U47B3D7fl+s5sxDl0q4dRR7OdYAhqwhzISOCDYrwSdHe9PoDVmoLtYvxxivc4kbXb
+	 +rVP5Lm5vDtZYrcEZXtr6193XYchHteExj4tRjqhATme6IJ9131aD3HBa6X2EQB+Ry
+	 b1bIKitHz6vvai6u3PakfruSu8NId9imdiOV5jEY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbfLIHvE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 02:51:04 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33113 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbfLIHvE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 02:51:04 -0500
-Received: by mail-pf1-f195.google.com with SMTP id y206so6793944pfb.0;
-        Sun, 08 Dec 2019 23:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=T93KpotdGkFqtc77qF2EAzOUEnvgTHpxwI5GuqbP7b4=;
-        b=N79GCO9lrJQ9kFidXylgJv1/NvbaQAqEtR6ip+va41MyO8Wgd+bFaBgZEiMHDCDrVq
-         /O7SGbGzDccjAXV+VBWPQxIv1atxpYo3eQLR5auqJD4thxtmZvN+aL3Yytab6RYvg9lv
-         1V6p6yZ/oPNWMWtS6hQQjdoTItOaYTHN1hiV3bLulK+0xwjDK2U+yp9wJ+nWKG2Wq07f
-         G6LBjWE+zT+vPRZPAfr68TWQb/hn3uJUYymefKC/jQt7eKAhNf0qBtURZgB1PtIS0Q5e
-         DDE9Li0cONlHxzXeylpBE04Z2FrtzF8auwGonb4CCCVaDr2H5kpXJEVBustMlQqKcSlt
-         s5pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=T93KpotdGkFqtc77qF2EAzOUEnvgTHpxwI5GuqbP7b4=;
-        b=uI2hccKbWAcBaDU8OfRrNHGv9NjBAWrRVvmowIg0aX3WK6069zraJYMQPuTpsxKUnb
-         67/zyk/rNnBYSkSJYJceYmFnjxUmEGe8FfOBkJkawHLMgj6DkkjxGt3GuZy5LM14dT7F
-         4rh+mJ1N6Ky45XI+jKzApPoeDttpl5UXLJpB95WpCpmavVcdTJ4oiy15GkeRftm7FDmm
-         ichtWK822XftG2Putu1ZEXxf/ozr4q21UkhinxDVa1vaSm+7UxT257dAxqP4r05s8ria
-         WE3qB1VceWLSW1eaV1Tum7zpWSBgtpyI8aWupk1Cx3eMt1rLwqFJzkGr4KZhmu4F9uDQ
-         3VpA==
-X-Gm-Message-State: APjAAAXIz+uFDgyuUeYCkIZmAFTEkbiHs2QowUox13TOslQcKrTdR00m
-        6WMXzH82V0Iut0+ktoGQx6WJuV1DAyQ=
-X-Google-Smtp-Source: APXvYqwNTJADqjLqVulG110m73ntGwb1QV+9AeWkSqjiWMdSBPgBwYxtAeEGWPWOQtdlvx/w1QW8SQ==
-X-Received: by 2002:aa7:8096:: with SMTP id v22mr976843pff.240.1575877863074;
-        Sun, 08 Dec 2019 23:51:03 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:13bf:5229:e955:851e:da75:6e07])
-        by smtp.gmail.com with ESMTPSA id z10sm2881079pfa.184.2019.12.08.23.51.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2019 23:51:02 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     paulmck@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH] rculist.h: Add list_tail_rcu()
-Date:   Mon,  9 Dec 2019 13:20:43 +0530
-Message-Id: <20191209075043.17947-1-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726683AbfLISdO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 13:33:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbfLISdO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 13:33:14 -0500
+Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB4742077B;
+        Mon,  9 Dec 2019 18:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575916393;
+        bh=PzahWwtA6K6WkU342K07lvpv8VhPjHQjg5sJaUv03vk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ysYVaXkQCshut8JuLNzNQJ9tT7W/P39aAhGL2xDQd8zB5xnMDtfNmSWWJK1ber59S
+         qaseNdO03e+O5jyuijIF3Vvj9xFcgXFbrao+2sjlOBXfkfRNlqlvmz1aQtt5fJepal
+         IZcv9jE+9Wsn+N4+1m3Qfp9/+TZPAch3LGqZQ6hI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 62AD43522769; Mon,  9 Dec 2019 10:33:13 -0800 (PST)
+Date:   Mon, 9 Dec 2019 10:33:13 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] rculist.h: Add list_tail_rcu()
+Message-ID: <20191209183313.GL2889@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191209075043.17947-1-madhuparnabhowmik04@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209075043.17947-1-madhuparnabhowmik04@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+On Mon, Dec 09, 2019 at 01:20:43PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> 
+> This patch adds the macro list_tail_rcu() and document it.
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-This patch adds the macro list_tail_rcu() and document it.
+Queued with slight edits, thank you very much!
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
----
- include/linux/rculist.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+							Thanx, Paul
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 4b7ae1bf50b3..9f21efa525ab 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -40,6 +40,16 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
-  */
- #define list_next_rcu(list)	(*((struct list_head __rcu **)(&(list)->next)))
- 
-+/**
-+ * list_tail_rcu - returns the prev pointer of the head of the list
-+ * @head: the head of the list
-+ *
-+ * Note: This should only be used with the list header,
-+ * but only if list_del() and similar primitives are not
-+ * also used on the list header.
-+ */
-+#define list_tail_rcu(head)	(*((struct list_head __rcu **)(&(head)->prev)))
-+
- /*
-  * Check during list traversal that we are within an RCU reader
-  */
--- 
-2.17.1
-
+> ---
+>  include/linux/rculist.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index 4b7ae1bf50b3..9f21efa525ab 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -40,6 +40,16 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+>   */
+>  #define list_next_rcu(list)	(*((struct list_head __rcu **)(&(list)->next)))
+>  
+> +/**
+> + * list_tail_rcu - returns the prev pointer of the head of the list
+> + * @head: the head of the list
+> + *
+> + * Note: This should only be used with the list header,
+> + * but only if list_del() and similar primitives are not
+> + * also used on the list header.
+> + */
+> +#define list_tail_rcu(head)	(*((struct list_head __rcu **)(&(head)->prev)))
+> +
+>  /*
+>   * Check during list traversal that we are within an RCU reader
+>   */
+> -- 
+> 2.17.1
+> 
