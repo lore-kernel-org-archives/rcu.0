@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C01C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4DB4C2D0B1
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C8F1420652
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CB0920652
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575952009;
-	bh=nGo2kmgXIxoagRTq8l20EvB15yLGsqGpyLAdga1D6qw=;
+	s=default; t=1575952011;
+	bh=sPFgIz3fLu8Ou+YZ5Q//dR6+97jnvTVPTDEC6o0YHQY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=oG/vtshJGcNSntv1aBm9ESqAVGP7cEDQ80G6tWXOoEw5dEpPUI94Gg0rZYtU9LX51
-	 GsVSVA3mwbcOQGdbbWsCrBjA89zkmYvEZGnsZGvZRzwp4w1Mz8VKBK0dAiOxiGys6C
-	 f/8rIf/MTcteV3iAlDid6PVxZAjMdORGwQezO1qg=
+	b=ooNwkBZQy3V0F+GzBumWCg5tuBr5An4llAg8ruTMTTjzW5PhkpSjU81cl0C4ARdDz
+	 49JU2Fxq2xH2bbh35QGFjj0WIZOkVj/s6T3wAMvfXMnzLvzo880KCtcBRBLEQTNnVp
+	 Eq/PuRKGGzLVBz6bmP7NLkzy7F3Pfm1D4v0fO0pQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbfLJE0n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:26:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
+        id S1727145AbfLJE0i (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:26:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727047AbfLJE0j (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:26:39 -0500
+        id S1727118AbfLJE0i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:26:38 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8573524655;
-        Tue, 10 Dec 2019 04:26:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39EE524654;
+        Tue, 10 Dec 2019 04:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951999;
-        bh=nGo2kmgXIxoagRTq8l20EvB15yLGsqGpyLAdga1D6qw=;
+        s=default; t=1575951997;
+        bh=sPFgIz3fLu8Ou+YZ5Q//dR6+97jnvTVPTDEC6o0YHQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTupLXawxvHRe+E6B1i1MuklKexXcPE6KHn0gCFE/yM4+ztBGT54oZmqw/aNn/oP6
-         vRtYscRB/81ss4h5PD9W4HdXxw9I4zso2Mgekvr2+RrvfiMGRxWsLk3wsna6h88PoE
-         oT8TgR+KmEoHr0CLRTKIS6Yhvit93397lN1mosx8=
+        b=khulCWv/XHdMBEmTiqls1MVCEpH8yG8UPD7Oc0hG0wLNJ0ZF543WNbLYat9e1KZ/m
+         60V+/6lE1I+He1ivHK5i+gaS+WANhCyVGzpWcV89KPZzAcRcaDbm2YEKUj1xjK7Un+
+         QPkntoO5kbaMNNpoQBE5e8EfFEqb1ELRb/zbIzgo=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/11] rcu: Avoid tick_dep_set_cpu() misordering
-Date:   Mon,  9 Dec 2019 20:26:29 -0800
-Message-Id: <20191210042629.3808-11-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/11] rcu: Use READ_ONCE() for ->expmask in rcu_read_unlock_special()
+Date:   Mon,  9 Dec 2019 20:26:27 -0800
+Message-Id: <20191210042629.3808-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210042606.GA3624@paulmck-ThinkPad-P72>
 References: <20191210042606.GA3624@paulmck-ThinkPad-P72>
@@ -60,60 +60,32 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-In the current code, rcu_nmi_enter_common() might decide to turn on
-the tick using tick_dep_set_cpu(), but be delayed just before doing so.
-Then the grace-period kthread might notice that the CPU in question had
-in fact gone through a quiescent state, thus turning off the tick using
-tick_dep_clear_cpu().  The later invocation of tick_dep_set_cpu() would
-then incorrectly leave the tick on.
+The rcu_node structure's ->expmask field is updated only when holding the
+->lock, but is also accessed locklessly.  This means that all ->expmask
+updates must use WRITE_ONCE() and all reads carried out without holding
+->lock must use READ_ONCE().  This commit therefore changes the lockless
+->expmask read in rcu_read_unlock_special() to use READ_ONCE().
 
-This commit therefore enlists the aid of the leaf rcu_node structure's
-->lock to ensure that decisions to enable or disable the tick are
-carried out before they can be reversed.
-
+Reported-by: syzbot+99f4ddade3c22ab0cf23@syzkaller.appspotmail.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Marco Elver <elver@google.com>
 ---
- kernel/rcu/tree.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5445da2..b0e0612 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -800,8 +800,8 @@ void rcu_user_exit(void)
-  */
- static __always_inline void rcu_nmi_enter_common(bool irq)
- {
--	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	long incby = 2;
-+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c3a3271..698a7f1 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -599,7 +599,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 		struct rcu_node *rnp = rdp->mynode;
  
- 	/* Complain about underflow. */
- 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting < 0);
-@@ -828,8 +828,13 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- 	} else if (tick_nohz_full_cpu(rdp->cpu) &&
- 		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
- 		   READ_ONCE(rdp->rcu_urgent_qs) && !rdp->rcu_forced_tick) {
--		rdp->rcu_forced_tick = true;
--		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
-+		raw_spin_lock_rcu_node(rdp->mynode);
-+		// Recheck under lock.
-+		if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
-+			rdp->rcu_forced_tick = true;
-+			tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
-+		}
-+		raw_spin_unlock_rcu_node(rdp->mynode);
- 	}
- 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
- 			  rdp->dynticks_nmi_nesting,
-@@ -898,6 +903,7 @@ void rcu_irq_enter_irqson(void)
-  */
- static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
- {
-+	raw_lockdep_assert_held_rcu_node(rdp->mynode);
- 	WRITE_ONCE(rdp->rcu_urgent_qs, false);
- 	WRITE_ONCE(rdp->rcu_need_heavy_qs, false);
- 	if (tick_nohz_full_cpu(rdp->cpu) && rdp->rcu_forced_tick) {
+ 		exp = (t->rcu_blocked_node && t->rcu_blocked_node->exp_tasks) ||
+-		      (rdp->grpmask & rnp->expmask) ||
++		      (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+ 		      tick_nohz_full_cpu(rdp->cpu);
+ 		// Need to defer quiescent state until everything is enabled.
+ 		if (irqs_were_disabled && use_softirq &&
 -- 
 2.9.5
 
