@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14F91C2D0B1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FF97C2D0BF
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A896724656
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 523B224656
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575949349;
-	bh=mU6YqZke+0tGNu021ySMmB1xwlHx9nd7WnQngizhidw=;
+	s=default; t=1575949350;
+	bh=O8zSgVKAg5FjaVRPXFRAgSlpaYk/7KotlPxmPGoBjpI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=yoE6/ZbdDSbdlS0q9C1U2NHvVbSwVuUi+qbfsBxEPzIrfxGSF3Dw5qNbG7jCeloac
-	 nQKhsG/edmVZInNCayplzTfWdjhvs96WX/IrIKIlbUuSLkfyeTgpuY+EAqgzpzgRDr
-	 +qBidYCgJYRZMjffKL5QWbaLFyiU0VfmqjrEzxpg=
+	b=EWCFpRkCY3K+UUurPwfPx/3M78DvM46N5G1WIBfGDQ68wjAcxR16cuYqjQwEhJJVi
+	 DZAN1yOHFwTmiAs5zUfzmqKPCDrU+TsaiB48s7WmXBCAwI8oPnNegPrMP+j2zBU0br
+	 98ChUf/O22EFU1bIsc0Sv3R3312cq4etBuk20zH8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbfLJDm2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 22:42:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
+        id S1726974AbfLJDm3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:42:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727139AbfLJDm2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 22:42:28 -0500
+        id S1727181AbfLJDm3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:42:29 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A91D24654;
+        by mail.kernel.org (Postfix) with ESMTPSA id C5BF9222C4;
         Tue, 10 Dec 2019 03:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575949347;
-        bh=mU6YqZke+0tGNu021ySMmB1xwlHx9nd7WnQngizhidw=;
+        s=default; t=1575949348;
+        bh=O8zSgVKAg5FjaVRPXFRAgSlpaYk/7KotlPxmPGoBjpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VXjOO30xAtVl4fJSAS9yyJI0Gi0VKwtpgCoAInfF2O0NUOro7IdMSSPHu5YjwJTyp
-         nplcOR7KA+GCk+aRBnKWBr99EjZRk1cA0799FbJ0tGYNZaSdhmj7AtN/WM6VfZ2I+x
-         zNzKv3ks1QNeepHhyOTXF1DBsjEIcdG9Lbjp+riU=
+        b=xIAsa6lJroSRwfUyaYatY1AIbzHZRRUDhGm0/tEZFSHLsBEPDuMVXSUGV6oX4BrWy
+         rle21P0MNI49Il0Kkxb/HBFjLcdXe0tuxniloaWr4dJso6SvMeVmHZLIq2yZCJuE+P
+         FuQYemvdvRpQ1jeLC5zesB/0wpZAbfk+8LFdZsOw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/12] torture: Allow "CFLIST" to specify default list of scenarios
-Date:   Mon,  9 Dec 2019 19:42:16 -0800
-Message-Id: <20191210034217.405-11-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/12] torture: Hoist calls to lscpu to higher-level kvm.sh script
+Date:   Mon,  9 Dec 2019 19:42:17 -0800
+Message-Id: <20191210034217.405-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210034119.GA32711@paulmck-ThinkPad-P72>
 References: <20191210034119.GA32711@paulmck-ThinkPad-P72>
@@ -60,76 +60,75 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-On a large system, it can be convenient to tell rcutorture to run
-several instances of the default scenarios.  Currently, this requires
-explicitly listing them, for example, "--configs '2*SRCU-N 2*SRCU-P...'".
-Although this works, it is rather inconvenient.
-
-This commit therefore allows "CFLIST" to be specified to indicate the
-default list of scenarios called out in the relevant CFLIST file, for
-example, for RCU, tools/testing/selftests/rcutorture/configs/rcu/CFLIST.
-In addition, multipliers may be used to run multiple instances of all
-the scenarios.  For example, on a 256-CPU system, "--configs '3*CFLIST'"
-would run three instances of each scenario concurrently with one CPU
-left over.  Thus "--configs '3*CFLIST TINY01'" would exactly consume all
-256 CPUs, which makes rcutorture's jitter feature more effective.
+On some kernels, concurrent calls to the lscpu command result in severe
+slowdowns.  For example, on v4.16, a single lscpu invocation takes about
+two milliseconds, four concurrent invocations more than two seconds,
+and 16 concurrent invocations more than 20 seconds.  Given that the only
+goal is to learn the number of CPUs, invoking lscpu but once suffices.
+This commit therefore invokes lscpu early in kvm.sh execution, setting
+the initial value of the TORTURE_ALLOTED_CPUS environment variable.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh |  7 +++----
+ tools/testing/selftests/rcutorture/bin/kvm.sh            | 11 ++++++++---
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 1d98992..e035230 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -133,11 +133,10 @@ fi
+ qemu_args="-enable-kvm -nographic $qemu_args"
+ cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
+ cpu_count=`configfrag_boot_cpus "$boot_args" "$config_template" "$cpu_count"`
+-vcpus=`identify_qemu_vcpus`
+-if test $cpu_count -gt $vcpus
++if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
+ then
+-	echo CPU count limited from $cpu_count to $vcpus | tee -a $resdir/Warnings
+-	cpu_count=$vcpus
++	echo CPU count limited from $cpu_count to $TORTURE_ALLOTED_CPUS | tee -a $resdir/Warnings
++	cpu_count=$TORTURE_ALLOTED_CPUS
+ fi
+ qemu_args="`specify_qemu_cpus "$QEMU" "$qemu_args" "$cpu_count"`"
+ 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 7251858..e19151c 100755
+index e19151c..78d18ab 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -198,9 +198,10 @@ fi
+@@ -24,7 +24,9 @@ dur=$((30*60))
+ dryrun=""
+ KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+ PATH=${KVM}/bin:$PATH; export PATH
+-TORTURE_ALLOTED_CPUS=""
++. functions.sh
++
++TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
+ TORTURE_DEFCONFIG=defconfig
+ TORTURE_BOOT_IMAGE=""
+ TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
+@@ -40,8 +42,6 @@ cpus=0
+ ds=`date +%Y.%m.%d-%H:%M:%S`
+ jitter="-1"
  
- CONFIGFRAG=${KVM}/configs/${TORTURE_SUITE}; export CONFIGFRAG
- 
-+defaultconfigs="`tr '\012' ' ' < $CONFIGFRAG/CFLIST`"
- if test -z "$configs"
- then
--	configs="`cat $CONFIGFRAG/CFLIST`"
-+	configs=$defaultconfigs
- fi
- 
- if test -z "$resdir"
-@@ -209,7 +210,7 @@ then
- fi
- 
- # Create a file of test-name/#cpus pairs, sorted by decreasing #cpus.
--touch $T/cfgcpu
-+configs_derep=
- for CF in $configs
- do
- 	case $CF in
-@@ -222,15 +223,21 @@ do
- 		CF1=$CF
+-. functions.sh
+-
+ usage () {
+ 	echo "Usage: $scriptname optional arguments:"
+ 	echo "       --bootargs kernel-boot-arguments"
+@@ -93,6 +93,11 @@ do
+ 		checkarg --cpus "(number)" "$#" "$2" '^[0-9]*$' '^--'
+ 		cpus=$2
+ 		TORTURE_ALLOTED_CPUS="$2"
++		max_cpus="`identify_qemu_vcpus`"
++		if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
++		then
++			TORTURE_ALLOTED_CPUS=$max_cpus
++		fi
+ 		shift
  		;;
- 	esac
-+	for ((cur_rep=0;cur_rep<$config_reps;cur_rep++))
-+	do
-+		configs_derep="$configs_derep $CF1"
-+	done
-+done
-+touch $T/cfgcpu
-+configs_derep="`echo $configs_derep | sed -e "s/\<CFLIST\>/$defaultconfigs/g"`"
-+for CF1 in $configs_derep
-+do
- 	if test -f "$CONFIGFRAG/$CF1"
- 	then
- 		cpu_count=`configNR_CPUS.sh $CONFIGFRAG/$CF1`
- 		cpu_count=`configfrag_boot_cpus "$TORTURE_BOOTARGS" "$CONFIGFRAG/$CF1" "$cpu_count"`
- 		cpu_count=`configfrag_boot_maxcpus "$TORTURE_BOOTARGS" "$CONFIGFRAG/$CF1" "$cpu_count"`
--		for ((cur_rep=0;cur_rep<$config_reps;cur_rep++))
--		do
--			echo $CF1 $cpu_count >> $T/cfgcpu
--		done
-+		echo $CF1 $cpu_count >> $T/cfgcpu
- 	else
- 		echo "The --configs file $CF1 does not exist, terminating."
- 		exit 1
+ 	--datestamp)
 -- 
 2.9.5
 
