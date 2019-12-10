@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C82C3F68F
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 750A7C2D0BE
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4CA620726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 41BC720726
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575951627;
-	bh=3j+nyDWKXqIsqOHBFtLIdJnOJK5V2lrF9xMWdZQgmXE=;
+	s=default; t=1575951628;
+	bh=BDReUdnaJUFqWGBCbhb2xo/YCPUh9AgdHIKKe3dNJIM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=gh5hbFAQExRUraALBzHpUoF32EWGRdfxX7iTHZrFBQjCxA64HiYHVcob9d/edDmxT
-	 bmz5PGFrd8VBujuIA864mgOU3LnNs3aKOhEJQih9FGjh88zQiZicWab75Pc7VUGItT
-	 T35Um2fOhMRu6UtBDvB5U+bVGLhfef042FGxjdIk=
+	b=KDI/JrkIdsDPkKkkXmXfgSQSb+dBoaeA5FN8UOHEB3NHkhn8sEGF5HE07oDKXlByB
+	 CPBDnPk4TeUdObnTZImigqxMr/pG/cxh6JdH5UjimPkqR3QgOKwJ/pnphLpPXB4kNx
+	 Wj8+7lxOJS6rAcTXlBWjuD0H6sGKUk0a2SA/AS7I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbfLJEUJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:20:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
+        id S1726959AbfLJEU1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:20:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727061AbfLJEUJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727076AbfLJEUJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 9 Dec 2019 23:20:09 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF17721556;
-        Tue, 10 Dec 2019 04:20:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 617C3214D8;
+        Tue, 10 Dec 2019 04:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951608;
-        bh=3j+nyDWKXqIsqOHBFtLIdJnOJK5V2lrF9xMWdZQgmXE=;
+        s=default; t=1575951609;
+        bh=BDReUdnaJUFqWGBCbhb2xo/YCPUh9AgdHIKKe3dNJIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lsk91IgUVBkujM97Mcza/CQD+FgNCi0BsnzV+NREI2n29V8VgkM/iXLtKmOA9fSSm
-         zzpXSTymdGBEviMXrt0qfhpqrBUmSVhZlm9e2fJBFX++by8bfsn7GWII9KnmUKnhym
-         B3kF8dyoCltRJod+/YLbCAS7mBkg+gh1xsG8KnWA=
+        b=vntOJ4Sl9DUwzaJFTfWQcNNtlSgaTHE68Rk3Vluw7nO6azGtrIOGxn94cdVN0Sjwj
+         kU2shBe4vqNSEr2teo/N2u9AxjOxyLLwOIdMUKXqbrXGO0LoCQAKPjIecfrHV37CVI
+         48qJ4Anyp2O+PbiA3UIgZAftRTZI7GtkOGm6Cgqo=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 6/9] rcu: Add a hlist_nulls_unhashed_lockless() function
-Date:   Mon,  9 Dec 2019 20:19:59 -0800
-Message-Id: <20191210042002.3490-6-paulmck@kernel.org>
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 7/9] rculist_nulls: Add docbook comments
+Date:   Mon,  9 Dec 2019 20:20:00 -0800
+Message-Id: <20191210042002.3490-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210041938.GA3367@paulmck-ThinkPad-P72>
 References: <20191210041938.GA3367@paulmck-ThinkPad-P72>
@@ -58,56 +59,39 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-This commit adds an hlist_nulls_unhashed_lockless() to allow lockless
-checking for whether or note an hlist_nulls_node is hashed or not.
-While in the area, this commit also adds a docbook comment to the existing
-hlist_nulls_unhashed() function.
+This patch adds docbook comment headers for hlist_nulls_first_rcu()
+and hlist_nulls_next_rcu() in rculist_nulls.h.
 
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/list_nulls.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ include/linux/rculist_nulls.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index 1ecd356..fa6e847 100644
---- a/include/linux/list_nulls.h
-+++ b/include/linux/list_nulls.h
-@@ -56,11 +56,33 @@ static inline unsigned long get_nulls_value(const struct hlist_nulls_node *ptr)
- 	return ((unsigned long)ptr) >> 1;
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index 517a06f..25952c4 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+ 	}
  }
  
 +/**
-+ * hlist_nulls_unhashed - Has node been removed and reinitialized?
-+ * @h: Node to be checked
-+ *
-+ * Not that not all removal functions will leave a node in unhashed state.
-+ * For example, hlist_del_init_rcu() leaves the node in unhashed state,
-+ * but hlist_nulls_del() does not.
++ * hlist_nulls_first_rcu - returns the first element of the hash list.
++ * @head: the head of the list.
 + */
- static inline int hlist_nulls_unhashed(const struct hlist_nulls_node *h)
- {
- 	return !h->pprev;
- }
+ #define hlist_nulls_first_rcu(head) \
+ 	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
  
 +/**
-+ * hlist_nulls_unhashed_lockless - Has node been removed and reinitialized?
-+ * @h: Node to be checked
-+ *
-+ * Not that not all removal functions will leave a node in unhashed state.
-+ * For example, hlist_del_init_rcu() leaves the node in unhashed state,
-+ * but hlist_nulls_del() does not.  Unlike hlist_nulls_unhashed(), this
-+ * function may be used locklessly.
++ * hlist_nulls_next_rcu - returns the element of the list after @node.
++ * @node: element of the list.
 + */
-+static inline int hlist_nulls_unhashed_lockless(const struct hlist_nulls_node *h)
-+{
-+	return !READ_ONCE(h->pprev);
-+}
-+
- static inline int hlist_nulls_empty(const struct hlist_nulls_head *h)
- {
- 	return is_a_nulls(READ_ONCE(h->first));
+ #define hlist_nulls_next_rcu(node) \
+ 	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
+ 
 -- 
 2.9.5
 
