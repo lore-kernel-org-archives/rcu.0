@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4DB4C2D0B1
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B66FFC43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8CB0920652
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C8AA20652
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575952011;
-	bh=sPFgIz3fLu8Ou+YZ5Q//dR6+97jnvTVPTDEC6o0YHQY=;
+	s=default; t=1575952015;
+	bh=hgkAaJEz97Y8JjBEQncErJDImLBC+X2C78Qsvhtd/YM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ooNwkBZQy3V0F+GzBumWCg5tuBr5An4llAg8ruTMTTjzW5PhkpSjU81cl0C4ARdDz
-	 49JU2Fxq2xH2bbh35QGFjj0WIZOkVj/s6T3wAMvfXMnzLvzo880KCtcBRBLEQTNnVp
-	 Eq/PuRKGGzLVBz6bmP7NLkzy7F3Pfm1D4v0fO0pQ=
+	b=nxjpApv/puEsajT+USV8dSolZ0GpTWv4QpTVFKIAorTqLDrJQkWfTdXugLR+/Oask
+	 hRd0YXGWu9tv+CnIrNupYbdB655nMvlMZAIGNNTN64XIPI0K+i+CFm80hLZjLSEYCy
+	 SAUpzMzSjyDD86YtRld6CwGGkLTfOGkAQAQuARn4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbfLJE0i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:26:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
+        id S1726819AbfLJE0z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:26:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbfLJE0i (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:26:38 -0500
+        id S1727076AbfLJE0h (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:26:37 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39EE524654;
-        Tue, 10 Dec 2019 04:26:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AE8220828;
+        Tue, 10 Dec 2019 04:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1575951997;
-        bh=sPFgIz3fLu8Ou+YZ5Q//dR6+97jnvTVPTDEC6o0YHQY=;
+        bh=hgkAaJEz97Y8JjBEQncErJDImLBC+X2C78Qsvhtd/YM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khulCWv/XHdMBEmTiqls1MVCEpH8yG8UPD7Oc0hG0wLNJ0ZF543WNbLYat9e1KZ/m
-         60V+/6lE1I+He1ivHK5i+gaS+WANhCyVGzpWcV89KPZzAcRcaDbm2YEKUj1xjK7Un+
-         QPkntoO5kbaMNNpoQBE5e8EfFEqb1ELRb/zbIzgo=
+        b=BOE5agW5ZPfi2AzZOi48XO4WpXvQlyNEl5o8a3sAoew5xw3hnetXDbN4tTt92cztW
+         eP+bq8ZS3u6MP0s4XSTra2SViRQSKjQHMwnG4utB9TgC/wXNupBC2JD9c2Fg6wPpgs
+         Tmajg354JHouua8XI/4TAS+ULZpe7eb+kEk7btEA=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/11] rcu: Use READ_ONCE() for ->expmask in rcu_read_unlock_special()
-Date:   Mon,  9 Dec 2019 20:26:27 -0800
-Message-Id: <20191210042629.3808-9-paulmck@kernel.org>
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/11] rcu: Clear ->rcu_read_unlock_special only once
+Date:   Mon,  9 Dec 2019 20:26:26 -0800
+Message-Id: <20191210042629.3808-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210042606.GA3624@paulmck-ThinkPad-P72>
 References: <20191210042606.GA3624@paulmck-ThinkPad-P72>
@@ -58,34 +59,62 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The rcu_node structure's ->expmask field is updated only when holding the
-->lock, but is also accessed locklessly.  This means that all ->expmask
-updates must use WRITE_ONCE() and all reads carried out without holding
-->lock must use READ_ONCE().  This commit therefore changes the lockless
-->expmask read in rcu_read_unlock_special() to use READ_ONCE().
+In rcu_preempt_deferred_qs_irqrestore(), ->rcu_read_unlock_special is
+cleared one piece at a time.  Given that the "if" statements in this
+function use the copy in "special", this commit removes the clearing
+of the individual pieces in favor of clearing ->rcu_read_unlock_special
+in one go just after it has been determined to be non-zero.
 
-Reported-by: syzbot+99f4ddade3c22ab0cf23@syzkaller.appspotmail.com
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Marco Elver <elver@google.com>
 ---
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c3a3271..698a7f1 100644
+index 7487c79..c3a3271 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -599,7 +599,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
- 		struct rcu_node *rnp = rdp->mynode;
+@@ -444,16 +444,9 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 		local_irq_restore(flags);
+ 		return;
+ 	}
+-	t->rcu_read_unlock_special.b.exp_hint = false;
+-	t->rcu_read_unlock_special.b.deferred_qs = false;
+-	if (special.b.need_qs) {
++	t->rcu_read_unlock_special.s = 0;
++	if (special.b.need_qs)
+ 		rcu_qs();
+-		t->rcu_read_unlock_special.b.need_qs = false;
+-		if (!t->rcu_read_unlock_special.s && !rdp->exp_deferred_qs) {
+-			local_irq_restore(flags);
+-			return;
+-		}
+-	}
  
- 		exp = (t->rcu_blocked_node && t->rcu_blocked_node->exp_tasks) ||
--		      (rdp->grpmask & rnp->expmask) ||
-+		      (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
- 		      tick_nohz_full_cpu(rdp->cpu);
- 		// Need to defer quiescent state until everything is enabled.
- 		if (irqs_were_disabled && use_softirq &&
+ 	/*
+ 	 * Respond to a request by an expedited grace period for a
+@@ -461,17 +454,11 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 	 * tasks are handled when removing the task from the
+ 	 * blocked-tasks list below.
+ 	 */
+-	if (rdp->exp_deferred_qs) {
++	if (rdp->exp_deferred_qs)
+ 		rcu_report_exp_rdp(rdp);
+-		if (!t->rcu_read_unlock_special.s) {
+-			local_irq_restore(flags);
+-			return;
+-		}
+-	}
+ 
+ 	/* Clean up if blocked during RCU read-side critical section. */
+ 	if (special.b.blocked) {
+-		t->rcu_read_unlock_special.b.blocked = false;
+ 
+ 		/*
+ 		 * Remove this task from the list it blocked on.  The task
 -- 
 2.9.5
 
