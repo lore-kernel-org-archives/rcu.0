@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208D5C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BCA8C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:02:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E7FF020726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:01:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7063C2077B
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950518;
-	bh=RX8i7uMUEjXP+6qIejQGL9lkVE4XXjHZhPVNvQaD7QI=;
+	s=default; t=1575950523;
+	bh=m2GXoSyuxJbV9GL011u2OK+TshJgf3LR/XQ5uYfnR1Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=tz8XFFGwZ70MSrX9APS6q4LzWkflYOdsVNU7l5SBHHjjyR3+Rxp6G0j76IJjKKo2n
-	 bYlr/ptqUNLU1RQHByjRFM8XXaR6uuRD5uU8rhn79ZfM7l49GVjYPIboFNfKLfmbOG
-	 XN528aFqM93OiaRO+5ZM8lqn5iHc1E1NcrP83hdQ=
+	b=OYxL7siMpPp1pxL/JPIpPBgA0w/E8zlSSBhPCar3nDo/5osTvZ9Wqrs9H0BCHSbRa
+	 Aq/xsF1gjn3J9lnybEJen5LKW+aSDTZlx9DDkQRbApPm/vczubX0nNpRZUSSbUahi2
+	 H7FKNozTCjK4GhvXQySmY55mGmyvN1+1XvZfZvJM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbfLJEB5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:01:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41390 "EHLO mail.kernel.org"
+        id S1727053AbfLJECC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:02:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbfLJEB5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:01:57 -0500
+        id S1726989AbfLJECC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:02:02 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38CE3205C9;
-        Tue, 10 Dec 2019 04:01:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A88DB214D8;
+        Tue, 10 Dec 2019 04:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950516;
-        bh=RX8i7uMUEjXP+6qIejQGL9lkVE4XXjHZhPVNvQaD7QI=;
+        s=default; t=1575950521;
+        bh=m2GXoSyuxJbV9GL011u2OK+TshJgf3LR/XQ5uYfnR1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wz66kMYkjt5tOqSJPV/XybuYU1xScJVV5uQOMeydooZV9TYj372CazKe1cXPDWWQT
-         qF0YzbAEiwXR1bR8/ATmgRsxYaMxO8qcQIbw8kODEaHFN5DH6Ex40th1hpKoNOHnW5
-         DajXfqVoWoAs8cyv2+tbDgkjOozRHzBsdtmApRq8=
+        b=Kc/tq1xbJEGaYDK4dsApB34Mss7gP2wVa0IoPZ37YBEHSnL9q75BVdCJdPXH26UTK
+         IqSVkU2/iuxDqAfIzmav4rv7ynSsFEvpRnKL/LEXCxI1k6endaK9M0jqVxEq463UXY
+         VZa1cXLgRDW7QTsPS0X1b5kEBc5SPZ/wbT33gUx8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/10] rcu: Use *_ONCE() to protect lockless ->expmask accesses
-Date:   Mon,  9 Dec 2019 20:01:45 -0800
-Message-Id: <20191210040154.2498-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/10] rcu: Update tree_exp.h function-header comments
+Date:   Mon,  9 Dec 2019 20:01:52 -0800
+Message-Id: <20191210040154.2498-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040122.GA2419@paulmck-ThinkPad-P72>
 References: <20191210040122.GA2419@paulmck-ThinkPad-P72>
@@ -60,103 +60,101 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_node structure's ->expmask field is accessed locklessly when
-starting a new expedited grace period and when reporting an expedited
-RCU CPU stall warning.  This commit therefore handles the former by
-taking a snapshot of ->expmask while the lock is held and the latter
-by applying READ_ONCE() to lockless reads and WRITE_ONCE() to the
-corresponding updates.
+The function-header comments in kernel/rcu/tree_exp.h have gotten a bit
+out of date, so this commit updates a number of them.
 
-Link: https://lore.kernel.org/lkml/CANpmjNNmSOagbTpffHr4=Yedckx9Rm2NuGqC9UqE+AOz5f1-ZQ@mail.gmail.com
-Reported-by: syzbot+134336b86f728d6e55a0@syzkaller.appspotmail.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Marco Elver <elver@google.com>
 ---
- kernel/rcu/tree_exp.h | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ kernel/rcu/tree_exp.h | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index d632cd0..69c5aa6 100644
+index 3923c07..1eafbcd 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
-@@ -134,7 +134,7 @@ static void __maybe_unused sync_exp_reset_tree(void)
- 	rcu_for_each_node_breadth_first(rnp) {
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		WARN_ON_ONCE(rnp->expmask);
--		rnp->expmask = rnp->expmaskinit;
-+		WRITE_ONCE(rnp->expmask, rnp->expmaskinit);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
- }
-@@ -211,7 +211,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
- 		rnp = rnp->parent;
- 		raw_spin_lock_rcu_node(rnp); /* irqs already disabled */
- 		WARN_ON_ONCE(!(rnp->expmask & mask));
--		rnp->expmask &= ~mask;
-+		WRITE_ONCE(rnp->expmask, rnp->expmask & ~mask);
- 	}
+@@ -21,7 +21,7 @@ static void rcu_exp_gp_seq_start(void)
  }
  
-@@ -241,7 +241,7 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return;
- 	}
--	rnp->expmask &= ~mask;
-+	WRITE_ONCE(rnp->expmask, rnp->expmask & ~mask);
- 	__rcu_report_exp_rnp(rnp, wake, flags); /* Releases rnp->lock. */
+ /*
+- * Return then value that expedited-grace-period counter will have
++ * Return the value that the expedited-grace-period counter will have
+  * at the end of the current grace period.
+  */
+ static __maybe_unused unsigned long rcu_exp_gp_seq_endval(void)
+@@ -39,7 +39,9 @@ static void rcu_exp_gp_seq_end(void)
  }
  
-@@ -372,12 +372,10 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ /*
+- * Take a snapshot of the expedited-grace-period counter.
++ * Take a snapshot of the expedited-grace-period counter, which is the
++ * earliest value that will indicate that a full grace period has
++ * elapsed since the current time.
+  */
+ static unsigned long rcu_exp_gp_seq_snap(void)
+ {
+@@ -143,22 +145,18 @@ static void __maybe_unused sync_exp_reset_tree(void)
+  * Return non-zero if there is no RCU expedited grace period in progress
+  * for the specified rcu_node structure, in other words, if all CPUs and
+  * tasks covered by the specified rcu_node structure have done their bit
+- * for the current expedited grace period.  Works only for preemptible
+- * RCU -- other RCU implementation use other means.
+- *
+- * Caller must hold the specificed rcu_node structure's ->lock
++ * for the current expedited grace period.
+  */
+ static bool sync_rcu_exp_done(struct rcu_node *rnp)
+ {
+ 	raw_lockdep_assert_held_rcu_node(rnp);
+-
+ 	return rnp->exp_tasks == NULL &&
+ 	       READ_ONCE(rnp->expmask) == 0;
+ }
  
- 	/* IPI the remaining CPUs for expedited quiescent state. */
--	for_each_leaf_node_cpu_mask(rnp, cpu, rnp->expmask) {
-+	for_each_leaf_node_cpu_mask(rnp, cpu, mask_ofl_ipi) {
- 		unsigned long mask = leaf_node_cpu_bit(rnp, cpu);
- 		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ /*
+- * Like sync_rcu_exp_done(), but this function assumes the caller doesn't
+- * hold the rcu_node's ->lock, and will acquire and release the lock itself
++ * Like sync_rcu_exp_done(), but where the caller does not hold the
++ * rcu_node's ->lock.
+  */
+ static bool sync_rcu_exp_done_unlocked(struct rcu_node *rnp)
+ {
+@@ -180,8 +178,6 @@ static bool sync_rcu_exp_done_unlocked(struct rcu_node *rnp)
+  * which the task was queued or to one of that rcu_node structure's ancestors,
+  * recursively up the tree.  (Calm down, calm down, we do the recursion
+  * iteratively!)
+- *
+- * Caller must hold the specified rcu_node structure's ->lock.
+  */
+ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
+ 				 bool wake, unsigned long flags)
+@@ -189,6 +185,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
+ {
+ 	unsigned long mask;
  
--		if (!(mask_ofl_ipi & mask))
--			continue;
- retry_ipi:
- 		if (rcu_dynticks_in_eqs_since(rdp, rdp->exp_dynticks_snap)) {
- 			mask_ofl_test |= mask;
-@@ -491,7 +489,7 @@ static void synchronize_sched_expedited_wait(void)
- 				struct rcu_data *rdp;
++	raw_lockdep_assert_held_rcu_node(rnp);
+ 	for (;;) {
+ 		if (!sync_rcu_exp_done(rnp)) {
+ 			if (!rnp->expmask)
+@@ -452,6 +449,10 @@ static void sync_rcu_exp_select_cpus(void)
+ 			flush_work(&rnp->rew.rew_work);
+ }
  
- 				mask = leaf_node_cpu_bit(rnp, cpu);
--				if (!(rnp->expmask & mask))
-+				if (!(READ_ONCE(rnp->expmask) & mask))
- 					continue;
- 				ndetected++;
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
-@@ -503,7 +501,8 @@ static void synchronize_sched_expedited_wait(void)
- 		}
- 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
- 			jiffies - jiffies_start, rcu_state.expedited_sequence,
--			rnp_root->expmask, ".T"[!!rnp_root->exp_tasks]);
-+			READ_ONCE(rnp_root->expmask),
-+			".T"[!!rnp_root->exp_tasks]);
- 		if (ndetected) {
- 			pr_err("blocking rcu_node structures:");
- 			rcu_for_each_node_breadth_first(rnp) {
-@@ -513,7 +512,7 @@ static void synchronize_sched_expedited_wait(void)
- 					continue;
- 				pr_cont(" l=%u:%d-%d:%#lx/%c",
- 					rnp->level, rnp->grplo, rnp->grphi,
--					rnp->expmask,
-+					READ_ONCE(rnp->expmask),
- 					".T"[!!rnp->exp_tasks]);
- 			}
- 			pr_cont("\n");
-@@ -521,7 +520,7 @@ static void synchronize_sched_expedited_wait(void)
- 		rcu_for_each_leaf_node(rnp) {
- 			for_each_leaf_node_possible_cpu(rnp, cpu) {
- 				mask = leaf_node_cpu_bit(rnp, cpu);
--				if (!(rnp->expmask & mask))
-+				if (!(READ_ONCE(rnp->expmask) & mask))
- 					continue;
- 				dump_cpu_task(cpu);
- 			}
++/*
++ * Wait for the expedited grace period to elapse, issuing any needed
++ * RCU CPU stall warnings along the way.
++ */
+ static void synchronize_sched_expedited_wait(void)
+ {
+ 	int cpu;
+@@ -781,7 +782,7 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+  * implementations, it is still unfriendly to real-time workloads, so is
+  * thus not recommended for any sort of common-case code.  In fact, if
+  * you are using synchronize_rcu_expedited() in a loop, please restructure
+- * your code to batch your updates, and then Use a single synchronize_rcu()
++ * your code to batch your updates, and then use a single synchronize_rcu()
+  * instead.
+  *
+  * This has the same semantics as (but is more brutal than) synchronize_rcu().
 -- 
 2.9.5
 
