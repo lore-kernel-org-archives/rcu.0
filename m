@@ -1,90 +1,102 @@
-Return-Path: <SRS0=27do=Z7=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=BMES=2A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56527C43603
-	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 21:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF035C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:41:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 294D4206D5
-	for <rcu@archiver.kernel.org>; Mon,  9 Dec 2019 21:19:01 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore-com.20150623.gappssmtp.com header.i=@paul-moore-com.20150623.gappssmtp.com header.b="oqcuQem8"
+	by mail.kernel.org (Postfix) with ESMTP id A28CE2080D
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575949281;
+	bh=DY6Mgd1bV3eKe7dD6rRjdTCDg7hrEmmsv83if/ODO+A=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=iYDDwhmZrN09Zufb5kGfBkE9c7MTikoxcej4anIwzZG0Zpt6WJQurwCvkvU9JDyVG
+	 B25zVSEztybR74d6KinEoMg4wdxZc8CHzTTRwJtQy+OQzSzBp+P30sTi6KMCU1KCDA
+	 KOmukrzu4tuMq8KiTE2vIBpljWEXTcxLgBlOGyg4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbfLIVTA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 16:19:00 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42654 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbfLIVTA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 16:19:00 -0500
-Received: by mail-lf1-f66.google.com with SMTP id y19so11869200lfl.9
-        for <rcu@vger.kernel.org>; Mon, 09 Dec 2019 13:18:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=etPxM7JTRJC9PaahnpBnJTghBkh947eZxG1jtsdTjI8=;
-        b=oqcuQem8yozPTswlgFIKPcb4zRGL5LpvHXCuvJm2xSKwbz6hLPru1d9M7aMqOmH0qB
-         CbEMCdFXR4xxv1DsPZcx3gI9B83cIExckC+uAu1EfehZCv0Ba2sqICKjtlRl2G0u7Hqd
-         91AiPx0vL23VehtNaFr0T9RE4sMDIpXGQ6eu3ReONTd9NHaDjKXA91+Bm30PKl4Fgrxx
-         A1YBPum7p7zwXUZSWAs0YUPAMzIHyzvaVYdvV4Zage/WejN9sdZ9+8NsV82K1q2vfohH
-         YZ6Ig7pbJi4X12iGWoM96NrHDubNL9V9giaTqWw6SKxrA7Czic/l5VMjbtpxb/jR5GWN
-         SM2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=etPxM7JTRJC9PaahnpBnJTghBkh947eZxG1jtsdTjI8=;
-        b=SCfsJcQuBDpFwETg+TaQqUgFRvccN2l8LYh/E83KklsSlaIEkXC+otrSDWOfaFavgC
-         QZ18UBijnKVGS5H8m/jh/gQSFmH6mO+m2HN66d+oQPELfCtwbNKLtWRKPHiQS9JD+arf
-         zP8TusNr/hgBQcrREFag7nuylVWIZUvGYSRiWzY4KJrsoNkElKSCWHWkpmVBrZYkFw6o
-         1sd6C3fgiYcAfDHs/laOoUtGSOmJv5EeQlJKud/f70raa1RqQghtq07a2jdW7KSssI2d
-         gp2ptgxI+lfeu3YmxppCH2mUgjXFOKqs+cA9fKGX6z+tACCVmZVEJW0OkyUfweQuhSCU
-         hJzQ==
-X-Gm-Message-State: APjAAAUtW0ffWPBQ905jbLKVdY6mFhk9E8GgMfe5jwkO3nWm2auckVG4
-        Fj8l2JTlap2mT1u1TRCEWBgV7am4Y05nqyvREo4j
-X-Google-Smtp-Source: APXvYqwN01WorvP4A75QXKj+g4bLf4ZZT6ACOZaQFUZ1S6zhYZI4eQs3tf0XYXVOYmW+6QeJvcAY+W25B+ONZIglVzQ=
-X-Received: by 2002:ac2:428d:: with SMTP id m13mr17054433lfh.64.1575926338811;
- Mon, 09 Dec 2019 13:18:58 -0800 (PST)
+        id S1727268AbfLJDlU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:41:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727274AbfLJDlU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:41:20 -0500
+Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A102420692;
+        Tue, 10 Dec 2019 03:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575949279;
+        bh=DY6Mgd1bV3eKe7dD6rRjdTCDg7hrEmmsv83if/ODO+A=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=yX7efwEvgFLso8YyZeWALcH3/4deB0wNLdtTdpUtb0gNDkjZBrZv/ZcrJUB16kGSQ
+         Upab0Yt4VmJ8ZLJpocbG9/RCCXyA8t5mMuw181p1Fe4Ge6N3Icm3tQVUpZNVauKVNE
+         V1Tv8093X1w5bwDp1UNcP2bc/FsTWD5TNM/+E2hw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3030E3522768; Mon,  9 Dec 2019 19:41:19 -0800 (PST)
+Date:   Mon, 9 Dec 2019 19:41:19 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/12] Torture-test updates for v5.6
+Message-ID: <20191210034119.GA32711@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20191126135700.743238-1-omosnace@redhat.com> <7ea9d889-c226-68a3-7dfc-3c507eefa53f@tycho.nsa.gov>
- <CAHC9VhQvoMaH8ioQhExFV_noRXvcpro1yJ59vxrJCaT+-Mhzug@mail.gmail.com>
-In-Reply-To: <CAHC9VhQvoMaH8ioQhExFV_noRXvcpro1yJ59vxrJCaT+-Mhzug@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 9 Dec 2019 16:18:47 -0500
-Message-ID: <CAHC9VhSUAtCx7Xk-tgwJCkb3A=bCYbpu57BKVF4a-3G_8-JOew@mail.gmail.com>
-Subject: Re: [PATCH v5] selinux: cache the SID -> context string translation
-To:     Stephen Smalley <sds@tycho.nsa.gov>,
-        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org
-Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Michal Sekletar <msekleta@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 9:58 AM Paul Moore <paul@paul-moore.com> wrote:
-> On Tue, Nov 26, 2019 at 9:32 AM Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > Looks good to me and tests passed.  I anticipate resolving conflicts
-> > between this and the sidtab reverse lookup hash table being non-trivial
-> > so it will probably require some review when/if Paul merges them both.
->
-> I haven't yet looked at the latest revision of either patch, but the
-> previous versions looked pretty good (my only comments were rather
-> small, and for the most part everyone else seemed happy as well -
-> minus the small fixes).  After I send the merge window PRs off to
-> Linus (tests are passing so that should be today) I'm going to give
-> these a final look and start trying to smoosh them together; I'll
-> probably create a new branch ("next-queue" or something similar) once
-> I'm done where people can review the merge and point out where I
-> messed things up ;)
+Hello!
 
-FYI, now merged into selinux/next.  Thanks everyone!
+This series provides torture-test updates.
 
--- 
-paul moore
-www.paul-moore.com
+1.	Use gawk instead of awk for systime() function.
+
+2.	Dispense with Dracut for initrd creation.
+
+3.	Handle jitter for CPUs that cannot be offlined.
+
+4.	Handle systems lacking the mpstat command.
+
+5.	Add worst-case call_rcu() forward-progress results.
+
+6.	Pull callback forward-progress data into rcu_fwd struct.
+
+7.	Thread rcu_fwd pointer through forward-progress functions.
+
+8.	Move to dynamic initialization of rcu_fwds.
+
+9.	Complete threading rcu_fwd pointers through functions.
+
+10.	Dynamically allocate rcu_fwds structure.
+
+11.	Allow "CFLIST" to specify default list of scenarios.
+
+12.	Hoist calls to lscpu to higher-level kvm.sh script.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ kernel/rcu/rcutorture.c                                   |  241 +++++++-------
+ tools/testing/selftests/rcutorture/bin/cpus2use.sh        |   11 
+ tools/testing/selftests/rcutorture/bin/jitter.sh          |   30 +
+ tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh |    3 
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh  |   13 
+ tools/testing/selftests/rcutorture/bin/kvm.sh             |   30 +
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh        |   55 ---
+ 7 files changed, 194 insertions(+), 189 deletions(-)
