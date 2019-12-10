@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 699B2C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E99C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3ED7720726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D237C20726
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950865;
-	bh=AIlYt7FH70CT7CO7G2+IY2nMcziboljsxBgveRaGOfo=;
+	s=default; t=1575950867;
+	bh=EHdy3lPlwbUbWpC4sHzAdF6ygyYZm7lBwwiG9rLftcs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Cq1JagQHRLoXCOPzrxJpKHU/a4zg+gwCrd+3k9QqL+w8QywMEraPLBIq59j/kNmdi
-	 vgqmmwFZnLzLOWGGlo9LTlyI0cCBixig4HRmfNeKIMvM/XS5Q0D4lGs8tQJOBCGdC2
-	 srfBjLKweXqycZqcrFkJHyBY2awpTpkRsXqRclyw=
+	b=jDkhloATnpp5NzQWYe7sGDLgAuR31XzY+u/gh+QWpAZDbtsZIj8bbZEoAv8+rROSx
+	 zP0yq+OrAWWB29WtERQvjkXdxqffAJEuuRip4GmgDXrJVxCanKiNjMYMzL3dCHdG7J
+	 DmWydRSZLWnZuUjLKq8l+E0rKCIzEaRVn+cPCXJM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbfLJEHp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:07:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43218 "EHLO mail.kernel.org"
+        id S1726969AbfLJEHr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:07:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbfLJEHo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:44 -0500
+        id S1726769AbfLJEHp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:45 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C0442071E;
-        Tue, 10 Dec 2019 04:07:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30EEC207FF;
+        Tue, 10 Dec 2019 04:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1575950864;
-        bh=AIlYt7FH70CT7CO7G2+IY2nMcziboljsxBgveRaGOfo=;
+        bh=EHdy3lPlwbUbWpC4sHzAdF6ygyYZm7lBwwiG9rLftcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KvSsBoCE7Nt71AlMOHPYTXFKAbGP36a2kGuo6AbualIANkjhXvugeaRMcrhVUmXkE
-         IXvMzE9UnHGQlJjkaYvPs1bZhSb/mBEFip7zXkV/5wtjge2/o1ENhVFOXGyY+YM6wA
-         4YJ5R2DDxx6ZyXOLguA1pa203aMH9bGwwNNG3mc8=
+        b=YhQMj57GvpdwRs8km7MjtlGzAaCslsLdRDwiveYDIDOHRN42zcqC29T+24ZUR7rfB
+         ZPzU8zIA7gAwoQ39W/ffBMBm/OXKlxhEK/F5R/sDLZCdZqVBIkiYGmjXwLPLdf5sJl
+         sKKKLbjcJo+uF3MkCrs2EvKdxXwr6eogKeOyjnus=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,15 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH tip/core/rcu 01/12] rcu: Remove rcu_swap_protected()
-Date:   Mon,  9 Dec 2019 20:07:30 -0800
-Message-Id: <20191210040741.2943-1-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/12] rcu: Mark non-global functions and variables as static
+Date:   Mon,  9 Dec 2019 20:07:31 -0800
+Message-Id: <20191210040741.2943-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -65,49 +60,72 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Now that the calls to rcu_swap_protected() have been replaced by
-rcu_replace_pointer(), this commit removes rcu_swap_protected().
+Each of rcu_state, rcu_rnp_online_cpus(), rcu_dynticks_curr_cpu_in_eqs(),
+and rcu_dynticks_snap() are used only in the kernel/rcu/tree.o translation
+unit, and may thus be marked static.  This commit therefore makes this
+change.
 
-Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Ben Dooks <ben.dooks@codethink.co.uk>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Bart Van Assche <bart.vanassche@wdc.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Johannes Thumshirn <jthumshirn@suse.de>
-Cc: Shane M Seymour <shane.seymour@hpe.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcupdate.h | 16 ----------------
- 1 file changed, 16 deletions(-)
+ kernel/rcu/tree.c | 8 ++++----
+ kernel/rcu/tree.h | 2 --
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 0b75063..fe47024 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -401,22 +401,6 @@ do {									      \
- })
- 
- /**
-- * rcu_swap_protected() - swap an RCU and a regular pointer
-- * @rcu_ptr: RCU pointer
-- * @ptr: regular pointer
-- * @c: the conditions under which the dereference will take place
-- *
-- * Perform swap(@rcu_ptr, @ptr) where @rcu_ptr is an RCU-annotated pointer and
-- * @c is the argument that is passed to the rcu_dereference_protected() call
-- * used to read that pointer.
-- */
--#define rcu_swap_protected(rcu_ptr, ptr, c) do {			\
--	typeof(ptr) __tmp = rcu_dereference_protected((rcu_ptr), (c));	\
--	rcu_assign_pointer((rcu_ptr), (ptr));				\
--	(ptr) = __tmp;							\
--} while (0)
--
--/**
-  * rcu_access_pointer() - fetch RCU pointer with no dereferencing
-  * @p: The pointer to read
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1694a6b..dd8cfc3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -84,7 +84,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+ 	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
+ 	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
+ };
+-struct rcu_state rcu_state = {
++static struct rcu_state rcu_state = {
+ 	.level = { &rcu_state.node[0] },
+ 	.gp_state = RCU_GP_IDLE,
+ 	.gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
+@@ -188,7 +188,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
+  * held, but the bit corresponding to the current CPU will be stable
+  * in most contexts.
+  */
+-unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
++static unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
+ {
+ 	return READ_ONCE(rnp->qsmaskinitnext);
+ }
+@@ -294,7 +294,7 @@ static void rcu_dynticks_eqs_online(void)
   *
+  * No ordering, as we are sampling CPU-local information.
+  */
+-bool rcu_dynticks_curr_cpu_in_eqs(void)
++static bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 
+@@ -305,7 +305,7 @@ bool rcu_dynticks_curr_cpu_in_eqs(void)
+  * Snapshot the ->dynticks counter with full ordering so as to allow
+  * stable comparison of this counter with past and future snapshots.
+  */
+-int rcu_dynticks_snap(struct rcu_data *rdp)
++static int rcu_dynticks_snap(struct rcu_data *rdp)
+ {
+ 	int snap = atomic_add_return(0, &rdp->dynticks);
+ 
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 055c317..e4dc5de 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -403,8 +403,6 @@ static const char *tp_rcu_varname __used __tracepoint_string = rcu_name;
+ #define RCU_NAME rcu_name
+ #endif /* #else #ifdef CONFIG_TRACING */
+ 
+-int rcu_dynticks_snap(struct rcu_data *rdp);
+-
+ /* Forward declarations for tree_plugin.h */
+ static void rcu_bootup_announce(void);
+ static void rcu_qs(void);
 -- 
 2.9.5
 
