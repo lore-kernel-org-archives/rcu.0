@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 120D8C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E77B1C2D0BE
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D9AA120836
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF28B21556
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575949341;
-	bh=Igw+4dyj3v7+ABzLjUDiV/H+YDko7hWvb3F+LP9oFN8=;
+	s=default; t=1575949344;
+	bh=kcnvqzPm19XI3s3B5/yd7FRqHJyep2utfI7AJtFZ7oo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=FrC3oUaD43UeT3D2UNe8z+ddYi88kokvPr4a59PrupQdvxcH5mZ7Z+VvmLEGOdUPZ
-	 ox5wRzhux1IbPqDzOKlb0fDvh1PMXSRnWA0HQm4IR50T5k1fMh073Sx8/ksXwa3Zhv
-	 wAH3i8cg6JcqXfNHlVa1LPgr8UL7gfJUPMNjKoHU=
+	b=tl/dAZukVIpgb59Fkjzgj8xFWfv3iX326favIscfJNIFieB47Jmjpfw1vGaQXc3Uo
+	 fmimaIHSnNDdlqp6XlUrzuQIW6VvoJ8NbGxXQShxfbyD5WEmq23zy312ZR45GwrS+n
+	 MqeRG4W6u0yQU+OdHOF9iRRrMYF4B1O3E5gq46Uo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbfLJDmV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 22:42:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60666 "EHLO mail.kernel.org"
+        id S1726881AbfLJDmX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:42:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbfLJDmV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 22:42:21 -0500
+        id S1726822AbfLJDmW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:42:22 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A6E62073D;
-        Tue, 10 Dec 2019 03:42:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BDFF20828;
+        Tue, 10 Dec 2019 03:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1575949341;
-        bh=Igw+4dyj3v7+ABzLjUDiV/H+YDko7hWvb3F+LP9oFN8=;
+        bh=kcnvqzPm19XI3s3B5/yd7FRqHJyep2utfI7AJtFZ7oo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zMSkd1sgKfyI/zUEe7k62stK2lBrH+73FUyFY7eJuNBx4DG5ZhBj+MjP5i+aqyxwI
-         A7RViR2jLhH3YZ9kQB1RhyluW5wuyVjYB+ufiDnlTll8Vkgu+n17YFNseZKL0s1lq8
-         KbhPlqsLT7YaXurTKpncFIykdGe3ef6025/8ERBk=
+        b=PV17zJpMeUMcgsqGJZEYa7v+dK1p35WPEshNMPLuRqDIfD851ptRInMP44S3Rf+A3
+         SysiulIOt+USsnO9cV9nce9k5FPujO+9KKQ96olPi3W2FPajuWPZzoTEENmkfYfNFK
+         +J8+bOx7n16DpHxjRBXCVFnC1hCaEyXfBltLOZoQ=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/12] torture: Use gawk instead of awk for systime() function
-Date:   Mon,  9 Dec 2019 19:42:06 -0800
-Message-Id: <20191210034217.405-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/12] rcutorture: Dispense with Dracut for initrd creation
+Date:   Mon,  9 Dec 2019 19:42:07 -0800
+Message-Id: <20191210034217.405-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210034119.GA32711@paulmck-ThinkPad-P72>
 References: <20191210034119.GA32711@paulmck-ThinkPad-P72>
@@ -60,66 +60,82 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-In many environments, gawk provides systime(), but awk doesn't.
-This commit therefore changes awk scripts using systime() to instead be
-gawk scripts.
+The dracut scripting does not work on all platforms, and there are no
+known failures from the init binary based on the statically linked C
+program.  This commit therefore removes the dracut scripting so that the
+statically linked C program is always used to create the init "script".
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/jitter.sh         | 4 ++--
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 55 ++--------------------
+ 1 file changed, 3 insertions(+), 52 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index dc49a3b..86a217b 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -23,12 +23,12 @@ spinmax=${4-1000}
+diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+index 6fa9bd1..38e424d 100755
+--- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
++++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+@@ -20,58 +20,9 @@ if [ -s "$D/initrd/init" ]; then
+     exit 0
+ fi
  
- n=1
- 
--starttime=`awk 'BEGIN { print systime(); }' < /dev/null`
-+starttime=`gawk 'BEGIN { print systime(); }' < /dev/null`
- 
- while :
- do
- 	# Check for done.
--	t=`awk -v s=$starttime 'BEGIN { print systime() - s; }' < /dev/null`
-+	t=`gawk -v s=$starttime 'BEGIN { print systime() - s; }' < /dev/null`
- 	if test "$t" -gt "$duration"
- 	then
- 		exit 0;
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 33c6696..1d98992 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -123,7 +123,7 @@ qemu_args=$5
- boot_args=$6
- 
- cd $KVM
--kstarttime=`awk 'BEGIN { print systime() }' < /dev/null`
-+kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
- if test -z "$TORTURE_BUILDONLY"
- then
- 	echo ' ---' `date`: Starting kernel
-@@ -177,7 +177,7 @@ do
- 	then
- 		qemu_pid=`cat "$resdir/qemu_pid"`
- 	fi
--	kruntime=`awk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
-+	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
- 	then
- 		if test $kruntime -ge $seconds
-@@ -213,7 +213,7 @@ then
- 	oldline="`tail $resdir/console.log`"
- 	while :
- 	do
--		kruntime=`awk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
-+		kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 		if kill -0 $qemu_pid > /dev/null 2>&1
- 		then
- 			:
+-T=${TMPDIR-/tmp}/mkinitrd.sh.$$
+-trap 'rm -rf $T' 0 2
+-mkdir $T
+-
+-cat > $T/init << '__EOF___'
+-#!/bin/sh
+-# Run in userspace a few milliseconds every second.  This helps to
+-# exercise the NO_HZ_FULL portions of RCU.  The 192 instances of "a" was
+-# empirically shown to give a nice multi-millisecond burst of user-mode
+-# execution on a 2GHz CPU, as desired.  Modern CPUs will vary from a
+-# couple of milliseconds up to perhaps 100 milliseconds, which is an
+-# acceptable range.
+-#
+-# Why not calibrate an exact delay?  Because within this initrd, we
+-# are restricted to Bourne-shell builtins, which as far as I know do not
+-# provide any means of obtaining a fine-grained timestamp.
+-
+-a4="a a a a"
+-a16="$a4 $a4 $a4 $a4"
+-a64="$a16 $a16 $a16 $a16"
+-a192="$a64 $a64 $a64"
+-while :
+-do
+-	q=
+-	for i in $a192
+-	do
+-		q="$q $i"
+-	done
+-	sleep 1
+-done
+-__EOF___
+-
+-# Try using dracut to create initrd
+-if command -v dracut >/dev/null 2>&1
+-then
+-	echo Creating $D/initrd using dracut.
+-	# Filesystem creation
+-	dracut --force --no-hostonly --no-hostonly-cmdline --module "base" $T/initramfs.img
+-	cd $D
+-	mkdir -p initrd
+-	cd initrd
+-	zcat $T/initramfs.img | cpio -id
+-	cp $T/init init
+-	chmod +x init
+-	echo Done creating $D/initrd using dracut
+-	exit 0
+-fi
+-
+-# No dracut, so create a C-language initrd/init program and statically
+-# link it.  This results in a very small initrd, but might be a bit less
+-# future-proof than dracut.
+-echo "Could not find dracut, attempting C initrd"
++# Create a C-language initrd/init infinite-loop program and statically
++# link it.  This results in a very small initrd.
++echo "Creating a statically linked C-language initrd"
+ cd $D
+ mkdir -p initrd
+ cd initrd
 -- 
 2.9.5
 
