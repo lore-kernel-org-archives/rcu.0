@@ -2,101 +2,124 @@ Return-Path: <SRS0=BMES=2A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF035C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 120D8C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A28CE2080D
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:41:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D9AA120836
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575949281;
-	bh=DY6Mgd1bV3eKe7dD6rRjdTCDg7hrEmmsv83if/ODO+A=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=iYDDwhmZrN09Zufb5kGfBkE9c7MTikoxcej4anIwzZG0Zpt6WJQurwCvkvU9JDyVG
-	 B25zVSEztybR74d6KinEoMg4wdxZc8CHzTTRwJtQy+OQzSzBp+P30sTi6KMCU1KCDA
-	 KOmukrzu4tuMq8KiTE2vIBpljWEXTcxLgBlOGyg4=
+	s=default; t=1575949341;
+	bh=Igw+4dyj3v7+ABzLjUDiV/H+YDko7hWvb3F+LP9oFN8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=FrC3oUaD43UeT3D2UNe8z+ddYi88kokvPr4a59PrupQdvxcH5mZ7Z+VvmLEGOdUPZ
+	 ox5wRzhux1IbPqDzOKlb0fDvh1PMXSRnWA0HQm4IR50T5k1fMh073Sx8/ksXwa3Zhv
+	 wAH3i8cg6JcqXfNHlVa1LPgr8UL7gfJUPMNjKoHU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbfLJDlU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 22:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60112 "EHLO mail.kernel.org"
+        id S1726683AbfLJDmV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:42:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727274AbfLJDlU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 22:41:20 -0500
+        id S1726682AbfLJDmV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:42:21 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A102420692;
-        Tue, 10 Dec 2019 03:41:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A6E62073D;
+        Tue, 10 Dec 2019 03:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575949279;
-        bh=DY6Mgd1bV3eKe7dD6rRjdTCDg7hrEmmsv83if/ODO+A=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=yX7efwEvgFLso8YyZeWALcH3/4deB0wNLdtTdpUtb0gNDkjZBrZv/ZcrJUB16kGSQ
-         Upab0Yt4VmJ8ZLJpocbG9/RCCXyA8t5mMuw181p1Fe4Ge6N3Icm3tQVUpZNVauKVNE
-         V1Tv8093X1w5bwDp1UNcP2bc/FsTWD5TNM/+E2hw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3030E3522768; Mon,  9 Dec 2019 19:41:19 -0800 (PST)
-Date:   Mon, 9 Dec 2019 19:41:19 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1575949341;
+        bh=Igw+4dyj3v7+ABzLjUDiV/H+YDko7hWvb3F+LP9oFN8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=zMSkd1sgKfyI/zUEe7k62stK2lBrH+73FUyFY7eJuNBx4DG5ZhBj+MjP5i+aqyxwI
+         A7RViR2jLhH3YZ9kQB1RhyluW5wuyVjYB+ufiDnlTll8Vkgu+n17YFNseZKL0s1lq8
+         KbhPlqsLT7YaXurTKpncFIykdGe3ef6025/8ERBk=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/12] Torture-test updates for v5.6
-Message-ID: <20191210034119.GA32711@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/12] torture: Use gawk instead of awk for systime() function
+Date:   Mon,  9 Dec 2019 19:42:06 -0800
+Message-Id: <20191210034217.405-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20191210034119.GA32711@paulmck-ThinkPad-P72>
+References: <20191210034119.GA32711@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series provides torture-test updates.
+In many environments, gawk provides systime(), but awk doesn't.
+This commit therefore changes awk scripts using systime() to instead be
+gawk scripts.
 
-1.	Use gawk instead of awk for systime() function.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/jitter.sh         | 4 ++--
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-2.	Dispense with Dracut for initrd creation.
+diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
+index dc49a3b..86a217b 100755
+--- a/tools/testing/selftests/rcutorture/bin/jitter.sh
++++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
+@@ -23,12 +23,12 @@ spinmax=${4-1000}
+ 
+ n=1
+ 
+-starttime=`awk 'BEGIN { print systime(); }' < /dev/null`
++starttime=`gawk 'BEGIN { print systime(); }' < /dev/null`
+ 
+ while :
+ do
+ 	# Check for done.
+-	t=`awk -v s=$starttime 'BEGIN { print systime() - s; }' < /dev/null`
++	t=`gawk -v s=$starttime 'BEGIN { print systime() - s; }' < /dev/null`
+ 	if test "$t" -gt "$duration"
+ 	then
+ 		exit 0;
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 33c6696..1d98992 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -123,7 +123,7 @@ qemu_args=$5
+ boot_args=$6
+ 
+ cd $KVM
+-kstarttime=`awk 'BEGIN { print systime() }' < /dev/null`
++kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
+ if test -z "$TORTURE_BUILDONLY"
+ then
+ 	echo ' ---' `date`: Starting kernel
+@@ -177,7 +177,7 @@ do
+ 	then
+ 		qemu_pid=`cat "$resdir/qemu_pid"`
+ 	fi
+-	kruntime=`awk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
++	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
+ 	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
+ 	then
+ 		if test $kruntime -ge $seconds
+@@ -213,7 +213,7 @@ then
+ 	oldline="`tail $resdir/console.log`"
+ 	while :
+ 	do
+-		kruntime=`awk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
++		kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
+ 		if kill -0 $qemu_pid > /dev/null 2>&1
+ 		then
+ 			:
+-- 
+2.9.5
 
-3.	Handle jitter for CPUs that cannot be offlined.
-
-4.	Handle systems lacking the mpstat command.
-
-5.	Add worst-case call_rcu() forward-progress results.
-
-6.	Pull callback forward-progress data into rcu_fwd struct.
-
-7.	Thread rcu_fwd pointer through forward-progress functions.
-
-8.	Move to dynamic initialization of rcu_fwds.
-
-9.	Complete threading rcu_fwd pointers through functions.
-
-10.	Dynamically allocate rcu_fwds structure.
-
-11.	Allow "CFLIST" to specify default list of scenarios.
-
-12.	Hoist calls to lscpu to higher-level kvm.sh script.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
- kernel/rcu/rcutorture.c                                   |  241 +++++++-------
- tools/testing/selftests/rcutorture/bin/cpus2use.sh        |   11 
- tools/testing/selftests/rcutorture/bin/jitter.sh          |   30 +
- tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh |    3 
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh  |   13 
- tools/testing/selftests/rcutorture/bin/kvm.sh             |   30 +
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh        |   55 ---
- 7 files changed, 194 insertions(+), 189 deletions(-)
