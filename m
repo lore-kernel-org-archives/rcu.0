@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9353C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F8EC2D0BF
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9099F207FF
+	by mail.kernel.org (Postfix) with ESMTP id C603D20836
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1575952022;
-	bh=NtcbtfBcwy0FOSNvRbbRjLfqRKrxMsAf+LEJkhGOTl8=;
+	bh=Kijt+ax9E/GM/w8P1YUGTcubjBJGWXIOWPwUkjE317E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=scTCBTGdHH9fYUsj2ihdmdOFrvMasahFqeYvTIeXfasQqBfWkJ0Jqzr7bG8DGC5c8
-	 bqnBhk2I2LesnkHHvI2X1BrrJTsiANmxiTcvZ7VLX5qhoLRBsbrw7fY8h1vlXbdpPs
-	 Ro6tp1T6YBHkC+jyjGQW/kufbzVCqFeJVP0qU7/M=
+	b=0mHHWIaik5N1hKg3UoS3XT4gV4SDSRr3wvkj56FNO2y8Dp+Z0YdDvtarHLGkTypVp
+	 OW3zeF/m+Q85kUTkLS8kKJ1ye/QOOfqMhgPNUMJINyKJGWKnKPjvulVjql6sijEszx
+	 xXTOLpSLidvM5aVOGSYItaNwErpJlYy0/m6F4mO0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbfLJE0g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:26:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48470 "EHLO mail.kernel.org"
+        id S1726911AbfLJE1C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:27:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbfLJE0e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:26:34 -0500
+        id S1727004AbfLJE0g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:26:36 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C3EE214AF;
-        Tue, 10 Dec 2019 04:26:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35F87222C4;
+        Tue, 10 Dec 2019 04:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951993;
-        bh=NtcbtfBcwy0FOSNvRbbRjLfqRKrxMsAf+LEJkhGOTl8=;
+        s=default; t=1575951995;
+        bh=Kijt+ax9E/GM/w8P1YUGTcubjBJGWXIOWPwUkjE317E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pV2Lqjyk/M1GCStFvYb4eD+ZOmvLxA7XXtU5xzuUHZeMGAeFi+9IVvjmdcCPwzrTT
-         s0/k7TW+rGjsbcqIWqYSFeu0X2UnO6/qY1H0XGChdVFe/G18D94l7F9hWc/HoS/eVM
-         NdvDHZykcBJh/7Z94XMZqg2eqr7wlQfb9X9xiGuM=
+        b=c/Hln0sfsFt4V7XKFv+f56Xj7pGyVVS1TxxSOd98Hf0+BWcVt0OwOoXhpCZYK4mDF
+         Lk/Hg7CZGTdDCKzQ8Le35jhoY4WXz9yZdinZKRTfRCsK/h0DmhfIwSS9DmYCwl/581
+         vWRKLhPSNLzWnxtYKX4tvmEjTFDXNHiGKLn94Nxs=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/11] rcu: Use lockdep rather than comment to enforce lock held
-Date:   Mon,  9 Dec 2019 20:26:21 -0800
-Message-Id: <20191210042629.3808-3-paulmck@kernel.org>
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/11] rcu: Rename some instance of CONFIG_PREEMPTION to CONFIG_PREEMPT_RCU
+Date:   Mon,  9 Dec 2019 20:26:24 -0800
+Message-Id: <20191210042629.3808-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210042606.GA3624@paulmck-ThinkPad-P72>
 References: <20191210042606.GA3624@paulmck-ThinkPad-P72>
@@ -58,42 +59,74 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The rcu_preempt_check_blocked_tasks() function has a comment
-that states that the rcu_node structure's ->lock must be held,
-which might be informative, but which carries little weight if
-not read.  This commit therefore removes this comment in favor of
-raw_lockdep_assert_held_rcu_node(), which will complain quite
-visibly if the required lock is not held.
+CONFIG_PREEMPTION and CONFIG_PREEMPT_RCU are always identical,
+but some code depends on CONFIG_PREEMPTION to access to
+rcu_preempt functionality. This patch changes CONFIG_PREEMPTION
+to CONFIG_PREEMPT_RCU in these cases.
 
+Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c       | 4 ++--
+ kernel/rcu/tree_stall.h | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index fe5f448..ed54d36 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -648,8 +648,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
-  * Check that the list of blocked tasks for the newly completed grace
-  * period is in fact empty.  It is a serious bug to complete a grace
-  * period that still has RCU readers blocked!  This function must be
-- * invoked -before- updating this rnp's ->gp_seq, and the rnp's ->lock
-- * must be held by the caller.
-+ * invoked -before- updating this rnp's ->gp_seq.
-  *
-  * Also, if there are blocked tasks on the list, they automatically
-  * block the newly created grace period, so set up ->gp_tasks accordingly.
-@@ -659,6 +658,7 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
- 	struct task_struct *t;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c9dbb05..5445da2 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1934,7 +1934,7 @@ rcu_report_unblock_qs_rnp(struct rcu_node *rnp, unsigned long flags)
+ 	struct rcu_node *rnp_p;
  
- 	RCU_LOCKDEP_WARN(preemptible(), "rcu_preempt_check_blocked_tasks() invoked with preemption enabled!!!\n");
-+	raw_lockdep_assert_held_rcu_node(rnp);
- 	if (WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)))
- 		dump_blkd_tasks(rnp, 10);
- 	if (rcu_preempt_has_tasks(rnp) &&
+ 	raw_lockdep_assert_held_rcu_node(rnp);
+-	if (WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPTION)) ||
++	if (WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT_RCU)) ||
+ 	    WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)) ||
+ 	    rnp->qsmask != 0) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+@@ -2294,7 +2294,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 		mask = 0;
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		if (rnp->qsmask == 0) {
+-			if (!IS_ENABLED(CONFIG_PREEMPTION) ||
++			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
+ 			    rcu_preempt_blocked_readers_cgp(rnp)) {
+ 				/*
+ 				 * No point in scanning bits because they
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index c0b8c45..a6652ef 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -163,7 +163,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
+ //
+ // Printing RCU CPU stall warnings
+ 
+-#ifdef CONFIG_PREEMPTION
++#ifdef CONFIG_PREEMPT_RCU
+ 
+ /*
+  * Dump detailed information for all tasks blocking the current RCU
+@@ -215,7 +215,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+ 	return ndetected;
+ }
+ 
+-#else /* #ifdef CONFIG_PREEMPTION */
++#else /* #ifdef CONFIG_PREEMPT_RCU */
+ 
+ /*
+  * Because preemptible RCU does not exist, we never have to check for
+@@ -233,7 +233,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+ {
+ 	return 0;
+ }
+-#endif /* #else #ifdef CONFIG_PREEMPTION */
++#endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+ 
+ /*
+  * Dump stacks of all tasks running on stalled CPUs.  First try using
 -- 
 2.9.5
 
