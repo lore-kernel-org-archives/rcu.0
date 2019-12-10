@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 669FAC2D0BF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7548C43603
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 33E3B2077B
+	by mail.kernel.org (Postfix) with ESMTP id 8225F2071E
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1575950892;
-	bh=d1mJ1n49nNM+kkuO2aLd3FM0NCS6Kt3EjC4AB7e9Ewc=;
+	bh=lwnUtQxHILM1DOKS0NZn4YW5OHWHwryStmJW7TMHfGk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=XZsNiBUZDmdlzqroY4cZztRs/ep6VfHFVP29rKx3kq9mvXD6CSo5LqPYQwYZd2Sbv
-	 l07zwgxjljbTKi1fqzyK8WlwVHtiXEYcrX9x9FV8bLimx3rKcGgRmYoFGpIUbEW4bQ
-	 7tjK4fIuXYo5hSJyS3pGZZsOXufStjjkktJQhuiY=
+	b=ZMrAFm30sxCl5C6Xn+dB4HPNlk2jwbIIfnmrRnR6oTDXcRV4hSCz7D4AMB6PnvzuI
+	 38z6VHas9r0568oHzmSVtST0pgIpEam3r/7xGlxa5liUkDwMB/h+nYlZsu3Ci72SiH
+	 P3C8suxdjfm4MDPQLGGGuzIEa9wj/OVARPQtkbqE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbfLJEHt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:07:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43490 "EHLO mail.kernel.org"
+        id S1727036AbfLJEIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:08:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727004AbfLJEHs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:48 -0500
+        id S1727024AbfLJEHt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:49 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E37B20836;
-        Tue, 10 Dec 2019 04:07:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D1D9208C3;
+        Tue, 10 Dec 2019 04:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1575950868;
-        bh=d1mJ1n49nNM+kkuO2aLd3FM0NCS6Kt3EjC4AB7e9Ewc=;
+        bh=lwnUtQxHILM1DOKS0NZn4YW5OHWHwryStmJW7TMHfGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AmISLtgCcWtZ7cS3AeCyDvGdsyBsKy78XqoZjU6p8H1ikH/WWOfchw2rfKJaRgigi
-         5WuYJ8xR07sj65F+0y+MGgo9O9/Xtu1YDIdoZI3PSO3rb4pcH2MDpOR5i1pwC06H+G
-         2RD8xAWEdhvZRAS9WNaW/UCrNwecthxxQs730MSU=
+        b=ueKTyIy9CiNF9/rZ2JaY8RP2g+EDkyoGJCNzY++M3diMkZ6OTEmn2kzDnXEEp3w97
+         oVR2aH2ISQiJuaUN7P1TOVMsJdMk9k71X8thqiQDtfZeWIJcIzSc2d1d/34W9fliFW
+         qsWYO4Uuj7+iUFeDVl5f3rSFaYZ4odZncbHK08mI=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/12] rcu: Move rcu_{expedited,normal} definitions into rcupdate.h
-Date:   Mon,  9 Dec 2019 20:07:36 -0800
-Message-Id: <20191210040741.2943-7-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/12] rcu: Switch force_qs_rnp() to for_each_leaf_node_cpu_mask()
+Date:   Mon,  9 Dec 2019 20:07:37 -0800
+Message-Id: <20191210040741.2943-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -59,49 +58,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Ben Dooks <ben.dooks@codethink.co.uk>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit moves the rcu_{expedited,normal} definitions from
-kernel/rcu/update.c to include/linux/rcupdate.h to make sure they are
-in sync, and also to avoid the following warning from sparse:
+Currently, force_qs_rnp() uses a for_each_leaf_node_possible_cpu()
+loop containing a check of the current CPU's bit in ->qsmask.
+This works, but this commit saves three lines by instead using
+for_each_leaf_node_cpu_mask(), which combines the functionality of
+for_each_leaf_node_possible_cpu() and leaf_node_cpu_bit().  This commit
+also replaces the use of the local variable "bit" with rdp->grpmask.
 
-kernel/ksysfs.c:150:5: warning: symbol 'rcu_expedited' was not declared. Should it be static?
-kernel/ksysfs.c:167:5: warning: symbol 'rcu_normal' was not declared. Should it be static?
-
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 4 ++++
- kernel/rcu/update.c      | 2 --
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index fe47024..bb363796 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -896,4 +896,8 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
- 	return false;
- }
- 
-+/* kernel/ksysfs.c definitions */
-+extern int rcu_expedited;
-+extern int rcu_normal;
-+
- #endif /* __LINUX_RCUPDATE_H */
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 1861103..294d357 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -51,9 +51,7 @@
- #define MODULE_PARAM_PREFIX "rcupdate."
- 
- #ifndef CONFIG_TINY_RCU
--extern int rcu_expedited; /* from sysctl */
- module_param(rcu_expedited, int, 0);
--extern int rcu_normal; /* from sysctl */
- module_param(rcu_normal, int, 0);
- static int rcu_normal_after_boot;
- module_param(rcu_normal_after_boot, int, 0);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bbb60ed..d950764 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2298,14 +2298,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 			continue;
+ 		}
+-		for_each_leaf_node_possible_cpu(rnp, cpu) {
+-			unsigned long bit = leaf_node_cpu_bit(rnp, cpu);
+-			if ((rnp->qsmask & bit) != 0) {
+-				rdp = per_cpu_ptr(&rcu_data, cpu);
+-				if (f(rdp)) {
+-					mask |= bit;
+-					rcu_disable_urgency_upon_qs(rdp);
+-				}
++		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->qsmask) {
++			rdp = per_cpu_ptr(&rcu_data, cpu);
++			if (f(rdp)) {
++				mask |= rdp->grpmask;
++				rcu_disable_urgency_upon_qs(rdp);
+ 			}
+ 		}
+ 		if (mask != 0) {
 -- 
 2.9.5
 
