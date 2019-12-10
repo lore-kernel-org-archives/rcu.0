@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1347C2D0BE
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B98C2D0B1
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 751602077B
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 163B92077B
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950900;
-	bh=1EDFsKq10v2RAcv+ouUFckwgU2L7K+cLnN0yoZBQRvk=;
+	s=default; t=1575950901;
+	bh=Y8HMxG0duC5wP4CKmvA4yTsGM/L3pmyRs9QNMDPlBn4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=kXbA15M3UXSudC3AZRoMtnPCBFxud9+U3bgEHEblw62rjS/1/qrzElxwZ/ktQcyDe
-	 9cxLdtvzla0pusKh+5c3bTKtynM2fbUNpwvFPkh5GU6VmfgcjWiygEZLRzZIeydlwj
-	 A2FqlVImr/+Jdpp1kyxxxPJKjyjnZAGMvER8sWVM=
+	b=UO9YD8hC3KmjXJlbh3eVS6pYis3Vo3jelm7Sv0l0ubs8SXaF1QBJjHDhPqY98yy2w
+	 WsizoZXYn1fdQKHfrWoer1JFWqqZDkx/g8toUkuRfXVH2yB3YNGyt/FKbk0mmxof6Z
+	 /bQ2mf3IJmN+47NSeUz5uSWDwTQyenr5BQ08oP4U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbfLJEIQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:08:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
+        id S1726986AbfLJEHr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:07:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726975AbfLJEHs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:48 -0500
+        id S1726957AbfLJEHr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:47 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4DD2214D8;
+        by mail.kernel.org (Postfix) with ESMTPSA id 324B620838;
         Tue, 10 Dec 2019 04:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950867;
-        bh=1EDFsKq10v2RAcv+ouUFckwgU2L7K+cLnN0yoZBQRvk=;
+        s=default; t=1575950866;
+        bh=Y8HMxG0duC5wP4CKmvA4yTsGM/L3pmyRs9QNMDPlBn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quOhZVYH43vcx6t9ug2xhRcRopYbRvxgdl1776/UXJlpL/vWZnzlVk3JtOv5u28VY
-         VfVmv3kRYwguiXtdzKaIpUlgo6HCbTXteDTeNlICu2sFayOv/lneapm9djqQpvhA/n
-         ZvEqrK3Tz1dUSb60DgNFMHMlvjSy4WatZtCer6uQ=
+        b=USnF7W3ruF87d7i8Ex+SUsrx28/EMuKGi0RVDNiN5si3CKSGohxfHQv8v6Uos5T1M
+         SC4+iLfb7/4kssQA5Ceu9f3ehS8BQLdunabKNFSAJun/tz2YX1bZylCLs67jtMAOJ8
+         v8dcPSwpX/awRYPFdPgl2Dzeldj7mUJFxwG1asY8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Lai Jiangshan <laijs@linux.alibaba.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/12] rcu: Move gp_state_names[] and gp_state_getname() to tree_stall.h
-Date:   Mon,  9 Dec 2019 20:07:35 -0800
-Message-Id: <20191210040741.2943-6-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/12] rcu: Remove the declaration of call_rcu() in tree.h
+Date:   Mon,  9 Dec 2019 20:07:34 -0800
+Message-Id: <20191210040741.2943-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -61,99 +61,29 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Only tree_stall.h needs to get name from GP state, so this commit
-moves the gp_state_names[] array and the gp_state_getname()
-from kernel/rcu/tree.h and kernel/rcu/tree.c, respectively, to
-kernel/rcu/tree_stall.h.  While moving gp_state_names[], this commit
-uses the GCC syntax to ensure that the right string is associated with
-the right CPP macro.
+The call_rcu() function is an external RCU API that is declared in
+include/linux/rcupdate.h.  There is thus no point in redeclaring it
+in kernel/rcu/tree.h, so this commit removes that redundant declaration.
 
 Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c       | 10 ----------
- kernel/rcu/tree.h       | 12 ------------
- kernel/rcu/tree_stall.h | 22 ++++++++++++++++++++++
- 3 files changed, 22 insertions(+), 22 deletions(-)
+ kernel/rcu/tree.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ba154a3..bbb60ed 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -529,16 +529,6 @@ static struct rcu_node *rcu_get_root(void)
- }
- 
- /*
-- * Convert a ->gp_state value to a character string.
-- */
--static const char *gp_state_getname(short gs)
--{
--	if (gs < 0 || gs >= ARRAY_SIZE(gp_state_names))
--		return "???";
--	return gp_state_names[gs];
--}
--
--/*
-  * Send along grace-period-related data for rcutorture diagnostics.
-  */
- void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 54ff989..9d5986a 100644
+index e4dc5de..54ff989 100644
 --- a/kernel/rcu/tree.h
 +++ b/kernel/rcu/tree.h
-@@ -368,18 +368,6 @@ struct rcu_state {
- #define RCU_GP_CLEANUP   7	/* Grace-period cleanup started. */
- #define RCU_GP_CLEANED   8	/* Grace-period cleanup complete. */
- 
--static const char * const gp_state_names[] = {
--	"RCU_GP_IDLE",
--	"RCU_GP_WAIT_GPS",
--	"RCU_GP_DONE_GPS",
--	"RCU_GP_ONOFF",
--	"RCU_GP_INIT",
--	"RCU_GP_WAIT_FQS",
--	"RCU_GP_DOING_FQS",
--	"RCU_GP_CLEANUP",
--	"RCU_GP_CLEANED",
--};
--
- /*
-  * In order to export the rcu_state name to the tracing tools, it
-  * needs to be added in the __tracepoint_string section.
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index c0b8c45..f18adaf 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -279,6 +279,28 @@ static void print_cpu_stall_fast_no_hz(char *cp, int cpu)
- 
- #endif /* #else #ifdef CONFIG_RCU_FAST_NO_HZ */
- 
-+static const char * const gp_state_names[] = {
-+	[RCU_GP_IDLE] = "RCU_GP_IDLE",
-+	[RCU_GP_WAIT_GPS] = "RCU_GP_WAIT_GPS",
-+	[RCU_GP_DONE_GPS] = "RCU_GP_DONE_GPS",
-+	[RCU_GP_ONOFF] = "RCU_GP_ONOFF",
-+	[RCU_GP_INIT] = "RCU_GP_INIT",
-+	[RCU_GP_WAIT_FQS] = "RCU_GP_WAIT_FQS",
-+	[RCU_GP_DOING_FQS] = "RCU_GP_DOING_FQS",
-+	[RCU_GP_CLEANUP] = "RCU_GP_CLEANUP",
-+	[RCU_GP_CLEANED] = "RCU_GP_CLEANED",
-+};
-+
-+/*
-+ * Convert a ->gp_state value to a character string.
-+ */
-+static const char *gp_state_getname(short gs)
-+{
-+	if (gs < 0 || gs >= ARRAY_SIZE(gp_state_names))
-+		return "???";
-+	return gp_state_names[gs];
-+}
-+
- /*
-  * Print out diagnostic information for the specified stalled CPU.
-  *
+@@ -413,7 +413,6 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
+ static int rcu_print_task_exp_stall(struct rcu_node *rnp);
+ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp);
+ static void rcu_flavor_sched_clock_irq(int user);
+-void call_rcu(struct rcu_head *head, rcu_callback_t func);
+ static void dump_blkd_tasks(struct rcu_node *rnp, int ncheck);
+ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
+ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
 -- 
 2.9.5
 
