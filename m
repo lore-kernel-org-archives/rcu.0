@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E99C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D74C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D237C20726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 52B7E2077B
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950867;
-	bh=EHdy3lPlwbUbWpC4sHzAdF6ygyYZm7lBwwiG9rLftcs=;
+	s=default; t=1575950875;
+	bh=6hVA58dIBEyN/mPJBos2dUyQmVqkjqz0PDuZsQk7yqs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=jDkhloATnpp5NzQWYe7sGDLgAuR31XzY+u/gh+QWpAZDbtsZIj8bbZEoAv8+rROSx
-	 zP0yq+OrAWWB29WtERQvjkXdxqffAJEuuRip4GmgDXrJVxCanKiNjMYMzL3dCHdG7J
-	 DmWydRSZLWnZuUjLKq8l+E0rKCIzEaRVn+cPCXJM=
+	b=zWSd7b+9t8+LNt7z2PtoRfXrKE3AaKKOFcCZ+ax3Rq0xHoGctVfW388kdvtbXlw47
+	 FRU4WcAQ0rk2J63QwXTdG+ytOgjZB6EKROh+e/biT3Fy6XCLcp0/20q0rck1Yi0P2n
+	 yrmMvW1y7NjqMhAF8oip6gJLYSTDQFvLusz7Q7Jo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbfLJEHr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:07:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43280 "EHLO mail.kernel.org"
+        id S1727004AbfLJEHy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:07:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726769AbfLJEHp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:45 -0500
+        id S1727076AbfLJEHw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:52 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30EEC207FF;
-        Tue, 10 Dec 2019 04:07:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E848F24680;
+        Tue, 10 Dec 2019 04:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950864;
-        bh=EHdy3lPlwbUbWpC4sHzAdF6ygyYZm7lBwwiG9rLftcs=;
+        s=default; t=1575950871;
+        bh=6hVA58dIBEyN/mPJBos2dUyQmVqkjqz0PDuZsQk7yqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YhQMj57GvpdwRs8km7MjtlGzAaCslsLdRDwiveYDIDOHRN42zcqC29T+24ZUR7rfB
-         ZPzU8zIA7gAwoQ39W/ffBMBm/OXKlxhEK/F5R/sDLZCdZqVBIkiYGmjXwLPLdf5sJl
-         sKKKLbjcJo+uF3MkCrs2EvKdxXwr6eogKeOyjnus=
+        b=dc3T+9yIJERy9jMjJpVUOTUSeBrvZG1T4FlZKqyraXiZtzzpCgpIbAI63vSWCKgJy
+         myjPU5qZQbFEOqocCn9xkLA8Jhx7R67fhHuFmaRsw3wW0byFlC3tpdFpjaFDxD1hg2
+         I5S+5j7GQ2T2lh+o82w7QHgpeWuaAhy9py4DGcN8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/12] rcu: Mark non-global functions and variables as static
-Date:   Mon,  9 Dec 2019 20:07:31 -0800
-Message-Id: <20191210040741.2943-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/12] rcu: Remove unused stop-machine #include
+Date:   Mon,  9 Dec 2019 20:07:41 -0800
+Message-Id: <20191210040741.2943-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -60,72 +60,42 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Each of rcu_state, rcu_rnp_online_cpus(), rcu_dynticks_curr_cpu_in_eqs(),
-and rcu_dynticks_snap() are used only in the kernel/rcu/tree.o translation
-unit, and may thus be marked static.  This commit therefore makes this
-change.
+Long ago, RCU used the stop-machine mechanism to implement expedited
+grace periods, but no longer does so.  This commit therefore removes
+the no-longer-needed #includes of linux/stop_machine.h.
 
-Reported-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Link: https://lwn.net/Articles/805317/
+Reported-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 8 ++++----
- kernel/rcu/tree.h | 2 --
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 1 -
+ kernel/rcu/tree.h | 1 -
+ 2 files changed, 2 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1694a6b..dd8cfc3 100644
+index d950764..878f62f 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -84,7 +84,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
- 	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
- 	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
- };
--struct rcu_state rcu_state = {
-+static struct rcu_state rcu_state = {
- 	.level = { &rcu_state.node[0] },
- 	.gp_state = RCU_GP_IDLE,
- 	.gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
-@@ -188,7 +188,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
-  * held, but the bit corresponding to the current CPU will be stable
-  * in most contexts.
-  */
--unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
-+static unsigned long rcu_rnp_online_cpus(struct rcu_node *rnp)
- {
- 	return READ_ONCE(rnp->qsmaskinitnext);
- }
-@@ -294,7 +294,7 @@ static void rcu_dynticks_eqs_online(void)
-  *
-  * No ordering, as we are sampling CPU-local information.
-  */
--bool rcu_dynticks_curr_cpu_in_eqs(void)
-+static bool rcu_dynticks_curr_cpu_in_eqs(void)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
-@@ -305,7 +305,7 @@ bool rcu_dynticks_curr_cpu_in_eqs(void)
-  * Snapshot the ->dynticks counter with full ordering so as to allow
-  * stable comparison of this counter with past and future snapshots.
-  */
--int rcu_dynticks_snap(struct rcu_data *rdp)
-+static int rcu_dynticks_snap(struct rcu_data *rdp)
- {
- 	int snap = atomic_add_return(0, &rdp->dynticks);
- 
+@@ -43,7 +43,6 @@
+ #include <uapi/linux/sched/types.h>
+ #include <linux/prefetch.h>
+ #include <linux/delay.h>
+-#include <linux/stop_machine.h>
+ #include <linux/random.h>
+ #include <linux/trace_events.h>
+ #include <linux/suspend.h>
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 055c317..e4dc5de 100644
+index 9d5986a..ce90c68 100644
 --- a/kernel/rcu/tree.h
 +++ b/kernel/rcu/tree.h
-@@ -403,8 +403,6 @@ static const char *tp_rcu_varname __used __tracepoint_string = rcu_name;
- #define RCU_NAME rcu_name
- #endif /* #else #ifdef CONFIG_TRACING */
+@@ -16,7 +16,6 @@
+ #include <linux/cpumask.h>
+ #include <linux/seqlock.h>
+ #include <linux/swait.h>
+-#include <linux/stop_machine.h>
+ #include <linux/rcu_node_tree.h>
  
--int rcu_dynticks_snap(struct rcu_data *rdp);
--
- /* Forward declarations for tree_plugin.h */
- static void rcu_bootup_announce(void);
- static void rcu_qs(void);
+ #include "rcu_segcblist.h"
 -- 
 2.9.5
 
