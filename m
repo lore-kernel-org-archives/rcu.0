@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B98C2D0B1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE93C43603
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 163B92077B
+	by mail.kernel.org (Postfix) with ESMTP id B8C252077B
 	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1575950901;
-	bh=Y8HMxG0duC5wP4CKmvA4yTsGM/L3pmyRs9QNMDPlBn4=;
+	bh=hkE3djVetnvqBS1YIlZacEzmgwQ31kas5IS+lXjAyMw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=UO9YD8hC3KmjXJlbh3eVS6pYis3Vo3jelm7Sv0l0ubs8SXaF1QBJjHDhPqY98yy2w
-	 WsizoZXYn1fdQKHfrWoer1JFWqqZDkx/g8toUkuRfXVH2yB3YNGyt/FKbk0mmxof6Z
-	 /bQ2mf3IJmN+47NSeUz5uSWDwTQyenr5BQ08oP4U=
+	b=LwG7eE4uWcKpyvhryCDl32LxE5PEbDbSvi56BrUYeExiHTf3TaXe5np0jqxUhNpCv
+	 zem2oP9Y3oSogoH48g/LUaHCXQO9vyGCMAsFv6W8PsiZfX+ZImP4gL2U9LRl7GEVqP
+	 /uUAfmbLrwsv02gXV9n9NlxPr7CZ+zvKViJd2EGk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbfLJEHr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:07:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
+        id S1726951AbfLJEHq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:07:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbfLJEHr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:47 -0500
+        id S1726619AbfLJEHp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:45 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 324B620838;
-        Tue, 10 Dec 2019 04:07:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1C0E2080D;
+        Tue, 10 Dec 2019 04:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950866;
-        bh=Y8HMxG0duC5wP4CKmvA4yTsGM/L3pmyRs9QNMDPlBn4=;
+        s=default; t=1575950865;
+        bh=hkE3djVetnvqBS1YIlZacEzmgwQ31kas5IS+lXjAyMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=USnF7W3ruF87d7i8Ex+SUsrx28/EMuKGi0RVDNiN5si3CKSGohxfHQv8v6Uos5T1M
-         SC4+iLfb7/4kssQA5Ceu9f3ehS8BQLdunabKNFSAJun/tz2YX1bZylCLs67jtMAOJ8
-         v8dcPSwpX/awRYPFdPgl2Dzeldj7mUJFxwG1asY8=
+        b=TrpGDPyxg7hIr43+E8XhRcq0s/70O93e7dT+fi9V8zjwU9BrhcCCLCd1+noA1w+Pz
+         I2WQlODrV3/uh1SkQbR1ID7e/cS6WW3F8Fj47WmJ74Yc0Fq9bM5GyvcVtXkLR3BAwt
+         OuNq76So+zEAr0ynRyggpn5OadqaOYg359tiUSFk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Lai Jiangshan <laijs@linux.alibaba.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/12] rcu: Remove the declaration of call_rcu() in tree.h
-Date:   Mon,  9 Dec 2019 20:07:34 -0800
-Message-Id: <20191210040741.2943-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/12] rcu: Fix harmless omission of "CONFIG_" from #if condition
+Date:   Mon,  9 Dec 2019 20:07:32 -0800
+Message-Id: <20191210040741.2943-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -61,29 +61,47 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The call_rcu() function is an external RCU API that is declared in
-include/linux/rcupdate.h.  There is thus no point in redeclaring it
-in kernel/rcu/tree.h, so this commit removes that redundant declaration.
+The C preprocessor macros SRCU and TINY_RCU should instead be CONFIG_SRCU
+and CONFIG_TINY_RCU, respectively in the #f in kernel/rcu/rcu.h. But
+there is no harm when "TINY_RCU" is wrongly used, which are always
+non-defined, which makes "!defined(TINY_RCU)" always true, which means
+the code block is always included, and the included code block doesn't
+cause any compilation error so far in CONFIG_TINY_RCU builds.  It is
+also the reason this change should not be taken in -stable.
+
+This commit adds the needed "CONFIG_" prefix to both macros.
+
+Not for -stable.
 
 Signed-off-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.h | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/rcu/rcu.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e4dc5de..54ff989 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -413,7 +413,6 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
- static int rcu_print_task_exp_stall(struct rcu_node *rnp);
- static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp);
- static void rcu_flavor_sched_clock_irq(int user);
--void call_rcu(struct rcu_head *head, rcu_callback_t func);
- static void dump_blkd_tasks(struct rcu_node *rnp, int ncheck);
- static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
- static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index ab504fb..4732594 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -281,7 +281,7 @@ void rcu_test_sync_prims(void);
+  */
+ extern void resched_cpu(int cpu);
+ 
+-#if defined(SRCU) || !defined(TINY_RCU)
++#if defined(CONFIG_SRCU) || !defined(CONFIG_TINY_RCU)
+ 
+ #include <linux/rcu_node_tree.h>
+ 
+@@ -418,7 +418,7 @@ do {									\
+ #define raw_lockdep_assert_held_rcu_node(p)				\
+ 	lockdep_assert_held(&ACCESS_PRIVATE(p, lock))
+ 
+-#endif /* #if defined(SRCU) || !defined(TINY_RCU) */
++#endif /* #if defined(CONFIG_SRCU) || !defined(CONFIG_TINY_RCU) */
+ 
+ #ifdef CONFIG_SRCU
+ void srcu_init(void);
 -- 
 2.9.5
 
