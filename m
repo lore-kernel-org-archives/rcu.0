@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BB33C2D0C4
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19CBFC2D0BE
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4538E20836
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC1E4207FF
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575952031;
-	bh=qnOCy3R7oF7uk4WJhiKaMhVNS1u2drNJf8xRjkLGYTo=;
+	s=default; t=1575952030;
+	bh=UvqPH8KGP2teZiHdUsosVSBBj5Gb/IKBzG45J8z/tuQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=gh4ziCwL4buog2dOjA8Y5YMcrq2xUGTLQRE0jSU/+Rddjyxg8eoviFaOPqp2GKaAT
-	 qdANsDEq9WxAGxkLextex0UpAs9/0teq5m+NIGpmetYnFwgZkSnIRlOQYM9awu846y
-	 PP/b21L+4v0G/GcBs8FVG2uxB7Kybw3CpPLwyBHY=
+	b=zSlK57gH2WJHaB2gUSw3lOTGPQqjSzQ9cbQCrNGK9N/7h+76W48yscqa20LKnH8YG
+	 oYfWD/0s/34O/vhplsmhJLvna+zzuMOvYSRMomwNY1wy9LYY2gvJs7I9/zdXs4Z2Sg
+	 /E7d5jM/DK2f5bo72TUhyMlzJLwbD4/uQutoL+tU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbfLJE0g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:26:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48420 "EHLO mail.kernel.org"
+        id S1727276AbfLJE1G (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:27:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726718AbfLJE0e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:26:34 -0500
+        id S1727003AbfLJE0g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:26:36 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F7DF208C3;
-        Tue, 10 Dec 2019 04:26:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7352D24679;
+        Tue, 10 Dec 2019 04:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951992;
-        bh=qnOCy3R7oF7uk4WJhiKaMhVNS1u2drNJf8xRjkLGYTo=;
+        s=default; t=1575951995;
+        bh=UvqPH8KGP2teZiHdUsosVSBBj5Gb/IKBzG45J8z/tuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WsVPcNkxYgWFbIqSXBm8BYI0Yb9yY4XE3gOmavmyVMsL79LYxFc6Gdl7LGaGlZ9D3
-         m3XZ2gsrUa58fZ/ubyQnvcdvhf4JNFyflRqOSM0IkDDFKz6iJH3vjdEYcQ+9O+im3a
-         6wi+hKp590XBe+I+J7wAPe8gqLwNe3zkxRSAOlvo=
+        b=c32MNEekPdboo365ph8TaYzom9kFpwYp7bqp7z2tlngbGtYDnOFLO1NsPMM634LkX
+         Z2op2WCPqf++rp2a0xQlLecrzrCpW4bhDgmHppKuvgRqI3ofekb7tSE/gma7S4fygV
+         2f6HFsnc6AnYklVe23p7wJGl17X8qegVfM/YjdGc=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/11] rcu: Avoid data-race in rcu_gp_fqs_check_wake()
-Date:   Mon,  9 Dec 2019 20:26:20 -0800
-Message-Id: <20191210042629.3808-2-paulmck@kernel.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH tip/core/rcu 05/11] rcu: Use CONFIG_PREEMPTION where appropriate
+Date:   Mon,  9 Dec 2019 20:26:23 -0800
+Message-Id: <20191210042629.3808-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210042606.GA3624@paulmck-ThinkPad-P72>
 References: <20191210042606.GA3624@paulmck-ThinkPad-P72>
@@ -58,106 +60,150 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-The rcu_gp_fqs_check_wake() function uses rcu_preempt_blocked_readers_cgp()
-to read ->gp_tasks while other cpus might overwrite this field.
+The config option `CONFIG_PREEMPT' is used for the preemption model
+"Low-Latency Desktop". The config option `CONFIG_PREEMPTION' is enabled
+when kernel preemption is enabled which is true for the preemption model
+`CONFIG_PREEMPT' and `CONFIG_PREEMPT_RT'.
 
-We need READ_ONCE()/WRITE_ONCE() pairs to avoid compiler
-tricks and KCSAN splats like the following :
+Use `CONFIG_PREEMPTION' if it applies to both preemption models and not
+just to `CONFIG_PREEMPT'.
 
-BUG: KCSAN: data-race in rcu_gp_fqs_check_wake / rcu_preempt_deferred_qs_irqrestore
-
-write to 0xffffffff85a7f190 of 8 bytes by task 7317 on cpu 0:
- rcu_preempt_deferred_qs_irqrestore+0x43d/0x580 kernel/rcu/tree_plugin.h:507
- rcu_read_unlock_special+0xec/0x370 kernel/rcu/tree_plugin.h:659
- __rcu_read_unlock+0xcf/0xe0 kernel/rcu/tree_plugin.h:394
- rcu_read_unlock include/linux/rcupdate.h:645 [inline]
- __ip_queue_xmit+0x3b0/0xa40 net/ipv4/ip_output.c:533
- ip_queue_xmit+0x45/0x60 include/net/ip.h:236
- __tcp_transmit_skb+0xdeb/0x1cd0 net/ipv4/tcp_output.c:1158
- __tcp_send_ack+0x246/0x300 net/ipv4/tcp_output.c:3685
- tcp_send_ack+0x34/0x40 net/ipv4/tcp_output.c:3691
- tcp_cleanup_rbuf+0x130/0x360 net/ipv4/tcp.c:1575
- tcp_recvmsg+0x633/0x1a30 net/ipv4/tcp.c:2179
- inet_recvmsg+0xbb/0x250 net/ipv4/af_inet.c:838
- sock_recvmsg_nosec net/socket.c:871 [inline]
- sock_recvmsg net/socket.c:889 [inline]
- sock_recvmsg+0x92/0xb0 net/socket.c:885
- sock_read_iter+0x15f/0x1e0 net/socket.c:967
- call_read_iter include/linux/fs.h:1864 [inline]
- new_sync_read+0x389/0x4f0 fs/read_write.c:414
-
-read to 0xffffffff85a7f190 of 8 bytes by task 10 on cpu 1:
- rcu_gp_fqs_check_wake kernel/rcu/tree.c:1556 [inline]
- rcu_gp_fqs_check_wake+0x93/0xd0 kernel/rcu/tree.c:1546
- rcu_gp_fqs_loop+0x36c/0x580 kernel/rcu/tree.c:1611
- rcu_gp_kthread+0x143/0x220 kernel/rcu/tree.c:1768
- kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 10 Comm: rcu_preempt Not tainted 5.3.0+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-[ paulmck:  Added another READ_ONCE() for RCU CPU stall warnings. ]
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: rcu@vger.kernel.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ include/linux/rcupdate.h | 4 ++--
+ kernel/rcu/Kconfig       | 4 ++--
+ kernel/rcu/rcutorture.c  | 2 +-
+ kernel/rcu/srcutiny.c    | 2 +-
+ kernel/rcu/tree.c        | 4 ++--
+ kernel/rcu/tree_exp.h    | 2 +-
+ kernel/rcu/tree_plugin.h | 4 ++--
+ 7 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 758bfe1..fe5f448 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -220,7 +220,7 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * blocked tasks.
- 	 */
- 	if (!rnp->gp_tasks && (blkd_state & RCU_GP_BLKD)) {
--		rnp->gp_tasks = &t->rcu_node_entry;
-+		WRITE_ONCE(rnp->gp_tasks, &t->rcu_node_entry);
- 		WARN_ON_ONCE(rnp->completedqs == rnp->gp_seq);
- 	}
- 	if (!rnp->exp_tasks && (blkd_state & RCU_EXP_BLKD))
-@@ -340,7 +340,7 @@ EXPORT_SYMBOL_GPL(rcu_note_context_switch);
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 70a41cd..eb32fff 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -154,7 +154,7 @@ static inline void exit_tasks_rcu_finish(void) { }
+  *
+  * This macro resembles cond_resched(), except that it is defined to
+  * report potential quiescent states to RCU-tasks even if the cond_resched()
+- * machinery were to be shut off, as some advocate for PREEMPT kernels.
++ * machinery were to be shut off, as some advocate for PREEMPTION kernels.
   */
- static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+ #define cond_resched_tasks_rcu_qs() \
+ do { \
+@@ -598,7 +598,7 @@ do {									      \
+  *
+  * You can avoid reading and understanding the next paragraph by
+  * following this rule: don't put anything in an rcu_read_lock() RCU
+- * read-side critical section that would block in a !PREEMPT kernel.
++ * read-side critical section that would block in a !PREEMPTION kernel.
+  * But if you want the full story, read on!
+  *
+  * In non-preemptible RCU implementations (pure TREE_RCU and TINY_RCU),
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 0303934..1cc940f 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -201,8 +201,8 @@ config RCU_NOCB_CPU
+ 	  specified at boot time by the rcu_nocbs parameter.  For each
+ 	  such CPU, a kthread ("rcuox/N") will be created to invoke
+ 	  callbacks, where the "N" is the CPU being offloaded, and where
+-	  the "p" for RCU-preempt (PREEMPT kernels) and "s" for RCU-sched
+-	  (!PREEMPT kernels).  Nothing prevents this kthread from running
++	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
++	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
+ 	  on the specified CPUs, but (1) the kthreads may be preempted
+ 	  between each callback, and (2) affinity or cgroups can be used
+ 	  to force the kthreads to run on whatever set of CPUs is desired.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index dee043f..121a050 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1730,7 +1730,7 @@ static void rcu_torture_fwd_cb_cr(struct rcu_head *rhp)
+ // Give the scheduler a chance, even on nohz_full CPUs.
+ static void rcu_torture_fwd_prog_cond_resched(unsigned long iter)
  {
--	return rnp->gp_tasks != NULL;
-+	return READ_ONCE(rnp->gp_tasks) != NULL;
+-	if (IS_ENABLED(CONFIG_PREEMPT) && IS_ENABLED(CONFIG_NO_HZ_FULL)) {
++	if (IS_ENABLED(CONFIG_PREEMPTION) && IS_ENABLED(CONFIG_NO_HZ_FULL)) {
+ 		// Real call_rcu() floods hit userspace, so emulate that.
+ 		if (need_resched() || (iter & 0xfff))
+ 			schedule();
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 44d6606..6208c1d 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -103,7 +103,7 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+ 
+ /*
+  * Workqueue handler to drive one grace period and invoke any callbacks
+- * that become ready as a result.  Single-CPU and !PREEMPT operation
++ * that become ready as a result.  Single-CPU and !PREEMPTION operation
+  * means that we get away with murder on synchronization.  ;-)
+  */
+ void srcu_drive_gp(struct work_struct *wp)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1694a6b..c9dbb05 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2698,9 +2698,9 @@ EXPORT_SYMBOL_GPL(kfree_call_rcu);
+ 
+ /*
+  * During early boot, any blocking grace-period wait automatically
+- * implies a grace period.  Later on, this is never the case for PREEMPT.
++ * implies a grace period.  Later on, this is never the case for PREEMPTION.
+  *
+- * Howevr, because a context switch is a grace period for !PREEMPT, any
++ * Howevr, because a context switch is a grace period for !PREEMPTION, any
+  * blocking grace-period wait automatically implies a grace period if
+  * there is only one CPU online at any point time during execution of
+  * either synchronize_rcu() or synchronize_rcu_expedited().  It is OK to
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index d632cd0..98d078c 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -670,7 +670,7 @@ static void rcu_exp_handler(void *unused)
+ 	}
  }
  
- /* Bias and limit values for ->rcu_read_lock_nesting. */
-@@ -493,7 +493,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 		trace_rcu_unlock_preempted_task(TPS("rcu_preempt"),
- 						rnp->gp_seq, t->pid);
- 		if (&t->rcu_node_entry == rnp->gp_tasks)
--			rnp->gp_tasks = np;
-+			WRITE_ONCE(rnp->gp_tasks, np);
- 		if (&t->rcu_node_entry == rnp->exp_tasks)
- 			rnp->exp_tasks = np;
- 		if (IS_ENABLED(CONFIG_RCU_BOOST)) {
-@@ -663,7 +663,7 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
- 		dump_blkd_tasks(rnp, 10);
- 	if (rcu_preempt_has_tasks(rnp) &&
- 	    (rnp->qsmaskinit || rnp->wait_blkd_tasks)) {
--		rnp->gp_tasks = rnp->blkd_tasks.next;
-+		WRITE_ONCE(rnp->gp_tasks, rnp->blkd_tasks.next);
- 		t = container_of(rnp->gp_tasks, struct task_struct,
- 				 rcu_node_entry);
- 		trace_rcu_unlock_preempted_task(TPS("rcu_preempt-GPS"),
-@@ -757,7 +757,8 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- 		pr_info("%s: %d:%d ->qsmask %#lx ->qsmaskinit %#lx ->qsmaskinitnext %#lx\n",
- 			__func__, rnp1->grplo, rnp1->grphi, rnp1->qsmask, rnp1->qsmaskinit, rnp1->qsmaskinitnext);
- 	pr_info("%s: ->gp_tasks %p ->boost_tasks %p ->exp_tasks %p\n",
--		__func__, rnp->gp_tasks, rnp->boost_tasks, rnp->exp_tasks);
-+		__func__, READ_ONCE(rnp->gp_tasks), rnp->boost_tasks,
-+		rnp->exp_tasks);
- 	pr_info("%s: ->blkd_tasks", __func__);
- 	i = 0;
- 	list_for_each(lhp, &rnp->blkd_tasks) {
+-/* PREEMPT=y, so no PREEMPT=n expedited grace period to clean up after. */
++/* PREEMPTION=y, so no PREEMPTION=n expedited grace period to clean up after. */
+ static void sync_sched_exp_online_cleanup(int cpu)
+ {
+ }
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index ed54d36..8cdce11 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -789,7 +789,7 @@ static void __init rcu_bootup_announce(void)
+ }
+ 
+ /*
+- * Note a quiescent state for PREEMPT=n.  Because we do not need to know
++ * Note a quiescent state for PREEMPTION=n.  Because we do not need to know
+  * how many quiescent states passed, just if there was at least one since
+  * the start of the grace period, this just sets a flag.  The caller must
+  * have disabled preemption.
+@@ -839,7 +839,7 @@ void rcu_all_qs(void)
+ EXPORT_SYMBOL_GPL(rcu_all_qs);
+ 
+ /*
+- * Note a PREEMPT=n context switch.  The caller must have disabled interrupts.
++ * Note a PREEMPTION=n context switch. The caller must have disabled interrupts.
+  */
+ void rcu_note_context_switch(bool preempt)
+ {
 -- 
 2.9.5
 
