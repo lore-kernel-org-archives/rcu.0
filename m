@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FF97C2D0BF
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24CE5C2D0BE
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 523B224656
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB150207FF
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575949350;
-	bh=O8zSgVKAg5FjaVRPXFRAgSlpaYk/7KotlPxmPGoBjpI=;
+	s=default; t=1575949371;
+	bh=N05EpPtOSrQbn7yOfFXBkRpyGIkc4d3k4nuvgRfYoEo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=EWCFpRkCY3K+UUurPwfPx/3M78DvM46N5G1WIBfGDQ68wjAcxR16cuYqjQwEhJJVi
-	 DZAN1yOHFwTmiAs5zUfzmqKPCDrU+TsaiB48s7WmXBCAwI8oPnNegPrMP+j2zBU0br
-	 98ChUf/O22EFU1bIsc0Sv3R3312cq4etBuk20zH8=
+	b=VXtCuvDl6aPxz7Oa6W2Qndv8B8mEz7s2BYGahAVfWE1j03KpDifMtND4vqqlDdFN5
+	 b7/VOzLT2hf8UklRMtjJ2Pg5GBBrx/pwOix8NrznFrNX0oHp6YF/sMuve6Eyw/QBFI
+	 7CWOAZYh4Rb02cxTl47YGL9ZYWY8McFX9sxXZmb4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbfLJDm3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 22:42:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        id S1727047AbfLJDmq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727181AbfLJDm3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 22:42:29 -0500
+        id S1727119AbfLJDm1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:42:27 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5BF9222C4;
-        Tue, 10 Dec 2019 03:42:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D86324653;
+        Tue, 10 Dec 2019 03:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575949348;
-        bh=O8zSgVKAg5FjaVRPXFRAgSlpaYk/7KotlPxmPGoBjpI=;
+        s=default; t=1575949347;
+        bh=N05EpPtOSrQbn7yOfFXBkRpyGIkc4d3k4nuvgRfYoEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xIAsa6lJroSRwfUyaYatY1AIbzHZRRUDhGm0/tEZFSHLsBEPDuMVXSUGV6oX4BrWy
-         rle21P0MNI49Il0Kkxb/HBFjLcdXe0tuxniloaWr4dJso6SvMeVmHZLIq2yZCJuE+P
-         FuQYemvdvRpQ1jeLC5zesB/0wpZAbfk+8LFdZsOw=
+        b=GYX5ME9vOZrQ+/TABwsJndz0ec0HVgdi5OlgvvD4dn5+r/fMYNfUj5jk7P+P9O+/W
+         la4QMGcUaKxepqB/udVmOAI9EyxH5ILUYEBl9QgT8EXy6sUgM5HMmIli8V7GoE135+
+         QpF1M1TtPcv1YCxjh80Zj5ZSMZs2EyiMvXjoWZ0g=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/12] torture: Hoist calls to lscpu to higher-level kvm.sh script
-Date:   Mon,  9 Dec 2019 19:42:17 -0800
-Message-Id: <20191210034217.405-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/12] rcutorture: Dynamically allocate rcu_fwds structure
+Date:   Mon,  9 Dec 2019 19:42:15 -0800
+Message-Id: <20191210034217.405-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210034119.GA32711@paulmck-ThinkPad-P72>
 References: <20191210034119.GA32711@paulmck-ThinkPad-P72>
@@ -60,75 +60,64 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-On some kernels, concurrent calls to the lscpu command result in severe
-slowdowns.  For example, on v4.16, a single lscpu invocation takes about
-two milliseconds, four concurrent invocations more than two seconds,
-and 16 concurrent invocations more than 20 seconds.  Given that the only
-goal is to learn the number of CPUs, invoking lscpu but once suffices.
-This commit therefore invokes lscpu early in kvm.sh execution, setting
-the initial value of the TORTURE_ALLOTED_CPUS environment variable.
+This commit switches from static structure to dynamic allocation
+for rcu_fwds as another step towards providing multiple call_rcu()
+forward-progress kthreads.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh |  7 +++----
- tools/testing/selftests/rcutorture/bin/kvm.sh            | 11 ++++++++---
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ kernel/rcu/rcutorture.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 1d98992..e035230 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -133,11 +133,10 @@ fi
- qemu_args="-enable-kvm -nographic $qemu_args"
- cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
- cpu_count=`configfrag_boot_cpus "$boot_args" "$config_template" "$cpu_count"`
--vcpus=`identify_qemu_vcpus`
--if test $cpu_count -gt $vcpus
-+if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
- then
--	echo CPU count limited from $cpu_count to $vcpus | tee -a $resdir/Warnings
--	cpu_count=$vcpus
-+	echo CPU count limited from $cpu_count to $TORTURE_ALLOTED_CPUS | tee -a $resdir/Warnings
-+	cpu_count=$TORTURE_ALLOTED_CPUS
- fi
- qemu_args="`specify_qemu_cpus "$QEMU" "$qemu_args" "$cpu_count"`"
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 394baac..f77f4d8 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1686,7 +1686,7 @@ struct rcu_fwd {
+ 	unsigned long rcu_launder_gp_seq_start;
+ };
  
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index e19151c..78d18ab 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -24,7 +24,9 @@ dur=$((30*60))
- dryrun=""
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
- PATH=${KVM}/bin:$PATH; export PATH
--TORTURE_ALLOTED_CPUS=""
-+. functions.sh
-+
-+TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
- TORTURE_DEFCONFIG=defconfig
- TORTURE_BOOT_IMAGE=""
- TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
-@@ -40,8 +42,6 @@ cpus=0
- ds=`date +%Y.%m.%d-%H:%M:%S`
- jitter="-1"
+-struct rcu_fwd rcu_fwds;
++struct rcu_fwd *rcu_fwds;
+ bool rcu_fwd_emergency_stop;
  
--. functions.sh
--
- usage () {
- 	echo "Usage: $scriptname optional arguments:"
- 	echo "       --bootargs kernel-boot-arguments"
-@@ -93,6 +93,11 @@ do
- 		checkarg --cpus "(number)" "$#" "$2" '^[0-9]*$' '^--'
- 		cpus=$2
- 		TORTURE_ALLOTED_CPUS="$2"
-+		max_cpus="`identify_qemu_vcpus`"
-+		if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
-+		then
-+			TORTURE_ALLOTED_CPUS=$max_cpus
-+		fi
- 		shift
- 		;;
- 	--datestamp)
+ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
+@@ -1952,7 +1952,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
+ static int rcutorture_oom_notify(struct notifier_block *self,
+ 				 unsigned long notused, void *nfreed)
+ {
+-	struct rcu_fwd *rfp = &rcu_fwds;
++	struct rcu_fwd *rfp = rcu_fwds;
+ 
+ 	WARN(1, "%s invoked upon OOM during forward-progress testing.\n",
+ 	     __func__);
+@@ -2010,7 +2010,7 @@ static int rcu_torture_fwd_prog(void *args)
+ /* If forward-progress checking is requested and feasible, spawn the thread. */
+ static int __init rcu_torture_fwd_prog_init(void)
+ {
+-	struct rcu_fwd *rfp = &rcu_fwds;
++	struct rcu_fwd *rfp;
+ 
+ 	if (!fwd_progress)
+ 		return 0; /* Not requested, so don't do it. */
+@@ -2026,12 +2026,15 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 		WARN_ON(1); /* Make sure rcutorture notices conflict. */
+ 		return 0;
+ 	}
+-	spin_lock_init(&rfp->rcu_fwd_lock);
+-	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
+ 	if (fwd_progress_holdoff <= 0)
+ 		fwd_progress_holdoff = 1;
+ 	if (fwd_progress_div <= 0)
+ 		fwd_progress_div = 4;
++	rfp = kzalloc(sizeof(*rfp), GFP_KERNEL);
++	if (!rfp)
++		return -ENOMEM;
++	spin_lock_init(&rfp->rcu_fwd_lock);
++	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
+ 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
+ }
+ 
 -- 
 2.9.5
 
