@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98A72C2D0B1
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32277C2D0B1
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 661B92071E
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08BF92071E
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950887;
-	bh=Jyu8RLllLlNVSv/jmpXsW4PEaKCtWgH/gY+vmMRry4M=;
+	s=default; t=1575950892;
+	bh=TvosYzjHhqHwTKEBhd/3tiZRrmMCcSiwrNi8S60IGbU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=D3aVtJrUmS/JpxxM5hjScWc/rS7aiL4pP8qwZlE8garkEEsRtvBRBqsZbA3PY6OJa
-	 IPVW02gbcQWVLJBiupMQi94t58qoeFNqD8OMs+c2OipGelr9VpnoKyXACc/vQORRJu
-	 G9EXb9mjc2YadA4z4Au5xINsVgx07K9V0i1arBf0=
+	b=iCh001WiyRLbkFrQWhPDiWbQuR5ADbkyoPr2iJpYzHNLh8ujeuN3pShJe/KZnUjYa
+	 VWW440DvuMRM7OQeO785WaxE/ehcgcAudTIC/qfjPI8M+lWMApjEIONn7vcJvnuQBV
+	 M2/cDlhq/nupQJKEV9RBvn4VyRHf+fKY9R6+QBRY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbfLJEID (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43630 "EHLO mail.kernel.org"
+        id S1727050AbfLJEIH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:08:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727050AbfLJEHu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:50 -0500
+        id S1727036AbfLJEHt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:49 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9822120726;
-        Tue, 10 Dec 2019 04:07:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBE5321556;
+        Tue, 10 Dec 2019 04:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950870;
-        bh=Jyu8RLllLlNVSv/jmpXsW4PEaKCtWgH/gY+vmMRry4M=;
+        s=default; t=1575950869;
+        bh=TvosYzjHhqHwTKEBhd/3tiZRrmMCcSiwrNi8S60IGbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rNgI7Dusv+Vuj/fb0EBgOYiDhW8XtODB/kYW7Cj2M0FoBjWeI9hDySEIx7qUsYWUp
-         j1+Y/nqkFy+QD1FkuJYeHN9V2brP4CO0A7pnB1lTskukg99IwYbSBHAbqvhu/lV2oO
-         jrEkzUVBzywQoObzc2JPT3quU5efm9SpxTNk+LVY=
+        b=yoyQ2iWIecL42QowLXibFx2YW2D9EBEnB9jklhBXZvHES7f7issqAHIQ196Glny6x
+         WT/VoesfY4Q17Nyaue71qZkt5hIVL/ZHF4ISdLYQDWaXu7rfiXrT8Ho0mgltEPAc2H
+         62+Y4wrN8ob/eLUFySOCqu2VbbjJI3t1bY2DMHsc=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/12] .mailmap: Add entries for old paulmck@kernel.org addresses
-Date:   Mon,  9 Dec 2019 20:07:39 -0800
-Message-Id: <20191210040741.2943-10-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/12] srcu: Apply *_ONCE() to ->srcu_last_gp_end
+Date:   Mon,  9 Dec 2019 20:07:38 -0800
+Message-Id: <20191210040741.2943-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -60,27 +60,50 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
+The ->srcu_last_gp_end field is accessed from any CPU at any time
+by synchronize_srcu(), so non-initialization references need to use
+READ_ONCE() and WRITE_ONCE().  This commit therefore makes that change.
+
+Reported-by: syzbot+08f3e9d26e5541e1ecf2@syzkaller.appspotmail.com
+Acked-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .mailmap | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/srcutree.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/.mailmap b/.mailmap
-index c24773d..5f330c5 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -207,6 +207,11 @@ Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
- Patrick Mochel <mochel@digitalimplant.org>
- Paul Burton <paulburton@kernel.org> <paul.burton@imgtec.com>
- Paul Burton <paulburton@kernel.org> <paul.burton@mips.com>
-+Paul Burton <paul.burton@mips.com> <paul.burton@imgtec.com>
-+Paul E. McKenney <paulmck@kernel.org> <paulmck@linux.ibm.com>
-+Paul E. McKenney <paulmck@kernel.org> <paulmck@linux.vnet.ibm.com>
-+Paul E. McKenney <paulmck@kernel.org> <paul.mckenney@linaro.org>
-+Paul E. McKenney <paulmck@kernel.org> <paulmck@us.ibm.com>
- Peter A Jonsson <pj@ludd.ltu.se>
- Peter Oruba <peter@oruba.de>
- Peter Oruba <peter.oruba@amd.com>
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 5dffade..21acdff 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -530,7 +530,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	idx = rcu_seq_state(ssp->srcu_gp_seq);
+ 	WARN_ON_ONCE(idx != SRCU_STATE_SCAN2);
+ 	cbdelay = srcu_get_delay(ssp);
+-	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
++	WRITE_ONCE(ssp->srcu_last_gp_end, ktime_get_mono_fast_ns());
+ 	rcu_seq_end(&ssp->srcu_gp_seq);
+ 	gpseq = rcu_seq_current(&ssp->srcu_gp_seq);
+ 	if (ULONG_CMP_LT(ssp->srcu_gp_seq_needed_exp, gpseq))
+@@ -762,6 +762,7 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+ 	unsigned long flags;
+ 	struct srcu_data *sdp;
+ 	unsigned long t;
++	unsigned long tlast;
+ 
+ 	/* If the local srcu_data structure has callbacks, not idle.  */
+ 	local_irq_save(flags);
+@@ -780,9 +781,9 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+ 
+ 	/* First, see if enough time has passed since the last GP. */
+ 	t = ktime_get_mono_fast_ns();
++	tlast = READ_ONCE(ssp->srcu_last_gp_end);
+ 	if (exp_holdoff == 0 ||
+-	    time_in_range_open(t, ssp->srcu_last_gp_end,
+-			       ssp->srcu_last_gp_end + exp_holdoff))
++	    time_in_range_open(t, tlast, tlast + exp_holdoff))
+ 		return false; /* Too soon after last GP. */
+ 
+ 	/* Next, check for probable idleness. */
 -- 
 2.9.5
 
