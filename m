@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D74C43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D5A1C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 52B7E2077B
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:07:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03CD02071E
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575950875;
-	bh=6hVA58dIBEyN/mPJBos2dUyQmVqkjqz0PDuZsQk7yqs=;
+	s=default; t=1575950883;
+	bh=H9rYx0czH4fQK/q1YmaxFub10EO4OctXx4sO0TWZeB0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zWSd7b+9t8+LNt7z2PtoRfXrKE3AaKKOFcCZ+ax3Rq0xHoGctVfW388kdvtbXlw47
-	 FRU4WcAQ0rk2J63QwXTdG+ytOgjZB6EKROh+e/biT3Fy6XCLcp0/20q0rck1Yi0P2n
-	 yrmMvW1y7NjqMhAF8oip6gJLYSTDQFvLusz7Q7Jo=
+	b=wvWjmemQtZjDJT2ESJXxcASWRxbO44BcvO34nLTixcN+5e0c6jifEaXDI34iu9gIw
+	 YIOd1StD0NX6RZS9Owh40GhZ/N0Cy/QIPFVjxx2lGDigk1yPu5w/qkrs62+7UPr7Cg
+	 O6hPnQVPJ+J4BdSbivcSdbkjE0mXzfLjF91Lulpc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbfLJEHy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
+        id S1727149AbfLJEH7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:07:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727076AbfLJEHw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:07:52 -0500
+        id S1727067AbfLJEHv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:07:51 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E848F24680;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4164224656;
         Tue, 10 Dec 2019 04:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575950871;
-        bh=6hVA58dIBEyN/mPJBos2dUyQmVqkjqz0PDuZsQk7yqs=;
+        s=default; t=1575950870;
+        bh=H9rYx0czH4fQK/q1YmaxFub10EO4OctXx4sO0TWZeB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dc3T+9yIJERy9jMjJpVUOTUSeBrvZG1T4FlZKqyraXiZtzzpCgpIbAI63vSWCKgJy
-         myjPU5qZQbFEOqocCn9xkLA8Jhx7R67fhHuFmaRsw3wW0byFlC3tpdFpjaFDxD1hg2
-         I5S+5j7GQ2T2lh+o82w7QHgpeWuaAhy9py4DGcN8=
+        b=XxBnAZhLKbD1s5lgC5Zev7uTqsm6TYubaVAbWLr0Tji4MWYJ6Qfipv2Twx9aC75hP
+         EeRLgXENaTYHS+tDE638QObWBt/IQnNkvCk1S19fd3KFmH6B9WUqaUBd6iMA6Th2Jb
+         RHRSxW4QYSK28htMHsVtbnrvarO0cpk0yNitELDY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/12] rcu: Remove unused stop-machine #include
-Date:   Mon,  9 Dec 2019 20:07:41 -0800
-Message-Id: <20191210040741.2943-12-paulmck@kernel.org>
+        Will Deacon <will@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/12] powerpc: Remove comment about read_barrier_depends()
+Date:   Mon,  9 Dec 2019 20:07:40 -0800
+Message-Id: <20191210040741.2943-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210040714.GA2715@paulmck-ThinkPad-P72>
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
@@ -58,44 +59,30 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Will Deacon <will@kernel.org>
 
-Long ago, RCU used the stop-machine mechanism to implement expedited
-grace periods, but no longer does so.  This commit therefore removes
-the no-longer-needed #includes of linux/stop_machine.h.
+'read_barrier_depends()' doesn't exist anymore so stop talking about it.
 
-Link: https://lwn.net/Articles/805317/
-Reported-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 1 -
- kernel/rcu/tree.h | 1 -
- 2 files changed, 2 deletions(-)
+ arch/powerpc/include/asm/barrier.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d950764..878f62f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -43,7 +43,6 @@
- #include <uapi/linux/sched/types.h>
- #include <linux/prefetch.h>
- #include <linux/delay.h>
--#include <linux/stop_machine.h>
- #include <linux/random.h>
- #include <linux/trace_events.h>
- #include <linux/suspend.h>
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 9d5986a..ce90c68 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -16,7 +16,6 @@
- #include <linux/cpumask.h>
- #include <linux/seqlock.h>
- #include <linux/swait.h>
--#include <linux/stop_machine.h>
- #include <linux/rcu_node_tree.h>
- 
- #include "rcu_segcblist.h"
+diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
+index fbe8df4..123adce 100644
+--- a/arch/powerpc/include/asm/barrier.h
++++ b/arch/powerpc/include/asm/barrier.h
+@@ -18,8 +18,6 @@
+  * mb() prevents loads and stores being reordered across this point.
+  * rmb() prevents loads being reordered across this point.
+  * wmb() prevents stores being reordered across this point.
+- * read_barrier_depends() prevents data-dependent loads being reordered
+- *	across this point (nop on PPC).
+  *
+  * *mb() variants without smp_ prefix must order all types of memory
+  * operations with one another. sync is the only instruction sufficient
 -- 
 2.9.5
 
