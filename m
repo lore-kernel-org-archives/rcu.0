@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 750A7C2D0BE
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E8BC43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 41BC720726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A01A20726
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575951628;
-	bh=BDReUdnaJUFqWGBCbhb2xo/YCPUh9AgdHIKKe3dNJIM=;
+	s=default; t=1575951633;
+	bh=om8HX3F1JQk0D3I7aUPL63MWrWDKGacZCIEb5Psjg9Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=KDI/JrkIdsDPkKkkXmXfgSQSb+dBoaeA5FN8UOHEB3NHkhn8sEGF5HE07oDKXlByB
-	 CPBDnPk4TeUdObnTZImigqxMr/pG/cxh6JdH5UjimPkqR3QgOKwJ/pnphLpPXB4kNx
-	 Wj8+7lxOJS6rAcTXlBWjuD0H6sGKUk0a2SA/AS7I=
+	b=WzZM0qOS3dKR7W/hjunPQYRPs4TOhsvlvjJ4lSXJGH6BWPNqpV0sOCKjf4uEVoyH0
+	 jjgLMx5hbXDsqOxbMJt/7QjizqCkBw9a78mHRUWqxpkxu2FQ4sSl2tmuA+TV7WAoZK
+	 XDquVY4OjSNE62LuWh6zm/Fmly1YbQ09FOPedn58=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbfLJEU1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:20:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
+        id S1726819AbfLJEUG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:20:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727076AbfLJEUJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 23:20:09 -0500
+        id S1726810AbfLJEUG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 23:20:06 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 617C3214D8;
-        Tue, 10 Dec 2019 04:20:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 232D720836;
+        Tue, 10 Dec 2019 04:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951609;
-        bh=BDReUdnaJUFqWGBCbhb2xo/YCPUh9AgdHIKKe3dNJIM=;
+        s=default; t=1575951605;
+        bh=om8HX3F1JQk0D3I7aUPL63MWrWDKGacZCIEb5Psjg9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vntOJ4Sl9DUwzaJFTfWQcNNtlSgaTHE68Rk3Vluw7nO6azGtrIOGxn94cdVN0Sjwj
-         kU2shBe4vqNSEr2teo/N2u9AxjOxyLLwOIdMUKXqbrXGO0LoCQAKPjIecfrHV37CVI
-         48qJ4Anyp2O+PbiA3UIgZAftRTZI7GtkOGm6Cgqo=
+        b=zEUFzaxmNivRQSSB7xxaWvz+8xhj+go/LfiQHyffh1jYDyZ5iHnvV1KkOLuc4MN73
+         wBvp5xVghYqOqE2bWTfegZbbRHiVQdVJpNHblTgj1SVeF/G3RCgpfMTflfyFMFuAfA
+         Zkfw1/Zxz2iOpc2zJmwCsb9oeCQ+vdEZr/D1l//o=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 7/9] rculist_nulls: Add docbook comments
-Date:   Mon,  9 Dec 2019 20:20:00 -0800
-Message-Id: <20191210042002.3490-7-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/9] list: Add hlist_unhashed_lockless()
+Date:   Mon,  9 Dec 2019 20:19:55 -0800
+Message-Id: <20191210042002.3490-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210041938.GA3367@paulmck-ThinkPad-P72>
 References: <20191210041938.GA3367@paulmck-ThinkPad-P72>
@@ -59,39 +58,188 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-This patch adds docbook comment headers for hlist_nulls_first_rcu()
-and hlist_nulls_next_rcu() in rculist_nulls.h.
+We would like to use hlist_unhashed() from timer_pending(),
+which runs without protection of a lock.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Note that other callers might also want to use this variant.
+
+Instead of forcing a READ_ONCE() for all hlist_unhashed()
+callers, add a new helper with an explicit _lockless suffix
+in the name to better document what is going on.
+
+Also add various WRITE_ONCE() in __hlist_del(), hlist_add_head()
+and hlist_add_before()/hlist_add_behind() to pair with
+the READ_ONCE().
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+[ paulmck: Also add WRITE_ONCE() to rculist.h. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rculist_nulls.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/list.h    | 32 +++++++++++++++++++++-----------
+ include/linux/rculist.h | 24 ++++++++++++------------
+ 2 files changed, 33 insertions(+), 23 deletions(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index 517a06f..25952c4 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -38,9 +38,17 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+diff --git a/include/linux/list.h b/include/linux/list.h
+index 85c9255..61f5aaf 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -749,6 +749,16 @@ static inline int hlist_unhashed(const struct hlist_node *h)
+ 	return !h->pprev;
+ }
+ 
++/* This variant of hlist_unhashed() must be used in lockless contexts
++ * to avoid potential load-tearing.
++ * The READ_ONCE() is paired with the various WRITE_ONCE() in hlist
++ * helpers that are defined below.
++ */
++static inline int hlist_unhashed_lockless(const struct hlist_node *h)
++{
++	return !READ_ONCE(h->pprev);
++}
++
+ static inline int hlist_empty(const struct hlist_head *h)
+ {
+ 	return !READ_ONCE(h->first);
+@@ -761,7 +771,7 @@ static inline void __hlist_del(struct hlist_node *n)
+ 
+ 	WRITE_ONCE(*pprev, next);
+ 	if (next)
+-		next->pprev = pprev;
++		WRITE_ONCE(next->pprev, pprev);
+ }
+ 
+ static inline void hlist_del(struct hlist_node *n)
+@@ -782,32 +792,32 @@ static inline void hlist_del_init(struct hlist_node *n)
+ static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+ {
+ 	struct hlist_node *first = h->first;
+-	n->next = first;
++	WRITE_ONCE(n->next, first);
+ 	if (first)
+-		first->pprev = &n->next;
++		WRITE_ONCE(first->pprev, &n->next);
+ 	WRITE_ONCE(h->first, n);
+-	n->pprev = &h->first;
++	WRITE_ONCE(n->pprev, &h->first);
+ }
+ 
+ /* next must be != NULL */
+ static inline void hlist_add_before(struct hlist_node *n,
+ 					struct hlist_node *next)
+ {
+-	n->pprev = next->pprev;
+-	n->next = next;
+-	next->pprev = &n->next;
++	WRITE_ONCE(n->pprev, next->pprev);
++	WRITE_ONCE(n->next, next);
++	WRITE_ONCE(next->pprev, &n->next);
+ 	WRITE_ONCE(*(n->pprev), n);
+ }
+ 
+ static inline void hlist_add_behind(struct hlist_node *n,
+ 				    struct hlist_node *prev)
+ {
+-	n->next = prev->next;
+-	prev->next = n;
+-	n->pprev = &prev->next;
++	WRITE_ONCE(n->next, prev->next);
++	WRITE_ONCE(prev->next, n);
++	WRITE_ONCE(n->pprev, &prev->next);
+ 
+ 	if (n->next)
+-		n->next->pprev  = &n->next;
++		WRITE_ONCE(n->next->pprev, &n->next);
+ }
+ 
+ /* after that we'll appear to be on some hlist and hlist_del will work */
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 61c6728a..4b7ae1b 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -173,7 +173,7 @@ static inline void hlist_del_init_rcu(struct hlist_node *n)
+ {
+ 	if (!hlist_unhashed(n)) {
+ 		__hlist_del(n);
+-		n->pprev = NULL;
++		WRITE_ONCE(n->pprev, NULL);
  	}
  }
  
-+/**
-+ * hlist_nulls_first_rcu - returns the first element of the hash list.
-+ * @head: the head of the list.
-+ */
- #define hlist_nulls_first_rcu(head) \
- 	(*((struct hlist_nulls_node __rcu __force **)&(head)->first))
+@@ -473,7 +473,7 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+ static inline void hlist_del_rcu(struct hlist_node *n)
+ {
+ 	__hlist_del(n);
+-	n->pprev = LIST_POISON2;
++	WRITE_ONCE(n->pprev, LIST_POISON2);
+ }
  
-+/**
-+ * hlist_nulls_next_rcu - returns the element of the list after @node.
-+ * @node: element of the list.
-+ */
- #define hlist_nulls_next_rcu(node) \
- 	(*((struct hlist_nulls_node __rcu __force **)&(node)->next))
+ /**
+@@ -489,11 +489,11 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
+ 	struct hlist_node *next = old->next;
  
+ 	new->next = next;
+-	new->pprev = old->pprev;
++	WRITE_ONCE(new->pprev, old->pprev);
+ 	rcu_assign_pointer(*(struct hlist_node __rcu **)new->pprev, new);
+ 	if (next)
+-		new->next->pprev = &new->next;
+-	old->pprev = LIST_POISON2;
++		WRITE_ONCE(new->next->pprev, &new->next);
++	WRITE_ONCE(old->pprev, LIST_POISON2);
+ }
+ 
+ /*
+@@ -528,10 +528,10 @@ static inline void hlist_add_head_rcu(struct hlist_node *n,
+ 	struct hlist_node *first = h->first;
+ 
+ 	n->next = first;
+-	n->pprev = &h->first;
++	WRITE_ONCE(n->pprev, &h->first);
+ 	rcu_assign_pointer(hlist_first_rcu(h), n);
+ 	if (first)
+-		first->pprev = &n->next;
++		WRITE_ONCE(first->pprev, &n->next);
+ }
+ 
+ /**
+@@ -564,7 +564,7 @@ static inline void hlist_add_tail_rcu(struct hlist_node *n,
+ 
+ 	if (last) {
+ 		n->next = last->next;
+-		n->pprev = &last->next;
++		WRITE_ONCE(n->pprev, &last->next);
+ 		rcu_assign_pointer(hlist_next_rcu(last), n);
+ 	} else {
+ 		hlist_add_head_rcu(n, h);
+@@ -592,10 +592,10 @@ static inline void hlist_add_tail_rcu(struct hlist_node *n,
+ static inline void hlist_add_before_rcu(struct hlist_node *n,
+ 					struct hlist_node *next)
+ {
+-	n->pprev = next->pprev;
++	WRITE_ONCE(n->pprev, next->pprev);
+ 	n->next = next;
+ 	rcu_assign_pointer(hlist_pprev_rcu(n), n);
+-	next->pprev = &n->next;
++	WRITE_ONCE(next->pprev, &n->next);
+ }
+ 
+ /**
+@@ -620,10 +620,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
+ 					struct hlist_node *prev)
+ {
+ 	n->next = prev->next;
+-	n->pprev = &prev->next;
++	WRITE_ONCE(n->pprev, &prev->next);
+ 	rcu_assign_pointer(hlist_next_rcu(prev), n);
+ 	if (n->next)
+-		n->next->pprev = &n->next;
++		WRITE_ONCE(n->next->pprev, &n->next);
+ }
+ 
+ #define __hlist_for_each_rcu(pos, head)				\
 -- 
 2.9.5
 
