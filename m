@@ -2,121 +2,95 @@ Return-Path: <SRS0=BMES=2A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A236CC2D0B1
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:43:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF46C43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:55:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 74ABA2077B
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:43:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8AF420726
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 03:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575949389;
-	bh=7L6+LJ3mKyRaJ5D/Ui49jomhEQenVN+LQSRFY/2aOZ4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=lUX6v+9jmdKNmPhNe79hOdWJ7NteE67kqbRySHjjw6LOrnzbY4T/Hd9RCCpNHlWjo
-	 Eebg53xkY3qc45CMnDY0ldKWKsTDsqW3B5nbMpeMA2i/wHzcHXn+ITJB96hxdtwoCl
-	 rMobk0q3/xMtcxfwqiDzFptPrYcHG+hxTeiCLOiY=
+	s=default; t=1575950140;
+	bh=T0eRrylaB+yqWaFPUnrO9eFyz+t+jDmLMxSOov6JvzM=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=Jj7pgkswshxqC9n59Qo6oAJzG2VS2bbw/L8Uhz4Ap86KicSmqvF4mlSPDWE/CLa4M
+	 f9t5xahlC4J9ptR8nMM7PWqbdhOmZ6mvOPIqC+aaYytLn+sh0e64A/4huqkERlZubE
+	 GW1j0D5mDEaNd2+YXFoLw5SFPy8fnesAm7xZ2nA8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbfLJDnC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 22:43:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60740 "EHLO mail.kernel.org"
+        id S1726691AbfLJDzk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 22:55:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbfLJDmX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Dec 2019 22:42:23 -0500
+        id S1726619AbfLJDzk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Dec 2019 22:55:40 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDF2120838;
-        Tue, 10 Dec 2019 03:42:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A099205C9;
+        Tue, 10 Dec 2019 03:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575949342;
-        bh=7L6+LJ3mKyRaJ5D/Ui49jomhEQenVN+LQSRFY/2aOZ4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=riJcszPP7zCtgNHBupQ5HD0PM+ws7kyx1PybkZfvhL5yjyu2RSJVM85YZQkY9XDJx
-         RfUEom4Z0NCVrRcVM1iJx/HhAyfodqCZ3Xp2QSzKPwOatgVjoy68GCUpi8m85jAqoO
-         +ABxCU//G+z9nPoGtiomQTak1iMVS85A1+Dd/j5E=
-From:   paulmck@kernel.org
+        s=default; t=1575950139;
+        bh=T0eRrylaB+yqWaFPUnrO9eFyz+t+jDmLMxSOov6JvzM=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Gc1QJ7UWRZm4UY9ctx1F21uD+Mkep7WkIKML7nubBLJg3rh7vMHhGZ+7F6S+bdIG6
+         wJUNhP4wyS8gtKmE+rYvjUTguuie/ZW0iekWquQeC0JfZOH55ZyTeqcwUqtacBw1IP
+         BUGDj+WrgTg+H2ECY7GZwR9gXh0yubM5XjU0rKfg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 345403522768; Mon,  9 Dec 2019 19:55:39 -0800 (PST)
+Date:   Mon, 9 Dec 2019 19:55:39 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/12] torture: Handle jitter for CPUs that cannot be offlined
-Date:   Mon,  9 Dec 2019 19:42:08 -0800
-Message-Id: <20191210034217.405-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20191210034119.GA32711@paulmck-ThinkPad-P72>
-References: <20191210034119.GA32711@paulmck-ThinkPad-P72>
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/7] Documentation updates for v5.6
+Message-ID: <20191210035539.GA792@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello!
 
-Currently, jitter.sh assumes that the underlying hypervisor will be
-configured with all CPUs hotpluggable, with the possible exception
-of CPU 0.  However, there are installations where the hypervisor
-prohibits offlining, which breaks jitter.sh.  This commit therefore
-lists the CPUs that cannot be offlined up front, and checks for the
-case where no CPU can be offlined in the loop.
+This series contains documentation updates for v5.6:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/bin/jitter.sh | 26 ++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+1.	Convert arrayRCU.txt to arrayRCU.rst, courtesy of Madhuparna
+	Bhowmik.
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index 86a217b..30cb5b2 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -25,6 +25,18 @@ n=1
- 
- starttime=`gawk 'BEGIN { print systime(); }' < /dev/null`
- 
-+nohotplugcpus=
-+for i in /sys/devices/system/cpu/cpu[0-9]*
-+do
-+	if test -f $i/online
-+	then
-+		:
-+	else
-+		curcpu=`echo $i | sed -e 's/^[^0-9]*//'`
-+		nohotplugcpus="$nohotplugcpus $curcpu"
-+	fi
-+done
-+
- while :
- do
- 	# Check for done.
-@@ -35,13 +47,15 @@ do
- 	fi
- 
- 	# Set affinity to randomly selected online CPU
--	cpus=`grep 1 /sys/devices/system/cpu/*/online |
--		sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//'`
--
--	# Do not leave out poor old cpu0 which may not be hot-pluggable
--	if [ ! -f "/sys/devices/system/cpu/cpu0/online" ]; then
--		cpus="0 $cpus"
-+	if cpus=`grep 1 /sys/devices/system/cpu/*/online 2>&1 |
-+		 sed -e 's,/[^/]*$,,' -e 's/^[^0-9]*//'`
-+	then
-+		:
-+	else
-+		cpus=
- 	fi
-+	# Do not leave out non-hot-pluggable CPUs
-+	cpus="$cpus $nohotplugcpus"
- 
- 	cpumask=`awk -v cpus="$cpus" -v me=$me -v n=$n 'BEGIN {
- 		srand(n + me + systime());
--- 
-2.9.5
+2.	Convert NMI-RCU.txt to NMI-RCU.rst, courtesy of Madhuparna
+	Bhowmik.
 
+3.	Convert whatisRCU.txt to .rst, courtesy of Phong Tran.
+
+4.	Convert to rcu_dereference.txt to rcu_dereference.rst, courtesy
+	of Amol Grover.
+
+5.	Convert to rcubarrier.txt to ReST, courtesy of Amol Grover.
+
+6.	Update full list of RCU API in whatisRCU.rst, courtesy of
+	Madhuparna Bhowmik.
+
+7.	Fix typo s/deference/dereference/.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ NMI-RCU.rst         |   53 ++++-----
+ arrayRCU.rst        |   30 +++--
+ index.rst           |    5 
+ lockdep-splat.txt   |    2 
+ rcu_dereference.rst |   75 +++++++------
+ rcubarrier.rst      |  222 ++++++++++++++++++++++-----------------
+ whatisRCU.rst       |  293 ++++++++++++++++++++++++++++++++--------------------
+ 7 files changed, 405 insertions(+), 275 deletions(-)
