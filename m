@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E8BC43603
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FBDFC43603
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4A01A20726
-	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4605520726
+	for <rcu@archiver.kernel.org>; Tue, 10 Dec 2019 04:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1575951633;
-	bh=om8HX3F1JQk0D3I7aUPL63MWrWDKGacZCIEb5Psjg9Y=;
+	s=default; t=1575951637;
+	bh=D/nNxJU2R/ELQtX//F+ypH4+OKcnEVClhfyZCCaSxqQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=WzZM0qOS3dKR7W/hjunPQYRPs4TOhsvlvjJ4lSXJGH6BWPNqpV0sOCKjf4uEVoyH0
-	 jjgLMx5hbXDsqOxbMJt/7QjizqCkBw9a78mHRUWqxpkxu2FQ4sSl2tmuA+TV7WAoZK
-	 XDquVY4OjSNE62LuWh6zm/Fmly1YbQ09FOPedn58=
+	b=TXkoJ2NNCJhMpRBtFSH6DKpmfooMIxVpe/s8U8l5Ve77bROLh654ttap/Td80G7m4
+	 AR2WV4aiycEMRAP1pcWOZ8tSBTKZUa2HfoX8+nEEemoK+HZYAwiYnoPx14VlLBlQlf
+	 l+KSvQlYawNDG0cIyUYeBKqHvkgqVPPSz+PVDDeE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfLJEUG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Dec 2019 23:20:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
+        id S1727076AbfLJEUd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Dec 2019 23:20:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbfLJEUG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726619AbfLJEUG (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 9 Dec 2019 23:20:06 -0500
 Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 232D720836;
+        by mail.kernel.org (Postfix) with ESMTPSA id C15F920838;
         Tue, 10 Dec 2019 04:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575951605;
-        bh=om8HX3F1JQk0D3I7aUPL63MWrWDKGacZCIEb5Psjg9Y=;
+        s=default; t=1575951606;
+        bh=D/nNxJU2R/ELQtX//F+ypH4+OKcnEVClhfyZCCaSxqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zEUFzaxmNivRQSSB7xxaWvz+8xhj+go/LfiQHyffh1jYDyZ5iHnvV1KkOLuc4MN73
-         wBvp5xVghYqOqE2bWTfegZbbRHiVQdVJpNHblTgj1SVeF/G3RCgpfMTflfyFMFuAfA
-         Zkfw1/Zxz2iOpc2zJmwCsb9oeCQ+vdEZr/D1l//o=
+        b=zqXCjPLiuJyaj+TpdtteuPUi6GgJRxzpXTUHmrgM6kzeunUwLQ7NYQqTKG2AoNtJw
+         mbVHUMJbfdQWXMqCvAfTUz/Xk3R9qZRi1TKATBupKuuEkNTrGbs+NGU90jFICAhsKq
+         NTieuaCLcTNbd1gdWwiTOo+1NZeAOZneM1KbmKI0=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/9] list: Add hlist_unhashed_lockless()
-Date:   Mon,  9 Dec 2019 20:19:55 -0800
-Message-Id: <20191210042002.3490-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 3/9] timer: Use hlist_unhashed_lockless() in timer_pending()
+Date:   Mon,  9 Dec 2019 20:19:56 -0800
+Message-Id: <20191210042002.3490-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20191210041938.GA3367@paulmck-ThinkPad-P72>
 References: <20191210041938.GA3367@paulmck-ThinkPad-P72>
@@ -60,186 +60,69 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-We would like to use hlist_unhashed() from timer_pending(),
-which runs without protection of a lock.
+The timer_pending() function is mostly used in lockless contexts, so
+Without proper annotations, KCSAN might detect a data-race [1].
 
-Note that other callers might also want to use this variant.
+Using hlist_unhashed_lockless() instead of hand-coding it seems
+appropriate (as suggested by Paul E. McKenney).
 
-Instead of forcing a READ_ONCE() for all hlist_unhashed()
-callers, add a new helper with an explicit _lockless suffix
-in the name to better document what is going on.
+[1]
 
-Also add various WRITE_ONCE() in __hlist_del(), hlist_add_head()
-and hlist_add_before()/hlist_add_behind() to pair with
-the READ_ONCE().
+BUG: KCSAN: data-race in del_timer / detach_if_pending
+
+write to 0xffff88808697d870 of 8 bytes by task 10 on cpu 0:
+ __hlist_del include/linux/list.h:764 [inline]
+ detach_timer kernel/time/timer.c:815 [inline]
+ detach_if_pending+0xcd/0x2d0 kernel/time/timer.c:832
+ try_to_del_timer_sync+0x60/0xb0 kernel/time/timer.c:1226
+ del_timer_sync+0x6b/0xa0 kernel/time/timer.c:1365
+ schedule_timeout+0x2d2/0x6e0 kernel/time/timer.c:1896
+ rcu_gp_fqs_loop+0x37c/0x580 kernel/rcu/tree.c:1639
+ rcu_gp_kthread+0x143/0x230 kernel/rcu/tree.c:1799
+ kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+
+read to 0xffff88808697d870 of 8 bytes by task 12060 on cpu 1:
+ del_timer+0x3b/0xb0 kernel/time/timer.c:1198
+ sk_stop_timer+0x25/0x60 net/core/sock.c:2845
+ inet_csk_clear_xmit_timers+0x69/0xa0 net/ipv4/inet_connection_sock.c:523
+ tcp_clear_xmit_timers include/net/tcp.h:606 [inline]
+ tcp_v4_destroy_sock+0xa3/0x3f0 net/ipv4/tcp_ipv4.c:2096
+ inet_csk_destroy_sock+0xf4/0x250 net/ipv4/inet_connection_sock.c:836
+ tcp_close+0x6f3/0x970 net/ipv4/tcp.c:2497
+ inet_release+0x86/0x100 net/ipv4/af_inet.c:427
+ __sock_release+0x85/0x160 net/socket.c:590
+ sock_close+0x24/0x30 net/socket.c:1268
+ __fput+0x1e1/0x520 fs/file_table.c:280
+ ____fput+0x1f/0x30 fs/file_table.c:313
+ task_work_run+0xf6/0x130 kernel/task_work.c:113
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_usermode_loop+0x2b4/0x2c0 arch/x86/entry/common.c:163
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 12060 Comm: syz-executor.5 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
 
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-[ paulmck: Also add WRITE_ONCE() to rculist.h. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/list.h    | 32 +++++++++++++++++++++-----------
- include/linux/rculist.h | 24 ++++++++++++------------
- 2 files changed, 33 insertions(+), 23 deletions(-)
+ include/linux/timer.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index 85c9255..61f5aaf 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -749,6 +749,16 @@ static inline int hlist_unhashed(const struct hlist_node *h)
- 	return !h->pprev;
- }
- 
-+/* This variant of hlist_unhashed() must be used in lockless contexts
-+ * to avoid potential load-tearing.
-+ * The READ_ONCE() is paired with the various WRITE_ONCE() in hlist
-+ * helpers that are defined below.
-+ */
-+static inline int hlist_unhashed_lockless(const struct hlist_node *h)
-+{
-+	return !READ_ONCE(h->pprev);
-+}
-+
- static inline int hlist_empty(const struct hlist_head *h)
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index 1e6650e..0dc19a8 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -164,7 +164,7 @@ static inline void destroy_timer_on_stack(struct timer_list *timer) { }
+  */
+ static inline int timer_pending(const struct timer_list * timer)
  {
- 	return !READ_ONCE(h->first);
-@@ -761,7 +771,7 @@ static inline void __hlist_del(struct hlist_node *n)
- 
- 	WRITE_ONCE(*pprev, next);
- 	if (next)
--		next->pprev = pprev;
-+		WRITE_ONCE(next->pprev, pprev);
+-	return timer->entry.pprev != NULL;
++	return !hlist_unhashed_lockless(&timer->entry);
  }
  
- static inline void hlist_del(struct hlist_node *n)
-@@ -782,32 +792,32 @@ static inline void hlist_del_init(struct hlist_node *n)
- static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
- {
- 	struct hlist_node *first = h->first;
--	n->next = first;
-+	WRITE_ONCE(n->next, first);
- 	if (first)
--		first->pprev = &n->next;
-+		WRITE_ONCE(first->pprev, &n->next);
- 	WRITE_ONCE(h->first, n);
--	n->pprev = &h->first;
-+	WRITE_ONCE(n->pprev, &h->first);
- }
- 
- /* next must be != NULL */
- static inline void hlist_add_before(struct hlist_node *n,
- 					struct hlist_node *next)
- {
--	n->pprev = next->pprev;
--	n->next = next;
--	next->pprev = &n->next;
-+	WRITE_ONCE(n->pprev, next->pprev);
-+	WRITE_ONCE(n->next, next);
-+	WRITE_ONCE(next->pprev, &n->next);
- 	WRITE_ONCE(*(n->pprev), n);
- }
- 
- static inline void hlist_add_behind(struct hlist_node *n,
- 				    struct hlist_node *prev)
- {
--	n->next = prev->next;
--	prev->next = n;
--	n->pprev = &prev->next;
-+	WRITE_ONCE(n->next, prev->next);
-+	WRITE_ONCE(prev->next, n);
-+	WRITE_ONCE(n->pprev, &prev->next);
- 
- 	if (n->next)
--		n->next->pprev  = &n->next;
-+		WRITE_ONCE(n->next->pprev, &n->next);
- }
- 
- /* after that we'll appear to be on some hlist and hlist_del will work */
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 61c6728a..4b7ae1b 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -173,7 +173,7 @@ static inline void hlist_del_init_rcu(struct hlist_node *n)
- {
- 	if (!hlist_unhashed(n)) {
- 		__hlist_del(n);
--		n->pprev = NULL;
-+		WRITE_ONCE(n->pprev, NULL);
- 	}
- }
- 
-@@ -473,7 +473,7 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
- static inline void hlist_del_rcu(struct hlist_node *n)
- {
- 	__hlist_del(n);
--	n->pprev = LIST_POISON2;
-+	WRITE_ONCE(n->pprev, LIST_POISON2);
- }
- 
- /**
-@@ -489,11 +489,11 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
- 	struct hlist_node *next = old->next;
- 
- 	new->next = next;
--	new->pprev = old->pprev;
-+	WRITE_ONCE(new->pprev, old->pprev);
- 	rcu_assign_pointer(*(struct hlist_node __rcu **)new->pprev, new);
- 	if (next)
--		new->next->pprev = &new->next;
--	old->pprev = LIST_POISON2;
-+		WRITE_ONCE(new->next->pprev, &new->next);
-+	WRITE_ONCE(old->pprev, LIST_POISON2);
- }
- 
- /*
-@@ -528,10 +528,10 @@ static inline void hlist_add_head_rcu(struct hlist_node *n,
- 	struct hlist_node *first = h->first;
- 
- 	n->next = first;
--	n->pprev = &h->first;
-+	WRITE_ONCE(n->pprev, &h->first);
- 	rcu_assign_pointer(hlist_first_rcu(h), n);
- 	if (first)
--		first->pprev = &n->next;
-+		WRITE_ONCE(first->pprev, &n->next);
- }
- 
- /**
-@@ -564,7 +564,7 @@ static inline void hlist_add_tail_rcu(struct hlist_node *n,
- 
- 	if (last) {
- 		n->next = last->next;
--		n->pprev = &last->next;
-+		WRITE_ONCE(n->pprev, &last->next);
- 		rcu_assign_pointer(hlist_next_rcu(last), n);
- 	} else {
- 		hlist_add_head_rcu(n, h);
-@@ -592,10 +592,10 @@ static inline void hlist_add_tail_rcu(struct hlist_node *n,
- static inline void hlist_add_before_rcu(struct hlist_node *n,
- 					struct hlist_node *next)
- {
--	n->pprev = next->pprev;
-+	WRITE_ONCE(n->pprev, next->pprev);
- 	n->next = next;
- 	rcu_assign_pointer(hlist_pprev_rcu(n), n);
--	next->pprev = &n->next;
-+	WRITE_ONCE(next->pprev, &n->next);
- }
- 
- /**
-@@ -620,10 +620,10 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
- 					struct hlist_node *prev)
- {
- 	n->next = prev->next;
--	n->pprev = &prev->next;
-+	WRITE_ONCE(n->pprev, &prev->next);
- 	rcu_assign_pointer(hlist_next_rcu(prev), n);
- 	if (n->next)
--		n->next->pprev = &n->next;
-+		WRITE_ONCE(n->next->pprev, &n->next);
- }
- 
- #define __hlist_for_each_rcu(pos, head)				\
+ extern void add_timer_on(struct timer_list *timer, int cpu);
 -- 
 2.9.5
 
