@@ -2,55 +2,47 @@ Return-Path: <SRS0=CxAO=2B=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5594C43603
-	for <rcu@archiver.kernel.org>; Wed, 11 Dec 2019 03:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF67C43603
+	for <rcu@archiver.kernel.org>; Wed, 11 Dec 2019 03:51:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B6E8C206EC
-	for <rcu@archiver.kernel.org>; Wed, 11 Dec 2019 03:37:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="L/WpBq9H"
+	by mail.kernel.org (Postfix) with ESMTP id D22C520838
+	for <rcu@archiver.kernel.org>; Wed, 11 Dec 2019 03:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1576036283;
+	bh=eFzj21qYloauMwUtdCGqTFTX4luWwusPmqSOsOyh+MA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=2mZEbpLpQ2eRdhXUR80qqxB8I9M3tBpGX/4pa9jO13PxzcaR0VkShAMRJzBYX8cIj
+	 Sj1Xx5FzoRdp36iRro2aMKaPEuwQt2nZFtDJ0nVghsUdSFmGkwaXXVA6i6Pll2IW1v
+	 lH/6/ImAS0Q+yJLltBCxprfA5eoCH5h9GHQJ3+YU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbfLKDhX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Dec 2019 22:37:23 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57202 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbfLKDhX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Dec 2019 22:37:23 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBB3P45C153230;
-        Wed, 11 Dec 2019 03:36:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=Pk8yzQhSfRv+UdtIPQBqczRUvP3c/3wYixQrmDvJIdM=;
- b=L/WpBq9Hcq0ugPV1O6/fkNdSOkjvoPjiBaKCrgETfqi5G985g5eFUAWdur6G0cJOadI2
- uTUEbGojG/uXUR9hjJJkBHnYXchQ8qLr5KcI3LJXR5Y7ILAlJP7qZqvIa7mGieN6V403
- iYtydiidgRCmCftDycVQOzqU76nRynC4oFvZqy3uzo8yz/8iQ857Bn11zXSOaSPvGw4b
- gGr1Hch0NEhxPH5CTiPpSAIgBWn1thZ/pGQiqmLguQGv2FyqXFd6+mQypfkgjpInDsiG
- sH8euVo2qVR6m1d1yjuvL4ax7O2m/vcpR/gRQwTTgyqEwLHpqv1LEinfSlvohoKNs8JA ug== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2wrw4n6ue4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Dec 2019 03:36:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBB3NtNP083739;
-        Wed, 11 Dec 2019 03:36:02 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2wtqg8jh38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Dec 2019 03:36:02 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBB3ZrJQ004814;
-        Wed, 11 Dec 2019 03:35:58 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Dec 2019 19:35:53 -0800
-To:     paulmck@kernel.org
+        id S1727119AbfLKDvX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Dec 2019 22:51:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726642AbfLKDvX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Dec 2019 22:51:23 -0500
+Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B03C620836;
+        Wed, 11 Dec 2019 03:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576036282;
+        bh=eFzj21qYloauMwUtdCGqTFTX4luWwusPmqSOsOyh+MA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kj8YTiynoPvqVPGtD11yWfGHT3qlut5vNEgfozkqAZo1l9ZP/AfhmRA1YzcHtPd9u
+         0WNKCcmHhY+hnJ4op/45/iKK1O7rgERiuAwa1joHTeJT4K6FDUbfoSStHSdg+cgG4d
+         H2VytX4+E+ivZoHg3e43NuzMKPUsgFmo9irJQCrQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 58986352276C; Tue, 10 Dec 2019 19:51:22 -0800 (PST)
+Date:   Tue, 10 Dec 2019 19:51:22 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
         dipankar@in.ibm.com, akpm@linux-foundation.org,
@@ -61,46 +53,39 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bart Van Assche <bart.vanassche@wdc.com>,
         Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
         Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
+        Shane M Seymour <shane.seymour@hpe.com>
 Subject: Re: [PATCH tip/core/rcu 01/12] rcu: Remove rcu_swap_protected()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
+Message-ID: <20191211035122.GC2889@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
-        <20191210040741.2943-1-paulmck@kernel.org>
-Date:   Tue, 10 Dec 2019 22:35:49 -0500
-In-Reply-To: <20191210040741.2943-1-paulmck@kernel.org> (paulmck@kernel.org's
-        message of "Mon, 9 Dec 2019 20:07:30 -0800")
-Message-ID: <yq1a77zmt4a.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+ <20191210040741.2943-1-paulmck@kernel.org>
+ <yq1a77zmt4a.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9467 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912110030
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9467 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912110030
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yq1a77zmt4a.fsf@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, Dec 10, 2019 at 10:35:49PM -0500, Martin K. Petersen wrote:
+> 
+> Paul,
+> 
+> > Now that the calls to rcu_swap_protected() have been replaced by
+> > rcu_replace_pointer(), this commit removes rcu_swap_protected().
+> 
+> It appears there are two callers remaining in Linus' master. Otherwise
+> looks good to me.
 
-Paul,
+I did queue a fix for one of them, and thank you for calling my
+attention to the new one.  This commit should hit -next soon, so
+hopefully this will discourage further additions.  ;-)
 
-> Now that the calls to rcu_swap_protected() have been replaced by
-> rcu_replace_pointer(), this commit removes rcu_swap_protected().
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-It appears there are two callers remaining in Linus' master. Otherwise
-looks good to me.
+Thank you!
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+							Thanx, Paul
