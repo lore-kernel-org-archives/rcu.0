@@ -2,88 +2,96 @@ Return-Path: <SRS0=JbrM=2C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23BF5C43603
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:04:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE219C43603
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:07:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 01212206DA
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:04:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A0C822527
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576173844;
-	bh=cZV989DdYo9B9NVAqpSi0dlI1udeZn5Oa6mQtxQHc08=;
+	s=default; t=1576174061;
+	bh=7JxF7qlG8TCPWnDPzZgbQ3ebBCcdJS+oN0FEpXv0GfQ=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=XB833GRbzso0o367lRkR6Cpi3c9/hNVs7uhSCde2HQE8g+IY+LmEaUW3n8UOpv8uD
-	 OXdu/Iqf6wdvU7/hOAv/CLYL4LBmvpneyxtA93w8W/gud1y2iE+FbhCVSEYZtjsjT8
-	 b1ZgcPraz/NbyX27bg/tye4CN+6CZzVllJMn4m20=
+	b=wkt/n0AUAygRf764ftWMbO8wSbkMaqdfuocPdLzCef2NJl6uW88nyOYj9I5lW1gLR
+	 TgPoegszZg6kg9IreDkLc0+hPYYvEBz9Ma7kVBsqI1vx3DDk1xhDaTp2bZmgzwwhXY
+	 6S6hebT97tDb7mWuXS1bDs0Y80+5Ql+wnISMvGa8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbfLLSEA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Dec 2019 13:04:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
+        id S1730305AbfLLSHl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Dec 2019 13:07:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730034AbfLLSD7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Dec 2019 13:03:59 -0500
+        id S1730304AbfLLSHl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Dec 2019 13:07:41 -0500
 Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.130])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65CC7206DA;
-        Thu, 12 Dec 2019 18:03:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1540E21556;
+        Thu, 12 Dec 2019 18:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576173839;
-        bh=cZV989DdYo9B9NVAqpSi0dlI1udeZn5Oa6mQtxQHc08=;
+        s=default; t=1576174060;
+        bh=7JxF7qlG8TCPWnDPzZgbQ3ebBCcdJS+oN0FEpXv0GfQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=n13dv87dgFevQzdUeJHbKYQ3YsqGQqtTbjX7j47+p3TV5ooU736D/cx/1AgU4Xsjq
-         5m+OsPbdg4tPh8HWhMAXNmwya28fwIXsS1BKo1w3ppgJJFLNyI4LNKl8tEJDqLkr8z
-         Ajr84HjIiD0JI3HkaN6YkeHiVwDSqfX+KHMJ1qJU=
+        b=JXkLX1OluMqqPy0R9SYwYDWxJrmMzd6K8MYmgGBuWxjlG0/D8gpeEYzaoggRWgBkp
+         o/k6R3AIzCN20dlJPguNrzjzU65m+o+pI2vKWsCPLVYsLYxqeaRHJrCo/eATvaKF0A
+         jzZUg5+Vav2q3Nl9XSzJQSanhy7jS95I5oGtlCMY=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id ACCC73522757; Thu, 12 Dec 2019 10:03:58 -0800 (PST)
-Date:   Thu, 12 Dec 2019 10:03:58 -0800
+        id A11A63522757; Thu, 12 Dec 2019 10:07:39 -0800 (PST)
+Date:   Thu, 12 Dec 2019 10:07:39 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "madhuparnabhowmik04@gmail.com" <madhuparnabhowmik04@gmail.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fs: nfs: dir.c: Fix sparse error
-Message-ID: <20191212180358.GX2889@paulmck-ThinkPad-P72>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] rcu: fix spelling mistake "leval" -> "level"
+Message-ID: <20191212180739.GZ2889@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <201912110621.WJ6oENgf%lkp@intel.com>
- <20191211074842.21400-1-madhuparnabhowmik04@gmail.com>
- <20191212041406.GT2889@paulmck-ThinkPad-P72>
- <5614739335088d3e9baff43b752df04b84a8ad14.camel@hammerspace.com>
+References: <20191212173643.91135-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5614739335088d3e9baff43b752df04b84a8ad14.camel@hammerspace.com>
+In-Reply-To: <20191212173643.91135-1-colin.king@canonical.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 01:45:29PM +0000, Trond Myklebust wrote:
-> On Wed, 2019-12-11 at 20:14 -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 11, 2019 at 01:18:42PM +0530, 
-> > madhuparnabhowmik04@gmail.com wrote:
-> > > This build error is because the macro list_tail_rcu() is
-> > > not yet present in the mainline kernel.
-> > > 
-> > > This patch is dependent on the patch : 
-> > > https://lore.kernel.org/linux-kernel-mentees/CAF65HP2SC89k9HJZfcLgeOMRPBKRyasCMiLo2gZgBKycjHuU6A@mail.gmail.com/T/#t
-> > 
-> > If the NFS folks are OK with it, I would be happy to take it in -rcu,
-> > where the list_tail_rcu() patch is currently located.
+On Thu, Dec 12, 2019 at 05:36:43PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> That would be fine with me.
+> There is a spelling mistake in a pr_info message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Very good!  I have queued it.
+Good catch!  Queued, thank you!
 
 							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree_plugin.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 4d4637c361b7..0765784012f8 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -57,7 +57,7 @@ static void __init rcu_bootup_announce_oddness(void)
+>  	if (qlowmark != DEFAULT_RCU_QLOMARK)
+>  		pr_info("\tBoot-time adjustment of callback low-water mark to %ld.\n", qlowmark);
+>  	if (qovld != DEFAULT_RCU_QOVLD)
+> -		pr_info("\tBoot-time adjustment of callback overload leval to %ld.\n", qovld);
+> +		pr_info("\tBoot-time adjustment of callback overload level to %ld.\n", qovld);
+>  	if (jiffies_till_first_fqs != ULONG_MAX)
+>  		pr_info("\tBoot-time adjustment of first FQS scan delay to %ld jiffies.\n", jiffies_till_first_fqs);
+>  	if (jiffies_till_next_fqs != ULONG_MAX)
+> -- 
+> 2.24.0
+> 
