@@ -2,152 +2,123 @@ Return-Path: <SRS0=JbrM=2C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B38DAC00454
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17F16C43603
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 21:55:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9103F2253D
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 18:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576174904;
-	bh=i+dcJM/f6xnhJQ9i63A4Z9F3vQYpJTHOxEAe+lR+QTw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=O10ndrPGec2kAB3hMUJMv/8Z3kD6qi+ncM7TSSShggnBXbFto3c6ER1+3ltazg9J8
-	 RAsDxoCjgEVJqXUilJyqGaHaNp61V4hVo8ExqIV8Ku030AERsZCZ6Eawep+kOx/gYl
-	 a+ZBPHxsVrpLC4JnKFHWqPz3O0aexWCMLu4OZeOI=
+	by mail.kernel.org (Postfix) with ESMTP id DA7A021556
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 21:55:37 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="akQTQ8DG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbfLLSVk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Dec 2019 13:21:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730110AbfLLSVk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Dec 2019 13:21:40 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [199.201.64.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BBED21556;
-        Thu, 12 Dec 2019 18:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576174899;
-        bh=i+dcJM/f6xnhJQ9i63A4Z9F3vQYpJTHOxEAe+lR+QTw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MofbQa+M16OKmySZ0fjGFEYYV9jhtP606xxBU8XZeCthREeFJ2ZFvZndPaRMTZ0yS
-         Y7sL09uwIBUFXKNHGQRUIn+ga11ipL6aiwAEjGK+PNCdbl91we4M7SGVgBTUv/6jvN
-         1iQloQW7HnVbigA/nfHwLT859Bgb0JBmoapSrp7Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 05C5B3522757; Thu, 12 Dec 2019 10:21:39 -0800 (PST)
-Date:   Thu, 12 Dec 2019 10:21:39 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Roy Luo <royluo@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH tip/core/rcu 01/12] rcu: Remove rcu_swap_protected()
-Message-ID: <20191212182139.GA2889@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
- <20191210040741.2943-1-paulmck@kernel.org>
- <yq1a77zmt4a.fsf@oracle.com>
- <20191211035122.GC2889@paulmck-ThinkPad-P72>
- <20191211183738.GA5190@paulmck-ThinkPad-P72>
- <1911b7fa-c8d4-e34b-020d-3346a56f29d6@gmail.com>
- <20191211231239.GK2889@paulmck-ThinkPad-P72>
- <87mubxdh52.fsf@kamboji.qca.qualcomm.com>
+        id S1731205AbfLLVzh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Dec 2019 16:55:37 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:40903 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731203AbfLLVzh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Dec 2019 16:55:37 -0500
+Received: by mail-pg1-f193.google.com with SMTP id k25so262759pgt.7
+        for <rcu@vger.kernel.org>; Thu, 12 Dec 2019 13:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h/VdtXdRQlPmJqNAwJpL0SAreQKh5WfidHfGkffdfTY=;
+        b=akQTQ8DGz4+sLf+zxm0p7E7OSR4ZVNkCljcLLOLKtWKJJXAmgxCFUjPlwOG5fbSC9N
+         mERo4ScyELdDEEkmatrR1iPy+pdwUVhfxjnUUIR+kUGOsjfUBzr5wxbpFNbTqRNtQ09z
+         b+wx6vcHLgpVhQN4aXYz0T07BsuRDMg6DU2cw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h/VdtXdRQlPmJqNAwJpL0SAreQKh5WfidHfGkffdfTY=;
+        b=iEAkPZFLk5qtbxF9aHpAAJxhF7qa4tdn3DTpUicKB30LgDA3gmTvKRv/RQEZ2zH7YO
+         M6XrKZkFlo9AI2AZdqFZYYalMYtaaa3tURNZZYGCgLdpaLlcmhjOsNMvT4+acCExyH/l
+         ezwEIcIDdt31s/JREcve6AkojIui1SvqlBQ3qnzeepZDT7/185yJJIIpT+HY68Esujt0
+         jV+TlUkC8IsYlBDmYaMv+02xL4nlea0Wi19762X39/DZqQlTewNgha0g8VaZuZV1H2LM
+         mGPq6hNziWbzzJDtR0OH6o7KHiS2gIHhvUVyr8lfPnOTBYsYj8vB2GSszE7jkWPmgzPq
+         pj/g==
+X-Gm-Message-State: APjAAAU6EOglP7ZHFCj7/AMo3eINOJjU3JMK5JiexkUTC6K0zeIDMVBb
+        8/RDpNkUMVsaVGxqoFDshTB5sQ==
+X-Google-Smtp-Source: APXvYqwsMX2eicc0dbN7r6W5gmKv0tIxPb2fvRfeVxEEAY6q0Rx/j41gSkqdSqxQQojNi+feY0HBOQ==
+X-Received: by 2002:a63:7843:: with SMTP id t64mr13106609pgc.144.1576187736533;
+        Thu, 12 Dec 2019 13:55:36 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id k88sm7172380pjb.15.2019.12.12.13.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2019 13:55:35 -0800 (PST)
+Date:   Thu, 12 Dec 2019 16:55:34 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     madhuparnabhowmik04@gmail.com, trond.myklebust@hammerspace.com,
+        anna.schumaker@netapp.com, linux-nfs@vger.kernel.org,
+        rcu@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] fs: nfs: dir.c: Fix sparse error
+Message-ID: <20191212215534.GE129023@google.com>
+References: <20191206151640.10966-1-madhuparnabhowmik04@gmail.com>
+ <20191206160238.GE2889@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mubxdh52.fsf@kamboji.qca.qualcomm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191206160238.GE2889@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 11:31:37AM +0200, Kalle Valo wrote:
-> + linux-wireless
-> 
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> 
-> > On Wed, Dec 11, 2019 at 08:09:11PM +0100, Matthias Brugger wrote:
-> >> On 11/12/2019 19:37, Paul E. McKenney wrote:
-> >>
-> >> > --- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
-> >> > +++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
-> >> > @@ -281,8 +281,8 @@ void mt76_rx_aggr_stop(struct mt76_dev *dev, struct mt76_wcid *wcid, u8 tidno)
-> >> >  {
-> >> >  	struct mt76_rx_tid *tid = NULL;
-> >> >  
-> >> > -	rcu_swap_protected(wcid->aggr[tidno], tid,
-> >> > -			   lockdep_is_held(&dev->mutex));
-> >> > +	tid = rcu_swap_protected(wcid->aggr[tidno], tid,
-> >> > +				 lockdep_is_held(&dev->mutex));
-> >> 
-> >> I suppose you meant: rcu_replace_pointer() here.
-> >
-> > Indeed I did, and thank you for catching this!  Bad patch day here.  :-/
-> >
-> > Update below...
-> >
-> > 							Thanx, Paul
-> >
-> > ------------------------------------------------------------------------
-> >
-> > commit ad5572b091429a45e863acaa6a36cf396d44f58d
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Wed Dec 11 10:30:21 2019 -0800
-> >
-> >     wireless/mediatek: Replace rcu_swap_protected() with rcu_replace_pointer()
-> >     
-> >     This commit replaces the use of rcu_swap_protected() with the more
-> >     intuitively appealing rcu_replace_pointer() as a step towards removing
-> >     rcu_swap_protected().
-> >     
-> >     Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> >     Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> >     Reported-by: "Martin K. Petersen" <martin.petersen@oracle.com>
-> >     [ paulmck: Apply Matthias Brugger feedback. ]
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Reviewed-by: "Martin K. Petersen" <martin.petersen@oracle.com>
-> >     Cc: Felix Fietkau <nbd@nbd.name>
-> >     Cc: Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
-> >     Cc: Ryder Lee <ryder.lee@mediatek.com>
-> >     Cc: Roy Luo <royluo@google.com>
-> >     Cc: Kalle Valo <kvalo@codeaurora.org>
-> >     Cc: "David S. Miller" <davem@davemloft.net>
-> >     Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> >     Cc: <linux-wireless@vger.kernel.org>
-> >     Cc: <netdev@vger.kernel.org>
-> >     Cc: <linux-arm-kernel@lists.infradead.org>
-> >     Cc: <linux-mediatek@lists.infradead.org>
-> 
-> Via which tree is this supposed to go? If I should take this please
-> resend to linux-wireless so that patchwork sees it, but if someone else
-> is planning to take this:
-> 
-> Acked-by: Kalle Valo <kvalo@codeaurora.org>
+On Fri, Dec 06, 2019 at 08:02:38AM -0800, Paul E. McKenney wrote:
 
-I have queued it just preceding the commit that remove rcu_swap_protected()
-with your ack, thank you!
+Thanks for fixing these issues and I caught up with all the patches.
 
-							Thanx, Paul
+> 
+> o	Create a list that is safe for bidirectional RCU traversal.
+> 	This can use list_head, and would need these functions,
+> 	give or take the exact names:
+
+On a related topic, I was trying to reason about how one could come up with
+bidirectional traversal without ever getting rid of poisoning.
+
+As you noted in another post, if during traversal, the node is deleted and
+poisoned, then the traverser can access a poisoned pointer. If the list is
+being traversed in reverse (by following prev), then poisioning could hurt
+it.
+
+Even with the below modifications, poisoning would still hurt it. No? Were
+you suggesting to remove poisoning for such bidirectional RCU list?
+
+Sorry if I missed something.
+thanks,
+
+ - Joel
+
+
+> 	list_add_tail_rcuprev():  This is like list_add_tail_rcu(),
+> 	but also has smp_store_release() for ->prev.  (As in there is
+> 	also a __list_add_rcuprev() helper that actually contains the
+> 	additional smp_store_release().)
+> 
+> 	list_del_rcuprev():  This can be exactly __list_del_entry(),
+> 	but with the assignment to ->prev in __list_del() becoming
+> 	WRITE_ONCE().  And it looks like callers to __list_del_entry()
+> 	and __list_del() might need some attention!  And these might
+> 	result in additional users of *_rcuprev().
+> 
+> 	list_prev_rcu() as in your first patch, but with READ_ONCE().
+> 	Otherwise DEC Alpha can fail.  And more subtle compiler issues
+> 	can appear on other architectures.
+> 
+> 	Note that list_move_tail() will be OK give or take *_ONCE().
+> 	It might be better to define a list_move_tail_rcuprev(), given
+> 	the large number of users of list_move_tail() -- some of these
+> 	users might not like even the possibility of added overhead due
+> 	to volatile accesses.  ;-)
+> 
+> Or am I missing something subtle here?
+> 
+> 							Thanx, Paul
