@@ -2,146 +2,116 @@ Return-Path: <SRS0=JbrM=2C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24603C2D0CA
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 09:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00F06C43603
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 13:45:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E7A9B21655
-	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 09:31:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C52652077B
+	for <rcu@archiver.kernel.org>; Thu, 12 Dec 2019 13:45:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=codeaurora.org header.i=@codeaurora.org header.b="orVCi63V";
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="EkhBYcXb"
+	dkim=pass (1024-bit key) header.d=hammerspace.com header.i=@hammerspace.com header.b="RjG14Yi+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbfLLJbv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Dec 2019 04:31:51 -0500
-Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186]:41288
-        "EHLO a27-186.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726382AbfLLJbv (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 12 Dec 2019 04:31:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1576143110;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
-        bh=ouHOZDTa38m5jgpyZx3jdMkeE7fUnBl8O7DVe4NkPvE=;
-        b=orVCi63Vpb1W5B9pveeaKRneucbmsxYWUWkWss7t4zCuPzY7kOzZYGZWNR8xDtpN
-        XW1HyMoDFVljKG+lwfoO04QxbOSn5tPYjGalAgoKXmJz1tapQ64Ns6Heobjzc86pIys
-        sKAKJPoybvJg96BQsLP8UMmUrTb+fFDHWo5OQ+q0=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1576143110;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
-        bh=ouHOZDTa38m5jgpyZx3jdMkeE7fUnBl8O7DVe4NkPvE=;
-        b=EkhBYcXbw3n7Oo1ti/zaKHchNxNq0iWu14baaS1ReddjBmH5IXnCScucy43YVjjZ
-        CNXzKvMQzSr38r4OO7wU5N+PohWfuLInB19LFpve+gtcdGOnFdM44+pqUK1NvWcH56c
-        YR6xjL8SZ7fGnIqQDfixbvh8wVW5QwVX1M8EqN4I=
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7A08C43383
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Bart Van Assche <bart.vanassche@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Shane M Seymour <shane.seymour@hpe.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Roy Luo <royluo@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH tip/core/rcu 01/12] rcu: Remove rcu_swap_protected()
-References: <20191210040714.GA2715@paulmck-ThinkPad-P72>
-        <20191210040741.2943-1-paulmck@kernel.org>
-        <yq1a77zmt4a.fsf@oracle.com>
-        <20191211035122.GC2889@paulmck-ThinkPad-P72>
-        <20191211183738.GA5190@paulmck-ThinkPad-P72>
-        <1911b7fa-c8d4-e34b-020d-3346a56f29d6@gmail.com>
-        <20191211231239.GK2889@paulmck-ThinkPad-P72>
-Date:   Thu, 12 Dec 2019 09:31:50 +0000
-In-Reply-To: <20191211231239.GK2889@paulmck-ThinkPad-P72> (Paul E. McKenney's
-        message of "Wed, 11 Dec 2019 15:12:39 -0800")
-Message-ID: <0101016ef9734051-f84be83c-272b-4fc7-9cbd-f2c18eebd00f-000000@us-west-2.amazonses.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1729508AbfLLNpd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Dec 2019 08:45:33 -0500
+Received: from mail-mw2nam12on2107.outbound.protection.outlook.com ([40.107.244.107]:40513
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729392AbfLLNpd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Dec 2019 08:45:33 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KOViPhT4CjhjNGmB/FR+PJ7oWwU5ER+2E0dWmiy04Ebg24rE44BQqeWgJdNsP7yBI+BVqQh3/V5lgtfRK8ilAarvci10mxAq2WxG0yoVN4hVRUrSVooOSf9jdY4LYP9s1OYmACk9Iw+l6FNpCfCG0EGo+DxMS9ug6Yzupem3Zp1zRFjqeHXQ51+QDTgG6RGdQn/4tr5OMKwAgKqt9BzmDPLZrnUcdvI4jP9r9+BE0xciuS3OaDvbJyhO7cYFyedrbLCIlhPAgVgk+dXjMjPZS30uzz9ZR2A4A7mVAAOEN+Oj7MwR2N+GLjkU6Sri9Xr3elmIDFhO62atJahLvdCZbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cXDFNXOMtyfqRJoqpL6MDqc7Wczvuf8vznYe0n4ZY+I=;
+ b=J0NKy4NBS48x/HaGD0uqfRxF/kaDGwVyDfOYbYuEBL1bRK/QijTAC+8voUEZeLTzTi2OlIXRP/wOQxN4kTRgxJcYNkvJOWuP920beB7nCuu5u+rk4FVER5UU3NT38Z6Y2ygFu+FQDd1NwkVARQnhgRs+X02SZkDVycSfrgOmXijHxLrtQ+4l3kD6E8/iBJI/ae5cg+wLiPS3uOMl4SOp6ZmzIUwDLRBD9D5DdhKSElddER8g4QeOi6HNt1dPfJOO7NTtBFCf97zFmPG7C1H99f3IE/7azscASZp8Z01/JudzTivFtELf02FNt1hRy3isy/rxDod3v74hQfqfkLhqJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cXDFNXOMtyfqRJoqpL6MDqc7Wczvuf8vznYe0n4ZY+I=;
+ b=RjG14Yi+YgeXTtGtBZWms36bB7AWuGX52AA26xjk/CBCIV9ttTyCZmaXWQaCodQfgFRvOdnud6muElqJctdKelmcjKIZJvI4StjhXznZls2dxi4Po1h5XErE0/IpA5FAllf13Ci5vunk7iBTtwoz7Hs3ONVzeMkh6Ees7zj6WLw=
+Received: from DM5PR1301MB2108.namprd13.prod.outlook.com (10.174.186.34) by
+ DM5PR1301MB2025.namprd13.prod.outlook.com (10.174.186.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.11; Thu, 12 Dec 2019 13:45:29 +0000
+Received: from DM5PR1301MB2108.namprd13.prod.outlook.com
+ ([fe80::2d23:b456:d67:f230]) by DM5PR1301MB2108.namprd13.prod.outlook.com
+ ([fe80::2d23:b456:d67:f230%6]) with mapi id 15.20.2538.012; Thu, 12 Dec 2019
+ 13:45:29 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "madhuparnabhowmik04@gmail.com" <madhuparnabhowmik04@gmail.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fs: nfs: dir.c: Fix sparse error
+Thread-Topic: [PATCH] fs: nfs: dir.c: Fix sparse error
+Thread-Index: AQHVrx1GhpnK5B8ObEWj1ayFx8ZCxae0HusAgABxqwCAAVZfAIAAn6KA
+Date:   Thu, 12 Dec 2019 13:45:29 +0000
+Message-ID: <5614739335088d3e9baff43b752df04b84a8ad14.camel@hammerspace.com>
+References: <201912110621.WJ6oENgf%lkp@intel.com>
+         <20191211074842.21400-1-madhuparnabhowmik04@gmail.com>
+         <20191212041406.GT2889@paulmck-ThinkPad-P72>
+In-Reply-To: <20191212041406.GT2889@paulmck-ThinkPad-P72>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=trondmy@hammerspace.com; 
+x-originating-ip: [68.40.189.247]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b6730210-7e93-49c9-9ed5-08d77f098d10
+x-ms-traffictypediagnostic: DM5PR1301MB2025:
+x-microsoft-antispam-prvs: <DM5PR1301MB202520B52BADE4C55838DA93B8550@DM5PR1301MB2025.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0249EFCB0B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39840400004)(376002)(366004)(396003)(136003)(346002)(189003)(199004)(110136005)(26005)(186003)(4744005)(36756003)(6512007)(2616005)(86362001)(5660300002)(71200400001)(508600001)(81166006)(64756008)(66556008)(66446008)(6506007)(6486002)(4001150100001)(966005)(54906003)(316002)(81156014)(76116006)(8676002)(2906002)(4326008)(66946007)(66476007)(91956017)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR1301MB2025;H:DM5PR1301MB2108.namprd13.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: hammerspace.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: r3VN4tx5S580MpVCryx2gLWDwjCSz/N8JvtVFzcxoh7rq07GGy4oPZPJCL8yc+p8n8iBZeY9A7kaicK1i48gJvTgRyWcTFwMFcbAA21fXlkjueqALU0fvDSAIJGGH4nz+CnKAndPfOYGDQuBEuspVZVxh/3Lpd+1fDjkRtBzgeTzagyI91rDCxbym9bV6LavqosW/c4ZoRLw1LPSs1LCWRzGm213SWhFk8jaqBgMnqHmc0125fSQrCQEcOwiecSnLDbOfGL9PPOPIITk0H+M+qgh1q+U7M5VZdKy5wLm36xHvmMOO66MoDEGVWBcOuhVygK36Ks9WryAFpua/7IwIS5iiwB6YPvruh+8BHnYaAVQY2ptek6SGjgSfsOQIXDacCWH58CN9c3Yr5GDbAP7hFMh8b6r+h6Vx5GO5+jOZgSilmKFsYs4HUPfXCyUdNLK
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E58661FD5D40E2428E504984389359BB@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SES-Outgoing: 2019.12.12-54.240.27.186
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6730210-7e93-49c9-9ed5-08d77f098d10
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2019 13:45:29.1725
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X0vRXfpDnDQAJSpbB9qU38mIG+WGUXYUibI6BOit3hiz0hS4k6FsV0xFpe2YGOypuICz3zIVuVini8D2HLzQfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1301MB2025
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-+ linux-wireless
-
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-
-> On Wed, Dec 11, 2019 at 08:09:11PM +0100, Matthias Brugger wrote:
->> On 11/12/2019 19:37, Paul E. McKenney wrote:
->>
->> > --- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
->> > +++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
->> > @@ -281,8 +281,8 @@ void mt76_rx_aggr_stop(struct mt76_dev *dev, struct mt76_wcid *wcid, u8 tidno)
->> >  {
->> >  	struct mt76_rx_tid *tid = NULL;
->> >  
->> > -	rcu_swap_protected(wcid->aggr[tidno], tid,
->> > -			   lockdep_is_held(&dev->mutex));
->> > +	tid = rcu_swap_protected(wcid->aggr[tidno], tid,
->> > +				 lockdep_is_held(&dev->mutex));
->> 
->> I suppose you meant: rcu_replace_pointer() here.
->
-> Indeed I did, and thank you for catching this!  Bad patch day here.  :-/
->
-> Update below...
->
-> 							Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit ad5572b091429a45e863acaa6a36cf396d44f58d
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Dec 11 10:30:21 2019 -0800
->
->     wireless/mediatek: Replace rcu_swap_protected() with rcu_replace_pointer()
->     
->     This commit replaces the use of rcu_swap_protected() with the more
->     intuitively appealing rcu_replace_pointer() as a step towards removing
->     rcu_swap_protected().
->     
->     Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
->     Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
->     Reported-by: "Martin K. Petersen" <martin.petersen@oracle.com>
->     [ paulmck: Apply Matthias Brugger feedback. ]
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Reviewed-by: "Martin K. Petersen" <martin.petersen@oracle.com>
->     Cc: Felix Fietkau <nbd@nbd.name>
->     Cc: Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
->     Cc: Ryder Lee <ryder.lee@mediatek.com>
->     Cc: Roy Luo <royluo@google.com>
->     Cc: Kalle Valo <kvalo@codeaurora.org>
->     Cc: "David S. Miller" <davem@davemloft.net>
->     Cc: Matthias Brugger <matthias.bgg@gmail.com>
->     Cc: <linux-wireless@vger.kernel.org>
->     Cc: <netdev@vger.kernel.org>
->     Cc: <linux-arm-kernel@lists.infradead.org>
->     Cc: <linux-mediatek@lists.infradead.org>
-
-Via which tree is this supposed to go? If I should take this please
-resend to linux-wireless so that patchwork sees it, but if someone else
-is planning to take this:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+T24gV2VkLCAyMDE5LTEyLTExIGF0IDIwOjE0IC0wODAwLCBQYXVsIEUuIE1jS2VubmV5IHdyb3Rl
+Og0KPiBPbiBXZWQsIERlYyAxMSwgMjAxOSBhdCAwMToxODo0MlBNICswNTMwLCANCj4gbWFkaHVw
+YXJuYWJob3dtaWswNEBnbWFpbC5jb20gd3JvdGU6DQo+ID4gVGhpcyBidWlsZCBlcnJvciBpcyBi
+ZWNhdXNlIHRoZSBtYWNybyBsaXN0X3RhaWxfcmN1KCkgaXMNCj4gPiBub3QgeWV0IHByZXNlbnQg
+aW4gdGhlIG1haW5saW5lIGtlcm5lbC4NCj4gPiANCj4gPiBUaGlzIHBhdGNoIGlzIGRlcGVuZGVu
+dCBvbiB0aGUgcGF0Y2ggOiANCj4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1rZXJu
+ZWwtbWVudGVlcy9DQUY2NUhQMlNDODlrOUhKWmZjTGdlT01SUEJLUnlhc0NNaUxvMmdaZ0JLeWNq
+SHVVNkFAbWFpbC5nbWFpbC5jb20vVC8jdA0KPiANCj4gSWYgdGhlIE5GUyBmb2xrcyBhcmUgT0sg
+d2l0aCBpdCwgSSB3b3VsZCBiZSBoYXBweSB0byB0YWtlIGl0IGluIC1yY3UsDQo+IHdoZXJlIHRo
+ZSBsaXN0X3RhaWxfcmN1KCkgcGF0Y2ggaXMgY3VycmVudGx5IGxvY2F0ZWQuDQo+IA0KPiAJCQkJ
+CQkJVGhhbngsIFBhdWwNCg0KVGhhdCB3b3VsZCBiZSBmaW5lIHdpdGggbWUuDQoNCkNoZWVycw0K
+ICBUcm9uZA0KDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFp
+bmVyLCBIYW1tZXJzcGFjZQ0KdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
