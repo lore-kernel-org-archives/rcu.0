@@ -2,95 +2,151 @@ Return-Path: <SRS0=b9tX=2D=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D67FC43603
-	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96614C2D0CA
+	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:19:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 357F22073D
-	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:11:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 73C062253D
+	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:19:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="JHoUOo20"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="SVp8rLnx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbfLMXLT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Dec 2019 18:11:19 -0500
-Received: from mail-qk1-f170.google.com ([209.85.222.170]:33242 "EHLO
-        mail-qk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbfLMXLT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Dec 2019 18:11:19 -0500
-Received: by mail-qk1-f170.google.com with SMTP id d71so640766qkc.0
-        for <rcu@vger.kernel.org>; Fri, 13 Dec 2019 15:11:18 -0800 (PST)
+        id S1726740AbfLMXTl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Dec 2019 18:19:41 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:42149 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfLMXTl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Dec 2019 18:19:41 -0500
+Received: by mail-pj1-f66.google.com with SMTP id o11so354410pjp.9
+        for <rcu@vger.kernel.org>; Fri, 13 Dec 2019 15:19:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Ej/qAZBSr6NQ77IrGs2L5rthjaD3OKf9wUGrXR2R3yQ=;
-        b=JHoUOo20+BKAuo3SzAXPD6L11pYowHqduZ3bk37Q/sY/e5JkIY/HXw0rULLdkFVfrz
-         ElxQcEaNT/Y17uC4YiCTpzIzGeliIuj5hZwQL9zyNMtnA/M4RAEIey6tcseRuh0maby6
-         ewQDsbptrKdrcKMZ/e2x/ZOhu6tH4GR/c0/zvB+t7Rqg/lVtewrEOdsyvRKgJajO8cTw
-         8MOmS/b3x1+2jBx3Yin8BT/R4/3EZ6n1mQyNAVOKWDzNKA2x3zFx+u3msG5dwf2Jv7Sr
-         EathoKfJOpqHDQLf1NKlblv/MBVGKCOnk7JNCkOG7CiKoohlFe8r61SNSivUDRkILLxB
-         83FQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=j4OUDi2GWFJr1GQx/XFXLfcptMVLhYOJn6klY92aaOQ=;
+        b=SVp8rLnx0teNHRRRm0PRHhUwbvbRCM2wy4jSFOelIlvzDVLv9yNq2vjqZ1mN3mlpOH
+         k1bgyxh7/bfJ0EkseK7VPY358DRrjePvhtWMdW9sdeT2ilrvA+tm4CRWplh4/XbECcwH
+         wsISc6Usvxqj6Ws7YK0R2/K0qpmR9IABVcmMU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Ej/qAZBSr6NQ77IrGs2L5rthjaD3OKf9wUGrXR2R3yQ=;
-        b=Cz2jMhX1QBAvJKJR3ezmASGhwQJbX4bK154prCiTsEkNTSBhBnfmm08au58HDALt+G
-         gKrCetNFYVkvWon2G85A19wFsZsQj8J5UGY+8V2TaOvR+NB5EfcoernHBjWTLuuB6TFW
-         LvSLYWzMOvf7M6uzFvEi1Gy9vJewXgw7CYEvUT/kBQ6BOyr8PYlHPZxNx1ZjcH/t2hk5
-         tPpCykAdrDry0nBe4OxwB10v+HNKIqNmB8XcpFijAyYehQ6sevrFeQEmrxYjZpO37OIq
-         bNs0vqQWigGmPhgIWjZsh6vAkD8EleTGsH4Sbgchpv+hwP7vqTmT2ZTazgOWt7SuKbQe
-         DOLg==
-X-Gm-Message-State: APjAAAVShOBfw50CTaEG2+fyK4JP4GDl7qf/4hoIJc4B0N4/jJ6+/o/S
-        hDClljzxJFv/ayRdLZ0tsaX8dQ==
-X-Google-Smtp-Source: APXvYqx+G6/SIZn77gZIHKi7EvT9I0S93illSNqw45DT3vElev9VkgOkgSzyyn0+vw7ohoTMkOKiEA==
-X-Received: by 2002:a37:2f47:: with SMTP id v68mr16236849qkh.217.1576278677753;
-        Fri, 13 Dec 2019 15:11:17 -0800 (PST)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id g4sm881579qtg.35.2019.12.13.15.11.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Dec 2019 15:11:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j4OUDi2GWFJr1GQx/XFXLfcptMVLhYOJn6klY92aaOQ=;
+        b=aLa+FRcGb1MtpqF4JPA3dMyNrjNi84j3RK64iK72h287aqiMvd0EySp1bbcubvgkUL
+         txfXZa8g/1ZDNjHvK1L2Qev8xcpLeVIVHdKzxHvo/71nOpze5YLSYlcFsiC71RXuKYGc
+         2o7dUpezaTMZt8m/vYW9LxyGu1ocvWaKZ2usWkgUtVNtnv6tArJZMVThkSxY/r8LCPZg
+         UVH14AWTLnvbdLypU/J3DaVXnUHpWlsjrsHIG0UOgMsVwLnZqKmDn2s+JuIGtVHgCkIf
+         /AptmywLZS/qsOsw1UlJoaRRp6qm0unWPohv1WrgdlxwSm/DkbhkYmodKxxS25+32ZYg
+         rBdA==
+X-Gm-Message-State: APjAAAW6Hdveo4lKHAeROrg2QMG0J4hxwQYm4ZYM0LiDw7KeMql9K5dB
+        CJWejU1Nu+FXIgQHcgZErnOqYw==
+X-Google-Smtp-Source: APXvYqwADL/M0/ouoqApRJjUcc6YwgsphiZr/cd/UqkDLYm8PsIjyhK3SpK4rAoR9Z/WqwufIc40Ig==
+X-Received: by 2002:a17:90a:c390:: with SMTP id h16mr2287765pjt.131.1576279180818;
+        Fri, 13 Dec 2019 15:19:40 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id a26sm13060069pfo.5.2019.12.13.15.19.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2019 15:19:40 -0800 (PST)
+Date:   Fri, 13 Dec 2019 18:19:39 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Phong Tran <tranmanphong@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu <rcu@vger.kernel.org>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH V2] ext4: use rcu API in debug_print_tree
+Message-ID: <20191213231939.GB195887@google.com>
+References: <20191213113510.GG15474@quack2.suse.cz>
+ <20191213153306.30744-1-tranmanphong@gmail.com>
+ <CAEXW_YQwrM6=u1gsij-5SL5+2n9Pk9HFEYdF_JWYjitLvr7Dcg@mail.gmail.com>
+ <20191213194943.GA959@quack2.suse.cz>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: "rcu: React to callback overload by aggressively seeking quiescent states" hangs on boot
-Date:   Fri, 13 Dec 2019 18:11:16 -0500
-Message-Id: <CAA6354A-C747-4BE0-8EDC-C06E3C1D7D08@lca.pw>
-References: <20191213224646.GH2889@paulmck-ThinkPad-P72>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Tejun Heo <tj@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-In-Reply-To: <20191213224646.GH2889@paulmck-ThinkPad-P72>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (17B111)
+Content-Disposition: inline
+In-Reply-To: <20191213194943.GA959@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Dec 13, 2019 at 08:49:43PM +0100, Jan Kara wrote:
+> On Fri 13-12-19 10:11:50, Joel Fernandes wrote:
+> > On Fri, Dec 13, 2019 at 7:39 AM Phong Tran <tranmanphong@gmail.com> wrote:
+> > >
+> > > struct ext4_sb_info.system_blks was marked __rcu.
+> > > But access the pointer without using RCU lock and dereference.
+> > > Sparse warning with __rcu notation:
+> > >
+> > > block_validity.c:139:29: warning: incorrect type in argument 1 (different address spaces)
+> > > block_validity.c:139:29:    expected struct rb_root const *
+> > > block_validity.c:139:29:    got struct rb_root [noderef] <asn:4> *
+> > >
+> > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > Signed-off-by: Phong Tran <tranmanphong@gmail.com>
+> > 
+> > Thanks Phong! Looks like a real bug fix caught thanks to Sparse. So
+> > let us mark for stable as well?
+> 
+> Well, not really. The code is active only with CONFIG_EXT4_DEBUG enabled
+> and in this case there's no race with remount (and thus sbi->system_blks
+> changing) possible. So the change is really only to silence the sparse
+> warning.
 
+Ok, thanks for clarifying.
 
-> On Dec 13, 2019, at 5:46 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> I am running this on a number of x86 systems, but will try it on a
+-Joel
 
-The config to reproduce includes several debugging options that might requir=
-ed to recreate.
-
-> wider variety.  If I cannot reproduce it, would you be willing to
-> run diagnostics?
-
-Yes.
-
->=20
-> Just to double-check...  Are you running rcutorture built into the kernel?=
-
-> (My guess is "no", but figured that I should ask.)
-
-No as you can see from the config I linked in the original email.=
+> 
+> 								Honza
+> 
+> > 
+> > - Joel
+> > 
+> > > ---
+> > >  fs/ext4/block_validity.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > >
+> > > ---
+> > > change log:
+> > > V2: Add Reviewed-by: Jan Kara <jack@suse.cz>
+> > >
+> > > diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+> > > index d4d4fdfac1a6..1ee04e76bbe0 100644
+> > > --- a/fs/ext4/block_validity.c
+> > > +++ b/fs/ext4/block_validity.c
+> > > @@ -133,10 +133,13 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+> > >  {
+> > >         struct rb_node *node;
+> > >         struct ext4_system_zone *entry;
+> > > +       struct ext4_system_blocks *system_blks;
+> > >         int first = 1;
+> > >
+> > >         printk(KERN_INFO "System zones: ");
+> > > -       node = rb_first(&sbi->system_blks->root);
+> > > +       rcu_read_lock();
+> > > +       system_blks = rcu_dereference(sbi->system_blks);
+> > > +       node = rb_first(&system_blks->root);
+> > >         while (node) {
+> > >                 entry = rb_entry(node, struct ext4_system_zone, node);
+> > >                 printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
+> > > @@ -144,6 +147,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+> > >                 first = 0;
+> > >                 node = rb_next(node);
+> > >         }
+> > > +       rcu_read_unlock();
+> > >         printk(KERN_CONT "\n");
+> > >  }
+> > >
+> > > --
+> > > 2.20.1
+> > >
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
