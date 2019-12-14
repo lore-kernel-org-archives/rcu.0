@@ -1,152 +1,95 @@
-Return-Path: <SRS0=b9tX=2D=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=BIsv=2E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96614C2D0CA
-	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C5A6C43603
+	for <rcu@archiver.kernel.org>; Sat, 14 Dec 2019 06:40:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 73C062253D
-	for <rcu@archiver.kernel.org>; Fri, 13 Dec 2019 23:19:45 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="SVp8rLnx"
+	by mail.kernel.org (Postfix) with ESMTP id 206522465B
+	for <rcu@archiver.kernel.org>; Sat, 14 Dec 2019 06:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1576305651;
+	bh=ywRbms/3SILxNnbJWJRfGsJaom/QIpHbbWAIN9MG/Xc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=pAqG+edKJtQQsk09PfXCfE3K6y/Ue/GjOYSmddJOXlDJpW2RSqA2WU7IeBsI/AVre
+	 HyjSEydBZVsnbw8jBBSoguHcM0AN1/m8BdWBon8sCFtk8tIaKdoVUyKkOczI5bAmNI
+	 MwVytcCG+DtEJwYeDIUYOWct4vFgtMnrtq9PVAr4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbfLMXTl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Dec 2019 18:19:41 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:42149 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbfLMXTl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Dec 2019 18:19:41 -0500
-Received: by mail-pj1-f66.google.com with SMTP id o11so354410pjp.9
-        for <rcu@vger.kernel.org>; Fri, 13 Dec 2019 15:19:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=j4OUDi2GWFJr1GQx/XFXLfcptMVLhYOJn6klY92aaOQ=;
-        b=SVp8rLnx0teNHRRRm0PRHhUwbvbRCM2wy4jSFOelIlvzDVLv9yNq2vjqZ1mN3mlpOH
-         k1bgyxh7/bfJ0EkseK7VPY358DRrjePvhtWMdW9sdeT2ilrvA+tm4CRWplh4/XbECcwH
-         wsISc6Usvxqj6Ws7YK0R2/K0qpmR9IABVcmMU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=j4OUDi2GWFJr1GQx/XFXLfcptMVLhYOJn6klY92aaOQ=;
-        b=aLa+FRcGb1MtpqF4JPA3dMyNrjNi84j3RK64iK72h287aqiMvd0EySp1bbcubvgkUL
-         txfXZa8g/1ZDNjHvK1L2Qev8xcpLeVIVHdKzxHvo/71nOpze5YLSYlcFsiC71RXuKYGc
-         2o7dUpezaTMZt8m/vYW9LxyGu1ocvWaKZ2usWkgUtVNtnv6tArJZMVThkSxY/r8LCPZg
-         UVH14AWTLnvbdLypU/J3DaVXnUHpWlsjrsHIG0UOgMsVwLnZqKmDn2s+JuIGtVHgCkIf
-         /AptmywLZS/qsOsw1UlJoaRRp6qm0unWPohv1WrgdlxwSm/DkbhkYmodKxxS25+32ZYg
-         rBdA==
-X-Gm-Message-State: APjAAAW6Hdveo4lKHAeROrg2QMG0J4hxwQYm4ZYM0LiDw7KeMql9K5dB
-        CJWejU1Nu+FXIgQHcgZErnOqYw==
-X-Google-Smtp-Source: APXvYqwADL/M0/ouoqApRJjUcc6YwgsphiZr/cd/UqkDLYm8PsIjyhK3SpK4rAoR9Z/WqwufIc40Ig==
-X-Received: by 2002:a17:90a:c390:: with SMTP id h16mr2287765pjt.131.1576279180818;
-        Fri, 13 Dec 2019 15:19:40 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a26sm13060069pfo.5.2019.12.13.15.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2019 15:19:40 -0800 (PST)
-Date:   Fri, 13 Dec 2019 18:19:39 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Phong Tran <tranmanphong@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        rcu <rcu@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH V2] ext4: use rcu API in debug_print_tree
-Message-ID: <20191213231939.GB195887@google.com>
-References: <20191213113510.GG15474@quack2.suse.cz>
- <20191213153306.30744-1-tranmanphong@gmail.com>
- <CAEXW_YQwrM6=u1gsij-5SL5+2n9Pk9HFEYdF_JWYjitLvr7Dcg@mail.gmail.com>
- <20191213194943.GA959@quack2.suse.cz>
+        id S1725862AbfLNGku (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 Dec 2019 01:40:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbfLNGku (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 Dec 2019 01:40:50 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E87B6214AF;
+        Sat, 14 Dec 2019 06:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576305650;
+        bh=ywRbms/3SILxNnbJWJRfGsJaom/QIpHbbWAIN9MG/Xc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TArLbUEdqOTQ8RP5TNPmRuqZQ8TG3JA6KzrdenMoMMjnXeYmQPORLO7UEPY7POfac
+         Yeal7xjT9zoRYp+MZrHMkz1JLowXAyh4OtbA8haXK56LY70Coi6IUa3UD+Q9bUj3qK
+         gwSEDUpqQXmwgQTElBrSc7uMW7mjJ+Q2rzvw7n78=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 13534352276B; Fri, 13 Dec 2019 22:40:48 -0800 (PST)
+Date:   Fri, 13 Dec 2019 22:40:48 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Tejun Heo <tj@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: "rcu: React to callback overload by aggressively seeking
+ quiescent states" hangs on boot
+Message-ID: <20191214064048.GI2889@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191213224646.GH2889@paulmck-ThinkPad-P72>
+ <CAA6354A-C747-4BE0-8EDC-C06E3C1D7D08@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191213194943.GA959@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAA6354A-C747-4BE0-8EDC-C06E3C1D7D08@lca.pw>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 08:49:43PM +0100, Jan Kara wrote:
-> On Fri 13-12-19 10:11:50, Joel Fernandes wrote:
-> > On Fri, Dec 13, 2019 at 7:39 AM Phong Tran <tranmanphong@gmail.com> wrote:
-> > >
-> > > struct ext4_sb_info.system_blks was marked __rcu.
-> > > But access the pointer without using RCU lock and dereference.
-> > > Sparse warning with __rcu notation:
-> > >
-> > > block_validity.c:139:29: warning: incorrect type in argument 1 (different address spaces)
-> > > block_validity.c:139:29:    expected struct rb_root const *
-> > > block_validity.c:139:29:    got struct rb_root [noderef] <asn:4> *
-> > >
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > Signed-off-by: Phong Tran <tranmanphong@gmail.com>
-> > 
-> > Thanks Phong! Looks like a real bug fix caught thanks to Sparse. So
-> > let us mark for stable as well?
+On Fri, Dec 13, 2019 at 06:11:16PM -0500, Qian Cai wrote:
 > 
-> Well, not really. The code is active only with CONFIG_EXT4_DEBUG enabled
-> and in this case there's no race with remount (and thus sbi->system_blks
-> changing) possible. So the change is really only to silence the sparse
-> warning.
-
-Ok, thanks for clarifying.
-
--Joel
-
 > 
-> 								Honza
+> > On Dec 13, 2019, at 5:46 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > I am running this on a number of x86 systems, but will try it on a
 > 
-> > 
-> > - Joel
-> > 
-> > > ---
-> > >  fs/ext4/block_validity.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >
-> > > ---
-> > > change log:
-> > > V2: Add Reviewed-by: Jan Kara <jack@suse.cz>
-> > >
-> > > diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-> > > index d4d4fdfac1a6..1ee04e76bbe0 100644
-> > > --- a/fs/ext4/block_validity.c
-> > > +++ b/fs/ext4/block_validity.c
-> > > @@ -133,10 +133,13 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
-> > >  {
-> > >         struct rb_node *node;
-> > >         struct ext4_system_zone *entry;
-> > > +       struct ext4_system_blocks *system_blks;
-> > >         int first = 1;
-> > >
-> > >         printk(KERN_INFO "System zones: ");
-> > > -       node = rb_first(&sbi->system_blks->root);
-> > > +       rcu_read_lock();
-> > > +       system_blks = rcu_dereference(sbi->system_blks);
-> > > +       node = rb_first(&system_blks->root);
-> > >         while (node) {
-> > >                 entry = rb_entry(node, struct ext4_system_zone, node);
-> > >                 printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
-> > > @@ -144,6 +147,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
-> > >                 first = 0;
-> > >                 node = rb_next(node);
-> > >         }
-> > > +       rcu_read_unlock();
-> > >         printk(KERN_CONT "\n");
-> > >  }
-> > >
-> > > --
-> > > 2.20.1
-> > >
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> The config to reproduce includes several debugging options that might
+> required to recreate.
+
+If you run without those debugging options, do you still see the hangs?
+If not, please let me know which debugging are involved.
+
+> > wider variety.  If I cannot reproduce it, would you be willing to
+> > run diagnostics?
+> 
+> Yes.
+
+Very good!  Let me see what I can put together.  (No luck reproducing
+at my end thus far.)
+
+> > Just to double-check...  Are you running rcutorture built into the kernel?
+> > (My guess is "no", but figured that I should ask.)
+> 
+> No as you can see from the config I linked in the original email.
+
+Fair point, and please accept my apologies for the pointless question.
+
+							Thanx, Paul
