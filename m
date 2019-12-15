@@ -1,95 +1,115 @@
-Return-Path: <SRS0=BIsv=2E=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=fvCY=2F=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C5A6C43603
-	for <rcu@archiver.kernel.org>; Sat, 14 Dec 2019 06:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 330A4C43603
+	for <rcu@archiver.kernel.org>; Sun, 15 Dec 2019 06:52:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 206522465B
-	for <rcu@archiver.kernel.org>; Sat, 14 Dec 2019 06:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576305651;
-	bh=ywRbms/3SILxNnbJWJRfGsJaom/QIpHbbWAIN9MG/Xc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=pAqG+edKJtQQsk09PfXCfE3K6y/Ue/GjOYSmddJOXlDJpW2RSqA2WU7IeBsI/AVre
-	 HyjSEydBZVsnbw8jBBSoguHcM0AN1/m8BdWBon8sCFtk8tIaKdoVUyKkOczI5bAmNI
-	 MwVytcCG+DtEJwYeDIUYOWct4vFgtMnrtq9PVAr4=
+	by mail.kernel.org (Postfix) with ESMTP id 0556222B48
+	for <rcu@archiver.kernel.org>; Sun, 15 Dec 2019 06:52:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="XC4ph8XT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbfLNGku (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 14 Dec 2019 01:40:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbfLNGku (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 14 Dec 2019 01:40:50 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E87B6214AF;
-        Sat, 14 Dec 2019 06:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576305650;
-        bh=ywRbms/3SILxNnbJWJRfGsJaom/QIpHbbWAIN9MG/Xc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TArLbUEdqOTQ8RP5TNPmRuqZQ8TG3JA6KzrdenMoMMjnXeYmQPORLO7UEPY7POfac
-         Yeal7xjT9zoRYp+MZrHMkz1JLowXAyh4OtbA8haXK56LY70Coi6IUa3UD+Q9bUj3qK
-         gwSEDUpqQXmwgQTElBrSc7uMW7mjJ+Q2rzvw7n78=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 13534352276B; Fri, 13 Dec 2019 22:40:48 -0800 (PST)
-Date:   Fri, 13 Dec 2019 22:40:48 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Tejun Heo <tj@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: "rcu: React to callback overload by aggressively seeking
- quiescent states" hangs on boot
-Message-ID: <20191214064048.GI2889@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191213224646.GH2889@paulmck-ThinkPad-P72>
- <CAA6354A-C747-4BE0-8EDC-C06E3C1D7D08@lca.pw>
+        id S1726101AbfLOGwy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 15 Dec 2019 01:52:54 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35804 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbfLOGwy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 15 Dec 2019 01:52:54 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z76so2740228qka.2
+        for <rcu@vger.kernel.org>; Sat, 14 Dec 2019 22:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tPZKrwWHh4ylX/L5NKvv2t0yL6XxsGTIa4rI25XVHaU=;
+        b=XC4ph8XTKEbCfmSYn/0bCW3gJdKJo42LALdj6mKZTw9GF31Pba4nVWGInUNIvg3l25
+         XJsX4Kr4mcnahIdFkpNu1mOB5aPMly2+tDXaFLlfLdjPH/bhFQhZVXEZX5ap7HxtlUBl
+         IZAoi3qM0uru+a3wK22RNfRtkU3gpYSSOqtD2P9I/QWgeLn4+upDMlvx6ae9MyOmbYpN
+         9jxBbBvxZ5ICa4p6gD28hxa5/vmiHB9ezgCsdJl6Bdi7H9w5kjJ5oXpP5x/FzaEGdWAv
+         yEeEqXTKq0eD1c2jr2dtDDExsgB9L4j2sREDbDLaCqxj1Osg8Vde2jck49SPQiHUPcBM
+         /cTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tPZKrwWHh4ylX/L5NKvv2t0yL6XxsGTIa4rI25XVHaU=;
+        b=NSFMu16gPNkj44DjRc7hbVhodANX1rlqnrEwuhJ3or7RajrjRllFD1zgdUbQjyZZkX
+         NXy75ROCr2iYDiy3BJjULg5vDPP9Q8gP99iu6P6TAp6ZdLba0tFgEUKhsh6OvYyppeSu
+         hudZZM1GWyHrTsUqG5eW6rXblbEG/WRD/9CZvm0bHLxFZNETXgKF0+Dq8Jv4kyLSy8hq
+         foOcA+jgV5IDt9iHQbTgvf5lKdrr/WOIHiY4DR6b44xCIC1uj0DSDL+oFFMNzehZO+VD
+         LtLmn+T5bWCgtBXab5xqcNYuGQE+Qj4w5vsdWg2z76x0IE5rCqqFxWli9rfZ1a4xflIn
+         Ri3Q==
+X-Gm-Message-State: APjAAAWOPyuNjaLEAVCSdlVpXy5ZfLicvis2nkVGl8jtNprz51AvBMJh
+        bk2O17hbbzBfxiblypRpS5T9zw==
+X-Google-Smtp-Source: APXvYqyBNHZtkp97vbhaklM9nVSAW53TxbaeO/7EbAa7s+W01/7BYobNAM/sj4a0tjj5Mq4BtdBkbg==
+X-Received: by 2002:a05:620a:1424:: with SMTP id k4mr21108980qkj.61.1576392773357;
+        Sat, 14 Dec 2019 22:52:53 -0800 (PST)
+Received: from ovpn-123-96.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id c16sm4623042qka.18.2019.12.14.22.52.51
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 14 Dec 2019 22:52:52 -0800 (PST)
+From:   Qian Cai <cai@lca.pw>
+To:     paulmck@kernel.org, josh@joshtriplett.org
+Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org, tj@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH] rcu: fix an infinite loop in rcu_gp_cleanup()
+Date:   Sun, 15 Dec 2019 01:52:42 -0500
+Message-Id: <20191215065242.7155-1-cai@lca.pw>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA6354A-C747-4BE0-8EDC-C06E3C1D7D08@lca.pw>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 06:11:16PM -0500, Qian Cai wrote:
-> 
-> 
-> > On Dec 13, 2019, at 5:46 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > 
-> > I am running this on a number of x86 systems, but will try it on a
-> 
-> The config to reproduce includes several debugging options that might
-> required to recreate.
+The commit 82150cb53dcb ("rcu: React to callback overload by
+aggressively seeking quiescent states") introduced an infinite loop
+during boot here,
 
-If you run without those debugging options, do you still see the hangs?
-If not, please let me know which debugging are involved.
+// Reset overload indication for CPUs no longer overloaded
+for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
+	rdp = per_cpu_ptr(&rcu_data, cpu);
+	check_cb_ovld_locked(rdp, rnp);
+}
 
-> > wider variety.  If I cannot reproduce it, would you be willing to
-> > run diagnostics?
-> 
-> Yes.
+because on an affected machine,
 
-Very good!  Let me see what I can put together.  (No luck reproducing
-at my end thus far.)
+rnp->cbovldmask = 0
+rnp->grphi = 127
+rnp->grplo = 0
 
-> > Just to double-check...  Are you running rcutorture built into the kernel?
-> > (My guess is "no", but figured that I should ask.)
-> 
-> No as you can see from the config I linked in the original email.
+It ends up with "cpu" is always 64 and never be able to get out of the
+loop due to "cpu <= rnp->grphi". It is pointless to enter the loop when
+the cpumask is 0 as there is no CPU would be able to match it.
 
-Fair point, and please accept my apologies for the pointless question.
+Fixes: 82150cb53dcb ("rcu: React to callback overload by aggressively seeking quiescent states")
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ kernel/rcu/rcu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index ab504fbc76ca..fb691ec86df4 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -363,7 +363,7 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
+ 	((rnp)->grplo + find_next_bit(&(mask), BITS_PER_LONG, (cpu)))
+ #define for_each_leaf_node_cpu_mask(rnp, cpu, mask) \
+ 	for ((cpu) = rcu_find_next_bit((rnp), 0, (mask)); \
+-	     (cpu) <= rnp->grphi; \
++	     (cpu) <= rnp->grphi && (mask); \
+ 	     (cpu) = rcu_find_next_bit((rnp), (cpu) + 1 - (rnp->grplo), (mask)))
+ 
+ /*
+-- 
+2.21.0 (Apple Git-122.2)
+
