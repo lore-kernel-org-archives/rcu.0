@@ -2,331 +2,244 @@ Return-Path: <SRS0=PgcC=2G=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFCA7C2D0BF
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:46:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADD98C43603
+	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 14:13:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 96B1B20CC7
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:46:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75798206A5
+	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 14:13:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1lXEQW3"
+	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="ETVeOCVs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbfLPMq3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Dec 2019 07:46:29 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:46432 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727762AbfLPMq2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Dec 2019 07:46:28 -0500
-Received: by mail-lf1-f65.google.com with SMTP id f15so4098764lfl.13;
-        Mon, 16 Dec 2019 04:46:26 -0800 (PST)
+        id S1727965AbfLPONC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Dec 2019 09:13:02 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:43053 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727916AbfLPONB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Dec 2019 09:13:01 -0500
+Received: by mail-qv1-f66.google.com with SMTP id p2so2740078qvo.10
+        for <rcu@vger.kernel.org>; Mon, 16 Dec 2019 06:13:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GFnDmlNyZSZLrsighJZzy59L+HK3ELB/DG/zXIrfnnM=;
-        b=R1lXEQW3HswWqhaDwTcSWyBJie5csrvSooXpmx6S1OQEi61P5fV2zDi4130XmOCWnv
-         6PB+zjTHnTDCyyi7BdrYT5EFfL4Ef8gQp0p9uA93SudkD69yRGGyJJ2NVyMkbgcRL1FG
-         LwxaNiDbcVarB456pkBKpbwzljH4fS451yyJz0bO3mZW2Rigsbl/+o/TZDJraLnCZ+wr
-         OrAGSr4M53qVacx37ej0xb+rQ1PhSXnKx0o+lugpQ5TSoLWRiT8NkXEzFtay2Br6YLYG
-         QGC/Y3d5O+rUKtQPfmWuYD/uvhVR8Sk4s8ISHvHVHozWfOjhGzxljAAfQSNmiVq+rY6R
-         uczQ==
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=mi7ftffFrqB3MIpnsGeNJ41kn2EGtdc3WEvbuGDojUA=;
+        b=ETVeOCVsQIXPTANO0VbZSfJ6I3BzftLD/sO6uJZYJ1eoa1eHcI1CugMDBoCvaYEPkZ
+         5FsGMuX5bO5Tuur0R1PRFTv00apn+5SQxIb5tkfnZzjlT7Ht5/cHztbpa1SinTrEVgaG
+         B7gC7MCOPJZAIrl6G7nTnU2UPxZTn+rc8s8wKoSihEFQKfjXZE+ZANchaVTzzkN48cqF
+         meTvQA9kB2RQqU7LjaoO/nG2M2gnP35RC15o85zb3bIuuw4ehv1hhbhR34jHhOc3QWmr
+         DgdEuEfSotsu6aKyNHxoRB0m7aH+MIcD5jNzrfYlLw6vYsLeT6McUzp3RQBJ57fCP9vQ
+         K3sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GFnDmlNyZSZLrsighJZzy59L+HK3ELB/DG/zXIrfnnM=;
-        b=KC/T/7QwkNVffgeTOCFOZ3GBT5Zz3UI6FgLim9lMuS5TQMUVfN3UguKq4rkkghCJne
-         zQDJp57S4kGtLXTxqKDKzWZgBpiyb7zWwDTWxeMPqA1SvxInxIEs5RyfYQY8Ox663JEt
-         bMAM1dT/8Q/a3wN+HEgWeaz5nAjiKlgjdYlgwRwKXI+ILGVrQlN+At/vHvgqRhkLY2so
-         QEFwG7E9THWH8EBxca0nUSb6tSjojFKK4uaK8w1TQDa7JD9lo5Ue8BUDNvfcVbpVJQjJ
-         08VFSbXZJ0zSCHSu24JlNBTvtfzDRzdnwCKKxHUCxSHW/Bp0O82hI8SnaTGSHMOyZAkg
-         5i5g==
-X-Gm-Message-State: APjAAAVXJ7LwzoMS7YX60Wxy4LL0Y1PQEh2Xs0Jct6XvNGakHEXvVdi2
-        VQzTZGqDXUKWvGGQiT4QfUY=
-X-Google-Smtp-Source: APXvYqz/hOoNT77xo7Mg+lPe87uGWP+P6k1y0fUhRNddlghaaiBEPe/X63gcFMdCPsXsZjQVhK5SIQ==
-X-Received: by 2002:ac2:4849:: with SMTP id 9mr16416888lfy.11.1576500385872;
-        Mon, 16 Dec 2019 04:46:25 -0800 (PST)
-Received: from pc636 ([37.139.158.167])
-        by smtp.gmail.com with ESMTPSA id m16sm10544906ljb.47.2019.12.16.04.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 04:46:25 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 16 Dec 2019 13:46:17 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kernel-team@lge.com, Byungchul Park <byungchul.park@lge.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        max.byungchul.park@gmail.com, Rao Shoaib <rao.shoaib@oracle.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
- batching
-Message-ID: <20191216124617.GA13293@pc636>
-References: <20190814160411.58591-1-joel@joelfernandes.org>
- <20190918095811.GA25821@pc636>
- <20191210095348.GA420@pc636>
- <20191212052727.GA125322@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191212052727.GA125322@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=mi7ftffFrqB3MIpnsGeNJ41kn2EGtdc3WEvbuGDojUA=;
+        b=MpqED+LEVtUzTpnTwMw84N2hOw7yZerc+bVkBXI8tiXN7qbpRM9hIZ5WWqzW0GIles
+         RFoDmXJYyhvIwFvl62BQAshBjZ3On9u8j4hX9DhVm8YrG9Ul9ZwqmZgC02wqyLdNDMXO
+         hNR66E6w5HyKEkDuowvzm+5fIMb6r5hMqROARSCMibCK4+E6R0jOwpce+TW10/w3cS8U
+         YVHtMDiYM7t8Y6LVTb0Elr+d7yyisHYS3I7FJKd+Gmq05AEN17ow9vZ+GSAJkDenRnI5
+         q6V+hrDi7AXLRObnEPY70EP9L3M2qnodbvd3XwFAyyQBMBp3qowN2RfjckOCOh2aZMv0
+         UKyA==
+X-Gm-Message-State: APjAAAWSYxLy8eaccKOayuOUDLfIZZTCNYWGUZ09zrirJoIl4kjnAdM3
+        s2CcoFUuUyGx2guMfrrDYttA5h83U1k=
+X-Google-Smtp-Source: APXvYqy30U1xUJPeEnRlbVlVmpesQ5tK8gBnBApYA59e/0ntyicHXPnbA9UeMOxAzwNzlGCZz6jVjA==
+X-Received: by 2002:ad4:514e:: with SMTP id g14mr26937965qvq.196.1576505580506;
+        Mon, 16 Dec 2019 06:13:00 -0800 (PST)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id o7sm5978842qkd.119.2019.12.16.06.12.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Dec 2019 06:13:00 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Subject: Re: [PATCH] rcu: fix an infinite loop in rcu_gp_cleanup()
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <20191215201646.GK2889@paulmck-ThinkPad-P72>
+Date:   Mon, 16 Dec 2019 09:12:58 -0500
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, tj@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B2AD3650-B814-48D1-89D0-BF2C56157DA1@lca.pw>
+References: <20191215065242.7155-1-cai@lca.pw>
+ <20191215201646.GK2889@paulmck-ThinkPad-P72>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+X-Mailer: Apple Mail (2.3608.40.2.2.4)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 12:27:27AM -0500, Joel Fernandes wrote:
-> On Tue, Dec 10, 2019 at 10:53:48AM +0100, Uladzislau Rezki wrote:
-> > On Wed, Sep 18, 2019 at 11:58:11AM +0200, Uladzislau Rezki wrote:
-> > > > Recently a discussion about stability and performance of a system
-> > > > involving a high rate of kfree_rcu() calls surfaced on the list [1]
-> > > > which led to another discussion how to prepare for this situation.
-> > > > 
-> > > > This patch adds basic batching support for kfree_rcu(). It is "basic"
-> > > > because we do none of the slab management, dynamic allocation, code
-> > > > moving or any of the other things, some of which previous attempts did
-> > > > [2]. These fancier improvements can be follow-up patches and there are
-> > > > different ideas being discussed in those regards. This is an effort to
-> > > > start simple, and build up from there. In the future, an extension to
-> > > > use kfree_bulk and possibly per-slab batching could be done to further
-> > > > improve performance due to cache-locality and slab-specific bulk free
-> > > > optimizations. By using an array of pointers, the worker thread
-> > > > processing the work would need to read lesser data since it does not
-> > > > need to deal with large rcu_head(s) any longer.
-> > > > 
-> > According to https://lkml.org/lkml/2017/12/19/706 there was an attempt
-> > to make use of kfree_bulk() interface. I have done some tests based on
-> > your patch and enhanced kfree_bulk() logic. Basically storing pointers 
-> > in an array with a specific size makes sense to me and seems to others
-> > as well. I mean in comparison with "pointer chasing" way, when there is
-> > probably a cache misses each time the access is done to next element:
-> 
-> This looks like a great idea to me, that is chaining blocks together.
-> 
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 1fe0418a5901..4f68662c1568 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2595,6 +2595,13 @@ EXPORT_SYMBOL_GPL(call_rcu);
-> > 
-> >  /* Maximum number of jiffies to wait before draining a batch. */
-> >  #define KFREE_DRAIN_JIFFIES (HZ / 50)
-> > +#define KFREE_BULK_MAX_SIZE 64
-> > +
-> > +struct kfree_rcu_bulk_data {
-> > +       int nr_records;
-> > +       void *records[KFREE_BULK_MAX_SIZE];
-> > +       struct kfree_rcu_bulk_data *next;
-> > +};
-> > 
-> >  /*
-> >   * Maximum number of kfree(s) to batch, if this limit is hit then the batch of
-> > @@ -2607,15 +2614,24 @@ struct kfree_rcu_cpu {
-> >         struct rcu_work rcu_work;
-> > 
-> >         /* The list of objects being queued in a batch but are not yet
-> > -        * scheduled to be freed.
-> > +        * scheduled to be freed. For emergency path only.
-> >          */
-> >         struct rcu_head *head;
-> > 
-> >         /* The list of objects that have now left ->head and are queued for
-> > -        * freeing after a grace period.
-> > +        * freeing after a grace period. For emergency path only.
-> >          */
-> >         struct rcu_head *head_free;
-> > 
-> > +       /*
-> > +        * It is a block list that keeps pointers in the array of specific
-> > +        * size which are freed by the kfree_bulk() logic. Intends to improve
-> > +        * drain throughput.
-> > +        */
-> > +       struct kfree_rcu_bulk_data *bhead;
-> > +       struct kfree_rcu_bulk_data *bhead_free;
-> > +       struct kfree_rcu_bulk_data *bcached;
-> > +
-> >         /* Protect concurrent access to this structure. */
-> >         spinlock_t lock;
-> > @@ -2637,23 +2653,39 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  {
-> >         unsigned long flags;
-> >         struct rcu_head *head, *next;
-> > +       struct kfree_rcu_bulk_data *bhead, *bnext;
-> >         struct kfree_rcu_cpu *krcp = container_of(to_rcu_work(work),
-> >                                         struct kfree_rcu_cpu, rcu_work);
-> >  
-> >         spin_lock_irqsave(&krcp->lock, flags);
-> >         head = krcp->head_free;
-> >         krcp->head_free = NULL;
-> > +       bhead = krcp->bhead_free;
-> > +       krcp->bhead_free = NULL;
-> >         spin_unlock_irqrestore(&krcp->lock, flags);
-> >  
-> >         /*
-> >          * The head is detached and not referenced from anywhere, so lockless
-> >          * access is Ok.
-> >          */
-> > +       for (; bhead; bhead = bnext) {
-> > +               bnext = bhead->next;
-> > +               kfree_bulk(bhead->nr_records, bhead->records);
-> > +
-> > +               if (cmpxchg(&krcp->bcached, NULL, bhead))
-> > +                       kfree(bhead);
-> 
-> After the first iteration of loop, say cmpxchg succeeded, then is there a
-> point it doing repeated cmpxchg in future loops? AIUI, cmpxchg has a
-> serializing cost and better be avoided where possible.
-> 
-I see your point. I also do not like calling cmpxchg() in the loop. From
-the other hand the number of loops depends on how many "chain blocks" we
-have in our list. To reduce that number we can increase KFREE_BULK_MAX_SIZE,
-i.e. the list will become shorter.
-
->
-> But... there can be a case where bcached was used up while the loop is
-> running. Then there could be a point in reassigning it in future loop
-> iterations.
-> 
-Sound like that, therefore i keep it in the loop.
-
-> > +
-> > +               cond_resched_tasks_rcu_qs();
-> > +       }
-> > +
-> > +       /*
-> > +        * Emergency case only. It can happen under low
-> > +        * memory condition when kmalloc gets failed, so
-> > +        * the "bulk" path can not be temporary maintained.
-> > +        */
-> >         for (; head; head = next) {
-> >                 next = head->next;
-> > -               /* Could be possible to optimize with kfree_bulk in future */
-> 
-> I'm glad I had left this comment ;-) ;-)
-> 
-It is always good to leave valuable comments :)
 
 
-> >                 __rcu_reclaim(rcu_state.name, head);
-> > -               cond_resched_tasks_rcu_qs();
-> 
-> Why take off this cond_resched..() ?
-> 
-I can keep it. I removed it because it becomes as "emergency path"
-only that is most likely never triggered.
+> On Dec 15, 2019, at 3:16 PM, Paul E. McKenney <paulmck@kernel.org> =
+wrote:
+>=20
+> On Sun, Dec 15, 2019 at 01:52:42AM -0500, Qian Cai wrote:
+>> The commit 82150cb53dcb ("rcu: React to callback overload by
+>> aggressively seeking quiescent states") introduced an infinite loop
+>> during boot here,
+>>=20
+>> // Reset overload indication for CPUs no longer overloaded
+>> for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
+>> 	rdp =3D per_cpu_ptr(&rcu_data, cpu);
+>> 	check_cb_ovld_locked(rdp, rnp);
+>> }
+>>=20
+>> because on an affected machine,
+>>=20
+>> rnp->cbovldmask =3D 0
+>> rnp->grphi =3D 127
+>> rnp->grplo =3D 0
+>=20
+> Your powerpc.config file from your first email shows:
+>=20
+> 	rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_ids=3D128=
 
-> >         }
-> >  }
-> > 
-> > @@ -2671,11 +2703,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
-> >          * another one, just refuse the optimization and it will be retried
-> >          * again in KFREE_DRAIN_JIFFIES time.
-> >          */
-> > -       if (krcp->head_free)
-> > +       if (krcp->bhead_free || krcp->head_free)
-> >                 return false;
-> > 
-> >         krcp->head_free = krcp->head;
-> >         krcp->head = NULL;
-> > +
-> > +       krcp->bhead_free = krcp->bhead;
-> > +       krcp->bhead = NULL;
-> > +
-> >         INIT_RCU_WORK(&krcp->rcu_work, kfree_rcu_work);
-> >         queue_rcu_work(system_wq, &krcp->rcu_work);
-> > 
-> > @@ -2747,6 +2783,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  {
-> >         unsigned long flags;
-> >         struct kfree_rcu_cpu *krcp;
-> > +       struct kfree_rcu_bulk_data *bnode;
-> > 
-> >         /* kfree_call_rcu() batching requires timers to be up. If the scheduler
-> >          * is not yet up, just skip batching and do the non-batched version.
-> > @@ -2754,16 +2791,35 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >         if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
-> >                 return kfree_call_rcu_nobatch(head, func);
-> > 
-> > -       head->func = func;
-> > -
-> >         local_irq_save(flags);  /* For safely calling this_cpu_ptr(). */
-> >         krcp = this_cpu_ptr(&krc);
-> >         spin_lock(&krcp->lock);
-> > 
-> > +       if (!krcp->bhead ||
-> > +                       krcp->bhead->nr_records == KFREE_BULK_MAX_SIZE) {
-> > +               /* Need a new block. */
-> > +               if (!(bnode = xchg(&krcp->bcached, NULL)))
-> 
-> Is it better to cache more than 1 block? But this is also Ok I think.
-> 
-I was thinking about it. In that case we need to answer the question
-how many blocks are worth to cache. As of now we can go with one if
-nobody minds.
+>=20
+> So this should be the root rcu_node structure (as opposed to one of =
+the
+> eight leaf rcu_node structures, each of which should have the =
+difference
+> between rnp->grphi and rnp->grplo equal to 15).  And RCU should not be
+> invoking for_each_leaf_node_cpu_mask() on this rcu_node structure.
+>=20
+>> It ends up with "cpu" is always 64 and never be able to get out of =
+the
+>> loop due to "cpu <=3D rnp->grphi". It is pointless to enter the loop =
+when
+>> the cpumask is 0 as there is no CPU would be able to match it.
+>>=20
+>> Fixes: 82150cb53dcb ("rcu: React to callback overload by aggressively =
+seeking quiescent states")
+>> Signed-off-by: Qian Cai <cai@lca.pw>
+>> ---
+>> kernel/rcu/rcu.h | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+>> index ab504fbc76ca..fb691ec86df4 100644
+>> --- a/kernel/rcu/rcu.h
+>> +++ b/kernel/rcu/rcu.h
+>> @@ -363,7 +363,7 @@ static inline void rcu_init_levelspread(int =
+*levelspread, const int *levelcnt)
+>> 	((rnp)->grplo + find_next_bit(&(mask), BITS_PER_LONG, (cpu)))
+>> #define for_each_leaf_node_cpu_mask(rnp, cpu, mask) \
+>> 	for ((cpu) =3D rcu_find_next_bit((rnp), 0, (mask)); \
+>> -	     (cpu) <=3D rnp->grphi; \
+>> +	     (cpu) <=3D rnp->grphi && (mask); \
+>> 	     (cpu) =3D rcu_find_next_bit((rnp), (cpu) + 1 - =
+(rnp->grplo), (mask)))
+>=20
+> This change cannot be right, but has to be one of the better bug =
+reports
+> I have ever received, so thank you very much, greatly appreciated!!!
+>=20
+> So if I say the above change cannot be right, what change might work?
+>=20
+> Again, it would certainly be a bug to invoke =
+for_each_leaf_node_cpu_mask()
+> on anything but one of the leaf rcu_node structures, as you might =
+guess
+> from the name.  And as noted above, your dump of the rcu_node fields
+> above looks like it is exactly that bug that happened.  So let's =
+review
+> the uses of this macro:
+>=20
+> kernel/rcu/tree.c:
+>=20
+> o	rcu_gp_cleanup() invokes for_each_leaf_node_cpu_mask() within a
+> 	srcu_for_each_node_breadth_first() loop, which includes non-leaf
+> 	rcu_node structures.  This is a bug!  Please see patch below.
+>=20
+> o	force_qs_rnp() is OK because for_each_leaf_node_cpu_mask() is
+> 	invoked within a rcu_for_each_leaf_node() loop.
+>=20
+> kernel/rcu/tree_exp.h:
+>=20
+> o	rcu_report_exp_cpu_mult() invokes it on whatever rcu_node =
+structure
+> 	was passed in:
+>=20
+> 	o	sync_rcu_exp_select_node_cpus() also relies on its
+> 		caller (via workqueues) to do the right thing.
+>=20
+> 		o	sync_rcu_exp_select_cpus() invokes
+> 			sync_rcu_exp_select_node_cpus() from within a
+> 			rcu_for_each_leaf_node() loop, so is OK.
+>=20
+> 		o	sync_rcu_exp_select_cpus() also invokes
+> 			sync_rcu_exp_select_node_cpus() indirectly
+> 			via workqueues, but also from within the same
+> 			rcu_for_each_leaf_node() loop, so is OK.
+>=20
+> 	o	rcu_report_exp_rdp() invokes rcu_report_exp_cpu_mult()
+> 		on the rcu_node structure corresponding to some
+> 		specific CPU, which will always be a leaf rcu_node
+> 		structure.
+>=20
+> Again, thank you very much for your testing and debugging efforts!
+> I have queued the three (almost untested) patches below, the first of
+> which I will fold into the buggy "rcu: React to callback overload by
+> aggressively seeking quiescent states" patch, the second of which I =
+will
+> apply to prevent future bugs of this sort, even when running on small
+> systems, and the third of which will allow me to easily run rcutorture
+> tests on the larger systems that I have recently gained easy access =
+to.
+>=20
+> And the big question...  Does the first patch clear up your hangs?  =
+;-)
+> Either way, please let me know!
+>=20
+> 							Thanx, Paul
+>=20
+> =
+------------------------------------------------------------------------
+>=20
+> commit e8d6182b015bdd8221164477f4ab1c307bd2fbe9
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Sun Dec 15 10:59:06 2019 -0800
+>=20
+>    squash! rcu: React to callback overload by aggressively seeking =
+quiescent states
+>=20
+>    [ paulmck: Fix bug located by Qian Cai. ]
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>=20
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1d0935e..48fba22 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1760,10 +1760,11 @@ static void rcu_gp_cleanup(void)
+> 		/* smp_mb() provided by prior unlock-lock pair. */
+> 		needgp =3D rcu_future_gp_cleanup(rnp) || needgp;
+> 		// Reset overload indication for CPUs no longer =
+overloaded
+> -		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
+> -			rdp =3D per_cpu_ptr(&rcu_data, cpu);
+> -			check_cb_ovld_locked(rdp, rnp);
+> -		}
+> +		if (rcu_is_leaf_node(rnp))
+> +			for_each_leaf_node_cpu_mask(rnp, cpu, =
+rnp->cbovldmask) {
+> +				rdp =3D per_cpu_ptr(&rcu_data, cpu);
+> +				check_cb_ovld_locked(rdp, rnp);
+> +			}
+> 		sq =3D rcu_nocb_gp_get(rnp);
+> 		raw_spin_unlock_irq_rcu_node(rnp);
+> 		rcu_nocb_gp_cleanup(sq);
+>=20
 
-> > +                       bnode = kmalloc(sizeof(struct kfree_rcu_bulk_data),
-> > +                               GFP_ATOMIC | __GFP_NOWARN);
-> > +
-> > +               /* If gets failed, maintain the list instead. */
-> > +               if (unlikely(!bnode)) {
-> > +                       head->func = func;
-> > +                       head->next = krcp->head;
-> > +                       krcp->head = head;
-> > +                       goto check_and_schedule;
-> > +               }
-> > +
-> > +               bnode->nr_records = 0;
-> > +               bnode->next = krcp->bhead;
-> > +               krcp->bhead = bnode;
-> > +       }
-> > +
-> >         /* Queue the kfree but don't yet schedule the batch. */
-> > -       head->next = krcp->head;
-> > -       krcp->head = head;
-> > +       krcp->bhead->records[krcp->bhead->nr_records++] =
-> > +               (void *) head - (unsigned long) func;
-> >  
-> > +check_and_schedule:
-> 
-> >         /* Schedule monitor for timely drain after KFREE_DRAIN_JIFFIES. */
-> >         if (!xchg(&krcp->monitor_todo, true))
-> >                 schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-> > 
-> > See below some test results with/without this patch:
-> > 
-> > # HiKey 960 8xCPUs
-> > rcuperf.ko kfree_loops=200000 kfree_alloc_num=1000 kfree_rcu_test=1
-> > [  159.017771] Total time taken by all kfree'ers: 92783584881 ns, loops: 200000, batches: 5117
-> > [  126.862573] Total time taken by all kfree'ers: 70935580718 ns, loops: 200000, batches: 3953
-> > 
-> > Running the "rcuperf" shows approximately ~23% better throughput in case of using
-> 
-> Awesome. Wow. Is this +23% with a slab allocator configuration?
-> 
-I have checked CONFIG_SLAB but on the virtual machine running under KVM
-the difference was ~15%. As for HiKey board and provided results above,
-i have just checked, it uses CONFIG_SLUB allocator. I can also check
-CONFIG_SLAB on HiKey 960 8xCPUs board.
 
->
-> You mentioned you will post a new version. Once you do it, I can take
-> another look and run some tests. Then I'll give your patch the Reviewed-by tag.
-> 
-OK.
+This works fine.
 
-Thank you Joel for your comments!
+Tested-by: Qian Cai <cai@lca.pw>
 
---
-Vlad Rezki
