@@ -5,61 +5,62 @@ X-Spam-Level:
 X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 689D8C43603
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:06:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFCA7C2D0BF
+	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:46:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 31AEE2072D
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:06:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 96B1B20CC7
+	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 12:46:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJ3vuyOn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1lXEQW3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727756AbfLPMGf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Dec 2019 07:06:35 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33880 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbfLPMGe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Dec 2019 07:06:34 -0500
-Received: by mail-lf1-f68.google.com with SMTP id l18so4048137lfc.1;
-        Mon, 16 Dec 2019 04:06:32 -0800 (PST)
+        id S1727611AbfLPMq3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Dec 2019 07:46:29 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:46432 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727762AbfLPMq2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Dec 2019 07:46:28 -0500
+Received: by mail-lf1-f65.google.com with SMTP id f15so4098764lfl.13;
+        Mon, 16 Dec 2019 04:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Dv/84AIFghRNFkI/DTk4weWTDUGQ7/AeJooqMaZ6A5g=;
-        b=aJ3vuyOn/N66J4E2rfFt1srz9e3n5elAO1VyCehtUo65ER6pegSk+KQHQxfihvOSwP
-         AJ88nw8s5q1DxbnkDV6l4Pj7ufGnCaBYpFBQJlnS/WYj7EHoNWxQq2e/NWr0QZPvZTB4
-         hnHuNfXaDGCyo7/Zs1R7gCZPq0X5yOvII++mAm0iXoF3cODETklyeS5+uLuA/zUsiIxz
-         7KBY93D5ETNR+kolMcc05YGoxafDqNxOonaDFazD7PFL7sdSa6izPDNw+l9KWE1XHkDv
-         VHwsgsie0nMmDtNInETCLxygpbzd+ilLqc3NGdVjxlnMMT6Ba6l4CTWZxnP7KTr8ytis
-         C6Gg==
+        bh=GFnDmlNyZSZLrsighJZzy59L+HK3ELB/DG/zXIrfnnM=;
+        b=R1lXEQW3HswWqhaDwTcSWyBJie5csrvSooXpmx6S1OQEi61P5fV2zDi4130XmOCWnv
+         6PB+zjTHnTDCyyi7BdrYT5EFfL4Ef8gQp0p9uA93SudkD69yRGGyJJ2NVyMkbgcRL1FG
+         LwxaNiDbcVarB456pkBKpbwzljH4fS451yyJz0bO3mZW2Rigsbl/+o/TZDJraLnCZ+wr
+         OrAGSr4M53qVacx37ej0xb+rQ1PhSXnKx0o+lugpQ5TSoLWRiT8NkXEzFtay2Br6YLYG
+         QGC/Y3d5O+rUKtQPfmWuYD/uvhVR8Sk4s8ISHvHVHozWfOjhGzxljAAfQSNmiVq+rY6R
+         uczQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Dv/84AIFghRNFkI/DTk4weWTDUGQ7/AeJooqMaZ6A5g=;
-        b=hcQ2j41t42rzEeTsZC7csxDnh4c+PsCO9bTadOz1GLthuaW+4HViQMoWc3rOndVM/o
-         HlWVKqy+tFIYPbFkKIKY/ZlLj2xKlder7dt+ORwoW9TJOzeyN6R6j4/b8iDyVo/7qU5W
-         iXSvQfa11oh20YSP9v7ZgDC2uKmGz0dZWIo6e3ZDcl6n29lNK2OYK8QsDSTOq2Bzb/Nh
-         1hmGQWhQN99KjZ1Xis2uX4Y9k49V7wqJvp2+dMnctP8lhP/NAOzI535CwScubAdBa+A2
-         ULkYTctmIW13Lps5k9w2CsFcXKCNC1to6kR7fL0cQ1mABEijhL/ZltfVO2i7MMjW2X+0
-         6m+g==
-X-Gm-Message-State: APjAAAWZu69zC92eb2vLyhF56diLV47qd2rOULakEZyYRBdIH31kjjyT
-        qMzybbyuwX5TCK9CrjjOF2k=
-X-Google-Smtp-Source: APXvYqy1m6hUs7Qwi4W/tu509zA+YZTsKcyKj+52kefHAqGDMv3K+21FMvkDXyN0CPIqf6kQdAZqVQ==
-X-Received: by 2002:ac2:51de:: with SMTP id u30mr16236983lfm.69.1576497991527;
-        Mon, 16 Dec 2019 04:06:31 -0800 (PST)
+        bh=GFnDmlNyZSZLrsighJZzy59L+HK3ELB/DG/zXIrfnnM=;
+        b=KC/T/7QwkNVffgeTOCFOZ3GBT5Zz3UI6FgLim9lMuS5TQMUVfN3UguKq4rkkghCJne
+         zQDJp57S4kGtLXTxqKDKzWZgBpiyb7zWwDTWxeMPqA1SvxInxIEs5RyfYQY8Ox663JEt
+         bMAM1dT/8Q/a3wN+HEgWeaz5nAjiKlgjdYlgwRwKXI+ILGVrQlN+At/vHvgqRhkLY2so
+         QEFwG7E9THWH8EBxca0nUSb6tSjojFKK4uaK8w1TQDa7JD9lo5Ue8BUDNvfcVbpVJQjJ
+         08VFSbXZJ0zSCHSu24JlNBTvtfzDRzdnwCKKxHUCxSHW/Bp0O82hI8SnaTGSHMOyZAkg
+         5i5g==
+X-Gm-Message-State: APjAAAVXJ7LwzoMS7YX60Wxy4LL0Y1PQEh2Xs0Jct6XvNGakHEXvVdi2
+        VQzTZGqDXUKWvGGQiT4QfUY=
+X-Google-Smtp-Source: APXvYqz/hOoNT77xo7Mg+lPe87uGWP+P6k1y0fUhRNddlghaaiBEPe/X63gcFMdCPsXsZjQVhK5SIQ==
+X-Received: by 2002:ac2:4849:: with SMTP id 9mr16416888lfy.11.1576500385872;
+        Mon, 16 Dec 2019 04:46:25 -0800 (PST)
 Received: from pc636 ([37.139.158.167])
-        by smtp.gmail.com with ESMTPSA id g6sm10534739lja.10.2019.12.16.04.06.29
+        by smtp.gmail.com with ESMTPSA id m16sm10544906ljb.47.2019.12.16.04.46.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 04:06:30 -0800 (PST)
+        Mon, 16 Dec 2019 04:46:25 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 16 Dec 2019 13:06:22 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+Date:   Mon, 16 Dec 2019 13:46:17 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
         linux-kernel@vger.kernel.org, kernel-team@android.com,
         kernel-team@lge.com, Byungchul Park <byungchul.park@lge.com>,
         Davidlohr Bueso <dave@stgolabs.net>,
@@ -70,22 +71,22 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH v4 1/2] rcu/tree: Add basic support for kfree_rcu()
  batching
-Message-ID: <20191216120622.GA12798@pc636>
+Message-ID: <20191216124617.GA13293@pc636>
 References: <20190814160411.58591-1-joel@joelfernandes.org>
  <20190918095811.GA25821@pc636>
  <20191210095348.GA420@pc636>
- <20191211234648.GO2889@paulmck-ThinkPad-P72>
+ <20191212052727.GA125322@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191211234648.GO2889@paulmck-ThinkPad-P72>
+In-Reply-To: <20191212052727.GA125322@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 03:46:48PM -0800, Paul E. McKenney wrote:
+On Thu, Dec 12, 2019 at 12:27:27AM -0500, Joel Fernandes wrote:
 > On Tue, Dec 10, 2019 at 10:53:48AM +0100, Uladzislau Rezki wrote:
 > > On Wed, Sep 18, 2019 at 11:58:11AM +0200, Uladzislau Rezki wrote:
 > > > > Recently a discussion about stability and performance of a system
@@ -111,26 +112,9 @@ On Wed, Dec 11, 2019 at 03:46:48PM -0800, Paul E. McKenney wrote:
 > > as well. I mean in comparison with "pointer chasing" way, when there is
 > > probably a cache misses each time the access is done to next element:
 > 
-> Something like this would be good!
+> This looks like a great idea to me, that is chaining blocks together.
 > 
-> The other thing to track besides CPU time savings (which does look good!)
-> is memory footprint.
->
-I will double check how much extra memory it requires, but it depends on
-how many elements we have in "bulk list" and the size of the
-kfree_rcu_bulk_data structure. So, i will run "rcuperf" to see what we
-have.
-
-> 
-> And there will also need to be something visible to RCU counting the
-> number of outstanding kfree()s.  But on a per-CPU basis, for example,
-> as an atomic_long_t field in the rcu_data structure or similar.  This
-> is needed to help RCU work out when it needs to work harder to bring
-> grace periods to an end.  But that can be a separate issue.
-> 
-OK, i see that. As far as i see we need to have per-cpu implementation
-first, i mean kfree_rcu() should be per-cpu.
-
+> > 
 > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 > > index 1fe0418a5901..4f68662c1568 100644
 > > --- a/kernel/rcu/tree.c
@@ -140,15 +124,6 @@ first, i mean kfree_rcu() should be per-cpu.
 > >  /* Maximum number of jiffies to wait before draining a batch. */
 > >  #define KFREE_DRAIN_JIFFIES (HZ / 50)
 > > +#define KFREE_BULK_MAX_SIZE 64
-> 
-> My guess is that performance does not depend all that much on the
-> exact number.  Does that match your testing?
-> 
-Not really. It does not depend on exact number, whereas it is clear
-that setting it to 1 does not make sense :) Also the size of the
-kfree_rcu_bulk_data struct should not be more then PAGE_SIZE due to
-memory fragmentation problems.
-
 > > +
 > > +struct kfree_rcu_bulk_data {
 > > +       int nr_records;
@@ -181,14 +156,6 @@ memory fragmentation problems.
 > > +       struct kfree_rcu_bulk_data *bhead;
 > > +       struct kfree_rcu_bulk_data *bhead_free;
 > > +       struct kfree_rcu_bulk_data *bcached;
-> 
-> So ->bcached keeps at most one kfree_rcu_bulk_data around for later use,
-> correct?  And ->bhead is where new memory is placed, while ->bhead_free
-> contains those waiting for a grace period, right?  (It would be good
-> to make the comment explicit about this.)
-> 
-Correct. I will add some extra comments.
-
 > > +
 > >         /* Protect concurrent access to this structure. */
 > >         spinlock_t lock;
@@ -217,6 +184,23 @@ Correct. I will add some extra comments.
 > > +
 > > +               if (cmpxchg(&krcp->bcached, NULL, bhead))
 > > +                       kfree(bhead);
+> 
+> After the first iteration of loop, say cmpxchg succeeded, then is there a
+> point it doing repeated cmpxchg in future loops? AIUI, cmpxchg has a
+> serializing cost and better be avoided where possible.
+> 
+I see your point. I also do not like calling cmpxchg() in the loop. From
+the other hand the number of loops depends on how many "chain blocks" we
+have in our list. To reduce that number we can increase KFREE_BULK_MAX_SIZE,
+i.e. the list will become shorter.
+
+>
+> But... there can be a case where bcached was used up while the loop is
+> running. Then there could be a point in reassigning it in future loop
+> iterations.
+> 
+Sound like that, therefore i keep it in the loop.
+
 > > +
 > > +               cond_resched_tasks_rcu_qs();
 > > +       }
@@ -229,8 +213,20 @@ Correct. I will add some extra comments.
 > >         for (; head; head = next) {
 > >                 next = head->next;
 > > -               /* Could be possible to optimize with kfree_bulk in future */
+> 
+> I'm glad I had left this comment ;-) ;-)
+> 
+It is always good to leave valuable comments :)
+
+
 > >                 __rcu_reclaim(rcu_state.name, head);
 > > -               cond_resched_tasks_rcu_qs();
+> 
+> Why take off this cond_resched..() ?
+> 
+I can keep it. I removed it because it becomes as "emergency path"
+only that is most likely never triggered.
+
 > >         }
 > >  }
 > > 
@@ -273,6 +269,13 @@ Correct. I will add some extra comments.
 > > +                       krcp->bhead->nr_records == KFREE_BULK_MAX_SIZE) {
 > > +               /* Need a new block. */
 > > +               if (!(bnode = xchg(&krcp->bcached, NULL)))
+> 
+> Is it better to cache more than 1 block? But this is also Ok I think.
+> 
+I was thinking about it. In that case we need to answer the question
+how many blocks are worth to cache. As of now we can go with one if
+nobody minds.
+
 > > +                       bnode = kmalloc(sizeof(struct kfree_rcu_bulk_data),
 > > +                               GFP_ATOMIC | __GFP_NOWARN);
 > > +
@@ -282,15 +285,6 @@ Correct. I will add some extra comments.
 > > +                       head->next = krcp->head;
 > > +                       krcp->head = head;
 > > +                       goto check_and_schedule;
-> 
-> It should be possible to move this code out to follow the "Queue the
-> next" comment, thus avoiding the goto.  Setting krcp->bhead to NULL
-> here should set up for the check below, right?
-> 
-Yes it should be possible. If we set krcp->bhead to NULL in case of
-failure we can loose previous queued "bulk elements". But i see your
-point and will rework it, trying to get rid of "goto" jump.
-
 > > +               }
 > > +
 > > +               bnode->nr_records = 0;
@@ -305,6 +299,7 @@ point and will rework it, trying to get rid of "goto" jump.
 > > +               (void *) head - (unsigned long) func;
 > >  
 > > +check_and_schedule:
+> 
 > >         /* Schedule monitor for timely drain after KFREE_DRAIN_JIFFIES. */
 > >         if (!xchg(&krcp->monitor_todo, true))
 > >                 schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
@@ -317,17 +312,21 @@ point and will rework it, trying to get rid of "goto" jump.
 > > [  126.862573] Total time taken by all kfree'ers: 70935580718 ns, loops: 200000, batches: 3953
 > > 
 > > Running the "rcuperf" shows approximately ~23% better throughput in case of using
-> > "bulk" interface, so we have 92783584881 vs 70935580718 as total time. The "drain logic"
-> > or its RCU callback does the work faster that leads to better throughput.
-> > 
-> > I can upload the RFC/PATCH of that change providing the test details and so on. 
-> > 
-> > Any thoughts about it?
 > 
-> Again nice improvement!  Please also check memory footprint.  I would
-> not expect much difference, but...
+> Awesome. Wow. Is this +23% with a slab allocator configuration?
 > 
-Thank you Paul for your comments! Will check it.
+I have checked CONFIG_SLAB but on the virtual machine running under KVM
+the difference was ~15%. As for HiKey board and provided results above,
+i have just checked, it uses CONFIG_SLUB allocator. I can also check
+CONFIG_SLAB on HiKey 960 8xCPUs board.
+
+>
+> You mentioned you will post a new version. Once you do it, I can take
+> another look and run some tests. Then I'll give your patch the Reviewed-by tag.
+> 
+OK.
+
+Thank you Joel for your comments!
 
 --
 Vlad Rezki
