@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52AD6C43603
-	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8DD9C43603
+	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 23E5D2146E
-	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:12:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E6A2206EC
+	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:22:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="JQJBKIRV"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="S+1TVgtF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbfLSQM4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Dec 2019 11:12:56 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:33107 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbfLSQMz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 19 Dec 2019 11:12:55 -0500
-Received: by mail-pf1-f193.google.com with SMTP id z16so3540237pfk.0
-        for <rcu@vger.kernel.org>; Thu, 19 Dec 2019 08:12:55 -0800 (PST)
+        id S1726858AbfLSQWs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Dec 2019 11:22:48 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45497 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbfLSQWs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Dec 2019 11:22:48 -0500
+Received: by mail-pf1-f196.google.com with SMTP id 2so3524719pfg.12
+        for <rcu@vger.kernel.org>; Thu, 19 Dec 2019 08:22:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bx8Jb0WaQCTtu/dzL5GBmb8jnnDesSBUSvEFPOM12Yc=;
-        b=JQJBKIRVGtI4VwCCP3hyatO9EmbXSVs/aw6TLzZIdjHxwAHAFsxHTmhBoSd0+E4JuL
-         j4avCkTjYoOlG87Cns9LFhyu+xGoaYInHiXcCbWrbnsXqvQcUnMDQ2YeZAmlWlAUb84k
-         sOVhQJlbtXk5vQtRC6N3Bd2Gdi39AvyiTzS9M=
+        bh=XjhTktDNNIa4enH2Adg8E64+TNvvSeb3MU4xDD4N6y4=;
+        b=S+1TVgtFUfcAkeVMZX15JSnrsSR+b4mHrDAJZPEW0YIuzlFcPMY/jQ6QIbrny4bqxR
+         KV+6ieZWWcuNCefV0X0KZl5TJ85CuQsLOjJUe1RvKwLmj0JOXxDpE5V1wk7VsqFaJxAg
+         EBaG9nxlhkZKlC6W9cAgW+V8qNBEd+61ZHu4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bx8Jb0WaQCTtu/dzL5GBmb8jnnDesSBUSvEFPOM12Yc=;
-        b=bRn/XTK4i3ddPEFEARU3Y7F9FXRgZDVAvJE4jHGcbWvOp0nGjpVtp+Xdixp9iWjOcO
-         0rL+2pawXUoAptQzBXgE9jZtdDdQyT49ZNOTMr+WAI5E7oFjKCnkbsLNl4QkDl9MxCHR
-         aiLKjNtvOIISJjs7rIGHN/7grnWkHLDmG19b9Vdq4uYdaVEHB3dHtwUb5ikbZy7odnIe
-         HVLOeH9UkrCXzVi26TGkNFJAWUMZovQg9KlB6QtojkU8WIbGhG8G4nAudf1VzStBqzI8
-         uxdPpN2NdvJQc17xqIeEQ1gS71TLL9EN6Kg9n5XZIN3rwos6ySRR3FmDe8KdkzHgWWV6
-         /SKw==
-X-Gm-Message-State: APjAAAVGXweAS9UyLYDGFLlX46fjYZowr1sUNHoJmpv7WzszVmZ1sqAT
-        r+QulKw7zwr7K1hCS+7eWJXsjw==
-X-Google-Smtp-Source: APXvYqw66nmbW+O3AVs6mvJmDJp+F1dljrELDidgKaMGsS8zDDjKSglw8t0bZYNqEUzI65h7lWpNwA==
-X-Received: by 2002:a63:6507:: with SMTP id z7mr10081594pgb.322.1576771974899;
-        Thu, 19 Dec 2019 08:12:54 -0800 (PST)
+        bh=XjhTktDNNIa4enH2Adg8E64+TNvvSeb3MU4xDD4N6y4=;
+        b=EZ06v7RExIqB4QKSIoq5f95jSeTk9RAPiA7TUgxf2lUzC0uNDx5Q2uExfX35RpyiPI
+         d7I2MBpgtuayofrIwStGuJ+djtF0SQ1OfxhvjtcE+IPtKCAIoruVkSzJz4qZOlrs3WLM
+         +yCYT6AjGHo551Najj3LLbRvdNgS2tHMVi1yh0ugWFrZqrbaiF6qf6+g4Tte3KyQqYp/
+         dEIVOESnErX0R2/RVqdUinSzH/IkpKEIBETBkGqeSRDfRyMnJiEynHbV1CQS/9L6ALrZ
+         kn7helpFu7IF8oLFCKSZNhFjvb18gF7R2J9AHI+gvoN+VOa1OSYL916kPaHVv/7Ueq1G
+         rSiA==
+X-Gm-Message-State: APjAAAWqUwojdKxa9d2Ud2+MobrbEdp9oRMewpAfMNuKoUbQx+p8pC3h
+        dqeVk58M2uj61M8S6W+jEZPkVA==
+X-Google-Smtp-Source: APXvYqxHXwpOEGvBlevCbs/eVfPnI8BV0/eirURjLaUDm0uj6xZohikXALfWZdJ0pnLprPjRBCREvA==
+X-Received: by 2002:aa7:90c9:: with SMTP id k9mr10699178pfk.53.1576772567094;
+        Thu, 19 Dec 2019 08:22:47 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id a13sm8813570pfc.40.2019.12.19.08.12.52
+        by smtp.gmail.com with ESMTPSA id k21sm8033830pgt.22.2019.12.19.08.22.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 08:12:54 -0800 (PST)
+        Thu, 19 Dec 2019 08:22:46 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -62,9 +62,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH rcu-dev] rcuperf: Measure memory footprint during kfree_rcu() test
-Date:   Thu, 19 Dec 2019 11:12:48 -0500
-Message-Id: <20191219161248.109734-1-joel@joelfernandes.org>
+Subject: [PATCH v2 rcu-dev] rcuperf: Measure memory footprint during kfree_rcu() test
+Date:   Thu, 19 Dec 2019 11:22:42 -0500
+Message-Id: <20191219162242.128282-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -80,22 +80,24 @@ compare with the beginning.
 
 A sample run shows something like:
 
-Total time taken by all kfree'ers: 6369738407 ns, loops: 10000, batches: 764 memory footprint:216MB
+Total time taken by all kfree'ers: 6369738407 ns, loops: 10000, batches: 764, memory footprint: 216MB
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 
 ---
+v1->v2 : Minor corrections
+
 Cc: bristot@redhat.com
 Cc: frextrite@gmail.com
 Cc: madhuparnabhowmik04@gmail.com
 Cc: urezki@gmail.com
 
- kernel/rcu/rcuperf.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ kernel/rcu/rcuperf.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index da94b89cd531..bf8e9d9b532c 100644
+index da94b89cd531..91f0650914cc 100644
 --- a/kernel/rcu/rcuperf.c
 +++ b/kernel/rcu/rcuperf.c
 @@ -12,6 +12,7 @@
@@ -106,7 +108,7 @@ index da94b89cd531..bf8e9d9b532c 100644
  #include <linux/module.h>
  #include <linux/kthread.h>
  #include <linux/err.h>
-@@ -611,12 +612,14 @@ kfree_perf_thread(void *arg)
+@@ -611,6 +612,7 @@ kfree_perf_thread(void *arg)
  	long me = (long)arg;
  	struct kfree_obj *alloc_ptr;
  	u64 start_time, end_time;
@@ -114,14 +116,7 @@ index da94b89cd531..bf8e9d9b532c 100644
  
  	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
- 	set_user_nice(current, MAX_NICE);
- 
- 	start_time = ktime_get_mono_fast_ns();
-+	mem_begin = si_mem_available();
- 
- 	if (atomic_inc_return(&n_kfree_perf_thread_started) >= kfree_nrealthreads) {
- 		if (gp_exp)
-@@ -626,7 +629,14 @@ kfree_perf_thread(void *arg)
+@@ -626,6 +628,12 @@ kfree_perf_thread(void *arg)
  	}
  
  	do {
@@ -132,11 +127,9 @@ index da94b89cd531..bf8e9d9b532c 100644
 +		}
 +
  		for (i = 0; i < kfree_alloc_num; i++) {
-+
  			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
  			if (!alloc_ptr)
- 				return -ENOMEM;
-@@ -645,9 +655,11 @@ kfree_perf_thread(void *arg)
+@@ -645,9 +653,11 @@ kfree_perf_thread(void *arg)
  		else
  			b_rcu_gp_test_finished = cur_ops->get_gp_seq();
  
