@@ -1,245 +1,154 @@
-Return-Path: <SRS0=PgcC=2G=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=65fK=2J=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADD98C43603
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 14:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52AD6C43603
+	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:12:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 75798206A5
-	for <rcu@archiver.kernel.org>; Mon, 16 Dec 2019 14:13:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23E5D2146E
+	for <rcu@archiver.kernel.org>; Thu, 19 Dec 2019 16:12:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="ETVeOCVs"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="JQJBKIRV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbfLPONC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Dec 2019 09:13:02 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:43053 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbfLPONB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Dec 2019 09:13:01 -0500
-Received: by mail-qv1-f66.google.com with SMTP id p2so2740078qvo.10
-        for <rcu@vger.kernel.org>; Mon, 16 Dec 2019 06:13:01 -0800 (PST)
+        id S1726858AbfLSQM4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Dec 2019 11:12:56 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:33107 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbfLSQMz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Dec 2019 11:12:55 -0500
+Received: by mail-pf1-f193.google.com with SMTP id z16so3540237pfk.0
+        for <rcu@vger.kernel.org>; Thu, 19 Dec 2019 08:12:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mi7ftffFrqB3MIpnsGeNJ41kn2EGtdc3WEvbuGDojUA=;
-        b=ETVeOCVsQIXPTANO0VbZSfJ6I3BzftLD/sO6uJZYJ1eoa1eHcI1CugMDBoCvaYEPkZ
-         5FsGMuX5bO5Tuur0R1PRFTv00apn+5SQxIb5tkfnZzjlT7Ht5/cHztbpa1SinTrEVgaG
-         B7gC7MCOPJZAIrl6G7nTnU2UPxZTn+rc8s8wKoSihEFQKfjXZE+ZANchaVTzzkN48cqF
-         meTvQA9kB2RQqU7LjaoO/nG2M2gnP35RC15o85zb3bIuuw4ehv1hhbhR34jHhOc3QWmr
-         DgdEuEfSotsu6aKyNHxoRB0m7aH+MIcD5jNzrfYlLw6vYsLeT6McUzp3RQBJ57fCP9vQ
-         K3sQ==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bx8Jb0WaQCTtu/dzL5GBmb8jnnDesSBUSvEFPOM12Yc=;
+        b=JQJBKIRVGtI4VwCCP3hyatO9EmbXSVs/aw6TLzZIdjHxwAHAFsxHTmhBoSd0+E4JuL
+         j4avCkTjYoOlG87Cns9LFhyu+xGoaYInHiXcCbWrbnsXqvQcUnMDQ2YeZAmlWlAUb84k
+         sOVhQJlbtXk5vQtRC6N3Bd2Gdi39AvyiTzS9M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mi7ftffFrqB3MIpnsGeNJ41kn2EGtdc3WEvbuGDojUA=;
-        b=MpqED+LEVtUzTpnTwMw84N2hOw7yZerc+bVkBXI8tiXN7qbpRM9hIZ5WWqzW0GIles
-         RFoDmXJYyhvIwFvl62BQAshBjZ3On9u8j4hX9DhVm8YrG9Ul9ZwqmZgC02wqyLdNDMXO
-         hNR66E6w5HyKEkDuowvzm+5fIMb6r5hMqROARSCMibCK4+E6R0jOwpce+TW10/w3cS8U
-         YVHtMDiYM7t8Y6LVTb0Elr+d7yyisHYS3I7FJKd+Gmq05AEN17ow9vZ+GSAJkDenRnI5
-         q6V+hrDi7AXLRObnEPY70EP9L3M2qnodbvd3XwFAyyQBMBp3qowN2RfjckOCOh2aZMv0
-         UKyA==
-X-Gm-Message-State: APjAAAWSYxLy8eaccKOayuOUDLfIZZTCNYWGUZ09zrirJoIl4kjnAdM3
-        s2CcoFUuUyGx2guMfrrDYttA5h83U1k=
-X-Google-Smtp-Source: APXvYqy30U1xUJPeEnRlbVlVmpesQ5tK8gBnBApYA59e/0ntyicHXPnbA9UeMOxAzwNzlGCZz6jVjA==
-X-Received: by 2002:ad4:514e:: with SMTP id g14mr26937965qvq.196.1576505580506;
-        Mon, 16 Dec 2019 06:13:00 -0800 (PST)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id o7sm5978842qkd.119.2019.12.16.06.12.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Dec 2019 06:13:00 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
-Subject: Re: [PATCH] rcu: fix an infinite loop in rcu_gp_cleanup()
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20191215201646.GK2889@paulmck-ThinkPad-P72>
-Date:   Mon, 16 Dec 2019 09:12:58 -0500
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, tj@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B2AD3650-B814-48D1-89D0-BF2C56157DA1@lca.pw>
-References: <20191215065242.7155-1-cai@lca.pw>
- <20191215201646.GK2889@paulmck-ThinkPad-P72>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3608.40.2.2.4)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bx8Jb0WaQCTtu/dzL5GBmb8jnnDesSBUSvEFPOM12Yc=;
+        b=bRn/XTK4i3ddPEFEARU3Y7F9FXRgZDVAvJE4jHGcbWvOp0nGjpVtp+Xdixp9iWjOcO
+         0rL+2pawXUoAptQzBXgE9jZtdDdQyT49ZNOTMr+WAI5E7oFjKCnkbsLNl4QkDl9MxCHR
+         aiLKjNtvOIISJjs7rIGHN/7grnWkHLDmG19b9Vdq4uYdaVEHB3dHtwUb5ikbZy7odnIe
+         HVLOeH9UkrCXzVi26TGkNFJAWUMZovQg9KlB6QtojkU8WIbGhG8G4nAudf1VzStBqzI8
+         uxdPpN2NdvJQc17xqIeEQ1gS71TLL9EN6Kg9n5XZIN3rwos6ySRR3FmDe8KdkzHgWWV6
+         /SKw==
+X-Gm-Message-State: APjAAAVGXweAS9UyLYDGFLlX46fjYZowr1sUNHoJmpv7WzszVmZ1sqAT
+        r+QulKw7zwr7K1hCS+7eWJXsjw==
+X-Google-Smtp-Source: APXvYqw66nmbW+O3AVs6mvJmDJp+F1dljrELDidgKaMGsS8zDDjKSglw8t0bZYNqEUzI65h7lWpNwA==
+X-Received: by 2002:a63:6507:: with SMTP id z7mr10081594pgb.322.1576771974899;
+        Thu, 19 Dec 2019 08:12:54 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id a13sm8813570pfc.40.2019.12.19.08.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2019 08:12:54 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        bristot@redhat.com, frextrite@gmail.com,
+        madhuparnabhowmik04@gmail.com, urezki@gmail.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH rcu-dev] rcuperf: Measure memory footprint during kfree_rcu() test
+Date:   Thu, 19 Dec 2019 11:12:48 -0500
+Message-Id: <20191219161248.109734-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+During changes to kfree_rcu() code, we often check how much is free
+memory. Instead of doing so manually, add a measurement in the test
+itself. We measure 4 times during the test for available memory and
+compare with the beginning.
+
+A sample run shows something like:
+
+Total time taken by all kfree'ers: 6369738407 ns, loops: 10000, batches: 764 memory footprint:216MB
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 
-> On Dec 15, 2019, at 3:16 PM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->=20
-> On Sun, Dec 15, 2019 at 01:52:42AM -0500, Qian Cai wrote:
->> The commit 82150cb53dcb ("rcu: React to callback overload by
->> aggressively seeking quiescent states") introduced an infinite loop
->> during boot here,
->>=20
->> // Reset overload indication for CPUs no longer overloaded
->> for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
->> 	rdp =3D per_cpu_ptr(&rcu_data, cpu);
->> 	check_cb_ovld_locked(rdp, rnp);
->> }
->>=20
->> because on an affected machine,
->>=20
->> rnp->cbovldmask =3D 0
->> rnp->grphi =3D 127
->> rnp->grplo =3D 0
->=20
-> Your powerpc.config file from your first email shows:
->=20
-> 	rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_ids=3D128=
+---
+Cc: bristot@redhat.com
+Cc: frextrite@gmail.com
+Cc: madhuparnabhowmik04@gmail.com
+Cc: urezki@gmail.com
 
->=20
-> So this should be the root rcu_node structure (as opposed to one of =
-the
-> eight leaf rcu_node structures, each of which should have the =
-difference
-> between rnp->grphi and rnp->grplo equal to 15).  And RCU should not be
-> invoking for_each_leaf_node_cpu_mask() on this rcu_node structure.
->=20
->> It ends up with "cpu" is always 64 and never be able to get out of =
-the
->> loop due to "cpu <=3D rnp->grphi". It is pointless to enter the loop =
-when
->> the cpumask is 0 as there is no CPU would be able to match it.
->>=20
->> Fixes: 82150cb53dcb ("rcu: React to callback overload by aggressively =
-seeking quiescent states")
->> Signed-off-by: Qian Cai <cai@lca.pw>
->> ---
->> kernel/rcu/rcu.h | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->> index ab504fbc76ca..fb691ec86df4 100644
->> --- a/kernel/rcu/rcu.h
->> +++ b/kernel/rcu/rcu.h
->> @@ -363,7 +363,7 @@ static inline void rcu_init_levelspread(int =
-*levelspread, const int *levelcnt)
->> 	((rnp)->grplo + find_next_bit(&(mask), BITS_PER_LONG, (cpu)))
->> #define for_each_leaf_node_cpu_mask(rnp, cpu, mask) \
->> 	for ((cpu) =3D rcu_find_next_bit((rnp), 0, (mask)); \
->> -	     (cpu) <=3D rnp->grphi; \
->> +	     (cpu) <=3D rnp->grphi && (mask); \
->> 	     (cpu) =3D rcu_find_next_bit((rnp), (cpu) + 1 - =
-(rnp->grplo), (mask)))
->=20
-> This change cannot be right, but has to be one of the better bug =
-reports
-> I have ever received, so thank you very much, greatly appreciated!!!
->=20
-> So if I say the above change cannot be right, what change might work?
->=20
-> Again, it would certainly be a bug to invoke =
-for_each_leaf_node_cpu_mask()
-> on anything but one of the leaf rcu_node structures, as you might =
-guess
-> from the name.  And as noted above, your dump of the rcu_node fields
-> above looks like it is exactly that bug that happened.  So let's =
-review
-> the uses of this macro:
->=20
-> kernel/rcu/tree.c:
->=20
-> o	rcu_gp_cleanup() invokes for_each_leaf_node_cpu_mask() within a
-> 	srcu_for_each_node_breadth_first() loop, which includes non-leaf
-> 	rcu_node structures.  This is a bug!  Please see patch below.
->=20
-> o	force_qs_rnp() is OK because for_each_leaf_node_cpu_mask() is
-> 	invoked within a rcu_for_each_leaf_node() loop.
->=20
-> kernel/rcu/tree_exp.h:
->=20
-> o	rcu_report_exp_cpu_mult() invokes it on whatever rcu_node =
-structure
-> 	was passed in:
->=20
-> 	o	sync_rcu_exp_select_node_cpus() also relies on its
-> 		caller (via workqueues) to do the right thing.
->=20
-> 		o	sync_rcu_exp_select_cpus() invokes
-> 			sync_rcu_exp_select_node_cpus() from within a
-> 			rcu_for_each_leaf_node() loop, so is OK.
->=20
-> 		o	sync_rcu_exp_select_cpus() also invokes
-> 			sync_rcu_exp_select_node_cpus() indirectly
-> 			via workqueues, but also from within the same
-> 			rcu_for_each_leaf_node() loop, so is OK.
->=20
-> 	o	rcu_report_exp_rdp() invokes rcu_report_exp_cpu_mult()
-> 		on the rcu_node structure corresponding to some
-> 		specific CPU, which will always be a leaf rcu_node
-> 		structure.
->=20
-> Again, thank you very much for your testing and debugging efforts!
-> I have queued the three (almost untested) patches below, the first of
-> which I will fold into the buggy "rcu: React to callback overload by
-> aggressively seeking quiescent states" patch, the second of which I =
-will
-> apply to prevent future bugs of this sort, even when running on small
-> systems, and the third of which will allow me to easily run rcutorture
-> tests on the larger systems that I have recently gained easy access =
-to.
->=20
-> And the big question...  Does the first patch clear up your hangs?  =
-;-)
-> Either way, please let me know!
->=20
-> 							Thanx, Paul
->=20
-> =
-------------------------------------------------------------------------
->=20
-> commit e8d6182b015bdd8221164477f4ab1c307bd2fbe9
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Sun Dec 15 10:59:06 2019 -0800
->=20
->    squash! rcu: React to callback overload by aggressively seeking =
-quiescent states
->=20
->    [ paulmck: Fix bug located by Qian Cai. ]
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->=20
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 1d0935e..48fba22 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1760,10 +1760,11 @@ static void rcu_gp_cleanup(void)
-> 		/* smp_mb() provided by prior unlock-lock pair. */
-> 		needgp =3D rcu_future_gp_cleanup(rnp) || needgp;
-> 		// Reset overload indication for CPUs no longer =
-overloaded
-> -		for_each_leaf_node_cpu_mask(rnp, cpu, rnp->cbovldmask) {
-> -			rdp =3D per_cpu_ptr(&rcu_data, cpu);
-> -			check_cb_ovld_locked(rdp, rnp);
-> -		}
-> +		if (rcu_is_leaf_node(rnp))
-> +			for_each_leaf_node_cpu_mask(rnp, cpu, =
-rnp->cbovldmask) {
-> +				rdp =3D per_cpu_ptr(&rcu_data, cpu);
-> +				check_cb_ovld_locked(rdp, rnp);
-> +			}
-> 		sq =3D rcu_nocb_gp_get(rnp);
-> 		raw_spin_unlock_irq_rcu_node(rnp);
-> 		rcu_nocb_gp_cleanup(sq);
->=20
+ kernel/rcu/rcuperf.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-
-This works fine.
-
-Tested-by: Qian Cai <cai@lca.pw>
-
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index da94b89cd531..bf8e9d9b532c 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/kthread.h>
+ #include <linux/err.h>
+@@ -611,12 +612,14 @@ kfree_perf_thread(void *arg)
+ 	long me = (long)arg;
+ 	struct kfree_obj *alloc_ptr;
+ 	u64 start_time, end_time;
++	long mem_begin, mem_during = 0;
+ 
+ 	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
+ 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
+ 	set_user_nice(current, MAX_NICE);
+ 
+ 	start_time = ktime_get_mono_fast_ns();
++	mem_begin = si_mem_available();
+ 
+ 	if (atomic_inc_return(&n_kfree_perf_thread_started) >= kfree_nrealthreads) {
+ 		if (gp_exp)
+@@ -626,7 +629,14 @@ kfree_perf_thread(void *arg)
+ 	}
+ 
+ 	do {
++		if (!mem_during) {
++			mem_during = mem_begin = si_mem_available();
++		} else if (loop % (kfree_loops / 4) == 0) {
++			mem_during = (mem_during + si_mem_available()) / 2;
++		}
++
+ 		for (i = 0; i < kfree_alloc_num; i++) {
++
+ 			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
+ 			if (!alloc_ptr)
+ 				return -ENOMEM;
+@@ -645,9 +655,11 @@ kfree_perf_thread(void *arg)
+ 		else
+ 			b_rcu_gp_test_finished = cur_ops->get_gp_seq();
+ 
+-		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld\n",
++		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld, memory footprint: %ldMB\n",
+ 		       (unsigned long long)(end_time - start_time), kfree_loops,
+-		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started));
++		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started),
++		       (mem_begin - mem_during) >> (20 - PAGE_SHIFT));
++
+ 		if (shutdown) {
+ 			smp_mb(); /* Assign before wake. */
+ 			wake_up(&shutdown_wq);
+-- 
+2.24.1.735.g03f4e72817-goog
