@@ -2,255 +2,384 @@ Return-Path: <SRS0=9PxD=2L=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C919AC43603
-	for <rcu@archiver.kernel.org>; Sat, 21 Dec 2019 03:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE83FC2D0C3
+	for <rcu@archiver.kernel.org>; Sat, 21 Dec 2019 23:21:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 809F620716
-	for <rcu@archiver.kernel.org>; Sat, 21 Dec 2019 03:37:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B012206A5
+	for <rcu@archiver.kernel.org>; Sat, 21 Dec 2019 23:21:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="nHid3n2M"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VSIB5J53"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbfLUDhR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Dec 2019 22:37:17 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:54383 "EHLO
+        id S1726318AbfLUXVU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 21 Dec 2019 18:21:20 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:39604 "EHLO
         mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbfLUDhR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Dec 2019 22:37:17 -0500
-Received: by mail-pj1-f67.google.com with SMTP id kx11so847425pjb.4
-        for <rcu@vger.kernel.org>; Fri, 20 Dec 2019 19:37:16 -0800 (PST)
+        with ESMTP id S1726086AbfLUXVT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 21 Dec 2019 18:21:19 -0500
+Received: by mail-pj1-f67.google.com with SMTP id t101so5776504pjb.4
+        for <rcu@vger.kernel.org>; Sat, 21 Dec 2019 15:21:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=bC53Tdj/5zjf8vYVwoDsYPND1D7l6kC/YqTeCZYRFKg=;
-        b=nHid3n2MdE+G2omI6IjxrvkfJvn3lxziq6J7qMfkau3EK2ThPGOSah6/AtBG2AIp8u
-         ep75QXrqkWGlQpNJCNoenwHnkAYjrNElJrj67gDBLhlm3OZN7XjO6iDtsGAEbr0rR1+4
-         JT614BRN9diYmRL2VEDdRP7FBJpGjLSX1Prgg=
+        bh=Qwuvmk0kpw1Hb0uGtiWMIVWTE1pbXU+7hZ9NigrgvCY=;
+        b=VSIB5J53C4iUAW+IG2TjewwAdxANiPTUn/+fzTlbZqiWf/9qx9gul+TZQvlRlyj/fI
+         LRiFn5VDX9lNh6r3mpzagXQMoRLlki5Vqj203rPoIoQSeFnvAjCv3qXInxK136pK8EkE
+         Rdm823etfCZIADtvhwmgr2UhU4nZeAnrmdqbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bC53Tdj/5zjf8vYVwoDsYPND1D7l6kC/YqTeCZYRFKg=;
-        b=N2+g/D0DP69KIWzCprss/zdlVNjhmxt34aE6P65KaWxiQ4ddPdpKif6GvUDDtNGz3t
-         0QitqJGL22XUfcp+8k3c4MvuqN65a5VF1YZnpI5L0n13LkgGE7xzlVl00WqrdMDbronA
-         R3tBG72+xtetP4MbkXOHacX7eEtYmE7Y139bB0ByVnVYWfNcSjadPpFoDUX/hhAV5+bC
-         73FMqAq4Yf3UOXiwBqc9jxMS/GTmpG+lIGUiTokJU6UMH/hiT+eEnH9+vH1fb6y7Qx3/
-         G7Ut+TxpBBpS9X4z3BZ8N6IFfFvqNorD9Iw7hVsSlt4dwYpD5x/YVUhE+cLlPUHvTV9r
-         unfg==
-X-Gm-Message-State: APjAAAWu9kQmGZF0YZpMuiA25knuP1i10JxRQ4uROj4K8syBbxWISMeS
-        EBDB5QxxHQjI9zU9tcAfybz7qHScQ60=
-X-Google-Smtp-Source: APXvYqxTjJ0fOwvHPPhViRSqpwoLi1bU+C77TCtWQjhMz7r/m1MeRtF3UpiAs8HWgTUl+d7HHaBbCQ==
-X-Received: by 2002:a17:902:bc45:: with SMTP id t5mr18551837plz.163.1576899435987;
-        Fri, 20 Dec 2019 19:37:15 -0800 (PST)
+        bh=Qwuvmk0kpw1Hb0uGtiWMIVWTE1pbXU+7hZ9NigrgvCY=;
+        b=ESvWHYut4dBdadhToze0ao/7cYC2B90Mab7I2QUfGLWPSmJ7IEuPAJ9BDDznADDIFK
+         hQ2gl1Z0juaUX3crOoglt30Iq8F8HTIlo7hJSc4nlJWMbPe8xjZKQXhKZtnd8JFnUEYY
+         Vf2AmkcNeYF2yNud+Jd5EBEf4HWfgVndLU6xtpIBrEk8xoGVJKpQxOJHhbZhBjIsK+z8
+         5itSIzDDi7QRydC4B4Z9ns82g2ws86TP1kowdzQSCsL+U9NNSD4FA8nw86E2s0bBvEu8
+         7F2eAowhOJhTjBh46R0ylRHBep9CwSjtQ5m5mMf0TXCUuRLIxgyFCoFSy8M6hTjw1OQa
+         ROxA==
+X-Gm-Message-State: APjAAAX9lzBo0g183VIQ9v2z4M5wQ1kg9K2eipvgW24aJ3iw/9juRbVO
+        ICtd7vkL7qwUUOBVvBGSZlMF8Q==
+X-Google-Smtp-Source: APXvYqw9j0IluS1/ZwQwHAP/9TD/2HtPM2AFO3Xf7jX7dcpvwYOGyZfI3rdTFQn7XQ/eue6QGqWAZw==
+X-Received: by 2002:a17:90a:e657:: with SMTP id ep23mr10025480pjb.105.1576970478804;
+        Sat, 21 Dec 2019 15:21:18 -0800 (PST)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j18sm13110940pgk.1.2019.12.20.19.37.15
+        by smtp.gmail.com with ESMTPSA id h7sm19587936pfq.36.2019.12.21.15.21.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2019 19:37:15 -0800 (PST)
-Date:   Fri, 20 Dec 2019 22:37:14 -0500
+        Sat, 21 Dec 2019 15:21:18 -0800 (PST)
+Date:   Sat, 21 Dec 2019 18:21:17 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, bristot@redhat.com,
-        frextrite@gmail.com, madhuparnabhowmik04@gmail.com,
-        urezki@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3 rcu-dev] rcuperf: Measure memory footprint during
- kfree_rcu() test
-Message-ID: <20191221033714.GB156579@google.com>
-References: <20191219211349.235877-1-joel@joelfernandes.org>
- <20191221000729.GH2889@paulmck-ThinkPad-P72>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in
+ kfree_rcu()
+Message-ID: <20191221232117.GA67625@google.com>
+References: <20191220125624.3953-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191221000729.GH2889@paulmck-ThinkPad-P72>
+In-Reply-To: <20191220125624.3953-1-urezki@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 04:07:29PM -0800, Paul E. McKenney wrote:
-> On Thu, Dec 19, 2019 at 04:13:49PM -0500, Joel Fernandes (Google) wrote:
-> > During changes to kfree_rcu() code, we often check the amount of free
-> > memory.  As an alternative to checking this manually, this commit adds a
-> > measurement in the test itself.  It measures four times during the test
-> > for available memory, digitally filters these measurements to produce a
-> > running average with a weight of 0.5, and compares this digitally
-> > filtered value with the amount of available memory at the beginning of
-> > the test.
-> > 
-> > We apply the digital filter only once we are more than 25% into the
-> > test. At the 25% mark, we just read available memory and don't apply any
-> > filtering. This prevents the first sample from skewing the results
-> > as we would not consider memory readings that were before memory was
-> > allocated.
-> > 
-> > A sample run shows something like:
-> > 
-> > Total time taken by all kfree'ers: 6369738407 ns, loops: 10000, batches: 764, memory footprint: 216MB
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Fri, Dec 20, 2019 at 01:56:24PM +0100, Uladzislau Rezki (Sony) wrote:
+> kfree_rcu() logic can be improved further by using kfree_bulk()
+> interface along with "basic batching support" introduced earlier.
 > 
-> Much better!  A few comments below.
+> The are at least two advantages of using "bulk" interface:
+> - in case of large number of kfree_rcu() requests kfree_bulk()
+>   reduces the per-object overhead caused by calling kfree()
+>   per-object.
 > 
-> 							Thanx, Paul
+> - reduces the number of cache-misses due to "pointer chasing"
+>   between objects which can be far spread between each other.
 > 
-> > ---
-> > v1->v2: Minor corrections
-> > v1->v3: Use long long to prevent 32-bit system's overflow
-> > 	Handle case where some threads start later than others.
-> > 	Start measuring only once 25% into the test. Slightly more accurate.
-> > 
-> > Cc: bristot@redhat.com
-> > Cc: frextrite@gmail.com
-> > Cc: madhuparnabhowmik04@gmail.com
-> > Cc: urezki@gmail.com
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > 
-> >  kernel/rcu/rcuperf.c | 23 +++++++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> > index da94b89cd531..67e0f804ea97 100644
-> > --- a/kernel/rcu/rcuperf.c
-> > +++ b/kernel/rcu/rcuperf.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/types.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/init.h>
-> > +#include <linux/mm.h>
-> >  #include <linux/module.h>
-> >  #include <linux/kthread.h>
-> >  #include <linux/err.h>
-> > @@ -604,6 +605,8 @@ struct kfree_obj {
-> >  	struct rcu_head rh;
-> >  };
-> >  
-> > +long long mem_begin;
-> > +
-> >  static int
-> >  kfree_perf_thread(void *arg)
-> >  {
-> > @@ -611,6 +614,7 @@ kfree_perf_thread(void *arg)
-> >  	long me = (long)arg;
-> >  	struct kfree_obj *alloc_ptr;
-> >  	u64 start_time, end_time;
-> > +	long long mem_during = si_mem_available();
+> This approach defines a new kfree_rcu_bulk_data structure that
+> stores pointers in an array with a specific size. Number of
+> entries in that array depends on PAGE_SIZE, i.e. it is based
+> on the fact that the size of kfree_rcu_bulk_data should not
+> exceed one page therefore there is such dependency.
 > 
-> You initialize here, which makes quite a bit of sense...
+> Since it deals with "block-chain" technique there is an extra
+> need in dynamic allocation when a new block is required. Memory
+> is allocated with GFP_NOWAIT | __GFP_NOWARN flags, i.e. that
+> allows to skip direct reclaim under low memory condition to
+> prevent stalling and fail silently under high memory pressure.
 > 
-> >  	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
-> >  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-> > @@ -626,6 +630,15 @@ kfree_perf_thread(void *arg)
-> >  	}
-> >  
-> >  	do {
-> > +		// Moving average of memory availability measurements.
-> > +		// Start measuring only from when we are at least 25% into the test.
-> > +		if (loop && kfree_loops > 3 && (loop % (kfree_loops / 4) == 0)) {
-> > +			if (loop == (kfree_loops / 4))
-> > +				mem_during = si_mem_available();
+> The "emergency path" gets maintained when a system is run out
+> of memory. In that case objects are linked into regular list
+> and that is it.
 > 
-> But then you reinitialize here.  Perhaps to avoid the compiler being
-> confused into complaining about uninitialized variables?  (But if so,
-> please comment it.)
-
-It is reinitialized here like that, because if kfree_loops is < 4, then
-mem_during needs to hold some value to avoid the (mem_begin - mem_during) to
-falsely appear quite large. That's why I initialized it in the beginning. If
-kfree_loops is >= 4, then yes it will be initialized twice but that's Ok.
-
-I can add a comment to the earlier initialization if you like.
-
-If that is the only comment on the patch left, I appreciate if you can
-change:
- + long long mem_during = si_mem_available();
- to 
- + long long mem_during = si_mem_available(); // for kfree_loops < 4 case
-
-> The thing is that by the fourth measurement, the initial influence has
-> been diluted by a factor of something like 16 or 32, correct?  I don't
-> believe that your measurements are any more accurate than that, given the
-> bursty nature of the RCU reclamation process.  So why not just initialize
-> it and average it at each sample point?
-
-Yes but diluting 200MB of delta by 16 is still high and causes a skew.
-
+> In order to evaluate it, the "rcuperf" was run to analyze how
+> much memory is consumed and what is kfree_bulk() throughput.
 > 
-> If you want more accuracy, you could increase the number of sample
-> points, while changing the filter constants to more heavily weight
-> past measurements.
+> Testing on the Intel(R) Xeon(R) W-2135 CPU @ 3.70GHz 12xCPUs
+> with below parameters:
+> 
+> CONFIG_SLAB=y
+> kfree_loops=200000 kfree_alloc_num=1000 kfree_rcu_test=1
+> 
+> Total time taken by all kfree'ers: 56828146341 ns, loops: 200000, batches: 2096
+> Total time taken by all kfree'ers: 57329844331 ns, loops: 200000, batches: 2379
+> 
+> Total time taken by all kfree'ers: 45498404821 ns, loops: 200000, batches: 2271
+> Total time taken by all kfree'ers: 45313811813 ns, loops: 200000, batches: 2263
+> 
+> rcuperf shows approximately ~21% better throughput(Total time)
+> in case of using "bulk" interface. The "drain logic" or its RCU
+> callback does the work faster that leads to better throughput.
+> 
+> During the test an average memory usage(see below run_2) is ~469MB
+> with "Default" configuration and ~399MB in the "Bulk interface" case.
+> 
+> See below detailed plots of three run:
+> 
+> ftp://vps418301.ovh.net/incoming/rcuperf_mem_usage_run_0.png
+> ftp://vps418301.ovh.net/incoming/rcuperf_mem_usage_run_1.png
+> ftp://vps418301.ovh.net/incoming/rcuperf_mem_usage_run_2.png
 
-At the moment the results are showing me consistent numbers in my tests and
-I'm quite happy with them. And it is better to have some measurement, than
-not having anything.
+Hi Uladzislau,
 
-We can certainly refine it further but at this time I am thinking of spending
-my time reviewing Lai's patches and learning some other RCU things I need to
-catch up on. If you hate this patch too much, we can also defer this patch
-review for a bit and I can carry it in my tree for now as it is only a patch
-to test code. But honestly, in its current form I am sort of happy with it.
+Your patch is based on an older version of the kfree_rcu work. The latest
+version is in Paul's -dev branch. There is also additional work done in that
+branch as well "rcu: Add multiple in-flight batches of kfree_rcu() work" :
+https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=e38fa01b94c87dfa945afa603ed50b4f7955934b
 
-> Actually, I strongly suggest recording frequent raw data, and applying
-> various filtering techniques offline to see what works best.  I might
-> be mistaken, but it feels like you are shooting in the dark here.
-
-The number I am aiming for is close to a constant. For example in a run, I
-see the available memory goes down from 460000 pages to ~ 400000 pages. That
-is around ~240MB of memory. This deviates by +- 20MB. I would rather take
-many samples than just 1 sample and apply some form of reduction to combine
-them into a single sample.  My current filtering works well in my testing and
-I could do more complex things, but then again at the moment I am happy with
-the test. I am open to any other filtering related suggestions though!
-
-Sorry if I missed something!
+Could you rebase your patch on Paul's -dev branch? The branch also has an
+rcuperf patch for measuring memory footprint automatically (memory footprint
+value is printed by rcuperf). Although I'd say try to use the latest version
+of the rcuperf patch by reverting that and applying:
+https://lore.kernel.org/patchwork/patch/1170895/ . I can then add your
+Tested-by tag to any future postings of the patch for rcuperf as well!
 
 thanks,
 
  - Joel
 
 
-> > +			else
-> > +				mem_during = (mem_during + si_mem_available()) / 2;
-> > +		}
-> > +
-> >  		for (i = 0; i < kfree_alloc_num; i++) {
-> >  			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-> >  			if (!alloc_ptr)
-> > @@ -645,9 +658,13 @@ kfree_perf_thread(void *arg)
-> >  		else
-> >  			b_rcu_gp_test_finished = cur_ops->get_gp_seq();
-> >  
-> > -		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld\n",
-> > +		// The "memory footprint" field represents how much in-flight
-> > +		// memory is allocated during the test and waiting to be freed.
 > 
-> This added comment is much better, thank you!
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c | 123 ++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 103 insertions(+), 20 deletions(-)
 > 
-> > +		pr_alert("Total time taken by all kfree'ers: %llu ns, loops: %d, batches: %ld, memory footprint: %lldMB\n",
-> >  		       (unsigned long long)(end_time - start_time), kfree_loops,
-> > -		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started));
-> > +		       rcuperf_seq_diff(b_rcu_gp_test_finished, b_rcu_gp_test_started),
-> > +		       (mem_begin - mem_during) >> (20 - PAGE_SHIFT));
-> > +
-> >  		if (shutdown) {
-> >  			smp_mb(); /* Assign before wake. */
-> >  			wake_up(&shutdown_wq);
-> > @@ -719,6 +736,8 @@ kfree_perf_init(void)
-> >  		goto unwind;
-> >  	}
-> >  
-> > +	mem_begin = si_mem_available();
-> > +
-> >  	for (i = 0; i < kfree_nrealthreads; i++) {
-> >  		firsterr = torture_create_kthread(kfree_perf_thread, (void *)i,
-> >  						  kfree_reader_tasks[i]);
-> > -- 
-> > 2.24.1.735.g03f4e72817-goog
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d8e250c8a48f..942a1beb06bb 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2655,6 +2655,28 @@ EXPORT_SYMBOL_GPL(call_rcu);
+>  /* Maximum number of jiffies to wait before draining a batch. */
+>  #define KFREE_DRAIN_JIFFIES (HZ / 50)
+>  
+> +/*
+> + * This macro defines how many entries the "records" array
+> + * will contain. It is based on the fact that the size of
+> + * kfree_rcu_bulk_data structure should not exceed one page
+> + * therefore there is a dependency on PAGE_SIZE.
+> + *
+> + * To be more specific it is set to half of the PAGE_SIZE.
+> + * For example if the PAGE_SIZE is 4096, the record size
+> + * is 8, the structure size becomes 2048 thus number of
+> + * entries are 254.
+> + *
+> + * We also can reserve exactly one page for that purpose
+> + * and switch to using directly "page allocator" instead.
+> + */
+> +#define KFREE_BULK_MAX_ENTR (((PAGE_SIZE / sizeof(void *)) >> 1) - 2)
+> +
+> +struct kfree_rcu_bulk_data {
+> +	unsigned long nr_records;
+> +	void *records[KFREE_BULK_MAX_ENTR];
+> +	struct kfree_rcu_bulk_data *next;
+> +};
+> +
+>  /*
+>   * Maximum number of kfree(s) to batch, if this limit is hit then the batch of
+>   * kfree(s) is queued for freeing after a grace period, right away.
+> @@ -2666,21 +2688,40 @@ struct kfree_rcu_cpu {
+>  	struct rcu_work rcu_work;
+>  
+>  	/* The list of objects being queued in a batch but are not yet
+> -	 * scheduled to be freed.
+> +	 * scheduled to be freed. For emergency path only.
+>  	 */
+>  	struct rcu_head *head;
+>  
+>  	/* The list of objects that have now left ->head and are queued for
+> -	 * freeing after a grace period.
+> +	 * freeing after a grace period. For emergency path only.
+>  	 */
+>  	struct rcu_head *head_free;
+>  
+> +	/*
+> +	 * The bulk list that keeps pointers in the array of
+> +	 * specific size for later take over to bhead_free.
+> +	 */
+> +	struct kfree_rcu_bulk_data *bhead;
+> +
+> +	/*
+> +	 * The bulk list that is detached from the bhead to
+> +	 * perform draining using kfree_bulk() interface.
+> +	 */
+> +	struct kfree_rcu_bulk_data *bhead_free;
+> +
+> +	/*
+> +	 * Keeps at most one object for late reuse.
+> +	 */
+> +	struct kfree_rcu_bulk_data *bcached;
+> +
+>  	/* Protect concurrent access to this structure. */
+>  	spinlock_t lock;
+>  
+> -	/* The delayed work that flushes ->head to ->head_free incase ->head
+> -	 * within KFREE_DRAIN_JIFFIES. In case flushing cannot be done if RCU
+> -	 * is busy, ->head just continues to grow and we retry flushing later.
+> +	/*
+> +	 * The delayed work that flushes ->bhead/head to ->bhead_free/head_free
+> +	 * incase ->bhead/head within KFREE_DRAIN_JIFFIES. In case flushing cannot
+> +	 * be done if RCU is busy, ->bhead/head just continues to grow and we retry
+> +	 * flushing later.
+>  	 */
+>  	struct delayed_work monitor_work;
+>  	bool monitor_todo;      /* Is a delayed work pending execution? */
+> @@ -2690,27 +2731,44 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
+>  
+>  /*
+>   * This function is invoked in workqueue context after a grace period.
+> - * It frees all the objects queued on ->head_free.
+> + * It frees all the objects queued on ->head_free or bhead_free.
+>   */
+>  static void kfree_rcu_work(struct work_struct *work)
+>  {
+>  	unsigned long flags;
+>  	struct rcu_head *head, *next;
+> +	struct kfree_rcu_bulk_data *bhead, *bnext;
+>  	struct kfree_rcu_cpu *krcp = container_of(to_rcu_work(work),
+>  											  struct kfree_rcu_cpu, rcu_work);
+>  
+>  	spin_lock_irqsave(&krcp->lock, flags);
+>  	head = krcp->head_free;
+>  	krcp->head_free = NULL;
+> +	bhead = krcp->bhead_free;
+> +	krcp->bhead_free = NULL;
+>  	spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+>  	/*
+>  	 * The head is detached and not referenced from anywhere, so lockless
+>  	 * access is Ok.
+>  	 */
+> +	for (; bhead; bhead = bnext) {
+> +		bnext = bhead->next;
+> +		kfree_bulk(bhead->nr_records, bhead->records);
+> +
+> +		if (cmpxchg(&krcp->bcached, NULL, bhead))
+> +			kfree(bhead);
+> +
+> +		cond_resched_tasks_rcu_qs();
+> +	}
+> +
+> +	/*
+> +	 * Emergency case only. It can happen under low
+> +	 * memory condition when kmalloc gets failed, so
+> +	 * the "bulk" path can not be temporary maintained.
+> +	 */
+>  	for (; head; head = next) {
+>  		next = head->next;
+> -		/* Could be possible to optimize with kfree_bulk in future */
+>  		__rcu_reclaim(rcu_state.name, head);
+>  		cond_resched_tasks_rcu_qs();
+>  	}
+> @@ -2730,11 +2788,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+>  	 * another one, just refuse the optimization and it will be retried
+>  	 * again in KFREE_DRAIN_JIFFIES time.
+>  	 */
+> -	if (krcp->head_free)
+> +	if (krcp->bhead_free || krcp->head_free)
+>  		return false;
+>  
+>  	krcp->head_free = krcp->head;
+>  	krcp->head = NULL;
+> +
+> +	krcp->bhead_free = krcp->bhead;
+> +	krcp->bhead = NULL;
+> +
+>  	INIT_RCU_WORK(&krcp->rcu_work, kfree_rcu_work);
+>  	queue_rcu_work(system_wq, &krcp->rcu_work);
+>  
+> @@ -2744,8 +2806,9 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+>  static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+>  										  unsigned long flags)
+>  {
+> -	/* Flush ->head to ->head_free, all objects on ->head_free will be
+> -	 * kfree'd after a grace period.
+> +	/*
+> +	 * Flush ->bhead/head to ->bhead_free/head_free, so all objects
+> +	 * on ->bhead_free/head_free will be freed after a grace period.
+>  	 */
+>  	if (queue_kfree_rcu_work(krcp)) {
+>  		/* Success! Our job is done here. */
+> @@ -2763,7 +2826,7 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+>  
+>  /*
+>   * This function is invoked after the KFREE_DRAIN_JIFFIES timeout has elapsed,
+> - * and it drains the specified kfree_rcu_cpu structure's ->head list.
+> + * and it drains the specified kfree_rcu_cpu structure's ->bhead/head list.
+>   */
+>  static void kfree_rcu_monitor(struct work_struct *work)
+>  {
+> @@ -2795,17 +2858,15 @@ EXPORT_SYMBOL_GPL(kfree_call_rcu_nobatch);
+>   * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch
+>   * will be kfree'd in workqueue context. This allows us to:
+>   *
+> - * 1. Batch requests together to reduce the number of grace periods during
+> + * Batch requests together to reduce the number of grace periods during
+>   * heavy kfree_rcu() load.
+> - *
+> - * 2. In the future, makes it possible to use kfree_bulk() on a large number of
+> - * kfree_rcu() requests thus reducing the per-object overhead of kfree() and
+> - * also reducing cache misses.
+>   */
+>  void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+>  	unsigned long flags;
+>  	struct kfree_rcu_cpu *krcp;
+> +	struct kfree_rcu_bulk_data *bnode;
+> +	bool maintain_bulk_list = true;
+>  
+>  	/* kfree_call_rcu() batching requires timers to be up. If the scheduler
+>  	 * is not yet up, just skip batching and do the non-batched version.
+> @@ -2813,15 +2874,37 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING)
+>  		return kfree_call_rcu_nobatch(head, func);
+>  
+> -	head->func = func;
+> -
+>  	local_irq_save(flags);  /* For safely calling this_cpu_ptr(). */
+>  	krcp = this_cpu_ptr(&krc);
+>  	spin_lock(&krcp->lock);
+>  
+> +	/* Check if we need a new block. */
+> +	if (!krcp->bhead ||
+> +			krcp->bhead->nr_records == KFREE_BULK_MAX_ENTR) {
+> +		bnode = xchg(&krcp->bcached, NULL);
+> +		if (!bnode)
+> +			bnode = kmalloc(sizeof(struct kfree_rcu_bulk_data),
+> +				GFP_NOWAIT | __GFP_NOWARN);
+> +
+> +		if (likely(bnode)) {
+> +			bnode->nr_records = 0;
+> +			bnode->next = krcp->bhead;
+> +			krcp->bhead = bnode;
+> +		} else {
+> +			/* If gets failed, maintain the list instead. */
+> +			maintain_bulk_list = false;
+> +		}
+> +	}
+> +
+>  	/* Queue the kfree but don't yet schedule the batch. */
+> -	head->next = krcp->head;
+> -	krcp->head = head;
+> +	if (likely(maintain_bulk_list)) {
+> +		krcp->bhead->records[krcp->bhead->nr_records++] =
+> +			(void *) head - (unsigned long) func;
+> +	} else {
+> +		head->func = func;
+> +		head->next = krcp->head;
+> +		krcp->head = head;
+> +	}
+>  
+>  	/* Schedule monitor for timely drain after KFREE_DRAIN_JIFFIES. */
+>  	if (!xchg(&krcp->monitor_todo, true))
+> -- 
+> 2.20.1
+> 
