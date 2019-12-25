@@ -1,108 +1,132 @@
-Return-Path: <SRS0=/UpN=2O=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=OE3B=2P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AA35C2D0C3
-	for <rcu@archiver.kernel.org>; Tue, 24 Dec 2019 18:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E63BC2D0C8
+	for <rcu@archiver.kernel.org>; Wed, 25 Dec 2019 22:41:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CADB6206D3
-	for <rcu@archiver.kernel.org>; Tue, 24 Dec 2019 18:49:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28481207FF
+	for <rcu@archiver.kernel.org>; Wed, 25 Dec 2019 22:41:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXdL/rij"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="stBC+9jY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbfLXStx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Dec 2019 13:49:53 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:42885 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbfLXStx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Dec 2019 13:49:53 -0500
-Received: by mail-lf1-f67.google.com with SMTP id y19so15619807lfl.9;
-        Tue, 24 Dec 2019 10:49:51 -0800 (PST)
+        id S1726853AbfLYWlP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Dec 2019 17:41:15 -0500
+Received: from mail-qt1-f180.google.com ([209.85.160.180]:34638 "EHLO
+        mail-qt1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbfLYWlP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Dec 2019 17:41:15 -0500
+Received: by mail-qt1-f180.google.com with SMTP id 5so21061210qtz.1
+        for <rcu@vger.kernel.org>; Wed, 25 Dec 2019 14:41:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lWn5lG1lm71cwDo15yx9m3Zo5kwANx7q2As8ujx/+8M=;
-        b=BXdL/rijyVZCACaMXJD0dON+UYD7AWBhrRNXvpLvby8tHu3kIC/vQgf+nDvupD3ORA
-         wF0GxTbPYQLye/oZE04zLXZ8so0QiRHQeSJVW5jtbVyghCEDjgCFXEJ6lBv7JX6xX5GD
-         x3gooA/KHSkBahceOOg1HO4eVx0ndOcId0FRmUAc0VCzMWtdpukzaWh0d0Rij2+53kWU
-         xISo0e1KOpUG0C7TO2GkVpJtvf63aGaDOwwLRF9HlO4qN7w9Tc9eFar17akS1pUmejEL
-         sT2NQwyLXe1Q6tn6Z63Zxjo7aTtndzXPNxtNZMHMqgt3B3wq8fMZdNcruBdxP8PE/IH3
-         h5eQ==
+        d=joelfernandes.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=/zvShOnUWZHTnNQagIRqPrbLozhAeH/F2o+ttK+nFHQ=;
+        b=stBC+9jYlDDn2fF6OmABBPTirefCfbbPAbPPsKRYwOw8TkRsH432NacDi3GxAToKb0
+         PX0aAiqzx8Ys2Np7gqMNQwMyeiMoY/Q7TcN7Xht1nvbQbF4V9obggoZ4K9nRegXps1Fx
+         QMQSI9lN+uhWOuktSvF+qtj8NeEjlOJyvPTWU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lWn5lG1lm71cwDo15yx9m3Zo5kwANx7q2As8ujx/+8M=;
-        b=ZhwjedrKJxnYiCxHxfxsdyXY4ROzBcINW9lzooe41JSi1pF5FaDVjHNdLMO3BHFE4T
-         bBq871UA20tUuIVGzqBBxO/XC2yRJReFjpbmGfh5s9+pzInlf2X9r7Kw5LqQS91pAIqg
-         ff2faXj1DJHignwrX6QoYj93yiRYoEVpFNqWDdCcyv8PBCpbcH5e68ddjwDuufEmh0n1
-         qNEMd+28CH8zat55nvtRCS2PiL4J+Ca/uVPB0kkdzryDWIFHyOPFg/w2i0+HZoOb59Yv
-         eK5OrxeADWoP9JVrB1fdWhHdJuiajPMNl0FCkHq3Hm28QC/jIHRU0LcQYdGXCL2ib0vj
-         nBxQ==
-X-Gm-Message-State: APjAAAVv5Chz+bLzIm6lqjPm39YG6XOvQ6So6+YjcI5iISd8ShE17ORq
-        nNe0MjvvRr/3goEcUiiaoCb2fMqHrHM=
-X-Google-Smtp-Source: APXvYqwoWhSsy+1/t4bgnaW4ctju9iEb5ctRYbTMpHNAblSqYOqjz0OPVcCOe9L4KURxzBFWKktWWg==
-X-Received: by 2002:a19:c210:: with SMTP id l16mr21640528lfc.35.1577213390894;
-        Tue, 24 Dec 2019 10:49:50 -0800 (PST)
-Received: from pc636 ([37.212.210.43])
-        by smtp.gmail.com with ESMTPSA id z7sm12351936lfa.81.2019.12.24.10.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Dec 2019 10:49:50 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 24 Dec 2019 19:49:40 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in
- kfree_rcu()
-Message-ID: <20191224184940.GA16346@pc636>
-References: <20191220125624.3953-1-urezki@gmail.com>
- <20191221232117.GA67625@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=/zvShOnUWZHTnNQagIRqPrbLozhAeH/F2o+ttK+nFHQ=;
+        b=joHsbD4CsxRynqL9MsITlogYp4UZCXYsHJti17cugYGKE6TzRjIH+PfQLtTC6ukG5z
+         NqmJP88f/FGNKW0pxKn5Yd0/QMGTl8cXov0mtSEFv5VcMfbGqWcMmBOR2K6U26n5LIk9
+         5idjbfT4uJJsGb1PXf38PXbwH2Ve+jpzEaIbLB5zc0G/g2fIOTS6xBPPR8NbJZia/7kP
+         0akgC351991HZYlBcQstuOWCvxrusMM/KCf/s/z4ca5nASuY16q5z3RP71PBkOfO8D0H
+         isWVKBhJQiai2XexanVzTDVYYirP5/sHEUf1X0ElH1OVp3e7RkLbrAWNiyfyt+0VKMs3
+         HvdA==
+X-Gm-Message-State: APjAAAX+zRmc1iliG4Cm7no+Dh/+zzFcFh1ErLBB5QoGLlDlNntd0KWf
+        XHlpTgGcXkSVrEk5gxv7PVWLNxSaGa8vG40c6uVGHA==
+X-Google-Smtp-Source: APXvYqzDzP69N0TbIRiNeqzK6U3ggzbxi4eYGaZxjWpzjKzuGt2Hw1YK/Ksr3GgMuQhzvpX7S9yyLGODzfNm6lV4sOo=
+X-Received: by 2002:ac8:3703:: with SMTP id o3mr31921220qtb.208.1577313674604;
+ Wed, 25 Dec 2019 14:41:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191221232117.GA67625@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 25 Dec 2019 17:41:04 -0500
+Message-ID: <CAEXW_YTyxm7QZwFV7KYpN2Sds=SDYqOvZ4+qfWL1_Kwx48Dusg@mail.gmail.com>
+Subject: RCU ideas discussed at LPC
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zilstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        rcu <rcu@vger.kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        Amol Grover <frextrite@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Joel.
+Hi Paul,
+We were discussing some ideas on facebook so I wanted to just post
+them here as well. This is in the context of the RCU section of RT MC
+https://www.youtube.com/watch?v=bpyFQJV5gCI
 
-> 
-> Hi Uladzislau,
-> 
-> Your patch is based on an older version of the kfree_rcu work. The latest
-> version is in Paul's -dev branch. There is also additional work done in that
-> branch as well "rcu: Add multiple in-flight batches of kfree_rcu() work" :
-> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=e38fa01b94c87dfa945afa603ed50b4f7955934b
-> 
-Ahh. I see there are some differences and my baseline is wrong. I will
-double check and rebase on Paul's -dev branch.
+Detecting high kfree_rcu() load
+----------
+You mentioned about this. As I understand it, we did the kfree_rcu()
+batching to let the system not do anything RCU related until a batch
+has filled up enough or a timeout has occurred. This makes the GP
+thread and the system do less work.
+The problem you are raising in our facebook thread is, that during
+heavy load the "batch" can be large and be dumped into call_rcu()
+eventually. Wouldn't this be better handled generically within
+call_rcu() itself, for the benefit of other non-kfree_rcu workloads?
+That is if a large number of callbacks is dumped, then try to end the
+GP more quickly. This likely doesn't need a signal from kfree_rcu()
+since call_rcu() knows that it is being hammered.
 
->
-> Could you rebase your patch on Paul's -dev branch? The branch also has an
-> rcuperf patch for measuring memory footprint automatically (memory footprint
-> value is printed by rcuperf). Although I'd say try to use the latest version
-> of the rcuperf patch by reverting that and applying:
-> https://lore.kernel.org/patchwork/patch/1170895/ . I can then add your
-> Tested-by tag to any future postings of the patch for rcuperf as well!
-> 
-I will do that and run all tests based on the latest code base.
+Detecting recursive call_rcu() within call_rcu()
+---------
+We could use a per-cpu variable to detect a scenario like this, though
+I am not sure if preemption during call_rcu() itself would cause false
+positives.
 
-Thanks for your comments.
+All rcuogp and rcuop threads tied to a house keeping CPU
+---
+In LPC you mentioned about the problem of OOM if all rcuo* threads
+including the GP one are not able to keep up with heavy load. On
+Facebook I had proposed something like this: What about making the
+affinity setting to be a "soft affinity", that is respect it always
+expect in the uncommon case. In the uncommon case of heavy load, let
+the threads run wherever to prevent OOM. Sure that might make the
+system a little more disruptive, but if we are approaching OOM we have
+bigger problems right?
 
---
-Vlad Rezki
+Peter mentioned about rcuogp0 should have slightly higher prio than rcuop0
+---------
+You mentioned this is something to look into but not sure if we looked
+into it yet.
+
+A "heavy" call_rcu() caller using synchronize_rcu() if too many
+callbacks are dumped
+---------
+How about doing this kind of call_rcu() to synchronize_rcu()
+transition automatically if the context allows it? I.e. Detect the
+context and if sleeping is allowed, then wait for the grace period
+synchronously in call_rcu(). Not sure about deadlocks and the like
+from this kind of waiting and have to think more.
+
+is square root of N number of rcuogp0 threads - the right optimization?
+---------
+The question raised was can we do with fewer threads, or even just
+one? You mentioned the square root might not be the right choice. How
+do we test how well the system is doing. Are you running rcutorture
+with a certain tree configuration and monitor memory footprint /
+performance?
+
+BTW, I have 2 interns working on RCU (Amol and Madupharna also on CC).
+They were selected among several others as a part of the
+LinuxFoundation mentorship program. They are familiar with RCU. I have
+asked them to look at some RCU-list work and RCU sparse work. However,
+I can also have them look into a few other things as time permits and
+depending on what interests them.
+
+Thanks, Merry Christmas!
+
+ - Joel
