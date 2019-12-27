@@ -1,190 +1,296 @@
-Return-Path: <SRS0=bpia=2Q=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=g2O0=2R=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85DB1C2D0C8
-	for <rcu@archiver.kernel.org>; Thu, 26 Dec 2019 01:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4EB9C2D0C6
+	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 509222075E
-	for <rcu@archiver.kernel.org>; Thu, 26 Dec 2019 01:05:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87CB322522
+	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577322334;
-	bh=R7Kt1L0p4nuhCOyPoUTcGP/mw8sfcBaj1RLwSrMx58s=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=u/Y0/G/kw28RJX7S8QO/2EE+4zKkW9mDL/tgvm/YEnybC1FPve/DoGNQkQbubTXOd
-	 EC+idqQTvJ4Lf89qu/cFkvsSxYOycMXZ6LiUh2nacRiW5pbSuQOB1iw3R2ZPd2PILj
-	 IMAZvnYGw5PzDDwoMFrelvJbtvXn1TxMGAlXCZ8s=
+	s=default; t=1577468886;
+	bh=Ou7652ezwE10mPJn5/Q7RQYllm+/ANrQOvIvtI4e3wk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=z6ykDLBrZ5AmYWBNsthSNjHlqOl+TsOO7mTVEWG5HaHUX6D7zPMXhj/ZvjerBKEmQ
+	 EXTp8eXSaEWskvhMWnp18Lu23juEAAEIA92gcnhEcwKTnCR5f3ZGknq6Nbc+mUTtF8
+	 BnLxt8Kod8TGG5CO2gVUMEd46OLlu5bTxGUeC8tg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbfLZBFe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Dec 2019 20:05:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53176 "EHLO mail.kernel.org"
+        id S1728564AbfL0Rou (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Dec 2019 12:44:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726881AbfLZBFd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Dec 2019 20:05:33 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728216AbfL0Rot (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:44:49 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 852942075B;
-        Thu, 26 Dec 2019 01:05:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C79D921744;
+        Fri, 27 Dec 2019 17:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577322332;
-        bh=R7Kt1L0p4nuhCOyPoUTcGP/mw8sfcBaj1RLwSrMx58s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OjgjkV635Bc6CNpzLoIOUWbqRGBWGPIrlzHxq9XCUg8EO86BkrK28VFJPaUwM2tND
-         kEM+/USabx5ghGD5GNn+tgm1GAHEyHDp82bAdyPmaS2rzGb3UBXVMk3/+Y0C1Eocjz
-         u3rp84c4Dj4voauE8Vd7RM2lRMR/2tW1AIGrxfxI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 545353522744; Wed, 25 Dec 2019 17:05:32 -0800 (PST)
-Date:   Wed, 25 Dec 2019 17:05:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zilstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
-        Amol Grover <frextrite@gmail.com>
-Subject: Re: RCU ideas discussed at LPC
-Message-ID: <20191226010532.GP13449@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAEXW_YTyxm7QZwFV7KYpN2Sds=SDYqOvZ4+qfWL1_Kwx48Dusg@mail.gmail.com>
+        s=default; t=1577468688;
+        bh=Ou7652ezwE10mPJn5/Q7RQYllm+/ANrQOvIvtI4e3wk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=A7+n8pYKilFF3wGdGBAaKfJu6BllKHdOtbOBqNS/iED4fMvhh1CCmxKM/wsD2iD9M
+         EOx9um0VoK0t3D7W8E4Ygj/UQU34W3BZD8Tc+1N9d9u3ip38TU/IlG6HzOSWMLoCpy
+         ned9o0qlXV5cA8jyod6D3in9GLPKPPrTRh0/C5PQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Firo Yang <firo.yang@suse.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 46/84] tcp/dccp: fix possible race __inet_lookup_established()
+Date:   Fri, 27 Dec 2019 12:43:14 -0500
+Message-Id: <20191227174352.6264-46-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191227174352.6264-1-sashal@kernel.org>
+References: <20191227174352.6264-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YTyxm7QZwFV7KYpN2Sds=SDYqOvZ4+qfWL1_Kwx48Dusg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 25, 2019 at 05:41:04PM -0500, Joel Fernandes wrote:
-> Hi Paul,
-> We were discussing some ideas on facebook so I wanted to just post
-> them here as well. This is in the context of the RCU section of RT MC
-> https://www.youtube.com/watch?v=bpyFQJV5gCI
-> 
-> Detecting high kfree_rcu() load
-> ----------
-> You mentioned about this. As I understand it, we did the kfree_rcu()
-> batching to let the system not do anything RCU related until a batch
-> has filled up enough or a timeout has occurred. This makes the GP
-> thread and the system do less work.
-> The problem you are raising in our facebook thread is, that during
-> heavy load the "batch" can be large and be dumped into call_rcu()
-> eventually. Wouldn't this be better handled generically within
-> call_rcu() itself, for the benefit of other non-kfree_rcu workloads?
-> That is if a large number of callbacks is dumped, then try to end the
-> GP more quickly. This likely doesn't need a signal from kfree_rcu()
-> since call_rcu() knows that it is being hammered.
+From: Eric Dumazet <edumazet@google.com>
 
-Except that call_rcu() currently has no idea how many parcels of memory
-a given request from kfree_rcu() represents.
+[ Upstream commit 8dbd76e79a16b45b2ccb01d2f2e08dbf64e71e40 ]
 
-> Detecting recursive call_rcu() within call_rcu()
-> ---------
-> We could use a per-cpu variable to detect a scenario like this, though
-> I am not sure if preemption during call_rcu() itself would cause false
-> positives.
+Michal Kubecek and Firo Yang did a very nice analysis of crashes
+happening in __inet_lookup_established().
 
-A call_rcu() from within an RCU callback function is legal and is
-sometimes done.  Or are you thinking of a call_rcu() from an interrupt
-handler interrupting another call_rcu()?
+Since a TCP socket can go from TCP_ESTABLISH to TCP_LISTEN
+(via a close()/socket()/listen() cycle) without a RCU grace period,
+I should not have changed listeners linkage in their hash table.
 
-> All rcuogp and rcuop threads tied to a house keeping CPU
-> ---
-> In LPC you mentioned about the problem of OOM if all rcuo* threads
-> including the GP one are not able to keep up with heavy load. On
-> Facebook I had proposed something like this: What about making the
-> affinity setting to be a "soft affinity", that is respect it always
-> expect in the uncommon case. In the uncommon case of heavy load, let
-> the threads run wherever to prevent OOM. Sure that might make the
-> system a little more disruptive, but if we are approaching OOM we have
-> bigger problems right?
+They must use the nulls protocol (Documentation/RCU/rculist_nulls.txt),
+so that a lookup can detect a socket in a hash list was moved in
+another one.
 
-The problem is that there are a rather large number of ways to force
-a given kthread to execute only on a given CPU, and reverse-engineering
-all that within call_rcu() isn't reasonable.  An alternative is to
-disable offloading, wait for the offloaded callbacks to drain, then
-start up the usual softirq approach (or per-CPU kthread, as the case
-may be).  This self-throttles because whatever is generating callbacks
-gets preempted by softirq invocation.
+Since we added code in commit d296ba60d8e2 ("soreuseport: Resolve
+merge conflict for v4/v6 ordering fix"), we have to add
+hlist_nulls_add_tail_rcu() helper.
 
-Give or take real-time priority settings, but beyond a certain point
-I start quoting Peter Parker's uncle.
+Fixes: 3b24d854cb35 ("tcp/dccp: do not touch listener sk_refcnt under synflood")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Michal Kubecek <mkubecek@suse.cz>
+Reported-by: Firo Yang <firo.yang@suse.com>
+Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
+Link: https://lore.kernel.org/netdev/20191120083919.GH27852@unicorn.suse.cz/
+Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/rculist_nulls.h | 37 +++++++++++++++++++++++++++++++++++
+ include/net/inet_hashtables.h | 12 +++++++++---
+ include/net/sock.h            |  5 +++++
+ net/ipv4/inet_diag.c          |  3 ++-
+ net/ipv4/inet_hashtables.c    | 16 +++++++--------
+ net/ipv4/tcp_ipv4.c           |  7 ++++---
+ 6 files changed, 65 insertions(+), 15 deletions(-)
 
-> Peter mentioned about rcuogp0 should have slightly higher prio than rcuop0
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index bc8206a8f30e..61974c4c566b 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -100,6 +100,43 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
+ 		first->pprev = &n->next;
+ }
+ 
++/**
++ * hlist_nulls_add_tail_rcu
++ * @n: the element to add to the hash list.
++ * @h: the list to add to.
++ *
++ * Description:
++ * Adds the specified element to the specified hlist_nulls,
++ * while permitting racing traversals.
++ *
++ * The caller must take whatever precautions are necessary
++ * (such as holding appropriate locks) to avoid racing
++ * with another list-mutation primitive, such as hlist_nulls_add_head_rcu()
++ * or hlist_nulls_del_rcu(), running on this same list.
++ * However, it is perfectly legal to run concurrently with
++ * the _rcu list-traversal primitives, such as
++ * hlist_nulls_for_each_entry_rcu(), used to prevent memory-consistency
++ * problems on Alpha CPUs.  Regardless of the type of CPU, the
++ * list-traversal primitive must be guarded by rcu_read_lock().
++ */
++static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
++					    struct hlist_nulls_head *h)
++{
++	struct hlist_nulls_node *i, *last = NULL;
++
++	/* Note: write side code, so rcu accessors are not needed. */
++	for (i = h->first; !is_a_nulls(i); i = i->next)
++		last = i;
++
++	if (last) {
++		n->next = last->next;
++		n->pprev = &last->next;
++		rcu_assign_pointer(hlist_next_rcu(last), n);
++	} else {
++		hlist_nulls_add_head_rcu(n, h);
++	}
++}
++
+ /**
+  * hlist_nulls_for_each_entry_rcu - iterate over rcu list of given type
+  * @tpos:	the type * to use as a loop cursor.
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index 9141e95529e7..b875dcef173c 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -106,13 +106,19 @@ struct inet_bind_hashbucket {
+ 	struct hlist_head	chain;
+ };
+ 
+-/*
+- * Sockets can be hashed in established or listening table
++/* Sockets can be hashed in established or listening table.
++ * We must use different 'nulls' end-of-chain value for all hash buckets :
++ * A socket might transition from ESTABLISH to LISTEN state without
++ * RCU grace period. A lookup in ehash table needs to handle this case.
+  */
++#define LISTENING_NULLS_BASE (1U << 29)
+ struct inet_listen_hashbucket {
+ 	spinlock_t		lock;
+ 	unsigned int		count;
+-	struct hlist_head	head;
++	union {
++		struct hlist_head	head;
++		struct hlist_nulls_head	nulls_head;
++	};
+ };
+ 
+ /* This is for listening sockets, thus all sockets which possess wildcards. */
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 4545a9ecc219..f359e5c94762 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -721,6 +721,11 @@ static inline void __sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_h
+ 	hlist_nulls_add_head_rcu(&sk->sk_nulls_node, list);
+ }
+ 
++static inline void __sk_nulls_add_node_tail_rcu(struct sock *sk, struct hlist_nulls_head *list)
++{
++	hlist_nulls_add_tail_rcu(&sk->sk_nulls_node, list);
++}
++
+ static inline void sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_head *list)
+ {
+ 	sock_hold(sk);
+diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
+index 5731670c560b..9742b37afe1d 100644
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -918,11 +918,12 @@ void inet_diag_dump_icsk(struct inet_hashinfo *hashinfo, struct sk_buff *skb,
+ 
+ 		for (i = s_i; i < INET_LHTABLE_SIZE; i++) {
+ 			struct inet_listen_hashbucket *ilb;
++			struct hlist_nulls_node *node;
+ 
+ 			num = 0;
+ 			ilb = &hashinfo->listening_hash[i];
+ 			spin_lock(&ilb->lock);
+-			sk_for_each(sk, &ilb->head) {
++			sk_nulls_for_each(sk, node, &ilb->nulls_head) {
+ 				struct inet_sock *inet = inet_sk(sk);
+ 
+ 				if (!net_eq(sock_net(sk), net))
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 7be966a60801..900756b3defb 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -560,10 +560,11 @@ static int inet_reuseport_add_sock(struct sock *sk,
+ 				   struct inet_listen_hashbucket *ilb)
+ {
+ 	struct inet_bind_bucket *tb = inet_csk(sk)->icsk_bind_hash;
++	const struct hlist_nulls_node *node;
+ 	struct sock *sk2;
+ 	kuid_t uid = sock_i_uid(sk);
+ 
+-	sk_for_each_rcu(sk2, &ilb->head) {
++	sk_nulls_for_each_rcu(sk2, node, &ilb->nulls_head) {
+ 		if (sk2 != sk &&
+ 		    sk2->sk_family == sk->sk_family &&
+ 		    ipv6_only_sock(sk2) == ipv6_only_sock(sk) &&
+@@ -599,9 +600,9 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 	}
+ 	if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
+ 		sk->sk_family == AF_INET6)
+-		hlist_add_tail_rcu(&sk->sk_node, &ilb->head);
++		__sk_nulls_add_node_tail_rcu(sk, &ilb->nulls_head);
+ 	else
+-		hlist_add_head_rcu(&sk->sk_node, &ilb->head);
++		__sk_nulls_add_node_rcu(sk, &ilb->nulls_head);
+ 	inet_hash2(hashinfo, sk);
+ 	ilb->count++;
+ 	sock_set_flag(sk, SOCK_RCU_FREE);
+@@ -650,11 +651,9 @@ void inet_unhash(struct sock *sk)
+ 		reuseport_detach_sock(sk);
+ 	if (ilb) {
+ 		inet_unhash2(hashinfo, sk);
+-		 __sk_del_node_init(sk);
+-		 ilb->count--;
+-	} else {
+-		__sk_nulls_del_node_init_rcu(sk);
++		ilb->count--;
+ 	}
++	__sk_nulls_del_node_init_rcu(sk);
+ 	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+ unlock:
+ 	spin_unlock_bh(lock);
+@@ -790,7 +789,8 @@ void inet_hashinfo_init(struct inet_hashinfo *h)
+ 
+ 	for (i = 0; i < INET_LHTABLE_SIZE; i++) {
+ 		spin_lock_init(&h->listening_hash[i].lock);
+-		INIT_HLIST_HEAD(&h->listening_hash[i].head);
++		INIT_HLIST_NULLS_HEAD(&h->listening_hash[i].nulls_head,
++				      i + LISTENING_NULLS_BASE);
+ 		h->listening_hash[i].count = 0;
+ 	}
+ 
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index bfec48849735..5553f6a833f3 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2020,13 +2020,14 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
+ 	struct tcp_iter_state *st = seq->private;
+ 	struct net *net = seq_file_net(seq);
+ 	struct inet_listen_hashbucket *ilb;
++	struct hlist_nulls_node *node;
+ 	struct sock *sk = cur;
+ 
+ 	if (!sk) {
+ get_head:
+ 		ilb = &tcp_hashinfo.listening_hash[st->bucket];
+ 		spin_lock(&ilb->lock);
+-		sk = sk_head(&ilb->head);
++		sk = sk_nulls_head(&ilb->nulls_head);
+ 		st->offset = 0;
+ 		goto get_sk;
+ 	}
+@@ -2034,9 +2035,9 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
+ 	++st->num;
+ 	++st->offset;
+ 
+-	sk = sk_next(sk);
++	sk = sk_nulls_next(sk);
+ get_sk:
+-	sk_for_each_from(sk) {
++	sk_nulls_for_each_from(sk, node) {
+ 		if (!net_eq(sock_net(sk), net))
+ 			continue;
+ 		if (sk->sk_family == afinfo->family)
+-- 
+2.20.1
 
-Assuming no strange cases with extremely short grace periods, agreed.
-
-> ---------
-> You mentioned this is something to look into but not sure if we looked
-> into it yet.
-> 
-> A "heavy" call_rcu() caller using synchronize_rcu() if too many
-> callbacks are dumped
-
-This is actually done in some parts of the kernel, though I would
-be happier with rcu_barrier() at least some of the time, either
-in addition to or in place of synchronize_rcu().  (In fairness,
-some of the use cases pre-date rcu_barrier().)
-
-> ---------
-> How about doing this kind of call_rcu() to synchronize_rcu()
-> transition automatically if the context allows it? I.e. Detect the
-> context and if sleeping is allowed, then wait for the grace period
-> synchronously in call_rcu(). Not sure about deadlocks and the like
-> from this kind of waiting and have to think more.
-
-This gets rather strange in a production PREEMPT=n build, so not a
-fan, actually.  And in real-time systems, I pretty much have to splat
-anyway if I slow down call_rcu() by that much.
-
-So the preference is instead detecting such misconfiguration and issuing
-appropriate diagnostics.  And making RCU more able to keep up when not
-grossly misconfigured, hence the kfree_rcu() memory footprint being
-fed into core RCU.
-
-> is square root of N number of rcuogp0 threads - the right optimization?
-
-If there were enough CPUs, it would be necessary to have three levels
-of hierarchy and to go to the cube root, but that would be more CPUs
-than I have seen used.
-
-> ---------
-> The question raised was can we do with fewer threads, or even just
-> one? You mentioned the square root might not be the right choice. How
-> do we test how well the system is doing. Are you running rcutorture
-> with a certain tree configuration and monitor memory footprint /
-> performance?
-
-The issue prompting the hierarcy was wakeup overhead on the grace-period
-kthread.  Going to a hierarchy reduced the load on that single thread
-(which could otherwise become a bottleneck on large systems, and also
-reduced the absolute number of wakeups by up to almost a factor of two.
-Deepening the hierarchy would further reduce the wakeup load on the
-grace-period kthread, but would increase the total number of wakeups.
-
-So this is not a matter of tweaks and optimizations.  I would need to
-see some horrible problem with the current setup to even consider
-making a change.
-
-> BTW, I have 2 interns working on RCU (Amol and Madupharna also on CC).
-> They were selected among several others as a part of the
-> LinuxFoundation mentorship program. They are familiar with RCU. I have
-> asked them to look at some RCU-list work and RCU sparse work. However,
-> I can also have them look into a few other things as time permits and
-> depending on what interests them.
-
-Dog paddling before cliff diving, please!  ;-)
-
-> Thanks, Merry Christmas!
-
-And to you and yours as well!
-
-							Thanx, Paul
