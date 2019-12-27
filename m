@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4EB9C2D0C6
-	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B224C2D0C6
+	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:53:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 87CB322522
-	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F89C208C4
+	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577468886;
-	bh=Ou7652ezwE10mPJn5/Q7RQYllm+/ANrQOvIvtI4e3wk=;
+	s=default; t=1577469184;
+	bh=RYxCbrhb0ssrvSLx3VTWpDJv75pfkQdYXqLh2751Ock=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=z6ykDLBrZ5AmYWBNsthSNjHlqOl+TsOO7mTVEWG5HaHUX6D7zPMXhj/ZvjerBKEmQ
-	 EXTp8eXSaEWskvhMWnp18Lu23juEAAEIA92gcnhEcwKTnCR5f3ZGknq6Nbc+mUTtF8
-	 BnLxt8Kod8TGG5CO2gVUMEd46OLlu5bTxGUeC8tg=
+	b=Jqg7292CafWsPzq+2Bkbjqdu/3+55AywtThVtA/q9q84aVzq9pOJKrsjin8iPiLSX
+	 TBPYRLrvpPa0EdgSqP+KbMZFZVbmGQ2x6XRSVHcyM7St+9dWL06myanjAiOLyz3utz
+	 Y5s9sFPMECC6JAhh5V5E7e38PT6Hea02g823nDvU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbfL0Rou (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Dec 2019 12:44:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43138 "EHLO mail.kernel.org"
+        id S1728059AbfL0RnB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Dec 2019 12:43:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728216AbfL0Rot (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:44:49 -0500
+        id S1728033AbfL0RnB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:43:01 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C79D921744;
-        Fri, 27 Dec 2019 17:44:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56C3620CC7;
+        Fri, 27 Dec 2019 17:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468688;
-        bh=Ou7652ezwE10mPJn5/Q7RQYllm+/ANrQOvIvtI4e3wk=;
+        s=default; t=1577468580;
+        bh=RYxCbrhb0ssrvSLx3VTWpDJv75pfkQdYXqLh2751Ock=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7+n8pYKilFF3wGdGBAaKfJu6BllKHdOtbOBqNS/iED4fMvhh1CCmxKM/wsD2iD9M
-         EOx9um0VoK0t3D7W8E4Ygj/UQU34W3BZD8Tc+1N9d9u3ip38TU/IlG6HzOSWMLoCpy
-         ned9o0qlXV5cA8jyod6D3in9GLPKPPrTRh0/C5PQ=
+        b=tyJauiSxMtSxlSZkIoITkzpYVq0mP8VLe3sli3lCpjNSxA9Ec1K9dN1FousGPNkW6
+         uzECC3rcBnCwCpLd9pMTuLS1LTqlndLBpfainsmKJbW5ffpMDD2WzYO69iQjf0gYKr
+         yvB0rh5+bI9wsmOVVeay/Wi/lJ4JkQTQF+VAHAsE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Eric Dumazet <edumazet@google.com>,
@@ -46,12 +46,12 @@ Cc:     Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 46/84] tcp/dccp: fix possible race __inet_lookup_established()
-Date:   Fri, 27 Dec 2019 12:43:14 -0500
-Message-Id: <20191227174352.6264-46-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 103/187] tcp/dccp: fix possible race __inet_lookup_established()
+Date:   Fri, 27 Dec 2019 12:39:31 -0500
+Message-Id: <20191227174055.4923-103-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174352.6264-1-sashal@kernel.org>
-References: <20191227174352.6264-1-sashal@kernel.org>
+In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
+References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -146,10 +146,10 @@ index bc8206a8f30e..61974c4c566b 100644
   * hlist_nulls_for_each_entry_rcu - iterate over rcu list of given type
   * @tpos:	the type * to use as a loop cursor.
 diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index 9141e95529e7..b875dcef173c 100644
+index af2b4c065a04..d0019d3395cf 100644
 --- a/include/net/inet_hashtables.h
 +++ b/include/net/inet_hashtables.h
-@@ -106,13 +106,19 @@ struct inet_bind_hashbucket {
+@@ -103,13 +103,19 @@ struct inet_bind_hashbucket {
  	struct hlist_head	chain;
  };
  
@@ -173,10 +173,10 @@ index 9141e95529e7..b875dcef173c 100644
  
  /* This is for listening sockets, thus all sockets which possess wildcards. */
 diff --git a/include/net/sock.h b/include/net/sock.h
-index 4545a9ecc219..f359e5c94762 100644
+index 718e62fbe869..fe7cd6899cde 100644
 --- a/include/net/sock.h
 +++ b/include/net/sock.h
-@@ -721,6 +721,11 @@ static inline void __sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_h
+@@ -723,6 +723,11 @@ static inline void __sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_h
  	hlist_nulls_add_head_rcu(&sk->sk_nulls_node, list);
  }
  
@@ -189,10 +189,10 @@ index 4545a9ecc219..f359e5c94762 100644
  {
  	sock_hold(sk);
 diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
-index 5731670c560b..9742b37afe1d 100644
+index 7dc79b973e6e..6a4c82f96e78 100644
 --- a/net/ipv4/inet_diag.c
 +++ b/net/ipv4/inet_diag.c
-@@ -918,11 +918,12 @@ void inet_diag_dump_icsk(struct inet_hashinfo *hashinfo, struct sk_buff *skb,
+@@ -914,11 +914,12 @@ void inet_diag_dump_icsk(struct inet_hashinfo *hashinfo, struct sk_buff *skb,
  
  		for (i = s_i; i < INET_LHTABLE_SIZE; i++) {
  			struct inet_listen_hashbucket *ilb;
@@ -207,10 +207,10 @@ index 5731670c560b..9742b37afe1d 100644
  
  				if (!net_eq(sock_net(sk), net))
 diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 7be966a60801..900756b3defb 100644
+index 83fb00153018..2bbaaf0c7176 100644
 --- a/net/ipv4/inet_hashtables.c
 +++ b/net/ipv4/inet_hashtables.c
-@@ -560,10 +560,11 @@ static int inet_reuseport_add_sock(struct sock *sk,
+@@ -516,10 +516,11 @@ static int inet_reuseport_add_sock(struct sock *sk,
  				   struct inet_listen_hashbucket *ilb)
  {
  	struct inet_bind_bucket *tb = inet_csk(sk)->icsk_bind_hash;
@@ -223,7 +223,7 @@ index 7be966a60801..900756b3defb 100644
  		if (sk2 != sk &&
  		    sk2->sk_family == sk->sk_family &&
  		    ipv6_only_sock(sk2) == ipv6_only_sock(sk) &&
-@@ -599,9 +600,9 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+@@ -555,9 +556,9 @@ int __inet_hash(struct sock *sk, struct sock *osk)
  	}
  	if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
  		sk->sk_family == AF_INET6)
@@ -235,7 +235,7 @@ index 7be966a60801..900756b3defb 100644
  	inet_hash2(hashinfo, sk);
  	ilb->count++;
  	sock_set_flag(sk, SOCK_RCU_FREE);
-@@ -650,11 +651,9 @@ void inet_unhash(struct sock *sk)
+@@ -606,11 +607,9 @@ void inet_unhash(struct sock *sk)
  		reuseport_detach_sock(sk);
  	if (ilb) {
  		inet_unhash2(hashinfo, sk);
@@ -249,7 +249,7 @@ index 7be966a60801..900756b3defb 100644
  	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
  unlock:
  	spin_unlock_bh(lock);
-@@ -790,7 +789,8 @@ void inet_hashinfo_init(struct inet_hashinfo *h)
+@@ -750,7 +749,8 @@ void inet_hashinfo_init(struct inet_hashinfo *h)
  
  	for (i = 0; i < INET_LHTABLE_SIZE; i++) {
  		spin_lock_init(&h->listening_hash[i].lock);
@@ -260,10 +260,10 @@ index 7be966a60801..900756b3defb 100644
  	}
  
 diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index bfec48849735..5553f6a833f3 100644
+index 67b2dc7a1727..eda64871f983 100644
 --- a/net/ipv4/tcp_ipv4.c
 +++ b/net/ipv4/tcp_ipv4.c
-@@ -2020,13 +2020,14 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
+@@ -2149,13 +2149,14 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
  	struct tcp_iter_state *st = seq->private;
  	struct net *net = seq_file_net(seq);
  	struct inet_listen_hashbucket *ilb;
@@ -279,7 +279,7 @@ index bfec48849735..5553f6a833f3 100644
  		st->offset = 0;
  		goto get_sk;
  	}
-@@ -2034,9 +2035,9 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
+@@ -2163,9 +2164,9 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
  	++st->num;
  	++st->offset;
  
