@@ -1,296 +1,371 @@
-Return-Path: <SRS0=g2O0=2R=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=YlMU=2V=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B224C2D0C6
-	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5001AC2D0DD
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 12:22:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3F89C208C4
-	for <rcu@archiver.kernel.org>; Fri, 27 Dec 2019 17:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577469184;
-	bh=RYxCbrhb0ssrvSLx3VTWpDJv75pfkQdYXqLh2751Ock=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Jqg7292CafWsPzq+2Bkbjqdu/3+55AywtThVtA/q9q84aVzq9pOJKrsjin8iPiLSX
-	 TBPYRLrvpPa0EdgSqP+KbMZFZVbmGQ2x6XRSVHcyM7St+9dWL06myanjAiOLyz3utz
-	 Y5s9sFPMECC6JAhh5V5E7e38PT6Hea02g823nDvU=
+	by mail.kernel.org (Postfix) with ESMTP id 0D57D206E4
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 12:22:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLg+WlhB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbfL0RnB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Dec 2019 12:43:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728033AbfL0RnB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:43:01 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56C3620CC7;
-        Fri, 27 Dec 2019 17:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468580;
-        bh=RYxCbrhb0ssrvSLx3VTWpDJv75pfkQdYXqLh2751Ock=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tyJauiSxMtSxlSZkIoITkzpYVq0mP8VLe3sli3lCpjNSxA9Ec1K9dN1FousGPNkW6
-         uzECC3rcBnCwCpLd9pMTuLS1LTqlndLBpfainsmKJbW5ffpMDD2WzYO69iQjf0gYKr
-         yvB0rh5+bI9wsmOVVeay/Wi/lJ4JkQTQF+VAHAsE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Firo Yang <firo.yang@suse.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 103/187] tcp/dccp: fix possible race __inet_lookup_established()
-Date:   Fri, 27 Dec 2019 12:39:31 -0500
-Message-Id: <20191227174055.4923-103-sashal@kernel.org>
+        id S1727066AbfLaMW4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Dec 2019 07:22:56 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34187 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbfLaMW4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Dec 2019 07:22:56 -0500
+Received: by mail-lj1-f196.google.com with SMTP id z22so31396569ljg.1;
+        Tue, 31 Dec 2019 04:22:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMaKh9p/GbIC/usk2NUnus/zNMM2CjwICdHi6ZH4YFQ=;
+        b=GLg+WlhB1OempL0PUprVXNtQC0OkogANbCWSOYhxsVbXyQzyiiSniH+OZNUn3MMRWW
+         88wxD603liuO0PkKi2X/PXIp7fg29bhPdynd8sCEw3OxgUl47LvijMgMcbe/jgQ9qncp
+         Agh+A/ENKeoUFVpaK7LSqeB8m90T/Cl3Bsi6ILM7wjD7z9BAEuSz1RE1Yo+x+EQztmIg
+         rs2NHF3SLyufrt9aQ7REixRWqd0JFyxkRgfDuYYBKH+opaL7lJSpf1Zcet8CeblBXXWd
+         YhJRIHo/uxmoQYNcyENgpDFq0s6oVT1+5YemuE0iP54fZfYs7VWDK8KCo1yB6WqrqAhD
+         tiwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMaKh9p/GbIC/usk2NUnus/zNMM2CjwICdHi6ZH4YFQ=;
+        b=QREZLgjNxF1GdOwwK3ABw1eTbJCpsjpEIoDXOcqOrzgeYxZT+PM62yFyXv+SnoNxfT
+         CMdOFZfvYhyLPh1s1JCq6e7PQEb74V/UHmTcCyHU4rm5W2msxbUN41Rf66a9bDSjR5uc
+         M1wo0tJNbPbjxTINCZbZtbkEDuoWd3i2cGS+LEcS0paj+FlRt6pOQpqAfFE3g65N1riY
+         9UnmSQJk4QzZuFH8ROTZrw11ZFHD0iVoTyQ2znXkJxtwTErXSBt5V/zDaZ+LXZrjMJT8
+         8ql0NHUO6r1LPb+KebKVOXX0zlepFTuwyUdKHxJKfZEkMAyEV4Px8PyC+XA51dDov+AS
+         fx3g==
+X-Gm-Message-State: APjAAAVOwA1m0vJ5phMgXanw+ayGTclyxqhg07Ac21oJqIGeHXcVxdU9
+        eHpC7F5C+GywkchdjN0Z6aGtfNX/luM=
+X-Google-Smtp-Source: APXvYqytHK2RHHG8xd83no0un2NtP2G//vjpOI1er1UKRiRBPMVI+E41xeGQeYXUxqQD2kYLV5ZEyQ==
+X-Received: by 2002:a2e:8152:: with SMTP id t18mr42396153ljg.255.1577794971742;
+        Tue, 31 Dec 2019 04:22:51 -0800 (PST)
+Received: from localhost.localdomain ([37.212.207.117])
+        by smtp.gmail.com with ESMTPSA id s13sm19487874lje.35.2019.12.31.04.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Dec 2019 04:22:51 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in kfree_rcu()
+Date:   Tue, 31 Dec 2019 13:22:41 +0100
+Message-Id: <20191231122241.5702-1-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
-References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+kfree_rcu() logic can be improved further by using kfree_bulk()
+interface along with "basic batching support" introduced earlier.
 
-[ Upstream commit 8dbd76e79a16b45b2ccb01d2f2e08dbf64e71e40 ]
+The are at least two advantages of using "bulk" interface:
+- in case of large number of kfree_rcu() requests kfree_bulk()
+  reduces the per-object overhead caused by calling kfree()
+  per-object.
 
-Michal Kubecek and Firo Yang did a very nice analysis of crashes
-happening in __inet_lookup_established().
+- reduces the number of cache-misses due to "pointer chasing"
+  between objects which can be far spread between each other.
 
-Since a TCP socket can go from TCP_ESTABLISH to TCP_LISTEN
-(via a close()/socket()/listen() cycle) without a RCU grace period,
-I should not have changed listeners linkage in their hash table.
+This approach defines a new kfree_rcu_bulk_data structure that
+stores pointers in an array with a specific size. Number of entries
+in that array depends on PAGE_SIZE making kfree_rcu_bulk_data
+structure to be exactly one page.
 
-They must use the nulls protocol (Documentation/RCU/rculist_nulls.txt),
-so that a lookup can detect a socket in a hash list was moved in
-another one.
+Since it deals with "block-chain" technique there is an extra
+need in dynamic allocation when a new block is required. Memory
+is allocated with GFP_NOWAIT | __GFP_NOWARN flags, i.e. that
+allows to skip direct reclaim under low memory condition to
+prevent stalling and fails silently under high memory pressure.
 
-Since we added code in commit d296ba60d8e2 ("soreuseport: Resolve
-merge conflict for v4/v6 ordering fix"), we have to add
-hlist_nulls_add_tail_rcu() helper.
+The "emergency path" gets maintained when a system is run out
+of memory. In that case objects are linked into regular list
+and that is it.
 
-Fixes: 3b24d854cb35 ("tcp/dccp: do not touch listener sk_refcnt under synflood")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Reported-by: Firo Yang <firo.yang@suse.com>
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-Link: https://lore.kernel.org/netdev/20191120083919.GH27852@unicorn.suse.cz/
-Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In order to evaluate it, the "rcuperf" was run to analyze how
+much memory is consumed and what is kfree_bulk() throughput.
+
+Testing on the HiKey-960, arm64, 8xCPUs with below parameters:
+
+CONFIG_SLAB=y
+kfree_loops=200000 kfree_alloc_num=1000 kfree_rcu_test=1
+
+102898760401 ns, loops: 200000, batches: 5822, memory footprint: 158MB
+89947009882  ns, loops: 200000, batches: 6715, memory footprint: 115MB
+
+rcuperf shows approximately ~12% better throughput(Total time)
+in case of using "bulk" interface. The "drain logic" or its RCU
+callback does the work faster that leads to better throughput.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rculist_nulls.h | 37 +++++++++++++++++++++++++++++++++++
- include/net/inet_hashtables.h | 12 +++++++++---
- include/net/sock.h            |  5 +++++
- net/ipv4/inet_diag.c          |  3 ++-
- net/ipv4/inet_hashtables.c    | 16 +++++++--------
- net/ipv4/tcp_ipv4.c           |  7 ++++---
- 6 files changed, 65 insertions(+), 15 deletions(-)
+ kernel/rcu/tree.c | 154 ++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 130 insertions(+), 24 deletions(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index bc8206a8f30e..61974c4c566b 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -100,6 +100,43 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
- 		first->pprev = &n->next;
- }
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 48fba2257748..4ee5c737558b 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2754,22 +2754,45 @@ EXPORT_SYMBOL_GPL(call_rcu);
+ #define KFREE_DRAIN_JIFFIES (HZ / 50)
+ #define KFREE_N_BATCHES 2
  
-+/**
-+ * hlist_nulls_add_tail_rcu
-+ * @n: the element to add to the hash list.
-+ * @h: the list to add to.
-+ *
-+ * Description:
-+ * Adds the specified element to the specified hlist_nulls,
-+ * while permitting racing traversals.
-+ *
-+ * The caller must take whatever precautions are necessary
-+ * (such as holding appropriate locks) to avoid racing
-+ * with another list-mutation primitive, such as hlist_nulls_add_head_rcu()
-+ * or hlist_nulls_del_rcu(), running on this same list.
-+ * However, it is perfectly legal to run concurrently with
-+ * the _rcu list-traversal primitives, such as
-+ * hlist_nulls_for_each_entry_rcu(), used to prevent memory-consistency
-+ * problems on Alpha CPUs.  Regardless of the type of CPU, the
-+ * list-traversal primitive must be guarded by rcu_read_lock().
++/*
++ * This macro defines how many entries the "records" array
++ * will contain. It is based on the fact that the size of
++ * kfree_rcu_bulk_data structure becomes exactly one page.
 + */
-+static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
-+					    struct hlist_nulls_head *h)
-+{
-+	struct hlist_nulls_node *i, *last = NULL;
++#define KFREE_BULK_MAX_ENTR ((PAGE_SIZE / sizeof(void *)) - 2)
 +
-+	/* Note: write side code, so rcu accessors are not needed. */
-+	for (i = h->first; !is_a_nulls(i); i = i->next)
-+		last = i;
-+
-+	if (last) {
-+		n->next = last->next;
-+		n->pprev = &last->next;
-+		rcu_assign_pointer(hlist_next_rcu(last), n);
-+	} else {
-+		hlist_nulls_add_head_rcu(n, h);
-+	}
-+}
++/**
++ * struct kfree_rcu_bulk_data - single block to store kfree_rcu() pointers
++ * @nr_records: Number of active pointers in the array
++ * @records: Array of the kfree_rcu() pointers
++ * @next: Next bulk object in the block chain
++ */
++struct kfree_rcu_bulk_data {
++	unsigned long nr_records;
++	void *records[KFREE_BULK_MAX_ENTR];
++	struct kfree_rcu_bulk_data *next;
++};
 +
  /**
-  * hlist_nulls_for_each_entry_rcu - iterate over rcu list of given type
-  * @tpos:	the type * to use as a loop cursor.
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index af2b4c065a04..d0019d3395cf 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -103,13 +103,19 @@ struct inet_bind_hashbucket {
- 	struct hlist_head	chain;
- };
- 
--/*
-- * Sockets can be hashed in established or listening table
-+/* Sockets can be hashed in established or listening table.
-+ * We must use different 'nulls' end-of-chain value for all hash buckets :
-+ * A socket might transition from ESTABLISH to LISTEN state without
-+ * RCU grace period. A lookup in ehash table needs to handle this case.
+  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+  * @head_free: List of kfree_rcu() objects waiting for a grace period
++ * @bhead_free: Bulk-List of kfree_rcu() objects waiting for a grace period
+  * @krcp: Pointer to @kfree_rcu_cpu structure
   */
-+#define LISTENING_NULLS_BASE (1U << 29)
- struct inet_listen_hashbucket {
- 	spinlock_t		lock;
- 	unsigned int		count;
--	struct hlist_head	head;
-+	union {
-+		struct hlist_head	head;
-+		struct hlist_nulls_head	nulls_head;
-+	};
+ 
+ struct kfree_rcu_cpu_work {
+ 	struct rcu_work rcu_work;
+ 	struct rcu_head *head_free;
++	struct kfree_rcu_bulk_data *bhead_free;
+ 	struct kfree_rcu_cpu *krcp;
  };
  
- /* This is for listening sockets, thus all sockets which possess wildcards. */
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 718e62fbe869..fe7cd6899cde 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -723,6 +723,11 @@ static inline void __sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_h
- 	hlist_nulls_add_head_rcu(&sk->sk_nulls_node, list);
+ /**
+  * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
+  * @head: List of kfree_rcu() objects not yet waiting for a grace period
++ * @bhead: Bulk-List of kfree_rcu() objects not yet waiting for a grace period
++ * @bcached: Keeps at most one object for later reuse when build chain blocks
+  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+  * @lock: Synchronize access to this structure
+  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+@@ -2783,6 +2806,8 @@ struct kfree_rcu_cpu_work {
+  */
+ struct kfree_rcu_cpu {
+ 	struct rcu_head *head;
++	struct kfree_rcu_bulk_data *bhead;
++	struct kfree_rcu_bulk_data *bcached;
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+ 	spinlock_t lock;
+ 	struct delayed_work monitor_work;
+@@ -2800,6 +2825,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ {
+ 	unsigned long flags;
+ 	struct rcu_head *head, *next;
++	struct kfree_rcu_bulk_data *bhead, *bnext;
+ 	struct kfree_rcu_cpu *krcp;
+ 	struct kfree_rcu_cpu_work *krwp;
+ 
+@@ -2809,22 +2835,39 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	spin_lock_irqsave(&krcp->lock, flags);
+ 	head = krwp->head_free;
+ 	krwp->head_free = NULL;
++	bhead = krwp->bhead_free;
++	krwp->bhead_free = NULL;
+ 	spin_unlock_irqrestore(&krcp->lock, flags);
+ 
+-	// List "head" is now private, so traverse locklessly.
++	/* List "bhead" is now private, so traverse locklessly. */
++	for (; bhead; bhead = bnext) {
++		bnext = bhead->next;
++
++		rcu_lock_acquire(&rcu_callback_map);
++		kfree_bulk(bhead->nr_records, bhead->records);
++		rcu_lock_release(&rcu_callback_map);
++
++		if (cmpxchg(&krcp->bcached, NULL, bhead))
++			free_page((unsigned long) bhead);
++
++		cond_resched_tasks_rcu_qs();
++	}
++
++	/*
++	 * Emergency case only. It can happen under low memory
++	 * condition when an allocation gets failed, so the "bulk"
++	 * path can not be temporary maintained.
++	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
+ 
+ 		next = head->next;
+-		// Potentially optimize with kfree_bulk in future.
+ 		debug_rcu_head_unqueue(head);
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
+ 
+-		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset))) {
+-			/* Could be optimized with kfree_bulk() in future. */
++		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
+ 			kfree((void *)head - offset);
+-		}
+ 
+ 		rcu_lock_release(&rcu_callback_map);
+ 		cond_resched_tasks_rcu_qs();
+@@ -2839,26 +2882,45 @@ static void kfree_rcu_work(struct work_struct *work)
+  */
+ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ {
++	struct kfree_rcu_cpu_work *krwp;
++	bool queued = false;
+ 	int i;
+-	struct kfree_rcu_cpu_work *krwp = NULL;
+ 
+ 	lockdep_assert_held(&krcp->lock);
+-	for (i = 0; i < KFREE_N_BATCHES; i++)
+-		if (!krcp->krw_arr[i].head_free) {
+-			krwp = &(krcp->krw_arr[i]);
+-			break;
+-		}
+ 
+-	// If a previous RCU batch is in progress, we cannot immediately
+-	// queue another one, so return false to tell caller to retry.
+-	if (!krwp)
+-		return false;
++	for (i = 0; i < KFREE_N_BATCHES; i++) {
++		krwp = &(krcp->krw_arr[i]);
+ 
+-	krwp->head_free = krcp->head;
+-	krcp->head = NULL;
+-	INIT_RCU_WORK(&krwp->rcu_work, kfree_rcu_work);
+-	queue_rcu_work(system_wq, &krwp->rcu_work);
+-	return true;
++		/*
++		 * Try to detach bhead or head and attach it over any
++		 * available corresponding free channel. It can be that
++		 * a previous RCU batch is in progress, it means that
++		 * immediately to queue another one is not possible so
++		 * return false to tell caller to retry.
++		 */
++		if ((krcp->bhead && !krwp->bhead_free) ||
++				(krcp->head && !krwp->head_free)) {
++			if (!krwp->bhead_free) {
++				krwp->bhead_free = krcp->bhead;
++				krcp->bhead = NULL;
++			}
++
++			if (!krwp->head_free) {
++				krwp->head_free = krcp->head;
++				krcp->head = NULL;
++			}
++
++			/*
++			 * The work can already be queued. If so, it means that
++			 * within a short time, second, either head or bhead has
++			 * been detached as well.
++			 */
++			queue_rcu_work(system_wq, &krwp->rcu_work);
++			queued = true;
++		}
++	}
++
++	return queued;
  }
  
-+static inline void __sk_nulls_add_node_tail_rcu(struct sock *sk, struct hlist_nulls_head *list)
+ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+@@ -2895,6 +2957,39 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 		spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
++static inline bool
++kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
 +{
-+	hlist_nulls_add_tail_rcu(&sk->sk_nulls_node, list);
++	struct kfree_rcu_bulk_data *bnode;
++
++	if (unlikely(!krcp->initialized))
++		return false;
++
++	lockdep_assert_held(&krcp->lock);
++
++	/* Check if a new block is required. */
++	if (!krcp->bhead ||
++			krcp->bhead->nr_records == KFREE_BULK_MAX_ENTR) {
++		bnode = xchg(&krcp->bcached, NULL);
++		if (!bnode)
++			bnode = (struct kfree_rcu_bulk_data *)
++				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
++
++		/* No cache or an allocation got failed. */
++		if (unlikely(!bnode))
++			return false;
++
++		/* Initialize the new block. */
++		bnode->nr_records = 0;
++		bnode->next = krcp->bhead;
++		krcp->bhead = bnode;
++	}
++
++	/* Finally insert. */
++	krcp->bhead->records[krcp->bhead->nr_records++] = ptr;
++	return true;
 +}
 +
- static inline void sk_nulls_add_node_rcu(struct sock *sk, struct hlist_nulls_head *list)
- {
- 	sock_hold(sk);
-diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
-index 7dc79b973e6e..6a4c82f96e78 100644
---- a/net/ipv4/inet_diag.c
-+++ b/net/ipv4/inet_diag.c
-@@ -914,11 +914,12 @@ void inet_diag_dump_icsk(struct inet_hashinfo *hashinfo, struct sk_buff *skb,
- 
- 		for (i = s_i; i < INET_LHTABLE_SIZE; i++) {
- 			struct inet_listen_hashbucket *ilb;
-+			struct hlist_nulls_node *node;
- 
- 			num = 0;
- 			ilb = &hashinfo->listening_hash[i];
- 			spin_lock(&ilb->lock);
--			sk_for_each(sk, &ilb->head) {
-+			sk_nulls_for_each(sk, node, &ilb->nulls_head) {
- 				struct inet_sock *inet = inet_sk(sk);
- 
- 				if (!net_eq(sock_net(sk), net))
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 83fb00153018..2bbaaf0c7176 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -516,10 +516,11 @@ static int inet_reuseport_add_sock(struct sock *sk,
- 				   struct inet_listen_hashbucket *ilb)
- {
- 	struct inet_bind_bucket *tb = inet_csk(sk)->icsk_bind_hash;
-+	const struct hlist_nulls_node *node;
- 	struct sock *sk2;
- 	kuid_t uid = sock_i_uid(sk);
- 
--	sk_for_each_rcu(sk2, &ilb->head) {
-+	sk_nulls_for_each_rcu(sk2, node, &ilb->nulls_head) {
- 		if (sk2 != sk &&
- 		    sk2->sk_family == sk->sk_family &&
- 		    ipv6_only_sock(sk2) == ipv6_only_sock(sk) &&
-@@ -555,9 +556,9 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ /*
+  * Queue a request for lazy invocation of kfree() after a grace period.
+  *
+@@ -2926,9 +3021,17 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 			  __func__, head);
+ 		goto unlock_return;
  	}
- 	if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
- 		sk->sk_family == AF_INET6)
--		hlist_add_tail_rcu(&sk->sk_node, &ilb->head);
-+		__sk_nulls_add_node_tail_rcu(sk, &ilb->nulls_head);
- 	else
--		hlist_add_head_rcu(&sk->sk_node, &ilb->head);
-+		__sk_nulls_add_node_rcu(sk, &ilb->nulls_head);
- 	inet_hash2(hashinfo, sk);
- 	ilb->count++;
- 	sock_set_flag(sk, SOCK_RCU_FREE);
-@@ -606,11 +607,9 @@ void inet_unhash(struct sock *sk)
- 		reuseport_detach_sock(sk);
- 	if (ilb) {
- 		inet_unhash2(hashinfo, sk);
--		 __sk_del_node_init(sk);
--		 ilb->count--;
--	} else {
--		__sk_nulls_del_node_init_rcu(sk);
-+		ilb->count--;
+-	head->func = func;
+-	head->next = krcp->head;
+-	krcp->head = head;
++
++	/*
++	 * Under high memory pressure GFP_NOWAIT can fail,
++	 * in that case the emergency path is maintained.
++	 */
++	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp,
++			(void *) head - (unsigned long) func))) {
++		head->func = func;
++		head->next = krcp->head;
++		krcp->head = head;
++	}
+ 
+ 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+@@ -3834,8 +3937,11 @@ static void __init kfree_rcu_batch_init(void)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		spin_lock_init(&krcp->lock);
+-		for (i = 0; i < KFREE_N_BATCHES; i++)
++		for (i = 0; i < KFREE_N_BATCHES; i++) {
++			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
++		}
++
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+ 		krcp->initialized = true;
  	}
-+	__sk_nulls_del_node_init_rcu(sk);
- 	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
- unlock:
- 	spin_unlock_bh(lock);
-@@ -750,7 +749,8 @@ void inet_hashinfo_init(struct inet_hashinfo *h)
- 
- 	for (i = 0; i < INET_LHTABLE_SIZE; i++) {
- 		spin_lock_init(&h->listening_hash[i].lock);
--		INIT_HLIST_HEAD(&h->listening_hash[i].head);
-+		INIT_HLIST_NULLS_HEAD(&h->listening_hash[i].nulls_head,
-+				      i + LISTENING_NULLS_BASE);
- 		h->listening_hash[i].count = 0;
- 	}
- 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 67b2dc7a1727..eda64871f983 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2149,13 +2149,14 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
- 	struct tcp_iter_state *st = seq->private;
- 	struct net *net = seq_file_net(seq);
- 	struct inet_listen_hashbucket *ilb;
-+	struct hlist_nulls_node *node;
- 	struct sock *sk = cur;
- 
- 	if (!sk) {
- get_head:
- 		ilb = &tcp_hashinfo.listening_hash[st->bucket];
- 		spin_lock(&ilb->lock);
--		sk = sk_head(&ilb->head);
-+		sk = sk_nulls_head(&ilb->nulls_head);
- 		st->offset = 0;
- 		goto get_sk;
- 	}
-@@ -2163,9 +2164,9 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
- 	++st->num;
- 	++st->offset;
- 
--	sk = sk_next(sk);
-+	sk = sk_nulls_next(sk);
- get_sk:
--	sk_for_each_from(sk) {
-+	sk_nulls_for_each_from(sk, node) {
- 		if (!net_eq(sock_net(sk), net))
- 			continue;
- 		if (sk->sk_family == afinfo->family)
 -- 
 2.20.1
 
