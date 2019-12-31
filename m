@@ -2,370 +2,190 @@ Return-Path: <SRS0=YlMU=2V=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5001AC2D0DD
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 12:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F249AC2D0C2
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 14:56:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0D57D206E4
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 12:22:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLg+WlhB"
+	by mail.kernel.org (Postfix) with ESMTP id C58A6206E4
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 14:56:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbfLaMW4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Dec 2019 07:22:56 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:34187 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbfLaMW4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Dec 2019 07:22:56 -0500
-Received: by mail-lj1-f196.google.com with SMTP id z22so31396569ljg.1;
-        Tue, 31 Dec 2019 04:22:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dMaKh9p/GbIC/usk2NUnus/zNMM2CjwICdHi6ZH4YFQ=;
-        b=GLg+WlhB1OempL0PUprVXNtQC0OkogANbCWSOYhxsVbXyQzyiiSniH+OZNUn3MMRWW
-         88wxD603liuO0PkKi2X/PXIp7fg29bhPdynd8sCEw3OxgUl47LvijMgMcbe/jgQ9qncp
-         Agh+A/ENKeoUFVpaK7LSqeB8m90T/Cl3Bsi6ILM7wjD7z9BAEuSz1RE1Yo+x+EQztmIg
-         rs2NHF3SLyufrt9aQ7REixRWqd0JFyxkRgfDuYYBKH+opaL7lJSpf1Zcet8CeblBXXWd
-         YhJRIHo/uxmoQYNcyENgpDFq0s6oVT1+5YemuE0iP54fZfYs7VWDK8KCo1yB6WqrqAhD
-         tiwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dMaKh9p/GbIC/usk2NUnus/zNMM2CjwICdHi6ZH4YFQ=;
-        b=QREZLgjNxF1GdOwwK3ABw1eTbJCpsjpEIoDXOcqOrzgeYxZT+PM62yFyXv+SnoNxfT
-         CMdOFZfvYhyLPh1s1JCq6e7PQEb74V/UHmTcCyHU4rm5W2msxbUN41Rf66a9bDSjR5uc
-         M1wo0tJNbPbjxTINCZbZtbkEDuoWd3i2cGS+LEcS0paj+FlRt6pOQpqAfFE3g65N1riY
-         9UnmSQJk4QzZuFH8ROTZrw11ZFHD0iVoTyQ2znXkJxtwTErXSBt5V/zDaZ+LXZrjMJT8
-         8ql0NHUO6r1LPb+KebKVOXX0zlepFTuwyUdKHxJKfZEkMAyEV4Px8PyC+XA51dDov+AS
-         fx3g==
-X-Gm-Message-State: APjAAAVOwA1m0vJ5phMgXanw+ayGTclyxqhg07Ac21oJqIGeHXcVxdU9
-        eHpC7F5C+GywkchdjN0Z6aGtfNX/luM=
-X-Google-Smtp-Source: APXvYqytHK2RHHG8xd83no0un2NtP2G//vjpOI1er1UKRiRBPMVI+E41xeGQeYXUxqQD2kYLV5ZEyQ==
-X-Received: by 2002:a2e:8152:: with SMTP id t18mr42396153ljg.255.1577794971742;
-        Tue, 31 Dec 2019 04:22:51 -0800 (PST)
-Received: from localhost.localdomain ([37.212.207.117])
-        by smtp.gmail.com with ESMTPSA id s13sm19487874lje.35.2019.12.31.04.22.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Dec 2019 04:22:51 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in kfree_rcu()
-Date:   Tue, 31 Dec 2019 13:22:41 +0100
-Message-Id: <20191231122241.5702-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726674AbfLaO4B (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Dec 2019 09:56:01 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49650 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726060AbfLaO4B (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Dec 2019 09:56:01 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id ECEC4FCC5B5E2D03D01A;
+        Tue, 31 Dec 2019 22:55:56 +0800 (CST)
+Received: from [127.0.0.1] (10.133.219.224) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Tue, 31 Dec 2019
+ 22:55:48 +0800
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+To:     Yufen Yu <yuyufen@huawei.com>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <ming.lei@redhat.com>, <hch@lst.de>,
+        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
+        <paulmck@kernel.org>, <joel@joelfernandes.org>,
+        <rcu@vger.kernel.org>
+References: <20191231110945.10857-1-yuyufen@huawei.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+Date:   Tue, 31 Dec 2019 22:55:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191231110945.10857-1-yuyufen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.219.224]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-kfree_rcu() logic can be improved further by using kfree_bulk()
-interface along with "basic batching support" introduced earlier.
+Hi,
 
-The are at least two advantages of using "bulk" interface:
-- in case of large number of kfree_rcu() requests kfree_bulk()
-  reduces the per-object overhead caused by calling kfree()
-  per-object.
+On 2019/12/31 19:09, Yufen Yu wrote:
+> When delete partition executes concurrently with IOs issue,
+> it may cause use-after-free on part in disk_map_sector_rcu()
+> as following:
+snip
 
-- reduces the number of cache-misses due to "pointer chasing"
-  between objects which can be far spread between each other.
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index ff6268970ddc..39fa8999905f 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -293,7 +293,23 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>  		part = rcu_dereference(ptbl->part[i]);
+>  
+>  		if (part && sector_in_part(part, sector)) {
+snip
 
-This approach defines a new kfree_rcu_bulk_data structure that
-stores pointers in an array with a specific size. Number of entries
-in that array depends on PAGE_SIZE making kfree_rcu_bulk_data
-structure to be exactly one page.
+>  			rcu_assign_pointer(ptbl->last_lookup, part);
+> +			part = rcu_dereference(ptbl->part[i]);
+> +			if (part == NULL) {
+> +				rcu_assign_pointer(ptbl->last_lookup, NULL);
+> +				break;
+> +			}
+>  			return part;
+>  		}
+>  	}
 
-Since it deals with "block-chain" technique there is an extra
-need in dynamic allocation when a new block is required. Memory
-is allocated with GFP_NOWAIT | __GFP_NOWARN flags, i.e. that
-allows to skip direct reclaim under low memory condition to
-prevent stalling and fails silently under high memory pressure.
+Not ensure whether the re-read can handle the following case or not:
 
-The "emergency path" gets maintained when a system is run out
-of memory. In that case objects are linked into regular list
-and that is it.
+process A                                 process B                          process C
 
-In order to evaluate it, the "rcuperf" was run to analyze how
-much memory is consumed and what is kfree_bulk() throughput.
+disk_map_sector_rcu():                    delete_partition():               disk_map_sector_rcu():
 
-Testing on the HiKey-960, arm64, 8xCPUs with below parameters:
+rcu_read_lock
 
-CONFIG_SLAB=y
-kfree_loops=200000 kfree_alloc_num=1000 kfree_rcu_test=1
+  // need to iterate partition table
+  part[i] != NULL   (1)                   part[i] = NULL (2)
+                                          smp_mb()
+                                          last_lookup = NULL (3)
+                                          call_rcu()  (4)
+    last_lookup = part[i] (5)
 
-102898760401 ns, loops: 200000, batches: 5822, memory footprint: 158MB
-89947009882  ns, loops: 200000, batches: 6715, memory footprint: 115MB
 
-rcuperf shows approximately ~12% better throughput(Total time)
-in case of using "bulk" interface. The "drain logic" or its RCU
-callback does the work faster that leads to better throughput.
+                                                                             rcu_read_lock()
+                                                                             read last_lookup return part[i] (6)
+                                                                             sector_in_part() is OK (7)
+                                                                             return part[i] (8)
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 154 ++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 130 insertions(+), 24 deletions(-)
+  part[i] == NULL (9)
+      last_lookup = NULL (10)
+  rcu_read_unlock() (11)
+                                           one RCU grace period completes
+                                           __delete_partition() (12)
+                                           free hd_partition (13)
+                                                                             // use-after-free
+                                                                             hd_struct_try_get(part[i])  (14)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 48fba2257748..4ee5c737558b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2754,22 +2754,45 @@ EXPORT_SYMBOL_GPL(call_rcu);
- #define KFREE_DRAIN_JIFFIES (HZ / 50)
- #define KFREE_N_BATCHES 2
- 
-+/*
-+ * This macro defines how many entries the "records" array
-+ * will contain. It is based on the fact that the size of
-+ * kfree_rcu_bulk_data structure becomes exactly one page.
-+ */
-+#define KFREE_BULK_MAX_ENTR ((PAGE_SIZE / sizeof(void *)) - 2)
+* the number in the parenthesis is the sequence of events.
+
+Maybe RCU experts can shed some light on this problem, so cc +paulmck@kernel.org, +joel@joelfernandes.org and +RCU maillist.
+
+If the above case is possible, maybe we can fix the problem by pinning last_lookup through increasing its ref-count
+(the following patch is only compile tested):
+
+diff --git a/block/genhd.c b/block/genhd.c
+index 6e8543ca6912..179e0056fae1 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -279,7 +279,14 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+ 		part = rcu_dereference(ptbl->part[i]);
+
+ 		if (part && sector_in_part(part, sector)) {
+-			rcu_assign_pointer(ptbl->last_lookup, part);
++			struct hd_struct *old;
 +
-+/**
-+ * struct kfree_rcu_bulk_data - single block to store kfree_rcu() pointers
-+ * @nr_records: Number of active pointers in the array
-+ * @records: Array of the kfree_rcu() pointers
-+ * @next: Next bulk object in the block chain
-+ */
-+struct kfree_rcu_bulk_data {
-+	unsigned long nr_records;
-+	void *records[KFREE_BULK_MAX_ENTR];
-+	struct kfree_rcu_bulk_data *next;
-+};
++			if (!hd_struct_try_get(part))
++				break;
 +
- /**
-  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
-  * @head_free: List of kfree_rcu() objects waiting for a grace period
-+ * @bhead_free: Bulk-List of kfree_rcu() objects waiting for a grace period
-  * @krcp: Pointer to @kfree_rcu_cpu structure
-  */
- 
- struct kfree_rcu_cpu_work {
- 	struct rcu_work rcu_work;
- 	struct rcu_head *head_free;
-+	struct kfree_rcu_bulk_data *bhead_free;
- 	struct kfree_rcu_cpu *krcp;
- };
- 
- /**
-  * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
-  * @head: List of kfree_rcu() objects not yet waiting for a grace period
-+ * @bhead: Bulk-List of kfree_rcu() objects not yet waiting for a grace period
-+ * @bcached: Keeps at most one object for later reuse when build chain blocks
-  * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
-  * @lock: Synchronize access to this structure
-  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
-@@ -2783,6 +2806,8 @@ struct kfree_rcu_cpu_work {
-  */
- struct kfree_rcu_cpu {
- 	struct rcu_head *head;
-+	struct kfree_rcu_bulk_data *bhead;
-+	struct kfree_rcu_bulk_data *bcached;
- 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
- 	spinlock_t lock;
- 	struct delayed_work monitor_work;
-@@ -2800,6 +2825,7 @@ static void kfree_rcu_work(struct work_struct *work)
- {
- 	unsigned long flags;
- 	struct rcu_head *head, *next;
-+	struct kfree_rcu_bulk_data *bhead, *bnext;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
- 
-@@ -2809,22 +2835,39 @@ static void kfree_rcu_work(struct work_struct *work)
- 	spin_lock_irqsave(&krcp->lock, flags);
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
-+	bhead = krwp->bhead_free;
-+	krwp->bhead_free = NULL;
- 	spin_unlock_irqrestore(&krcp->lock, flags);
- 
--	// List "head" is now private, so traverse locklessly.
-+	/* List "bhead" is now private, so traverse locklessly. */
-+	for (; bhead; bhead = bnext) {
-+		bnext = bhead->next;
-+
-+		rcu_lock_acquire(&rcu_callback_map);
-+		kfree_bulk(bhead->nr_records, bhead->records);
-+		rcu_lock_release(&rcu_callback_map);
-+
-+		if (cmpxchg(&krcp->bcached, NULL, bhead))
-+			free_page((unsigned long) bhead);
-+
-+		cond_resched_tasks_rcu_qs();
-+	}
-+
-+	/*
-+	 * Emergency case only. It can happen under low memory
-+	 * condition when an allocation gets failed, so the "bulk"
-+	 * path can not be temporary maintained.
-+	 */
- 	for (; head; head = next) {
- 		unsigned long offset = (unsigned long)head->func;
- 
- 		next = head->next;
--		// Potentially optimize with kfree_bulk in future.
- 		debug_rcu_head_unqueue(head);
- 		rcu_lock_acquire(&rcu_callback_map);
- 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
- 
--		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset))) {
--			/* Could be optimized with kfree_bulk() in future. */
-+		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
- 			kfree((void *)head - offset);
--		}
- 
- 		rcu_lock_release(&rcu_callback_map);
- 		cond_resched_tasks_rcu_qs();
-@@ -2839,26 +2882,45 @@ static void kfree_rcu_work(struct work_struct *work)
-  */
- static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- {
-+	struct kfree_rcu_cpu_work *krwp;
-+	bool queued = false;
- 	int i;
--	struct kfree_rcu_cpu_work *krwp = NULL;
- 
- 	lockdep_assert_held(&krcp->lock);
--	for (i = 0; i < KFREE_N_BATCHES; i++)
--		if (!krcp->krw_arr[i].head_free) {
--			krwp = &(krcp->krw_arr[i]);
--			break;
--		}
- 
--	// If a previous RCU batch is in progress, we cannot immediately
--	// queue another one, so return false to tell caller to retry.
--	if (!krwp)
--		return false;
-+	for (i = 0; i < KFREE_N_BATCHES; i++) {
-+		krwp = &(krcp->krw_arr[i]);
- 
--	krwp->head_free = krcp->head;
--	krcp->head = NULL;
--	INIT_RCU_WORK(&krwp->rcu_work, kfree_rcu_work);
--	queue_rcu_work(system_wq, &krwp->rcu_work);
--	return true;
-+		/*
-+		 * Try to detach bhead or head and attach it over any
-+		 * available corresponding free channel. It can be that
-+		 * a previous RCU batch is in progress, it means that
-+		 * immediately to queue another one is not possible so
-+		 * return false to tell caller to retry.
-+		 */
-+		if ((krcp->bhead && !krwp->bhead_free) ||
-+				(krcp->head && !krwp->head_free)) {
-+			if (!krwp->bhead_free) {
-+				krwp->bhead_free = krcp->bhead;
-+				krcp->bhead = NULL;
-+			}
-+
-+			if (!krwp->head_free) {
-+				krwp->head_free = krcp->head;
-+				krcp->head = NULL;
-+			}
-+
-+			/*
-+			 * The work can already be queued. If so, it means that
-+			 * within a short time, second, either head or bhead has
-+			 * been detached as well.
-+			 */
-+			queue_rcu_work(system_wq, &krwp->rcu_work);
-+			queued = true;
-+		}
-+	}
-+
-+	return queued;
- }
- 
- static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
-@@ -2895,6 +2957,39 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 		spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
-+static inline bool
-+kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-+{
-+	struct kfree_rcu_bulk_data *bnode;
-+
-+	if (unlikely(!krcp->initialized))
-+		return false;
-+
-+	lockdep_assert_held(&krcp->lock);
-+
-+	/* Check if a new block is required. */
-+	if (!krcp->bhead ||
-+			krcp->bhead->nr_records == KFREE_BULK_MAX_ENTR) {
-+		bnode = xchg(&krcp->bcached, NULL);
-+		if (!bnode)
-+			bnode = (struct kfree_rcu_bulk_data *)
-+				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-+
-+		/* No cache or an allocation got failed. */
-+		if (unlikely(!bnode))
-+			return false;
-+
-+		/* Initialize the new block. */
-+		bnode->nr_records = 0;
-+		bnode->next = krcp->bhead;
-+		krcp->bhead = bnode;
-+	}
-+
-+	/* Finally insert. */
-+	krcp->bhead->records[krcp->bhead->nr_records++] = ptr;
-+	return true;
-+}
-+
- /*
-  * Queue a request for lazy invocation of kfree() after a grace period.
-  *
-@@ -2926,9 +3021,17 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 			  __func__, head);
- 		goto unlock_return;
++			old = xchg(&ptbl->last_lookup, part);
++			if (old)
++				hd_struct_put(old);
+ 			return part;
+ 		}
  	}
--	head->func = func;
--	head->next = krcp->head;
--	krcp->head = head;
+@@ -1231,7 +1238,11 @@ static void disk_replace_part_tbl(struct gendisk *disk,
+ 	rcu_assign_pointer(disk->part_tbl, new_ptbl);
+
+ 	if (old_ptbl) {
+-		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
++		struct hd_struct *part;
 +
-+	/*
-+	 * Under high memory pressure GFP_NOWAIT can fail,
-+	 * in that case the emergency path is maintained.
-+	 */
-+	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp,
-+			(void *) head - (unsigned long) func))) {
-+		head->func = func;
-+		head->next = krcp->head;
-+		krcp->head = head;
-+	}
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-@@ -3834,8 +3937,11 @@ static void __init kfree_rcu_batch_init(void)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		spin_lock_init(&krcp->lock);
--		for (i = 0; i < KFREE_N_BATCHES; i++)
-+		for (i = 0; i < KFREE_N_BATCHES; i++) {
-+			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
-+		}
-+
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
- 		krcp->initialized = true;
++		part = xchg(&old_ptbl->last_lookup, NULL);
++		if (part)
++			hd_struct_put(part);
+ 		kfree_rcu(old_ptbl, rcu_head);
  	}
+ }
+diff --git a/block/partition-generic.c b/block/partition-generic.c
+index 98d60a59b843..441c1c591c04 100644
+--- a/block/partition-generic.c
++++ b/block/partition-generic.c
+@@ -285,7 +285,8 @@ void delete_partition(struct gendisk *disk, int partno)
+ 		return;
+
+ 	rcu_assign_pointer(ptbl->part[partno], NULL);
+-	rcu_assign_pointer(ptbl->last_lookup, NULL);
++	if (cmpxchg(&ptbl->last_lookup, part, NULL) == part)
++		hd_struct_put(part);
+ 	kobject_put(part->holder_dir);
+ 	device_del(part_to_dev(part));
+
 -- 
-2.20.1
+2.22.0
+
+Regards,
+Tao
+
+
+> diff --git a/block/partition-generic.c b/block/partition-generic.c
+> index 1d20c9cf213f..1e0065ed6f02 100644
+> --- a/block/partition-generic.c
+> +++ b/block/partition-generic.c
+> @@ -284,6 +284,13 @@ void delete_partition(struct gendisk *disk, int partno)
+>  		return;
+>  
+>  	rcu_assign_pointer(ptbl->part[partno], NULL);
+> +	/*
+> +	 * Without the memory barrier, disk_map_sector_rcu()
+> +	 * may read the old value after overwriting the
+> +	 * last_lookup. Then it can not clear last_lookup,
+> +	 * which may cause use-after-free.
+> +	 */
+> +	smp_mb();
+>  	rcu_assign_pointer(ptbl->last_lookup, NULL);
+>  	kobject_put(part->holder_dir);
+>  	device_del(part_to_dev(part));
+> 
 
