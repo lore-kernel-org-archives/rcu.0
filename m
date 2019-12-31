@@ -2,120 +2,217 @@ Return-Path: <SRS0=YlMU=2V=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9BEAC2D0C2
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2924FC2D0CE
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 23:12:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AE7B3206DB
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZhEl5l4"
+	by mail.kernel.org (Postfix) with ESMTP id E9AEB206E6
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 23:12:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1577833921;
+	bh=I5VDTlagzgjoV/Vq0KLS6Pp7oec19p27s39/DZHvy6U=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=hi9tTVjKW5GgZjJUkx4devKn+dqxG/A7xNrY/gcYDVf3Qvvu7RmezLHUVsyBS1ffW
+	 UntzIpDuBmuvZ/bta1aXEZLIZN8KoU9R4wH6XqLKY4RxEC91xAYAtq8clPFb6i26Gn
+	 F2mWHWRiSm+BQVVmufXi5c83z26IIQL6/LeDqqDE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbfLaPQD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Dec 2019 10:16:03 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37455 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbfLaPQD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Dec 2019 10:16:03 -0500
-Received: by mail-wm1-f65.google.com with SMTP id f129so2069509wmf.2;
-        Tue, 31 Dec 2019 07:16:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OTaEoscjST+wQG0z7k1CEnJk1jN/Aw24bHq6v/U/FoM=;
-        b=CZhEl5l4YqRlUQcPt7001CCV41zm2DCqktS7u9BCCHE5DTVhuSgO4L33rj1OfiG6Bn
-         3V/kmAlZPw+kyBsr2L45PcvokmvUAPEYv8M6EBuNSY2no3rb/uN9Qgew/ksmpbwilZZi
-         GUQk5UlJAl7Nl6WU07GTM94iOWgnp6ndNBMUCldvojEKISZP2UEQf9Gvo73F1uOWKBGL
-         Hw64buyrrg86bUTGkORUs2CI2kQw5ekYOuIl76Txz4WQwUfWygk79jiFy8rE11AV16kN
-         MjsBeJOwAnIZJYSroKOiHeiR6VvBobSNrqFWJV3qttC2vZY55mzJ/6EydnTWguGBTver
-         7OiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=OTaEoscjST+wQG0z7k1CEnJk1jN/Aw24bHq6v/U/FoM=;
-        b=D2VlTaFxS6GXvFZss6qlzeGfwwpE6ZMXQSuP4kquPDWJZNF37QTmoLIWZZijpbA04r
-         7eqKsZXm4Xn9hiKxM/01xWbl+SMayXA1kqTqI6Ldj0KPadz3OpV+yz1OHvXUhf4ew5jZ
-         8wKY5uhuaJ+YYZwPtcw6qo/JY3whO5iMSpLN7G4Do08Diu3mZ+XYwUIEpV3IX3yo/uuH
-         bGWCsT8u60jYwGxZdptqw8v6rz7gvNaB13yNz1qPA1VW1AKA/3N5IKut++3LEqsLU9lD
-         0lkvoGCgY6YOUAckHE+JWLR5jK88FZn94p/j8XUSedF/gncirMc0HcbmnI2A86g9Nvlg
-         BQPA==
-X-Gm-Message-State: APjAAAUTLL17OgpUwWy/tL8vh3AvOOkvbEjed+cJX133K3otoIZakTyo
-        LSuCskGplWF6OqGmovpKa1Q=
-X-Google-Smtp-Source: APXvYqzYjuLNbRfE2I/6LIoj8sh+lezHVsGaApwkb0RbZRpOhw4+gqGGBOvuY/9vh3ryJvXqNi53ug==
-X-Received: by 2002:a05:600c:2207:: with SMTP id z7mr4671480wml.138.1577805360815;
-        Tue, 31 Dec 2019 07:16:00 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:45f9:d1e3:14f9:8ba2])
-        by smtp.gmail.com with ESMTPSA id e12sm49228468wrn.56.2019.12.31.07.15.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Dec 2019 07:16:00 -0800 (PST)
-From:   sj38.park@gmail.com
-X-Google-Original-From: sjpark@amazon.de
-To:     paulmck@kernel.org
-Cc:     corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 1/7] doc/RCU/Design: Remove remaining HTML tags in ReST files
-Date:   Tue, 31 Dec 2019 16:15:43 +0100
-Message-Id: <20191231151549.12797-2-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191231151549.12797-1-sjpark@amazon.de>
-References: <20191231151549.12797-1-sjpark@amazon.de>
+        id S1727071AbfLaXMA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Dec 2019 18:12:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727054AbfLaXMA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Dec 2019 18:12:00 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1C9B205ED;
+        Tue, 31 Dec 2019 23:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577833918;
+        bh=I5VDTlagzgjoV/Vq0KLS6Pp7oec19p27s39/DZHvy6U=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pe/rVDeLq/t43ZeJuGpDutta0HAnnwq0I/v2qB96KW7qMVU3GgYVkQ6bs+/tnsOGH
+         eE/lgQ0E/iFecx7GRQM1DXU80C2O+6l3m5y+RY+gBlwTdjaoDcZlDjx5JM34TFLxpJ
+         opc/fcNXSxzNXiTEO01w5Mr1JcgSrExbQ4KhjQ3U=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B812A352108C; Tue, 31 Dec 2019 15:11:58 -0800 (PST)
+Date:   Tue, 31 Dec 2019 15:11:58 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Yufen Yu <yuyufen@huawei.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, ming.lei@redhat.com, hch@lst.de,
+        zhengchuan@huawei.com, yi.zhang@huawei.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+Message-ID: <20191231231158.GW13449@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20191231110945.10857-1-yuyufen@huawei.com>
+ <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, Dec 31, 2019 at 10:55:47PM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 2019/12/31 19:09, Yufen Yu wrote:
+> > When delete partition executes concurrently with IOs issue,
+> > it may cause use-after-free on part in disk_map_sector_rcu()
+> > as following:
+> snip
+> 
+> > 
+> > diff --git a/block/genhd.c b/block/genhd.c
+> > index ff6268970ddc..39fa8999905f 100644
+> > --- a/block/genhd.c
+> > +++ b/block/genhd.c
+> > @@ -293,7 +293,23 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+> >  		part = rcu_dereference(ptbl->part[i]);
+> >  
+> >  		if (part && sector_in_part(part, sector)) {
+> snip
+> 
+> >  			rcu_assign_pointer(ptbl->last_lookup, part);
+> > +			part = rcu_dereference(ptbl->part[i]);
+> > +			if (part == NULL) {
+> > +				rcu_assign_pointer(ptbl->last_lookup, NULL);
+> > +				break;
+> > +			}
+> >  			return part;
+> >  		}
+> >  	}
+> 
+> Not ensure whether the re-read can handle the following case or not:
+> 
+> process A                                 process B                          process C
+> 
+> disk_map_sector_rcu():                    delete_partition():               disk_map_sector_rcu():
+> 
+> rcu_read_lock
+> 
+>   // need to iterate partition table
+>   part[i] != NULL   (1)                   part[i] = NULL (2)
+>                                           smp_mb()
+>                                           last_lookup = NULL (3)
+>                                           call_rcu()  (4)
+>     last_lookup = part[i] (5)
+> 
+> 
+>                                                                              rcu_read_lock()
+>                                                                              read last_lookup return part[i] (6)
+>                                                                              sector_in_part() is OK (7)
+>                                                                              return part[i] (8)
 
-Commit ccc9971e2147 ("docs: rcu: convert some articles from html to
-ReST") has converted a few of html RCU docs into ReST files, but a few
-of html tags which not supported on rst is remaining.  This commit
-converts those to ReST appropriate alternatives.
+Just for the record...
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst   | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Use of RCU needs to ensure that readers cannot access the to-be-freed
+structure -before- invoking call_rcu().  Which does look to happen here
+with the "last_lookup = NULL".  But in addition, the callback needs to
+get access to the to-be-freed structure via some sideband (usually the
+structure passed to call_rcu()), not from the reader-accessible structure.
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 1a8b129cfc04..83ae3b79a643 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -4,7 +4,7 @@ A Tour Through TREE_RCU's Grace-Period Memory Ordering
- 
- August 8, 2017
- 
--This article was contributed by Paul E.&nbsp;McKenney
-+This article was contributed by Paul E. McKenney
- 
- Introduction
- ============
-@@ -48,7 +48,7 @@ Tree RCU Grace Period Memory Ordering Building Blocks
- 
- The workhorse for RCU's grace-period memory ordering is the
- critical section for the ``rcu_node`` structure's
--``-&gt;lock``. These critical sections use helper functions for lock
-+``->lock``. These critical sections use helper functions for lock
- acquisition, including ``raw_spin_lock_rcu_node()``,
- ``raw_spin_lock_irq_rcu_node()``, and ``raw_spin_lock_irqsave_rcu_node()``.
- Their lock-release counterparts are ``raw_spin_unlock_rcu_node()``,
-@@ -102,9 +102,9 @@ lock-acquisition and lock-release functions::
-    23   r3 = READ_ONCE(x);
-    24 }
-    25
--   26 WARN_ON(r1 == 0 &amp;&amp; r2 == 0 &amp;&amp; r3 == 0);
-+   26 WARN_ON(r1 == 0 && r2 == 0 && r3 == 0);
- 
--The ``WARN_ON()`` is evaluated at &ldquo;the end of time&rdquo;,
-+The ``WARN_ON()`` is evaluated at "the end of time",
- after all changes have propagated throughout the system.
- Without the ``smp_mb__after_unlock_lock()`` provided by the
- acquisition functions, this ``WARN_ON()`` could trigger, for example
--- 
-2.17.1
+Or am I misinterpreting this sequence of events?
 
+							Thanx, Paul
+
+>   part[i] == NULL (9)
+>       last_lookup = NULL (10)
+>   rcu_read_unlock() (11)
+>                                            one RCU grace period completes
+>                                            __delete_partition() (12)
+>                                            free hd_partition (13)
+>                                                                              // use-after-free
+>                                                                              hd_struct_try_get(part[i])  (14)
+> 
+> * the number in the parenthesis is the sequence of events.
+> 
+> Maybe RCU experts can shed some light on this problem, so cc +paulmck@kernel.org, +joel@joelfernandes.org and +RCU maillist.
+> 
+> If the above case is possible, maybe we can fix the problem by pinning last_lookup through increasing its ref-count
+> (the following patch is only compile tested):
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 6e8543ca6912..179e0056fae1 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -279,7 +279,14 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>  		part = rcu_dereference(ptbl->part[i]);
+> 
+>  		if (part && sector_in_part(part, sector)) {
+> -			rcu_assign_pointer(ptbl->last_lookup, part);
+> +			struct hd_struct *old;
+> +
+> +			if (!hd_struct_try_get(part))
+> +				break;
+> +
+> +			old = xchg(&ptbl->last_lookup, part);
+> +			if (old)
+> +				hd_struct_put(old);
+>  			return part;
+>  		}
+>  	}
+> @@ -1231,7 +1238,11 @@ static void disk_replace_part_tbl(struct gendisk *disk,
+>  	rcu_assign_pointer(disk->part_tbl, new_ptbl);
+> 
+>  	if (old_ptbl) {
+> -		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
+> +		struct hd_struct *part;
+> +
+> +		part = xchg(&old_ptbl->last_lookup, NULL);
+> +		if (part)
+> +			hd_struct_put(part);
+>  		kfree_rcu(old_ptbl, rcu_head);
+>  	}
+>  }
+> diff --git a/block/partition-generic.c b/block/partition-generic.c
+> index 98d60a59b843..441c1c591c04 100644
+> --- a/block/partition-generic.c
+> +++ b/block/partition-generic.c
+> @@ -285,7 +285,8 @@ void delete_partition(struct gendisk *disk, int partno)
+>  		return;
+> 
+>  	rcu_assign_pointer(ptbl->part[partno], NULL);
+> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
+> +	if (cmpxchg(&ptbl->last_lookup, part, NULL) == part)
+> +		hd_struct_put(part);
+>  	kobject_put(part->holder_dir);
+>  	device_del(part_to_dev(part));
+> 
+> -- 
+> 2.22.0
+> 
+> Regards,
+> Tao
+> 
+> 
+> > diff --git a/block/partition-generic.c b/block/partition-generic.c
+> > index 1d20c9cf213f..1e0065ed6f02 100644
+> > --- a/block/partition-generic.c
+> > +++ b/block/partition-generic.c
+> > @@ -284,6 +284,13 @@ void delete_partition(struct gendisk *disk, int partno)
+> >  		return;
+> >  
+> >  	rcu_assign_pointer(ptbl->part[partno], NULL);
+> > +	/*
+> > +	 * Without the memory barrier, disk_map_sector_rcu()
+> > +	 * may read the old value after overwriting the
+> > +	 * last_lookup. Then it can not clear last_lookup,
+> > +	 * which may cause use-after-free.
+> > +	 */
+> > +	smp_mb();
+> >  	rcu_assign_pointer(ptbl->last_lookup, NULL);
+> >  	kobject_put(part->holder_dir);
+> >  	device_del(part_to_dev(part));
+> > 
+> 
