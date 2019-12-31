@@ -8,60 +8,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D66B1C2D0DC
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9399C2D0C2
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A7261206DB
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C07F206DB
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MuPDQ31J"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaF2LbkZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbfLaPQM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Dec 2019 10:16:12 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:33635 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727180AbfLaPQK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Dec 2019 10:16:10 -0500
-Received: by mail-wm1-f67.google.com with SMTP id d139so1954385wmd.0;
-        Tue, 31 Dec 2019 07:16:09 -0800 (PST)
+        id S1727180AbfLaPQS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Dec 2019 10:16:18 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55268 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727149AbfLaPQH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Dec 2019 10:16:07 -0500
+Received: by mail-wm1-f65.google.com with SMTP id b19so2048089wmj.4;
+        Tue, 31 Dec 2019 07:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TQMSEdRQ4ekpdJKwbIsHv9YNIyDhx2awGDRf3GaLUoA=;
-        b=MuPDQ31JAsnaUbWu33M5qr81ER4QFiw8/4Mukj7bEgn1qiImA316a/iR2mH02cV6bU
-         Mu8BaaHO5CZVQAJpP3PcUhu36H+yL4ai65XuD0Q1aVU5J0k3t8GOiPzi7P+xuRvpPiyH
-         MTBCccF4MSHKcbDSFzxU0JVu8YmXx83fO3UQEtn2L1GYICZUy5cdWbmArwpzFxodwW8q
-         3Am37j6iixnIdQpx903s0yoGEQyVd3OWvNeH7KNS1dZpAGXjywZcJO4CEJ+EaDmOUCsR
-         kcR9Mq9FaHKIuYAfWbDYO5sP5EeLKfFlFZS23DAKYMcn0wuQAkKYSkB8MqG19as9ZAeS
-         Bt2Q==
+        bh=V2G0IIz6PcMHsLxOWfvVq8qGDWQifeiMnhGJx0KlTEE=;
+        b=BaF2LbkZ0P5Ts9drkbMuHOvzHt5Ooh4QNvUsZgigepGufNFTaHEf65AlGfd/rhlrAJ
+         LM0sA5AHX20lY26/dIioDr5VHop19AEpxBktINChZjJ1BRwia5ktn+ysatWqvZcHbRrV
+         PHvXxJ5AtN5/xgQdbmHpjBKyb1MPjYsUPVNcfJkSFnDaP+c8zVo5gUQ4cWu0qGujUmDt
+         RjD6Wznj+xCVXqAd4tFjY6qlFJ077ZTbRVy743vadtGfPqV/C4jkKEx7rDoo+AZlfLeU
+         o6q5uNMC1j+Z10WTAZoVd7Dg4YUEbH2209++PfQBKKZBx9pNDYlSXdkE2HInXHiW4jrJ
+         fxeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TQMSEdRQ4ekpdJKwbIsHv9YNIyDhx2awGDRf3GaLUoA=;
-        b=H3RAxkxrWzFXX1yyPHkMsnSq1CIDocF3nzu0Xkrs/g16pcjiC3BOdBp7WzTfCVMvdw
-         LRX8mT2twwc5BczYfz7uaAbT3aWu+ixJdEcYy4Fen5pd/9jo9eoTNqPuNIe5oVy92MSS
-         WQgPPb5fqRCYHBzEjr58qZSoAAs1y0f1hxILCgR4ZuZibSSHGam05v+y/TV0N4RH17hx
-         pcH2k5bmKHTK2IN2ttbrPqgeKR7H8qjuAX05wO2sDwQqgVEXccAMtYfj3eiiIY26x3wn
-         +a926cLIDe5h38j7jeOwLpVcTHZTxunS6+fV6quTuwfws0PkEuftddzf6wuCQfWSBQf/
-         Nzpw==
-X-Gm-Message-State: APjAAAXo/yB5eq8Ee5wtod77+cSOXPi8Abr16wI0Nb2mbGXITpIHXFTJ
-        7vishgAioTR7Ey/qTwdREXY=
-X-Google-Smtp-Source: APXvYqwzosLGiFO8h5oGTKEN3V9jiDhs5PrmLw3JN1QdbUc2cga+BAGy/PJs8U5iBzBam6xXgWVPNg==
-X-Received: by 2002:a05:600c:54b:: with SMTP id k11mr4770427wmc.63.1577805368677;
-        Tue, 31 Dec 2019 07:16:08 -0800 (PST)
+        bh=V2G0IIz6PcMHsLxOWfvVq8qGDWQifeiMnhGJx0KlTEE=;
+        b=S5jFXsDD1YnsZcJZ0qkRpv/idp2YvxEDMlcgRBQ4X8vd8m30AKGSp1H6O2ueGcShIa
+         7bc/H6zb0D0FG3ld7QOOoq07bE0Yrj160adQP+AvSgeqMXxKkFmZ3zWD2LgYt+nyeBtv
+         9dgYHmu1kLR+uVhWAL6mw0yBueNKjgZWaCs4pl2ytdIm0u6hZeIzd2dfPnTMn9/ppGNg
+         KRsgIEes0vIaMkvSDmFlG0VQtYYTDPaPbm9KDx5SKg2oZOsnLSTQxIdkfNuCI6sGu75H
+         giJ/VF9EALun4cT7HjnB3t5rI2hUhxus6xVKQF8qsbAdDgC2ofSZ9mwI9LaT7geZfvmY
+         8DfA==
+X-Gm-Message-State: APjAAAXvOv7Pb76jtza8Llm6MaUybxPb6DQmI34OFORgsGLbNkpa6Ad9
+        NqqQWs3eDlEur0DjLBy2Ja4=
+X-Google-Smtp-Source: APXvYqyH4EmxY/t3g79B3jzE6Pn3KtZw9m+3YI1G7IaAGyxpEkeOy1+NmQpGPp5/lkzy+1b9n0CGEw==
+X-Received: by 2002:a05:600c:1003:: with SMTP id c3mr4731764wmc.120.1577805365512;
+        Tue, 31 Dec 2019 07:16:05 -0800 (PST)
 Received: from localhost.localdomain ([2a02:2450:10d2:194d:45f9:d1e3:14f9:8ba2])
-        by smtp.gmail.com with ESMTPSA id e12sm49228468wrn.56.2019.12.31.07.16.07
+        by smtp.gmail.com with ESMTPSA id e12sm49228468wrn.56.2019.12.31.07.16.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Dec 2019 07:16:08 -0800 (PST)
+        Tue, 31 Dec 2019 07:16:05 -0800 (PST)
 From:   sj38.park@gmail.com
 X-Google-Original-From: sjpark@amazon.de
 To:     paulmck@kernel.org
 Cc:     corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 7/7] rcu: Fix typos in beginning comments
-Date:   Tue, 31 Dec 2019 16:15:49 +0100
-Message-Id: <20191231151549.12797-8-sjpark@amazon.de>
+Subject: [PATCH 5/7] doc/RCU/rcu: Use absolute paths for non-rst files
+Date:   Tue, 31 Dec 2019 16:15:47 +0100
+Message-Id: <20191231151549.12797-6-sjpark@amazon.de>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191231151549.12797-1-sjpark@amazon.de>
 References: <20191231151549.12797-1-sjpark@amazon.de>
@@ -74,42 +74,29 @@ From: SeongJae Park <sjpark@amazon.de>
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- kernel/rcu/srcutree.c | 2 +-
- kernel/rcu/tree.c     | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/RCU/rcu.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 119a37319e67..a0892a9e2bf7 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -5,7 +5,7 @@
-  * Copyright (C) IBM Corporation, 2006
-  * Copyright (C) Fujitsu, 2012
-  *
-- * Author: Paul McKenney <paulmck@linux.ibm.com>
-+ * Authors: Paul McKenney <paulmck@linux.ibm.com>
-  *	   Lai Jiangshan <laijs@cn.fujitsu.com>
-  *
-  * For detailed explanation of Read-Copy Update mechanism see -
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 48fba2257748..ab7cbe71f57b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1,12 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * Read-Copy Update mechanism for mutual exclusion
-+ * Read-Copy Update mechanism for mutual exclusion (tree-based version)
-  *
-  * Copyright IBM Corporation, 2008
-  *
-  * Authors: Dipankar Sarma <dipankar@in.ibm.com>
-  *	    Manfred Spraul <manfred@colorfullife.com>
-- *	    Paul E. McKenney <paulmck@linux.ibm.com> Hierarchical version
-+ *	    Paul E. McKenney <paulmck@linux.ibm.com>
-  *
-  * Based on the original work by Paul McKenney <paulmck@linux.ibm.com>
-  * and inputs from Rusty Russell, Andrea Arcangeli and Andi Kleen.
+diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
+index a1dd71d01862..2a830c51477e 100644
+--- a/Documentation/RCU/rcu.rst
++++ b/Documentation/RCU/rcu.rst
+@@ -75,7 +75,7 @@ Frequently Asked Questions
+ - I hear that RCU is patented?  What is with that?
+ 
+   Yes, it is.  There are several known patents related to RCU,
+-  search for the string "Patent" in RTFP.txt to find them.
++  search for the string "Patent" in Documentation/RCU/RTFP.txt to find them.
+   Of these, one was allowed to lapse by the assignee, and the
+   others have been contributed to the Linux kernel under GPL.
+   There are now also LGPL implementations of user-level RCU
+@@ -88,5 +88,5 @@ Frequently Asked Questions
+ 
+ - Where can I find more information on RCU?
+ 
+-  See the RTFP.txt file in this directory.
++  See the Documentation/RCU/RTFP.txt file.
+   Or point your browser at (http://www.rdrop.com/users/paulmck/RCU/).
 -- 
 2.17.1
 
