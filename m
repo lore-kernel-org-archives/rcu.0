@@ -8,60 +8,61 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9659FC2D0DD
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BA38C2D0DE
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6B5F62072A
-	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 40A00206E4
+	for <rcu@archiver.kernel.org>; Tue, 31 Dec 2019 15:16:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hePclLS7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S0z0zRhl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbfLaPQX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Dec 2019 10:16:23 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:37463 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbfLaPQG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Dec 2019 10:16:06 -0500
-Received: by mail-wm1-f68.google.com with SMTP id f129so2069625wmf.2;
-        Tue, 31 Dec 2019 07:16:05 -0800 (PST)
+        id S1727140AbfLaPQF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Dec 2019 10:16:05 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:51190 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727114AbfLaPQE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Dec 2019 10:16:04 -0500
+Received: by mail-wm1-f66.google.com with SMTP id a5so2074205wmb.0;
+        Tue, 31 Dec 2019 07:16:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=JnHdGaV2EYztRNWEzGusYVpDY82eC9xf3HPJR7UpcnU=;
-        b=hePclLS7i3OzVaMuvM1NYINH4n6cJpNx1kqWuxiyOESHzYvPrtaB4pe6x8VGpmFQ5r
-         6faEdO+yI9sopEDrpSPpkh6fzLRMD/SS5sNvN8+hvOYdhEHfJYzLGuhs3mMksitQtwcG
-         cWW6baz6Z8w8ER63VMWEW3Lu0ZyBVkjdQdaVe2tMJFLGx68UbhLoFXel5nYocuyW3oon
-         O1DXOpkTsUnyAeJthGrfjnkHy6IBcuycUj2gUCvOQwI532hUHmRGqs/zCgN3ub0WCrm6
-         G2fyDrNPSvoB4TKId2+OJsOZhO+Pim55guzaDguMV6ButumbiH1+eERbK7Sv5eECTe3w
-         px3A==
+        bh=0zRWwdtgruTsO81wWfn/rafYXouQTO9qf/YHoNcQKSg=;
+        b=S0z0zRhln0SWWToB7rd1sTzBK1Q0sJoKJJ8RyrzuC/4V0mC12RPg/7QW8RMXT9jj1E
+         ZRtFd8N5PIQGRh7qogmCxO2UkWokTdGwnHS58gdSacAJlcaL//rM1S21TJ5iYMvaCmfS
+         b0eAn6+cZttsSZ6hTeWKx5M95/5kvMrQsR+loeP5rp2AAI8wSskpfWctEgwpn+LVb6rW
+         UaGuU9nSq66NZ7eqGQ639ytAkURC4v9AwbFbsN0tWs6n/GIFbYUXYL2aCepyUuHNnWhz
+         WKjARW6L5l6HVzA7nNj5y+8g+Xt//Rd8Y4wniZiX43AGeI8ekLxhd10qij29nMkcWRdg
+         nV7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=JnHdGaV2EYztRNWEzGusYVpDY82eC9xf3HPJR7UpcnU=;
-        b=aZilCx/HK/8nryeRQm5yHpQAkSvrr4VhkMxbB2oZuc8JKDBuD7XA1cIQD1ndnVl9R1
-         RG1m3Dk5GqVWVhYTWSkqEyMSgbPvazQFJt/Z94UylyrW32SznC2fToMTcAxXo+tdhaOH
-         QiccewdIdWUX7x4T5f097M+hU6CLwaldXBqC7EjIkwIfWpMP3nZFrB+HmD6r5COqicKf
-         mrvUqY0vUcFDxuqWuC3p6Pe6+6MArI1/ZLoEgIJ9Zuk8mHM/qXoQV+R068FZipcl23MI
-         cNljF3SUQba973Bn1nx+CCugr7uVy5p9DKlI2JkxOKIu/2/QzL91Uijb+tvB2gUKCTN8
-         3hjw==
-X-Gm-Message-State: APjAAAWwlPWvVZY4tx9EXKFgvMVk3zEHIVq3bOLCQgqKgOwLj0WmnBaE
-        oco1Y6E/fWjyOxm6QQQD0PvrDblhd7U=
-X-Google-Smtp-Source: APXvYqzlRTk9w2B921KGJceQlHsXVKusg3BiCjxha/HlLbDewSERlFQxsVtBQmkFSvF9KNjhvJ+HXg==
-X-Received: by 2002:a1c:1fd0:: with SMTP id f199mr4845448wmf.113.1577805364433;
-        Tue, 31 Dec 2019 07:16:04 -0800 (PST)
+        bh=0zRWwdtgruTsO81wWfn/rafYXouQTO9qf/YHoNcQKSg=;
+        b=RkoEHL2OCV0nGZPpHBDchujo+46eDfRUMmQtfE1ILYsCFOBNvtA7w9UpClEOwI8mxC
+         ukz4DcAWWQR1FSJ1FEtvn34r235JUS5Fvmyv0e6f/KTvH7+S+TNoF98hfJEu/Vfq9BXi
+         +R/F9tkHxMSv8awdQO+fhTfwnB/2ESIJ8YBwudPn78MTRVAgaB/V2xVNOe6yJBRxvX4Z
+         xylP3sztRh25O9JoP7fcaSif7YJDzWzpxv3ywzAijOy6bsHROjA0cvUOP0uwL8A10xeo
+         lyOSD3BxO6Y+LNLBF3HpR/2qa/PoK4+zkSdx/rnxPEljFtEZ55Jnhzjrhaomxts43dwv
+         t/3g==
+X-Gm-Message-State: APjAAAUg0m2RiasY+0Jg3Rc4eXo39/iQI50KrKn23QGqHpwKYgnPShXq
+        tOngSRRxnf6cTqtXkIqxiaHbebnGx68=
+X-Google-Smtp-Source: APXvYqzmV8T8DEjiqy7yS+WPrHQvB2YMMSM5zouLY+QLAICDLLBA94+i1woaLjQZBNDYIAPS+lGAyQ==
+X-Received: by 2002:a1c:7715:: with SMTP id t21mr4689270wmi.149.1577805362111;
+        Tue, 31 Dec 2019 07:16:02 -0800 (PST)
 Received: from localhost.localdomain ([2a02:2450:10d2:194d:45f9:d1e3:14f9:8ba2])
-        by smtp.gmail.com with ESMTPSA id e12sm49228468wrn.56.2019.12.31.07.16.03
+        by smtp.gmail.com with ESMTPSA id e12sm49228468wrn.56.2019.12.31.07.16.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Dec 2019 07:16:03 -0800 (PST)
+        Tue, 31 Dec 2019 07:16:01 -0800 (PST)
 From:   sj38.park@gmail.com
 X-Google-Original-From: sjpark@amazon.de
 To:     paulmck@kernel.org
 Cc:     corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH 4/7] doc/RCU/rcu: Use ':ref:' for links to other docs
-Date:   Tue, 31 Dec 2019 16:15:46 +0100
-Message-Id: <20191231151549.12797-5-sjpark@amazon.de>
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        SeongJae Park <sj38.park@amazon.de>
+Subject: [PATCH 2/7] doc/RCU/listRCU: Fix typos in a example code snippets
+Date:   Tue, 31 Dec 2019 16:15:44 +0100
+Message-Id: <20191231151549.12797-3-sjpark@amazon.de>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191231151549.12797-1-sjpark@amazon.de>
 References: <20191231151549.12797-1-sjpark@amazon.de>
@@ -72,48 +73,33 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Signed-off-by: SeongJae Park <sj38.park@amazon.de>
 ---
- Documentation/RCU/rcu.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Documentation/RCU/listRCU.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
-index 8dfb437dacc3..a1dd71d01862 100644
---- a/Documentation/RCU/rcu.rst
-+++ b/Documentation/RCU/rcu.rst
-@@ -11,8 +11,8 @@ must be long enough that any readers accessing the item being deleted have
- since dropped their references.  For example, an RCU-protected deletion
- from a linked list would first remove the item from the list, wait for
- a grace period to elapse, then free the element.  See the
--Documentation/RCU/listRCU.rst file for more information on using RCU with
--linked lists.
-+:ref:`Documentation/RCU/listRCU.rst <list_rcu_doc>` for more information on
-+using RCU with linked lists.
- 
- Frequently Asked Questions
- --------------------------
-@@ -50,7 +50,7 @@ Frequently Asked Questions
- - If I am running on a uniprocessor kernel, which can only do one
-   thing at a time, why should I wait for a grace period?
- 
--  See the Documentation/RCU/UP.rst file for more information.
-+  See :ref:`Documentation/RCU/UP.rst <up_doc>` for more information.
- 
- - How can I see where RCU is currently used in the Linux kernel?
- 
-@@ -68,9 +68,9 @@ Frequently Asked Questions
- 
- - Why the name "RCU"?
- 
--  "RCU" stands for "read-copy update".  The file Documentation/RCU/listRCU.rst
--  has more information on where this name came from, search for
--  "read-copy update" to find it.
-+  "RCU" stands for "read-copy update".
-+  :ref:`Documentation/RCU/listRCU.rst <list_rcu_doc>` has more information on where
-+  this name came from, search for "read-copy update" to find it.
- 
- - I hear that RCU is patented?  What is with that?
- 
+diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
+index 55d2b30db481..e768f56e8fa3 100644
+--- a/Documentation/RCU/listRCU.rst
++++ b/Documentation/RCU/listRCU.rst
+@@ -226,7 +226,7 @@ need to be filled in)::
+ 		list_for_each_entry(e, list, list) {
+ 			if (!audit_compare_rule(rule, &e->rule)) {
+ 				e->rule.action = newaction;
+-				e->rule.file_count = newfield_count;
++				e->rule.field_count = newfield_count;
+ 				write_unlock(&auditsc_lock);
+ 				return 0;
+ 			}
+@@ -255,7 +255,7 @@ RCU (*read-copy update*) its name.  The RCU code is as follows::
+ 					return -ENOMEM;
+ 				audit_copy_rule(&ne->rule, &e->rule);
+ 				ne->rule.action = newaction;
+-				ne->rule.file_count = newfield_count;
++				ne->rule.field_count = newfield_count;
+ 				list_replace_rcu(&e->list, &ne->list);
+ 				call_rcu(&e->rcu, audit_free_rule);
+ 				return 0;
 -- 
 2.17.1
 
