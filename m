@@ -2,190 +2,220 @@ Return-Path: <SRS0=Stsp=2X=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09298C2D0DF
-	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 01:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 534E7C2D0DD
+	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 06:54:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CCB53215A4
-	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 01:23:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BCC12053B
+	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 06:54:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hmN9YNnX"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VkbEwrcG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbgABBXg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Jan 2020 20:23:36 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:59392 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725895AbgABBXg (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 1 Jan 2020 20:23:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1577928215;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsepRmJjvT4cYPy6QHyiU0FOUdA3CmEcRr+bW/pGgyA=;
-        b=hmN9YNnXUQ76Io52S6/vM+1YgWqtwrFTvixPLTyWrnyhbEBU7RnOIXFD92J4iTpN/EkOOC
-        M3EFwPSc8m93cLq+kFNn4sSKgZLBDsw1zmxe3HHkJXDG8pkIXq58qYdBdXtd/4OUu1aPIQ
-        xlz7ePqy+azmivQ0RgHRfwo8wMZCxN0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-NjYHBSVINhyEOiJSU7-ydQ-1; Wed, 01 Jan 2020 20:23:31 -0500
-X-MC-Unique: NjYHBSVINhyEOiJSU7-ydQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 846B4420DB;
-        Thu,  2 Jan 2020 01:23:29 +0000 (UTC)
-Received: from ming.t460p (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2141078E9E;
-        Thu,  2 Jan 2020 01:23:19 +0000 (UTC)
-Date:   Thu, 2 Jan 2020 09:23:14 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Yufen Yu <yuyufen@huawei.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, hch@lst.de, zhengchuan@huawei.com,
-        yi.zhang@huawei.com, paulmck@kernel.org, joel@joelfernandes.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
- deleted
-Message-ID: <20200102012314.GB16719@ming.t460p>
-References: <20191231110945.10857-1-yuyufen@huawei.com>
- <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+        id S1726125AbgABGyt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Jan 2020 01:54:49 -0500
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:47039 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgABGyt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Jan 2020 01:54:49 -0500
+Received: by mail-lj1-f173.google.com with SMTP id m26so37307616ljc.13
+        for <rcu@vger.kernel.org>; Wed, 01 Jan 2020 22:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=s82264XRyod3Ls2XC7t2OJmG70X3mqI2X/kr7BgzOxQ=;
+        b=VkbEwrcG+nQvocWjriZrVgVVJF0ifPzcWl+/m31Zi+zCOaZ81Y68BRVEQcTs2p2CS0
+         fbXkvtJA4sGEuY5Du5gafJGFfNdIYsCSYzpgIm3D/ZdBEovjRJ6xRxj2DlNehwZXjUst
+         c6vQ7d4xpuQaatkHrcObPJrFuywmHClyjso0r7WX3TwCTajl7Jsyia8v64lFsNJnSmBO
+         BD2WK+TQH2vkBJXjCDm7+euXTeADoZKBwZbJi41R6lD6eDLb2tTMD2xX9f0Y5qb5dAfZ
+         5uOCj5APj33iBFImTmNE8WT1AShGlRR1t93IroTBrID1iwuwedoWDG+E7tSVBuJKJFGv
+         J6qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=s82264XRyod3Ls2XC7t2OJmG70X3mqI2X/kr7BgzOxQ=;
+        b=T0UlXv+xrtXX4HGW7CZ7+Sk3nqHyvqT0JzGgnWpnXvpuXxrWa0ESI4cdfz7kRtG8V8
+         jXk9C6BWGJfZIUdD45CzuZByqiWU7Ck6G6j+/IyuSjwIElG4X7YEvlg/anWQgPWI+ncU
+         2rsYeL/BQR/EoWEMwBIGcw49C7jRQbLhDE269V61rpME4G3wwknI47PbpYAu0zWVizvc
+         orSQX4aP/WZMfHLnx/zB7192MrvLMRAVI0oEm/saeQPLn0J9JDi5G+cfO85nS+YwgJPJ
+         Y2GR4B9F4aOdfZLwXk5AJfmUuE47oi5vtN6NTRwVgFOcWft5U2rkQUgKTUGt6MvBxYPO
+         VPGQ==
+X-Gm-Message-State: APjAAAUAh/o706kcm/GZ6cWpcXcfVr19O0h6jDTDM2KdGJaux9lZPvOI
+        IXPjHsiPDe4vkgrL6FQ3MkFZUiE2Ed7/qqWdRwwfuw==
+X-Google-Smtp-Source: APXvYqyMVB2vyX9/+6+KNiPDEDYSmob0A+2pJ3L1Ezi9S/2kvLMwVr4fObnfcbPTpAvbnthMCe9IWhwLA18ZdBqEzoE=
+X-Received: by 2002:a2e:884f:: with SMTP id z15mr37068944ljj.46.1577948086775;
+ Wed, 01 Jan 2020 22:54:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 2 Jan 2020 12:24:35 +0530
+Message-ID: <CA+G9fYv3=oJSFodFp4wwF7G7_g5FWYRYbc4F0AMU6jyfLT689A@mail.gmail.com>
+Subject: stable-rc-4.19.93-rc1/4e040169e8b7 : kernel panic RIP: 0010:__inet_lookup_listener
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Firo Yang <firo.yang@suse.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        rcu@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 31, 2019 at 10:55:47PM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 2019/12/31 19:09, Yufen Yu wrote:
-> > When delete partition executes concurrently with IOs issue,
-> > it may cause use-after-free on part in disk_map_sector_rcu()
-> > as following:
-> snip
-> 
-> > 
-> > diff --git a/block/genhd.c b/block/genhd.c
-> > index ff6268970ddc..39fa8999905f 100644
-> > --- a/block/genhd.c
-> > +++ b/block/genhd.c
-> > @@ -293,7 +293,23 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
-> >  		part = rcu_dereference(ptbl->part[i]);
-> >  
-> >  		if (part && sector_in_part(part, sector)) {
-> snip
-> 
-> >  			rcu_assign_pointer(ptbl->last_lookup, part);
-> > +			part = rcu_dereference(ptbl->part[i]);
-> > +			if (part == NULL) {
-> > +				rcu_assign_pointer(ptbl->last_lookup, NULL);
-> > +				break;
-> > +			}
-> >  			return part;
-> >  		}
-> >  	}
-> 
-> Not ensure whether the re-read can handle the following case or not:
-> 
-> process A                                 process B                          process C
-> 
-> disk_map_sector_rcu():                    delete_partition():               disk_map_sector_rcu():
-> 
-> rcu_read_lock
-> 
->   // need to iterate partition table
->   part[i] != NULL   (1)                   part[i] = NULL (2)
->                                           smp_mb()
->                                           last_lookup = NULL (3)
->                                           call_rcu()  (4)
->     last_lookup = part[i] (5)
-> 
-> 
->                                                                              rcu_read_lock()
->                                                                              read last_lookup return part[i] (6)
->                                                                              sector_in_part() is OK (7)
->                                                                              return part[i] (8)
-> 
->   part[i] == NULL (9)
->       last_lookup = NULL (10)
->   rcu_read_unlock() (11)
->                                            one RCU grace period completes
->                                            __delete_partition() (12)
->                                            free hd_partition (13)
->                                                                              // use-after-free
->                                                                              hd_struct_try_get(part[i])  (14)
-> 
-> * the number in the parenthesis is the sequence of events.
-> 
-> Maybe RCU experts can shed some light on this problem, so cc +paulmck@kernel.org, +joel@joelfernandes.org and +RCU maillist.
-> 
-> If the above case is possible, maybe we can fix the problem by pinning last_lookup through increasing its ref-count
-> (the following patch is only compile tested):
-> 
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 6e8543ca6912..179e0056fae1 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -279,7 +279,14 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
->  		part = rcu_dereference(ptbl->part[i]);
-> 
->  		if (part && sector_in_part(part, sector)) {
-> -			rcu_assign_pointer(ptbl->last_lookup, part);
-> +			struct hd_struct *old;
-> +
-> +			if (!hd_struct_try_get(part))
-> +				break;
-> +
-> +			old = xchg(&ptbl->last_lookup, part);
-> +			if (old)
-> +				hd_struct_put(old);
->  			return part;
->  		}
->  	}
-> @@ -1231,7 +1238,11 @@ static void disk_replace_part_tbl(struct gendisk *disk,
->  	rcu_assign_pointer(disk->part_tbl, new_ptbl);
-> 
->  	if (old_ptbl) {
-> -		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
-> +		struct hd_struct *part;
-> +
-> +		part = xchg(&old_ptbl->last_lookup, NULL);
-> +		if (part)
-> +			hd_struct_put(part);
->  		kfree_rcu(old_ptbl, rcu_head);
->  	}
->  }
-> diff --git a/block/partition-generic.c b/block/partition-generic.c
-> index 98d60a59b843..441c1c591c04 100644
-> --- a/block/partition-generic.c
-> +++ b/block/partition-generic.c
-> @@ -285,7 +285,8 @@ void delete_partition(struct gendisk *disk, int partno)
->  		return;
-> 
->  	rcu_assign_pointer(ptbl->part[partno], NULL);
-> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
-> +	if (cmpxchg(&ptbl->last_lookup, part, NULL) == part)
-> +		hd_struct_put(part);
->  	kobject_put(part->holder_dir);
->  	device_del(part_to_dev(part));
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm64, arm, x86_64, and i386.
 
-IMO this approach looks good.
+While running LTP syscalls accept* test cases on stable-rc-4.19 branch kern=
+el.
+This report log extracted from qemu_x86_64.
 
-Given partition is actually protected by percpu-refcount now, I guess the
-RCU annotation for referencing ->part[partno] and ->last_lookup may not
-be necessary, together with the part->rcu_work.
+metadata:
+  git branch: linux-4.19.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git
+  git commit: 4e040169e8b7f4e1c50ceb0f6596015ecc67a052
+  git describe: v4.19.92-112-g4e040169e8b7
+  make_kernelversion: 4.19.93-rc1
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkf=
+t/linux-stable-rc-4.19/396/config
 
+Crash log,
 
-Thanks,
-Ming
+BUG: unable to handle kernel paging request at 0000000040000001
+[   23.578222] PGD 138f25067 P4D 138f25067 PUD 0
+er run is 0h 15m[   23.578222] Oops: 0000 [#1] SMP NOPTI
+[   23.578222] CPU: 1 PID: 2216 Comm: accept02 Not tainted 4.19.93-rc1 #1
+[   23.578222] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.12.0-1 04/01/2014
+[   23.578222] RIP: 0010:__inet_lookup_listener+0x12d/0x300
+ 00s
+[ts t_buffe r 23.578222] Code: 18 48 85 db 0f 84 fe 00 00 00 48 83 eb
+68 0f 84 f4 00 00 00 0f b7 75 d0 44 8b 55 10 45 89 f1 45 31 ff 31 c0
+45 89 de 89 75 b0 <4c> 3b 63 30 75 43 66 44 3b 6b 0e 75 3c 0f b6 73 13
+40 f6 c6 20 75
+[   23.578222] RSP: 0018:ffff9e0dbba83c38 EFLAGS: 00010206
+[   23.578222] RAX: ffff9e0db6ff8a80 RBX: 000000003fffffd1 RCX: 00000000000=
+00000
+[   23.578222] RDX: 0000000000000006 RSI: 0000000000000000 RDI: 00000000fff=
+fffff
+[   23.578222] RBP: ffff9e0dbba83c88 R08: 000000000100007f R09: 00000000000=
+00000
+[   23.578222] R10: 000000000100007f R11: 0000000000000000 R12: ffffffffbeb=
+2fe40
+[   23.578222] R13: 000000000000d59f R14: 0000000000000000 R15: 00000000000=
+00006
+[   23.578222] FS:  00007fbb30e57700(0000) GS:ffff9e0dbba80000(0000)
+knlGS:0000000000000000
+[   23.578222] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   23.578222] CR2: 0000000040000001 CR3: 000000013276c000 CR4: 00000000003=
+406e0
+[   23.578222] Call Trace:
+[   23.578222]  <IRQ>
+[   23.578222]  tcp_v4_rcv+0x4fe/0xc80
+[   23.578222]  ip_local_deliver_finish+0xaf/0x390
+[   23.578222]  ip_local_deliver+0x1a1/0x200
+[   23.578222]  ? ip_sublist_rcv+0x420/0x420
+[   23.578222]  ip_rcv_finish+0x88/0xd0
+s.c:55: INFO: Te[   23.578222]  ip_rcv+0x142/0x200
+[   23.578222]  ? ip_rcv_finish_core.isra.18+0x4e0/0x4e0
+st is[ us ing guar  23.578222]  ? process_backlog+0x6d/0x230
+[   23.578222]  __netif_receive_skb_one_core+0x57/0x80
+ded [bu ffe rs
+ ac2c3.578222]  __netif_receive_skb+0x18/0x60
+[   23.578222]  process_backlog+0xd4/0x230
+[   23.578222]  net_rx_action+0x13e/0x420
+[   23.578222]  ? __do_softirq+0x9b/0x426
+[   23.578222]  __do_softirq+0xc7/0x426
+[   23.578222]  ? ip_finish_output2+0x255/0x660
+[   23.578222]  do_softirq_own_stack+0x2a/0x40
+[   23.578222]  </IRQ>
+[   23.578222]  do_softirq.part.19+0x4d/0x60
+[   23.578222]  __local_bh_enable_ip+0xd9/0xf0
+[   23.578222]  ip_finish_output2+0x27e/0x660
+[   23.578222]  ip_finish_output+0x235/0x370
+[   23.578222]  ? ip_finish_output+0x235/0x370
+[   23.578222]  ip_output+0x76/0x250
+[   23.578222]  ? ip_fragment.constprop.50+0x80/0x80
+[   23.578222]  ip_local_out+0x3f/0x70
+[   23.578222]  __ip_queue_xmit+0x1ea/0x5f0
+[   23.578222]  ? __lock_is_held+0x5a/0xa0
+[   23.578222]  ip_queue_xmit+0x10/0x20
+[   23.578222]  __tcp_transmit_skb+0x57c/0xb60
+[   23.578222]  tcp_connect+0xccd/0x1030
+[   23.578222]  tcp_v4_connect+0x515/0x550
+[   23.578222]  __inet_stream_connect+0x249/0x390
+[   23.578222]  ? __local_bh_enable_ip+0x7f/0xf0
+[   23.578222]  inet_stream_connect+0x3b/0x60
+[   23.578222]  __sys_connect+0xa3/0x120
+[   23.578222]  ? kfree+0x203/0x240
+[   23.578222]  ? syscall_trace_enter+0x1e3/0x350
+[   23.578222]  ? trace_hardirqs_off_caller+0x22/0xf0
+[   23.578222]  ? do_syscall_64+0x17/0x1a0
+[   23.578222]  ? lockdep_hardirqs_on+0xef/0x180
+[   23.578222]  ? do_syscall_64+0x17/0x1a0
+[   23.578222]  __x64_sys_connect+0x1a/0x20
+[   23.578222]  do_syscall_64+0x55/0x1a0
+[   23.578222]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[   23.578222] RIP: 0033:0x7fbb31a1c927
+[   23.578222] Code: 44 00 00 41 54 41 89 d4 55 48 89 f5 53 89 fb 48
+83 ec 10 e8 0b f9 ff ff 44 89 e2 48 89 ee 89 df 41 89 c0 b8 2a 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 89 44 24 0c e8 45 f9 ff ff
+8b 44
+[   23.578222] RSP: 002b:00007fbb30e56e00 EFLAGS: 00000293 ORIG_RAX:
+000000000000002a
+[   23.578222] RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 00007fbb31a=
+1c927
+[   23.578222] RDX: 0000000000000010 RSI: 00007fbb31e4bff0 RDI: 00000000000=
+00008
+[   23.578222] RBP: 00007fbb31e4bff0 R08: 0000000000000000 R09: 00000000000=
+00010
+[   23.578222] R10: 000000000000010b R11: 0000000000000293 R12: 00000000000=
+00010
+[   23.578222] R13: 0000000000412b64 R14: 0000000000000054 R15: 00000000000=
+00000
+[   23.578222] Modules linked in: fuse
+[   23.578222] CR2: 0000000040000001
+[   23.578222] ---[ end trace f7e2316fdadfb18a ]---
+[   23.578222] RIP: 0010:__inet_lookup_listener+0x12d/0x300
+[   23.578222] Code: 18 48 85 db 0f 84 fe 00 00 00 48 83 eb 68 0f 84
+f4 00 00 00 0f b7 75 d0 44 8b 55 10 45 89 f1 45 31 ff 31 c0 45 89 de
+89 75 b0 <4c> 3b 63 30 75 43 66 44 3b 6b 0e 75 3c 0f b6 73 13 40 f6 c6
+20 75
+[   23.578222] RSP: 0018:ffff9e0dbba83c38 EFLAGS: 00010206
+[   23.578222] RAX: ffff9e0db6ff8a80 RBX: 000000003fffffd1 RCX: 00000000000=
+00000
+[   23.578222] RDX: 0000000000000006 RSI: 0000000000000000 RDI: 00000000fff=
+fffff
+[   23.578222] RBP: ffff9e0dbba83c88 R08: 000000000100007f R09: 00000000000=
+00000
+[   23.578222] R10: 000000000100007f R11: 0000000000000000 R12: ffffffffbeb=
+2fe40
+[   23.578222] R13: 000000000000d59f R14: 0000000000000000 R15: 00000000000=
+00006
+[   23.578222] FS:  00007fbb30e57700(0000) GS:ffff9e0dbba80000(0000)
+knlGS:0000000000000000
+[   23.578222] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   23.578222] CR2: 0000000040000001 CR3: 000000013276c000 CR4: 00000000003=
+406e0
+[   23.578222] Kernel panic - not syncing: Fatal exception in interrupt
+ept02.c:127: INFO: Starting listener on port: 54687
+[   23.578222] Kernel Offset: 0x3c200000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[   23.578222] ---[ end Kernel panic - not syncing: Fatal exception in
+interrupt ]---
 
+crash log links,
+https://lkft.validation.linaro.org/scheduler/job/1076789#L1033
+
+--
+Linaro LKFT
+https://lkft.linaro.org
