@@ -1,98 +1,206 @@
-Return-Path: <SRS0=Stsp=2X=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=M6yn=2Y=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DBFC3276C
-	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 21:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A1BDC3276F
+	for <rcu@archiver.kernel.org>; Fri,  3 Jan 2020 03:06:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CBC2321655
-	for <rcu@archiver.kernel.org>; Thu,  2 Jan 2020 21:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578001702;
-	bh=2WXjLqQbps2a6F38F9m9ASGc4E7E4qO9KBQB0pZiS/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=YXzCUuIQ/wQmeGyVqQTnr3tZs8FZ13hUhLBVkooI1+52cdLXd8o9zJWC3e0UhXmjo
-	 72wKgZ6huCKQyEMx6WoCRq6smW216ZbVxqw9GKFKFylp24xp0asqS44jmQVjGA63oT
-	 QH+vIeW3ZudrEceybI2Xg2oQbN6dufBt/FFn0QuI=
+	by mail.kernel.org (Postfix) with ESMTP id 75995222C3
+	for <rcu@archiver.kernel.org>; Fri,  3 Jan 2020 03:06:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgABVsW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Jan 2020 16:48:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgABVsW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Jan 2020 16:48:22 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17DDD20863;
-        Thu,  2 Jan 2020 21:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578001701;
-        bh=2WXjLqQbps2a6F38F9m9ASGc4E7E4qO9KBQB0pZiS/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ChnEJTAvI7DSzADhF4xt8jED3CPXr3vS4YW3KPb+PiK/qm9oKKW7Rer8Cq/42UYwo
-         XnuAhVqELmoj3plWmKpRtqMrzCQWsLyvDmUcw4repVTJU+4yncndX/v4YWVLYRFa5v
-         8EqDycQLYCLokgf9eMd7Bzpt2ELML+SwC5TEpI5s=
-Date:   Thu, 2 Jan 2020 22:48:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        Firo Yang <firo.yang@suse.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH stable-4.19] tcp/dccp: fix possible race
- __inet_lookup_established()
-Message-ID: <20200102214819.GA745235@kroah.com>
-References: <CA+G9fYv3=oJSFodFp4wwF7G7_g5FWYRYbc4F0AMU6jyfLT689A@mail.gmail.com>
- <20200102212844.0D734E0095@unicorn.suse.cz>
+        id S1727358AbgACDGe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Jan 2020 22:06:34 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47644 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727325AbgACDGe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Jan 2020 22:06:34 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7E5ED8A828111D5EE3C1;
+        Fri,  3 Jan 2020 11:06:31 +0800 (CST)
+Received: from [127.0.0.1] (10.133.219.224) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Fri, 3 Jan 2020
+ 11:06:26 +0800
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Yufen Yu <yuyufen@huawei.com>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>, <hch@lst.de>,
+        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
+        <paulmck@kernel.org>, <joel@joelfernandes.org>,
+        <rcu@vger.kernel.org>
+References: <20191231110945.10857-1-yuyufen@huawei.com>
+ <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+ <20200102012314.GB16719@ming.t460p>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <c12da8ca-be66-496b-efb2-a60ceaf9ce54@huawei.com>
+Date:   Fri, 3 Jan 2020 11:06:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200102212844.0D734E0095@unicorn.suse.cz>
+In-Reply-To: <20200102012314.GB16719@ming.t460p>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.219.224]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 02, 2020 at 10:28:44PM +0100, Michal Kubecek wrote:
-> From: Eric Dumazet <edumazet@google.com>
-> 
-> [ Upstream commit 8dbd76e79a16b45b2ccb01d2f2e08dbf64e71e40 ]
-> 
-> Michal Kubecek and Firo Yang did a very nice analysis of crashes
-> happening in __inet_lookup_established().
-> 
-> Since a TCP socket can go from TCP_ESTABLISH to TCP_LISTEN
-> (via a close()/socket()/listen() cycle) without a RCU grace period,
-> I should not have changed listeners linkage in their hash table.
-> 
-> They must use the nulls protocol (Documentation/RCU/rculist_nulls.txt),
-> so that a lookup can detect a socket in a hash list was moved in
-> another one.
-> 
-> Since we added code in commit d296ba60d8e2 ("soreuseport: Resolve
-> merge conflict for v4/v6 ordering fix"), we have to add
-> hlist_nulls_add_tail_rcu() helper.
-> 
-> stable-4.19: we also need to update code in __inet_lookup_listener() and
-> inet6_lookup_listener() which has been removed in 5.0-rc1.
-> 
-> Fixes: 3b24d854cb35 ("tcp/dccp: do not touch listener sk_refcnt under synflood")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Reported-by: Michal Kubecek <mkubecek@suse.cz>
-> Reported-by: Firo Yang <firo.yang@suse.com>
-> Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-> Link: https://lore.kernel.org/netdev/20191120083919.GH27852@unicorn.suse.cz/
-> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
+Hi,
 
-Thanks for the updated patches, all now queued up.
+On 2020/1/2 9:23, Ming Lei wrote:
+> On Tue, Dec 31, 2019 at 10:55:47PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 2019/12/31 19:09, Yufen Yu wrote:
+>>> When delete partition executes concurrently with IOs issue,
+>>> it may cause use-after-free on part in disk_map_sector_rcu()
+>>> as following:
+>> snip
+>>
+>>>
+>>> diff --git a/block/genhd.c b/block/genhd.c
+>>> index ff6268970ddc..39fa8999905f 100644
+>>> --- a/block/genhd.c
+>>> +++ b/block/genhd.c
+>>> @@ -293,7 +293,23 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>>>  		part = rcu_dereference(ptbl->part[i]);
+>>>  
+>>>  		if (part && sector_in_part(part, sector)) {
+>> snip
+>>
+>>>  			rcu_assign_pointer(ptbl->last_lookup, part);
+>>> +			part = rcu_dereference(ptbl->part[i]);
+>>> +			if (part == NULL) {
+>>> +				rcu_assign_pointer(ptbl->last_lookup, NULL);
+>>> +				break;
+>>> +			}
+>>>  			return part;
+>>>  		}
+>>>  	}
+>>
+>> Not ensure whether the re-read can handle the following case or not:
+>>
+We have written a similar test case for the following case and found out that
+process C still may got the freed hd_struct pointer from process A. So
+the re-read will not resolve the problem.
 
-greg k-h
+>> process A                                 process B                          process C
+>>
+>> disk_map_sector_rcu():                    delete_partition():               disk_map_sector_rcu():
+>>
+>> rcu_read_lock
+>>
+>>   // need to iterate partition table
+>>   part[i] != NULL   (1)                   part[i] = NULL (2)
+>>                                           smp_mb()
+>>                                           last_lookup = NULL (3)
+>>                                           call_rcu()  (4)
+>>     last_lookup = part[i] (5)
+>>
+>>
+>>                                                                              rcu_read_lock()
+>>                                                                              read last_lookup return part[i] (6)
+>>                                                                              sector_in_part() is OK (7)
+>>                                                                              return part[i] (8)
+>>
+>>   part[i] == NULL (9)
+>>       last_lookup = NULL (10)
+>>   rcu_read_unlock() (11)
+>>                                            one RCU grace period completes
+>>                                            __delete_partition() (12)
+>>                                            free hd_partition (13)
+>>                                                                              // use-after-free
+>>                                                                              hd_struct_try_get(part[i])  (14)
+>>
+>> * the number in the parenthesis is the sequence of events.
+>>
+
+
+
+>> Maybe RCU experts can shed some light on this problem, so cc +paulmck@kernel.org, +joel@joelfernandes.org and +RCU maillist.
+>>
+>> If the above case is possible, maybe we can fix the problem by pinning last_lookup through increasing its ref-count
+>> (the following patch is only compile tested):
+>>
+>> diff --git a/block/genhd.c b/block/genhd.c
+>> index 6e8543ca6912..179e0056fae1 100644
+>> --- a/block/genhd.c
+>> +++ b/block/genhd.c
+>> @@ -279,7 +279,14 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>>  		part = rcu_dereference(ptbl->part[i]);
+>>
+>>  		if (part && sector_in_part(part, sector)) {
+>> -			rcu_assign_pointer(ptbl->last_lookup, part);
+>> +			struct hd_struct *old;
+>> +
+>> +			if (!hd_struct_try_get(part))
+>> +				break;
+>> +
+>> +			old = xchg(&ptbl->last_lookup, part);
+>> +			if (old)
+>> +				hd_struct_put(old);
+>>  			return part;
+>>  		}
+>>  	}
+>> @@ -1231,7 +1238,11 @@ static void disk_replace_part_tbl(struct gendisk *disk,
+>>  	rcu_assign_pointer(disk->part_tbl, new_ptbl);
+>>
+>>  	if (old_ptbl) {
+>> -		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
+>> +		struct hd_struct *part;
+>> +
+>> +		part = xchg(&old_ptbl->last_lookup, NULL);
+>> +		if (part)
+>> +			hd_struct_put(part);
+>>  		kfree_rcu(old_ptbl, rcu_head);
+>>  	}
+>>  }
+>> diff --git a/block/partition-generic.c b/block/partition-generic.c
+>> index 98d60a59b843..441c1c591c04 100644
+>> --- a/block/partition-generic.c
+>> +++ b/block/partition-generic.c
+>> @@ -285,7 +285,8 @@ void delete_partition(struct gendisk *disk, int partno)
+>>  		return;
+>>
+>>  	rcu_assign_pointer(ptbl->part[partno], NULL);
+>> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
+>> +	if (cmpxchg(&ptbl->last_lookup, part, NULL) == part)
+>> +		hd_struct_put(part);
+>>  	kobject_put(part->holder_dir);
+>>  	device_del(part_to_dev(part));
+> 
+> IMO this approach looks good.
+>
+Not sure about the overhead when there are concurrent IOs on different partitions,
+we will measure that.
+
+We have got a seemingly better solution: caching the index of last_lookup in tbl->part[]
+instead of caching the pointer itself, so we can ensure the validity of returned pointer
+by ensuring it's not NULL in tbl->part[] as does when last_lookup is NULL or 0.
+
+> Given partition is actually protected by percpu-refcount now, I guess the
+> RCU annotation for referencing ->part[partno] and ->last_lookup may not
+> be necessary, together with the part->rcu_work.
+> 
+So we will depends on the invocation of of call_rcu() on __percpu_ref_switch_mode() to
+ensure the RCU readers will find part[i] is NULL before trying to increasing
+the atomic ref-counter of part[i], right ?
+
+Regards,
+Tao
+
+> 
+> Thanks,
+> Ming
+> 
+> 
+> .
+> 
+
