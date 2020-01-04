@@ -2,252 +2,241 @@ Return-Path: <SRS0=EP0b=2Z=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06F16C00523
-	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 02:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93664C32767
+	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 09:16:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BA9EC24649
-	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 02:31:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578105095;
-	bh=lXjkK/JLSjpc7WvX5Do6GyiHNabXj1+zphe5Y0mgLds=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=PdTMQgrhq5j49cGQNnRTcK69noR9aMgUshUSTQsCySoVUw6n7tHmczREHQZw2iMpH
-	 bDiHu36VW2Pf8GD/zONeGvejfTjgY97ZN32wf1xO7CZy9UoeXf1l87JV24k0BhmNDS
-	 PiE/zNLUQzvzmJ7kxuzuBsAfiLEnnMEFGhd6AH8I=
+	by mail.kernel.org (Postfix) with ESMTP id 61DD2215A4
+	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 09:16:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgADCbf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Jan 2020 21:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727222AbgADCbf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Jan 2020 21:31:35 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88BFB21835;
-        Sat,  4 Jan 2020 02:31:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578105093;
-        bh=lXjkK/JLSjpc7WvX5Do6GyiHNabXj1+zphe5Y0mgLds=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=plxkwgNiC87DylnnXd9PCaLxPWvZRPK+AKxYBV3He+UA1Xi+vt38nwDlLre8l0VAb
-         zwogr08FYeoKkcyQlj+Dt6L9m0P8qdd3d7AOMBRoa0CWrCJZzoa2opL7JqnfnJBWPB
-         SwkXk3cnW8bVYlpc2iP0/2M6dQM9bo284AyozZNI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5C8AD35227A3; Fri,  3 Jan 2020 18:31:33 -0800 (PST)
-Date:   Fri, 3 Jan 2020 18:31:33 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zilstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        rcu <rcu@vger.kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
-        Amol Grover <frextrite@gmail.com>
-Subject: Re: RCU ideas discussed at LPC
-Message-ID: <20200104023133.GD13449@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAEXW_YTyxm7QZwFV7KYpN2Sds=SDYqOvZ4+qfWL1_Kwx48Dusg@mail.gmail.com>
- <20191226010532.GP13449@paulmck-ThinkPad-P72>
- <20200104015617.GK189259@google.com>
+        id S1726191AbgADJQo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 4 Jan 2020 04:16:44 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8678 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726133AbgADJQn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 4 Jan 2020 04:16:43 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D4EE1D14FE2955177214;
+        Sat,  4 Jan 2020 17:16:39 +0800 (CST)
+Received: from [127.0.0.1] (10.133.219.224) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Sat, 4 Jan 2020
+ 17:16:34 +0800
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+CC:     Yufen Yu <yuyufen@huawei.com>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>, <ming.lei@redhat.com>, <hch@lst.de>,
+        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
+        <rcu@vger.kernel.org>
+References: <20191231110945.10857-1-yuyufen@huawei.com>
+ <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+ <20191231231158.GW13449@paulmck-ThinkPad-P72>
+ <20200103234521.GG189259@google.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <27b4c66e-316a-b261-364d-0b246d48e6bd@huawei.com>
+Date:   Sat, 4 Jan 2020 17:16:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200104015617.GK189259@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200103234521.GG189259@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.219.224]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 08:56:17PM -0500, Joel Fernandes wrote:
-> On Wed, Dec 25, 2019 at 05:05:32PM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 25, 2019 at 05:41:04PM -0500, Joel Fernandes wrote:
-> > > Hi Paul,
-> > > We were discussing some ideas on facebook so I wanted to just post
-> > > them here as well. This is in the context of the RCU section of RT MC
-> > > https://www.youtube.com/watch?v=bpyFQJV5gCI
-> > > 
-> > > Detecting high kfree_rcu() load
-> > > ----------
-> > > You mentioned about this. As I understand it, we did the kfree_rcu()
-> > > batching to let the system not do anything RCU related until a batch
-> > > has filled up enough or a timeout has occurred. This makes the GP
-> > > thread and the system do less work.
-> > > The problem you are raising in our facebook thread is, that during
-> > > heavy load the "batch" can be large and be dumped into call_rcu()
-> > > eventually. Wouldn't this be better handled generically within
-> > > call_rcu() itself, for the benefit of other non-kfree_rcu workloads?
-> > > That is if a large number of callbacks is dumped, then try to end the
-> > > GP more quickly. This likely doesn't need a signal from kfree_rcu()
-> > > since call_rcu() knows that it is being hammered.
-> > 
-> > Except that call_rcu() currently has no idea how many parcels of memory
-> > a given request from kfree_rcu() represents.
+Hi Joel,
+
+On 2020/1/4 7:45, Joel Fernandes wrote:
+> On Tue, Dec 31, 2019 at 03:11:58PM -0800, Paul E. McKenney wrote:
+>> On Tue, Dec 31, 2019 at 10:55:47PM +0800, Hou Tao wrote:
+>>> Hi,
+>>>
+>>> On 2019/12/31 19:09, Yufen Yu wrote:
+>>>> When delete partition executes concurrently with IOs issue,
+>>>> it may cause use-after-free on part in disk_map_sector_rcu()
+>>>> as following:
+>>> snip
+>>>
+>>>>
+>>>> diff --git a/block/genhd.c b/block/genhd.c
+>>>> index ff6268970ddc..39fa8999905f 100644
+>>>> --- a/block/genhd.c
+>>>> +++ b/block/genhd.c
+>>>> @@ -293,7 +293,23 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>>>>  		part = rcu_dereference(ptbl->part[i]);
+>>>>  
+>>>>  		if (part && sector_in_part(part, sector)) {
+>>> snip
+>>>
+>>>>  			rcu_assign_pointer(ptbl->last_lookup, part);
+>>>> +			part = rcu_dereference(ptbl->part[i]);
+>>>> +			if (part == NULL) {
+>>>> +				rcu_assign_pointer(ptbl->last_lookup, NULL);
+>>>> +				break;
+>>>> +			}
+>>>>  			return part;
+>>>>  		}
+>>>>  	}
+>>>
+>>> Not ensure whether the re-read can handle the following case or not:
+>>>
+>>> process A                                 process B                          process C
+>>>
+>>> disk_map_sector_rcu():                    delete_partition():               disk_map_sector_rcu():
+>>>
+>>> rcu_read_lock
+>>>
+>>>   // need to iterate partition table
+>>>   part[i] != NULL   (1)                   part[i] = NULL (2)
+>>>                                           smp_mb()
+>>>                                           last_lookup = NULL (3)
+>>>                                           call_rcu()  (4)
+>>>     last_lookup = part[i] (5)
+>>>
+>>>
+>>>                                                                              rcu_read_lock()
+>>>                                                                              read last_lookup return part[i] (6)
+>>>                                                                              sector_in_part() is OK (7)
+>>>                                                                              return part[i] (8)
+>>
+>> Just for the record...
+>>
+>> Use of RCU needs to ensure that readers cannot access the to-be-freed
+>> structure -before- invoking call_rcu().  Which does look to happen here
+>> with the "last_lookup = NULL".  But in addition, the callback needs to
+>> get access to the to-be-freed structure via some sideband (usually the
+>> structure passed to call_rcu()), not from the reader-accessible structure.
+>>
+>> Or am I misinterpreting this sequence of events?
 > 
-> True. At the moment, neither does kfree_rcu() since we store only the
-> pointer. We could consult the low level allocator if they have this
-> information. If you could let me know how to make RCU more aggressive in this
-> case (once we know there's a problem), I could work on something like this. I
-> did have OOM issues in earlier versions of the kfree_rcu() patch. I could
-> boot a system with less memory and OOM it too with the tests even now.
-
-Let's keep things simple, at first at least!  ;-)
-
-Currently, call_rcu() has no idea how much memory is tied up by a normal
-callback, either.  But just counting the callbacks (or, in the case of
-kfree_rcu(), counting the block of memory, independent of size) is at
-least correlated with the memory footprint.  Plus that is what has been
-used in the past, so it should be a good place to start.
-
-Besides, how many call_rcu() invocations is a 1K kfree_rcu() invocation
-worth?  A 8K kfree_rcu() invocation?  A 64-byte kfree_rcu() invocation?
-
-We might need to answer those questions over time, but again, let's start
-simple.
-
-> > > Detecting recursive call_rcu() within call_rcu()
-> > > ---------
-> > > We could use a per-cpu variable to detect a scenario like this, though
-> > > I am not sure if preemption during call_rcu() itself would cause false
-> > > positives.
-> > 
-> > A call_rcu() from within an RCU callback function is legal and is
-> > sometimes done.  Or are you thinking of a call_rcu() from an interrupt
-> > handler interrupting another call_rcu()?
+> If I understand correctly, the issue described above is there are 2 threads
+> setting last_lookup pointer simultaneously, one of them is NULLing it and
+> waiting for a GP before freeing it (process B above), while the other is
+> assigning to it concurrently after it was just NULLed (process A). Meanwhile
+> process C starts a reader section *after* the GP by process B already started
+> and accesses the reassigned pointer causing use-after-free.
 > 
-> Oh, did not know this. I thought this was the point heavily discussed in the
-> LPC talk but must have misunderstood when you said you hoped no one was
-> precisely doing this..
-
-What I hoped they avoid is a call_rcu() bomb, where each callback does
-several call_rcu() invocations.  Just as with child processes invoking
-fork(), within broad limits it is OK for callback functions to invoke
-call_rcu().  There is at least one in rcutorture, for example, but it
-does just one call_rcu() and also checks a time-to-stop flag.
-
-> > > All rcuogp and rcuop threads tied to a house keeping CPU
-> > > ---
-> > > In LPC you mentioned about the problem of OOM if all rcuo* threads
-> > > including the GP one are not able to keep up with heavy load. On
-> > > Facebook I had proposed something like this: What about making the
-> > > affinity setting to be a "soft affinity", that is respect it always
-> > > expect in the uncommon case. In the uncommon case of heavy load, let
-> > > the threads run wherever to prevent OOM. Sure that might make the
-> > > system a little more disruptive, but if we are approaching OOM we have
-> > > bigger problems right?
-> > 
-> > The problem is that there are a rather large number of ways to force
-> > a given kthread to execute only on a given CPU, and reverse-engineering
-> > all that within call_rcu() isn't reasonable.  An alternative is to
-> > disable offloading, wait for the offloaded callbacks to drain, then
-> > start up the usual softirq approach (or per-CPU kthread, as the case
-> > may be).  This self-throttles because whatever is generating callbacks
-> > gets preempted by softirq invocation.
+> Did I miss something?
 > 
-> Ok, agreed. Did you already implement the "disable offloading" code?
+No. It's exactly the same as you have summarized. And thanks for that.
 
-Not yet, and I do agree with the results of the LPC vote, which is to
-do the diagnostic first.  Perhaps given a suitable diagnostic strategy,
-"disable offloading" never will be needed.
+> I believe the fix is what Tao already posted which is to use refcounts so
+> that the destructor does not free it while references are already held. Is
+> that what the final fix is going to be? That other thread is pretty long so I
+> lost track a bit..
+> We are just trying to find a better solution (e.g. more readable or understandable).
 
-That said, the changes I have made to RCU over the past several years
-are within striking distance of "disable offloading" being possible.
-There are fewer race conditions than there used to be, but there is
-still no shortage.
+Regards,
+Tao
 
-> > > ---------
-> > > How about doing this kind of call_rcu() to synchronize_rcu()
-> > > transition automatically if the context allows it? I.e. Detect the
-> > > context and if sleeping is allowed, then wait for the grace period
-> > > synchronously in call_rcu(). Not sure about deadlocks and the like
-> > > from this kind of waiting and have to think more.
-> > 
-> > This gets rather strange in a production PREEMPT=n build, so not a
-> > fan, actually.  And in real-time systems, I pretty much have to splat
-> > anyway if I slow down call_rcu() by that much.
-> > 
-> > So the preference is instead detecting such misconfiguration and issuing
-> > appropriate diagnostics.  And making RCU more able to keep up when not
-> > grossly misconfigured, hence the kfree_rcu() memory footprint being
-> > fed into core RCU.
+> thanks,
 > 
-> Ok. Is it not Ok to simply assume that a large number of callbacks queued
-> along with observing high memory pressure, means RCU should be more
-> aggressive anyway since whatever memory can be freed by invoking callbacks
-> should be helpful anyway? Or were you thinking making RCU aggressive when
-> there's a lot of memory pressure is not worth it, without knowing that RCU is
-> the cause for it?
-
-I used to have a memory-pressure switch for RCU, but the OOM guys hated
-it.  But given a reliable "running short of memory" indicator, I would
-be quite happy to use it.  After all, even if RCU is not at fault, it
-might still be helpful for it to pull its memory-footprint horns in a bit.
-
-> > > is square root of N number of rcuogp0 threads - the right optimization?
-> > 
-> > If there were enough CPUs, it would be necessary to have three levels
-> > of hierarchy and to go to the cube root, but that would be more CPUs
-> > than I have seen used.
-> > > ---------
-> > > The question raised was can we do with fewer threads, or even just
-> > > one? You mentioned the square root might not be the right choice. How
-> > > do we test how well the system is doing. Are you running rcutorture
-> > > with a certain tree configuration and monitor memory footprint /
-> > > performance?
-> > 
-> > The issue prompting the hierarcy was wakeup overhead on the grace-period
-> > kthread.  Going to a hierarchy reduced the load on that single thread
-> > (which could otherwise become a bottleneck on large systems, and also
-> > reduced the absolute number of wakeups by up to almost a factor of two.
-> > Deepening the hierarchy would further reduce the wakeup load on the
-> > grace-period kthread, but would increase the total number of wakeups.
-> > 
-> > So this is not a matter of tweaks and optimizations.  I would need to
-> > see some horrible problem with the current setup to even consider
-> > making a change.
+>  - Joel
 > 
-> Ok, I only raised this because in the LPC talk you mentioned that you are not
-> sure if this is the right optimization. But I understand the rationale for
-> choosing some hierarchy in light of the wakeup performance improvements (I
-> already knew that this is why you had a hierarchy).
-
-Very good!  ;-)
-
-> > > BTW, I have 2 interns working on RCU (Amol and Madupharna also on CC).
-> > > They were selected among several others as a part of the
-> > > LinuxFoundation mentorship program. They are familiar with RCU. I have
-> > > asked them to look at some RCU-list work and RCU sparse work. However,
-> > > I can also have them look into a few other things as time permits and
-> > > depending on what interests them.
-> > 
-> > Dog paddling before cliff diving, please!  ;-)
 > 
-> Sure. They are working on relatively simpler things for their internship but
-> I just put these ideas out there with them on CC so they can pick something
-> else as well if they have time and interest ;-)
-
-I considered pointing them at KCSAN reports, but about 5% of them require
-global knowledge.  And it is never clear up front which are the 5%.  And
-that 5% of "real bugs" is most of the motivation for things like KCSAN.
-
-> > > Thanks, Merry Christmas!
-> > 
-> > And to you and yours as well!
 > 
-> Hope you had a good holiday season!
+>> 							Thanx, Paul
+>>
+>>>   part[i] == NULL (9)
+>>>       last_lookup = NULL (10)
+>>>   rcu_read_unlock() (11)
+>>>                                            one RCU grace period completes
+>>>                                            __delete_partition() (12)
+>>>                                            free hd_partition (13)
+>>>                                                                              // use-after-free
+>>>                                                                              hd_struct_try_get(part[i])  (14)
+>>>
+>>> * the number in the parenthesis is the sequence of events.
+>>>
+>>> Maybe RCU experts can shed some light on this problem, so cc +paulmck@kernel.org, +joel@joelfernandes.org and +RCU maillist.
+>>>
+>>> If the above case is possible, maybe we can fix the problem by pinning last_lookup through increasing its ref-count
+>>> (the following patch is only compile tested):
+>>>
+>>> diff --git a/block/genhd.c b/block/genhd.c
+>>> index 6e8543ca6912..179e0056fae1 100644
+>>> --- a/block/genhd.c
+>>> +++ b/block/genhd.c
+>>> @@ -279,7 +279,14 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>>>  		part = rcu_dereference(ptbl->part[i]);
+>>>
+>>>  		if (part && sector_in_part(part, sector)) {
+>>> -			rcu_assign_pointer(ptbl->last_lookup, part);
+>>> +			struct hd_struct *old;
+>>> +
+>>> +			if (!hd_struct_try_get(part))
+>>> +				break;
+>>> +
+>>> +			old = xchg(&ptbl->last_lookup, part);
+>>> +			if (old)
+>>> +				hd_struct_put(old);
+>>>  			return part;
+>>>  		}
+>>>  	}
+>>> @@ -1231,7 +1238,11 @@ static void disk_replace_part_tbl(struct gendisk *disk,
+>>>  	rcu_assign_pointer(disk->part_tbl, new_ptbl);
+>>>
+>>>  	if (old_ptbl) {
+>>> -		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
+>>> +		struct hd_struct *part;
+>>> +
+>>> +		part = xchg(&old_ptbl->last_lookup, NULL);
+>>> +		if (part)
+>>> +			hd_struct_put(part);
+>>>  		kfree_rcu(old_ptbl, rcu_head);
+>>>  	}
+>>>  }
+>>> diff --git a/block/partition-generic.c b/block/partition-generic.c
+>>> index 98d60a59b843..441c1c591c04 100644
+>>> --- a/block/partition-generic.c
+>>> +++ b/block/partition-generic.c
+>>> @@ -285,7 +285,8 @@ void delete_partition(struct gendisk *disk, int partno)
+>>>  		return;
+>>>
+>>>  	rcu_assign_pointer(ptbl->part[partno], NULL);
+>>> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
+>>> +	if (cmpxchg(&ptbl->last_lookup, part, NULL) == part)
+>>> +		hd_struct_put(part);
+>>>  	kobject_put(part->holder_dir);
+>>>  	device_del(part_to_dev(part));
+>>>
+>>> -- 
+>>> 2.22.0
+>>>
+>>> Regards,
+>>> Tao
+>>>
+>>>
+>>>> diff --git a/block/partition-generic.c b/block/partition-generic.c
+>>>> index 1d20c9cf213f..1e0065ed6f02 100644
+>>>> --- a/block/partition-generic.c
+>>>> +++ b/block/partition-generic.c
+>>>> @@ -284,6 +284,13 @@ void delete_partition(struct gendisk *disk, int partno)
+>>>>  		return;
+>>>>  
+>>>>  	rcu_assign_pointer(ptbl->part[partno], NULL);
+>>>> +	/*
+>>>> +	 * Without the memory barrier, disk_map_sector_rcu()
+>>>> +	 * may read the old value after overwriting the
+>>>> +	 * last_lookup. Then it can not clear last_lookup,
+>>>> +	 * which may cause use-after-free.
+>>>> +	 */
+>>>> +	smp_mb();
+>>>>  	rcu_assign_pointer(ptbl->last_lookup, NULL);
+>>>>  	kobject_put(part->holder_dir);
+>>>>  	device_del(part_to_dev(part));
+>>>>
+>>>
+> 
+> .
+> 
 
-It did!  First holiday season in quite a few years featuring all
-three kids, though not all at once.  Might be awhile until the next
-time that happens.  Something about them being about 30 years old and
-widely dispersed.  ;-)
-
-As the little one becomes more aware, your holiday seasons should become
-quite fun.  Don't miss out!  ;-)
-
-							Thanx, Paul
