@@ -1,131 +1,181 @@
-Return-Path: <SRS0=EP0b=2Z=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=5w8b=23=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04587C32771
-	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 21:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D314EC32771
+	for <rcu@archiver.kernel.org>; Mon,  6 Jan 2020 07:39:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CB8EE21734
-	for <rcu@archiver.kernel.org>; Sat,  4 Jan 2020 21:21:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="am5n50n1"
+	by mail.kernel.org (Postfix) with ESMTP id AECEF215A4
+	for <rcu@archiver.kernel.org>; Mon,  6 Jan 2020 07:39:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgADVVd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 4 Jan 2020 16:21:33 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43920 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726170AbgADVVd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 4 Jan 2020 16:21:33 -0500
-Received: by mail-pf1-f196.google.com with SMTP id x6so24011173pfo.10
-        for <rcu@vger.kernel.org>; Sat, 04 Jan 2020 13:21:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=plpKbdiW72DXJOvU1TVKdnl0zL4VM/YG87vawclIn4g=;
-        b=am5n50n1oazIAUJ+wPBXku6ho9iqM+p9CB9klzmmA3vS9X9Fy65BjVdjbZadmAjSTF
-         j7rspwpImjnIRTaPRl89iMez9Wwy0CEciZyQ+72J/Js5lZPUyCO6b6TQxTYvA33B/LUJ
-         qW0Kx8ekLp+UQ+TwZjCvlGUFOndUeA4M/hX88=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=plpKbdiW72DXJOvU1TVKdnl0zL4VM/YG87vawclIn4g=;
-        b=C4qu6VlyMKjlLdFum+k8da7qAf715ZfwyvUJD78sUXzXx1WHbPxNmXyNcu2bZRAXF5
-         jDVy39naBent6+q3ayAOJCIJKYhGa3jmXaNaXaIYQ/2zcrqfewLS/ih6B4dy7kkfGn2j
-         RAObIkNvKMtX/uYXOB2tRzniLfLStxFwMwl9y306IFZ/Uabn0EqM+KpVOCGZNdrWP7WW
-         Iv0K/2m3OAA+YBtameyRjMJk6dqFbRup5zWs/2q8/BxehB5chpSz26y5gyKEns/+Pv3a
-         h3jbqAA3d7+l8sU1suY/wWI/Gjkuw/93NhQPsY/7yrZc43eti+em+A8FBYRrL25Y2Jpa
-         0EWw==
-X-Gm-Message-State: APjAAAX2myKjAKBmG6S+ILXw9j4XMMWRJRDLvQWwAyr7vF2OWTMoXmS0
-        j82UfVBJ36SO8Dof8LOOt4ENty506bY=
-X-Google-Smtp-Source: APXvYqznm49seUa5hKAczurh81jT6PyWLH3/0O90WcjrfI7g+tRM/rvYJDn6zIYHARt2LE/nuhElqA==
-X-Received: by 2002:aa7:96b7:: with SMTP id g23mr98998711pfk.108.1578172892874;
-        Sat, 04 Jan 2020 13:21:32 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id s18sm67570463pfh.179.2020.01.04.13.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2020 13:21:32 -0800 (PST)
-Date:   Sat, 4 Jan 2020 16:21:31 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     madhuparnabhowmik04@gmail.com
-Cc:     stefanr@s5r6.in-berlin.de, paulmck@kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, frextrite@gmail.com
-Subject: Re: [PATCH] drivers: firewire: core-transaction: Pass lockdep
- condition to address_handler_list iterator
-Message-ID: <20200104212131.GN189259@google.com>
-References: <20200104144215.27590-1-madhuparnabhowmik04@gmail.com>
+        id S1725817AbgAFHjU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Jan 2020 02:39:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8219 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725446AbgAFHjU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Jan 2020 02:39:20 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 2F65A6988ACE485D6CB6;
+        Mon,  6 Jan 2020 15:39:18 +0800 (CST)
+Received: from [10.173.221.193] (10.173.221.193) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 6 Jan 2020 15:39:08 +0800
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Hou Tao <houtao1@huawei.com>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>, <hch@lst.de>,
+        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
+        <paulmck@kernel.org>, <joel@joelfernandes.org>,
+        <rcu@vger.kernel.org>
+References: <20191231110945.10857-1-yuyufen@huawei.com>
+ <a9ce86d6-dadb-9301-7d76-8cef81d782fd@huawei.com>
+ <20200102012314.GB16719@ming.t460p>
+ <c12da8ca-be66-496b-efb2-a60ceaf9ce54@huawei.com>
+ <20200103041805.GA29924@ming.t460p>
+ <ea362a86-d2de-7dfe-c826-d59e8b5068c3@huawei.com>
+ <20200103081745.GA11275@ming.t460p>
+ <82c10514-aec5-0d7c-118f-32c261015c6a@huawei.com>
+ <20200103151616.GA23308@ming.t460p>
+From:   Yufen Yu <yuyufen@huawei.com>
+Message-ID: <582f8e81-6127-47aa-f7fe-035251052238@huawei.com>
+Date:   Mon, 6 Jan 2020 15:39:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200104144215.27590-1-madhuparnabhowmik04@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200103151616.GA23308@ming.t460p>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.221.193]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jan 04, 2020 at 08:12:15PM +0530, madhuparnabhowmik04@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Hi, Ming
+
+On 2020/1/3 23:16, Ming Lei wrote:
+> Hello Yufen,
 > 
-> The address_handler_list is traversed with list_for_each_entry_rcu
-> with address_handler_list_lock held.
-> list_for_each_entry_rcu has built-in RCU and lock checking.
-> Use it for address_handler_list traversal.
+> OK, we still can move clearing .last_lookup into __delete_partition(),
+> at that time all IO path can observe the partition percpu-refcount killed.
 > 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
-> ---
->  drivers/firewire/core-transaction.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> Also the rcu work fn is run after one RCU grace period, at that time,
+> the NULL .last_lookup becomes visible in all IO path too.
 > 
-> diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
-> index 404a035f104d..a15e70027932 100644
-> --- a/drivers/firewire/core-transaction.c
-> +++ b/drivers/firewire/core-transaction.c
-> @@ -61,6 +61,11 @@
->  #define PHY_CONFIG_ROOT_ID(node_id)	((((node_id) & 0x3f) << 24) | (1 << 23))
->  #define PHY_IDENTIFIER(id)		((id) << 30)
->  
-> +static DEFINE_SPINLOCK(address_handler_list_lock);
-> +static LIST_HEAD(address_handler_list);
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index 089e890ab208..79599f5fd5b7 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -1365,18 +1365,6 @@ void blk_account_io_start(struct request *rq, bool new_io)
+>   		part_stat_inc(part, merges[rw]);
+>   	} else {
+>   		part = disk_map_sector_rcu(rq->rq_disk, blk_rq_pos(rq));
+> -		if (!hd_struct_try_get(part)) {
+> -			/*
+> -			 * The partition is already being removed,
+> -			 * the request will be accounted on the disk only
+> -			 *
+> -			 * We take a reference on disk->part0 although that
+> -			 * partition will never be deleted, so we can treat
+> -			 * it as any other partition.
+> -			 */
+> -			part = &rq->rq_disk->part0;
+> -			hd_struct_get(part);
+> -		}
+>   		part_inc_in_flight(rq->q, part, rw);
+>   		rq->part = part;
+>   	}
+> diff --git a/block/genhd.c b/block/genhd.c
+> index ff6268970ddc..e3dec90b1f43 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -286,17 +286,21 @@ struct hd_struct *disk_map_sector_rcu(struct gendisk *disk, sector_t sector)
+>   	ptbl = rcu_dereference(disk->part_tbl);
+>   
+>   	part = rcu_dereference(ptbl->last_lookup);
+> -	if (part && sector_in_part(part, sector))
+> +	if (part && sector_in_part(part, sector) && hd_struct_try_get(part))
+>   		return part;
+>   
+>   	for (i = 1; i < ptbl->len; i++) {
+>   		part = rcu_dereference(ptbl->part[i]);
+>   
+>   		if (part && sector_in_part(part, sector)) {
+> +                       if (!hd_struct_try_get(part))
+> +                               goto exit;
+>   			rcu_assign_pointer(ptbl->last_lookup, part);
+>   			return part;
+>   		}
+>   	}
+> + exit:
+> +	hd_struct_get(&disk->part0);
+>   	return &disk->part0;
+>   }
+>   EXPORT_SYMBOL_GPL(disk_map_sector_rcu);
+> diff --git a/block/partition-generic.c b/block/partition-generic.c
+> index 1d20c9cf213f..1739f750dbf2 100644
+> --- a/block/partition-generic.c
+> +++ b/block/partition-generic.c
+> @@ -262,6 +262,12 @@ static void delete_partition_work_fn(struct work_struct *work)
+>   void __delete_partition(struct percpu_ref *ref)
+>   {
+>   	struct hd_struct *part = container_of(ref, struct hd_struct, ref);
+> +	struct disk_part_tbl *ptbl =
+> +		rcu_dereference_protected(part->disk->part_tbl, 1);
 > +
-> +#define address_handler_list_lock_held() lock_is_held(&(address_handler_list_lock).dep_map)
+> +	rcu_assign_pointer(ptbl->last_lookup, NULL);
+> +	put_device(disk_to_dev(part->disk));
 > +
->  /* returns 0 if the split timeout handler is already running */
->  static int try_cancel_split_timeout(struct fw_transaction *t)
->  {
-> @@ -485,7 +490,7 @@ static struct fw_address_handler *lookup_overlapping_address_handler(
->  {
->  	struct fw_address_handler *handler;
->  
-> -	list_for_each_entry_rcu(handler, list, link) {
-> +	list_for_each_entry_rcu(handler, list, link, address_handler_list_lock_held()) {
->  		if (handler->offset < offset + length &&
->  		    offset < handler->offset + handler->length)
->  			return handler;
-> @@ -514,8 +519,6 @@ static struct fw_address_handler *lookup_enclosing_address_handler(
->  	return NULL;
->  }
->  
-> -static DEFINE_SPINLOCK(address_handler_list_lock);
-> -static LIST_HEAD(address_handler_list);
->  
->  const struct fw_address_region fw_high_memory_region =
->  	{ .start = FW_MAX_PHYSICAL_RANGE, .end = 0xffffe0000000ULL, };
-> -- 
-> 2.17.1
-> 
+>   	INIT_RCU_WORK(&part->rcu_work, delete_partition_work_fn);
+>   	queue_rcu_work(system_wq, &part->rcu_work);
+>   }
+> @@ -283,8 +289,9 @@ void delete_partition(struct gendisk *disk, int partno)
+>   	if (!part)
+>   		return;
+>   
+> +	get_device(disk_to_dev(disk));
+>   	rcu_assign_pointer(ptbl->part[partno], NULL);
+> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
+> +
+>   	kobject_put(part->holder_dir);
+>   	device_del(part_to_dev(part));
+>   
+> @@ -349,6 +356,7 @@ struct hd_struct *add_partition(struct gendisk *disk, int partno,
+>   	p->nr_sects = len;
+>   	p->partno = partno;
+>   	p->policy = get_disk_ro(disk);
+> +	p->disk = disk;
+>   
+>   	if (info) {
+>   		struct partition_meta_info *pinfo = alloc_part_info(disk);
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index 8bb63027e4d6..66660ec5e8ee 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -129,6 +129,7 @@ struct hd_struct {
+>   #else
+>   	struct disk_stats dkstats;
+>   #endif
+> +	struct gendisk *disk;
+>   	struct percpu_ref ref;
+>   	struct rcu_work rcu_work;
+>   };
+
+
+IMO, this change can solve the problem. But, __delete_partition will
+depend on the implementation of disk_release(). If disk .release modify
+as blocked in the future, then __delete_partition will also be blocked,
+which is not expected in rcu callback function.
+
+We may cache index of part[] instead of part[i] itself to fix the use-after-free bug.
+https://patchwork.kernel.org/patch/11318767/
+
+Thanks,
+Yufen
