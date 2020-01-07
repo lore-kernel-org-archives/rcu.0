@@ -1,104 +1,116 @@
-Return-Path: <SRS0=5w8b=23=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ioRT=24=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E12CFC47409
-	for <rcu@archiver.kernel.org>; Mon,  6 Jan 2020 20:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69EFAC33C99
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 11:40:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B75B624679
-	for <rcu@archiver.kernel.org>; Mon,  6 Jan 2020 20:08:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1g+/l8W"
+	by mail.kernel.org (Postfix) with ESMTP id 3677E2073D
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 11:40:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgAFUIq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Jan 2020 15:08:46 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:42165 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgAFUI1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Jan 2020 15:08:27 -0500
-Received: by mail-wr1-f66.google.com with SMTP id q6so51073279wro.9;
-        Mon, 06 Jan 2020 12:08:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=F2cYtzodL9YV1EN0v6Lt+0C7d2wI63L5Ti7WB64sdNw=;
-        b=E1g+/l8W5UpNIDqkgKEFYfjkT7MLJrnRJ45k5ZOt7ZPLY/rbiKiZ55Ge5l8zAhc6q0
-         SE/19jmrOiZTGZ6bvbS6fY2ghbGMrdWAggj4BawE9bKxMBlAllBov9UyNaHdUYWouUAJ
-         1WXWhq/vS6QmOXozI5p4AVcyQrKeQo2tRf0wRhm5hTlCtYHPa9a+tDMq2iCQ0i3MaTpW
-         EuOXBx7JBwvxR+yITqZ/TQeMzX1VSJxy2f2NYmqFNwY6w9BAcvlHvZa5gY2x5z0v/iSd
-         +fbwvmK0u88rCWoZx1wqTd+Lx8vO+XR/DKHTkA6aETJxsvI3qUXurM45Q9un53BiqL+n
-         yRqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=F2cYtzodL9YV1EN0v6Lt+0C7d2wI63L5Ti7WB64sdNw=;
-        b=oD/juFbeXv4MPARZ2xpd9fZNH1OQ976+g79K3RCC/kVR9hd8cpykfZDCmb0lbxript
-         50m5/EwwIXcWBAswM6RqMnbpV7k4K3AG+uxOBXLkskU2OA3QrzYX+qFegH8q87IqKQ2O
-         jQyol03Dh/2Uq2pzIhK7khHL9RuyZTut+lQ9IQEnY3ub/LnRzjk/T+VLnhcl+8tprtu5
-         Gda493LwdOFxBgodBIvhcut41/HuqIigtiFsH7ilJbEcbBGUkEUXdrRLHbfT7ZhKWnQC
-         ehwW06XkRewBSuSGMAUVTTjClGpZo0yYzpUUjyAvgyAJvCHCrOmSTW/j3dY9W19LBZeM
-         hYhg==
-X-Gm-Message-State: APjAAAWJTxBwuV8KTWpfd6yXNauvQGqnkkNVM01s3apuv6wk0BxF6Wlo
-        Q5cG0Iw+qkLSvUMFNUOJYhA=
-X-Google-Smtp-Source: APXvYqzAr+PY6eXwyS4I6TtUEcARBjR00PvgGyLI7ehmIfPGTrpvRbxubZxMleBEinzO3iGpsSPlow==
-X-Received: by 2002:a5d:65c5:: with SMTP id e5mr104548540wrw.311.1578341305876;
-        Mon, 06 Jan 2020 12:08:25 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:74f9:b588:decc:794d])
-        by smtp.gmail.com with ESMTPSA id t190sm23836982wmt.44.2020.01.06.12.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2020 12:08:25 -0800 (PST)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     paulmck@kernel.org
-Cc:     corbet@lwn.net, madhuparnabhowmik04@gmail.com, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: [PATCH v3 2/7] doc/RCU/listRCU: Fix typos in a example code snippets
-Date:   Mon,  6 Jan 2020 21:07:57 +0100
-Message-Id: <20200106200802.26994-3-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200106200802.26994-1-sj38.park@gmail.com>
-References: <20200106200802.26994-1-sj38.park@gmail.com>
+        id S1727559AbgAGLk1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jan 2020 06:40:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:54084 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727177AbgAGLk0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jan 2020 06:40:26 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C8CDDE3AC312FE33E8A7;
+        Tue,  7 Jan 2020 19:40:20 +0800 (CST)
+Received: from [127.0.0.1] (10.133.219.224) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Tue, 7 Jan 2020
+ 19:40:11 +0800
+Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
+ deleted
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Yufen Yu <yuyufen@huawei.com>, <axboe@kernel.dk>,
+        <linux-block@vger.kernel.org>, <hch@lst.de>,
+        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
+        <paulmck@kernel.org>, <joel@joelfernandes.org>,
+        <rcu@vger.kernel.org>
+References: <20200102012314.GB16719@ming.t460p>
+ <c12da8ca-be66-496b-efb2-a60ceaf9ce54@huawei.com>
+ <20200103041805.GA29924@ming.t460p>
+ <ea362a86-d2de-7dfe-c826-d59e8b5068c3@huawei.com>
+ <20200103081745.GA11275@ming.t460p>
+ <82c10514-aec5-0d7c-118f-32c261015c6a@huawei.com>
+ <20200103151616.GA23308@ming.t460p>
+ <582f8e81-6127-47aa-f7fe-035251052238@huawei.com>
+ <20200106081137.GA10487@ming.t460p>
+ <747c3856-afa4-0909-dae2-f3b23aa38118@huawei.com>
+ <20200106100547.GA15256@ming.t460p>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <762e1d7b-af3e-93f4-c744-ecd8ae8946e8@huawei.com>
+Date:   Tue, 7 Jan 2020 19:40:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200106100547.GA15256@ming.t460p>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.219.224]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Hi,
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/RCU/listRCU.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2020/1/6 18:05, Ming Lei wrote:
+> On Mon, Jan 06, 2020 at 05:41:45PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+[snipped]
 
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index 55d2b30db481..e768f56e8fa3 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -226,7 +226,7 @@ need to be filled in)::
- 		list_for_each_entry(e, list, list) {
- 			if (!audit_compare_rule(rule, &e->rule)) {
- 				e->rule.action = newaction;
--				e->rule.file_count = newfield_count;
-+				e->rule.field_count = newfield_count;
- 				write_unlock(&auditsc_lock);
- 				return 0;
- 			}
-@@ -255,7 +255,7 @@ RCU (*read-copy update*) its name.  The RCU code is as follows::
- 					return -ENOMEM;
- 				audit_copy_rule(&ne->rule, &e->rule);
- 				ne->rule.action = newaction;
--				ne->rule.file_count = newfield_count;
-+				ne->rule.field_count = newfield_count;
- 				list_replace_rcu(&e->list, &ne->list);
- 				call_rcu(&e->rcu, audit_free_rule);
- 				return 0;
--- 
-2.17.1
+>> Yes. The solution you proposed also adds an invocation of percpu_ref_tryget_live()
+>> in the fast path. Not sure which one will have a better performance. However the
+>> reason we prefer the index caching is the simplicity instead of performance.
+> 
+> No, hd_struct_try_get() and hd_struct_get() is always called once for one IO, the
+> patch I proposed changes nothing about this usage.
+> 
+> Please take a close look at the patch:
+> 
+> https://lore.kernel.org/linux-block/5cc465cc-d68c-088e-0729-2695279c7853@huawei.com/T/#m8f3e6b4e77eadf006ce142a84c966f50f3a9ae26
+> 
+> which just moves hd_struct_try_get() from blk_account_io_start() into
+> disk_map_sector_rcu(), doesn't it?
+> 
+Yes, you are right. And a little suggestion for your patch:
+
+@@ -283,8 +289,9 @@ void delete_partition(struct gendisk *disk, int partno)
+ 	if (!part)
+ 		return;
+
++	get_device(disk_to_dev(disk));
+ 	rcu_assign_pointer(ptbl->part[partno], NULL);
+-	rcu_assign_pointer(ptbl->last_lookup, NULL);
++
+ 	kobject_put(part->holder_dir);
+ 	device_del(part_to_dev(part));
+
+Could we move the call of get_device() into add_partition, and that will make the assignment of
+disk to p->disk in add_partition() be natural ?
+
+Maybe there is no need to add a new disk field in hd_struct, because the kobject of gendisk
+is already the parent of hd_struct. But make use of part->__dev.parent after the calling
+of device_del() is a bad_idea.
+
+Regards,
+Tao
+
+
+> 
+> Thanks,
+> Ming
+> 
+> 
+> .
+> 
 
