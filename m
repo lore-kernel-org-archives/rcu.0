@@ -2,115 +2,97 @@ Return-Path: <SRS0=ioRT=24=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69EFAC33C99
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 11:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 343D5C33C8C
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 17:35:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3677E2073D
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 11:40:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0891A208C4
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 17:35:23 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fdk5/inR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbgAGLk1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Jan 2020 06:40:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54084 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727177AbgAGLk0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Jan 2020 06:40:26 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C8CDDE3AC312FE33E8A7;
-        Tue,  7 Jan 2020 19:40:20 +0800 (CST)
-Received: from [127.0.0.1] (10.133.219.224) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Tue, 7 Jan 2020
- 19:40:11 +0800
-Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
- deleted
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     Yufen Yu <yuyufen@huawei.com>, <axboe@kernel.dk>,
-        <linux-block@vger.kernel.org>, <hch@lst.de>,
-        <zhengchuan@huawei.com>, <yi.zhang@huawei.com>,
-        <paulmck@kernel.org>, <joel@joelfernandes.org>,
-        <rcu@vger.kernel.org>
-References: <20200102012314.GB16719@ming.t460p>
- <c12da8ca-be66-496b-efb2-a60ceaf9ce54@huawei.com>
- <20200103041805.GA29924@ming.t460p>
- <ea362a86-d2de-7dfe-c826-d59e8b5068c3@huawei.com>
- <20200103081745.GA11275@ming.t460p>
- <82c10514-aec5-0d7c-118f-32c261015c6a@huawei.com>
- <20200103151616.GA23308@ming.t460p>
- <582f8e81-6127-47aa-f7fe-035251052238@huawei.com>
- <20200106081137.GA10487@ming.t460p>
- <747c3856-afa4-0909-dae2-f3b23aa38118@huawei.com>
- <20200106100547.GA15256@ming.t460p>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <762e1d7b-af3e-93f4-c744-ecd8ae8946e8@huawei.com>
-Date:   Tue, 7 Jan 2020 19:40:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200106100547.GA15256@ming.t460p>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.133.219.224]
-X-CFilter-Loop: Reflected
+        id S1728344AbgAGRfX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jan 2020 12:35:23 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:34496 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbgAGRfX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jan 2020 12:35:23 -0500
+Received: by mail-pl1-f193.google.com with SMTP id x17so9894pln.1;
+        Tue, 07 Jan 2020 09:35:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SJ2X7WpLg0FrWfJBUWgKBYL6TqlxNNJeppsfwwD9mMQ=;
+        b=fdk5/inRsxMjh8bZaDJiNZavvsDYMaz1z6Q+wBlSAg5iKy/QmC8eN/MI/tSXtPPCtL
+         wX8rVuAW1NnotCHdQRlBfJY49oe15AO0lrC/dmW901u//sL4p+jkOL741iC6+IjfcHxA
+         QlJXk3Kim3KbspQspAEmnxJOLp3/EL8kfzT1VAya63ai58/jnoRIfgbBXO2AnAUx6sGz
+         mNitcp2SzJA0gvOERxLUAOzVQPfx20B0TQrWRf1uiPmtJNvb75XLSoJICJFoq/Heve8N
+         PG4S70cGp2UxpdEDlTWbEwC+tLCRVIJt23Pwv5P85RXhlbbhtHRwsxMUA9Xroft2Tjwe
+         OYsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SJ2X7WpLg0FrWfJBUWgKBYL6TqlxNNJeppsfwwD9mMQ=;
+        b=UGhR5rg14BjtSdWct59XNN4cP8MATXStZr6sAByFy5ZTk/tYrBt08EhVPt9ubOjxzh
+         wzxML/BK4jPLz+oI+DQVvyRDtu0UvBrLSyijBa6ERkediNaQtYsfIN3ViZ9PsubVbrEB
+         l9KDTKeG/8/B3HzxcGpvJ962Vd8gW75rXmeceETsfRgCczoL3muFTzhdSoXsKqbobIhf
+         Lho3X6/jDLuzOvYflNlZYk8QYddHscMuC4saLZpCxUQf3PeRuzgCp0C3oypPaAJvUhVw
+         oadBWuKz06An2GnTBLRFj+CGFQF+EE+SRYqAnYmG9+l8xoiAvEmd2e5gKVPf4PmMjV6G
+         COCQ==
+X-Gm-Message-State: APjAAAXTrCcL5vcCFTRyWMLLNnGnoly1G834iICIJWfU3Kvm1crfhKnB
+        QUdjCuWpfH7bxSBr5ezet+I=
+X-Google-Smtp-Source: APXvYqxIicyrXMpE6DtoTVEUGxByj1tKZgLrrAE+L6a1P/+ajmE1S+RY0vKL6wMwNYQj7M3UH/UUqA==
+X-Received: by 2002:a17:90a:fb45:: with SMTP id iq5mr884671pjb.93.1578418522122;
+        Tue, 07 Jan 2020 09:35:22 -0800 (PST)
+Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee3:fd53:981d:523f:a647:bef8])
+        by smtp.gmail.com with ESMTPSA id d3sm130091pfn.113.2020.01.07.09.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2020 09:35:21 -0800 (PST)
+From:   madhuparnabhowmik04@gmail.com
+To:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
+        dledford@redhat.com, paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list checking
+Date:   Tue,  7 Jan 2020 23:05:08 +0530
+Message-Id: <20200107173510.20320-1-madhuparnabhowmik04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-On 2020/1/6 18:05, Ming Lei wrote:
-> On Mon, Jan 06, 2020 at 05:41:45PM +0800, Hou Tao wrote:
->> Hi,
->>
-[snipped]
+list_for_each_entry_rcu has built-in RCU and lock checking.
+Pass cond argument to list_for_each_entry_rcu.
 
->> Yes. The solution you proposed also adds an invocation of percpu_ref_tryget_live()
->> in the fast path. Not sure which one will have a better performance. However the
->> reason we prefer the index caching is the simplicity instead of performance.
-> 
-> No, hd_struct_try_get() and hd_struct_get() is always called once for one IO, the
-> patch I proposed changes nothing about this usage.
-> 
-> Please take a close look at the patch:
-> 
-> https://lore.kernel.org/linux-block/5cc465cc-d68c-088e-0729-2695279c7853@huawei.com/T/#m8f3e6b4e77eadf006ce142a84c966f50f3a9ae26
-> 
-> which just moves hd_struct_try_get() from blk_account_io_start() into
-> disk_map_sector_rcu(), doesn't it?
-> 
-Yes, you are right. And a little suggestion for your patch:
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+---
+ drivers/infiniband/hw/hfi1/verbs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-@@ -283,8 +289,9 @@ void delete_partition(struct gendisk *disk, int partno)
- 	if (!part)
- 		return;
-
-+	get_device(disk_to_dev(disk));
- 	rcu_assign_pointer(ptbl->part[partno], NULL);
--	rcu_assign_pointer(ptbl->last_lookup, NULL);
-+
- 	kobject_put(part->holder_dir);
- 	device_del(part_to_dev(part));
-
-Could we move the call of get_device() into add_partition, and that will make the assignment of
-disk to p->disk in add_partition() be natural ?
-
-Maybe there is no need to add a new disk field in hd_struct, because the kobject of gendisk
-is already the parent of hd_struct. But make use of part->__dev.parent after the calling
-of device_del() is a bad_idea.
-
-Regards,
-Tao
-
-
-> 
-> Thanks,
-> Ming
-> 
-> 
-> .
-> 
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 089e201d7550..cab2ff185240 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -515,7 +515,8 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
+ 				       opa_get_lid(packet->dlid, 9B));
+ 		if (!mcast)
+ 			goto drop;
+-		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
++		list_for_each_entry_rcu(p, &mcast->qp_list, list
++								lock_is_held(&(ibp->rvp.lock).dep_map)) {
+ 			packet->qp = p->qp;
+ 			if (hfi1_do_pkey_check(packet))
+ 				goto drop;
+-- 
+2.17.1
 
