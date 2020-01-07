@@ -2,97 +2,104 @@ Return-Path: <SRS0=ioRT=24=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A060BC33C9B
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 19:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8483C282DD
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 20:34:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 77FA3206DB
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 19:31:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8851B2077B
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 20:34:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ayegAG88"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LzfATNAF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgAGTb3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Jan 2020 14:31:29 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:32783 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728307AbgAGTb2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Jan 2020 14:31:28 -0500
-Received: by mail-pg1-f194.google.com with SMTP id 6so356397pgk.0;
-        Tue, 07 Jan 2020 11:31:28 -0800 (PST)
+        id S1728702AbgAGUd5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jan 2020 15:33:57 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:42135 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728457AbgAGUd5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jan 2020 15:33:57 -0500
+Received: by mail-qv1-f67.google.com with SMTP id dc14so449421qvb.9
+        for <rcu@vger.kernel.org>; Tue, 07 Jan 2020 12:33:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3ST/dj3po+BlNeYM5PMnB4Z+srpzBM2wonPJAfu44pg=;
-        b=ayegAG88ic4ZMzTrQ5veoMKLjpAiwBmaJgBtFHY14G+/hkJWblccaas0os4TVCGKU0
-         JGskHw2/EF9g9oqgXWRZsQu4bwEUv/mzKh0vtW8N5JbfoEpH5mc0iHPYBSMiPx+kQ2Ii
-         UuR8zZmrVymnRwa0240MOFfMrmIM7RKUC65YyifibGP5k6UoAFQFrFilwcrjFwwEBxtx
-         G+FprGREsEVGy+JsYmWUJV4/xv8NtSNKW/yHeoQktpOY5C/saZF2HMvWjOEQKzWmNd40
-         +W24LHsjIQZ/DDnBiyXvFxhjBBjSMsYlbxPM5KLkvs/s/edJ/HDUCfqpw616E4/D+1Rq
-         114g==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3zhpjGKRs5oCN7gE0zJUv09fBYY5DJxxWR8yhyAhckI=;
+        b=LzfATNAFVRCE8SAl1d6Ctk4/lJ3RQSwN2ruwf6LC27wA411ljbwylPEOr6fqE9gRJK
+         /aW3Q/ojQqDrhd3inOEO0hHNcy6SAQJ1vTsbc9lFG5jVP3pvqSdDSaU8Pa5owAqvBU8B
+         luGS4iid5TYnlqBU3ecv9aw61bsN9ZpBz3F+DDSVAdrPb4wNO92hWHqqoQxhrBdpv5Ph
+         oPrKDojhIIATLeooNxbXC9kMnsP5qZA1e90aV/Tz4jgc5sIqaT9AIJXuDHRgZ+XbpjTv
+         +nk4SnEi+FeRmci7r55ERdAASdZgPpAY02r9b46vZe0iLEDR3Xge2WCmwVarMRF8iPmL
+         g1JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3ST/dj3po+BlNeYM5PMnB4Z+srpzBM2wonPJAfu44pg=;
-        b=eiM8jxS1sZV0LGCHkUP0NhJ7At+2L6Z3TgBUjjey4wYO4LdbkiDDmyk7hkhV9uER38
-         Qot/y4vJf1HiMSzh+J67JvD5UJ4R5Y629lm1vY+3FOhqGCM2YeuuAolIlzsTedwGMCNs
-         DL5eY4d2/e2LiETM/4Y5X917ui4smL/kEqYGPTz5lzbcDVdfOYdjxkpK4LauICbHVlT0
-         zrbp1ZKOWiQ84EAv6DgmgpkCWJNNmfNDRlXCia+6dbcyNFoINePcu0kT9P82x/EhsPPE
-         RzQVS1X2tQvRD1Dh1Vqw644Sgc9jaZ4wxAM7wcIf6jxiuaN+gOcGXojSge10yaktmivX
-         1nWw==
-X-Gm-Message-State: APjAAAUhRv5MsMqVHymJmE2+t39jQFYNTxSgsnC2t/4uENrGPc82i/hG
-        445rNiPe4j44pzgOMnJHNDk=
-X-Google-Smtp-Source: APXvYqwEJ4DGXraHQ+XTpgucybYYLANGWqLS0H5FRZ2LWC/vCHUIp2l5InPQcrZS3vIu3NDqkcJVHA==
-X-Received: by 2002:a62:1548:: with SMTP id 69mr837034pfv.239.1578425487834;
-        Tue, 07 Jan 2020 11:31:27 -0800 (PST)
-Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee3:fd53:8500:6ea8:4ef2:c9be])
-        by smtp.gmail.com with ESMTPSA id b4sm365817pfd.18.2020.01.07.11.31.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2020 11:31:26 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
-        dledford@redhat.com, paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3zhpjGKRs5oCN7gE0zJUv09fBYY5DJxxWR8yhyAhckI=;
+        b=VGf6RXE09xTOJPY3dxYx1NZZLR3rFSp4kaeyMzEStRTJtwKI50CQGxEe4l3u8q8cBj
+         LN8DDHVr+sE2jfl87p1VicCJOwbvl5N9nmZHH0SyEM6qJme2xhYlDqBElN3DdXDrtR/y
+         kpCcXFQ/r1sagbEdQo1PjBMG3ZDokkwlICqLstszFJhm4iNv/HqN86nFTbN5U4Ne9Q5d
+         Pm6DJe18lIeha51nuVtZDWDfnOzX8HaaBbr7qk9wxuNkq0PE6Jbgqqm8zAy8Yy+7RG/g
+         1gc5n8Kk4fjZKBRyWRqjRJO8wAqpxK2reoD1upVpEnEIgo+fjewrG/RXSMDjZGK/mj6T
+         GmaQ==
+X-Gm-Message-State: APjAAAXtL63kCkVZGFlBE7OYExsxrKX0TqY1m9/854uiABRMFIxZoGKh
+        5UQoT4iFWCftVXFSK884xiUijA==
+X-Google-Smtp-Source: APXvYqzWbftKZEr84YWD8iGrR1oDz0h1VmVb/RITKJH7Bi68eIZnbK/lkG9EUM5l75oi0+8mHGJU/Q==
+X-Received: by 2002:a05:6214:1150:: with SMTP id b16mr1181882qvt.71.1578429235967;
+        Tue, 07 Jan 2020 12:33:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id i28sm446729qtc.57.2020.01.07.12.33.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Jan 2020 12:33:55 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iovY2-0001Xd-Ue; Tue, 07 Jan 2020 16:33:54 -0400
+Date:   Tue, 7 Jan 2020 16:33:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
+        dledford@redhat.com, paulmck@kernel.org, rcu@vger.kernel.org,
+        joel@joelfernandes.org, frextrite@gmail.com,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH 3/3] infiniband: sw: rdmavt: mcast.c: Use built-in RCU list checking
-Date:   Wed,  8 Jan 2020 01:01:19 +0530
-Message-Id: <20200107193119.22915-1-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+Message-ID: <20200107203354.GD26174@ziepe.ca>
+References: <20200107192912.22691-1-madhuparnabhowmik04@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107192912.22691-1-madhuparnabhowmik04@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+On Wed, Jan 08, 2020 at 12:59:12AM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> 
+> list_for_each_entry_rcu has built-in RCU and lock checking.
+> Pass cond argument to list_for_each_entry_rcu.
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+>  drivers/infiniband/hw/hfi1/verbs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+> index 089e201d7550..e6abdbcb4ffb 100644
+> +++ b/drivers/infiniband/hw/hfi1/verbs.c
+> @@ -515,7 +515,8 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
+>  				       opa_get_lid(packet->dlid, 9B));
+>  		if (!mcast)
+>  			goto drop;
+> -		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+> +		list_for_each_entry_rcu(p, &mcast->qp_list, list,
+> +					lock_is_held(&(ibp->rvp.lock).dep_map)) {
 
-Use built-in RCU and lock-checking for list_for_each_entry_rcu()
-by passing the cond argument.
+Why .dep_map? Does this compile?
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
----
- drivers/infiniband/sw/rdmavt/mcast.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
-index dd11c6fcd060..983cf6d06dfc 100644
---- a/drivers/infiniband/sw/rdmavt/mcast.c
-+++ b/drivers/infiniband/sw/rdmavt/mcast.c
-@@ -224,7 +224,8 @@ static int rvt_mcast_add(struct rvt_dev_info *rdi, struct rvt_ibport *ibp,
- 		}
- 
- 		/* Search the QP list to see if this is already there. */
--		list_for_each_entry_rcu(p, &tmcast->qp_list, list) {
-+		list_for_each_entry_rcu(p, &tmcast->qp_list, list,
-+					lock_is_held(&(ibp->lock).dep_map)) {
- 			if (p->qp == mqp->qp) {
- 				ret = ESRCH;
- 				goto bail;
--- 
-2.17.1
-
+Jason
