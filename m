@@ -2,100 +2,107 @@ Return-Path: <SRS0=ioRT=24=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 050FBC33C8C
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 17:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66819C282DD
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 18:26:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D2821222D9
-	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 17:36:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B5E32146E
+	for <rcu@archiver.kernel.org>; Tue,  7 Jan 2020 18:26:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O45qqj0a"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="it07uPHD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgAGRgs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Jan 2020 12:36:48 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:55527 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728470AbgAGRgr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Jan 2020 12:36:47 -0500
-Received: by mail-pj1-f67.google.com with SMTP id d5so80892pjz.5;
-        Tue, 07 Jan 2020 09:36:47 -0800 (PST)
+        id S1728601AbgAGS0n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Jan 2020 13:26:43 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40785 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728590AbgAGS0m (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Jan 2020 13:26:42 -0500
+Received: by mail-qk1-f194.google.com with SMTP id c17so255779qkg.7
+        for <rcu@vger.kernel.org>; Tue, 07 Jan 2020 10:26:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yEpRHlcDF4psUPPX8udaCtEP3gg4YAcBzZqIRmvDq4M=;
-        b=O45qqj0aDDULssDuKLQcH16n+Zkv27jPGry9/wMjWy0wRqXphQim2gedId/p3u4n2Z
-         MMcmLTugiChCJ7XpCS0cGoXvkAUaTZCdA68ICgGDyGESgXIrKDek3SK5U9jL9ggoBXKi
-         /QVCQV+SXMbuh3h4lzYjs4AmZAXZ8R82e/Rz//ukbWs9tLnHy3FyBZsXgved9Bf6PNdH
-         C47yCiHk9ag1bygHICUnu52JC3Q84XJSjP7qHGcrb+lh/8JLZruI1NBnArcirWoER96h
-         gGhphUznyXUT6/c8h+3fjnCkTa5SD9fnFzBHJWF4xI2QScOkI0ZgDMhr/5m7UuWzj1Yw
-         1aMQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7T+Uz+ziIhwrQC1V0AO3Y5+ZIkKPGfie4ADyDKB8cAU=;
+        b=it07uPHDjGFZLQpswrCddH3xbdXVBbPpx7Nx/qj/M+AFTfNxE4quAolxqS+arqL82c
+         bl2Dty4s2fHhhM+letMeeVrn66LuHeYFxq+gNVaSLml043l3Mgqb4ZuFwUwnaUla9vBU
+         XCvnGSIeEWBLy3HClWG54PiF0P9CP0Kw/yorUkncnr/GVkjNLF0VOPdoEqQc1YZs648M
+         +wTyOAeW9mG/SF5WZayTC41edK3kWoBdjfGk0WyEi0tItDsszZY4wPlWG0TOaJoVLoYS
+         XPL4BZeApnwa5rKBzKuaVQbj42euhCwi2RU/Q78YPwDBnIw92QRCD1G8blFVRkcADxlx
+         9fLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=yEpRHlcDF4psUPPX8udaCtEP3gg4YAcBzZqIRmvDq4M=;
-        b=N7K4mV9isj56J6iEg0jf4RJfp4szhOeDDU/o2malQ/LZ04+6wa1i6LGkxd0Xntx9TP
-         960sZIz7FqvAUKZ0TPOf+WlUyyiDAGQYr7cw+9akg4rk2jCsqQR5vRLlZTUl7v9nWoby
-         MnPWzE+1IIlxVf4aUyjU3gn85qtIGnXzeCDV6KNFClH9ABVC6q/eAvPUztem99K6f4AQ
-         X1MdciW+EZvvRZ/PYzQMg3vVRXsCfBqe/7HTB87czANOZIRCCCrWoyQtmW3zboaRDQUJ
-         ZY9qXIR9GDlf9uoKhf8truqM4Ldi5oLWcdTTuo4g2lQgERjkTt7bPqfcbc6FovRb7Lmd
-         TA9w==
-X-Gm-Message-State: APjAAAU4X//CUizQioTEXbhm+43dlK8fbgolWuYfbV7qqqBRqKh/+qmi
-        tMkz1D3dfXHI6QxESfvkZ/U=
-X-Google-Smtp-Source: APXvYqwlIMhhQqRk4XXts851ki2Ruxlx1uFIWb/XbuB0nNQEVcpwt/2clYA0lB6mVvUaefD7sNnXEw==
-X-Received: by 2002:a17:902:c509:: with SMTP id o9mr822791plx.112.1578418607016;
-        Tue, 07 Jan 2020 09:36:47 -0800 (PST)
-Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee3:fd53:981d:523f:a647:bef8])
-        by smtp.gmail.com with ESMTPSA id d3sm130091pfn.113.2020.01.07.09.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2020 09:36:46 -0800 (PST)
-From:   madhuparnabhowmik04@gmail.com
-To:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
-        dledford@redhat.com, paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7T+Uz+ziIhwrQC1V0AO3Y5+ZIkKPGfie4ADyDKB8cAU=;
+        b=KOlTh5wQLNFva0OWchQwbM9KsrlSCIKqTb4gkRB+jLEOihffMf7mrFgfokoHG8OxtG
+         nAqg3m7xynE4lqd3Ddufs6fNGM/3JwhyWnt9RFTQ/CVTMZyl5ZNDmwoc8mnNZefk5N3f
+         Ec8daBYXfqJbK4sgiIbDgVDIoX5G5iDgCYLHBHHuHlpEyXLiXAnXGCMoo3WbqEMVif+5
+         c+Yf0qb3vV3cJc+VfAqkDq03Ag36LVNmHgqbygkR06OgFrCc/qooS8uQAfvpJhiTvbTz
+         PoKk/RwRodrHIjDM5hjJY+eM9zsv3CCoAtQF1KOd3YLU0hbKRqCo4rHU7oqTlsUZ6fBR
+         iIXw==
+X-Gm-Message-State: APjAAAU67FWc5B+7+mPci0p99CYbH982GIqes+AT36BrXjGFeFKt7UZh
+        8GM+i64O4Yg1f4hss2/Y1LHF8Q==
+X-Google-Smtp-Source: APXvYqx7dejdsvwplVt1zaxwDZ5VHKGR9kLeMkjdXFz1Pgrfhz+vaitLElnr3cudKfk5O3dhcZdagQ==
+X-Received: by 2002:a37:bcc4:: with SMTP id m187mr655640qkf.329.1578421601844;
+        Tue, 07 Jan 2020 10:26:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id t29sm186540qkm.27.2020.01.07.10.26.41
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Jan 2020 10:26:41 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iotYv-0008Q7-0P; Tue, 07 Jan 2020 14:26:41 -0400
+Date:   Tue, 7 Jan 2020 14:26:40 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
+        dledford@redhat.com, paulmck@kernel.org, rcu@vger.kernel.org,
+        joel@joelfernandes.org, frextrite@gmail.com,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: [PATCH 3/3] infiniband: sw: rdmavt: mcast.c: Use built-in RCU list checking
-Date:   Tue,  7 Jan 2020 23:05:10 +0530
-Message-Id: <20200107173510.20320-3-madhuparnabhowmik04@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200107173510.20320-1-madhuparnabhowmik04@gmail.com>
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+Message-ID: <20200107182640.GC26174@ziepe.ca>
 References: <20200107173510.20320-1-madhuparnabhowmik04@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107173510.20320-1-madhuparnabhowmik04@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+On Tue, Jan 07, 2020 at 11:05:08PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> 
+> list_for_each_entry_rcu has built-in RCU and lock checking.
+> Pass cond argument to list_for_each_entry_rcu.
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+>  drivers/infiniband/hw/hfi1/verbs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+> index 089e201d7550..cab2ff185240 100644
+> +++ b/drivers/infiniband/hw/hfi1/verbs.c
+> @@ -515,7 +515,8 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
+>  				       opa_get_lid(packet->dlid, 9B));
+>  		if (!mcast)
+>  			goto drop;
+> -		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+> +		list_for_each_entry_rcu(p, &mcast->qp_list, list
+> +								lock_is_held(&(ibp->rvp.lock).dep_map)) {
 
-Use built-in RCU and lock-checking for list_for_each_entry_rcu()
-by passing the cond argument.
+This is missing a ',' and isn't indented properly. Does it even
+compile?
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
----
- drivers/infiniband/sw/rdmavt/mcast.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The idea seems sound though.
 
-diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
-index dd11c6fcd060..5fce375f22f4 100644
---- a/drivers/infiniband/sw/rdmavt/mcast.c
-+++ b/drivers/infiniband/sw/rdmavt/mcast.c
-@@ -224,7 +224,8 @@ static int rvt_mcast_add(struct rvt_dev_info *rdi, struct rvt_ibport *ibp,
- 		}
- 
- 		/* Search the QP list to see if this is already there. */
--		list_for_each_entry_rcu(p, &tmcast->qp_list, list) {
-+		list_for_each_entry_rcu(p, &tmcast->qp_list, list
-+								lock_is_held(&(ibp->lock).dep_map)) {
- 			if (p->qp == mqp->qp) {
- 				ret = ESRCH;
- 				goto bail;
--- 
-2.17.1
-
+Jason
