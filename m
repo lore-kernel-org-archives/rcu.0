@@ -1,133 +1,100 @@
-Return-Path: <SRS0=JRU5=25=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=8IKI=26=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE656C33C9E
-	for <rcu@archiver.kernel.org>; Wed,  8 Jan 2020 03:20:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87ADDC282DD
+	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 15:32:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B3A7F2077B
-	for <rcu@archiver.kernel.org>; Wed,  8 Jan 2020 03:20:00 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jN5/F5XV"
+	by mail.kernel.org (Postfix) with ESMTP id 5D7F020721
+	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 15:32:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1578583952;
+	bh=e+8teUutDcTrOf1C5tq1dzQr8Tjsy4MZMpCRFIYHJuc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=oU/eojWZj400NSb8P+hp+qYN+u7hKA+n9sr3s5+0NV03vSwABHfHYeD5JQ1bx+K2I
+	 RPtwFV1Nq/KQVO7aHPQByOkuBGKYXHb8OmYXoDR6grAegyRK342W9XKEUWJjsgspko
+	 n8B32PSKd8WT7TiAPFlnlInfhIbxle46lnTaiNzQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgAHDUA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Jan 2020 22:20:00 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37335 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726142AbgAHDUA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Jan 2020 22:20:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578453598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wvEBuw7GXT/dhI2u1WBG49AGz4RwHQH9v/2XZP/TBRE=;
-        b=jN5/F5XVh0LKoK+c3GgU9LCtsudqaJPi1EMFfqkj4xotyxQlOOOctypwi4+rtbLnFEpwdM
-        xuIVImXkY0sMnd4ntq1Wceck3hXA3FX2e1yv7iTuZ0yE+ejpC0E/s46F//0+bUgS0zDSl4
-        wo/9xLI2L4SUyj8vDBl7Ohtts56HsNA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-BLn_FBXXPTSGiUvJdBs6Qg-1; Tue, 07 Jan 2020 22:19:55 -0500
-X-MC-Unique: BLn_FBXXPTSGiUvJdBs6Qg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731103AbgAIPc2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Jan 2020 10:32:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729589AbgAIPc2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:32:28 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 756C0801E6C;
-        Wed,  8 Jan 2020 03:19:53 +0000 (UTC)
-Received: from ming.t460p (ovpn-8-18.pek2.redhat.com [10.72.8.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E20A110013A7;
-        Wed,  8 Jan 2020 03:19:45 +0000 (UTC)
-Date:   Wed, 8 Jan 2020 11:19:41 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Yufen Yu <yuyufen@huawei.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, hch@lst.de, zhengchuan@huawei.com,
-        yi.zhang@huawei.com, paulmck@kernel.org, joel@joelfernandes.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] block: make sure last_lookup set as NULL after part
- deleted
-Message-ID: <20200108031941.GD28075@ming.t460p>
-References: <20200103041805.GA29924@ming.t460p>
- <ea362a86-d2de-7dfe-c826-d59e8b5068c3@huawei.com>
- <20200103081745.GA11275@ming.t460p>
- <82c10514-aec5-0d7c-118f-32c261015c6a@huawei.com>
- <20200103151616.GA23308@ming.t460p>
- <582f8e81-6127-47aa-f7fe-035251052238@huawei.com>
- <20200106081137.GA10487@ming.t460p>
- <747c3856-afa4-0909-dae2-f3b23aa38118@huawei.com>
- <20200106100547.GA15256@ming.t460p>
- <762e1d7b-af3e-93f4-c744-ecd8ae8946e8@huawei.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FFE92072A;
+        Thu,  9 Jan 2020 15:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578583947;
+        bh=e+8teUutDcTrOf1C5tq1dzQr8Tjsy4MZMpCRFIYHJuc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x0+zT5fu5S2nCgP35Kc9swptcQDkCVh27Z9qnkoMWKBJy5yQ7KwHux13C4WwVsxeU
+         kXmNgtSCnHfhTbdZsigqPxu8OO2SYXWmcDvaPxHkFWk+T1D9WIDDjy+IBzf6h0yK1r
+         0e/PzjaCU6YFd00U72+HOKb8jUFv5SL+NSoSDeTs=
+Date:   Thu, 9 Jan 2020 10:32:26 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Firo Yang <firo.yang@suse.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        rcu@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH AUTOSEL 4.19 46/84] tcp/dccp: fix possible race
+ __inet_lookup_established()
+Message-ID: <20200109153226.GG1706@sasha-vm>
+References: <20191227174352.6264-1-sashal@kernel.org>
+ <20191227174352.6264-46-sashal@kernel.org>
+ <CA+G9fYv8o4he83kqpxB9asT7eUMAeODyX3MBbmwsCdgqLcXPWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <762e1d7b-af3e-93f4-c744-ecd8ae8946e8@huawei.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CA+G9fYv8o4he83kqpxB9asT7eUMAeODyX3MBbmwsCdgqLcXPWw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 07, 2020 at 07:40:10PM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 2020/1/6 18:05, Ming Lei wrote:
-> > On Mon, Jan 06, 2020 at 05:41:45PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> [snipped]
-> 
-> >> Yes. The solution you proposed also adds an invocation of percpu_ref_tryget_live()
-> >> in the fast path. Not sure which one will have a better performance. However the
-> >> reason we prefer the index caching is the simplicity instead of performance.
-> > 
-> > No, hd_struct_try_get() and hd_struct_get() is always called once for one IO, the
-> > patch I proposed changes nothing about this usage.
-> > 
-> > Please take a close look at the patch:
-> > 
-> > https://lore.kernel.org/linux-block/5cc465cc-d68c-088e-0729-2695279c7853@huawei.com/T/#m8f3e6b4e77eadf006ce142a84c966f50f3a9ae26
-> > 
-> > which just moves hd_struct_try_get() from blk_account_io_start() into
-> > disk_map_sector_rcu(), doesn't it?
-> > 
-> Yes, you are right. And a little suggestion for your patch:
-> 
-> @@ -283,8 +289,9 @@ void delete_partition(struct gendisk *disk, int partno)
->  	if (!part)
->  		return;
-> 
-> +	get_device(disk_to_dev(disk));
->  	rcu_assign_pointer(ptbl->part[partno], NULL);
-> -	rcu_assign_pointer(ptbl->last_lookup, NULL);
-> +
->  	kobject_put(part->holder_dir);
->  	device_del(part_to_dev(part));
-> 
-> Could we move the call of get_device() into add_partition, and that will make the assignment of
-> disk to p->disk in add_partition() be natural ?
+On Thu, Jan 02, 2020 at 01:31:22PM +0530, Naresh Kamboju wrote:
+>On Fri, 27 Dec 2019 at 23:17, Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> From: Eric Dumazet <edumazet@google.com>
+>>
+>> [ Upstream commit 8dbd76e79a16b45b2ccb01d2f2e08dbf64e71e40 ]
+>>
+>> Michal Kubecek and Firo Yang did a very nice analysis of crashes
+>> happening in __inet_lookup_established().
+>>
+>> Since a TCP socket can go from TCP_ESTABLISH to TCP_LISTEN
+>> (via a close()/socket()/listen() cycle) without a RCU grace period,
+>> I should not have changed listeners linkage in their hash table.
+>>
+>> They must use the nulls protocol (Documentation/RCU/rculist_nulls.txt),
+>> so that a lookup can detect a socket in a hash list was moved in
+>> another one.
+>>
+>> Since we added code in commit d296ba60d8e2 ("soreuseport: Resolve
+>> merge conflict for v4/v6 ordering fix"), we have to add
+>> hlist_nulls_add_tail_rcu() helper.
+>
+>The kernel panic reported on all devices,
+>While running LTP syscalls accept* test cases on stable-rc-4.19 branch kernel.
+>This report log extracted from qemu_x86_64.
+>
+>Reverting this patch re-solved kernel crash.
 
-It isn't necessary to do that way, the parent disk's refcount isn't released
-until device_del(part_to_dev(part)). So it is enough to hold disk's refcount
-before calling device_del(part).
+I'll drop it until we can look into what's happening here, thanks!
 
-> 
-> Maybe there is no need to add a new disk field in hd_struct, because the kobject of gendisk
-> is already the parent of hd_struct. But make use of part->__dev.parent after the calling
-> of device_del() is a bad_idea.
-
-Yeah, that is why I added 'disk' field, which can be put with other
-fields not accessed in fast path.
-
-BTW, 'struct percpu_ref ref' should have been put just after 'nr_sects',
-then these fast path fields can share single cache line.
-
-
+-- 
 Thanks,
-Ming
-
+Sasha
