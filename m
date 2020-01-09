@@ -2,92 +2,89 @@ Return-Path: <SRS0=8IKI=26=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A07D0C282DD
-	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 17:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 882F9C33CA1
+	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 18:10:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 744212067D
-	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 17:07:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 58D71206ED
+	for <rcu@archiver.kernel.org>; Thu,  9 Jan 2020 18:10:42 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="i+vIrFkV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387954AbgAIRHt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Jan 2020 12:07:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49716 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731444AbgAIRHt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Jan 2020 12:07:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 56469AE03;
-        Thu,  9 Jan 2020 17:07:47 +0000 (UTC)
-Received: by unicorn.suse.cz (Postfix, from userid 1000)
-        id 1454DE008B; Thu,  9 Jan 2020 18:07:46 +0100 (CET)
-Date:   Thu, 9 Jan 2020 18:07:46 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Firo Yang <firo.yang@suse.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        rcu@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Subject: Re: [PATCH AUTOSEL 4.19 46/84] tcp/dccp: fix possible race
- __inet_lookup_established()
-Message-ID: <20200109170746.GO22387@unicorn.suse.cz>
-References: <20191227174352.6264-1-sashal@kernel.org>
- <20191227174352.6264-46-sashal@kernel.org>
- <CA+G9fYv8o4he83kqpxB9asT7eUMAeODyX3MBbmwsCdgqLcXPWw@mail.gmail.com>
- <20200109153226.GG1706@sasha-vm>
+        id S2388415AbgAISKm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Jan 2020 13:10:42 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37597 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728653AbgAISKm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Jan 2020 13:10:42 -0500
+Received: by mail-qt1-f196.google.com with SMTP id w47so6642719qtk.4
+        for <rcu@vger.kernel.org>; Thu, 09 Jan 2020 10:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0QYZyDBxeJN3VU/Z0akCtNQf4HyHME9Tnn6OBKwEbI8=;
+        b=i+vIrFkVhNXBZMoERSSUvS2Qk0BqcHa21Sqlcrehd20FjlnCaUYvrWqLyr0T3ZLKiD
+         FjO30OzpcIMZJW0L7yWFmrtZAXgfcl82RWRqLuMMBDnTGOZ5UqaXOWQzkFSOv8mQwJvs
+         bop+05Eoa3AiB6Y/kXaZ58r72mZyBYJclJEloK7dx7uueawHcM35DzGOi+KbKn25HZ2D
+         b5vI59/tV03t9naGFs+K3CdsLj7nuVygGBHHZwekdhBOHAkjhG03xxvqo6POkvtr58AY
+         38aZIt4fZfNjF2R6ZEhhkdK0zU+kRl/kvuPJZwgZv1NcuhYt+vp13Semad83a4xueGWN
+         CTfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0QYZyDBxeJN3VU/Z0akCtNQf4HyHME9Tnn6OBKwEbI8=;
+        b=fLfmaPYwE9Vo/QDoZhuEaN+PAiTB7lYym9CjFM55s8S3M6MzmkZTFEsG2rDJFSrHA9
+         CuvjKjUq9LOZXKWI+XAMq2o0vIHV+PHPnUgVCtj+bUaiwhhp7c78XONtfHHhYmvdk2n6
+         SZba4lUUp5kWdxQkSAd9AqNDURNvY2gUvOOBxPwPICWFOCnZXPenm/rqAh2QJQWDniZ4
+         YzAmu9Dha9A/TQZQnvGXzNOHSth+7SZCY5E/rsn4KrdMQug2pP4cm3OTBTmGO3uivCzU
+         quBUHR23Z/WQFOoqVV8uEkytJ8a+h45+0OjSiXInnv4oy3noxtzfb+ETlR8oOpyHR8oz
+         eE+w==
+X-Gm-Message-State: APjAAAUBflAgF+DnSbeJDa4J3gAGbY7I8Poe2jUdt2bYJhbnF+SN6uLe
+        TyeDEgn6IMxzW1SThKb+OUWmig==
+X-Google-Smtp-Source: APXvYqwDDMBGM6inrZQKFmQK40divx6D3kYVrebZh7EmlkxFsfLJxK36AvJD/AON7sxFauHvMR6DNw==
+X-Received: by 2002:ac8:53cb:: with SMTP id c11mr8971667qtq.14.1578593439653;
+        Thu, 09 Jan 2020 10:10:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 206sm3367074qkf.132.2020.01.09.10.10.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 09 Jan 2020 10:10:39 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ipcGU-00019D-Hs; Thu, 09 Jan 2020 14:10:38 -0400
+Date:   Thu, 9 Jan 2020 14:10:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     dennis.dalessandro@intel.com, mike.marciniszyn@intel.com,
+        dledford@redhat.com, paulmck@kernel.org, rcu@vger.kernel.org,
+        joel@joelfernandes.org, frextrite@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+Message-ID: <20200109181038.GA24939@ziepe.ca>
+References: <20200107192912.22691-1-madhuparnabhowmik04@gmail.com>
+ <20200107203354.GD26174@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200109153226.GG1706@sasha-vm>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200107203354.GD26174@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 10:32:26AM -0500, Sasha Levin wrote:
-> On Thu, Jan 02, 2020 at 01:31:22PM +0530, Naresh Kamboju wrote:
-> > On Fri, 27 Dec 2019 at 23:17, Sasha Levin <sashal@kernel.org> wrote:
-> > > 
-> > > From: Eric Dumazet <edumazet@google.com>
-> > > 
-> > > [ Upstream commit 8dbd76e79a16b45b2ccb01d2f2e08dbf64e71e40 ]
-> > > 
-> > > Michal Kubecek and Firo Yang did a very nice analysis of crashes
-> > > happening in __inet_lookup_established().
-> > > 
-> > > Since a TCP socket can go from TCP_ESTABLISH to TCP_LISTEN
-> > > (via a close()/socket()/listen() cycle) without a RCU grace period,
-> > > I should not have changed listeners linkage in their hash table.
-> > > 
-> > > They must use the nulls protocol (Documentation/RCU/rculist_nulls.txt),
-> > > so that a lookup can detect a socket in a hash list was moved in
-> > > another one.
-> > > 
-> > > Since we added code in commit d296ba60d8e2 ("soreuseport: Resolve
-> > > merge conflict for v4/v6 ordering fix"), we have to add
-> > > hlist_nulls_add_tail_rcu() helper.
-> > 
-> > The kernel panic reported on all devices,
-> > While running LTP syscalls accept* test cases on stable-rc-4.19 branch kernel.
-> > This report log extracted from qemu_x86_64.
-> > 
-> > Reverting this patch re-solved kernel crash.
-> 
-> I'll drop it until we can look into what's happening here, thanks!
+On Wed, Jan 08, 2020 at 01:38:50PM +0530, madhuparnabhowmik04@gmail.com wrote:
 
-It was already discussed here:
+> Alternatively, it can be lockdep_is_held(ibp->rvp.lock).
+> Please refer to the macro(link below) and let me know if the usage of lock_is_held()
+> in the patch is correct.
 
-  http://lkml.kernel.org/r/CA+G9fYv3=oJSFodFp4wwF7G7_g5FWYRYbc4F0AMU6jyfLT689A@mail.gmail.com
+lock_is_held is the normal way to write this
 
-and fixed version should be in 4.19, 4.14 and 4.9 stable branches now.
-
-Michal Kubecek
+Jason
