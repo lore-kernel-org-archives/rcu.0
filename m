@@ -4,256 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BE4AC33C9E
-	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 16:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB5CBC33CB2
+	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 16:57:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DF11524656
-	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 16:49:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 81C032084D
+	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 16:57:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="q0IopxeG"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="XTiJWkcP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgANQtk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Jan 2020 11:49:40 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:40805 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727102AbgANQtk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Jan 2020 11:49:40 -0500
-Received: by mail-pg1-f194.google.com with SMTP id k25so6646595pgt.7
-        for <rcu@vger.kernel.org>; Tue, 14 Jan 2020 08:49:39 -0800 (PST)
+        id S1728057AbgANQ5n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Jan 2020 11:57:43 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:34833 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgANQ5m (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Jan 2020 11:57:42 -0500
+Received: by mail-qv1-f66.google.com with SMTP id u10so5993241qvi.2
+        for <rcu@vger.kernel.org>; Tue, 14 Jan 2020 08:57:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Ayd9f3cYgl4qWDrpBjsdRYd2mAYU8sWweONj/PljPbA=;
-        b=q0IopxeGBQcol9tKXjrIxXw4M22bIyKZ/H0CD7tcK5oNf3ih/2hYCmdTw3T2mlLpVN
-         K1740k2EmgIUpEIde0oLp+1K8RDo10D1L2eYXchk2ATwn/oV4iz1NaoMtLgHslqhXuRP
-         hAsLD01aKVGfO7GYPYpg2aWXCwUStdIDyxfVw=
+        bh=R4InSAKuZ5aCK6QR9Y31K9i3lSVfiJudcKWrhEMNHDc=;
+        b=XTiJWkcP0CtYyjzpFYIsdheUjlKBCgS/2w+rJ6OzGCRSJQhoTM3fQPNtiylHKjRsUx
+         ayrC2dfUPa3VHxwXtXRAfyuvl5IzL+Clvwtq9p5vFydeY08ncMvtJVlB2PIhe1Cr/Vxv
+         DjZgNqeXb4lAgJNIfthyvvgBbP5uaC7dd9oRB4BrVhPE3xX7sATluJtjrCp3PwSdUUoh
+         v++u0APj+AaMOwdR3P4C+tYqR1iVvC+ZimG54pzqKaU8TmJ6OcvkixJgzhq+fEJjJ+5D
+         JUg1ZiQTPSazNN7A6pMwjLwBMZkHicU2mpVIpCH4LnOO/G9OWeZHvoORlWe2FiaeMlFF
+         rKJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ayd9f3cYgl4qWDrpBjsdRYd2mAYU8sWweONj/PljPbA=;
-        b=V95L3eFa9XgwXFnK8PTH7x4b5CIiN1IOHCyCQu4qfgF07snC9LIIx8f38ySa6deQjt
-         HeOJ28PI12J3Nm73N2F0ZlZVlHQyPFqdWcFu4tt1IyJ6eJnzlbUwYqgDX5DQ94Bl2l9o
-         yGR114/bb65I4aGaH1jBoSV0NVSNsfF3WmPKH8tCHGoQf6XD0QAj5/s1U8uHSoaluj3t
-         /fEO2QUeCTo+HWdrswkO7sUU5PE8urVJr6V6ZY2tBhj4BtrSBSAkIqxkgJXe8WDvEqHu
-         Ud2JJCVBAzXhFrD4zx9MXDqxAsGablkrKyyHly6oggbdkp+ZlEaa/IGiTZOR8HLNdmeu
-         FP2A==
-X-Gm-Message-State: APjAAAWaqZtiQyMYK/QYaqukW8AD+TsD+7aSK6Y1QzGxA9AEOx26jEJ4
-        bIotuU5YD5c3KNcE94Abkztgcw==
-X-Google-Smtp-Source: APXvYqxE3J+uShSftk2i77xK0VkwTN6jbDtvsEOSCPgxU/LuxRSrFHr7fwvb4op59vrZ8KmIueJowA==
-X-Received: by 2002:a63:3e03:: with SMTP id l3mr28011076pga.118.1579020579313;
-        Tue, 14 Jan 2020 08:49:39 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j28sm18549513pgb.36.2020.01.14.08.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 08:49:38 -0800 (PST)
-Date:   Tue, 14 Jan 2020 11:49:37 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in
- kfree_rcu()
-Message-ID: <20200114164937.GA50403@google.com>
-References: <20191231122241.5702-1-urezki@gmail.com>
- <20200113190315.GA12543@paulmck-ThinkPad-P72>
+        bh=R4InSAKuZ5aCK6QR9Y31K9i3lSVfiJudcKWrhEMNHDc=;
+        b=KSkuPrHJlI4/O4D9vzB2iw8slTydjMxt9M7V6+iowOUcmI8zvqbWxNMKlczMF6RkuQ
+         prGCWqn5elkwYGF4r2neA2l4wWI8kNfeb2RnVapMy19gMLaq2DjNoGHi8xLyZThW9XCU
+         fl5N8dUgm8diGUCjNsH9Nb2WiSAvza2U9sCoO15qinVPc4hhfohLl85EWVSBRKcOT3QR
+         OwCZ9QfGmQUboGzA+Gf2p4q69uOXQ6cpx1qKTNLXN9/+faiIix6vhBWsDeduOcWm71J/
+         Y6RzEfOvpeB6T+E6FZuBuTCxzJBtjKwifvX9oD1Ci3nktpabAlgB3e3KYqc94aTmTZ7U
+         gq3g==
+X-Gm-Message-State: APjAAAUZ+Lflk9y8Af2N6cRLp4H5BkBCaLIjoLY5vMHoo06xNjQGEFZT
+        i0MChWEDjTi7ow/YX+6TAUi0cQ==
+X-Google-Smtp-Source: APXvYqxAwJK6KP985x5SBiObouJjRK4aFNXWGUGpgf/HH+9wFqdlGTn1tzkvG8CrF/UY6GDih4BbRQ==
+X-Received: by 2002:a0c:fe8d:: with SMTP id d13mr21133077qvs.150.1579021061827;
+        Tue, 14 Jan 2020 08:57:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id j1sm6868284qkl.86.2020.01.14.08.57.41
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Jan 2020 08:57:41 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1irPVc-0003VV-RT; Tue, 14 Jan 2020 12:57:40 -0400
+Date:   Tue, 14 Jan 2020 12:57:40 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        paulmck@kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+Message-ID: <20200114165740.GB22037@ziepe.ca>
+References: <20200114162345.19995-1-madhuparnabhowmik04@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200113190315.GA12543@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200114162345.19995-1-madhuparnabhowmik04@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
-
-On Mon, Jan 13, 2020 at 11:03:15AM -0800, Paul E. McKenney wrote:
-> On Tue, Dec 31, 2019 at 01:22:41PM +0100, Uladzislau Rezki (Sony) wrote:
-> > kfree_rcu() logic can be improved further by using kfree_bulk()
-> > interface along with "basic batching support" introduced earlier.
-> > 
-> > The are at least two advantages of using "bulk" interface:
-> > - in case of large number of kfree_rcu() requests kfree_bulk()
-> >   reduces the per-object overhead caused by calling kfree()
-> >   per-object.
-> > 
-> > - reduces the number of cache-misses due to "pointer chasing"
-> >   between objects which can be far spread between each other.
-> > 
-> > This approach defines a new kfree_rcu_bulk_data structure that
-> > stores pointers in an array with a specific size. Number of entries
-> > in that array depends on PAGE_SIZE making kfree_rcu_bulk_data
-> > structure to be exactly one page.
-> > 
-> > Since it deals with "block-chain" technique there is an extra
-> > need in dynamic allocation when a new block is required. Memory
-> > is allocated with GFP_NOWAIT | __GFP_NOWARN flags, i.e. that
-> > allows to skip direct reclaim under low memory condition to
-> > prevent stalling and fails silently under high memory pressure.
-> > 
-> > The "emergency path" gets maintained when a system is run out
-> > of memory. In that case objects are linked into regular list
-> > and that is it.
-> > 
-> > In order to evaluate it, the "rcuperf" was run to analyze how
-> > much memory is consumed and what is kfree_bulk() throughput.
-> > 
-> > Testing on the HiKey-960, arm64, 8xCPUs with below parameters:
-> > 
-> > CONFIG_SLAB=y
-> > kfree_loops=200000 kfree_alloc_num=1000 kfree_rcu_test=1
-> > 
-> > 102898760401 ns, loops: 200000, batches: 5822, memory footprint: 158MB
-> > 89947009882  ns, loops: 200000, batches: 6715, memory footprint: 115MB
-> > 
-> > rcuperf shows approximately ~12% better throughput(Total time)
-> > in case of using "bulk" interface. The "drain logic" or its RCU
-> > callback does the work faster that leads to better throughput.
+On Tue, Jan 14, 2020 at 09:53:45PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 > 
-> Nice improvement!
+> list_for_each_entry_rcu has built-in RCU and lock checking.
+> Pass cond argument to list_for_each_entry_rcu.
 > 
-> But rcuperf uses a single block size, which turns into kfree_bulk() using
-> a single slab, which results in good locality of reference.  So I have to
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+>  drivers/infiniband/hw/hfi1/verbs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+> index 089e201d7550..22f2d4fd2577 100644
+> +++ b/drivers/infiniband/hw/hfi1/verbs.c
+> @@ -515,7 +515,7 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
+>  				       opa_get_lid(packet->dlid, 9B));
+>  		if (!mcast)
+>  			goto drop;
+> -		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+> +		list_for_each_entry_rcu(p, &mcast->qp_list, list, lockdep_is_held(&(ibp->rvp.lock))) {
 
-You meant a "single cache" category when you say "single slab"? Just to
-mention, the number of slabs (in a single cache) when a large number of
-objects are allocated is more than 1 (not single). With current rcuperf, I
-see 100s of slabs (each slab being one page) in the kmalloc-32 cache. Each
-slab contains around 128 objects of type kfree_rcu (24 byte object aligned to
-32-byte slab object).
+Okay, this looks reasonable
 
-> ask...  Is this performance result representative of production workloads?
+Mike, Dennis, is this the right lock to test?
 
-I added more variation to allocation sizes to rcuperf (patch below) to distribute
-allocations across 4 kmalloc slabs (32,64,96 and 128) and I see a signficant
-improvement with Ulad's patch in SLAB in terms of completion time of the
-test. Below are the results. With SLUB I see slightly higher memory
-footprint, I have never used SLUB and not sure who is using it so I am not
-too concerned since the degradation in memory footprint is only slight with
-SLAB having the signifcant improvement.
-
-with SLAB:
-
-with Ulad's patch:
-[   19.096052] Total time taken by all kfree'ers: 17519684419 ns, loops: 10000, batches: 3378, memory footprint: 319MB
-[   18.980837] Total time taken by all kfree'ers: 17460918969 ns, loops: 10000, batches: 3399, memory footprint: 312MB
-[   18.671535] Total time taken by all kfree'ers: 17116640301 ns, loops: 10000, batches: 3331, memory footprint: 268MB
-[   18.737601] Total time taken by all kfree'ers: 17227635828 ns, loops: 10000, batches: 3311, memory footprint: 329MB
-
-without Ulad's patch:
-[   22.679112] Total time taken by all kfree'ers: 21174999896 ns, loops: 10000, batches: 2722, memory footprint: 314MB
-[   22.099168] Total time taken by all kfree'ers: 20528110989 ns, loops: 10000, batches: 2611, memory footprint: 240MB
-[   22.477571] Total time taken by all kfree'ers: 20975674614 ns, loops: 10000, batches: 2763, memory footprint: 341MB
-[   22.772915] Total time taken by all kfree'ers: 21207270347 ns, loops: 10000, batches: 2765, memory footprint: 329MB
-
-with SLUB:
-
-without Ulad's patch:
-[   10.714471] Total time taken by all kfree'ers: 9216968353 ns, loops: 10000, batches: 1099, memory footprint: 393MB
-[   11.188174] Total time taken by all kfree'ers: 9613032449 ns, loops: 10000, batches: 1147, memory footprint: 387MB
-[   11.077431] Total time taken by all kfree'ers: 9547675890 ns, loops: 10000, batches: 1292, memory footprint: 296MB
-[   11.212767] Total time taken by all kfree'ers: 9712869591 ns, loops: 10000, batches: 1155, memory footprint: 387MB
-
-
-with Ulad's patch
-[   11.241949] Total time taken by all kfree'ers: 9681912225 ns, loops: 10000, batches: 1087, memory footprint: 417MB
-[   11.651831] Total time taken by all kfree'ers: 10154268745 ns, loops: 10000, batches: 1184, memory footprint: 416MB
-[   11.342659] Total time taken by all kfree'ers: 9844937317 ns, loops: 10000, batches: 1137, memory footprint: 477MB
-[   11.718769] Total time taken by all kfree'ers: 10138649532 ns, loops: 10000, batches: 1159, memory footprint: 395MB
-
-Test patch for rcuperf is below. The memory footprint measurement for rcuperf
-is still under discussion in another thread, but I tested based on that anyway:
-
----8<-----------------------
-
-From d44e4c6112c388d39f7c2241e061dd77cca28d9e Mon Sep 17 00:00:00 2001
-From: Joel Fernandes <joelaf@google.com>
-Date: Tue, 14 Jan 2020 09:59:23 -0500
-Subject: [PATCH] rcuperf: Add support to vary the slab object sizes
-
-Signed-off-by: Joel Fernandes <joelaf@google.com>
----
- kernel/rcu/rcuperf.c | 43 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 36 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index a4a8d097d84d..216d7c072ca2 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -600,17 +600,29 @@ static int kfree_nrealthreads;
- static atomic_t n_kfree_perf_thread_started;
- static atomic_t n_kfree_perf_thread_ended;
- 
--struct kfree_obj {
--	char kfree_obj[8];
--	struct rcu_head rh;
--};
-+/*
-+ * Define a kfree_obj with size as the @size parameter + the size of rcu_head
-+ * (rcu_head is 16 bytes on 64-bit arch).
-+ */
-+#define DEFINE_KFREE_OBJ(size)	\
-+struct kfree_obj_ ## size {	\
-+	char kfree_obj[size];	\
-+	struct rcu_head rh;	\
-+}
-+
-+/* This should goto the right sized slabs on both 32-bit and 64-bit arch */
-+DEFINE_KFREE_OBJ(16); // goes on kmalloc-32 slab
-+DEFINE_KFREE_OBJ(32); // goes on kmalloc-64 slab
-+DEFINE_KFREE_OBJ(64); // goes on kmalloc-96 slab
-+DEFINE_KFREE_OBJ(96); // goes on kmalloc-128 slab
- 
- static int
- kfree_perf_thread(void *arg)
- {
- 	int i, loop = 0;
- 	long me = (long)arg;
--	struct kfree_obj *alloc_ptr;
-+	void *alloc_ptr;
-+
- 	u64 start_time, end_time;
- 	long long mem_begin, mem_during = 0;
- 
-@@ -635,11 +647,28 @@ kfree_perf_thread(void *arg)
- 		}
- 
- 		for (i = 0; i < kfree_alloc_num; i++) {
--			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-+			int kfree_type = i % 4;
-+
-+			if (kfree_type == 0)
-+				alloc_ptr = kmalloc(sizeof(struct kfree_obj_16), GFP_KERNEL);
-+			else if (kfree_type == 1)
-+				alloc_ptr = kmalloc(sizeof(struct kfree_obj_32), GFP_KERNEL);
-+			else if (kfree_type == 2)
-+				alloc_ptr = kmalloc(sizeof(struct kfree_obj_64), GFP_KERNEL);
-+			else
-+				alloc_ptr = kmalloc(sizeof(struct kfree_obj_96),  GFP_KERNEL);
-+
- 			if (!alloc_ptr)
- 				return -ENOMEM;
- 
--			kfree_rcu(alloc_ptr, rh);
-+			if (kfree_type == 0)
-+				kfree_rcu((struct kfree_obj_16 *)alloc_ptr, rh);
-+			else if (kfree_type == 1)
-+				kfree_rcu((struct kfree_obj_32 *)alloc_ptr, rh);
-+			else if (kfree_type == 2)
-+				kfree_rcu((struct kfree_obj_64 *)alloc_ptr, rh);
-+			else
-+				kfree_rcu((struct kfree_obj_96 *)alloc_ptr, rh);
- 		}
- 
- 		cond_resched();
--- 
-2.25.0.rc1.283.g88dfdc4193-goog
-
+Jason
