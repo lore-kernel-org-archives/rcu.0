@@ -1,106 +1,102 @@
-Return-Path: <SRS0=FQhq=3D=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=sWdW=3E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D0DC33C9E
-	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 19:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 577F1C33CB1
+	for <rcu@archiver.kernel.org>; Wed, 15 Jan 2020 11:41:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 223F324670
-	for <rcu@archiver.kernel.org>; Tue, 14 Jan 2020 19:46:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2B2582073A
+	for <rcu@archiver.kernel.org>; Wed, 15 Jan 2020 11:41:18 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLy6jB7e"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgANTqz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Jan 2020 14:46:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:46993 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgANTqy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Jan 2020 14:46:54 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2020 11:46:54 -0800
-X-IronPort-AV: E=Sophos;i="5.70,320,1574150400"; 
-   d="scan'208";a="213448748"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.179]) ([10.254.201.179])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 14 Jan 2020 11:46:52 -0800
-Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
- checking
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     madhuparnabhowmik04@gmail.com, mike.marciniszyn@intel.com,
-        paulmck@kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        rcu@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200114162345.19995-1-madhuparnabhowmik04@gmail.com>
- <20200114165740.GB22037@ziepe.ca>
- <74adec84-ec5b-ea1b-7adf-3f8608838259@intel.com>
- <25133367-6544-d0af-ae30-5178909748b1@intel.com>
- <20200114194148.GD22037@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <7959316e-7647-9ba3-5f1a-10c8d31a2994@intel.com>
-Date:   Tue, 14 Jan 2020 14:46:50 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <20200114194148.GD22037@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1729903AbgAOLlR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Jan 2020 06:41:17 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39833 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729900AbgAOLlR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Jan 2020 06:41:17 -0500
+Received: by mail-pg1-f195.google.com with SMTP id b137so8098458pga.6;
+        Wed, 15 Jan 2020 03:41:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NJMMur67AR0jae8jF9nPUvI7tXT+F1ukuVAKqerILaA=;
+        b=ZLy6jB7emzIXTRq+hgGRXWDcMcxvW/MxXSJxSfSOPYL7BT0wZJ9RmS4ECrN5sU64LE
+         71VnbUoHLMD2ny/8BwRo+KG2gQA7bGfp/c2QH5oCx9lEUohAd0DsHdnMcGCSOzKVCnlr
+         Mftxp9UKelVq0dZNII4VpiKfsAqEX7e+j6ZNI2rKuKgbdOsjRgXUipJdNXXOuOO00RSp
+         AKY9pyE4551I+2MNDQFFvH4gpTkDWVZ7ONmC4AQvmgKjAtS9l0lVfRLd7k33KHBIOgzm
+         myCYp341wTatTXf6qFxdajiVM9GXXcETTVnhYtgNuLJHofVS12KZvjCVja3WwRgi/X8+
+         Gwwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NJMMur67AR0jae8jF9nPUvI7tXT+F1ukuVAKqerILaA=;
+        b=IGx0FlTttThZNisFPhgrzJksjMwZewSPz/nB+h0lwd1QlFB5ecQMRKQtYSv1IOrWx2
+         ERFjlWFdC7NUcY/gsLdbYrmYfO3fa8H68iQ0fqS2Krz1M3cFBldhqm3YC2gePCWsL8e2
+         Kj7H3mQNqiBkKaed4Z/XXFH2h5D3tpDxJMipDo7UauTbZyibL6WIWXknKo6vaWzc5rGJ
+         NxnDJMhKFnD5nYh2s3CaT5fQeWg1C5O2vkILQCX4J8Y8wO2z0Yec8tuEhs/l7ezzySAo
+         ryaXmavfJtzKxlipTAxCA28dtiflQ392SGXFvLmD0pM3+83vaSqrSONWJHy3dVJflWeX
+         rEqg==
+X-Gm-Message-State: APjAAAUKuGaLQEwRPgSdHThGSQpl6MVEad0CxFTHI8QWFVw1NTZPXVje
+        xJwyQ215jbg6O0UoflFEcuc=
+X-Google-Smtp-Source: APXvYqx7eBmWC19EHivXv+68lQFzkQ9AwswFFyZ1hC6yGbRYdKg3lmD3zxWhHuW82cTbauFGweytHg==
+X-Received: by 2002:a65:6451:: with SMTP id s17mr32436532pgv.188.1579088476475;
+        Wed, 15 Jan 2020 03:41:16 -0800 (PST)
+Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee2:fbb9:d507:a4c2:d370:bd13])
+        by smtp.gmail.com with ESMTPSA id v4sm21300869pfn.181.2020.01.15.03.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2020 03:41:16 -0800 (PST)
+From:   madhuparnabhowmik04@gmail.com
+To:     davem@davemloft.net, gregkh@linuxfoundation.org
+Cc:     paulmck@kernel.org, joel@joelfernandes.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        frextrite@gmail.com,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: [PATCH] net: wan: lapbether.c: Use built-in RCU list checking
+Date:   Wed, 15 Jan 2020 17:11:01 +0530
+Message-Id: <20200115114101.13068-1-madhuparnabhowmik04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/14/2020 2:41 PM, Jason Gunthorpe wrote:
-> On Tue, Jan 14, 2020 at 01:24:00PM -0500, Dennis Dalessandro wrote:
->> On 1/14/2020 12:00 PM, Dennis Dalessandro wrote:
->>> On 1/14/2020 11:57 AM, Jason Gunthorpe wrote:
->>>> On Tue, Jan 14, 2020 at 09:53:45PM +0530,
->>>> madhuparnabhowmik04@gmail.com wrote:
->>>>> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
->>>>>
->>>>> list_for_each_entry_rcu has built-in RCU and lock checking.
->>>>> Pass cond argument to list_for_each_entry_rcu.
->>>>>
->>>>> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
->>>>>    drivers/infiniband/hw/hfi1/verbs.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/hw/hfi1/verbs.c
->>>>> b/drivers/infiniband/hw/hfi1/verbs.c
->>>>> index 089e201d7550..22f2d4fd2577 100644
->>>>> +++ b/drivers/infiniband/hw/hfi1/verbs.c
->>>>> @@ -515,7 +515,7 @@ static inline void hfi1_handle_packet(struct
->>>>> hfi1_packet *packet,
->>>>>                           opa_get_lid(packet->dlid, 9B));
->>>>>            if (!mcast)
->>>>>                goto drop;
->>>>> -        list_for_each_entry_rcu(p, &mcast->qp_list, list) {
->>>>> +        list_for_each_entry_rcu(p, &mcast->qp_list, list,
->>>>> lockdep_is_held(&(ibp->rvp.lock))) {
->>>>
->>>> Okay, this looks reasonable
->>>>
->>>> Mike, Dennis, is this the right lock to test?
->>>>
->>>
->>> I'm looking at that right now actually, I don't think this is correct.
->>> Wanted to talk to Mike before I send a response though.
->>>
->>> -Denny
->>
->> That's definitely going to throw a ton of lock dep messages. It's not really
->> the right lock either. Instead what we probably need to do is what we do in
->> the non-multicast part of the code and take the rcu_read_lock().
-> 
-> Uh.. why is this using the _rcu varient without holding the rcu lock?
-> That is quite wrong already.
->
+From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-Yep, seems like a bug to me. Patch forthcoming.
+The only callers of the function lapbeth_get_x25_dev()
+are lapbeth_rcv() and lapbeth_device_event().
 
--Denny
+lapbeth_rcv() uses rcu_read_lock() whereas lapbeth_device_event()
+is called with RTNL held (As mentioned in the comments).
+
+Therefore, pass lockdep_rtnl_is_held() as cond argument in
+list_for_each_entry_rcu();
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+---
+ drivers/net/wan/lapbether.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 0f1217b506ad..e30d91a38cfb 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -64,7 +64,7 @@ static struct lapbethdev *lapbeth_get_x25_dev(struct net_device *dev)
+ {
+ 	struct lapbethdev *lapbeth;
+ 
+-	list_for_each_entry_rcu(lapbeth, &lapbeth_devices, node) {
++	list_for_each_entry_rcu(lapbeth, &lapbeth_devices, node, lockdep_rtnl_is_held()) {
+ 		if (lapbeth->ethdev == dev) 
+ 			return lapbeth;
+ 	}
+-- 
+2.17.1
 
