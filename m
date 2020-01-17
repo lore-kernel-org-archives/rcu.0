@@ -2,144 +2,228 @@ Return-Path: <SRS0=lUfD=3G=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12F85C33C9E
-	for <rcu@archiver.kernel.org>; Fri, 17 Jan 2020 21:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F71C33C9E
+	for <rcu@archiver.kernel.org>; Fri, 17 Jan 2020 22:18:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D154E2192A
-	for <rcu@archiver.kernel.org>; Fri, 17 Jan 2020 21:59:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1191D21D56
+	for <rcu@archiver.kernel.org>; Fri, 17 Jan 2020 22:18:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LwYY4I12"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LfRx5pvZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729852AbgAQV7M (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Jan 2020 16:59:12 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:36236 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729764AbgAQV7M (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Jan 2020 16:59:12 -0500
-Received: by mail-pl1-f195.google.com with SMTP id a6so10402933plm.3
-        for <rcu@vger.kernel.org>; Fri, 17 Jan 2020 13:59:12 -0800 (PST)
+        id S1726970AbgAQWSI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Jan 2020 17:18:08 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:33587 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726861AbgAQWSI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Jan 2020 17:18:08 -0500
+Received: by mail-pf1-f196.google.com with SMTP id z16so12576050pfk.0
+        for <rcu@vger.kernel.org>; Fri, 17 Jan 2020 14:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=56aH2f2I6unxBhsORyRTc0s6WhmndqDwz/RgmZbYgAA=;
-        b=LwYY4I12Sm9BWHk3vv2Z14wWQzIKywGelJkc7iNg/vnd5QatMajbAsw1CQIorcPqYB
-         1KFb6ZB/rFQjZ1Cu6YpbrkEWIVIrgZj6BsrhidYpdnc3bIiqCltXR3ydkWaO/jjtDAJ0
-         DPFUIk3BKmYDLHOmM3KEZmO4fYPkaJVXP6HTg=
+        bh=apkoNmNueEmlW6DbknDEwDUk7paJjuboBqdPKRt5uKE=;
+        b=LfRx5pvZwjleMwhu3r9sLni1dQV3OOv7jBLLHK9p5Wr5Bq3oeGJF7dfy13mJVVshc/
+         HtouQj9zyrAiSNGFoiql1YGNnUGKrV3j2B47NoGGv1HBdVWtMD+Gj9v9AttyIQI/JOWn
+         vO34laggYffBHcbzOpDj0PBkKLr+LvAsYChgM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=56aH2f2I6unxBhsORyRTc0s6WhmndqDwz/RgmZbYgAA=;
-        b=S34fim9G9SoKi9sjgz8kDQB3PUv25MF3+spdStcrN1ho3WpTx7LdYM6mafDUbIGSJi
-         BjCWKg4qCe6ItFxkb4Zs9IK89YpXE6srwzM3QDsTz/Av4KrCf/M4Yqe0Pz8RSOpnl3FD
-         VTfwoiKkS4Elux6JO6eThDuDpok/XCMc7vZBURcx6tX8hM2nDt/YNtPkmxRXROd6OZ48
-         bloHb3Uffzi7fK2aByJZtD35gHqgECjDA80K40XTh0D7D+lCRMIN3+oWBL/3/RVCyZps
-         0EuuuJe5ds9mgCpPMIE+Jlaln9bWttm6m6VSgc+AMcHtLglYZf1Pz77Qdy5IGasDQbnM
-         tJoQ==
-X-Gm-Message-State: APjAAAVq1x+vvuB+Fxy6ZlwquPMBEkH9fqFOSNIn/58WOBuUohb97xzb
-        JjVnG6co1pGoUl/Y9zg+PnGCI1wX4Z8=
-X-Google-Smtp-Source: APXvYqyhobpoBDY9+cq/GGePm6cjJoaX2BRvuTP4Gds5sQhVwiHPqq9vFFK+QyyReL+nnFMC1xSUKg==
-X-Received: by 2002:a17:902:7c88:: with SMTP id y8mr1412589pll.321.1579298351632;
-        Fri, 17 Jan 2020 13:59:11 -0800 (PST)
+        bh=apkoNmNueEmlW6DbknDEwDUk7paJjuboBqdPKRt5uKE=;
+        b=n/hvsMLniYEwkUi2Q3/Bs2QSLykxG5IJx/CW7Q4uyD0r6oXGqnJ4dFEHtF4JkcxuPH
+         2zDTrirwGKW/EYJSNgwHypvQdf3Ab5ikmWx0qZgZ6hjGKbYEi1MA5C0CMYuzMyNVxbZC
+         CLpz0X0ebDI9aKWBFv01uH+Q0d1XVNS6+gdZCEQJN84ExrKQ5LD6RqX1lPJ4r3UGXiGc
+         IBMBlclzWivvs81xzMd7bRDLEOaBOYd0z9SOo0E7WBkIopDZSyx7nU8MRElhaqfNSB1v
+         ynsePlro1RxYxpr5vgaen24MjisFl/x7gCdWCe6hAhGQijJti6kOjEwd9nTNxYclNbGb
+         gnQw==
+X-Gm-Message-State: APjAAAWWBjU13iPmcwXf4kKb6jS2Dt6abME/2pP5XpwnptLKDjP3TxUM
+        PTzrvCh2BcQr915WgQOBIK94t63hxGY=
+X-Google-Smtp-Source: APXvYqwIjHrNnIGY3KFBFxkV7T/YNv6TdLCbXtRxh6q0QTTX0ss8FQUFJbKXpqlXKe1AeD2SO1wybw==
+X-Received: by 2002:a62:158c:: with SMTP id 134mr5078321pfv.81.1579299486267;
+        Fri, 17 Jan 2020 14:18:06 -0800 (PST)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q22sm31131110pfg.170.2020.01.17.13.59.10
+        by smtp.gmail.com with ESMTPSA id m19sm7434662pjv.10.2020.01.17.14.18.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 13:59:11 -0800 (PST)
-Date:   Fri, 17 Jan 2020 16:59:10 -0500
+        Fri, 17 Jan 2020 14:18:05 -0800 (PST)
+Date:   Fri, 17 Jan 2020 17:18:04 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: support kfree_bulk() interface in
- kfree_rcu()
-Message-ID: <20200117215910.GC206250@google.com>
-References: <20191231122241.5702-1-urezki@gmail.com>
- <20200113190315.GA12543@paulmck-ThinkPad-P72>
- <20200114164937.GA50403@google.com>
- <20200115131446.GA18417@pc636>
- <20200115225350.GA246464@google.com>
- <20200117175217.GA23622@pc636>
- <20200117185732.GH246464@google.com>
- <20200117213721.GN2935@paulmck-ThinkPad-P72>
+To:     rcu@vger.kernel.org, paulmck@kernel.org, rostedt@goodmis.org,
+        bristot@redhat.com
+Subject: Re: RCU_BOOST not working for me
+Message-ID: <20200117221804.GA211665@google.com>
+References: <20200117215814.GB206250@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200117213721.GN2935@paulmck-ThinkPad-P72>
+In-Reply-To: <20200117215814.GB206250@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 01:37:21PM -0800, Paul E. McKenney wrote:
-> On Fri, Jan 17, 2020 at 01:57:32PM -0500, Joel Fernandes wrote:
-> > On Fri, Jan 17, 2020 at 06:52:17PM +0100, Uladzislau Rezki wrote:
-> > > > > > > But rcuperf uses a single block size, which turns into kfree_bulk() using
-> > > > > > > a single slab, which results in good locality of reference.  So I have to
-> > > > > > 
-> > > > > > You meant a "single cache" category when you say "single slab"? Just to
-> > > > > > mention, the number of slabs (in a single cache) when a large number of
-> > > > > > objects are allocated is more than 1 (not single). With current rcuperf, I
-> > > > > > see 100s of slabs (each slab being one page) in the kmalloc-32 cache. Each
-> > > > > > slab contains around 128 objects of type kfree_rcu (24 byte object aligned to
-> > > > > > 32-byte slab object).
-> > > > > > 
-> > > > > I think that is about using different slab caches to break locality. It
-> > > > > makes sense, IMHO, because usually the system make use of different slabs,
-> > > > > because of different object sizes. From the other hand i guess there are
-> > > > > test cases when only one slab gets used.
-> > > > 
-> > > > I was wondering about "locality". A cache can be split into many slabs. Only
-> > > > the data on a page is local (contiguous). If there are a large number of
-> > > > objects, then it goes to a new slab (on the same cache). At least on the
-> > > > kmalloc slabs, there is only 1 slab per page. So for example, if on
-> > > > kmalloc-32 slab, there are more than 128 objects, then it goes to a different
-> > > > slab / page. So how is there still locality?
-> > > > 
-> > > Hmm.. On a high level:
-> > > 
-> > > one slab cache manages a specific object size, i.e. the slab memory consists of
-> > > contiguous pages(when increased probably not) of memory(4096 bytes or so) divided
-> > > into equal object size. For example when kmalloc() gets called, the appropriate
-> > > cache size(slab that serves only specific size) is selected and an object assigned
-> > > from it is returned.
-> > > 
-> > > But that is theory and i have not deeply analyzed how the SLAB works internally,
-> > > so i can be wrong :)
-> > > 
-> > > You mentioned 128 objects per one slab in the kmalloc-32 slab-cache. But all of
-> > > them follows each other, i mean it is sequential and is like regular array. In
-> > 
-> > Yes, for these 128 objects it is sequential. But the next 128 could be on
-> > some other page is what I was saying  And we are allocating 10s of 1000s of
-> > objects in this test.  (I believe pages are sequential only per slab and not
-> > for a different slab within same cache).
-> > 
-> > > that sense freeing can be beneficial because when an access is done to any object
-> > > whole CPU cache-line is fetched(if it was not before), usually it is 64K.
-> > 
-> > You mean size of the whole L1 cache right? cachelines are in the order of bytes.
-> > 
-> > > That is what i meant "locality". In order to "break it" i meant to allocate from
-> > > different slabs to see how kfree_slub() behaves in that sense, what is more real
-> > > scenario and workload, i think.
-> > 
-> > Ok, agreed.
-> > (BTW I do agree your patch is beneficial, just wanted to get the slab
-> > discussion right).
+On Fri, Jan 17, 2020 at 04:58:14PM -0500, Joel Fernandes wrote:
+> Hi,
+> Me and Daniel were poking around with RCU_BOOST. I wrote a kernel module to
+> test it a bit and I don't see the boost happening (thanks to Daniel for idea
+> of writing a module). Haven't debugged it more yet. Will look more tomorrow.
+> But below is the kernel module code and it prints a FAIL message to kernel
+> logs in a few seconds.
 > 
-> Thank you both!
+> I see the reader thread not getting CPU for several seconds. RCU_BOOST_DELAY
+> is set to 500.
 > 
-> Then I should be looking for an updated version of the patch with an upgraded
-> commit log?  Or is there more investigation/testing/review in process?
-> 
+> Thoughts?
 
-From my side the review is complete. I believe he will repost with
-debugobjects fix and we should be good.
+So this could be because I did not start a grace period which is quite silly.
+I am sorry about that. I will add another thread to start grace periods as
+well and let you know if I still see a problem.
+
+thanks,
+
+ - Joel
+
+
+> 
+> ---8<-----------------------
+> 
+> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+> index c1860d35dc7e..ba34957dff26 100644
+> --- a/drivers/misc/Makefile
+> +++ b/drivers/misc/Makefile
+> @@ -2,7 +2,7 @@
+>  #
+>  # Makefile for misc devices that really don't fit anywhere else.
+>  #
+> -
+> +obj-m += ptest.o
+>  obj-$(CONFIG_IBM_ASM)		+= ibmasm/
+>  obj-$(CONFIG_IBMVMC)		+= ibmvmc.o
+>  obj-$(CONFIG_AD525X_DPOT)	+= ad525x_dpot.o
+> diff --git a/drivers/misc/ptest.c b/drivers/misc/ptest.c
+> new file mode 100644
+> index 000000000000..76cc9524ccac
+> --- /dev/null
+> +++ b/drivers/misc/ptest.c
+> @@ -0,0 +1,112 @@
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/kthread.h>
+> +#include <linux/delay.h>
+> +
+> +#define RCU_READER_DELAY 100 //ms
+> +#define RCU_BLOCKER_DELAY 600 //ms
+> +
+> +MODULE_LICENSE("GPL");
+> +
+> +struct sched_param {
+> +	int sched_priority;
+> +};
+> +
+> +int stop_test = 0;
+> +int test_pass = 1;
+> +int reader_exit = 0;
+> +s64 delta_fail;
+> +
+> +#define ns_to_ms(delta) (delta / 1000000ULL)
+> +
+> +static int rcu_reader(void *a)
+> +{
+> +	ktime_t start, end, reader_begin;
+> +	s64 delta;
+> +
+> +	reader_begin = ktime_get();
+> +
+> +	while (!kthread_should_stop() && !stop_test) {
+> +		start = ktime_get();
+> +		rcu_read_lock();
+> +		trace_printk("rcu_reader entering RSCS\n");
+> +		mdelay(RCU_READER_DELAY);
+> +		trace_printk("rcu_reader exiting RSCS\n");
+> +		rcu_read_lock();
+> +		end = ktime_get();
+> +		delta = ktime_to_ns(ktime_sub(end, start));
+> +
+> +		if (delta < 0 || (ns_to_ms(delta) > (2 * RCU_READER_DELAY))) {
+> +			delta_fail = delta;
+> +			test_pass = 0;
+> +			break;
+> +		}
+> +
+> +		// Don't let the rcu_reader() run more than 3s inorder to
+> +		// not starve the blocker incase reader prio > blocker prio.
+> +		delta = ktime_to_ns(ktime_sub(end, reader_begin));
+> +		if (ns_to_ms(delta) > 3000)
+> +			break;
+> +	}
+> +
+> +	stop_test = 1;
+> +	reader_exit = 1;
+> +	pr_err("Exiting reader\n");
+> +	return 0;
+> +}
+> +
+> +static int rcu_blocker(void *a)
+> +{
+> +	int loops = 5;
+> +
+> +	while (!kthread_should_stop() && loops-- && !stop_test) {
+> +		trace_printk("rcu_blocker entering\n");
+> +		mdelay(RCU_BLOCKER_DELAY);
+> +		trace_printk("rcu_blocker exiting\n");
+> +	}
+> +
+> +	pr_err("Exiting blocker\n");
+> +	stop_test = 1;
+> +
+> +	// Wait for reader to finish
+> +	while (!reader_exit)
+> +		schedule_timeout_uninterruptible(1);
+> +
+> +	if (test_pass)
+> +		pr_err("TEST PASSED\n");
+> +	else
+> +		pr_err("TEST FAILED, failing delta=%lldms\n", ns_to_ms(delta_fail));
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init ptest_init(void){
+> +	struct sched_param params;
+> +	struct task_struct *reader, *blocker;
+> +
+> +	reader = kthread_create(rcu_reader, NULL, "reader");
+> +	params.sched_priority = 50;
+> +	sched_setscheduler(reader, SCHED_FIFO, &params);
+> +	kthread_bind(reader, smp_processor_id());
+> +
+> +	blocker = kthread_create(rcu_blocker, NULL, "blocker");
+> +	params.sched_priority = 60;
+> +	sched_setscheduler(blocker, SCHED_FIFO, &params);
+> +	kthread_bind(blocker, smp_processor_id());
+> +
+> +	wake_up_process(reader);
+> +
+> +	// Let reader run a little
+> +	mdelay(50);
+> +
+> +	wake_up_process(blocker);
+> +	return 0;
+> +}
+> +
+> +static void __exit ptest_exit(void){
+> +}
+> +
+> +module_init(ptest_init);
+> +module_exit(ptest_exit);
+> -- 
+> 2.25.0.341.g760bfbb309-goog
+> 
