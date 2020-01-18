@@ -2,185 +2,113 @@ Return-Path: <SRS0=UQpt=3H=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA5EEC33CB1
-	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 12:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E513C33CB1
+	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 16:56:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A8C1A2072E
-	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 12:01:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE95C21D7D
+	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 16:55:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pqq9MNpc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cuzk/v2r"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgARMBA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 18 Jan 2020 07:01:00 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45658 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbgARMBA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 18 Jan 2020 07:01:00 -0500
-Received: by mail-lj1-f195.google.com with SMTP id j26so29150474ljc.12;
-        Sat, 18 Jan 2020 04:00:58 -0800 (PST)
+        id S1726460AbgARQz7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 18 Jan 2020 11:55:59 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:41750 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgARQz7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 18 Jan 2020 11:55:59 -0500
+Received: by mail-pg1-f195.google.com with SMTP id x8so13254295pgk.8;
+        Sat, 18 Jan 2020 08:55:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VZj/+gTBYwih9w8p4CHvebReTfIMgw1NYGMhYLwgkjY=;
-        b=Pqq9MNpc0mluCwwOKD2lqGkoDdsfpynn/xg1au7LAGAye67z/NsqeDuVDGrcgalaI+
-         1OJYIYI/gtNkMK0cXvjAbF0QIEZgRsp6QxGRh6ZCTYAEvW2TFkFump0n2TCHIBrXfr/k
-         EMfOxTDDaI0UZJHqQ1S+ONMQzww2ZXeLjJ0tnG5a9e2X7DJohIM1DcaF9jM6hgpBfwIl
-         ROzG7rWE9ooOijOZ6yY0FnRajbAP0mt90NVoNkoD0LlBj2Gj8aA/AF2fYNTziMnVcrHH
-         Li6pdXZr8DtBv4szeYINZobelo9rvUS7ac/qCHLI+VcilZnOh3LtdxxX2EmqJExrgQVz
-         UrQw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pHjwyacvYMGoFpBb1ji3Ywgw20nYhNtNHuaRMfwxOs0=;
+        b=Cuzk/v2rmZxlFbH1iwUh1jcfOyH4GZH0PoB4rDQhzMC2VZ2cGsxXT9sS8GasXDNIrs
+         AlkuBGsxK98YSd2RFM9FbmvQRmcTlP7ka5xpTSFIeeSrSSB66mfDh23S31ELk/vz4em7
+         Xihf1bM4Akxd0ppex6SP3ivSR/QIiC4evnsYdRjidZDmg3g13H2z9RfxAFCd3QM8WZIS
+         Cq7lun7KzCXChlt7+hGEnCInXMEwtm4YUQ6DjASR/NR4W+yeyH/xYjuSlbzcM6aCIsHe
+         XpqFLy0aLpOkeieWgjx5Pgg1S5JSnNp1SuLaCeskvY7Kiw2ZYUptTRgjfjWB331VY5Ki
+         eluA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VZj/+gTBYwih9w8p4CHvebReTfIMgw1NYGMhYLwgkjY=;
-        b=LlAVNZ/+wSNPesJEakXNRg9RImGfYrjE3ffpt4aiJFkb+SbyXc6PQLzdxIVONiqs2l
-         cncj7okWAu7nLfxIokkipRlKmNpsonOsv8Rl711Va+kJLjPJUXYk1gECRgcCNZ0oPtEw
-         ZGni8xZOdPUJeRU8yV4QNiSN7yhZO8KvORMXEVJfKP1wtfV8Tt0QQ0yHm6NgZYQ7cqZR
-         1unlB+EBmmwK71UQqUBAB6ZyQ0FRpo7728NG+ipnHdJVLzpJ6+PcUat2esFqPotdSpgl
-         53O6oC7BrGRVAPiPZ3ghs706bHFcQ7hV8SP0z+fjsGKF4zDkEmUD30iY5lAsOpYL89IJ
-         9RnQ==
-X-Gm-Message-State: APjAAAU6uG3QGx7pSksSQ8YaE7JvhKVE0wz3LIXNjJt8kWF2qfgxnmid
-        db5ptKylS4tzrHuVR1nQQurWSITMZ3E6bw==
-X-Google-Smtp-Source: APXvYqwosEdFwVQMSXRQKZbO5XfS6GRjYRqsw50BWyzXGZLANGfEw3N0Lwq9GnaTiEvN3WzmbZvk+g==
-X-Received: by 2002:a2e:8053:: with SMTP id p19mr7936544ljg.263.1579348857779;
-        Sat, 18 Jan 2020 04:00:57 -0800 (PST)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id m8sm13500659lfp.4.2020.01.18.04.00.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pHjwyacvYMGoFpBb1ji3Ywgw20nYhNtNHuaRMfwxOs0=;
+        b=bvbU63ask1hhNH0MQbOPyHbs8fhhvkCXR6kqVp4dSUo81kS+g2MIsD9QKOQuQKX3n1
+         2w/uQU9pdawuFX2Dqcbex5/YV9PxRy1sdF12gUCEubInmyl4fYu5X9KBjeIkdtGE0RMJ
+         CQv/to1HRQxC92FjBa+9dZn1uA1VLIG34bQ/ZrAmeKigg6kvddKlGny9RJMjE04n5lCu
+         +8LbJReRiR+MCSwtgkk0oT0vG4XeLdOwuvSeLhVJRo4or7AgjdP3CHZtf3CtrSAfMx/x
+         YCi6oRRWkohDMjvdPJA5OKhVaQo+vv9hWBidkycxfr7gKP/jqYWkiUzRd4sIETkNSxh3
+         TSRQ==
+X-Gm-Message-State: APjAAAUt+4RpRfrcuAX/3LfGljpk6u///z55l/HXmoO7xKycSB254scc
+        +tFnmr3/MAGqJRl+gOz9jt6FaxD8
+X-Google-Smtp-Source: APXvYqzL3uU0K97mb0rwv+HwRhmmpc3cE2p0938r2jZsWjKwjG8pFWjesMBAZ1rEpZFisR48RYDyNA==
+X-Received: by 2002:aa7:80c5:: with SMTP id a5mr8989492pfn.53.1579366558488;
+        Sat, 18 Jan 2020 08:55:58 -0800 (PST)
+Received: from localhost.localdomain ([146.196.37.181])
+        by smtp.googlemail.com with ESMTPSA id s7sm12389009pjk.22.2020.01.18.08.55.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jan 2020 04:00:57 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sat, 18 Jan 2020 13:00:49 +0100
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, urezki@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
+        Sat, 18 Jan 2020 08:55:58 -0800 (PST)
+From:   Amol Grover <frextrite@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/2] rcuperf: Add support to vary the slab object sizes
-Message-ID: <20200118120049.GA10134@pc636>
-References: <20200115224225.246061-1-joel@joelfernandes.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        Amol Grover <frextrite@gmail.com>
+Subject: [PATCH] rculist: Add brackets around cond argument in __list_check_rcu macro
+Date:   Sat, 18 Jan 2020 22:24:18 +0530
+Message-Id: <20200118165417.12325-1-frextrite@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200115224225.246061-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Joel.
+Passing a complex lockdep condition to __list_check_rcu results
+in false positive lockdep splat due to incorrect expression
+evaluation.
 
-> This patch varies the allocated size of objects to be more realistic in
-> comparison to production workloads.
-> 
-> Cc: urezki@gmail.com
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> ---
->  kernel/rcu/rcuperf.c | 48 +++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 41 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> index da94b89cd531..1fd0cc72022e 100644
-> --- a/kernel/rcu/rcuperf.c
-> +++ b/kernel/rcu/rcuperf.c
-> @@ -87,6 +87,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
->  torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
->  torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
->  torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() perf test?");
-> +torture_param(bool, kfree_vary_obj_size, 0, "Vary the kfree_rcu object size");
->  
->  static char *perf_type = "rcu";
->  module_param(perf_type, charp, 0444);
-> @@ -599,17 +600,29 @@ static int kfree_nrealthreads;
->  static atomic_t n_kfree_perf_thread_started;
->  static atomic_t n_kfree_perf_thread_ended;
->  
-> -struct kfree_obj {
-> -	char kfree_obj[8];
-> -	struct rcu_head rh;
-> -};
-> +/*
-> + * Define a kfree_obj with size as the @size parameter + the size of rcu_head
-> + * (rcu_head is 16 bytes on 64-bit arch).
-> + */
-> +#define DEFINE_KFREE_OBJ(size)	\
-> +struct kfree_obj_ ## size {	\
-> +	char kfree_obj[size];	\
-> +	struct rcu_head rh;	\
-> +}
-> +
-> +/* This should goto the right sized slabs on both 32-bit and 64-bit arch */
-> +DEFINE_KFREE_OBJ(16); // goes on kmalloc-32 slab
-> +DEFINE_KFREE_OBJ(32); // goes on kmalloc-64 slab
-> +DEFINE_KFREE_OBJ(64); // goes on kmalloc-96 slab
-> +DEFINE_KFREE_OBJ(96); // goes on kmalloc-128 slab
->  
->  static int
->  kfree_perf_thread(void *arg)
->  {
->  	int i, loop = 0;
->  	long me = (long)arg;
-> -	struct kfree_obj *alloc_ptr;
-> +	void *alloc_ptr;
-> +
->  	u64 start_time, end_time;
->  
->  	VERBOSE_PERFOUT_STRING("kfree_perf_thread task started");
-> @@ -627,11 +640,32 @@ kfree_perf_thread(void *arg)
->  
->  	do {
->  		for (i = 0; i < kfree_alloc_num; i++) {
-> -			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-> +			int kfree_type = i % 4;
-> +
-> +			// Allocate only kfree_obj_16 if rcuperf.kfree_vary_obj_size not passed.
-> +			if (!kfree_vary_obj_size)
-> +				kfree_type = 0;
-> +
-> +			if (kfree_type == 0)
-> +				alloc_ptr = kmalloc(sizeof(struct kfree_obj_16), GFP_KERNEL);
-> +			else if (kfree_type == 1)
-> +				alloc_ptr = kmalloc(sizeof(struct kfree_obj_32), GFP_KERNEL);
-> +			else if (kfree_type == 2)
-> +				alloc_ptr = kmalloc(sizeof(struct kfree_obj_64), GFP_KERNEL);
-> +			else
-> +				alloc_ptr = kmalloc(sizeof(struct kfree_obj_96),  GFP_KERNEL);
-> +
->  			if (!alloc_ptr)
->  				return -ENOMEM;
->  
-> -			kfree_rcu(alloc_ptr, rh);
-> +			if (kfree_type == 0)
-> +				kfree_rcu((struct kfree_obj_16 *)alloc_ptr, rh);
-> +			else if (kfree_type == 1)
-> +				kfree_rcu((struct kfree_obj_32 *)alloc_ptr, rh);
-> +			else if (kfree_type == 2)
-> +				kfree_rcu((struct kfree_obj_64 *)alloc_ptr, rh);
-> +			else
-> +				kfree_rcu((struct kfree_obj_96 *)alloc_ptr, rh);
->  		}
->  
->  		cond_resched();
-> -- 
-> 2.25.0.rc1.283.g88dfdc4193-goog
-> 
+For example, a lockdep check condition `cond1 || cond2` is
+evaluated as `!cond1 || cond2 && !rcu_read_lock_any_held()`
+which, according to operator precedence, evaluates to
+`!cond1 || (cond2 && !rcu_read_lock_any_held())`.
+This would result in a lockdep splat when cond1 is false
+and cond2 is true which is logically incorrect.
 
-Good point and patch!
+Signed-off-by: Amol Grover <frextrite@gmail.com>
+---
+ include/linux/rculist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
---
-Vlad Rezki
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 4158b7212936..dce491f0b354 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -50,9 +50,9 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+ #define __list_check_rcu(dummy, cond, extra...)				\
+ 	({								\
+ 	check_arg_count_one(extra);					\
+-	RCU_LOCKDEP_WARN(!cond && !rcu_read_lock_any_held(),		\
++	RCU_LOCKDEP_WARN(!(cond) && !rcu_read_lock_any_held(),		\
+ 			 "RCU-list traversed in non-reader section!");	\
+-	 })
++	})
+ #else
+ #define __list_check_rcu(dummy, cond, extra...)				\
+ 	({ check_arg_count_one(extra); })
+-- 
+2.24.1
 
