@@ -2,102 +2,103 @@ Return-Path: <SRS0=UQpt=3H=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07A2AC33CB6
-	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 03:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 065EFC33C9E
+	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 03:11:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CF9C524679
-	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 03:06:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C3CFA208CD
+	for <rcu@archiver.kernel.org>; Sat, 18 Jan 2020 03:11:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cT7tAvPz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kFFMSn6G"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbgARDG1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Jan 2020 22:06:27 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:35384 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgARDG0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Jan 2020 22:06:26 -0500
-Received: by mail-pg1-f194.google.com with SMTP id l24so12571753pgk.2;
-        Fri, 17 Jan 2020 19:06:26 -0800 (PST)
+        id S1730588AbgARDLL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Jan 2020 22:11:11 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:33585 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgARDLL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Jan 2020 22:11:11 -0500
+Received: by mail-pl1-f193.google.com with SMTP id ay11so10642966plb.0;
+        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ZOS/QKfJuYHMcS4p5y33x0lWJFFfhgPkwQi+6BWE0/s=;
-        b=cT7tAvPzEQGvP8FwNaSz5sJQJr16JuwCeKy76J7+0CXYibIXw5W9H3ImH/XF6Y1y2f
-         l/CB6PhveH0EW7bldI3GYIsM5xB7dibtyGiLFyCwniQtWvLc2j6mQiNMs7Lhb29WT1Sc
-         RzPCEeOd1QeCvdbDZAPv2glcGElX7NvwYG697Z5z6HvhQ9OFctcDGI0Dx/JP8HoP6A8b
-         plDGQGF++TK5lj8ih3gcGHlBKGppcyMtH11TRDVoQMaUM23xvtRizceMkNmDqTXzi3f7
-         GQEFvEcCdDNv2CdQXITNzLcOIW4sYIOx83eNe7O/IQ/e5LNsP4HCuNTjvS8Vz1WjVx2U
-         UIbQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=kCkFnYkawO75Slclr1NGNbFjc/K/Z8ax1mgdyxXyluc=;
+        b=kFFMSn6GQbVrsB7xcz6GHNYsvWVsZtZLtyarkvcW4Qjn8R2Vlklx5fkrNTwwRZulTD
+         Jjnj/FKMP1+IzHx8ruolwTiB6z+Z3Y8NZWo1QTXIis3LaKm2v0/NYOdnner2pO9hrV3U
+         Ock9seKbMjAL63Xn7eeqrCFS6F4e3bYHJIFHESFv0x7zzpG5oh2xf5aR0alR+kcSYnxC
+         LG9Aeugqhvwf/kv2MkGt9FH7Y2RXdgoKAowTagWQUeVtagogRbE2cDQ/xhduU5oOB2Hz
+         CMgcvKpqoCE6iquWtUM+Fqj57BHjyIdrVoGA6eEf5Rud/K6I9FFqrL1asp7kDWRlW57+
+         0S7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ZOS/QKfJuYHMcS4p5y33x0lWJFFfhgPkwQi+6BWE0/s=;
-        b=iBWbwqQM6/5MCi/J+khlV4tMVJvhF9C4J9TNb1UvhszWHNt4Ir7cSvMRho68qVSGed
-         Q/Po2Yjqs4Gra4SfbHPcSbTny7k87v8QcnYpmZBlISVbvEzE7aqdkz7zINx6bixOqw8s
-         5GIzYZiNqdpL6z4HCnjLI34Ivwqc9VmZf5udBYTKdpeqlpXGFUncnkmM26FKTw7XWh/a
-         fPtgxe+Hovs8A4dSlsh3KLU2JdCE+mzKLKBjFhdpXj2Xt3gQmT48SsVJi3NP1qW1eqCo
-         NlFF7YvARSdI2LwXQlSF89c/OaoBUmXw4SW9h8vIf6wF69ihZI2JCxy/W1WlbZSu4I2L
-         j7Hg==
-X-Gm-Message-State: APjAAAUqr/7MVO4jBU7jKdR7Qd7+1gOnYjAxcqDWN8kN3NjIwmTWfinR
-        2/2/KVzsIgZt6FWlGT9d+g==
-X-Google-Smtp-Source: APXvYqynSuHb7zqQFO6TPM9eaLCNeLc6NMrMJ4WBFqPMvpJD0F/OdoY3zjM/mK1N3r4FVktNXKFNbg==
-X-Received: by 2002:a63:1c13:: with SMTP id c19mr49126467pgc.450.1579316786303;
-        Fri, 17 Jan 2020 19:06:26 -0800 (PST)
-Received: from madhuparna-HP-Notebook ([2402:3a80:1ee0:feca:7477:122a:17db:72ef])
-        by smtp.gmail.com with ESMTPSA id s22sm184620pji.30.2020.01.17.19.06.21
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 Jan 2020 19:06:25 -0800 (PST)
-Date:   Sat, 18 Jan 2020 08:36:18 +0530
-From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-To:     peterz@infradead.org, --@madhuparna-HP-Notebook, mingo@redhat.com,
-        -c@madhuparna-HP-Notebook, jolsa@redhat.com,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, frextrite@gmail.com
-Subject: [PATCH] events:core.c: Use built-in RCU list checking
-Message-ID: <20200118030618.GA28502@madhuparna-HP-Notebook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kCkFnYkawO75Slclr1NGNbFjc/K/Z8ax1mgdyxXyluc=;
+        b=tNriiQ+07mMGuSyUF0fx0w37zTSkJkcm1GrJHzD+Y6zxRRSPiioxQuyqBinszD9Zas
+         OLwL8ZN1aVVWpYHkYx0xhVaJ3Yl9NdOiHTNj0EVhemEfQgdoc013qhyj8q2a6nAkilzg
+         XXf2NUWktlYFbGhPnqpDMSKQv8keTLvg7R7DKmxS1HPFELRGA4jj7g0kdt1QKCFbm62O
+         Fi2XPA8SYXAwYvTgMSPgoagl6BWLNIiwHQq3nUWWETvYpn7PLx2aFPoYkn33UGmkmm8W
+         1HfgndZDieQQrRdC1nzHazsj97lDZzMKmMdQqKhLUqSMGsfh4yeQiZK2LUShwN5zOMkW
+         12iQ==
+X-Gm-Message-State: APjAAAWKhmhYkbBH2DSXObZCZoGFZPsHvXXkNN8eAj9qf68SHO2ieJc6
+        rGRGMk4ks7oDxlwroW0HMg==
+X-Google-Smtp-Source: APXvYqzrX/dzjceNK2YxPQDFBmGY7ox/l+PSYdFJ8XUj9ddhcLLJUTQk19QT+CBkmgvu/QeymGKONg==
+X-Received: by 2002:a17:902:848f:: with SMTP id c15mr2751205plo.182.1579317070565;
+        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
+Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee0:feca:40cf:944c:98dd:69a3])
+        by smtp.gmail.com with ESMTPSA id g8sm30478701pfh.43.2020.01.17.19.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
+From:   madhuparnabhowmik10@gmail.com
+To:     tj@kernel.org, lizefan@huawei.com
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, rcu@vger.kernel.org, frextrite@gmail.com,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] cgroup.c: Use built-in RCU list checking
+Date:   Sat, 18 Jan 2020 08:40:51 +0530
+Message-Id: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-list_for_each_entry_rcu has built-in RCU and lock checking.
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
+list_for_each_entry_rcu has built-in RCU and lock checking.
 Pass cond argument to list_for_each_entry_rcu() to silence
-false lockdep warning when CONFIG_PROVE_RCU_LIST is enabled
+false lockdep warning when  CONFIG_PROVE_RCU_LIST is enabled
 by default.
+
+Even though the function css_next_child() already checks if
+cgroup_mutex or rcu_read_lock() is held using
+cgroup_assert_mutex_or_rcu_locked(), there is a need to pass
+cond to list_for_each_entry_rcu() to avoid false positive
+lockdep warning.
 
 Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 ---
- kernel/events/core.c | 3 ++-
+ kernel/cgroup/cgroup.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4ff86d57f9e5..04d28f3eb8df 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -3760,7 +3760,8 @@ static void perf_adjust_freq_unthr_context(struct perf_event_context *ctx,
- 	raw_spin_lock(&ctx->lock);
- 	perf_pmu_disable(ctx->pmu);
- 
--	list_for_each_entry_rcu(event, &ctx->event_list, event_entry) {
-+	list_for_each_entry_rcu(event, &ctx->event_list, event_entry,
-+				lockdep_is_held(&ctx->lock)) {
- 		if (event->state != PERF_EVENT_STATE_ACTIVE)
- 			continue;
- 
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..c2959764ad95 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4152,7 +4152,8 @@ struct cgroup_subsys_state *css_next_child(struct cgroup_subsys_state *pos,
+ 	} else if (likely(!(pos->flags & CSS_RELEASED))) {
+ 		next = list_entry_rcu(pos->sibling.next, struct cgroup_subsys_state, sibling);
+ 	} else {
+-		list_for_each_entry_rcu(next, &parent->children, sibling)
++		list_for_each_entry_rcu(next, &parent->children, sibling,
++					lockdep_is_held(&cgroup_mutex))
+ 			if (next->serial_nr > pos->serial_nr)
+ 				break;
+ 	}
 -- 
 2.17.1
 
