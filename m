@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43B52C32771
-	for <rcu@archiver.kernel.org>; Mon, 20 Jan 2020 22:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B812C32771
+	for <rcu@archiver.kernel.org>; Mon, 20 Jan 2020 22:42:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0FC9222525
-	for <rcu@archiver.kernel.org>; Mon, 20 Jan 2020 22:41:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC5832253D
+	for <rcu@archiver.kernel.org>; Mon, 20 Jan 2020 22:42:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V/ONJGbm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBq8fcYy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgATWlh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jan 2020 17:41:37 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45107 "EHLO
+        id S1727065AbgATWmI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Jan 2020 17:42:08 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35594 "EHLO
         mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgATWlh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jan 2020 17:41:37 -0500
-Received: by mail-wr1-f66.google.com with SMTP id j42so1141679wrj.12;
-        Mon, 20 Jan 2020 14:41:36 -0800 (PST)
+        with ESMTP id S1726752AbgATWmI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Jan 2020 17:42:08 -0500
+Received: by mail-wr1-f66.google.com with SMTP id g17so1219419wro.2;
+        Mon, 20 Jan 2020 14:42:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tDWSSJBZQa8HlVV6FvLApvQT2M9iuui0osv97v1mf5U=;
-        b=V/ONJGbmkMt7TfgtnTxNyEu3qil+wkpPlU9kw0sy23a33hrFcxzNdVVENcucOE4gXo
-         BGI1oIN56w8H6TbXahObOuHtyK5zt63UmJ6EFq72Suu/S7ReGPfnRRfYbLZFDrR8+9D0
-         fS3AYyYGc+00zuFnt5gGRE7GVRR+2/D9g7G33n9CW92KPVYsurgOvvRy68CWkehRM56g
-         sxPpa9bZ44pPzJoA7eRAz+kwDXSO8wrNesZelz5iMElEPXmPZypYRX9Ttn92rJD+M8+4
-         AKcPEy5qMWIGNEwHrCLfcDIZF3RgMcs6nztVNzm3DDwuKKGZHMjiNvEP4fvaWpYFB7kb
-         PyfA==
+        bh=9ITBcINNYy8cuY+EjN48KeHLH2wyMa+Vm+dTbM0bJoY=;
+        b=ZBq8fcYyAOPw1LCn4VC+SUeaCsV5GuCHmZ1Oz6HgtNFSoDhMNsnXs732RN+BL8MBI+
+         gRuuiM+nbYj/pOskLF01fH7TqMUc7nxBTBnVXypr3veBXhUjksBxvhcMtDhYOtmaz75F
+         yK9ousgYGRJ5FFQOqesWDw+8475puKBGROOMriHQ6m8Mh7yuf4gk2eZ5qTUQIoF5LUU8
+         P7y9SB1094pSu0k2VcTHgpLFtly2DlQV0saoH4QlF0eperDq7VB/miYoKJ5TWiXwLpJF
+         HYP/cXwSUu4ByK0C+bWjpbx4SoYszfQCCEaOeuv0vgR9Yt/mzlsHnteFMzufLUSBxydQ
+         U7WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tDWSSJBZQa8HlVV6FvLApvQT2M9iuui0osv97v1mf5U=;
-        b=CXv0wsLUsVKEg/va87UYdgF1hhaVCIz9A/U2ywbFS9vk3hNNR83eAYFxH6TW4nJYuY
-         etkO3A0QgyiFgGlbu4DRtXZxbhj+cwRpYiiK+Hz3w08yH3UwggTEIxY4urGTE6slt9Yf
-         cJhPYxmpIC7FLPqv/XAW4C+X/y5JkZU1US5yarAZ48cr28Aby0cTEjydlJ1K/UbhO2hf
-         mrfhdqgVcwqR8mfCw5m9eWtwgekc+gbl1bkoJ2BFQjjp29LLpF2uv55TPk6UbXrZ38Tj
-         CwOT9IGh3pb2nHxVoWwYndNmNT2HvkkTV1Gg/Pu2CyqnUk+9CD6k/2RgkHJVJ+toNitO
-         vnEA==
-X-Gm-Message-State: APjAAAV+b1O4fQ1KnjUyGo7fPRCdKaWwrhSJhLo71nEX4fNqDFVs6JLL
-        kcVCOqX6NwIbSNOTRPWGyg==
-X-Google-Smtp-Source: APXvYqy8LPxDnidMN0QFhJIAgk1t7ivmtN5M+EQstEV0Yqap5i2TLkbjFws42RlQWPPZnY/UpEUAyg==
-X-Received: by 2002:a5d:6a02:: with SMTP id m2mr1652174wru.52.1579560095301;
-        Mon, 20 Jan 2020 14:41:35 -0800 (PST)
+        bh=9ITBcINNYy8cuY+EjN48KeHLH2wyMa+Vm+dTbM0bJoY=;
+        b=szKYLDGKIspYHWwoKafkRcfXfkCcw1BbZvp+XgALmGa0NuF4ro5Ro++8ubxYdyF20d
+         ByOXygzVNsB2NAyQRt+qUm4obb+csIBsP7y9IALq5CJcQvjK4RJ+531XgSfztrz+knHh
+         7spOBkuA0E8HjCVVtFLVrjZCmYTzLNcn9AScknJ0ldkZdSNaBC4NyDYK5f2Gdo6JGQnG
+         bbkn2U9cPT1IXdSp4PAkeTKF7KGoZKW1d05I5k1QUtoE6l0n29l5TkKlK6ysA2/q873B
+         6qPLIrY3ELH0gQBpy08OGUrJvqsZJ814h5dccISSoWYr9AL9kQWNf5dWEIIh74x457pg
+         R4Qw==
+X-Gm-Message-State: APjAAAVGR5MqPWY9/OyHFwPLJeci3pUZX3SlFWCU1M3fNocxRzQf0PAo
+        2Vq05Ewe8YgcEzkW8Q8GaZ4zdOw1Yuus
+X-Google-Smtp-Source: APXvYqx/Kxut5kmWYYqHaCNwY7t43/DGPZgpwx93/52+q6M/64a3kez+wXCxFiCPTa936ox4mEg7DA==
+X-Received: by 2002:adf:f88c:: with SMTP id u12mr1509034wrp.323.1579560126059;
+        Mon, 20 Jan 2020 14:42:06 -0800 (PST)
 Received: from ninjahost.lan (host-92-15-170-165.as43234.net. [92.15.170.165])
-        by smtp.googlemail.com with ESMTPSA id q15sm49438371wrr.11.2020.01.20.14.41.34
+        by smtp.googlemail.com with ESMTPSA id a1sm1053666wmj.40.2020.01.20.14.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 14:41:34 -0800 (PST)
+        Mon, 20 Jan 2020 14:42:05 -0800 (PST)
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     paulmck@kernel.org
 Cc:     rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         joel@joelfernandes.org, rcu@vger.kernel.org, iangshanlai@gmail.com,
         boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
         Jules Irenge <jbi.octave@gmail.com>
-Subject: [PATCH 2/5] rcu: Add missing annotation for exit_tasks_rcu_start()
-Date:   Mon, 20 Jan 2020 22:41:26 +0000
-Message-Id: <20200120224126.51615-1-jbi.octave@gmail.com>
+Subject: [PATCH 3/5] rcu: Add missing annotation for exit_tasks_rcu_finish()
+Date:   Mon, 20 Jan 2020 22:41:54 +0000
+Message-Id: <20200120224154.51683-1-jbi.octave@gmail.com>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,12 +72,13 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Sparse reports a warning at exit_tasks_rcu_start(void)
+Sparse reports a warning at exit_tasks_rcu_finish(void)
 
-|warning: context imbalance in exit_tasks_rcu_start() - wrong count at exit
+|warning: context imbalance in exit_tasks_rcu_finish()
+|- wrong count at exit
 
-To fix this, an __acquires(&tasks_rcu_exit_srcu) is added.
-Given that exit_tasks_rcu_start() does actually call __srcu_read_lock().
+To fix this, an __releases(&tasks_rcu_exit_srcu) is added.
+Given that exit_tasks_rcu_finish() does actually call __srcu_read_lock().
 This not only fixes the warning
 but also improves on the readability of the code.
 
@@ -87,18 +88,18 @@ Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 1861103662db..99f4e617116b 100644
+index 99f4e617116b..5853f19f0cb5 100644
 --- a/kernel/rcu/update.c
 +++ b/kernel/rcu/update.c
-@@ -801,7 +801,7 @@ static int __init rcu_spawn_tasks_kthread(void)
- core_initcall(rcu_spawn_tasks_kthread);
+@@ -809,7 +809,7 @@ void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+ }
  
- /* Do the srcu_read_lock() for the above synchronize_srcu().  */
--void exit_tasks_rcu_start(void)
-+void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+ /* Do the srcu_read_unlock() for the above synchronize_srcu().  */
+-void exit_tasks_rcu_finish(void)
++void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
  {
  	preempt_disable();
- 	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+ 	__srcu_read_unlock(&tasks_rcu_exit_srcu, current->rcu_tasks_idx);
 -- 
 2.24.1
 
