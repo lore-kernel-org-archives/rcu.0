@@ -2,124 +2,200 @@ Return-Path: <SRS0=d+Zk=3K=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD667C2D0DB
-	for <rcu@archiver.kernel.org>; Tue, 21 Jan 2020 19:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B415C2D0CE
+	for <rcu@archiver.kernel.org>; Tue, 21 Jan 2020 20:46:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B4F7121835
-	for <rcu@archiver.kernel.org>; Tue, 21 Jan 2020 19:09:10 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="Sn/YEVab"
+	by mail.kernel.org (Postfix) with ESMTP id 5240B217F4
+	for <rcu@archiver.kernel.org>; Tue, 21 Jan 2020 20:46:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1579639568;
+	bh=8i54OlJYbQvHLGVM4fus5+jNJN9K2eL3sYVtcr2pzgY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=QywdN9aS4yaAAim6DvcNDjt7a7merBxbUXfwjCysiBMz4GLWXIKkvo3gG29olmbLf
+	 x1KPBN0FvAT7FNtOAEfSlBieColS21nEjTJun64UlOl2VGWAcfVdgwU6dmZGFA4ZOi
+	 6cCmjwPH2yEE+m4yBEjQ6VyFEhRJQT3lDzDHY9qs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgAUTJK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Jan 2020 14:09:10 -0500
-Received: from mail-qv1-f53.google.com ([209.85.219.53]:39360 "EHLO
-        mail-qv1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729274AbgAUTJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Jan 2020 14:09:09 -0500
-Received: by mail-qv1-f53.google.com with SMTP id y8so2004429qvk.6
-        for <rcu@vger.kernel.org>; Tue, 21 Jan 2020 11:09:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=OkhQvHS8jVFYyzSdwlzdra0fHXrxQRAP81m6ftm1DPo=;
-        b=Sn/YEVabYrSO+1xwPBsT1wsX23V+Ss+TkR6cRQZP+XHVFao+nmyPXPSBpe/ZD9Hv1s
-         8fT4YVNncAUSpX3hsTV4sPnOFDNe5YnLPXCBUx+ZT6AcTnOrNg2MXhwaINSUxKT8q5Eu
-         e+Ef0VCok7XicUl/z3tMEfsPixu8nZ9ghOIu/s8czG5H0BWyyqYL7qnbOOa6SdadIOp4
-         b2E5vJtYRt49QoI0MCXJP3m+XeqeFLt6yfK7RESy7Mvr4Z+pqb0c50hyZwhUpsnWDN2W
-         RBF7c5xznWOdZ47b64d1IEqExfHkY9Bj2S/ags3M0gnNrLRozyIC2yUCS5sbYK24HJxj
-         xHIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=OkhQvHS8jVFYyzSdwlzdra0fHXrxQRAP81m6ftm1DPo=;
-        b=YRSY7J6vf0O8nh7OH8wH3TTEF/ib/ToV/2GJ4B/FN9QPVVJW+r1AFSjYYaBvoCqz6h
-         AmANzdb61u3tAXLc5DQx6xrUKN6Ai19RhAfyq01NP10AXbP/ElVCRF0Cg2X/+3EeNLb7
-         dYz45EDSdtnNKxp/6M1NgZMe7aqd1F+cGCLFX+rUG2utYrNI6Su6IuPUJ9qV4qysl+fU
-         v0tYAcIAZA3Ge+gXAoc4YPctW9tSVy9kKB8gau5+ZxG941rQNKDkHDx9cXQgrfBztF4p
-         mOFaIYNWs7C4926fx6NwSZlA2mv/YW/Ac1gpOXqXLC72/K5MWxrJHQWvW2BOZMkAumRv
-         1zJA==
-X-Gm-Message-State: APjAAAWG/gmfTSY77xwk2LxTsc7VTktRovw4ax0z9TxKXMIzliaJTfdr
-        yPU7bt4EE7INaBOOPAx6jsxCXA==
-X-Google-Smtp-Source: APXvYqw0QDyCQ435rTnlGbW4snzDWcupFjquDZIIGXvun07tKi7Z0gmG+0nbTGb34WOwp8jsY+XRhA==
-X-Received: by 2002:a0c:cd8e:: with SMTP id v14mr6423089qvm.182.1579633747273;
-        Tue, 21 Jan 2020 11:09:07 -0800 (PST)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id v24sm19554611qtq.14.2020.01.21.11.09.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jan 2020 11:09:06 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
-Subject: Re: Boot warning at rcu_check_gp_start_stall()
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200121161533.GT2935@paulmck-ThinkPad-P72>
-Date:   Tue, 21 Jan 2020 14:09:05 -0500
+        id S1728139AbgAUUqI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Jan 2020 15:46:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727360AbgAUUqI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Jan 2020 15:46:08 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42DB2217F4;
+        Tue, 21 Jan 2020 20:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579639566;
+        bh=8i54OlJYbQvHLGVM4fus5+jNJN9K2eL3sYVtcr2pzgY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FSFH6R+EVdnTMyNXXQbeDztzJyp66UKPrX7Z9/GJAZFcJ4qee/Vi5rGiZIskfpTOW
+         BOFdrsqWiEX4AGU6ye76S0plMt9TFat5ScIYzlkvfZgw3la6JXmQpKV3OSpE25vsaA
+         vieB24keAXfQUOgVjvta11hdR9hzgNrOja33/7Ak=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 177BE3520DC0; Tue, 21 Jan 2020 12:46:06 -0800 (PST)
+Date:   Tue, 21 Jan 2020 12:46:06 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qian Cai <cai@lca.pw>
 Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6A6B0325-64C4-4470-91B4-37104CF8DA1A@lca.pw>
+Subject: Re: Boot warning at rcu_check_gp_start_stall()
+Message-ID: <20200121204606.GZ2935@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200121141923.GP2935@paulmck-ThinkPad-P72>
  <A230E332-07D0-40A8-A034-33ADB4BFB767@lca.pw>
  <20200121161533.GT2935@paulmck-ThinkPad-P72>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3608.40.2.2.4)
+ <6A6B0325-64C4-4470-91B4-37104CF8DA1A@lca.pw>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6A6B0325-64C4-4470-91B4-37104CF8DA1A@lca.pw>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, Jan 21, 2020 at 02:09:05PM -0500, Qian Cai wrote:
+> > On Jan 21, 2020, at 11:15 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > On Tue, Jan 21, 2020 at 09:37:13AM -0500, Qian Cai wrote:
+> >>> On Jan 21, 2020, at 9:19 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>> 
+> >>> One approach would be to boot with rcupdate.rcu_cpu_stall_timeout=300,
+> >>> which would allow more time.
+> >> 
+> >> It works for me if once that warning triggered,  give a bit information about adjusting the parameter when debugging options are on to suppress the warning due to expected long boot.
+> > 
+> > Indeed.  300 seconds as shown above is currently the maximum, but
+> > please let me know if it needs to be increased.  This module parameter
+> > is writable after boot via sysfs, so maybe that could be part of the
+> > workaround.
+> > 
+> >>> Longer term, I could suppress this warning during boot when
+> >>> CONFIG_EFI_PGT_DUMP=y, but that sounds quite specific.  Alternatively,
+> >>> I could provide a Kconfig option that suppressed this during boot
+> >>> that was selected by whatever long-running boot-time Kconfig option
+> >>> needed it.  Yet another approach would be for long-running operations
+> >>> like efi_dump_pagetable() to suppress stalls on entry and re-enable them
+> >>> upon exit.
+> >>> 
+> >>> Thoughts?
+> >> 
+> >> None of the options sounds particularly better for me because there could come up with other options may trigger this, memtest comes in mind, for example. Then, it is a bit of pain to maintain of unknown.
+> > 
+> > I was afraid of that.  ;-)
+> > 
+> > Could you please send me the full dmesg up to that point?  No promises,
+> > but it might well be that I can make some broad-spectrum adjustment
+> > within RCU.  Only one way to find out…
+> 
+> https://cailca.github.io/files/dmesg.txt
 
+Interesting.
 
-> On Jan 21, 2020, at 11:15 AM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->=20
-> On Tue, Jan 21, 2020 at 09:37:13AM -0500, Qian Cai wrote:
->>=20
->>=20
->>> On Jan 21, 2020, at 9:19 AM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->>>=20
->>> One approach would be to boot with =
-rcupdate.rcu_cpu_stall_timeout=3D300,
->>> which would allow more time.
->>=20
->> It works for me if once that warning triggered,  give a bit =
-information about adjusting the parameter when debugging options are on =
-to suppress the warning due to expected long boot.
->=20
-> Indeed.  300 seconds as shown above is currently the maximum, but
-> please let me know if it needs to be increased.  This module parameter
-> is writable after boot via sysfs, so maybe that could be part of the
-> workaround.
->=20
->>> Longer term, I could suppress this warning during boot when
->>> CONFIG_EFI_PGT_DUMP=3Dy, but that sounds quite specific.  =
-Alternatively,
->>> I could provide a Kconfig option that suppressed this during boot
->>> that was selected by whatever long-running boot-time Kconfig option
->>> needed it.  Yet another approach would be for long-running =
-operations
->>> like efi_dump_pagetable() to suppress stalls on entry and re-enable =
-them
->>> upon exit.
->>>=20
->>> Thoughts?
->>=20
->> None of the options sounds particularly better for me because there =
-could come up with other options may trigger this, memtest comes in =
-mind, for example. Then, it is a bit of pain to maintain of unknown.
->=20
-> I was afraid of that.  ;-)
->=20
-> Could you please send me the full dmesg up to that point?  No =
-promises,
-> but it might well be that I can make some broad-spectrum adjustment
-> within RCU.  Only one way to find out=E2=80=A6
+Does the following (very lightly tested) patch help?
 
-https://cailca.github.io/files/dmesg.txt
+							Thanx, Paul
 
+------------------------------------------------------------------------
+
+commit fb21277f8f1c5cc40a8d41da2db4b0c499459821
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Jan 21 12:30:22 2020 -0800
+
+    rcu: Don't flag non-starting GPs before GP kthread is running
+    
+    Currently rcu_check_gp_start_stall() complains if a grace period takes
+    too long to start, where "too long" is roughly one RCU CPU stall-warning
+    interval.  This has worked well, but there are some debugging Kconfig
+    options (such as CONFIG_EFI_PGT_DUMP=y) that can make booting take a
+    very long time, so much so that the stall-warning interval has expired
+    before RCU's grace-period kthread has even been spawned.
+    
+    This commit therefore resets the rcu_state.gp_req_activity and
+    rcu_state.gp_activity timestamps just before the grace-period kthread
+    is spawned, and modifies the checks and adds ordering to ensure that
+    if rcu_check_gp_start_stall() sees that the grace-period kthread
+    has been spawned, that it will also see the resets applied to the
+    rcu_state.gp_req_activity and rcu_state.gp_activity timestamps.
+    
+    Reported-by: Qian Cai <cai@lca.pw>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 04718bc..d9d619d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1209,7 +1209,7 @@ static bool rcu_start_this_gp(struct rcu_node *rnp_start, struct rcu_data *rdp,
+ 	trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("Startedroot"));
+ 	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_INIT);
+ 	WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
+-	if (!rcu_state.gp_kthread) {
++	if (!READ_ONCE(rcu_state.gp_kthread)) {
+ 		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("NoGPkthread"));
+ 		goto unlock_out;
+ 	}
+@@ -1259,10 +1259,10 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+  */
+ static void rcu_gp_kthread_wake(void)
+ {
+-	if ((current == rcu_state.gp_kthread &&
++	if ((current == READ_ONCE(rcu_state.gp_kthread) &&
+ 	     !in_irq() && !in_serving_softirq()) ||
+ 	    !READ_ONCE(rcu_state.gp_flags) ||
+-	    !rcu_state.gp_kthread)
++	    !READ_ONCE(rcu_state.gp_kthread))
+ 		return;
+ 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+ 	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
+@@ -3619,7 +3619,10 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	}
+ 	rnp = rcu_get_root();
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+-	rcu_state.gp_kthread = t;
++	WRITE_ONCE(rcu_state.gp_activity, jiffies);
++	WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
++	// Reset .gp_activity and .gp_req_activity before setting .gp_kthread.
++	smp_store_release(&rcu_state.gp_kthread, t);  /* ^^^ */
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	wake_up_process(t);
+ 	rcu_spawn_nocb_kthreads();
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 476458c..75f6e9f 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -578,6 +578,7 @@ void show_rcu_gp_kthreads(void)
+ 	unsigned long jw;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
++	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+ 
+ 	j = jiffies;
+ 	ja = j - READ_ONCE(rcu_state.gp_activity);
+@@ -585,8 +586,7 @@ void show_rcu_gp_kthreads(void)
+ 	jw = j - READ_ONCE(rcu_state.gp_wake_time);
+ 	pr_info("%s: wait state: %s(%d) ->state: %#lx delta ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_flags %#x\n",
+ 		rcu_state.name, gp_state_getname(rcu_state.gp_state),
+-		rcu_state.gp_state,
+-		rcu_state.gp_kthread ? rcu_state.gp_kthread->state : 0x1ffffL,
++		rcu_state.gp_state, t ? t->state : 0x1ffffL,
+ 		ja, jr, jw, (long)READ_ONCE(rcu_state.gp_wake_seq),
+ 		(long)READ_ONCE(rcu_state.gp_seq),
+ 		(long)READ_ONCE(rcu_get_root()->gp_seq_needed),
+@@ -633,7 +633,8 @@ static void rcu_check_gp_start_stall(struct rcu_node *rnp, struct rcu_data *rdp,
+ 
+ 	if (!IS_ENABLED(CONFIG_PROVE_RCU) || rcu_gp_in_progress() ||
+ 	    ULONG_CMP_GE(READ_ONCE(rnp_root->gp_seq),
+-	    		 READ_ONCE(rnp_root->gp_seq_needed)))
++	    		 READ_ONCE(rnp_root->gp_seq_needed)) ||
++	    !smp_load_acquire(&rcu_state.gp_kthread))
+ 		return;
+ 	j = jiffies; /* Expensive access, and in common case don't get here. */
+ 	if (time_before(j, READ_ONCE(rcu_state.gp_req_activity) + gpssdelay) ||
