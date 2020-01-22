@@ -8,60 +8,60 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0978C2D0DB
-	for <rcu@archiver.kernel.org>; Wed, 22 Jan 2020 17:05:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB84AC2D0DB
+	for <rcu@archiver.kernel.org>; Wed, 22 Jan 2020 18:12:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A64CF21569
-	for <rcu@archiver.kernel.org>; Wed, 22 Jan 2020 17:05:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 886272465A
+	for <rcu@archiver.kernel.org>; Wed, 22 Jan 2020 18:12:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MiEOeaY9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bda7f3bY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgAVRFA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jan 2020 12:05:00 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:39387 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgAVRFA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jan 2020 12:05:00 -0500
-Received: by mail-pf1-f195.google.com with SMTP id q10so132304pfs.6;
-        Wed, 22 Jan 2020 09:05:00 -0800 (PST)
+        id S1725924AbgAVSMZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jan 2020 13:12:25 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:38946 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgAVSMZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jan 2020 13:12:25 -0500
+Received: by mail-pf1-f193.google.com with SMTP id q10so220674pfs.6;
+        Wed, 22 Jan 2020 10:12:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=8QgKyiW0upu1Q+szE5cYtvDG9vOJuAl1OpeZnvTZVEo=;
-        b=MiEOeaY9kdqB8tM2DEWTmU6WQEOBSN25csdV/dunSwN65KQayZ2vpbrRRSl12K9Jgu
-         HXf86q8yhkgvpyxzQ5wvyyn6bbcqkAulGpMpU/x0X9OEwvxQRnihQCZOWHI3CoQhC/ab
-         Qf5TsiHtNaSsqETuS5UXb+TdCqQgkf503b7rxEQhdKHvgCOcLym5G6AHto0rAdM74tw5
-         QY1Uhxu9oMMLGRK9JBBN0WZIb2ls96L3wyHnj8n2t3JXNHSA8inI7gO6utTzlMBtm4l7
-         H6YkYUWIHGzE2v9EyeUqismEmgPBQgYIWLMGp/VPvN8ivEl7lsopgw6o90oAxdUYzHzN
-         3/dQ==
+        bh=B+Ke+CwXs3xGZ3tbHutNH7xTsHS0Vqf+fEezUoTK8sI=;
+        b=bda7f3bYbWYwtQeloFHRnTLyX8sWbVzc0HsDmPCfdsuO6Mf0xeo4BFdz2sBjCbjEuN
+         EguKTtqCDNevzmVON+sBVBf12Jx2qNh5b8Z2wS+tpf7WkALZNGM0UMJAxr0sfNRfd+Qm
+         pLdspVaoxFjnRIbWimsGCNPHbYz02TXLokZEhlUFfllw8Ybt1F/uFlLxjc/E20Ho2WYy
+         k0detZwWRPpM6jedtLBm/FbrZkYQ/xsUqsi0BbMPAXqDn0TYqUvHVV+Z5PJUmLslZSqo
+         RRFJRsCBnETN1spx0U+hqaG/upS/uCVQu0k66SUGr3MOc28mEWidc4lDucHBWhyVjYzr
+         vksA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8QgKyiW0upu1Q+szE5cYtvDG9vOJuAl1OpeZnvTZVEo=;
-        b=KAOsoFGSNaTYkd8fEzR9P6eb8qXeH2xRpqVwB4pPxg0/Ezagda1jfDfFBc/Xjw9bez
-         1jRfRtjH0XayymcKjTmSwRcuhkXirCHcWAJNjuJoZB/mG6iuVfUyB20RTzewyPGUB5Js
-         mA6oMnS929BLZd8qh5aqc5YkWw09VokUUQLL/FWrOGKDUbdE10tNoMnIENeGrxp6gB4m
-         +jaaO+WeW7/e6t4kgdbhNu9q8cWAeV8K+7m+WUwgpOXbtGQ86HT9xEyu7AWJlDnNqmIA
-         2+ur0bAn+SKcyiMbdsfRgpWLL22U7EQDk/udVZcW3vObq7n/slnTVJFAm3dYn64WB/+t
-         V2UA==
-X-Gm-Message-State: APjAAAVoA8GgdoV6sgOm1rDSuxBmZXrW7V8GTFKLRrbhlv9elp7PT8Fr
-        dvKsq6uOZQTl1Nf/GGWQ1Q==
-X-Google-Smtp-Source: APXvYqyX/P9oePdmnshAVZLFNwM9QuwuiD9JHWbvwEAoCgBTDQkKNh07krpp1ELPjLALfeQDppTOig==
-X-Received: by 2002:aa7:96f9:: with SMTP id i25mr3471919pfq.161.1579712699709;
-        Wed, 22 Jan 2020 09:04:59 -0800 (PST)
+        bh=B+Ke+CwXs3xGZ3tbHutNH7xTsHS0Vqf+fEezUoTK8sI=;
+        b=nlQuIQmxXte5YVP1k9FmMmoCiRCX/MGaPaV8EbB4y5RedzcQQ538wQdq+aJmeMTros
+         3PVXpmi3TpMCBdaRuOidox6A5CTPI1Dr0yW2T2dED9lum8W2qX1TTLUcFvgUMWGn6saj
+         gCtHb2wVV+jNdDJetgq/cAF/LaeRMamup6CISUGU0OZYcGBdhzQ+A2ECjRK5+XPNHvvh
+         Q3Y7SDavgR39fIBwEiiUL4OwugYCdKUtVaBYdzICYNUKfsASxU+8haKxy+gEtAmEnOmY
+         w+gGIZVKrAC1JbY+E6VuM0tVlzbdaH0khGguMeSARH1ogR1PMuYx3Z8b1vyX1+qSLlK/
+         9WQA==
+X-Gm-Message-State: APjAAAVLT8VXLvjXQOwcUpNqhYJGdBNJVg1u+UshZbFx7yKvdSccoPpc
+        LbAwuC41ZbHaFeaV7RsaXA==
+X-Google-Smtp-Source: APXvYqxEMMqFZ6pi6+0X1WZIqS3erRAUcOz3R2ZqRGGwv2CMP7f+uwwCFdtTKvcplNBpEwBBCngHsg==
+X-Received: by 2002:a62:1d52:: with SMTP id d79mr3688669pfd.144.1579716744488;
+        Wed, 22 Jan 2020 10:12:24 -0800 (PST)
 Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1eee:fc60:1df1:6c1a:3227:9ec0])
-        by smtp.gmail.com with ESMTPSA id b42sm4001350pjc.27.2020.01.22.09.04.55
+        by smtp.gmail.com with ESMTPSA id k10sm4167646pjq.14.2020.01.22.10.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jan 2020 09:04:59 -0800 (PST)
+        Wed, 22 Jan 2020 10:12:23 -0800 (PST)
 From:   madhuparnabhowmik10@gmail.com
-To:     jeyu@kernel.org
+To:     mingo@redhat.com, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        frextrite@gmail.com, rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org,
+        frextrite@gmail.com, rcu@vger.kernel.org, paulmck@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
         Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH] module.h: Annotate mod_kallsyms with __rcu
-Date:   Wed, 22 Jan 2020 22:34:47 +0530
-Message-Id: <20200122170447.20539-1-madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] sched.h: Annotate sighand_struct with __rcu
+Date:   Wed, 22 Jan 2020 23:41:56 +0530
+Message-Id: <20200122181156.27244-1-madhuparnabhowmik10@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
@@ -72,29 +72,28 @@ From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
 This patch fixes the following sparse errors:
 
-kernel/module.c:3623:9: error: incompatible types in comparison expression
-kernel/module.c:4060:41: error: incompatible types in comparison expression
-kernel/module.c:4203:28: error: incompatible types in comparison expression
-kernel/module.c:4225:41: error: incompatible types in comparison expression
+kernel/fork.c:1511:9: error: incompatible types in comparison expression
+kernel/exit.c:100:19: error: incompatible types in comparison expression
+kernel/signal.c:1370:27: error: incompatible types in comparison expression
 
 Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 ---
- include/linux/module.h | 2 +-
+ include/linux/sched.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index bd165ba68617..dfdc8863e26a 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -429,7 +429,7 @@ struct module {
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b511e178a89f..7a351360ad54 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -918,7 +918,7 @@ struct task_struct {
  
- #ifdef CONFIG_KALLSYMS
- 	/* Protected by RCU and/or module_mutex: use rcu_dereference() */
--	struct mod_kallsyms *kallsyms;
-+	struct mod_kallsyms __rcu *kallsyms;
- 	struct mod_kallsyms core_kallsyms;
- 
- 	/* Section attributes */
+ 	/* Signal handlers: */
+ 	struct signal_struct		*signal;
+-	struct sighand_struct		*sighand;
++	struct sighand_struct __rcu		*sighand;
+ 	sigset_t			blocked;
+ 	sigset_t			real_blocked;
+ 	/* Restored if set_restore_sigmask() was used: */
 -- 
 2.17.1
 
