@@ -7,121 +7,93 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B150C2D0DB
-	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 16:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8CBDC2D0DB
+	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 17:23:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7066221D7E
-	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 16:41:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D799207FF
+	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 17:23:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579797669;
-	bh=SYOcg05hp0GKFRdLdX4OKweCK3oCGyHJiXYgJpSn9B0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=r7IfRU8uBeZGS3sK/m+Umv1GtVskhCaILBfr3BkDXAOqr9sdXn3IOnCRE0ZAQ5oAQ
-	 PE+sUdLK9AboI+skhfVtNyP67VIcnHzo/d6ccHgdwgSHZkMw9SUIK1xHmkY/sHor94
-	 C95rEOVgQpDL6Es5oR4ZlHmvucn1GkprRHRfZ6lo=
+	s=default; t=1579800185;
+	bh=vdad4h34opYp5igmK3XVwdbMOblM1qfChkC2aQ7dLVA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=Bz0R/YGJg/A6QSAbysxjsDdghyO1Gor68BISPTQw9HPgDaYGyl72B0nxhleol2WmD
+	 vtnq8/UMScbt/JxdeBGeMmViViOZSCz2HKEiMlpqfm9yQ7S3oOjTElMTlTT3v3VWmO
+	 9c0xmBdaeOAaBzFso3tEpvlumZUn28xqqOUuj+EI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgAWQlJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Jan 2020 11:41:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52074 "EHLO mail.kernel.org"
+        id S1727194AbgAWRXF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Jan 2020 12:23:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727312AbgAWQlJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Jan 2020 11:41:09 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1726605AbgAWRXF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Jan 2020 12:23:05 -0500
+Received: from linux-8ccs (x2f7fea8.dyn.telefonica.de [2.247.254.168])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EE2E21734;
-        Thu, 23 Jan 2020 16:41:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30AB1207FF;
+        Thu, 23 Jan 2020 17:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579797668;
-        bh=SYOcg05hp0GKFRdLdX4OKweCK3oCGyHJiXYgJpSn9B0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=wKcMTcEN8AXJfZr+rw4lPetdkINSK3OPE6IJftTzck/7ynnPzQnrDMgqysqUX83QW
-         0tiuizAa/ivcdupeGkVy2gXHCxNRGeDDJb8JDwLAoTR9Cqtu+zmNj2aUNh9Ya/tF6H
-         C4wWOKEqGw4r2TU86XoKPT5u6foDIhICEl0lrXgM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 593DA3520C31; Thu, 23 Jan 2020 08:41:08 -0800 (PST)
-Date:   Thu, 23 Jan 2020 08:41:08 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1579800184;
+        bh=vdad4h34opYp5igmK3XVwdbMOblM1qfChkC2aQ7dLVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cs0hz3m7UAqKvsQ5oNLIQzdgRdSQjGmU0cMUw27DzycVvzfHfNH/nQ5z7PAO+W+5U
+         c8OCWz5tPzB3HrmhpkQXB7fqizYL1b/ISqQRHpfOs1cEi7w0DDQRoFwjn5tUZsuRsX
+         uDd89xMAqcCAODFElxaBDSxEYsTQskn/YEXoPMG0=
+Date:   Thu, 23 Jan 2020 18:22:58 +0100
+From:   Jessica Yu <jeyu@kernel.org>
 To:     madhuparnabhowmik10@gmail.com
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, ebiederm@xmission.com,
-        christian.brauner@ubuntu.com, oleg@redhat.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        frextrite@gmail.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] sched.h: Annotate sighand_struct with __rcu
-Message-ID: <20200123164108.GQ2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200123145305.10652-1-madhuparnabhowmik10@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        frextrite@gmail.com, rcu@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org
+Subject: Re: [PATCH] module.h: Annotate mod_kallsyms with __rcu
+Message-ID: <20200123172257.GA14784@linux-8ccs>
+References: <20200122170447.20539-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200123145305.10652-1-madhuparnabhowmik10@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200122170447.20539-1-madhuparnabhowmik10@gmail.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 08:23:05PM +0530, madhuparnabhowmik10@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> 
-> This patch fixes the following sparse errors by annotating the
-> sighand_struct with __rcu
-> 
-> kernel/fork.c:1511:9: error: incompatible types in comparison expression
-> kernel/exit.c:100:19: error: incompatible types in comparison expression
-> kernel/signal.c:1370:27: error: incompatible types in comparison expression
-> 
-> This fix introduces the following sparse error in signal.c due to
-> checking the sighand pointer without rcu primitives:
-> 
-> kernel/signal.c:1386:21: error: incompatible types in comparison expression
-> 
-> This new sparse error is also addressed in this patch.
-> 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> ---
->  include/linux/sched.h | 2 +-
->  kernel/signal.c       | 3 ++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index b511e178a89f..7a351360ad54 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -918,7 +918,7 @@ struct task_struct {
->  
->  	/* Signal handlers: */
->  	struct signal_struct		*signal;
-> -	struct sighand_struct		*sighand;
-> +	struct sighand_struct __rcu		*sighand;
->  	sigset_t			blocked;
->  	sigset_t			real_blocked;
->  	/* Restored if set_restore_sigmask() was used: */
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index bcd46f547db3..1272def37462 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -1383,7 +1383,8 @@ struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
->  		 * must see ->sighand == NULL.
->  		 */
->  		spin_lock_irqsave(&sighand->siglock, *flags);
-> -		if (likely(sighand == tsk->sighand))
-> +		if (likely(sighand == rcu_dereference_protected(tsk->sighand,
-> +						lockdep_is_held(&sighand->siglock))))
++++ madhuparnabhowmik10@gmail.com [22/01/20 22:34 +0530]:
+>From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+>
+>This patch fixes the following sparse errors:
+>
+>kernel/module.c:3623:9: error: incompatible types in comparison expression
+>kernel/module.c:4060:41: error: incompatible types in comparison expression
+>kernel/module.c:4203:28: error: incompatible types in comparison expression
+>kernel/module.c:4225:41: error: incompatible types in comparison expression
+>
+>Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Given that the return value is never dereferenced, you can use
-rcu_access_pointer(), which may be used outside of an RCU read-side
-critical section, and thus does not need the lockdep_is_held().  So this
-change would save a line of code and would be a bit easier on the eyes.
+Hi Madhuparna,
 
-							Thanx, Paul
+Thanks, I can confirm this patch fixes the sparse warnings. I've
+applied it to modules-next.
 
->  			break;
->  		spin_unlock_irqrestore(&sighand->siglock, *flags);
->  	}
-> -- 
-> 2.17.1
-> 
+Jessica
+
+>---
+> include/linux/module.h | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/include/linux/module.h b/include/linux/module.h
+>index bd165ba68617..dfdc8863e26a 100644
+>--- a/include/linux/module.h
+>+++ b/include/linux/module.h
+>@@ -429,7 +429,7 @@ struct module {
+>
+> #ifdef CONFIG_KALLSYMS
+> 	/* Protected by RCU and/or module_mutex: use rcu_dereference() */
+>-	struct mod_kallsyms *kallsyms;
+>+	struct mod_kallsyms __rcu *kallsyms;
+> 	struct mod_kallsyms core_kallsyms;
+>
+> 	/* Section attributes */
+>-- 
+>2.17.1
+>
