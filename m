@@ -1,99 +1,105 @@
-Return-Path: <SRS0=TYAb=3M=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Fsgb=3N=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8CBDC2D0DB
-	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 17:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29878C2D0CE
+	for <rcu@archiver.kernel.org>; Fri, 24 Jan 2020 04:26:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7D799207FF
-	for <rcu@archiver.kernel.org>; Thu, 23 Jan 2020 17:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579800185;
-	bh=vdad4h34opYp5igmK3XVwdbMOblM1qfChkC2aQ7dLVA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=Bz0R/YGJg/A6QSAbysxjsDdghyO1Gor68BISPTQw9HPgDaYGyl72B0nxhleol2WmD
-	 vtnq8/UMScbt/JxdeBGeMmViViOZSCz2HKEiMlpqfm9yQ7S3oOjTElMTlTT3v3VWmO
-	 9c0xmBdaeOAaBzFso3tEpvlumZUn28xqqOUuj+EI=
+	by mail.kernel.org (Postfix) with ESMTP id EC9B52071A
+	for <rcu@archiver.kernel.org>; Fri, 24 Jan 2020 04:26:21 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sjKprFmI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbgAWRXF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Jan 2020 12:23:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgAWRXF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Jan 2020 12:23:05 -0500
-Received: from linux-8ccs (x2f7fea8.dyn.telefonica.de [2.247.254.168])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30AB1207FF;
-        Thu, 23 Jan 2020 17:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579800184;
-        bh=vdad4h34opYp5igmK3XVwdbMOblM1qfChkC2aQ7dLVA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cs0hz3m7UAqKvsQ5oNLIQzdgRdSQjGmU0cMUw27DzycVvzfHfNH/nQ5z7PAO+W+5U
-         c8OCWz5tPzB3HrmhpkQXB7fqizYL1b/ISqQRHpfOs1cEi7w0DDQRoFwjn5tUZsuRsX
-         uDd89xMAqcCAODFElxaBDSxEYsTQskn/YEXoPMG0=
-Date:   Thu, 23 Jan 2020 18:22:58 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     madhuparnabhowmik10@gmail.com
-Cc:     linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        frextrite@gmail.com, rcu@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org
-Subject: Re: [PATCH] module.h: Annotate mod_kallsyms with __rcu
-Message-ID: <20200123172257.GA14784@linux-8ccs>
-References: <20200122170447.20539-1-madhuparnabhowmik10@gmail.com>
+        id S1730314AbgAXE0V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Jan 2020 23:26:21 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40654 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729760AbgAXE0V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Jan 2020 23:26:21 -0500
+Received: by mail-pj1-f66.google.com with SMTP id bg7so485139pjb.5;
+        Thu, 23 Jan 2020 20:26:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ESSVHC6qV85e8H5wIqp30FQ6rrj3HanCaflPIZpS5p4=;
+        b=sjKprFmI5+PynbYnEaH+yspbuyLdAbql3dsNyfASc9i/V4WnLGJNLX8PkReWZWxmSX
+         UJpDaa95WQ6TOfGT8pV0i4/xfWk/enTJmSL+nxzS9NsUXqpPT0Ase/1tMHhjV9AQeHJS
+         tZ3eVS/rVqnHyRlK17Ck4b9IpC6Gx4xd+RYSF2lrbubZ42ydLyFnim0XwgU+hS0F/CyA
+         Rj1WahUr0qft/ln24gUFecseWvdTj8nABLi7TZMdJGA4Zy9vztUyB1rcGM1Ec3FV2d9G
+         t+8W/4Z1dzG2o3aAPLkVI4LPMvMj2WRMnPu5jY17GEy31k9RhMkfnyuy+uVTB61E5gtv
+         h37g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ESSVHC6qV85e8H5wIqp30FQ6rrj3HanCaflPIZpS5p4=;
+        b=pHrVCMsybA/4/X/j11Ry8S/VkPzEVb+8umiSU54Zvj+FHlqC26lH6xpCfeASxMKo8F
+         1lqZNSv7unjva0nNxUnWe6y6L1xmhGGO3/ynZl8kmXGdSnKxvW7Bb5L9i3N7hovHY1Mz
+         O1LbafhsdGwmuAL6vUbBXr19xbQVqOq8xiSYsdjorRBC9YfbQRbtyoY6fYE+OjVnGh6d
+         rs87tqGL9g+l/LsoL+jjC+vVoSsgxummi0gt/4YZHEMIT4s5Ih5y5R7bKiGGpAlF1te6
+         U4YOj09hspkGUicCL1rflNgF8xkoL81XllDgJuVCmoOcA4lgUtOamrVk90MXTaOvNPXd
+         uI/w==
+X-Gm-Message-State: APjAAAU6WPceQCUX78VmeEdXbmK0fOd2zfjgPjrvgH+AR8ADxuQuRluj
+        0x1Z4q2k5tG0FkJlt1G8/RsSRYs=
+X-Google-Smtp-Source: APXvYqxprB70a0uP/R+rGUDMKzsz+0tnKdqYZd8ZDy2t+H61CeoOvFKKrX7ufnu84cM9HGFooDRwhQ==
+X-Received: by 2002:a17:90a:6545:: with SMTP id f5mr1243695pjs.42.1579839980685;
+        Thu, 23 Jan 2020 20:26:20 -0800 (PST)
+Received: from madhuparna-HP-Notebook ([2402:3a80:1ee5:e37b:72:f3a9:f673:9aea])
+        by smtp.gmail.com with ESMTPSA id g9sm4381184pfm.150.2020.01.23.20.26.16
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Jan 2020 20:26:20 -0800 (PST)
+From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
+Date:   Fri, 24 Jan 2020 09:56:12 +0530
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     madhuparnabhowmik10@gmail.com, steffen.klassert@secunet.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, frextrite@gmail.com, rcu@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [PATCH] padata.h: Annotate parallel_data with __rcu
+Message-ID: <20200124042612.GB23699@madhuparna-HP-Notebook>
+References: <20200122170246.20177-1-madhuparnabhowmik10@gmail.com>
+ <20200123160850.gcwoydrdpw6saotk@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200122170447.20539-1-madhuparnabhowmik10@gmail.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200123160850.gcwoydrdpw6saotk@ca-dmjordan1.us.oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-+++ madhuparnabhowmik10@gmail.com [22/01/20 22:34 +0530]:
->From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Thu, Jan 23, 2020 at 11:08:50AM -0500, Daniel Jordan wrote:
+> [add Herbert]
+> 
+> Hi Madhuparna,
+> 
+> On Wed, Jan 22, 2020 at 10:32:46PM +0530, madhuparnabhowmik10@gmail.com wrote:
+> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > 
+> > This patch fixes the following sparse errors:
+> > kernel/padata.c:110:14: error: incompatible types in comparison expression
+> > kernel/padata.c:520:9: error: incompatible types in comparison expression
+> > kernel/padata.c:1000:9: error: incompatible types in comparison expression
+> 
+> This recent patch to padata in the cryptodev tree has fixed these sparse errors
+> and is heading for mainline soon:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=bbefa1dd6a6d53537c11624752219e39959d04fb
 >
->This patch fixes the following sparse errors:
->
->kernel/module.c:3623:9: error: incompatible types in comparison expression
->kernel/module.c:4060:41: error: incompatible types in comparison expression
->kernel/module.c:4203:28: error: incompatible types in comparison expression
->kernel/module.c:4225:41: error: incompatible types in comparison expression
->
->Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Thank you for letting me know about this.
 
-Hi Madhuparna,
+Regards,
+Madhuparna
 
-Thanks, I can confirm this patch fixes the sparse warnings. I've
-applied it to modules-next.
-
-Jessica
-
->---
-> include/linux/module.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/include/linux/module.h b/include/linux/module.h
->index bd165ba68617..dfdc8863e26a 100644
->--- a/include/linux/module.h
->+++ b/include/linux/module.h
->@@ -429,7 +429,7 @@ struct module {
->
-> #ifdef CONFIG_KALLSYMS
-> 	/* Protected by RCU and/or module_mutex: use rcu_dereference() */
->-	struct mod_kallsyms *kallsyms;
->+	struct mod_kallsyms __rcu *kallsyms;
-> 	struct mod_kallsyms core_kallsyms;
->
-> 	/* Section attributes */
->-- 
->2.17.1
->
+> Thanks,
+> Daniel
