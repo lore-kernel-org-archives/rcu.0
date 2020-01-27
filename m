@@ -2,88 +2,102 @@ Return-Path: <SRS0=q3PZ=3Q=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 752DBC32771
-	for <rcu@archiver.kernel.org>; Mon, 27 Jan 2020 08:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F830C32771
+	for <rcu@archiver.kernel.org>; Mon, 27 Jan 2020 09:30:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5103F20702
-	for <rcu@archiver.kernel.org>; Mon, 27 Jan 2020 08:52:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 663142168B
+	for <rcu@archiver.kernel.org>; Mon, 27 Jan 2020 09:30:05 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PimJ8yow"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgA0IwF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Jan 2020 03:52:05 -0500
-Received: from mga07.intel.com ([134.134.136.100]:49250 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgA0IwE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Jan 2020 03:52:04 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jan 2020 00:51:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,369,1574150400"; 
-   d="scan'208";a="428917882"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Jan 2020 00:51:37 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1iw07M-000EkU-BH; Mon, 27 Jan 2020 16:51:36 +0800
-Date:   Mon, 27 Jan 2020 16:51:10 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, urezki@gmail.com
-Subject: Re: [PATCH 2/2] rcuperf: Measure memory footprint during kfree_rcu()
- test (v4)
-Message-ID: <202001271653.IxODFuYS%lkp@intel.com>
-References: <20200115224225.246061-2-joel@joelfernandes.org>
+        id S1729616AbgA0JaF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Jan 2020 04:30:05 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55677 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726191AbgA0JaF (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 27 Jan 2020 04:30:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1580117404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nDSg7vKNkgUU6jWUsJmpRRkdzJQUOjJxGGK53N4Ir/o=;
+        b=PimJ8yow41winEJrvjM0uws+1/oPWOKGIkQbU5oPxmv3ImPyBl5yCcjC3Qhzlv3jiXIArq
+        xo6BrKHLVMaJ/kr5Wwfb8LmJpiUu3nrDT5E/qNEET8shRMN+0VqgzXFbykB+dwRhUsBpzZ
+        Sn+KR48fVaOn++ib9MB0Sig+zwX9Jkc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-U0vpYBDcMXmf1lpVbUuKfQ-1; Mon, 27 Jan 2020 04:29:59 -0500
+X-MC-Unique: U0vpYBDcMXmf1lpVbUuKfQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE97B8024F1;
+        Mon, 27 Jan 2020 09:29:57 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.70])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D1CC98704A;
+        Mon, 27 Jan 2020 09:29:52 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 27 Jan 2020 10:29:57 +0100 (CET)
+Date:   Mon, 27 Jan 2020 10:29:52 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     madhuparnabhowmik10@gmail.com
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, ebiederm@xmission.com,
+        christian.brauner@ubuntu.com, paulmck@kernel.org,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        frextrite@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] sched.h: Annotate sighand_struct with __rcu
+Message-ID: <20200127092951.GA1116@redhat.com>
+References: <20200124045908.26389-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200115224225.246061-2-joel@joelfernandes.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20200124045908.26389-1-madhuparnabhowmik10@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi "Joel,
+On 01/24, madhuparnabhowmik10@gmail.com wrote:
+>
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -918,7 +918,7 @@ struct task_struct {
+>  
+>  	/* Signal handlers: */
+>  	struct signal_struct		*signal;
+> -	struct sighand_struct		*sighand;
+> +	struct sighand_struct __rcu		*sighand;
+>  	sigset_t			blocked;
+>  	sigset_t			real_blocked;
+>  	/* Restored if set_restore_sigmask() was used: */
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index bcd46f547db3..9ad8dea93dbb 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1383,7 +1383,7 @@ struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
+>  		 * must see ->sighand == NULL.
+>  		 */
+>  		spin_lock_irqsave(&sighand->siglock, *flags);
+> -		if (likely(sighand == tsk->sighand))
+> +		if (likely(sighand == rcu_access_pointer(tsk->sighand)))
+>  			break;
+>  		spin_unlock_irqrestore(&sighand->siglock, *flags);
+>  	}
 
-Thank you for the patch! Perhaps something to improve:
+ACK,
 
-[auto build test WARNING on next-20200116]
-[cannot apply to rcu/dev linux/master linus/master v5.5-rc6 v5.5-rc5 v5.5-rc4 v5.5]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+perhaps you can also cleanup copy_sighand(). rcu_assign_pointer() makes no
+sense, we should either move it down or simply use RCU_INIT_POINTER().
 
-url:    https://github.com/0day-ci/linux/commits/Joel-Fernandes-Google/rcuperf-Add-support-to-vary-the-slab-object-sizes/20200117-101205
-base:    2747d5fdab78f43210256cd52fb2718e0b3cce74
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-153-g47b6dfef-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+Oleg.
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> kernel/rcu/rcuperf.c:620:11: sparse: sparse: symbol 'mem_begin' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
