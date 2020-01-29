@@ -2,88 +2,92 @@ Return-Path: <SRS0=l9jG=3S=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67817C33CB2
-	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 12:02:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E4DC33CB2
+	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 12:31:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 385252071E
-	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 12:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580299328;
-	bh=OxBv/uHgVr9/HqkUSFAjENjNm3fctbgRZ8dGInJ5ves=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=poiNmnj4w+YkdTbRnGOjlJXNxdopXtSWwfE+2OrsPx/T3mIT3ijdA4XGYoPzFvmLA
-	 3mOQWASGtN8zyfPAfOKNGqd5EvTBit7C8nNj/esGnOCg9/ebkYxPFkHMO+LOf00Kpo
-	 bgGc65/BaZmCHXMDk0mZ/m2WjNaTHxszRDGyiT7w=
+	by mail.kernel.org (Postfix) with ESMTP id CED7720702
+	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 12:31:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZaaLsCCu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgA2MCI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jan 2020 07:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgA2MCH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jan 2020 07:02:07 -0500
-Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726186AbgA2MbC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jan 2020 07:31:02 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33828 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726128AbgA2MbA (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Wed, 29 Jan 2020 07:31:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1580301059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mVoGmnbnu+6R1pSCl0dLyuO7kwDWvlmj5m5kaifObZg=;
+        b=ZaaLsCCub7Z4xmuXFeLEhSU6vMEN5NwNHeaaEzoCGXSXfKE2yartIajPJEYizEgjx4OzKw
+        0tHjngx8fOA9hg1hJ6noOcdSHz77jk6jFckJoCfUUHZbt0nQzrLE8hLlsFM1cxtPc/hArq
+        s2b45Xcm+NP7jE1nsGgYBWl4N2I+DT4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-Q5wd-9RhPqyzHHEuMF8AeA-1; Wed, 29 Jan 2020 07:30:53 -0500
+X-MC-Unique: Q5wd-9RhPqyzHHEuMF8AeA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33E032070E;
-        Wed, 29 Jan 2020 12:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580299327;
-        bh=OxBv/uHgVr9/HqkUSFAjENjNm3fctbgRZ8dGInJ5ves=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=eK4wOCcnIM4ISOPeO55LIgl6Zg9LUK8u/vHWXdDqdsEEkv8cUlDH6WJZMWaP9IiNo
-         dHDQQzz9cklMLfxdYQo1P5uGxprxTGizLsfNfCCKD+hOWkDOPvCcHp6MDA9OXSyIii
-         VVQT3tO5MobCWJ6GbQHZV/e0rWxxGfYN21/WJaMg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CABCD352276F; Wed, 29 Jan 2020 04:02:06 -0800 (PST)
-Date:   Wed, 29 Jan 2020 04:02:06 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, a.p.zijlstra@chello.nl,
-        tglx@linutronix.de, akpm@linux-foundation.org
-Subject: [GIT PULL tip/core/rcu urgent] RCU fix for boot-time splat
-Message-ID: <20200129120206.GA15554@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7238E800D41;
+        Wed, 29 Jan 2020 12:30:51 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.70])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8A0695C1B5;
+        Wed, 29 Jan 2020 12:30:49 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 29 Jan 2020 13:30:49 +0100 (CET)
+Date:   Wed, 29 Jan 2020 13:30:47 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     madhuparnabhowmik10@gmail.com
+Cc:     peterz@infradead.org, mingo@kernel.org,
+        christian.brauner@ubuntu.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] exit.c: Fix Sparse errors and warnings
+Message-ID: <20200129123046.GA1726@redhat.com>
+References: <20200128172008.22665-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200128172008.22665-1-madhuparnabhowmik10@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Ingo,
+On 01/28, madhuparnabhowmik10@gmail.com wrote:
+>
+> kernel/exit.c:626:40: warning: incorrect type in assignment
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> ---
+>  kernel/exit.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index bcbd59888e67..c5a9d6360440 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -623,8 +623,8 @@ static void forget_original_parent(struct task_struct *father,
+>  	reaper = find_new_reaper(father, reaper);
+>  	list_for_each_entry(p, &father->children, sibling) {
+>  		for_each_thread(p, t) {
+> -			t->real_parent = reaper;
+> -			BUG_ON((!t->ptrace) != (t->parent == father));
+> +			rcu_assign_pointer(t->real_parent, reaper);
 
-This pull request contains a single commit that fixes an embarrassing
-bug discussed here:
+Another case when RCU_INIT_POINTER() makes more sense (although to me it
+too looks confusing). We didn't modify the new parent.
 
-https://lore.kernel.org/lkml/20200125131425.GB16136@zn.tnic/
+Oleg.
 
-which apparently also affects smaller systems.
-
-The following changes since commit 0e247386d9ed5ab8b7dad010cf4b183efeb1e47d:
-
-  Merge branches 'doc.2019.12.10a', 'exp.2019.12.09a', 'fixes.2020.01.24a', 'kfree_rcu.2020.01.24a', 'list.2020.01.10a', 'preempt.2020.01.24a' and 'torture.2019.12.09a' into HEAD (2020-01-24 10:37:27 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urgent-for-mingo
-
-for you to fetch changes up to 59d8cc6b2e375ff486b030da6703b1d481e186e6:
-
-  rcu: Forgive slow expedited grace periods at boot time (2020-01-25 12:00:40 -0800)
-
-In the meantime, I will go place a brown paper bag over my head.  :-/
-
-----------------------------------------------------------------
-Paul E. McKenney (1):
-      rcu: Forgive slow expedited grace periods at boot time
-
- kernel/rcu/tree_exp.h | 1 -
- 1 file changed, 1 deletion(-)
