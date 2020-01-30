@@ -1,70 +1,106 @@
-Return-Path: <SRS0=l9jG=3S=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=LYSJ=3T=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC365C2D0DB
-	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 19:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92FD1C2D0DB
+	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 00:30:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C8E2C20720
-	for <rcu@archiver.kernel.org>; Wed, 29 Jan 2020 19:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580325012;
-	bh=gMB61TugbTETLOelIlSzb0zII7/V7zLdZi/9zcPYho4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=xk2PPHOIoQ4mvlzYrcky3gVUV8AAgouNlpwp+FAkr1MgIlEDAmLnUwpEwRPaqm9sD
-	 WHHyo1DTeS0MrjG+e0JGMqGh72w5SNirTcdw1w95N7YSoM5steNQ76c7Awijnq/8m9
-	 8/y1fO56rC4LqLe0f2i6MqehLvVF2btd+VfmV7ig=
+	by mail.kernel.org (Postfix) with ESMTP id 641E4206A2
+	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 00:30:26 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pPg9s5tX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727585AbgA2TKI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Jan 2020 14:10:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727542AbgA2TKI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Jan 2020 14:10:08 -0500
-Subject: Re: [GIT PULL tip/core/rcu urgent] RCU fix for boot-time splat
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580325007;
-        bh=gMB61TugbTETLOelIlSzb0zII7/V7zLdZi/9zcPYho4=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=yDsJ83JoBjk5P4woSuPMxzxWfHR/cwCPSLREp191WVOCEx7KPUY99u/RFhTpeg1dB
-         /bqvQfo/GbiNbJqKwN19+3p7F6Ozwfyeuav3b82r1crCml+GmJd0Anl7PZegFkU5Ws
-         J2p2jCNNLK594nAY+vDpRsqapvBqB/Z/CENSRWX4=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200129120206.GA15554@paulmck-ThinkPad-P72>
-References: <20200129120206.GA15554@paulmck-ThinkPad-P72>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200129120206.GA15554@paulmck-ThinkPad-P72>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
- urgent-for-mingo
-X-PR-Tracked-Commit-Id: 59d8cc6b2e375ff486b030da6703b1d481e186e6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 15d6632496537fa66488221ee5dd2f9fb318ef2e
-Message-Id: <158032500759.28574.17205140926246637211.pr-tracker-bot@kernel.org>
-Date:   Wed, 29 Jan 2020 19:10:07 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        a.p.zijlstra@chello.nl, tglx@linutronix.de,
-        akpm@linux-foundation.org
+        id S1726671AbgA3Aa0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Jan 2020 19:30:26 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:35472 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgA3AaZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Jan 2020 19:30:25 -0500
+Received: by mail-wm1-f68.google.com with SMTP id b17so2134506wmb.0;
+        Wed, 29 Jan 2020 16:30:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MXuXlcYaFybhZK1QuyNgDHIHxuFl+Ricrrn7dPKgOpU=;
+        b=pPg9s5tX1/hohT72JS+QDkLFoGqmfB/XaHf6yg7/jcblENm75u/+9Sl+yQHCc94SKI
+         zLoPOlxuHhG1OdbNAyXgh5FZVipwTYXOJR67wLkdcJhdoD8/QvIaBjXqHuqSixS3Iu26
+         zDceuYL4PA4PoB49Iy4CfmPo4hl8wpvAo96JJ52804N5tHFzcQIXbkfzF3SYhIvl05PT
+         uwX5vU9PmthXgf9rQAScrnjL5ZUS+tVbc7tCpsmbSOeTVUDFYL7iqmIoxudjdrSuU5cp
+         Zpm/ARGuqHmKyn+28Ftg3oDU1T6DEkDTa0TOCJK3t50BHsROSKL78y/vjiH20JSLc8A/
+         WaHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MXuXlcYaFybhZK1QuyNgDHIHxuFl+Ricrrn7dPKgOpU=;
+        b=V7TdbAyRpEgVPVssCj3qyWYMXVEitrjdBTScua2yYbl0GWe3UvXSBOxCaYNFbcbgRj
+         W+qII+Bb8XtrkPU7sbJ/lA6UA1qhZ4OsItMKegnaCx7DJwxj1FE5CXrotRRBhL747Yej
+         erajWiDgxSa0o6e8mARpVB60qS5LSRlgeCKSzlbItAmIWAQK19Dt3htwB8xY1WIWKx4f
+         dOTqPXegDPGKwX8xCiDsNb8d6g+lPBG1Peua6KR/pG9fIB01hxwAuAm/0C+40kR4nwiJ
+         +Tsi5taw40qlJAbErekj5UPexPr+D/DrOILFzpKRjhyd9l8t7vdDBCdqcHOGVa64aQD8
+         qBhg==
+X-Gm-Message-State: APjAAAVrYNocQntROamIT6WDh8oGQ/uPA0z+3ZhHtvWlmIYb6WtVj3Fr
+        ujVmNdmbDTef9pI0jE2ZbA==
+X-Google-Smtp-Source: APXvYqyUxbLDQUOJnk4TfX1NU5mYiXT9GRYv4ft2uoUmMv/0O3z5CsV4F7GZiGd17qPKYGcUGMINyg==
+X-Received: by 2002:a7b:cb42:: with SMTP id v2mr1870894wmj.170.1580344223698;
+        Wed, 29 Jan 2020 16:30:23 -0800 (PST)
+Received: from ninjahost.lan (host-2-102-13-223.as13285.net. [2.102.13.223])
+        by smtp.googlemail.com with ESMTPSA id f1sm4946356wro.85.2020.01.29.16.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2020 16:30:23 -0800 (PST)
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     boqun.feng@gmail.com
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, jiangshanlai@gmail.com,
+        mathieu.desnoyers@efficios.com, rostedt@goodmis.org,
+        josh@joshtriplett.org, paulmck@kernel.org, rcu@vger.kernel.org,
+        Jules Irenge <jbi.octave@gmail.com>
+Subject: [PATCH 2/2] rcu/nocb: Add missing annotation for rcu_nocb_bypass_unlock()
+Date:   Thu, 30 Jan 2020 00:30:09 +0000
+Message-Id: <59087bdc398a69ac743ee3e5cfa0bd26495881e3.1580337836.git.jbi.octave@gmail.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1580337836.git.jbi.octave@gmail.com>
+References: <0/2> <cover.1580337836.git.jbi.octave@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Wed, 29 Jan 2020 04:02:06 -0800:
+Sparse reports warning at rcu_nocb_bypass_unlock()
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urgent-for-mingo
+warning: context imbalance in rcu_nocb_bypass_unlock() - unexpected unlock
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/15d6632496537fa66488221ee5dd2f9fb318ef2e
+The root cause is a missing annotation of rcu_nocb_bypass_unlock()
+which causes the warning.
 
-Thank you!
+Add the missing __releases(&rdp->nocb_bypass_lock) annotation.
 
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/rcu/tree_plugin.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 9d21cb07d57c..8783d19a58b2 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1553,6 +1553,7 @@ static bool rcu_nocb_bypass_trylock(struct rcu_data *rdp)
+  * Release the specified rcu_data structure's ->nocb_bypass_lock.
+  */
+ static void rcu_nocb_bypass_unlock(struct rcu_data *rdp)
++	__releases(&rdp->nocb_bypass_lock)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	raw_spin_unlock(&rdp->nocb_bypass_lock);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.24.1
+
