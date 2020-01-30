@@ -2,126 +2,97 @@ Return-Path: <SRS0=LYSJ=3T=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87727C33C9E
-	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 12:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6B6C2D0DB
+	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 14:11:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 641A020702
-	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 12:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 54D7E20658
+	for <rcu@archiver.kernel.org>; Thu, 30 Jan 2020 14:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580393470;
+	bh=G0gBjAny5yN8fGZvT15qlodFm7KjouPKenaASKGMRxU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=LL6MyGYBDLb9LJb9Bi37ct6UP3xUXfn6LwoYVbqIAXFw2N4dR4FF6Y0/072GeoQMM
+	 CzQPdi2uTWteRrp/IwqXgR2NJe56GgpWxelLJ6bZ5mnlOx8PCZGNduSZbnTmMZHycC
+	 tXRPciBRpg8Jj3j7M94WrTQ0hHze/jD9qSwNqZyA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgA3MCu convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Thu, 30 Jan 2020 07:02:50 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51443 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727158AbgA3MCu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jan 2020 07:02:50 -0500
-Received: by mail-wm1-f67.google.com with SMTP id t23so3491631wmi.1
-        for <rcu@vger.kernel.org>; Thu, 30 Jan 2020 04:02:48 -0800 (PST)
+        id S1726902AbgA3OLK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jan 2020 09:11:10 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:51947 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727260AbgA3OLK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jan 2020 09:11:10 -0500
+Received: by mail-wm1-f68.google.com with SMTP id t23so3928589wmi.1;
+        Thu, 30 Jan 2020 06:11:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=q4JcWlTe/zyFu8ktXOL2ermwd8PkUTZPqu99fFqglok=;
+        b=PELddM3/DNwRWFFCa+0FQswbMO1Du5Ln/pkQSTMxbiSJLDaoSkZJ/6MoNySi6BaEbY
+         RPsApofmJvjg6ahjIdGGDf3K97cGkDLV+qy1qvJgG0zhpGzbxrk4HH7Qj2fScRZjnui3
+         qoPURYZjzHn+WDDTe4g1kiPzGsx4sS1pEBtCT9vC4YGEYVYgJDzmINdlNv6erAmjg1cf
+         6u9lzqPPFK+DYbmQBlMiYxskmKnDPyKIgJ4IxZWRCVBHHU0MQ6fldFU3vtgO1DziovBA
+         hECydFHqgzr+IrkWHltOJdvwQQJNs9G1j/knKsNN5U3mQLq86ezg7rYNxqUUgpXQ86kp
+         UQOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=Eti0yRnmjwLs2yRe1krSvPdmZnl0PtvNqJ94tkjn534=;
-        b=e98+x0FMSbxkB8Ifr8JI3q/p2uwmQWKg6LhIHBxdMAVGTlcrvW2F2yqNXe50xtZg34
-         LjLGtaXfRd4caAf4Z24UtE4v/0CpXpOLS1y5adTxke9PXqPqfZB76pAku08zl1kL2wi6
-         K4joUY3SiCKX/SNumgxANNZLJWeOIxUqbViyid+Nf5xajUdezCQ02AxClLBmJvMSXOvg
-         1O28UqHTXfmZ09OcRoVVk8NK67c60dzHSh/pwcFLZWVwbIRia83rWM41Gueeylgc6HWi
-         HtFCdmm19/89HowTKDuDYCx0+330wGWrlCDub2nh0fe0Z+8eF3txpEcTKlx70HHODQcD
-         zzKA==
-X-Gm-Message-State: APjAAAV4wQ8zS0eeFQCZ2msACIXNEQWOs2YBHLTfwf/5enezK7s4227U
-        ODCxabiZbvyLQgaOCNZ4rgxApw==
-X-Google-Smtp-Source: APXvYqxNJ2gaOJkwmVoFcJMWZ4ZHP8gYRIU3hwNEd8Jbog0G2JtnUuUg0Cz8MDtps+Uu5rm/vUM+/A==
-X-Received: by 2002:a1c:f008:: with SMTP id a8mr3810733wmb.81.1580385767515;
-        Thu, 30 Jan 2020 04:02:47 -0800 (PST)
-Received: from ?IPv6:2a00:20:8033:fc11:1c15:76bc:997f:b2bd? ([2a00:20:8033:fc11:1c15:76bc:997f:b2bd])
-        by smtp.gmail.com with ESMTPSA id h8sm7282645wrx.63.2020.01.30.04.02.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jan 2020 04:02:46 -0800 (PST)
-Date:   Thu, 30 Jan 2020 12:45:26 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200130113339.GA25426@redhat.com>
-References: <20200130062028.4870-1-madhuparnabhowmik10@gmail.com> <20200130103158.azxldyfnugwvv6vy@wittgenstein> <20200130113339.GA25426@redhat.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=q4JcWlTe/zyFu8ktXOL2ermwd8PkUTZPqu99fFqglok=;
+        b=J77YJo6VKN2Dncy2ySAXo0SYLVM4jJYS81h8D+BFAD9aJpRNfvT1PSSwb2lgics6Ah
+         M9kw6liAuBbYW+OjXFNv26S+Vjb2D102W54WH+DVUXNVQZI6DohRXBqTzaWGxoYQQT0z
+         vmBe7/5HfZ22MvRK/pY/hzFdTJed1RBi7RHU7uhDBBDL8uo4A3hchUWl+wgGK5UIlVwN
+         v9GLZZ5tu+5lf3mu8Xu2oZCW+YkOFdCSQ1Z0VJ8zPU4dhOReuSayRUU9e0POo4gAttkm
+         cfbjL/jnHt+zLGJuN4cbuhVVHpqRXCGUDZ8sVAc0lgJBmVXRPxO1nuRPZVXqKl7d8f+v
+         xZoA==
+X-Gm-Message-State: APjAAAUWMOIbO17Updq8VtcM9FqKgOxpNkpWW+g4ovqqdfmZAWtiGy0t
+        fANAjLRJqG+W8LrWMlF6djo=
+X-Google-Smtp-Source: APXvYqwouINwxupUGjm9+xYVizQvCNu2xbJw/0I+bZf+JGGE9mwkWx4GM3izcsSlc52BkQdbWxWTsg==
+X-Received: by 2002:a1c:9602:: with SMTP id y2mr5837435wmd.23.1580393467708;
+        Thu, 30 Jan 2020 06:11:07 -0800 (PST)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id i16sm6998338wmb.36.2020.01.30.06.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2020 06:11:07 -0800 (PST)
+Date:   Thu, 30 Jan 2020 15:11:05 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL tip/core/rcu urgent] RCU fix for boot-time splat
+Message-ID: <20200130141105.GA130017@gmail.com>
+References: <20200129120206.GA15554@paulmck-ThinkPad-P72>
+ <CAHk-=whK-nw7PizDEzMgKwQQ6H5NXg0=NTwb6ECDb5PfchFQjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [PATCH] exit.c: Fix Sparse errors and warnings
-To:     Oleg Nesterov <oleg@redhat.com>
-CC:     madhuparnabhowmik10@gmail.com, peterz@infradead.org,
-        mingo@kernel.org, paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, rcu@vger.kernel.org
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-Message-ID: <32DE6B3E-ADC3-49EB-888C-CABCF82330FE@ubuntu.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whK-nw7PizDEzMgKwQQ6H5NXg0=NTwb6ECDb5PfchFQjQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On January 30, 2020 12:33:41 PM GMT+01:00, Oleg Nesterov <oleg@redhat.com> wrote:
->On 01/30, Christian Brauner wrote:
->>
->> On Thu, Jan 30, 2020 at 11:50:28AM +0530,
->madhuparnabhowmik10@gmail.com wrote:
->> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->> >
->> > This patch fixes the following sparse error:
->> > kernel/exit.c:627:25: error: incompatible types in comparison
->expression
->> >
->> > And the following warning:
->> > kernel/exit.c:626:40: warning: incorrect type in assignment
->> >
->> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->>
->> I think the previous version was already fine but hopefully
->> RCU_INIT_POINTER() really saves some overhead. In any case:
->
->It is not about overhead, RCU_INIT_POINTER() documents the fact that we
->didn't make any changes to the new parent, we only need to change the
->pointer.
 
-Right, I wasn't complaining.  RCU_INIT_POINTER() claims that it has less overhead than rcu_assign_pointer().
-So that is an additional argument for it.
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
->
->And btw, I don't really understand the __rcu annotations. Say,
->according
->to sparse this code is wrong:
->
->	int __rcu *P;
->
->	void func(int *p)
->	{
->		P = p;
->	}
->
->OK, although quite possibly it is fine.
->
->However, this code
->
->	int __rcu *P;
->
->	void func(int __rcu *p)
->	{
->		*p = 10;
->	       	P = p;
->	}
->
->is almost certainly wrong but sparse is happy, asn is the same.
+> On Wed, Jan 29, 2020 at 4:02 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Hello, Ingo,
+> >
+> > This pull request contains a single commit that fixes an embarrassing
+> > bug discussed here:
+> 
+> Ingo, just FYI: I'll just take this pull directly, just to avoid
+> having the warning in my current tree.
 
-That's more an argument to fix sparse I guess?
-The annotations themselves are rather useful I think.
-They at least help me when reading the code.
-It's not that rcu lifetimes are trivial and anything that helps remind me that an object wants rcu semantics I'm happy to take it. :)
+Thanks!
 
->
->
->> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
->
->Acked-by: Oleg Nesterov <oleg@redhat.com>
-
+	Ingo
