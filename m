@@ -1,106 +1,104 @@
-Return-Path: <SRS0=c3Ty=3U=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=tJ1+=3V=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51046C3F68F
-	for <rcu@archiver.kernel.org>; Fri, 31 Jan 2020 04:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94526C33CB3
+	for <rcu@archiver.kernel.org>; Sat,  1 Feb 2020 12:58:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 278C32082E
-	for <rcu@archiver.kernel.org>; Fri, 31 Jan 2020 04:42:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580445743;
-	bh=vrX3/6pwu1fAAx+7ajC/iDE0rq9jlf4ifOVKqF5c5jw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=bPbW3PNQbB/+p3RZ2PVBGJuGdEPl95fp/BOElfGgFA7PrsER5RL8XCvrkS+cYCxuG
-	 AJVkdzzg39Dk7ayoWEOABDV8NFoHsVogS7VkRc4Jb3QFc4fzVXzh8LTm3zK8aZUY0w
-	 Mc+RnnXVcgofmKJEejvTlrk7a2lYYD32FI4tbaXM=
+	by mail.kernel.org (Postfix) with ESMTP id 6B87C206E3
+	for <rcu@archiver.kernel.org>; Sat,  1 Feb 2020 12:58:45 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VzPZwDZT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgAaEmW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jan 2020 23:42:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727987AbgAaEmW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jan 2020 23:42:22 -0500
-Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09E2620705;
-        Fri, 31 Jan 2020 04:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580445742;
-        bh=vrX3/6pwu1fAAx+7ajC/iDE0rq9jlf4ifOVKqF5c5jw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lwIbH048z9e6sY/ayc2ASfw0Wd7frbTi30V5UKrUdKj0zv+olj7kg7mgLrGgzZJT5
-         tJlTjr5OWbHUh7gLSws93FvQjpEP7bVzZIj9MxJ9E9ZuulILEwk44YVye/dcK8CZ84
-         4zopYZKcxjAmg3sQAjGpR4mgiJZHggT4MvGow9aA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AF9303521386; Thu, 30 Jan 2020 20:42:21 -0800 (PST)
-Date:   Thu, 30 Jan 2020 20:42:21 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Jules Irenge <jbi.octave@gmail.com>, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        jiangshanlai@gmail.com, mathieu.desnoyers@efficios.com,
-        rostedt@goodmis.org, josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 2/2] rcu/nocb: Add missing annotation for
- rcu_nocb_bypass_unlock()
-Message-ID: <20200131044221.GN2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <0/2>
- <cover.1580337836.git.jbi.octave@gmail.com>
- <59087bdc398a69ac743ee3e5cfa0bd26495881e3.1580337836.git.jbi.octave@gmail.com>
- <20200131005952.GD83200@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200131005952.GD83200@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726536AbgBAM6n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 1 Feb 2020 07:58:43 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42057 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgBAM6n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 1 Feb 2020 07:58:43 -0500
+Received: by mail-pg1-f194.google.com with SMTP id s64so5097778pgb.9;
+        Sat, 01 Feb 2020 04:58:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Sg2eOI3lpxVLDcDQYQkxI8yUvrkJbYXCIF4uNleTtLs=;
+        b=VzPZwDZTiS0OoC9iJdqoQZ1rJQirI983lgb8kIAJifeN7iI9AFpWSkW3lfGLH/Wqny
+         9SPjmGclSfOzm0g88K0e38IsOKwyGaexWV6Er/Ua0KH43NACA+d4KQQkN7ig5POv38+M
+         YturwSNZ1zWY+IpsyBi5TWxl3a9tp9tJEQH4KuG5IBwYJK2KryuioiFI/o+DDsViZP/I
+         JaucO0AUmY/47JkO3fIw7Ch4v5pPPLE+6CWVMKIYfugruQT8AR+1XkDXiL6j8HTGplAW
+         cP9PMZvYhP8K+ibnghXfauWD7g1oCGNOR17tbzDyTbaKXAVHH+LK0580wn3RirUXrLsb
+         QYdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Sg2eOI3lpxVLDcDQYQkxI8yUvrkJbYXCIF4uNleTtLs=;
+        b=eztKJX1avs0jMKGvB+nAJL/k7Az8457KlPZyL4reoD5mdO+T7xChwXTX8vTqeiyowc
+         ox1/ZeEFVzuXSubyZDsRxXEIpmCLH+3oAIuK7nbFCnN6e3eyItXWUXOH5vmlqVhkNAug
+         YOXoG9ZRpqZMXPNjeYy0aZH8vNrViy/U8MS973CaNzUuD7eUwx2vAONTk6NF05JFtohi
+         i3XUjVyAD4OgedjYSRzpirp/3MnH+9aAEh69QAm1LcwhPOtYM08Wy4mYDHA9iPlC86z/
+         PzZJklus41Q5Dr8dLUvXfmcjzHd77p/Qp7Im2a2w25IjgEJypyRQwWU7WDVFIC9lk3IG
+         2s1Q==
+X-Gm-Message-State: APjAAAWlM3d7V5Lpo4oVi7HWrBijrcHmYA+wGYEnRSke/HgefkLWuicZ
+        9omgV6YB/q+UOqcSwbPjbw==
+X-Google-Smtp-Source: APXvYqworotb8yqMSLn48khNRtGO3KrwLk+wNzdBnnKoVNx2LbrYoU5BvXU8otqmX/6laJRxkocHmg==
+X-Received: by 2002:a63:1a08:: with SMTP id a8mr15444283pga.425.1580561921051;
+        Sat, 01 Feb 2020 04:58:41 -0800 (PST)
+Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:cd2:8ab5:f87d:af67:e1a2:1634])
+        by smtp.gmail.com with ESMTPSA id g22sm13607889pgk.85.2020.02.01.04.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Feb 2020 04:58:40 -0800 (PST)
+From:   madhuparnabhowmik10@gmail.com
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, joel@joelfernandes.org, paulmck@kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] sched.h: Annotate curr pointer in rq with __rcu
+Date:   Sat,  1 Feb 2020 18:28:03 +0530
+Message-Id: <20200201125803.20245-1-madhuparnabhowmik10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 08:59:52AM +0800, Boqun Feng wrote:
-> On Thu, Jan 30, 2020 at 12:30:09AM +0000, Jules Irenge wrote:
-> > Sparse reports warning at rcu_nocb_bypass_unlock()
-> > 
-> > warning: context imbalance in rcu_nocb_bypass_unlock() - unexpected unlock
-> > 
-> > The root cause is a missing annotation of rcu_nocb_bypass_unlock()
-> > which causes the warning.
-> > 
-> > Add the missing __releases(&rdp->nocb_bypass_lock) annotation.
-> > 
-> > Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> 
-> Acked-by: Boqun Feng <boqun.feng@gmail.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Applied, thank you both!
+This patch fixes the following sparse errors in sched/core.c
+and sched/membarrier.c
+:
+kernel/sched/core.c:2372:27: error: incompatible types in comparison expression
+kernel/sched/core.c:4061:17: error: incompatible types in comparison expression
+kernel/sched/core.c:6067:9: error: incompatible types in comparison expression
+kernel/sched/membarrier.c:108:21: error: incompatible types in comparison expression
+kernel/sched/membarrier.c:177:21: error: incompatible types in comparison expression
+kernel/sched/membarrier.c:243:21: error: incompatible types in comparison expression
 
-							Thanx, Paul
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+---
+ kernel/sched/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > ---
-> >  kernel/rcu/tree_plugin.h | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 9d21cb07d57c..8783d19a58b2 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -1553,6 +1553,7 @@ static bool rcu_nocb_bypass_trylock(struct rcu_data *rdp)
-> >   * Release the specified rcu_data structure's ->nocb_bypass_lock.
-> >   */
-> >  static void rcu_nocb_bypass_unlock(struct rcu_data *rdp)
-> > +	__releases(&rdp->nocb_bypass_lock)
-> >  {
-> >  	lockdep_assert_irqs_disabled();
-> >  	raw_spin_unlock(&rdp->nocb_bypass_lock);
-> > -- 
-> > 2.24.1
-> > 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 280a3c735935..97b1396b6008 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -896,7 +896,7 @@ struct rq {
+ 	 */
+ 	unsigned long		nr_uninterruptible;
+ 
+-	struct task_struct	*curr;
++	struct task_struct __rcu	*curr;
+ 	struct task_struct	*idle;
+ 	struct task_struct	*stop;
+ 	unsigned long		next_balance;
+-- 
+2.17.1
+
