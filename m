@@ -1,100 +1,157 @@
-Return-Path: <SRS0=GK+O=3Z=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=+OWy=37=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A071C35247
-	for <rcu@archiver.kernel.org>; Wed,  5 Feb 2020 22:34:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A7FC3B187
+	for <rcu@archiver.kernel.org>; Tue, 11 Feb 2020 16:24:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 18C422072B
-	for <rcu@archiver.kernel.org>; Wed,  5 Feb 2020 22:34:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 472FB2086A
+	for <rcu@archiver.kernel.org>; Tue, 11 Feb 2020 16:24:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QaYncY22"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PCzzM/8k"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgBEWeR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Feb 2020 17:34:17 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42332 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727149AbgBEWeR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Feb 2020 17:34:17 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 4so1935624pfz.9
-        for <rcu@vger.kernel.org>; Wed, 05 Feb 2020 14:34:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BJAZ+tjDZGEWKOLhDN5AGrWH1BdqO7gaMNKY2ZpYEZE=;
-        b=QaYncY22KA1veHmJfyF9ObQNUPiSi3a+CYQ/HWRhROmmrwOgTOH5jglHbNzKa3crqZ
-         0yWquqQt2uqdYLCLXrJPtB1A+OFdkF7HpKyn/NN7xtUqFHK7ipFabry5qlMjt0gX01gE
-         iB3UJDUvBVIWfSXh0lUgCf+hLlzcJkZDwHd/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BJAZ+tjDZGEWKOLhDN5AGrWH1BdqO7gaMNKY2ZpYEZE=;
-        b=rUhrYbivQXgdL3Nbcb6uinqX5o0GTzplmxDVjcv65083zYwDnInE0FQiHXBqukpV2f
-         7d0n0+xq1WL0ceuKHD4ZqBZ3hxfVqUjSg9M+I5DKpZbtMUpiORrq8RSbMGcIZHg64uY+
-         Q37JjdOFdVG2EbthImfQsq4gAwiz/zGecaot3FfjufyiqH0DzqE1lVTmnyb6y5jBH0GC
-         PAfY16GUjnE5rUxVLDZ7K0xLjWcs1iGa7JHdZvG4IXvj+OlBNxfk6HBsAzyR8orJzbMh
-         ocyTevtauXx/CTxAuuolWpLxPTPJ+oUWFzYTEkcEIP24ZBwRtze1fzJplJcer3FoN+yc
-         GIeQ==
-X-Gm-Message-State: APjAAAV0X2Vc722bnA1EuOypHD/y0UuKBB+ISI8++zTg9l5Bs3YSM24z
-        d3KBwly9IUFKZ8wQjRiKcEByYA==
-X-Google-Smtp-Source: APXvYqwH/JozABknbiZDhGi/qjztmZyyCX4nXbvdvUmqzc6dhXb1KJ7OGhn2QUC6bDzXn1X7tfRLFg==
-X-Received: by 2002:a63:d0c:: with SMTP id c12mr130039pgl.173.1580942057139;
-        Wed, 05 Feb 2020 14:34:17 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id t19sm784459pgg.23.2020.02.05.14.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2020 14:34:16 -0800 (PST)
-Date:   Wed, 5 Feb 2020 17:34:15 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        paulmck@kernel.org, frextrite@gmail.com, rcu@vger.kernel.org,
-        madhuparnabhowmik04@gmail.com
-Subject: Re: [PATCH] kernel/trace: Use rcu_assign_pointer() for setting
- fgraph hash pointers
-Message-ID: <20200205223415.GA55522@google.com>
-References: <20200205221808.54576-1-joel@joelfernandes.org>
- <20200205172529.4282a0d1@oasis.local.home>
+        id S1727722AbgBKQY2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Feb 2020 11:24:28 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31785 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727815AbgBKQY2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Feb 2020 11:24:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581438266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W0ZDjuaIZ1KLsnFDXhfjcN6b+4tlT6PGYmx69L4Q8Yg=;
+        b=PCzzM/8kQ/YV2yJT8Rt4CFCs3meBEOD1tAdMZo2XntNWViZM/dPMcMEAicoPxGsNxigc1T
+        k3mxWd83JzSdrpAVon85BriDyORsUFfQiJZb4XNgPSqyuUnCxeIaC5bOPWs2xyItq9H7Ru
+        gc3BZdhBIpZr4n926V6yv+RnMkeiHjU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-93-IyBcJEbxMLGWlODOxC7_dA-1; Tue, 11 Feb 2020 11:24:25 -0500
+X-MC-Unique: IyBcJEbxMLGWlODOxC7_dA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B4A1107ACC4;
+        Tue, 11 Feb 2020 16:24:24 +0000 (UTC)
+Received: from lithium.redhat.com (ovpn-204-63.brq.redhat.com [10.40.204.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9889A26FB0;
+        Tue, 11 Feb 2020 16:24:22 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     rcu@vger.kernel.org, ebiederm@xmission.com, paulmck@kernel.org
+Subject: [PATCH] ipc: use a work queue to free_ipc
+Date:   Tue, 11 Feb 2020 17:24:08 +0100
+Message-Id: <20200211162408.2194037-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200205172529.4282a0d1@oasis.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 05, 2020 at 05:25:29PM -0500, Steven Rostedt wrote:
-> On Wed,  5 Feb 2020 17:18:08 -0500
-> "Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
-> 
-> > set_ftrace_early_graph() sets pointers without any explicit
-> > release-barriers. Let us use rcu_assign_pointer() to ensure the same.
-> > 
-> > Note that ftrace_early_graph() calls ftrace_graph_set_hash() which does
-> > do mutex_unlock(&ftrace_lock); which should imply a release barrier.
-> > However it is better to not depend on it and just use
-> > rcu_assign_pointer() which should also avoid sparse errors in the
-> > future.
-> 
-> This is going to have to wait for the next merge window, as I'm already
-> *very* late, and I've pushed the limit to what I will add at this time
-> frame.
+it avoids blocking on synchronize_rcu() in kern_umount().
 
-I understand, no problem. I will resend it next merge window.
+the code:
 
-thanks,
+\#define _GNU_SOURCE
+\#include <sched.h>
+\#include <error.h>
+\#include <errno.h>
+\#include <stdlib.h>
+int main()
+{
+  int i;
+  for (i  =3D 0; i < 1000; i++)
+    if (unshare (CLONE_NEWIPC) < 0)
+      error (EXIT_FAILURE, errno, "unshare");
+}
 
- - Joel
+gets from:
 
-> 
-> -- Steve
-> 
+	Command being timed: "./ipc-namespace"
+	User time (seconds): 0.00
+	System time (seconds): 0.06
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.05
+
+to:
+
+	Command being timed: "./ipc-namespace"
+	User time (seconds): 0.00
+	System time (seconds): 0.02
+	Percent of CPU this job got: 96%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.03
+
+Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+---
+ include/linux/ipc_namespace.h |  2 ++
+ ipc/namespace.c               | 17 +++++++++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.=
+h
+index c309f43bde45..a06a78c67f19 100644
+--- a/include/linux/ipc_namespace.h
++++ b/include/linux/ipc_namespace.h
+@@ -68,6 +68,8 @@ struct ipc_namespace {
+ 	struct user_namespace *user_ns;
+ 	struct ucounts *ucounts;
+=20
++	struct llist_node mnt_llist;
++
+ 	struct ns_common ns;
+ } __randomize_layout;
+=20
+diff --git a/ipc/namespace.c b/ipc/namespace.c
+index b3ca1476ca51..37d27e1b807a 100644
+--- a/ipc/namespace.c
++++ b/ipc/namespace.c
+@@ -117,6 +117,7 @@ void free_ipcs(struct ipc_namespace *ns, struct ipc_i=
+ds *ids,
+=20
+ static void free_ipc_ns(struct ipc_namespace *ns)
+ {
++	mq_put_mnt(ns);
+ 	sem_exit_ns(ns);
+ 	msg_exit_ns(ns);
+ 	shm_exit_ns(ns);
+@@ -127,6 +128,17 @@ static void free_ipc_ns(struct ipc_namespace *ns)
+ 	kfree(ns);
+ }
+=20
++static LLIST_HEAD(free_ipc_list);
++static void free_ipc(struct work_struct *unused)
++{
++	struct llist_node *node =3D llist_del_all(&free_ipc_list);
++	struct ipc_namespace *n, *t;
++
++	llist_for_each_entry_safe(n, t, node, mnt_llist)
++		free_ipc_ns(n);
++}
++static DECLARE_WORK(free_ipc_work, free_ipc);
++
+ /*
+  * put_ipc_ns - drop a reference to an ipc namespace.
+  * @ns: the namespace to put
+@@ -148,8 +160,9 @@ void put_ipc_ns(struct ipc_namespace *ns)
+ 	if (refcount_dec_and_lock(&ns->count, &mq_lock)) {
+ 		mq_clear_sbinfo(ns);
+ 		spin_unlock(&mq_lock);
+-		mq_put_mnt(ns);
+-		free_ipc_ns(ns);
++
++		if (llist_add(&ns->mnt_llist, &free_ipc_list))
++			schedule_work(&free_ipc_work);
+ 	}
+ }
+=20
+--=20
+2.24.1
+
