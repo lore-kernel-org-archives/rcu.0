@@ -1,157 +1,100 @@
-Return-Path: <SRS0=+OWy=37=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=y1Kt=4A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A7FC3B187
-	for <rcu@archiver.kernel.org>; Tue, 11 Feb 2020 16:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A87A8C352A4
+	for <rcu@archiver.kernel.org>; Wed, 12 Feb 2020 22:12:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 472FB2086A
-	for <rcu@archiver.kernel.org>; Tue, 11 Feb 2020 16:24:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PCzzM/8k"
+	by mail.kernel.org (Postfix) with ESMTP id 7D22A2082F
+	for <rcu@archiver.kernel.org>; Wed, 12 Feb 2020 22:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1581545572;
+	bh=gIBhXoixH45hbT4GYg9lAnxlV14cpfRSrk3yVLUvyn4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=lGhl0EUnPV704oDksDshX6Ii/9ucKdg43aSL766eIasAfxy1DUEVr6rGbpG0n9QNW
+	 XTupng4cTt1uuBmSeS2pAAIKmhN4qkxgU17oFGZlUXV+hi3kyOBxu3lVNAcZNwyOGT
+	 f0BTAWStXofkIEs0idpnUEANFlsR2YKOQLbN1M2w=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727722AbgBKQY2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Feb 2020 11:24:28 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31785 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727815AbgBKQY2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Feb 2020 11:24:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581438266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=W0ZDjuaIZ1KLsnFDXhfjcN6b+4tlT6PGYmx69L4Q8Yg=;
-        b=PCzzM/8kQ/YV2yJT8Rt4CFCs3meBEOD1tAdMZo2XntNWViZM/dPMcMEAicoPxGsNxigc1T
-        k3mxWd83JzSdrpAVon85BriDyORsUFfQiJZb4XNgPSqyuUnCxeIaC5bOPWs2xyItq9H7Ru
-        gc3BZdhBIpZr4n926V6yv+RnMkeiHjU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-93-IyBcJEbxMLGWlODOxC7_dA-1; Tue, 11 Feb 2020 11:24:25 -0500
-X-MC-Unique: IyBcJEbxMLGWlODOxC7_dA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B4A1107ACC4;
-        Tue, 11 Feb 2020 16:24:24 +0000 (UTC)
-Received: from lithium.redhat.com (ovpn-204-63.brq.redhat.com [10.40.204.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9889A26FB0;
-        Tue, 11 Feb 2020 16:24:22 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     rcu@vger.kernel.org, ebiederm@xmission.com, paulmck@kernel.org
-Subject: [PATCH] ipc: use a work queue to free_ipc
-Date:   Tue, 11 Feb 2020 17:24:08 +0100
-Message-Id: <20200211162408.2194037-1-gscrivan@redhat.com>
+        id S1728447AbgBLWMw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Feb 2020 17:12:52 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36713 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727564AbgBLWMw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Feb 2020 17:12:52 -0500
+Received: by mail-qk1-f194.google.com with SMTP id w25so3752284qki.3;
+        Wed, 12 Feb 2020 14:12:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=htZSNJ3oIZAPreJh5xh8HpLPmxowkMMDY5AHwsIFPU4=;
+        b=JgbLnHXZBEJ6fny9Cf39uzWywqhTZCEc9XA7HjonBYcbbBVxey3E8jGB1bPKWVrUdH
+         MDi2aKPGMfYktEAwxum6w8vAcuQKbRKfvpUwLIGwLk3/YmeHtcygHekDiNYf5+9Q3/ti
+         zacH6LhE208pGea8c9ESgsdYtAeXB4ezKvDfBqcv9jlPHtgoFYltXKi/V/yrcVbYwnku
+         X3bNAPwE8YMLtOxeeS52qw2JNI4UFj3sP6w3f4vVctpZ6uj6fLe0Dq1xLddiXOyyjYKa
+         A7dAQszw4h0EP/fqdq1NQXGkBCDWNQkAIM2qeUiWaw6Udu9cErLrvXzo/wABUaU4uD/W
+         FynQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=htZSNJ3oIZAPreJh5xh8HpLPmxowkMMDY5AHwsIFPU4=;
+        b=C8Ug9jH40vk/5pOkGXLTSN/WguOooEey+REBbI+2iIUTN2uxPLNkKZGvhY0Sp9gKd7
+         Hj1CXoLsgoJ37DgbaGne3XbEL1wq16vuDY/z5IBqdy3pHaGE3X+E0cwtCrIDfehoTLoe
+         wRdl6nRWoFt8UBdCJsTcOnoY9Jl8zwNLLlqZxMd2lexFoq/qGZn0XXtmdgYdJMwC9pRg
+         WGKt9mJyQmU0GaNw5aVSqT2mh0YzBrFbgRCfxeeV78Cc+Mff8Oh4treBG2ONXdQ86sgF
+         APPFD4AplKowj6pOW0fLdgEW4x73zPsJVvLm2SK2pe066HFgkHfloKOGKhKTFZozi3X4
+         vpiw==
+X-Gm-Message-State: APjAAAVnT4EexUst0eXASEkUF/m/dwJX4gr+i708UbDXnx2quqLLkrkq
+        0VS7mvYiimykdhIOxq0vLMA=
+X-Google-Smtp-Source: APXvYqxE4NIyH0FkdpRmw+1I/jpCPC2PqJQ0htb5y8JgKDlczdQUhN+kVKDtAJ65cv4fAthi3gls5g==
+X-Received: by 2002:a05:620a:90d:: with SMTP id v13mr13066419qkv.332.1581545570921;
+        Wed, 12 Feb 2020 14:12:50 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::1:985a])
+        by smtp.gmail.com with ESMTPSA id r3sm288026qtc.85.2020.02.12.14.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2020 14:12:50 -0800 (PST)
+Date:   Wed, 12 Feb 2020 17:12:49 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     madhuparnabhowmik10@gmail.com
+Cc:     lizefan@huawei.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, frextrite@gmail.com
+Subject: Re: [PATCH] cgroup.c: Use built-in RCU list checking
+Message-ID: <20200212221249.GJ80993@mtj.thefacebook.com>
+References: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-it avoids blocking on synchronize_rcu() in kern_umount().
+On Sat, Jan 18, 2020 at 08:40:51AM +0530, madhuparnabhowmik10@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> 
+> list_for_each_entry_rcu has built-in RCU and lock checking.
+> Pass cond argument to list_for_each_entry_rcu() to silence
+> false lockdep warning when  CONFIG_PROVE_RCU_LIST is enabled
+> by default.
+> 
+> Even though the function css_next_child() already checks if
+> cgroup_mutex or rcu_read_lock() is held using
+> cgroup_assert_mutex_or_rcu_locked(), there is a need to pass
+> cond to list_for_each_entry_rcu() to avoid false positive
+> lockdep warning.
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-the code:
+Applied to cgroup/for-5.7.
 
-\#define _GNU_SOURCE
-\#include <sched.h>
-\#include <error.h>
-\#include <errno.h>
-\#include <stdlib.h>
-int main()
-{
-  int i;
-  for (i  =3D 0; i < 1000; i++)
-    if (unshare (CLONE_NEWIPC) < 0)
-      error (EXIT_FAILURE, errno, "unshare");
-}
+Thanks.
 
-gets from:
-
-	Command being timed: "./ipc-namespace"
-	User time (seconds): 0.00
-	System time (seconds): 0.06
-	Percent of CPU this job got: 0%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.05
-
-to:
-
-	Command being timed: "./ipc-namespace"
-	User time (seconds): 0.00
-	System time (seconds): 0.02
-	Percent of CPU this job got: 96%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.03
-
-Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
----
- include/linux/ipc_namespace.h |  2 ++
- ipc/namespace.c               | 17 +++++++++++++++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.=
-h
-index c309f43bde45..a06a78c67f19 100644
---- a/include/linux/ipc_namespace.h
-+++ b/include/linux/ipc_namespace.h
-@@ -68,6 +68,8 @@ struct ipc_namespace {
- 	struct user_namespace *user_ns;
- 	struct ucounts *ucounts;
-=20
-+	struct llist_node mnt_llist;
-+
- 	struct ns_common ns;
- } __randomize_layout;
-=20
-diff --git a/ipc/namespace.c b/ipc/namespace.c
-index b3ca1476ca51..37d27e1b807a 100644
---- a/ipc/namespace.c
-+++ b/ipc/namespace.c
-@@ -117,6 +117,7 @@ void free_ipcs(struct ipc_namespace *ns, struct ipc_i=
-ds *ids,
-=20
- static void free_ipc_ns(struct ipc_namespace *ns)
- {
-+	mq_put_mnt(ns);
- 	sem_exit_ns(ns);
- 	msg_exit_ns(ns);
- 	shm_exit_ns(ns);
-@@ -127,6 +128,17 @@ static void free_ipc_ns(struct ipc_namespace *ns)
- 	kfree(ns);
- }
-=20
-+static LLIST_HEAD(free_ipc_list);
-+static void free_ipc(struct work_struct *unused)
-+{
-+	struct llist_node *node =3D llist_del_all(&free_ipc_list);
-+	struct ipc_namespace *n, *t;
-+
-+	llist_for_each_entry_safe(n, t, node, mnt_llist)
-+		free_ipc_ns(n);
-+}
-+static DECLARE_WORK(free_ipc_work, free_ipc);
-+
- /*
-  * put_ipc_ns - drop a reference to an ipc namespace.
-  * @ns: the namespace to put
-@@ -148,8 +160,9 @@ void put_ipc_ns(struct ipc_namespace *ns)
- 	if (refcount_dec_and_lock(&ns->count, &mq_lock)) {
- 		mq_clear_sbinfo(ns);
- 		spin_unlock(&mq_lock);
--		mq_put_mnt(ns);
--		free_ipc_ns(ns);
-+
-+		if (llist_add(&ns->mnt_llist, &free_ipc_list))
-+			schedule_work(&free_ipc_work);
- 	}
- }
-=20
---=20
-2.24.1
-
+-- 
+tejun
