@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DBBFC35242
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B619C35242
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0B8242072D
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E8ADF2072D
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581724627;
-	bh=D6j1tXPphXZ5GajKLJ8/Pzq/9LkCUdeqMQ58e6TV40g=;
+	s=default; t=1581724631;
+	bh=KDgPHykD0We0jRCxEKxxG0D6uKEtDAatkVlJdEZQ+E4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=iyA30IffYW08VA/jYQUKvBkIQHD6UhzDO00w0GNPxKsXOwqTN2L0mlTiJqrHY9GLb
-	 zG7J8tnKjSMEUzy6Hx3mV0tC69+6IFPSpJXNRyWXN4fpivl+vhGZuC/F1uw21nGI4N
-	 Ik5Hbjdl4zV8lwA5XSgUWYxe0E44OQmVcCB9msAY=
+	b=GSv4mTEsheIEkQVQA8L/wlXEasPEjWWupzf958enNLTUhWWKDk4pkX+hO4lpLtIdX
+	 pH8KpgqGZhqmJmstk1EtTuzO8ZwsCdC7YHv8poOIl/kdicqeOc5t5QIe8Zyg4DYUWT
+	 4d6VprP0V+Try9sqhA8nXi/lJYKHZdjluQJk3F8k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgBNX5G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 18:57:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36934 "EHLO mail.kernel.org"
+        id S1728376AbgBNX5K (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 18:57:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726164AbgBNX5G (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 18:57:06 -0500
+        id S1726164AbgBNX5J (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 18:57:09 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B6F724650;
-        Fri, 14 Feb 2020 23:57:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF3592187F;
+        Fri, 14 Feb 2020 23:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581724625;
-        bh=D6j1tXPphXZ5GajKLJ8/Pzq/9LkCUdeqMQ58e6TV40g=;
+        s=default; t=1581724629;
+        bh=KDgPHykD0We0jRCxEKxxG0D6uKEtDAatkVlJdEZQ+E4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=geXbzF697MOrynFf1hxiWhU7GgEASH7kMrhakr3COK+Lw2TmEDfNZ5CBgCtQncZAR
-         REglkGnJx4DMD17AmoY1JgqmDlkdaFD3pd8ZU14jPfichFkL1WBrJZUG3lCdC705MF
-         E7MGX9ABi+10NHkX/30wlb62hFZuC6C6xAdLn+OQ=
+        b=HlNsfA8b6DlgGznU66LiekGj6yA3vPGuq7TUqdaLNt9lvcdXw9y7L8+yU+3RMYDWr
+         6dVEjyyRDTxgN7CDXtl0XAGIk0pH7iVpTMN9BxhbAJhTml4982rt9TMhmUb244ikNY
+         YJv9jg92+zuz962B683pKbzBN4TTwlrz9YDYvf6A=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/30] rcu: Add *_ONCE() to rcu_data ->rcu_forced_tick
-Date:   Fri, 14 Feb 2020 15:55:52 -0800
-Message-Id: <20200214235607.13749-15-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/30] rcu: Add *_ONCE() to rcu_node ->boost_kthread_status
+Date:   Fri, 14 Feb 2020 15:55:53 -0800
+Message-Id: <20200214235607.13749-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200214235536.GA13364@paulmck-ThinkPad-P72>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
@@ -60,46 +60,53 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_data structure's ->rcu_forced_tick field is read locklessly, so
-this commit adds WRITE_ONCE() to all updates and READ_ONCE() to all
-lockless reads.
+The rcu_node structure's ->boost_kthread_status field is accessed
+locklessly, so this commit causes all updates to use WRITE_ONCE() and
+all reads to use READ_ONCE().
 
 This data race was reported by KCSAN.  Not appropriate for backporting
 due to failure being unlikely.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/rcu/tree_plugin.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e851a12..be59a5d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -818,11 +818,12 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- 		incby = 1;
- 	} else if (tick_nohz_full_cpu(rdp->cpu) &&
- 		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
--		   READ_ONCE(rdp->rcu_urgent_qs) && !rdp->rcu_forced_tick) {
-+		   READ_ONCE(rdp->rcu_urgent_qs) &&
-+		   !READ_ONCE(rdp->rcu_forced_tick)) {
- 		raw_spin_lock_rcu_node(rdp->mynode);
- 		// Recheck under lock.
- 		if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
--			rdp->rcu_forced_tick = true;
-+			WRITE_ONCE(rdp->rcu_forced_tick, true);
- 			tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
- 		}
- 		raw_spin_unlock_rcu_node(rdp->mynode);
-@@ -899,7 +900,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
- 	WRITE_ONCE(rdp->rcu_need_heavy_qs, false);
- 	if (tick_nohz_full_cpu(rdp->cpu) && rdp->rcu_forced_tick) {
- 		tick_dep_clear_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
--		rdp->rcu_forced_tick = false;
-+		WRITE_ONCE(rdp->rcu_forced_tick, false);
- 	}
- }
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index b5ba148..0f8b714 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1032,18 +1032,18 @@ static int rcu_boost_kthread(void *arg)
  
+ 	trace_rcu_utilization(TPS("Start boost kthread@init"));
+ 	for (;;) {
+-		rnp->boost_kthread_status = RCU_KTHREAD_WAITING;
++		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_WAITING);
+ 		trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
+ 		rcu_wait(rnp->boost_tasks || rnp->exp_tasks);
+ 		trace_rcu_utilization(TPS("Start boost kthread@rcu_wait"));
+-		rnp->boost_kthread_status = RCU_KTHREAD_RUNNING;
++		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_RUNNING);
+ 		more2boost = rcu_boost(rnp);
+ 		if (more2boost)
+ 			spincnt++;
+ 		else
+ 			spincnt = 0;
+ 		if (spincnt > 10) {
+-			rnp->boost_kthread_status = RCU_KTHREAD_YIELDING;
++			WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_YIELDING);
+ 			trace_rcu_utilization(TPS("End boost kthread@rcu_yield"));
+ 			schedule_timeout_interruptible(2);
+ 			trace_rcu_utilization(TPS("Start boost kthread@rcu_yield"));
+@@ -1082,7 +1082,7 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
+ 			rnp->boost_tasks = rnp->gp_tasks;
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		rcu_wake_cond(rnp->boost_kthread_task,
+-			      rnp->boost_kthread_status);
++			      READ_ONCE(rnp->boost_kthread_status));
+ 	} else {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
 -- 
 2.9.5
 
