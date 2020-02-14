@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F25BBC3B1A1
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7BBFC3B1A1
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:39:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BF3B3246A1
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:32:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8E32E217F4
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581697969;
-	bh=6qBaMBa9O1quroqDXcJ/6oezinCncWm5hTqLJKbdXv8=;
+	s=default; t=1581698370;
+	bh=bLHsI1avykTVTZ++UlFPHsdaV/LJpmD+e/AgRBCQONI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rzNTEQ6KNSNw+CHBpfSXyqY09Pyp2uej7+8KIKQT3evpxsURaaMd/PoON9VEF3CG3
-	 fNRB9wAsBSyy9WiLEIB/fL9DB2WIbT5rpHeGeQrFsf2Udbqu+gdt0j0SrAeJBXV3pI
-	 xOd4vcUQKu8C/PefoykloYP8kebxXKBdvr2qyoIk=
+	b=psXaHzj3CCbN4y2Zyai4AyzB01lZ3CLIXvJayy1NT/7D+dYRfrhF/8HQK7aWuy1yw
+	 LarBK2psOZ30KdjEt+AKr20MuTjmg6R60yzKsdpgorx4vSXP1epIRenB4XE1dDEzJn
+	 LTsoDiwLvOyZKVDV9mzhdo8ihmqLvjkCP57ERH9k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406212AbgBNQcp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:32:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35650 "EHLO mail.kernel.org"
+        id S2389084AbgBNQja (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 11:39:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406190AbgBNQZo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:25:44 -0500
+        id S2405562AbgBNQXO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:23:14 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25632247C8;
-        Fri, 14 Feb 2020 16:25:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D41822476D;
+        Fri, 14 Feb 2020 16:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697543;
-        bh=6qBaMBa9O1quroqDXcJ/6oezinCncWm5hTqLJKbdXv8=;
+        s=default; t=1581697392;
+        bh=bLHsI1avykTVTZ++UlFPHsdaV/LJpmD+e/AgRBCQONI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fA1JGeI8c/kl1NbDpRuSLp/nKl111ACIXgkKHncTcpoW6N0AWj5skl/yb690DFcYR
-         WYCEI6yUHLTbHBeoImnY5xmo2HIqxSAsLFZICj0mCkzLkF+90c1pX4VHQ4PqB6E5ll
-         w9zVv4lXGbnI2oID8s5iIcmu15TLCSQuL8OpU1J4=
+        b=HeL6zuGYmMBuGehHUbwhQvhXAKsiTC8II+H9rlc8eVF2OQ/R40PU9koM16HXlf0Fk
+         s8m794uaB7vzDH0F20en6vp5ukhy2s4udl8kmY1LtzK1KCMtoHwG+SExzXq77Gp59W
+         VX9qRoA9kTamBUGnbEBaOaMGjsd8tzLK69xPYtgU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 063/100] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
-Date:   Fri, 14 Feb 2020 11:23:47 -0500
-Message-Id: <20200214162425.21071-63-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 087/141] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
+Date:   Fri, 14 Feb 2020 11:20:27 -0500
+Message-Id: <20200214162122.19794-87-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214162425.21071-1-sashal@kernel.org>
-References: <20200214162425.21071-1-sashal@kernel.org>
+In-Reply-To: <20200214162122.19794-1-sashal@kernel.org>
+References: <20200214162122.19794-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -152,10 +152,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index 444d2b1313bda..703928e4fd42d 100644
+index 87ff4f58a2f01..9e20bf7f46a20 100644
 --- a/include/linux/list_nulls.h
 +++ b/include/linux/list_nulls.h
-@@ -66,10 +66,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
+@@ -71,10 +71,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
  	struct hlist_nulls_node *first = h->first;
  
  	n->next = first;
@@ -168,7 +168,7 @@ index 444d2b1313bda..703928e4fd42d 100644
  }
  
  static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
-@@ -79,13 +79,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+@@ -84,13 +84,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
  
  	WRITE_ONCE(*pprev, next);
  	if (!is_a_nulls(next))
@@ -185,7 +185,7 @@ index 444d2b1313bda..703928e4fd42d 100644
  
  /**
 diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index 1c33dd7da4a7d..f35dc0a1d6ebc 100644
+index 106f4e0d7bd39..4d71e3687d1ed 100644
 --- a/include/linux/rculist_nulls.h
 +++ b/include/linux/rculist_nulls.h
 @@ -33,7 +33,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
@@ -217,8 +217,8 @@ index 1c33dd7da4a7d..f35dc0a1d6ebc 100644
 -		first->pprev = &n->next;
 +		WRITE_ONCE(first->pprev, &n->next);
  }
+ 
  /**
-  * hlist_nulls_for_each_entry_rcu - iterate over rcu list of given type
 -- 
 2.20.1
 
