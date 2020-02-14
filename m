@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03BCCC35242
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F16AC35242
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:56:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D07FB206B6
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:56:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BB5622314
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581724578;
-	bh=7CNvii9CnoOApIZ3tmG1GiK1b7u2u/vdaOrCJaOUH0M=;
+	s=default; t=1581724582;
+	bh=wSmco/Aj++Js7E9iUxiBfk6npGHQUrzPWCJ9ucxNPYk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=alD5rI17NTX+P82z72yY9qfL471VE7e/IdjcY1r7LQh5onshW9y2rHaYISPBHmym2
-	 GnFSICX7/WaoVWnXS056U35KSfUqIzJNpzitkhZefJIL4CiQSqSwd7EWrcZuBp/5/b
-	 SP3xR4KLQlQZwtLFc5bH870MA70jCTUeJZcBjaaQ=
+	b=aRkDhFtsw+MEL/7s2jm8TxE3CvPv8UzPo+6mFfDUWqshfTkcLDkui4Lk9cfdWjSRp
+	 4595a7Rc6UXiQBWpyaYrsEa4yhBiMFx9YAtcljmVSq8wX9oVs1/dlk3I1dSaeAKw1I
+	 yYo/3fpumSAvuSAxG5MmDr19/tSOsszgKkh8MUIk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgBNX4S (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 18:56:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36042 "EHLO mail.kernel.org"
+        id S1728417AbgBNX4W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 18:56:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727649AbgBNX4S (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 18:56:18 -0500
+        id S1727649AbgBNX4V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 18:56:21 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8A70217F4;
-        Fri, 14 Feb 2020 23:56:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B1C12081E;
+        Fri, 14 Feb 2020 23:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581724577;
-        bh=7CNvii9CnoOApIZ3tmG1GiK1b7u2u/vdaOrCJaOUH0M=;
+        s=default; t=1581724581;
+        bh=wSmco/Aj++Js7E9iUxiBfk6npGHQUrzPWCJ9ucxNPYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M34dHv1Zd/268Ul+GZqPtZR52ytj7JztwlSxiYUUBl6//8EuaCTbtxJX6KqstIkOw
-         S48mWMucx9/92ZGFIF4PUNflzSH/8cDB2yNb8IwWH5esC1b1MOzwSnFONkoSDbSUcn
-         Gas6RFJsr7SbgGb+21UVnyw1kmuHwhHpIWwt4W1w=
+        b=d5GrWpsIonBsJHDwWvFA/ze2sbSw4cyMnQ+jYm8U4/bf7W3zG2u44jiOUSLo3LMwo
+         MmDwNWG5NUi1dFAPN5ze57TQqQoTQZmn1tbpvLDBBosBJGes2WTVUwbE7pP/0/L7p1
+         7zh6yfGrjKNP7upshDJP4jaCum1pSsbVD4UJ0/OE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/30] rcu: Warn on for_each_leaf_node_cpu_mask() from non-leaf
-Date:   Fri, 14 Feb 2020 15:55:39 -0800
-Message-Id: <20200214235607.13749-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/30] rcu: Fix exp_funnel_lock()/rcu_exp_wait_wake() datarace
+Date:   Fri, 14 Feb 2020 15:55:40 -0800
+Message-Id: <20200214235607.13749-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200214235536.GA13364@paulmck-ThinkPad-P72>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
@@ -60,43 +60,31 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The for_each_leaf_node_cpu_mask() and for_each_leaf_node_possible_cpu()
-macros must be invoked only on leaf rcu_node structures.  Failing to
-abide by this restriction can result in infinite loops on systems with
-more than 64 CPUs (or for more than 32 CPUs on 32-bit systems).  This
-commit therefore adds WARN_ON_ONCE() calls to make misuse of these two
-macros easier to debug.
+The rcu_node structure's ->exp_seq_rq field is accessed locklessly, so
+updates must use WRITE_ONCE().  This commit therefore adds the needed
+WRITE_ONCE() invocation where it was missed.
 
-Reported-by: Qian Cai <cai@lca.pw>
+This data race was reported by KCSAN.  Not appropriate for backporting
+due to failure being unlikely.
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_exp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 05f936e..f6ce173 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -325,7 +325,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
-  * Iterate over all possible CPUs in a leaf RCU node.
-  */
- #define for_each_leaf_node_possible_cpu(rnp, cpu) \
--	for ((cpu) = cpumask_next((rnp)->grplo - 1, cpu_possible_mask); \
-+	for (WARN_ON_ONCE(!rcu_is_leaf_node(rnp)), \
-+	     (cpu) = cpumask_next((rnp)->grplo - 1, cpu_possible_mask); \
- 	     (cpu) <= rnp->grphi; \
- 	     (cpu) = cpumask_next((cpu), cpu_possible_mask))
- 
-@@ -335,7 +336,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
- #define rcu_find_next_bit(rnp, cpu, mask) \
- 	((rnp)->grplo + find_next_bit(&(mask), BITS_PER_LONG, (cpu)))
- #define for_each_leaf_node_cpu_mask(rnp, cpu, mask) \
--	for ((cpu) = rcu_find_next_bit((rnp), 0, (mask)); \
-+	for (WARN_ON_ONCE(!rcu_is_leaf_node(rnp)), \
-+	     (cpu) = rcu_find_next_bit((rnp), 0, (mask)); \
- 	     (cpu) <= rnp->grphi; \
- 	     (cpu) = rcu_find_next_bit((rnp), (cpu) + 1 - (rnp->grplo), (mask)))
- 
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index dcbd757..d7e0484 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -589,7 +589,7 @@ static void rcu_exp_wait_wake(unsigned long s)
+ 			spin_lock(&rnp->exp_lock);
+ 			/* Recheck, avoid hang in case someone just arrived. */
+ 			if (ULONG_CMP_LT(rnp->exp_seq_rq, s))
+-				rnp->exp_seq_rq = s;
++				WRITE_ONCE(rnp->exp_seq_rq, s);
+ 			spin_unlock(&rnp->exp_lock);
+ 		}
+ 		smp_mb(); /* All above changes before wakeup. */
 -- 
 2.9.5
 
