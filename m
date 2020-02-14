@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC599C35242
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23083C35242
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8C4BB222C4
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EFEE5222C4
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581724638;
-	bh=/CZ6brnT2OOOiZ54KLSqe6C3gg9LefVC3f18wiX3jVw=;
+	s=default; t=1581724642;
+	bh=kkWVvzcfYyb6s78K6hN+gaYRTSKBYtihy3ywc/PWw0I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=EmVrdvMegP9gFwkW5guRYi0/DBNfn4+KxUazWFTuq2gwxYon26lchQgvLC9RT0b7Q
-	 hHHeB3cMfPlaSaoNWQGjspMcmyWNO7GOmeKJEaKZYAKu60RREMOIzVaMoQYmOt7Vgm
-	 YQj6tNhqcAmktK7HilxcLvj/QRZQKSsjFh6WIvU8=
+	b=lyUVi+sZIkRGv2z6tG00r/35wHLC1Dl+gVS/FxsrAvaN9tIWSs3Bp16T/P54vhrnr
+	 Il9n+eSFTP0tA90BBBjCi27H9PBeuP7LQNY92Q0Yr//rNZX1QDL+Ohs80Z9mtbwITV
+	 k9+4Nr/SRPVDwUabZ1FKq7I4w53mkJv1r84JcvOY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgBNX5S (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 18:57:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37114 "EHLO mail.kernel.org"
+        id S1728080AbgBNX5V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 18:57:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726164AbgBNX5R (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 18:57:17 -0500
+        id S1728202AbgBNX5U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 18:57:20 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 321892081E;
-        Fri, 14 Feb 2020 23:57:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD0012072D;
+        Fri, 14 Feb 2020 23:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581724636;
-        bh=/CZ6brnT2OOOiZ54KLSqe6C3gg9LefVC3f18wiX3jVw=;
+        s=default; t=1581724640;
+        bh=kkWVvzcfYyb6s78K6hN+gaYRTSKBYtihy3ywc/PWw0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YJwiL7dlF/ZIcOiJkKqclOfHkrOEW+ySNVvzk7WA8hr6qSlJghUSaon2yZ2WAH5Kr
-         9c4GFRTbj7LruKv/0p81Yqkf8S5w9ZL133mjATpvnX2TAocXSfFDtelBhLYrMysJNS
-         f5k8XJtbnOsQaxRd5Cqqw2P4JSAYcKq035meqDqo=
+        b=eWLuvl+84o+an7+qt+WDrebPj8KayftX7SorxGevPy685saazQGtkr3lEsh60Xi9Y
+         W9vVX2noUO8yStBcG+v4Gyr5NMyqyS6pabjj57WlALznGSZZpmlffESBiJ8IJ/t6iJ
+         g9bnZc/jgLLoO/CmqfnyiWR3HA0g0hNTzq3Mh77E=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 18/30] rcu: Remove dead code from rcu_segcblist_insert_pend_cbs()
-Date:   Fri, 14 Feb 2020 15:55:55 -0800
-Message-Id: <20200214235607.13749-18-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 19/30] rcu: Add WRITE_ONCE() to rcu_state ->gp_start
+Date:   Fri, 14 Feb 2020 15:55:56 -0800
+Message-Id: <20200214235607.13749-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200214235536.GA13364@paulmck-ThinkPad-P72>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
@@ -60,30 +60,31 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_segcblist_insert_pend_cbs() function currently (partially)
-initializes the rcu_cblist that it pulls callbacks from.  However, all
-the resulting stores are dead because all callers pass in the address of
-an on-stack cblist that is not used afterwards.  This commit therefore
-removes this pointless initialization.
+The rcu_state structure's ->gp_start field is read locklessly, so this
+commit adds the WRITE_ONCE() to an update in order to provide proper
+documentation and READ_ONCE()/WRITE_ONCE() pairing.
+
+This data race was reported by KCSAN.  Not appropriate for backporting
+due to failure being unlikely.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu_segcblist.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/tree_stall.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 426a472..9a0f661 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -381,8 +381,6 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
- 		return; /* Nothing to do. */
- 	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
- 	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
--	rclp->head = NULL;
--	rclp->tail = &rclp->head;
- }
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 3275f27..56df88e 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -102,7 +102,7 @@ static void record_gp_stall_check_time(void)
+ 	unsigned long j = jiffies;
+ 	unsigned long j1;
  
- /*
+-	rcu_state.gp_start = j;
++	WRITE_ONCE(rcu_state.gp_start, j);
+ 	j1 = rcu_jiffies_till_stall_check();
+ 	/* Record ->gp_start before ->jiffies_stall. */
+ 	smp_store_release(&rcu_state.jiffies_stall, j + j1); /* ^^^ */
 -- 
 2.9.5
 
