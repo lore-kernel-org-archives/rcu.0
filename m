@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B619C35242
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C35E6C35242
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E8ADF2072D
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9A6DA2072D
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581724631;
-	bh=KDgPHykD0We0jRCxEKxxG0D6uKEtDAatkVlJdEZQ+E4=;
+	s=default; t=1581724634;
+	bh=76npuQ/bNHTIDoov2SsCuPriR8m3tU1YnXAn5Ggth8M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GSv4mTEsheIEkQVQA8L/wlXEasPEjWWupzf958enNLTUhWWKDk4pkX+hO4lpLtIdX
-	 pH8KpgqGZhqmJmstk1EtTuzO8ZwsCdC7YHv8poOIl/kdicqeOc5t5QIe8Zyg4DYUWT
-	 4d6VprP0V+Try9sqhA8nXi/lJYKHZdjluQJk3F8k=
+	b=OUAm0Ab+ULr+7eK8V4SBjprwXKoOAAdCQ9BRpxrcy03qwVxXOnEUjgDB1YSMbZPtz
+	 /pQVlFTa5CGknZ8eaCj+5JHuody0br/w1klLFDxUeErvyJAPtRR8mngv5s1NFyM7Z+
+	 tv6YUn5lBbXOQQxUoK5zaVtd70BhZkUMEBQfa224=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgBNX5K (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 18:57:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
+        id S1728150AbgBNX5O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 18:57:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726164AbgBNX5J (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 18:57:09 -0500
+        id S1726164AbgBNX5N (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 18:57:13 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF3592187F;
-        Fri, 14 Feb 2020 23:57:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95F02206B6;
+        Fri, 14 Feb 2020 23:57:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581724629;
-        bh=KDgPHykD0We0jRCxEKxxG0D6uKEtDAatkVlJdEZQ+E4=;
+        s=default; t=1581724632;
+        bh=76npuQ/bNHTIDoov2SsCuPriR8m3tU1YnXAn5Ggth8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlNsfA8b6DlgGznU66LiekGj6yA3vPGuq7TUqdaLNt9lvcdXw9y7L8+yU+3RMYDWr
-         6dVEjyyRDTxgN7CDXtl0XAGIk0pH7iVpTMN9BxhbAJhTml4982rt9TMhmUb244ikNY
-         YJv9jg92+zuz962B683pKbzBN4TTwlrz9YDYvf6A=
+        b=ZHSg9ZuDm3oOo8mpFQh7LN3Da1xByBIsp4Bn4jxtXh1AsT1lC1xf659Y15qd09MME
+         9VArIdcgR9gSvNhTJV3V7I6QMrv+1IPIM4MgXAJ2480dL1yLU8Xytpg1BbXU5xiIFY
+         2TJml5Ux26fmzzNjSM7xhwUs3Dn4FDuKqLhqncZE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 16/30] rcu: Add *_ONCE() to rcu_node ->boost_kthread_status
-Date:   Fri, 14 Feb 2020 15:55:53 -0800
-Message-Id: <20200214235607.13749-16-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 17/30] timer: Use hlist_unhashed_lockless() in timer_pending()
+Date:   Fri, 14 Feb 2020 15:55:54 -0800
+Message-Id: <20200214235607.13749-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200214235536.GA13364@paulmck-ThinkPad-P72>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
@@ -58,55 +58,112 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
 
-The rcu_node structure's ->boost_kthread_status field is accessed
-locklessly, so this commit causes all updates to use WRITE_ONCE() and
-all reads to use READ_ONCE().
+The timer_pending() function is mostly used in lockless contexts, so
+Without proper annotations, KCSAN might detect a data-race [1].
 
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely.
+Using hlist_unhashed_lockless() instead of hand-coding it seems
+appropriate (as suggested by Paul E. McKenney).
 
+[1]
+
+BUG: KCSAN: data-race in del_timer / detach_if_pending
+
+write to 0xffff88808697d870 of 8 bytes by task 10 on cpu 0:
+ __hlist_del include/linux/list.h:764 [inline]
+ detach_timer kernel/time/timer.c:815 [inline]
+ detach_if_pending+0xcd/0x2d0 kernel/time/timer.c:832
+ try_to_del_timer_sync+0x60/0xb0 kernel/time/timer.c:1226
+ del_timer_sync+0x6b/0xa0 kernel/time/timer.c:1365
+ schedule_timeout+0x2d2/0x6e0 kernel/time/timer.c:1896
+ rcu_gp_fqs_loop+0x37c/0x580 kernel/rcu/tree.c:1639
+ rcu_gp_kthread+0x143/0x230 kernel/rcu/tree.c:1799
+ kthread+0x1d4/0x200 drivers/block/aoe/aoecmd.c:1253
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:352
+
+read to 0xffff88808697d870 of 8 bytes by task 12060 on cpu 1:
+ del_timer+0x3b/0xb0 kernel/time/timer.c:1198
+ sk_stop_timer+0x25/0x60 net/core/sock.c:2845
+ inet_csk_clear_xmit_timers+0x69/0xa0 net/ipv4/inet_connection_sock.c:523
+ tcp_clear_xmit_timers include/net/tcp.h:606 [inline]
+ tcp_v4_destroy_sock+0xa3/0x3f0 net/ipv4/tcp_ipv4.c:2096
+ inet_csk_destroy_sock+0xf4/0x250 net/ipv4/inet_connection_sock.c:836
+ tcp_close+0x6f3/0x970 net/ipv4/tcp.c:2497
+ inet_release+0x86/0x100 net/ipv4/af_inet.c:427
+ __sock_release+0x85/0x160 net/socket.c:590
+ sock_close+0x24/0x30 net/socket.c:1268
+ __fput+0x1e1/0x520 fs/file_table.c:280
+ ____fput+0x1f/0x30 fs/file_table.c:313
+ task_work_run+0xf6/0x130 kernel/task_work.c:113
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_usermode_loop+0x2b4/0x2c0 arch/x86/entry/common.c:163
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 12060 Comm: syz-executor.5 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+[ paulmck: Pulled in Eric's later amendments. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/timer.h | 2 +-
+ kernel/time/timer.c   | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index b5ba148..0f8b714 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1032,18 +1032,18 @@ static int rcu_boost_kthread(void *arg)
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index 1e6650e..0dc19a8 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -164,7 +164,7 @@ static inline void destroy_timer_on_stack(struct timer_list *timer) { }
+  */
+ static inline int timer_pending(const struct timer_list * timer)
+ {
+-	return timer->entry.pprev != NULL;
++	return !hlist_unhashed_lockless(&timer->entry);
+ }
  
- 	trace_rcu_utilization(TPS("Start boost kthread@init"));
- 	for (;;) {
--		rnp->boost_kthread_status = RCU_KTHREAD_WAITING;
-+		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_WAITING);
- 		trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
- 		rcu_wait(rnp->boost_tasks || rnp->exp_tasks);
- 		trace_rcu_utilization(TPS("Start boost kthread@rcu_wait"));
--		rnp->boost_kthread_status = RCU_KTHREAD_RUNNING;
-+		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_RUNNING);
- 		more2boost = rcu_boost(rnp);
- 		if (more2boost)
- 			spincnt++;
- 		else
- 			spincnt = 0;
- 		if (spincnt > 10) {
--			rnp->boost_kthread_status = RCU_KTHREAD_YIELDING;
-+			WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_YIELDING);
- 			trace_rcu_utilization(TPS("End boost kthread@rcu_yield"));
- 			schedule_timeout_interruptible(2);
- 			trace_rcu_utilization(TPS("Start boost kthread@rcu_yield"));
-@@ -1082,7 +1082,7 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 			rnp->boost_tasks = rnp->gp_tasks;
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		rcu_wake_cond(rnp->boost_kthread_task,
--			      rnp->boost_kthread_status);
-+			      READ_ONCE(rnp->boost_kthread_status));
- 	} else {
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
+ extern void add_timer_on(struct timer_list *timer, int cpu);
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 4820823..568564a 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -944,6 +944,7 @@ static struct timer_base *lock_timer_base(struct timer_list *timer,
+ 
+ #define MOD_TIMER_PENDING_ONLY		0x01
+ #define MOD_TIMER_REDUCE		0x02
++#define MOD_TIMER_NOTPENDING		0x04
+ 
+ static inline int
+ __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int options)
+@@ -960,7 +961,7 @@ __mod_timer(struct timer_list *timer, unsigned long expires, unsigned int option
+ 	 * the timer is re-modified to have the same timeout or ends up in the
+ 	 * same array bucket then just return:
+ 	 */
+-	if (timer_pending(timer)) {
++	if (!(options & MOD_TIMER_NOTPENDING) && timer_pending(timer)) {
+ 		/*
+ 		 * The downside of this optimization is that it can result in
+ 		 * larger granularity than you would get from adding a new
+@@ -1133,7 +1134,7 @@ EXPORT_SYMBOL(timer_reduce);
+ void add_timer(struct timer_list *timer)
+ {
+ 	BUG_ON(timer_pending(timer));
+-	mod_timer(timer, timer->expires);
++	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
+ }
+ EXPORT_SYMBOL(add_timer);
+ 
+@@ -1891,7 +1892,7 @@ signed long __sched schedule_timeout(signed long timeout)
+ 
+ 	timer.task = current;
+ 	timer_setup_on_stack(&timer.timer, process_timeout, 0);
+-	__mod_timer(&timer.timer, expire, 0);
++	__mod_timer(&timer.timer, expire, MOD_TIMER_NOTPENDING);
+ 	schedule();
+ 	del_singleshot_timer_sync(&timer.timer);
+ 
 -- 
 2.9.5
 
