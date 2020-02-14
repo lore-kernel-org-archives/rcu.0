@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C89BC35242
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF953C35242
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:58:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 65D98206B6
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:57:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7F209206B6
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 23:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581724678;
-	bh=EWaEpSMKaY0FCAqVa0hpnXDzFDnfMqFMXfz1EdwE0R4=;
+	s=default; t=1581724682;
+	bh=n8jIhHNs71ogHuL4lu8VxGWfjDBY6s7fdmQ+qRK6opY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=wm8IG2HBdt4IHIjX2tIDEbutg52J9529kVhsHaGZ6EeiaRzcCaILNYD3iXRH9egzp
-	 KcIwBfK2CKjggDwXBcptTcGuIalaH0HvR5iH4YxA+HAzrW3gf27r/2dCTO6lhEjfsE
-	 NIVnTa9R9A2LC7C25qyVCY2veuQ0gEYGSrHcwH2A=
+	b=MKtcpf0smAexYYDsf3r1hn542hfrLg0Mqym2v0toSUesBMrYlAna+5rcxuxL+KLe9
+	 oNg+1xjSLUjWTtlO/hOCYqdRkyu58K3M0dBR9C+16TURyfdjQXRL6gsZHDOylAQ7Yy
+	 mujY5vQCsozYJwWCL/4xrbFvWp03/V+8hyb70iwY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbgBNX56 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 18:57:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37838 "EHLO mail.kernel.org"
+        id S1728713AbgBNX6C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 18:58:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727649AbgBNX55 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 18:57:57 -0500
+        id S1728436AbgBNX6B (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 18:58:01 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 777ED24676;
-        Fri, 14 Feb 2020 23:57:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1102C24654;
+        Fri, 14 Feb 2020 23:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581724676;
-        bh=EWaEpSMKaY0FCAqVa0hpnXDzFDnfMqFMXfz1EdwE0R4=;
+        s=default; t=1581724680;
+        bh=n8jIhHNs71ogHuL4lu8VxGWfjDBY6s7fdmQ+qRK6opY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPI8fmD+UmAheY24TdvCflfiJfXIxVjtiUyOUvoE5pO+TuInk4DA/boJOejILpv/o
-         alOfzFlEBZmhD2J/BBr9yDq2EJKHtMug13ew8dM9A3eiMXRuhE8uYZAfH8YlHXmenB
-         OUPcReaE8hPpAPWUp9sYfvmIDz0ITrm8uZPzbDrQ=
+        b=Grw04+HBpcBkoeQWPGjA1lwrrQ8582oJq0s+6G6PDcqKe2RGhQ1qdgonBGk1lifjU
+         PxdzzqXIM95tIMxYj6p2B5Y1kI+tP9JlVqfrjNlgTqkQbD5qGhXAtKyLYlewAruirc
+         KjdwiLYWszT2hFlmilVGEk15K58eTmPm56zmL9Tk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 29/30] rcu: Mark rcu_state.gp_seq to detect concurrent writes
-Date:   Fri, 14 Feb 2020 15:56:06 -0800
-Message-Id: <20200214235607.13749-29-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "# 5 . 5 . x" <stable@vger.kernel.org>
+Subject: [PATCH tip/core/rcu 30/30] rcu: Make rcu_barrier() account for offline no-CBs CPUs
+Date:   Fri, 14 Feb 2020 15:56:07 -0800
+Message-Id: <20200214235607.13749-30-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200214235536.GA13364@paulmck-ThinkPad-P72>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
@@ -60,109 +61,116 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_state structure's gp_seq field is only to be modified by the RCU
-grace-period kthread, which is single-threaded.  This commit therefore
-enlists KCSAN's help in enforcing this restriction.
+Currently, rcu_barrier() ignores offline CPUs,  However, it is possible
+for an offline no-CBs CPU to have callbacks queued, and rcu_barrier()
+must wait for those callbacks.  This commit therefore makes rcu_barrier()
+directly invoke the rcu_barrier_func() with interrupts disabled for such
+CPUs.  This requires passing the CPU number into this function so that
+it can entrain the rcu_barrier() callback onto the correct CPU's callback
+list, given that the code must instead execute on the current CPU.
 
+While in the area, this commit fixes a bug where the first CPU's callback
+might have been invoked before rcu_segcblist_entrain() returned, which
+would also result in an early wakeup.
+
+Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.5.x
 ---
- kernel/rcu/tree.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ include/trace/events/rcu.h |  1 +
+ kernel/rcu/tree.c          | 32 ++++++++++++++++++++------------
+ 2 files changed, 21 insertions(+), 12 deletions(-)
 
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 5e49b06..d56d54c 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -712,6 +712,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
+  *	"Begin": rcu_barrier() started.
+  *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
+  *	"Inc1": rcu_barrier() piggyback check counter incremented.
++ *	"OfflineNoCBQ": rcu_barrier() found offline no-CBs CPU with callbacks.
+  *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
+  *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
+  *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3a60a160..d15041f 100644
+index d15041f..160643e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1209,7 +1209,7 @@ static bool rcu_start_this_gp(struct rcu_node *rnp_start, struct rcu_data *rdp,
- 		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("NoGPkthread"));
- 		goto unlock_out;
- 	}
--	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rcu_state.gp_seq), TPS("newreq"));
-+	trace_rcu_grace_period(rcu_state.name, data_race(rcu_state.gp_seq), TPS("newreq"));
- 	ret = true;  /* Caller must wake GP kthread. */
- unlock_out:
- 	/* Push furthest requested GP to leaf node and rcu_data structure. */
-@@ -1494,6 +1494,7 @@ static bool rcu_gp_init(void)
- 	record_gp_stall_check_time();
- 	/* Record GP times before starting GP, hence rcu_seq_start(). */
- 	rcu_seq_start(&rcu_state.gp_seq);
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
- 	raw_spin_unlock_irq_rcu_node(rnp);
+@@ -3098,9 +3098,10 @@ static void rcu_barrier_callback(struct rcu_head *rhp)
+ /*
+  * Called with preemption disabled, and from cross-cpu IRQ context.
+  */
+-static void rcu_barrier_func(void *unused)
++static void rcu_barrier_func(void *cpu_in)
+ {
+-	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
++	uintptr_t cpu = (uintptr_t)cpu_in;
++	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
  
-@@ -1656,8 +1657,7 @@ static void rcu_gp_fqs_loop(void)
- 			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
- 				   jiffies + (j ? 3 * j : 2));
- 		}
--		trace_rcu_grace_period(rcu_state.name,
--				       READ_ONCE(rcu_state.gp_seq),
-+		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 				       TPS("fqswait"));
- 		rcu_state.gp_state = RCU_GP_WAIT_FQS;
- 		ret = swait_event_idle_timeout_exclusive(
-@@ -1671,13 +1671,11 @@ static void rcu_gp_fqs_loop(void)
- 		/* If time for quiescent-state forcing, do it. */
- 		if (ULONG_CMP_GE(jiffies, rcu_state.jiffies_force_qs) ||
- 		    (gf & RCU_GP_FLAG_FQS)) {
--			trace_rcu_grace_period(rcu_state.name,
--					       READ_ONCE(rcu_state.gp_seq),
-+			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsstart"));
- 			rcu_gp_fqs(first_gp_fqs);
- 			first_gp_fqs = false;
--			trace_rcu_grace_period(rcu_state.name,
--					       READ_ONCE(rcu_state.gp_seq),
-+			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsend"));
- 			cond_resched_tasks_rcu_qs();
- 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
-@@ -1688,8 +1686,7 @@ static void rcu_gp_fqs_loop(void)
- 			cond_resched_tasks_rcu_qs();
- 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 			WARN_ON(signal_pending(current));
--			trace_rcu_grace_period(rcu_state.name,
--					       READ_ONCE(rcu_state.gp_seq),
-+			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqswaitsig"));
- 			ret = 1; /* Keep old FQS timing. */
- 			j = jiffies;
-@@ -1766,6 +1763,7 @@ static void rcu_gp_cleanup(void)
- 	/* Declare grace period done, trace first to use old GP number. */
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
- 	rcu_seq_end(&rcu_state.gp_seq);
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
- 	rcu_state.gp_state = RCU_GP_IDLE;
- 	/* Check for GP requests since above loop. */
- 	rdp = this_cpu_ptr(&rcu_data);
-@@ -1781,7 +1779,7 @@ static void rcu_gp_cleanup(void)
- 		WRITE_ONCE(rcu_state.gp_flags, RCU_GP_FLAG_INIT);
- 		WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
- 		trace_rcu_grace_period(rcu_state.name,
--				       READ_ONCE(rcu_state.gp_seq),
-+				       rcu_state.gp_seq,
- 				       TPS("newreq"));
- 	} else {
- 		WRITE_ONCE(rcu_state.gp_flags,
-@@ -1800,8 +1798,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
+ 	rcu_barrier_trace(TPS("IRQ"), -1, rcu_state.barrier_sequence);
+ 	rdp->barrier_head.func = rcu_barrier_callback;
+@@ -3127,7 +3128,7 @@ static void rcu_barrier_func(void *unused)
+  */
+ void rcu_barrier(void)
+ {
+-	int cpu;
++	uintptr_t cpu;
+ 	struct rcu_data *rdp;
+ 	unsigned long s = rcu_seq_snap(&rcu_state.barrier_sequence);
  
- 		/* Handle grace-period start. */
- 		for (;;) {
--			trace_rcu_grace_period(rcu_state.name,
--					       READ_ONCE(rcu_state.gp_seq),
-+			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("reqwait"));
- 			rcu_state.gp_state = RCU_GP_WAIT_GPS;
- 			swait_event_idle_exclusive(rcu_state.gp_wq,
-@@ -1814,8 +1811,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
- 			cond_resched_tasks_rcu_qs();
- 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 			WARN_ON(signal_pending(current));
--			trace_rcu_grace_period(rcu_state.name,
--					       READ_ONCE(rcu_state.gp_seq),
-+			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("reqwaitsig"));
- 		}
+@@ -3150,13 +3151,14 @@ void rcu_barrier(void)
+ 	rcu_barrier_trace(TPS("Inc1"), -1, rcu_state.barrier_sequence);
  
+ 	/*
+-	 * Initialize the count to one rather than to zero in order to
+-	 * avoid a too-soon return to zero in case of a short grace period
+-	 * (or preemption of this task).  Exclude CPU-hotplug operations
+-	 * to ensure that no offline CPU has callbacks queued.
++	 * Initialize the count to two rather than to zero in order
++	 * to avoid a too-soon return to zero in case of an immediate
++	 * invocation of the just-enqueued callback (or preemption of
++	 * this task).  Exclude CPU-hotplug operations to ensure that no
++	 * offline non-offloaded CPU has callbacks queued.
+ 	 */
+ 	init_completion(&rcu_state.barrier_completion);
+-	atomic_set(&rcu_state.barrier_cpu_count, 1);
++	atomic_set(&rcu_state.barrier_cpu_count, 2);
+ 	get_online_cpus();
+ 
+ 	/*
+@@ -3166,13 +3168,19 @@ void rcu_barrier(void)
+ 	 */
+ 	for_each_possible_cpu(cpu) {
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+-		if (!cpu_online(cpu) &&
++		if (cpu_is_offline(cpu) &&
+ 		    !rcu_segcblist_is_offloaded(&rdp->cblist))
+ 			continue;
+-		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
++		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+ 			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+ 					  rcu_state.barrier_sequence);
+-			smp_call_function_single(cpu, rcu_barrier_func, NULL, 1);
++			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
++		} else if (cpu_is_offline(cpu)) {
++			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
++					  rcu_state.barrier_sequence);
++			local_irq_disable();
++			rcu_barrier_func((void *)cpu);
++			local_irq_enable();
+ 		} else {
+ 			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+ 					  rcu_state.barrier_sequence);
+@@ -3184,7 +3192,7 @@ void rcu_barrier(void)
+ 	 * Now that we have an rcu_barrier_callback() callback on each
+ 	 * CPU, and thus each counted, remove the initial count.
+ 	 */
+-	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count))
++	if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
+ 		complete(&rcu_state.barrier_completion);
+ 
+ 	/* Wait for all rcu_barrier_callback() callbacks to be invoked. */
 -- 
 2.9.5
 
