@@ -4,48 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C980C2BA83
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72B5DC3B1AF
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:46:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D214224650
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:29:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 469B1206D7
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581701371;
-	bh=cldcMUZ+n6GGb4CcpB3xjq3wxG6GbSXzVfAQyHf4vHg=;
+	s=default; t=1581702418;
+	bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ieyxcKBo1h9CbjFSirsXKBzswASccAkvbKAy0fnBufd2TShhHB/iYpUZ4eFmACmB/
-	 8mJCjEWFsyG4pbHH+493tqUPwxSuVruGM0Gk5oUfaW/t9gFs8U2A4ENO6fVXJJWoMg
-	 3bWNs/7YARH13uRITfIjL/poLOKiAFawU+4pUdw0=
+	b=q7BodRsFAfmTXOmJGe9HIznEqhexf/FZjg9FtWYCuPoyUZWAlUXUvTHxH/Yoru9el
+	 k5eekW813Wei/ikFT1GDrqnjy2TeLcBfhz5QDeau9dWJfelfxN/AS2PCTIB1R0q97D
+	 PbRUQv8SLCsmgJSc+R147vG5nL3rR2y1Q8wESQNk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390364AbgBNR3b (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 12:29:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
+        id S2389256AbgBNRqy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 12:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390797AbgBNQHw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:07:52 -0500
+        id S2389236AbgBNQCE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:02:04 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16F9924687;
-        Fri, 14 Feb 2020 16:07:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A1132067D;
+        Fri, 14 Feb 2020 16:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696471;
-        bh=cldcMUZ+n6GGb4CcpB3xjq3wxG6GbSXzVfAQyHf4vHg=;
+        s=default; t=1581696123;
+        bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uL/K7Ij2fiHgK9HzZH61B6+MCr/EYqQ2rA9rDymLMQRGmCdQ1biOl4nO9vMxVFeHM
-         uwrCSefy7FbaEv+p/elxcshYIQiEl6OEp4QDj8LG88cpKCNOIsiwJmgilX1CTRBSl2
-         dbmgnEOIT447/6+vBeQStEb+HB2pQp08gfztit7s=
+        b=gTOsBgnFchYyTs3dreKaIfnAKJvQe/Y3D0IP5qRy3DKknrt1d/LOSWuDZ3JK+Y/uw
+         Gt7FTjueK4+0JF0G2VX7Fwil8pixOJgMCSQH4tMCvrdj2axyFZNm2Q7z4b+jqTfqnH
+         rGzOmJMafKx+iHlvlJnUVeZpdP8ApTORqIZBlmpI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 280/459] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
-Date:   Fri, 14 Feb 2020 10:58:50 -0500
-Message-Id: <20200214160149.11681-280-sashal@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 010/459] rcu: Fix data-race due to atomic_t copy-by-value
+Date:   Fri, 14 Feb 2020 10:54:20 -0500
+Message-Id: <20200214160149.11681-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
@@ -58,167 +64,130 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Marco Elver <elver@google.com>
 
-[ Upstream commit 860c8802ace14c646864795e057349c9fb2d60ad ]
+[ Upstream commit 6cf539a87a61a4fbc43f625267dbcbcf283872ed ]
 
-Eric Dumazet supplied a KCSAN report of a bug that forces use
-of hlist_unhashed_lockless() from sk_unhashed():
+This fixes a data-race where `atomic_t dynticks` is copied by value. The
+copy is performed non-atomically, resulting in a data-race if `dynticks`
+is updated concurrently.
 
-------------------------------------------------------------------------
+This data-race was found with KCSAN:
+==================================================================
+BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
 
-BUG: KCSAN: data-race in inet_unhash / inet_unhash
+write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
+ atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
+ rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
+ dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
+ force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
+ rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
+ rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
+ rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
+ kthread+0x1b5/0x200 kernel/kthread.c:255
+ <snip>
 
-write to 0xffff8880a69a0170 of 8 bytes by interrupt on cpu 1:
- __hlist_nulls_del include/linux/list_nulls.h:88 [inline]
- hlist_nulls_del_init_rcu include/linux/rculist_nulls.h:36 [inline]
- __sk_nulls_del_node_init_rcu include/net/sock.h:676 [inline]
- inet_unhash+0x38f/0x4a0 net/ipv4/inet_hashtables.c:612
- tcp_set_state+0xfa/0x3e0 net/ipv4/tcp.c:2249
- tcp_done+0x93/0x1e0 net/ipv4/tcp.c:3854
- tcp_write_err+0x7e/0xc0 net/ipv4/tcp_timer.c:56
- tcp_retransmit_timer+0x9b8/0x16d0 net/ipv4/tcp_timer.c:479
- tcp_write_timer_handler+0x42d/0x510 net/ipv4/tcp_timer.c:599
- tcp_write_timer+0xd1/0xf0 net/ipv4/tcp_timer.c:619
- call_timer_fn+0x5f/0x2f0 kernel/time/timer.c:1404
- expire_timers kernel/time/timer.c:1449 [inline]
- __run_timers kernel/time/timer.c:1773 [inline]
- __run_timers kernel/time/timer.c:1740 [inline]
- run_timer_softirq+0xc0c/0xcd0 kernel/time/timer.c:1786
- __do_softirq+0x115/0x33f kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:373 [inline]
- irq_exit+0xbb/0xe0 kernel/softirq.c:413
- exiting_irq arch/x86/include/asm/apic.h:536 [inline]
- smp_apic_timer_interrupt+0xe6/0x280 arch/x86/kernel/apic/apic.c:1137
- apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:830
- native_safe_halt+0xe/0x10 arch/x86/kernel/paravirt.c:71
- arch_cpu_idle+0x1f/0x30 arch/x86/kernel/process.c:571
- default_idle_call+0x1e/0x40 kernel/sched/idle.c:94
- cpuidle_idle_call kernel/sched/idle.c:154 [inline]
- do_idle+0x1af/0x280 kernel/sched/idle.c:263
- cpu_startup_entry+0x1b/0x20 kernel/sched/idle.c:355
- start_secondary+0x208/0x260 arch/x86/kernel/smpboot.c:264
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
-
-read to 0xffff8880a69a0170 of 8 bytes by interrupt on cpu 0:
- sk_unhashed include/net/sock.h:607 [inline]
- inet_unhash+0x3d/0x4a0 net/ipv4/inet_hashtables.c:592
- tcp_set_state+0xfa/0x3e0 net/ipv4/tcp.c:2249
- tcp_done+0x93/0x1e0 net/ipv4/tcp.c:3854
- tcp_write_err+0x7e/0xc0 net/ipv4/tcp_timer.c:56
- tcp_retransmit_timer+0x9b8/0x16d0 net/ipv4/tcp_timer.c:479
- tcp_write_timer_handler+0x42d/0x510 net/ipv4/tcp_timer.c:599
- tcp_write_timer+0xd1/0xf0 net/ipv4/tcp_timer.c:619
- call_timer_fn+0x5f/0x2f0 kernel/time/timer.c:1404
- expire_timers kernel/time/timer.c:1449 [inline]
- __run_timers kernel/time/timer.c:1773 [inline]
- __run_timers kernel/time/timer.c:1740 [inline]
- run_timer_softirq+0xc0c/0xcd0 kernel/time/timer.c:1786
- __do_softirq+0x115/0x33f kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:373 [inline]
- irq_exit+0xbb/0xe0 kernel/softirq.c:413
- exiting_irq arch/x86/include/asm/apic.h:536 [inline]
- smp_apic_timer_interrupt+0xe6/0x280 arch/x86/kernel/apic/apic.c:1137
- apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:830
- native_safe_halt+0xe/0x10 arch/x86/kernel/paravirt.c:71
- arch_cpu_idle+0x1f/0x30 arch/x86/kernel/process.c:571
- default_idle_call+0x1e/0x40 kernel/sched/idle.c:94
- cpuidle_idle_call kernel/sched/idle.c:154 [inline]
- do_idle+0x1af/0x280 kernel/sched/idle.c:263
- cpu_startup_entry+0x1b/0x20 kernel/sched/idle.c:355
- rest_init+0xec/0xf6 init/main.c:452
- arch_call_rest_init+0x17/0x37
- start_kernel+0x838/0x85e init/main.c:786
- x86_64_start_reservations+0x29/0x2b arch/x86/kernel/head64.c:490
- x86_64_start_kernel+0x72/0x76 arch/x86/kernel/head64.c:471
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
+read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
+ rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
+ rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
+ irq_enter+0x5/0x50 kernel/softirq.c:347
+ <snip>
 
 Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.0-rc6+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 01/01/2011
+CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+Workqueue: kblockd blk_mq_run_work_fn
+==================================================================
 
-------------------------------------------------------------------------
-
-This commit therefore replaces C-language assignments with WRITE_ONCE()
-in include/linux/list_nulls.h and include/linux/rculist_nulls.h.
-
-Reported-by: Eric Dumazet <edumazet@google.com> # For KCSAN
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/list_nulls.h    | 8 ++++----
- include/linux/rculist_nulls.h | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ include/trace/events/rcu.h |  4 ++--
+ kernel/rcu/tree.c          | 11 ++++++-----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index 3ef96743db8da..1ecd35664e0d3 100644
---- a/include/linux/list_nulls.h
-+++ b/include/linux/list_nulls.h
-@@ -72,10 +72,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
- 	struct hlist_nulls_node *first = h->first;
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 694bd040cf51a..fdd31c5fd1265 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
+  */
+ TRACE_EVENT_RCU(rcu_dyntick,
  
- 	n->next = first;
--	n->pprev = &h->first;
-+	WRITE_ONCE(n->pprev, &h->first);
- 	h->first = n;
- 	if (!is_a_nulls(first))
--		first->pprev = &n->next;
-+		WRITE_ONCE(first->pprev, &n->next);
- }
+-	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
++	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
  
- static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
-@@ -85,13 +85,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+ 	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
  
- 	WRITE_ONCE(*pprev, next);
- 	if (!is_a_nulls(next))
--		next->pprev = pprev;
-+		WRITE_ONCE(next->pprev, pprev);
- }
+@@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
+ 		__entry->polarity = polarity;
+ 		__entry->oldnesting = oldnesting;
+ 		__entry->newnesting = newnesting;
+-		__entry->dynticks = atomic_read(&dynticks);
++		__entry->dynticks = dynticks;
+ 	),
  
- static inline void hlist_nulls_del(struct hlist_nulls_node *n)
- {
- 	__hlist_nulls_del(n);
--	n->pprev = LIST_POISON2;
-+	WRITE_ONCE(n->pprev, LIST_POISON2);
- }
- 
- /**
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index 61974c4c566be..90f2e2232c6d7 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -34,7 +34,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
- {
- 	if (!hlist_nulls_unhashed(n)) {
- 		__hlist_nulls_del(n);
--		n->pprev = NULL;
-+		WRITE_ONCE(n->pprev, NULL);
+ 	TP_printk("%s %lx %lx %#3x", __entry->polarity,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 81105141b6a82..62e59596a30a0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
  	}
- }
  
-@@ -66,7 +66,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
- static inline void hlist_nulls_del_rcu(struct hlist_nulls_node *n)
- {
- 	__hlist_nulls_del(n);
--	n->pprev = LIST_POISON2;
-+	WRITE_ONCE(n->pprev, LIST_POISON2);
- }
+ 	lockdep_assert_irqs_disabled();
+-	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	do_nocb_deferred_wakeup(rdp);
+@@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+ 	 * leave it in non-RCU-idle state.
+ 	 */
+ 	if (rdp->dynticks_nmi_nesting != 1) {
+-		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
++		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
++				  atomic_read(&rdp->dynticks));
+ 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+ 			   rdp->dynticks_nmi_nesting - 2);
+ 		return;
+ 	}
  
- /**
-@@ -94,10 +94,10 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
- 	struct hlist_nulls_node *first = h->first;
+ 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+-	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
  
- 	n->next = first;
--	n->pprev = &h->first;
-+	WRITE_ONCE(n->pprev, &h->first);
- 	rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
- 	if (!is_a_nulls(first))
--		first->pprev = &n->next;
-+		WRITE_ONCE(first->pprev, &n->next);
- }
- 
- /**
+ 	if (irq)
+@@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
+ 	rcu_dynticks_task_exit();
+ 	rcu_dynticks_eqs_exit();
+ 	rcu_cleanup_after_idle();
+-	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
++	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	WRITE_ONCE(rdp->dynticks_nesting, 1);
+ 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+@@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+ 	}
+ 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
+ 			  rdp->dynticks_nmi_nesting,
+-			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
++			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
+ 		   rdp->dynticks_nmi_nesting + incby);
+ 	barrier();
 -- 
 2.20.1
 
