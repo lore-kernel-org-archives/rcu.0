@@ -7,51 +7,45 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72B5DC3B1AF
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:46:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA5BC3B1AF
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:47:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 469B1206D7
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:46:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 972C9206B6
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581702418;
-	bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+	s=default; t=1581702427;
+	bh=H3LKj47Yqut0p8cQXZtywNFL074vZu1UaiH+k7PfGpE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=q7BodRsFAfmTXOmJGe9HIznEqhexf/FZjg9FtWYCuPoyUZWAlUXUvTHxH/Yoru9el
-	 k5eekW813Wei/ikFT1GDrqnjy2TeLcBfhz5QDeau9dWJfelfxN/AS2PCTIB1R0q97D
-	 PbRUQv8SLCsmgJSc+R147vG5nL3rR2y1Q8wESQNk=
+	b=UJ52QpC3u3TwWi02+eW8Qw1Xf71nidIuFibmPOHt3FQ1q7w08Cbppq8V1pRgIjm5z
+	 8kh6v1K2FyapzdSPl5uR3aAmprfFF1fr9CpVglCrIapujy5+lhYsoikZgHS0j/HLqi
+	 WK+02pW3ScvYCC9qiYnvtG7NwXmTcQGdU22dEiyc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389256AbgBNRqy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 12:46:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48108 "EHLO mail.kernel.org"
+        id S2389236AbgBNRq7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 12:46:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389236AbgBNQCE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:02:04 -0500
+        id S2389229AbgBNQB7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:01:59 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A1132067D;
-        Fri, 14 Feb 2020 16:02:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E9402467D;
+        Fri, 14 Feb 2020 16:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696123;
-        bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+        s=default; t=1581696119;
+        bh=H3LKj47Yqut0p8cQXZtywNFL074vZu1UaiH+k7PfGpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gTOsBgnFchYyTs3dreKaIfnAKJvQe/Y3D0IP5qRy3DKknrt1d/LOSWuDZ3JK+Y/uw
-         Gt7FTjueK4+0JF0G2VX7Fwil8pixOJgMCSQH4tMCvrdj2axyFZNm2Q7z4b+jqTfqnH
-         rGzOmJMafKx+iHlvlJnUVeZpdP8ApTORqIZBlmpI=
+        b=qkbtllJJ3ojsHE39vpkXquk9327GmqFgamfbcf4XY4jXiEi2/EypeaIfd8MxXeqvQ
+         OHsUSy+BBAO57jrAmnoDvdboa8+x8R7ZqZ1EDLUODznVvqvUQ+rtoMlbygrxll30Xq
+         O8RzO10tSlRWMhy5vZ7yuqOuzqXwsEGmz9vCY1xU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
+Cc:     Stefan Reiter <stefan@pimaker.at>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 010/459] rcu: Fix data-race due to atomic_t copy-by-value
-Date:   Fri, 14 Feb 2020 10:54:20 -0500
-Message-Id: <20200214160149.11681-10-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 007/459] rcu/nocb: Fix dump_tree hierarchy print always active
+Date:   Fri, 14 Feb 2020 10:54:17 -0500
+Message-Id: <20200214160149.11681-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
@@ -64,130 +58,79 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Stefan Reiter <stefan@pimaker.at>
 
-[ Upstream commit 6cf539a87a61a4fbc43f625267dbcbcf283872ed ]
+[ Upstream commit 610dea36d3083a977e4f156206cbe1eaa2a532f0 ]
 
-This fixes a data-race where `atomic_t dynticks` is copied by value. The
-copy is performed non-atomically, resulting in a data-race if `dynticks`
-is updated concurrently.
+Commit 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if
+dump_tree") added print statements to rcu_organize_nocb_kthreads for
+debugging, but incorrectly guarded them, causing the function to always
+spew out its message.
 
-This data-race was found with KCSAN:
-==================================================================
-BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
+This patch fixes it by guarding both pr_alert statements with dump_tree,
+while also changing the second pr_alert to a pr_cont, to print the
+hierarchy in a single line (assuming that's how it was supposed to
+work).
 
-write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
- atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
- rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
- dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
- force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
- rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
- rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
- rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
- kthread+0x1b5/0x200 kernel/kthread.c:255
- <snip>
-
-read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
- rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
- rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
- irq_enter+0x5/0x50 kernel/softirq.c:347
- <snip>
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-Workqueue: kblockd blk_mq_run_work_fn
-==================================================================
-
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Fixes: 18cd8c93e69e ("rcu/nocb: Print gp/cb kthread hierarchy if dump_tree")
+Signed-off-by: Stefan Reiter <stefan@pimaker.at>
+[ paulmck: Make single-nocbs-CPU GP kthreads look less erroneous. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/rcu.h |  4 ++--
- kernel/rcu/tree.c          | 11 ++++++-----
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ kernel/rcu/tree_plugin.h | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 694bd040cf51a..fdd31c5fd1265 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
-  */
- TRACE_EVENT_RCU(rcu_dyntick,
- 
--	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
-+	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
- 
- 	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
- 
-@@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
- 		__entry->polarity = polarity;
- 		__entry->oldnesting = oldnesting;
- 		__entry->newnesting = newnesting;
--		__entry->dynticks = atomic_read(&dynticks);
-+		__entry->dynticks = dynticks;
- 	),
- 
- 	TP_printk("%s %lx %lx %#3x", __entry->polarity,
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 81105141b6a82..62e59596a30a0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index f849e7429816f..f7118842a2b88 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2322,6 +2322,8 @@ static void __init rcu_organize_nocb_kthreads(void)
+ {
+ 	int cpu;
+ 	bool firsttime = true;
++	bool gotnocbs = false;
++	bool gotnocbscbs = true;
+ 	int ls = rcu_nocb_gp_stride;
+ 	int nl = 0;  /* Next GP kthread. */
+ 	struct rcu_data *rdp;
+@@ -2344,21 +2346,31 @@ static void __init rcu_organize_nocb_kthreads(void)
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+ 		if (rdp->cpu >= nl) {
+ 			/* New GP kthread, set up for CBs & next GP. */
++			gotnocbs = true;
+ 			nl = DIV_ROUND_UP(rdp->cpu + 1, ls) * ls;
+ 			rdp->nocb_gp_rdp = rdp;
+ 			rdp_gp = rdp;
+-			if (!firsttime && dump_tree)
+-				pr_cont("\n");
+-			firsttime = false;
+-			pr_alert("%s: No-CB GP kthread CPU %d:", __func__, cpu);
++			if (dump_tree) {
++				if (!firsttime)
++					pr_cont("%s\n", gotnocbscbs
++							? "" : " (self only)");
++				gotnocbscbs = false;
++				firsttime = false;
++				pr_alert("%s: No-CB GP kthread CPU %d:",
++					 __func__, cpu);
++			}
+ 		} else {
+ 			/* Another CB kthread, link to previous GP kthread. */
++			gotnocbscbs = true;
+ 			rdp->nocb_gp_rdp = rdp_gp;
+ 			rdp_prev->nocb_next_cb_rdp = rdp;
+-			pr_alert(" %d", cpu);
++			if (dump_tree)
++				pr_cont(" %d", cpu);
+ 		}
+ 		rdp_prev = rdp;
  	}
++	if (gotnocbs && dump_tree)
++		pr_cont("%s\n", gotnocbscbs ? "" : " (self only)");
+ }
  
- 	lockdep_assert_irqs_disabled();
--	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	rdp = this_cpu_ptr(&rcu_data);
- 	do_nocb_deferred_wakeup(rdp);
-@@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
- 	 * leave it in non-RCU-idle state.
- 	 */
- 	if (rdp->dynticks_nmi_nesting != 1) {
--		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
-+		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
-+				  atomic_read(&rdp->dynticks));
- 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
- 			   rdp->dynticks_nmi_nesting - 2);
- 		return;
- 	}
- 
- 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
--	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
- 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
- 
- 	if (irq)
-@@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
- 	rcu_dynticks_task_exit();
- 	rcu_dynticks_eqs_exit();
- 	rcu_cleanup_after_idle();
--	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	WRITE_ONCE(rdp->dynticks_nesting, 1);
- 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
-@@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- 	}
- 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
- 			  rdp->dynticks_nmi_nesting,
--			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
-+			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
- 	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
- 		   rdp->dynticks_nmi_nesting + incby);
- 	barrier();
+ /*
 -- 
 2.20.1
 
