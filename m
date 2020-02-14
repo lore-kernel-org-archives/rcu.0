@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7BBFC3B1A1
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DA69C3B1A5
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:51:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8E32E217F4
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:39:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57E1024690
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 16:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581698370;
-	bh=bLHsI1avykTVTZ++UlFPHsdaV/LJpmD+e/AgRBCQONI=;
+	s=default; t=1581699101;
+	bh=ikSg4dDCJPsTAPiCTvCrHhfbjky6Dvry/ArXtbmw6bM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=psXaHzj3CCbN4y2Zyai4AyzB01lZ3CLIXvJayy1NT/7D+dYRfrhF/8HQK7aWuy1yw
-	 LarBK2psOZ30KdjEt+AKr20MuTjmg6R60yzKsdpgorx4vSXP1epIRenB4XE1dDEzJn
-	 LTsoDiwLvOyZKVDV9mzhdo8ihmqLvjkCP57ERH9k=
+	b=IJCVzGrFgLlrx7JsuGD4H0vRFKQWI0NBH95kjG11Dswl3jrs+BvNtxxD5BEJApn86
+	 MyahI6B3oaTrZgCqV/cM2Ex8HrJGwPcQAp7rHen5rzq5sZBYu6pA8xWCpNjZp0p9+/
+	 jZnUPhWAWqMZfP4HjG3VIIGIgVpaEub+uCZOkHGo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389084AbgBNQja (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
+        id S2388578AbgBNQvf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 11:51:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405562AbgBNQXO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:23:14 -0500
+        id S2404622AbgBNQTo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:19:44 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D41822476D;
-        Fri, 14 Feb 2020 16:23:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE72224726;
+        Fri, 14 Feb 2020 16:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697392;
-        bh=bLHsI1avykTVTZ++UlFPHsdaV/LJpmD+e/AgRBCQONI=;
+        s=default; t=1581697183;
+        bh=ikSg4dDCJPsTAPiCTvCrHhfbjky6Dvry/ArXtbmw6bM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HeL6zuGYmMBuGehHUbwhQvhXAKsiTC8II+H9rlc8eVF2OQ/R40PU9koM16HXlf0Fk
-         s8m794uaB7vzDH0F20en6vp5ukhy2s4udl8kmY1LtzK1KCMtoHwG+SExzXq77Gp59W
-         VX9qRoA9kTamBUGnbEBaOaMGjsd8tzLK69xPYtgU=
+        b=KehlYX+oBG+HDITae+DtM6WO9Iw3ocgy5+Gu0Uke8xvU7yj4g91aqGKtEbSoOhrqO
+         PjNbU7xcJWk8T046UsuAoJ+OOvW4z07GxzbDsjGjmT1iw6HsB94qv70S+zb4UpCY18
+         25tBVPr5X7mjdy/8ZHsYItbaUiyC2bw6GCPJyByo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 087/141] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
-Date:   Fri, 14 Feb 2020 11:20:27 -0500
-Message-Id: <20200214162122.19794-87-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 114/186] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
+Date:   Fri, 14 Feb 2020 11:16:03 -0500
+Message-Id: <20200214161715.18113-114-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214162122.19794-1-sashal@kernel.org>
-References: <20200214162122.19794-1-sashal@kernel.org>
+In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
+References: <20200214161715.18113-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -152,10 +152,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index 87ff4f58a2f01..9e20bf7f46a20 100644
+index 3ef96743db8da..1ecd35664e0d3 100644
 --- a/include/linux/list_nulls.h
 +++ b/include/linux/list_nulls.h
-@@ -71,10 +71,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
+@@ -72,10 +72,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
  	struct hlist_nulls_node *first = h->first;
  
  	n->next = first;
@@ -168,7 +168,7 @@ index 87ff4f58a2f01..9e20bf7f46a20 100644
  }
  
  static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
-@@ -84,13 +84,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+@@ -85,13 +85,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
  
  	WRITE_ONCE(*pprev, next);
  	if (!is_a_nulls(next))
@@ -185,10 +185,10 @@ index 87ff4f58a2f01..9e20bf7f46a20 100644
  
  /**
 diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index 106f4e0d7bd39..4d71e3687d1ed 100644
+index a10da545b3f67..cf64a94922566 100644
 --- a/include/linux/rculist_nulls.h
 +++ b/include/linux/rculist_nulls.h
-@@ -33,7 +33,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+@@ -34,7 +34,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
  {
  	if (!hlist_nulls_unhashed(n)) {
  		__hlist_nulls_del(n);
@@ -197,7 +197,7 @@ index 106f4e0d7bd39..4d71e3687d1ed 100644
  	}
  }
  
-@@ -65,7 +65,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+@@ -66,7 +66,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
  static inline void hlist_nulls_del_rcu(struct hlist_nulls_node *n)
  {
  	__hlist_nulls_del(n);
@@ -206,7 +206,7 @@ index 106f4e0d7bd39..4d71e3687d1ed 100644
  }
  
  /**
-@@ -93,10 +93,10 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
+@@ -94,10 +94,10 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
  	struct hlist_nulls_node *first = h->first;
  
  	n->next = first;
