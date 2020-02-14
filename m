@@ -2,81 +2,223 @@ Return-Path: <SRS0=LJ8s=4C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E66DC3B1A6
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C980C2BA83
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:29:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5B73124650
-	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:26:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D214224650
+	for <rcu@archiver.kernel.org>; Fri, 14 Feb 2020 17:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1581701371;
+	bh=cldcMUZ+n6GGb4CcpB3xjq3wxG6GbSXzVfAQyHf4vHg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=ieyxcKBo1h9CbjFSirsXKBzswASccAkvbKAy0fnBufd2TShhHB/iYpUZ4eFmACmB/
+	 8mJCjEWFsyG4pbHH+493tqUPwxSuVruGM0Gk5oUfaW/t9gFs8U2A4ENO6fVXJJWoMg
+	 3bWNs/7YARH13uRITfIjL/poLOKiAFawU+4pUdw0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391178AbgBNR0i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 12:26:38 -0500
-Received: from mga09.intel.com ([134.134.136.24]:40382 "EHLO mga09.intel.com"
+        id S2390364AbgBNR3b (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 12:29:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390996AbgBNR0i (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 12:26:38 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Feb 2020 09:26:37 -0800
-X-IronPort-AV: E=Sophos;i="5.70,441,1574150400"; 
-   d="scan'208";a="223081578"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.146]) ([10.254.204.146])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 14 Feb 2020 09:26:35 -0800
-Subject: Re: [PATCH 3/3] infiniband: sw: rdmavt: mcast.c: Use built-in RCU
- list checking
-To:     madhuparnabhowmik04@gmail.com, mike.marciniszyn@intel.com,
-        jgg@ziepe.ca, paulmck@kernel.org
-Cc:     joel@joelfernandes.org, frextrite@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        rcu@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200114162536.20388-1-madhuparnabhowmik04@gmail.com>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <b9a48945-7fc7-2463-2b56-61ad43e54754@intel.com>
-Date:   Fri, 14 Feb 2020 12:26:34 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S2390797AbgBNQHw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:07:52 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16F9924687;
+        Fri, 14 Feb 2020 16:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581696471;
+        bh=cldcMUZ+n6GGb4CcpB3xjq3wxG6GbSXzVfAQyHf4vHg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uL/K7Ij2fiHgK9HzZH61B6+MCr/EYqQ2rA9rDymLMQRGmCdQ1biOl4nO9vMxVFeHM
+         uwrCSefy7FbaEv+p/elxcshYIQiEl6OEp4QDj8LG88cpKCNOIsiwJmgilX1CTRBSl2
+         dbmgnEOIT447/6+vBeQStEb+HB2pQp08gfztit7s=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 280/459] rcu: Use WRITE_ONCE() for assignments to ->pprev for hlist_nulls
+Date:   Fri, 14 Feb 2020 10:58:50 -0500
+Message-Id: <20200214160149.11681-280-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200114162536.20388-1-madhuparnabhowmik04@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/14/2020 11:25 AM, madhuparnabhowmik04@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> 
-> Use built-in RCU and lock-checking for list_for_each_entry_rcu()
-> by passing the cond argument.
-> 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> ---
->   drivers/infiniband/sw/rdmavt/mcast.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
-> index dd11c6fcd060..31c7f12c7665 100644
-> --- a/drivers/infiniband/sw/rdmavt/mcast.c
-> +++ b/drivers/infiniband/sw/rdmavt/mcast.c
-> @@ -224,7 +224,7 @@ static int rvt_mcast_add(struct rvt_dev_info *rdi, struct rvt_ibport *ibp,
->   		}
->   
->   		/* Search the QP list to see if this is already there. */
-> -		list_for_each_entry_rcu(p, &tmcast->qp_list, list) {
-> +		list_for_each_entry_rcu(p, &tmcast->qp_list, list, lockdep_is_held(&(ibp->lock))) {
->   			if (p->qp == mqp->qp) {
->   				ret = ESRCH;
->   				goto bail;
-> 
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This one is OK. The lock is held and it is the correct one to use when 
-updating the list.
+[ Upstream commit 860c8802ace14c646864795e057349c9fb2d60ad ]
 
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Eric Dumazet supplied a KCSAN report of a bug that forces use
+of hlist_unhashed_lockless() from sk_unhashed():
+
+------------------------------------------------------------------------
+
+BUG: KCSAN: data-race in inet_unhash / inet_unhash
+
+write to 0xffff8880a69a0170 of 8 bytes by interrupt on cpu 1:
+ __hlist_nulls_del include/linux/list_nulls.h:88 [inline]
+ hlist_nulls_del_init_rcu include/linux/rculist_nulls.h:36 [inline]
+ __sk_nulls_del_node_init_rcu include/net/sock.h:676 [inline]
+ inet_unhash+0x38f/0x4a0 net/ipv4/inet_hashtables.c:612
+ tcp_set_state+0xfa/0x3e0 net/ipv4/tcp.c:2249
+ tcp_done+0x93/0x1e0 net/ipv4/tcp.c:3854
+ tcp_write_err+0x7e/0xc0 net/ipv4/tcp_timer.c:56
+ tcp_retransmit_timer+0x9b8/0x16d0 net/ipv4/tcp_timer.c:479
+ tcp_write_timer_handler+0x42d/0x510 net/ipv4/tcp_timer.c:599
+ tcp_write_timer+0xd1/0xf0 net/ipv4/tcp_timer.c:619
+ call_timer_fn+0x5f/0x2f0 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers kernel/time/timer.c:1773 [inline]
+ __run_timers kernel/time/timer.c:1740 [inline]
+ run_timer_softirq+0xc0c/0xcd0 kernel/time/timer.c:1786
+ __do_softirq+0x115/0x33f kernel/softirq.c:292
+ invoke_softirq kernel/softirq.c:373 [inline]
+ irq_exit+0xbb/0xe0 kernel/softirq.c:413
+ exiting_irq arch/x86/include/asm/apic.h:536 [inline]
+ smp_apic_timer_interrupt+0xe6/0x280 arch/x86/kernel/apic/apic.c:1137
+ apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:830
+ native_safe_halt+0xe/0x10 arch/x86/kernel/paravirt.c:71
+ arch_cpu_idle+0x1f/0x30 arch/x86/kernel/process.c:571
+ default_idle_call+0x1e/0x40 kernel/sched/idle.c:94
+ cpuidle_idle_call kernel/sched/idle.c:154 [inline]
+ do_idle+0x1af/0x280 kernel/sched/idle.c:263
+ cpu_startup_entry+0x1b/0x20 kernel/sched/idle.c:355
+ start_secondary+0x208/0x260 arch/x86/kernel/smpboot.c:264
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
+
+read to 0xffff8880a69a0170 of 8 bytes by interrupt on cpu 0:
+ sk_unhashed include/net/sock.h:607 [inline]
+ inet_unhash+0x3d/0x4a0 net/ipv4/inet_hashtables.c:592
+ tcp_set_state+0xfa/0x3e0 net/ipv4/tcp.c:2249
+ tcp_done+0x93/0x1e0 net/ipv4/tcp.c:3854
+ tcp_write_err+0x7e/0xc0 net/ipv4/tcp_timer.c:56
+ tcp_retransmit_timer+0x9b8/0x16d0 net/ipv4/tcp_timer.c:479
+ tcp_write_timer_handler+0x42d/0x510 net/ipv4/tcp_timer.c:599
+ tcp_write_timer+0xd1/0xf0 net/ipv4/tcp_timer.c:619
+ call_timer_fn+0x5f/0x2f0 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers kernel/time/timer.c:1773 [inline]
+ __run_timers kernel/time/timer.c:1740 [inline]
+ run_timer_softirq+0xc0c/0xcd0 kernel/time/timer.c:1786
+ __do_softirq+0x115/0x33f kernel/softirq.c:292
+ invoke_softirq kernel/softirq.c:373 [inline]
+ irq_exit+0xbb/0xe0 kernel/softirq.c:413
+ exiting_irq arch/x86/include/asm/apic.h:536 [inline]
+ smp_apic_timer_interrupt+0xe6/0x280 arch/x86/kernel/apic/apic.c:1137
+ apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:830
+ native_safe_halt+0xe/0x10 arch/x86/kernel/paravirt.c:71
+ arch_cpu_idle+0x1f/0x30 arch/x86/kernel/process.c:571
+ default_idle_call+0x1e/0x40 kernel/sched/idle.c:94
+ cpuidle_idle_call kernel/sched/idle.c:154 [inline]
+ do_idle+0x1af/0x280 kernel/sched/idle.c:263
+ cpu_startup_entry+0x1b/0x20 kernel/sched/idle.c:355
+ rest_init+0xec/0xf6 init/main.c:452
+ arch_call_rest_init+0x17/0x37
+ start_kernel+0x838/0x85e init/main.c:786
+ x86_64_start_reservations+0x29/0x2b arch/x86/kernel/head64.c:490
+ x86_64_start_kernel+0x72/0x76 arch/x86/kernel/head64.c:471
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.0-rc6+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 01/01/2011
+
+------------------------------------------------------------------------
+
+This commit therefore replaces C-language assignments with WRITE_ONCE()
+in include/linux/list_nulls.h and include/linux/rculist_nulls.h.
+
+Reported-by: Eric Dumazet <edumazet@google.com> # For KCSAN
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/list_nulls.h    | 8 ++++----
+ include/linux/rculist_nulls.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
+index 3ef96743db8da..1ecd35664e0d3 100644
+--- a/include/linux/list_nulls.h
++++ b/include/linux/list_nulls.h
+@@ -72,10 +72,10 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
+ 	struct hlist_nulls_node *first = h->first;
+ 
+ 	n->next = first;
+-	n->pprev = &h->first;
++	WRITE_ONCE(n->pprev, &h->first);
+ 	h->first = n;
+ 	if (!is_a_nulls(first))
+-		first->pprev = &n->next;
++		WRITE_ONCE(first->pprev, &n->next);
+ }
+ 
+ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+@@ -85,13 +85,13 @@ static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+ 
+ 	WRITE_ONCE(*pprev, next);
+ 	if (!is_a_nulls(next))
+-		next->pprev = pprev;
++		WRITE_ONCE(next->pprev, pprev);
+ }
+ 
+ static inline void hlist_nulls_del(struct hlist_nulls_node *n)
+ {
+ 	__hlist_nulls_del(n);
+-	n->pprev = LIST_POISON2;
++	WRITE_ONCE(n->pprev, LIST_POISON2);
+ }
+ 
+ /**
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index 61974c4c566be..90f2e2232c6d7 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -34,7 +34,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+ {
+ 	if (!hlist_nulls_unhashed(n)) {
+ 		__hlist_nulls_del(n);
+-		n->pprev = NULL;
++		WRITE_ONCE(n->pprev, NULL);
+ 	}
+ }
+ 
+@@ -66,7 +66,7 @@ static inline void hlist_nulls_del_init_rcu(struct hlist_nulls_node *n)
+ static inline void hlist_nulls_del_rcu(struct hlist_nulls_node *n)
+ {
+ 	__hlist_nulls_del(n);
+-	n->pprev = LIST_POISON2;
++	WRITE_ONCE(n->pprev, LIST_POISON2);
+ }
+ 
+ /**
+@@ -94,10 +94,10 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
+ 	struct hlist_nulls_node *first = h->first;
+ 
+ 	n->next = first;
+-	n->pprev = &h->first;
++	WRITE_ONCE(n->pprev, &h->first);
+ 	rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
+ 	if (!is_a_nulls(first))
+-		first->pprev = &n->next;
++		WRITE_ONCE(first->pprev, &n->next);
+ }
+ 
+ /**
+-- 
+2.20.1
+
