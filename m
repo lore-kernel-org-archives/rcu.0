@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E4EC35242
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9605C35242
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:37:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D5937207FF
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:37:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8819A217F4
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581727046;
-	bh=BOS4V9LRWUgl4TAZLJl90ngMyJMD4i27HDB4Rq6MkKw=;
+	s=default; t=1581727055;
+	bh=3v3RBgQ+X/7OKM2+sRdYehsB6ohrN13jJdVtxUlawn4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=bUgr1ihLSdenSxsfRTZyd9HXRsoIjtW6HPwW9xyHILdquw+jT0IfzcSZKB8dl/Ftk
-	 2iuuO1CvoYJNPcbDI973D60D3iqRnCTfsaEkz+Cc1JaotGsa/+Lko3ugib9BCxq9qw
-	 eqC3MwTsU1E3K9/iOJNiUJa99snnnrsRXmAIBB2o=
+	b=x/VITPWBcSUM1358iIXX3VSyRnhiTaSzl2VHsLN54gaugIkU1H42YY214ua2XB0ZR
+	 xxA2VbCLuWWq2Jm61y3fNqeEdCvfi1Oe9TBc4JQG6t7wMmEgwu8zWcRRIZtE7PMYWK
+	 ZidH/qQLcykwlfei+G85h6y5J8B9SPcLoLGdDfmI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgBOAh0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 19:37:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
+        id S1727994AbgBOAhe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 19:37:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727567AbgBOAhZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 19:37:25 -0500
+        id S1727943AbgBOAhd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 19:37:33 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0630020848;
-        Sat, 15 Feb 2020 00:37:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08437207FF;
+        Sat, 15 Feb 2020 00:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581727045;
-        bh=BOS4V9LRWUgl4TAZLJl90ngMyJMD4i27HDB4Rq6MkKw=;
+        s=default; t=1581727052;
+        bh=3v3RBgQ+X/7OKM2+sRdYehsB6ohrN13jJdVtxUlawn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCj3HiUdi32N/nbYN/SSMzKSSONS0qDkpOrLM0O2VavelobzGPOc13CAKrsfQLOqx
-         3H42hFOAQcj+7UFFJTeRk1ls2U0rivqXCrlUNyfl1YK7Opz2YQq7Leq2KYWjYc1aY6
-         H7jOUzLod6Izh2PtCEATr2o5dwaP0HrJ1cMw9gBw=
+        b=X49JVMREIC1XJoJLDJU8Vf9SP3fVpkBEBbTmJmWusNlwTt9xESnU4eXCcxTHoS0FW
+         tSBsjRh34ktduAe/ojYbvOKnxdENDG2UX1HORLdbI/ubLVuFVWKBIqCGWX6S6CwIJT
+         w3Gi+9jWjCQSdE3Ta3Wjk8DjFzU4h42bQ9kFteYk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/18] rcutorture: Refrain from callback flooding during boot
-Date:   Fri, 14 Feb 2020 16:36:56 -0800
-Message-Id: <20200215003711.16463-3-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/18] rcutorture: Allow boottime stall warnings to be suppressed
+Date:   Fri, 14 Feb 2020 16:36:58 -0800
+Message-Id: <20200215003711.16463-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200215003634.GA16227@paulmck-ThinkPad-P72>
 References: <20200215003634.GA16227@paulmck-ThinkPad-P72>
@@ -60,42 +60,165 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Additional rcutorture aggression can result in, believe it or not,
-boot times in excess of three minutes on large hyperthreaded systems.
-This is long enough for rcutorture to decide to do some callback flooding,
-which seems a bit excessive given that userspace cannot have started
-until long after boot, and it is userspace that does the real-world
-callback flooding.  Worse yet, because Tiny RCU lacks forward-progress
-functionality, the looping-in-the-kernel tests can also be problematic
-during early boot.
-
-This commit therefore causes rcutorture to hold off on callback
-flooding until about the time that init is spawned, and the same
-for looping-in-the-kernel tests for Tiny RCU.
+In normal production, an RCU CPU stall warning at boottime is often
+just as bad as at any other time.  In fact, given the desire for fast
+boot, any sort of long-term stall at boot is a bad idea.  However,
+heavy rcutorture testing on large hyperthreaded systems can generate
+boottime RCU CPU stalls as a matter of course.  This commit therefore
+provides a kernel boot parameter that suppresses reporting of boottime
+RCU CPU stall warnings and similarly of rcutorture writer stalls.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+ kernel/rcu/rcu.h                                | 17 +++++++++++++++++
+ kernel/rcu/rcutorture.c                         |  2 +-
+ kernel/rcu/tree_exp.h                           |  2 +-
+ kernel/rcu/tree_stall.h                         |  6 +++---
+ kernel/rcu/update.c                             |  8 +++++++-
+ 6 files changed, 35 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index dbc22d6..ee007b5 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4195,6 +4195,12 @@
+ 	rcupdate.rcu_cpu_stall_suppress= [KNL]
+ 			Suppress RCU CPU stall warning messages.
+ 
++	rcupdate.rcu_cpu_stall_suppress_at_boot= [KNL]
++			Suppress RCU CPU stall warning messages and
++			rcutorture writer stall warnings that occur
++			during early boot, that is, during the time
++			before the init task is spawned.
++
+ 	rcupdate.rcu_cpu_stall_timeout= [KNL]
+ 			Set timeout for RCU CPU stall warning messages.
+ 
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 05f936e..1779cbf 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -198,6 +198,13 @@ static inline void debug_rcu_head_unqueue(struct rcu_head *head)
+ }
+ #endif	/* #else !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+ 
++extern int rcu_cpu_stall_suppress_at_boot;
++
++static inline bool rcu_stall_is_suppressed_at_boot(void)
++{
++	return rcu_cpu_stall_suppress_at_boot && !rcu_inkernel_boot_has_ended();
++}
++
+ #ifdef CONFIG_RCU_STALL_COMMON
+ 
+ extern int rcu_cpu_stall_ftrace_dump;
+@@ -205,6 +212,11 @@ extern int rcu_cpu_stall_suppress;
+ extern int rcu_cpu_stall_timeout;
+ int rcu_jiffies_till_stall_check(void);
+ 
++static inline bool rcu_stall_is_suppressed(void)
++{
++	return rcu_stall_is_suppressed_at_boot() || rcu_cpu_stall_suppress;
++}
++
+ #define rcu_ftrace_dump_stall_suppress() \
+ do { \
+ 	if (!rcu_cpu_stall_suppress) \
+@@ -218,6 +230,11 @@ do { \
+ } while (0)
+ 
+ #else /* #endif #ifdef CONFIG_RCU_STALL_COMMON */
++
++static inline bool rcu_stall_is_suppressed(void)
++{
++	return rcu_stall_is_suppressed_at_boot();
++}
+ #define rcu_ftrace_dump_stall_suppress()
+ #define rcu_ftrace_dump_stall_unsuppress()
+ #endif /* #ifdef CONFIG_RCU_STALL_COMMON */
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 9ba4978..08fa4ef 100644
+index 08fa4ef..16c84ec 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1994,8 +1994,11 @@ static int rcu_torture_fwd_prog(void *args)
- 		schedule_timeout_interruptible(fwd_progress_holdoff * HZ);
- 		WRITE_ONCE(rcu_fwd_emergency_stop, false);
- 		register_oom_notifier(&rcutorture_oom_nb);
--		rcu_torture_fwd_prog_nr(rfp, &tested, &tested_tries);
--		rcu_torture_fwd_prog_cr(rfp);
-+		if (!IS_ENABLED(CONFIG_TINY_RCU) ||
-+		    rcu_inkernel_boot_has_ended())
-+			rcu_torture_fwd_prog_nr(rfp, &tested, &tested_tries);
-+		if (rcu_inkernel_boot_has_ended())
-+			rcu_torture_fwd_prog_cr(rfp);
- 		unregister_oom_notifier(&rcutorture_oom_nb);
+@@ -1479,7 +1479,7 @@ rcu_torture_stats_print(void)
+ 	if (cur_ops->stats)
+ 		cur_ops->stats();
+ 	if (rtcv_snap == rcu_torture_current_version &&
+-	    rcu_torture_current != NULL) {
++	    rcu_torture_current != NULL && !rcu_stall_is_suppressed()) {
+ 		int __maybe_unused flags = 0;
+ 		unsigned long __maybe_unused gp_seq = 0;
  
- 		/* Avoid slow periods, better to test when busy. */
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index a72d16e..c28d9f0 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -518,7 +518,7 @@ static void synchronize_rcu_expedited_wait(void)
+ 	for (;;) {
+ 		if (synchronize_rcu_expedited_wait_once(jiffies_stall))
+ 			return;
+-		if (rcu_cpu_stall_suppress)
++		if (rcu_stall_is_suppressed())
+ 			continue;
+ 		panic_on_rcu_stall();
+ 		pr_err("INFO: %s detected expedited stalls on CPUs/tasks: {",
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 55f9b84..7ee8a1c 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -383,7 +383,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
+ 
+ 	/* Kick and suppress, if so configured. */
+ 	rcu_stall_kick_kthreads();
+-	if (rcu_cpu_stall_suppress)
++	if (rcu_stall_is_suppressed())
+ 		return;
+ 
+ 	/*
+@@ -452,7 +452,7 @@ static void print_cpu_stall(void)
+ 
+ 	/* Kick and suppress, if so configured. */
+ 	rcu_stall_kick_kthreads();
+-	if (rcu_cpu_stall_suppress)
++	if (rcu_stall_is_suppressed())
+ 		return;
+ 
+ 	/*
+@@ -504,7 +504,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	unsigned long js;
+ 	struct rcu_node *rnp;
+ 
+-	if ((rcu_cpu_stall_suppress && !rcu_kick_kthreads) ||
++	if ((rcu_stall_is_suppressed() && !rcu_kick_kthreads) ||
+ 	    !rcu_gp_in_progress())
+ 		return;
+ 	rcu_stall_kick_kthreads();
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index feaaec5..085f08a 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -476,13 +476,19 @@ EXPORT_SYMBOL_GPL(rcutorture_sched_setaffinity);
+ #ifdef CONFIG_RCU_STALL_COMMON
+ int rcu_cpu_stall_ftrace_dump __read_mostly;
+ module_param(rcu_cpu_stall_ftrace_dump, int, 0644);
+-int rcu_cpu_stall_suppress __read_mostly; /* 1 = suppress stall warnings. */
++int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings.
+ EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress);
+ module_param(rcu_cpu_stall_suppress, int, 0644);
+ int rcu_cpu_stall_timeout __read_mostly = CONFIG_RCU_CPU_STALL_TIMEOUT;
+ module_param(rcu_cpu_stall_timeout, int, 0644);
+ #endif /* #ifdef CONFIG_RCU_STALL_COMMON */
+ 
++// Suppress boot-time RCU CPU stall warnings and rcutorture writer stall
++// warnings.  Also used by rcutorture even if stall warnings are excluded.
++int rcu_cpu_stall_suppress_at_boot __read_mostly; // !0 = suppress boot stalls.
++EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress_at_boot);
++module_param(rcu_cpu_stall_suppress_at_boot, int, 0444);
++
+ #ifdef CONFIG_TASKS_RCU
+ 
+ /*
 -- 
 2.9.5
 
