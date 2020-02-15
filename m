@@ -2,85 +2,140 @@ Return-Path: <SRS0=vfTc=4D=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B35FCC35242
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98633C35242
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:18:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 875A22082F
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:18:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C85F2082F
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581725899;
-	bh=zBkIaXyCDkP0NHhzcS+nOpVULeLBaNTeUYV5b4mTysY=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=hc3yX68IL8vI1VjWrJxV2Zh9wb+QlBusqpskPDpWcguCAtSB0AqQu7t5e42pDckj0
-	 jx3L3gdHZSqG5mur+k2jeiJh/0XYflFFYj3zpNi20kL/9YALVtviYvBuwI1IHRLMRD
-	 pcatq0/GsoaRwLSqVHuZozHFBwSdbstGXKmW9Ax4=
+	s=default; t=1581725934;
+	bh=zD8j4Kz3cR7iNFCcKdyu8XC+oQJpI7FqPVapUF0WhBY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=B/M1AcbGKvaICyaaLhY6frN2i10XRaA60dpHx1efVne21lJ6rNKYz5P3gq2BZAwWj
+	 vTO7BderU4TTB3yL6habvCH45h6qRVRWIpmy3ZLjwroJex0Wli3fr/OQPJYTuhMjCi
+	 KEs4mTa1MG+2aE0dfW+0Z52FHdRMoaCchgQkNEIA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgBOAST (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 19:18:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        id S1727529AbgBOASy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 19:18:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726079AbgBOAST (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 19:18:19 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [62.84.152.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726079AbgBOASx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 19:18:53 -0500
+Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58089207FF;
-        Sat, 15 Feb 2020 00:18:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2D5B207FF;
+        Sat, 15 Feb 2020 00:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581725898;
-        bh=zBkIaXyCDkP0NHhzcS+nOpVULeLBaNTeUYV5b4mTysY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Ay7eKa0NhKknq7r8n5VMKeW8J10mV+eaVAPGJsR74nCIxhqxwkGOoLRjdDqyLp7vK
-         VUZytnkm9+XtrNGeiZeVTvJ3xJwhp9+Nj8UeQBvuG3ZtQuBtGGzAnBRbtg6bmK9jy5
-         r9CX3wW7FHxub6psEs8uArKQ3bGe2Bu6btKhDCT0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B6B023520D46; Fri, 14 Feb 2020 16:18:16 -0800 (PST)
-Date:   Fri, 14 Feb 2020 16:18:16 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1581725933;
+        bh=zD8j4Kz3cR7iNFCcKdyu8XC+oQJpI7FqPVapUF0WhBY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IvXIuYoDEMP+FaOQQ+5tpxp/gSJdDytHFFCWpZLeTEXcbGcemwnbX99KCqJXgc8ML
+         SqviyyFyoX/vh1A8CpGETQN2v7/PzIZyz5YbGpGL88Hs21EPP8HL1XgKi9PAC48ttw
+         XI6g2Q2FcW20f4LyT89wkqIIkd8RyUeB7nQUpx+I=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/5] Callback-overload update for v5.7
-Message-ID: <20200215001816.GA15284@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 1/5] rcu: Clear ->core_needs_qs at GP end or self-reported QS
+Date:   Fri, 14 Feb 2020 16:18:41 -0800
+Message-Id: <20200215001845.15432-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200215001816.GA15284@paulmck-ThinkPad-P72>
+References: <20200215001816.GA15284@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series contains updates to handling of callback-overload condiitons.
+The rcu_data structure's ->core_needs_qs field does not necessarily get
+cleared in a timely fashion after the corresponding CPUs' quiescent state
+has been reported.  From a functional viewpoint, no harm done, but this
+can result in excessive invocation of RCU core processing, as witnessed
+by the kernel test robot, which saw greatly increased softirq overhead.
 
-1.	Clear ->core_needs_qs at GP end or self-reported QS.
+This commit therefore restores the rcu_report_qs_rdp() function's
+clearing of this field, but only when running on the corresponding CPU.
+Cases where some other CPU reports the quiescent state (for example, on
+behalf of an idle CPU) are handled by setting this field appropriately
+within the __note_gp_changes() function's end-of-grace-period checks.
+This handling is carried out regardless of whether the end of a grace
+period actually happened, thus handling the case where a CPU goes non-idle
+after a quiescent state is reported on its behalf, but before the grace
+period ends.  This fix also avoids cross-CPU updates to ->core_needs_qs,
 
-2.	React to callback overload by aggressively seeking quiescent
-	states.
+While in the area, this commit changes the __note_gp_changes() need_gp
+variable's name to need_qs because it is a quiescent state that is needed
+from the CPU in question.
 
-3.	React to callback overload by boosting RCU readers.
+Fixes: ed93dfc6bc00 ("rcu: Confine ->core_needs_qs accesses to the corresponding CPU")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-4.	Fix spelling mistake "leval" -> "level".
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d91c915..31d01f8 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1386,7 +1386,7 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+ {
+ 	bool ret = false;
+-	bool need_gp;
++	bool need_qs;
+ 	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+ 			       rcu_segcblist_is_offloaded(&rdp->cblist);
+ 
+@@ -1400,10 +1400,13 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	    unlikely(READ_ONCE(rdp->gpwrap))) {
+ 		if (!offloaded)
+ 			ret = rcu_advance_cbs(rnp, rdp); /* Advance CBs. */
++		rdp->core_needs_qs = false;
+ 		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuend"));
+ 	} else {
+ 		if (!offloaded)
+ 			ret = rcu_accelerate_cbs(rnp, rdp); /* Recent CBs. */
++		if (rdp->core_needs_qs)
++			rdp->core_needs_qs = !!(rnp->qsmask & rdp->grpmask);
+ 	}
+ 
+ 	/* Now handle the beginnings of any new-to-this-CPU grace periods. */
+@@ -1415,9 +1418,9 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+ 		 * go looking for one.
+ 		 */
+ 		trace_rcu_grace_period(rcu_state.name, rnp->gp_seq, TPS("cpustart"));
+-		need_gp = !!(rnp->qsmask & rdp->grpmask);
+-		rdp->cpu_no_qs.b.norm = need_gp;
+-		rdp->core_needs_qs = need_gp;
++		need_qs = !!(rnp->qsmask & rdp->grpmask);
++		rdp->cpu_no_qs.b.norm = need_qs;
++		rdp->core_needs_qs = need_qs;
+ 		zero_cpu_stall_ticks(rdp);
+ 	}
+ 	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
+@@ -1987,6 +1990,8 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+ 		return;
+ 	}
+ 	mask = rdp->grpmask;
++	if (rdp->cpu == smp_processor_id())
++		rdp->core_needs_qs = false;
+ 	if ((rnp->qsmask & mask) == 0) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	} else {
+-- 
+2.9.5
 
-5.	Update __call_rcu() comments.
-
-								Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt |    9 ++
- kernel/rcu/tree.c                               |   97 ++++++++++++++++++++----
- kernel/rcu/tree.h                               |    4 
- kernel/rcu/tree_plugin.h                        |    6 -
- 4 files changed, 99 insertions(+), 17 deletions(-)
