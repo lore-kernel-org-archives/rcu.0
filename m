@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09886C35242
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A8A7C3F68F
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:29:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CCD4820848
-	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:29:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE0542083B
+	for <rcu@archiver.kernel.org>; Sat, 15 Feb 2020 00:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581726587;
-	bh=AM7BWBBRULXhHF5jNwhG2VL7NvzrkRoAiUsPNZ5Bbbo=;
+	s=default; t=1581726592;
+	bh=XdMJOms8RbFN2DS7z+iHuxwTOky+fnSYiXiwhbUyJSI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Lfbz0qnjA7gd1cKoZiy4JXl7celrFGbY00wZh/tIBQE/4Ipc50jXYvLR2qkV5fgcu
-	 OwShexJZBUNSjt6sYTLuhN27cVXKR4lJ69236AHI2HLG/7jymE3W10Bir59ms85FJD
-	 vskkEcFcXodXJnz0ucdOUgrMDskG2FbFM9IH6BRo=
+	b=NqDOu4gb5OeYKVejrf43QbDqh0ZmGgmBC+/bYqSV0XhVc0K5DN/vnx7XehPzLH1xi
+	 Shcvo52oWH9TNcnuzDqewt4MUxq+wxoUD0gk9hgvl2MTmrGZTnZ18el/M6k338E113
+	 ixUSjZF9TLomxa480RgQbNodw6nOcYK8pd5XaT1U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbgBOA3r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Feb 2020 19:29:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45446 "EHLO mail.kernel.org"
+        id S1727884AbgBOA3v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Feb 2020 19:29:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727567AbgBOA3r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Feb 2020 19:29:47 -0500
+        id S1727567AbgBOA3v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Feb 2020 19:29:51 -0500
 Received: from paulmck-ThinkPad-P72.c.hoisthospitality.com (unknown [62.84.152.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97EF42187F;
-        Sat, 15 Feb 2020 00:29:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65FBD207FF;
+        Sat, 15 Feb 2020 00:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581726586;
-        bh=AM7BWBBRULXhHF5jNwhG2VL7NvzrkRoAiUsPNZ5Bbbo=;
+        s=default; t=1581726590;
+        bh=XdMJOms8RbFN2DS7z+iHuxwTOky+fnSYiXiwhbUyJSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=foExSxWZabAGXAuD2q9Vizf0A2nLrwgCLQC8AE026UtTPhXLritza7vMrianNw9ta
-         RShVuyeZ0ACTiZT5++qIOB4FlYvCl1Cfd3eAu6as6GoNX2D4lz1pOuoIMOP0EHBswf
-         DtdMSHSrMIbbbqlVOz5ueVvd9iGUrhPZhECWO1Jo=
+        b=cBc9XNaWmAo84NIbK+z57M9ndzCt02Wr0Tq8K5wUjl1p0dCbCSvp5PPa/7vja6j5b
+         LA5gIhZnfuijWpaXS1RfjkBZ2DAmfJ5lSZE51/3orm15eh++gR4Vbo8KHhk4ltgjn0
+         YhfbGVG5X+T28xIjTXMOaZet9iq5nquRbvrMI8JU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 3/4] srcu: Fix process_srcu()/srcu_batches_completed() datarace
-Date:   Fri, 14 Feb 2020 16:29:31 -0800
-Message-Id: <20200215002932.15976-3-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 4/4] srcu: Add READ_ONCE() to srcu_struct ->srcu_gp_seq load
+Date:   Fri, 14 Feb 2020 16:29:32 -0800
+Message-Id: <20200215002932.15976-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200215002907.GA15895@paulmck-ThinkPad-P72>
 References: <20200215002907.GA15895@paulmck-ThinkPad-P72>
@@ -60,12 +60,11 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The srcu_struct structure's ->srcu_idx field is accessed locklessly,
-so reads must use READ_ONCE().  This commit therefore adds the needed
-READ_ONCE() invocation where it was missed.
+The load of the srcu_struct structure's ->srcu_gp_seq field in
+srcu_funnel_gp_start() is lockless, so this commit adds the requisite
+READ_ONCE().
 
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely.
+This data race was reported by KCSAN.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
@@ -73,18 +72,18 @@ Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 79848f7d..119a373 100644
+index 119a373..90ab475 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -1079,7 +1079,7 @@ EXPORT_SYMBOL_GPL(srcu_barrier);
-  */
- unsigned long srcu_batches_completed(struct srcu_struct *ssp)
- {
--	return ssp->srcu_idx;
-+	return READ_ONCE(ssp->srcu_idx);
- }
- EXPORT_SYMBOL_GPL(srcu_batches_completed);
+@@ -678,7 +678,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
  
+ 	/* If grace period not already done and none in progress, start it. */
+ 	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
+-	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
++	    rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)) == SRCU_STATE_IDLE) {
+ 		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
+ 		srcu_gp_start(ssp);
+ 		if (likely(srcu_init_done))
 -- 
 2.9.5
 
