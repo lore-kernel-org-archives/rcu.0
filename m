@@ -2,119 +2,140 @@ Return-Path: <SRS0=T7aT=4F=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E9B2C34024
-	for <rcu@archiver.kernel.org>; Mon, 17 Feb 2020 18:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C695C34021
+	for <rcu@archiver.kernel.org>; Mon, 17 Feb 2020 18:23:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EAC46208C4
-	for <rcu@archiver.kernel.org>; Mon, 17 Feb 2020 18:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581963484;
-	bh=338v2vpL74mCpLaYTTw92AbQMD7tUxezoo/j14+a184=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=LJQj8vUKj5yvslP+wTct0KuOpmXrGGuyMv9Z70mjn3tl9c9Mj8UVdWuhffVaP7efE
-	 gPsrZncCw1WcagHF6gOEj0LBukL31ALhgZ/aCz8WCcpihAAioysh11QpAwA6nuvfAk
-	 CgQBqUdZWG/USyVsWMiFwXpfr2vVOGFe4dWbYyC0=
+	by mail.kernel.org (Postfix) with ESMTP id EAF0920836
+	for <rcu@archiver.kernel.org>; Mon, 17 Feb 2020 18:23:04 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PRtK00E8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbgBQSSD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Feb 2020 13:18:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726833AbgBQSSD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Feb 2020 13:18:03 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FEC6207FD;
-        Mon, 17 Feb 2020 18:18:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581963482;
-        bh=338v2vpL74mCpLaYTTw92AbQMD7tUxezoo/j14+a184=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DjxYBzoxfz0WGvHd/F4riFm7IGF1zVkk/BNkix7v7sAAZFJujAydEAxTG6SaUA8Nj
-         OcVQGT2+8clUW4+2CIlM7iLxaH39nKh7inAKnHePTbMqdIOIyItYc3Tx3wbJBijXxW
-         GFCVFB5gt/JWVBBvrk6ylcuhTY8zeWx1RnRCCCSA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7930B352273C; Mon, 17 Feb 2020 10:18:02 -0800 (PST)
-Date:   Mon, 17 Feb 2020 10:18:02 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        id S1727370AbgBQSXE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Feb 2020 13:23:04 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38047 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727179AbgBQSXE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Feb 2020 13:23:04 -0500
+Received: by mail-qk1-f193.google.com with SMTP id z19so17049169qkj.5
+        for <rcu@vger.kernel.org>; Mon, 17 Feb 2020 10:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ExlmS46njhcTqc8w4ZPFnB+kDMjqLTpYWtRZo+ff53M=;
+        b=PRtK00E85kSVbIJnsQF0DrM1hy3gJqz3BnRu9yXXLT6nVT1rW2WLw2Yb4a/KjGGhnt
+         25kXFoLmkThV/euFkYtXJsdp2OiBc+qYySLWUnzf55BXHNiHo9mfgdT6GN9/PdXwU5wN
+         GvzESJ97ZazM5EQbwgMHzHdigTVUbqA7A/8TE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ExlmS46njhcTqc8w4ZPFnB+kDMjqLTpYWtRZo+ff53M=;
+        b=daEWN+W5e7kC3ZyovRUcUFYOvIqBoBPJ1y5JmwjuppxrsHB9ZFg1Kq9iKouQLIp3Qc
+         AwLtDyTJYKn8L83sHdsagQKBnlHmebKqJCCfAH6coDonRGx5iRlPP/RW6Joh8/t/zGL7
+         K1QHszfZ8CddxVtLtNyZNL808l3cZehCU1gq4PJY6V1rtJ6Hw0gbnY+YqR73fD1410Cw
+         Xk7uFmo9rV3xGK0bIirjgGguyjdEjEF+tj1pADaVQ12SI0koChq2NoNWFKLBf+XHhzfe
+         JmMfulSpgR+BpCs/LxyPdVqize0seliL30Pej1bwWHfMl8fmQ4Qsxe5ioYWygPnQklYs
+         9XuQ==
+X-Gm-Message-State: APjAAAVkJNIc4KKFbwxyUsQwcfAWq2fReWSzpxrhjo8WAhQOw28fvE3x
+        VaGOVE7eY482q8LR8IFrf7g1EQ==
+X-Google-Smtp-Source: APXvYqzcReuQJC8MlMnkzQWKu9Og1hzOuQP9u1WS/LcLFPGJihFE/W2h588XoFzChVf3l4AKdwO7dQ==
+X-Received: by 2002:ae9:f205:: with SMTP id m5mr15779969qkg.152.1581963783082;
+        Mon, 17 Feb 2020 10:23:03 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id u12sm587641qtj.84.2020.02.17.10.23.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2020 10:23:02 -0800 (PST)
+Date:   Mon, 17 Feb 2020 13:23:02 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, rostedt@goodmis.org, dhowells@redhat.com,
-        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
-        joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 1/4] srcu: Fix __call_srcu()/process_srcu()
- datarace
-Message-ID: <20200217181802.GQ2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200215002907.GA15895@paulmck-ThinkPad-P72>
- <20200215002932.15976-1-paulmck@kernel.org>
- <20200217124231.GS14914@hirez.programming.kicks-ass.net>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, elver@google.com
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu-tasks: *_ONCE() for
+ rcu_tasks_cbs_head
+Message-ID: <20200217182302.GD112239@google.com>
+References: <20200215002446.GA15663@paulmck-ThinkPad-P72>
+ <20200215002520.15746-1-paulmck@kernel.org>
+ <20200217123851.GR14914@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200217124231.GS14914@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200217123851.GR14914@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 01:42:31PM +0100, Peter Zijlstra wrote:
-> On Fri, Feb 14, 2020 at 04:29:29PM -0800, paulmck@kernel.org wrote:
+On Mon, Feb 17, 2020 at 01:38:51PM +0100, Peter Zijlstra wrote:
+> On Fri, Feb 14, 2020 at 04:25:18PM -0800, paulmck@kernel.org wrote:
 > > From: "Paul E. McKenney" <paulmck@kernel.org>
 > > 
-> > The srcu_node structure's ->srcu_gp_seq_needed_exp field is accessed
-> > locklessly, so updates must use WRITE_ONCE().  This commit therefore
-> > adds the needed WRITE_ONCE() invocations.
+> > The RCU tasks list of callbacks, rcu_tasks_cbs_head, is sampled locklessly
+> > by rcu_tasks_kthread() when waiting for work to do.  This commit therefore
+> > applies READ_ONCE() to that lockless sampling and WRITE_ONCE() to the
+> > single potential store outside of rcu_tasks_kthread.
 > > 
 > > This data race was reported by KCSAN.  Not appropriate for backporting
 > > due to failure being unlikely.
 > 
-> This does indeed look like there can be a failure; but this Changelog
-> fails to describe an actual problem.
+> What failure is possible here? AFAICT this is (again) one of them
+> load-complare-against-constant-discard patterns that are impossible to
+> mess up.
 
-As before, within RCU, the mere fact of a KCSAN report motivates a change.
-I am not going to waste time brainstorming overly creative compiler
-optimizations, present or future.
+You mean that because we are only testing for NULL, so load/store tearing of
+rcu_tasks_cbs_head is not an issue right?
 
-							Thanx, Paul
+I agree. Even with invented stores, worst case we have a false-wakeup and go
+right back to sleep. Or, we read a partial rcu_tasks_cbs_head, and then go
+acquire the lock and read the whole thing correctly under lock.
+
+I wonder if we can teach KCSAN to actually ignore this kind of situation so
+we don't need to employ READ_ONCE() for no reason. Basically ask it to not
+bother if the read was only NULL-testing. +Marco since it is KCSAN related.
+
+thanks,
+
+ - Joel
+
 
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > ---
-> >  kernel/rcu/srcutree.c | 4 ++--
+> >  kernel/rcu/update.c | 4 ++--
 > >  1 file changed, 2 insertions(+), 2 deletions(-)
 > > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 657e6a7..b1edac9 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -550,7 +550,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
-> >  		snp->srcu_have_cbs[idx] = gpseq;
-> >  		rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
-> >  		if (ULONG_CMP_LT(snp->srcu_gp_seq_needed_exp, gpseq))
-> > -			snp->srcu_gp_seq_needed_exp = gpseq;
-> > +			WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
-> >  		mask = snp->srcu_data_have_cbs[idx];
-> >  		snp->srcu_data_have_cbs[idx] = 0;
-> >  		spin_unlock_irq_rcu_node(snp);
-> > @@ -660,7 +660,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
-> >  		if (snp == sdp->mynode)
-> >  			snp->srcu_data_have_cbs[idx] |= sdp->grpmask;
-> >  		if (!do_norm && ULONG_CMP_LT(snp->srcu_gp_seq_needed_exp, s))
-> > -			snp->srcu_gp_seq_needed_exp = s;
-> > +			WRITE_ONCE(snp->srcu_gp_seq_needed_exp, s);
-> >  		spin_unlock_irqrestore_rcu_node(snp, flags);
-> >  	}
-> >  
+> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> > index 6c4b862..a27df76 100644
+> > --- a/kernel/rcu/update.c
+> > +++ b/kernel/rcu/update.c
+> > @@ -528,7 +528,7 @@ void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func)
+> >  	rhp->func = func;
+> >  	raw_spin_lock_irqsave(&rcu_tasks_cbs_lock, flags);
+> >  	needwake = !rcu_tasks_cbs_head;
+> > -	*rcu_tasks_cbs_tail = rhp;
+> > +	WRITE_ONCE(*rcu_tasks_cbs_tail, rhp);
+> >  	rcu_tasks_cbs_tail = &rhp->next;
+> >  	raw_spin_unlock_irqrestore(&rcu_tasks_cbs_lock, flags);
+> >  	/* We can't create the thread unless interrupts are enabled. */
+> > @@ -658,7 +658,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+> >  		/* If there were none, wait a bit and start over. */
+> >  		if (!list) {
+> >  			wait_event_interruptible(rcu_tasks_cbs_wq,
+> > -						 rcu_tasks_cbs_head);
+> > +						 READ_ONCE(rcu_tasks_cbs_head));
+> >  			if (!rcu_tasks_cbs_head) {
+> >  				WARN_ON(signal_pending(current));
+> >  				schedule_timeout_interruptible(HZ/10);
 > > -- 
 > > 2.9.5
 > > 
