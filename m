@@ -2,147 +2,131 @@ Return-Path: <SRS0=OxHY=4G=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E4EC34044
-	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 16:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A466C34026
+	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 16:43:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C515222B48
-	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 16:34:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F266A22B48
+	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 16:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582043646;
-	bh=k6r7kW/VRYWSj/+4iFogeBzp0brmIrHpaYxLxUwi880=;
+	s=default; t=1582044196;
+	bh=wuFZ+80meI/wCrT4fcDqibe9FS/MNqI4Yqa+RTE6mSU=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=j8hKixl3XE1hq4dKotQY0uO3yDocj5Do9UKDK/nK+7cyJx6Jl/WwE7OaAWYnftlPi
-	 oyBbgZlIjj05FikQ7UhR2lmCqB25zEUlHJNZnwrzYx9mDso4YSTUhifSdWHXznajE0
-	 jeoLmz8p0tRBB8NU1+bpHJZEw18El+59lVJ4DrLI=
+	b=g8/Q/T6S0s2Vw4vu3J9TZ19Gw0fR1jN2dTq9gf3wEIymtgN/Oiyf9YcFtwDI1PQcC
+	 rLeLgcSh/ue7fFTNkEtiTeSLWlWDgfmrdHQg7D/NaMm1G1jWDJb+h0wC/fg8R7Z1rd
+	 pCdL5XhGhFEpGCD/GnsNGgyXSr56TFDI+akodUWg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgBRQeG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Feb 2020 11:34:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57540 "EHLO mail.kernel.org"
+        id S1726610AbgBRQnP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Feb 2020 11:43:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgBRQeG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Feb 2020 11:34:06 -0500
+        id S1726528AbgBRQnP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Feb 2020 11:43:15 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8238A2067D;
-        Tue, 18 Feb 2020 16:34:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8F9B21D56;
+        Tue, 18 Feb 2020 16:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582043645;
-        bh=k6r7kW/VRYWSj/+4iFogeBzp0brmIrHpaYxLxUwi880=;
+        s=default; t=1582044194;
+        bh=wuFZ+80meI/wCrT4fcDqibe9FS/MNqI4Yqa+RTE6mSU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nSQoAZS9Bz6zOOsa52dFQooE6a4TYCI7Eh5tRmUKLuk9+aPKKgUxvFhCnaJZssR5t
-         nbdi5lupCJ7tad1IcRPM7HK7VSAVsbgEV7SQqJ3WoXVA9lVEZPZa03sXk5CTnazrlA
-         Jwug8B7g3LnL4h5ChKEoh+/Ve6ifcoj5q9vt90zs=
+        b=jDQweW1cjYLyQePTP6bA+ueGikUn5TNmIqZFse63qinGEqoLROoiVVIEvOrIcn60e
+         4tbCHoIX8ydAylg/+PhgrtO/JV9wFVmxYr3k2AR7kjo7d+RbvrWCDK7uv0BfYo36Kj
+         YAXjOQ4FB3KUD9ZVgbAgrem4wN+qBWpO539bk+qw=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 57E883520365; Tue, 18 Feb 2020 08:34:05 -0800 (PST)
-Date:   Tue, 18 Feb 2020 08:34:05 -0800
+        id AD4263520365; Tue, 18 Feb 2020 08:43:14 -0800 (PST)
+Date:   Tue, 18 Feb 2020 08:43:14 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, rostedt@goodmis.org, dhowells@redhat.com,
-        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
-        joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 4/4] srcu: Add READ_ONCE() to srcu_struct
- ->srcu_gp_seq load
-Message-ID: <20200218163405.GF2935@paulmck-ThinkPad-P72>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH V2 2/7] rcu: cleanup rcu_preempt_deferred_qs()
+Message-ID: <20200218164314.GG2935@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200215002907.GA15895@paulmck-ThinkPad-P72>
- <20200215002932.15976-4-paulmck@kernel.org>
- <20200217124507.GT14914@hirez.programming.kicks-ass.net>
- <20200217183220.GS2935@paulmck-ThinkPad-P72>
- <20200218114334.GX14914@hirez.programming.kicks-ass.net>
+References: <20191102124559.1135-3-laijs@linux.alibaba.com>
+ <20191103020150.GA23770@tardis>
+ <7489f817-adaf-275b-b19d-18ad248b071f@linux.alibaba.com>
+ <20191104145539.GY20975@paulmck-ThinkPad-P72>
+ <e820852f-87ca-f974-2245-99833205e270@linux.alibaba.com>
+ <20191105071911.GL20975@paulmck-ThinkPad-P72>
+ <20191111143238.GA13306@paulmck-ThinkPad-P72>
+ <cbded276-6770-25a0-2975-2c087872a38e@linux.alibaba.com>
+ <20200217232307.GA17570@paulmck-ThinkPad-P72>
+ <20200218094124.339c0315@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200218114334.GX14914@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200218094124.339c0315@gandalf.local.home>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 12:43:34PM +0100, Peter Zijlstra wrote:
-> On Mon, Feb 17, 2020 at 10:32:20AM -0800, Paul E. McKenney wrote:
-> > On Mon, Feb 17, 2020 at 01:45:07PM +0100, Peter Zijlstra wrote:
-> > > On Fri, Feb 14, 2020 at 04:29:32PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > The load of the srcu_struct structure's ->srcu_gp_seq field in
-> > > > srcu_funnel_gp_start() is lockless, so this commit adds the requisite
-> > > > READ_ONCE().
-> > > > 
-> > > > This data race was reported by KCSAN.
+On Tue, Feb 18, 2020 at 09:41:24AM -0500, Steven Rostedt wrote:
+> On Mon, 17 Feb 2020 15:23:07 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > > I'm still asking for more comments.
 > > > 
-> > > But is there in actual fact a data-race? AFAICT this code was just fine.
-> > 
-> > Now that you mention it, the lock is held at that point, isn't it?  So if
-> > that READ_ONCE() actually does anything, there is a bug somewhere else.
-> > 
-> > Good catch, I will drop this patch, thank you!
+> > > By now, I have received some precious comments, mainly due to my
+> > > stupid naming mistakes and a misleading changelog. I should have
 > 
-> Well, I didn't get further than the Changelog fails to describe an
-> actual problem and it looks like compare-against-a-constant.
+> How about typos?
+
+We appear to have enough typos, thank you!
+
+> > > updated all these with a new series patches. But I hope I
+> > > can polish more in the new patchset with more suggestions from
+> > > valuable comments, especially in x86,scheduler,percpu and rcu
+> > > areas.
+> > > 
+> > > I'm very obliged to hear anything.  
+> > 
+> > commit 23a58acde0eea57ac77377e5d50d9562b2dbdfaa
+> > Author: Lai Jiangshan <laijs@linux.alibaba.com>
+> > Date:   Sat Feb 15 14:37:26 2020 -0800
+> > 
+> >     rcu: Don't set nesting depth negative in rcu_preempt_deferred_qs()
+> >     
+> >     Now that RCU flavors have been consolidated, an RCU-preempt
+> >     rcu_rea_unlock() in an interrupt or softirq handler cannot possibly
 > 
-> (worse, it masks off everything but the 2 lowest bits, so even if there
-> was a problem with load-tearing, it still wouldn't matter)
+> What's a "rea"? ;-)
 
-There is still the possibility of load fusing.  And the possibility
-of defending against possible future changes as well as the current
-snapshot of the code base.
+A typo.  Probably mine.  Thank you for catching it, will fix!  ;-)
 
-> I'm not going to argue with you if you want to use READ_ONCE() vs
-> data_race() and a comment to denote false-positive KCSAN warnings, but I
-> do feel somewhat strongly that the Changelog should describe the actual
-> problem -- if there is one -- or just flat out state that this is to
-> make KCSAN shut up but the code is fine.
-
-The problem is that "the code is fine" is highly subjective and varies
-over time.  :-/
-
-But in this case there was a real problem, just that I got confused
-when analyzing.
-
-> That is; every KCSAN report should be analysed, right? All I'm asking is
-> for that analysis to end up in the Changelog.
-
-Before responding further, I have to ask...
-
-Are you intending your "every KCSAN report should be analyzed" to apply
-globally or just when someone creates a patch based on such a report?
-
-In any case, you have acked this patch's successor (thank you very
-much!), so on this specific patch (or more accurately, its successor)
-I presume that we are all good.
+But maybe an rcu_rhea_lock()?  Just in case the rheas are getting loose?
 
 							Thanx, Paul
 
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >  kernel/rcu/srcutree.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 119a373..90ab475 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -678,7 +678,7 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
-> > > >  
-> > > >  	/* If grace period not already done and none in progress, start it. */
-> > > >  	if (!rcu_seq_done(&ssp->srcu_gp_seq, s) &&
-> > > > -	    rcu_seq_state(ssp->srcu_gp_seq) == SRCU_STATE_IDLE) {
-> > > > +	    rcu_seq_state(READ_ONCE(ssp->srcu_gp_seq)) == SRCU_STATE_IDLE) {
-> > > >  		WARN_ON_ONCE(ULONG_CMP_GE(ssp->srcu_gp_seq, ssp->srcu_gp_seq_needed));
-> > > >  		srcu_gp_start(ssp);
-> > > >  		if (likely(srcu_init_done))
-> > > > -- 
-> > > > 2.9.5
-> > > > 
+> -- Steve
+> 
+> >     end the RCU read-side critical section.  Consider the old vulnerability
+> >     involving rcu_preempt_deferred_qs() being invoked within such a handler
+> >     that interrupted an extended RCU read-side critical section, in which
+> >     a wakeup might be invoked with a scheduler lock held.  Because
+> >     rcu_read_unlock_special() no longer does wakeups in such situations,
+> >     it is no longer necessary for rcu_preempt_deferred_qs() to set the
+> >     nesting level negative.
+> >     
+> >     This commit therfore removes this recursion-protection code from
+> >     rcu_preempt_deferred_qs().
+> >     
+> >     Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> >
