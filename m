@@ -2,30 +2,48 @@ Return-Path: <SRS0=OxHY=4G=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE15AC34031
-	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 22:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB99C34031
+	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 22:54:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 90B2122B48
-	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 22:45:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A2E4C2173E
+	for <rcu@archiver.kernel.org>; Tue, 18 Feb 2020 22:54:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1582066497;
+	bh=b57O7Q3xNzy0G0mohr9Qa5PA/2PUgMbA5hYF4Hu/4No=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=mdC+I+4CRf0Ysb8sdMPyC2Rs3y4+s9dY8zEio/kIYvj2OMaKk6noLPhTjN+yAl9BX
+	 GQAJZUTjbmdyKcncQG5cO6wxJH3c/wLGQlSGByODcSUPLYZrGqSRkjhQOQl17FESS8
+	 Ehq6oQd3qfp1mWw9Qyrtte6thnuXomiEy1l63hZY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgBRWpH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Feb 2020 17:45:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
+        id S1726820AbgBRWy5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Feb 2020 17:54:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgBRWpH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Feb 2020 17:45:07 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726427AbgBRWy5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Feb 2020 17:54:57 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BB682173E;
-        Tue, 18 Feb 2020 22:45:05 +0000 (UTC)
-Date:   Tue, 18 Feb 2020 17:45:03 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id EA52D207FD;
+        Tue, 18 Feb 2020 22:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582066496;
+        bh=b57O7Q3xNzy0G0mohr9Qa5PA/2PUgMbA5hYF4Hu/4No=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EMmNe7YvcJy9VW21eyqDg46Ch4m05ZrjnpmyvRDsmmZg6N8WmC/4VR0JnYzwvc9S2
+         4uBvmrn5meudDyKFNfThCqbtvQXLFE2iNmW6b1KsU+dpPjWUH2Rf/4Y8WWLb5hnZyj
+         eQ6+5B2Fc7mq4nhMc+7FCSTf2dY//GEGdCcksmM4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BEB923520856; Tue, 18 Feb 2020 14:54:55 -0800 (PST)
+Date:   Tue, 18 Feb 2020 14:54:55 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
@@ -35,59 +53,112 @@ Cc:     Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org,
         joel@joelfernandes.org
 Subject: Re: [PATCH tip/core/rcu 1/3] rcu-tasks: *_ONCE() for
  rcu_tasks_cbs_head
-Message-ID: <20200218174503.3d4e4750@gandalf.local.home>
-In-Reply-To: <20200218202226.GJ2935@paulmck-ThinkPad-P72>
+Message-ID: <20200218225455.GN2935@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200215002446.GA15663@paulmck-ThinkPad-P72>
-        <20200215002520.15746-1-paulmck@kernel.org>
-        <20200217123851.GR14914@hirez.programming.kicks-ass.net>
-        <20200217181615.GP2935@paulmck-ThinkPad-P72>
-        <20200218075648.GW14914@hirez.programming.kicks-ass.net>
-        <20200218162719.GE2935@paulmck-ThinkPad-P72>
-        <20200218201142.GF11457@worktop.programming.kicks-ass.net>
-        <20200218202226.GJ2935@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20200215002520.15746-1-paulmck@kernel.org>
+ <20200217123851.GR14914@hirez.programming.kicks-ass.net>
+ <20200217181615.GP2935@paulmck-ThinkPad-P72>
+ <20200218075648.GW14914@hirez.programming.kicks-ass.net>
+ <20200218162719.GE2935@paulmck-ThinkPad-P72>
+ <20200218201142.GF11457@worktop.programming.kicks-ass.net>
+ <20200218202226.GJ2935@paulmck-ThinkPad-P72>
+ <20200218174503.3d4e4750@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218174503.3d4e4750@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 18 Feb 2020 12:22:26 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> On Tue, Feb 18, 2020 at 09:11:42PM +0100, Peter Zijlstra wrote:
-> > On Tue, Feb 18, 2020 at 08:27:19AM -0800, Paul E. McKenney wrote:  
-> > > On Tue, Feb 18, 2020 at 08:56:48AM +0100, Peter Zijlstra wrote:  
-> >   
-> > > > I just took offence at the Changelog wording. It seems to suggest there
-> > > > actually is a problem, there is not.  
-> > > 
-> > > Quoting the changelog: "Not appropriate for backporting due to failure
-> > > being unlikely."  
-> > 
-> > That implies there is failure, however unlikely.
-> > 
-> > In this particular case there is absolutely no failure, except perhaps
-> > in KCSAN. This patch is a pure annotation such that KCSAN can understand
-> > the code.
-> > 
-> > Like said, I don't object to the actual patch, but I do think it is
-> > important to call out false negatives or to describe the actual problem
-> > found.  
+On Tue, Feb 18, 2020 at 05:45:03PM -0500, Steven Rostedt wrote:
+> On Tue, 18 Feb 2020 12:22:26 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> I don't feel at all comfortable declaring that there is absolutely
-> no possibility of failure.
+> > On Tue, Feb 18, 2020 at 09:11:42PM +0100, Peter Zijlstra wrote:
+> > > On Tue, Feb 18, 2020 at 08:27:19AM -0800, Paul E. McKenney wrote:  
+> > > > On Tue, Feb 18, 2020 at 08:56:48AM +0100, Peter Zijlstra wrote:  
+> > >   
+> > > > > I just took offence at the Changelog wording. It seems to suggest there
+> > > > > actually is a problem, there is not.  
+> > > > 
+> > > > Quoting the changelog: "Not appropriate for backporting due to failure
+> > > > being unlikely."  
+> > > 
+> > > That implies there is failure, however unlikely.
+> > > 
+> > > In this particular case there is absolutely no failure, except perhaps
+> > > in KCSAN. This patch is a pure annotation such that KCSAN can understand
+> > > the code.
+> > > 
+> > > Like said, I don't object to the actual patch, but I do think it is
+> > > important to call out false negatives or to describe the actual problem
+> > > found.  
+> > 
+> > I don't feel at all comfortable declaring that there is absolutely
+> > no possibility of failure.
+> 
+> Perhaps wording it like so:
+> 
+> "There's know known issue with the current code, but the *_ONCE()
+> annotations here makes KCSAN happy, allowing us to focus on KCSAN
+> warnings that can help bring about known issues in other code that we
+> can fix, without being distracted by KCSAN warnings that we do not see
+> a problem with."
+> 
+> ?
 
-Perhaps wording it like so:
+That sounds more like something I might put in rcutodo.html as a statement
+of the RCU approach to KCSAN reports.
 
-"There's know known issue with the current code, but the *_ONCE()
-annotations here makes KCSAN happy, allowing us to focus on KCSAN
-warnings that can help bring about known issues in other code that we
-can fix, without being distracted by KCSAN warnings that we do not see
-a problem with."
+But switching to a different situation (for variety, if nothing else),
+what about the commit shown below?
 
-?
+							Thanx, Paul
 
--- Steve
+------------------------------------------------------------------------
+
+commit 35bc02b04a041f32470ae6d959c549bcce8483db
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Feb 18 13:41:02 2020 -0800
+
+    rcutorture: Mark data-race potential for rcu_barrier() test statistics
+    
+    The n_barrier_successes, n_barrier_attempts, and
+    n_rcu_torture_barrier_error variables are updated (without access
+    markings) by the main rcu_barrier() test kthread, and accessed (also
+    without access markings) by the rcu_torture_stats() kthread.  This of
+    course can result in KCSAN complaints.
+    
+    Because the accesses are in diagnostic prints, this commit uses
+    data_race() to excuse the diagnostic prints from the data race.  If this
+    were to ever cause bogus statistics prints (for example, due to store
+    tearing), any misleading information would be disambiguated by the
+    presence or absence of an rcutorture splat.
+    
+    This data race was reported by KCSAN.  Not appropriate for backporting
+    due to failure being unlikely and due to the mild consequences of the
+    failure, namely a confusing rcutorture console message.
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 5453bd5..b3301f3 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1444,9 +1444,9 @@ rcu_torture_stats_print(void)
+ 		atomic_long_read(&n_rcu_torture_timers));
+ 	torture_onoff_stats();
+ 	pr_cont("barrier: %ld/%ld:%ld\n",
+-		n_barrier_successes,
+-		n_barrier_attempts,
+-		n_rcu_torture_barrier_error);
++		data_race(n_barrier_successes),
++		data_race(n_barrier_attempts),
++		data_race(n_rcu_torture_barrier_error));
+ 
+ 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+ 	if (atomic_read(&n_rcu_torture_mberror) ||
