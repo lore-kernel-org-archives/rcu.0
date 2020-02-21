@@ -2,195 +2,349 @@ Return-Path: <SRS0=qU2T=4J=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A2FC35642
-	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E77BCC35646
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 13:28:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4F3EB20722
-	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582275011;
-	bh=HzO3ag8UxDL8oDxRgE0ImymDAM2E6B8Jsq3Oz5gyom4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=kGgMwEXQnlBR92Od3RaG/+S2IIGtpx0Wl/BXmDj0CSJtkUNx41QA3gfQBbl1qPrtb
-	 fvtTjparWT66owgUxhW+XbrorhWFm91av2xmr7L4vqbBrJHyCQvCeSVya8aXsxCNIg
-	 Ow9/gEkKXnrDnzS6fYFNgMq1kdTgdoWGKK0fG6y8=
+	by mail.kernel.org (Postfix) with ESMTP id 9E1202073A
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 13:28:20 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BVfIGLO/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgBUIuK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Feb 2020 03:50:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727495AbgBUHoA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Feb 2020 02:44:00 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6609C222C4;
-        Fri, 21 Feb 2020 07:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582271038;
-        bh=HzO3ag8UxDL8oDxRgE0ImymDAM2E6B8Jsq3Oz5gyom4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2kMxu/vFWSl6Aqna7pzO+yDBFaGpDmU1da9vq4Hb9AFvUsz7Gh1yUFwwH6TNug17r
-         Ygnmrm3wqYK9MNbjU466qz8Rk7aC6WDyGaQ/3yIao99ZdDy/G2Shwj0xnvQR/3fJtg
-         PWAadduxoX1pkZ2wVNf2z8yOwsy6OT02NsdVEG4A=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        id S1728198AbgBUN2U (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Feb 2020 08:28:20 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:45460 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbgBUN2U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Feb 2020 08:28:20 -0500
+Received: by mail-qt1-f194.google.com with SMTP id d9so1207867qte.12
+        for <rcu@vger.kernel.org>; Fri, 21 Feb 2020 05:28:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ttw7zbAKUYQGYrdurjacYFEgGvhEz3TZgtMI5lpX0U4=;
+        b=BVfIGLO/GnUrYvKVSHBfApZeSvJwQV+JVs0B7EPICFhsCTTYppnKxZWIQH358zEpDo
+         m9nIHwfIINrGHkZWC2KQsxXKV6IESLPn96ZujfXajLv3in5e1n2zxunFvznSXn1myHWy
+         asvVJAI5kaMIYsUdDmBBeu+ACKjcTymn+CfBA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ttw7zbAKUYQGYrdurjacYFEgGvhEz3TZgtMI5lpX0U4=;
+        b=Vxrd9VNsN5nTkkExvUa0yM9E7IxEsjHD0dSBJ1akY8CMOW1yR4LnAp+LH9cGRde8IG
+         IwWniROku0qs7rW00/j1/mkCmlN3pCe9H57+P+YmCtv6oja8sMpCzDtIWiKv7c82v87z
+         gfAM/M4VSzDC8QGxSUmkmjDB2lVnIR8OkRAQzeclSdcCwZPPpMTIGskrh/qUGYuslEkn
+         NMdIzt7DEznL9SUOCoBR5A7YIcscTnfnvi9EMz/cgdrDF8mQeh/Zc5jXlxxDMpl/MVL2
+         tuDXrPOe4Ld38OesvgiD3tR/bs6+ScvX1Ft5TFwtAx/KRE+gRE5aSaK4ukjCSrLnIrnl
+         7Ceg==
+X-Gm-Message-State: APjAAAWNhjwHEzz5Ritbq0o/RCgmo2aPnkJOZ6aPAwhbH5arhR5grLW2
+        jgl8OG/07NJzm2GRdkvGyscO/A==
+X-Google-Smtp-Source: APXvYqxpLDn0bCSYatZg7Uqhj28dqOda+8wk8jeIA5o4UuOhP0FzZdpWO/o0xpLUi/UNbdJRyTmwtA==
+X-Received: by 2002:ac8:554b:: with SMTP id o11mr31612397qtr.36.1582291698716;
+        Fri, 21 Feb 2020 05:28:18 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id k58sm1535726qtb.60.2020.02.21.05.28.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2020 05:28:18 -0800 (PST)
+Date:   Fri, 21 Feb 2020 08:28:17 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 017/399] rcu: Fix data-race due to atomic_t copy-by-value
-Date:   Fri, 21 Feb 2020 08:35:42 +0100
-Message-Id: <20200221072403.999831553@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200221072402.315346745@linuxfoundation.org>
-References: <20200221072402.315346745@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200221132817.GB194360@google.com>
+References: <20200215233817.GA670792@mit.edu>
+ <20200216121246.GG2935@paulmck-ThinkPad-P72>
+ <20200217160827.GA5685@pc636>
+ <20200217193314.GA12604@mit.edu>
+ <20200218170857.GA28774@pc636>
+ <20200221120618.GA194360@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200221120618.GA194360@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+On Fri, Feb 21, 2020 at 07:06:18AM -0500, Joel Fernandes wrote:
+> On Tue, Feb 18, 2020 at 06:08:57PM +0100, Uladzislau Rezki wrote:
+> > On Mon, Feb 17, 2020 at 02:33:14PM -0500, Theodore Y. Ts'o wrote:
+> > > On Mon, Feb 17, 2020 at 05:08:27PM +0100, Uladzislau Rezki wrote:
+> > > > Hello, Joel, Paul, Ted. 
+> > > > 
+> > > > > 
+> > > > > Good point!
+> > > > > 
+> > > > > Now that kfree_rcu() is on its way to being less of a hack deeply
+> > > > > entangled into the bowels of RCU, this might be fairly easy to implement.
+> > > > > It might well be simply a matter of a function pointer and a kvfree_rcu()
+> > > > > API.  Adding Uladzislau Rezki and Joel Fernandez on CC for their thoughts.
+> > > > > 
+> > > > I think it makes sense. For example i see there is a similar demand in
+> > > > the mm/list_lru.c too. As for implementation, it will not be hard, i think. 
+> > > > 
+> > > > The easiest way is to inject kvfree() support directly into existing kfree_call_rcu()
+> > > > logic(probably will need to rename that function), i.e. to free vmalloc() allocations
+> > > > only in "emergency path" by just calling kvfree(). So that function in its turn will
+> > > > figure out if it is _vmalloc_ address or not and trigger corresponding "free" path.
+> > > 
+> > > The other difference between ext4_kvfree_array_rcu() and kfree_rcu()
+> > > is that kfree_rcu() is a magic macro which frees a structure, which
+> > > has to contain a struct rcu_head.  In this case, I'm freeing a pointer
+> > > to set of structures, or in another case, a set of buffer_heads, which
+> > > do *not* have an rcu_head structure.
+> > > 
+> > We can implement kvfree_rcu() that will deal with pointer only, it is not
+> > an issue. I mean without embedding rcu_head to the structure or whatever
+> > else.
+> > 
+> > I tried to implement it with less number of changes to make it more clear
+> > and readable. Please have a look:
+> > 
+> > <snip>
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> 
+> Overall this implementation is nice. You are basically avoiding allocating
+> rcu_head like Ted did by using the array-of-pointers technique we used for
+> the previous kfree_rcu() work.
+> 
+> One thing stands out, the path where we could not allocate a page for the new
+> block node:
+> 
+> > @@ -3061,6 +3148,11 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >         if (krcp->initialized)
+> >                 spin_unlock(&krcp->lock);
+> >         local_irq_restore(flags);
+> > +
+> > +       if (!skip_call_rcu) {
+> > +               synchronize_rcu();
+> > +               kvfree(ptr_to_free);
+> 
+> We can't block, it has to be async otherwise everything else blocks, and I
+> think this can also be used from interrupt handlers which would at least be
+> an SWA violation. So perhaps it needs to allocate an rcu_head wrapper object
+> itself for the 'emergeny case' and use the regular techniques.
+> 
+> Another thing that stands out is the code duplication, if we can make this
+> reuse as much as of the previous code as possible, that'd be great. I'd like
+> to avoid bvcached and bvhead if possible. Maybe we can store information
+> about the fact that this is a 'special object' in some of the lower-order
+> bits of the pointer. Then we can detect that it is 'special' and free it
+> using kvfree() during the reclaim
 
-[ Upstream commit 6cf539a87a61a4fbc43f625267dbcbcf283872ed ]
+I was thinking something like the following, only build-tested -- just to
+show the idea. Perhaps the synchronize_rcu() should be done from a workqueue
+handler to prevent IRQ crapping out?
 
-This fixes a data-race where `atomic_t dynticks` is copied by value. The
-copy is performed non-atomically, resulting in a data-race if `dynticks`
-is updated concurrently.
+Basically what I did different is:
+1. Use the existing kfree_rcu_bulk_data::records array to store the
+   to-be-freed array.
+2. In case of emergency, allocate a new wrapper and tag the pointer.
+   Read the tag later to figure its an array wrapper and do additional kvfree.
 
-This data-race was found with KCSAN:
-==================================================================
-BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
+debug_objects bits wouldn't work obviously for the !emergency kvfree case,
+not sure what we can do there.
+---8<-----------------------
 
-write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
- atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
- rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
- dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
- force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
- rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
- rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
- rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
- kthread+0x1b5/0x200 kernel/kthread.c:255
- <snip>
-
-read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
- rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
- rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
- irq_enter+0x5/0x50 kernel/softirq.c:347
- <snip>
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-Workqueue: kblockd blk_mq_run_work_fn
-==================================================================
-
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/trace/events/rcu.h |  4 ++--
- kernel/rcu/tree.c          | 11 ++++++-----
- 2 files changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 66122602bd085..697e2c0624dcd 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -449,7 +449,7 @@ TRACE_EVENT_RCU(rcu_fqs,
-  */
- TRACE_EVENT_RCU(rcu_dyntick,
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 2678a37c31696..19fd7c74ad532 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -805,7 +805,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+ #define __kfree_rcu(head, offset) \
+ 	do { \
+ 		BUILD_BUG_ON(!__is_kfree_rcu_offset(offset)); \
+-		kfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
++		kfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset), NULL); \
+ 	} while (0)
  
--	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
-+	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
+ /**
+@@ -842,6 +842,14 @@ do {									\
+ 		__kfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+ } while (0)
  
- 	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
++#define kvfree_rcu(ptr)                                                \
++do {                                                                   \
++       typeof (ptr) ___p = (ptr);                                      \
++                                                                       \
++       if (___p)                                                       \
++               kfree_call_rcu(NULL, (rcu_callback_t)(unsigned long)(0), ___p); \
++} while (0)
++
+ /*
+  * Place this after a lock-acquisition primitive to guarantee that
+  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 045c28b71f4f3..a12ecc1645fa9 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -34,7 +34,7 @@ static inline void synchronize_rcu_expedited(void)
+ 	synchronize_rcu();
+ }
  
-@@ -464,7 +464,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
- 		__entry->polarity = polarity;
- 		__entry->oldnesting = oldnesting;
- 		__entry->newnesting = newnesting;
--		__entry->dynticks = atomic_read(&dynticks);
-+		__entry->dynticks = dynticks;
- 	),
+-static inline void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++static inline void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func, void *ptr)
+ {
+ 	call_rcu(head, func);
+ }
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 45f3f66bb04df..1e445b566c019 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -33,7 +33,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
+ }
  
- 	TP_printk("%s %lx %lx %#3x", __entry->polarity,
+ void synchronize_rcu_expedited(void);
+-void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
++void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func, void *ptr);
+ 
+ void rcu_barrier(void);
+ bool rcu_eqs_special_set(int cpu);
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1694a6b57ad8c..6145e08a14072 100644
+index ec81139cc4c6a..7b6ab4160f080 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -577,7 +577,7 @@ static void rcu_eqs_enter(bool user)
- 	}
+@@ -2814,6 +2814,15 @@ struct kfree_rcu_cpu {
+ 	bool initialized;
+ };
  
- 	lockdep_assert_irqs_disabled();
--	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	rdp = this_cpu_ptr(&rcu_data);
- 	do_nocb_deferred_wakeup(rdp);
-@@ -650,14 +650,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
- 	 * leave it in non-RCU-idle state.
++/*
++ * Used in a situation where array of pointers could
++ * not be put onto a kfree_bulk_data::records array.
++ */
++struct kfree_rcu_wrap_kvarray {
++	struct rcu_head head;
++	void *ptr;
++};
++
+ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
+ 
+ static __always_inline void
+@@ -2873,12 +2882,25 @@ static void kfree_rcu_work(struct work_struct *work)
  	 */
- 	if (rdp->dynticks_nmi_nesting != 1) {
--		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
-+		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
-+				  atomic_read(&rdp->dynticks));
- 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
- 			   rdp->dynticks_nmi_nesting - 2);
- 		return;
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
++		bool is_array_ptr = false;
++
++		if (((unsigned long)head - offset) & BIT(0)) {
++			is_array_ptr = true;
++			offset = offset - 1;
++		}
+ 
+ 		next = head->next;
+-		debug_rcu_head_unqueue(head);
++		if (!is_array_ptr)
++			debug_rcu_head_unqueue(head);
++
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
+ 
++		if (is_array_ptr) {
++			struct kfree_rcu_wrap_kvarray *kv = (void *)head - offset;
++			kvfree((void *)kv->ptr);
++		}
++
+ 		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
+ 			kfree((void *)head - offset);
+ 
+@@ -2975,7 +2997,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 
+ static inline bool
+ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+-	struct rcu_head *head, rcu_callback_t func)
++	struct rcu_head *head, rcu_callback_t func, void *ptr)
+ {
+ 	struct kfree_rcu_bulk_data *bnode;
+ 
+@@ -3009,14 +3031,20 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
  	}
  
- 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
--	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
- 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+ #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	head->func = func;
+-	head->next = krcp->bhead->head_free_debug;
+-	krcp->bhead->head_free_debug = head;
++	/* debug_objects doesn't work for kvfree */
++	if (!ptr) {
++		head->func = func;
++		head->next = krcp->bhead->head_free_debug;
++		krcp->bhead->head_free_debug = head;
++	}
+ #endif
  
- 	if (irq)
-@@ -744,7 +745,7 @@ static void rcu_eqs_exit(bool user)
- 	rcu_dynticks_task_exit();
- 	rcu_dynticks_eqs_exit();
- 	rcu_cleanup_after_idle();
--	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
-+	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	WRITE_ONCE(rdp->dynticks_nesting, 1);
- 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
-@@ -833,7 +834,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
- 	}
- 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
- 			  rdp->dynticks_nmi_nesting,
--			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
-+			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
- 	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
- 		   rdp->dynticks_nmi_nesting + incby);
- 	barrier();
--- 
-2.20.1
-
-
-
+ 	/* Finally insert. */
+-	krcp->bhead->records[krcp->bhead->nr_records++] =
+-		(void *) head - (unsigned long) func;
++	if (ptr)
++		krcp->bhead->records[krcp->bhead->nr_records++] = ptr;
++	else
++		krcp->bhead->records[krcp->bhead->nr_records++] =
++			(void *) head - (unsigned long) func;
+ 
+ 	return true;
+ }
+@@ -3033,10 +3061,11 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+  * be free'd in workqueue context. This allows us to: batch requests together to
+  * reduce the number of grace periods during heavy kfree_rcu() load.
+  */
+-void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func, void *ptr)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
++	bool ret;
+ 
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+ 	krcp = this_cpu_ptr(&krc);
+@@ -3044,7 +3073,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		spin_lock(&krcp->lock);
+ 
+ 	// Queue the object but don't yet schedule the batch.
+-	if (debug_rcu_head_queue(head)) {
++	// NOTE: debug objects doesn't work for kvfree.
++	if (!ptr && debug_rcu_head_queue(head)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
+@@ -3055,7 +3085,29 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func))) {
++	ret = !kfree_call_rcu_add_ptr_to_bulk(krcp, head, func, ptr);
++	if (unlikely(!ret)) {
++		if (ptr) {
++			struct kfree_rcu_wrap_kvarray *kvwrap;
++
++			kvwrap = kzalloc(sizeof(*kvwrap), GFP_KERNEL);
++
++			// If memory is really low, just try inline-freeing.
++			if (!kvwrap) {
++				// NOT SURE if permitted due to IRQ. Maybe we
++				// should try doing this from WQ?
++				synchronize_rcu();
++				kvfree(ptr);
++			}
++
++			kvwrap->ptr = ptr;
++			ptr = NULL;
++			head = &(kvwrap->head);
++			func = offsetof(typeof(*kvwrap), head);
++			// Tag the array as wrapper
++			func = (rcu_callback_t)((unsigned long)func + 1);
++		}
++
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
