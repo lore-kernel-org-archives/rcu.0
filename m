@@ -1,129 +1,196 @@
-Return-Path: <SRS0=W0OP=4H=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=qU2T=4J=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E31C34022
-	for <rcu@archiver.kernel.org>; Wed, 19 Feb 2020 03:59:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A006C35641
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:01:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 526B324656
-	for <rcu@archiver.kernel.org>; Wed, 19 Feb 2020 03:59:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01DA32073A
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:01:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582084762;
-	bh=UlD/GgrIoO+98ilCRhTMm11ZU9cYeUcU+NIKuiRdwPM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=UOM+WMn7w8pyWWAnMjqA0gnN2k4SoicXb8M0+xnsmBMHEiYhHxoJVmdkxnIGUfice
-	 RLjB9dGc1syxzW7+lzJyi7TPS52yqjqrjqKSgybuzkBJpT2/MSZYfPFYO+qc+qw6in
-	 jLL6XlS2FRS5vRoX2m+7WWdhwFL8mxRPdr2dqGCY=
+	s=default; t=1582272101;
+	bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=2AnAF+ptWptL2ekEgOJ9/hdpfzeBcnfxcVDb5q6t32jY8gJfU6IEfyeEPbDHf6lUA
+	 ERmk7Bvfeq1g9SzR0RNrVrkIFoF5u10A97rRoJAbZPvbhy6xHDTc4oILdhkecWqwyJ
+	 z7Kg6iy8bDSw/QRbBYps75XOqgq7EA63m+txdENQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgBSD7W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Feb 2020 22:59:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
+        id S1730940AbgBUIBj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Feb 2020 03:01:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726464AbgBSD7W (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Feb 2020 22:59:22 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1731224AbgBUIBg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Feb 2020 03:01:36 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BDAD208E4;
-        Wed, 19 Feb 2020 03:59:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8316206ED;
+        Fri, 21 Feb 2020 08:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582084761;
-        bh=UlD/GgrIoO+98ilCRhTMm11ZU9cYeUcU+NIKuiRdwPM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UsgF5iz6/VZmX54+QmHA84ui3KIJdH/0oIaBJC6mlm9ljdykZx8mZcnyvhN9ZjoqI
-         Jo3bo9dnj2K9gB/b2J6ZWZ1JqPyRd7uVrN1IT6bgKFVWYPPZ226X3ypA3/vdDRXtBE
-         FOdUbeVrx/mABL9FuPe4aFjosHkBdRZ3XcX8HRs4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F21AF3520C69; Tue, 18 Feb 2020 19:59:20 -0800 (PST)
-Date:   Tue, 18 Feb 2020 19:59:20 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        s=default; t=1582272095;
+        bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U8wyxf7R8hSI3xMMZwGUGXeXAedXO/00ZqYfMXkfGi6jfmx7+kXCcMsUyeG9lhcOt
+         Zkr4O0YPN959z1dHtaO/mey9Ajip9mPCcqffdz1FN+oIAP5/Y8E7N3mTsiZ7STYInA
+         8tFz77OEJs0WsppR5Kjgz7xvDWZqWtxekXk1BMAE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH V2 1/7] rcu: use preempt_count to test whether scheduler
- locks is held
-Message-ID: <20200219035920.GR2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20191102124559.1135-1-laijs@linux.alibaba.com>
- <20191102124559.1135-2-laijs@linux.alibaba.com>
- <20200219033147.GA103554@google.com>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 015/344] rcu: Fix data-race due to atomic_t copy-by-value
+Date:   Fri, 21 Feb 2020 08:36:54 +0100
+Message-Id: <20200221072350.630576454@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200221072349.335551332@linuxfoundation.org>
+References: <20200221072349.335551332@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219033147.GA103554@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 10:31:47PM -0500, Joel Fernandes wrote:
-> On Sat, Nov 02, 2019 at 12:45:53PM +0000, Lai Jiangshan wrote:
-> > Ever since preemption was introduced to linux kernel,
-> > irq disabled spinlocks are always held with preemption
-> > disabled. One of the reason is that sometimes we need
-> > to use spin_unlock() which will do preempt_enable()
-> > to unlock the irq disabled spinlock with keeping irq
-> > disabled. So preempt_count can be used to test whether
-> > scheduler locks is possible held.
-> > 
-> > CC: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > ---
-> >  kernel/rcu/tree_plugin.h | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 0982e9886103..aba5896d67e3 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -603,10 +603,14 @@ static void rcu_read_unlock_special(struct task_struct *t)
-> >  		      tick_nohz_full_cpu(rdp->cpu);
-> >  		// Need to defer quiescent state until everything is enabled.
-> >  		if (irqs_were_disabled && use_softirq &&
-> > -		    (in_interrupt() ||
-> > -		     (exp && !t->rcu_read_unlock_special.b.deferred_qs))) {
-> > +		    (in_interrupt() || (exp && !preempt_bh_were_disabled))) {
-> >  			// Using softirq, safe to awaken, and we get
-> >  			// no help from enabling irqs, unlike bh/preempt.
-> > +			// in_interrupt(): raise_softirq_irqoff() is
-> > +			// guaranteed not to not do wakeup
-> > +			// !preempt_bh_were_disabled: scheduler locks cannot
-> > +			// be held, since spinlocks are always held with
-> > +			// preempt_disable(), so the wakeup will be safe.
-> 
-> This means if preemption is disabled for any reason (other than scheduler
-> locks), such as acquiring an unrelated lock that is not held by the
-> scheduler, then the softirq would not be raised even if it was safe to
-> do so. From that respect, it seems a step back no?
+From: Marco Elver <elver@google.com>
 
-This patch was one of the things motivating me to turn tick on for
-nohz_full CPUs that spend too long in the kernel.  Given that change,
-this patch can be (and recently was) made more straightforward.  Prior to
-the nohz_full change, Lai was kind of between a rock and a hard place
-on this one.  ;-)
+[ Upstream commit 6cf539a87a61a4fbc43f625267dbcbcf283872ed ]
 
-							Thanx, Paul
+This fixes a data-race where `atomic_t dynticks` is copied by value. The
+copy is performed non-atomically, resulting in a data-race if `dynticks`
+is updated concurrently.
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> >  			raise_softirq_irqoff(RCU_SOFTIRQ);
-> >  		} else {
-> >  			// Enabling BH or preempt does reschedule, so...
-> > -- 
-> > 2.20.1
-> > 
+This data-race was found with KCSAN:
+==================================================================
+BUG: KCSAN: data-race in dyntick_save_progress_counter / rcu_irq_enter
+
+write to 0xffff989dbdbe98e0 of 4 bytes by task 10 on cpu 3:
+ atomic_add_return include/asm-generic/atomic-instrumented.h:78 [inline]
+ rcu_dynticks_snap kernel/rcu/tree.c:310 [inline]
+ dyntick_save_progress_counter+0x43/0x1b0 kernel/rcu/tree.c:984
+ force_qs_rnp+0x183/0x200 kernel/rcu/tree.c:2286
+ rcu_gp_fqs kernel/rcu/tree.c:1601 [inline]
+ rcu_gp_fqs_loop+0x71/0x880 kernel/rcu/tree.c:1653
+ rcu_gp_kthread+0x22c/0x3b0 kernel/rcu/tree.c:1799
+ kthread+0x1b5/0x200 kernel/kthread.c:255
+ <snip>
+
+read to 0xffff989dbdbe98e0 of 4 bytes by task 154 on cpu 7:
+ rcu_nmi_enter_common kernel/rcu/tree.c:828 [inline]
+ rcu_irq_enter+0xda/0x240 kernel/rcu/tree.c:870
+ irq_enter+0x5/0x50 kernel/softirq.c:347
+ <snip>
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 7 PID: 154 Comm: kworker/7:1H Not tainted 5.3.0+ #5
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+Workqueue: kblockd blk_mq_run_work_fn
+==================================================================
+
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/trace/events/rcu.h |  4 ++--
+ kernel/rcu/tree.c          | 11 ++++++-----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 694bd040cf51a..fdd31c5fd1265 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
+  */
+ TRACE_EVENT_RCU(rcu_dyntick,
+ 
+-	TP_PROTO(const char *polarity, long oldnesting, long newnesting, atomic_t dynticks),
++	TP_PROTO(const char *polarity, long oldnesting, long newnesting, int dynticks),
+ 
+ 	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
+ 
+@@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
+ 		__entry->polarity = polarity;
+ 		__entry->oldnesting = oldnesting;
+ 		__entry->newnesting = newnesting;
+-		__entry->dynticks = atomic_read(&dynticks);
++		__entry->dynticks = dynticks;
+ 	),
+ 
+ 	TP_printk("%s %lx %lx %#3x", __entry->polarity,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 81105141b6a82..62e59596a30a0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
+ 	}
+ 
+ 	lockdep_assert_irqs_disabled();
+-	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	do_nocb_deferred_wakeup(rdp);
+@@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+ 	 * leave it in non-RCU-idle state.
+ 	 */
+ 	if (rdp->dynticks_nmi_nesting != 1) {
+-		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2, rdp->dynticks);
++		trace_rcu_dyntick(TPS("--="), rdp->dynticks_nmi_nesting, rdp->dynticks_nmi_nesting - 2,
++				  atomic_read(&rdp->dynticks));
+ 		WRITE_ONCE(rdp->dynticks_nmi_nesting, /* No store tearing. */
+ 			   rdp->dynticks_nmi_nesting - 2);
+ 		return;
+ 	}
+ 
+ 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
+-	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, rdp->dynticks);
++	trace_rcu_dyntick(TPS("Startirq"), rdp->dynticks_nmi_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
+ 
+ 	if (irq)
+@@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
+ 	rcu_dynticks_task_exit();
+ 	rcu_dynticks_eqs_exit();
+ 	rcu_cleanup_after_idle();
+-	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, rdp->dynticks);
++	trace_rcu_dyntick(TPS("End"), rdp->dynticks_nesting, 1, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	WRITE_ONCE(rdp->dynticks_nesting, 1);
+ 	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+@@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+ 	}
+ 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
+ 			  rdp->dynticks_nmi_nesting,
+-			  rdp->dynticks_nmi_nesting + incby, rdp->dynticks);
++			  rdp->dynticks_nmi_nesting + incby, atomic_read(&rdp->dynticks));
+ 	WRITE_ONCE(rdp->dynticks_nmi_nesting, /* Prevent store tearing. */
+ 		   rdp->dynticks_nmi_nesting + incby);
+ 	barrier();
+-- 
+2.20.1
+
+
+
