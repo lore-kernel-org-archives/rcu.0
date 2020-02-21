@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A006C35641
-	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A2FC35642
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:50:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 01DA32073A
-	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:01:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F3EB20722
+	for <rcu@archiver.kernel.org>; Fri, 21 Feb 2020 08:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582272101;
-	bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+	s=default; t=1582275011;
+	bh=HzO3ag8UxDL8oDxRgE0ImymDAM2E6B8Jsq3Oz5gyom4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=2AnAF+ptWptL2ekEgOJ9/hdpfzeBcnfxcVDb5q6t32jY8gJfU6IEfyeEPbDHf6lUA
-	 ERmk7Bvfeq1g9SzR0RNrVrkIFoF5u10A97rRoJAbZPvbhy6xHDTc4oILdhkecWqwyJ
-	 z7Kg6iy8bDSw/QRbBYps75XOqgq7EA63m+txdENQ=
+	b=kGgMwEXQnlBR92Od3RaG/+S2IIGtpx0Wl/BXmDj0CSJtkUNx41QA3gfQBbl1qPrtb
+	 fvtTjparWT66owgUxhW+XbrorhWFm91av2xmr7L4vqbBrJHyCQvCeSVya8aXsxCNIg
+	 Ow9/gEkKXnrDnzS6fYFNgMq1kdTgdoWGKK0fG6y8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730940AbgBUIBj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Feb 2020 03:01:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
+        id S1728652AbgBUIuK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Feb 2020 03:50:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731224AbgBUIBg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Feb 2020 03:01:36 -0500
+        id S1727495AbgBUHoA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Feb 2020 02:44:00 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8316206ED;
-        Fri, 21 Feb 2020 08:01:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6609C222C4;
+        Fri, 21 Feb 2020 07:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582272095;
-        bh=VAEiBAgjy/gCmBix35/puJS0Yzce1xq9F45YjCo8c9o=;
+        s=default; t=1582271038;
+        bh=HzO3ag8UxDL8oDxRgE0ImymDAM2E6B8Jsq3Oz5gyom4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U8wyxf7R8hSI3xMMZwGUGXeXAedXO/00ZqYfMXkfGi6jfmx7+kXCcMsUyeG9lhcOt
-         Zkr4O0YPN959z1dHtaO/mey9Ajip9mPCcqffdz1FN+oIAP5/Y8E7N3mTsiZ7STYInA
-         8tFz77OEJs0WsppR5Kjgz7xvDWZqWtxekXk1BMAE=
+        b=2kMxu/vFWSl6Aqna7pzO+yDBFaGpDmU1da9vq4Hb9AFvUsz7Gh1yUFwwH6TNug17r
+         Ygnmrm3wqYK9MNbjU466qz8Rk7aC6WDyGaQ/3yIao99ZdDy/G2Shwj0xnvQR/3fJtg
+         PWAadduxoX1pkZ2wVNf2z8yOwsy6OT02NsdVEG4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -50,12 +50,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ingo Molnar <mingo@redhat.com>,
         Dmitry Vyukov <dvyukov@google.com>, rcu@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/344] rcu: Fix data-race due to atomic_t copy-by-value
-Date:   Fri, 21 Feb 2020 08:36:54 +0100
-Message-Id: <20200221072350.630576454@linuxfoundation.org>
+Subject: [PATCH 5.5 017/399] rcu: Fix data-race due to atomic_t copy-by-value
+Date:   Fri, 21 Feb 2020 08:35:42 +0100
+Message-Id: <20200221072403.999831553@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200221072349.335551332@linuxfoundation.org>
-References: <20200221072349.335551332@linuxfoundation.org>
+In-Reply-To: <20200221072402.315346745@linuxfoundation.org>
+References: <20200221072402.315346745@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -119,10 +119,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 694bd040cf51a..fdd31c5fd1265 100644
+index 66122602bd085..697e2c0624dcd 100644
 --- a/include/trace/events/rcu.h
 +++ b/include/trace/events/rcu.h
-@@ -442,7 +442,7 @@ TRACE_EVENT_RCU(rcu_fqs,
+@@ -449,7 +449,7 @@ TRACE_EVENT_RCU(rcu_fqs,
   */
  TRACE_EVENT_RCU(rcu_dyntick,
  
@@ -131,7 +131,7 @@ index 694bd040cf51a..fdd31c5fd1265 100644
  
  	TP_ARGS(polarity, oldnesting, newnesting, dynticks),
  
-@@ -457,7 +457,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
+@@ -464,7 +464,7 @@ TRACE_EVENT_RCU(rcu_dyntick,
  		__entry->polarity = polarity;
  		__entry->oldnesting = oldnesting;
  		__entry->newnesting = newnesting;
@@ -141,10 +141,10 @@ index 694bd040cf51a..fdd31c5fd1265 100644
  
  	TP_printk("%s %lx %lx %#3x", __entry->polarity,
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 81105141b6a82..62e59596a30a0 100644
+index 1694a6b57ad8c..6145e08a14072 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -576,7 +576,7 @@ static void rcu_eqs_enter(bool user)
+@@ -577,7 +577,7 @@ static void rcu_eqs_enter(bool user)
  	}
  
  	lockdep_assert_irqs_disabled();
@@ -153,7 +153,7 @@ index 81105141b6a82..62e59596a30a0 100644
  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
  	rdp = this_cpu_ptr(&rcu_data);
  	do_nocb_deferred_wakeup(rdp);
-@@ -649,14 +649,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
+@@ -650,14 +650,15 @@ static __always_inline void rcu_nmi_exit_common(bool irq)
  	 * leave it in non-RCU-idle state.
  	 */
  	if (rdp->dynticks_nmi_nesting != 1) {
@@ -171,7 +171,7 @@ index 81105141b6a82..62e59596a30a0 100644
  	WRITE_ONCE(rdp->dynticks_nmi_nesting, 0); /* Avoid store tearing. */
  
  	if (irq)
-@@ -743,7 +744,7 @@ static void rcu_eqs_exit(bool user)
+@@ -744,7 +745,7 @@ static void rcu_eqs_exit(bool user)
  	rcu_dynticks_task_exit();
  	rcu_dynticks_eqs_exit();
  	rcu_cleanup_after_idle();
@@ -180,7 +180,7 @@ index 81105141b6a82..62e59596a30a0 100644
  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
  	WRITE_ONCE(rdp->dynticks_nesting, 1);
  	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
-@@ -827,7 +828,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+@@ -833,7 +834,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
  	}
  	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
  			  rdp->dynticks_nmi_nesting,
