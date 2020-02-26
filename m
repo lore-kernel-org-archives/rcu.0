@@ -2,48 +2,83 @@ Return-Path: <SRS0=//1+=4O=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19A96C4BA0A
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 04:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D2BC4BA0B
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 06:14:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C2394222C2
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 04:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582690721;
-	bh=wa0ljoR4VKK7AhtcPWEwY9ai7AZZg6kuy4bimaFCvDw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=dh1uv19Z9kLwXmyoN0M4TSR3bnQKxinTgHuoYwUQQCRw4yU3AnjroyHL3oi/2q2uY
-	 eFch/oigNKCA0hLOV/6dWwmHex6k2mqnkeSFX/dbufuBdfr2C1vB8iAXz1c86SKWyS
-	 rBZN8M9BPLSLmbzhliZZw8yvAWe2EEbEf9wniflw=
+	by mail.kernel.org (Postfix) with ESMTP id 2D95520838
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 06:14:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fzly5Bt0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgBZESl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Feb 2020 23:18:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgBZESl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Feb 2020 23:18:41 -0500
-Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 452A821D7E;
-        Wed, 26 Feb 2020 04:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582690720;
-        bh=wa0ljoR4VKK7AhtcPWEwY9ai7AZZg6kuy4bimaFCvDw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XFhFqlnat9Kma6j8YRzZQIF0YpG7+omQM53gZLnZfyg78icJvpZ5C+WNFlVBzMT6F
-         9rAsvD2Kg9A8fFNOxP961HwP/PVlAAMMt24Wq9nFeLo6eqqEQNV1p76pwG1DhndQf2
-         554I/BZFHVYB0HG7LWVvORTkZF08qm9zs/+9hex0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8586635226CF; Tue, 25 Feb 2020 20:18:39 -0800 (PST)
-Date:   Tue, 25 Feb 2020 20:18:39 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
+        id S1726396AbgBZGOl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Feb 2020 01:14:41 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35721 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgBZGOk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Feb 2020 01:14:40 -0500
+Received: by mail-qk1-f196.google.com with SMTP id 145so1639620qkl.2;
+        Tue, 25 Feb 2020 22:14:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ldFSenbRaobXFFVp1f9QUTi/39L2YQ/OqXM/JGo52LQ=;
+        b=fzly5Bt0lxR+i2u0c1cZjYUfRjnq/3BWstDBcDQuvUw7FMyh4CbKJrPP6EKDoQsLdN
+         W3anSQ2tt+1+OR2LXca+GDf1UpOl1qYJUzHV1o5nwtIR9CKp0RvPV0EV9BLhaJ+x8I0C
+         QZgxhDXe5yhh7N5NvxRvtM8EFqHsmGBf5R47CYyawj/TfRBjYzSTd90jRmeiHy08rpIm
+         kuyTxG/BD0VCt70AsDgCttd1JX0rm6Cbjxtoy6N6fH2T392+pgIkiu46ldMi1f5ZLPF/
+         a7jxIsKM6GhdXLeC8BWfwhhgW4ZzlnB92H3G1zmcP1uMVsLtXVi+PGLxHfODd8+fowbm
+         bgeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ldFSenbRaobXFFVp1f9QUTi/39L2YQ/OqXM/JGo52LQ=;
+        b=p8s6p67E+vw7ss41iom/EDaPpWIjNmOBGO4i9BQfSpkV6uhrk3gS/GD/+3SOMovCWF
+         vKmNlM889WNM+VYPCQb6rT/nPIY/CtnxwafWn8Fz13VmUuLukKoHef8LEsSCJaLlVRw/
+         VfaPFfyIh6GTthq/HIuXfb4XgDeL1gPCw80XNmzc5ZUmMB3e8ORMEsVsTF4GhcowF44V
+         /Wwc8ZX7goKXk7zcg6+ZHtRP49Qd74H6XqBDclLUXfwqgN5joCXmZ5NXog0IScTR1IvS
+         Q9aiu2xVMe+/eaqYmo4wzXDEOSDply1hG5FdzjUB/5udb+Dozuc+Li3VCzVHeXK/lsQP
+         /Hxg==
+X-Gm-Message-State: APjAAAUu0rUMPyTbRR5TqvcXvIGqpQZtAMQ9nYjp7upTq36W21GTM82u
+        hgmrxKNbe51UjHHRyfbxwCc=
+X-Google-Smtp-Source: APXvYqx+agJq5UAQQvCSqKYB0p4U2JJemof53VRAGUqT5ucpZVf+jarRYWQ9o50sXaLQuzeDW34nLg==
+X-Received: by 2002:a05:620a:686:: with SMTP id f6mr3628750qkh.86.1582697679383;
+        Tue, 25 Feb 2020 22:14:39 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id x22sm565383qtq.30.2020.02.25.22.14.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 25 Feb 2020 22:14:38 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1744E21B2C;
+        Wed, 26 Feb 2020 01:14:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 26 Feb 2020 01:14:37 -0500
+X-ME-Sender: <xms:yQxWXrUZKMDVe39paIRKBNibCbCC3yny502xUEnhPZzHBltNApQV9g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrleefgdelhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucfkphephedvrd
+    duheehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqd
+    eiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhl
+    rdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:yQxWXreaspuYoRdWEIVK1yjKzgvGyg6PW7KnOpZQ5HVXXK_27Q1LHA>
+    <xmx:yQxWXmypc8hXxsjbgLnwyCVQ1uuJkxBTAiTRs4MSCbSIq6dAHSQrXQ>
+    <xmx:yQxWXuGyVy_Rm31dVn3Nhi-_sWJ0UyyKsGDpknVVLSwfkOoSdbOV9w>
+    <xmx:zQxWXgKVOnzbvV5I1t3YylBWvcaA3DdsuyOc_aDV46N4CwHC1avBrwtI3kU>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B03DE3060D1A;
+        Wed, 26 Feb 2020 01:14:32 -0500 (EST)
+Date:   Wed, 26 Feb 2020 14:14:30 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
         dipankar@in.ibm.com, akpm@linux-foundation.org,
@@ -54,8 +89,7 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         "# 5 . 5 . x" <stable@vger.kernel.org>
 Subject: Re: [PATCH tip/core/rcu 30/30] rcu: Make rcu_barrier() account for
  offline no-CBs CPUs
-Message-ID: <20200226041839.GA13200@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200226061430.GG110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
  <20200214235607.13749-30-paulmck@kernel.org>
  <20200225102436.GF110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
@@ -64,7 +98,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200226031455.GZ2935@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -182,7 +215,43 @@ On Tue, Feb 25, 2020 at 07:14:55PM -0800, Paul E. McKenney wrote:
 > 
 > Thank you very much -- this bug would not have shown up in any validation
 > setup that I am aware of.  ;-)
+> 
+> 							Thanx, Paul
+> 
+> > Regards,
+> > Boqun
+> > 
+> > > +			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
+> > > +					  rcu_state.barrier_sequence);
+> > > +			local_irq_disable();
+> > > +			rcu_barrier_func((void *)cpu);
+> > > +			local_irq_enable();
 
-And with additional adjustment to make tracing accurate.
+Another (interesting) thing I found here is that we actually don't need
+the irq-off section to call rcu_barrier_func() in this branch. Because
+the target CPU is offlined, so only the cblist is only accessed at two
+places, IIUC, one is the rcuo kthread and one is here (in
+rcu_barrier()), and both places are in the process context rather than
+irq context, so irq-off is not required to prevent the deadlock.
 
-							Thanx, Paul
+But yes, I know, if we drop the local_irq_disable/enable() pair here,
+it will make lockdep very unhappy ;-)
+
+Regards,
+Boqun
+
+> > >  		} else {
+> > >  			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+> > >  					  rcu_state.barrier_sequence);
+> > > @@ -3184,7 +3192,7 @@ void rcu_barrier(void)
+> > >  	 * Now that we have an rcu_barrier_callback() callback on each
+> > >  	 * CPU, and thus each counted, remove the initial count.
+> > >  	 */
+> > > -	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count))
+> > > +	if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
+> > >  		complete(&rcu_state.barrier_completion);
+> > >  
+> > >  	/* Wait for all rcu_barrier_callback() callbacks to be invoked. */
+> > > -- 
+> > > 2.9.5
+> > > 
