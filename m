@@ -2,236 +2,159 @@ Return-Path: <SRS0=//1+=4O=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 148EEC4BA13
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 15:02:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 012BAC4BA24
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 23:59:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D409424688
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 15:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582729339;
-	bh=YdavwjKW764gaMMCY/6DItdn27P+LhGI44b50YrPEik=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=qZYXi/nB9/LTMNAy0rJdeejX19XNTQXneEiAPtt82zZ0Qd/iSMOMjjE5edkYIjz7Q
-	 2zro1+guEn40nggkZ7Fvr3FYDZPFOjqZRUGw7YDuTCywDaDmu3/bs+TKAPXmg5DU3P
-	 JZrIFkNCQ19FkHW54BIThvfZsd2WqgKibdllQ/R0=
+	by mail.kernel.org (Postfix) with ESMTP id BE3AD206BF
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 23:59:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IRi3k6jh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgBZPCT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Feb 2020 10:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgBZPCT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Feb 2020 10:02:19 -0500
-Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85CEF24685;
-        Wed, 26 Feb 2020 15:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582729338;
-        bh=YdavwjKW764gaMMCY/6DItdn27P+LhGI44b50YrPEik=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2sbgL7e94ntYhGUYANr6/gsCMc4+cpMtj2zUZzW86ef6QQ/sINUHOGKCC+zaZtY22
-         9tF1d/YcOZy8tHHY3SWS+aE5sOqTjoWXdcu3Sou4jrMnhLZSCl4YQ5Tg5MKs47Vgvs
-         fLmHXpRZ5ZEtdywYOBJJv+82msglW71Xvhdb8PUY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 14E833521EAF; Wed, 26 Feb 2020 07:02:18 -0800 (PST)
-Date:   Wed, 26 Feb 2020 07:02:18 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "# 5 . 5 . x" <stable@vger.kernel.org>
-Subject: Re: [PATCH tip/core/rcu 30/30] rcu: Make rcu_barrier() account for
- offline no-CBs CPUs
-Message-ID: <20200226150218.GA2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
- <20200214235607.13749-30-paulmck@kernel.org>
- <20200225102436.GF110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200226031455.GZ2935@paulmck-ThinkPad-P72>
- <20200226061430.GG110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        id S1728054AbgBZX7u (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Feb 2020 18:59:50 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34922 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728035AbgBZX7u (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Feb 2020 18:59:50 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 145so1472422qkl.2;
+        Wed, 26 Feb 2020 15:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CS6s48/fad45V23lipX1Fu4yrThXZZxHb+g1PPIjhHA=;
+        b=IRi3k6jh6CuNv9Iro1mODuBhyGCOIg1/vXBw8jI0ViW2AXxKWxW8sK7Een8m08wiHc
+         3B5yTb7fi9uWt9azv8i9bgSCAT0Tiglgfl+IZT43wzBE/Pe64tLTUNA+Fr55ueUCyhR4
+         5NLFyV2r5wMTwrYrYvbJjgzRcNUBLF2fcDU71Vu/8xvOBNbFfIDbrFKusJaBK5EPEl47
+         nsSEsEMTot2hkGeWVysMjLio5a0dYAKfhaYFJEYyX5zlrCT0K/nMCDXA232K/SWWiZz+
+         PNDUrpIjA9YPQ/ZSFhYjrZFVlNKbLewNjzoRQKrviTXKbLf2UlrGp7MGzTudpX0vkHQm
+         ATXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CS6s48/fad45V23lipX1Fu4yrThXZZxHb+g1PPIjhHA=;
+        b=hYzC16KZD8GfO42Ziu+A1zDQ5eT+zK5Gb7RvTF9H7qnpYp0a+9EmctH9BurA+IWmNr
+         F2ipkU6+4gwwIJR9hJopXCbnWxIHr22m0E86T0ahBCPXsItnwrfb8ZroPUZvd1X4E10/
+         aBcJU8QXG82fL+jJY8Y2B3vKQeKPxGTTnWOjsy+3eeoAAzt/+qq1iJ1e28zFy5V/T//P
+         /SMlv+b9pdWAip3EkjidTqx9XrD1vWFxDS9iIZvvPy2E0ghswveQtwcAaV3g9M/YFhGq
+         N5vVAJom4lbV4Qj8LbJVrJec/1D20Xkjym4nRRMkuR3Ino8g0mEB29mxsUCZinuCIRAK
+         ryHg==
+X-Gm-Message-State: APjAAAV6lH71iOSYLOPfEVuoVmICHYLyqKrC8Wcojp6zIJWZX6kuq7XP
+        st5xC7vEYSMBHfo42dUSiiI=
+X-Google-Smtp-Source: APXvYqwP2u0Kb+4Dq8jv1W/FJcdrY0PYuMBX+e+UaZQvwyocsi3K5G4bg9viAStlyxSs4Q6+LcvX9Q==
+X-Received: by 2002:a37:de0d:: with SMTP id h13mr2220679qkj.332.1582761588987;
+        Wed, 26 Feb 2020 15:59:48 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id t187sm2048550qke.85.2020.02.26.15.59.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Feb 2020 15:59:48 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A299221BA9;
+        Wed, 26 Feb 2020 18:59:46 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 26 Feb 2020 18:59:46 -0500
+X-ME-Sender: <xms:cAZXXhbjjJjIv7V0GQ9zs4TInE16GsnUN1ylPrvZElfWfDhZebbEWg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrleehgddukecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucfkphephedvrd
+    duheehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqd
+    eiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhl
+    rdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:cAZXXrqb9SBYjA0sUQmdlA-1Ux1dndcfzLMAVeog4XU9JZ7tQIJRvQ>
+    <xmx:cAZXXoDWg5d4uZmDGU7zy3meZEfDfeWPDBwh9H3Rhc40dN2o8Q6jyQ>
+    <xmx:cAZXXpqPZHyNyRIt62uIgFv38kmSH4trGdqZNT16aTZamMm_0I74QA>
+    <xmx:cgZXXiaXZEufA1TgQY8MAwt2l1tutBAigwptFf_og_WDSQFnHNLoqc0L5ME>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 194BF328005D;
+        Wed, 26 Feb 2020 18:59:43 -0500 (EST)
+Date:   Thu, 27 Feb 2020 07:59:42 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] tools/memory-model: Remove lock-final checking in
+ lock.cat
+Message-ID: <20200226235942.GR69864@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <20200226032142.89424-1-boqun.feng@gmail.com>
+ <Pine.LNX.4.44L0.2002260953110.3674-100000@netrider.rowland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200226061430.GG110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <Pine.LNX.4.44L0.2002260953110.3674-100000@netrider.rowland.org>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 02:14:30PM +0800, Boqun Feng wrote:
-> On Tue, Feb 25, 2020 at 07:14:55PM -0800, Paul E. McKenney wrote:
-> > On Tue, Feb 25, 2020 at 06:24:36PM +0800, Boqun Feng wrote:
-> > > Hi Paul,
-> > > 
-> > > On Fri, Feb 14, 2020 at 03:56:07PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > Currently, rcu_barrier() ignores offline CPUs,  However, it is possible
-> > > > for an offline no-CBs CPU to have callbacks queued, and rcu_barrier()
-> > > > must wait for those callbacks.  This commit therefore makes rcu_barrier()
-> > > > directly invoke the rcu_barrier_func() with interrupts disabled for such
-> > > > CPUs.  This requires passing the CPU number into this function so that
-> > > > it can entrain the rcu_barrier() callback onto the correct CPU's callback
-> > > > list, given that the code must instead execute on the current CPU.
-> > > > 
-> > > > While in the area, this commit fixes a bug where the first CPU's callback
-> > > > might have been invoked before rcu_segcblist_entrain() returned, which
-> > > > would also result in an early wakeup.
-> > > > 
-> > > > Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Cc: <stable@vger.kernel.org> # 5.5.x
-> > > > ---
-> > > >  include/trace/events/rcu.h |  1 +
-> > > >  kernel/rcu/tree.c          | 32 ++++++++++++++++++++------------
-> > > >  2 files changed, 21 insertions(+), 12 deletions(-)
-> > > > 
-> > > > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> > > > index 5e49b06..d56d54c 100644
-> > > > --- a/include/trace/events/rcu.h
-> > > > +++ b/include/trace/events/rcu.h
-> > > > @@ -712,6 +712,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
-> > > >   *	"Begin": rcu_barrier() started.
-> > > >   *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
-> > > >   *	"Inc1": rcu_barrier() piggyback check counter incremented.
-> > > > + *	"OfflineNoCBQ": rcu_barrier() found offline no-CBs CPU with callbacks.
-> > > >   *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
-> > > >   *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
-> > > >   *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index d15041f..160643e 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3098,9 +3098,10 @@ static void rcu_barrier_callback(struct rcu_head *rhp)
-> > > >  /*
-> > > >   * Called with preemption disabled, and from cross-cpu IRQ context.
-> > > >   */
-> > > > -static void rcu_barrier_func(void *unused)
-> > > > +static void rcu_barrier_func(void *cpu_in)
-> > > >  {
-> > > > -	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
-> > > > +	uintptr_t cpu = (uintptr_t)cpu_in;
-> > > > +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > >  
-> > > >  	rcu_barrier_trace(TPS("IRQ"), -1, rcu_state.barrier_sequence);
-> > > >  	rdp->barrier_head.func = rcu_barrier_callback;
-> > > > @@ -3127,7 +3128,7 @@ static void rcu_barrier_func(void *unused)
-> > > >   */
-> > > >  void rcu_barrier(void)
-> > > >  {
-> > > > -	int cpu;
-> > > > +	uintptr_t cpu;
-> > > >  	struct rcu_data *rdp;
-> > > >  	unsigned long s = rcu_seq_snap(&rcu_state.barrier_sequence);
-> > > >  
-> > > > @@ -3150,13 +3151,14 @@ void rcu_barrier(void)
-> > > >  	rcu_barrier_trace(TPS("Inc1"), -1, rcu_state.barrier_sequence);
-> > > >  
-> > > >  	/*
-> > > > -	 * Initialize the count to one rather than to zero in order to
-> > > > -	 * avoid a too-soon return to zero in case of a short grace period
-> > > > -	 * (or preemption of this task).  Exclude CPU-hotplug operations
-> > > > -	 * to ensure that no offline CPU has callbacks queued.
-> > > > +	 * Initialize the count to two rather than to zero in order
-> > > > +	 * to avoid a too-soon return to zero in case of an immediate
-> > > > +	 * invocation of the just-enqueued callback (or preemption of
-> > > > +	 * this task).  Exclude CPU-hotplug operations to ensure that no
-> > > > +	 * offline non-offloaded CPU has callbacks queued.
-> > > >  	 */
-> > > >  	init_completion(&rcu_state.barrier_completion);
-> > > > -	atomic_set(&rcu_state.barrier_cpu_count, 1);
-> > > > +	atomic_set(&rcu_state.barrier_cpu_count, 2);
-> > > >  	get_online_cpus();
-> > > >  
-> > > >  	/*
-> > > > @@ -3166,13 +3168,19 @@ void rcu_barrier(void)
-> > > >  	 */
-> > > >  	for_each_possible_cpu(cpu) {
-> > > >  		rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > -		if (!cpu_online(cpu) &&
-> > > > +		if (cpu_is_offline(cpu) &&
-> > > >  		    !rcu_segcblist_is_offloaded(&rdp->cblist))
-> > > >  			continue;
-> > > > -		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
-> > > > +		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
-> > > >  			rcu_barrier_trace(TPS("OnlineQ"), cpu,
-> > > >  					  rcu_state.barrier_sequence);
-> > > > -			smp_call_function_single(cpu, rcu_barrier_func, NULL, 1);
-> > > > +			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
-> > > > +		} else if (cpu_is_offline(cpu)) {
-> > > 
-> > > I wonder whether this should be:
-> > > 
-> > > 		  else if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_is_offline(cpu))
-> > > 
-> > > ? Because I think we only want to queue the barrier call back if there
-> > > are callbacks for a particular CPU. Am I missing something subtle?
-> > 
-> > I don't believe that you are missing anything at all!
-> > 
-> > Thank you very much -- this bug would not have shown up in any validation
-> > setup that I am aware of.  ;-)
-> > 
-> > 							Thanx, Paul
-> > 
-> > > Regards,
-> > > Boqun
-> > > 
-> > > > +			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
-> > > > +					  rcu_state.barrier_sequence);
-> > > > +			local_irq_disable();
-> > > > +			rcu_barrier_func((void *)cpu);
-> > > > +			local_irq_enable();
+On Wed, Feb 26, 2020 at 09:58:12AM -0500, Alan Stern wrote:
+> On Wed, 26 Feb 2020, Boqun Feng wrote:
 > 
-> Another (interesting) thing I found here is that we actually don't need
-> the irq-off section to call rcu_barrier_func() in this branch. Because
-> the target CPU is offlined, so only the cblist is only accessed at two
-> places, IIUC, one is the rcuo kthread and one is here (in
-> rcu_barrier()), and both places are in the process context rather than
-> irq context, so irq-off is not required to prevent the deadlock.
+> > In commit 30b795df11a1 ("tools/memory-model: Improve mixed-access
+> > checking in lock.cat"), we have added the checking to disallow any
+> > normal memory access to lock variables, and this checking is stronger
+> > than lock-final. So remove the lock-final checking as it's unnecessary
+> > now.
 > 
-> But yes, I know, if we drop the local_irq_disable/enable() pair here,
-> it will make lockdep very unhappy ;-)
-
-And acquiring ->nocb_lock with interrupts enabled would be rather scary.
-And probably would be an accident waiting to happen.  So I am happy to
-disable interrupts on this path, given that it should be infrequent,
-only being executed for a short time after a no-CBs CPU goes offline.
-
-Much nicer to let lockdep do its thing than to have to second-guess it
-on every change that involves acquiring ->nocb_lock in an interrupt
-handler!  ;-)
-
-							Thanx, Paul
-
-> Regards,
-> Boqun
+> I don't understand this description.  Why do you say that the
+> normal-access checking is stronger than the lock-final check?
 > 
-> > > >  		} else {
-> > > >  			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
-> > > >  					  rcu_state.barrier_sequence);
-> > > > @@ -3184,7 +3192,7 @@ void rcu_barrier(void)
-> > > >  	 * Now that we have an rcu_barrier_callback() callback on each
-> > > >  	 * CPU, and thus each counted, remove the initial count.
-> > > >  	 */
-> > > > -	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count))
-> > > > +	if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
-> > > >  		complete(&rcu_state.barrier_completion);
-> > > >  
-> > > >  	/* Wait for all rcu_barrier_callback() callbacks to be invoked. */
-> > > > -- 
-> > > > 2.9.5
-> > > > 
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  tools/memory-model/lock.cat | 3 ---
+> >  1 file changed, 3 deletions(-)
+> > 
+> > diff --git a/tools/memory-model/lock.cat b/tools/memory-model/lock.cat
+> > index 6b52f365d73a..827a3646607c 100644
+> > --- a/tools/memory-model/lock.cat
+> > +++ b/tools/memory-model/lock.cat
+> > @@ -54,9 +54,6 @@ flag ~empty LKR \ domain(lk-rmw) as unpaired-LKR
+> >   *)
+> >  empty ([LKW] ; po-loc ; [LKR]) \ (po-loc ; [UL] ; po-loc) as lock-nest
+> >  
+> > -(* The final value of a spinlock should not be tested *)
+> > -flag ~empty [FW] ; loc ; [ALL-LOCKS] as lock-final
+> > -
+> >  (*
+> >   * Put lock operations in their appropriate classes, but leave UL out of W
+> >   * until after the co relation has been generated.
+> 
+> With this check removed, what will prevent people from writing litmus 
+> tests like this?
+> 
+
+You are right, one thing I was missing is although FW is a subset of M,
+however FW & IW is not empty. Thanks! I will drop this.
+
+Regards,
+Boqun
+
+> C test
+> 
+> {
+> 	spinlock_t s;
+> }
+> 
+> ...
+> 
+> exists (s=0)
+> 
+> Alan
+> 
