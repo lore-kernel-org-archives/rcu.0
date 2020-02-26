@@ -2,207 +2,131 @@ Return-Path: <SRS0=//1+=4O=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44826C4BA06
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 03:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F57C4BA06
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 03:22:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0DEC521D7E
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 03:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582686897;
-	bh=t6C+JSqpJc3ZGM0GQELXv6dxp1w3T5mg2ZA90yJosw4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=y7wD1XGWjXvSCXwM71F/rfCaop5KmTjegHxPwxLg4bOwiuhu23Kl2R8+ccswkVXFD
-	 VJ6rKZSVv2eP2ZkjasisocvTgXi6APNibMKTfDmjZEIDg3rc3lcyGXiKpIiHYFlmY0
-	 9mo5elXWQ+Ulol46WuxdBV0JHDGS/ahWpTRgJp2s=
+	by mail.kernel.org (Postfix) with ESMTP id 574DD2082F
+	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 03:22:00 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YdiogCH1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgBZDO4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Feb 2020 22:14:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729434AbgBZDO4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Feb 2020 22:14:56 -0500
-Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E43721927;
-        Wed, 26 Feb 2020 03:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582686895;
-        bh=t6C+JSqpJc3ZGM0GQELXv6dxp1w3T5mg2ZA90yJosw4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IJUq6jyQYRAIwcaoj/y5igedXdeK3nckj9xJenUbGWvkNY/n9b/2w2o2bVMUzmy9l
-         tet1PSe45NBEpdYnTJua6nL/P21DiR9Cysxbo6O/CY2OcMs8cIXimZmG9DHHectwkz
-         JSj5EThaVSHv3G94rkwwFarnWts2OYwCQZxZTONs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 215983521EAF; Tue, 25 Feb 2020 19:14:55 -0800 (PST)
-Date:   Tue, 25 Feb 2020 19:14:55 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "# 5 . 5 . x" <stable@vger.kernel.org>
-Subject: Re: [PATCH tip/core/rcu 30/30] rcu: Make rcu_barrier() account for
- offline no-CBs CPUs
-Message-ID: <20200226031455.GZ2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200214235536.GA13364@paulmck-ThinkPad-P72>
- <20200214235607.13749-30-paulmck@kernel.org>
- <20200225102436.GF110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        id S1729982AbgBZDWA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Feb 2020 22:22:00 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:36793 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729558AbgBZDV7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Feb 2020 22:21:59 -0500
+Received: by mail-qv1-f68.google.com with SMTP id ff2so693117qvb.3;
+        Tue, 25 Feb 2020 19:21:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BD1v6ba+2r56oC0/ebLwqYI1y4GFppKRXuPk+6nsRH8=;
+        b=YdiogCH1KkMuVBITidQZokgpQeKA3s8zG+vfkM3gTUNQgmBd4rHvC0+ckVBZswyjNS
+         nm9eLiiq8mk3pG4Kvg7LlsVLr/2ORtmqBw9rFQKXDafoderhSmFCT736eTq7VOkGZvMb
+         852/mYuLIhNKEIgHqU/v1ll8pPnUDjXS5ohVkjF8MWUru6KL+OcWQqpfl2/2GGhBs77M
+         M2SdNAU/waAo91bHe7Bpub502rfCJz5UZOREZzaP5o20GUtZ8alPnP5Fdjv6Tt4TvHMF
+         zGlAdMowzbpt6afwOVeOMSSW1JFPWYgnrTLCOZvBzDtY9meFvqlRjrL70Zeb5cqKENJf
+         LPbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BD1v6ba+2r56oC0/ebLwqYI1y4GFppKRXuPk+6nsRH8=;
+        b=Zn2WrGG1LBhOWtE5brRCK+Yr9EMKNMVBP96DQImqIg4IQD0veAqYjvRJgjFKaz06YE
+         o2SEL4czipvRx+1mZzp/Ivk55KmQ6XMZny/HDZbA77BhU7liDPtAqad0Vgsbyna8N2tl
+         4uS7H8RpzwmT5GaVcUc+MtAnaH/iNCw6I60W9sAiQeqsvrMaB+XyzzzReZjAJrCcFU5p
+         M0I0UNA+u/kHN/eXZXPTwo1U7mq/8JCNihAcqZ6fhkv8MhA7WKFrw5PYYouSJIbX6er/
+         nC5uY3/WIWw5cihbgb8GCS3nr1hR7MYLOiN+uNbB4xZDRdx82bgucz5Vhl+t5XkhGuMZ
+         zItw==
+X-Gm-Message-State: APjAAAVtQnzHUWAawojSTvdHiXsKHk+edqJKJ6hp9ZFYB0zKbBT7g6m5
+        qxyDeVJ9dGnOluRXiY3umBg=
+X-Google-Smtp-Source: APXvYqzNBdzTkdJdbZng4SXlA0GJlJqTbzKL1u6PAVVOHA7Frl8p+t3f77RnPOpt2/YtCtPh2+KWZQ==
+X-Received: by 2002:a0c:f404:: with SMTP id h4mr2600337qvl.251.1582687318833;
+        Tue, 25 Feb 2020 19:21:58 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id a13sm347602qkh.123.2020.02.25.19.21.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 25 Feb 2020 19:21:58 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 83E462151C;
+        Tue, 25 Feb 2020 22:21:57 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 25 Feb 2020 22:21:57 -0500
+X-ME-Sender: <xms:VORVXkfe4OU3IO88Qlia6dMTXr0Xrap-bSEBXf7TW_GKDXjcbaOhTw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrleefgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucfkphephedvrdduhe
+    ehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
+    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
+    ohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:VORVXu67VdYHcCh3iC8cmV4C6GL2_FSvtfOWROhiNB5xdN6CKOkFdg>
+    <xmx:VORVXldtRuACX9KojoLYBVKeYiS96AwJ02WgUUqbWbP_ZPaybQodUQ>
+    <xmx:VORVXmewzs-GS7VdtmKqSZYdejydTVmT0Q1nGY8wBpFnPlX4o0HTXw>
+    <xmx:VeRVXl-Rok7nkLNZhGohG54SohVOLylpgmjz_3CqA20NHgmzsETd2fUjmf4>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7692E3060FE0;
+        Tue, 25 Feb 2020 22:21:56 -0500 (EST)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>, linux-arch@vger.kernel.org
+Subject: [PATCH] tools/memory-model: Remove lock-final checking in lock.cat
+Date:   Wed, 26 Feb 2020 11:21:40 +0800
+Message-Id: <20200226032142.89424-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200225102436.GF110915@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 06:24:36PM +0800, Boqun Feng wrote:
-> Hi Paul,
-> 
-> On Fri, Feb 14, 2020 at 03:56:07PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > Currently, rcu_barrier() ignores offline CPUs,  However, it is possible
-> > for an offline no-CBs CPU to have callbacks queued, and rcu_barrier()
-> > must wait for those callbacks.  This commit therefore makes rcu_barrier()
-> > directly invoke the rcu_barrier_func() with interrupts disabled for such
-> > CPUs.  This requires passing the CPU number into this function so that
-> > it can entrain the rcu_barrier() callback onto the correct CPU's callback
-> > list, given that the code must instead execute on the current CPU.
-> > 
-> > While in the area, this commit fixes a bug where the first CPU's callback
-> > might have been invoked before rcu_segcblist_entrain() returned, which
-> > would also result in an early wakeup.
-> > 
-> > Fixes: 5d6742b37727 ("rcu/nocb: Use rcu_segcblist for no-CBs CPUs")
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: <stable@vger.kernel.org> # 5.5.x
-> > ---
-> >  include/trace/events/rcu.h |  1 +
-> >  kernel/rcu/tree.c          | 32 ++++++++++++++++++++------------
-> >  2 files changed, 21 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> > index 5e49b06..d56d54c 100644
-> > --- a/include/trace/events/rcu.h
-> > +++ b/include/trace/events/rcu.h
-> > @@ -712,6 +712,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
-> >   *	"Begin": rcu_barrier() started.
-> >   *	"EarlyExit": rcu_barrier() piggybacked, thus early exit.
-> >   *	"Inc1": rcu_barrier() piggyback check counter incremented.
-> > + *	"OfflineNoCBQ": rcu_barrier() found offline no-CBs CPU with callbacks.
-> >   *	"OnlineQ": rcu_barrier() found online CPU with callbacks.
-> >   *	"OnlineNQ": rcu_barrier() found online CPU, no callbacks.
-> >   *	"IRQ": An rcu_barrier_callback() callback posted on remote CPU.
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d15041f..160643e 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3098,9 +3098,10 @@ static void rcu_barrier_callback(struct rcu_head *rhp)
-> >  /*
-> >   * Called with preemption disabled, and from cross-cpu IRQ context.
-> >   */
-> > -static void rcu_barrier_func(void *unused)
-> > +static void rcu_barrier_func(void *cpu_in)
-> >  {
-> > -	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
-> > +	uintptr_t cpu = (uintptr_t)cpu_in;
-> > +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  
-> >  	rcu_barrier_trace(TPS("IRQ"), -1, rcu_state.barrier_sequence);
-> >  	rdp->barrier_head.func = rcu_barrier_callback;
-> > @@ -3127,7 +3128,7 @@ static void rcu_barrier_func(void *unused)
-> >   */
-> >  void rcu_barrier(void)
-> >  {
-> > -	int cpu;
-> > +	uintptr_t cpu;
-> >  	struct rcu_data *rdp;
-> >  	unsigned long s = rcu_seq_snap(&rcu_state.barrier_sequence);
-> >  
-> > @@ -3150,13 +3151,14 @@ void rcu_barrier(void)
-> >  	rcu_barrier_trace(TPS("Inc1"), -1, rcu_state.barrier_sequence);
-> >  
-> >  	/*
-> > -	 * Initialize the count to one rather than to zero in order to
-> > -	 * avoid a too-soon return to zero in case of a short grace period
-> > -	 * (or preemption of this task).  Exclude CPU-hotplug operations
-> > -	 * to ensure that no offline CPU has callbacks queued.
-> > +	 * Initialize the count to two rather than to zero in order
-> > +	 * to avoid a too-soon return to zero in case of an immediate
-> > +	 * invocation of the just-enqueued callback (or preemption of
-> > +	 * this task).  Exclude CPU-hotplug operations to ensure that no
-> > +	 * offline non-offloaded CPU has callbacks queued.
-> >  	 */
-> >  	init_completion(&rcu_state.barrier_completion);
-> > -	atomic_set(&rcu_state.barrier_cpu_count, 1);
-> > +	atomic_set(&rcu_state.barrier_cpu_count, 2);
-> >  	get_online_cpus();
-> >  
-> >  	/*
-> > @@ -3166,13 +3168,19 @@ void rcu_barrier(void)
-> >  	 */
-> >  	for_each_possible_cpu(cpu) {
-> >  		rdp = per_cpu_ptr(&rcu_data, cpu);
-> > -		if (!cpu_online(cpu) &&
-> > +		if (cpu_is_offline(cpu) &&
-> >  		    !rcu_segcblist_is_offloaded(&rdp->cblist))
-> >  			continue;
-> > -		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
-> > +		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
-> >  			rcu_barrier_trace(TPS("OnlineQ"), cpu,
-> >  					  rcu_state.barrier_sequence);
-> > -			smp_call_function_single(cpu, rcu_barrier_func, NULL, 1);
-> > +			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
-> > +		} else if (cpu_is_offline(cpu)) {
-> 
-> I wonder whether this should be:
-> 
-> 		  else if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_is_offline(cpu))
-> 
-> ? Because I think we only want to queue the barrier call back if there
-> are callbacks for a particular CPU. Am I missing something subtle?
+In commit 30b795df11a1 ("tools/memory-model: Improve mixed-access
+checking in lock.cat"), we have added the checking to disallow any
+normal memory access to lock variables, and this checking is stronger
+than lock-final. So remove the lock-final checking as it's unnecessary
+now.
 
-I don't believe that you are missing anything at all!
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ tools/memory-model/lock.cat | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Thank you very much -- this bug would not have shown up in any validation
-setup that I am aware of.  ;-)
+diff --git a/tools/memory-model/lock.cat b/tools/memory-model/lock.cat
+index 6b52f365d73a..827a3646607c 100644
+--- a/tools/memory-model/lock.cat
++++ b/tools/memory-model/lock.cat
+@@ -54,9 +54,6 @@ flag ~empty LKR \ domain(lk-rmw) as unpaired-LKR
+  *)
+ empty ([LKW] ; po-loc ; [LKR]) \ (po-loc ; [UL] ; po-loc) as lock-nest
+ 
+-(* The final value of a spinlock should not be tested *)
+-flag ~empty [FW] ; loc ; [ALL-LOCKS] as lock-final
+-
+ (*
+  * Put lock operations in their appropriate classes, but leave UL out of W
+  * until after the co relation has been generated.
+-- 
+2.25.0
 
-							Thanx, Paul
-
-> Regards,
-> Boqun
-> 
-> > +			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
-> > +					  rcu_state.barrier_sequence);
-> > +			local_irq_disable();
-> > +			rcu_barrier_func((void *)cpu);
-> > +			local_irq_enable();
-> >  		} else {
-> >  			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
-> >  					  rcu_state.barrier_sequence);
-> > @@ -3184,7 +3192,7 @@ void rcu_barrier(void)
-> >  	 * Now that we have an rcu_barrier_callback() callback on each
-> >  	 * CPU, and thus each counted, remove the initial count.
-> >  	 */
-> > -	if (atomic_dec_and_test(&rcu_state.barrier_cpu_count))
-> > +	if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
-> >  		complete(&rcu_state.barrier_completion);
-> >  
-> >  	/* Wait for all rcu_barrier_callback() callbacks to be invoked. */
-> > -- 
-> > 2.9.5
-> > 
