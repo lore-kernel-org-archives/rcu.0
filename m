@@ -8,53 +8,53 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67B11C35E1C
-	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 18:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D24C8C11D3D
+	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 18:07:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 32173246A1
-	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 18:03:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BAD32468E
+	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 18:07:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KGpGyAnT"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGXEeyU2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730327AbgB0SDn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Feb 2020 13:03:43 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37468 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgB0SDm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Feb 2020 13:03:42 -0500
-Received: by mail-pf1-f193.google.com with SMTP id p14so217696pfn.4;
-        Thu, 27 Feb 2020 10:03:41 -0800 (PST)
+        id S1729232AbgB0SHH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Feb 2020 13:07:07 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34391 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgB0SHH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Feb 2020 13:07:07 -0500
+Received: by mail-pl1-f194.google.com with SMTP id j7so119702plt.1;
+        Thu, 27 Feb 2020 10:07:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Yo/6zTJwv1CEgXTNldxHhJmkmbn3jw4xocyTMxdbW40=;
-        b=KGpGyAnTK7rs3wkQoSfsVkApE02Kn4qslahJwDNmhj+YjsVp3bys8IUIlOrMPRwvXK
-         idRcfRcI4P3Bhvu63ao+EypufA4jkbDecWgqfCLs1QkqdKY69z1ykouP9txpg50m3e0C
-         VGZzIlpNzBsd9zrIZsalSs2R4ZLbZEIEwqAfO0WZ+GzDi+pXOy1R1XIIcWQKxSOsT8rr
-         cQdXgPjZT0iiRkelirNBT8QRMX8FEZgfA0Yf9LUwCzV/cR2TILVtYXpDB2MMo50T9r2r
-         b3gCc9fE1RDhTBX+H6ECSCtCswweFKt9FdhwZBzyZU24l6CXicfqRXCmmXqGDjUPf7vk
-         +ILg==
+        bh=DXpYA4uWFjCld7w/2i2JWerrfYMLcOkZ4f6tlpHJ5Zg=;
+        b=EGXEeyU2so7TeL8mrOoWfqXxbEaWvAOrVAKbPgfRMHeVnlVNe4ZCkzT0OkpOO3uJtk
+         VaaJOetGJP9NPwO/z475KPLFeZ08j7x7ed5iOP/WKOegVg9uEqGDSHG31Sa1fYFcowfu
+         T6HiuXmM4RRWnpKlElNKTxfCyPs1lya5EX4V28vJoAMYQ1PubwjMhkzfpHHGFdrKbryb
+         A0aq2yZZYREvLvrRaDSB7SfnknBh0ozwgV91z+UNu9Ni4aSGDy+zxiMukjio0DLsWoUF
+         PHmELLp71WCwJw4nKfrpNLPBqlssNccqbu0GGatCQ7ZECGnB2CXffvW0tcToWkJt+qd0
+         KaKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Yo/6zTJwv1CEgXTNldxHhJmkmbn3jw4xocyTMxdbW40=;
-        b=BU1zuBg10CJkXZRpqZa78pO3qjlEAJK2IBeWKlY++7kSfr/tHALBIhzIQOVc6ukYsk
-         2S/A1nY9ekBQG3zDYsQKIjplEO6Dy8/o8nKU1kWBFQoVfQhdlWXkkWrOObL07va0mY86
-         syXnh99KMfo0L4CY/Q9FIAFVnt/qFC0/SlBPl+hoppm+x+u2E2WhXjRDCVD2MRyn9g4d
-         Wj5LmSFyFdL8Z+OIoK7YhNTNO8lHjg4uLyOv5YNYePvAcb7yxQ4k6DH0t1fAwL/9Ddlt
-         rcJJru4JF5GteRsyCwk0/ReC/68HQZoHzOMZRnHojiwyOax1R4nRBvUINhH1nud7lwB1
-         Y9XA==
-X-Gm-Message-State: APjAAAXPyspme5HESO9tMAe3vIafDFTjCACk/u2k13fkDJEApU8JRBeB
-        nwAKfPGpMfHoOvSQinHzUT8=
-X-Google-Smtp-Source: APXvYqwMsjN6cqxmneTfLyh2DCmz7nyUHSU1f/AoBHJhMFNypdcxOGCxAiM0YnmuOA5HUamGl9ZGtA==
-X-Received: by 2002:a62:1b4f:: with SMTP id b76mr161859pfb.163.1582826620389;
-        Thu, 27 Feb 2020 10:03:40 -0800 (PST)
+        bh=DXpYA4uWFjCld7w/2i2JWerrfYMLcOkZ4f6tlpHJ5Zg=;
+        b=RGtvo491xGRs2oYsSEotlFhke4N+9Pu99r3VVvSXk1sb3D7ujFLueeINLx0TH8Lhin
+         LnDuo9iwG2wE2kaiYeOeggVP+49BbIbhBB+2mV/dwZJzSuafNmtOpJRfHdVmITta6xKK
+         CMvRcdoGFaTM0sZMiheN7nUmHL+qAp4vPLLobGPwU0S1gkyUtVC0sezMQSWXYd5gRWkO
+         Q0EKWQqvjpA8tezyjjsfZGGTNS1OspzAyxwxRTnppT01XB0OdLdKGUP541gVOe0T5WIV
+         3kZA+GNJ2QBw9HIksPItsZye/QdaaT/Ot0YRA+J2PfojyOtY+Fafx6oFO98ND52uNIbl
+         tV3Q==
+X-Gm-Message-State: APjAAAU4eCiYoHGsCZuz4jbpIp30GsnZBVh2+TlHCgNGFb/2umEcffE8
+        Eoz65SCaJDQa6btqQgvXuso=
+X-Google-Smtp-Source: APXvYqy1mC1uucBJ03PGY/m8T8w6yBw3AdzpncNLr+l3+yXc+IodzPS8v47/vFJHYfedKRomxUIs8g==
+X-Received: by 2002:a17:902:462:: with SMTP id 89mr20554ple.270.1582826824450;
+        Thu, 27 Feb 2020 10:07:04 -0800 (PST)
 Received: from localhost.localdomain ([103.46.201.58])
-        by smtp.gmail.com with ESMTPSA id m71sm9312579pje.0.2020.02.27.10.03.35
+        by smtp.gmail.com with ESMTPSA id d1sm7207096pgj.79.2020.02.27.10.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2020 10:03:39 -0800 (PST)
+        Thu, 27 Feb 2020 10:07:03 -0800 (PST)
 From:   Aman Sharma <amanharitsh123@gmail.com>
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         amanharitsh123@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         Joel Fernandes <joel@joelfernandes.org>,
         Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH v2] doc: Convert rculist_nulls.txt to rculist_nulls.rst
-Date:   Thu, 27 Feb 2020 23:33:11 +0530
-Message-Id: <20200227180314.14211-1-amanharitsh123@gmail.com>
+Subject: [Linux-kernel-mentees] [PATCH v3] doc: Convert rculist_nulls.txt to rculist_nulls.rst
+Date:   Thu, 27 Feb 2020 23:36:53 +0530
+Message-Id: <20200227180656.15187-1-amanharitsh123@gmail.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -84,8 +84,7 @@ Major changes includes:
 1) Addition of section headers and subsection headers.
 2) Addition of literal blocks which contains all the codes.
 3) Making enumerated list item by changing X) to X. where X is number
-   like 1,2,3 etc.2) Addition of literal blocks which contains all the
-codes.
+   like 1,2,3 etc.
 
 Signed-off-by: Aman Sharma <amanharitsh123@gmail.com>
 ---
