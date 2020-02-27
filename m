@@ -1,4 +1,4 @@
-Return-Path: <SRS0=//1+=4O=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=5+Ir=4P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,154 +7,157 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 012BAC4BA24
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 23:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A68EAC4BA24
+	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 08:30:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BE3AD206BF
-	for <rcu@archiver.kernel.org>; Wed, 26 Feb 2020 23:59:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A133222C2
+	for <rcu@archiver.kernel.org>; Thu, 27 Feb 2020 08:30:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IRi3k6jh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tyDk7PYl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgBZX7u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Feb 2020 18:59:50 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34922 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgBZX7u (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Feb 2020 18:59:50 -0500
-Received: by mail-qk1-f195.google.com with SMTP id 145so1472422qkl.2;
-        Wed, 26 Feb 2020 15:59:49 -0800 (PST)
+        id S1728539AbgB0IaU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Feb 2020 03:30:20 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40064 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728454AbgB0IaU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Feb 2020 03:30:20 -0500
+Received: by mail-pf1-f194.google.com with SMTP id b185so1237682pfb.7;
+        Thu, 27 Feb 2020 00:30:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CS6s48/fad45V23lipX1Fu4yrThXZZxHb+g1PPIjhHA=;
-        b=IRi3k6jh6CuNv9Iro1mODuBhyGCOIg1/vXBw8jI0ViW2AXxKWxW8sK7Een8m08wiHc
-         3B5yTb7fi9uWt9azv8i9bgSCAT0Tiglgfl+IZT43wzBE/Pe64tLTUNA+Fr55ueUCyhR4
-         5NLFyV2r5wMTwrYrYvbJjgzRcNUBLF2fcDU71Vu/8xvOBNbFfIDbrFKusJaBK5EPEl47
-         nsSEsEMTot2hkGeWVysMjLio5a0dYAKfhaYFJEYyX5zlrCT0K/nMCDXA232K/SWWiZz+
-         PNDUrpIjA9YPQ/ZSFhYjrZFVlNKbLewNjzoRQKrviTXKbLf2UlrGp7MGzTudpX0vkHQm
-         ATXg==
+        bh=Tvby+wcv0BQs9h7cjR7fY7Khx0epyt1ALylZ/rOptsk=;
+        b=tyDk7PYlcOkw+gGiTcjC/6Qa3T7IV3N+PomawQkDEiJGrEoCCxSnWkYJ5O/Fpgwyy4
+         ZtOLBWdGNND4hNkyWa3dHc/ut8slDRK9rgLL8XyEfLxxueDkU/GItIt+OIyNcySmM6zR
+         /qBcX92xLsADWlEomsFtB9+iYXpvy0e7guWXKMwEwgYrjdMuXHCRwFT6Kftn/IgbFTHr
+         PBh442mhEugo9AJJLOM3S9Rj2ruJuhDOGfsldCMqRsLAQ6Wlbz8iWawZSfVHHd0XrQQb
+         vI5L1Z98bkcjdrwpQXy9a/ATMieVCkUD1K5O0r6nVJActWwc24pkfIkMPk65i3+CJevR
+         2DMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CS6s48/fad45V23lipX1Fu4yrThXZZxHb+g1PPIjhHA=;
-        b=hYzC16KZD8GfO42Ziu+A1zDQ5eT+zK5Gb7RvTF9H7qnpYp0a+9EmctH9BurA+IWmNr
-         F2ipkU6+4gwwIJR9hJopXCbnWxIHr22m0E86T0ahBCPXsItnwrfb8ZroPUZvd1X4E10/
-         aBcJU8QXG82fL+jJY8Y2B3vKQeKPxGTTnWOjsy+3eeoAAzt/+qq1iJ1e28zFy5V/T//P
-         /SMlv+b9pdWAip3EkjidTqx9XrD1vWFxDS9iIZvvPy2E0ghswveQtwcAaV3g9M/YFhGq
-         N5vVAJom4lbV4Qj8LbJVrJec/1D20Xkjym4nRRMkuR3Ino8g0mEB29mxsUCZinuCIRAK
-         ryHg==
-X-Gm-Message-State: APjAAAV6lH71iOSYLOPfEVuoVmICHYLyqKrC8Wcojp6zIJWZX6kuq7XP
-        st5xC7vEYSMBHfo42dUSiiI=
-X-Google-Smtp-Source: APXvYqwP2u0Kb+4Dq8jv1W/FJcdrY0PYuMBX+e+UaZQvwyocsi3K5G4bg9viAStlyxSs4Q6+LcvX9Q==
-X-Received: by 2002:a37:de0d:: with SMTP id h13mr2220679qkj.332.1582761588987;
-        Wed, 26 Feb 2020 15:59:48 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id t187sm2048550qke.85.2020.02.26.15.59.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Feb 2020 15:59:48 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A299221BA9;
-        Wed, 26 Feb 2020 18:59:46 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 26 Feb 2020 18:59:46 -0500
-X-ME-Sender: <xms:cAZXXhbjjJjIv7V0GQ9zs4TInE16GsnUN1ylPrvZElfWfDhZebbEWg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrleehgddukecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucfkphephedvrd
-    duheehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqd
-    eiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhl
-    rdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:cAZXXrqb9SBYjA0sUQmdlA-1Ux1dndcfzLMAVeog4XU9JZ7tQIJRvQ>
-    <xmx:cAZXXoDWg5d4uZmDGU7zy3meZEfDfeWPDBwh9H3Rhc40dN2o8Q6jyQ>
-    <xmx:cAZXXpqPZHyNyRIt62uIgFv38kmSH4trGdqZNT16aTZamMm_0I74QA>
-    <xmx:cgZXXiaXZEufA1TgQY8MAwt2l1tutBAigwptFf_og_WDSQFnHNLoqc0L5ME>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 194BF328005D;
-        Wed, 26 Feb 2020 18:59:43 -0500 (EST)
-Date:   Thu, 27 Feb 2020 07:59:42 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>, linux-arch@vger.kernel.org
-Subject: Re: [PATCH] tools/memory-model: Remove lock-final checking in
- lock.cat
-Message-ID: <20200226235942.GR69864@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200226032142.89424-1-boqun.feng@gmail.com>
- <Pine.LNX.4.44L0.2002260953110.3674-100000@netrider.rowland.org>
+        bh=Tvby+wcv0BQs9h7cjR7fY7Khx0epyt1ALylZ/rOptsk=;
+        b=myGNPCF9gen1McJAPMNypCTJwaqRPnJZRF8FQ3s1koIDYnLctwuCeOR6k+87shJRNg
+         4frPR/32P4MoY54qY7Zz+zX0985Tp2Hc0UEWBbhkk5X1M7AU7rNGxSQ3rJShJ0vJMI3N
+         vQxX4rFs2L/2I2zRLhVV99NHYzoy/18VGU+EpT6xBJLPxDOag+ALjavG/EJJpHR+bKwx
+         /IZU5NDodl9LNoj5/FYWcMDcvv/g3JxZt/TsoAvvKObDIDcmL4pY/IzE4ITDmj4Ge580
+         P5SnMSfBg0oDrYEnnE0CfKBj3VH1GAWl1Tqur27ypF607rXOQLduGk91LN6aRcjSoG2e
+         U67A==
+X-Gm-Message-State: APjAAAV6VMbuhy9e3Yf+irxu5T2kWwul5O1VEqy8uOgfAm/jWS+fty9v
+        04PfHMxD5ASNGYoCHAnQo8E=
+X-Google-Smtp-Source: APXvYqwbdwa5z/Mw8fsv5fDjzzdIQEE48+SMUMGxedgroSV5O6Mz8Opk8lbDY2FoQaMBU2tprUKiPg==
+X-Received: by 2002:a63:a741:: with SMTP id w1mr3064761pgo.131.1582792218623;
+        Thu, 27 Feb 2020 00:30:18 -0800 (PST)
+Received: from workstation-portable ([103.87.56.152])
+        by smtp.gmail.com with ESMTPSA id r145sm6174967pfr.5.2020.02.27.00.30.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2020 00:30:18 -0800 (PST)
+Date:   Thu, 27 Feb 2020 14:00:10 +0530
+From:   Amol Grover <frextrite@gmail.com>
+To:     amanharitsh123 <amanharitsh123@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] doc: Convert to checklist.txt to
+ checklist.rst
+Message-ID: <20200227083010.GB5241@workstation-portable>
+References: <20200225183916.4555-1-amanharitsh123@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44L0.2002260953110.3674-100000@netrider.rowland.org>
+In-Reply-To: <20200225183916.4555-1-amanharitsh123@gmail.com>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 09:58:12AM -0500, Alan Stern wrote:
-> On Wed, 26 Feb 2020, Boqun Feng wrote:
-> 
-> > In commit 30b795df11a1 ("tools/memory-model: Improve mixed-access
-> > checking in lock.cat"), we have added the checking to disallow any
-> > normal memory access to lock variables, and this checking is stronger
-> > than lock-final. So remove the lock-final checking as it's unnecessary
-> > now.
-> 
-> I don't understand this description.  Why do you say that the
-> normal-access checking is stronger than the lock-final check?
-> 
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  tools/memory-model/lock.cat | 3 ---
-> >  1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/tools/memory-model/lock.cat b/tools/memory-model/lock.cat
-> > index 6b52f365d73a..827a3646607c 100644
-> > --- a/tools/memory-model/lock.cat
-> > +++ b/tools/memory-model/lock.cat
-> > @@ -54,9 +54,6 @@ flag ~empty LKR \ domain(lk-rmw) as unpaired-LKR
-> >   *)
-> >  empty ([LKW] ; po-loc ; [LKR]) \ (po-loc ; [UL] ; po-loc) as lock-nest
-> >  
-> > -(* The final value of a spinlock should not be tested *)
-> > -flag ~empty [FW] ; loc ; [ALL-LOCKS] as lock-final
-> > -
-> >  (*
-> >   * Put lock operations in their appropriate classes, but leave UL out of W
-> >   * until after the co relation has been generated.
-> 
-> With this check removed, what will prevent people from writing litmus 
-> tests like this?
+On Wed, Feb 26, 2020 at 12:09:16AM +0530, amanharitsh123 wrote:
+> This patch converts checklist.txt to checklist.rst and
+> adds it to index.rst
 > 
 
-You are right, one thing I was missing is although FW is a subset of M,
-however FW & IW is not empty. Thanks! I will drop this.
+Hi Aman,
 
-Regards,
-Boqun
+Thank you for the patch! But before this can be accepted there are a few
+things that you need to take care of.
 
-> C test
+> Signed-off-by: amanharitsh123 <amanharitsh123@gmail.com>
+
+1. Signed-off-by *must* *always* include your full real name. You can
+modify .gitconfig, or run `git config user.name "Your Name"` to change
+this.
+
+> ---
+>  Documentation/RCU/{checklist.txt => checklist.rst} | 8 +++++---
+>  Documentation/RCU/index.rst                        | 1 +
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+>  rename Documentation/RCU/{checklist.txt => checklist.rst} (99%)
 > 
-> {
-> 	spinlock_t s;
-> }
+> diff --git a/Documentation/RCU/checklist.txt b/Documentation/RCU/checklist.rst
+> similarity index 99%
+> rename from Documentation/RCU/checklist.txt
+> rename to Documentation/RCU/checklist.rst
+> index e98ff261a438..49bf7862c950 100644
+> --- a/Documentation/RCU/checklist.txt
+> +++ b/Documentation/RCU/checklist.rst
+> @@ -1,5 +1,7 @@
+> -Review Checklist for RCU Patches
+> +.. checklist doc:
+
+2. The document identifier must always start with an underscore and
+should not contain white spaces, something like:
+.. _checklist_doc:
+should work.
+
+>  
+> +Review Checklist for RCU Patches
+> +================================
+>  
+>  This document contains a checklist for producing and reviewing patches
+>  that make use of RCU.  Violating any of the rules listed below will
+> @@ -442,8 +444,8 @@ over a rather long period of time, but improvements are always welcome!
+>  
+>  	You instead need to use one of the barrier functions:
+>  
+> -	o	call_rcu() -> rcu_barrier()
+> -	o	call_srcu() -> srcu_barrier()
+> +	-	call_rcu() -> rcu_barrier()
+> +	-	call_srcu() -> srcu_barrier()
+>  
+>  	However, these barrier functions are absolutely -not- guaranteed
+>  	to wait for a grace period.  In fact, if there are no call_rcu()
+> diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
+> index 81a0a1e5f767..d60eb4ba2cd0 100644
+> --- a/Documentation/RCU/index.rst
+> +++ b/Documentation/RCU/index.rst
+> @@ -10,6 +10,7 @@ RCU concepts
+>     arrayRCU
+>     rcubarrier
+>     rcu_dereference
+> +   checklist
+>     whatisRCU
+>     rcu
+>     listRCU
+
+3. The subject line needs a bit of tweaking.
+
+Apart from the above mentioned changes, everything looks good!
+
+Thanks
+Amol
+
+> -- 
+> 2.20.1
 > 
-> ...
-> 
-> exists (s=0)
-> 
-> Alan
-> 
+> _______________________________________________
+> Linux-kernel-mentees mailing list
+> Linux-kernel-mentees@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
