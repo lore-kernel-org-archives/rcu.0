@@ -1,83 +1,80 @@
-Return-Path: <SRS0=TlEe=4U=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=zrtj=4W=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FDABC3F2C6
-	for <rcu@archiver.kernel.org>; Tue,  3 Mar 2020 22:42:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 605E3C3F2CE
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 00:35:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 593292072A
-	for <rcu@archiver.kernel.org>; Tue,  3 Mar 2020 22:42:14 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kOdkCKMJ"
+	by mail.kernel.org (Postfix) with ESMTP id 2CD2620870
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 00:35:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1583368528;
+	bh=A0B6q9mDysJC9CEiJqkKY3U8/e/cX5VhA8cYED9cPmo=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=haNEPxL7sslx00nIB0COnuK+gSHbkR2XVVaImRmo6p01jiZwvBYyUL8RYZc9pP+0g
+	 Ugq1ON2NekHZYRgyrsCLaxhLd6PFQ9QPHAVW/vCPHLJcXif0houI+0whb3gT4WJxP7
+	 yHbrODVO2Rs6Jx8mTn0PpAgQpLPydCv7o8qiQcVk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgCCWmO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Mar 2020 17:42:14 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:35381 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbgCCWmN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Mar 2020 17:42:13 -0500
-Received: by mail-lf1-f65.google.com with SMTP id z9so4211514lfa.2;
-        Tue, 03 Mar 2020 14:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XQ+/6uwXVB6CkyLfTNiBmxLaJM91ko5pwiW+d2U99Zw=;
-        b=kOdkCKMJ25uZAL9QZiaPnAkeF36l8NzO8A0yDYUAmejbrRU0i+9Omw9zg4asAHvTpR
-         EeIeyTz3EJ01h7Z+1D73XCiYgd7/2nyU7LjEHg8UpqfklhBhOztAm+bjq8hrfEIXSXYS
-         aigc6EcDKKqwArLmjQLZ9dFFgQyth/ZHZKGeSt0bdsvN32Tc2EJUwtAEUa6gCzL6+ZSL
-         Pyy3GthcmMP53qZGUouny+dHWBguedGyB0yd6tt7FYCUtzB2VtusSXUKEJaENS+Zxumi
-         jAxBtnIeGvE8WKTk+MpIjrQ4tFr93BlJd40xLP39cAhO3E/flbZe4zNPojl0OiOd2/NI
-         t3ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XQ+/6uwXVB6CkyLfTNiBmxLaJM91ko5pwiW+d2U99Zw=;
-        b=jrGdQCEYP/Dze9VoOp47KOv4VpQnSakXqr6nfBArNfp/ZsKMfnxX1JkzjuOM/SEpc/
-         JZ0+b4PQ2LWqutxJByWMbkCya7ykWVXNGbYQrg/VfH472OwAy7LUhJuo4nqjV/S82qCd
-         hxYVxpPV/kw6/iIsE1FOSPi3RYzLesje4JBewTHY6d0I4768xBnOGrN1G/f+YEsO2tlP
-         ONTkaRwh8KfHINMRUr8XDvf/2NQSsE/mmptZSVOV8kH8i1Ry4jliBJ+PksbqcjvOhMuP
-         P8GUKFG4uhFWNIz+PRAnNzUyJqfe7JZxTEWim9RN6SIv82TkQsWmkAtXqdSJHOkVEozm
-         wL4A==
-X-Gm-Message-State: ANhLgQ1vPYsKtqJFiMRF0jeZrAit/7AY/QxFd3nwXPH0KkbNxX+vSFkA
-        iRwRTGnLQ7n8IvfpGVWHm+MOUjuSGaSEKF/6wNc=
-X-Google-Smtp-Source: ADFU+vuPr3JWnczjWq1ulvrGiPJF/rnWMBUcED8G8VW+qWk1fLE4W0ZIdsvpbMzcNfwztuwikWNxxO/l9aUlJPN6e5U=
-X-Received: by 2002:a19:4344:: with SMTP id m4mr122964lfj.140.1583275330926;
- Tue, 03 Mar 2020 14:42:10 -0800 (PST)
-MIME-Version: 1.0
-References: <CAOMZO5CrvxZDuRfBvwLV6uJJwtPuj1-vqoELKP3j15k3TbSjyg@mail.gmail.com>
- <20200301100755.4532-1-hdanton@sina.com>
-In-Reply-To: <20200301100755.4532-1-hdanton@sina.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 3 Mar 2020 19:41:59 -0300
-Message-ID: <CAOMZO5C6CG7HLxGu3wi0=GhSiVneXqCqEsYUQpKJX=xVRXaewA@mail.gmail.com>
-Subject: Re: rcu_sched stalls on 4.14
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        id S2388509AbgCEAf1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Mar 2020 19:35:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388407AbgCEAf1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Mar 2020 19:35:27 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10DC32084E;
+        Thu,  5 Mar 2020 00:35:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583368527;
+        bh=A0B6q9mDysJC9CEiJqkKY3U8/e/cX5VhA8cYED9cPmo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=h+taKVQbSBRSWDF0Q7aHQcp8F8fFOIlDl/Z3rg1xj7YbDd20n3SHfLCV69O/DdsqK
+         dq29DR+6uLzamssXGopylboDp98CoKFzxmnzmxSBDK5cEtugT8L8Juycq/LdLB7Aeo
+         7Gu0IS5d+B+0oau7p/h3NUMMuq++Sy3htnj+xfMo=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D98743522731; Wed,  4 Mar 2020 16:35:26 -0800 (PST)
+Date:   Wed, 4 Mar 2020 16:35:26 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        joel@joelfernandes.org, bigeasy@linutronix.de, tglx@linutronix.de,
+        swood@redhat.com, williams@redhat.com, juri.lelli@redhat.com,
+        linux-rt-users@vger.kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org
+Subject: RCU use of swait
+Message-ID: <20200305003526.GA20601@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Hillf,
+Hello!
 
-On Sun, Mar 1, 2020 at 7:08 AM Hillf Danton <hdanton@sina.com> wrote:
+RCU makes considerable use of swait and friends.  The motivation I recall
+was around offloaded callbacks, where in the old days the grace-period
+kthread might do a wakeup for up to N tasks, where N is the number of
+CPUs, all with interrupts disabled.  This has since been reduced to
+roughly sqrt(N) tasks, which might well still be too many wakeups to do
+with interrupts disabled throughout.
 
-> If it would not take much difficulty to repro, see if it's likely down
-> to a softirq hog.
+However, the other use cases have at most one waiter to be awakened.
 
-Thanks for your suggestion.
+So I am guessing that I could usefully convert all but the rcu_node
+structure's ->nocb_gp_wq field from swait to wait.  Particularly the
+use cases in SRCU and Tiny RCU.
 
-I have asked the reporter to test it.
+Or is there some other reason why {S,}RCU needs to use swait that I
+am forgetting?
 
-Thanks
+							Thanx, Paul
