@@ -2,214 +2,118 @@ Return-Path: <SRS0=zrtj=4W=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B22C3F2D2
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1BBAC3F2D2
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:23:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 93B0420801
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:17:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9845120801
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:23:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="e2uP7GSo"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="DeveEGgd"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgCEWR4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Mar 2020 17:17:56 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44420 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgCEWR4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:17:56 -0500
-Received: by mail-qk1-f193.google.com with SMTP id f198so422624qke.11
-        for <rcu@vger.kernel.org>; Thu, 05 Mar 2020 14:17:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KtJH5QV8X5puZW05K9mF0ArNYyR1iSSvlLq7+eFOBlM=;
-        b=e2uP7GSoZY3MnBc0ACHvh9M8AmXy5DN+nH3Je6EKcaBWHgvbfybU1DZMwrqHR6Sca3
-         u+yQbP30jVphg518OYwRq3A8a655zDHGUankpC/8yJeYsozgeLujAIOw1ug14rM5RYem
-         /Xl/xE4i0kmGMJSZUiMtlXYGWaEZMF1CCbONU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KtJH5QV8X5puZW05K9mF0ArNYyR1iSSvlLq7+eFOBlM=;
-        b=U/YUrlMtZRohqBiB7gLNZCGkCHrHfYbXNHi7oGSkgMKpCEbeSF9mz8aforq+7xFH1U
-         MrivDFyBB/uG7OHL9yDIgQOJlmgWsiH57fEyvI1BjXn2cC6eXz+Ir/0TIdOXriwUBX+4
-         HLB/lO6Kn498ypp6Xdy1MzERyMaJHWGmDJXy0twcBCbv0Q+kxfqUpz2jmwy2is4c4Syg
-         dvvX67d55J/H8BeqaMat5XCnrsWRraiHHyfjG6C+hVcHL8qYdL6fFTQGlX5AQ7bY1+yK
-         qN2MLboCIjOd4Az8YBMMQFMODlJYzjCBRl0e3niTXa83rsfBSWkN9wh0Ho3C3+2mPT1F
-         tanQ==
-X-Gm-Message-State: ANhLgQ1GX3KLQvL0VADqs2J6vhNqa5xYvCPyph6EmRLRbu4SZqyO7qCz
-        HwPi7K2A/dPsBKGCfMWaWe43dg==
-X-Google-Smtp-Source: ADFU+vtYq72oP3Tra1ZpNGV4aNQ+yh9RZgeUnjQ/WjvZTsnvVKjbbD3GQhQoaATOByT5hL9V8Y2S5A==
-X-Received: by 2002:a05:620a:13ed:: with SMTP id h13mr180689qkl.313.1583446674322;
-        Thu, 05 Mar 2020 14:17:54 -0800 (PST)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id d137sm10415771qkc.99.2020.03.05.14.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 14:17:53 -0800 (PST)
-Date:   Thu, 5 Mar 2020 17:17:53 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     urezki@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        id S1726251AbgCEWXo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Mar 2020 17:23:44 -0500
+Received: from mout.gmx.net ([212.227.17.22]:44301 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgCEWXo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:23:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583446984;
+        bh=LGz0Ac8M2VCBTBKcZ8Cfwh9vk3xuYtKImru4lo9VeqI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=DeveEGgdJvCius7RQhsJdo1/YgH2ToK+TvWed9EoPc+smbnGfB+ScI8ZZg4v863Ew
+         y84x2W3AHjCjlBKuxNwXWrh6m28d4wsFGquk34aIAuY2zQmgLgA95Rm8bBpP6H/DzW
+         wR5LvhyOhGfYAaZ/+LAATha0X2skX2dKyz/QKmIo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.195.153]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEFzx-1j1yYE47sL-00AIgE; Thu, 05
+ Mar 2020 23:23:04 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     rcu@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH linus/master 2/2] rcu/tree: Add a shrinker to prevent OOM
- due to kfree_rcu() batching
-Message-ID: <20200305221753.GA66450@google.com>
-References: <20200305221323.66051-1-joel@joelfernandes.org>
- <20200305221323.66051-2-joel@joelfernandes.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "rculist: Describe variadic macro argument in a Sphinx-compatible way"
+Date:   Thu,  5 Mar 2020 23:22:55 +0100
+Message-Id: <20200305222255.25266-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305221323.66051-2-joel@joelfernandes.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lcYis6IUbD9AoVz5IC9ajdFSVsnIDAIJYcwNlhjvJYmMaT3EFMz
+ VwFhBw3Z8icfhHL5o7wo/23JyZWt2XcARlBkcYlgJxXlBB8VSEuwpkeS5aDlWLtdn5FJSCB
+ WitTn+CjFA5J9AISGKWTrfK/yIhSqb6XWNnzlJsyvRjW+JB7tUXvr8u+3DTwg4UaLFaSpgL
+ wmKgi4xLFYqRAOdiRwAfQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qMJoParss7A=:JIqFDbLdbYdIYtJmy8sdXz
+ A5iDrxV7UvXiY9FkdIbypNqSC9796zDTEtv939X2/x/+69V8bmuiI01QPgO9RPSH+J0CJG/9U
+ MuOvVp7tBoaJzbU5fpVvA5By75xKX6c4EIzpWBPfQEJExL5oVMDDpo23zn7a8ETB+axr/F04u
+ zZKCnHBwmnFb/0Rd/x2/h7u7iy7yYq7Qzy1OJcbSYQLh0XaVHEzp/aEInqV9FDYxiYXq3Agpp
+ nnGXO9ICKu7YKDaFnj4ztGElj3m2W+JGbC7/mLX+5k8vcTy1Zud7ct+gRQ3eKUt4CZ04PGq4e
+ eFGhn2bZaoQY682wuPwiTiT0rncOYHch+seVUbIyFHIW+c2WwLGVHWqWJj0FrOHSta/wTMW4G
+ 4U7o5+t2/ri3uWqBgv0Y+We3AQ7PYl4XEI85FjdQVJFhUotyGqiT4g/pT04HK867DIwG5qpfn
+ j3/f0sBHYz0UKOCqa2pg5kHUJEC7GccIcvkF8RVD7k5OPbDIKyylGl2TfREE0dlmlC1OUSBSF
+ Sz6kLoYXSMaAgMjqx4oPi7NpJqrOfWmlfammD/0wKnO1jWbwBvEinDnfQlnyoWXPyyfc+b50u
+ cDWhVfr2cCe3tTa74FL7z+J/jcVJpBMBmfWpN4GlTGm7P5TcGKtKwncmm2FdGfBn7TaY83TzJ
+ Kv0xpimUuXSFIx2Lp3J2qWyKKKQGRQFcGZk/4udr8JT5MbYu808fwUKJqoA+qn7XKBBspC3H+
+ hXyVPJIQqd6qi485hP8jgPXK1BTNa0kc20iEnOTKkWwp8cOfORMt4zDcfbYo6en8/hwPcAxjC
+ 8hGVT9dQWitEvQ6Q12cEM6OZGYildEa7IpF+mV1u7e45NDWgfK+4vcgZb4FAqnRP/RMxZO5iJ
+ rd7u5ETJtY02w9cjLGqhKKoD+M/Zpuo3DAO6Uts2A7DCznrjCRXASHk+cnEDCJtrclzWJMTt6
+ vOBz6QTydhUqNxnPlr7wVpujzvwcH2ptKn1DQUtTv1qBOuRMmPzS9bOfiixMzFgPqNuN6Di/r
+ EUBjNx9+hoSNWN+SEVralpFO+PG4Cs+hnWkO3FM3JEfA++9Mvv1oBBpMxs+4NMiC5sxYPdOFV
+ pZq02nvpeLoPaG823z03FydrNvYGIQFcT7u4FUpZhuZ4sksmBxg8Z13qfsmVwsgFj2XMCmHK7
+ BeSHFCgF5vsk53IgI/+btR1kvY7sBcUbZlwaq4pzXyE23kJmj7egk4+OGG3DjIxu1tQpf4b1D
+ pQD+huMsZ/N7rbgZy
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 05:13:23PM -0500, Joel Fernandes (Google) wrote:
-> To reduce grace periods and improve kfree() performance, we have done
-> batching recently dramatically bringing down the number of grace periods
-> while giving us the ability to use kfree_bulk() for efficient kfree'ing.
-> 
-> However, this has increased the likelihood of OOM condition under heavy
-> kfree_rcu() flood on small memory systems. This patch introduces a
-> shrinker which starts grace periods right away if the system is under
-> memory pressure due to existence of objects that have still not started
-> a grace period.
-> 
-> With this patch, I do not observe an OOM anymore on a system with 512MB
-> RAM and 8 CPUs, with the following rcuperf options:
-> 
-> rcuperf.kfree_loops=20000 rcuperf.kfree_alloc_num=8000
-> rcuperf.kfree_rcu_test=1 rcuperf.kfree_mult=2
+This reverts commit f452ee096d95482892b101bde4fd037fa025d3cc.
 
-Paul,
-I may have to rebase this patch on top of Vlad's kfree_bulk() work. But let
-us discuss patch and I can rebase it and repost it once patch looks Ok to
-you. (The kfree_bulk() work should not affect the patch).
+The workaround became unnecessary with commit 43756e347f21
+("scripts/kernel-doc: Add support for named variable macro arguments").
 
-thanks,
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ include/linux/rculist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- - Joel
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 9f313e4999fe..93accccb9620 100644
+=2D-- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -371,7 +371,7 @@ static inline void list_splice_tail_init_rcu(struct li=
+st_head *list,
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+  * @member:	the name of the list_head within the struct.
+- * @cond...:	optional lockdep expression if called from non-RCU protectio=
+n.
++ * @cond:	optional lockdep expression if called from non-RCU protection.
+  *
+  * This list-traversal primitive may safely run concurrently with
+  * the _rcu list-mutation primitives such as list_add_rcu()
+@@ -646,7 +646,7 @@ static inline void hlist_add_behind_rcu(struct hlist_n=
+ode *n,
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+  * @member:	the name of the hlist_node within the struct.
+- * @cond...:	optional lockdep expression if called from non-RCU protectio=
+n.
++ * @cond:	optional lockdep expression if called from non-RCU protection.
+  *
+  * This list-traversal primitive may safely run concurrently with
+  * the _rcu list-mutation primitives such as hlist_add_head_rcu()
+=2D-
+2.20.1
 
-
-> 
-> NOTE:
-> On systems with no memory pressure, the patch has no effect as intended.
-> 
-> Cc: urezki@gmail.com
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> ---
->  kernel/rcu/tree.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index d91c9156fab2e..28ec35e15529d 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2723,6 +2723,8 @@ struct kfree_rcu_cpu {
->  	struct delayed_work monitor_work;
->  	bool monitor_todo;
->  	bool initialized;
-> +	// Number of objects for which GP not started
-> +	int count;
->  };
->  
->  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
-> @@ -2791,6 +2793,7 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
->  
->  	krwp->head_free = krcp->head;
->  	krcp->head = NULL;
-> +	krcp->count = 0;
->  	INIT_RCU_WORK(&krwp->rcu_work, kfree_rcu_work);
->  	queue_rcu_work(system_wq, &krwp->rcu_work);
->  	return true;
-> @@ -2864,6 +2867,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	head->func = func;
->  	head->next = krcp->head;
->  	krcp->head = head;
-> +	krcp->count++;
->  
->  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-> @@ -2879,6 +2883,58 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  }
->  EXPORT_SYMBOL_GPL(kfree_call_rcu);
->  
-> +static unsigned long
-> +kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> +{
-> +	int cpu;
-> +	unsigned long flags, count = 0;
-> +
-> +	/* Snapshot count of all CPUs */
-> +	for_each_online_cpu(cpu) {
-> +		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> +
-> +		spin_lock_irqsave(&krcp->lock, flags);
-> +		count += krcp->count;
-> +		spin_unlock_irqrestore(&krcp->lock, flags);
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static unsigned long
-> +kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> +{
-> +	int cpu, freed = 0;
-> +	unsigned long flags;
-> +
-> +	for_each_online_cpu(cpu) {
-> +		int count;
-> +		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> +
-> +		count = krcp->count;
-> +		spin_lock_irqsave(&krcp->lock, flags);
-> +		if (krcp->monitor_todo)
-> +			kfree_rcu_drain_unlock(krcp, flags);
-> +		else
-> +			spin_unlock_irqrestore(&krcp->lock, flags);
-> +
-> +		sc->nr_to_scan -= count;
-> +		freed += count;
-> +
-> +		if (sc->nr_to_scan <= 0)
-> +			break;
-> +	}
-> +
-> +	return freed;
-> +}
-> +
-> +static struct shrinker kfree_rcu_shrinker = {
-> +	.count_objects = kfree_rcu_shrink_count,
-> +	.scan_objects = kfree_rcu_shrink_scan,
-> +	.batch = 0,
-> +	.seeks = DEFAULT_SEEKS,
-> +};
-> +
->  void __init kfree_rcu_scheduler_running(void)
->  {
->  	int cpu;
-> @@ -3774,6 +3830,8 @@ static void __init kfree_rcu_batch_init(void)
->  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
->  		krcp->initialized = true;
->  	}
-> +	if (register_shrinker(&kfree_rcu_shrinker))
-> +		pr_err("Failed to register kfree_rcu() shrinker!\n");
->  }
->  
->  void __init rcu_init(void)
-> -- 
-> 2.25.0.265.gbab2e86ba0-goog
-> 
