@@ -2,118 +2,114 @@ Return-Path: <SRS0=zrtj=4W=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1BBAC3F2D2
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 622D9C3F2D1
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:26:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9845120801
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:23:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33016206E6
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:26:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="DeveEGgd"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="h0wbAKXu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgCEWXo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Mar 2020 17:23:44 -0500
-Received: from mout.gmx.net ([212.227.17.22]:44301 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgCEWXo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:23:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583446984;
-        bh=LGz0Ac8M2VCBTBKcZ8Cfwh9vk3xuYtKImru4lo9VeqI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=DeveEGgdJvCius7RQhsJdo1/YgH2ToK+TvWed9EoPc+smbnGfB+ScI8ZZg4v863Ew
-         y84x2W3AHjCjlBKuxNwXWrh6m28d4wsFGquk34aIAuY2zQmgLgA95Rm8bBpP6H/DzW
-         wR5LvhyOhGfYAaZ/+LAATha0X2skX2dKyz/QKmIo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.153]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEFzx-1j1yYE47sL-00AIgE; Thu, 05
- Mar 2020 23:23:04 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     rcu@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S1726162AbgCEW0A (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Mar 2020 17:26:00 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40900 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgCEWZ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:25:59 -0500
+Received: by mail-qk1-f194.google.com with SMTP id m2so469636qka.7
+        for <rcu@vger.kernel.org>; Thu, 05 Mar 2020 14:25:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DS3YcKqO0mcvZOjaCwu0fyqXymHyb+ZjqvrmGOweESY=;
+        b=h0wbAKXuAqwo28k+L1LitMTs7AAC/dVZRZ2ITanvKFmMHIay2KcQrKUAHY3sE7abTX
+         DcHRM3gVQZaSUpyYNLENY9/JOWsxRnBTGFpngQAUriNZhOBOC7/UYjW66aigFhvl29fV
+         Tl+TyKlrgIiewIPKtGdZmt8rj93Ymk1zIkzHQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DS3YcKqO0mcvZOjaCwu0fyqXymHyb+ZjqvrmGOweESY=;
+        b=XAOOFe0L6uqIm4eT8eXxoQWDqnlmV7vvzigCwdp0tiQRND4D5iLFg6Pr7OVh+iQfAt
+         ev2valialcYpZ4t/NCYDdGUdOMqwf1Ek2izeJXLil+ZmsbsWZmTkKa+zJvbi40JjaVVU
+         nDCdj4HfUs66OHxuTioWGO3g1U9tZ5U2mWW49RDT6gx5QDZc5NCnnxGmluO8bGpnsdwl
+         lvy4hBRa3JydDYl/d9SG0L9xHXNthmX7oXn3+zVrpljG9+aHf+GlbUi3fPUm/i7vV3x4
+         Ms5s1nd8oqTKQz/+tH3KJIxW201WVq/EZh25/EO9cLJiGw8N/ZzuUzZjs86RN+istgHb
+         SIsw==
+X-Gm-Message-State: ANhLgQ2rlWc1hqIv4ozTc+AUkCKCdYRIIh2SpTlcQRmUHMz0YnfBWZM+
+        5/eWX4xD9lpV83K6w+rHjdGwdA==
+X-Google-Smtp-Source: ADFU+vt1oVNptXPz9F8bBpIDh+C+Grp42hvsIUhuEafTJkrTFcfHcFAnWPnE/23LP587vsl/ZjoSkQ==
+X-Received: by 2002:a37:4d10:: with SMTP id a16mr210869qkb.325.1583447158811;
+        Thu, 05 Mar 2020 14:25:58 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id g1sm6910713qkl.55.2020.03.05.14.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Mar 2020 14:25:58 -0800 (PST)
+Date:   Thu, 5 Mar 2020 17:25:57 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     urezki@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "rculist: Describe variadic macro argument in a Sphinx-compatible way"
-Date:   Thu,  5 Mar 2020 23:22:55 +0100
-Message-Id: <20200305222255.25266-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.20.1
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH linus/master 2/2] rcu/tree: Add a shrinker to prevent OOM
+ due to kfree_rcu() batching
+Message-ID: <20200305222557.GC66450@google.com>
+References: <20200305221323.66051-1-joel@joelfernandes.org>
+ <20200305221323.66051-2-joel@joelfernandes.org>
+ <20200305221753.GA66450@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lcYis6IUbD9AoVz5IC9ajdFSVsnIDAIJYcwNlhjvJYmMaT3EFMz
- VwFhBw3Z8icfhHL5o7wo/23JyZWt2XcARlBkcYlgJxXlBB8VSEuwpkeS5aDlWLtdn5FJSCB
- WitTn+CjFA5J9AISGKWTrfK/yIhSqb6XWNnzlJsyvRjW+JB7tUXvr8u+3DTwg4UaLFaSpgL
- wmKgi4xLFYqRAOdiRwAfQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qMJoParss7A=:JIqFDbLdbYdIYtJmy8sdXz
- A5iDrxV7UvXiY9FkdIbypNqSC9796zDTEtv939X2/x/+69V8bmuiI01QPgO9RPSH+J0CJG/9U
- MuOvVp7tBoaJzbU5fpVvA5By75xKX6c4EIzpWBPfQEJExL5oVMDDpo23zn7a8ETB+axr/F04u
- zZKCnHBwmnFb/0Rd/x2/h7u7iy7yYq7Qzy1OJcbSYQLh0XaVHEzp/aEInqV9FDYxiYXq3Agpp
- nnGXO9ICKu7YKDaFnj4ztGElj3m2W+JGbC7/mLX+5k8vcTy1Zud7ct+gRQ3eKUt4CZ04PGq4e
- eFGhn2bZaoQY682wuPwiTiT0rncOYHch+seVUbIyFHIW+c2WwLGVHWqWJj0FrOHSta/wTMW4G
- 4U7o5+t2/ri3uWqBgv0Y+We3AQ7PYl4XEI85FjdQVJFhUotyGqiT4g/pT04HK867DIwG5qpfn
- j3/f0sBHYz0UKOCqa2pg5kHUJEC7GccIcvkF8RVD7k5OPbDIKyylGl2TfREE0dlmlC1OUSBSF
- Sz6kLoYXSMaAgMjqx4oPi7NpJqrOfWmlfammD/0wKnO1jWbwBvEinDnfQlnyoWXPyyfc+b50u
- cDWhVfr2cCe3tTa74FL7z+J/jcVJpBMBmfWpN4GlTGm7P5TcGKtKwncmm2FdGfBn7TaY83TzJ
- Kv0xpimUuXSFIx2Lp3J2qWyKKKQGRQFcGZk/4udr8JT5MbYu808fwUKJqoA+qn7XKBBspC3H+
- hXyVPJIQqd6qi485hP8jgPXK1BTNa0kc20iEnOTKkWwp8cOfORMt4zDcfbYo6en8/hwPcAxjC
- 8hGVT9dQWitEvQ6Q12cEM6OZGYildEa7IpF+mV1u7e45NDWgfK+4vcgZb4FAqnRP/RMxZO5iJ
- rd7u5ETJtY02w9cjLGqhKKoD+M/Zpuo3DAO6Uts2A7DCznrjCRXASHk+cnEDCJtrclzWJMTt6
- vOBz6QTydhUqNxnPlr7wVpujzvwcH2ptKn1DQUtTv1qBOuRMmPzS9bOfiixMzFgPqNuN6Di/r
- EUBjNx9+hoSNWN+SEVralpFO+PG4Cs+hnWkO3FM3JEfA++9Mvv1oBBpMxs+4NMiC5sxYPdOFV
- pZq02nvpeLoPaG823z03FydrNvYGIQFcT7u4FUpZhuZ4sksmBxg8Z13qfsmVwsgFj2XMCmHK7
- BeSHFCgF5vsk53IgI/+btR1kvY7sBcUbZlwaq4pzXyE23kJmj7egk4+OGG3DjIxu1tQpf4b1D
- pQD+huMsZ/N7rbgZy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200305221753.GA66450@google.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This reverts commit f452ee096d95482892b101bde4fd037fa025d3cc.
+On Thu, Mar 05, 2020 at 05:17:53PM -0500, Joel Fernandes wrote:
+> On Thu, Mar 05, 2020 at 05:13:23PM -0500, Joel Fernandes (Google) wrote:
+> > To reduce grace periods and improve kfree() performance, we have done
+> > batching recently dramatically bringing down the number of grace periods
+> > while giving us the ability to use kfree_bulk() for efficient kfree'ing.
+> > 
+> > However, this has increased the likelihood of OOM condition under heavy
+> > kfree_rcu() flood on small memory systems. This patch introduces a
+> > shrinker which starts grace periods right away if the system is under
+> > memory pressure due to existence of objects that have still not started
+> > a grace period.
+> > 
+> > With this patch, I do not observe an OOM anymore on a system with 512MB
+> > RAM and 8 CPUs, with the following rcuperf options:
+> > 
+> > rcuperf.kfree_loops=20000 rcuperf.kfree_alloc_num=8000
+> > rcuperf.kfree_rcu_test=1 rcuperf.kfree_mult=2
+> 
+> Paul,
+> I may have to rebase this patch on top of Vlad's kfree_bulk() work. But let
+> us discuss patch and I can rebase it and repost it once patch looks Ok to
+> you. (The kfree_bulk() work should not affect the patch).
 
-The workaround became unnecessary with commit 43756e347f21
-("scripts/kernel-doc: Add support for named variable macro arguments").
+BTW, we can also use the scheme in the future to keep garbage uncollected
+until memory pressure. That way you defer grace periods for longer similar to
+the paper [1], until the MM layer thinks the party is over. For one, I am not
+too confident about the shrinker's ability to handle transient memory spikes.
+If I remember, the shrinker is best-effort.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- include/linux/rculist.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+But one step at a time :)
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 9f313e4999fe..93accccb9620 100644
-=2D-- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -371,7 +371,7 @@ static inline void list_splice_tail_init_rcu(struct li=
-st_head *list,
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-  * @member:	the name of the list_head within the struct.
-- * @cond...:	optional lockdep expression if called from non-RCU protectio=
-n.
-+ * @cond:	optional lockdep expression if called from non-RCU protection.
-  *
-  * This list-traversal primitive may safely run concurrently with
-  * the _rcu list-mutation primitives such as list_add_rcu()
-@@ -646,7 +646,7 @@ static inline void hlist_add_behind_rcu(struct hlist_n=
-ode *n,
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-  * @member:	the name of the hlist_node within the struct.
-- * @cond...:	optional lockdep expression if called from non-RCU protectio=
-n.
-+ * @cond:	optional lockdep expression if called from non-RCU protection.
-  *
-  * This list-traversal primitive may safely run concurrently with
-  * the _rcu list-mutation primitives such as hlist_add_head_rcu()
-=2D-
-2.20.1
+thanks,
+
+ - Joel
+
+[1] https://dl.acm.org/doi/10.1145/3190508.3190522
 
