@@ -2,126 +2,114 @@ Return-Path: <SRS0=zrtj=4W=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3275C3F2CD
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 08:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C4E7C3F2D2
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:13:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B65A2073D
-	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 08:18:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F2B2520801
+	for <rcu@archiver.kernel.org>; Thu,  5 Mar 2020 22:13:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="jSZV6G8w"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yUJonfYk"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgCEIS5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Mar 2020 03:18:57 -0500
-Received: from mail-m963.mail.126.com ([123.126.96.3]:33768 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgCEIS5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Mar 2020 03:18:57 -0500
-X-Greylist: delayed 1919 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Mar 2020 03:18:49 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=k9HkUhFYn1+h3FUkrG
-        ApXkMLDxlEv2B5rAwCtF/NaqQ=; b=jSZV6G8wQJFoTL3AUqBp248iCElFbcoL0t
-        6c77OFpy7vZH0KQa4AdH2Ztd+ISy1SiiJUU6TmLFZ8eWNK2sC568G171JbSiiV8e
-        szW6pA53Sitv+rxY+vMzsGS5bURWI3e/oZJ5GaUld3BVzmR2VVvIKAwQvxBXGtAz
-        XTa9BeMOA=
-Received: from pek-lpd-ccm2.wrs.com (unknown [60.247.85.82])
-        by smtp8 (Coremail) with SMTP id NORpCgDH1toYrmBeqjl1GQ--.6848S2;
-        Thu, 05 Mar 2020 15:45:34 +0800 (CST)
-From:   Zhaolong Zhang <zhangzl2013@126.com>
-To:     Zhaolong Zhang <zhangzl2013@126.com.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S1726243AbgCEWNi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Mar 2020 17:13:38 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:41231 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgCEWNi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:13:38 -0500
+Received: by mail-qv1-f65.google.com with SMTP id s15so51557qvn.8
+        for <rcu@vger.kernel.org>; Thu, 05 Mar 2020 14:13:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+B1geMfKugZ9/Y0qjQLB48rxQUh2J0QAO4pKzK9MPtc=;
+        b=yUJonfYkzQmASLfePqIhRviUDsAM+NazCmszFozaooCnRqJBeQ04Ol7bzuEhApnWu/
+         6z+YcC4kmkO9bpOh0sQ7sXKgWLpk6VI9cD97Lv69w9p65AnjBmQDn5Tak8mcpvMakWa1
+         lHaM3zQB9LWo5dvFjy/l6+RnJAzC3oJsttK1Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+B1geMfKugZ9/Y0qjQLB48rxQUh2J0QAO4pKzK9MPtc=;
+        b=MnWNLhtajsdrUtsDJsJR3N9AttYxFjuq1jHdhhqThK7zn7GTPNQY87cHUkDTx2N7Vc
+         aAZuEvcVuybYszPsIJJjSc00DRFpLy32ZYp6AVdyTFSdHUyWMmoWYoUCcsSOMGoTT5ta
+         /Gcmc5CZspPLnBx3r7+7ZGzz4Jo+Yb3UtqzJw/41Qy1txdtR3bZ8iF+O31IZLTzw3uab
+         oPnJRZpj2nVCekH5hJ3sOsNXQY1xWlOQPXthde5yiQPlouS0/rhqkv8OLhN3q5goMXCz
+         D2SUKWNVtSqf9EKw85zgrdKP51YMkB+j48ZtYz1Y+wRdayqqVpgXdPzKNVgbf5Ke7wIJ
+         Ijsg==
+X-Gm-Message-State: ANhLgQ3Yrb5XBI7zVCQZs8tWWT/Exsw1JkdDxE7u0I20ir9RKDuJt9oo
+        WXRfwFEt0/ngADBVm+GXeVijgQ==
+X-Google-Smtp-Source: ADFU+vt6v0+EF3++rFKijcSaojGu0jqGRlv6a89byICbegBod4UGPa8P3gUncs01N8yuFqjTtyMQTQ==
+X-Received: by 2002:a05:6214:1404:: with SMTP id n4mr374856qvx.237.1583446417238;
+        Thu, 05 Mar 2020 14:13:37 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id n8sm16366198qke.37.2020.03.05.14.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Mar 2020 14:13:36 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Fix the (t=0 jiffies) false positive
-Date:   Thu,  5 Mar 2020 15:45:57 +0800
-Message-Id: <1583394357-11767-1-git-send-email-zhangzl2013@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: NORpCgDH1toYrmBeqjl1GQ--.6848S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJr48tr4DKrWxAw1DZr4kCrg_yoW8Kr17pa
-        y7Ka47ta1UJF1vva47t3s5Xr1UJr4kXa47ta9Fy34Fva15JF4FqF90v34UKrWUur93WrWa
-        vFyFyF9rAw4ktFUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j2_M3UUUUU=
-X-Originating-IP: [60.247.85.82]
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbitQTdz1pEAlS7TwAAsf
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, urezki@gmail.com
+Subject: [PATCH linus/master 1/2] rcuperf: Add ability to increase object allocation size
+Date:   Thu,  5 Mar 2020 17:13:22 -0500
+Message-Id: <20200305221323.66051-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Calculate 't' with the previously recorded 'gps' instead of 'gp_start'.
+This allows us to increase memory pressure dynamically using a new
+rcuperf boot command line parameter called 'rcumult'.
 
-Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
 ---
- kernel/rcu/tree_stall.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/rcuperf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 55f9b84..4223b8b 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -371,7 +371,7 @@ static void rcu_check_gp_kthread_starvation(void)
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index da94b89cd5310..36f0ed75c7cf3 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -87,6 +87,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
+ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
+ torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
+ torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() perf test?");
++torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
+ 
+ static char *perf_type = "rcu";
+ module_param(perf_type, charp, 0444);
+@@ -627,7 +628,7 @@ kfree_perf_thread(void *arg)
+ 
+ 	do {
+ 		for (i = 0; i < kfree_alloc_num; i++) {
+-			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
++			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
+ 			if (!alloc_ptr)
+ 				return -ENOMEM;
+ 
+@@ -712,6 +713,8 @@ kfree_perf_init(void)
+ 		schedule_timeout_uninterruptible(1);
  	}
- }
  
--static void print_other_cpu_stall(unsigned long gp_seq)
-+static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- {
- 	int cpu;
- 	unsigned long flags;
-@@ -408,7 +408,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
- 	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu)\n",
--	       smp_processor_id(), (long)(jiffies - rcu_state.gp_start),
-+	       smp_processor_id(), (long)(jiffies - gps),
- 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
- 	if (ndetected) {
- 		rcu_dump_cpu_stacks();
-@@ -442,7 +442,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
- 	rcu_force_quiescent_state();  /* Kick them all. */
- }
- 
--static void print_cpu_stall(void)
-+static void print_cpu_stall(unsigned long gps)
- {
- 	int cpu;
- 	unsigned long flags;
-@@ -467,7 +467,7 @@ static void print_cpu_stall(void)
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
- 	pr_cont("\t(t=%lu jiffies g=%ld q=%lu)\n",
--		jiffies - rcu_state.gp_start,
-+		jiffies - gps,
- 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
- 
- 	rcu_check_gp_kthread_starvation();
-@@ -546,7 +546,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
- 		/* We haven't checked in, so go dump stack. */
--		print_cpu_stall();
-+		print_cpu_stall(gps);
- 		if (rcu_cpu_stall_ftrace_dump)
- 			rcu_ftrace_dump(DUMP_ALL);
- 
-@@ -555,7 +555,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
- 		/* They had a few time units to dump stack, so complain. */
--		print_other_cpu_stall(gs2);
-+		print_other_cpu_stall(gs2, gps);
- 		if (rcu_cpu_stall_ftrace_dump)
- 			rcu_ftrace_dump(DUMP_ALL);
- 	}
++	pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
++
+ 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (kfree_reader_tasks == NULL) {
 -- 
-1.8.3.1
+2.25.0.265.gbab2e86ba0-goog
 
