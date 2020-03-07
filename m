@@ -1,133 +1,311 @@
-Return-Path: <SRS0=V1ps=4X=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=zJ2d=4Y=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8465C3F2CD
-	for <rcu@archiver.kernel.org>; Fri,  6 Mar 2020 05:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14838C10F25
+	for <rcu@archiver.kernel.org>; Sat,  7 Mar 2020 03:33:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6F28A20728
-	for <rcu@archiver.kernel.org>; Fri,  6 Mar 2020 05:07:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D0C712070A
+	for <rcu@archiver.kernel.org>; Sat,  7 Mar 2020 03:33:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=126.com header.i=@126.com header.b="ceDItYFO"
+	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="WF4b75xX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgCFFHo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Mar 2020 00:07:44 -0500
-Received: from m15-6.126.com ([220.181.15.6]:19916 "EHLO m15-6.126.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgCFFHo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Mar 2020 00:07:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=XfIPh
-        7x1oEHUZRf575YujUvh2bmTi0eo55RZ9OzvY18=; b=ceDItYFOsRS/UZ/CwRWan
-        UfqfW9u+yjFoylptIDCtdhHP1b6TMzjd9NpqvIpa9+6Tams5+l2wJ2y7gfMp+TgT
-        Vr3snPOAzoXIGPcbIr8TpcUYQcvLdAd7u0S+YyfSkOaNwLpFc7NDwjKuqVymUevV
-        XMFuVMWNpBKp3Vl6iiv8qE=
-Received: from zhangzl2013$126.com ( [147.11.252.42] ) by
- ajax-webmail-wmsvr6 (Coremail) ; Fri, 6 Mar 2020 13:06:13 +0800 (CST)
-X-Originating-IP: [147.11.252.42]
-Date:   Fri, 6 Mar 2020 13:06:13 +0800 (CST)
-From:   "Zhaolong Zhang" <zhangzl2013@126.com>
-To:     paulmck@kernel.org
-Cc:     "Zhaolong Zhang" <zhangzl2013@126.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "Lai Jiangshan" <jiangshanlai@gmail.com>,
-        "Joel Fernandes" <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix the (t=0 jiffies) false positive
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190724(ac680a23)
- Copyright (c) 2002-2020 www.mailtech.cn 126com
-In-Reply-To: <20200305230515.GN2935@paulmck-ThinkPad-P72>
-References: <1583394357-11767-1-git-send-email-zhangzl2013@126.com>
- <20200305230515.GN2935@paulmck-ThinkPad-P72>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
-MIME-Version: 1.0
-Message-ID: <3e2ee4b9.3169.170ae3c9ed0.Coremail.zhangzl2013@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: BsqowAD3Br9G2mFeFFR0AA--.44548W
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbikgfez1pD-8BC0QABsw
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+        id S1726269AbgCGDd2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Mar 2020 22:33:28 -0500
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:42841 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726245AbgCGDd1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Mar 2020 22:33:27 -0500
+Received: by mail-qt1-f175.google.com with SMTP id r6so3286154qtt.9
+        for <rcu@vger.kernel.org>; Fri, 06 Mar 2020 19:33:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yWvC0kkBmOA3iFTKCQGyV2Z6IPkQjFiOBlLksK4/WcI=;
+        b=WF4b75xXsJ7bXheJut50ZeKYt6rOXZItWoih1bMTVCYOp35Sc5K+pDKXId4BXS8D29
+         RTb+LY7ycNwBWJNUl4ChZWOfmfE9NcBuPeXyk0zAURmlzFhOo293aiTbvcRzrCC7Iz1e
+         hDe5F55IIAy3ZQlWQlYNXc2IMMTGtbndoZDmZgjP6VmHxC+YR4qQLpcQC8Qj8IdqdDSV
+         1+0sGOUW7Ot7Snd8Fr9OtUhHjADJbXlHxWdpQeHwhh+9cLBg/K5kpBU/L7c/eA9i3kdp
+         cHD7bsjFynfqnZ2h5w0ZSA+w4qVljTpYPdPUETJXCH+WFa1yZ/xCkyw3UV5UipSnmEIh
+         1yTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yWvC0kkBmOA3iFTKCQGyV2Z6IPkQjFiOBlLksK4/WcI=;
+        b=FpdKXnzI5YQqZIwND8wqVP6bId9HuCwhtVCaPS1BUaBNV+6uU39CMo/AuT4xOe3Ahl
+         UYS3zjZ3t7p2S5fnS93wbQTDXrbJ+Isseq70Xmp5rHdXv9mQe1di2WiuXeuDzFNXJUMS
+         rlO+aYkqBOAuMwdNsv3M4ayCz/IeVvoDCAjd/EQ8t4CcDsJVxxk7pNDW3iDf6J7piQXJ
+         tPOcoLS2SpfXJxR1bAFyk1RbTNNiR/qGkMnuJL/IwDqSSA6ym0Yhoxhycy1ifLdi+bqT
+         PVowfaWc0MNzt/Y3JElry9iqcOndyG5bpbXkHMvWe0wPocqITtfMFzqt8r9RvRplPbeW
+         NWzQ==
+X-Gm-Message-State: ANhLgQ0tgofybtamgHERv2bvW9uVy9xdbBWas7zwlVpczRDzRelP9jeJ
+        qgg5+5GIVdIcrwwolvwFAqrrZw==
+X-Google-Smtp-Source: ADFU+vt5J+r0T8D+Mtv0eHCxm/U/E2qaELnto77SqaHWKdYT+AnfibJx+GhzROWnYastPlzlQ9KkGQ==
+X-Received: by 2002:ac8:48c7:: with SMTP id l7mr5809284qtr.174.1583552003986;
+        Fri, 06 Mar 2020 19:33:23 -0800 (PST)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 206sm5755555qkn.36.2020.03.06.19.33.23
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Mar 2020 19:33:23 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.60.0.2.5\))
+Subject: Hard lockups due to "tick/common: Make tick_periodic() check for
+ missing ticks"
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <CA9BD318-A8C8-4F22-828A-65C355931A5C@lca.pw>
+Date:   Fri, 6 Mar 2020 22:33:22 -0500
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F95F95DE-77D9-4A1D-AA5C-CAC165F6B4C8@lca.pw>
+References: <CA9BD318-A8C8-4F22-828A-65C355931A5C@lca.pw>
+To:     Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: Apple Mail (2.3608.60.0.2.5)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-SGkgUGF1bCwKClNvcnJ5IGZvciB0aGUgaW5jb252ZW5pZW5jZS4gCkkgY3JlYXRlZCBteSBwYXRj
-aCBiYXNlZCBvbiBtYWlubGluZScgY29tbWl0IDc3NmU0OWU4ZGRiNTE2OWU2NDc3ZmQzM2EzOTZl
-OWM3YjJlYjc0MDAKClRoYW5rIHlvdSBmb3IgdGhlIHByb2Zlc3Npb25hbCBkZXNjcmlwdGlvbiBh
-bmQgaGFuZCBhcHBseWluZy4KSSB3aWxsIHNlbmQgZnV0dXJlIHJjdSByZWxhdGVkIHBhdGNoZXMg
-YmFzZWQgb24geW91ciAiZGV2IiBicmFuY2ggb2YgbGludXgtcmN1IHRyZWUuCgpSZWdhcmRzLApa
-aGFvbG9uZwoKCkF0IDIwMjAtMDMtMDYgMDc6MDU6MTUsICJQYXVsIEUuIE1jS2VubmV5IiA8cGF1
-bG1ja0BrZXJuZWwub3JnPiB3cm90ZToKPk9uIFRodSwgTWFyIDA1LCAyMDIwIGF0IDAzOjQ1OjU3
-UE0gKzA4MDAsIFpoYW9sb25nIFpoYW5nIHdyb3RlOgo+PiBDYWxjdWxhdGUgJ3QnIHdpdGggdGhl
-IHByZXZpb3VzbHkgcmVjb3JkZWQgJ2dwcycgaW5zdGVhZCBvZiAnZ3Bfc3RhcnQnLgo+PiAKPj4g
-U2lnbmVkLW9mZi1ieTogWmhhb2xvbmcgWmhhbmcgPHpoYW5nemwyMDEzQDEyNi5jb20+Cj4KPkdv
-b2QgY2F0Y2gsIHRoYW5rIHlvdSEKPgo+SSBoYWQgdG8gYXBwbHkgdGhpcyBieSBoYW5kLiAgTXkg
-Z3Vlc3MgaXMgdGhhdCB5b3UgZGV2ZWxvcGVkIGFnYWluc3QKPm1haW5saW5lIHJhdGhlciB0aGFu
-IHRoZSAiZGV2IiBicmFuY2ggb2YgdGhlIC1yY3UgdHJlZToKPgo+Z2l0Oi8vZ2l0Lmtlcm5lbC5v
-cmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3BhdWxtY2svbGludXgtcmN1LmdpdAo+Cj5PciBw
-ZXJoYXBzIHlvdXIgZW1haWwgY2xpZW50IGNvcnJ1cHRlZCB0aGUgcGF0Y2g/Cj4KPlJlZ2FyZGxl
-c3MsIHBsZWFzZSBjaGVjayB0aGUgdmVyc2lvbiBiZWxvdyBhbmQgbGV0IG1lIGtub3cgaWYgSSBt
-ZXNzZWQKPmFueXRoaW5nIHVwLgo+Cj4JCQkJCQkJVGhhbngsIFBhdWwKPgo+LS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCj4KPmNvbW1pdCA3ZGQ1ODFiYmJjYzAwMjQ2ZmVjMzVlZGE2MGFkZDRiMzIyMDBiMGEwCj5B
-dXRob3I6IFpoYW9sb25nIFpoYW5nIDx6aGFuZ3psMjAxM0AxMjYuY29tPgo+RGF0ZTogICBUaHUg
-TWFyIDUgMTQ6NTY6MTEgMjAyMCAtMDgwMAo+Cj4gICAgcmN1OiBGaXggdGhlICh0PTAgamlmZmll
-cykgZmFsc2UgcG9zaXRpdmUKPiAgICAKPiAgICBJdCBpcyBwb3NzaWJsZSB0aGF0IGFuIG92ZXIt
-bG9uZyBncmFjZSBwZXJpb2Qgd2lsbCBlbmQgd2hpbGUgdGhlIFJDVQo+ICAgIENQVSBzdGFsbCB3
-YXJuaW5nIG1lc3NhZ2UgaXMgcHJpbnRpbmcuICBJbiB0aGlzIGNhc2UsIHRoZSBlc3RpbWF0ZSBv
-Zgo+ICAgIHRoZSBvZmZlbmRpbmcgZ3JhY2UgcGVyaW9kJ3MgZHVyYXRpb24gY2FuIGJlIGVycm9u
-ZW91cyBkdWUgdG8gcmVmZXRjaGluZwo+ICAgIG9mIHJjdV9zdGF0ZS5ncF9zdGFydCwgd2hpY2gg
-d2lsbCBub3cgYmUgdGhlIHRpbWUgb2YgdGhlIG5ld2x5IHN0YXJ0ZWQKPiAgICBncmFjZSBwZXJp
-b2QuICBDb21wdXRhdGlvbiBvZiB0aGlzIGR1cmF0aW9uIGNsZWFybHkgbmVlZHMgdG8gdXNlIHRo
-ZQo+ICAgIHN0YXJ0IHRpbWUgZm9yIHRoZSBvbGQgb3Zlci1sb25nIGdyYWNlIHBlcmlvZCwgbm90
-IHRoZSBmcmVzaCBuZXcgb25lLgo+ICAgIFRoaXMgY29tbWl0IGF2b2lkcyBzdWNoIGVycm9ycyBi
-eSBjYXVzaW5nIGJvdGggcHJpbnRfb3RoZXJfY3B1X3N0YWxsKCkgYW5kCj4gICAgcHJpbnRfY3B1
-X3N0YWxsKCkgdG8gcmV1c2UgdGhlIHZhbHVlIHByZXZpb3VzbHkgZmV0Y2hlZCBieSB0aGVpciBj
-YWxsZXIuCj4gICAgCj4gICAgU2lnbmVkLW9mZi1ieTogWmhhb2xvbmcgWmhhbmcgPHpoYW5nemwy
-MDEzQDEyNi5jb20+Cj4gICAgU2lnbmVkLW9mZi1ieTogUGF1bCBFLiBNY0tlbm5leSA8cGF1bG1j
-a0BrZXJuZWwub3JnPgo+Cj5kaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlX3N0YWxsLmggYi9r
-ZXJuZWwvcmN1L3RyZWVfc3RhbGwuaAo+aW5kZXggYjE3Y2Q5Yi4uNTAyYjRkZCAxMDA2NDQKPi0t
-LSBhL2tlcm5lbC9yY3UvdHJlZV9zdGFsbC5oCj4rKysgYi9rZXJuZWwvcmN1L3RyZWVfc3RhbGwu
-aAo+QEAgLTM3MSw3ICszNzEsNyBAQCBzdGF0aWMgdm9pZCByY3VfY2hlY2tfZ3Bfa3RocmVhZF9z
-dGFydmF0aW9uKHZvaWQpCj4gCX0KPiB9Cj4gCj4tc3RhdGljIHZvaWQgcHJpbnRfb3RoZXJfY3B1
-X3N0YWxsKHVuc2lnbmVkIGxvbmcgZ3Bfc2VxKQo+K3N0YXRpYyB2b2lkIHByaW50X290aGVyX2Nw
-dV9zdGFsbCh1bnNpZ25lZCBsb25nIGdwX3NlcSwgdW5zaWduZWQgbG9uZyBncHMpCj4gewo+IAlp
-bnQgY3B1Owo+IAl1bnNpZ25lZCBsb25nIGZsYWdzOwo+QEAgLTQwOCw3ICs0MDgsNyBAQCBzdGF0
-aWMgdm9pZCBwcmludF9vdGhlcl9jcHVfc3RhbGwodW5zaWduZWQgbG9uZyBncF9zZXEpCj4gCWZv
-cl9lYWNoX3Bvc3NpYmxlX2NwdShjcHUpCj4gCQl0b3RxbGVuICs9IHJjdV9nZXRfbl9jYnNfY3B1
-KGNwdSk7Cj4gCXByX2NvbnQoIlx0KGRldGVjdGVkIGJ5ICVkLCB0PSVsZCBqaWZmaWVzLCBnPSVs
-ZCwgcT0lbHUpXG4iLAo+LQkgICAgICAgc21wX3Byb2Nlc3Nvcl9pZCgpLCAobG9uZykoamlmZmll
-cyAtIHJjdV9zdGF0ZS5ncF9zdGFydCksCj4rCSAgICAgICBzbXBfcHJvY2Vzc29yX2lkKCksIChs
-b25nKShqaWZmaWVzIC0gZ3BzKSwKPiAJICAgICAgIChsb25nKXJjdV9zZXFfY3VycmVudCgmcmN1
-X3N0YXRlLmdwX3NlcSksIHRvdHFsZW4pOwo+IAlpZiAobmRldGVjdGVkKSB7Cj4gCQlyY3VfZHVt
-cF9jcHVfc3RhY2tzKCk7Cj5AQCAtNDQyLDcgKzQ0Miw3IEBAIHN0YXRpYyB2b2lkIHByaW50X290
-aGVyX2NwdV9zdGFsbCh1bnNpZ25lZCBsb25nIGdwX3NlcSkKPiAJcmN1X2ZvcmNlX3F1aWVzY2Vu
-dF9zdGF0ZSgpOyAgLyogS2ljayB0aGVtIGFsbC4gKi8KPiB9Cj4gCj4tc3RhdGljIHZvaWQgcHJp
-bnRfY3B1X3N0YWxsKHZvaWQpCj4rc3RhdGljIHZvaWQgcHJpbnRfY3B1X3N0YWxsKHVuc2lnbmVk
-IGxvbmcgZ3BzKQo+IHsKPiAJaW50IGNwdTsKPiAJdW5zaWduZWQgbG9uZyBmbGFnczsKPkBAIC00
-NjcsNyArNDY3LDcgQEAgc3RhdGljIHZvaWQgcHJpbnRfY3B1X3N0YWxsKHZvaWQpCj4gCWZvcl9l
-YWNoX3Bvc3NpYmxlX2NwdShjcHUpCj4gCQl0b3RxbGVuICs9IHJjdV9nZXRfbl9jYnNfY3B1KGNw
-dSk7Cj4gCXByX2NvbnQoIlx0KHQ9JWx1IGppZmZpZXMgZz0lbGQgcT0lbHUpXG4iLAo+LQkJamlm
-ZmllcyAtIHJjdV9zdGF0ZS5ncF9zdGFydCwKPisJCWppZmZpZXMgLSBncHMsCj4gCQkobG9uZyly
-Y3Vfc2VxX2N1cnJlbnQoJnJjdV9zdGF0ZS5ncF9zZXEpLCB0b3RxbGVuKTsKPiAKPiAJcmN1X2No
-ZWNrX2dwX2t0aHJlYWRfc3RhcnZhdGlvbigpOwo+QEAgLTU0Niw3ICs1NDYsNyBAQCBzdGF0aWMg
-dm9pZCBjaGVja19jcHVfc3RhbGwoc3RydWN0IHJjdV9kYXRhICpyZHApCj4gCSAgICBjbXB4Y2hn
-KCZyY3Vfc3RhdGUuamlmZmllc19zdGFsbCwganMsIGpuKSA9PSBqcykgewo+IAo+IAkJLyogV2Ug
-aGF2ZW4ndCBjaGVja2VkIGluLCBzbyBnbyBkdW1wIHN0YWNrLiAqLwo+LQkJcHJpbnRfY3B1X3N0
-YWxsKCk7Cj4rCQlwcmludF9jcHVfc3RhbGwoZ3BzKTsKPiAJCWlmIChyY3VfY3B1X3N0YWxsX2Z0
-cmFjZV9kdW1wKQo+IAkJCXJjdV9mdHJhY2VfZHVtcChEVU1QX0FMTCk7Cj4gCj5AQCAtNTU1LDcg
-KzU1NSw3IEBAIHN0YXRpYyB2b2lkIGNoZWNrX2NwdV9zdGFsbChzdHJ1Y3QgcmN1X2RhdGEgKnJk
-cCkKPiAJCSAgIGNtcHhjaGcoJnJjdV9zdGF0ZS5qaWZmaWVzX3N0YWxsLCBqcywgam4pID09IGpz
-KSB7Cj4gCj4gCQkvKiBUaGV5IGhhZCBhIGZldyB0aW1lIHVuaXRzIHRvIGR1bXAgc3RhY2ssIHNv
-IGNvbXBsYWluLiAqLwo+LQkJcHJpbnRfb3RoZXJfY3B1X3N0YWxsKGdzMik7Cj4rCQlwcmludF9v
-dGhlcl9jcHVfc3RhbGwoZ3MyLCBncHMpOwo+IAkJaWYgKHJjdV9jcHVfc3RhbGxfZnRyYWNlX2R1
-bXApCj4gCQkJcmN1X2Z0cmFjZV9kdW1wKERVTVBfQUxMKTsKPiAJfQo=
+
+
+> On Mar 5, 2020, at 11:06 PM, Qian Cai <cai@lca.pw> wrote:
+>=20
+
+Using this config,
+
+> https://raw.githubusercontent.com/cailca/linux-mm/master/x86.config
+
+Reverted the linux-next commit d441dceb5dce (=E2=80=9Ctick/common: Make =
+tick_periodic() check for missing ticks=E2=80=9D)
+fixed the lockup that could easily happen during boot.
+
+>=20
+> [    0.013514][    C0] NMI watchdog: Watchdog detected hard LOCKUP on =
+cpu 0=20
+> [    0.013514][    C0] Modules linked in:=20
+> [    0.013514][    C0] irq event stamp: 64186318=20
+> [    0.013514][    C0] hardirqs last  enabled at (64186317): =
+[<ffffffff84c9b107>] _raw_spin_unlock_irq+0x27/0x40=20
+> [    0.013514][    C0] hardirqs last disabled at (64186318): =
+[<ffffffff84c8f384>] __schedule+0x214/0x1070=20
+> [    0.013514][    C0] softirqs last  enabled at (267904): =
+[<ffffffff85000447>] __do_softirq+0x447/0x766=20
+> [    0.013514][    C0] softirqs last disabled at (267897): =
+[<ffffffff842d1f16>] irq_exit+0xd6/0xf0=20
+> [    0.013514][    C0] CPU: 0 PID: 1 Comm: swapper/0 Not tainted =
+5.6.0-rc4-next-20200305+ #6=20
+> [    0.013514][    C0] Hardware name: HP ProLiant BL660c Gen9, BIOS =
+I38 10/17/2018=20
+> [    0.013514][    C0] RIP: 0010:lock_is_held_type+0x12a/0x150=20
+> [    0.013514][    C0] Code: 41 0f 94 c4 65 48 8b 1c 25 40 0f 02 00 48 =
+8d bb 74 08 00 00 e8 77 c0 28 00 c7 83 74 08 00 00 00 00 00 00 41 56 9d =
+48 83 c4 18 <44> 89 e0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 45 31 e4 eb c7 =
+41 bc 01=20
+> [    0.013514][    C0] RSP: 0000:ffffc9000628f9f8 EFLAGS: 00000082=20
+> [    0.013514][    C0] RAX: 0000000000000000 RBX: ffff889880efc040 =
+RCX: ffffffff8438b449=20
+> [    0.013514][    C0] RDX: 0000000000000007 RSI: dffffc0000000000 =
+RDI: ffff889880efc8b4=20
+> [    0.013514][    C0] RBP: ffffc9000628fa20 R08: ffffed1108588a24 =
+R09: ffffed1108588a24=20
+> [    0.013514][    C0] R10: ffff888842c4511b R11: 0000000000000000 =
+R12: 0000000000000000=20
+> [    0.013514][    C0] R13: ffff889880efc908 R14: 0000000000000046 =
+R15: 0000000000000003=20
+> [    0.013514][    C0] FS:  0000000000000000(0000) =
+GS:ffff888842c00000(0000) knlGS:0000000000000000=20
+> [    0.013514][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: =
+0000000080050033=20
+> [    0.013514][    C0] CR2: ffff88a0707ff000 CR3: 0000000b72012001 =
+CR4: 00000000001606f0=20
+> [    0.013514][    C0] Call Trace:=20
+> [    0.013514][    C0]  rcu_read_lock_sched_held+0xac/0xe0=20
+> lock_is_held at include/linux/lockdep.h:361
+> (inlined by) rcu_read_lock_sched_held at kernel/rcu/update.c:121
+> [    0.013514][    C0]  ? rcu_read_lock_bh_held+0xc0/0xc0=20
+> [    0.013514][    C0]  rcu_note_context_switcx186/0x3b0=20
+> [    0.013514][    C0]  __schedule+0x21f/0x1070=20
+> [    0.013514][    C0]  ? __sched_text_start+0x8/0x8=20
+> [    0.013514][    C0]  schedule+0x95/0x160=20
+> [    0.013514][    C0]  do_boot_cpu+0x58c/0xaf0=20
+> [    0.013514][    C0]  native_cpu_up+0x298/0x430=20
+> [    0.013514][    C0]  ? common_cpu_up+0x150/0x150=20
+> [    0.013514][    C0]  bringup_cpu+0x44/0x310=20
+> [    0.013514][    C0]  ? timers_prepare_cpu+0x114/0x190=20
+> [    0.013514][    C0]  ? takedown_cpu+0x2e0/0x2e0=20
+> [    0.013514][    C0]  cpuhp_invoke_callback+0x197/0x1120=20
+> [    0.013514][    C0]  ? ring_buffer_record_is_set_on+0x40/0x40=20
+> [    0.013514][    C0]  _cpu_up+0x171/0x280=20
+> [    0.013514][    C0]  do_cpu_up+0xb1/0x120=20
+> [    0.013514][    C0]  cpu_up+0x13/0x20=20
+> [    0.013514][    C0]  smp_init+0x91/0x118=20
+> [    0.013514][    C0]  kernel_init_freeable+0x221/0x4f8=20
+> [    0.013514][    C0]  ? mark_held_locks+0x34/0xb0=20
+> [    0.013514][    C0]  ? _raw_spin_unlock_irq+0x27/0x40=20
+> [    0.013514][    C0]  ? start_kernel+0x876/0x876=20
+> [    0.013514][    C0]  ? lockdep_hardirqs_on+0x1b0/0x2a0=20
+> [    0.013514][    C0]  ? _raw_spin_unlock_irq+0x27/0x40=20
+> [    0.013514][    C0]  ? rest_init+0x307/0x307=20
+> [    0.013514][    C0]  kernel_init+0x  0.013514][    C0]  ? =
+rest_init+0x307/0x307=20
+> [    0.013514][    C0]  ret_from_fork+0x3a/0x50=20
+>=20
+
+We could have many slightly different traces,
+
+[    0.000000][    T0] smpboot: CPU 8 Converting physical 0 to logical =
+die 1
+[    0.021496][    C0] NMI watchdog: Watchdog detected hard LOCKUP on =
+cpu 0
+[    0.021496][    C0] Modules linked in:
+[    0.021496][    C0] irq event stamp: 53241496
+[    0.021496][    C0] hardirqs last  enabled at (53241495): =
+[<ffffffffa9c8c037>] _raw_spin_unlock_irq+0x27/0x40
+[    0.021496][    C0] hardirqs last disabled at (53241496): =
+[<ffffffffa9c80244>] __schedule+0x214/0x1070
+[    0.021496][    C0] softirqs last  enabled at (88160): =
+[<ffffffffaa000447>] __do_softirq+0x447/0x766
+[    0.021496][    C0] softirqs last disabled at (88153): =
+[<ffffffffa92d0c66>] irq_exit+0xd6/0xf0
+[    0.021496][    C0] CPU: 0 PID: 1 Comm: swapper/0 Not tainted =
+5.6.0-rc4+ #25
+[    0.021496][    C0] Hardware name: HPE ProLiant DL385 Gen10/ProLiant =
+DL385 Gen10, BIOS A40 03/09/2018
+[    0.021496][    C0] RIP: 0010:__asan_load8+0x0/0xa0
+[    0.021496][    C0] Code: e8 03 0f b6 04 30 84 c0 74 c2 38 d0 0f 9e =
+c0 84 c0 74 b9 ba 01 00 00 00 be 04 00 00 00 e8 c8 e3 ff ff 5d c3 66 0f =
+1f 44 00 00 <55> 48 89 e5 48 8b 4d 08 eb 3a 0f 1f 00 48 b8 00 00 00 00 =
+00 00 00
+[    0.021496][    C0] RSP: 0018:ffffc900031779d8 EFLAGS: 00000082
+[    0.021496][    C0] RAX: 000000000000000f RBX: ffff88820f118040 RCX: =
+ffffffffa9386e1c
+[    0.021496][    C0] RDX: ffff88820f1188b0 RSI: ffff8884534442d8 RDI: =
+ffff88820f118938
+[    0.021496][    C0] RBP: ffffc90003177a10 R08: ffffed1041e23009 R09: =
+ffffed1041e23009
+[    0.021496][    C0] R10: ffffed1041e23008 R11: 0000000000000000 R12: =
+ffff88820f118928
+[    0.021496][    C0] R13: ffff8884534442d8 R14: 0000000000000003 R15: =
+ffff88820f118928
+[    0.021496][    C0] FS:  0000000000000000(0000) =
+GS:ffff888453400000(0000) knlGS:0000000000000000
+[    0.021496][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    0.021496][    C0] CR2: ffff88887b9ff000 CR3: 0000000257c12000 CR4: =
+00000000003406f0
+[    0.021496][    C0] Call Trace:
+[    0.021496][    C0]  ? match_held_lock+0x20/0x250
+[    0.021496][    C0]  lock_unpin_lock+0x16a/0x260
+[    0.021496][    C0]  ? lock_repin_lock+0x210/0x210
+[    0.021496][    C0]  ? __kasan_check_read+0x11/0x20
+[    0.021496][    C0]  ? pick_next_task_fair+0x3a6/0x6b0
+[    0.021496][    C0]  __schedule+0xd4f/0x1070
+[    0.021496][    C0]  ? firmware_map_remove+0xee/0xee
+[    0.021496][    C0]  ? schedule+0xc9/0x160
+[    0.021496][    C0]  schedule+0x95/0x160
+[    0.021496][    C0]  do_boot_cpu+0x58c/0xaf0
+[    0.021496][    C0]  native_cpu_up+0x298/0x430
+[    0.021496][    C0]  ? common_cpu_up+0x150/0x150
+[    0.021496][    C0]  bringup_cpu+0x44/0x310
+[    0.021496][    C0]  ? timers_prepare_cpu+0x114/0x190
+[    0.021496][    C0]  ? takedown_cpu+0x2e0/0x2e0
+[    0.021496][    C0]  cpuhp_invoke_callback+0x197/0x1120
+[    0.021496][    C0]  ? ring_buffer_record_is_set_on+0x40/0x40
+[    0.021496][    C0]  _cpu_up+0x171/0x280
+[    0.021496][    C0]  do_cpu_up+0xb1/0x120
+[    0.021496][    C0]  cpu_up+0x13/0x20
+[    0.021496][    C0]  smp_init+0x91/0x118
+[    0.021496][    C0]  kernel_init_freeable+0x221/0x4f8
+[    0.021496][    C0]  ? mark_held_locks+0x34/0xb0
+[    0.021496][    C0]  ? _raw_spin_unlock_irq+0x27/0x40
+[    0.021496][    C0]  ? start_kernel+0x857/0x857
+[    0.021496][    C0]  ? lockdep_hardirqs_on+0x1b0/0x2a0
+[    0.021496][    C0]  ? _raw_spin_unlock_irq+0x27/0x40
+[    0.021496][    C0]  ? rest_init+0x307/0x307
+[    0.021496][    C0]  kernel_init+0x11/0x139
+[    0.021496][    C0]  ? rest_init+0x307/0x307
+[    0.021496][    C0]  ret_from_fork+0x27/0x50
+
+[    0.021458][    C0] NMI watchdog: Watchdog detected hard LOCKUP on =
+cpu 0
+[    0.021458][    C0] Modules linked in:
+[    0.021458][    C0] irq event stamp: 55574034
+[    0.021458][    C0] hardirqs last  enabled at (55574033): =
+[<ffffffffa549d4d7>] _raw_spin_unlock_irq+0x27/0x40
+[    0.021458][    C0] hardirqs last disabled at (55574034): =
+[<ffffffffa5491754>] __schedule+0x214/0x1070
+[    0.021458][    C0] softirqs last  enabled at (83640): =
+[<ffffffffa5800447>] __do_softirq+0x447/0x766
+[    0.021458][    C0] softirqs last disabled at (83623): =
+[<ffffffffa4ad2196>] irq_exit+0xd6/0xf0
+[    0.021458][    C0] CPU: 0 PID: 1 Comm: swapper/0 Not tainted =
+5.6.0-rc4+ #13
+[    0.021458][    C0] Hardware name: HPE ProLiant DL385 Gen10/ProLiant =
+DL385 Gen10, BIOS A40 03/09/2018
+[    0.021458][    C0] RIP: 0010:check_memory_region+0x136/0x200
+[    0.021458][    C0] Code: 00 eb 0c 49 83 c0 01 48 89 d8 49 39 d8 74 =
+10 41 80 38 00 74 ee 4b 8d 44 0d 00 4d 85 c0 75 4d 4c 89 e3 48 29 c3 e9 =
+3e ff ff ff <48> 85 db 74 2e 41 80 39 00 75 34 48 b8 01 00 00 00 00 fc =
+ff df 49
+[    0.021458][    C0] RSP: 0018:ffffc900031779e8 EFLAGS: 00000083
+[    0.021458][    C0] RAX: fffff5200062ef48 RBX: 0000000000000001 RCX: =
+ffffffffa4b94e16
+[    0.021458][    C0] RDX: 0000000000000001 RSI: 0000000000000004 RDI: =
+ffffc90003177a40
+[    0.021458][    C0] RBP: ffffc90003177a00 R08: 1ffff9200062ef48 R09: =
+fffff5200062ef48
+[    0.021458][    C0] R10: fffff5200062ef48 R11: ffffc90003177a43 R12: =
+fffff5200062ef49
+[    0.021458][    C0] R13: ffffc90003177a80 R14: ffff888453444310 R15: =
+ffff888453444308
+[    0.021458][    C0] FS:  0000000000000000(0000) =
+GS:ffff888453400000(0000) knlGS:0000000000000000
+[    0.021458][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    0.021458][    C0] CR2: ffff88887b9ff000 CR3: 00000006e6c12000 CR4: =
+00000000003406f0
+[    0.021458][    C0] Call Trace:
+[    0.021458][    C0]  __kasan_check_write+0x14/0x20
+[    0.021458][    C0]  do_raw_spin_lock+0xe6/0x1e0
+[    0.021458][    C0]  ? rwlock_bug.part.1+0x60/0x60
+[    0.021458][    C0]  ? __schedule+0x227/0x1070
+[    0.021458][    C0]  _raw_spin_lock+0x37/0x40
+[    0.021458][    C0]  ? __schedule+0x227/0x1070
+[    0.021458][    C0]  __schedule+0x227/0x1070
+[    0.021458][    C0]  ? __sched_text_start+0x8/0x8
+[    0.021458][    C0]  schedule+0x95/0x160
+[    0.021458][    C0]  do_boot_cpu+0x58c/0xaf0
+[    0.021458][    C0]  native_cpu_up+0x298/0x430
+[    0.021458][    C0]  ? common_cpu_up+0x150/0x150
+[    0.021458][    C0]  bringup_cpu+0x44/0x310
+[    0.021458][    C0]  ? timers_prepare_cpu+0x114/0x190
+[    0.021458][    C0]  ? takedown_cpu+0x2e0/0x2e0
+[    0.021458][    C0]  cpuhp_invoke_callback+0x197/0x1120
+[    0.021458][    C0]  ? ring_buffer_record_is_set_on+0x40/0x40
+[    0.021458][    C0]  _cpu_up+0x171/0x280
+[    0.021458][    C0]  do_cpu_up+0xb1/0x120
+[    0.021458][    C0]  cpu_up+0x13/0x20
+[    0.021458][    C0]  smp_init+0x91/0x118
+[    0.021458][    C0]  kernel_init_freeable+0x221/0x4f8
+[    0.021458][    C0]  ? mark_held_locks+0x34/0xb0
+[    0.021458][    C0]  ? _raw_spin_unlock_irq+0x27/0x40
+[    0.021458][    C0]  ? start_kernel+0x876/0x876
+[    0.021458][    C0]  ? lockdep_hardirqs_on+0x1b0/0x2a0
+[    0.021458][    C0]  ? _raw_spin_unlock_irq+0x27/0x40
+[    0.021458][    C0]  ? rest_init+0x307/0x307
+[    0.021458][    C0]  kernel_init+0x11/0x139
+[    0.021458][    C0]  ? rest_init+0x307/0x307
+[    0.021458][    C0]  ret_from_fork+0x27/0x50
+
+
+
