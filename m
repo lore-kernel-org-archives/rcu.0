@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1288DC10DCE
-	for <rcu@archiver.kernel.org>; Thu, 12 Mar 2020 18:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9812C4CECE
+	for <rcu@archiver.kernel.org>; Thu, 12 Mar 2020 18:17:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C7E5320746
-	for <rcu@archiver.kernel.org>; Thu, 12 Mar 2020 18:17:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF7602074A
+	for <rcu@archiver.kernel.org>; Thu, 12 Mar 2020 18:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584037025;
-	bh=QhQn73h+DWfpDj9QJYvc3jL1eYN2/CxEtnU/MGer2UA=;
+	s=default; t=1584037030;
+	bh=8VEeb7FDFFHZE7VvW+cGXYKxIpj4f7PaqyJX7M8QAxQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=d2Qh52vaa10E7MOiVvdslfTOTKnEu3fgEYBX/9lpNqRCGfBFh627TUrQKQuO+9kMY
-	 UUgfxYooWfT9gWIS01pKQMqGFYKI0SGt4SSxknyDB/uRkDMFodMbKKnURy/8DbPDen
-	 2w9hWdjJPphW9untP3PFvNKXjXXQQcn9NavVnhmI=
+	b=QpPVhrkpn9FDJdYpmdXgPTwwMlzynNvTpAqI41FYind7ydQSXyp0ygPNJyqtcCtYb
+	 q1yaOCo/syzFQtY1rLooueA3AP6SZKtn2PlaMEQLLPj734IvbZT5wFKhX7ZYMsZTq4
+	 aOoKKYGHsc3Esxu/nncXpYUA3is2b0+tOM+H4pI0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgCLSRF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Mar 2020 14:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51890 "EHLO mail.kernel.org"
+        id S1726760AbgCLSRK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Mar 2020 14:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbgCLSRF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:17:05 -0400
+        id S1726726AbgCLSRJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:17:09 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED5E0206B1;
-        Thu, 12 Mar 2020 18:17:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DFFA2076E;
+        Thu, 12 Mar 2020 18:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584037024;
-        bh=QhQn73h+DWfpDj9QJYvc3jL1eYN2/CxEtnU/MGer2UA=;
+        s=default; t=1584037028;
+        bh=8VEeb7FDFFHZE7VvW+cGXYKxIpj4f7PaqyJX7M8QAxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFnE0iVPMh+c8wM6PIfzjw8PECiatE5OaMo5ytxB1VKZPdqZzc4oUrZigcUbYK+cf
-         QUyQ4eCdjW7dKq9DC4bcEWhXpIvGYixQ7/To9QfTSxrpol1HMZ3ecy+bBkBQ1ALu8H
-         uSyI/V3jSVuvyPbXo7leYOlBXlj+j794SgyGHjmQ=
+        b=h7BRWNCvwRKF4ucldc29wrTptPxKBJ6ibudrtRWcXbhZxGBySah0bbE22eQRj9THy
+         a/1O77uv2k8rs7iBKP6HAK4k2siyB6OWuqWwWvf/BupHfWet6FecxXs4OKkVe6O0Ii
+         vP65opBLo4FF/cC3jn3t0I0OMwK5ngzOAtnKFbcE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,15 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Subject: [PATCH RFC tip/core/rcu 01/16] sched/core: Add function to sample state of non-running function
-Date:   Thu, 12 Mar 2020 11:16:47 -0700
-Message-Id: <20200312181702.8443-1-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH RFC tip/core/rcu 11/16] rcu-tasks: Use unique names for RCU-Tasks kthreads and messages
+Date:   Thu, 12 Mar 2020 11:16:57 -0700
+Message-Id: <20200312181702.8443-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200312181618.GA21271@paulmck-ThinkPad-P72>
 References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
@@ -65,115 +60,83 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-A running task's state can be sampled in a consistent manner (for example,
-for diagnostic purposes) simply by invoking smp_call_function_single()
-on its CPU, which may be obtained using task_cpu(), then having the
-IPI handler verify that the desired task is in fact still running.
-However, if the task is not running, this sampling can in theory be
-done directly.  In practice, the task might start running at any time,
-including during the sampling period.  Gaining a consistent sample of
-a not-running task therefore requires that something be done to prevent
-that task from running.
-
-This commit therefore adds a try_invoke_on_nonrunning_task() function
-that invokes a specified function with the specified argument if the
-specified task is in a non-running state, returning true if successful.
-Otherwise this function simply returns false.  Given that the function
-passed to try_invoke_on_nonrunning_task() will be invoked with a runqueue
-lock held, that function had better be quite lightweight.
+This commit causes the flavors of RCU Tasks to use different names
+for their kthreads and in their console messages.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-[ paulmck: Apply feedback from Peter Zijlstra and Steven Rostedt. ]
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
 ---
- include/linux/wait.h |  2 ++
- kernel/sched/core.c  | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
+ kernel/rcu/tasks.h | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 3283c8d..6c0f989 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -1148,4 +1148,6 @@ int autoremove_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, i
- 		(wait)->flags = 0;						\
- 	} while (0)
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 1d25c50..6a5b2b7e 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -22,6 +22,8 @@ typedef void (*rcu_tasks_gp_func_t)(struct rcu_tasks *rtp);
+  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
+  * @gp_func: This flavor's grace-period-wait function.
+  * @call_func: This flavor's call_rcu()-equivalent function.
++ * @name: This flavor's textual name.
++ * @kname: This flavor's kthread name.
+  */
+ struct rcu_tasks {
+ 	struct rcu_head *cbs_head;
+@@ -31,16 +33,20 @@ struct rcu_tasks {
+ 	struct task_struct *kthread_ptr;
+ 	rcu_tasks_gp_func_t gp_func;
+ 	call_rcu_func_t call_func;
++	char *name;
++	char *kname;
+ };
  
-+bool try_invoke_on_nonrunning_task(struct task_struct *p, void (*func)(void *arg), void *arg);
-+
- #endif /* _LINUX_WAIT_H */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fc1dfc0..d64328c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2580,6 +2580,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	 *
- 	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
- 	 * __schedule().  See the comment for smp_mb__after_spinlock().
-+	 *
-+	 * A similar smb_rmb() lives in try_invoke_on_nonrunning_task().
- 	 */
- 	smp_rmb();
- 	if (p->on_rq && ttwu_remote(p, wake_flags))
-@@ -2654,6 +2656,53 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+-#define DEFINE_RCU_TASKS(name, gp, call)				\
+-static struct rcu_tasks name =						\
++#define DEFINE_RCU_TASKS(rt_name, gp, call, n)				\
++static struct rcu_tasks rt_name =					\
+ {									\
+-	.cbs_tail = &name.cbs_head,					\
+-	.cbs_wq = __WAIT_QUEUE_HEAD_INITIALIZER(name.cbs_wq),		\
+-	.cbs_lock = __RAW_SPIN_LOCK_UNLOCKED(name.cbs_lock),		\
++	.cbs_tail = &rt_name.cbs_head,					\
++	.cbs_wq = __WAIT_QUEUE_HEAD_INITIALIZER(rt_name.cbs_wq),	\
++	.cbs_lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name.cbs_lock),		\
+ 	.gp_func = gp,							\
+ 	.call_func = call,						\
++	.name = n,							\
++	.kname = #rt_name,						\
  }
  
+ /* Track exiting tasks in order to allow them to be waited for. */
+@@ -145,8 +151,8 @@ static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
+ {
+ 	struct task_struct *t;
+ 
+-	t = kthread_run(rcu_tasks_kthread, rtp, "rcu_tasks_kthread");
+-	if (WARN_ONCE(IS_ERR(t), "%s: Could not start Tasks-RCU grace-period kthread, OOM is now expected behavior\n", __func__))
++	t = kthread_run(rcu_tasks_kthread, rtp, "%s_kthread", rtp->kname);
++	if (WARN_ONCE(IS_ERR(t), "%s: Could not start %s grace-period kthread, OOM is now expected behavior\n", __func__, rtp->name))
+ 		return;
+ 	smp_mb(); /* Ensure others see full kthread. */
+ }
+@@ -342,7 +348,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ }
+ 
+ void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks);
++DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+ 
  /**
-+ * try_invoke_on_nonrunning_task - Invoke a function for a non-running task
-+ * @p: Process for which the function is to be invoked.
-+ * @func: Function to invoke.
-+ * @arg: Argument to function.
-+ *
-+ * If the specified task is not running (either sleeping or runnable but
-+ * not actually running), arrange to keep it in that state while invoking
-+ * @func(@arg).  Given that @func can be invoked with a runqueue lock held,
-+ * it had better be quite lightweight.
-+ *
-+ * Returns:
-+ *	@false if the task is running or blocked.
-+ *	@true if the task is runnable but not running.
-+ */
-+bool try_invoke_on_nonrunning_task(struct task_struct *p, void (*func)(void *arg), void *arg)
-+{
-+	bool ret = false;
-+	struct rq_flags rf;
-+	struct rq *rq;
-+
-+	lockdep_assert_irqs_enabled();
-+	raw_spin_lock_irq(&p->pi_lock);
-+	if (p->on_rq) {
-+		rq = __task_rq_lock(p, &rf);
-+		if (task_rq(p) == rq && !task_curr(p)) {
-+			func(arg);
-+			ret = true;
-+		}
-+		rq_unlock(rq, &rf);
-+	} else {
-+		switch (p->state) {
-+		case TASK_RUNNING:
-+		case TASK_WAKING:
-+			break;
-+		default:
-+			smp_rmb();
-+			if (!p->on_rq) {
-+				func(arg);
-+				ret = true;
-+			}
-+		}
-+	}
-+	raw_spin_unlock_irq(&p->pi_lock);
-+	return ret;
-+}
-+
-+/**
-  * wake_up_process - Wake up a specific process
-  * @p: The process to be woken up.
-  *
+  * call_rcu_tasks() - Queue an RCU for invocation task-based grace period
+@@ -438,7 +444,8 @@ static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
+ EXPORT_SYMBOL_GPL(rcu_tasks_rude_wait_gp);
+ 
+ void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude);
++DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
++		 "RCU Tasks Rude");
+ 
+ /**
+  * call_rcu_tasks_rude() - Queue a callback rude task-based grace period
 -- 
 2.9.5
 
