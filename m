@@ -2,105 +2,75 @@ Return-Path: <SRS0=Iwfc=46=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7CEC2BB1D
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 15:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77967C10DCE
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 16:57:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 35E79206E2
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 15:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584114165;
-	bh=UooZSFKMpcy1PzJo48+1CHGIj4c7gbOpifD6iMLhBZo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=Xcbm213kSPD1YJVUPaRx+qMSTbgjXhSGd1AJjynMAX+M+npg/ivFFhP9J9GJVjTvL
-	 BTLRDEwY5tbudKESt7Zgt6KrKT0BNuGLN5LLvSac0tt67syG1El+81pXFPsU10nogQ
-	 1nlLWgdx2bvpd4x/JtK2R9zi4EKOWt1nh+nesM4A=
+	by mail.kernel.org (Postfix) with ESMTP id 47E78206B7
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 16:57:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgCMPmo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Mar 2020 11:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46764 "EHLO mail.kernel.org"
+        id S1726533AbgCMQ5R (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Mar 2020 12:57:17 -0400
+Received: from mx.sdf.org ([205.166.94.20]:52512 "EHLO mx.sdf.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgCMPmo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:42:44 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1D1C206B7;
-        Fri, 13 Mar 2020 15:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584114163;
-        bh=UooZSFKMpcy1PzJo48+1CHGIj4c7gbOpifD6iMLhBZo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Xm6oYDsQ+O0rSWeMIzGlS7otfVJxpr6azEsuq8HhE2Xb8L/N9hDwHRBLS2uQhXTZI
-         BZ0I6rh1rNGL4LEZbveLfUJ2MhV5esFhborrwLN7Ww881u6g6LxD253X0hD1HeDtDj
-         JjQemximUEpaUxFtnu4Cm21zszade/qlLihdtAGs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B3A183522719; Fri, 13 Mar 2020 08:42:43 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 08:42:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     mutt@paulmck-ThinkPad-P72, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH RFC tip/core/rcu 0/16] Prototype RCU usable from idle,
- exception, offline
-Message-ID: <20200313154243.GU3199@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
- <20200313144145.GA31604@lenoir>
+        id S1726406AbgCMQ5Q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Mar 2020 12:57:16 -0400
+Received: from sdf.org (IDENT:lkml@otaku.sdf.org [205.166.94.8])
+        by mx.sdf.org (8.15.2/8.14.5) with ESMTPS id 02DGqK5N014403
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits) verified NO);
+        Fri, 13 Mar 2020 16:52:20 GMT
+Received: (from lkml@localhost)
+        by sdf.org (8.15.2/8.12.8/Submit) id 02DGqJJX002553;
+        Fri, 13 Mar 2020 16:52:19 GMT
+Date:   Fri, 13 Mar 2020 16:52:19 +0000
+From:   George Spelvin <lkml@SDF.ORG>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, lkml@sdf.org
+Subject: Re: Is there a reason we don't have kvfree_rcu()?
+Message-ID: <20200313165219.GA1384@SDF.ORG>
+References: <20200312162730.GB11889@SDF.ORG>
+ <20200312181138.GI3199@paulmck-ThinkPad-P72>
+ <20200312191009.GA27429@pc636>
+ <20200313050659.GA22938@SDF.ORG>
+ <20200313135400.GQ3199@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313144145.GA31604@lenoir>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200313135400.GQ3199@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 03:41:46PM +0100, Frederic Weisbecker wrote:
-> On Thu, Mar 12, 2020 at 11:16:18AM -0700, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > This series provides two variants of Tasks RCU, a rude variant inspired
-> > by Steven Rostedt's use of schedule_on_each_cpu(), and a tracing variant
-> > requested by the BPF folks and perhaps also of use for other tracing
-> > use cases.
-> > 
-> > The tracing variant has explicit read-side markers to permit finite grace
-> > periods even given in-kernel loops in PREEMPT=n builds It also protects
-> > code in the idle loop, on exception entry/exit paths, and on the various
-> > CPU-hotplug online/offline code paths, thus having protection properties
-> > similar to SRCU.  However, unlike SRCU, this variant avoids expensive
-> > instructions in the read-side primitives, thus having read-side overhead
-> > similar to that of preemptible RCU.
-> > 
-> > There are of course downsides.  The grace-period code can send IPIs to
-> > CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
-> > It is necessary to scan the full tasklist, much as for Tasks RCU.  There
-> > is a single callback queue guarded by a single lock, again, much as for
-> > Tasks RCU.  If needed, these downsides can be at least partially remedied
-> 
-> So what we trade to fix the issues we are having with tracing against extended
-> grace periods, we lose in CPU isolation. That worries me a bit as tracing can
-> be thoroughly used with nohz_full and CPU isolation.
+On Fri, Mar 13, 2020 at 06:54:00AM -0700, Paul E. McKenney wrote:
+> I would guess that sorting them before the grace period might improve
+> cache locality and thus performance.  So it does seem like an excellent
+> thing to try, at the very least as an experiment.
 
-First, disturbing nohz_full CPUs can be avoided by the sysadm simply
-refusing to remove tracepoints while sensitive applications are running
-on nohz_full CPUs.
+That doesn't seem at all obvious.  Processing them in separate batches
+would improve I-cache locality, but you could sort them after the
+grace period just as well as before.  Especially if you have arrays of 
+500 pointers to work with.
 
-Second, for non-CPU-bound real-time programs with mostly-idle CPUs,
-I should be able to decrease the likelihood of sending IPIs pretty much
-to zero.
+Indeed, one thing that seems worth trying is sorting by address, which 
+would improve D-cache locality, since you have a significant chance for 
+consecutive frees to be in the same slab or otherwise reference the same 
+overhead data structures.
 
-Or am I missing something here?
+Sorting by (address - VMALLOC_START) automatically groups the vallocated 
+poiners together at the front, too.  Since there's no vfree_bulk, you can 
+iterate over them until you run out, then kfree_bulk the rest.
 
-							Thanx, Paul
+(This idea came from a memory that bulk file operations can be 
+made faster by sorting by inode number.)
+
+P.S. if you want to fit one extra pointer in the array, an array index
+identifying the first unused slot is distinguishable from a pointer,
+so if the last slot is a pointer, the page is full.  If it's an index,
+the page is not full.
