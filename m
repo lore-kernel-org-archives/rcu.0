@@ -2,101 +2,88 @@ Return-Path: <SRS0=Iwfc=46=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E2EC10DCE
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F026C10DCE
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:54:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7334E20724
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:49:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE4CC20724
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584107388;
-	bh=At/75gfQwkhyDMreQNSP6ToQofJ4Q7qQJMTCfs6C/io=;
+	s=default; t=1584107642;
+	bh=lg26QZCnHEwmLTPKuvDTykkgAgWVkc7+gtSR75FBMhk=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=cJh+NH8n74DM3t+6PK33Zk/ckBdxyV56Tl4FNLbJXhxkZTXkqsO04ZELrssfKkpld
-	 BgtpvTxRo6x0Y1AIwwTBQDTd40u9X1J0Y+PgiKc2U7g870sg7DTWhJa8i8aS0lnATO
-	 0rEERqJNeRT4lJVvM2GLq8Ja5fJwJoeluHlBHspk=
+	b=hNdak5/s1Nsh9L6OWshPdtjlXVrNOvx4CJldS6oLos7e+yBL3O0N6rfD3U4tHtuAZ
+	 A0D9TEaXY/tMd7WQLHjeXLZY98uaYnkkmlfgdfZAp06VOWWS2/W+asT81PbKerKQ1G
+	 fXskWa4GxEOIntyWHT/AVhQ4pC3VxFVm0kAs9stg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgCMNts (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Mar 2020 09:49:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
+        id S1726526AbgCMNyB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Mar 2020 09:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgCMNts (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Mar 2020 09:49:48 -0400
+        id S1726327AbgCMNyB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Mar 2020 09:54:01 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE868206B7;
-        Fri, 13 Mar 2020 13:49:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD2B1206B7;
+        Fri, 13 Mar 2020 13:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584107387;
-        bh=At/75gfQwkhyDMreQNSP6ToQofJ4Q7qQJMTCfs6C/io=;
+        s=default; t=1584107640;
+        bh=lg26QZCnHEwmLTPKuvDTykkgAgWVkc7+gtSR75FBMhk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=GfU+L0K/k90Bm8na1YSrZ4vf9Wp9FDH+ezeOGE2p//LpG5E5IissloSZX08X1JsFp
-         j/oEVSb8hnv0fk7S07leNxNxy9YQt0bE8AzwjCdxCnqcvRh7JhLNFrK0rE/GF7Dxsx
-         byha3pKVZMSUuZKof6dyCxd4T0OZUKJFd/6XCmOw=
+        b=hSq412lEtjL9FZ+bJBpl+E9roHeVAc2Es6SOC4HmV6oN+odMPV57BOFBK67I3xj5m
+         FdcHFt5fU9wfve3mmZ1mnsi2o+7kvH8JAY9hT1ckHHvsBtKLqx6DaB1D1jLfXvJIIA
+         J9MpHM7rze2ds8ClibTTIz3V3iwvsueOKi8wQjaM=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7FD4E3522719; Fri, 13 Mar 2020 06:49:47 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 06:49:47 -0700
+        id B34633522719; Fri, 13 Mar 2020 06:54:00 -0700 (PDT)
+Date:   Fri, 13 Mar 2020 06:54:00 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qiujun Huang <hqjagain@gmail.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+To:     George Spelvin <lkml@SDF.ORG>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] rcu-tasks: fix a modpost warning for
- rcu_tasks_rude_wait_gp
-Message-ID: <20200313134947.GP3199@paulmck-ThinkPad-P72>
+        joel@joelfernandes.org
+Subject: Re: Is there a reason we don't have kvfree_rcu()?
+Message-ID: <20200313135400.GQ3199@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200313113810.3840-1-hqjagain@gmail.com>
+References: <20200312162730.GB11889@SDF.ORG>
+ <20200312181138.GI3199@paulmck-ThinkPad-P72>
+ <20200312191009.GA27429@pc636>
+ <20200313050659.GA22938@SDF.ORG>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313113810.3840-1-hqjagain@gmail.com>
+In-Reply-To: <20200313050659.GA22938@SDF.ORG>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 07:38:10PM +0800, Qiujun Huang wrote:
-> Found by gcc:
-> WARNING: modpost: "rcu_tasks_rude_wait_gp" [vmlinux] is a static
-> EXPORT_SYMBOL_GPL
+On Fri, Mar 13, 2020 at 05:06:59AM +0000, George Spelvin wrote:
+> I'd just like to mention that the is_vmalloc_addr() test depends only on 
+> the virtual address, so can be done when the memory is queued, before the 
+> grace period.  That is, you could have kfree_rcu(), vfree_rcu(), and a 
+> kvfree_rcu() function which decides between them.
 > 
-> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+> One advantage of that would be that you could put the vfree() sanity
+> checks into vfree_rcu(), so errors would have a useful backtrace,
+> and just do the __vunmap when the grace period expires.
+> 
+> Or you could build a mixed queue and do the is_vmalloc_addr() test at
+> the end of the grace period.  That was my original idea, because it
+> avoids the need for a separate queue.  (In the _rcu_bulk_data structure,
+> you can do a quicksort-style partitioning on is_vmalloc_addr(), so
+> the kfree_bulk() pointers are all contiguous.)
+> 
+> Just an implementation option.
 
-Good eyes, thank you!
-
-However, the fix is instead to remove the EXPORT_SYMBOL_GPL().  I will
-squash the removal of this line into a04838a348a9 ("rcu-tasks: Add an
-RCU-tasks rude variant"), crediting you with catching this bug.
-
-Again, thank you!
+I would guess that sorting them before the grace period might improve
+cache locality and thus performance.  So it does seem like an excellent
+thing to try, at the very least as an experiment.
 
 							Thanx, Paul
-
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index cd071b5d4274..04d3c583a9fc 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -447,7 +447,7 @@ static void rcu_tasks_be_rude(struct work_struct *work)
->  }
->  
->  // Wait for one rude RCU-tasks grace period.
-> -static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
-> +void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
->  {
->  	schedule_on_each_cpu(rcu_tasks_be_rude);
->  }
-> -- 
-> 2.17.1
-> 
