@@ -6,84 +6,83 @@ X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F026C10DCE
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FEA6C10DCE
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 14:41:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EE4CC20724
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 13:54:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 24B9620746
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 14:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584107642;
-	bh=lg26QZCnHEwmLTPKuvDTykkgAgWVkc7+gtSR75FBMhk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=hNdak5/s1Nsh9L6OWshPdtjlXVrNOvx4CJldS6oLos7e+yBL3O0N6rfD3U4tHtuAZ
-	 A0D9TEaXY/tMd7WQLHjeXLZY98uaYnkkmlfgdfZAp06VOWWS2/W+asT81PbKerKQ1G
-	 fXskWa4GxEOIntyWHT/AVhQ4pC3VxFVm0kAs9stg=
+	s=default; t=1584110510;
+	bh=tkDtSVMV9wG5/KlFdfEzBofOPCCL6QYbGj7vjKcmMzg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=bcixGH0tR0dBVD9MB3L95DNGTqMyCIu6yY/W81++B1+sWhCMK5V+1oU3Ps5NlRVt6
+	 sVl+L/0xPctH82GKsGotEiuxISAuk5h7ny/ePndH6jaYjvy8zWKQT9eJmPW5zTcrJh
+	 aQ1SwxIGNYI0CIRY146d/s3koi9GGFD9TJs8aPgI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgCMNyB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Mar 2020 09:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51904 "EHLO mail.kernel.org"
+        id S1726716AbgCMOlt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Mar 2020 10:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgCMNyB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Mar 2020 09:54:01 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1726216AbgCMOlt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Mar 2020 10:41:49 -0400
+Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD2B1206B7;
-        Fri, 13 Mar 2020 13:54:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FC89206E9;
+        Fri, 13 Mar 2020 14:41:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584107640;
-        bh=lg26QZCnHEwmLTPKuvDTykkgAgWVkc7+gtSR75FBMhk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hSq412lEtjL9FZ+bJBpl+E9roHeVAc2Es6SOC4HmV6oN+odMPV57BOFBK67I3xj5m
-         FdcHFt5fU9wfve3mmZ1mnsi2o+7kvH8JAY9hT1ckHHvsBtKLqx6DaB1D1jLfXvJIIA
-         J9MpHM7rze2ds8ClibTTIz3V3iwvsueOKi8wQjaM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B34633522719; Fri, 13 Mar 2020 06:54:00 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 06:54:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     George Spelvin <lkml@SDF.ORG>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Subject: Re: Is there a reason we don't have kvfree_rcu()?
-Message-ID: <20200313135400.GQ3199@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200312162730.GB11889@SDF.ORG>
- <20200312181138.GI3199@paulmck-ThinkPad-P72>
- <20200312191009.GA27429@pc636>
- <20200313050659.GA22938@SDF.ORG>
+        s=default; t=1584110509;
+        bh=tkDtSVMV9wG5/KlFdfEzBofOPCCL6QYbGj7vjKcmMzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mrpw/AiO9C5nCDYeNyZbkNb0EfKaLKKGWDbpiszZNfRSxxvv/s+cqkWwSlyZXtWgU
+         nEMUQNhr0c0t1a3vJiAMICMysNCE4zE6mIk8klsnItE6CqYVkLTfifvZkDz9zc04jm
+         /dbf09u3fW0aTfH8FQAq95+nNj7eNVYvwfvUpe10=
+Date:   Fri, 13 Mar 2020 15:41:46 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mutt@paulmck-ThinkPad-P72, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 0/16] Prototype RCU usable from idle,
+ exception, offline
+Message-ID: <20200313144145.GA31604@lenoir>
+References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313050659.GA22938@SDF.ORG>
+In-Reply-To: <20200312181618.GA21271@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 05:06:59AM +0000, George Spelvin wrote:
-> I'd just like to mention that the is_vmalloc_addr() test depends only on 
-> the virtual address, so can be done when the memory is queued, before the 
-> grace period.  That is, you could have kfree_rcu(), vfree_rcu(), and a 
-> kvfree_rcu() function which decides between them.
+On Thu, Mar 12, 2020 at 11:16:18AM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> One advantage of that would be that you could put the vfree() sanity
-> checks into vfree_rcu(), so errors would have a useful backtrace,
-> and just do the __vunmap when the grace period expires.
+> This series provides two variants of Tasks RCU, a rude variant inspired
+> by Steven Rostedt's use of schedule_on_each_cpu(), and a tracing variant
+> requested by the BPF folks and perhaps also of use for other tracing
+> use cases.
 > 
-> Or you could build a mixed queue and do the is_vmalloc_addr() test at
-> the end of the grace period.  That was my original idea, because it
-> avoids the need for a separate queue.  (In the _rcu_bulk_data structure,
-> you can do a quicksort-style partitioning on is_vmalloc_addr(), so
-> the kfree_bulk() pointers are all contiguous.)
+> The tracing variant has explicit read-side markers to permit finite grace
+> periods even given in-kernel loops in PREEMPT=n builds It also protects
+> code in the idle loop, on exception entry/exit paths, and on the various
+> CPU-hotplug online/offline code paths, thus having protection properties
+> similar to SRCU.  However, unlike SRCU, this variant avoids expensive
+> instructions in the read-side primitives, thus having read-side overhead
+> similar to that of preemptible RCU.
 > 
-> Just an implementation option.
+> There are of course downsides.  The grace-period code can send IPIs to
+> CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
+> It is necessary to scan the full tasklist, much as for Tasks RCU.  There
+> is a single callback queue guarded by a single lock, again, much as for
+> Tasks RCU.  If needed, these downsides can be at least partially remedied
 
-I would guess that sorting them before the grace period might improve
-cache locality and thus performance.  So it does seem like an excellent
-thing to try, at the very least as an experiment.
-
-							Thanx, Paul
+So what we trade to fix the issues we are having with tracing against extended
+grace periods, we lose in CPU isolation. That worries me a bit as tracing can
+be thoroughly used with nohz_full and CPU isolation.
