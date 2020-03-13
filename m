@@ -2,86 +2,123 @@ Return-Path: <SRS0=Iwfc=46=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C53B7C4CECE
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 19:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC19DC10DCE
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 21:47:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 91911206EB
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 19:58:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BDB22074F
+	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 21:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584129486;
-	bh=p6hRYh/5g1+rnqKlC74CdLefoTR8g5NmUJKw9TYLsro=;
+	s=default; t=1584136073;
+	bh=xwtCKX2P8MxJJx8X4zwf2g8PUIkfnSRKtARj+udGAwc=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=HeomF2fktaVfIapSDZ6P3Osags36KGsCSbLD1H2pjBZ+jqLWVPI66Ty3skzZHc/Xj
-	 f6zYcSyrqrjSyLU9TeLWcVP+eToThxawyZYtyhVhnRSMNwxesarKrRsftFUAevVP88
-	 cqCwYxlbAKMdIhqsri00PY1+qLjfQGihEk8goKxA=
+	b=DA5UFVLcvCQIs93eJ4I2hWKe5HO+Eyo8KQ4vKuqec9OpTLXXDV/lEBy1Pm0ZFwRCw
+	 VsDSW4YFU1Ca7pNziDXyv1kt/8YtVQoW70PK4+6CXKn0N5uwfreUDOKUKA4J9e8IJZ
+	 Zci0kJNfw3ITblgPPQkLVUMmmLxjF2d5yE0ppgfo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgCMT6G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Mar 2020 15:58:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39274 "EHLO mail.kernel.org"
+        id S1726637AbgCMVrx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Mar 2020 17:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgCMT6G (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Mar 2020 15:58:06 -0400
+        id S1726480AbgCMVrx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Mar 2020 17:47:53 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8DA5206E2;
-        Fri, 13 Mar 2020 19:58:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6299E2074E;
+        Fri, 13 Mar 2020 21:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584129485;
-        bh=p6hRYh/5g1+rnqKlC74CdLefoTR8g5NmUJKw9TYLsro=;
+        s=default; t=1584136072;
+        bh=xwtCKX2P8MxJJx8X4zwf2g8PUIkfnSRKtARj+udGAwc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cuVu8P8y6xMIhoPl+xrUUy0O89eOY3vo3UEoMWyC+87CBGU+RfOgpBn61iR1fFYdL
-         chSPKCTLXfqjiuwRoPcr2dNG6wct5oVD1PH0FyLbrKwbd9n5gw0nTz4PtcXf/lzYmB
-         xxO2ptqD0AhFZF5lEoENknWqSSJV/6+4BzSP3fr0=
+        b=KGqYDl+7TcFX2aXTi3OMKJXCXPVbEl3pjXaQ5B81LOKoMS600NMQo+SfCmwU5vFlo
+         ZQdcFM1oA2j6t8A5Pyi3dr3VKPtmlsoqMIvhGdRPFBAqv2r+Lnt2ztSJkr1vdQ1QJV
+         wzUIIjGyWIACnqXdjGOipVp8IyE6sp6qVvUGKSzc=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 74678352272E; Fri, 13 Mar 2020 12:58:05 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 12:58:05 -0700
+        id 3279335226C7; Fri, 13 Mar 2020 14:47:52 -0700 (PDT)
+Date:   Fri, 13 Mar 2020 14:47:52 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     George Spelvin <lkml@SDF.ORG>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Subject: Re: Is there a reason we don't have kvfree_rcu()?
-Message-ID: <20200313195805.GA3199@paulmck-ThinkPad-P72>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, "# 5 . 5 . x" <stable@vger.kernel.org>
+Subject: Re: [PATCH RFC tip/core/rcu 1/2] rcu: Don't acquire lock in NMI
+ handler in rcu_nmi_enter_common()
+Message-ID: <20200313214752.GF3199@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200312162730.GB11889@SDF.ORG>
- <20200312181138.GI3199@paulmck-ThinkPad-P72>
- <20200312191009.GA27429@pc636>
- <20200313050659.GA22938@SDF.ORG>
- <20200313135400.GQ3199@paulmck-ThinkPad-P72>
- <20200313165219.GA1384@SDF.ORG>
- <20200313181917.GY3199@paulmck-ThinkPad-P72>
- <20200313184641.GA14782@SDF.ORG>
+References: <20200313024007.GA27492@paulmck-ThinkPad-P72>
+ <20200313024046.27622-1-paulmck@kernel.org>
+ <20200313035201.GB190951@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313184641.GA14782@SDF.ORG>
+In-Reply-To: <20200313035201.GB190951@google.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 06:46:41PM +0000, George Spelvin wrote:
-> On Fri, Mar 13, 2020 at 11:19:17AM -0700, Paul E. McKenney wrote:
-> > Another approach would be to terminate with a NULL pointer, or with the
-> > end of the array, as the case may be.
+On Thu, Mar 12, 2020 at 11:52:01PM -0400, Joel Fernandes wrote:
+> On Thu, Mar 12, 2020 at 07:40:45PM -0700, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > The rcu_nmi_enter_common() function can be invoked both in interrupt
+> > and NMI handlers.  If it is invoked from process context (as opposed
+> > to userspace or idle context) on a nohz_full CPU, it might acquire the
+> > CPU's leaf rcu_node structure's ->lock.  Because this lock is held only
+> > with interrupts disabled, this is safe from an interrupt handler, but
+> > doing so from an NMI handler can result in self-deadlock.
+> > 
+> > This commit therefore adds "irq" to the "if" condition so as to only
+> > acquire the ->lock from irq handlers or process context, never from
+> > an NMI handler.
 > 
-> That's the basic idea, but you want to be able to append a pointer
-> in O(1) time, and a simple null-termination requires a linear search.
+> I think Peter's new lockdep changes for NMI would also catch this issue.
+> 
+> > 
+> > Fixes: 5b14557b073c ("rcu: Avoid tick_dep_set_cpu() misordering")
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Fair point!
-
-> It's obfuscation for negligible gain, however, so I'm sorry I
-> bothered mentioning it.
-
-I am with you on keeping it simple, especially initially, all evidence
-to the contrary notwithstanding.
+Applied, thank you!!!
 
 							Thanx, Paul
+
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> > Reported-by: Thomas Gleixner <tglx@linutronix.de>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: <stable@vger.kernel.org> # 5.5.x
+> > ---
+> >  kernel/rcu/tree.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d3f52c3..f7d3e48 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -825,7 +825,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
+> >  			rcu_cleanup_after_idle();
+> >  
+> >  		incby = 1;
+> > -	} else if (tick_nohz_full_cpu(rdp->cpu) &&
+> > +	} else if (irq && tick_nohz_full_cpu(rdp->cpu) &&
+> >  		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
+> >  		   READ_ONCE(rdp->rcu_urgent_qs) &&
+> >  		   !READ_ONCE(rdp->rcu_forced_tick)) {
+> > -- 
+> > 2.9.5
+> > 
