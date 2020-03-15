@@ -1,124 +1,245 @@
-Return-Path: <SRS0=Iwfc=46=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=wCpI=5A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC19DC10DCE
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 21:47:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F529C1975A
+	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 01:28:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9BDB22074F
-	for <rcu@archiver.kernel.org>; Fri, 13 Mar 2020 21:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584136073;
-	bh=xwtCKX2P8MxJJx8X4zwf2g8PUIkfnSRKtARj+udGAwc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=DA5UFVLcvCQIs93eJ4I2hWKe5HO+Eyo8KQ4vKuqec9OpTLXXDV/lEBy1Pm0ZFwRCw
-	 VsDSW4YFU1Ca7pNziDXyv1kt/8YtVQoW70PK4+6CXKn0N5uwfreUDOKUKA4J9e8IJZ
-	 Zci0kJNfw3ITblgPPQkLVUMmmLxjF2d5yE0ppgfo=
+	by mail.kernel.org (Postfix) with ESMTP id F1E9D206EB
+	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 01:28:55 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qP2ixFBW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgCMVrx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Mar 2020 17:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgCMVrx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Mar 2020 17:47:53 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6299E2074E;
-        Fri, 13 Mar 2020 21:47:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584136072;
-        bh=xwtCKX2P8MxJJx8X4zwf2g8PUIkfnSRKtARj+udGAwc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KGqYDl+7TcFX2aXTi3OMKJXCXPVbEl3pjXaQ5B81LOKoMS600NMQo+SfCmwU5vFlo
-         ZQdcFM1oA2j6t8A5Pyi3dr3VKPtmlsoqMIvhGdRPFBAqv2r+Lnt2ztSJkr1vdQ1QJV
-         wzUIIjGyWIACnqXdjGOipVp8IyE6sp6qVvUGKSzc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3279335226C7; Fri, 13 Mar 2020 14:47:52 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 14:47:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, "# 5 . 5 . x" <stable@vger.kernel.org>
-Subject: Re: [PATCH RFC tip/core/rcu 1/2] rcu: Don't acquire lock in NMI
- handler in rcu_nmi_enter_common()
-Message-ID: <20200313214752.GF3199@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200313024007.GA27492@paulmck-ThinkPad-P72>
- <20200313024046.27622-1-paulmck@kernel.org>
- <20200313035201.GB190951@google.com>
+        id S1726484AbgCOB2z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 14 Mar 2020 21:28:55 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:40248 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgCOB2y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 14 Mar 2020 21:28:54 -0400
+Received: by mail-io1-f67.google.com with SMTP id d8so13590447ion.7
+        for <rcu@vger.kernel.org>; Sat, 14 Mar 2020 18:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pinTi/t1yYoUNm8IVr+xW1d/79zVLYYM3Ifu/x4kb6g=;
+        b=qP2ixFBWouQwucdaAze/oC0Kc9fOqSEKLCfl4tAnRKyKgvvivoBb1y7t9cSpyY4QlN
+         R3mYYc/VRLHf5QiZyk0KDXJ8//akfLXe8Z2se7q1X50v5E+IsNEZZAHlU1vCNk1Ma7Ay
+         pCCds55bcoTlzTnz+VNLLaf9+dRD5arJfiRPE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pinTi/t1yYoUNm8IVr+xW1d/79zVLYYM3Ifu/x4kb6g=;
+        b=oI1FMDiQzuMWO286j+gjlOOWWoyXQGhnMQWHrkcSZLXtT7mYs1vRSW09VfK3Fu/4N8
+         1+7OBUCRhLrWUmzKklYbXA3Sc8BRQgthGpYONKfB/6yIhFDIwy/qjK0OKUb+9S10IfFp
+         I6vvueASMQkeF+JclGNlhdOj5eMJL7WM2ce/r5Dir+v5Q72dlev8SQZN/ktS49F6+UT7
+         WCzTN9tXXq2D2NCiMyU5/HickUQrNhbd49TdAhMlhxdeAaUinqMVwCUi98lL7abFDJsi
+         IBTHgX2LukpMJ3qNlgecwEL3B+JiY8F9M1B0qNM2lzcxEJY2SDHGr33SMiF7ZpumN+YJ
+         bkSQ==
+X-Gm-Message-State: ANhLgQ1coeByJ9MIWxjVEMQFxGLZUKSnAJXhKwJE+y+KLVhWlz0a5QOa
+        ZRhKGxk66K4sLEpCHFEiYkrXZixWMfY=
+X-Google-Smtp-Source: ADFU+vudb0sNgUmAbbvIyvQmEohGmf5qtoxYEyDVJyFIlPlr/TyiQb3JX0PnvQfsx1hFemqXPUZJ2w==
+X-Received: by 2002:ae9:f80a:: with SMTP id x10mr3474931qkh.43.1584234264685;
+        Sat, 14 Mar 2020 18:04:24 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id v12sm31293227qti.84.2020.03.14.18.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Mar 2020 18:04:24 -0700 (PDT)
+Date:   Sat, 14 Mar 2020 21:04:22 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Qian Cai <cai@lca.pw>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] locking/lockdep: Avoid recursion in
+ lockdep_count_{for,back}ward_deps()
+Message-ID: <20200315010422.GA134626@google.com>
+References: <20200312151258.128036-1-boqun.feng@gmail.com>
+ <20200313093325.GW12561@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200313035201.GB190951@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200313093325.GW12561@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 11:52:01PM -0400, Joel Fernandes wrote:
-> On Thu, Mar 12, 2020 at 07:40:45PM -0700, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > The rcu_nmi_enter_common() function can be invoked both in interrupt
-> > and NMI handlers.  If it is invoked from process context (as opposed
-> > to userspace or idle context) on a nohz_full CPU, it might acquire the
-> > CPU's leaf rcu_node structure's ->lock.  Because this lock is held only
-> > with interrupts disabled, this is safe from an interrupt handler, but
-> > doing so from an NMI handler can result in self-deadlock.
-> > 
-> > This commit therefore adds "irq" to the "if" condition so as to only
-> > acquire the ->lock from irq handlers or process context, never from
-> > an NMI handler.
+On Fri, Mar 13, 2020 at 10:33:25AM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 12, 2020 at 11:12:55PM +0800, Boqun Feng wrote:
 > 
-> I think Peter's new lockdep changes for NMI would also catch this issue.
-> 
-> > 
-> > Fixes: 5b14557b073c ("rcu: Avoid tick_dep_set_cpu() misordering")
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Thanks!
 
-Applied, thank you!!!
+Thanks Peter and Boqun, the below patch makes sense to me. Just had some nits
+below, otherwise:
 
-							Thanx, Paul
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> > Reported-by: Thomas Gleixner <tglx@linutronix.de>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: <stable@vger.kernel.org> # 5.5.x
-> > ---
-> >  kernel/rcu/tree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d3f52c3..f7d3e48 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -825,7 +825,7 @@ static __always_inline void rcu_nmi_enter_common(bool irq)
-> >  			rcu_cleanup_after_idle();
+> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> > index 32406ef0d6a2..5142a6b11bf5 100644
+> > --- a/kernel/locking/lockdep.c
+> > +++ b/kernel/locking/lockdep.c
+> > @@ -1719,9 +1719,11 @@ unsigned long lockdep_count_forward_deps(struct lock_class *class)
+> >  	this.class = class;
 > >  
-> >  		incby = 1;
-> > -	} else if (tick_nohz_full_cpu(rdp->cpu) &&
-> > +	} else if (irq && tick_nohz_full_cpu(rdp->cpu) &&
-> >  		   rdp->dynticks_nmi_nesting == DYNTICK_IRQ_NONIDLE &&
-> >  		   READ_ONCE(rdp->rcu_urgent_qs) &&
-> >  		   !READ_ONCE(rdp->rcu_forced_tick)) {
-> > -- 
-> > 2.9.5
-> > 
+> >  	raw_local_irq_save(flags);
+> > +	current->lockdep_recursion = 1;
+> >  	arch_spin_lock(&lockdep_lock);
+> >  	ret = __lockdep_count_forward_deps(&this);
+> >  	arch_spin_unlock(&lockdep_lock);
+> > +	current->lockdep_recursion = 0;
+> >  	raw_local_irq_restore(flags);
+> >  
+> >  	return ret;
+> > @@ -1746,9 +1748,11 @@ unsigned long lockdep_count_backward_deps(struct lock_class *class)
+> >  	this.class = class;
+> >  
+> >  	raw_local_irq_save(flags);
+> > +	current->lockdep_recursion = 1;
+> >  	arch_spin_lock(&lockdep_lock);
+> >  	ret = __lockdep_count_backward_deps(&this);
+> >  	arch_spin_unlock(&lockdep_lock);
+> > +	current->lockdep_recursion = 0;
+> >  	raw_local_irq_restore(flags);
+> >  
+> >  	return ret;
+> 
+> This copies a bad pattern though; all the sites that do not check
+> lockdep_recursion_count first really should be using ++/-- instead. But
+> I just found there are indeed already a few sites that violate this.
+> 
+> I've taken this patch and done a general fixup on top.
+> 
+> ---
+> Subject: locking/lockdep: Fix bad recursion pattern
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Fri Mar 13 09:56:38 CET 2020
+> 
+> There were two patterns for lockdep_recursion:
+> 
+> Pattern-A:
+> 	if (current->lockdep_recursion)
+> 		return
+> 
+> 	current->lockdep_recursion = 1;
+> 	/* do stuff */
+> 	current->lockdep_recursion = 0;
+> 
+> Pattern-B:
+> 	current->lockdep_recursion++;
+> 	/* do stuff */
+> 	current->lockdep_recursion--;
+> 
+> But a third pattern has emerged:
+> 
+> Pattern-C:
+> 	current->lockdep_recursion = 1;
+> 	/* do stuff */
+> 	current->lockdep_recursion = 0;
+> 
+> And while this isn't broken per-se, it is highly dangerous because it
+> doesn't nest properly.
+> 
+> Get rid of all Pattern-C instances and shore up Pattern-A with a
+> warning.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/locking/lockdep.c |   74 +++++++++++++++++++++++++----------------------
+>  1 file changed, 40 insertions(+), 34 deletions(-)
+> 
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -389,6 +389,12 @@ void lockdep_on(void)
+>  }
+>  EXPORT_SYMBOL(lockdep_on);
+>  
+> +static inline void lockdep_recursion_finish(void)
+> +{
+> +	if (WARN_ON_ONCE(--current->lockdep_recursion))
+> +		current->lockdep_recursion = 0;
+> +}
+> +
+>  void lockdep_set_selftest_task(struct task_struct *task)
+>  {
+>  	lockdep_selftest_task_struct = task;
+> @@ -1719,11 +1725,11 @@ unsigned long lockdep_count_forward_deps
+>  	this.class = class;
+>  
+>  	raw_local_irq_save(flags);
+> -	current->lockdep_recursion = 1;
+> +	current->lockdep_recursion++;
+>  	arch_spin_lock(&lockdep_lock);
+>  	ret = __lockdep_count_forward_deps(&this);
+>  	arch_spin_unlock(&lockdep_lock);
+> -	current->lockdep_recursion = 0;
+> +	current->lockdep_recursion--;
+
+This doesn't look like it should recurse. Why not just use the
+lockdep_recursion_finish() helper here?
+
+>  	raw_local_irq_restore(flags);
+>  
+>  	return ret;
+> @@ -1748,11 +1754,11 @@ unsigned long lockdep_count_backward_dep
+>  	this.class = class;
+>  
+>  	raw_local_irq_save(flags);
+> -	current->lockdep_recursion = 1;
+> +	current->lockdep_recursion++;
+>  	arch_spin_lock(&lockdep_lock);
+>  	ret = __lockdep_count_backward_deps(&this);
+>  	arch_spin_unlock(&lockdep_lock);
+> -	current->lockdep_recursion = 0;
+> +	current->lockdep_recursion--;
+
+And here.
+
+> @@ -4963,7 +4969,7 @@ static void free_zapped_rcu(struct rcu_h
+>  
+>  	raw_local_irq_save(flags);
+>  	arch_spin_lock(&lockdep_lock);
+> -	current->lockdep_recursion = 1;
+> +	current->lockdep_recursion++;
+>  
+>  	/* closed head */
+>  	pf = delayed_free.pf + (delayed_free.index ^ 1);
+> @@ -4975,7 +4981,7 @@ static void free_zapped_rcu(struct rcu_h
+>  	 */
+>  	call_rcu_zapped(delayed_free.pf + delayed_free.index);
+>  
+> -	current->lockdep_recursion = 0;
+> +	current->lockdep_recursion--;
+
+And here also if it applies.
+
+>  	arch_spin_unlock(&lockdep_lock);
+>  	raw_local_irq_restore(flags);
+>  }
+> @@ -5022,11 +5028,11 @@ static void lockdep_free_key_range_reg(v
+>  
+>  	raw_local_irq_save(flags);
+>  	arch_spin_lock(&lockdep_lock);
+> -	current->lockdep_recursion = 1;
+> +	current->lockdep_recursion++;
+>  	pf = get_pending_free();
+>  	__lockdep_free_key_range(pf, start, size);
+>  	call_rcu_zapped(pf);
+> -	current->lockdep_recursion = 0;
+> +	current->lockdep_recursion--;
+
+And here also if it applies.
+
+thanks!
+
+ - Joel
+
