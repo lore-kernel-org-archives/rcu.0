@@ -2,244 +2,153 @@ Return-Path: <SRS0=wCpI=5A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F529C1975A
-	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 01:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22BEBC10DCE
+	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 17:45:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F1E9D206EB
-	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 01:28:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E6181206EB
+	for <rcu@archiver.kernel.org>; Sun, 15 Mar 2020 17:45:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qP2ixFBW"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="i2fD1vdq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgCOB2z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 14 Mar 2020 21:28:55 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:40248 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgCOB2y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 14 Mar 2020 21:28:54 -0400
-Received: by mail-io1-f67.google.com with SMTP id d8so13590447ion.7
-        for <rcu@vger.kernel.org>; Sat, 14 Mar 2020 18:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pinTi/t1yYoUNm8IVr+xW1d/79zVLYYM3Ifu/x4kb6g=;
-        b=qP2ixFBWouQwucdaAze/oC0Kc9fOqSEKLCfl4tAnRKyKgvvivoBb1y7t9cSpyY4QlN
-         R3mYYc/VRLHf5QiZyk0KDXJ8//akfLXe8Z2se7q1X50v5E+IsNEZZAHlU1vCNk1Ma7Ay
-         pCCds55bcoTlzTnz+VNLLaf9+dRD5arJfiRPE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pinTi/t1yYoUNm8IVr+xW1d/79zVLYYM3Ifu/x4kb6g=;
-        b=oI1FMDiQzuMWO286j+gjlOOWWoyXQGhnMQWHrkcSZLXtT7mYs1vRSW09VfK3Fu/4N8
-         1+7OBUCRhLrWUmzKklYbXA3Sc8BRQgthGpYONKfB/6yIhFDIwy/qjK0OKUb+9S10IfFp
-         I6vvueASMQkeF+JclGNlhdOj5eMJL7WM2ce/r5Dir+v5Q72dlev8SQZN/ktS49F6+UT7
-         WCzTN9tXXq2D2NCiMyU5/HickUQrNhbd49TdAhMlhxdeAaUinqMVwCUi98lL7abFDJsi
-         IBTHgX2LukpMJ3qNlgecwEL3B+JiY8F9M1B0qNM2lzcxEJY2SDHGr33SMiF7ZpumN+YJ
-         bkSQ==
-X-Gm-Message-State: ANhLgQ1coeByJ9MIWxjVEMQFxGLZUKSnAJXhKwJE+y+KLVhWlz0a5QOa
-        ZRhKGxk66K4sLEpCHFEiYkrXZixWMfY=
-X-Google-Smtp-Source: ADFU+vudb0sNgUmAbbvIyvQmEohGmf5qtoxYEyDVJyFIlPlr/TyiQb3JX0PnvQfsx1hFemqXPUZJ2w==
-X-Received: by 2002:ae9:f80a:: with SMTP id x10mr3474931qkh.43.1584234264685;
-        Sat, 14 Mar 2020 18:04:24 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id v12sm31293227qti.84.2020.03.14.18.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Mar 2020 18:04:24 -0700 (PDT)
-Date:   Sat, 14 Mar 2020 21:04:22 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Qian Cai <cai@lca.pw>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] locking/lockdep: Avoid recursion in
- lockdep_count_{for,back}ward_deps()
-Message-ID: <20200315010422.GA134626@google.com>
-References: <20200312151258.128036-1-boqun.feng@gmail.com>
- <20200313093325.GW12561@hirez.programming.kicks-ass.net>
+        id S1728990AbgCORpH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 15 Mar 2020 13:45:07 -0400
+Received: from mail.efficios.com ([167.114.26.124]:55322 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728979AbgCORpH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 15 Mar 2020 13:45:07 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 569BB25265B;
+        Sun, 15 Mar 2020 13:45:06 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uBRmkdaKLqTU; Sun, 15 Mar 2020 13:45:06 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id DD62D25265A;
+        Sun, 15 Mar 2020 13:45:05 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com DD62D25265A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1584294305;
+        bh=TBC3tg+fQLWhANZZ+S2T6zpVClByqCGVvreSonLonsE=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=i2fD1vdquDb50EMgAM85zQXLibDdtL1GV8ui6FMpF1f5IAW5Opr2O8Zk2zT98Eqfs
+         mMvMgQOZMiJqN4JkS9uj/3jjf8bRJgYb4joq5rdibQQ89C2PYZdhLUYy7FPLC9WpVd
+         +wVkO2oOf4w14IhZG37AADRXcd6VsCIRdMXn8vfL1cVy/CfbxTcx7QSxM1bySyVL8q
+         JEqn+OK1aUzjwUsWRjrqz/3ObF4+hGoklGovatjFnecaWC28tGb7sxbF2FqTvVO1e8
+         kNbDrZZJI4zWmlrSUJsjgH1FvDjYsybym991eu2TTZgNpKPKrKY2zQQjR03caCyvrX
+         coR/+rvBh4fEA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id bq-mjMuJjExz; Sun, 15 Mar 2020 13:45:05 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id C726F253280;
+        Sun, 15 Mar 2020 13:45:05 -0400 (EDT)
+Date:   Sun, 15 Mar 2020 13:45:05 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     paulmck <paulmck@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dipankar <dipankar@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>
+Message-ID: <2062731308.28584.1584294305768.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200313154243.GU3199@paulmck-ThinkPad-P72>
+References: <20200312181618.GA21271@paulmck-ThinkPad-P72> <20200313144145.GA31604@lenoir> <20200313154243.GU3199@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH RFC tip/core/rcu 0/16] Prototype RCU usable from idle,
+ exception, offline
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200313093325.GW12561@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3901 (ZimbraWebClient - FF73 (Linux)/8.8.15_GA_3895)
+Thread-Topic: Prototype RCU usable from idle, exception, offline
+Thread-Index: a/NhvL+0Mq6sqPjESRf5g9/gd7j1wg==
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 10:33:25AM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 12, 2020 at 11:12:55PM +0800, Boqun Feng wrote:
-> 
-> Thanks!
+----- On Mar 13, 2020, at 11:42 AM, paulmck paulmck@kernel.org wrote:
 
-Thanks Peter and Boqun, the below patch makes sense to me. Just had some nits
-below, otherwise:
+> On Fri, Mar 13, 2020 at 03:41:46PM +0100, Frederic Weisbecker wrote:
+>> On Thu, Mar 12, 2020 at 11:16:18AM -0700, Paul E. McKenney wrote:
+>> > Hello!
+>> > 
+>> > This series provides two variants of Tasks RCU, a rude variant inspired
+>> > by Steven Rostedt's use of schedule_on_each_cpu(), and a tracing variant
+>> > requested by the BPF folks and perhaps also of use for other tracing
+>> > use cases.
+>> > 
+>> > The tracing variant has explicit read-side markers to permit finite grace
+>> > periods even given in-kernel loops in PREEMPT=n builds It also protects
+>> > code in the idle loop, on exception entry/exit paths, and on the various
+>> > CPU-hotplug online/offline code paths, thus having protection properties
+>> > similar to SRCU.  However, unlike SRCU, this variant avoids expensive
+>> > instructions in the read-side primitives, thus having read-side overhead
+>> > similar to that of preemptible RCU.
+>> > 
+>> > There are of course downsides.  The grace-period code can send IPIs to
+>> > CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
+>> > It is necessary to scan the full tasklist, much as for Tasks RCU.  There
+>> > is a single callback queue guarded by a single lock, again, much as for
+>> > Tasks RCU.  If needed, these downsides can be at least partially remedied
+>> 
+>> So what we trade to fix the issues we are having with tracing against extended
+>> grace periods, we lose in CPU isolation. That worries me a bit as tracing can
+>> be thoroughly used with nohz_full and CPU isolation.
+> 
+> First, disturbing nohz_full CPUs can be avoided by the sysadm simply
+> refusing to remove tracepoints while sensitive applications are running
+> on nohz_full CPUs.
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+I doubt this approach will survive real-life.
 
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index 32406ef0d6a2..5142a6b11bf5 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -1719,9 +1719,11 @@ unsigned long lockdep_count_forward_deps(struct lock_class *class)
-> >  	this.class = class;
-> >  
-> >  	raw_local_irq_save(flags);
-> > +	current->lockdep_recursion = 1;
-> >  	arch_spin_lock(&lockdep_lock);
-> >  	ret = __lockdep_count_forward_deps(&this);
-> >  	arch_spin_unlock(&lockdep_lock);
-> > +	current->lockdep_recursion = 0;
-> >  	raw_local_irq_restore(flags);
-> >  
-> >  	return ret;
-> > @@ -1746,9 +1748,11 @@ unsigned long lockdep_count_backward_deps(struct lock_class *class)
-> >  	this.class = class;
-> >  
-> >  	raw_local_irq_save(flags);
-> > +	current->lockdep_recursion = 1;
-> >  	arch_spin_lock(&lockdep_lock);
-> >  	ret = __lockdep_count_backward_deps(&this);
-> >  	arch_spin_unlock(&lockdep_lock);
-> > +	current->lockdep_recursion = 0;
-> >  	raw_local_irq_restore(flags);
-> >  
-> >  	return ret;
 > 
-> This copies a bad pattern though; all the sites that do not check
-> lockdep_recursion_count first really should be using ++/-- instead. But
-> I just found there are indeed already a few sites that violate this.
+> Second, for non-CPU-bound real-time programs with mostly-idle CPUs,
+> I should be able to decrease the likelihood of sending IPIs pretty much
+> to zero.
 > 
-> I've taken this patch and done a general fixup on top.
-> 
-> ---
-> Subject: locking/lockdep: Fix bad recursion pattern
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Fri Mar 13 09:56:38 CET 2020
-> 
-> There were two patterns for lockdep_recursion:
-> 
-> Pattern-A:
-> 	if (current->lockdep_recursion)
-> 		return
-> 
-> 	current->lockdep_recursion = 1;
-> 	/* do stuff */
-> 	current->lockdep_recursion = 0;
-> 
-> Pattern-B:
-> 	current->lockdep_recursion++;
-> 	/* do stuff */
-> 	current->lockdep_recursion--;
-> 
-> But a third pattern has emerged:
-> 
-> Pattern-C:
-> 	current->lockdep_recursion = 1;
-> 	/* do stuff */
-> 	current->lockdep_recursion = 0;
-> 
-> And while this isn't broken per-se, it is highly dangerous because it
-> doesn't nest properly.
-> 
-> Get rid of all Pattern-C instances and shore up Pattern-A with a
-> warning.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/locking/lockdep.c |   74 +++++++++++++++++++++++++----------------------
->  1 file changed, 40 insertions(+), 34 deletions(-)
-> 
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -389,6 +389,12 @@ void lockdep_on(void)
->  }
->  EXPORT_SYMBOL(lockdep_on);
->  
-> +static inline void lockdep_recursion_finish(void)
-> +{
-> +	if (WARN_ON_ONCE(--current->lockdep_recursion))
-> +		current->lockdep_recursion = 0;
-> +}
-> +
->  void lockdep_set_selftest_task(struct task_struct *task)
->  {
->  	lockdep_selftest_task_struct = task;
-> @@ -1719,11 +1725,11 @@ unsigned long lockdep_count_forward_deps
->  	this.class = class;
->  
->  	raw_local_irq_save(flags);
-> -	current->lockdep_recursion = 1;
-> +	current->lockdep_recursion++;
->  	arch_spin_lock(&lockdep_lock);
->  	ret = __lockdep_count_forward_deps(&this);
->  	arch_spin_unlock(&lockdep_lock);
-> -	current->lockdep_recursion = 0;
-> +	current->lockdep_recursion--;
+> Or am I missing something here?
 
-This doesn't look like it should recurse. Why not just use the
-lockdep_recursion_finish() helper here?
+I would recommend considering the following alternative for this tracing-rcu
+flavor:
 
->  	raw_local_irq_restore(flags);
->  
->  	return ret;
-> @@ -1748,11 +1754,11 @@ unsigned long lockdep_count_backward_dep
->  	this.class = class;
->  
->  	raw_local_irq_save(flags);
-> -	current->lockdep_recursion = 1;
-> +	current->lockdep_recursion++;
->  	arch_spin_lock(&lockdep_lock);
->  	ret = __lockdep_count_backward_deps(&this);
->  	arch_spin_unlock(&lockdep_lock);
-> -	current->lockdep_recursion = 0;
-> +	current->lockdep_recursion--;
+- For all CPUs which are not nohz_full:
+  - Implement fast RCU read-side which only requires compiler barriers,
+  - Use IPIs to each of those CPUs when doing a grace period.
 
-And here.
+- For all nohz_full CPUS:
+  - Dynamically detect CPUs which are nohz_full,
+  - Implement slower RCU read-side with memory barriers,
+  - No need to issue any IPI to those CPUs when doing the grace period.
 
-> @@ -4963,7 +4969,7 @@ static void free_zapped_rcu(struct rcu_h
->  
->  	raw_local_irq_save(flags);
->  	arch_spin_lock(&lockdep_lock);
-> -	current->lockdep_recursion = 1;
-> +	current->lockdep_recursion++;
->  
->  	/* closed head */
->  	pf = delayed_free.pf + (delayed_free.index ^ 1);
-> @@ -4975,7 +4981,7 @@ static void free_zapped_rcu(struct rcu_h
->  	 */
->  	call_rcu_zapped(delayed_free.pf + delayed_free.index);
->  
-> -	current->lockdep_recursion = 0;
-> +	current->lockdep_recursion--;
+This should cover all use-cases: staying fast for the common case, without
+disturbing RT workloads.
 
-And here also if it applies.
+Thoughts ?
 
->  	arch_spin_unlock(&lockdep_lock);
->  	raw_local_irq_restore(flags);
->  }
-> @@ -5022,11 +5028,11 @@ static void lockdep_free_key_range_reg(v
->  
->  	raw_local_irq_save(flags);
->  	arch_spin_lock(&lockdep_lock);
-> -	current->lockdep_recursion = 1;
-> +	current->lockdep_recursion++;
->  	pf = get_pending_free();
->  	__lockdep_free_key_range(pf, start, size);
->  	call_rcu_zapped(pf);
-> -	current->lockdep_recursion = 0;
-> +	current->lockdep_recursion--;
+Thanks,
 
-And here also if it applies.
+Mathieu
 
-thanks!
 
- - Joel
 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
