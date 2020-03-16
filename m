@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01BB8C4CECE
-	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 16:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 590BBC0044D
+	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 17:42:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C9F0B2071C
-	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 16:32:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 268A2205ED
+	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 17:42:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yRrupE0w"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pUjrMXS0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732170AbgCPQcm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Mar 2020 12:32:42 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41735 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732158AbgCPQci (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Mar 2020 12:32:38 -0400
-Received: by mail-qt1-f193.google.com with SMTP id i26so4964497qtq.8
-        for <rcu@vger.kernel.org>; Mon, 16 Mar 2020 09:32:35 -0700 (PDT)
+        id S1732127AbgCPRmX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Mar 2020 13:42:23 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45383 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730437AbgCPRmX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Mar 2020 13:42:23 -0400
+Received: by mail-qk1-f193.google.com with SMTP id c145so27660781qke.12
+        for <rcu@vger.kernel.org>; Mon, 16 Mar 2020 10:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WnVlBAntxMU0MXZ+RmdU8L+mrOyKQNUKTy7ZQi+XdC8=;
-        b=yRrupE0w4MSh9gGyHF9e1ziDGwNrGhLF/dLaUnvrWu11MtqF4IxFB4BWiIfH57h59M
-         6xYdwrzmqFWONkPJ3KDHCqKTvhDY1v6xpCIosPc1Z2krUhFFl+Zu6Y8T2FA6C6LS8fsd
-         JHxM6Ma3AC4GWgmyuSvIFJqUakGi7RTMEUYU0=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ID3H30czz/FP3Uv6UAzC/d4Q+G/GcberRTPzu1ZMo3E=;
+        b=pUjrMXS0RNct/9Enu86BqiyDEyDA19V03PxzPGB6D8+iM2iV7UoDhLF8BPum0uzAyr
+         T/IufEnDOIte1DkXg/9yRlJhtFt8uoXQCuWg9Czdg7Ow+DEVIAOhl/Zj2NnOrEHNhuXG
+         bR9IifFrczz8icm/pyp4HFEjqnfA/Mhi0e1ik=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WnVlBAntxMU0MXZ+RmdU8L+mrOyKQNUKTy7ZQi+XdC8=;
-        b=RigFPxrqW2PgI2Xifi6ZD2hp5M7+4UOshCIxsKvCE2D49VpKJWHTj7Ss4+h+egBYhv
-         tCaACChWIUbOxwUez8wexL5NHaY2Jt3LcEC6kxaRw4WD1Es3TTDOSGW7DwF4OHdHSXfE
-         p6jlectwBhrjRFdwPFGN/VTeXkImlnpc7Tko9BYguhiBq0d4wZ4scHNDUnjnHMqiDdrn
-         dNjyvwUe4yJmQSFK9bCG6Lb08BcPbDhjxj2mORvtxe/cUYsVtv3P1V7V48QfEOKsnKyw
-         CEHUIFR4TQx0Z5u0ciiKVH/Qbr4r37dTkbsAWqZVuiA37BnrKkUUGUMl4c70WKks15kE
-         wPPQ==
-X-Gm-Message-State: ANhLgQ3DaqzpbOknX9vmGudEpRD3Mx4LMW9jjJ35MdgvT81haf3L0ucE
-        XjQnni/0pCJLPrUJdmLFgnmXww==
-X-Google-Smtp-Source: ADFU+vtq0G5LtEJV/OjmUmq2TfxhUJeV8n+Ipq9JkxFR+qkcD+BHlYPmFz6RMjpq0mTjjM0s+BBsHQ==
-X-Received: by 2002:ac8:1194:: with SMTP id d20mr903885qtj.243.1584376354881;
-        Mon, 16 Mar 2020 09:32:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ID3H30czz/FP3Uv6UAzC/d4Q+G/GcberRTPzu1ZMo3E=;
+        b=KIJzQMiEtLnQtqdJI851B5+FJYwPek1vGHegnU7f/5HDww1RHpSgHibdSZCcMTyL34
+         SsVHFwJf8v4YKAxVMsCddH8wWHgipYbxiifPZQRGJtFUilBcC/X88v1xi6rzluud5P5v
+         Rfb09K7KiyNt5+H4lbLGQaeK67L6HTOrzTLfJo7giwDCBrmf3ozSKbjhc4uaha4pQvfm
+         u7zbDKdsE6GUg7JTeaFc/zQJf9b+WUDlSTloStO7Ac+ZPj7X0T7lCZ4e/IfS4HCJNF2b
+         shV9EO7kxhzyCmDFeA7OryA0qFSExLECowZP/NWMakOqGDiofzWtFpGroRsGkYFa2ICU
+         4QAA==
+X-Gm-Message-State: ANhLgQ0dusYnuxb8qf28Ugv8Ui9IaK8El+cviKS+AjrcFECVwpmaOnFS
+        XNdi1Mu3h7DtZd8BW7BCWBepqw==
+X-Google-Smtp-Source: ADFU+vsUqZ3usZr2Eg81VF8mEAQnj3RaqBD5qL05O2zypbQOSU/izpiqRllh9ZyhbPi+zjBxCqAQdg==
+X-Received: by 2002:a37:e47:: with SMTP id 68mr807305qko.17.1584380542178;
+        Mon, 16 Mar 2020 10:42:22 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y127sm84139qkb.76.2020.03.16.09.32.33
+        by smtp.gmail.com with ESMTPSA id h138sm205962qke.86.2020.03.16.10.42.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 09:32:34 -0700 (PDT)
+        Mon, 16 Mar 2020 10:42:21 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        urezki@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, linux-mm@kvack.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 rcu-dev 2/3] rcu/tree: Add a shrinker to prevent OOM due to kfree_rcu() batching
-Date:   Mon, 16 Mar 2020 12:32:27 -0400
-Message-Id: <20200316163228.62068-2-joel@joelfernandes.org>
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [RFC] Simplify debug_objects handling in kfree_rcu
+Date:   Mon, 16 Mar 2020 13:42:18 -0400
+Message-Id: <20200316174218.154090-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
-In-Reply-To: <20200316163228.62068-1-joel@joelfernandes.org>
-References: <20200316163228.62068-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
@@ -73,134 +75,120 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-To reduce grace periods and improve kfree() performance, we have done
-batching recently dramatically bringing down the number of grace periods
-while giving us the ability to use kfree_bulk() for efficient kfree'ing.
+In order to prepare for future changes to headless RCU support, make the
+debug_objects handling in kfree_rcu use the final 'pointer' value of the
+object, instead of depending on the head.
 
-However, this has increased the likelihood of OOM condition under heavy
-kfree_rcu() flood on small memory systems. This patch introduces a
-shrinker which starts grace periods right away if the system is under
-memory pressure due to existence of objects that have still not started
-a grace period.
-
-With this patch, I do not observe an OOM anymore on a system with 512MB
-RAM and 8 CPUs, with the following rcuperf options:
-
-rcuperf.kfree_loops=20000 rcuperf.kfree_alloc_num=8000
-rcuperf.kfree_rcu_test=1 rcuperf.kfree_mult=2
-
-Otherwise it easily OOMs with the above parameters.
-
-NOTE:
-1. On systems with no memory pressure, the patch has no effect as intended.
-2. In the future, we can use this same mechanism to prevent grace periods
-   from happening even more, by relying on shrinkers carefully.
-
-Cc: urezki@gmail.com
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+Paul, Vlad, I am adding this to my rcu/kfree tree for further testing. Let me know any
+comments. I have only build-tested this patch.
+
+ kernel/rcu/tree.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4a885af2ff73e..dc570dff68d7b 100644
+index 32152be9a09ac..0e2632622176b 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2801,6 +2801,8 @@ struct kfree_rcu_cpu {
- 	struct delayed_work monitor_work;
- 	bool monitor_todo;
- 	bool initialized;
-+	// Number of objects for which GP not started
-+	int count;
+@@ -2758,7 +2758,6 @@ struct kfree_rcu_bulk_data {
+ 	unsigned long nr_records;
+ 	void *records[KFREE_BULK_MAX_ENTR];
+ 	struct kfree_rcu_bulk_data *next;
+-	struct rcu_head *head_free_debug;
  };
  
+ /**
+@@ -2808,11 +2807,11 @@ struct kfree_rcu_cpu {
  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
-@@ -2914,6 +2916,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 				krcp->head = NULL;
- 			}
  
-+			krcp->count = 0;
-+
- 			/*
- 			 * One work is per one batch, so there are two "free channels",
- 			 * "bhead_free" and "head_free" the batch can handle. It can be
-@@ -3050,6 +3054,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		krcp->head = head;
- 	}
- 
-+	krcp->count++;
-+
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 	    !krcp->monitor_todo) {
-@@ -3064,6 +3070,58 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- }
- EXPORT_SYMBOL_GPL(kfree_call_rcu);
- 
-+static unsigned long
-+kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-+{
-+	int cpu;
-+	unsigned long flags, count = 0;
-+
-+	/* Snapshot count of all CPUs */
-+	for_each_online_cpu(cpu) {
-+		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-+
-+		spin_lock_irqsave(&krcp->lock, flags);
-+		count += krcp->count;
-+		spin_unlock_irqrestore(&krcp->lock, flags);
-+	}
-+
-+	return count;
-+}
-+
-+static unsigned long
-+kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-+{
-+	int cpu, freed = 0;
-+	unsigned long flags;
-+
-+	for_each_online_cpu(cpu) {
-+		int count;
-+		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-+
-+		count = krcp->count;
-+		spin_lock_irqsave(&krcp->lock, flags);
-+		if (krcp->monitor_todo)
-+			kfree_rcu_drain_unlock(krcp, flags);
-+		else
-+			spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+		sc->nr_to_scan -= count;
-+		freed += count;
-+
-+		if (sc->nr_to_scan <= 0)
-+			break;
-+	}
-+
-+	return freed;
-+}
-+
-+static struct shrinker kfree_rcu_shrinker = {
-+	.count_objects = kfree_rcu_shrink_count,
-+	.scan_objects = kfree_rcu_shrink_scan,
-+	.batch = 0,
-+	.seeks = DEFAULT_SEEKS,
-+};
-+
- void __init kfree_rcu_scheduler_running(void)
+ static __always_inline void
+-debug_rcu_head_unqueue_bulk(struct rcu_head *head)
++debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
  {
- 	int cpu;
-@@ -3981,6 +4039,8 @@ static void __init kfree_rcu_batch_init(void)
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
- 		krcp->initialized = true;
- 	}
-+	if (register_shrinker(&kfree_rcu_shrinker))
-+		pr_err("Failed to register kfree_rcu() shrinker!\n");
+ #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	for (; head; head = head->next)
+-		debug_rcu_head_unqueue(head);
++	for (int i = 0; i < bhead->nr_records; i++)
++		debug_rcu_head_unqueue((struct rcu_head *)(bhead->records[i]));
+ #endif
  }
  
- void __init rcu_init(void)
+@@ -2842,7 +2841,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	for (; bhead; bhead = bnext) {
+ 		bnext = bhead->next;
+ 
+-		debug_rcu_head_unqueue_bulk(bhead->head_free_debug);
++		debug_rcu_bhead_unqueue(bhead);
+ 
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kfree_bulk_callback(rcu_state.name,
+@@ -2864,14 +2863,15 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
++		void *ptr = (void *)head - offset;
+ 
+ 		next = head->next;
+-		debug_rcu_head_unqueue(head);
++		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
+ 
+ 		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
+-			kvfree((void *)head - offset);
++			kvfree(ptr);
+ 
+ 		rcu_lock_release(&rcu_callback_map);
+ 		cond_resched_tasks_rcu_qs();
+@@ -2995,18 +2995,11 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+ 		bnode->next = krcp->bhead;
+-		bnode->head_free_debug = NULL;
+ 
+ 		/* Attach it to the head. */
+ 		krcp->bhead = bnode;
+ 	}
+ 
+-#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	head->func = func;
+-	head->next = krcp->bhead->head_free_debug;
+-	krcp->bhead->head_free_debug = head;
+-#endif
+-
+ 	/* Finally insert. */
+ 	krcp->bhead->records[krcp->bhead->nr_records++] =
+ 		(void *) head - (unsigned long) func;
+@@ -3030,14 +3023,17 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
++	void *ptr;
+ 
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+ 	krcp = this_cpu_ptr(&krc);
+ 	if (krcp->initialized)
+ 		spin_lock(&krcp->lock);
+ 
++	ptr = (void *)head - (unsigned long)func;
++
+ 	// Queue the object but don't yet schedule the batch.
+-	if (debug_rcu_head_queue(head)) {
++	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
+@@ -3054,8 +3050,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	if (is_vmalloc_addr((void *) head - (unsigned long) func) ||
+-			!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func)) {
++	if (is_vmalloc_addr(ptr) ||
++	    !kfree_call_rcu_add_ptr_to_bulk(krcp, head, func)) {
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
 -- 
 2.25.1.481.gfbce0eb801-goog
-
