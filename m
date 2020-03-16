@@ -2,85 +2,103 @@ Return-Path: <SRS0=IXig=5B=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F12C18E5B
-	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 13:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66BFCC0044D
+	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 14:45:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BA3D02051A
-	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 13:55:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G42P68L1"
+	by mail.kernel.org (Postfix) with ESMTP id 3BD4620719
+	for <rcu@archiver.kernel.org>; Mon, 16 Mar 2020 14:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1584369940;
+	bh=ZSbltSbSiUmq6xIxQWgW2sb4hHSYglWKFRNFnwZUai0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=ZZ5QTIGEqXOoQyhH1dMRDs4ZwvOH+j8SnjtdLEE4TL9ndO/IjgFRjMf4UMWUx2P1H
+	 lsSrM9AB67bp+8gRzBRl3DJ3BbPsQzXYibdH5QXYic2nQiQITieA3r5MsHlzF+aPb0
+	 AFvgwWoT9DcozlxT0w+i2QcHQpfGc6BVqcYhZn2s=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731411AbgCPNzN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Mar 2020 09:55:13 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:48928 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731110AbgCPNzN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Mar 2020 09:55:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WEBG3nIg5bRO/ndpNpdjvppQegv8JGgyyt7RDg3n9BA=; b=G42P68L1AVx/huDT3DLmA5JN+R
-        T9nK0j8g2tIhO+d+7Kq90Oabd+k2yKREMXg4WYN1OrgaB7okGszUsGuSn/OEjIFY2Qf6qAsnr4lHE
-        gnut877TQ4yK4893v0WhkXkigpKr2NlBpIZygt/mmbGcKoMnsiXHnk+hFHrO6XG0WzmVhWcKkL/mD
-        klD0+jzJF4ttIx932LKWpLPPRNswCysyDAD6vr/tZ3uDWqw1UaO58gK7k93FAU6IK7JfE93lpcPTt
-        2CcZGdh+piCS5+Uf/3xe5N/TNWjbtPH1EdD7jnlFmnht8D33wSrnAm6UKjgF1bsLmsfSJ5sgLVMaA
-        vqrRm3GQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jDqCz-0007ub-Qa; Mon, 16 Mar 2020 13:55:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1731560AbgCPOpj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Mar 2020 10:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731555AbgCPOpj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Mar 2020 10:45:39 -0400
+Received: from localhost (lfbn-ncy-1-985-231.w90-101.abo.wanadoo.fr [90.101.63.231])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3B7530138D;
-        Mon, 16 Mar 2020 14:55:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DE7B820B16492; Mon, 16 Mar 2020 14:55:07 +0100 (CET)
-Date:   Mon, 16 Mar 2020 14:55:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Qian Cai <cai@lca.pw>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] locking/lockdep: Avoid recursion in
- lockdep_count_{for,back}ward_deps()
-Message-ID: <20200316135507.GF12561@hirez.programming.kicks-ass.net>
-References: <20200312151258.128036-1-boqun.feng@gmail.com>
- <20200313093325.GW12561@hirez.programming.kicks-ass.net>
- <20200315010422.GA134626@google.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8B7020679;
+        Mon, 16 Mar 2020 14:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584369939;
+        bh=ZSbltSbSiUmq6xIxQWgW2sb4hHSYglWKFRNFnwZUai0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i7S4vgbzI3Wd7TMTGENsRPOoUnHYKDC8Hbu0QB8jAlv/ezS2LEnLbp9spR+6coyfZ
+         hMq6E2ISggw/9ERyMFMWXW2T6yaYNhtQogAW7tFoSsc/1NBxx+YQgzx4v0vf5V9B/0
+         mzc47/PkO06kfQluyVnrKOpaoJ3oc+4TVXebvuLY=
+Date:   Mon, 16 Mar 2020 15:45:36 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mutt@paulmck-ThinkPad-P72, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 0/16] Prototype RCU usable from idle,
+ exception, offline
+Message-ID: <20200316144535.GA501@lenoir>
+References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
+ <20200313144145.GA31604@lenoir>
+ <20200313154243.GU3199@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200315010422.GA134626@google.com>
+In-Reply-To: <20200313154243.GU3199@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Mar 14, 2020 at 09:04:22PM -0400, Joel Fernandes wrote:
-> On Fri, Mar 13, 2020 at 10:33:25AM +0100, Peter Zijlstra wrote:
-
-> Thanks Peter and Boqun, the below patch makes sense to me. Just had some nits
-> below, otherwise:
-> > @@ -1719,11 +1725,11 @@ unsigned long lockdep_count_forward_deps
-> >  	this.class = class;
-> >  
-> >  	raw_local_irq_save(flags);
-> > -	current->lockdep_recursion = 1;
-> > +	current->lockdep_recursion++;
-> >  	arch_spin_lock(&lockdep_lock);
-> >  	ret = __lockdep_count_forward_deps(&this);
-> >  	arch_spin_unlock(&lockdep_lock);
-> > -	current->lockdep_recursion = 0;
-> > +	current->lockdep_recursion--;
+On Fri, Mar 13, 2020 at 08:42:43AM -0700, Paul E. McKenney wrote:
+> On Fri, Mar 13, 2020 at 03:41:46PM +0100, Frederic Weisbecker wrote:
+> > On Thu, Mar 12, 2020 at 11:16:18AM -0700, Paul E. McKenney wrote:
+> > > Hello!
+> > > 
+> > > This series provides two variants of Tasks RCU, a rude variant inspired
+> > > by Steven Rostedt's use of schedule_on_each_cpu(), and a tracing variant
+> > > requested by the BPF folks and perhaps also of use for other tracing
+> > > use cases.
+> > > 
+> > > The tracing variant has explicit read-side markers to permit finite grace
+> > > periods even given in-kernel loops in PREEMPT=n builds It also protects
+> > > code in the idle loop, on exception entry/exit paths, and on the various
+> > > CPU-hotplug online/offline code paths, thus having protection properties
+> > > similar to SRCU.  However, unlike SRCU, this variant avoids expensive
+> > > instructions in the read-side primitives, thus having read-side overhead
+> > > similar to that of preemptible RCU.
+> > > 
+> > > There are of course downsides.  The grace-period code can send IPIs to
+> > > CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
+> > > It is necessary to scan the full tasklist, much as for Tasks RCU.  There
+> > > is a single callback queue guarded by a single lock, again, much as for
+> > > Tasks RCU.  If needed, these downsides can be at least partially remedied
+> > 
+> > So what we trade to fix the issues we are having with tracing against extended
+> > grace periods, we lose in CPU isolation. That worries me a bit as tracing can
+> > be thoroughly used with nohz_full and CPU isolation.
 > 
-> This doesn't look like it should recurse. Why not just use the
-> lockdep_recursion_finish() helper here?
+> First, disturbing nohz_full CPUs can be avoided by the sysadm simply
+> refusing to remove tracepoints while sensitive applications are running
+> on nohz_full CPUs.
 
-I chose to only add that to the sites that check recursion on entry.
+So, in that case we'll need to modify the tools such as perf tools to avoid
+releasing the related buffers until we are ready to do so.
+
+That's possible but it's kindof an ABI breakage. Also what if there is a
+long running service on that nohz full CPU polling on the networking card...
+
+Thanks.
