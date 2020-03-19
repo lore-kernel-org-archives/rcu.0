@@ -2,100 +2,169 @@ Return-Path: <SRS0=6vZU=5E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE940C4332E
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 19:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A80C4332D
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 19:04:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7E2D32072C
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 19:00:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wuji1qBo"
+	by mail.kernel.org (Postfix) with ESMTP id 93F68217D8
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 19:04:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgCSTAq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Mar 2020 15:00:46 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:54281 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726589AbgCSTAq (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 19 Mar 2020 15:00:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1584644444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1t0CDXQGrkOTO7FpbdWrJYK+C3q0cC+jstTgkRHjIMg=;
-        b=Wuji1qBoLapCm81NjNW3KKqXvE/fufBXdh+ZbEsujjgH5gAhfLN67J/N6rQWMALR4Jrd10
-        UA2DxylbSMhoVeY8ILJJeAW59PL1VYfuQOjzhGE9pvrAhEm8rqwUmmLpetQbMIW9T1V4Iq
-        O1mne7bhLuvdXEXG72/R4miYkt0kBMU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-OD2bujDXMLe31JPoO6ISew-1; Thu, 19 Mar 2020 15:00:40 -0400
-X-MC-Unique: OD2bujDXMLe31JPoO6ISew-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727982AbgCSTEh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Mar 2020 15:04:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727948AbgCSTEg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Mar 2020 15:04:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E6D218FE868;
-        Thu, 19 Mar 2020 19:00:38 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-113-139.rdu2.redhat.com [10.10.113.139])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CE0F6EFAB;
-        Thu, 19 Mar 2020 19:00:36 +0000 (UTC)
-Subject: Re: Hard lockups due to "tick/common: Make tick_periodic() check for
- missing ticks"
-To:     Qian Cai <cai@lca.pw>, Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>
-References: <CA9BD318-A8C8-4F22-828A-65C355931A5C@lca.pw>
- <F95F95DE-77D9-4A1D-AA5C-CAC165F6B4C8@lca.pw>
- <11BEA1A5-2E93-4E01-A05C-A6BA73A74CEB@lca.pw>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <218eed57-27c8-12c0-6f5f-111874798c21@redhat.com>
-Date:   Thu, 19 Mar 2020 15:00:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        by mail.kernel.org (Postfix) with ESMTPSA id D43442072C;
+        Thu, 19 Mar 2020 19:04:33 +0000 (UTC)
+Date:   Thu, 19 Mar 2020 15:04:32 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, dhowells@redhat.com,
+        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
+        joel@joelfernandes.org
+Subject: Re: [PATCH RFC v2 tip/core/rcu 09/22] rcu-tasks: Add an RCU-tasks
+ rude variant
+Message-ID: <20200319150432.1ac9dac9@gandalf.local.home>
+In-Reply-To: <20200319001100.24917-9-paulmck@kernel.org>
+References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
+        <20200319001100.24917-9-paulmck@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <11BEA1A5-2E93-4E01-A05C-A6BA73A74CEB@lca.pw>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 3/19/20 9:58 AM, Qian Cai wrote:
->
->> On Mar 6, 2020, at 10:33 PM, Qian Cai <cai@lca.pw> wrote:
->>
->>
->>
->>> On Mar 5, 2020, at 11:06 PM, Qian Cai <cai@lca.pw> wrote:
->>>
->> Using this config,
->>
->>> https://raw.githubusercontent.com/cailca/linux-mm/master/x86.config
->> Reverted the linux-next commit d441dceb5dce (=E2=80=9Ctick/common: Mak=
-e tick_periodic() check for missing ticks=E2=80=9D)
->> fixed the lockup that could easily happen during boot.
->
-> Thomas or Stephen, can you back out this patch from linux-next while Wa=
-iman is getting to the bottom of it?
-> I can still reproduce it as today.
+On Wed, 18 Mar 2020 17:10:47 -0700
+paulmck@kernel.org wrote:
 
-I am fine for reverting the patch for now. I am still having some
-trouble reproducing it and I have other tasks to work on right now. I
-will get to the bottom of it and resubmit a new patch later on.
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> This commit adds a "rude" variant of RCU-tasks that has as quiescent
+> states schedule(), cond_resched_tasks_rcu_qs(), userspace execution,
+> and (in theory, anyway) cond_resched().  In other words, RCU-tasks rude
+> readers are regions of code with preemption disabled, but excluding code
+> early in the CPU-online sequence and late in the CPU-offline sequence.
+> Updates make use of IPIs and force an IPI and a context switch on each
+> online CPU.  This variant is useful in some situations in tracing.
+> 
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> [ paulmck: Apply EXPORT_SYMBOL_GPL() feedback from Qiujun Huang. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  include/linux/rcupdate.h |  3 ++
+>  kernel/rcu/Kconfig       | 12 +++++-
+>  kernel/rcu/tasks.h       | 98 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 112 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5523145..2be97a8 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -37,6 +37,7 @@
+>  /* Exported common interfaces */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func);
+>  void rcu_barrier_tasks(void);
+> +void rcu_barrier_tasks_rude(void);
+>  void synchronize_rcu(void);
+>  
+>  #ifdef CONFIG_PREEMPT_RCU
+> @@ -138,6 +139,8 @@ static inline void rcu_init_nohz(void) { }
+>  #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t)
+>  void call_rcu_tasks(struct rcu_head *head, rcu_callback_t func);
+>  void synchronize_rcu_tasks(void);
+> +void call_rcu_tasks_rude(struct rcu_head *head, rcu_callback_t func);
+> +void synchronize_rcu_tasks_rude(void);
+>  void exit_tasks_rcu_start(void);
+>  void exit_tasks_rcu_finish(void);
+>  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 38475d0..0d43ec1 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -71,7 +71,7 @@ config TREE_SRCU
+>  	  This option selects the full-fledged version of SRCU.
+>  
+>  config TASKS_RCU_GENERIC
+> -	def_bool TASKS_RCU
+> +	def_bool TASKS_RCU || TASKS_RUDE_RCU
+>  	select SRCU
+>  	help
+>  	  This option enables generic infrastructure code supporting
+> @@ -84,6 +84,16 @@ config TASKS_RCU
+>  	  only voluntary context switch (not preemption!), idle, and
+>  	  user-mode execution as quiescent states.  Not for manual selection.
+>  
+> +config TASKS_RUDE_RCU
+> +	def_bool 0
+> +	default n
 
-Cheers,
-Longman
+No need for "default n" as that's the default without it.
 
+> +	help
+> +	  This option enables a task-based RCU implementation that uses
+> +	  only context switch (including preemption) and user-mode
+> +	  execution as quiescent states.  It forces IPIs and context
+> +	  switches on all online CPUs, including idle ones, so use
+> +	  with caution.  Not for manual selection.
+
+Really don't need the "Not for manual selection", as not having a prompt
+shows that too.
+
+> +
+>  config RCU_STALL_COMMON
+>  	def_bool TREE_RCU
+>  	help
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index d77921e..7ba1730 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -180,6 +180,9 @@ static void __init rcu_tasks_bootup_oddness(void)
+>  	else
+>  		pr_info("\tTasks RCU enabled.\n");
+>  #endif /* #ifdef CONFIG_TASKS_RCU */
+> +#ifdef CONFIG_TASKS_RUDE_RCU
+> +	pr_info("\tRude variant of Tasks RCU enabled.\n");
+> +#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
+>  }
+>  
+>  #endif /* #ifndef CONFIG_TINY_RCU */
+> @@ -410,3 +413,98 @@ static int __init rcu_spawn_tasks_kthread(void)
+>  core_initcall(rcu_spawn_tasks_kthread);
+>  
+>  #endif /* #ifdef CONFIG_TASKS_RCU */
+> +
+> +#ifdef CONFIG_TASKS_RUDE_RCU
+> +
+> +////////////////////////////////////////////////////////////////////////
+> +//
+> +// "Rude" variant of Tasks RCU, inspired by Steve Rostedt's trick of
+> +// passing an empty function to schedule_on_each_cpu().  This approach
+> +// provides an asynchronous call_rcu_rude() API and batching of concurrent
+> +// calls to the synchronous synchronize_rcu_rude() API.  This sends IPIs
+> +// far and wide and induces otherwise unnecessary context switches on all
+> +// online CPUs, whether online or not.
+
+   "on all online CPUs, whether online or not" ????
+
+-- Steve
+
+> +
+> +// Empty function to allow workqueues to force a context switch.
+> +static void rcu_tasks_be_rude(struct work_struct *work)
+> +{
+> +}
+> +
