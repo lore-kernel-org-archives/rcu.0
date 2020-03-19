@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18C2EC43333
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FE20C4332E
 	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:11:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E01AE2076F
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:11:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69C402076F
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584576717;
-	bh=lKdlR+yvmKv8UTk4vOzDkhjS0DRm8Tw3V7YRjhYVRfY=;
+	s=default; t=1584576718;
+	bh=VX0fhkTHGpTTVQNLQ6YVf7+3W71egg1ysRdaAxsTytc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=RYWJTvt6KM1ZQVBj2b1XfBG3rB+gLs64LscA9mTYRkjf56Xr0j/6vA/geTjZcc+W7
-	 kq8rmstQnXvAFBuXw7rXgmnLA3QF6p5gKTks0z5akrf1Fu9rB7WE6yjWWk6cagyPbt
-	 TzU0CCZKDH+tpq3bsS/1ce3JrvEp8n36KM8T928s=
+	b=FBiEiI/wjJNaNphmk1l4XG3fLDbFDVTlEBbuwpe94GecnRq635AcOE3UmHia2iyIr
+	 o0WrSjCBrdbvAW/obnqBiorFKICNF1/TY9G+7qDWnc+Cspt4HFJKymrMJrJQ2AR64A
+	 SVwzxDgI58BcRlaPKUCe+uRGphNa6r5rJ7yf/0Us=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727691AbgCSALs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Mar 2020 20:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S1727352AbgCSAL6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Mar 2020 20:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727426AbgCSALG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Mar 2020 20:11:06 -0400
+        id S1727416AbgCSALF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Mar 2020 20:11:05 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 361322145D;
-        Thu, 19 Mar 2020 00:11:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6DC120774;
+        Thu, 19 Mar 2020 00:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1584576665;
-        bh=lKdlR+yvmKv8UTk4vOzDkhjS0DRm8Tw3V7YRjhYVRfY=;
+        bh=VX0fhkTHGpTTVQNLQ6YVf7+3W71egg1ysRdaAxsTytc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oEaVZ8CndqyVMYuvpXcUSYxcrz1CSHtxtcIHMwSgnM7CuLYhqFwcKymqhyrZhpjRh
-         iVEOb8Pk4mRSzfBzQkhn2NP1+rjcBUZVngo6Uwvgr5hadvaa5VDwaSLZxXDRtjKGB6
-         WDdN//Ksm/X35x7VV4XQUCh/2IKVxNiT8dJ0XpEM=
+        b=p3EMpWtJIPydev6f5k2ETgxwSq/SO67Sh8H/7FSOwNok38Uq/J1mE9n9/zrih8zkd
+         5SrgMtJ/mQK969m01lSMuKYoH+kEMTe7lXcP8lYChRS4YJALhoFgQmxCTGfDcvB7qI
+         x0ZruyXHT3wcSNBhmWCkgt6kPYPo4ZnMZtLIIIw4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 tip/core/rcu 10/22] rcutorture: Add torture tests for RCU Tasks Rude
-Date:   Wed, 18 Mar 2020 17:10:48 -0700
-Message-Id: <20200319001100.24917-10-paulmck@kernel.org>
+Subject: [PATCH RFC v2 tip/core/rcu 09/22] rcu-tasks: Add an RCU-tasks rude variant
+Date:   Wed, 18 Mar 2020 17:10:47 -0700
+Message-Id: <20200319001100.24917-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200319001024.GA28798@paulmck-ThinkPad-P72>
 References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
@@ -60,141 +60,187 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds the definitions required to torture the rude flavor of
-RCU tasks.
+This commit adds a "rude" variant of RCU-tasks that has as quiescent
+states schedule(), cond_resched_tasks_rcu_qs(), userspace execution,
+and (in theory, anyway) cond_resched().  In other words, RCU-tasks rude
+readers are regions of code with preemption disabled, but excluding code
+early in the CPU-online sequence and late in the CPU-offline sequence.
+Updates make use of IPIs and force an IPI and a context switch on each
+online CPU.  This variant is useful in some situations in tracing.
 
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+[ paulmck: Apply EXPORT_SYMBOL_GPL() feedback from Qiujun Huang. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug                           |  2 ++
- kernel/rcu/rcu.h                                   |  1 +
- kernel/rcu/rcutorture.c                            | 31 ++++++++++++++++++++--
- .../selftests/rcutorture/configs/rcu/CFLIST        |  1 +
- .../selftests/rcutorture/configs/rcu/RUDE01        | 10 +++++++
- .../selftests/rcutorture/configs/rcu/RUDE01.boot   |  1 +
- 6 files changed, 44 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
+ include/linux/rcupdate.h |  3 ++
+ kernel/rcu/Kconfig       | 12 +++++-
+ kernel/rcu/tasks.h       | 98 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 112 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index ec4bb6c..b15a3bd 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -24,6 +24,7 @@ config RCU_PERF_TEST
- 	select TORTURE_TEST
- 	select SRCU
- 	select TASKS_RCU
-+	select TASKS_RUDE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs performance
-@@ -41,6 +42,7 @@ config RCU_TORTURE_TEST
- 	select TORTURE_TEST
- 	select SRCU
- 	select TASKS_RCU
-+	select TASKS_RUDE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs torture tests
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 00ddc92..c574620 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -441,6 +441,7 @@ void rcu_request_urgent_qs_task(struct task_struct *t);
- enum rcutorture_type {
- 	RCU_FLAVOR,
- 	RCU_TASKS_FLAVOR,
-+	RCU_TASKS_RUDE_FLAVOR,
- 	RCU_TRIVIAL_FLAVOR,
- 	SRCU_FLAVOR,
- 	INVALID_RCU_FLAVOR
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 88631f5..386cd11 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -731,6 +731,33 @@ static struct rcu_torture_ops trivial_ops = {
- 	.name		= "trivial"
- };
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5523145..2be97a8 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -37,6 +37,7 @@
+ /* Exported common interfaces */
+ void call_rcu(struct rcu_head *head, rcu_callback_t func);
+ void rcu_barrier_tasks(void);
++void rcu_barrier_tasks_rude(void);
+ void synchronize_rcu(void);
  
-+/*
-+ * Definitions for rude RCU-tasks torture testing.
-+ */
-+
-+static void rcu_tasks_rude_torture_deferred_free(struct rcu_torture *p)
-+{
-+	call_rcu_tasks_rude(&p->rtort_rcu, rcu_torture_cb);
-+}
-+
-+static struct rcu_torture_ops tasks_rude_ops = {
-+	.ttype		= RCU_TASKS_RUDE_FLAVOR,
-+	.init		= rcu_sync_torture_init,
-+	.readlock	= rcu_torture_read_lock_trivial,
-+	.read_delay	= rcu_read_delay,  /* just reuse rcu's version. */
-+	.readunlock	= rcu_torture_read_unlock_trivial,
-+	.get_gp_seq	= rcu_no_completed,
-+	.deferred_free	= rcu_tasks_rude_torture_deferred_free,
-+	.sync		= synchronize_rcu_tasks_rude,
-+	.exp_sync	= synchronize_rcu_tasks_rude,
-+	.call		= call_rcu_tasks_rude,
-+	.cb_barrier	= rcu_barrier_tasks_rude,
-+	.fqs		= NULL,
-+	.stats		= NULL,
-+	.irq_capable	= 1,
-+	.name		= "tasks-rude"
-+};
-+
- static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
- {
- 	if (!cur_ops->gp_diff)
-@@ -740,7 +767,7 @@ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
+ #ifdef CONFIG_PREEMPT_RCU
+@@ -138,6 +139,8 @@ static inline void rcu_init_nohz(void) { }
+ #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t)
+ void call_rcu_tasks(struct rcu_head *head, rcu_callback_t func);
+ void synchronize_rcu_tasks(void);
++void call_rcu_tasks_rude(struct rcu_head *head, rcu_callback_t func);
++void synchronize_rcu_tasks_rude(void);
+ void exit_tasks_rcu_start(void);
+ void exit_tasks_rcu_finish(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 38475d0..0d43ec1 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -71,7 +71,7 @@ config TREE_SRCU
+ 	  This option selects the full-fledged version of SRCU.
  
- static bool __maybe_unused torturing_tasks(void)
- {
--	return cur_ops == &tasks_ops;
-+	return cur_ops == &tasks_ops || cur_ops == &tasks_rude_ops;
+ config TASKS_RCU_GENERIC
+-	def_bool TASKS_RCU
++	def_bool TASKS_RCU || TASKS_RUDE_RCU
+ 	select SRCU
+ 	help
+ 	  This option enables generic infrastructure code supporting
+@@ -84,6 +84,16 @@ config TASKS_RCU
+ 	  only voluntary context switch (not preemption!), idle, and
+ 	  user-mode execution as quiescent states.  Not for manual selection.
+ 
++config TASKS_RUDE_RCU
++	def_bool 0
++	default n
++	help
++	  This option enables a task-based RCU implementation that uses
++	  only context switch (including preemption) and user-mode
++	  execution as quiescent states.  It forces IPIs and context
++	  switches on all online CPUs, including idle ones, so use
++	  with caution.  Not for manual selection.
++
+ config RCU_STALL_COMMON
+ 	def_bool TREE_RCU
+ 	help
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index d77921e..7ba1730 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -180,6 +180,9 @@ static void __init rcu_tasks_bootup_oddness(void)
+ 	else
+ 		pr_info("\tTasks RCU enabled.\n");
+ #endif /* #ifdef CONFIG_TASKS_RCU */
++#ifdef CONFIG_TASKS_RUDE_RCU
++	pr_info("\tRude variant of Tasks RCU enabled.\n");
++#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
  }
  
- /*
-@@ -2408,7 +2435,7 @@ rcu_torture_init(void)
- 	int firsterr = 0;
- 	static struct rcu_torture_ops *torture_ops[] = {
- 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops,
--		&busted_srcud_ops, &tasks_ops, &trivial_ops,
-+		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops, &trivial_ops,
- 	};
+ #endif /* #ifndef CONFIG_TINY_RCU */
+@@ -410,3 +413,98 @@ static int __init rcu_spawn_tasks_kthread(void)
+ core_initcall(rcu_spawn_tasks_kthread);
  
- 	if (!torture_init_begin(torture_type, verbose))
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index c3c1fb5..ec0c72f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -14,3 +14,4 @@ TINY02
- TASKS01
- TASKS02
- TASKS03
-+RUDE01
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01 b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-new file mode 100644
-index 0000000..bafe94c
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-@@ -0,0 +1,10 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=2
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_DEBUG_LOCK_ALLOC=y
-+CONFIG_PROVE_LOCKING=y
-+#CHECK#CONFIG_PROVE_RCU=y
-+CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
-new file mode 100644
-index 0000000..9363708
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
-@@ -0,0 +1 @@
-+rcutorture.torture_type=tasks-rude
+ #endif /* #ifdef CONFIG_TASKS_RCU */
++
++#ifdef CONFIG_TASKS_RUDE_RCU
++
++////////////////////////////////////////////////////////////////////////
++//
++// "Rude" variant of Tasks RCU, inspired by Steve Rostedt's trick of
++// passing an empty function to schedule_on_each_cpu().  This approach
++// provides an asynchronous call_rcu_rude() API and batching of concurrent
++// calls to the synchronous synchronize_rcu_rude() API.  This sends IPIs
++// far and wide and induces otherwise unnecessary context switches on all
++// online CPUs, whether online or not.
++
++// Empty function to allow workqueues to force a context switch.
++static void rcu_tasks_be_rude(struct work_struct *work)
++{
++}
++
++// Wait for one rude RCU-tasks grace period.
++static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
++{
++	schedule_on_each_cpu(rcu_tasks_be_rude);
++}
++
++void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func);
++DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude);
++
++/**
++ * call_rcu_tasks_rude() - Queue a callback rude task-based grace period
++ * @rhp: structure to be used for queueing the RCU updates.
++ * @func: actual callback function to be invoked after the grace period
++ *
++ * The callback function will be invoked some time after a full grace
++ * period elapses, in other words after all currently executing RCU
++ * read-side critical sections have completed. call_rcu_tasks_rude()
++ * assumes that the read-side critical sections end at context switch,
++ * cond_resched_rcu_qs(), or transition to usermode execution.  As such,
++ * there are no read-side primitives analogous to rcu_read_lock() and
++ * rcu_read_unlock() because this primitive is intended to determine
++ * that all tasks have passed through a safe state, not so much for
++ * data-strcuture synchronization.
++ *
++ * See the description of call_rcu() for more detailed information on
++ * memory ordering guarantees.
++ */
++void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
++{
++	call_rcu_tasks_generic(rhp, func, &rcu_tasks_rude);
++}
++EXPORT_SYMBOL_GPL(call_rcu_tasks_rude);
++
++/**
++ * synchronize_rcu_tasks_rude - wait for a rude rcu-tasks grace period
++ *
++ * Control will return to the caller some time after a rude rcu-tasks
++ * grace period has elapsed, in other words after all currently
++ * executing rcu-tasks read-side critical sections have elapsed.  These
++ * read-side critical sections are delimited by calls to schedule(),
++ * cond_resched_tasks_rcu_qs(), userspace execution, and (in theory,
++ * anyway) cond_resched().
++ *
++ * This is a very specialized primitive, intended only for a few uses in
++ * tracing and other situations requiring manipulation of function preambles
++ * and profiling hooks.  The synchronize_rcu_tasks_rude() function is not
++ * (yet) intended for heavy use from multiple CPUs.
++ *
++ * See the description of synchronize_rcu() for more detailed information
++ * on memory ordering guarantees.
++ */
++void synchronize_rcu_tasks_rude(void)
++{
++	synchronize_rcu_tasks_generic(&rcu_tasks_rude);
++}
++EXPORT_SYMBOL_GPL(synchronize_rcu_tasks_rude);
++
++/**
++ * rcu_barrier_tasks_rude - Wait for in-flight call_rcu_tasks_rude() callbacks.
++ *
++ * Although the current implementation is guaranteed to wait, it is not
++ * obligated to, for example, if there are no pending callbacks.
++ */
++void rcu_barrier_tasks_rude(void)
++{
++	/* There is only one callback queue, so this is easy.  ;-) */
++	synchronize_rcu_tasks_rude();
++}
++EXPORT_SYMBOL_GPL(rcu_barrier_tasks_rude);
++
++static int __init rcu_spawn_tasks_rude_kthread(void)
++{
++	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
++	return 0;
++}
++core_initcall(rcu_spawn_tasks_rude_kthread);
++
++#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
 -- 
 2.9.5
 
