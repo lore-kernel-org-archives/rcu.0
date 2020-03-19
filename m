@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC1A6C43333
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C55C43333
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A51EF2076F
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 74AE42076F
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584576722;
-	bh=hSbQDuf8vTlOMjI6rgIo5X6FzzD0x98qmRWJGH4U1u8=;
+	s=default; t=1584576731;
+	bh=pQlQRjD4yimpnJzghi3drA3TOuaXMcXyU0xt0j/uKtk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vhjR8AxLBpxiNDyt4C27HLlvHYPV+l93dCQSX1uUKRKeFbJdU/i5UM0UANMWiUjyr
-	 hiRBMhHIIfDNRoF66axaR5gRZfWa2Y7hqoQPwFTjz1oe/rwlFOmIKlQYctwmPqAebd
-	 jZ8IfZYZNILDizxP0c7yrPLYsXk9rbsqlv0GdDL4=
+	b=fbmEAtsXaL/G6qb53QtuZr6q4Mbv3CMJSBaclf8S5thA3OEcdjZYtLHHB0AK8zmUE
+	 3bOkcOap6aCZFOihPsR4PHPZScsa61dWt7LiCGqW1OFSFfkHpEst1wpPCdOMMf3nK/
+	 n23gcK1fk+YNPbTV6PKokXiEy1w/GGbH4ILGOtcw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbgCSALF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Mar 2020 20:11:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37136 "EHLO mail.kernel.org"
+        id S1727782AbgCSAMC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Mar 2020 20:12:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727389AbgCSALE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727394AbgCSALE (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 18 Mar 2020 20:11:04 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB75D208CA;
-        Thu, 19 Mar 2020 00:11:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A1CF20775;
+        Thu, 19 Mar 2020 00:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1584576664;
-        bh=hSbQDuf8vTlOMjI6rgIo5X6FzzD0x98qmRWJGH4U1u8=;
+        bh=pQlQRjD4yimpnJzghi3drA3TOuaXMcXyU0xt0j/uKtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKC6weUI7rfBZJWjNzpQ+nx5U+bVGddfrFydosG3Qj4PodkewARrtHOsouRiVeGl8
-         +xfhM9WNry1jsnBMtD/zNU40M38vRWfy66spn8b5J0QmnxC9BFsIYLGv5Y8gyIYKmL
-         TDxTjINcnU1NyAd7/xswQhs2cd3HGgbrQfaLMX0w=
+        b=nTJC+DPOnkmpanenNcq5wnjOumxNsKA1z9fGQc7z0VLxCHfNiNClYbL8BcmxrVgwf
+         w+met3EHUE/5cZvbyqIzA+Io/+xVK4bRx3jaTtVRNgPWxaHbHsefbVqqHWiOk4/kgl
+         ixknBZU/ekRoccb1n5e95br9+xR8T3J3NIc9+tN0=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 tip/core/rcu 06/22] rcu: Reinstate synchronize_rcu_mult()
-Date:   Wed, 18 Mar 2020 17:10:44 -0700
-Message-Id: <20200319001100.24917-6-paulmck@kernel.org>
+Subject: [PATCH RFC v2 tip/core/rcu 07/22] rcutorture: Add a test for synchronize_rcu_mult()
+Date:   Wed, 18 Mar 2020 17:10:45 -0700
+Message-Id: <20200319001100.24917-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200319001024.GA28798@paulmck-ThinkPad-P72>
 References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
@@ -60,45 +60,48 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-With the advent and likely usage of synchronize_rcu_rude(), there is
-again a need to wait on multiple types of RCU grace periods, for
-example, call_rcu_tasks() and call_rcu_tasks_rude().  This commit
-therefore reinstates synchronize_rcu_mult() in order to allow these
-grace periods to be straightforwardly waited on concurrently.
+This commit adds a crude test for synchronize_rcu_mult().  This is
+currently a smoke test rather than a high-quality stress test.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_wait.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ kernel/rcu/rcutorture.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index c0578ba..699b938 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -31,4 +31,23 @@ do {									\
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index ada5b91..88631f5 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -20,7 +20,7 @@
+ #include <linux/err.h>
+ #include <linux/spinlock.h>
+ #include <linux/smp.h>
+-#include <linux/rcupdate.h>
++#include <linux/rcupdate_wait.h>
+ #include <linux/interrupt.h>
+ #include <linux/sched/signal.h>
+ #include <uapi/linux/sched/types.h>
+@@ -666,6 +666,11 @@ static void rcu_tasks_torture_deferred_free(struct rcu_torture *p)
+ 	call_rcu_tasks(&p->rtort_rcu, rcu_torture_cb);
+ }
  
- #define wait_rcu_gp(...) _wait_rcu_gp(false, __VA_ARGS__)
- 
-+/**
-+ * synchronize_rcu_mult - Wait concurrently for multiple grace periods
-+ * @...: List of call_rcu() functions for different grace periods to wait on
-+ *
-+ * This macro waits concurrently for multiple types of RCU grace periods.
-+ * For example, synchronize_rcu_mult(call_rcu, call_rcu_tasks) would wait
-+ * on concurrent RCU and RCU-tasks grace periods.  Waiting on a given SRCU
-+ * domain requires you to write a wrapper function for that SRCU domain's
-+ * call_srcu() function, with this wrapper supplying the pointer to the
-+ * corresponding srcu_struct.
-+ *
-+ * The first argument tells Tiny RCU's _wait_rcu_gp() not to
-+ * bother waiting for RCU.  The reason for this is because anywhere
-+ * synchronize_rcu_mult() can be called is automatically already a full
-+ * grace period.
-+ */
-+#define synchronize_rcu_mult(...) \
-+	_wait_rcu_gp(IS_ENABLED(CONFIG_TINY_RCU), __VA_ARGS__)
++static void synchronize_rcu_mult_test(void)
++{
++	synchronize_rcu_mult(call_rcu_tasks, call_rcu);
++}
 +
- #endif /* _LINUX_SCHED_RCUPDATE_WAIT_H */
+ static struct rcu_torture_ops tasks_ops = {
+ 	.ttype		= RCU_TASKS_FLAVOR,
+ 	.init		= rcu_sync_torture_init,
+@@ -675,7 +680,7 @@ static struct rcu_torture_ops tasks_ops = {
+ 	.get_gp_seq	= rcu_no_completed,
+ 	.deferred_free	= rcu_tasks_torture_deferred_free,
+ 	.sync		= synchronize_rcu_tasks,
+-	.exp_sync	= synchronize_rcu_tasks,
++	.exp_sync	= synchronize_rcu_mult_test,
+ 	.call		= call_rcu_tasks,
+ 	.cb_barrier	= rcu_barrier_tasks,
+ 	.fqs		= NULL,
 -- 
 2.9.5
 
