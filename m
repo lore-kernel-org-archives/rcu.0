@@ -2,143 +2,111 @@ Return-Path: <SRS0=6vZU=5E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE068C4332B
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B905C4332B
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:47:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 84E532076F
-	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584576734;
-	bh=TdhN6iEu3ZBiSuFW3OU6H5q6ejlclIc2O1HRtdN/Aa8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=j+dnofDLFHHlnsIseyR4Nxr0Qig+qN3GJKxS5lBatUo4tMDfndPdAqa5GDGDuag71
-	 GB69fUzpWMrL4YTj4zfM4pktQLGpfM5Rc8B8VRJwrwT73z9zUTMnbgEPmDp6VWX3wN
-	 y/k/XZ0OuMNFMrQrWIBIZoclLcUNQ9XiCGR+uuMk=
+	by mail.kernel.org (Postfix) with ESMTP id 0A2052076C
+	for <rcu@archiver.kernel.org>; Thu, 19 Mar 2020 00:47:31 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UyUB0eHG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgCSALD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Mar 2020 20:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726856AbgCSALD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Mar 2020 20:11:03 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BA722076F;
-        Thu, 19 Mar 2020 00:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584576662;
-        bh=TdhN6iEu3ZBiSuFW3OU6H5q6ejlclIc2O1HRtdN/Aa8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fbNqqMg3Oqpklu8K0G5iDCZQhtBX01G/nCi7767V73PjXv2RZBfRyvNDMP5dBYkZ/
-         n8BbHfpOl9GPQ+NIXMGMzgPLsT2styP0+B8Fzhjs2/MJ+8wwTS2nsOmAUQaSe+zeyB
-         YuGkhaPeNByPQWX4rZl6ESLMggQrf0cMHwBojcOA=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC v2 tip/core/rcu 02/22] rcu: Add per-task state to RCU CPU stall warnings
-Date:   Wed, 18 Mar 2020 17:10:40 -0700
-Message-Id: <20200319001100.24917-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200319001024.GA28798@paulmck-ThinkPad-P72>
-References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
+        id S1726973AbgCSAra (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Mar 2020 20:47:30 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:42708 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbgCSAra (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Mar 2020 20:47:30 -0400
+Received: by mail-io1-f65.google.com with SMTP id q128so484588iof.9
+        for <rcu@vger.kernel.org>; Wed, 18 Mar 2020 17:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nikfs2mITY1YnXregatCfjsnN0VxQx1MLHWWy5mZepo=;
+        b=UyUB0eHGnGw9m1dq+wwqfipb+e49FVRrNMBxA7casT2HN+Z9yLj4EKGNR9lyGbcx55
+         KkQujx6BOLkfj/DMsoWnz4gc8HQgeuNk7J/Ymzcgcr9a3WZRujV1KBRPHVHqxxFqrHsL
+         rC6cZTsbs2NrBW6LkZ8snTeMclPM8M1h3wAvA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nikfs2mITY1YnXregatCfjsnN0VxQx1MLHWWy5mZepo=;
+        b=fy/U0Hkyk5Vs6kTCx0a+jUvcQNFBJLmMaMSEV1SW9JknTbPxPmMaGttvzznMVKbcOA
+         HxpE+YZUY5S/VXL1O9Q7RkTjTZEXdtzt774mwKN1pBP+FB8iYZHXQVUO9zsYr+5F1Js+
+         NLGFpuUAX2sEbDSqJG9GCIj2qOhuvY42RaNRNrSxEHqPC2RsmuVFk5b3EGIGQTBcjiQr
+         MVbTc1UW4RpFMey3YB1sW0CHxWIU0hNPu36CS9uNVsLE8V+7rSCSI9mz55bd+ReZ9lQa
+         XvHmxCoYb3oMMJ/ZLHtA0Yhn52Z/PBrqE7Nnndc6eQA48msvuF2NWjCh2naaaeoPTeUS
+         PwMA==
+X-Gm-Message-State: ANhLgQ1wG4rhuHJm0Jf1iNUe8Vm34TSZaeOm53KlHwTYWuv8ud36s44K
+        X4gaSIjvct92AaX50rLb9MIKIfYGjIb5XSIj1V4iAw==
+X-Google-Smtp-Source: ADFU+vsUlxX18RINXbTIKk/71K/n1UmMkxX3JU9OJ9HNcL+q/mSD0Gp2PA3I1g/jz2/K2Yt2Ke+h8g36hOL7IzNEeJg=
+X-Received: by 2002:a02:c85a:: with SMTP id r26mr829137jao.74.1584578849973;
+ Wed, 18 Mar 2020 17:47:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200305003526.GA20601@paulmck-ThinkPad-P72> <20200305081135.yg7wryd3hrqzocrm@linutronix.de>
+In-Reply-To: <20200305081135.yg7wryd3hrqzocrm@linutronix.de>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 18 Mar 2020 20:47:18 -0400
+Message-ID: <CAEXW_YSiKrT50mTR1a4tB5x_jQzZKnuAo6JY-Vc5w7r=XLv+OA@mail.gmail.com>
+Subject: Re: RCU use of swait
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        Scott Wood <swood@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        linux-rt-users@vger.kernel.org, rcu <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Mar 5, 2020 at 3:11 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-03-04 16:35:26 [-0800], Paul E. McKenney wrote:
+> > Hello!
+> Hi Paul,
+>
+> > Or is there some other reason why {S,}RCU needs to use swait that I
+> > am forgetting?
+>
+> swait can be used in hardirq-context (on RT) that is in a section within
+> local_irq_save() / raw_spin_lock() and so.
+> wait on the hand uses spinlock_t which can not be used in this context.
+> So if you have no users which fall into that category then you could
+> move back to wait.h.
 
-Currently, an RCU-preempt CPU stall warning simply lists the PIDs of
-those tasks holding up the current grace period.  This can be helpful,
-but more can be even more helpful.
+In RCU, there are some truly-atomic code sections containing an
+swake_upXX() call, which would be considered atomic also on
+PREEMPT_RT, one example is:
 
-To this end, this commit adds the nesting level, whether the task
-things it was preempted in its current RCU read-side critical section,
-whether RCU core has asked this task for a quiescent state, whether the
-expedited-grace-period hint is set, and whether the task believes that
-it is on the blocked-tasks list (it must be, or it would not be printed,
-but if things are broken, best not to take too much for granted).
+rcu_core() contains an local_irq_{save,restore}() section.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_stall.h | 38 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+        /* No grace period and unregistered callbacks? */
+        if (!rcu_gp_in_progress() &&
+            rcu_segcblist_is_enabled(&rdp->cblist) && !offloaded) {
+                local_irq_save(flags);
+                if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+                        rcu_accelerate_cbs_unlocked(rnp, rdp);
+                local_irq_restore(flags);
+        }
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 502b4dd..e19487d 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -192,14 +192,40 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- }
- 
-+// Communicate task state back to the RCU CPU stall warning request.
-+struct rcu_stall_chk_rdr {
-+	int nesting;
-+	union rcu_special rs;
-+	bool on_blkd_list;
-+};
-+
-+/*
-+ * Report out the state of a not-running task that is stalling the
-+ * current RCU grace period.
-+ */
-+static bool check_slow_task(struct task_struct *t, void *arg)
-+{
-+	struct rcu_node *rnp;
-+	struct rcu_stall_chk_rdr *rscrp = arg;
-+
-+	if (task_curr(t))
-+		return false; // It is running, so decline to inspect it.
-+	rscrp->nesting = t->rcu_read_lock_nesting;
-+	rscrp->rs = t->rcu_read_unlock_special;
-+	rnp = t->rcu_blocked_node;
-+	rscrp->on_blkd_list = !list_empty(&t->rcu_node_entry);
-+	return true;
-+}
-+
- /*
-  * Scan the current list of tasks blocked within RCU read-side critical
-  * sections, printing out the tid of each.
-  */
- static int rcu_print_task_stall(struct rcu_node *rnp)
- {
--	struct task_struct *t;
- 	int ndetected = 0;
-+	struct rcu_stall_chk_rdr rscr;
-+	struct task_struct *t;
- 
- 	if (!rcu_preempt_blocked_readers_cgp(rnp))
- 		return 0;
-@@ -208,7 +234,15 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
- 	t = list_entry(rnp->gp_tasks->prev,
- 		       struct task_struct, rcu_node_entry);
- 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
--		pr_cont(" P%d", t->pid);
-+		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
-+			pr_cont(" P%d", t->pid);
-+		else
-+			pr_cont(" P%d/%d:%c%c%c%c",
-+				t->pid, rscr.nesting,
-+				".b"[rscr.rs.b.blocked],
-+				".q"[rscr.rs.b.need_qs],
-+				".e"[rscr.rs.b.exp_hint],
-+				".l"[rscr.on_blkd_list]);
- 		ndetected++;
- 	}
- 	pr_cont("\n");
--- 
-2.9.5
+And rcu_accelerate_cbs_unlocked(rnp, rdp) calls rcu_gp_kthread_wake()
+which does an swake_up_one(), so I think we will have to leave it as
+swake_up() the way it is.
 
+thanks,
+
+ - Joel
