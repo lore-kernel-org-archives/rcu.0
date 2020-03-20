@@ -7,60 +7,61 @@ X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E8DC4332D
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B7ABC4332B
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:42:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9F58920752
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:39:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2399620782
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:42:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J/FM1wE7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GeHU0qas"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgCTPjH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Mar 2020 11:39:07 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42055 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbgCTPjH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Mar 2020 11:39:07 -0400
-Received: by mail-qk1-f194.google.com with SMTP id e11so7236268qkg.9
-        for <rcu@vger.kernel.org>; Fri, 20 Mar 2020 08:39:06 -0700 (PDT)
+        id S1727002AbgCTPml (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Mar 2020 11:42:41 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34357 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727049AbgCTPml (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Mar 2020 11:42:41 -0400
+Received: by mail-qt1-f193.google.com with SMTP id 10so5278042qtp.1
+        for <rcu@vger.kernel.org>; Fri, 20 Mar 2020 08:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z8zA57JFXFt2AL+yPvN5tzHw30eT4MJB2hoBh1V9V18=;
-        b=J/FM1wE7PyVDhuJik6SITHG6EEhChrCxSZp7popuFKzyG0+du4chi55EmAZeJFrNjR
-         2yN+1SFs3HcNSqfepPFivsIBZuKVe/e59mSVCxtO/O4K18wvtxZTp5cx+PHDth3YAUGH
-         rF2Nb1b2p/6rgFl3ZfJ9I+E8Q8BRsjliko2/LB4RWUoi96Q7MsZDrIYlArj3guZJqzzK
-         tIC/9Gc8HQQDIPVd66NjMRArGV6PfF1zcOWPTV09YcnwaS6DQtS/jPBsiiBU51C3p44a
-         V3/jJuuG1PyK7dHeceEszYGn6Kfg7GSbH6BkK6GWJi/DXZ+a3B/OPEp5W/Arb/jQujqY
-         pvzw==
+        bh=g19Z0AL+oVzZVOxsXjEEVkUP9hXqPLhiX7vvspZjbqI=;
+        b=GeHU0qasNum+zVdPSku/i6ICaKR+0jlY9lNkWGfDEY88SDquDjyClFQj4YeHsCmstA
+         JPJXOINAfSjzPx0s5sdkQ1RajQHqnwgfL5lpolECr6wGfFDEnlYmzqLJy9MqQnJMHR1m
+         c9L6IoIscpHJ/Te5V7E9jmNwn1b3B2ZtbTtgZoYTeZ4j/SyefmoT1qyZIgnNrI15266K
+         QB0OvKfeegfWue3ITp0q4NhEyJDFfJuZia5tyIvDf8vGEFp5sPmeOZE+KIvQQwYJFC4r
+         yyezUkMhxMaILYd1XNLpNuATIaCIg0r6/J3qsOMblXgqTuHg045DnnzdRYva/r9hUjmm
+         UjLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z8zA57JFXFt2AL+yPvN5tzHw30eT4MJB2hoBh1V9V18=;
-        b=YoKhvJXgHoEsNexPt10DgzTmskEKTMJbClTshsM6Z9KB2r28lF6MVMZR72KiPy4zzS
-         KiBupuepE0UgkRwKVre3M8ejTgJh23tseB/P7YMG9DE28Ips0egSTU+baG/OKSBurSiC
-         ONDmfbk6/8eSiIyUNF6XhETJSkVCTGwVx4g1UZg98jhMIM028Ss6kuS8Sc31puZA0LKp
-         +ixKuuCwGTv3jZkSoXr15BZJ0k9hmBLRJtvRQ2xE/b8W68u9w87UQJHL3b+QwX/KT99U
-         WlSJY/vSutn0Itc7id+M5w44heuKIo3JeYAZsFngJxJc/TSEvJtgMr2PJggLr713mcy5
-         3PBg==
-X-Gm-Message-State: ANhLgQ0p7AbxMScjFY6PhA6XFEplqi2+IgmZ2tdH2q5QSdiLCt/QefI4
-        qe9hefxBgZM9QZ0Q4Ona3ioFDdVBTDEkIBeHa9cADA==
-X-Google-Smtp-Source: ADFU+vs6O3hBD5D5FUXIPjT/NoUSSgRPlXoDQIj1C0Vra25tDqR64QkbSZFmDjSl+nLRZKGz3KYkZpv5ryEJxhXzPqM=
-X-Received: by 2002:a37:7c47:: with SMTP id x68mr8753821qkc.8.1584718745750;
- Fri, 20 Mar 2020 08:39:05 -0700 (PDT)
+        bh=g19Z0AL+oVzZVOxsXjEEVkUP9hXqPLhiX7vvspZjbqI=;
+        b=oGsVpfhbMUPzcLLPD81K/b6yKW5piNk53m57GOX2RWiYh1494hp4UHC0GPFafVYyA3
+         qcbEYYxgzu0p3Xwjwqyjmno8VqnF9AVdwTjqXvbMKlWPd56Ft6uGQtsrvi8pzKw96K6s
+         JpzMKUe6EiGzOn/CQB1OtLCf99z1W6JUFODs9EXHnJEd5upje6igrn40aFXaRx9SR2Y8
+         ioU7jCBNMcEzai7DJFEVQG4bUe2tq47tgtv123fwT7xi/9benUoV35phJv0vj/nBKX5d
+         HZ4B580RcY9NDjOS8nHTEX/RjNXmA83kGjAnzExy7Vfk/YwycDJPs7MfLWEhN9O5LQ3O
+         FRyQ==
+X-Gm-Message-State: ANhLgQ1TnAZfBfzs3oCKToqw+zo5CBCLsn0cleT6m7WxRNfYeR2AGvvw
+        FjdPuXXuP6ZcpMNUM4HkfOwB7YWK0JABbItC15GZ3g==
+X-Google-Smtp-Source: ADFU+vsrnn9HPcrtgg6UFQhymtJaLKpvGdgNd/d3WOK1WBTFnJHRkmZg7jpdDN5mXDrdEDsRekV1NLmgwILxGkOxBwI=
+X-Received: by 2002:aed:2591:: with SMTP id x17mr8919616qtc.380.1584718959600;
+ Fri, 20 Mar 2020 08:42:39 -0700 (PDT)
 MIME-Version: 1.0
 References: <000000000000ae2ab305a123f146@google.com> <CACT4Y+a_d=5TNZth0dPov0B7tB5T9bAzWXBj1HjhXdn-=0KOOg@mail.gmail.com>
  <20200318214109.GV3199@paulmck-ThinkPad-P72> <CACT4Y+ZhP_Qu+WZ4t2dLjd__H+rUKCTRCNoghvW9Uf3QQYRcNg@mail.gmail.com>
- <20200319150414.GD3199@paulmck-ThinkPad-P72>
-In-Reply-To: <20200319150414.GD3199@paulmck-ThinkPad-P72>
+ <20200320130822.GF4650@kadam>
+In-Reply-To: <20200320130822.GF4650@kadam>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 20 Mar 2020 16:38:54 +0100
-Message-ID: <CACT4Y+YHQQWeeW44NYAxX+fFU6RyvFbbmcig1q8NSE7yV0zgjA@mail.gmail.com>
+Date:   Fri, 20 Mar 2020 16:42:28 +0100
+Message-ID: <CACT4Y+aCAYdYx9QPLUVdAOzhvYSA-n_wASaqAD8OUTioiHgsQQ@mail.gmail.com>
 Subject: Re: linux-next build error (8)
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     syzbot <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com>,
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        syzbot <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -74,9 +75,9 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 4:04 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Fri, Mar 20, 2020 at 2:11 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 >
-> On Thu, Mar 19, 2020 at 08:13:35AM +0100, Dmitry Vyukov wrote:
+> On Thu, Mar 19, 2020 at 08:13:35AM +0100, 'Dmitry Vyukov' via syzkaller-bugs wrote:
 > > On Wed, Mar 18, 2020 at 10:41 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
 > > > On Wed, Mar 18, 2020 at 09:54:07PM +0100, Dmitry Vyukov wrote:
@@ -109,42 +110,19 @@ On Thu, Mar 19, 2020 at 4:04 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > If the kernel dev process would only have a way to avoid dups from all
 > > test systems...
 >
-> I do significant testing before pushing to -next, but triggering this
-> one requires a combination of Kconfig options that are incompatible
-> with rcutorture.  :-/
->
-> I suppose one strategy would be to give kbuild test robot some time before
-> passing to -next, but they seem to sometimes get too far behind for me to
-> be willing to wait that long.  So my current approach is to push my "dev"
-> branch, run moderate rcutorture testing (three hours per scenario other
-> than TREE10, which gets only one hour), and if that passes, push to -next.
->
-> I suppose that I could push to -next only commits that are at least three
-> days old or some such.  But I get in trouble pushing to -next too slowly
-> as often as I get in trouble pushing too quickly, so I suspect that my
-> current approach is in roughly the right place.
->
-> > Now we need to spend time and deal with it. What has fixed it?
->
-> It is fixed by commit c6ef38e4d595 ("rcu-tasks: Add RCU tasks to
-> rcutorture writer stall output") and some of its predecessors.
->
-> Perhaps more useful to you, this commit is included in next-20200319
-> from the -next tree.  ;-)
+> We could make a mailing list for recording it, and then just grep the
+> mailbox for the file and function.
 
-Let's tell syzbot about the fix:
+As far as I understand Paul was already aware of the breakage and both
+reports. Also how do we make all kernel testing out there to respect
+this new list?....
 
-#syz fix: rcu-tasks: Add RCU tasks to rcutorture writer stall output
+> Or we could just assume that kbuild is going to find almost all the
+> build errors.
 
-I think what you are doing is the best possible option in the current situation.
-I don't think requiring all human maintainers to do more manual
-repetitive work, which is not well defined and even without a way to
-really require something from them is scalable nor reliable nor the
-right approach.
-
-We would consume something like LKGR [1] if it existed for the kernel.
-But it would require tighter integration of testing systems with
-kernel dev processes, or of course throwing more manual labor at it to
-track all uncoordinated testing systems and publishing LKGR tags.
-
-[1] https://chromium.googlesource.com/chromiumos/docs/+/master/glossary.md
+Paul mentioned that they don't sometimes ("but they seem to sometimes
+get too far behind for me to
+be willing to wait that long"). Lots of people mentioned this on the
+last LPC as well. It's not completely transparent and not part of the
+kernel project to rely on it (how do we add new configs? how do we
+urgently repair it? etc).
