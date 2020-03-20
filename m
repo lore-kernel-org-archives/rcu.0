@@ -6,171 +6,149 @@ X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F12ECC4332B
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8F6C4332B
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:26:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C48EC20753
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:11:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1EA8F20739
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:26:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584720684;
-	bh=pga0nnKgW8xg9uhns1BYEZ40Eed+kmdH4uF0UjG48lw=;
+	s=default; t=1584721613;
+	bh=GRkJPRXSUPxB/4FaDSLTXZXzBr8dpjV+3HyNoC/Gdos=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=oYUa8fbIdyem32B6My81EovTmJQt52AqbpWOFV578qdrhHCPNCM7CvRlALoYggU6v
-	 dlRNlgMNIfRQKJYfuDVWfht4PLDc4Zjtv/jhXQoXawkWCDkzm2CkWCaGIaMA8W7Di0
-	 1ROH93ZhMNSGQlx7M/INoP1NpQt8PLC/gzW0ly8k=
+	b=Li0NlC6dQHymFUYd5oj0qa0tiaQCJc8jfwpW4dD2Ft34PDOBo1nVy/R8cfOA36EEv
+	 0U+wiVniF0O2ePhX8LXk0l85sRE9bi788TCWeCg+OcSmuMa0oDBt+f67nDdoHBHLG2
+	 jIQN2TuChmKlCJuM9DtSbBUxXhVKw2I7EJKrBsv4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727572AbgCTQLT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Mar 2020 12:11:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47156 "EHLO mail.kernel.org"
+        id S1727134AbgCTQ0w (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Mar 2020 12:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbgCTQLT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Mar 2020 12:11:19 -0400
+        id S1727122AbgCTQ0w (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Mar 2020 12:26:52 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCE8320739;
-        Fri, 20 Mar 2020 16:11:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DD6D20724;
+        Fri, 20 Mar 2020 16:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584720678;
-        bh=pga0nnKgW8xg9uhns1BYEZ40Eed+kmdH4uF0UjG48lw=;
+        s=default; t=1584721611;
+        bh=GRkJPRXSUPxB/4FaDSLTXZXzBr8dpjV+3HyNoC/Gdos=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=a3WXVveqaO6ZDJtkp9YMyrQbUe38YQ0w7yVS4S2kZWd8O3UYdfEWDiNF97NFqvRBR
-         Dmz7YwV2IDZ8jw+UhW0qvzW71sGzuXs9EPksJgBVr/4Y++O1RSSguuycN62LPymX1S
-         DR+m6ovlusTmMjzxq2s+ay1zIxZT2LoszNVq4qQs=
+        b=E4YH+CNNo4ZnxnlmBJyLRcAUJDx8wp7GFj5JquWhmYs0ptqbKyXi6+JURFaKi02zi
+         ksBlpCIcrtMfQfq8cmv7BXcEQW6gySqmpoCU/FpVh5HD2YbRnBjvSfoubAmM1rCXSC
+         BIOFSDlRNd4e42leZi4PoTcQX4N7Hb4Edov12V7Q=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AFDF835226B4; Fri, 20 Mar 2020 09:11:18 -0700 (PDT)
-Date:   Fri, 20 Mar 2020 09:11:18 -0700
+        id 00E7035226B4; Fri, 20 Mar 2020 09:26:50 -0700 (PDT)
+Date:   Fri, 20 Mar 2020 09:26:50 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH RFC v2 tip/core/rcu 03/22] rcutorture: Add flag to
- produce non-busy-wait task stalls
-Message-ID: <20200320161118.GO3199@paulmck-ThinkPad-P72>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: linux-next build error (8)
+Message-ID: <20200320162650.GP3199@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
- <20200319104614.11444-1-hdanton@sina.com>
- <20200319133947.12172-1-hdanton@sina.com>
- <20200320040329.9840-1-hdanton@sina.com>
+References: <000000000000ae2ab305a123f146@google.com>
+ <CACT4Y+a_d=5TNZth0dPov0B7tB5T9bAzWXBj1HjhXdn-=0KOOg@mail.gmail.com>
+ <20200318214109.GV3199@paulmck-ThinkPad-P72>
+ <CACT4Y+ZhP_Qu+WZ4t2dLjd__H+rUKCTRCNoghvW9Uf3QQYRcNg@mail.gmail.com>
+ <20200319150414.GD3199@paulmck-ThinkPad-P72>
+ <CACT4Y+YHQQWeeW44NYAxX+fFU6RyvFbbmcig1q8NSE7yV0zgjA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200320040329.9840-1-hdanton@sina.com>
+In-Reply-To: <CACT4Y+YHQQWeeW44NYAxX+fFU6RyvFbbmcig1q8NSE7yV0zgjA@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 12:03:29PM +0800, Hillf Danton wrote:
+On Fri, Mar 20, 2020 at 04:38:54PM +0100, Dmitry Vyukov wrote:
+> On Thu, Mar 19, 2020 at 4:04 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Mar 19, 2020 at 08:13:35AM +0100, Dmitry Vyukov wrote:
+> > > On Wed, Mar 18, 2020 at 10:41 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Wed, Mar 18, 2020 at 09:54:07PM +0100, Dmitry Vyukov wrote:
+> > > > > On Wed, Mar 18, 2020 at 5:57 PM syzbot
+> > > > > <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com> wrote:
+> > > > > >
+> > > > > > Hello,
+> > > > > >
+> > > > > > syzbot found the following crash on:
+> > > > > >
+> > > > > > HEAD commit:    47780d78 Add linux-next specific files for 20200318
+> > > > > > git tree:       linux-next
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=14228745e00000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=b68b7b89ad96c62a
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=792dec47d693ccdc05a0
+> > > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > > >
+> > > > > > Unfortunately, I don't have any reproducer for this crash yet.
+> > > > > >
+> > > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > > > Reported-by: syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com
+> > > > > >
+> > > > > > kernel/rcu/tasks.h:1070:37: error: 'rcu_tasks_rude' undeclared (first use in this function); did you mean 'rcu_tasks_qs'?
+> > > > >
+> > > > > +rcu maintainers
+> > > >
+> > > > The kbuild test robot beat you to it, and apologies for the hassle.
+> > > > Fixed in -rcu on current "dev" branch.
+> > >
+> > > If the kernel dev process would only have a way to avoid dups from all
+> > > test systems...
+> >
+> > I do significant testing before pushing to -next, but triggering this
+> > one requires a combination of Kconfig options that are incompatible
+> > with rcutorture.  :-/
+> >
+> > I suppose one strategy would be to give kbuild test robot some time before
+> > passing to -next, but they seem to sometimes get too far behind for me to
+> > be willing to wait that long.  So my current approach is to push my "dev"
+> > branch, run moderate rcutorture testing (three hours per scenario other
+> > than TREE10, which gets only one hour), and if that passes, push to -next.
+> >
+> > I suppose that I could push to -next only commits that are at least three
+> > days old or some such.  But I get in trouble pushing to -next too slowly
+> > as often as I get in trouble pushing too quickly, so I suspect that my
+> > current approach is in roughly the right place.
+> >
+> > > Now we need to spend time and deal with it. What has fixed it?
+> >
+> > It is fixed by commit c6ef38e4d595 ("rcu-tasks: Add RCU tasks to
+> > rcutorture writer stall output") and some of its predecessors.
+> >
+> > Perhaps more useful to you, this commit is included in next-20200319
+> > from the -next tree.  ;-)
 > 
-> On Thu, 19 Mar 2020 08:22:53 -0700 "Paul E. McKenney" wrote:
-> > 
-> > On Thu, Mar 19, 2020 at 09:39:47PM +0800, Hillf Danton wrote:
-> > > 
-> > > On Thu, 19 Mar 2020 05:38:12 -0700 "Paul E. McKenney" wrote:
-> > > > 
-> > > > On Thu, Mar 19, 2020 at 06:46:14PM +0800, Hillf Danton wrote:
-> > > > > 
-> > > > > On Wed, 18 Mar 2020 17:10:41 -0700
-> > > > > >  static int rcu_torture_stall(void *args)
-> > > > > >  {
-> > > > > > +	int idx;
-> > > > > >  	unsigned long stop_at;
-> > > > > >  
-> > > > > >  	VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
-> > > > > > @@ -1610,21 +1612,22 @@ static int rcu_torture_stall(void *args)
-> > > > > >  	if (!kthread_should_stop()) {
-> > > > > >  		stop_at = ktime_get_seconds() + stall_cpu;
-> > > > > >  		/* RCU CPU stall is expected behavior in following code. */
-> > > > > > -		rcu_read_lock();
-> > > > > > +		idx = cur_ops->readlock();
-> > > > > >  		if (stall_cpu_irqsoff)
-> > > > > >  			local_irq_disable();
-> > > > > > -		else
-> > > > > > +		else if (!stall_cpu_block)
-> > > > > >  			preempt_disable();
-> > > > > >  		pr_alert("rcu_torture_stall start on CPU %d.\n",
-> > > > > > -			 smp_processor_id());
-> > > > > > +			 raw_smp_processor_id());
-> > > > > >  		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
-> > > > > >  				    stop_at))
-> > > > > > -			continue;  /* Induce RCU CPU stall warning. */
-> > > > > > +			if (stall_cpu_block)
-> > > > > > +				schedule_timeout_uninterruptible(HZ);
-> > > > > 
-> > > > > Why is the scheduled-in task so special that it will be running on
-> > > > > the current CPU with irq disabled?
-> > > > 
-> > > > You lost me on this one.
-> > > 
-> > > Quite likely :)
-> > > 
-> > > > IRQs are not at all disabled.
-> > > > 
-> > > > > >  		if (stall_cpu_irqsoff)
-> > > > > >  			local_irq_enable();
-> > > 
-> > > Local IRQs get enabled here depending on stall_cpu_irqsoff.
-> > > 
-> > > What I was asking is the scheduling case like
-> > > 
-> > > 	local_irq_disable();
-> > > 	schedule_timeout(HZ);
-> > > 	local_irq_enable();
-> > > 
-> > > Is it likely going to be ruled out in this patch?
-> > 
-> > If an rcutorture run specified both the rcutorture.stall_cpu_irqsoff and
-> > the rcutorture.stall_cpu_block module parameters, then yes, exactly the
-> > sequence you call out should occur.  Can't say that I have tried this,
-> > though.  Nor would I expect to have ever done so without your suggesting
-> > that I do.
-> > 
-> > But why not try it on current -rcu?
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 12 --duration 3 --configs "TRACE01" --bootargs "rcutorture.stall_cpu=25 rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu_block=1 rcupdate.rcu_task_stall_timeout=10000 rcutorture.stall_cpu_irqsoff"
-> > 
-> > This tells rcutorture to use all 12 hardware threads, to run the kernel for
-> > three minutes, to run only the TRACE01 rcutorture scenario, and to test
-> > RCU CPU stall warnings:
-> > 
-> > rcutorture.stall_cpu=25: Stall the CPU for 25 seconds.
-> > 
-> > rcutorture.stall_cpu_holdoff=30: Wait 30 seconds after boot to start stalling.
-> > 
-> > rcutorture.stall_cpu_block=1: Do the schedule_timeout_uninterruptible()
-> > 	while stalling.
-> > 
-> > rcupdate.rcu_task_stall_timeout=10000: Set the stall-warning timeout
-> > 	to 10,000 jiffies, or ten seconds.
-> > 
-> > rcutorture.stall_cpu_irqsoff: This tells rcutorture to execute the
-> > 	local_irq_disable() that you called out above.
-> > 
-> > And this results in a couple of stall warning messages, as expected
+> Let's tell syzbot about the fix:
 > 
-> Given these warning messages,
+> #syz fix: rcu-tasks: Add RCU tasks to rcutorture writer stall output
 > 
-> > given that you get two ten-second intervals in a 25-second interval.
-> 
-> I suspect it is likely to induce RCU CPU stall using
-> schedule_timeout_uninterruptible(HZ).
+> I think what you are doing is the best possible option in the current situation.
+> I don't think requiring all human maintainers to do more manual
+> repetitive work, which is not well defined and even without a way to
+> really require something from them is scalable nor reliable nor the
+> right approach.
 
-Exactly.  In fact, inducing an RCU CPU stall warning is the whole purpose
-of those rcutorture module parameters.
+Thank you, and I do greatly appreciate the automation!
 
-But it depends on the flavor of RCU in use.  Feel free to experiment!
+> We would consume something like LKGR [1] if it existed for the kernel.
+> But it would require tighter integration of testing systems with
+> kernel dev processes, or of course throwing more manual labor at it to
+> track all uncoordinated testing systems and publishing LKGR tags.
+> 
+> [1] https://chromium.googlesource.com/chromiumos/docs/+/master/glossary.md
 
-And again, I do not expect to be using rcutorture.stall_cpu_block=1 and
-rcutorture.stall_cpu_irqsoff at the same time except as a demonstration
-of something silly.  So I do not see the need to make a change.  If you
-are advocating some change or reporting some bug, I am missing your point.
+At my end, it is pretty quick and easy to detect duplicate notifications
+of the same bug, so the current situation isn't causing me undue distress.
 
 							Thanx, Paul
