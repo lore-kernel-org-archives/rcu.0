@@ -2,127 +2,175 @@ Return-Path: <SRS0=HuQd=5F=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B7ABC4332B
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F12ECC4332B
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:11:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2399620782
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 15:42:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GeHU0qas"
+	by mail.kernel.org (Postfix) with ESMTP id C48EC20753
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1584720684;
+	bh=pga0nnKgW8xg9uhns1BYEZ40Eed+kmdH4uF0UjG48lw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=oYUa8fbIdyem32B6My81EovTmJQt52AqbpWOFV578qdrhHCPNCM7CvRlALoYggU6v
+	 dlRNlgMNIfRQKJYfuDVWfht4PLDc4Zjtv/jhXQoXawkWCDkzm2CkWCaGIaMA8W7Di0
+	 1ROH93ZhMNSGQlx7M/INoP1NpQt8PLC/gzW0ly8k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgCTPml (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Mar 2020 11:42:41 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34357 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbgCTPml (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Mar 2020 11:42:41 -0400
-Received: by mail-qt1-f193.google.com with SMTP id 10so5278042qtp.1
-        for <rcu@vger.kernel.org>; Fri, 20 Mar 2020 08:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g19Z0AL+oVzZVOxsXjEEVkUP9hXqPLhiX7vvspZjbqI=;
-        b=GeHU0qasNum+zVdPSku/i6ICaKR+0jlY9lNkWGfDEY88SDquDjyClFQj4YeHsCmstA
-         JPJXOINAfSjzPx0s5sdkQ1RajQHqnwgfL5lpolECr6wGfFDEnlYmzqLJy9MqQnJMHR1m
-         c9L6IoIscpHJ/Te5V7E9jmNwn1b3B2ZtbTtgZoYTeZ4j/SyefmoT1qyZIgnNrI15266K
-         QB0OvKfeegfWue3ITp0q4NhEyJDFfJuZia5tyIvDf8vGEFp5sPmeOZE+KIvQQwYJFC4r
-         yyezUkMhxMaILYd1XNLpNuATIaCIg0r6/J3qsOMblXgqTuHg045DnnzdRYva/r9hUjmm
-         UjLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g19Z0AL+oVzZVOxsXjEEVkUP9hXqPLhiX7vvspZjbqI=;
-        b=oGsVpfhbMUPzcLLPD81K/b6yKW5piNk53m57GOX2RWiYh1494hp4UHC0GPFafVYyA3
-         qcbEYYxgzu0p3Xwjwqyjmno8VqnF9AVdwTjqXvbMKlWPd56Ft6uGQtsrvi8pzKw96K6s
-         JpzMKUe6EiGzOn/CQB1OtLCf99z1W6JUFODs9EXHnJEd5upje6igrn40aFXaRx9SR2Y8
-         ioU7jCBNMcEzai7DJFEVQG4bUe2tq47tgtv123fwT7xi/9benUoV35phJv0vj/nBKX5d
-         HZ4B580RcY9NDjOS8nHTEX/RjNXmA83kGjAnzExy7Vfk/YwycDJPs7MfLWEhN9O5LQ3O
-         FRyQ==
-X-Gm-Message-State: ANhLgQ1TnAZfBfzs3oCKToqw+zo5CBCLsn0cleT6m7WxRNfYeR2AGvvw
-        FjdPuXXuP6ZcpMNUM4HkfOwB7YWK0JABbItC15GZ3g==
-X-Google-Smtp-Source: ADFU+vsrnn9HPcrtgg6UFQhymtJaLKpvGdgNd/d3WOK1WBTFnJHRkmZg7jpdDN5mXDrdEDsRekV1NLmgwILxGkOxBwI=
-X-Received: by 2002:aed:2591:: with SMTP id x17mr8919616qtc.380.1584718959600;
- Fri, 20 Mar 2020 08:42:39 -0700 (PDT)
+        id S1727572AbgCTQLT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Mar 2020 12:11:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727016AbgCTQLT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Mar 2020 12:11:19 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCE8320739;
+        Fri, 20 Mar 2020 16:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584720678;
+        bh=pga0nnKgW8xg9uhns1BYEZ40Eed+kmdH4uF0UjG48lw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=a3WXVveqaO6ZDJtkp9YMyrQbUe38YQ0w7yVS4S2kZWd8O3UYdfEWDiNF97NFqvRBR
+         Dmz7YwV2IDZ8jw+UhW0qvzW71sGzuXs9EPksJgBVr/4Y++O1RSSguuycN62LPymX1S
+         DR+m6ovlusTmMjzxq2s+ay1zIxZT2LoszNVq4qQs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AFDF835226B4; Fri, 20 Mar 2020 09:11:18 -0700 (PDT)
+Date:   Fri, 20 Mar 2020 09:11:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC v2 tip/core/rcu 03/22] rcutorture: Add flag to
+ produce non-busy-wait task stalls
+Message-ID: <20200320161118.GO3199@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
+ <20200319104614.11444-1-hdanton@sina.com>
+ <20200319133947.12172-1-hdanton@sina.com>
+ <20200320040329.9840-1-hdanton@sina.com>
 MIME-Version: 1.0
-References: <000000000000ae2ab305a123f146@google.com> <CACT4Y+a_d=5TNZth0dPov0B7tB5T9bAzWXBj1HjhXdn-=0KOOg@mail.gmail.com>
- <20200318214109.GV3199@paulmck-ThinkPad-P72> <CACT4Y+ZhP_Qu+WZ4t2dLjd__H+rUKCTRCNoghvW9Uf3QQYRcNg@mail.gmail.com>
- <20200320130822.GF4650@kadam>
-In-Reply-To: <20200320130822.GF4650@kadam>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 20 Mar 2020 16:42:28 +0100
-Message-ID: <CACT4Y+aCAYdYx9QPLUVdAOzhvYSA-n_wASaqAD8OUTioiHgsQQ@mail.gmail.com>
-Subject: Re: linux-next build error (8)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        syzbot <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200320040329.9840-1-hdanton@sina.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 2:11 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Thu, Mar 19, 2020 at 08:13:35AM +0100, 'Dmitry Vyukov' via syzkaller-bugs wrote:
-> > On Wed, Mar 18, 2020 at 10:41 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Mar 18, 2020 at 09:54:07PM +0100, Dmitry Vyukov wrote:
-> > > > On Wed, Mar 18, 2020 at 5:57 PM syzbot
-> > > > <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following crash on:
-> > > > >
-> > > > > HEAD commit:    47780d78 Add linux-next specific files for 20200318
-> > > > > git tree:       linux-next
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=14228745e00000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=b68b7b89ad96c62a
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=792dec47d693ccdc05a0
-> > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > > >
-> > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com
-> > > > >
-> > > > > kernel/rcu/tasks.h:1070:37: error: 'rcu_tasks_rude' undeclared (first use in this function); did you mean 'rcu_tasks_qs'?
-> > > >
-> > > > +rcu maintainers
-> > >
-> > > The kbuild test robot beat you to it, and apologies for the hassle.
-> > > Fixed in -rcu on current "dev" branch.
-> >
-> > If the kernel dev process would only have a way to avoid dups from all
-> > test systems...
->
-> We could make a mailing list for recording it, and then just grep the
-> mailbox for the file and function.
+On Fri, Mar 20, 2020 at 12:03:29PM +0800, Hillf Danton wrote:
+> 
+> On Thu, 19 Mar 2020 08:22:53 -0700 "Paul E. McKenney" wrote:
+> > 
+> > On Thu, Mar 19, 2020 at 09:39:47PM +0800, Hillf Danton wrote:
+> > > 
+> > > On Thu, 19 Mar 2020 05:38:12 -0700 "Paul E. McKenney" wrote:
+> > > > 
+> > > > On Thu, Mar 19, 2020 at 06:46:14PM +0800, Hillf Danton wrote:
+> > > > > 
+> > > > > On Wed, 18 Mar 2020 17:10:41 -0700
+> > > > > >  static int rcu_torture_stall(void *args)
+> > > > > >  {
+> > > > > > +	int idx;
+> > > > > >  	unsigned long stop_at;
+> > > > > >  
+> > > > > >  	VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
+> > > > > > @@ -1610,21 +1612,22 @@ static int rcu_torture_stall(void *args)
+> > > > > >  	if (!kthread_should_stop()) {
+> > > > > >  		stop_at = ktime_get_seconds() + stall_cpu;
+> > > > > >  		/* RCU CPU stall is expected behavior in following code. */
+> > > > > > -		rcu_read_lock();
+> > > > > > +		idx = cur_ops->readlock();
+> > > > > >  		if (stall_cpu_irqsoff)
+> > > > > >  			local_irq_disable();
+> > > > > > -		else
+> > > > > > +		else if (!stall_cpu_block)
+> > > > > >  			preempt_disable();
+> > > > > >  		pr_alert("rcu_torture_stall start on CPU %d.\n",
+> > > > > > -			 smp_processor_id());
+> > > > > > +			 raw_smp_processor_id());
+> > > > > >  		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
+> > > > > >  				    stop_at))
+> > > > > > -			continue;  /* Induce RCU CPU stall warning. */
+> > > > > > +			if (stall_cpu_block)
+> > > > > > +				schedule_timeout_uninterruptible(HZ);
+> > > > > 
+> > > > > Why is the scheduled-in task so special that it will be running on
+> > > > > the current CPU with irq disabled?
+> > > > 
+> > > > You lost me on this one.
+> > > 
+> > > Quite likely :)
+> > > 
+> > > > IRQs are not at all disabled.
+> > > > 
+> > > > > >  		if (stall_cpu_irqsoff)
+> > > > > >  			local_irq_enable();
+> > > 
+> > > Local IRQs get enabled here depending on stall_cpu_irqsoff.
+> > > 
+> > > What I was asking is the scheduling case like
+> > > 
+> > > 	local_irq_disable();
+> > > 	schedule_timeout(HZ);
+> > > 	local_irq_enable();
+> > > 
+> > > Is it likely going to be ruled out in this patch?
+> > 
+> > If an rcutorture run specified both the rcutorture.stall_cpu_irqsoff and
+> > the rcutorture.stall_cpu_block module parameters, then yes, exactly the
+> > sequence you call out should occur.  Can't say that I have tried this,
+> > though.  Nor would I expect to have ever done so without your suggesting
+> > that I do.
+> > 
+> > But why not try it on current -rcu?
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 12 --duration 3 --configs "TRACE01" --bootargs "rcutorture.stall_cpu=25 rcutorture.stall_cpu_holdoff=30 rcutorture.stall_cpu_block=1 rcupdate.rcu_task_stall_timeout=10000 rcutorture.stall_cpu_irqsoff"
+> > 
+> > This tells rcutorture to use all 12 hardware threads, to run the kernel for
+> > three minutes, to run only the TRACE01 rcutorture scenario, and to test
+> > RCU CPU stall warnings:
+> > 
+> > rcutorture.stall_cpu=25: Stall the CPU for 25 seconds.
+> > 
+> > rcutorture.stall_cpu_holdoff=30: Wait 30 seconds after boot to start stalling.
+> > 
+> > rcutorture.stall_cpu_block=1: Do the schedule_timeout_uninterruptible()
+> > 	while stalling.
+> > 
+> > rcupdate.rcu_task_stall_timeout=10000: Set the stall-warning timeout
+> > 	to 10,000 jiffies, or ten seconds.
+> > 
+> > rcutorture.stall_cpu_irqsoff: This tells rcutorture to execute the
+> > 	local_irq_disable() that you called out above.
+> > 
+> > And this results in a couple of stall warning messages, as expected
+> 
+> Given these warning messages,
+> 
+> > given that you get two ten-second intervals in a 25-second interval.
+> 
+> I suspect it is likely to induce RCU CPU stall using
+> schedule_timeout_uninterruptible(HZ).
 
-As far as I understand Paul was already aware of the breakage and both
-reports. Also how do we make all kernel testing out there to respect
-this new list?....
+Exactly.  In fact, inducing an RCU CPU stall warning is the whole purpose
+of those rcutorture module parameters.
 
-> Or we could just assume that kbuild is going to find almost all the
-> build errors.
+But it depends on the flavor of RCU in use.  Feel free to experiment!
 
-Paul mentioned that they don't sometimes ("but they seem to sometimes
-get too far behind for me to
-be willing to wait that long"). Lots of people mentioned this on the
-last LPC as well. It's not completely transparent and not part of the
-kernel project to rely on it (how do we add new configs? how do we
-urgently repair it? etc).
+And again, I do not expect to be using rcutorture.stall_cpu_block=1 and
+rcutorture.stall_cpu_irqsoff at the same time except as a demonstration
+of something silly.  So I do not see the need to make a change.  If you
+are advocating some change or reporting some bug, I am missing your point.
+
+							Thanx, Paul
