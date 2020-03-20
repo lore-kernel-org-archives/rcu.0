@@ -6,149 +6,97 @@ X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8F6C4332B
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:26:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16990C4332D
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:27:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1EA8F20739
-	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:26:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D362720739
+	for <rcu@archiver.kernel.org>; Fri, 20 Mar 2020 16:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584721613;
-	bh=GRkJPRXSUPxB/4FaDSLTXZXzBr8dpjV+3HyNoC/Gdos=;
+	s=default; t=1584721652;
+	bh=gwsNsin4/SYg1Xj0KQ+zV+B8Z3aO3Bg8kEnqtbQn7Oc=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=Li0NlC6dQHymFUYd5oj0qa0tiaQCJc8jfwpW4dD2Ft34PDOBo1nVy/R8cfOA36EEv
-	 0U+wiVniF0O2ePhX8LXk0l85sRE9bi788TCWeCg+OcSmuMa0oDBt+f67nDdoHBHLG2
-	 jIQN2TuChmKlCJuM9DtSbBUxXhVKw2I7EJKrBsv4=
+	b=GB+EnGW7jlx7SQTPGu1yvtn/7MEBLe3d0Zl2PGklsIPBp4giHaIqK7BMO1adO1b8q
+	 Y0oV4QVU+yJWHnAhS1u8MOrqSoRy/AIBapxubIwT/yHknxlgiCxMmpAe1+QkuiJ6M4
+	 ESyRHoNczqwdXAOoA4gPSEIVyxq7A8G0WjPJPMlQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgCTQ0w (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Mar 2020 12:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52636 "EHLO mail.kernel.org"
+        id S1727469AbgCTQ1c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Mar 2020 12:27:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727122AbgCTQ0w (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Mar 2020 12:26:52 -0400
+        id S1727464AbgCTQ1c (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Mar 2020 12:27:32 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DD6D20724;
-        Fri, 20 Mar 2020 16:26:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5E6520724;
+        Fri, 20 Mar 2020 16:27:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584721611;
-        bh=GRkJPRXSUPxB/4FaDSLTXZXzBr8dpjV+3HyNoC/Gdos=;
+        s=default; t=1584721651;
+        bh=gwsNsin4/SYg1Xj0KQ+zV+B8Z3aO3Bg8kEnqtbQn7Oc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=E4YH+CNNo4ZnxnlmBJyLRcAUJDx8wp7GFj5JquWhmYs0ptqbKyXi6+JURFaKi02zi
-         ksBlpCIcrtMfQfq8cmv7BXcEQW6gySqmpoCU/FpVh5HD2YbRnBjvSfoubAmM1rCXSC
-         BIOFSDlRNd4e42leZi4PoTcQX4N7Hb4Edov12V7Q=
+        b=sYpq5idgbfPCkOXvP9v10jUWhgcWOkAqCS6lMIHDNrKY4kHXbxslXyhOsVlWwOIEg
+         NsSPGQsIJGjWY0qvwWsQrO01v2+BmXBzVBKTeKmUh+3Fcs2XEPfCaT0FJtJC8qjXDI
+         8TtwLtKyYaJzXtwo3R9/8oiPfAcH+1X00W0867sg=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 00E7035226B4; Fri, 20 Mar 2020 09:26:50 -0700 (PDT)
-Date:   Fri, 20 Mar 2020 09:26:50 -0700
+        id C0E0135226B4; Fri, 20 Mar 2020 09:27:31 -0700 (PDT)
+Date:   Fri, 20 Mar 2020 09:27:31 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: linux-next build error (8)
-Message-ID: <20200320162650.GP3199@paulmck-ThinkPad-P72>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, dhowells@redhat.com,
+        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
+        joel@joelfernandes.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH RFC v2 tip/core/rcu 01/22] sched/core: Add function to
+ sample state of locked-down task
+Message-ID: <20200320162731.GQ3199@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <000000000000ae2ab305a123f146@google.com>
- <CACT4Y+a_d=5TNZth0dPov0B7tB5T9bAzWXBj1HjhXdn-=0KOOg@mail.gmail.com>
- <20200318214109.GV3199@paulmck-ThinkPad-P72>
- <CACT4Y+ZhP_Qu+WZ4t2dLjd__H+rUKCTRCNoghvW9Uf3QQYRcNg@mail.gmail.com>
- <20200319150414.GD3199@paulmck-ThinkPad-P72>
- <CACT4Y+YHQQWeeW44NYAxX+fFU6RyvFbbmcig1q8NSE7yV0zgjA@mail.gmail.com>
+References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
+ <20200319001100.24917-1-paulmck@kernel.org>
+ <20200319132238.75a034c3@gandalf.local.home>
+ <20200319173525.GI3199@paulmck-ThinkPad-P72>
+ <20200320024943.GA29649@paulmck-ThinkPad-P72>
+ <20200319230945.3f4701ed@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+YHQQWeeW44NYAxX+fFU6RyvFbbmcig1q8NSE7yV0zgjA@mail.gmail.com>
+In-Reply-To: <20200319230945.3f4701ed@oasis.local.home>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 04:38:54PM +0100, Dmitry Vyukov wrote:
-> On Thu, Mar 19, 2020 at 4:04 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Mar 19, 2020 at 08:13:35AM +0100, Dmitry Vyukov wrote:
-> > > On Wed, Mar 18, 2020 at 10:41 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Wed, Mar 18, 2020 at 09:54:07PM +0100, Dmitry Vyukov wrote:
-> > > > > On Wed, Mar 18, 2020 at 5:57 PM syzbot
-> > > > > <syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com> wrote:
-> > > > > >
-> > > > > > Hello,
-> > > > > >
-> > > > > > syzbot found the following crash on:
-> > > > > >
-> > > > > > HEAD commit:    47780d78 Add linux-next specific files for 20200318
-> > > > > > git tree:       linux-next
-> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=14228745e00000
-> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=b68b7b89ad96c62a
-> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=792dec47d693ccdc05a0
-> > > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > > >
-> > > > > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > > > >
-> > > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > > > Reported-by: syzbot+792dec47d693ccdc05a0@syzkaller.appspotmail.com
-> > > > > >
-> > > > > > kernel/rcu/tasks.h:1070:37: error: 'rcu_tasks_rude' undeclared (first use in this function); did you mean 'rcu_tasks_qs'?
-> > > > >
-> > > > > +rcu maintainers
-> > > >
-> > > > The kbuild test robot beat you to it, and apologies for the hassle.
-> > > > Fixed in -rcu on current "dev" branch.
-> > >
-> > > If the kernel dev process would only have a way to avoid dups from all
-> > > test systems...
-> >
-> > I do significant testing before pushing to -next, but triggering this
-> > one requires a combination of Kconfig options that are incompatible
-> > with rcutorture.  :-/
-> >
-> > I suppose one strategy would be to give kbuild test robot some time before
-> > passing to -next, but they seem to sometimes get too far behind for me to
-> > be willing to wait that long.  So my current approach is to push my "dev"
-> > branch, run moderate rcutorture testing (three hours per scenario other
-> > than TREE10, which gets only one hour), and if that passes, push to -next.
-> >
-> > I suppose that I could push to -next only commits that are at least three
-> > days old or some such.  But I get in trouble pushing to -next too slowly
-> > as often as I get in trouble pushing too quickly, so I suspect that my
-> > current approach is in roughly the right place.
-> >
-> > > Now we need to spend time and deal with it. What has fixed it?
-> >
-> > It is fixed by commit c6ef38e4d595 ("rcu-tasks: Add RCU tasks to
-> > rcutorture writer stall output") and some of its predecessors.
-> >
-> > Perhaps more useful to you, this commit is included in next-20200319
-> > from the -next tree.  ;-)
+On Thu, Mar 19, 2020 at 11:09:45PM -0400, Steven Rostedt wrote:
+> On Thu, 19 Mar 2020 19:49:43 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> Let's tell syzbot about the fix:
+> > > The current setup is very convenient for the use cases thus far.  It
+> > > allows the function to say "Yeah, I was called, but I couldn't do
+> > > anything", thus allowing the caller to make exactly one check to know
+> > > that corrective action is required.  
+> > 
+> > And here is another use case that led me to take this approach.
+> > The trc_inspect_reader_notrunning() function in the patch below is passed
+> > to try_invoke_on_locked_down_task() whose caller can continue testing
+> > just the return value from try_invoke_on_locked_down_task() to work out
+> > what to do next.
+> > 
+> > Thoughts?  Other use cases?
 > 
-> #syz fix: rcu-tasks: Add RCU tasks to rcutorture writer stall output
+> Note, I made this comment before looking at the use cases in the later
+> patches. I was looking at it for a more generic purpose, but I'm not
+> sure there is one.
 > 
-> I think what you are doing is the best possible option in the current situation.
-> I don't think requiring all human maintainers to do more manual
-> repetitive work, which is not well defined and even without a way to
-> really require something from them is scalable nor reliable nor the
-> right approach.
+> It's fine as is for now.
 
-Thank you, and I do greatly appreciate the automation!
-
-> We would consume something like LKGR [1] if it existed for the kernel.
-> But it would require tighter integration of testing systems with
-> kernel dev processes, or of course throwing more manual labor at it to
-> track all uncoordinated testing systems and publishing LKGR tags.
-> 
-> [1] https://chromium.googlesource.com/chromiumos/docs/+/master/glossary.md
-
-At my end, it is pretty quick and easy to detect duplicate notifications
-of the same bug, so the current situation isn't causing me undue distress.
+Sounds good, and again thank you for looking this over!
 
 							Thanx, Paul
