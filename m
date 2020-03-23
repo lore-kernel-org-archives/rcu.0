@@ -5,56 +5,56 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA3C4C54FCE
-	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00479C4332B
+	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 880DF206F9
+	by mail.kernel.org (Postfix) with ESMTP id CC36B206F9
 	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y5d3DlMn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QLFs93Yf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgCWLgk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1728225AbgCWLgu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Mar 2020 07:36:50 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:36588 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgCWLgk (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 23 Mar 2020 07:36:40 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:41976 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728213AbgCWLgi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Mar 2020 07:36:38 -0400
-Received: by mail-lf1-f67.google.com with SMTP id z22so9925490lfd.8;
-        Mon, 23 Mar 2020 04:36:36 -0700 (PDT)
+Received: by mail-lj1-f193.google.com with SMTP id g12so14140898ljj.3;
+        Mon, 23 Mar 2020 04:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EeerbHA789QqCt+ZvYPemD2jw89P7msksfF9sWBneFs=;
-        b=Y5d3DlMnpQInC2H8nKjIrnogwXZqagx5Bgq1i/mYJf4YyeUXxA6PuyE2CEuC3ukvfD
-         YihdtW0+yWX0oruTeI++aBf7HaoMKqC4mL6ehw08GwOmoNYajcAaWQwfs+rSz+FoJzFm
-         T4cTuEQUyOCKV1h1Jaufv3Fp2f4LeWctLL4qi8mxgQaM1hqsBNemd4jLohbWzSG4Jy6l
-         f+VRxob9f3i0FDbQc2aFh8ua6egfZNBeGhQHazK5H+h40/naKr5/K52/wF+1nZA9pSYL
-         Ti7Dl39dyQRprMgWYs0Y5rnxhhncaHPfl6ab3Pmj5k8ciWcTl7J65iAtmZZedgXoHMiU
-         PNmA==
+        bh=YmBYmS63U9/15/NydakT4NOTAZC5PmBIzcV68l5d7lw=;
+        b=QLFs93Yf1DjjUJrqzZMwDLEwOci8q8T5i4cWEFA2DBbQkmQsrnfHc0YE/+xyV5WuW3
+         nuJhxQLdI5ZSMXxzwhjkPcW9PVq9KEOblddkc7REaWg1NO5nzYJJ/X4PAGFJhaBUEjZA
+         WVDBAZU6TE9ZBfUNCiejesdVIlDvp55EOAHAwBEjwmJvMsHdB2wxuqtcfZYJ/oToeQya
+         mzhLGOI7NOitEgII2EkjVTtozvRo8Ozz6JYU1VjkZFnNQX3kEiz7zCCnPPsZF5LFow3P
+         KeaXWyIMvpiDIh9Iqp8TbeKsCOa8BShFrcAYR2pyuIo/EsqOqS9XAG4UTWuIdlJYnqhw
+         tH7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EeerbHA789QqCt+ZvYPemD2jw89P7msksfF9sWBneFs=;
-        b=KvcOY60F6+fRXBRFj8brGewMYwP3rbfZAC34RcC2hb9dddsabUx7kXOEC7cAJ0TlI9
-         exfiDkEj+PGUvyOOhzCAlCYtXbAMmgdMoZo+KEASYF06Xg5laxC9+NfFgXj/ss4t1TJE
-         25/LtYfKEqCM1S8vHBJvPtLRsSR6u5WFf8hkXuFDSzvVdmqgym3ooOMZXkkzRjCRE5LJ
-         czqEXNeeu9gRBwIUWJrErMoJIkiJK8fcaJaClTqSU/9kJceqpf/cPjKHnjLhhuDshqBw
-         cmmhc5ywRuPGWYaPw0RhTdPXEWApW38OFnlrn855/XIoqMJsb8P0nQMh/RKRZD9UjioD
-         vcmQ==
-X-Gm-Message-State: ANhLgQ0uzBRDTX5AWHcwFJMAQsJbIUnxz4mIDuHQZBEZ5TrHGokv0tur
-        +n/jNijFEsxvfQK6H0KekyPtShWYYXE=
-X-Google-Smtp-Source: ADFU+vtpZ76jZPBZZRvN+X7u8tZYTBIkD5o7HK5HtQ4sYl6OUhfXtEFLwN2h/ohKlICYbLX10lu5Qw==
-X-Received: by 2002:a19:148:: with SMTP id 69mr5179274lfb.143.1584963395397;
-        Mon, 23 Mar 2020 04:36:35 -0700 (PDT)
+        bh=YmBYmS63U9/15/NydakT4NOTAZC5PmBIzcV68l5d7lw=;
+        b=b4GXdJFuLtkdJMK4Mo9rHUylv8C0bfUt+zb/9gglL+pkha8xaomj9qE+FFaP38KnIN
+         6T5N3BdFE87ISjMOBKfeiuILQo3qWZFeVXDdHcdbVfs7HMYu8dE3uMPKX1LoFqIF3xU/
+         sx/m/qxFXr+EHK+vAncKaUco4Mx0h2pqg3uVBflPTXFLbKicS26EoNA34GaX0cEoH4i9
+         cie8bTYCrMlfGZqS8KEEWEPNHWWXUl7iiWBWOlwsNbji1/fzCcJH44qlOHufQoP8O+FN
+         t9/nhFdXexDomqsllrGDxF8E5VKx5qsSFeOg4ga7slLVMaUN7Cj2hmENpIoBr05B1iSR
+         oeew==
+X-Gm-Message-State: ANhLgQ2PhgGJFuA620KtP4drrIDhZ5BawjD1exhmpK+IodyHb3hpjTxO
+        6j9zuz2pBQJ9vn40ASP6hUiAobRrpjs=
+X-Google-Smtp-Source: ADFU+vsFZN0lVqUF6byQBltbpBV1iWBNQ3Oqg32PJNrInSuXr/J7Akr43u/1rCR/o1YD+ZoT28LAGA==
+X-Received: by 2002:a2e:b302:: with SMTP id o2mr13711074lja.289.1584963397766;
+        Mon, 23 Mar 2020 04:36:37 -0700 (PDT)
 Received: from localhost.localdomain (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.33
+        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Mar 2020 04:36:35 -0700 (PDT)
+        Mon, 23 Mar 2020 04:36:37 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     RCU <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 4/7] rcu/tree: support reclaim for head-less object
-Date:   Mon, 23 Mar 2020 12:36:18 +0100
-Message-Id: <20200323113621.12048-5-urezki@gmail.com>
+Subject: [PATCH 6/7] rcu/tiny: support reclaim for head-less object
+Date:   Mon, 23 Mar 2020 12:36:20 +0100
+Message-Id: <20200323113621.12048-7-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200323113621.12048-1-urezki@gmail.com>
 References: <20200323113621.12048-1-urezki@gmail.com>
@@ -77,211 +77,211 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Update the kvfree_call_rcu() with head-less support, it
-means an object without any rcu_head structure can be
-reclaimed after GP.
+Make a kvfree_call_rcu() function to support head-less
+freeing. Same as for tree-RCU, for such purpose we store
+pointers in array. SLAB and vmalloc ptrs. are mixed and
+coexist together.
 
-To store pointers there are two chain-arrays maintained
-one for SLAB and another one is for vmalloc. Both types
-of objects(head-less variant and regular one) are placed
-there based on the type.
+Under high memory pressure it can be that maintaining of
+arrays becomes impossible. Objects with an rcu_head are
+released via call_rcu(). When it comes to the head-less
+variant, the kvfree() call is directly inlined, i.e. we
+do the same as for tree-RCU:
+    a) wait until a grace period has elapsed;
+    b) direct inlining of the kvfree() call.
 
-It can be that maintaining of arrays becomes impossible
-due to high memory pressure. For such reason there is an
-emergency path. In that case objects with rcu_head inside
-are just queued building one way list. Later on that list
-is drained.
-
-As for head-less variant. Such objects do not have any
-rcu_head helper inside. Thus it is dynamically attached.
-As a result an object consists of back-pointer and regular
-rcu_head. It implies that emergency path can detect such
-object type, therefore they are tagged. So a back-pointer
-could be freed as well as dynamically attached wrapper.
-
-Even though such approach requires dynamic memory it needs
-only sizeof(unsigned long *) + sizeof(struct rcu_head) bytes,
-thus SLAB is used to obtain it. Finally if attaching of the
-rcu_head and queuing get failed, the current context has
-to follow might_sleep() annotation, thus below steps could
-be applied:
-   a) wait until a grace period has elapsed;
-   b) direct inlining of the kvfree() call.
+Thus the current context has to follow might_sleep()
+annotation. Also please note that for tiny-RCU any
+call of synchronize_rcu() is actually a quiescent
+state, therefore (a) does nothing.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 94 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 86 insertions(+), 8 deletions(-)
+ kernel/rcu/tiny.c | 157 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 156 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 869a72e25d38..5a64c92feafc 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2892,19 +2892,34 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 * when we could not allocate a bulk array.
- 	 *
- 	 * Under that condition an object is queued to the
--	 * list instead.
-+	 * list instead. Please note that head-less objects
-+	 * have dynamically attached rcu_head, so they also
-+	 * contain a back-pointer that has to be freed.
- 	 */
- 	for (; head; head = next) {
- 		unsigned long offset = (unsigned long)head->func;
--		void *ptr = (void *)head - offset;
-+		bool headless;
-+		void *ptr;
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index 508c82faa45c..b1c31a935db9 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -40,6 +40,29 @@ static struct rcu_ctrlblk rcu_ctrlblk = {
+ 	.curtail	= &rcu_ctrlblk.rcucblist,
+ };
  
- 		next = head->next;
++/* Can be common with tree-RCU. */
++#define KVFREE_DRAIN_JIFFIES (HZ / 50)
 +
-+		/* We tag the headless object, if so adjust offset. */
-+		headless = (((unsigned long) head - offset) & BIT(0));
-+		if (headless)
-+			offset -= 1;
++/* Can be common with tree-RCU. */
++struct kvfree_rcu_bulk_data {
++	unsigned long nr_records;
++	struct kvfree_rcu_bulk_data *next;
++	void *records[];
++};
 +
-+		ptr = (void *) head - offset;
- 		debug_rcu_head_unqueue((struct rcu_head *)ptr);
++/* Can be common with tree-RCU. */
++#define KVFREE_BULK_MAX_ENTR \
++	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
 +
- 		rcu_lock_acquire(&rcu_callback_map);
- 		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
- 
--		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
-+		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset))) {
-+			if (headless)
-+				kvfree((void *) *((unsigned long *) ptr));
++static struct kvfree_rcu_bulk_data *kvhead;
++static struct kvfree_rcu_bulk_data *kvhead_free;
++static struct kvfree_rcu_bulk_data *kvcache;
 +
- 			kvfree(ptr);
-+		}
- 
- 		rcu_lock_release(&rcu_callback_map);
- 		cond_resched_tasks_rcu_qs();
-@@ -3053,6 +3068,25 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- 	return true;
++static DEFINE_STATIC_KEY_FALSE(rcu_init_done);
++static struct delayed_work monitor_work;
++static struct rcu_work rcu_work;
++static bool monitor_todo;
++
+ void rcu_barrier(void)
+ {
+ 	wait_rcu_gp(call_rcu);
+@@ -177,9 +200,137 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
  }
+ EXPORT_SYMBOL_GPL(call_rcu);
  
-+static inline struct rcu_head *
-+attach_rcu_head_to_object(void *obj)
++static inline bool
++kvfree_call_rcu_add_ptr_to_bulk(void *ptr)
 +{
-+	unsigned long *ptr;
++	struct kvfree_rcu_bulk_data *bnode;
 +
-+	ptr = kmalloc(sizeof(unsigned long *) +
-+			sizeof(struct rcu_head), GFP_NOWAIT | __GFP_NOWARN);
++	if (!kvhead || kvhead->nr_records == KVFREE_BULK_MAX_ENTR) {
++		bnode = xchg(&kvcache, NULL);
++		if (!bnode)
++			bnode = (struct kvfree_rcu_bulk_data *)
++				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
 +
-+	if (!ptr)
-+		ptr = kmalloc(sizeof(unsigned long *) +
-+				sizeof(struct rcu_head), GFP_ATOMIC | __GFP_NOWARN);
++		if (unlikely(!bnode))
++			return false;
 +
-+	if (!ptr)
-+		return NULL;
++		/* Initialize the new block. */
++		bnode->nr_records = 0;
++		bnode->next = kvhead;
 +
-+	ptr[0] = (unsigned long) obj;
-+	return ((struct rcu_head *) ++ptr);
++		/* Attach it to the bvhead. */
++		kvhead = bnode;
++	}
++
++	/* Done. */
++	kvhead->records[kvhead->nr_records++] = ptr;
++	return true;
 +}
 +
- /*
-  * Queue a request for lazy invocation of appropriate free routine after a
-  * grace period. Please note there are three paths are maintained, two are the
-@@ -3071,20 +3105,37 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
- 	bool expedited_drain = false;
++static void
++kvfree_rcu_work(struct work_struct *work)
++{
++	struct kvfree_rcu_bulk_data *kvhead_tofree, *next;
++	unsigned long flags;
++	int i;
++
++	local_irq_save(flags);
++	kvhead_tofree = kvhead_free;
++	kvhead_free = NULL;
++	local_irq_restore(flags);
++
++	/* Reclaim process. */
++	for (; kvhead_tofree; kvhead_tofree = next) {
++		next = kvhead_tofree->next;
++
++		for (i = 0; i < kvhead_tofree->nr_records; i++) {
++			debug_rcu_head_unqueue((struct rcu_head *)
++				kvhead_tofree->records[i]);
++			kvfree(kvhead_tofree->records[i]);
++		}
++
++		if (cmpxchg(&kvcache, NULL, kvhead_tofree))
++			free_page((unsigned long) kvhead_tofree);
++	}
++}
++
++static inline bool
++queue_kvfree_rcu_work(void)
++{
++	/* Check if the free channel is available. */
++	if (kvhead_free)
++		return false;
++
++	kvhead_free = kvhead;
++	kvhead = NULL;
++
++	/*
++	 * Queue the job for memory reclaim after GP.
++	 */
++	queue_rcu_work(system_wq, &rcu_work);
++	return true;
++}
++
++static void kvfree_rcu_monitor(struct work_struct *work)
++{
++	unsigned long flags;
++	bool queued;
++
++	local_irq_save(flags);
++	queued = queue_kvfree_rcu_work();
++	if (queued)
++		/* Success. */
++		monitor_todo = false;
++	local_irq_restore(flags);
++
++	/*
++	 * If previous RCU reclaim process is still in progress,
++	 * schedule the work one more time to try again later.
++	 */
++	if (monitor_todo)
++		schedule_delayed_work(&monitor_work,
++			KVFREE_DRAIN_JIFFIES);
++}
++
+ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+-	call_rcu(head, func);
++	unsigned long flags;
 +	bool success;
- 	void *ptr;
- 
++	void *ptr;
++
 +	if (head) {
 +		ptr = (void *) head - (unsigned long) func;
 +	} else {
-+		/*
-+		 * Please note there is a limitation for the head-less
-+		 * variant, that is why there is a clear rule for such
-+		 * objects:
-+		 *
-+		 * use it from might_sleep() context only. For other
-+		 * places please embed an rcu_head to your structures.
-+		 */
 +		might_sleep();
-+		ptr = (unsigned long *) func;
++		ptr = (void *) func;
 +	}
 +
- 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
- 	if (krcp->initialized)
- 		spin_lock(&krcp->lock);
- 
--	ptr = (void *)head - (unsigned long)func;
--
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(ptr)) {
- 		// Probable double kfree_rcu(), just leak.
- 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
- 			  __func__, head);
++	if (debug_rcu_head_queue(ptr)) {
++		/* Probable double free, just leak. */
++		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
++			  __func__, head);
++		return;
++	}
 +
-+		/* Mark as success and leave. */
-+		success = true;
- 		goto unlock_return;
- 	}
- 
-@@ -3092,7 +3143,22 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	 * Under high memory pressure GFP_NOWAIT can fail,
- 	 * in that case the emergency path is maintained.
- 	 */
--	if (!kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr)) {
-+	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-+	if (!success) {
-+		/* Is headless object? */
-+		if (head == NULL) {
-+			head = attach_rcu_head_to_object(ptr);
-+			if (head == NULL)
-+				goto unlock_return;
-+
-+			/*
-+			 * Tag the headless object. Such objects have a back-pointer
-+			 * to the original allocated memory, that has to be freed as
-+			 * well as dynamically attached wrapper/head.
-+			 */
-+			func = (rcu_callback_t) (sizeof(unsigned long *) + 1);
++	local_irq_save(flags);
++	success = kvfree_call_rcu_add_ptr_to_bulk(ptr);
++	if (static_branch_likely(&rcu_init_done)) {
++		if (success && !monitor_todo) {
++			monitor_todo = true;
++			schedule_delayed_work(&monitor_work,
++				KVFREE_DRAIN_JIFFIES);
 +		}
++	}
++	local_irq_restore(flags);
 +
- 		head->func = func;
- 		head->next = krcp->head;
- 		krcp->head = head;
-@@ -3104,15 +3170,15 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		 * appropriate free calls.
- 		 */
- 		expedited_drain = true;
-+		success = true;
- 	}
- 
- 	WRITE_ONCE(krcp->count, krcp->count + 1);
- 
- 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
--	    !krcp->monitor_todo) {
-+			!krcp->monitor_todo) {
- 		krcp->monitor_todo = true;
--
- 		schedule_delayed_work(&krcp->monitor_work,
- 			expedited_drain ? 0:KFREE_DRAIN_JIFFIES);
- 	}
-@@ -3121,6 +3187,18 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	if (krcp->initialized)
- 		spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
-+
-+	/*
-+	 * High memory pressure, so inline kvfree() after
-+	 * synchronize_rcu(). We can do it from might_sleep()
-+	 * context only, so the current CPU can pass the QS
-+	 * state.
-+	 */
 +	if (!success) {
-+		debug_rcu_head_unqueue(ptr);
-+		synchronize_rcu();
-+		kvfree(ptr);
++		if (!head) {
++			synchronize_rcu();
++			kvfree(ptr);
++		} else {
++			call_rcu(head, func);
++		}
 +	}
  }
  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
  
+@@ -188,4 +339,8 @@ void __init rcu_init(void)
+ 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
+ 	rcu_early_boot_tests();
+ 	srcu_init();
++
++	INIT_DELAYED_WORK(&monitor_work, kvfree_rcu_monitor);
++	INIT_RCU_WORK(&rcu_work, kvfree_rcu_work);
++	static_branch_enable(&rcu_init_done);
+ }
 -- 
 2.20.1
 
