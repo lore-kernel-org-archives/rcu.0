@@ -8,53 +8,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A6DCC4332E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA3C4C54FCE
 	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 10639206F9
+	by mail.kernel.org (Postfix) with ESMTP id 880DF206F9
 	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qS76gR8f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y5d3DlMn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgCWLgq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Mar 2020 07:36:46 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:35216 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728196AbgCWLgm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Mar 2020 07:36:42 -0400
-Received: by mail-lj1-f193.google.com with SMTP id u12so14152765ljo.2;
-        Mon, 23 Mar 2020 04:36:40 -0700 (PDT)
+        id S1728241AbgCWLgk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Mar 2020 07:36:40 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:41976 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728213AbgCWLgi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Mar 2020 07:36:38 -0400
+Received: by mail-lf1-f67.google.com with SMTP id z22so9925490lfd.8;
+        Mon, 23 Mar 2020 04:36:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GphvHmLAhceFYQBa1OZ1h7RBa7vQUlExR2ca155Stlg=;
-        b=qS76gR8fwgcl4Ri1p34R8jatA1DUnG172+l7oWlwnJzP2+abTSO66DypYT9p5np6GM
-         sv2zIBmkm62x18gBBOsGgvCALynAltxlcLgZByiEY7tjq884dt59n4Qu0tWsb/U+8O50
-         DFLC5a//0oRw76uMPBp0mwYBT3ubmiHPIDAbyGk3ztPr13igmVBKMrnCZQF8o3PAYwkF
-         81RAnFNccC2jSmglGBHpm3L0U+UpQjxu2owVW+NOoWhqLKnZlkimbGNsAJ9ieBWhH0Ct
-         p/O7C0+vD/rFjN8xuvJEyfngkQf/duPKWaKKzOIlBC+DH14GitLAglVhkHPuX83GHr0F
-         mDZg==
+        bh=EeerbHA789QqCt+ZvYPemD2jw89P7msksfF9sWBneFs=;
+        b=Y5d3DlMnpQInC2H8nKjIrnogwXZqagx5Bgq1i/mYJf4YyeUXxA6PuyE2CEuC3ukvfD
+         YihdtW0+yWX0oruTeI++aBf7HaoMKqC4mL6ehw08GwOmoNYajcAaWQwfs+rSz+FoJzFm
+         T4cTuEQUyOCKV1h1Jaufv3Fp2f4LeWctLL4qi8mxgQaM1hqsBNemd4jLohbWzSG4Jy6l
+         f+VRxob9f3i0FDbQc2aFh8ua6egfZNBeGhQHazK5H+h40/naKr5/K52/wF+1nZA9pSYL
+         Ti7Dl39dyQRprMgWYs0Y5rnxhhncaHPfl6ab3Pmj5k8ciWcTl7J65iAtmZZedgXoHMiU
+         PNmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GphvHmLAhceFYQBa1OZ1h7RBa7vQUlExR2ca155Stlg=;
-        b=FPmbG8HMxknBsQe3E7eGqel+fg+tF5nOvnQw2GFcUhtoqZXKi332YE4JyE9g4+DWTL
-         k3B5c0OLiQ8t2CdRbsAo4jiGeRYpQ1nAMjW9kvTLEb1TM6It0w0uzHn8Pe1timTZk75R
-         a3QQWVG4exwXD+ngwm7cMIl/RizfR0IL+53L1svjWSeBF+7osi2lDIScmJYbe+xrReMN
-         YZuBJ3Uw+QKEQ6JmQhmPXuC5SiOiekqeKN887MJ8Wxd8RMcjYjwIYM2uZm2Oab9udzGy
-         T0AL/qnFk/DHFtZ41H58mGmdB+9P1M1xX0jp5qPM3DJiN/p+ZFw5fXL4Amm8xaETjJTj
-         HSpA==
-X-Gm-Message-State: ANhLgQ13oZCnuYtgF/u2C9b10AQKiw4OvDe5YyHbJNrDOGe6evHZ0MEA
-        KjEUYfrOirmuci0qK7AQQkZpJJCgHHw=
-X-Google-Smtp-Source: ADFU+vvBWQplGGYEHQzPeT5aUZc2YTbon7I5TlSyLNWceXWYZ5QlGyXx3t+RzLSXJ/6u7P0C3heXRQ==
-X-Received: by 2002:a2e:a3d3:: with SMTP id w19mr13993303lje.232.1584963399122;
-        Mon, 23 Mar 2020 04:36:39 -0700 (PDT)
+        bh=EeerbHA789QqCt+ZvYPemD2jw89P7msksfF9sWBneFs=;
+        b=KvcOY60F6+fRXBRFj8brGewMYwP3rbfZAC34RcC2hb9dddsabUx7kXOEC7cAJ0TlI9
+         exfiDkEj+PGUvyOOhzCAlCYtXbAMmgdMoZo+KEASYF06Xg5laxC9+NfFgXj/ss4t1TJE
+         25/LtYfKEqCM1S8vHBJvPtLRsSR6u5WFf8hkXuFDSzvVdmqgym3ooOMZXkkzRjCRE5LJ
+         czqEXNeeu9gRBwIUWJrErMoJIkiJK8fcaJaClTqSU/9kJceqpf/cPjKHnjLhhuDshqBw
+         cmmhc5ywRuPGWYaPw0RhTdPXEWApW38OFnlrn855/XIoqMJsb8P0nQMh/RKRZD9UjioD
+         vcmQ==
+X-Gm-Message-State: ANhLgQ0uzBRDTX5AWHcwFJMAQsJbIUnxz4mIDuHQZBEZ5TrHGokv0tur
+        +n/jNijFEsxvfQK6H0KekyPtShWYYXE=
+X-Google-Smtp-Source: ADFU+vtpZ76jZPBZZRvN+X7u8tZYTBIkD5o7HK5HtQ4sYl6OUhfXtEFLwN2h/ohKlICYbLX10lu5Qw==
+X-Received: by 2002:a19:148:: with SMTP id 69mr5179274lfb.143.1584963395397;
+        Mon, 23 Mar 2020 04:36:35 -0700 (PDT)
 Received: from localhost.localdomain (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.37
+        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Mar 2020 04:36:38 -0700 (PDT)
+        Mon, 23 Mar 2020 04:36:35 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     RCU <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 7/7] rcu: support headless variant in the kvfree_rcu()
-Date:   Mon, 23 Mar 2020 12:36:21 +0100
-Message-Id: <20200323113621.12048-8-urezki@gmail.com>
+Subject: [PATCH 4/7] rcu/tree: support reclaim for head-less object
+Date:   Mon, 23 Mar 2020 12:36:18 +0100
+Message-Id: <20200323113621.12048-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200323113621.12048-1-urezki@gmail.com>
 References: <20200323113621.12048-1-urezki@gmail.com>
@@ -77,92 +77,211 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Make it possible to pass one or two arguments to the
-kvfree_rcu() macro what corresponds to either headless
-case or not, so it becomes a bit versatile.
+Update the kvfree_call_rcu() with head-less support, it
+means an object without any rcu_head structure can be
+reclaimed after GP.
 
-As a result we obtain two ways of using that macro,
-below are two examples:
+To store pointers there are two chain-arrays maintained
+one for SLAB and another one is for vmalloc. Both types
+of objects(head-less variant and regular one) are placed
+there based on the type.
 
-a) kvfree_rcu(ptr, rhf);
-    struct X {
-        struct rcu_head rhf;
-        unsigned char data[100];
-    };
+It can be that maintaining of arrays becomes impossible
+due to high memory pressure. For such reason there is an
+emergency path. In that case objects with rcu_head inside
+are just queued building one way list. Later on that list
+is drained.
 
-    void *ptr = kvmalloc(sizeof(struct X), GFP_KERNEL);
-    if (ptr)
-        kvfree_rcu(ptr, rhf);
+As for head-less variant. Such objects do not have any
+rcu_head helper inside. Thus it is dynamically attached.
+As a result an object consists of back-pointer and regular
+rcu_head. It implies that emergency path can detect such
+object type, therefore they are tagged. So a back-pointer
+could be freed as well as dynamically attached wrapper.
 
-b) kvfree_rcu(ptr);
-    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
-    if (ptr)
-        kvfree_rcu(ptr);
-
-Last one, we name it headless variant, only needs one
-argument, means it does not require any rcu_head to be
-present within the type of ptr.
-
-There is a restriction the (b) context has to fall into
-might_sleep() annotation. To check that, please activate
-the CONFIG_DEBUG_ATOMIC_SLEEP option in your kernel.
+Even though such approach requires dynamic memory it needs
+only sizeof(unsigned long *) + sizeof(struct rcu_head) bytes,
+thus SLAB is used to obtain it. Finally if attaching of the
+rcu_head and queuing get failed, the current context has
+to follow might_sleep() annotation, thus below steps could
+be applied:
+   a) wait until a grace period has elapsed;
+   b) direct inlining of the kvfree() call.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcupdate.h | 38 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 94 +++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 86 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index efd3dc13c36d..51ebf2461d51 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -844,12 +844,42 @@ do {									\
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 869a72e25d38..5a64c92feafc 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2892,19 +2892,34 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	 * when we could not allocate a bulk array.
+ 	 *
+ 	 * Under that condition an object is queued to the
+-	 * list instead.
++	 * list instead. Please note that head-less objects
++	 * have dynamically attached rcu_head, so they also
++	 * contain a back-pointer that has to be freed.
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
+-		void *ptr = (void *)head - offset;
++		bool headless;
++		void *ptr;
  
- /**
-  * kvfree_rcu() - kvfree an object after a grace period.
-- * @ptr:	pointer to kvfree
-- * @rhf:	the name of the struct rcu_head within the type of @ptr.
-  *
-- * Same as kfree_rcu(), just simple alias.
-+ * This macro consists of one or two arguments and it is
-+ * based on whether an object is head-less or not. If it
-+ * has a head then a semantic stays the same as it used
-+ * to be before:
-+ *
-+ *     kvfree_rcu(ptr, rhf);
-+ *
-+ * where @ptr is a pointer to kvfree(), @rhf is the name
-+ * of the rcu_head structure within the type of @ptr.
-+ *
-+ * When it comes to head-less variant, only one argument
-+ * is passed and that is just a pointer which has to be
-+ * freed after a grace period. Therefore the semantic is
-+ *
-+ *     kvfree_rcu(ptr);
-+ *
-+ * where @ptr is a pointer to kvfree().
-+ *
-+ * Please note, head-less way of freeing is permitted to
-+ * use from a context that has to follow might_sleep()
-+ * annotation. Otherwise, please switch and embed the
-+ * rcu_head structure within the type of @ptr.
-  */
--#define kvfree_rcu(ptr, rhf) kfree_rcu(ptr, rhf)
-+#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,		\
-+	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
+ 		next = head->next;
 +
-+#define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
-+#define kvfree_rcu_arg_2(ptr, rhf) kfree_rcu(ptr, rhf)
-+#define kvfree_rcu_arg_1(ptr)					\
-+do {								\
-+	typeof(ptr) ___p = (ptr);				\
-+								\
-+	if (___p)						\
-+		kvfree_call_rcu(NULL, (rcu_callback_t) (___p));	\
-+} while (0)
++		/* We tag the headless object, if so adjust offset. */
++		headless = (((unsigned long) head - offset) & BIT(0));
++		if (headless)
++			offset -= 1;
++
++		ptr = (void *) head - offset;
+ 		debug_rcu_head_unqueue((struct rcu_head *)ptr);
++
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
  
+-		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
++		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset))) {
++			if (headless)
++				kvfree((void *) *((unsigned long *) ptr));
++
+ 			kvfree(ptr);
++		}
+ 
+ 		rcu_lock_release(&rcu_callback_map);
+ 		cond_resched_tasks_rcu_qs();
+@@ -3053,6 +3068,25 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 	return true;
+ }
+ 
++static inline struct rcu_head *
++attach_rcu_head_to_object(void *obj)
++{
++	unsigned long *ptr;
++
++	ptr = kmalloc(sizeof(unsigned long *) +
++			sizeof(struct rcu_head), GFP_NOWAIT | __GFP_NOWARN);
++
++	if (!ptr)
++		ptr = kmalloc(sizeof(unsigned long *) +
++				sizeof(struct rcu_head), GFP_ATOMIC | __GFP_NOWARN);
++
++	if (!ptr)
++		return NULL;
++
++	ptr[0] = (unsigned long) obj;
++	return ((struct rcu_head *) ++ptr);
++}
++
  /*
-  * Place this after a lock-acquisition primitive to guarantee that
+  * Queue a request for lazy invocation of appropriate free routine after a
+  * grace period. Please note there are three paths are maintained, two are the
+@@ -3071,20 +3105,37 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
+ 	bool expedited_drain = false;
++	bool success;
+ 	void *ptr;
+ 
++	if (head) {
++		ptr = (void *) head - (unsigned long) func;
++	} else {
++		/*
++		 * Please note there is a limitation for the head-less
++		 * variant, that is why there is a clear rule for such
++		 * objects:
++		 *
++		 * use it from might_sleep() context only. For other
++		 * places please embed an rcu_head to your structures.
++		 */
++		might_sleep();
++		ptr = (unsigned long *) func;
++	}
++
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+ 	krcp = this_cpu_ptr(&krc);
+ 	if (krcp->initialized)
+ 		spin_lock(&krcp->lock);
+ 
+-	ptr = (void *)head - (unsigned long)func;
+-
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
++
++		/* Mark as success and leave. */
++		success = true;
+ 		goto unlock_return;
+ 	}
+ 
+@@ -3092,7 +3143,22 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	if (!kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr)) {
++	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	if (!success) {
++		/* Is headless object? */
++		if (head == NULL) {
++			head = attach_rcu_head_to_object(ptr);
++			if (head == NULL)
++				goto unlock_return;
++
++			/*
++			 * Tag the headless object. Such objects have a back-pointer
++			 * to the original allocated memory, that has to be freed as
++			 * well as dynamically attached wrapper/head.
++			 */
++			func = (rcu_callback_t) (sizeof(unsigned long *) + 1);
++		}
++
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
+@@ -3104,15 +3170,15 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		 * appropriate free calls.
+ 		 */
+ 		expedited_drain = true;
++		success = true;
+ 	}
+ 
+ 	WRITE_ONCE(krcp->count, krcp->count + 1);
+ 
+ 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+-	    !krcp->monitor_todo) {
++			!krcp->monitor_todo) {
+ 		krcp->monitor_todo = true;
+-
+ 		schedule_delayed_work(&krcp->monitor_work,
+ 			expedited_drain ? 0:KFREE_DRAIN_JIFFIES);
+ 	}
+@@ -3121,6 +3187,18 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	if (krcp->initialized)
+ 		spin_unlock(&krcp->lock);
+ 	local_irq_restore(flags);
++
++	/*
++	 * High memory pressure, so inline kvfree() after
++	 * synchronize_rcu(). We can do it from might_sleep()
++	 * context only, so the current CPU can pass the QS
++	 * state.
++	 */
++	if (!success) {
++		debug_rcu_head_unqueue(ptr);
++		synchronize_rcu();
++		kvfree(ptr);
++	}
+ }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+ 
 -- 
 2.20.1
 
