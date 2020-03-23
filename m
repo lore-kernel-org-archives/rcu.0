@@ -8,53 +8,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 739BAC54FCE
-	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9349C4332E
+	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4AA38206F9
-	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A088920784
+	for <rcu@archiver.kernel.org>; Mon, 23 Mar 2020 11:36:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I5R2vU6Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxE1a/Dc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgCWLgk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Mar 2020 07:36:40 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35213 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728228AbgCWLgj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Mar 2020 07:36:39 -0400
-Received: by mail-lj1-f196.google.com with SMTP id u12so14152594ljo.2;
-        Mon, 23 Mar 2020 04:36:37 -0700 (PDT)
+        id S1728218AbgCWLgh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Mar 2020 07:36:37 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:36570 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgCWLgg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Mar 2020 07:36:36 -0400
+Received: by mail-lj1-f194.google.com with SMTP id g12so14140569ljj.3;
+        Mon, 23 Mar 2020 04:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GU+XkzCORh6tm0Vt+4y4UlmhdyRi5QBd9PG4J+axnaY=;
-        b=I5R2vU6Zxau8RuDcdKIeAhb0MOQXNDobGCbYYC3tkzZHjf97xSNF0vkrebftt3glJl
-         Jkrrdej0X1ApjbouiK4E0MXlG2oPQFpXl6GMvsrT0aqFH8+oXSRCQXtAhKP8c88R1B2I
-         522fusTH2U3kBaCwbDGQgN23A3hMvnI1c+OrgDnkkLS6lvEQwdTXCDFk0J4HMbrxigO5
-         DAy2XehtjWaIq8H7EbSmRO0poeN0tH2WabE1pg97H3m5bhO0MCcD4mePhB5Cx9L+r1dX
-         xCElHXigSd8fMjAhsvJlySnOvNmF39RShU4L8hB3AI/lRTlLjhD9euf+ANWxmoxEi7jF
-         kMqA==
+        bh=fz8u0ZjFk3Lv2kJB2Ooc1ldYEjF3gky60PssRmP4hiE=;
+        b=FxE1a/Dcd3Rb3fQ5h95hBJmHPkyO+2I3eUMDuzGt48a3ROTIzitvmXTpcNhGAjEUrt
+         v9BDEPrCrYwxq3nT9tPw2cYCp9XiodyaxXKrqdVzi2UIV00kGiac9Q5/nWMoN80eAE0l
+         8/KHmz/c6Uq6O6duAv0AIUxN7K0NxI3qRabneHCQmYs+J+umNFB2jCZAS7iQCZjazVcO
+         UHauvNP33tOHw9YPdFRbXXARjlsR13F3VCutSZhe+0CJgA1oOrqlT9GYqqDQZnjftVPv
+         2vzhJ49gpqsLrXgeH9t8XyzTaCdaZYioHFENdHkMNErupzpEHgesD2Wzfp7d+cpKO9gl
+         kOOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GU+XkzCORh6tm0Vt+4y4UlmhdyRi5QBd9PG4J+axnaY=;
-        b=uYy8kqpINmgwu702ksR3VOvO5m0sWz/0vUK0GeEKt22FHS3Dbg+yrVI4aHkC2a5orQ
-         licJPBzNLh7AXk/2O6TF0QLjH3dVvqQwqkrXUlg+xSQigQQbRAHDRZ1+2x0eT+u1lc2b
-         5aLzCjaLADu0RfhxgUey4Q3uwJi3x2b3jCabQFMh7dmrRa7fyeFLxxMUKbY+PKN77aLP
-         ZzISvVT7kpgkSXH88KOs3+Xke7WqB2ZYo4tVFoaDo3zYao90u6VH19RITe8AvoHgizI1
-         3Mz4f5oyYUMc4BWbOowEkhToIA9q1abXslZQYobDmitNBisLApaAlqZjO6G/o4KOPNP9
-         7IJw==
-X-Gm-Message-State: ANhLgQ29AyK3/GC3lqNRlpfXcfj0HizzkZG8WY0PqftiPAasl2YrK4Ct
-        Ae2A5dCpwIIguHBrZutG50fA6oUKYlA=
-X-Google-Smtp-Source: ADFU+vtpoW5Bi8bQzhXtXLHSN1XTnNF8vMNa3luBePvQJNHfv/0eiv2lRD+A/n15kdSKwfgSfrWHIA==
-X-Received: by 2002:a2e:8595:: with SMTP id b21mr13177553lji.184.1584963396632;
-        Mon, 23 Mar 2020 04:36:36 -0700 (PDT)
+        bh=fz8u0ZjFk3Lv2kJB2Ooc1ldYEjF3gky60PssRmP4hiE=;
+        b=fkV7pbLGADa7IT+zf+RSuUWWEBk7QlQOIvOcKgQujCPV6yVMW3zmGVYryfylDyrvVm
+         pASFfOwMmANDLUtJqywMXFdhKnl5dNjFIkNRS02QcSUxF6MgYsMKygnmpYm5triAmCQG
+         8kT6RfAN8JHSH3ZYywiDRFO4mGhuRe2nVl7Q6zvj3EaVi9z9ohhZYOa5J5EeHaot8CEz
+         wknisF5kwGC47vmIYqYvu6Iel4aR+kfinBqMspTq995YLzRE+kGnAm/KIvPqR95EdLAw
+         PpJq9LN867wJGFyOauakRW4cCbwBoy84MnA1D1Ek/dfGmctqFwvelD7+SXj8R4PV2P8Z
+         4CEw==
+X-Gm-Message-State: ANhLgQ1GcH8QPlSOHOAHExQRrdakewsTx30quge42UNtEfAp+VvPFkcw
+        ndi7fVJPZFmrl1tRp8nhPXxF63vTv5E=
+X-Google-Smtp-Source: ADFU+vt9kzX0ee3yMV61EpE28xxQpmeNO5l0Ntbl7/ZgHt/wWAOwevjPwcDxr5uTSXHK8uQ7zgT7ug==
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr3597046ljw.100.1584963393356;
+        Mon, 23 Mar 2020 04:36:33 -0700 (PDT)
 Received: from localhost.localdomain (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.35
+        by smtp.gmail.com with ESMTPSA id r23sm8079268lfi.89.2020.03.23.04.36.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Mar 2020 04:36:36 -0700 (PDT)
+        Mon, 23 Mar 2020 04:36:32 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     RCU <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 5/7] rcu/tiny: move kvfree_call_rcu() out of header
-Date:   Mon, 23 Mar 2020 12:36:19 +0100
-Message-Id: <20200323113621.12048-6-urezki@gmail.com>
+Subject: [PATCH 3/7] rcu/tree: introduce expedited_drain flag
+Date:   Mon, 23 Mar 2020 12:36:17 +0100
+Message-Id: <20200323113621.12048-4-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200323113621.12048-1-urezki@gmail.com>
 References: <20200323113621.12048-1-urezki@gmail.com>
@@ -77,50 +77,70 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Move inlined kvfree_call_rcu() function out of the
-header file. This step is a preparation for head-lees
-support.
+It is used and set to true when the bulk array can not
+be maintained, it happens under low memory condition
+and memory pressure.
+
+In that case the drain work is scheduled right away and
+not after KFREE_DRAIN_JIFFIES. It tends to speed up the
+reclaim path. From the other hand there are no any data
+showing the difference yet.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcutiny.h | 6 +-----
- kernel/rcu/tiny.c       | 6 ++++++
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ kernel/rcu/tree.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 4cae3dd77173..3a879a2e0268 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -34,11 +34,7 @@ static inline void synchronize_rcu_expedited(void)
- 	synchronize_rcu();
- }
- 
--static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
--{
--	call_rcu(head, func);
--}
--
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
- void rcu_qs(void);
- 
- static inline void rcu_softirq_qs(void)
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index aa897c3f2e92..508c82faa45c 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -177,6 +177,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- }
- EXPORT_SYMBOL_GPL(call_rcu);
- 
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	call_rcu(head, func);
-+}
-+EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-+
- void __init rcu_init(void)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 20d08eca7006..869a72e25d38 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3061,14 +3061,16 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+  * due to memory pressure.
+  *
+  * Each kvfree_call_rcu() request is added to a batch. The batch will be drained
+- * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch will
+- * be free'd in workqueue context. This allows us to: batch requests together to
+- * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
++ * every KFREE_DRAIN_JIFFIES number of jiffies or can be scheduled right away if
++ * a low memory is detected. All the objects in the batch will be free'd in
++ * workqueue context. This allows us to: batch requests together to reduce the
++ * number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
+  */
+ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
  {
- 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
++	bool expedited_drain = false;
+ 	void *ptr;
+ 
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+@@ -3094,6 +3096,14 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
++
++		/*
++		 * There was an issue to place the pointer directly
++		 * into array, due to memory pressure. Initiate an
++		 * expedited drain to accelerate lazy invocation of
++		 * appropriate free calls.
++		 */
++		expedited_drain = true;
+ 	}
+ 
+ 	WRITE_ONCE(krcp->count, krcp->count + 1);
+@@ -3102,7 +3112,9 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+ 	    !krcp->monitor_todo) {
+ 		krcp->monitor_todo = true;
+-		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
++
++		schedule_delayed_work(&krcp->monitor_work,
++			expedited_drain ? 0:KFREE_DRAIN_JIFFIES);
+ 	}
+ 
+ unlock_return:
 -- 
 2.20.1
 
