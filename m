@@ -2,48 +2,58 @@ Return-Path: <SRS0=d/lD=5J=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 360CDC43331
-	for <rcu@archiver.kernel.org>; Tue, 24 Mar 2020 16:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAA7CC2BAEE
+	for <rcu@archiver.kernel.org>; Tue, 24 Mar 2020 16:53:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F01BB20788
-	for <rcu@archiver.kernel.org>; Tue, 24 Mar 2020 16:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585067196;
-	bh=v6vmrl85KvdqDMSCspqrKS6nIKJJeoQe5XN+cjpOJhs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=hSvN/EJg1rwqw4ey09oHHOfqhKwfIlnVz9jOlujX21N97hJWpUSFndKMboBGPNBf6
-	 7byiMuyQt5W3tg9iF3gJVVC/gts+C7rizL9+fPa9dxkv+dNcJxY8MUEg/xVnkD/NSD
-	 knbK/+7+bPOBX6jnbLVVD6vz9GihBct+vJeyCYcI=
+	by mail.kernel.org (Postfix) with ESMTP id ABE0A206F6
+	for <rcu@archiver.kernel.org>; Tue, 24 Mar 2020 16:53:00 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Pvm7RYTC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgCXQ0f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Mar 2020 12:26:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727466AbgCXQ0f (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Mar 2020 12:26:35 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FB3D20774;
-        Tue, 24 Mar 2020 16:26:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585067194;
-        bh=v6vmrl85KvdqDMSCspqrKS6nIKJJeoQe5XN+cjpOJhs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lYiS3iZ6NudRBIRvd7aKEUydXiJr+RP4Hm2TGEej4tB12a3Esuzwf1Or5Vk0/+vdR
-         +N3W0sW/2Uae6P6iNA8qKBYo48Zg8AHGjWLMPQp3nq8QB9OD/ipaGfk9WQjVt/YKCk
-         CPft9ZtHXWH63nIRcns9NUrKziQQajFB/cSnwxKc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 32052352275F; Tue, 24 Mar 2020 09:26:34 -0700 (PDT)
-Date:   Tue, 24 Mar 2020 09:26:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        id S1728024AbgCXQxA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Mar 2020 12:53:00 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36043 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727464AbgCXQw7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Mar 2020 12:52:59 -0400
+Received: by mail-qk1-f196.google.com with SMTP id d11so19999980qko.3
+        for <rcu@vger.kernel.org>; Tue, 24 Mar 2020 09:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=X70HFJUJ8UBP2puE+4Pj/8Ffpu/zNV0pZe3tHi3ELyo=;
+        b=Pvm7RYTCtHAH9sMzgFZ1SrpEviFMtXMGRtXzAfU0f7w4htIjfwtomnoookRoWLaQzj
+         zdLnqaa9pUW1X+U83Ew7VNozcn8y+vfL+UZHu9VfPzY1w7nQD1ocdFi0SmTg1Ir8Mxxn
+         ABnAEoLDabKZuvfN43/KaaDvmdsjLAJIg4d2c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X70HFJUJ8UBP2puE+4Pj/8Ffpu/zNV0pZe3tHi3ELyo=;
+        b=SNTupHj7tMnKXDrMlxxnHW1CoNOZi5/AUufpufvsxEYpv9kHWCVjg03Pw7B4CW7v5K
+         I9D1MoAP/M4Wg24bdcz/Wbtn7twS84CIiVjeZmQ7MvBSsSpHtGczCJlU9BLdFVw6odvn
+         VT5tWQgceoHYtHNSLGkcbVmNg94BMhtShzUNoXZWR50DBTExPWv0r6x65EBJyzmI3nUU
+         aWp7FQMiip8mLFV21k7cvEzmz8IL/f6YI9jnAjTCFe8f52NVitpImKh0zAWHv2Ue4YSY
+         E5y70BVICDYfgNIwPP7nqFlLKqyeLkO1QzizBEwo2RxqRiNzZGRdWZPIkp6xWNHg+Lcm
+         P00Q==
+X-Gm-Message-State: ANhLgQ1d904dJfOD3FT2H4BOZKwDVua2W9D19owseNvPBQ765y2rdsJu
+        ONgAqXtOeMBAnPVZZ/SOQLpxKw==
+X-Google-Smtp-Source: ADFU+vuxk2fU8o/h44zPLHBVcdInqjTDwHMcau9NBCsn9rJc0M8OWFuDgHMv71xrgc9BIbPT2rMHDg==
+X-Received: by 2002:a37:7a46:: with SMTP id v67mr26301949qkc.87.1585068776697;
+        Tue, 24 Mar 2020 09:52:56 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id v75sm13831625qkb.22.2020.03.24.09.52.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 09:52:56 -0700 (PDT)
+Date:   Tue, 24 Mar 2020 12:52:55 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
@@ -54,111 +64,30 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        vpillai@digitalocean.com
 Subject: Re: [PATCH RFC v2 tip/core/rcu 01/22] sched/core: Add function to
  sample state of locked-down task
-Message-ID: <20200324162634.GG19865@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200324165255.GA242454@google.com>
 References: <20200319001024.GA28798@paulmck-ThinkPad-P72>
  <20200319001100.24917-1-paulmck@kernel.org>
  <20200319132238.75a034c3@gandalf.local.home>
  <20200319173525.GI3199@paulmck-ThinkPad-P72>
  <20200320024943.GA29649@paulmck-ThinkPad-P72>
  <20200324000639.GA29340@google.com>
- <20200324001549.GB42910@google.com>
+ <20200324154822.GC19865@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200324001549.GB42910@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200324154822.GC19865@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 08:15:49PM -0400, Joel Fernandes wrote:
-> On Mon, Mar 23, 2020 at 08:06:39PM -0400, Joel Fernandes wrote:
-> > On Thu, Mar 19, 2020 at 07:49:43PM -0700, Paul E. McKenney wrote:
-> > [...] 
-> > > 							Thanx, Paul
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > commit e26a234c1205bf02b62b62cd7f15f8086fc0b13b
-> > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > Date:   Thu Mar 19 15:33:12 2020 -0700
-> > > 
-> > >     rcu-tasks: Avoid IPIing userspace/idle tasks if kernel is so built
-> > >     
-> > >     Systems running CPU-bound real-time task do not want IPIs sent to CPUs
-> > >     executing nohz_full userspace tasks.  Battery-powered systems don't
-> > >     want IPIs sent to idle CPUs in low-power mode.  Unfortunately, RCU tasks
-> > >     trace can and will send such IPIs in some cases.
-> > >     
-> > >     Both of these situations occur only when the target CPU is in RCU
-> > >     dyntick-idle mode, in other words, when RCU is not watching the
-> > >     target CPU.  This suggests that CPUs in dyntick-idle mode should use
-> > >     memory barriers in outermost invocations of rcu_read_lock_trace()
-> > >     and rcu_read_unlock_trace(), which would allow the RCU tasks trace
-> > >     grace period to directly read out the target CPU's read-side state.
-> > >     One challenge is that RCU tasks trace is not targeting a specific
-> > >     CPU, but rather a task.  And that task could switch from one CPU to
-> > >     another at any time.
-> > >     
-> > >     This commit therefore uses try_invoke_on_locked_down_task()
-> > >     and checks for task_curr() in trc_inspect_reader_notrunning().
-> > >     When this condition holds, the target task is running and cannot move.
-> > >     If CONFIG_TASKS_TRACE_RCU_READ_MB=y, the new rcu_dynticks_zero_in_eqs()
-> > >     function can be used to check if the specified integer (in this case,
-> > >     t->trc_reader_nesting) is zero while the target CPU remains in that same
-> > >     dyntick-idle sojourn.  If so, the target task is in a quiescent state.
-> > >     If not, trc_read_check_handler() must indicate failure so that the
-> > >     grace-period kthread can take appropriate action or retry after an
-> > >     appropriate delay, as the case may be.
-> > >     
-> > >     With this change, given CONFIG_TASKS_TRACE_RCU_READ_MB=y, if a given
-> > >     CPU remains idle or a given task continues executing in nohz_full mode,
-> > >     the RCU tasks trace grace-period kthread will detect this without the
-> > >     need to send an IPI.
-> > >     
-> > >     Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > 
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index e1089fd..296f926 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -501,6 +501,7 @@ void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> > >  #endif
-> > >  
-> > >  #ifdef CONFIG_TINY_RCU
-> > > +static inline bool rcu_dynticks_zero_in_eqs(int cpu, int *vp) { return false; }
-> > >  static inline unsigned long rcu_get_gp_seq(void) { return 0; }
-> > >  static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
-> > >  static inline unsigned long
-> > > @@ -510,6 +511,7 @@ static inline void show_rcu_gp_kthreads(void) { }
-> > >  static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
-> > >  static inline void rcu_fwd_progress_check(unsigned long j) { }
-> > >  #else /* #ifdef CONFIG_TINY_RCU */
-> > > +bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
-> > >  unsigned long rcu_get_gp_seq(void);
-> > >  unsigned long rcu_exp_batches_completed(void);
-> > >  unsigned long srcu_batches_completed(struct srcu_struct *sp);
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index d31ed74..36f03d3 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -802,22 +802,38 @@ static void trc_read_check_handler(void *t_in)
-> > >  /* Callback function for scheduler to check non-running) task.  */
-> > >  static bool trc_inspect_reader_notrunning(struct task_struct *t, void *arg)
-> > 
-> > This function name is a bit confusing. The task could be running when this
-> > function is called. Below you are detecting that the task is running, by
-> > calling task_curr().
-> > 
-> > Maybe just trc_inspect_reader() is better?
-> > 
-> > [..]
+On Tue, Mar 24, 2020 at 08:48:22AM -0700, Paul E. McKenney wrote:
+[..] 
 > > 
 > > > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
 > > > index 44edd0a..43991a4 100644
@@ -193,9 +122,102 @@ On Mon, Mar 23, 2020 at 08:15:49PM -0400, Joel Fernandes wrote:
 > > transition from IPI-mode to using heavier reader-sections), then is a memory
 > > barrier needed here just to protect the reader section that already started?
 > 
-> Forgot to add:
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> That memory barrier is provided by the memory ordering in the callers
+> of rcu_dynticks_task_trace_enter() and rcu_dynticks_task_trace_exit(),
+> namely, those callers' atomic_add_return() invocations.  These barriers
+> pair with the pair of smp_rmb() calls in rcu_dynticks_zero_in_eqs(),
+> which is in turn invoked from the function formerly known as
+> trc_inspect_reader_notrunning(), AKA trc_inspect_reader().
+> 
+> This same pair of smp_rmb() calls also pair with the conditional smp_mb()
+> calls in rcu_read_lock_trace() and rcu_read_unlock_trace().
+> 
+> In your scenario, the calls in rcu_read_lock_trace() and
+> rcu_read_unlock_trace() wouldn't happen, but in that case the ordering
+> from atomic_add_return() would suffice.
+> 
+> Does that work?  Or is there an ordering bug in there somewhere?
 
-Applied, thank you!
+Thanks for explaining. Could the following scenario cause a problem?
 
-							Thanx, Paul
+If we consider the litmus test:
+
+{
+int x = 1;
+int *y = &x;
+int z = 1;
+}
+
+P0(int *x, int *z, int **y)
+{
+	int *r0;
+	int r1;
+
+	dynticks_eqs_trace_enter();
+
+	rcu_read_lock();
+	r0 = rcu_dereference(*y);
+
+	dynticks_eqs_trace_exit(); // cut-off reader's mb wings :)
+
+	r1 = READ_ONCE(*r0); // Reordering of this beyond the unlock() is bad.
+	rcu_read_unlock();
+}
+
+P1(int *x, int *z, int **y)
+{
+	rcu_assign_pointer(*y, z);
+	synchronize_rcu();
+	WRITE_ONCE(*x, 0);
+}
+
+exists (0:r0=x /\ 0:r1=0)
+
+Then the following situation can happen?
+
+	READER					UPDATER
+
+						y = &z;
+
+	eqs_enter(); // full-mb
+
+	rcu_read_lock(); // full-mb
+	// r0 = x;
+						// GP-start
+						// ..zero_in_eqs() notices eqs, no IPI
+	eqs_exit(); // full-mb
+
+	// actual r1 = *x but will reorder
+
+	rcu_read_unlock(); // no-mb
+						// GP-finish as notices nesting = 0
+						x = 0;
+	// reordered r1 = *x = 0;
+
+
+Basically r0=x /\ r1=0 happened because r1=0. Or did I miss something that
+prevents it?
+
+thanks,
+
+ - Joel
+
+
+
+
+> > thanks,
+> > 
+> >  - Joel
+> > 
+> > 
+> > > +#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
+> > > +}
+> > > +
+> > > +/* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+> > > +static void rcu_dynticks_task_trace_exit(void)
+> > > +{
+> > > +#ifdef CONFIG_TASKS_RCU_TRACE
+> > > +	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+> > > +		current->trc_reader_special.b.need_mb = false;
+> > > +#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
+> > > +}
