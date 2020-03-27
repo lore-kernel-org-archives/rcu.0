@@ -2,328 +2,143 @@ Return-Path: <SRS0=KYXL=5M=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C68FBC43331
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F19C43331
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8B4822072F
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:23:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 130D820774
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347828;
-	bh=SY+0Q13cdiLCyweJl9Y4ZF897cLrmmwILPQHft8+ITw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=L37udMkZkHSv70Rlgyygr18bNPnUYcuTAUpN56Vuqo2UdqDevenaZ99vwlOOD3nYZ
-	 mXji4ms0JdUZebDfX7dIHB+6r6bnJTT7hTGveH+t+hhKYBOQbQLhg96B6LdAO3xRkl
-	 YlJjoXFwbg5ZiV5sCFkECQ94Pg1b+Xs+8ZhNhma4=
+	s=default; t=1585347900;
+	bh=AbHzCq/ipvxYg03IOnh2qoQJ9OKD4rtZm+KGxOfTrN8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=TmUGCqAd8vrgRWhhk66E2uTT2HQt2gNOFDOaUWjiD1al7R63KzZauq4qQBO51EdTI
+	 Axg4flJ4euWcq542I8OfjtFU2tDXtG1LaP3UVZhwpB8Gvo41kTgOuVPChU6vbfin5y
+	 qsPwASXTRVxGqpu8hBTrjQO4fKw4EzeZuyWrjvLQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727655AbgC0WXs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:23:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
+        id S1727702AbgC0WY7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:24:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726781AbgC0WXs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:23:48 -0400
+        id S1727655AbgC0WY7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:24:59 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32C6E206DB;
-        Fri, 27 Mar 2020 22:23:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81AE72074A;
+        Fri, 27 Mar 2020 22:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347827;
-        bh=SY+0Q13cdiLCyweJl9Y4ZF897cLrmmwILPQHft8+ITw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=grtF2meVq8NWC3HzSp4Xqd3Hft6LG4JWajJb09mvAUZy4rL6F65Zvg1D04ZfmgKCy
-         S97/kP/BYuljczbbgxht3ZQWTyLXxcJcQLvCuuueGuFjNvMumy1BHe/0mwRLcZl1tP
-         g1u+nKNuKx89PSjL4Dctkmsxv8vYDYcjpF5IT8TY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EE73D35226D5; Fri, 27 Mar 2020 15:23:46 -0700 (PDT)
-Date:   Fri, 27 Mar 2020 15:23:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1585347898;
+        bh=AbHzCq/ipvxYg03IOnh2qoQJ9OKD4rtZm+KGxOfTrN8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IC5moYkei5dZ1wiSq/o7J0l4Cdsqm4//zp/FLfQ63sbC5S4R7bJj9hI/945WHoopH
+         2r3ksuPGMe6K/wRKoh1lUe9NgdFKMW0Wc7KsgBb6HYj77irMWJPrjZa55nXU91g26v
+         f2+8PUGYWW7kS6U2mrUw+wTzdG1ogM0iO7qHfkmA=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH RFC v3 tip/core/rcu 0/34] Prototype RCU usable from idle,
- exception, offline
-Message-ID: <20200327222346.GA12082@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200312181618.GA21271@paulmck-ThinkPad-P72>
- <20200319001024.GA28798@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200319001024.GA28798@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 02/34] rcu: Add per-task state to RCU CPU stall warnings
+Date:   Fri, 27 Mar 2020 15:24:24 -0700
+Message-Id: <20200327222456.12470-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
+References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
+
+Currently, an RCU-preempt CPU stall warning simply lists the PIDs of
+those tasks holding up the current grace period.  This can be helpful,
+but more can be even more helpful.
+
+To this end, this commit adds the nesting level, whether the task
+thinks it was preempted in its current RCU read-side critical section,
+whether RCU core has asked this task for a quiescent state, whether the
+expedited-grace-period hint is set, and whether the task believes that
+it is on the blocked-tasks list (it must be, or it would not be printed,
+but if things are broken, best not to take too much for granted).
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_stall.h | 38 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 502b4dd..e19487d 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -192,14 +192,40 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ }
+ 
++// Communicate task state back to the RCU CPU stall warning request.
++struct rcu_stall_chk_rdr {
++	int nesting;
++	union rcu_special rs;
++	bool on_blkd_list;
++};
++
++/*
++ * Report out the state of a not-running task that is stalling the
++ * current RCU grace period.
++ */
++static bool check_slow_task(struct task_struct *t, void *arg)
++{
++	struct rcu_node *rnp;
++	struct rcu_stall_chk_rdr *rscrp = arg;
++
++	if (task_curr(t))
++		return false; // It is running, so decline to inspect it.
++	rscrp->nesting = t->rcu_read_lock_nesting;
++	rscrp->rs = t->rcu_read_unlock_special;
++	rnp = t->rcu_blocked_node;
++	rscrp->on_blkd_list = !list_empty(&t->rcu_node_entry);
++	return true;
++}
++
+ /*
+  * Scan the current list of tasks blocked within RCU read-side critical
+  * sections, printing out the tid of each.
+  */
+ static int rcu_print_task_stall(struct rcu_node *rnp)
+ {
+-	struct task_struct *t;
+ 	int ndetected = 0;
++	struct rcu_stall_chk_rdr rscr;
++	struct task_struct *t;
+ 
+ 	if (!rcu_preempt_blocked_readers_cgp(rnp))
+ 		return 0;
+@@ -208,7 +234,15 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+ 	t = list_entry(rnp->gp_tasks->prev,
+ 		       struct task_struct, rcu_node_entry);
+ 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+-		pr_cont(" P%d", t->pid);
++		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
++			pr_cont(" P%d", t->pid);
++		else
++			pr_cont(" P%d/%d:%c%c%c%c",
++				t->pid, rscr.nesting,
++				".b"[rscr.rs.b.blocked],
++				".q"[rscr.rs.b.need_qs],
++				".e"[rscr.rs.b.exp_hint],
++				".l"[rscr.on_blkd_list]);
+ 		ndetected++;
+ 	}
+ 	pr_cont("\n");
+-- 
+2.9.5
 
-This series provides two variants of Tasks RCU, a rude variant inspired
-by Steven Rostedt's use of schedule_on_each_cpu(), and a tracing variant
-requested by the BPF folks to be used (for example) to protect BPF
-programs that unconditionally access userspace memory, and thus might
-occasionally take a page fault, resulting in a voluntary context switch.
-
-The rude variant uses context switches and offline as its quiescent
-states, so that preempt-disabled regions of code executing on online
-CPUs form the tasks rude RCU readers.
-
-The tracing variant has explicit read-side markers to permit finite grace
-periods even given in-kernel loops in PREEMPT=n builds.  These markers
-are rcu_read_lock_trace() and rcu_read_unlock_trace(), so that any code
-not under rcu_read_lock_trace() is a quiescent state.  This variant
-also protects marked code in the idle loop, on exception entry/exit
-paths, and on the various CPU-hotplug online/offline code paths, thus
-having protection properties similar to SRCU.  However, unlike SRCU,
-this variant avoids expensive instructions in the read-side primitives,
-thus having read-side overhead similar to that of preemptible RCU.
-This difference is important for some BPF programs, according to
-benchmarking from Alexei Starovoitov:
-
-https://lore.kernel.org/lkml/20200310014043.4dbagqbr2wsbuarm@ast-mbp/
-
-There are of course downsides.  The grace-period code can send IPIs to
-CPUs, even when those CPUs are in the idle loop or in nohz_full userspace.
-However, this version enlists the aid of the context-switch hooks,
-which eliminates the need for IPIs in context-switch-heavy workloads.
-It also prohibits sending of IPIs early in the grace period based on a
-new rcupdate.rcu_task_ipi_delay kernel boot parameter, which provides
-additional opportunity for the hooks to do their job.  Finally, a new
-TASKS_TRACE_RCU_READ_MB Kconfig option avoids sending IPIs to tasks
-executing userspace or in the idle loop, at the expense of higher overhead
-readers during kernel entry/exit code and in the idle loop.
-
-It is also necessary to scan the full tasklist, much as for Tasks RCU.
-There is a single callback queue guarded by a single lock, again, much
-as for Tasks RCU.  If needed, these downsides can be at least partially
-remedied.
-
-Perhaps most important, this variant of RCU does not affect the vanilla
-flavors, rcu_preempt and rcu_sched.  The fact that RCU Tasks Trace
-readers can operate from idle, offline, and exception entry/exit in no
-way allows rcu_preempt and rcu_sched readers to also do so.
-
-The RCU tasks trace mechanism is based off of RCU tasks rather than
-SRCU because the latter is more complex and also because the latter
-uses a CPU-by-CPU approach to tracking quiescent states instead of the
-task-by-task approach that is needed.  It is in theory possible to mash
-RCU tasks trace into the Tree SRCU implementation, but there will need
-to be extremely good reasons for doing so.  The vanilla RCU mechanism
-could in theory be used in CONFIG_PREEMPT=y kernels, but fails utterly
-in CONFIG_PREEMPT=n kernels.  Tasks RCU does not work because page
-faults can result in a voluntary context switch, which prevents it from
-protecting a BPF program that page faults.  The new "rude" variant only
-protected preempt-disable regions of code, thus also failing to protect
-BPF programs that page fault.
-
-This effort benefited greatly from off-list discussions of BPF
-requirements with Alexei Starovoitov and Andrii Nakryiko, as well as from
-numerous on-list discussions, at least some of which are captured in the
-"Link:" tags on the patches themselves.
-
-The patches in this series are as follows, with asterisks indicating
-significant change from v1:
-
-1*.	Add function to sample state of a locked-down task.  Added
-	the task_struct argument to the callback function.
-
-2*.	Use the above function to add per-task state to RCU CPU stall
-	warnings.  This commit was adapted to the updated API.
-
-3.	Add rcutorture module parameter to produce non-busy-wait task
-	stalls, thus allowing the above RCU CPU stall change to be
-	exercised.
-
-4.	Move Tasks RCU to its own file.
-
-5.	Create struct to hold RCU-tasks state information.
-
-6.	Reinstate synchronize_rcu_mult(), as there will likely once
-	again be a need to wait on multiple flavors of RCU.
-
-7.	Add an rcutorture test for synchronize_rcu_mult().
-
-8.	Refactor RCU-tasks to allow variants to be added.
-
-9*.	Add an RCU-tasks rude variant, based on Steven Rostedt's
-	use of schedule_on_each_cpu().  Updated Kconfig default
-	to rely on default default value, updated help text, and
-	updated the header comment.
-
-10.	Add torture tests for RCU Tasks Rude.
-
-11.	Use unique names for RCU-Tasks kthreads and messages.
-
-12.	Further refactor RCU-tasks to allow adding even more variants.
-
-13.	Code movement to allow even more Tasks RCU variants.
-
-14*.	Add an RCU Tasks Trace to simplify protection of tracing hooks,
-	including BPF.  This version fixes even more bugs and adds a
-	URL to an email explaining the memory ordering.  It also updates
-	the Kconfig default and updates the help text.  Furthermore, it
-	moves a misplaced comment update.  Finally, it makes the
-	rcu_read_unlock_trace() function safe for scheduler locks,
-	interrupt handlers, and NMI handlers.
-
-15.	Add torture tests for RCU Tasks Trace.
-
-16.	Add stall warnings for RCU Tasks Trace.
-
-17.	Move #ifdef into tasks.h to ease addition of Kconfig-dependent APIs.
-
-18.	Add RCU-tasks-specific information to rcutorture writer stall
-	output, easing debugging of these RCU variants.
-
-19.	Make the above rcutorture writer stall output include
-	grace-period state.
-
-20.	Cause RCU tasks trace to take advantage of RCU scheduler hooks,
-	thus reducing the number of IPIs.
-
-21.	Record grace-period start time for RCU tasks variants for
-	IPI throttling and for debugging.
-
-22.	Provide a kernel boot parameter to delay IPIs until a given grace
-	period reaches the specified age, with this age defaulting to
-	half a second, further reducing the number of IPIs.  To zero on
-	context-switch-heavy workloads.
-
-23*.	Split ->trc_reader_need_end to make room for memory-barrier
-	indication.
-
-24*.	Add grace-period and IPI counts to statistics.
-
-25*.	Add Kconfig option to mediate smp_mb() vs. IPI.
-
-26*.	Avoid IPIing userspace/idle tasks if kernel is so built.
-
-27*.	Allow rcu_read_unlock_trace() under scheduler locks.
-
-28*.	Disable CPU hotplug across RCU tasks trace scans.  This enables
-	detection of idle tasks for offline CPUs.
-
-29*.	Handle the running-offline idle-task special case.
-
-30*.	Make RCU tasks trace also wait for idle tasks.
-
-31*.	Add rcu_dynticks_zero_in_eqs() effectiveness statistics.
-
-32*.	Add count for idle tasks on offline CPUs.
-
-33*.	Add TRACE02 scenario enabling RCU Tasks Trace IPIs.
-	The existing TRACE01 scenario avoids IPIs to userspace
-	and idle CPUs.
-
-34*.	Add IPI failure count to statistics.
-
-These new versions of Tasks RCU now pass heavy rcutorture testing, and
-should thus be fine for experimental use.  The original Tree RCU went
-upstream with less testing than this has seen, but then again those were
-simpler times.  ;-)
-
-Changes since v2:
-
-o	Leveraged idle entry/exit hooks to reduce IPIing of idle and
-	userspace tasks.
-
-o	Switch to read-side memory barriers during idle and userspace
-	execution in kernels built for real-time or battery-powered use,
-	mediated by a new TASKS_TRACE_RCU_READ_MB Kconfig option.  Also
-	add an rcutorture test scenario for this option.
-
-o	Adjust rcutorture to better test the IPI path.  (Seeing zero IPIs
-	might be satisfying to me personally, but it is a lousy test
-	strategy!)
-
-o	Added more information to stall warnings and rcutorture
-	end-of-test printout.
-
-o	Make rcu_read_unlock_trace() usable when invoked with
-	scheduler locks held.
-
-o	Make rcu_read_unlock_trace() usable in interrupt and NMI
-	handlers.
-
-o	Fix handling of idle tasks, including those "running" on
-	offline CPUs.
-
-o	Fixed a number of other bugs found during testing and responded
-	to review feedback.
-
-Changes since v1:
-
-o	Updated this cover letter to provide more detail, including
-	on roads not taken.
-
-o	Updated commit logs based on feedback from v1.
-
-o	Updated the function providing a consistent view of the
-	specified non-running task's state to invoke the specified
-	function even if the task is currently running.  This will
-	be necessary to safely eliminate IPIs for long-term idle and
-	userspace execution.  The function may also now return false
-	to transmit a failure indication to the caller, for example,
-	if the function cannot handle being invoked on a running CPU.
-	The function is now passed the relevant task_struct pointer as
-	well as the specified argument.
-
-	Changes were of course made to use the new API.
-
-o	Leveraged context-switch hooks to avoid unnecessary IPIs.
-
-o	Held off IPIs for the first half second (by default) of each
-	grace period to give the context-switch hooks a better chance
-	to do their job.
-
-o	Lots of testing.
-
-o	Fixed a number of bugs and responded to v2 feedback.
-
-Todo:
-
-o	Even more testing.
-
-o	If all goes well, post a non-RFC series.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt             |   12 
- include/linux/rcupdate.h                                    |   48 
- include/linux/rcupdate_trace.h                              |   98 
- include/linux/rcupdate_wait.h                               |   19 
- include/linux/rcutiny.h                                     |    2 
- include/linux/sched.h                                       |   12 
- include/linux/wait.h                                        |    2 
- init/init_task.c                                            |    5 
- kernel/fork.c                                               |    5 
- kernel/rcu/Kconfig                                          |   50 
- kernel/rcu/Kconfig.debug                                    |    4 
- kernel/rcu/rcu.h                                            |    5 
- kernel/rcu/rcutorture.c                                     |   99 
- kernel/rcu/tasks.h                                          | 2089 +++++++++---
- kernel/rcu/tree.c                                           |   24 
- kernel/rcu/tree.h                                           |    2 
- kernel/rcu/tree_plugin.h                                    |   24 
- kernel/rcu/tree_stall.h                                     |   40 
- kernel/rcu/update.c                                         |  375 --
- kernel/sched/core.c                                         |   48 
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |    3 
- tools/testing/selftests/rcutorture/configs/rcu/RUDE01       |   10 
- tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot  |    1 
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01      |   11 
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot |    1 
- tools/testing/selftests/rcutorture/configs/rcu/TRACE02      |   11 
- tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot |    1 
- 27 files changed, 2140 insertions(+), 861 deletions(-)
