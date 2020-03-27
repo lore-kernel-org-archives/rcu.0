@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D232C2D0EE
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E6C2C2D0E5
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1099B2073E
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 11F4B2073E
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347965;
-	bh=bzEBBx1NMqRoc2oUn+LWRfpri+mzDzy4uPnalAtsjCc=;
+	s=default; t=1585347966;
+	bh=WXBO/ZPMHex+UqRjYTFM44vWqG22vzMF6bLX0ctGiVU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=H3drCuJOfRtEKh5XXLntqrvHnms6o5azMQUNayd8caGSfB84nh7SID2akyljeB5v/
-	 MkWahtzkghfoEToioyl5ha2ACVXsllL+OWozTwpu0nuYDFCZLWy3f2MXRY4phppvk+
-	 MgY8J5Jgzn7QBR5NkHMpKwTtMUJoypuFnWzWw40A=
+	b=P5eixc9OqMjcgyCTqvgumdIea2Ubvq1JronIfCN2/yn+AxDE7IQ/J0OnDx+zUy+73
+	 n991o/4JPIT/MBoIMkj5gS101Bcy47psmskD2g2S1IrLmATZ4LPOTVC5uuRa0z5P71
+	 um1XF4ou2ULuSgEUsvUy/xhLNgAAJty9jq5CgcsM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgC0WZ4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43254 "EHLO mail.kernel.org"
+        id S1727841AbgC0WZF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgC0WZI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:08 -0400
+        id S1727821AbgC0WZE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:04 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B99E216FD;
-        Fri, 27 Mar 2020 22:25:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86ABC215A4;
+        Fri, 27 Mar 2020 22:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347906;
-        bh=bzEBBx1NMqRoc2oUn+LWRfpri+mzDzy4uPnalAtsjCc=;
+        s=default; t=1585347903;
+        bh=WXBO/ZPMHex+UqRjYTFM44vWqG22vzMF6bLX0ctGiVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gdl4q6coniYgo4uyWFywW/lHIeBmfycAA5OglSdv/z0+7REr8GZ/uQyVrXiSOOfIx
-         OAtrPflXM7WERAk53Bp1gUyDS18rLVgNwpzYRa71pNBcBy2AmPJvmU5limZUKkvwd2
-         gaTHps1wrPI5hFoO2yc/XzeHo4hQQlQKjitsvGQQ=
+        b=JwdocSBNZLDugUS6nKYjuf8tbC0aA8MrJcmtm0NxZk3yqJbvBMk4bD/3SK4ki70fh
+         x+/qvqeAFIX4NIB3BwiZyVHzWdT+14YCBeJwB3jtAewhNddoX11NchmJOf5zOE61Xp
+         EDE5NkiOaQQ7R95usAXzZS7Jlrmu9/xV2AjyKZNk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 24/34] rcu-tasks: Add grace-period and IPI counts to statistics
-Date:   Fri, 27 Mar 2020 15:24:46 -0700
-Message-Id: <20200327222456.12470-24-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 16/34] rcu-tasks: Add stall warnings for RCU Tasks Trace
+Date:   Fri, 27 Mar 2020 15:24:38 -0700
+Message-Id: <20200327222456.12470-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,76 +60,119 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds a grace-period count and a count of IPIs sent since
-boot, which is printed in response to rcutorture writer stalls and at
-the end of rcutorture testing.  These counts will be used to evaluate
-various schemes to reduce the number of IPIs sent.
+This commit adds RCU CPU stall warnings for RCU Tasks Trace.  These
+dump out any tasks blocking the current grace period, as well as any
+CPUs that have not responded to an IPI request.  This happens in two
+phases, when initially extracting state from the tasks and later when
+waiting for any holdout tasks to check in.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 66 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4150f8d..f9a828c 100644
+index a5ed7e2..fc7f116 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -30,6 +30,8 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @gp_state: Grace period's most recent state transition (debugging).
-  * @gp_jiffies: Time of last @gp_state transition.
-  * @gp_start: Most recent grace-period start in jiffies.
-+ * @n_gps: Number of grace periods completed since boot.
-+ * @n_ipis: Number of IPIs sent to encourage grace periods to end.
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-  * @pertask_func: This flavor's per-task scan function (optional).
-  * @postscan_func: This flavor's post-task scan function (optional).
-@@ -47,6 +49,8 @@ struct rcu_tasks {
- 	int gp_state;
- 	unsigned long gp_jiffies;
- 	unsigned long gp_start;
-+	unsigned long n_gps;
-+	unsigned long n_ipis;
- 	struct task_struct *kthread_ptr;
- 	rcu_tasks_gp_func_t gp_func;
- 	pregp_func_t pregp_func;
-@@ -208,6 +212,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
- 		rtp->gp_start = jiffies;
- 		rtp->gp_func(rtp);
-+		rtp->n_gps++;
- 
- 		/* Invoke the callbacks. */
- 		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
-@@ -285,11 +290,12 @@ static void __init rcu_tasks_bootup_oddness(void)
- /* Dump out rcutorture-relevant state common to all RCU-tasks flavors. */
- static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
- {
--	pr_info("%s: %s(%d) since %lu %c%c %s\n",
-+	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c %s\n",
- 		rtp->kname,
- 		tasks_gp_state_getname(rtp),
- 		data_race(rtp->gp_state),
- 		jiffies - data_race(rtp->gp_jiffies),
-+		data_race(rtp->n_gps), data_race(rtp->n_ipis),
- 		".k"[!!data_race(rtp->kthread_ptr)],
- 		".C"[!!data_race(rtp->cbs_head)],
- 		s);
-@@ -592,6 +598,7 @@ static void rcu_tasks_be_rude(struct work_struct *work)
- // Wait for one rude RCU-tasks grace period.
- static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
- {
-+	rtp->n_ipis += cpumask_weight(cpu_online_mask);
- 	schedule_on_each_cpu(rcu_tasks_be_rude);
+@@ -794,9 +794,41 @@ static void rcu_tasks_trace_postscan(void)
+ 	// Any tasks that exit after this point will set ->trc_reader_checked.
  }
  
-@@ -852,6 +859,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 		atomic_inc(&trc_n_readers_need_end);
- 		per_cpu(trc_ipi_to_cpu, cpu) = true;
- 		t->trc_ipi_to_cpu = cpu;
-+		rcu_tasks_trace.n_ipis++;
- 		if (smp_call_function_single(cpu,
- 					     trc_read_check_handler, t, 0)) {
- 			// Just in case there is some other reason for
++/* Show the state of a task stalling the current RCU tasks trace GP. */
++static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
++{
++	int cpu;
++
++	if (*firstreport) {
++		pr_err("INFO: rcu_tasks_trace detected stalls on tasks:\n");
++		*firstreport = false;
++	}
++	// FIXME: This should attempt to use try_invoke_on_nonrunning_task().
++	cpu = task_cpu(t);
++	pr_alert("P%d: %c%c%c nesting: %d%c cpu: %d\n",
++		 t->pid,
++		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) > 0],
++		 ".i"[is_idle_task(t)],
++		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
++		 t->trc_reader_nesting,
++		 " N"[!!t->trc_reader_need_end],
++		 cpu);
++	sched_show_task(t);
++}
++
++/* List stalled IPIs for RCU tasks trace. */
++static void show_stalled_ipi_trace(void)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu)
++		if (per_cpu(trc_ipi_to_cpu, cpu))
++			pr_alert("\tIPI outstanding to CPU %d\n", cpu);
++}
++
+ /* Do one scan of the holdout list. */
+ static void check_all_holdout_tasks_trace(struct list_head *hop,
+-					  bool ndrpt, bool *frptp)
++					  bool needreport, bool *firstreport)
+ {
+ 	struct task_struct *g, *t;
+ 
+@@ -809,21 +841,51 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
+ 		// If check succeeded, remove this task from the list.
+ 		if (READ_ONCE(t->trc_reader_checked))
+ 			trc_del_holdout(t);
++		else if (needreport)
++			show_stalled_task_trace(t, firstreport);
++	}
++	if (needreport) {
++		if (firstreport)
++			pr_err("INFO: rcu_tasks_trace detected stalls?\n");
++		show_stalled_ipi_trace();
+ 	}
+ }
+ 
+ /* Wait for grace period to complete and provide ordering. */
+ static void rcu_tasks_trace_postgp(void)
+ {
++	bool firstreport;
++	struct task_struct *g, *t;
++	LIST_HEAD(holdouts);
++	long ret;
++
+ 	// Remove the safety count.
+ 	smp_mb__before_atomic();  // Order vs. earlier atomics
+ 	atomic_dec(&trc_n_readers_need_end);
+ 	smp_mb__after_atomic();  // Order vs. later atomics
+ 
+ 	// Wait for readers.
+-	wait_event_idle_exclusive(trc_wait,
+-				  atomic_read(&trc_n_readers_need_end) == 0);
+-
++	for (;;) {
++		ret = wait_event_idle_exclusive_timeout(
++				trc_wait,
++				atomic_read(&trc_n_readers_need_end) == 0,
++				READ_ONCE(rcu_task_stall_timeout));
++		if (ret)
++			break;  // Count reached zero.
++		for_each_process_thread(g, t)
++			if (READ_ONCE(t->trc_reader_need_end))
++				trc_add_holdout(t, &holdouts);
++		firstreport = true;
++		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list)
++			if (READ_ONCE(t->trc_reader_need_end)) {
++				show_stalled_task_trace(t, &firstreport);
++				trc_del_holdout(t);
++			}
++		if (firstreport)
++			pr_err("INFO: rcu_tasks_trace detected stalls?\n");
++		show_stalled_ipi_trace();
++		pr_err("\t%d holdouts\n", atomic_read(&trc_n_readers_need_end));
++	}
+ 	smp_mb(); // Caller's code must be ordered after wakeup.
+ }
+ 
 -- 
 2.9.5
 
