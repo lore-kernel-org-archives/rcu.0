@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9F92C43331
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C9F2C2D0EF
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A053220857
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 378A920857
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347993;
-	bh=lKdlR+yvmKv8UTk4vOzDkhjS0DRm8Tw3V7YRjhYVRfY=;
+	s=default; t=1585347995;
+	bh=hSbQDuf8vTlOMjI6rgIo5X6FzzD0x98qmRWJGH4U1u8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=a1pF9tY9v4M3G0ILgwcaKycm/sR2lL8nQXPJImar6ChghBBBzSE8BAomoUMC3Ar3c
-	 9bRYrYpI9e69EfLhXm1SZpdXLcSWd1C1lXdsegjL+QbjWilolnDrwOsYAfAd77jyi7
-	 8PJ/R1ujURZm5BbCoczX9FFzq1wgNP6nFqGunSDo=
+	b=UOt+WgvdV1S+QW7mxYiSm3KQvhxoMFQ9ghN+Ya9JeBlrk5QFFotf9SzlEphK96eCS
+	 XNRnWneNbKb9bLA9ehfQs5+zTNLzdrTryEcIQR+rBi8N+OoCfIuU9JPblou5aNaQ5U
+	 8FnhHcb3RAyiOJZE070X7YRQYKokBE91GnZiGEB8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgC0W0Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42830 "EHLO mail.kernel.org"
+        id S1727779AbgC0WZA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727705AbgC0WZC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:02 -0400
+        id S1727769AbgC0WZA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:00 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F527208FE;
-        Fri, 27 Mar 2020 22:25:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA3EB20848;
+        Fri, 27 Mar 2020 22:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347901;
-        bh=lKdlR+yvmKv8UTk4vOzDkhjS0DRm8Tw3V7YRjhYVRfY=;
+        s=default; t=1585347900;
+        bh=hSbQDuf8vTlOMjI6rgIo5X6FzzD0x98qmRWJGH4U1u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w/Z8KwXtwHAHtUHBeek1NgXjvMOnqtGkHhS7g5tCDbG2NbEFJV2nQ8plwE6lbzrZG
-         Zy0MqEg8gcd2SwudJddCTlAwg+qpftub4AdSRIxCR5kZc1E2FM4dBTPV9yWqrR7DuV
-         PxCmKUdKjHkd+6QZqyneg4AnSAYM/czFu5DD+RVo=
+        b=TZz8x2vxqphiEoRCJJvKduyp1ubYwTV3PIUNII8/V6r+6c4/osMQMCNsyE39Y+aR4
+         0n5WT8u7UmxibCa/e6RR41OPZaS1c/p+HW3rMSZQHh6tLBMWJWW+PkiB1KkbjKjbCd
+         Aqa7mIqHDpPHCuUwMdIENFs5MfNWhZodjspTUZm8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 10/34] rcutorture: Add torture tests for RCU Tasks Rude
-Date:   Fri, 27 Mar 2020 15:24:32 -0700
-Message-Id: <20200327222456.12470-10-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 06/34] rcu: Reinstate synchronize_rcu_mult()
+Date:   Fri, 27 Mar 2020 15:24:28 -0700
+Message-Id: <20200327222456.12470-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,141 +60,45 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds the definitions required to torture the rude flavor of
-RCU tasks.
+With the advent and likely usage of synchronize_rcu_rude(), there is
+again a need to wait on multiple types of RCU grace periods, for
+example, call_rcu_tasks() and call_rcu_tasks_rude().  This commit
+therefore reinstates synchronize_rcu_mult() in order to allow these
+grace periods to be straightforwardly waited on concurrently.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug                           |  2 ++
- kernel/rcu/rcu.h                                   |  1 +
- kernel/rcu/rcutorture.c                            | 31 ++++++++++++++++++++--
- .../selftests/rcutorture/configs/rcu/CFLIST        |  1 +
- .../selftests/rcutorture/configs/rcu/RUDE01        | 10 +++++++
- .../selftests/rcutorture/configs/rcu/RUDE01.boot   |  1 +
- 6 files changed, 44 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
+ include/linux/rcupdate_wait.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index ec4bb6c..b15a3bd 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -24,6 +24,7 @@ config RCU_PERF_TEST
- 	select TORTURE_TEST
- 	select SRCU
- 	select TASKS_RCU
-+	select TASKS_RUDE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs performance
-@@ -41,6 +42,7 @@ config RCU_TORTURE_TEST
- 	select TORTURE_TEST
- 	select SRCU
- 	select TASKS_RCU
-+	select TASKS_RUDE_RCU
- 	default n
- 	help
- 	  This option provides a kernel module that runs torture tests
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 00ddc92..c574620 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -441,6 +441,7 @@ void rcu_request_urgent_qs_task(struct task_struct *t);
- enum rcutorture_type {
- 	RCU_FLAVOR,
- 	RCU_TASKS_FLAVOR,
-+	RCU_TASKS_RUDE_FLAVOR,
- 	RCU_TRIVIAL_FLAVOR,
- 	SRCU_FLAVOR,
- 	INVALID_RCU_FLAVOR
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 88631f5..386cd11 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -731,6 +731,33 @@ static struct rcu_torture_ops trivial_ops = {
- 	.name		= "trivial"
- };
+diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+index c0578ba..699b938 100644
+--- a/include/linux/rcupdate_wait.h
++++ b/include/linux/rcupdate_wait.h
+@@ -31,4 +31,23 @@ do {									\
  
-+/*
-+ * Definitions for rude RCU-tasks torture testing.
+ #define wait_rcu_gp(...) _wait_rcu_gp(false, __VA_ARGS__)
+ 
++/**
++ * synchronize_rcu_mult - Wait concurrently for multiple grace periods
++ * @...: List of call_rcu() functions for different grace periods to wait on
++ *
++ * This macro waits concurrently for multiple types of RCU grace periods.
++ * For example, synchronize_rcu_mult(call_rcu, call_rcu_tasks) would wait
++ * on concurrent RCU and RCU-tasks grace periods.  Waiting on a given SRCU
++ * domain requires you to write a wrapper function for that SRCU domain's
++ * call_srcu() function, with this wrapper supplying the pointer to the
++ * corresponding srcu_struct.
++ *
++ * The first argument tells Tiny RCU's _wait_rcu_gp() not to
++ * bother waiting for RCU.  The reason for this is because anywhere
++ * synchronize_rcu_mult() can be called is automatically already a full
++ * grace period.
 + */
++#define synchronize_rcu_mult(...) \
++	_wait_rcu_gp(IS_ENABLED(CONFIG_TINY_RCU), __VA_ARGS__)
 +
-+static void rcu_tasks_rude_torture_deferred_free(struct rcu_torture *p)
-+{
-+	call_rcu_tasks_rude(&p->rtort_rcu, rcu_torture_cb);
-+}
-+
-+static struct rcu_torture_ops tasks_rude_ops = {
-+	.ttype		= RCU_TASKS_RUDE_FLAVOR,
-+	.init		= rcu_sync_torture_init,
-+	.readlock	= rcu_torture_read_lock_trivial,
-+	.read_delay	= rcu_read_delay,  /* just reuse rcu's version. */
-+	.readunlock	= rcu_torture_read_unlock_trivial,
-+	.get_gp_seq	= rcu_no_completed,
-+	.deferred_free	= rcu_tasks_rude_torture_deferred_free,
-+	.sync		= synchronize_rcu_tasks_rude,
-+	.exp_sync	= synchronize_rcu_tasks_rude,
-+	.call		= call_rcu_tasks_rude,
-+	.cb_barrier	= rcu_barrier_tasks_rude,
-+	.fqs		= NULL,
-+	.stats		= NULL,
-+	.irq_capable	= 1,
-+	.name		= "tasks-rude"
-+};
-+
- static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
- {
- 	if (!cur_ops->gp_diff)
-@@ -740,7 +767,7 @@ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
- 
- static bool __maybe_unused torturing_tasks(void)
- {
--	return cur_ops == &tasks_ops;
-+	return cur_ops == &tasks_ops || cur_ops == &tasks_rude_ops;
- }
- 
- /*
-@@ -2408,7 +2435,7 @@ rcu_torture_init(void)
- 	int firsterr = 0;
- 	static struct rcu_torture_ops *torture_ops[] = {
- 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops,
--		&busted_srcud_ops, &tasks_ops, &trivial_ops,
-+		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops, &trivial_ops,
- 	};
- 
- 	if (!torture_init_begin(torture_type, verbose))
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index c3c1fb5..ec0c72f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -14,3 +14,4 @@ TINY02
- TASKS01
- TASKS02
- TASKS03
-+RUDE01
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01 b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-new file mode 100644
-index 0000000..bafe94c
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01
-@@ -0,0 +1,10 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=2
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_DEBUG_LOCK_ALLOC=y
-+CONFIG_PROVE_LOCKING=y
-+#CHECK#CONFIG_PROVE_RCU=y
-+CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
-new file mode 100644
-index 0000000..9363708
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
-@@ -0,0 +1 @@
-+rcutorture.torture_type=tasks-rude
+ #endif /* _LINUX_SCHED_RCUPDATE_WAIT_H */
 -- 
 2.9.5
 
