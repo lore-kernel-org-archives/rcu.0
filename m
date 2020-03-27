@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00CEEC2D0EE
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC3CC2D0E5
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 25BD92173E
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64A082073B
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347910;
-	bh=z0cDMWPHjda8S1DQ/YXhUKhufGNi2+4CB+bAP+nrCxg=;
+	s=default; t=1585347937;
+	bh=yBox/4GWVJ8ewhqBGhJZd6XuRgqwee8Uc9VXqctFhDs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=H5TTZW5BI1wWYBHfjgkZtjHd4bYYpqYvhqO8o4VVJomweIFuGxGfYEH+pcMPA1x1x
-	 ui1JQ8SAkjiTpIWbrfBPokWlk6A1vl44f5ieDoaWHpDV3TOH9Ay45crOlbVzD69Hdt
-	 2vQIEp0bitCLu8vAlBsXtNcIi3B1v95+/kqtuxgg=
+	b=UqSjelqkbfPbJhkRGPBgDBkezVJywPUvdz/ymvuvb8836gg/Hdon03qCfqIm6TniQ
+	 qWCRDYCTirKE0JTi/x9V+ZWM6e0K7ch13XupunMJplR9Kplpx/YPRdHyXCRNf9hBf3
+	 RSdNA12N8SVZGTcvkH+4b0I9yHgFycGAYmHeC1T8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgC0WZJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43282 "EHLO mail.kernel.org"
+        id S1727891AbgC0WZK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727860AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:09 -0400
+        id S1727880AbgC0WZK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:10 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A17AC21655;
-        Fri, 27 Mar 2020 22:25:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1286121775;
+        Fri, 27 Mar 2020 22:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347906;
-        bh=z0cDMWPHjda8S1DQ/YXhUKhufGNi2+4CB+bAP+nrCxg=;
+        s=default; t=1585347909;
+        bh=yBox/4GWVJ8ewhqBGhJZd6XuRgqwee8Uc9VXqctFhDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y9RiKNwpLGjZX4S+C4uJ2yOq5NrLQJa126vyZ8+yYfVwuOIcUMUdCdRRc2wSLkZUK
-         uWB4i16ak+OUOSl3s4tZA4PSBImE2rF5+BxGGo+C/8Egjm4us3hEJcBbQIJM8LN390
-         bFPh7JmqXdt0TPoOKlxZcioeTtg0NOP4LZ+MngXo=
+        b=r6rZPslJAC8t5VhpKpG1VVSOv5LybYgM4RZ6cq6QQGtS0T//U0QxuMlNkWyfW4bHc
+         T7/wCy/unkacM8TeNeChXez6ZsBkU2UUaDaK3y7g/5Udn60OQF3qmBoKGtpsiZmcKg
+         K5fYC7a/7ugOpstHTXiqXcYVpRHPtTLKZGBUAqco=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 25/34] rcu-tasks: Add Kconfig option to mediate smp_mb() vs. IPI
-Date:   Fri, 27 Mar 2020 15:24:47 -0700
-Message-Id: <20200327222456.12470-25-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 32/34] rcu-tasks: Add count for idle tasks on offline CPUs
+Date:   Fri, 27 Mar 2020 15:24:54 -0700
+Message-Id: <20200327222456.12470-32-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,74 +60,46 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit provides a new TASKS_TRACE_RCU_READ_MB Kconfig option that
-enables use of read-side memory barriers by both rcu_read_lock_trace()
-and rcu_read_unlock_trace() when the are executed with the
-current->trc_reader_special.b.need_mb flag set.  This flag is currently
-never set.  Doing that is the subject of a later commit.
+This commit adds a counter for the number of times the quiescent state
+was an idle task associated with an offline CPU, and prints this count
+at the end of rcutorture runs and at stall time.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h |  3 ++-
- kernel/rcu/Kconfig             | 18 ++++++++++++++++++
- kernel/rcu/tasks.h             |  3 ++-
- 3 files changed, 22 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index c42b365c..4c25a41 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -50,7 +50,8 @@ static inline void rcu_read_lock_trace(void)
- 	struct task_struct *t = current;
- 
- 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
--	if (t->trc_reader_special.b.need_mb)
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
-+	    t->trc_reader_special.b.need_mb)
- 		smp_mb(); // Pairs with update-side barriers
- 	rcu_lock_acquire(&rcu_trace_lock_map);
- }
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index cb1d18e..0ebe15a 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -234,4 +234,22 @@ config RCU_NOCB_CPU
- 	  Say Y here if you want to help to debug reduced OS jitter.
- 	  Say N here if you are unsure.
- 
-+config TASKS_TRACE_RCU_READ_MB
-+	bool "Tasks Trace RCU readers use memory barriers in user and idle"
-+	depends on RCU_EXPERT
-+	default PREEMPT_RT || NR_CPUS < 8
-+	help
-+	  Use this option to further reduce the number of IPIs sent
-+	  to CPUs executing in userspace or idle during tasks trace
-+	  RCU grace periods.  Given that a reasonable setting of
-+	  the rcupdate.rcu_task_ipi_delay kernel boot parameter
-+	  eliminates such IPIs for many workloads, proper setting
-+	  of this Kconfig option is important mostly for aggressive
-+	  real-time installations and for battery-powered devices,
-+	  hence the default chosen above.
-+
-+	  Say Y here if you hate IPIs.
-+	  Say N here if you hate read-side memory barriers.
-+	  Take the default if you are unsure.
-+
- endmenu # "RCU Subsystem"
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index f9a828c..b18298b 100644
+index c1a0706..06fe0c4 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -734,7 +734,8 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
- {
- 	int nq = t->trc_reader_special.b.need_qs;
+@@ -729,6 +729,7 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+ // heavyweight readers executing explicit memory barriers.
+ unsigned long n_heavy_reader_attempts;
+ unsigned long n_heavy_reader_updates;
++unsigned long n_heavy_reader_ofl_updates;
  
--	if (t->trc_reader_special.b.need_mb)
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
-+	    t->trc_reader_special.b.need_mb)
- 		smp_mb(); // Pairs with update-side barriers.
- 	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
- 	if (nq)
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
+@@ -840,6 +841,8 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ 		    !rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
+ 			return false; // No quiescent state, do it the hard way.
+ 		n_heavy_reader_updates++;
++		if (ofl)
++			n_heavy_reader_ofl_updates++;
+ 		in_qs = true;
+ 	} else {
+ 		in_qs = likely(!t->trc_reader_nesting);
+@@ -1152,7 +1155,8 @@ static void show_rcu_tasks_trace_gp_kthread(void)
+ {
+ 	char buf[64];
+ 
+-	sprintf(buf, "N%d h:%lu/%lu", atomic_read(&trc_n_readers_need_end),
++	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
++		data_race(n_heavy_reader_ofl_updates),
+ 		data_race(n_heavy_reader_updates),
+ 		data_race(n_heavy_reader_attempts));
+ 	show_rcu_tasks_generic_gp_kthread(&rcu_tasks_trace, buf);
 -- 
 2.9.5
 
