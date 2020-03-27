@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4544C2D0EC
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CF07C2D0E5
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 996FF2073E
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D2CD2073B
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347937;
-	bh=q2fE1kOW1cI7SuRCjq116uhDjWMg8G8XdBqzxEWCt3Q=;
+	s=default; t=1585347943;
+	bh=mCZgb7DLDa9iRGQSrkVQ/UNKgd0DFXuZwivFK+V0VE8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Poq+hX0MZmN6du0TI2qdPf0unRdDhIb1DhlQivOnZvzwzAtSnWGvwlYNGMskHPMOm
-	 e3G6AT0PUXcJR3NF+9SJp9Qt0YVzQin2GXjTsPWRaPC0G1xp3e0279z8edRXjrwN56
-	 1Ps6aHq4WeEi57NRTRG+TwgpE5R1LPHG/nUch1Ek=
+	b=eVccrj1nEknFRADCx2B7YtR+0r9IZAIhirFkNFmM4EgWFndBBDc1AruQcNdzDmulo
+	 TK1jqZ2bCjiAM9fbxzP6JksyLu+iUL5j32x0GlCUrIuomAwJzyzO8bYc4P3wE9c+Y+
+	 in7thfV2C4dQLjhlIrZW2Un6S4SjMabyXfIXCA+E=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgC0WZK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43218 "EHLO mail.kernel.org"
+        id S1727714AbgC0WZh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:09 -0400
+        id S1727805AbgC0WZK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:10 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB45C214DB;
-        Fri, 27 Mar 2020 22:25:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B75E821924;
+        Fri, 27 Mar 2020 22:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347906;
-        bh=q2fE1kOW1cI7SuRCjq116uhDjWMg8G8XdBqzxEWCt3Q=;
+        s=default; t=1585347910;
+        bh=mCZgb7DLDa9iRGQSrkVQ/UNKgd0DFXuZwivFK+V0VE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I5SfAYoq5UMFhHOdCuTqt3DUqHnDA6nvjqxsz+oOfy2V5RiXxkaM0h+/etvfGG8AX
-         VOMqfdFFrjrSOmzq3bZp5pL+ZgBouHbGoa0H64Ff4H9ML3n2pqOiJ9G92IgK7Oh7SS
-         4zkNiH3/iVkDc5sgJ+dCxB7TiEuo0oiKY+eyl7cE=
+        b=mwaPSxNHLKkSXXN+Jy+WJvj/EHo+42D2l//S3LPIri8dXBhCRsCYdkffCqH3Lk9kk
+         HnNMSt79SjhgCdZtsg/mO63qoE3koHCMiMQnqtcC/lh01KLtLnXR0HeXBOKW/mJaNk
+         JtsMtUAef+A8Ci8XmSJVDwJfsuGftEgq5OH1h6mE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 23/34] rcu-tasks: Split ->trc_reader_need_end
-Date:   Fri, 27 Mar 2020 15:24:45 -0700
-Message-Id: <20200327222456.12470-23-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 34/34] rcu-tasks: Add IPI failure count to statistics
+Date:   Fri, 27 Mar 2020 15:24:56 -0700
+Message-Id: <20200327222456.12470-34-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,198 +60,60 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit splits ->trc_reader_need_end by using the rcu_special union.
-This change permits readers to check to see if a memory barrier is
-required without any added overhead in the common case where no such
-barrier is required.  This commit also adds the read-side checking.
-Later commits will add the machinery to properly set the new
-->trc_reader_special.b.need_mb field.
-
-This commit also makes rcu_read_unlock_trace_special() tolerate nested
-read-side critical sections within interrupt and NMI handlers.
+This commit adds a failure-return count for smp_call_function_single(),
+and adds this to the console messages for rcutorture writer stalls and at
+the end of rcutorture testing.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h | 11 +++++++----
- include/linux/sched.h          |  4 ++--
- init/init_task.c               |  1 +
- kernel/fork.c                  |  1 +
- kernel/rcu/tasks.h             | 33 ++++++++++++++++++++-------------
- 5 files changed, 31 insertions(+), 19 deletions(-)
+ kernel/rcu/tasks.h | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index ed97e10..c42b365c 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -31,7 +31,7 @@ static inline int rcu_read_lock_trace_held(void)
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
- 
--void rcu_read_unlock_trace_special(struct task_struct *t);
-+void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
- 
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-@@ -50,6 +50,8 @@ static inline void rcu_read_lock_trace(void)
- 	struct task_struct *t = current;
- 
- 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-+	if (t->trc_reader_special.b.need_mb)
-+		smp_mb(); // Pairs with update-side barriers
- 	rcu_lock_acquire(&rcu_trace_lock_map);
- }
- 
-@@ -69,10 +71,11 @@ static inline void rcu_read_unlock_trace(void)
- 
- 	rcu_lock_release(&rcu_trace_lock_map);
- 	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
--	WRITE_ONCE(t->trc_reader_nesting, nesting);
--	if (likely(!READ_ONCE(t->trc_reader_need_end)) || nesting)
-+	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
-+		WRITE_ONCE(t->trc_reader_nesting, nesting);
- 		return;  // We assume shallow reader nesting.
--	rcu_read_unlock_trace_special(t);
-+	}
-+	rcu_read_unlock_trace_special(t, nesting);
- }
- 
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ef68ae4..63d359e 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -611,7 +611,7 @@ union rcu_special {
- 		u8			blocked;
- 		u8			need_qs;
- 		u8			exp_hint; /* Hint for performance. */
--		u8			pad; /* No garbage from compiler! */
-+		u8			need_mb; /* Readers need smp_mb(). */
- 	} b; /* Bits. */
- 	u32 s; /* Set of bits. */
- };
-@@ -725,7 +725,7 @@ struct task_struct {
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	int				trc_reader_nesting;
- 	int				trc_ipi_to_cpu;
--	bool				trc_reader_need_end;
-+	union rcu_special		trc_reader_special;
- 	bool				trc_reader_checked;
- 	struct list_head		trc_holdout_list;
- #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
-diff --git a/init/init_task.c b/init/init_task.c
-index 1b9ec3d..4efd819 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -142,6 +142,7 @@ struct task_struct init_task
- #endif
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	.trc_reader_nesting = 0,
-+	.trc_reader_special.s = 0,
- 	.trc_holdout_list = LIST_HEAD_INIT(init_task.trc_holdout_list),
- #endif
- #ifdef CONFIG_CPUSETS
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 97df86b..2505e21 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1687,6 +1687,7 @@ static inline void rcu_copy_process(struct task_struct *p)
- #endif /* #ifdef CONFIG_TASKS_RCU */
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	p->trc_reader_nesting = 0;
-+	p->trc_reader_special.s = 0;
- 	INIT_LIST_HEAD(&p->trc_holdout_list);
- #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index a034f48..4150f8d 100644
+index 06fe0c4..9c65e78 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -723,10 +723,17 @@ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
- 		 "RCU Tasks Trace");
- 
- /* If we are the last reader, wake up the grace-period kthread. */
--void rcu_read_unlock_trace_special(struct task_struct *t)
-+void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
+@@ -32,6 +32,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * @gp_start: Most recent grace-period start in jiffies.
+  * @n_gps: Number of grace periods completed since boot.
+  * @n_ipis: Number of IPIs sent to encourage grace periods to end.
++ * @n_ipis_fails: Number of IPI-send failures.
+  * @pregp_func: This flavor's pre-grace-period function (optional).
+  * @pertask_func: This flavor's per-task scan function (optional).
+  * @postscan_func: This flavor's post-task scan function (optional).
+@@ -51,6 +52,7 @@ struct rcu_tasks {
+ 	unsigned long gp_start;
+ 	unsigned long n_gps;
+ 	unsigned long n_ipis;
++	unsigned long n_ipis_fails;
+ 	struct task_struct *kthread_ptr;
+ 	rcu_tasks_gp_func_t gp_func;
+ 	pregp_func_t pregp_func;
+@@ -290,12 +292,12 @@ static void __init rcu_tasks_bootup_oddness(void)
+ /* Dump out rcutorture-relevant state common to all RCU-tasks flavors. */
+ static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
  {
--	WRITE_ONCE(t->trc_reader_need_end, false);
--	if (atomic_dec_and_test(&trc_n_readers_need_end))
-+	int nq = t->trc_reader_special.b.need_qs;
-+
-+	if (t->trc_reader_special.b.need_mb)
-+		smp_mb(); // Pairs with update-side barriers.
-+	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
-+	if (nq)
-+		WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
-+	WRITE_ONCE(t->trc_reader_nesting, nesting);
-+	if (nq && atomic_dec_and_test(&trc_n_readers_need_end))
- 		wake_up(&trc_wait);
- }
- EXPORT_SYMBOL_GPL(rcu_read_unlock_trace_special);
-@@ -777,8 +784,8 @@ static void trc_read_check_handler(void *t_in)
- 	// Get here if the task is in a read-side critical section.  Set
- 	// its state so that it will awaken the grace-period kthread upon
- 	// exit from that critical section.
--	WARN_ON_ONCE(t->trc_reader_need_end);
--	WRITE_ONCE(t->trc_reader_need_end, true);
-+	WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 
- reset_ipi:
- 	// Allow future IPIs to be sent on CPU and for task.
-@@ -804,8 +811,8 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 	// exit from that critical section.
- 	if (unlikely(t->trc_reader_nesting)) {
- 		atomic_inc(&trc_n_readers_need_end); // One more to wait on.
--		WARN_ON_ONCE(t->trc_reader_need_end);
--		WRITE_ONCE(t->trc_reader_need_end, true);
-+		WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+		WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 	}
- 	return true;
- }
-@@ -880,7 +887,7 @@ static void rcu_tasks_trace_pregp_step(void)
- static void rcu_tasks_trace_pertask(struct task_struct *t,
- 				    struct list_head *hop)
- {
--	WRITE_ONCE(t->trc_reader_need_end, false);
-+	WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
- 	WRITE_ONCE(t->trc_reader_checked, false);
- 	t->trc_ipi_to_cpu = -1;
- 	trc_wait_for_one_reader(t, hop);
-@@ -912,7 +919,7 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
- 		 ".i"[is_idle_task(t)],
- 		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
- 		 t->trc_reader_nesting,
--		 " N"[!!t->trc_reader_need_end],
-+		 " N"[!!t->trc_reader_special.b.need_qs],
- 		 cpu);
- 	sched_show_task(t);
- }
-@@ -976,11 +983,11 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- 			break;  // Count reached zero.
- 		// Stall warning time, so make a list of the offenders.
- 		for_each_process_thread(g, t)
--			if (READ_ONCE(t->trc_reader_need_end))
-+			if (READ_ONCE(t->trc_reader_special.b.need_qs))
- 				trc_add_holdout(t, &holdouts);
- 		firstreport = true;
- 		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list)
--			if (READ_ONCE(t->trc_reader_need_end)) {
-+			if (READ_ONCE(t->trc_reader_special.b.need_qs)) {
- 				show_stalled_task_trace(t, &firstreport);
- 				trc_del_holdout(t);
- 			}
-@@ -999,8 +1006,8 @@ void exit_tasks_rcu_finish_trace(struct task_struct *t)
- 	WRITE_ONCE(t->trc_reader_checked, true);
- 	WARN_ON_ONCE(t->trc_reader_nesting);
- 	WRITE_ONCE(t->trc_reader_nesting, 0);
--	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_need_end)))
--		rcu_read_unlock_trace_special(t);
-+	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs)))
-+		rcu_read_unlock_trace_special(t, 0);
- }
- 
- /**
+-	pr_info("%s: %s(%d) since %lu g:%lu i:%lu %c%c %s\n",
++	pr_info("%s: %s(%d) since %lu g:%lu i:%lu/%lu %c%c %s\n",
+ 		rtp->kname,
+-		tasks_gp_state_getname(rtp),
+-		data_race(rtp->gp_state),
++		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
+ 		jiffies - data_race(rtp->gp_jiffies),
+-		data_race(rtp->n_gps), data_race(rtp->n_ipis),
++		data_race(rtp->n_gps),
++		data_race(rtp->n_ipis_fails), data_race(rtp->n_ipis),
+ 		".k"[!!data_race(rtp->kthread_ptr)],
+ 		".C"[!!data_race(rtp->cbs_head)],
+ 		s);
+@@ -905,6 +907,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 					     trc_read_check_handler, t, 0)) {
+ 			// Just in case there is some other reason for
+ 			// failure than the target CPU being offline.
++			rcu_tasks_trace.n_ipis_fails++;
+ 			per_cpu(trc_ipi_to_cpu, cpu) = false;
+ 			t->trc_ipi_to_cpu = cpu;
+ 			if (atomic_dec_and_test(&trc_n_readers_need_end)) {
 -- 
 2.9.5
 
