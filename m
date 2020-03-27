@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6939FC2D0EC
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91020C2D0EC
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3C4722073B
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66E5F2073E
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347965;
-	bh=qTIvH1W8g0qo2hcyz9TJSGgl/4cIHI9ltfPWYEXSxIw=;
+	s=default; t=1585347973;
+	bh=yQeLNXE8pE+mX3NEX+uIgJ7GV9AeElQkGmvOOqKMGQ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Zg/sK+tAGU+aH3OJE7kCK4a8S360q6yvcqxfi08BoK7U/BLe2VHVltUbRnTeQu+aC
-	 +uy9l0EA86/zQb/BIJiv71ZqgY7xl2MqmH0p/bEixuy7DtNofmA5Ib/9OPB3XiN2ZZ
-	 xWBevKlH02JH2msGfWnAQGh+L2kTyqvP6sFERKzs=
+	b=BufrB809bBIFHNeKmXje1pgy73SvHSQZvhtVPksTai4lUgdqOlrk+sPNJqjd3htXO
+	 VsbCk9ObNWSE9PmqSVVoAnvbSjy9Dwy5JGxjqLt6ijDiQA/5xM+CD8awFmvo5uTz+y
+	 uSR6bQgZxh9P36oOxHOlYIb1Ba+Qzs9OCzffAsls=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgC0WZ4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
+        id S1727830AbgC0W0J (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:26:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727852AbgC0WZI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:08 -0400
+        id S1727822AbgC0WZE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:04 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03AAB21744;
-        Fri, 27 Mar 2020 22:25:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 338772137B;
+        Fri, 27 Mar 2020 22:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347907;
-        bh=qTIvH1W8g0qo2hcyz9TJSGgl/4cIHI9ltfPWYEXSxIw=;
+        s=default; t=1585347903;
+        bh=yQeLNXE8pE+mX3NEX+uIgJ7GV9AeElQkGmvOOqKMGQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bW8kb4d5ZrZQNZa5dH3tiQbDZPgHEJAsN/USmATq68s4MwJQ8n7eR+8Bd2JxRH2/Y
-         L3TF7yjWxBYcQ3Gze3Tx6wLpGtBmSuFUZr3w59o5NlI+WqR2bHNdbjttqZ11kIYM1a
-         fxbgPB3uDb8fFqdfk9hahPexmu2AjXtXZ/rz4mB8=
+        b=IcUE2hcyHo3P42DvB5aLcbawWekr1QUmns8giXhhv9X5D3hLECUnsH7V/Q9bCRWly
+         SEHNtJxLAAdxvkDfDlWLrJl9cghQ5sjTGkLp6/1lPXBldlyo98vhkfa1+UQ2fS66LC
+         JunGkxQ2047ExDM8S6gi+wBm+HjDBWzt0WVH7wJw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 26/34] rcu-tasks: Avoid IPIing userspace/idle tasks if kernel is so built
-Date:   Fri, 27 Mar 2020 15:24:48 -0700
-Message-Id: <20200327222456.12470-26-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 15/34] rcutorture: Add torture tests for RCU Tasks Trace
+Date:   Fri, 27 Mar 2020 15:24:37 -0700
+Message-Id: <20200327222456.12470-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,208 +60,161 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Systems running CPU-bound real-time task do not want IPIs sent to CPUs
-executing nohz_full userspace tasks.  Battery-powered systems don't
-want IPIs sent to idle CPUs in low-power mode.  Unfortunately, RCU tasks
-trace can and will send such IPIs in some cases.
+This commit adds the definitions required to torture the tracing flavor
+of RCU tasks.
 
-Both of these situations occur only when the target CPU is in RCU
-dyntick-idle mode, in other words, when RCU is not watching the
-target CPU.  This suggests that CPUs in dyntick-idle mode should use
-memory barriers in outermost invocations of rcu_read_lock_trace()
-and rcu_read_unlock_trace(), which would allow the RCU tasks trace
-grace period to directly read out the target CPU's read-side state.
-One challenge is that RCU tasks trace is not targeting a specific
-CPU, but rather a task.  And that task could switch from one CPU to
-another at any time.
-
-This commit therefore uses try_invoke_on_locked_down_task()
-and checks for task_curr() in trc_inspect_reader_notrunning().
-When this condition holds, the target task is running and cannot move.
-If CONFIG_TASKS_TRACE_RCU_READ_MB=y, the new rcu_dynticks_zero_in_eqs()
-function can be used to check if the specified integer (in this case,
-t->trc_reader_nesting) is zero while the target CPU remains in that same
-dyntick-idle sojourn.  If so, the target task is in a quiescent state.
-If not, trc_read_check_handler() must indicate failure so that the
-grace-period kthread can take appropriate action or retry after an
-appropriate delay, as the case may be.
-
-With this change, given CONFIG_TASKS_TRACE_RCU_READ_MB=y, if a given
-CPU remains idle or a given task continues executing in nohz_full mode,
-the RCU tasks trace grace-period kthread will detect this without the
-need to send an IPI.
-
-Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu.h         |  2 ++
- kernel/rcu/tasks.h       | 36 ++++++++++++++++++++++++++----------
- kernel/rcu/tree.c        | 24 ++++++++++++++++++++++++
- kernel/rcu/tree.h        |  2 ++
- kernel/rcu/tree_plugin.h | 18 ++++++++++++++++++
- 5 files changed, 72 insertions(+), 10 deletions(-)
+ kernel/rcu/Kconfig.debug                           |  2 +
+ kernel/rcu/rcu.h                                   |  1 +
+ kernel/rcu/rcutorture.c                            | 44 +++++++++++++++++++++-
+ .../selftests/rcutorture/configs/rcu/CFLIST        |  1 +
+ .../selftests/rcutorture/configs/rcu/TRACE01       | 10 +++++
+ .../selftests/rcutorture/configs/rcu/TRACE01.boot  |  1 +
+ 6 files changed, 58 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
 
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index b15a3bd..a4db41d 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -25,6 +25,7 @@ config RCU_PERF_TEST
+ 	select SRCU
+ 	select TASKS_RCU
+ 	select TASKS_RUDE_RCU
++	select TASKS_TRACE_RCU
+ 	default n
+ 	help
+ 	  This option provides a kernel module that runs performance
+@@ -43,6 +44,7 @@ config RCU_TORTURE_TEST
+ 	select SRCU
+ 	select TASKS_RCU
+ 	select TASKS_RUDE_RCU
++	select TASKS_TRACE_RCU
+ 	default n
+ 	help
+ 	  This option provides a kernel module that runs torture tests
 diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index e1089fd..296f926 100644
+index c574620..72903867 100644
 --- a/kernel/rcu/rcu.h
 +++ b/kernel/rcu/rcu.h
-@@ -501,6 +501,7 @@ void srcutorture_get_gp_data(enum rcutorture_type test_type,
- #endif
+@@ -442,6 +442,7 @@ enum rcutorture_type {
+ 	RCU_FLAVOR,
+ 	RCU_TASKS_FLAVOR,
+ 	RCU_TASKS_RUDE_FLAVOR,
++	RCU_TASKS_TRACING_FLAVOR,
+ 	RCU_TRIVIAL_FLAVOR,
+ 	SRCU_FLAVOR,
+ 	INVALID_RCU_FLAVOR
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 386cd11..bb6daa58 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -45,6 +45,7 @@
+ #include <linux/sched/sysctl.h>
+ #include <linux/oom.h>
+ #include <linux/tick.h>
++#include <linux/rcupdate_trace.h>
  
- #ifdef CONFIG_TINY_RCU
-+static inline bool rcu_dynticks_zero_in_eqs(int cpu, int *vp) { return false; }
- static inline unsigned long rcu_get_gp_seq(void) { return 0; }
- static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
- static inline unsigned long
-@@ -510,6 +511,7 @@ static inline void show_rcu_gp_kthreads(void) { }
- static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
- static inline void rcu_fwd_progress_check(unsigned long j) { }
- #else /* #ifdef CONFIG_TINY_RCU */
-+bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
- unsigned long rcu_get_gp_seq(void);
- unsigned long rcu_exp_batches_completed(void);
- unsigned long srcu_batches_completed(struct srcu_struct *sp);
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index b18298b..a7ecde9 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -806,22 +806,38 @@ static void trc_read_check_handler(void *t_in)
- /* Callback function for scheduler to check locked-down task.  */
- static bool trc_inspect_reader(struct task_struct *t, void *arg)
- {
--	if (task_curr(t))
--		return false;  // It is running, so decline to inspect it.
-+	int cpu = task_cpu(t);
-+	bool in_qs = false;
-+
-+	if (task_curr(t)) {
-+		// If no chance of heavyweight readers, do it the hard way.
-+		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-+			return false;
-+
-+		// If heavyweight readers are enabled on the remote task,
-+		// we can inspect its state despite its currently running.
-+		// However, we cannot safely change its state.
-+		if (!rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
-+			return false; // No quiescent state, do it the hard way.
-+		in_qs = true;
-+	} else {
-+		in_qs = likely(!t->trc_reader_nesting);
-+	}
+ #include "rcu.h"
  
- 	// Mark as checked.  Because this is called from the grace-period
- 	// kthread, also remove the task from the holdout list.
- 	t->trc_reader_checked = true;
- 	trc_del_holdout(t);
+@@ -758,6 +759,45 @@ static struct rcu_torture_ops tasks_rude_ops = {
+ 	.name		= "tasks-rude"
+ };
  
--	// If the task is in a read-side critical section, set up its
--	// its state so that it will awaken the grace-period kthread upon
--	// exit from that critical section.
--	if (unlikely(t->trc_reader_nesting)) {
--		atomic_inc(&trc_n_readers_need_end); // One more to wait on.
--		WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
--		WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
--	}
-+	if (in_qs)
-+		return true;  // Already in quiescent state, done!!!
-+
-+	// The task is in a read-side critical section, so set up its
-+	// state so that it will awaken the grace-period kthread upon exit
-+	// from that critical section.
-+	atomic_inc(&trc_n_readers_need_end); // One more to wait on.
-+	WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 	return true;
- }
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index de6228a..4eb424e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -239,6 +239,7 @@ static void rcu_dynticks_eqs_enter(void)
- 	 * critical sections, and we also must force ordering with the
- 	 * next idle sojourn.
- 	 */
-+	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
- 	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
- 	// RCU is no longer watching.  Better be in extended quiescent state!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-@@ -265,6 +266,7 @@ static void rcu_dynticks_eqs_exit(void)
- 	 */
- 	seq = atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
- 	// RCU is now watching.  Better not be in an extended quiescent state!
-+	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
- 		     !(seq & RCU_DYNTICK_CTRL_CTR));
- 	if (seq & RCU_DYNTICK_CTRL_MASK) {
-@@ -337,6 +339,28 @@ static bool rcu_dynticks_in_eqs_since(struct rcu_data *rdp, int snap)
- }
- 
- /*
-+ * Return true if the referenced integer is zero while the specified
-+ * CPU remains within a single extended quiescent state.
-+ */
-+bool rcu_dynticks_zero_in_eqs(int cpu, int *vp)
-+{
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+	int snap;
-+
-+	// If not quiescent, force back to earlier extended quiescent state.
-+	snap = atomic_read(&rdp->dynticks) & ~(RCU_DYNTICK_CTRL_MASK |
-+					       RCU_DYNTICK_CTRL_CTR);
-+
-+	smp_rmb(); // Order ->dynticks and *vp reads.
-+	if (READ_ONCE(*vp))
-+		return false;  // Non-zero, so report failure;
-+	smp_rmb(); // Order *vp read and ->dynticks re-read.
-+
-+	// If still in the same extended quiescent state, we are good!
-+	return snap == (atomic_read(&rdp->dynticks) & ~RCU_DYNTICK_CTRL_MASK);
-+}
-+
 +/*
-  * Set the special (bottom) bit of the specified CPU so that it
-  * will take special action (such as flushing its TLB) on the
-  * next exit from an extended quiescent state.  Returns true if
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 44edd0a..43991a4 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -455,6 +455,8 @@ static void rcu_bind_gp_kthread(void);
- static bool rcu_nohz_full_cpu(void);
- static void rcu_dynticks_task_enter(void);
- static void rcu_dynticks_task_exit(void);
-+static void rcu_dynticks_task_trace_enter(void);
-+static void rcu_dynticks_task_trace_exit(void);
++ * Definitions for tracing RCU-tasks torture testing.
++ */
++
++static int tasks_tracing_torture_read_lock(void)
++{
++	rcu_read_lock_trace();
++	return 0;
++}
++
++static void tasks_tracing_torture_read_unlock(int idx)
++{
++	rcu_read_unlock_trace();
++}
++
++static void rcu_tasks_tracing_torture_deferred_free(struct rcu_torture *p)
++{
++	call_rcu_tasks_trace(&p->rtort_rcu, rcu_torture_cb);
++}
++
++static struct rcu_torture_ops tasks_tracing_ops = {
++	.ttype		= RCU_TASKS_TRACING_FLAVOR,
++	.init		= rcu_sync_torture_init,
++	.readlock	= tasks_tracing_torture_read_lock,
++	.read_delay	= srcu_read_delay,  /* just reuse srcu's version. */
++	.readunlock	= tasks_tracing_torture_read_unlock,
++	.get_gp_seq	= rcu_no_completed,
++	.deferred_free	= rcu_tasks_tracing_torture_deferred_free,
++	.sync		= synchronize_rcu_tasks_trace,
++	.exp_sync	= synchronize_rcu_tasks_trace,
++	.call		= call_rcu_tasks_trace,
++	.cb_barrier	= rcu_barrier_tasks_trace,
++	.fqs		= NULL,
++	.stats		= NULL,
++	.irq_capable	= 1,
++	.slow_gps	= 1,
++	.name		= "tasks-tracing"
++};
++
+ static unsigned long rcutorture_seq_diff(unsigned long new, unsigned long old)
+ {
+ 	if (!cur_ops->gp_diff)
+@@ -1316,6 +1356,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
+ 				  rcu_read_lock_bh_held() ||
+ 				  rcu_read_lock_sched_held() ||
+ 				  srcu_read_lock_held(srcu_ctlp) ||
++				  rcu_read_lock_trace_held() ||
+ 				  torturing_tasks());
+ 	if (p == NULL) {
+ 		/* Wait for rcu_torture_writer to get underway */
+@@ -2435,7 +2476,8 @@ rcu_torture_init(void)
+ 	int firsterr = 0;
+ 	static struct rcu_torture_ops *torture_ops[] = {
+ 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops,
+-		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops, &trivial_ops,
++		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops,
++		&tasks_tracing_ops, &trivial_ops,
+ 	};
  
- /* Forward declarations for tree_stall.h */
- static void record_gp_stall_check_time(void);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 9355536..f4a344e 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2553,3 +2553,21 @@ static void rcu_dynticks_task_exit(void)
- 	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
- #endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
- }
-+
-+/* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
-+static void rcu_dynticks_task_trace_enter(void)
-+{
-+#ifdef CONFIG_TASKS_RCU_TRACE
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-+		current->trc_reader_special.b.need_mb = true;
-+#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+}
-+
-+/* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
-+static void rcu_dynticks_task_trace_exit(void)
-+{
-+#ifdef CONFIG_TASKS_RCU_TRACE
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
-+		current->trc_reader_special.b.need_mb = false;
-+#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+}
+ 	if (!torture_init_begin(torture_type, verbose))
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+index ec0c72f..dfb1817 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+@@ -15,3 +15,4 @@ TASKS01
+ TASKS02
+ TASKS03
+ RUDE01
++TRACE01
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+new file mode 100644
+index 0000000..078e2c1
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+@@ -0,0 +1,10 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
++CONFIG_PREEMPT_NONE=y
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=n
++CONFIG_DEBUG_LOCK_ALLOC=y
++CONFIG_PROVE_LOCKING=y
++#CHECK#CONFIG_PROVE_RCU=y
++CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+new file mode 100644
+index 0000000..9675ad6
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+@@ -0,0 +1 @@
++rcutorture.torture_type=tasks-tracing
 -- 
 2.9.5
 
