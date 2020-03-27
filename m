@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB9B1C2D0EC
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C241C2D0E5
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C1C922073B
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47EFF2073B
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347955;
-	bh=1nn9QtPMvUtw5J8lfCbvfOGClwyMMAJVbt0kG1bLOmI=;
+	s=default; t=1585347956;
+	bh=vQe8NVEMs1r1iIdW79nChbeEufogMpa18G/zwHFEoSQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zAZVTQVTIIup4xWRaWyYsCyUBe8f8081kINALNwh5IqD1295b3/bdu2yrI5XZaKU8
-	 mNcDqMwdRHb6qBkhVArnXeXHL/W2zkXj1ovHaFZHR5GddAyc61wKbRgLK4pT3rQRDv
-	 j63MPfqPjYKvyL9Wllx92uPXQBL1SlU91nppalnE=
+	b=MOTs09A1f2hbd+/YQnVyndUmASXS10YVCDHRqGpUdGjkOshtsvD+iO/sW3Wuyfa3i
+	 bnPEQCRA9/EPKgoTrTwEAPQSckas+c4zKIXVzdcq+Bov0zwshJFaCdesOzdNzM5RoC
+	 j1syqWwCsKlLy6IFwQKustmcgvcH5nw9Vr9Gvb+M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgC0WZw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
+        id S1727873AbgC0WZI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Mar 2020 18:25:09 -0400
+        id S1727848AbgC0WZF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Mar 2020 18:25:05 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B29EC21927;
-        Fri, 27 Mar 2020 22:25:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4348120748;
+        Fri, 27 Mar 2020 22:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347908;
-        bh=1nn9QtPMvUtw5J8lfCbvfOGClwyMMAJVbt0kG1bLOmI=;
+        s=default; t=1585347905;
+        bh=vQe8NVEMs1r1iIdW79nChbeEufogMpa18G/zwHFEoSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wKT67xEcMLAjt1OB+qdmOR3qmOqGzLDsrZ6q8oZPo3npTzGCPnzGwodq8I158OAgi
-         DYeLpTrJXnYwchLpxy1vuVfPE2Z6XQq78pfsaQXHUvqMyYsLK2oazPSSwrcwcoTMPe
-         SAW+tuhDJHYtL408ZyHtWBtJXxgTUwZXFCFljuK0=
+        b=SQiiUl5hDCl4F4W5UrTIKu284R2qZVNjSmhtQ2LuOLwHq2Vi7RxFpkjGaBpt8Fqc1
+         35iaRZVOIFutS9ooRUWswhZyjl1s6JhHSkKuGfw2XGXuDYkBXPZ85dtPDacW2OGKYZ
+         QrWa1lZ5oMSpCAyqSRJLDh+l5NLCK4wuwuuKxicc=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 31/34] rcu-tasks: Add rcu_dynticks_zero_in_eqs() effectiveness statistics
-Date:   Fri, 27 Mar 2020 15:24:53 -0700
-Message-Id: <20200327222456.12470-31-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 21/34] rcu-tasks: Add a grace-period start time for throttling and debug
+Date:   Fri, 27 Mar 2020 15:24:43 -0700
+Message-Id: <20200327222456.12470-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,58 +60,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds counts of the number of calls and number of successful
-calls to rcu_dynticks_zero_in_eqs(), which are printed at the end
-of rcutorture runs and at stall time.  This allows evaluation of the
-effectiveness of rcu_dynticks_zero_in_eqs().
+This commit adds a place to record the grace-period start in jiffies.
+This will be used by later commits for debugging purposes and to throttle
+IPIs early in the grace period.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 27d2458..c1a0706 100644
+index cbc9905..fa9c069 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -725,6 +725,11 @@ DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
- // Record outstanding IPIs to each CPU.  No point in sending two...
- static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+@@ -46,6 +46,7 @@ struct rcu_tasks {
+ 	raw_spinlock_t cbs_lock;
+ 	int gp_state;
+ 	unsigned long gp_jiffies;
++	unsigned long gp_start;
+ 	struct task_struct *kthread_ptr;
+ 	rcu_tasks_gp_func_t gp_func;
+ 	pregp_func_t pregp_func;
+@@ -200,6 +201,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
  
-+// The number of detections of task quiescent state relying on
-+// heavyweight readers executing explicit memory barriers.
-+unsigned long n_heavy_reader_attempts;
-+unsigned long n_heavy_reader_updates;
-+
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
- 		 "RCU Tasks Trace");
-@@ -830,9 +835,11 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		// If heavyweight readers are enabled on the remote task,
- 		// we can inspect its state despite its currently running.
- 		// However, we cannot safely change its state.
-+		n_heavy_reader_attempts++;
- 		if (!ofl && // Check for "running" idle tasks on offline CPUs.
- 		    !rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
- 			return false; // No quiescent state, do it the hard way.
-+		n_heavy_reader_updates++;
- 		in_qs = true;
- 	} else {
- 		in_qs = likely(!t->trc_reader_nesting);
-@@ -1143,9 +1150,11 @@ core_initcall(rcu_spawn_tasks_trace_kthread);
+ 		// Wait for one grace period.
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
++		rtp->gp_start = jiffies;
+ 		rtp->gp_func(rtp);
  
- static void show_rcu_tasks_trace_gp_kthread(void)
- {
--	char buf[32];
-+	char buf[64];
- 
--	sprintf(buf, "N%d", atomic_read(&trc_n_readers_need_end));
-+	sprintf(buf, "N%d h:%lu/%lu", atomic_read(&trc_n_readers_need_end),
-+		data_race(n_heavy_reader_updates),
-+		data_race(n_heavy_reader_attempts));
- 	show_rcu_tasks_generic_gp_kthread(&rcu_tasks_trace, buf);
- }
- 
+ 		/* Invoke the callbacks. */
 -- 
 2.9.5
 
