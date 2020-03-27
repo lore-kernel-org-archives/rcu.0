@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A94C2D0EC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEAEDC2D0EE
 	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9909D2073E
+	by mail.kernel.org (Postfix) with ESMTP id C3C5F2073B
 	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1585347943;
-	bh=AozrG3MmGq6+pM4lOKZjhKJpJ9U2ielG7RVJMhTB7pw=;
+	bh=Rk2CxUrPJzLDOVHfjzdHQBbJbX/efNGj6HmojnwnvTI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=YUcdntjvlQA18dCGrsI8uVSb8c4dKjRofvoGCE4FZNra9kGvwF9u/Xg+or0J9f+Md
-	 fEvdiCHc1/hb1Reh9WtNV059WwKIVgHl2GnSE6WnR/IbJBpjZbZUnJHHLxHp3gM1Ah
-	 wkGTpexNTRcWPtoMvKrEVDIABGbBJFevk+lez8IY=
+	b=RxipOy0+pfmW1AqwwzYUo6VGl/99hfRWeW6pkieksnodkGqznnOh0yk9EaaYQ+K9w
+	 Ilp/R1BlU3XVR+/hEmXhREtk8uACC2+tQ0nyDki5E/7ctyu5dJsc+l4pVSfNIeWKyQ
+	 svKzzFxqPySB3uuEjBpgoWaDYPmLWC77YDoyiVDI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgC0WZJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Mar 2020 18:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43394 "EHLO mail.kernel.org"
+        id S1727719AbgC0WZn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Mar 2020 18:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727869AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727885AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 27 Mar 2020 18:25:09 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA0E921D6C;
-        Fri, 27 Mar 2020 22:25:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 651782192A;
+        Fri, 27 Mar 2020 22:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347907;
-        bh=AozrG3MmGq6+pM4lOKZjhKJpJ9U2ielG7RVJMhTB7pw=;
+        s=default; t=1585347909;
+        bh=Rk2CxUrPJzLDOVHfjzdHQBbJbX/efNGj6HmojnwnvTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xGDVj2yfmCfSZa+shrDeY1vLssuE0+riJLlgKTy7VPuNr8ZBbfEEneRCDfsNJmIpc
-         5GwKdWFg/0KBfc04TpPMCcEP6CkjWDd/YSZNwPogCtIpHYVtCWO+9KwvJltCm4Oerb
-         1WaRRebSxmH6rCwgOXYpWpRM9MeJ37IfwiGj7sZw=
+        b=rLEgolWTCkh1MU1hhA49BFZGQoVgG9RTkCsOfeeHcSbWCKDi5w1mfVp5jfV3I9jTL
+         z2JUIM76/ttMOBzAglFuB+1DHRJX/PgcJfkycz5RnSSSJzryWkIyelECPgPIE457RM
+         2KN7mN2sl5plxbYl8M0UE/Xe0Hq04v1+iJdIQLbI=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 28/34] rcu-tasks: Disable CPU hotplug across RCU tasks trace scans
-Date:   Fri, 27 Mar 2020 15:24:50 -0700
-Message-Id: <20200327222456.12470-28-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 33/34] rcutorture: Add TRACE02 scenario enabling RCU Tasks Trace IPIs
+Date:   Fri, 27 Mar 2020 15:24:55 -0700
+Message-Id: <20200327222456.12470-33-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,71 +60,62 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit disables CPU hotplug across RCU tasks trace scans, which
-is a first step towards correctly recognizing idle tasks "running" on
-offline CPUs.
+This commit adds a TRACE02 scenario which enables preemption and RCU
+Tasks Trace IPIs, more specifically, disabling heavyweight readers.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |  1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01      |  1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02      | 11 +++++++++++
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot |  1 +
+ 4 files changed, 14 insertions(+)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 2663167e..df6e785 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -906,16 +906,16 @@ static void rcu_tasks_trace_pregp_step(void)
- {
- 	int cpu;
- 
--	// Wait for CPU-hotplug paths to complete.
--	cpus_read_lock();
--	cpus_read_unlock();
--
- 	// Allow for fast-acting IPIs.
- 	atomic_set(&trc_n_readers_need_end, 1);
- 
- 	// There shouldn't be any old IPIs, but...
- 	for_each_possible_cpu(cpu)
- 		WARN_ON_ONCE(per_cpu(trc_ipi_to_cpu, cpu));
-+
-+	// Disable CPU hotplug across the tasklist scan.
-+	// This also waits for all readers in CPU-hotplug code paths.
-+	cpus_read_lock();
- }
- 
- /* Do first-round processing for the specified task. */
-@@ -931,6 +931,9 @@ static void rcu_tasks_trace_pertask(struct task_struct *t,
- /* Do intermediate processing between task and holdout scans. */
- static void rcu_tasks_trace_postscan(void)
- {
-+	// Re-enable CPU hotplug now that the tasklist scan has completed.
-+	cpus_read_unlock();
-+
- 	// Wait for late-stage exiting tasks to finish exiting.
- 	// These might have passed the call to exit_tasks_rcu_finish().
- 	synchronize_rcu();
-@@ -975,6 +978,9 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
- {
- 	struct task_struct *g, *t;
- 
-+	// Disable CPU hotplug across the holdout list scan.
-+	cpus_read_lock();
-+
- 	list_for_each_entry_safe(t, g, hop, trc_holdout_list) {
- 		// If safe and needed, try to check the current task.
- 		if (READ_ONCE(t->trc_ipi_to_cpu) == -1 &&
-@@ -987,6 +993,10 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
- 		else if (needreport)
- 			show_stalled_task_trace(t, firstreport);
- 	}
-+
-+	// Re-enable CPU hotplug now that the holdout list scan has completed.
-+	cpus_read_unlock();
-+
- 	if (needreport) {
- 		if (firstreport)
- 			pr_err("INFO: rcu_tasks_trace detected stalls?\n");
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+index dfb1817..f2b20db 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+@@ -16,3 +16,4 @@ TASKS02
+ TASKS03
+ RUDE01
+ TRACE01
++TRACE02
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+index 078e2c1..12e7661 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+@@ -7,4 +7,5 @@ CONFIG_PREEMPT=n
+ CONFIG_DEBUG_LOCK_ALLOC=y
+ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
++CONFIG_TASKS_TRACE_RCU_READ_MB=y
+ CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+new file mode 100644
+index 0000000..b69ed66
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+@@ -0,0 +1,11 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=4
++CONFIG_HOTPLUG_CPU=y
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_PROVE_LOCKING=n
++#CHECK#CONFIG_PROVE_RCU=n
++CONFIG_TASKS_TRACE_RCU_READ_MB=n
++CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+new file mode 100644
+index 0000000..9675ad6
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+@@ -0,0 +1 @@
++rcutorture.torture_type=tasks-tracing
 -- 
 2.9.5
 
