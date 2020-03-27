@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEAEDC2D0EE
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5524C43331
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C3C5F2073B
-	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91AEC2073B
+	for <rcu@archiver.kernel.org>; Fri, 27 Mar 2020 22:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585347943;
-	bh=Rk2CxUrPJzLDOVHfjzdHQBbJbX/efNGj6HmojnwnvTI=;
+	s=default; t=1585347952;
+	bh=C0mR+oVSGsBrT/NnbUHWzDYpCT/o9GJoOYQwwGwT130=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=RxipOy0+pfmW1AqwwzYUo6VGl/99hfRWeW6pkieksnodkGqznnOh0yk9EaaYQ+K9w
-	 Ilp/R1BlU3XVR+/hEmXhREtk8uACC2+tQ0nyDki5E/7ctyu5dJsc+l4pVSfNIeWKyQ
-	 svKzzFxqPySB3uuEjBpgoWaDYPmLWC77YDoyiVDI=
+	b=Axu6/lEkQpE57TmHZxYWcvdcPvSldl3k7E46h2ZuL3fC6CGsLrGdaQvaGdcrVhXp6
+	 H84nF8y4AnQ30fM8CAvkrtZ12VbU2gwOI/r5djc/MqpCh1kpe/02n+V4aoQWOsJ0GP
+	 qBW7GI8nGmLhEx3zgZ2Zq6wIwFsKtPo/W/98rocM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbgC0WZn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1728021AbgC0WZn (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Fri, 27 Mar 2020 18:25:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727879AbgC0WZJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 27 Mar 2020 18:25:09 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 651782192A;
-        Fri, 27 Mar 2020 22:25:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AE4D21556;
+        Fri, 27 Mar 2020 22:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585347909;
-        bh=Rk2CxUrPJzLDOVHfjzdHQBbJbX/efNGj6HmojnwnvTI=;
+        s=default; t=1585347908;
+        bh=C0mR+oVSGsBrT/NnbUHWzDYpCT/o9GJoOYQwwGwT130=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLEgolWTCkh1MU1hhA49BFZGQoVgG9RTkCsOfeeHcSbWCKDi5w1mfVp5jfV3I9jTL
-         z2JUIM76/ttMOBzAglFuB+1DHRJX/PgcJfkycz5RnSSSJzryWkIyelECPgPIE457RM
-         2KN7mN2sl5plxbYl8M0UE/Xe0Hq04v1+iJdIQLbI=
+        b=Z+BrxhK3aZM6YhMrgIFxH+BCHwzcNaUySEDGnjfPyPf1qUL1HyFJ037IH9b661Ds0
+         4QQtAzoOyWgboBFh27sedGCi4aK4jW2hzx3MRII09LaXLaocI5bc5FTyJooJxXhX5W
+         BMpiM1RPZ4A5wzdF6sbNJtUF7RbFywAEJ+nj628g=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 tip/core/rcu 33/34] rcutorture: Add TRACE02 scenario enabling RCU Tasks Trace IPIs
-Date:   Fri, 27 Mar 2020 15:24:55 -0700
-Message-Id: <20200327222456.12470-33-paulmck@kernel.org>
+Subject: [PATCH v3 tip/core/rcu 29/34] rcu-tasks: Handle the running-offline idle-task special case
+Date:   Fri, 27 Mar 2020 15:24:51 -0700
+Message-Id: <20200327222456.12470-29-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200327222346.GA12082@paulmck-ThinkPad-P72>
 References: <20200327222346.GA12082@paulmck-ThinkPad-P72>
@@ -60,62 +60,44 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds a TRACE02 scenario which enables preemption and RCU
-Tasks Trace IPIs, more specifically, disabling heavyweight readers.
+The idle task corresponding to an offline CPU can appear to be running
+while that CPU is offline.  This commit therefore adds checks for this
+situation, treating it as a quiescent state.  Because the tasklist scan
+and the holdout-list scan now exclude CPU-hotplug operations, readers
+on the CPU-hotplug paths are still waited for.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST       |  1 +
- tools/testing/selftests/rcutorture/configs/rcu/TRACE01      |  1 +
- tools/testing/selftests/rcutorture/configs/rcu/TRACE02      | 11 +++++++++++
- tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot |  1 +
- 4 files changed, 14 insertions(+)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+ kernel/rcu/tasks.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index dfb1817..f2b20db 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -16,3 +16,4 @@ TASKS02
- TASKS03
- RUDE01
- TRACE01
-+TRACE02
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-index 078e2c1..12e7661 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
-@@ -7,4 +7,5 @@ CONFIG_PREEMPT=n
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_PROVE_LOCKING=y
- #CHECK#CONFIG_PROVE_RCU=y
-+CONFIG_TASKS_TRACE_RCU_READ_MB=y
- CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
-new file mode 100644
-index 0000000..b69ed66
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
-@@ -0,0 +1,11 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=4
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-+CONFIG_DEBUG_LOCK_ALLOC=n
-+CONFIG_PROVE_LOCKING=n
-+#CHECK#CONFIG_PROVE_RCU=n
-+CONFIG_TASKS_TRACE_RCU_READ_MB=n
-+CONFIG_RCU_EXPERT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
-new file mode 100644
-index 0000000..9675ad6
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
-@@ -0,0 +1 @@
-+rcutorture.torture_type=tasks-tracing
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index df6e785..d1fa7715 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -818,16 +818,20 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ {
+ 	int cpu = task_cpu(t);
+ 	bool in_qs = false;
++	bool ofl = cpu_is_offline(cpu);
+ 
+ 	if (task_curr(t)) {
++		WARN_ON_ONCE(ofl & !is_idle_task(t));
++
+ 		// If no chance of heavyweight readers, do it the hard way.
+-		if (!IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
++		if (!ofl && !IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 			return false;
+ 
+ 		// If heavyweight readers are enabled on the remote task,
+ 		// we can inspect its state despite its currently running.
+ 		// However, we cannot safely change its state.
+-		if (!rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
++		if (!ofl && // Check for "running" idle tasks on offline CPUs.
++		    !rcu_dynticks_zero_in_eqs(cpu, &t->trc_reader_nesting))
+ 			return false; // No quiescent state, do it the hard way.
+ 		in_qs = true;
+ 	} else {
 -- 
 2.9.5
 
