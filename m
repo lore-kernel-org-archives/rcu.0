@@ -2,150 +2,161 @@ Return-Path: <SRS0=wvKi=5P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B958C43331
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 12:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30DCDC2D0EE
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:00:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5015B206F6
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 12:49:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EFBF820733
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:00:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgDgFjod"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="lg9bvgvr"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729881AbgC3MtD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Mar 2020 08:49:03 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39528 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730064AbgC3MtC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Mar 2020 08:49:02 -0400
-Received: by mail-lj1-f193.google.com with SMTP id i20so17905465ljn.6;
-        Mon, 30 Mar 2020 05:49:00 -0700 (PDT)
+        id S1730201AbgC3NAt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Mar 2020 09:00:49 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37379 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729995AbgC3NAt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Mar 2020 09:00:49 -0400
+Received: by mail-ot1-f65.google.com with SMTP id g23so17889071otq.4
+        for <rcu@vger.kernel.org>; Mon, 30 Mar 2020 06:00:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yJlVVKeLd5TaPn/Me6iYYSCfAeG+ZykuXZ4qCxcjxic=;
-        b=mgDgFjodGfs/tgXVpHOm+ddXiwOlaywSDzMN6XLWzY25fepCZ4bXct6/IC+71pO1sr
-         JbRdrFIoAL4XCxQDqiTYKJN/AZDrieZjoG824C+naszyUxFttD5SMzK0u9nz839I8VdM
-         hT5HPfEcDWfBFcKOxnaXqt7zfXdoLbFql10zPJ9XWK94zZqB1s6vCY2R43uMT6JxxkPP
-         UvsB6TEtlR6DpdOxJwnEEAqi5xUiCrTE2bVdTRCie9GFnQOsaj+o9c9OqPbsOAgrNjhq
-         O02GP6+WxV5FHnlIIpSJ7mM8BoJYxv9ecUIhV2uCtDgmVxoLn8Eppw5/RQ9UpJTjeMaW
-         vH5g==
+        d=ffwll.ch; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fla8h5dw+7kESbxPfIOGPXN0TH0KgZ2TkZfruGM5x9o=;
+        b=lg9bvgvrsr0fQ+6RWmswj1Ye2O+9fMYB4JLMCTLhaiT6/OxszDwqgfMiMC1jVWxEkO
+         tTp6yhmw2iUfjKosQmnJ44qYjHc0TVJz/31+6/HqOYVe+0C/CADWA2Wm1RxFciJo48Zy
+         HDmHRIgT1OdpEs7r+pHoyENZjFcg3mQ+9PJig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yJlVVKeLd5TaPn/Me6iYYSCfAeG+ZykuXZ4qCxcjxic=;
-        b=UWsJ5F/6fNlyQ+PRdEP5o9oeaTcLSSDzGAHkk7nY9Z9PCj8LdHtQBwnZZCqYPG4F+n
-         mcBP1XcGApOkGtNuI+5zYrIc6uQPAVj23mvwRYaGE2eqjgUKVEHQg1MH0ViriqR/+FVS
-         r/1yutVqKg51ZJSxGw6K/XALsQRdILRolu6C/PaSNl6MHB3ubhakAJOmQ9+uAjOMd5QN
-         9DJU9vazxFiVFxatQCJt6i9VQzAlzL6D+irCor9PA+eS3y2b3cNiak857FZ2qOE80Jcp
-         CeiWaboMrdLNJCCvS+B8M2RU/iGmIl95PJtVPaXfu0Et2qmMGulk3SYJTl0VS2oxYyCJ
-         B6Cw==
-X-Gm-Message-State: AGi0PuarIylmTnXFHYnDIlhURuTzVVc5sl7UZzk7+TSo+2bqBUg/f0dj
-        VaC59J6fR1d2xWbHbyUUbyM=
-X-Google-Smtp-Source: APiQypKg5+v/r/XUQa3s09TJaeKdUyJILEy3iif1u9ojSl1WAemanDLN4DIPvO94A+atsysEq63ulg==
-X-Received: by 2002:a2e:9097:: with SMTP id l23mr510984ljg.279.1585572539723;
-        Mon, 30 Mar 2020 05:48:59 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id r9sm6813068ljd.10.2020.03.30.05.48.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2020 05:48:58 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 30 Mar 2020 14:48:41 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 4/7] rcu/tree: support reclaim for head-less object
-Message-ID: <20200330124841.GA15431@pc636>
-References: <20200323113621.12048-1-urezki@gmail.com>
- <20200323113621.12048-5-urezki@gmail.com>
- <20200329225610.GA102186@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fla8h5dw+7kESbxPfIOGPXN0TH0KgZ2TkZfruGM5x9o=;
+        b=iziMSWo++LC2ArjlSFclN3gmhqA+z9mNXZciVAdR9+nvp2QBaOPPocMHGY7ETgQ2Tb
+         vQJUIag9vuOgjLpDs+Uu/wdYnS3tWtZfNQzopW+ibRndTgvHJBBcs/5PEPMrk1/SiW7m
+         CGayR9NuG+xUilWaO5bFLvweZMwnNujLKUtvVoevIaamIJaeoHsYnRHff55RwEnCHTHU
+         HIcelhFAxaBd0Bke3qo75YjdigdmgBvUvqOGA1kdV1cOnMQCkPe42OLsqoKlaIpjLO4w
+         JxlaTEEJrQCxhFg5Evk329JSlYnWkposMXH9JfrsYCHTxFfJB994IE1Z2yyyRRdURk9c
+         Gx/A==
+X-Gm-Message-State: ANhLgQ2b291w+LxS2kiji5+Iwk5Lvwq5zFZZBGY8zhbiWKUgsazveDAF
+        WPLmOaTCx477LTBFVWnZKjO4Jb/I/YHw2QMNYgxV+A==
+X-Google-Smtp-Source: ADFU+vt5DBwGAI9mfWkYTIU+buXY6ODllVl/y1pNfdCTo2/8qAS1bHnAc8vYv+NAxTpPE7GJFTMrj4Eq0QnR0Jyv8os=
+X-Received: by 2002:a9d:6e8f:: with SMTP id a15mr4716842otr.188.1585573246524;
+ Mon, 30 Mar 2020 06:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200329225610.GA102186@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 30 Mar 2020 15:00:35 +0200
+Message-ID: <CAKMK7uGQ49JGetk3-VmHxXR0HVEoQgVxSZvX9Z0b5so8y+13cA@mail.gmail.com>
+Subject: rcu_barrier() no longer allowed within mmap_sem?
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> 
-> Very nice work, Vlad! And beautifully split! Makes it easy to review! One
-> comment below but otherwise patches 1-4 look good to me, I will look at
-> others as well now. I have some patches on top of the series, mostly little
-> clean ups which I will send together with yours.
-> 
-Thanks, Joel!
+Hi all, for all = rcu, cpuhotplug and perf maintainers
 
+We've hit an interesting new lockdep splat in our drm/i915 CI:
 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/tree.c | 94 +++++++++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 86 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 869a72e25d38..5a64c92feafc 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2892,19 +2892,34 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  	 * when we could not allocate a bulk array.
-> >  	 *
-> >  	 * Under that condition an object is queued to the
-> > -	 * list instead.
-> > +	 * list instead. Please note that head-less objects
-> > +	 * have dynamically attached rcu_head, so they also
-> > +	 * contain a back-pointer that has to be freed.
-> >  	 */
-> >  	for (; head; head = next) {
-> >  		unsigned long offset = (unsigned long)head->func;
-> > -		void *ptr = (void *)head - offset;
-> > +		bool headless;
-> > +		void *ptr;
-> >  
-> >  		next = head->next;
-> > +
-> > +		/* We tag the headless object, if so adjust offset. */
-> > +		headless = (((unsigned long) head - offset) & BIT(0));
-> > +		if (headless)
-> > +			offset -= 1;
-> 
-> Just to be sure, can vmalloc() ever allocate an object at an odd valued
-> memory address? I'm not fully sure looking at vmalloc code whether this is
-> the case.
->
-No. It must be PAGE_ALIGNED(addr). 
+https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_17096/shard-tglb7/igt@kms_frontbuffer_tracking@fbcpsr-rgb101010-draw-mmap-gtt.html#dmesg-warnings861
 
-> 
-> As per the tagging, allocated objects have to at least at a 2-byte boundary
-> for the pointer's BIT(0) to be available. If that's not the case, we need to
-> add a warning to the code at a bare minimum.
-> 
-> Another approach which is better I think is to add the tag to the offset
-> itself. So if the offset is > LONG_MAX / 2 or something like that, then
-> assume it is headless, and override offset to sizeof(unsigned long *) in that
-> case. Then you would arrive at the correct pointer for the wrapper. That
-> would take care of the case where in the future, either SLAB or vmalloc()
-> ends up returning pointers that are only byte-aligned.
-> 
-> Thoughts?
-> 
-I saw your https://lkml.org/lkml/2020/3/29/480. I think it is OK,
-and we can go your way. There is advantage that it is tolerate to
-any alignment :)
+Summarizing away the driver parts we have
 
-Thanks!
+< gpu locks which are held within mm->mmap_sem in various gpu fault handlers >
 
---
-Vlad Rezki
+-> #4 (&mm->mmap_sem#2){++++}:
+<4> [604.892615] __might_fault+0x63/0x90
+<4> [604.892617] _copy_to_user+0x1e/0x80
+<4> [604.892619] perf_read+0x200/0x2b0
+<4> [604.892621] vfs_read+0x96/0x160
+<4> [604.892622] ksys_read+0x9f/0xe0
+<4> [604.892623] do_syscall_64+0x4f/0x220
+<4> [604.892624] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+<4> [604.892625]
+-> #3 (&cpuctx_mutex){+.+.}:
+<4> [604.892626] __mutex_lock+0x9a/0x9c0
+<4> [604.892627] perf_event_init_cpu+0xa4/0x140
+<4> [604.892629] perf_event_init+0x19d/0x1cd
+<4> [604.892630] start_kernel+0x362/0x4e4
+<4> [604.892631] secondary_startup_64+0xa4/0xb0
+<4> [604.892631]
+-> #2 (pmus_lock){+.+.}:
+<4> [604.892633] __mutex_lock+0x9a/0x9c0
+<4> [604.892633] perf_event_init_cpu+0x6b/0x140
+<4> [604.892635] cpuhp_invoke_callback+0x9b/0x9d0
+<4> [604.892636] _cpu_up+0xa2/0x140
+<4> [604.892637] do_cpu_up+0x61/0xa0
+<4> [604.892639] smp_init+0x57/0x96
+<4> [604.892639] kernel_init_freeable+0x87/0x1dc
+<4> [604.892640] kernel_init+0x5/0x100
+<4> [604.892642] ret_from_fork+0x24/0x50
+<4> [604.892642]
+-> #1 (cpu_hotplug_lock.rw_sem){++++}:
+<4> [604.892643] cpus_read_lock+0x34/0xd0
+<4> [604.892644] rcu_barrier+0xaa/0x190
+<4> [604.892645] kernel_init+0x21/0x100
+<4> [604.892647] ret_from_fork+0x24/0x50
+<4> [604.892647]
+-> #0 (rcu_state.barrier_mutex){+.+.}:
+<4> [604.892649] __lock_acquire+0x1328/0x15d0
+<4> [604.892650] lock_acquire+0xa7/0x1c0
+<4> [604.892651] __mutex_lock+0x9a/0x9c0
+<4> [604.892652] rcu_barrier+0x23/0x190
+<4> [604.892680] i915_gem_object_unbind+0x29d/0x3f0 [i915]
+<4> [604.892707] i915_gem_object_pin_to_display_plane+0x141/0x270 [i915]
+<4> [604.892737] intel_pin_and_fence_fb_obj+0xec/0x1f0 [i915]
+<4> [604.892767] intel_plane_pin_fb+0x3f/0xd0 [i915]
+<4> [604.892797] intel_prepare_plane_fb+0x13b/0x5c0 [i915]
+<4> [604.892798] drm_atomic_helper_prepare_planes+0x85/0x110
+<4> [604.892827] intel_atomic_commit+0xda/0x390 [i915]
+<4> [604.892828] drm_atomic_helper_set_config+0x57/0xa0
+<4> [604.892830] drm_mode_setcrtc+0x1c4/0x720
+<4> [604.892830] drm_ioctl_kernel+0xb0/0xf0
+<4> [604.892831] drm_ioctl+0x2e1/0x390
+<4> [604.892833] ksys_ioctl+0x7b/0x90
+<4> [604.892835] __x64_sys_ioctl+0x11/0x20
+<4> [604.892835] do_syscall_64+0x4f/0x220
+<4> [604.892836] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+The last backtrace boils down to i915 driver code which holds the same
+locks we are holding within mm->mmap_sem, and then ends up calling
+rcu_barrier(). From what I can see i915 is just the messenger here,
+any driver with this pattern of a lock held within mmap_sem which also
+has a path of calling rcu_barrier while holding that lock should be
+hitting this splat.
+
+Two questions:
+- This suggests that calling rcu_barrier() isn't ok anymore while
+holding mmap_sem, or anything that has a dependency upon mmap_sem. I
+guess that's not the idea, please confirm.
+- Assuming this depedency is indeed not intended, where should the
+loop be broken? It goes through perf, cpuhotplug and rcu subsystems,
+and I don't have a clue about any of those.
+
+Thanks a lot.
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
