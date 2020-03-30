@@ -2,53 +2,53 @@ Return-Path: <SRS0=wvKi=5P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0D6AC43331
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:31:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F368EC43331
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:59:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 728FB2073B
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:31:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585575061;
-	bh=qSfFw4Xt6kcV5uLecfdNYj4mpU1Cl5FKqVHHOIVmkPY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=UsMvprNpdulkIrYkBlYwI3zkEKY6j9d41P3E8ITE3fFLAEAV6r903hG0ZVIXwM59a
-	 T2cUVX7FLTrmWMEbQ8ap8L+D7UaF3ZL7mAUmU1k8hplTAfh/HNTzbhovSkML1JLU+I
-	 b1Tb/WQ/cZCEuFZMCJvuFlaOKAOdSO0chMXusCyo=
+	by mail.kernel.org (Postfix) with ESMTP id C97B4206CC
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:59:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="stkTU0Xa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgC3NbB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Mar 2020 09:31:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbgC3NbB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Mar 2020 09:31:01 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1728594AbgC3N7D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Mar 2020 09:59:03 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:38654 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728504AbgC3N7D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Mar 2020 09:59:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iKhZXgftDGmAxrAyzuUZ0II6kxBjrrnhDkeJI23ZPuk=; b=stkTU0XaBsPQ9gLT7F1OSv2r8T
+        MwO0gEyYbNpZAldaghGnbpyLa7yWgs5GToM7+yFda4Nm5jczSvC1dLaCWJ9hyX5HGBJ7BSbhWBffa
+        2UIFyJh4tZfRvUnqcIz8IAHdE9Cu9oIueK1va8cLUF93rW9GfeCdxfRQuwgNL/FQHa+yKLl+GmQyA
+        0j+WyTHLHUomuxzkGgtwuHTFlyTvJQ+CENI/7nE5TUgrIKDZIO8nv98sbo+vT9KF3H2Zjz8hytsN5
+        XlI8vBqpHIToFb+IB9gvKOewYpOwg8uXg3d/l/KWmNCY5Y7p0ouXzsXxKHQU4ncV02vWT9kFnV30h
+        hZDk5WtQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jIuvn-0005Lc-JC; Mon, 30 Mar 2020 13:58:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38D5E20716;
-        Mon, 30 Mar 2020 13:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585575060;
-        bh=qSfFw4Xt6kcV5uLecfdNYj4mpU1Cl5FKqVHHOIVmkPY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Q9HcMfLecFcko618lmMeqPiJEzubwJ5u1Ip9reIi2mnZqgzVRMJaX2TNq65jD7Uzk
-         91bigtJdPi+s48g83dv16HPxcg/D++utxWRP6/E0kgB5tIa8zTJxcBxS3FvNJtbXRY
-         KI3iTHxlNifbgQ0WIqlzhPtdUzwwROHTBhEsprZY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 01D8835226F8; Mon, 30 Mar 2020 06:30:59 -0700 (PDT)
-Date:   Mon, 30 Mar 2020 06:30:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43936300F28;
+        Mon, 30 Mar 2020 15:58:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0A4CD2038CEED; Mon, 30 Mar 2020 15:58:19 +0200 (CEST)
+Date:   Mon, 30 Mar 2020 15:58:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -61,14 +61,12 @@ Cc:     Josh Triplett <josh@joshtriplett.org>,
         intel-gfx <intel-gfx@lists.freedesktop.org>,
         dri-devel <dri-devel@lists.freedesktop.org>
 Subject: Re: rcu_barrier() no longer allowed within mmap_sem?
-Message-ID: <20200330133059.GH19865@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200330135818.GO20696@hirez.programming.kicks-ass.net>
 References: <CAKMK7uGQ49JGetk3-VmHxXR0HVEoQgVxSZvX9Z0b5so8y+13cA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <CAKMK7uGQ49JGetk3-VmHxXR0HVEoQgVxSZvX9Z0b5so8y+13cA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -119,26 +117,8 @@ On Mon, Mar 30, 2020 at 03:00:35PM +0200, Daniel Vetter wrote:
 > <4> [604.892647] ret_from_fork+0x24/0x50
 > <4> [604.892647]
 > -> #0 (rcu_state.barrier_mutex){+.+.}:
-> <4> [604.892649] __lock_acquire+0x1328/0x15d0
-> <4> [604.892650] lock_acquire+0xa7/0x1c0
-> <4> [604.892651] __mutex_lock+0x9a/0x9c0
-> <4> [604.892652] rcu_barrier+0x23/0x190
-> <4> [604.892680] i915_gem_object_unbind+0x29d/0x3f0 [i915]
-> <4> [604.892707] i915_gem_object_pin_to_display_plane+0x141/0x270 [i915]
-> <4> [604.892737] intel_pin_and_fence_fb_obj+0xec/0x1f0 [i915]
-> <4> [604.892767] intel_plane_pin_fb+0x3f/0xd0 [i915]
-> <4> [604.892797] intel_prepare_plane_fb+0x13b/0x5c0 [i915]
-> <4> [604.892798] drm_atomic_helper_prepare_planes+0x85/0x110
-> <4> [604.892827] intel_atomic_commit+0xda/0x390 [i915]
-> <4> [604.892828] drm_atomic_helper_set_config+0x57/0xa0
-> <4> [604.892830] drm_mode_setcrtc+0x1c4/0x720
-> <4> [604.892830] drm_ioctl_kernel+0xb0/0xf0
-> <4> [604.892831] drm_ioctl+0x2e1/0x390
-> <4> [604.892833] ksys_ioctl+0x7b/0x90
-> <4> [604.892835] __x64_sys_ioctl+0x11/0x20
-> <4> [604.892835] do_syscall_64+0x4f/0x220
-> <4> [604.892836] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
+
+
 > The last backtrace boils down to i915 driver code which holds the same
 > locks we are holding within mm->mmap_sem, and then ends up calling
 > rcu_barrier(). From what I can see i915 is just the messenger here,
@@ -154,16 +134,14 @@ On Mon, Mar 30, 2020 at 03:00:35PM +0200, Daniel Vetter wrote:
 > loop be broken? It goes through perf, cpuhotplug and rcu subsystems,
 > and I don't have a clue about any of those.
 
-Indeed, rcu_barrier() excludes CPU hotplug in order to eliminate a number
-of interesting races.
+I wonder what is new here; the 1-4 chain there has been true for a long
+time, see also the comment at perf_event_ctx_lock_nested().
 
-Am I interpreting the above trace correctly in thinking that the various
-calls to cpus_read_lock() are with mmap_sem held?  If so, can the calls
-to rcu_barrier() be moved out from under the regions of code protected
-by cpus_read_lock()?  Invoking rcu_barrier() with cpus_read_lock() held
-is an immediate self-deadlock.
+That said; it _might_ be possible to break 3->4, that is, all the
+copy_{to,from}_user() usage in perf can be lifted out from under the
+various locks by re-arranging code, but I have a nagging feeling there
+was more to it than that. Of course, while I did document the locking
+rules, I seem to have forgotten to comment on exactly why these rules
+are as they are.. oh well.
 
-Or is rcu_barrier() somehow indirectly sometimes acquiring mmap_sem
-or pmus_lock?  (Not seeing it myself, but...)
 
-							Thanx, Paul
