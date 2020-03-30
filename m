@@ -2,146 +2,115 @@ Return-Path: <SRS0=wvKi=5P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F368EC43331
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80983C43331
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 14:42:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C97B4206CC
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 13:59:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4FAA7206DB
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 14:42:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="stkTU0Xa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h3Kc8KDH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgC3N7D (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Mar 2020 09:59:03 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:38654 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728504AbgC3N7D (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Mar 2020 09:59:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iKhZXgftDGmAxrAyzuUZ0II6kxBjrrnhDkeJI23ZPuk=; b=stkTU0XaBsPQ9gLT7F1OSv2r8T
-        MwO0gEyYbNpZAldaghGnbpyLa7yWgs5GToM7+yFda4Nm5jczSvC1dLaCWJ9hyX5HGBJ7BSbhWBffa
-        2UIFyJh4tZfRvUnqcIz8IAHdE9Cu9oIueK1va8cLUF93rW9GfeCdxfRQuwgNL/FQHa+yKLl+GmQyA
-        0j+WyTHLHUomuxzkGgtwuHTFlyTvJQ+CENI/7nE5TUgrIKDZIO8nv98sbo+vT9KF3H2Zjz8hytsN5
-        XlI8vBqpHIToFb+IB9gvKOewYpOwg8uXg3d/l/KWmNCY5Y7p0ouXzsXxKHQU4ncV02vWT9kFnV30h
-        hZDk5WtQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jIuvn-0005Lc-JC; Mon, 30 Mar 2020 13:58:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43936300F28;
-        Mon, 30 Mar 2020 15:58:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0A4CD2038CEED; Mon, 30 Mar 2020 15:58:19 +0200 (CEST)
-Date:   Mon, 30 Mar 2020 15:58:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1727755AbgC3Omi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Mar 2020 10:42:38 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:41847 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgC3Omh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Mar 2020 10:42:37 -0400
+Received: by mail-lj1-f195.google.com with SMTP id n17so18360915lji.8;
+        Mon, 30 Mar 2020 07:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zZl8DGHxKfW9Vu36ePmFE8gP/ULjjF5tAO2pNWgNfJ8=;
+        b=h3Kc8KDHcLiXfTCe9KLFRZw8NC3uNi76b2bvj8c5PfQqsPu3mTsnwZHSVXXMF+M57R
+         aCZ1Yfa80MsCs0jly+WB/q5zh0bMdinYZ8efN7zr2VXsvNNhAdVLcGycLNRvwA+ITI5w
+         Iu9nWHpV4YhgBBcAofo+4dW7YzLWCNCnblGhYo/cMra3um6S+d8ic31+9ibO/v8RhCez
+         bGR6LAi0zzGWgXstRGtTSRCX3AgWBPN9iNVlYAritB1dFd93zUGps8o+Cb6ClXLEqZbw
+         P1CCbhLNL8U9f45/x88HVfqQILzHaE1WvOBUW38y6VgTjKEk3/yTNassbR7dW4XyiLxE
+         65RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zZl8DGHxKfW9Vu36ePmFE8gP/ULjjF5tAO2pNWgNfJ8=;
+        b=iaqL3mhNDyXQzfhwruWQuJt4vbIP/o7T0bSBGsS2pjus7alLo9uMsn3V277CcwjmdH
+         WKHjtsHqJHLeEbaO383LmJTTuoNwC5gu+uLHSO18WSlzCbfwiQBS04NsWTW0M/1nFigl
+         +7ZrEwVJuFq0cQXANJ8ket8C9cu0sAtNM555HFsx8daLtJl3o4z1EMiZQuTKgmKxu1nz
+         c6Rs0qlWfM5rXvVldA9W1ZAF5PHcwbjOJK4gAd5XhsSaMk2MUYUgwlT+eiBYTboVcqRL
+         lm95G2lV9xxAjD+5nKv86a8mzLjPY6vm0TUdiDTxuKma+AWg9kEOmcBhgggAwyJIo9RM
+         oCJQ==
+X-Gm-Message-State: AGi0PuYd7A8XT06xdEBQr32TxFrw8T16FuTaLk/VlKisghrIYQXXBE8U
+        3p3YPpBGOOYcqQ+dPQuHcoM=
+X-Google-Smtp-Source: APiQypJDLgeyGA4Jl3+7HtQKeMzM/OnpeTMviE/XQdDGRdcozdPKungXUDu36lYdIPZMiuEU7g5uTA==
+X-Received: by 2002:a2e:854e:: with SMTP id u14mr7198364ljj.95.1585579354883;
+        Mon, 30 Mar 2020 07:42:34 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id r141sm7832506lff.58.2020.03.30.07.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Mar 2020 07:42:34 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 30 Mar 2020 16:42:27 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: rcu_barrier() no longer allowed within mmap_sem?
-Message-ID: <20200330135818.GO20696@hirez.programming.kicks-ass.net>
-References: <CAKMK7uGQ49JGetk3-VmHxXR0HVEoQgVxSZvX9Z0b5so8y+13cA@mail.gmail.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 6/7] rcu/tiny: support reclaim for head-less object
+Message-ID: <20200330144227.GA16651@pc636>
+References: <20200323113621.12048-1-urezki@gmail.com>
+ <20200323113621.12048-7-urezki@gmail.com>
+ <20200330005637.GA138004@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uGQ49JGetk3-VmHxXR0HVEoQgVxSZvX9Z0b5so8y+13cA@mail.gmail.com>
+In-Reply-To: <20200330005637.GA138004@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 03:00:35PM +0200, Daniel Vetter wrote:
-> Hi all, for all = rcu, cpuhotplug and perf maintainers
 > 
-> We've hit an interesting new lockdep splat in our drm/i915 CI:
+> Hmm, Ok. So on -tiny, if there's any allocation failure ever, we immediately
+> revert to call_rcu(). I guess we could also create a regular (non-array)
+> queue for objects with an rcu_head and queue it on that (since it does not
+> need allocation) in case of array allocation failure, however that may not be
+> worth it. So this LGTM. Thanks!
 > 
-> https://intel-gfx-ci.01.org/tree/drm-tip/Patchwork_17096/shard-tglb7/igt@kms_frontbuffer_tracking@fbcpsr-rgb101010-draw-mmap-gtt.html#dmesg-warnings861
+> For entire series:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> (I will submit a follow-up to fix the tagging, please let me submit Vlad's
+> entire series with some patches on top -- I also did a bit of wordsmithing in
+> the commit messages of this series).
+>
+Thank you, Joel, for your review and help!
+
 > 
-> Summarizing away the driver parts we have
+> Loved the might_sleep() idea btw, I suppose if atomic context wants to do
+> kvfree_rcu(), then we could also have kfree_rcu() defer the kvfree_rcu() to
+> execute from a workqueue. Thoughts? We can then allow poor insomniacs from
+> calling this API :)
 > 
-> < gpu locks which are held within mm->mmap_sem in various gpu fault handlers >
-> 
-> -> #4 (&mm->mmap_sem#2){++++}:
-> <4> [604.892615] __might_fault+0x63/0x90
-> <4> [604.892617] _copy_to_user+0x1e/0x80
-> <4> [604.892619] perf_read+0x200/0x2b0
-> <4> [604.892621] vfs_read+0x96/0x160
-> <4> [604.892622] ksys_read+0x9f/0xe0
-> <4> [604.892623] do_syscall_64+0x4f/0x220
-> <4> [604.892624] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> <4> [604.892625]
-> -> #3 (&cpuctx_mutex){+.+.}:
-> <4> [604.892626] __mutex_lock+0x9a/0x9c0
-> <4> [604.892627] perf_event_init_cpu+0xa4/0x140
-> <4> [604.892629] perf_event_init+0x19d/0x1cd
-> <4> [604.892630] start_kernel+0x362/0x4e4
-> <4> [604.892631] secondary_startup_64+0xa4/0xb0
-> <4> [604.892631]
-> -> #2 (pmus_lock){+.+.}:
-> <4> [604.892633] __mutex_lock+0x9a/0x9c0
-> <4> [604.892633] perf_event_init_cpu+0x6b/0x140
-> <4> [604.892635] cpuhp_invoke_callback+0x9b/0x9d0
-> <4> [604.892636] _cpu_up+0xa2/0x140
-> <4> [604.892637] do_cpu_up+0x61/0xa0
-> <4> [604.892639] smp_init+0x57/0x96
-> <4> [604.892639] kernel_init_freeable+0x87/0x1dc
-> <4> [604.892640] kernel_init+0x5/0x100
-> <4> [604.892642] ret_from_fork+0x24/0x50
-> <4> [604.892642]
-> -> #1 (cpu_hotplug_lock.rw_sem){++++}:
-> <4> [604.892643] cpus_read_lock+0x34/0xd0
-> <4> [604.892644] rcu_barrier+0xaa/0x190
-> <4> [604.892645] kernel_init+0x21/0x100
-> <4> [604.892647] ret_from_fork+0x24/0x50
-> <4> [604.892647]
-> -> #0 (rcu_state.barrier_mutex){+.+.}:
+Not sure if i understand you correctly. Could you please <snip> some code
+for illustration?
 
+As far as i understand, it should be done then synchronously. We can defer  
+and queue some work to do it in worqueue context. But i am not sure how
+to proccess next coming request, i.e. busy waiting until we manage to push
+a new ptr. to free? But in that case it would not work if there is only
+one CPU available.
 
-> The last backtrace boils down to i915 driver code which holds the same
-> locks we are holding within mm->mmap_sem, and then ends up calling
-> rcu_barrier(). From what I can see i915 is just the messenger here,
-> any driver with this pattern of a lock held within mmap_sem which also
-> has a path of calling rcu_barrier while holding that lock should be
-> hitting this splat.
-> 
-> Two questions:
-> - This suggests that calling rcu_barrier() isn't ok anymore while
-> holding mmap_sem, or anything that has a dependency upon mmap_sem. I
-> guess that's not the idea, please confirm.
-> - Assuming this depedency is indeed not intended, where should the
-> loop be broken? It goes through perf, cpuhotplug and rcu subsystems,
-> and I don't have a clue about any of those.
+Thanks!
 
-I wonder what is new here; the 1-4 chain there has been true for a long
-time, see also the comment at perf_event_ctx_lock_nested().
-
-That said; it _might_ be possible to break 3->4, that is, all the
-copy_{to,from}_user() usage in perf can be lifted out from under the
-various locks by re-arranging code, but I have a nagging feeling there
-was more to it than that. Of course, while I did document the locking
-rules, I seem to have forgotten to comment on exactly why these rules
-are as they are.. oh well.
-
-
+--
+Vlad Rezki
