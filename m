@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36270C2D0ED
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 02:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F482C2D0E7
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 02:34:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 03C72206DB
-	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 02:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB58720780
+	for <rcu@archiver.kernel.org>; Mon, 30 Mar 2020 02:34:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fxT0FW2S"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="EZj/LdDI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgC3Ce3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 29 Mar 2020 22:34:29 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39240 "EHLO
+        id S1729361AbgC3Cee (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 29 Mar 2020 22:34:34 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33089 "EHLO
         mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729051AbgC3Cdi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 29 Mar 2020 22:33:38 -0400
-Received: by mail-qt1-f196.google.com with SMTP id f20so13936345qtq.6
-        for <rcu@vger.kernel.org>; Sun, 29 Mar 2020 19:33:36 -0700 (PDT)
+        with ESMTP id S1728950AbgC3Cdg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 29 Mar 2020 22:33:36 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c14so13969101qtp.0
+        for <rcu@vger.kernel.org>; Sun, 29 Mar 2020 19:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i7es2W9CEqIB4GMVROiAy2JZJ57uZN4pFanE1V1uKhA=;
-        b=fxT0FW2SkmPY/tTctVOOiNEaCQkEJhYBD9Ljg3DTwuJpXM6Z+pQuU2xjzrWckST7Wt
-         kTky1ILPKzjvatfadFjqzTvUwv+sQZt7v+UsnxOvCkxsgAJran4D5XewUjyU9oT8+Jl+
-         E6huwFcNFYQ0MuaqQftjvXLOI6/gzgK68TEnc=
+        bh=SHLAtJMh4QvoU/qfwuEaXXVei4ZAh6L5O9IfzaCS1DM=;
+        b=EZj/LdDIb8HO3LYMjwICXSEVb7Ug5CB6y+9yeeADTqwVWhn/iu4pUuRlJQp8IWjNRv
+         ZHhEK+CiED++Nq7ZmpKIIk9AzYqhwZhx4OfWzy5quBd5oc00JjePZcq6xqYMOn+tAGOG
+         pzdgsMtvd6/BeARibxZlYR4poF6nx+XzQnoHc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i7es2W9CEqIB4GMVROiAy2JZJ57uZN4pFanE1V1uKhA=;
-        b=hTukuvWfYnDnqrKmNoxkb5Bq3oC4Ypf8KnLpwBA2ECM2nXOTDHb5z3dOXIEDKkMAag
-         6OUpumyclwGx0w2rPHYS+yG+os5tMM0uNcPZyQGphjmscgSLQfUayQDt7Jaug8emPnSe
-         apigko1Tfy/3+wP1g3/MoQBIiFooKOWD6Bw8qMD+ZsOfRkvrxV/XqMy3HSVrqXuR4dQW
-         7L6DBdVu8jL6cRVJCC8mbrUhK4mZbmRNnXfwsl6KNONZ06iBDaGOm77y4pn7NFRZdqw7
-         jUn4m3azlQi0iK5MP7PITrLFC0jNeSppnjuPTwvxePx0Lfavqg7B1SS5bes20sAtTJzg
-         L/4w==
-X-Gm-Message-State: ANhLgQ3jCuhJOIdtn62hyvpjjpB/lF1owcna6Dw5bz30w8Siv5AMeIK4
-        leatXGHzl5ifFBCAIY8Vv9ZwwQ==
-X-Google-Smtp-Source: ADFU+vs2ndobSCzogyfpMzEQcEldd3+b0TiV6qhu47wRBO4t65Nlw0iw94d+x/RbDFy/qTpIQuCBmQ==
-X-Received: by 2002:aed:3c4b:: with SMTP id u11mr9819279qte.208.1585535616115;
-        Sun, 29 Mar 2020 19:33:36 -0700 (PDT)
+        bh=SHLAtJMh4QvoU/qfwuEaXXVei4ZAh6L5O9IfzaCS1DM=;
+        b=D1uwAVB/E5I3Y+aYqBSoc9kFb7bDDWQMny8NuuLtoRTXdmXcb3MtglY5db7NEqLAKQ
+         xHAkDxhq4LaxS4RptmrAutnNwNXLM25mOPrvMY7rdT0TscrDp76J6zfCMVKF6VTP40Pi
+         1PgoMnvMK61aQV0EUyxI4f5uQvLiQ9TFiqGmyEh0VgNWjQNOHnI5hT7kxrReheqZhXXb
+         WVdzzx//7qPz+E5duAkNWr6kLIDV5EmudtokONOkJce4cxCZJsZrpCtFkgBDtMdGZHCB
+         IfzE2FfS5Af9TSp+iAl6lVY42K/LVVL4xu8ZhJQHRKmKa3TD410+qrMhhPOHxacPaNH5
+         j+Yw==
+X-Gm-Message-State: ANhLgQ3obKEAdELpyjaSPnP/waPvhwTMtOVymsTDgfhVYAIhmJX6ty+p
+        NBIk5++ScuUQgHcTB5uQieRruA==
+X-Google-Smtp-Source: ADFU+vt25iE1CsRcLCeax/iZQAcxxqmJ1TSX0Yl3KB0TJZ2nCudJEfCk4XFJ5v786E3wtic9LAXdDA==
+X-Received: by 2002:aed:2535:: with SMTP id v50mr10066898qtc.354.1585535613043;
+        Sun, 29 Mar 2020 19:33:33 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q15sm10030625qtj.83.2020.03.29.19.33.35
+        by smtp.gmail.com with ESMTPSA id q15sm10030625qtj.83.2020.03.29.19.33.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Mar 2020 19:33:35 -0700 (PDT)
+        Sun, 29 Mar 2020 19:33:32 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
@@ -63,9 +63,9 @@ Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 05/18] rcu: Rename kfree_call_rcu() to the kvfree_call_rcu().
-Date:   Sun, 29 Mar 2020 22:32:35 -0400
-Message-Id: <20200330023248.164994-6-joel@joelfernandes.org>
+Subject: [PATCH 02/18] rcu: Introduce kvfree_rcu() interface
+Date:   Sun, 29 Mar 2020 22:32:32 -0400
+Message-Id: <20200330023248.164994-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.26.0.rc2.310.g2932bb562d-goog
 In-Reply-To: <20200330023248.164994-1-joel@joelfernandes.org>
 References: <20200330023248.164994-1-joel@joelfernandes.org>
@@ -78,119 +78,119 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-The reason is, it is capable of freeing vmalloc()
-memory now.
+kvfree_rcu() can deal with an allocated memory that is obtained
+via kvmalloc(). It can return two types of allocated memory or
+"pointers", one can belong to regular SLAB allocator and another
+one can be vmalloc one. It depends on requested size and memory
+pressure.
 
-Do the same with __kfree_rcu() macro, it becomes
-__kvfree_rcu(), the reason is the same as pointed
-above.
+Based on that, two streams are split, thus if a pointer belongs
+to vmalloc allocator it is queued to the list, otherwise SLAB
+one is queued into "bulk array" for further processing.
+
+The main reason of such splitting is:
+    a) to distinguish kmalloc()/vmalloc() ptrs;
+    b) there is no vmalloc_bulk() interface.
+
+As of now we have list_lru.c user that needs such interface,
+also there will be new comers. Apart of that it is preparation
+to have a head-less variant later.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcupdate.h | 8 ++++----
- include/linux/rcutiny.h  | 2 +-
- include/linux/rcutree.h  | 2 +-
- kernel/rcu/tree.c        | 8 ++++----
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ include/linux/rcupdate.h |  9 +++++++++
+ kernel/rcu/tiny.c        |  3 ++-
+ kernel/rcu/tree.c        | 17 ++++++++++++-----
+ 3 files changed, 23 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index c6f6a195cb1cd..edb6eeba49f83 100644
+index 3598bbb5ff407..8b7128d0860e2 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -830,10 +830,10 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
- /*
-  * Helper macro for kfree_rcu() to prevent argument-expansion eyestrain.
-  */
--#define __kfree_rcu(head, offset) \
-+#define __kvfree_rcu(head, offset) \
- 	do { \
- 		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offset)); \
--		kfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
-+		kvfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
- 	} while (0)
- 
- /**
-@@ -852,7 +852,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * Because the functions are not allowed in the low-order 4096 bytes of
-  * kernel virtual memory, offsets up to 4095 bytes can be accommodated.
-  * If the offset is larger than 4095 bytes, a compile-time error will
-- * be generated in __kfree_rcu().  If this error is triggered, you can
-+ * be generated in __kvfree_rcu(). If this error is triggered, you can
-  * either fall back to use of call_rcu() or rearrange the structure to
-  * position the rcu_head structure into the first 4096 bytes.
-  *
-@@ -867,7 +867,7 @@ do {									\
- 	typeof (ptr) ___p = (ptr);					\
- 									\
- 	if (___p)							\
--		__kfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
-+		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+@@ -870,6 +870,15 @@ do {									\
+ 		__kfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
  } while (0)
  
- /**
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index d77e11186afd1..5ba0bcb231976 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -34,7 +34,7 @@ static inline void synchronize_rcu_expedited(void)
- 	synchronize_rcu();
- }
++/**
++ * kvfree_rcu() - kvfree an object after a grace period.
++ * @ptr:	pointer to kvfree
++ * @rhf:	the name of the struct rcu_head within the type of @ptr.
++ *
++ * Same as kfree_rcu(), just simple alias.
++ */
++#define kvfree_rcu(ptr, rhf) kfree_rcu(ptr, rhf)
++
+ /*
+  * Place this after a lock-acquisition primitive to guarantee that
+  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index dd572ce7c7479..4b99f7b88beec 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -23,6 +23,7 @@
+ #include <linux/cpu.h>
+ #include <linux/prefetch.h>
+ #include <linux/slab.h>
++#include <linux/mm.h>
  
--static inline void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
- 	call_rcu(head, func);
- }
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 45f3f66bb04df..3a7829d69fef8 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -33,7 +33,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
- }
+ #include "rcu.h"
  
- void synchronize_rcu_expedited(void);
--void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
- 
- void rcu_barrier(void);
- bool rcu_eqs_special_set(int cpu);
+@@ -86,7 +87,7 @@ static inline bool rcu_reclaim_tiny(struct rcu_head *head)
+ 	rcu_lock_acquire(&rcu_callback_map);
+ 	if (__is_kfree_rcu_offset(offset)) {
+ 		trace_rcu_invoke_kfree_callback("", head, offset);
+-		kfree((void *)head - offset);
++		kvfree((void *)head - offset);
+ 		rcu_lock_release(&rcu_callback_map);
+ 		return true;
+ 	}
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1209945a34bfd..3fb19ea039912 100644
+index 4eb424eb44acb..2d10c50621c38 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3082,18 +3082,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
- }
+@@ -2925,9 +2925,9 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	}
  
- /*
-- * Queue a request for lazy invocation of kfree_bulk()/kfree() after a grace
-+ * Queue a request for lazy invocation of kfree_bulk()/kvfree() after a grace
-  * period. Please note there are two paths are maintained, one is the main one
-  * that uses kfree_bulk() interface and second one is emergency one, that is
-  * used only when the main path can not be maintained temporary, due to memory
-  * pressure.
-  *
-- * Each kfree_call_rcu() request is added to a batch. The batch will be drained
-+ * Each kvfree_call_rcu() request is added to a batch. The batch will be drained
-  * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch will
-  * be free'd in workqueue context. This allows us to: batch requests together to
-  * reduce the number of grace periods during heavy kfree_rcu() load.
-  */
--void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
-@@ -3142,7 +3142,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
- }
--EXPORT_SYMBOL_GPL(kfree_call_rcu);
-+EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+ 	/*
+-	 * Emergency case only. It can happen under low memory
+-	 * condition when an allocation gets failed, so the "bulk"
+-	 * path can not be temporary maintained.
++	 * vmalloc() pointers end up here also emergency case. It can
++	 * happen under low memory condition when an allocation gets
++	 * failed, so the "bulk" path can not be temporary maintained.
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
+@@ -2938,7 +2938,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
  
- static unsigned long
- kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
+-			kfree((void *)head - offset);
++			kvfree((void *)head - offset);
+ 
+ 		rcu_lock_release(&rcu_callback_map);
+ 		cond_resched_tasks_rcu_qs();
+@@ -3112,10 +3112,17 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	}
+ 
+ 	/*
++	 * We do not queue vmalloc pointers into array,
++	 * instead they are just queued to the list. We
++	 * do it because of:
++	 *    a) to distinguish kmalloc()/vmalloc() ptrs;
++	 *    b) there is no vmalloc_bulk() interface.
++	 *
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func))) {
++	if (is_vmalloc_addr((void *) head - (unsigned long) func) ||
++			!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func)) {
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
 -- 
 2.26.0.rc2.310.g2932bb562d-goog
 
