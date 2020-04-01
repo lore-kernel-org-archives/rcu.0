@@ -2,171 +2,97 @@ Return-Path: <SRS0=yXb9=5R=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C14C2D0F0
-	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 19:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C13C43331
+	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 20:50:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E3BAA20719
-	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 19:35:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53E5920658
+	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 20:50:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdTGEWph"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qARTqRBe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732781AbgDATfi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Apr 2020 15:35:38 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:38692 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732780AbgDATfi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Apr 2020 15:35:38 -0400
-Received: by mail-lf1-f66.google.com with SMTP id c5so722027lfp.5;
-        Wed, 01 Apr 2020 12:35:35 -0700 (PDT)
+        id S1732345AbgDAUuP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Apr 2020 16:50:15 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:43453 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732350AbgDAUuO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Apr 2020 16:50:14 -0400
+Received: by mail-qt1-f179.google.com with SMTP id a5so1386355qtw.10
+        for <rcu@vger.kernel.org>; Wed, 01 Apr 2020 13:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cBGwSKFQoUy9yQfRkZN+LSw8IOHhJ+8pXF0jMXV6jtI=;
-        b=mdTGEWph6Vq2uaR0tc/iifpcG/c3qY0Hb5ngWLIUu1WnoAB8NR6sznifiUDpTOtJ5T
-         k93eZvr2OpbDPyQ5USWWW9Oy7KjsWFMwWkSA/D7XJsMJcHweC86r/DhV1IMy70nuroQY
-         tq030XM3aJzQO5Ancl7qtzJqtr8jtR1NKtV219bh8oMAqFDb2JN7l1hKeWJNXXr1XZi4
-         OYWDHN58geOD4f0vQdqNTHAKrnKjaPZGNPdDTaQqnTtYjFMGorBdnQ6LU4eFSZl4qsw4
-         m170l2Yoe1mnNa26wfjdo4vfd1YfITS1vQu3yN4ZYLIgoC/CsTu4WyWjADSghEhGhG54
-         /9lg==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ChzHASHm/TaTfFYQF8dFqluK5hccbTbRDahFmV/GYAg=;
+        b=qARTqRBehTmAwNC2T13cmie795aSz9hOx+Z+GpD1GXwTWnXyRaHIGFvPnnMp19QkJw
+         hwFtyHpCx8LiBOZlOPi5WFcbxDYY/C7GU+nTFtAbvbVyJN2nJMl8T8gvy56c0JtbaUq5
+         HiuZwbUrjOvZoPvkhXmftgH+T+rEbfCI8l1G8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cBGwSKFQoUy9yQfRkZN+LSw8IOHhJ+8pXF0jMXV6jtI=;
-        b=eQP2BuooJbzNqd7GaUaDm3ZUKQ2km6ZueE4aVnSJvrGxgrFmk5GCczstL4kVk7Q5XP
-         P4GDvnUAn9SJ7phMZey2lHl8bq4ii+hnAEzZHr6WcmM5wEdJ76HO8N/NSqWRAma8TiwL
-         +ubY70vtcD41cZg13TOvTj4bzB+olYP1+Q+qJ3ncSE4ofMyJ1DVVlz+hhf4TitDz39Km
-         h+YRpvSBIrBWr+yHU1CPhFzZC1o6PB73CYGpIJx+K9iN+7Vxtqpo5ianIV47KYWv7UmU
-         HFch23gN7tJUabC0YrPxcdxRj7XXjgTyqsfaMmxew4DVxHFgLAGIBgcibRcEpQbahwWt
-         K/sQ==
-X-Gm-Message-State: AGi0PuborGjxwcLopyQNGFXj3QryZ2bHv6Uv8Y98z0IzSyclbxfLcdPV
-        hz+aAH8LZqWUImM+AkIfGts=
-X-Google-Smtp-Source: APiQypKMfYt0DX+KfPnN+lhcxZl2+YbgbU5zIV42ErNExS24cFdhwcnLKz7tal7KIdh6r3bYoYQqZA==
-X-Received: by 2002:ac2:4116:: with SMTP id b22mr14730366lfi.172.1585769734597;
-        Wed, 01 Apr 2020 12:35:34 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id y124sm2292003lff.48.2020.04.01.12.35.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ChzHASHm/TaTfFYQF8dFqluK5hccbTbRDahFmV/GYAg=;
+        b=KZNIN6EwTJ5BCKGldeUSeU9rmNSYXEfrIuBanjOGj6MnGsJng47z6++XqjS2HnRN5P
+         uno+pKwzb9VssWu8tXXbdg7lOyetN8UVf4cbao7IcWlZF1BbZTReBHIyT0cZ1b3TI6d3
+         gLi68JWaIvwc3ewUkVl+YhtRguAiHj/pVlVZhYjb4j9b5qU+EBovePGk6rjoLnXWkbLz
+         DIWZycXbecaSVm2kZTY1B2Xzy5alHNDCz6Rz7y02d3uqCdu4iwbwUZ/lfgVM3B22uq12
+         Sh43aTb2Ip9tQ9M3rLJ74I/2RmMuBkWz35+hqeh7YABbVnhTxo/KjJm0qvaG0CeRYcUS
+         XW1g==
+X-Gm-Message-State: ANhLgQ1TtUb1gH/TNoNmWUuYt7RWZTq/M9xgbvIgbdqH4jhoN+CU6/yY
+        Daf98vhTbUKNaY9ODgEegYGQYQ==
+X-Google-Smtp-Source: ADFU+vszhUVBo8rk6zQ/KP2nDIHemw/whCCufwEnjdP5HFQ3SxUOc40tK7hbpV8NdfvvfFfglUakww==
+X-Received: by 2002:ac8:266c:: with SMTP id v41mr12580604qtv.174.1585774213440;
+        Wed, 01 Apr 2020 13:50:13 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id y41sm2234552qtc.72.2020.04.01.13.50.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Apr 2020 12:35:31 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 1 Apr 2020 21:35:24 +0200
+        Wed, 01 Apr 2020 13:50:12 -0700 (PDT)
+Date:   Wed, 1 Apr 2020 16:50:12 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rcu@vger.kernel.org, willy@infradead.org, peterz@infradead.org,
-        neilb@suse.com, vbabka@suse.cz, mgorman@suse.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH RFC] rcu/tree: Use GFP_MEMALLOC for alloc memory to free
- memory pattern
-Message-ID: <20200401193524.GA6821@pc636>
-References: <20200331160119.GA27614@pc636>
- <20200331183000.GD236678@google.com>
- <20200401122550.GA32593@pc636>
- <20200401134745.GV19865@paulmck-ThinkPad-P72>
- <20200401181601.GA4042@pc636>
- <20200401182615.GE19865@paulmck-ThinkPad-P72>
- <20200401183745.GA5960@pc636>
- <20200401185439.GG19865@paulmck-ThinkPad-P72>
- <20200401190548.GA6360@pc636>
- <20200401193405.GH19865@paulmck-ThinkPad-P72>
+Cc:     urezki@gmail.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: What should we be doing to stress-test kfree_rcu()?
+Message-ID: <20200401205012.GC206273@google.com>
+References: <20200401184415.GA7619@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200401193405.GH19865@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200401184415.GA7619@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 12:34:05PM -0700, Paul E. McKenney wrote:
-> On Wed, Apr 01, 2020 at 09:05:48PM +0200, Uladzislau Rezki wrote:
-> > On Wed, Apr 01, 2020 at 11:54:39AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Apr 01, 2020 at 08:37:45PM +0200, Uladzislau Rezki wrote:
-> > > > On Wed, Apr 01, 2020 at 11:26:15AM -0700, Paul E. McKenney wrote:
-> > > > > On Wed, Apr 01, 2020 at 08:16:01PM +0200, Uladzislau Rezki wrote:
-> > > > > > > > > 
-> > > > > > > > > Right. Per discussion with Paul, we discussed that it is better if we
-> > > > > > > > > pre-allocate N number of array blocks per-CPU and use it for the cache.
-> > > > > > > > > Default for N being 1 and tunable with a boot parameter. I agree with this.
-> > > > > > > > > 
-> > > > > > > > As discussed before, we can make use of memory pool API for such
-> > > > > > > > purpose. But i am not sure if it should be one pool per CPU or
-> > > > > > > > one pool per NR_CPUS, that would contain NR_CPUS * N pre-allocated
-> > > > > > > > blocks.
-> > > > > > > 
-> > > > > > > There are advantages and disadvantages either way.  The advantage of the
-> > > > > > > per-CPU pool is that you don't have to worry about something like lock
-> > > > > > > contention causing even more pain during an OOM event.  One potential
-> > > > > > > problem wtih the per-CPU pool can happen when callbacks are offloaded,
-> > > > > > > in which case the CPUs needing the memory might never be getting it,
-> > > > > > > because in the offloaded case (RCU_NOCB_CPU=y) the CPU posting callbacks
-> > > > > > > might never be invoking them.
-> > > > > > > 
-> > > > > > > But from what I know now, systems built with CONFIG_RCU_NOCB_CPU=y
-> > > > > > > either don't have heavy callback loads (HPC systems) or are carefully
-> > > > > > > configured (real-time systems).  Plus large systems would probably end
-> > > > > > > up needing something pretty close to a slab allocator to keep from dying
-> > > > > > > from lock contention, and it is hard to justify that level of complexity
-> > > > > > > at this point.
-> > > > > > > 
-> > > > > > > Or is there some way to mark a specific slab allocator instance as being
-> > > > > > > able to keep some amount of memory no matter what the OOM conditions are?
-> > > > > > > If not, the current per-CPU pre-allocated cache is a better choice in the
-> > > > > > > near term.
-> > > > > > > 
-> > > > > > As for mempool API:
-> > > > > > 
-> > > > > > mempool_alloc() just tries to make regular allocation taking into
-> > > > > > account passed gfp_t bitmask. If it fails due to memory pressure,
-> > > > > > it uses reserved preallocated pool that consists of number of
-> > > > > > desirable elements(preallocated when a pool is created).
-> > > > > > 
-> > > > > > mempoll_free() returns an element to to pool, if it detects that
-> > > > > > current reserved elements are lower then minimum allowed elements,
-> > > > > > it will add an element to reserved pool, i.e. refill it. Otherwise
-> > > > > > just call kfree() or whatever we define as "element-freeing function."
-> > > > > 
-> > > > > Unless I am missing something, mempool_alloc() acquires a per-mempool
-> > > > > lock on each invocation under OOM conditions.  For our purposes, this
-> > > > > is essentially a global lock.  This will not be at all acceptable on a
-> > > > > large system.
-> > > > > 
-> > > > It uses pool->lock to access to reserved objects, so if we have one memory
-> > > > pool per one CPU then it would be serialized.
-> > > 
-> > > I am having difficulty parsing your sentence.  It looks like your thought
-> > > is to invoke mempool_create() for each CPU, so that the locking would be
-> > > on a per-CPU basis, as in 128 invocations of mempool_init() on a system
-> > > having 128 hardware threads.  Is that your intent?
-> > > 
-> > In order to serialize it, you need to have it per CPU. So if you have 128
-> > cpus, it means:
-> > 
-> > <snip>
-> > for_each_possible_cpu(...)
-> >     cpu_pool = mempool_create();
-> > <snip>
-> > 
-> > but please keep in mind that it is not my intention, but i had a though
-> > about mempool API. Because it has pre-reserve logic inside.
+On Wed, Apr 01, 2020 at 11:44:15AM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> OK, fair point on use of mempool API, but my guess is that extending
-> the current kfree_rcu() logic will be simpler.
-> 
-Agree :)
+> What should we be doing to stress-test kfree_rcu(), including its ability
+> to cope with OOM conditions?  Yes, rcuperf runs are nice, but they are not
+> currently doing much more than testing base functionality, performance,
+> and scalability.
 
---
-Vlad Rezki
+I already stress kfree_rcu() with rcuperf right now to a point of OOM and
+make sure it does not OOM. The way I do this is set my VM to low memory (like
+512MB) and then flood kfree_rcu()s. After the shrinker changes, I don't see
+OOM with my current rcuperf settings.
+
+Not saying that my testing is sufficient, just saying this is what I do. It
+would be good to get a real workload to trigger lot of kfree_rcu() activity
+as well especially on low memory systems. Any ideas on that?
+
+One idea could be to trigger memory pressure from unrelated allocations (such
+as userspace memory hogs), and see how it perform with memory-pressure. For
+one, the shrinker should trigger in such situations to force the queue into
+waiting for a GP in such situations instead of batching too much.
+
+We are also missing vmalloc() tests. I remember Vlad had some clever vmalloc
+tests around for his great vmalloc rewrites :). Vlad, any thoughts on getting
+to stress kvfree_rcu()?
+
+thanks,
+
+ - Joel
+
