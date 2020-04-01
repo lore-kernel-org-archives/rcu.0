@@ -2,64 +2,48 @@ Return-Path: <SRS0=yXb9=5R=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 210CFC2D0F0
-	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 13:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 504E0C43331
+	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 13:47:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E70CB2073B
-	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 13:23:14 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Chcf0o+1"
+	by mail.kernel.org (Postfix) with ESMTP id 1DBAA20776
+	for <rcu@archiver.kernel.org>; Wed,  1 Apr 2020 13:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1585748867;
+	bh=CvwldOZwrOCHacHE+jmnj9rjAqgJ9cJeX4YmgaNFGyQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=ZvJO+8BTPKsN2U9YWqEn3rAIdB/8cBYSidU554AzG2Z+O7UkbIExK1l7N5JUgZq9W
+	 QVftRBUL7HvOee4h1pVSEmLEVe+DMpV+xuu9ILbaDIIRX2Bzo5yj1kOenfkqK3+Hh3
+	 p/jYUWOr6HPcPwJLr6+e7fmcZDZt0KoWK4mXb2UA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732635AbgDANXK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Apr 2020 09:23:10 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:36801 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732289AbgDANXJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Apr 2020 09:23:09 -0400
-Received: by mail-lf1-f66.google.com with SMTP id w145so1269628lff.3;
-        Wed, 01 Apr 2020 06:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=x+0+LY1hYid8SN3qoqXgUaMr5zJLkCBGndVrhVygy6s=;
-        b=Chcf0o+1x+pHXlHz3a+Of7l1Fb/v7AlLTSaW8A+lrJMq3PW+0BUZMUBsmwYUyUYs2w
-         Pc6vmF5cFBAHyoOz6hWDtfa3cqQIa6zOBjUjDyHbxtMKv8lrzYESLc3W8OjupBMhCLIb
-         CSqWBuSd310VTAJPcXwDLGi79qx7mwz3ab8IwfHUdRK5SRz0Cd2kSDSmuG8+YC0+z9j2
-         JWfATYzgpLCOEpl/BYkEWHkSfUZ5J39gCGLJeWeuFiDD5pAHrC0ad9R2NRHr1SndCIhQ
-         uM3Gqek1l1BUq1oq+tbzkmtfZtS1PIIyqQ/hh3xGFVYI7xX9IPiJZhbUUAO8TeXRy59K
-         E/rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x+0+LY1hYid8SN3qoqXgUaMr5zJLkCBGndVrhVygy6s=;
-        b=Fz84fvBEUJhiXahwSRo4htHwhtmbyizkLoW2/1HwdMS2oYrzdZ7HrkfN7xryCbc7yt
-         XoHe6QYbBn+7hqbKkKZXMUlZl903vCmiJV22zsybyvgoQRkh7oq25MnxU78NwxSn2+7C
-         3rnWjy3kPQYgC/TT4zAgXKB9bO7PfXdgxYr/pXJMPAHyo5OpMve0LzdVTGnef8KrKlRR
-         gG1DD3g8Q5YPxpbgYZ4RSnNAyeuulG9+tij/NRSYEFrw1EbzESMOZshk0mru+FKei5gy
-         m3924TWvP6jZDDmkUXwU88nBFjSYMRYjjNl/7LfcfP5dXVYa1QpTL30nTqLjDbgBEVli
-         ylhQ==
-X-Gm-Message-State: AGi0PuYr6m6J4/Gmk9+TSdlwLaQ1DNNH7RjQL4iJEQOOnuFyhWMPHGO/
-        K0yeh9JMZnu3OCJgyWCvZMA=
-X-Google-Smtp-Source: APiQypK98HgdlqS/OKFCL75PGkc3IGwL4tt2n4fedmuIGaEQIEEHCY+drgiyhExwvtjaCRjkEnP/qA==
-X-Received: by 2002:a19:3f47:: with SMTP id m68mr14640157lfa.210.1585747386899;
-        Wed, 01 Apr 2020 06:23:06 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id 24sm1183836ljv.105.2020.04.01.06.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Apr 2020 06:23:06 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 1 Apr 2020 15:22:58 +0200
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        id S1732542AbgDANrq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Apr 2020 09:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732289AbgDANrq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Apr 2020 09:47:46 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8DB9206F5;
+        Wed,  1 Apr 2020 13:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585748865;
+        bh=CvwldOZwrOCHacHE+jmnj9rjAqgJ9cJeX4YmgaNFGyQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=n9dQjVEJndzYqA/D9qyvlmeRzljwKA0hKpPcwuwEarzVa+LiZrEsSpVfsP+S8HIDJ
+         mzfj1ojIB7cIlLeirIEAO9Ok5YuWlmxTGha+MxAf7z2o9S93ZZtW4SUNWAVDsTM65t
+         3ijG+Q8QhIylR5xd7VP0XDa0zmWTzp02vPvydJRw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 9645535226AC; Wed,  1 Apr 2020 06:47:45 -0700 (PDT)
+Date:   Wed, 1 Apr 2020 06:47:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         rcu@vger.kernel.org, willy@infradead.org, peterz@infradead.org,
         neilb@suse.com, vbabka@suse.cz, mgorman@suse.de,
@@ -67,56 +51,82 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [PATCH RFC] rcu/tree: Use GFP_MEMALLOC for alloc memory to free
  memory pattern
-Message-ID: <20200401132258.GA1953@pc636>
+Message-ID: <20200401134745.GV19865@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200331131628.153118-1-joel@joelfernandes.org>
- <20200331145806.GB236678@google.com>
- <20200331153450.GM30449@dhcp22.suse.cz>
- <20200331161215.GA27676@pc636>
- <20200401070958.GB22681@dhcp22.suse.cz>
- <20200401123230.GB32593@pc636>
- <20200401125503.GJ22681@dhcp22.suse.cz>
- <20200401130816.GA1320@pc636>
- <20200401131528.GK22681@dhcp22.suse.cz>
+ <20200331140433.GA26498@pc636>
+ <20200331150911.GC236678@google.com>
+ <20200331160119.GA27614@pc636>
+ <20200331183000.GD236678@google.com>
+ <20200401122550.GA32593@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200401131528.GK22681@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200401122550.GA32593@pc636>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > We call it from atomic context, so we can not sleep, also we do not have
-> > any existing context coming from the caller. I see that GFP_ATOMIC is high-level
-> > flag and is differ from __GFP_ATOMIC. It is defined as:
-> > 
-> > #define GFP_ATOMIC (__GFP_HIGH|__GFP_ATOMIC|__GFP_KSWAPD_RECLAIM)
-> > 
-> > so basically we would like to have __GFP_KSWAPD_RECLAIM that is included in it,
-> > because it will also help in case of high memory pressure and wake-up kswapd to
-> > reclaim memory.
-> > 
-> > We also can extract:
-> > 
-> > __GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL | __GFP_KSWAPD_RECLAIM
-> > 
-> > but that is longer then
-> > 
-> > GFP_ATMOC |  __GFP_RETRY_MAYFAIL
-> 
-> OK, if you are always in the atomic context then GFP_ATOMIC is
-> sufficient. __GFP_RETRY_MAYFAIL will make no difference for allocations
-> which do not reclaim (and thus not retry). Sorry this was not clear to
-> me from the previous description.
-> 
-Ahh. OK. Then adding __GFP_RETRY_MAYFAIL to GFP_ATOMIC will not make any effect.
+On Wed, Apr 01, 2020 at 02:25:50PM +0200, Uladzislau Rezki wrote:
 
-Thank you for your explanation!
+[ . . . ]
 
---
-Vlad Rezki
+> > > > Paul was concerned about following scenario with hitting synchronize_rcu():
+> > > > 1. Consider a system under memory pressure.
+> > > > 2. Consider some other subsystem X depending on another system Y which uses
+> > > >    kfree_rcu(). If Y doesn't complete the operation in time, X accumulates
+> > > >    more memory.
+> > > > 3. Since kfree_rcu() on Y hits synchronize_rcu() a lot, it slows it down.
+> > > >    This causes X to further allocate memory, further causing a chain
+> > > >    reaction.
+> > > > Paul, please correct me if I'm wrong.
+> > > > 
+> > > I see your point and agree that in theory it can happen. So, we should
+> > > make it more tight when it comes to rcu_head attachment logic.
+> > 
+> > Right. Per discussion with Paul, we discussed that it is better if we
+> > pre-allocate N number of array blocks per-CPU and use it for the cache.
+> > Default for N being 1 and tunable with a boot parameter. I agree with this.
+> > 
+> As discussed before, we can make use of memory pool API for such
+> purpose. But i am not sure if it should be one pool per CPU or
+> one pool per NR_CPUS, that would contain NR_CPUS * N pre-allocated
+> blocks.
+
+There are advantages and disadvantages either way.  The advantage of the
+per-CPU pool is that you don't have to worry about something like lock
+contention causing even more pain during an OOM event.  One potential
+problem wtih the per-CPU pool can happen when callbacks are offloaded,
+in which case the CPUs needing the memory might never be getting it,
+because in the offloaded case (RCU_NOCB_CPU=y) the CPU posting callbacks
+might never be invoking them.
+
+But from what I know now, systems built with CONFIG_RCU_NOCB_CPU=y
+either don't have heavy callback loads (HPC systems) or are carefully
+configured (real-time systems).  Plus large systems would probably end
+up needing something pretty close to a slab allocator to keep from dying
+from lock contention, and it is hard to justify that level of complexity
+at this point.
+
+Or is there some way to mark a specific slab allocator instance as being
+able to keep some amount of memory no matter what the OOM conditions are?
+If not, the current per-CPU pre-allocated cache is a better choice in the
+near term.
+
+							Thanx, Paul
+
+> > In current code, we have 1 cache page per CPU, but this is allocated only on
+> > the first kvfree_rcu() request. So we could change this behavior as well to
+> > make it pre-allocated.
+> > 
+> > Does this all sound good to you?
+> > 
+> I think that makes sense :)
+> 
+> --
+> Vlad Rezki
