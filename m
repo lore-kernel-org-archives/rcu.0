@@ -1,168 +1,89 @@
-Return-Path: <SRS0=frk5=5S=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=jERE=5T=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1C37C2BA19
-	for <rcu@archiver.kernel.org>; Thu,  2 Apr 2020 12:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0433C43331
+	for <rcu@archiver.kernel.org>; Fri,  3 Apr 2020 06:53:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 988BA20784
-	for <rcu@archiver.kernel.org>; Thu,  2 Apr 2020 12:33:15 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="apIxOOpu"
+	by mail.kernel.org (Postfix) with ESMTP id 88DE620757
+	for <rcu@archiver.kernel.org>; Fri,  3 Apr 2020 06:53:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388007AbgDBMdI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Apr 2020 08:33:08 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:46639 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbgDBMdI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:33:08 -0400
-Received: by mail-lj1-f194.google.com with SMTP id r7so2976001ljg.13;
-        Thu, 02 Apr 2020 05:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tB5Om8/vjXd8Shhy7gccK+1zsTKo1F5yn1ziCQxk5RE=;
-        b=apIxOOpuaj9CeJortfeXXN6+I17U1oEqokkNyJAsVBVGMa6nppSAZGqaceFNoA5DyN
-         mJ5BX0CkvUDnryB6tLnWnaMqc2qvr+8SrhRfxGh4X0/zL09hnSY6lvbqx3Hytd6DRhUr
-         dmVvZKXwg5WHyazfygIy2Nmu+P+LiXRXuWu9gsgTLsDHEftEtc+8DaEWlErsbG2zdXkc
-         lz9b+iMZLp9Hk08KqdoPktOwMF6FlfXAACsmReS3C74IFR5022ZHRbgyt4RubRnwt73n
-         EbG1sEZ0AgzGX3Ij9FrTuE4CfG2V+v1IqRvMP0T4FEyOE+1vWVyGmf0s0GgNgV4FtPcc
-         VWVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tB5Om8/vjXd8Shhy7gccK+1zsTKo1F5yn1ziCQxk5RE=;
-        b=lJgh/CDNSwZRiYqcZynl89Qdf3ZkWEAbf4PThIgUAwSFZfwb3I8y8jtk+XCmWTZ6W9
-         roeMmKS4Pi7TAPl/NToTlZPSOuvkgEMzYFuEI1DP61VctL9xDkI3zqmqAC1j4nl24IWt
-         nseqftG3nbPQbGhyGcj7ymIrMfxLlwkmb5lROc/u1zr7XPdm0m76wNpX+IzC27BfTeLZ
-         TcnBJI9Vyd4vjGWA/Hugn1rSyUrBbNOUsfUbBG0D0AB9LTL3UqjZ+f5V3gSSTyCy8o+S
-         jaHRHPfymS4wKqIjdTA7zUxONxXbpMOQOm/SZVyFZfkYefqUpiGs+e9ANlZ3o7IklDnf
-         5Bcg==
-X-Gm-Message-State: AGi0PubXy69Yho0ge3srAMx9RN8LglBCchnW4ygc0MzhvxuIxyiecbcW
-        a0bZ6Ce75PDtc0TYvaJ7cpfHOxP8hbg=
-X-Google-Smtp-Source: APiQypIcS/0ZJG7YlW+OPjmQzK2ZO8973RyK3GGEQvRKxPf6FN91uLJ6txbYJd0fY/sqwIBF0bVUeA==
-X-Received: by 2002:a2e:854b:: with SMTP id u11mr1868755ljj.75.1585830784175;
-        Thu, 02 Apr 2020 05:33:04 -0700 (PDT)
-Received: from pc636.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id u25sm3833494lfo.71.2020.04.02.05.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 05:33:03 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 2/3] rcu/tree: move locking/unlocking to separate functions
-Date:   Thu,  2 Apr 2020 14:32:52 +0200
-Message-Id: <20200402123253.10382-2-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200402123253.10382-1-urezki@gmail.com>
-References: <20200402123253.10382-1-urezki@gmail.com>
+        id S1730759AbgDCGxX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Apr 2020 02:53:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:36967 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729423AbgDCGxX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Apr 2020 02:53:23 -0400
+IronPort-SDR: pkfLmWpzZubv+DHa8fiJAyu7bJwuIO/XCyMy5rPySuD4tcYd27exZU7XlcCsZITG71e2Vc3aag
+ yzROJfHYaVbQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 23:53:22 -0700
+IronPort-SDR: SYWvhQZyVHVpX4T8X0mwVSyHpqrQLoipgtu+F7FP2HWJYz+ETML7SiQEeGyQnC63G4SX1xnMaq
+ d+R0X+4p/0pw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,338,1580803200"; 
+   d="scan'208";a="451200393"
+Received: from unknown (HELO [10.239.13.3]) ([10.239.13.3])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Apr 2020 23:53:20 -0700
+Subject: Re: [LKP] Re: de8f5e4f2d ("lockdep: Introduce wait-type checks"): [
+ 17.344674] EIP: default_idle
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        kernel test robot <lkp@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        LKP <lkp@lists.01.org>
+References: <20200402081732.GM8179@shao2-debian>
+ <87h7y2ns2j.fsf@nanos.tec.linutronix.de>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <75dd6e6b-745d-23be-6d3d-1984b1f7f47d@intel.com>
+Date:   Fri, 3 Apr 2020 14:52:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h7y2ns2j.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Introduce two helpers to lock and unlock an access to the
-per-cpu "kfree_rcu_cpu" structure. The reason is to make
-kvfree_call_rcu() function to be more readable.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 39 +++++++++++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 24f620a06219..5e26145e9ead 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3159,6 +3159,27 @@ static inline struct rcu_head *attach_rcu_head_to_object(void *obj)
- 	return ((struct rcu_head *) ++ptr);
- }
- 
-+static inline struct kfree_rcu_cpu *
-+krc_this_cpu_lock(unsigned long *flags)
-+{
-+	struct kfree_rcu_cpu *krcp;
-+
-+	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
-+	krcp = this_cpu_ptr(&krc);
-+	if (likely(krcp->initialized))
-+		spin_lock(&krcp->lock);
-+
-+	return krcp;
-+}
-+
-+static inline void
-+krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
-+{
-+	if (likely(krcp->initialized))
-+		spin_unlock(&krcp->lock);
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * Queue a request for lazy invocation of appropriate free routine after a
-  * grace period. Please note there are three paths are maintained, two are the
-@@ -3195,10 +3216,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		ptr = (unsigned long *) func;
- 	}
- 
--	local_irq_save(flags);	// For safely calling this_cpu_ptr().
--	krcp = this_cpu_ptr(&krc);
--	if (krcp->initialized)
--		spin_lock(&krcp->lock);
-+	krcp = krc_this_cpu_lock(&flags);
- 
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(ptr)) {
-@@ -3220,19 +3238,14 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		/* Is headless object? */
- 		if (head == NULL) {
- 			/* Drop the lock. */
--			if (krcp->initialized)
--				spin_unlock(&krcp->lock);
--			local_irq_restore(flags);
-+			krc_this_cpu_unlock(krcp, flags);
- 
- 			head = attach_rcu_head_to_object(ptr);
- 			if (head == NULL)
- 				goto inline_return;
- 
- 			/* Take it back. */
--			local_irq_save(flags);
--			krcp = this_cpu_ptr(&krc);
--			if (krcp->initialized)
--				spin_lock(&krcp->lock);
-+			krcp = krc_this_cpu_lock(&flags);
- 
- 			/*
- 			 * Tag the headless object. Such objects have a back-pointer
-@@ -3267,9 +3280,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	}
- 
- unlock_return:
--	if (krcp->initialized)
--		spin_unlock(&krcp->lock);
--	local_irq_restore(flags);
-+	krc_this_cpu_unlock(krcp, flags);
- 
- inline_return:
- 	/*
--- 
-2.20.1
+On 4/2/20 5:40 PM, Thomas Gleixner wrote:
+> kernel test robot <lkp@intel.com> writes:
+>> Greetings,
+>>
+>> 0day kernel testing robot got the below dmesg and the first bad commit is
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>
+>> commit de8f5e4f2dc1f032b46afda0a78cab5456974f89
+>> Author:     Peter Zijlstra <peterz@infradead.org>
+>> AuthorDate: Sat Mar 21 12:26:01 2020 +0100
+>> Commit:     Peter Zijlstra <peterz@infradead.org>
+>> CommitDate: Sat Mar 21 16:00:24 2020 +0100
+>>
+>>      lockdep: Introduce wait-type checks
+> Can you please avoid enabling
+>
+>> CONFIG_PROVE_RAW_LOCK_NESTING=y
+> for now?
+>
+> As the changelog states, there are known issues and that's why the
+> config is default=n.
 
+Hi Thomas,
+
+Thanks for the advice, we have disabled CONFIG_PROVE_RAW_LOCK_NESTING.
+
+Best Regards,
+Rong Chen
