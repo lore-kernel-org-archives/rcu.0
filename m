@@ -1,102 +1,201 @@
-Return-Path: <SRS0=jERE=5T=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=3CeA=5U=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46C2EC43331
-	for <rcu@archiver.kernel.org>; Fri,  3 Apr 2020 19:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8107FC2BA17
+	for <rcu@archiver.kernel.org>; Sat,  4 Apr 2020 19:09:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 187A820737
-	for <rcu@archiver.kernel.org>; Fri,  3 Apr 2020 19:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585941261;
-	bh=imyyqIJRl5n2TRDy87GoQbmJVeFzTinDt+M5mJkXmns=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=MCYvKM4zXh5IQT0nh7oeX+9GhxhDPS2uNu89OgUnRhfNgS9VNp1SU4+KuDLqdM56h
-	 epQPzV1D+RXmwOidwbIYh5iLXmTkdy6fwABotEAmeeQJ4oae8Zf+zMF8J84lvmOgve
-	 vm4wyRykWzhNjBL4gumg11nFB7BdN3cucRQLzpTg=
+	by mail.kernel.org (Postfix) with ESMTP id 4F7F6206F5
+	for <rcu@archiver.kernel.org>; Sat,  4 Apr 2020 19:09:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uJWfSqmw"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgDCTOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Apr 2020 15:14:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728296AbgDCTOU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Apr 2020 15:14:20 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3248920719;
-        Fri,  3 Apr 2020 19:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585941260;
-        bh=imyyqIJRl5n2TRDy87GoQbmJVeFzTinDt+M5mJkXmns=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rhNsW0F00Iio6KqEe/9izVA5oyGU5i1OI+UDJ1vuq5h3eI7vLhcqQsXHw3yXWb2yz
-         MNWghs8tag5eZD+J+Dz9NSnNCoBuETuANZxAL8bNl4867ZKL+aAYsGBOWMlESDmvK+
-         J+ugrQJvCD3oFT3x8pwY6tVDJ3wn8VmT1qxTChcA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id ED132352275C; Fri,  3 Apr 2020 12:14:19 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 12:14:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S1726222AbgDDTJe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 4 Apr 2020 15:09:34 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:44095 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgDDTJe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 4 Apr 2020 15:09:34 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 131so8494104lfh.11;
+        Sat, 04 Apr 2020 12:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Cv6xnrTRODwtxm6ik3+0p7UKLU5YsK0bKozKaU8wMGI=;
+        b=uJWfSqmw8KaFiG+RqkyvU3MBFnV5Y28SWNdjoS40IUGdLjeHGGux/SUmElr/IYFHzH
+         Reo0Q826zgUEd/QeyauIhNywQaxhJg+ziPWu3TqIVzL9OSnkRaaCY56cMCVNU0+PV2On
+         /XOe4w2v68IEeD3hCZUSHaC3UbVgwm6KYvZILxad/IDJWHgZC/wMoVNv14kxfDWwSRTQ
+         hAcikTZ/roD40twXYOpz6lg26XxSOIZ/OXy7pofxdheW7TjFyrXxMiqUxycE8O9t3oeP
+         uT7EXrQuJyvV+SY1mH3D7m1H55CIFMb0TXd5spkIvCGq465oAmnkK0FLTJXb93kjUAp5
+         Oh7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Cv6xnrTRODwtxm6ik3+0p7UKLU5YsK0bKozKaU8wMGI=;
+        b=Gc+YfyzS4kLMU7+QJDTYlG2dN6LLHH2WNEYwVYzb+V9MOu/tsEcZtOCxlgX310cQKr
+         C+HZZ39S8B6hqIWv50XZRmU0FZ/rAIp1Bf1JKjh509uJh2tD7o6+JRfFWbrP2jpg02hE
+         nlXJ0Ya00RjrmO92dphmZYm4GKeoo2P2CH0Ny5rIq4d849IU1SPvM8i/OlQFjaVhIHAm
+         QCLpD92ZGnF5ZnAb3rYl4My/U9t/wT+xHCJg0MgGpKSsx4zv0Qr/mGzEhH5TkJ+qqHTO
+         5wFLOxM4Oz/kI5HjYFqNfzhBC3lril2YSxFgbErt3R+yuKST7XeDBplSMeVKrJxJrsp9
+         jyaA==
+X-Gm-Message-State: AGi0PuYP5nuIlExT5ZYpzj23NPAraae4B/kKZ2aKUy06jgPK60Uawwx+
+        s+mLZDWxA13FZXxGz7KUBA0=
+X-Google-Smtp-Source: APiQypK7V4Nug/szoSqA+5cqvVc107goHH4D52ORHpCrSyk5/IgAWm9FvmdTRTC087ZhYY69pXrwnQ==
+X-Received: by 2002:ac2:50cf:: with SMTP id h15mr8951798lfm.127.1586027371915;
+        Sat, 04 Apr 2020 12:09:31 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id c4sm4056408ljd.30.2020.04.04.12.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 12:09:31 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sat, 4 Apr 2020 21:09:29 +0200
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [PATCH 1/1] rcu/tree: add emergency pool for headless case
-Message-ID: <20200403191419.GU19865@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200404190929.GC424@pc636>
 References: <20200403173051.4081-1-urezki@gmail.com>
+ <20200403181655.GR21484@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403173051.4081-1-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200403181655.GR21484@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 07:30:51PM +0200, Uladzislau Rezki (Sony) wrote:
-> Maintain an emergency pool for each CPU with some
-> extra objects. There is read-only sysfs attribute,
-> the name is "rcu_nr_emergency_objs". It reflects
-> the size of the pool. As for now the default value
-> is 3.
-> 
-> The pool is populated when low memory condition is
-> detected. Please note it is only for headless case
-> it means when the regular SLAB is not able to serve
-> any request, the pool is used.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/tree.c | 133 +++++++++++++++++++++++++++++++++-------------
->  1 file changed, 97 insertions(+), 36 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 5e26145e9ead..f9f1f935ab0b 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -114,6 +114,14 @@ int rcu_num_lvls __read_mostly = RCU_NUM_LVLS;
->  int rcu_kfree_nowarn;
->  module_param(rcu_kfree_nowarn, int, 0444);
->  
-> +/*
-> + * For headless variant. Under memory pressure an
-> + * emergency pool can be used if the regular SLAB
-> + * is not able to serve some memory for us.
-> + */
-> +int rcu_nr_emergency_objs = 3;
-> +module_param(rcu_nr_emergency_objs, int, 0444);
+Hello, Matthew.
 
-Please document this in Documentation/admin-guide/kernel-parameters.txt.
+> On Fri, Apr 03, 2020 at 07:30:51PM +0200, Uladzislau Rezki (Sony) wrote:
+> > @@ -2877,6 +2885,12 @@ struct kfree_rcu_cpu {
+> >  	bool initialized;
+> >  	// Number of objects for which GP not started
+> >  	int count;
+> > +
+> > +	/*
+> > +	 * Reserved emergency pool for headless variant.
+> > +	 */
+> > +	int nr_emergency;
+> > +	void **emergency;
+> 
+> This is a pretty expensive way to maintain an emergency pool.
+> 
+Well. I do not see what is expansive there, really. But i see
+some drawbacks i would like to fix. First of all get rid of
 
-							Thanx, Paul
+<snip>
+    krcp->emergency = kmalloc_array(rcu_nr_emergency_objs,
+        sizeof(void *), GFP_NOWAIT);
+<snip>
+
+and second one, as you pointed below to use list instead of
+an array. There is some advantages, first is no need in array
+bound check, second, in case of list we can dynamically control
+its length via exposed sysfs attribute.
+
+> Try something like this ...
+> 
+> struct emergency_pool_object {
+> 	union {
+> 		struct whatever foo;
+> 		struct {
+> 			int remaining;
+> 			void *next;
+> 		};
+> 	};
+> };
+> 
+> struct kfree_rcu_cpu {
+> 	...
+> 	struct emergency_pool_object *epo;
+> };
+> 
+> struct whatever *get_emergency_object(struct kfree_rcu_cpu *krc)
+> {
+> 	struct emergency_pool_object *epo = krc->epo;
+> 	if (epo)
+> 		krc->epo = epo->next;
+> 	return &epo->foo;
+> }
+> 
+> void alloc_emergency_objects(struct kfree_rcu_cpu *krc, int n)
+> {
+> 	int i = 0;
+> 
+> 	if (krc->epo)
+> 		i = krc->epo->remaining;
+> 
+> 	while (++i < n) {
+> 		struct emergency_pool_object *epo = kmalloc(sizeof(epo), GFP);
+> 		epo->remaining = i;
+> 		epo->next = krc->epo;
+> 		krc->epo = epo;
+> 	}
+> }
+> 
+I will upload v2. I just stash objects in the list. Something like:
+
+<snip>
+@@ -2877,6 +2888,18 @@ struct kfree_rcu_cpu {
+        bool initialized;
+        // Number of objects for which GP not started
+        int count;
++
++       /*
++        * Reserved emergency objects for headless variant.
++        * The objects are queued into the lock-less list,
++        * the length of the list is limited therefore we
++        * also have a counter.
++        *
++        * Actually we have the room for embedding a counter
++        * into our cached object, but let's keep it simple.
++        */
++       int nr_objs_elist;
++       struct llist_head elist;
+ };
+...
++static inline unsigned long *
++get_emergency_object(struct kfree_rcu_cpu *krcp)
++{
++       if (!krcp->nr_objs_elist)
++               return NULL;
++
++       krcp->nr_objs_elist--;
++       return (unsigned long *)
++               llist_del_first(&krcp->elist);
++}
++
++static inline bool
++put_emergency_object(struct kfree_rcu_cpu *krcp,
++       unsigned long *obj)
++{
++       /* Check the limit. */
++       if (krcp->nr_objs_elist >= rcu_nr_emergency_objs)
++               return false;
++
++       llist_add((struct llist_node *) obj, &krcp->elist);
++       krcp->nr_objs_elist++;
++       return true;
++}
+<snip>
+
+Thanks for your comments!
+
+--
+Vlad Rezki
