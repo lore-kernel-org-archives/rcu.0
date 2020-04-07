@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44578C2BABC
-	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C693C2BA80
+	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:11:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1B1732082D
-	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:05:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 732C220719
+	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:11:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Ug+nh1/D"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="xI/ujC/R"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgDGCF3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Apr 2020 22:05:29 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41950 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgDGCF2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:05:28 -0400
-Received: by mail-qt1-f195.google.com with SMTP id i3so1560468qtv.8
-        for <rcu@vger.kernel.org>; Mon, 06 Apr 2020 19:05:28 -0700 (PDT)
+        id S1726521AbgDGCLW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Apr 2020 22:11:22 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:39447 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgDGCLW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Apr 2020 22:11:22 -0400
+Received: by mail-qv1-f65.google.com with SMTP id v38so1131928qvf.6
+        for <rcu@vger.kernel.org>; Mon, 06 Apr 2020 19:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QE9feUnP6i9X/aj/z/7/gJs0TCfrmf+hqNm1oT5H5Wo=;
-        b=Ug+nh1/Djrrr/Q9qUloEDJX7nwoQbukp++5BAg8jRhC6bKO5v2srUpBPJ5CSdxM8+y
-         DZM3V/FCvDfVTAdln6l0g4IpB2p5Q+zSAwEMPnG4Mpn7Id6AxXESijE8ghTVWJ6YUHrQ
-         ldTC1LqkITSR7e14Q2G+OgeqG3MEEF1b1wsaA=
+        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
+        b=xI/ujC/RAckrvStiyT1s/lKEcpA1186172WShsPNhGoEOvQ5y2Ser1kYDtJsnPsLga
+         f6QPfBlDXJ4h7eLoL/ZFwg0+woBukzLR534NkFoPeELNS+GjxvNixkkD5xoEJUd4e+n9
+         Kyrm2zsmBCRaqyD3cOlNW7XK34Oqd7RmKL8vA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QE9feUnP6i9X/aj/z/7/gJs0TCfrmf+hqNm1oT5H5Wo=;
-        b=DJolLnwkLJrVRbEkrB44rVlrn5EjLZZgSr40KXZV1Npo1domnUosS1HL0mynkkRk1E
-         TLdRs0DVGnVhnU49801B6Wm8HMEQMVjyLoFcqxsxjn3PePz7KH2YjSddOFmp1Ig/Vllo
-         KIDjy70/mOQAYgaCvZZEVoKLEiwjI+kXVSgro+LjNHdvlOCJ8RAaowS+RkxJVeyhGQbW
-         tx+pdQ7kzDaIK/fGZ2STMsidvgK53bRoz3Q56os9soPfhFBJNhc+CGW0M+Cx2PDkJl3J
-         4xKpXyk1Op8CD9uuOOM5tZtJPvRkoj4/D6oGxt7aI4vKu4SgrOeMevQxvvkqFoSFO0cv
-         9X9Q==
-X-Gm-Message-State: AGi0PubiViPjOtHY+fOjoJNGYd/7OUzvaoxIwM/9NMmg6LBsy+rEUF9I
-        o/wkFThtfPOjrP9cC/Jaqmf5RA==
-X-Google-Smtp-Source: APiQypKtWDj3oedlvF3bwvLFauAg3ZIkbXpPPfDmPdit0eD4VUDvGdBp5v89JmUTbXIWhz19qDHGug==
-X-Received: by 2002:aed:37a8:: with SMTP id j37mr213233qtb.272.1586225127531;
-        Mon, 06 Apr 2020 19:05:27 -0700 (PDT)
+        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
+        b=jJ25DLYr/Nk3aD4r4IhmcZClq+sdGEFrMJuvlW47FXjkXHIwvMtMEYbVxiEeU1wj/+
+         n3BE8mppHwXfaJBFYR2MbRbO3Wkhk4NVVAukqUtkiPvgo3pGGep82DZuVweoNumGuLtP
+         pdBKHEDPKpCeekSPxq+IjJUdxDzeosqMHVQUeXl2PGC6e7zG7AcPi9av0/DWsBRwbvqs
+         8ZIrpSKyQ7Htt7ZEdFTGMhy0AEXr3snCgTogZRvlsDKavWJ5wSJ1HYwTkCzHTpTGB7Qk
+         3dAyvKYJHZTtlgkzY/CDXi0c5Telm8WpXxgUImz5eFCyGe4p9OchNDqtTHHV0DkQ6Xvi
+         6R3Q==
+X-Gm-Message-State: AGi0PuZxbW35yovqzwaGynRxWyzisU1KhhQi00oZhPoCLIjcE3uL4a60
+        vqDikw5JFNZaYBtDm83xdGddjg==
+X-Google-Smtp-Source: APiQypJXPpYd12Vrp+/OA+MjcYQlGqYJcYWnu164CU0oVIxQEvSPK9xJqC/qsXd3mxWCvZpUCgm1Ng==
+X-Received: by 2002:ad4:4f93:: with SMTP id em19mr84697qvb.110.1586225479431;
+        Mon, 06 Apr 2020 19:11:19 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id n5sm15879583qkn.4.2020.04.06.19.05.26
+        by smtp.gmail.com with ESMTPSA id g187sm15461721qkf.115.2020.04.06.19.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 19:05:26 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 22:05:25 -0400
+        Mon, 06 Apr 2020 19:11:18 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 22:11:18 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -62,7 +62,7 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [PATCH 1/3] rcu/tree: use more permissive parameters when
  attaching a head
-Message-ID: <20200407020525.GA113967@google.com>
+Message-ID: <20200407021118.GB113967@google.com>
 References: <20200402123253.10382-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -96,14 +96,6 @@ On Thu, Apr 02, 2020 at 02:32:51PM +0200, Uladzislau Rezki (Sony) wrote:
 > 
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Beautifully done, thanks Vlad! I agree with this and the other 2 changes and
-I applied it to my rcu/kfree branch for further testing by both of us.
-
-thanks,
-
- - Joel
-
 > ---
 >  kernel/rcu/tree.c | 23 ++++++++++++++++-------
 >  1 file changed, 16 insertions(+), 7 deletions(-)
@@ -126,6 +118,16 @@ thanks,
 > -
 > +		sizeof(struct rcu_head), GFP_KERNEL |
 > +			__GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL);
+
+On thing here though, you removed the NOWARN. Was there a reason? It would
+now warn even when synchronously waiting right? I will fixup your commit to
+add it back for now but let me know if you had some other reason to remove it.
+
+thanks,
+
+ - Joel
+
+
 >  	if (!ptr)
 >  		return NULL;
 >  
