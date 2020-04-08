@@ -1,166 +1,141 @@
-Return-Path: <SRS0=wfWh=5X=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=gIoB=5Y=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C693C2BA80
-	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACF4FC2BA1A
+	for <rcu@archiver.kernel.org>; Wed,  8 Apr 2020 09:31:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 732C220719
-	for <rcu@archiver.kernel.org>; Tue,  7 Apr 2020 02:11:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84F6A206F5
+	for <rcu@archiver.kernel.org>; Wed,  8 Apr 2020 09:31:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="xI/ujC/R"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="usEOvHbE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgDGCLW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Apr 2020 22:11:22 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:39447 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgDGCLW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:11:22 -0400
-Received: by mail-qv1-f65.google.com with SMTP id v38so1131928qvf.6
-        for <rcu@vger.kernel.org>; Mon, 06 Apr 2020 19:11:20 -0700 (PDT)
+        id S1727735AbgDHJb1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Apr 2020 05:31:27 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:45040 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgDHJb1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Apr 2020 05:31:27 -0400
+Received: by mail-lf1-f67.google.com with SMTP id 131so4580115lfh.11
+        for <rcu@vger.kernel.org>; Wed, 08 Apr 2020 02:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
-        b=xI/ujC/RAckrvStiyT1s/lKEcpA1186172WShsPNhGoEOvQ5y2Ser1kYDtJsnPsLga
-         f6QPfBlDXJ4h7eLoL/ZFwg0+woBukzLR534NkFoPeELNS+GjxvNixkkD5xoEJUd4e+n9
-         Kyrm2zsmBCRaqyD3cOlNW7XK34Oqd7RmKL8vA=
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=U4FOr2RB0Xkp5M31fPJH/yewnv/w+8CnOr9geW5TqdQ=;
+        b=usEOvHbEb3uhYdWzO7P06VtHwKYVXajG3/Yh8MHLDPWNHQGsOWWz3oYULJfVn7D5GL
+         nbCAkFDURSXxt4IUtmJxll/BMSayX57NuQWZNGvTo/rLSJy5VmLfqiOggukdSQP8CFfL
+         uUrQ+mAesLXmNiW70T6Uq/CK/dBRsZzSb8j7hC2bcHVUG3jsO0fT/OKOEAv4HkZX3OZ4
+         j+lU5zR2x9cQrCW8UAa9XCh1cp2BeR4jnIEjFtzbqlZqKAUHIsr95c6/dy5d8yizgBIq
+         5LRuvcVIuKKbHJxHmM5em7KpHHgvyoSieMG4cgQgrJF1ZK79yLqOwU9r2lW6u4oDK31I
+         Q/jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
-        b=jJ25DLYr/Nk3aD4r4IhmcZClq+sdGEFrMJuvlW47FXjkXHIwvMtMEYbVxiEeU1wj/+
-         n3BE8mppHwXfaJBFYR2MbRbO3Wkhk4NVVAukqUtkiPvgo3pGGep82DZuVweoNumGuLtP
-         pdBKHEDPKpCeekSPxq+IjJUdxDzeosqMHVQUeXl2PGC6e7zG7AcPi9av0/DWsBRwbvqs
-         8ZIrpSKyQ7Htt7ZEdFTGMhy0AEXr3snCgTogZRvlsDKavWJ5wSJ1HYwTkCzHTpTGB7Qk
-         3dAyvKYJHZTtlgkzY/CDXi0c5Telm8WpXxgUImz5eFCyGe4p9OchNDqtTHHV0DkQ6Xvi
-         6R3Q==
-X-Gm-Message-State: AGi0PuZxbW35yovqzwaGynRxWyzisU1KhhQi00oZhPoCLIjcE3uL4a60
-        vqDikw5JFNZaYBtDm83xdGddjg==
-X-Google-Smtp-Source: APiQypJXPpYd12Vrp+/OA+MjcYQlGqYJcYWnu164CU0oVIxQEvSPK9xJqC/qsXd3mxWCvZpUCgm1Ng==
-X-Received: by 2002:ad4:4f93:: with SMTP id em19mr84697qvb.110.1586225479431;
-        Mon, 06 Apr 2020 19:11:19 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g187sm15461721qkf.115.2020.04.06.19.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 19:11:18 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 22:11:18 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] rcu/tree: use more permissive parameters when
- attaching a head
-Message-ID: <20200407021118.GB113967@google.com>
-References: <20200402123253.10382-1-urezki@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=U4FOr2RB0Xkp5M31fPJH/yewnv/w+8CnOr9geW5TqdQ=;
+        b=I+pnRLhKvXxgp4WF75e5HWjywWh4ioLH1xbDEJVqVo/xrg+ibJ1yrIW5RCEdjIjAGk
+         7YeSfS6xCtxLftwC3vaDpRUDf0kFqNbxjHjpJSCgp0e3nMOIknpdHu/V4QVt2jlRw0ka
+         +h+jEGtVAt3aadhjabnNj+0hzSJ/DT2JwCeut+KZmI09MNOr/fSfHX0Z4aWwZ2bHdFl/
+         ptyFRaGhNSl5TQ4vab5hs6PDUENljw6cua0fg7JvNTcw7QABkjqZrcXsVqg0C1AKz9Mc
+         M5TrLPO+4YbFdJ8OAEhgO5MyNjRf1tqHXoqcAq3V+5V9kgSGFFfEf18SQu6Fi5yJu2Ar
+         UogQ==
+X-Gm-Message-State: AGi0PuZgITFHc9bWVHJJRgI/EH29XvRh/glH/i+5411P0/uqr2xNNM8v
+        o8ISgJIkfgMaVso6pUf9gf+1s0vK7w4m+P/X11qX0bXW1co=
+X-Google-Smtp-Source: APiQypKhYSCDUEJUEVy9hktqxHqR/v62qoq+zVwHHwdUO5fOqzCLwr/JZd03yKJMY7UVU9Il3O/JZ2fUDlSTweBlnaY=
+X-Received: by 2002:ac2:4da7:: with SMTP id h7mr3527277lfe.95.1586338283132;
+ Wed, 08 Apr 2020 02:31:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402123253.10382-1-urezki@gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 8 Apr 2020 15:01:11 +0530
+Message-ID: <CA+G9fYtYRc_mKPDN-Gryw7fhjPNGBUP=KemTXaXR6UBU94M3hw@mail.gmail.com>
+Subject: WARNING: events/ipi.h:36 suspicious rcu_dereference_check() usage!
+To:     linux- stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Cc:     Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        rcu@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Leo Yan <leo.yan@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>, zanussi@kernel.org,
+        svens@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:32:51PM +0200, Uladzislau Rezki (Sony) wrote:
-> It is documneted that a headless object can be reclaimed from
-> might_sleep() context only. Because of that when a head is
-> dynamically attached it makes sense to drop the lock and do
-> an allocation with much more permissve flags comparing if it
-> is done from atomic context.
-> 
-> That is why use GFP_KERNEL flag plus some extra ones which
-> would make an allocation most likely to be succeed. The big
-> advantage of doing so is a direct reclaim process.
-> 
-> Tested such approach on my local tiny system with 145MB of
-> ram(the minimum amount the KVM system is capable of booting)
-> and 4xCPUs. For stressing the rcuperf module was used. During
-> tests with difference combinations i did not observe any hit
-> of our last emergency case, when synchronize_rcu() is involved.
-> 
-> Please note, the "dynamically attaching" path was enabled only,
-> apart of that all types of objects were considered as headless
-> variant during testing.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 6172e6296dd7..24f620a06219 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3148,13 +3148,10 @@ static inline struct rcu_head *attach_rcu_head_to_object(void *obj)
->  {
->  	unsigned long *ptr;
->  
-> +	/* Try hard to get the memory. */
->  	ptr = kmalloc(sizeof(unsigned long *) +
-> -			sizeof(struct rcu_head), GFP_NOWAIT | __GFP_NOWARN);
-> -
-> -	if (!ptr)
-> -		ptr = kmalloc(sizeof(unsigned long *) +
-> -				sizeof(struct rcu_head), GFP_ATOMIC | __GFP_NOWARN);
-> -
-> +		sizeof(struct rcu_head), GFP_KERNEL |
-> +			__GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL);
+On arm64 qemu_arm64, juno-r2 and dragonboard-410c while running kselftest ftrace
+on stable rc 5.5.1-rc1 to till today 5.5.16-rc2 and 5.6  found this
+kernel warning.
 
-On thing here though, you removed the NOWARN. Was there a reason? It would
-now warn even when synchronously waiting right? I will fixup your commit to
-add it back for now but let me know if you had some other reason to remove it.
-
-thanks,
-
- - Joel
+[  386.349099] kselftest: Running tests in ftrace
+[  393.984018]
+[  393.984290] =============================
+[  393.984781] WARNING: suspicious RCU usage
+[  393.988690] 5.6.3-rc2 #1 Not tainted
+[  393.992679] -----------------------------
+[  393.996327] /usr/src/kernel/include/trace/events/ipi.h:36
+suspicious rcu_dereference_check() usage!
+[  394.000241]
+[  394.000241] other info that might help us debug this:
+[  394.000241]
+[  394.009094]
+[  394.009094] RCU used illegally from idle CPU!
+[  394.009094] rcu_scheduler_active = 2, debug_locks = 1
+[  394.017084] RCU used illegally from extended quiescent state!
+[  394.028187] 1 lock held by swapper/3/0:
+[  394.033826]  #0: ffff80001237b6a8 (max_trace_lock){....}, at:
+check_critical_timing+0x7c/0x1a8
+[  394.037480]
+[  394.037480] stack backtrace:
+[  394.046158] CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.6.3-rc2 #1
+[  394.050584] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[  394.056663] Call trace:
+[  394.063515]  dump_backtrace+0x0/0x1e0
+[  394.065686]  show_stack+0x24/0x30
+[  394.069505]  dump_stack+0xe8/0x150
+[  394.072805]  lockdep_rcu_suspicious+0xcc/0x110
+[  394.076106]  arch_irq_work_raise+0x208/0x210
+[  394.080533]  __irq_work_queue_local+0x5c/0x80
+[  394.084959]  irq_work_queue+0x38/0x78
+[  394.089212]  __update_max_tr+0x150/0x218
+[  394.092858]  update_max_tr_single.part.82+0x98/0x100
+[  394.096851]  update_max_tr_single+0x1c/0x28
+[  394.101798]  check_critical_timing+0x198/0x1a8
+[  394.105705]  stop_critical_timings+0x128/0x148
+[  394.110221]  cpuidle_enter_state+0x74/0x4f8
+[  394.114645]  cpuidle_enter+0x3c/0x50
+[  394.118726]  call_cpuidle+0x44/0x80
+[  394.122542]  do_idle+0x22c/0x2d0
+[  394.125755]  cpu_startup_entry+0x28/0x48
+[  394.129229]  secondary_start_kernel+0x1b4/0x210
 
 
->  	if (!ptr)
->  		return NULL;
->  
-> @@ -3222,9 +3219,20 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	if (!success) {
->  		/* Is headless object? */
->  		if (head == NULL) {
-> +			/* Drop the lock. */
-> +			if (krcp->initialized)
-> +				spin_unlock(&krcp->lock);
-> +			local_irq_restore(flags);
-> +
->  			head = attach_rcu_head_to_object(ptr);
->  			if (head == NULL)
-> -				goto unlock_return;
-> +				goto inline_return;
-> +
-> +			/* Take it back. */
-> +			local_irq_save(flags);
-> +			krcp = this_cpu_ptr(&krc);
-> +			if (krcp->initialized)
-> +				spin_lock(&krcp->lock);
->  
->  			/*
->  			 * Tag the headless object. Such objects have a back-pointer
-> @@ -3263,6 +3271,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  		spin_unlock(&krcp->lock);
->  	local_irq_restore(flags);
->  
-> +inline_return:
->  	/*
->  	 * High memory pressure, so inline kvfree() after
->  	 * synchronize_rcu(). We can do it from might_sleep()
-> -- 
-> 2.20.1
-> 
+metadata:
+  git branch: linux-5.5.y and linux-5.6.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.5/65/config
+
+Full test log,
+5.6 test logs,
+https://lkft.validation.linaro.org/scheduler/job/1350627#L12612
+https://lkft.validation.linaro.org/scheduler/job/1350731#L9509
+
+5.5 test logs,
+https://lkft.validation.linaro.org/scheduler/job/1322704#L9777
+https://lkft.validation.linaro.org/scheduler/job/1153369#L9745
+https://lkft.validation.linaro.org/scheduler/job/1351155#L8982
+https://lkft.validation.linaro.org/scheduler/job/1351065#L12349
+
+--
+Linaro LKFT
+https://lkft.linaro.org
