@@ -1,141 +1,76 @@
-Return-Path: <SRS0=gIoB=5Y=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=Hkx7=5Z=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACF4FC2BA1A
-	for <rcu@archiver.kernel.org>; Wed,  8 Apr 2020 09:31:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D273C2BB86
+	for <rcu@archiver.kernel.org>; Thu,  9 Apr 2020 11:44:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 84F6A206F5
-	for <rcu@archiver.kernel.org>; Wed,  8 Apr 2020 09:31:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="usEOvHbE"
+	by mail.kernel.org (Postfix) with ESMTP id E2F7420771
+	for <rcu@archiver.kernel.org>; Thu,  9 Apr 2020 11:44:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgDHJb1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Apr 2020 05:31:27 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:45040 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgDHJb1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Apr 2020 05:31:27 -0400
-Received: by mail-lf1-f67.google.com with SMTP id 131so4580115lfh.11
-        for <rcu@vger.kernel.org>; Wed, 08 Apr 2020 02:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=U4FOr2RB0Xkp5M31fPJH/yewnv/w+8CnOr9geW5TqdQ=;
-        b=usEOvHbEb3uhYdWzO7P06VtHwKYVXajG3/Yh8MHLDPWNHQGsOWWz3oYULJfVn7D5GL
-         nbCAkFDURSXxt4IUtmJxll/BMSayX57NuQWZNGvTo/rLSJy5VmLfqiOggukdSQP8CFfL
-         uUrQ+mAesLXmNiW70T6Uq/CK/dBRsZzSb8j7hC2bcHVUG3jsO0fT/OKOEAv4HkZX3OZ4
-         j+lU5zR2x9cQrCW8UAa9XCh1cp2BeR4jnIEjFtzbqlZqKAUHIsr95c6/dy5d8yizgBIq
-         5LRuvcVIuKKbHJxHmM5em7KpHHgvyoSieMG4cgQgrJF1ZK79yLqOwU9r2lW6u4oDK31I
-         Q/jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=U4FOr2RB0Xkp5M31fPJH/yewnv/w+8CnOr9geW5TqdQ=;
-        b=I+pnRLhKvXxgp4WF75e5HWjywWh4ioLH1xbDEJVqVo/xrg+ibJ1yrIW5RCEdjIjAGk
-         7YeSfS6xCtxLftwC3vaDpRUDf0kFqNbxjHjpJSCgp0e3nMOIknpdHu/V4QVt2jlRw0ka
-         +h+jEGtVAt3aadhjabnNj+0hzSJ/DT2JwCeut+KZmI09MNOr/fSfHX0Z4aWwZ2bHdFl/
-         ptyFRaGhNSl5TQ4vab5hs6PDUENljw6cua0fg7JvNTcw7QABkjqZrcXsVqg0C1AKz9Mc
-         M5TrLPO+4YbFdJ8OAEhgO5MyNjRf1tqHXoqcAq3V+5V9kgSGFFfEf18SQu6Fi5yJu2Ar
-         UogQ==
-X-Gm-Message-State: AGi0PuZgITFHc9bWVHJJRgI/EH29XvRh/glH/i+5411P0/uqr2xNNM8v
-        o8ISgJIkfgMaVso6pUf9gf+1s0vK7w4m+P/X11qX0bXW1co=
-X-Google-Smtp-Source: APiQypKhYSCDUEJUEVy9hktqxHqR/v62qoq+zVwHHwdUO5fOqzCLwr/JZd03yKJMY7UVU9Il3O/JZ2fUDlSTweBlnaY=
-X-Received: by 2002:ac2:4da7:: with SMTP id h7mr3527277lfe.95.1586338283132;
- Wed, 08 Apr 2020 02:31:23 -0700 (PDT)
+        id S1726477AbgDILo3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Apr 2020 07:44:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55692 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726622AbgDILo2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Apr 2020 07:44:28 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D67071A3D8173519489F;
+        Thu,  9 Apr 2020 19:44:13 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
+ 19:44:06 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <dave@stgolabs.net>, <paulmck@kernel.org>, <josh@joshtriplett.org>,
+        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
+        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] rcutorture: make rcu_fwds and rcu_fwd_emergency_stop static
+Date:   Thu, 9 Apr 2020 19:42:38 +0800
+Message-ID: <20200409114238.39765-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 8 Apr 2020 15:01:11 +0530
-Message-ID: <CA+G9fYtYRc_mKPDN-Gryw7fhjPNGBUP=KemTXaXR6UBU94M3hw@mail.gmail.com>
-Subject: WARNING: events/ipi.h:36 suspicious rcu_dereference_check() usage!
-To:     linux- stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Cc:     Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        rcu@vger.kernel.org, lkft-triage@lists.linaro.org,
-        Leo Yan <leo.yan@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>, zanussi@kernel.org,
-        svens@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On arm64 qemu_arm64, juno-r2 and dragonboard-410c while running kselftest ftrace
-on stable rc 5.5.1-rc1 to till today 5.5.16-rc2 and 5.6  found this
-kernel warning.
+Fix the following sparse warning:
 
-[  386.349099] kselftest: Running tests in ftrace
-[  393.984018]
-[  393.984290] =============================
-[  393.984781] WARNING: suspicious RCU usage
-[  393.988690] 5.6.3-rc2 #1 Not tainted
-[  393.992679] -----------------------------
-[  393.996327] /usr/src/kernel/include/trace/events/ipi.h:36
-suspicious rcu_dereference_check() usage!
-[  394.000241]
-[  394.000241] other info that might help us debug this:
-[  394.000241]
-[  394.009094]
-[  394.009094] RCU used illegally from idle CPU!
-[  394.009094] rcu_scheduler_active = 2, debug_locks = 1
-[  394.017084] RCU used illegally from extended quiescent state!
-[  394.028187] 1 lock held by swapper/3/0:
-[  394.033826]  #0: ffff80001237b6a8 (max_trace_lock){....}, at:
-check_critical_timing+0x7c/0x1a8
-[  394.037480]
-[  394.037480] stack backtrace:
-[  394.046158] CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.6.3-rc2 #1
-[  394.050584] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[  394.056663] Call trace:
-[  394.063515]  dump_backtrace+0x0/0x1e0
-[  394.065686]  show_stack+0x24/0x30
-[  394.069505]  dump_stack+0xe8/0x150
-[  394.072805]  lockdep_rcu_suspicious+0xcc/0x110
-[  394.076106]  arch_irq_work_raise+0x208/0x210
-[  394.080533]  __irq_work_queue_local+0x5c/0x80
-[  394.084959]  irq_work_queue+0x38/0x78
-[  394.089212]  __update_max_tr+0x150/0x218
-[  394.092858]  update_max_tr_single.part.82+0x98/0x100
-[  394.096851]  update_max_tr_single+0x1c/0x28
-[  394.101798]  check_critical_timing+0x198/0x1a8
-[  394.105705]  stop_critical_timings+0x128/0x148
-[  394.110221]  cpuidle_enter_state+0x74/0x4f8
-[  394.114645]  cpuidle_enter+0x3c/0x50
-[  394.118726]  call_cpuidle+0x44/0x80
-[  394.122542]  do_idle+0x22c/0x2d0
-[  394.125755]  cpu_startup_entry+0x28/0x48
-[  394.129229]  secondary_start_kernel+0x1b4/0x210
+kernel/rcu/rcutorture.c:1695:16: warning: symbol 'rcu_fwds' was not
+declared. Should it be static?
+kernel/rcu/rcutorture.c:1696:6: warning: symbol 'rcu_fwd_emergency_stop'
+was not declared. Should it be static?
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-metadata:
-  git branch: linux-5.5.y and linux-5.6.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.5/65/config
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 5453bd557f43..d621a31de8a4 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1692,8 +1692,8 @@ struct rcu_fwd {
+ 	unsigned long rcu_launder_gp_seq_start;
+ };
+ 
+-struct rcu_fwd *rcu_fwds;
+-bool rcu_fwd_emergency_stop;
++static struct rcu_fwd *rcu_fwds;
++static bool rcu_fwd_emergency_stop;
+ 
+ static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
+ {
+-- 
+2.17.2
 
-Full test log,
-5.6 test logs,
-https://lkft.validation.linaro.org/scheduler/job/1350627#L12612
-https://lkft.validation.linaro.org/scheduler/job/1350731#L9509
-
-5.5 test logs,
-https://lkft.validation.linaro.org/scheduler/job/1322704#L9777
-https://lkft.validation.linaro.org/scheduler/job/1153369#L9745
-https://lkft.validation.linaro.org/scheduler/job/1351155#L8982
-https://lkft.validation.linaro.org/scheduler/job/1351065#L12349
-
---
-Linaro LKFT
-https://lkft.linaro.org
