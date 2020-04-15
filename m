@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4CBAC2BB85
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 022FDC2BA19
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BC07C21707
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D40C7216FD
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586970723;
-	bh=dmpyRpRc++xi9KkXweAWSawKqD80BTw54kiQlk5yZVo=;
+	s=default; t=1586970724;
+	bh=ULSCJ4AUZ34fFoHXztiykYhBJYb0OeWc+BVUnx4B4hM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=O6S+/kBwhTlEfHgrPOrPdfdwF0qQFt0rD/IhNhiT2eEu/NiBiP7CaZTKzGUKDgskW
-	 E0DqM8VTiBHhHmzB/sPMmw4hG9PfsBxly+S4jtVrCji7WQ/6wpGB4qXngThtMOpUni
-	 glT7tXSEpIFDCoXpN+qWxoUd6k9Ox4kmHbsDsCZI=
+	b=FDh8oVBFIp0aViUWtTnXagtsD1kgmJHlTyhHPRu9j7BFV3kDqIfphg5PPjLARHL6m
+	 Y+bKLbnzBMHwqZejf4ydXubI7misTJpY53YXMmfvGXdx4wkWp2Z4Jjem41LLaud+9u
+	 VNvTjRE00K6Gb2u73LpZxIJgUTsZlOtVV+qzfzAA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410724AbgDORLB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 13:11:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        id S1416394AbgDORME (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 13:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410710AbgDORK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:10:57 -0400
+        id S2410719AbgDORLA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:11:00 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D81E421973;
-        Wed, 15 Apr 2020 17:10:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8862221D82;
+        Wed, 15 Apr 2020 17:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970657;
-        bh=dmpyRpRc++xi9KkXweAWSawKqD80BTw54kiQlk5yZVo=;
+        s=default; t=1586970659;
+        bh=ULSCJ4AUZ34fFoHXztiykYhBJYb0OeWc+BVUnx4B4hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1tVbQd/dvCVWYC2kNLKlHCDMVJDHASlNKsYSe1LPvlE1fLHuLR0TZP2xDHDou00cO
-         2ueBIzta+BYucxSRFfpf+AJshmQoAbAkE2KoPas79HThfUhm+s5WEx1K42xAZ8QKlX
-         KMcF3nYI1l3wGAh4b5AlSBo1miDKqVfZTBYWAmj4=
+        b=K1uijSpQniBBEY5+f7gv3nDAlpMj3ck9xKzoqh0KYTKIqqcty5+rYa15Bj5+c4zHC
+         iqmNycF0EaKHnqn/ACNeFVur3uJyEBHC7VlmckB7HBHJuMX65C/F0CIID4GQ4LlMoI
+         pkIkNHLQOzIcHEAY7rJuCT5agj61IqglzBJ2Gtdk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/19] rcu: Mark rcu_state.ncpus to detect concurrent writes
-Date:   Wed, 15 Apr 2020 10:10:38 -0700
-Message-Id: <20200415171054.9013-3-paulmck@kernel.org>
+        Zhaolong Zhang <zhangzl2013@126.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/19] rcu: Fix the (t=0 jiffies) false positive
+Date:   Wed, 15 Apr 2020 10:10:46 -0700
+Message-Id: <20200415171054.9013-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -58,29 +59,81 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zhaolong Zhang <zhangzl2013@126.com>
 
-The rcu_state structure's ncpus field is only to be modified by the
-CPU-hotplug CPU-online code path, which is single-threaded.  This
-commit therefore enlists KCSAN's help in enforcing this restriction.
+It is possible that an over-long grace period will end while the RCU
+CPU stall warning message is printing.  In this case, the estimate of
+the offending grace period's duration can be erroneous due to refetching
+of rcu_state.gp_start, which will now be the time of the newly started
+grace period.  Computation of this duration clearly needs to use the
+start time for the old over-long grace period, not the fresh new one.
+This commit avoids such errors by causing both print_other_cpu_stall() and
+print_cpu_stall() to reuse the value previously fetched by their caller.
 
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tree_stall.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f13130a..4fd3e0f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3612,6 +3612,7 @@ void rcu_cpu_starting(unsigned int cpu)
- 	nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
- 	/* Allow lockless access for expedited grace periods. */
- 	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
- 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
- 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
- 	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index e7da111..3a7bc99 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -371,7 +371,7 @@ static void rcu_check_gp_kthread_starvation(void)
+ 	}
+ }
+ 
+-static void print_other_cpu_stall(unsigned long gp_seq)
++static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ {
+ 	int cpu;
+ 	unsigned long flags;
+@@ -408,7 +408,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu)\n",
+-	       smp_processor_id(), (long)(jiffies - rcu_state.gp_start),
++	       smp_processor_id(), (long)(jiffies - gps),
+ 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks();
+@@ -442,7 +442,7 @@ static void print_other_cpu_stall(unsigned long gp_seq)
+ 	rcu_force_quiescent_state();  /* Kick them all. */
+ }
+ 
+-static void print_cpu_stall(void)
++static void print_cpu_stall(unsigned long gps)
+ {
+ 	int cpu;
+ 	unsigned long flags;
+@@ -467,7 +467,7 @@ static void print_cpu_stall(void)
+ 	for_each_possible_cpu(cpu)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_cont("\t(t=%lu jiffies g=%ld q=%lu)\n",
+-		jiffies - rcu_state.gp_start,
++		jiffies - gps,
+ 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
+ 
+ 	rcu_check_gp_kthread_starvation();
+@@ -546,7 +546,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
+ 		/* We haven't checked in, so go dump stack. */
+-		print_cpu_stall();
++		print_cpu_stall(gps);
+ 		if (rcu_cpu_stall_ftrace_dump)
+ 			rcu_ftrace_dump(DUMP_ALL);
+ 
+@@ -555,7 +555,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
+ 		/* They had a few time units to dump stack, so complain. */
+-		print_other_cpu_stall(gs2);
++		print_other_cpu_stall(gs2, gps);
+ 		if (rcu_cpu_stall_ftrace_dump)
+ 			rcu_ftrace_dump(DUMP_ALL);
+ 	}
 -- 
 2.9.5
 
