@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC5CC2BA19
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84BD8C2BA19
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:21:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 174682076D
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:21:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DB8A2076D
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586974906;
-	bh=T9/w6q7CENdfvJFl6wJFXIO6IbM2kExEvSh42iLeJjI=;
+	s=default; t=1586974913;
+	bh=xQQ5D9d5N12lUAswqMibvXSEwoQfdAIYn85iLDZ9dzw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=nWhfxb640DuOVM8ckjMWbBxcKWEIeKsNejK72fkq8XhH+6escttteW2NIyUpQInUT
-	 hyBadZsdWLObOnZ0EUmYeWGBU25pHs8eGnOfrHeqaWQgcJa1inMLjcU02uwZUqc+Vl
-	 /AFeT993PtcokbGSx6HNyqYNPhFX+NCkaK6/u7gE=
+	b=tnv/G2q3XCdTPzRVTnKM0dnzfquNn/6GR5AjClf8MFbrDAb7Nqda9vT5Dycv8h+Jt
+	 WCcpDUKywvWZzPxYGYAjBb7N+P3vSp7YsZFDKsMBOu4507Ie/gfdDycE4HqvSdaarQ
+	 RddT/EMY2YjpUjuGQhbBRo+e2pYqjIw1IVZQBUqg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441475AbgDOSVm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 14:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37526 "EHLO mail.kernel.org"
+        id S2441484AbgDOSVv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 14:21:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441380AbgDOSTx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S2441385AbgDOSTx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 15 Apr 2020 14:19:53 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 623962084D;
-        Wed, 15 Apr 2020 18:19:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CB2D21927;
+        Wed, 15 Apr 2020 18:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586974790;
-        bh=T9/w6q7CENdfvJFl6wJFXIO6IbM2kExEvSh42iLeJjI=;
+        s=default; t=1586974791;
+        bh=xQQ5D9d5N12lUAswqMibvXSEwoQfdAIYn85iLDZ9dzw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnB3MoCKIAM+lJGEbCxfPIudRkzQYn0LiqR6Ofz46WKIoIKdrDFRrz02Bn9AfVcCF
-         fkKLtAWzR6MccWiNc9H/zDtqBkHcOUe/NwLovx30Os/rISIg1U/OKjl2TsyZ+WsiTb
-         HmJblPTTX4/P2P+2wdNtR39Y45QGl/WgRKMB2mlo=
+        b=kN/rPDifhOCIivsjkWD+S2MdMPt1wa7bJhtQ0xnRnHXaFiWFpEh/FctlXosl1EvWa
+         YQtV2wkDF5509kdx8cKOkd/iFvH/fFNEvzNveLqe0UW2MvgCgI8TDK5d73hG/RDdfS
+         5HWqFIZxJRhBQJZpGn7qZyCL9RHsTotTygwYPvTg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 20/38] rcu-tasks: Make rcutorture writer stall output include GP state
-Date:   Wed, 15 Apr 2020 11:19:23 -0700
-Message-Id: <20200415181941.11653-20-paulmck@kernel.org>
+Subject: [PATCH v4 tip/core/rcu 23/38] rcu-tasks: Provide boot parameter to delay IPIs until late in grace period
+Date:   Wed, 15 Apr 2020 11:19:26 -0700
+Message-Id: <20200415181941.11653-23-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415181856.GA11037@paulmck-ThinkPad-P72>
 References: <20200415181856.GA11037@paulmck-ThinkPad-P72>
@@ -60,222 +60,87 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds grace-period state and time to the rcutorture writer
-stall output.
+This commit provides a rcupdate.rcu_task_ipi_delay kernel boot parameter
+that specifies how old the RCU tasks trace grace period must be before
+the grace-period kthread starts sending IPIs.  This delay allows more
+tasks to pass through rcu_tasks_qs() quiescent states, thus reducing
+(or even eliminating) the number of IPIs that must be sent.
+
+On a short rcutorture test setting this kernel boot parameter to HZ/2
+resulted in zero IPIs for all 877 RCU-tasks trace grace periods that
+elapsed during that test.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 72 insertions(+), 5 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
+ kernel/rcu/tasks.h                              | 15 ++++++++++-----
+ 2 files changed, 17 insertions(+), 5 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index f2a93c8..aaa8678 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4286,6 +4286,13 @@
+ 			only normal grace-period primitives.  No effect
+ 			on CONFIG_TINY_RCU kernels.
+ 
++	rcupdate.rcu_task_ipi_delay= [KNL]
++			Set time in jiffies during which RCU tasks will
++			avoid sending IPIs, starting with the beginning
++			of a given grace period.  Setting a large
++			number avoids disturbing real-time workloads,
++			but lengthens grace periods.
++
+ 	rcupdate.rcu_task_stall_timeout= [KNL]
+ 			Set timeout in jiffies for RCU task stall warning
+ 			messages.  Disable with a value less than or equal
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index cd220a4..8dffe2b 100644
+index 199f87a..6f4e8b1 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -17,7 +17,7 @@ typedef void (*pregp_func_t)(void);
- typedef void (*pertask_func_t)(struct task_struct *t, struct list_head *hop);
- typedef void (*postscan_func_t)(void);
- typedef void (*holdouts_func_t)(struct list_head *hop, bool ndrpt, bool *frptp);
--typedef void (*postgp_func_t)(void);
-+typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+@@ -74,6 +74,11 @@ static struct rcu_tasks rt_name =					\
+ /* Track exiting tasks in order to allow them to be waited for. */
+ DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
  
- /**
-  * Definition for a Tasks-RCU-like mechanism.
-@@ -27,6 +27,9 @@ typedef void (*postgp_func_t)(void);
-  * @cbs_lock: Lock protecting callback list.
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @gp_func: This flavor's grace-period-wait function.
-+ * @gp_state: Grace period's most recent state transition (debugging).
-+ * @gp_jiffies: Time of last @gp_state transition.
-+ * @gp_start: Most recent grace-period start in jiffies.
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-  * @pertask_func: This flavor's per-task scan function (optional).
-  * @postscan_func: This flavor's post-task scan function (optional).
-@@ -41,6 +44,8 @@ struct rcu_tasks {
- 	struct rcu_head **cbs_tail;
- 	struct wait_queue_head cbs_wq;
- 	raw_spinlock_t cbs_lock;
-+	int gp_state;
-+	unsigned long gp_jiffies;
- 	struct task_struct *kthread_ptr;
- 	rcu_tasks_gp_func_t gp_func;
- 	pregp_func_t pregp_func;
-@@ -73,10 +78,56 @@ DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
++/* Avoid IPIing CPUs early in the grace period. */
++#define RCU_TASK_IPI_DELAY (HZ / 2)
++static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
++module_param(rcu_task_ipi_delay, int, 0644);
++
+ /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+ #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
  static int rcu_task_stall_timeout __read_mostly = RCU_TASK_STALL_TIMEOUT;
- module_param(rcu_task_stall_timeout, int, 0644);
+@@ -713,6 +718,10 @@ DECLARE_WAIT_QUEUE_HEAD(trc_wait);	// List of holdout tasks.
+ // Record outstanding IPIs to each CPU.  No point in sending two...
+ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
  
-+/* RCU tasks grace-period state for debugging. */
-+#define RTGS_INIT		 0
-+#define RTGS_WAIT_WAIT_CBS	 1
-+#define RTGS_WAIT_GP		 2
-+#define RTGS_PRE_WAIT_GP	 3
-+#define RTGS_SCAN_TASKLIST	 4
-+#define RTGS_POST_SCAN_TASKLIST	 5
-+#define RTGS_WAIT_SCAN_HOLDOUTS	 6
-+#define RTGS_SCAN_HOLDOUTS	 7
-+#define RTGS_POST_GP		 8
-+#define RTGS_WAIT_READERS	 9
-+#define RTGS_INVOKE_CBS		10
-+#define RTGS_WAIT_CBS		11
-+static const char * const rcu_tasks_gp_state_names[] = {
-+	"RTGS_INIT",
-+	"RTGS_WAIT_WAIT_CBS",
-+	"RTGS_WAIT_GP",
-+	"RTGS_PRE_WAIT_GP",
-+	"RTGS_SCAN_TASKLIST",
-+	"RTGS_POST_SCAN_TASKLIST",
-+	"RTGS_WAIT_SCAN_HOLDOUTS",
-+	"RTGS_SCAN_HOLDOUTS",
-+	"RTGS_POST_GP",
-+	"RTGS_WAIT_READERS",
-+	"RTGS_INVOKE_CBS",
-+	"RTGS_WAIT_CBS",
-+};
++void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
++DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
++		 "RCU Tasks Trace");
 +
- ////////////////////////////////////////////////////////////////////////
- //
- // Generic code.
- 
-+/* Record grace-period phase and time. */
-+static void set_tasks_gp_state(struct rcu_tasks *rtp, int newstate)
-+{
-+	rtp->gp_state = newstate;
-+	rtp->gp_jiffies = jiffies;
-+}
-+
-+/* Return state name. */
-+static const char *tasks_gp_state_getname(struct rcu_tasks *rtp)
-+{
-+	int i = data_race(rtp->gp_state); // Let KCSAN detect update races
-+	int j = READ_ONCE(i); // Prevent the compiler from reading twice
-+
-+	if (j >= ARRAY_SIZE(rcu_tasks_gp_state_names))
-+		return "???";
-+	return rcu_tasks_gp_state_names[j];
-+}
-+
- // Enqueue a callback for the specified flavor of Tasks RCU.
- static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 				   struct rcu_tasks *rtp)
-@@ -141,15 +192,18 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 						 READ_ONCE(rtp->cbs_head));
- 			if (!rtp->cbs_head) {
- 				WARN_ON(signal_pending(current));
-+				set_tasks_gp_state(rtp, RTGS_WAIT_WAIT_CBS);
- 				schedule_timeout_interruptible(HZ/10);
- 			}
- 			continue;
- 		}
- 
- 		// Wait for one grace period.
-+		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
- 		rtp->gp_func(rtp);
- 
- 		/* Invoke the callbacks. */
-+		set_tasks_gp_state(rtp, RTGS_INVOKE_CBS);
- 		while (list) {
- 			next = list->next;
- 			local_bh_disable();
-@@ -160,6 +214,8 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 		}
- 		/* Paranoid sleep to keep this from entering a tight loop */
- 		schedule_timeout_uninterruptible(HZ/10);
-+
-+		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
- 	}
- }
- 
-@@ -222,8 +278,11 @@ static void __init rcu_tasks_bootup_oddness(void)
- /* Dump out rcutorture-relevant state common to all RCU-tasks flavors. */
- static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
+ /* If we are the last reader, wake up the grace-period kthread. */
+ void rcu_read_unlock_trace_special(struct task_struct *t)
  {
--	pr_info("%s %c%c %s\n",
-+	pr_info("%s: %s(%d) since %lu %c%c %s\n",
- 		rtp->kname,
-+		tasks_gp_state_getname(rtp),
-+		data_race(rtp->gp_state),
-+		jiffies - data_race(rtp->gp_jiffies),
- 		".k"[!!data_race(rtp->kthread_ptr)],
- 		".C"[!!data_race(rtp->cbs_head)],
- 		s);
-@@ -243,6 +302,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 	LIST_HEAD(holdouts);
- 	int fract;
+@@ -825,7 +834,7 @@ static void trc_wait_for_one_reader(struct task_struct *t,
  
-+	set_tasks_gp_state(rtp, RTGS_PRE_WAIT_GP);
- 	rtp->pregp_func();
+ 	// If currently running, send an IPI, either way, add to list.
+ 	trc_add_holdout(t, bhp);
+-	if (task_curr(t)) {
++	if (task_curr(t) && time_after(jiffies, rcu_tasks_trace.gp_start + rcu_task_ipi_delay)) {
+ 		// The task is currently running, so try IPIing it.
+ 		cpu = task_cpu(t);
  
- 	/*
-@@ -251,11 +311,13 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 	 * that are not already voluntarily blocked.  Mark these tasks
- 	 * and make a list of them in holdouts.
- 	 */
-+	set_tasks_gp_state(rtp, RTGS_SCAN_TASKLIST);
- 	rcu_read_lock();
- 	for_each_process_thread(g, t)
- 		rtp->pertask_func(t, &holdouts);
- 	rcu_read_unlock();
- 
-+	set_tasks_gp_state(rtp, RTGS_POST_SCAN_TASKLIST);
- 	rtp->postscan_func();
- 
- 	/*
-@@ -277,6 +339,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 			break;
- 
- 		/* Slowly back off waiting for holdouts */
-+		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
- 		schedule_timeout_interruptible(HZ/fract);
- 
- 		if (fract > 1)
-@@ -288,10 +351,12 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 			lastreport = jiffies;
- 		firstreport = true;
- 		WARN_ON(signal_pending(current));
-+		set_tasks_gp_state(rtp, RTGS_SCAN_HOLDOUTS);
- 		rtp->holdouts_func(&holdouts, needreport, &firstreport);
- 	}
- 
--	rtp->postgp_func();
-+	set_tasks_gp_state(rtp, RTGS_POST_GP);
-+	rtp->postgp_func(rtp);
+@@ -994,10 +1003,6 @@ void exit_tasks_rcu_finish_trace(struct task_struct *t)
+ 		rcu_read_unlock_trace_special(t);
  }
  
- ////////////////////////////////////////////////////////////////////////
-@@ -394,7 +459,7 @@ static void check_all_holdout_tasks(struct list_head *hop,
- }
- 
- /* Finish off the Tasks-RCU grace period. */
--static void rcu_tasks_postgp(void)
-+static void rcu_tasks_postgp(struct rcu_tasks *rtp)
- {
- 	/*
- 	 * Because ->on_rq and ->nvcsw are not guaranteed to have a full
-@@ -877,7 +942,7 @@ static void check_all_holdout_tasks_trace(struct list_head *hop,
- }
- 
- /* Wait for grace period to complete and provide ordering. */
--static void rcu_tasks_trace_postgp(void)
-+static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- {
- 	bool firstreport;
- 	struct task_struct *g, *t;
-@@ -890,6 +955,7 @@ static void rcu_tasks_trace_postgp(void)
- 	smp_mb__after_atomic();  // Order vs. later atomics
- 
- 	// Wait for readers.
-+	set_tasks_gp_state(rtp, RTGS_WAIT_READERS);
- 	for (;;) {
- 		ret = wait_event_idle_exclusive_timeout(
- 				trc_wait,
-@@ -897,6 +963,7 @@ static void rcu_tasks_trace_postgp(void)
- 				READ_ONCE(rcu_task_stall_timeout));
- 		if (ret)
- 			break;  // Count reached zero.
-+		// Stall warning time, so make a list of the offenders.
- 		for_each_process_thread(g, t)
- 			if (READ_ONCE(t->trc_reader_need_end))
- 				trc_add_holdout(t, &holdouts);
+-void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
+-		 "RCU Tasks Trace");
+-
+ /**
+  * call_rcu_tasks_trace() - Queue a callback trace task-based grace period
+  * @rhp: structure to be used for queueing the RCU updates.
 -- 
 2.9.5
 
