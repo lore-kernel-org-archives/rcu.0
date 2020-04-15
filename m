@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01A70C38A2B
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B5AC2BB85
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:22:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D06C72076D
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:22:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C6B02076D
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 18:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586974951;
-	bh=rbRByjaGsuOpTa9qP5IJ2JcoNu5IZVQh0K93MG0arIM=;
+	s=default; t=1586974958;
+	bh=INgabvAlb4AsrKfzNR+JKWk0ecQAVyupAhHILsJUC60=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=MpPWz2SeUK1/eTZlos12EoS2zBYnllFtQq/zjmbPYzYSBFbv2DFwbBJICkzzakxuH
-	 tLc/xJXGHlXUKjieziIYqeImB8IglxDBP15sxjIUrWpyzBYbcVRYuVKsjJTIAqed8e
-	 rnUtxvPvP6CVyEcNDGG5Q45Fg/aTIgxhEZsYjB38=
+	b=drPQVP411oNoAUib0ft4FgjzSDBjpfigtMks6e3Dunh69rDpjbKUAQ8LUWK7jC6k5
+	 m+321BvvvInZxE0mIjmKEWuqMVqOeUfbxgay3vNu/YGLNvYTELUGeG6gCVFQ4cqPvc
+	 B1F7z0R42DgaNyeqOc6dIdSYfGcwAkq7Eog+3WHQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416610AbgDOSW1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 14:22:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
+        id S1416604AbgDOSWY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 14:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441373AbgDOSTt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:19:49 -0400
+        id S2441384AbgDOSTx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 14:19:53 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D8D921775;
-        Wed, 15 Apr 2020 18:19:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17A072192A;
+        Wed, 15 Apr 2020 18:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586974788;
-        bh=rbRByjaGsuOpTa9qP5IJ2JcoNu5IZVQh0K93MG0arIM=;
+        s=default; t=1586974791;
+        bh=INgabvAlb4AsrKfzNR+JKWk0ecQAVyupAhHILsJUC60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kLS+XmrQnY4Augji7dpvqomfLpUcFcAWlUL0ckIgdXE9mSeH9o4/qB1X8xlngJoBn
-         n3kwl6VGcfde5YWE8SboE8ByT9z4FBEwcOJkZRBB/PU+O0RoFF9h8fNV45+F53unfz
-         tmJk10jqGmhqwxkBq8jzeVDDVPqhItTCTP6EyIfM=
+        b=SAwH/b+RnqlJe6lre+2kLnwFXw1kLNV0HwkoxebcZ7JejAKW4pbsMYuZKqfkGDADj
+         UK9gs6M15Y2ZRDZWklWUoYs4tb3ca0ftUgjo+5AuS3hwAvwQFEf1Oa3RzcR5vz/QaF
+         FVBu1Noz4ZpkdW0OdgCMHvcWZ80p3LDtU3RE95/A=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v4 tip/core/rcu 14/38] rcu-tasks: Code movement to allow more Tasks RCU variants
-Date:   Wed, 15 Apr 2020 11:19:17 -0700
-Message-Id: <20200415181941.11653-14-paulmck@kernel.org>
+Subject: [PATCH v4 tip/core/rcu 22/38] rcu-tasks: Add a grace-period start time for throttling and debug
+Date:   Wed, 15 Apr 2020 11:19:25 -0700
+Message-Id: <20200415181941.11653-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415181856.GA11037@paulmck-ThinkPad-P72>
 References: <20200415181856.GA11037@paulmck-ThinkPad-P72>
@@ -60,154 +60,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit does nothing but move rcu_tasks_wait_gp() up to a new section
-for common code.
+This commit adds a place to record the grace-period start in jiffies.
+This will be used by later commits for debugging purposes and to throttle
+IPIs early in the grace period.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 122 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 63 insertions(+), 59 deletions(-)
+ kernel/rcu/tasks.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 344426e..d8b09d5 100644
+index 2ec82f4..199f87a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -213,6 +213,69 @@ static void __init rcu_tasks_bootup_oddness(void)
+@@ -46,6 +46,7 @@ struct rcu_tasks {
+ 	raw_spinlock_t cbs_lock;
+ 	int gp_state;
+ 	unsigned long gp_jiffies;
++	unsigned long gp_start;
+ 	struct task_struct *kthread_ptr;
+ 	rcu_tasks_gp_func_t gp_func;
+ 	pregp_func_t pregp_func;
+@@ -200,6 +201,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
  
- ////////////////////////////////////////////////////////////////////////
- //
-+// Shared code between task-list-scanning variants of Tasks RCU.
-+
-+/* Wait for one RCU-tasks grace period. */
-+static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
-+{
-+	struct task_struct *g, *t;
-+	unsigned long lastreport;
-+	LIST_HEAD(holdouts);
-+	int fract;
-+
-+	rtp->pregp_func();
-+
-+	/*
-+	 * There were callbacks, so we need to wait for an RCU-tasks
-+	 * grace period.  Start off by scanning the task list for tasks
-+	 * that are not already voluntarily blocked.  Mark these tasks
-+	 * and make a list of them in holdouts.
-+	 */
-+	rcu_read_lock();
-+	for_each_process_thread(g, t)
-+		rtp->pertask_func(t, &holdouts);
-+	rcu_read_unlock();
-+
-+	rtp->postscan_func();
-+
-+	/*
-+	 * Each pass through the following loop scans the list of holdout
-+	 * tasks, removing any that are no longer holdouts.  When the list
-+	 * is empty, we are done.
-+	 */
-+	lastreport = jiffies;
-+
-+	/* Start off with HZ/10 wait and slowly back off to 1 HZ wait. */
-+	fract = 10;
-+
-+	for (;;) {
-+		bool firstreport;
-+		bool needreport;
-+		int rtst;
-+
-+		if (list_empty(&holdouts))
-+			break;
-+
-+		/* Slowly back off waiting for holdouts */
-+		schedule_timeout_interruptible(HZ/fract);
-+
-+		if (fract > 1)
-+			fract--;
-+
-+		rtst = READ_ONCE(rcu_task_stall_timeout);
-+		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
-+		if (needreport)
-+			lastreport = jiffies;
-+		firstreport = true;
-+		WARN_ON(signal_pending(current));
-+		rtp->holdouts_func(&holdouts, needreport, &firstreport);
-+	}
-+
-+	rtp->postgp_func();
-+}
-+
-+////////////////////////////////////////////////////////////////////////
-+//
- // Simple variant of RCU whose quiescent states are voluntary context
- // switch, cond_resched_rcu_qs(), user-space execution, and idle.
- // As such, grace periods can take one good long time.  There are no
-@@ -333,65 +396,6 @@ static void rcu_tasks_postgp(void)
- 	synchronize_rcu();
- }
+ 		// Wait for one grace period.
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_GP);
++		rtp->gp_start = jiffies;
+ 		rtp->gp_func(rtp);
  
--/* Wait for one RCU-tasks grace period. */
--static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
--{
--	struct task_struct *g, *t;
--	unsigned long lastreport;
--	LIST_HEAD(holdouts);
--	int fract;
--
--	rtp->pregp_func();
--
--	/*
--	 * There were callbacks, so we need to wait for an RCU-tasks
--	 * grace period.  Start off by scanning the task list for tasks
--	 * that are not already voluntarily blocked.  Mark these tasks
--	 * and make a list of them in holdouts.
--	 */
--	rcu_read_lock();
--	for_each_process_thread(g, t)
--		rtp->pertask_func(t, &holdouts);
--	rcu_read_unlock();
--
--	rtp->postscan_func();
--
--	/*
--	 * Each pass through the following loop scans the list of holdout
--	 * tasks, removing any that are no longer holdouts.  When the list
--	 * is empty, we are done.
--	 */
--	lastreport = jiffies;
--
--	/* Start off with HZ/10 wait and slowly back off to 1 HZ wait. */
--	fract = 10;
--
--	for (;;) {
--		bool firstreport;
--		bool needreport;
--		int rtst;
--
--		if (list_empty(&holdouts))
--			break;
--
--		/* Slowly back off waiting for holdouts */
--		schedule_timeout_interruptible(HZ/fract);
--
--		if (fract > 1)
--			fract--;
--
--		rtst = READ_ONCE(rcu_task_stall_timeout);
--		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
--		if (needreport)
--			lastreport = jiffies;
--		firstreport = true;
--		WARN_ON(signal_pending(current));
--		rtp->holdouts_func(&holdouts, needreport, &firstreport);
--	}
--
--	rtp->postgp_func();
--}
--
- void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
- 
+ 		/* Invoke the callbacks. */
 -- 
 2.9.5
 
