@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D094C2BA19
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:34:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF93EC2BA19
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:34:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C3BF2076D
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:34:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D58B2076D
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586972040;
-	bh=o7s+nb4IFo8XsLFZfVkqmDwCaBeH1xn6gx6poVypWSU=;
+	s=default; t=1586972075;
+	bh=HikJ6mnWhOOmNpYbei/Nibhwz1bEc5VLRGABERfQOHM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=z8Wn7LFz0cDqC5zF9hyu1fOEZEeUWSdqW9cG+M4hIPah9WybQozzDqDIpHrvm6P9l
-	 HfldLGeATFTgmFMHMgwOOg2DM3ALPpYo2ubC3yAlmGNOMcH9DRmCzajlFfnCTv3DHL
-	 R28ojoEWlUzUqUbvDXr4c/DiyYAOGKRioQ3wSUNo=
+	b=MAl3qUzt1AlhaG+W57lMoimoiXFYuTfFhR9BGt33eSCuzEeo6eRwrSMzyPUaaSO3d
+	 oBfubkJzI52jsEUk0PCWKD43itvfX+HpkczTFjcEWUuAHwrqeImQiC0dgDHAf+848w
+	 HayF8BdW9Xu54Qm/3U2Uc3pV4XLBvwxG/GmoFj/4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411345AbgDORd5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 13:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45838 "EHLO mail.kernel.org"
+        id S2411352AbgDOReC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 13:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411117AbgDORbE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:31:04 -0400
+        id S2411115AbgDORbC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:31:02 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB2C621556;
+        by mail.kernel.org (Postfix) with ESMTPSA id 22499208E0;
         Wed, 15 Apr 2020 17:31:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586971863;
-        bh=o7s+nb4IFo8XsLFZfVkqmDwCaBeH1xn6gx6poVypWSU=;
+        s=default; t=1586971862;
+        bh=HikJ6mnWhOOmNpYbei/Nibhwz1bEc5VLRGABERfQOHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IvRLqN988VVb5QUKsDLwBqM7YkO341Ci3TtURo19wgMCT9b7FniEspc9D+GO/q2UY
-         ZfXuq7g0NwprToDo2RFD5FM5q416uqve4Pl/d998GkyulP2VAU3p2NekCEg7QjjRd2
-         XaG6QqJJT3W1Krpis08SZiuDoUQukpWc1XjorqzI=
+        b=zu8b153tsFRqMvMmkruH6myie6YBQr1gKyaMBQUgw8VCRqSFZ5GjqshqYdMeWiVC4
+         IXWATd+IWnf6kOrpVZHFOA7Gc+oHuIDsT6fWLO9iIKAgMyhhUQmCiJODBaOzuYvmii
+         R2MLqvwk3476C905dU7DgsxFB0Ed1DH/EoxGXpfY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,61 +46,57 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/18] locktorture.c: Fix if-statement empty body warnings
-Date:   Wed, 15 Apr 2020 10:30:46 -0700
-Message-Id: <20200415173100.9927-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/18] rcutorture: Make kvm-recheck-rcu.sh handle truncated lines
+Date:   Wed, 15 Apr 2020 10:30:44 -0700
+Message-Id: <20200415173100.9927-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415173037.GA9768@paulmck-ThinkPad-P72>
 References: <20200415173037.GA9768@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-When using -Wextra, gcc complains about torture_preempt_schedule()
-when its definition is empty (i.e., when CONFIG_PREEMPTION is not
-set/enabled).  Fix these warnings by adding an empty do-while block
-for that macro when CONFIG_PREEMPTION is not set.
-Fixes these build warnings:
+System hangs or killed rcutorture guest OSes can result in truncated
+"Reader Pipe:" lines, which can in turn result in false-positive
+reader-batch near-miss warnings.  This commit therefore adjusts the
+reader-batch checks to account for possible line truncation.
 
-../kernel/locking/locktorture.c:119:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../kernel/locking/locktorture.c:166:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../kernel/locking/locktorture.c:337:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../kernel/locking/locktorture.c:490:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../kernel/locking/locktorture.c:528:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../kernel/locking/locktorture.c:553:29: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-
-I have verified that there is no object code change (with gcc 7.5.0).
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/torture.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh  | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 6241f59..629b66e 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -89,7 +89,7 @@ void _torture_stop_kthread(char *m, struct task_struct **tp);
- #ifdef CONFIG_PREEMPTION
- #define torture_preempt_schedule() preempt_schedule()
- #else
--#define torture_preempt_schedule()
-+#define torture_preempt_schedule()	do { } while (0)
- #endif
- 
- #endif /* __LINUX_TORTURE_H */
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+index 9d9a416..1706cd4 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh
+@@ -41,7 +41,21 @@ else
+ 		title="$title ($ngpsps/s)"
+ 	fi
+ 	echo $title $stopstate $fwdprog
+-	nclosecalls=`grep --binary-files=text 'torture: Reader Batch' $i/console.log | tail -1 | awk '{for (i=NF-8;i<=NF;i++) sum+=$i; } END {print sum}'`
++	nclosecalls=`grep --binary-files=text 'torture: Reader Batch' $i/console.log | tail -1 | \
++		awk -v sum=0 '
++		{
++			for (i = 0; i <= NF; i++) {
++				sum += $i;
++				if ($i ~ /Batch:/) {
++					sum = 0;
++					i = i + 2;
++				}
++			}
++		}
++
++		END {
++			print sum
++		}'`
+ 	if test -z "$nclosecalls"
+ 	then
+ 		exit 0
 -- 
 2.9.5
 
