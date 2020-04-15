@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49180C3815B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4CBAC2BB85
 	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2827721707
+	by mail.kernel.org (Postfix) with ESMTP id BC07C21707
 	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1586970723;
-	bh=0Ap4gVR11GozJBhoxSUSEWm77eFrY/PRYCBpDri2wcM=;
+	bh=dmpyRpRc++xi9KkXweAWSawKqD80BTw54kiQlk5yZVo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=PvkLeX0bPRi3MaRSk4pRsvyvRdb6BTP9VKqW1DUvf5468FXn2ZOYVeBG+64y53YBc
-	 4UaDmrYIQ9+pyNRmHxrzwKwBVWWNtGZDI8ExXNAeQDdD5lq8933Gk22v5vrca9ldq5
-	 Jc1WGjvP+EhldjiE64FOucVwUIcfCdB4kqzZpx3I=
+	b=O6S+/kBwhTlEfHgrPOrPdfdwF0qQFt0rD/IhNhiT2eEu/NiBiP7CaZTKzGUKDgskW
+	 E0DqM8VTiBHhHmzB/sPMmw4hG9PfsBxly+S4jtVrCji7WQ/6wpGB4qXngThtMOpUni
+	 glT7tXSEpIFDCoXpN+qWxoUd6k9Ox4kmHbsDsCZI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416349AbgDORLn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 13:11:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410725AbgDORLB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S2410724AbgDORLB (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 15 Apr 2020 13:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410710AbgDORK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:10:57 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D43221D94;
-        Wed, 15 Apr 2020 17:11:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D81E421973;
+        Wed, 15 Apr 2020 17:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970661;
-        bh=0Ap4gVR11GozJBhoxSUSEWm77eFrY/PRYCBpDri2wcM=;
+        s=default; t=1586970657;
+        bh=dmpyRpRc++xi9KkXweAWSawKqD80BTw54kiQlk5yZVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9HPSGIEQ3dlaLV0kJgl9zhCUB6qfYvAsCl2d9jBgix/uM56/Jk3kqJseL/O3gWSA
-         efIbIf3R4mIvdajNRzyoFT9kOFdWYvfycgIId3A8ICV0HZaea7+e4p3f6EUanauim3
-         RviqLISy4LOAd+RD4JRghs7vNz16uhWfkguba99E=
+        b=1tVbQd/dvCVWYC2kNLKlHCDMVJDHASlNKsYSe1LPvlE1fLHuLR0TZP2xDHDou00cO
+         2ueBIzta+BYucxSRFfpf+AJshmQoAbAkE2KoPas79HThfUhm+s5WEx1K42xAZ8QKlX
+         KMcF3nYI1l3wGAh4b5AlSBo1miDKqVfZTBYWAmj4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Jules Irenge <jbi.octave@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 16/19] rcu: Replace 1 by true
-Date:   Wed, 15 Apr 2020 10:10:51 -0700
-Message-Id: <20200415171054.9013-16-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/19] rcu: Mark rcu_state.ncpus to detect concurrent writes
+Date:   Wed, 15 Apr 2020 10:10:38 -0700
+Message-Id: <20200415171054.9013-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -59,35 +58,29 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Jules Irenge <jbi.octave@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Coccinelle reports a warning at use_softirq declaration
+The rcu_state structure's ncpus field is only to be modified by the
+CPU-hotplug CPU-online code path, which is single-threaded.  This
+commit therefore enlists KCSAN's help in enforcing this restriction.
 
-WARNING: Assignment of 0/1 to bool variable
-
-The root cause is
-use_softirq a variable of bool type is initialised with the integer 1
-Replacing 1 with value true solve the issue.
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 09ccc29..97c0b47 100644
+index f13130a..4fd3e0f 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -113,7 +113,7 @@ static struct rcu_state rcu_state = {
- static bool dump_tree;
- module_param(dump_tree, bool, 0444);
- /* By default, use RCU_SOFTIRQ instead of rcuc kthreads. */
--static bool use_softirq = 1;
-+static bool use_softirq = true;
- module_param(use_softirq, bool, 0444);
- /* Control rcu_node-tree auto-balancing at boot time. */
- static bool rcu_fanout_exact;
+@@ -3612,6 +3612,7 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+ 	/* Allow lockless access for expedited grace periods. */
+ 	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
+ 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+ 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+ 	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
 -- 
 2.9.5
 
