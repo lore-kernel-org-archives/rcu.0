@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B6D9C3815B
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB8DAC3815B
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 602F0216FD
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 80A1521707
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586970684;
-	bh=rL1sdTIZ7lBkSO1ah125Dy4M0JqYkG/FMNf97VUr4BM=;
+	s=default; t=1586970689;
+	bh=Zn8T0qXMV7YOFTrMGGq/sgMTy5x4U/tVlqKtgx6cd7c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rDZquZ+ODilBPzYDUlobUMkPDtZXz8q4hk4TJTgGzAnRs+FtfhTdVh/5kB7FWkwlp
-	 ttPwUts87USLX060Jd0lBi+WJ/qVN/ZRnBJ+VHLI43I8ew2ruOzdFZ3RIpu2ur95g+
-	 TqdhSvyXULXBpKGAmMyzh5BfVe33X41yvywLfuk0=
+	b=KEsPkSPJM4/WACiqR1aqq0KpQTerYduUuwiuVvksG/T2m8cwXeJvOM2Gh7/dZ0EnQ
+	 cPSAfzkVa8dCAo+eXqM/P79QXY+HUfUNpJbDN9uAh22ARzjQCSPnXLCPwBji2swfOK
+	 TlixLxyb43pR+v3Gprb+lpH3prFvGJ543udQ23Z0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410740AbgDORLG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 13:11:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42796 "EHLO mail.kernel.org"
+        id S2410735AbgDORLF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 13:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410728AbgDORLD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:11:03 -0400
+        id S2410718AbgDORLA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:11:00 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54D9621D91;
-        Wed, 15 Apr 2020 17:11:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3475221734;
+        Wed, 15 Apr 2020 17:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970662;
-        bh=rL1sdTIZ7lBkSO1ah125Dy4M0JqYkG/FMNf97VUr4BM=;
+        s=default; t=1586970659;
+        bh=Zn8T0qXMV7YOFTrMGGq/sgMTy5x4U/tVlqKtgx6cd7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PeM4MmgUVVvlo+3JCSacIuehqy9nLyavfhctOG19/GC3JX7hRUE1akwS4VinvmRGA
-         pERvBbQ41Bmfd0mO2xdyt22aVx9v3O5zxIBd2NA61TILoUhSV0NDOiizrhZQGfrCIc
-         v70PO6CXbzY4ynBsLvaRMLZTwqOKQZp34Ei5xWIE=
+        b=zcbvyz2nruR/MdSV8jptuHaaAZVLahctHXjaFpbsUDQqrdC0CVOQcozcY8VCubuQQ
+         kOTM/+Ffnc20KqtdDoqB7IV8hCfFh2htQ/mkcKoLcfDBhSoPRyLCRMpH2iIajoEgjS
+         rdvkTV8q4w+LwQxe9zMk6ZJO7m+NVOd9QOYyPrwM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/19] rcu: Convert rcu_nohz_full_cpu() ULONG_CMP_LT() to time_before()
-Date:   Wed, 15 Apr 2020 10:10:54 -0700
-Message-Id: <20200415171054.9013-19-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/19] rcu: Expedite first two FQS scans under callback-overload conditions
+Date:   Wed, 15 Apr 2020 10:10:45 -0700
+Message-Id: <20200415171054.9013-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -60,28 +60,94 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit converts the ULONG_CMP_LT() in rcu_nohz_full_cpu() to
-time_before() to reflect the fact that it is comparing a timestamp to
-the jiffies counter.
+Even if some CPUs have excessive numbers of callbacks, RCU's grace-period
+kthread will still wait normally between successive force-quiescent-state
+scans.  The first two are the most important, as they are the ones that
+enlist aid from the scheduler when overloaded.  This commit therefore
+omits the wait before the first and the second force-quiescent-state
+scan under callback-overload conditions.
+
+This approach was inspired by a discussion with Jeff Roberson.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 19 +++++++++++++++----
+ kernel/rcu/tree.h |  1 +
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5cd27c2..5771e32 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2537,7 +2537,7 @@ static bool rcu_nohz_full_cpu(void)
- #ifdef CONFIG_NO_HZ_FULL
- 	if (tick_nohz_full_cpu(smp_processor_id()) &&
- 	    (!rcu_gp_in_progress() ||
--	     ULONG_CMP_LT(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
-+	     time_before(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 4fd3e0f..7c734b2 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1624,12 +1624,16 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
+ {
+ 	struct rcu_node *rnp = rcu_get_root();
+ 
+-	/* Someone like call_rcu() requested a force-quiescent-state scan. */
++	// If under overload conditions, force an immediate FQS scan.
++	if (*gfp & RCU_GP_FLAG_OVLD)
++		return true;
++
++	// Someone like call_rcu() requested a force-quiescent-state scan.
+ 	*gfp = READ_ONCE(rcu_state.gp_flags);
+ 	if (*gfp & RCU_GP_FLAG_FQS)
  		return true;
- #endif /* #ifdef CONFIG_NO_HZ_FULL */
- 	return false;
+ 
+-	/* The current grace period has completed. */
++	// The current grace period has completed.
+ 	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers_cgp(rnp))
+ 		return true;
+ 
+@@ -1667,13 +1671,15 @@ static void rcu_gp_fqs(bool first_time)
+ static void rcu_gp_fqs_loop(void)
+ {
+ 	bool first_gp_fqs;
+-	int gf;
++	int gf = 0;
+ 	unsigned long j;
+ 	int ret;
+ 	struct rcu_node *rnp = rcu_get_root();
+ 
+ 	first_gp_fqs = true;
+ 	j = READ_ONCE(jiffies_till_first_fqs);
++	if (rcu_state.cbovld)
++		gf = RCU_GP_FLAG_OVLD;
+ 	ret = 0;
+ 	for (;;) {
+ 		if (!ret) {
+@@ -1698,7 +1704,11 @@ static void rcu_gp_fqs_loop(void)
+ 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+ 					       TPS("fqsstart"));
+ 			rcu_gp_fqs(first_gp_fqs);
+-			first_gp_fqs = false;
++			gf = 0;
++			if (first_gp_fqs) {
++				first_gp_fqs = false;
++				gf = rcu_state.cbovld ? RCU_GP_FLAG_OVLD : 0;
++			}
+ 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+ 					       TPS("fqsend"));
+ 			cond_resched_tasks_rcu_qs();
+@@ -1718,6 +1728,7 @@ static void rcu_gp_fqs_loop(void)
+ 				j = 1;
+ 			else
+ 				j = rcu_state.jiffies_force_qs - j;
++			gf = 0;
+ 		}
+ 	}
+ }
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 9dc2ec0..44edd0a 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -359,6 +359,7 @@ struct rcu_state {
+ /* Values for rcu_state structure's gp_flags field. */
+ #define RCU_GP_FLAG_INIT 0x1	/* Need grace-period initialization. */
+ #define RCU_GP_FLAG_FQS  0x2	/* Need grace-period quiescent-state forcing. */
++#define RCU_GP_FLAG_OVLD 0x4	/* Experiencing callback overload. */
+ 
+ /* Values for rcu_state structure's gp_state field. */
+ #define RCU_GP_IDLE	 0	/* Initial state and no GP in progress. */
 -- 
 2.9.5
 
