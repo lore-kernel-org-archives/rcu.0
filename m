@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B282C3815B
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA8B6C3815B
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3CB75216FD
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 900F021707
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586970726;
-	bh=HKQ+woHhGtl4OllltC1lRFunVAzpZUkFuZ2hz9tJ/8w=;
+	s=default; t=1586970729;
+	bh=WED0g8p0VyucPsEGiI66uD3UYudFeJSY415JzZLv8Fc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=VvLQ6NHhsIT+s3IwTVVrXoD67+YR4a0yCH0hcejApdBhsb6mkIm8LQnY9wKtvI8Ub
-	 WYKRRAK/VC9d6uufUaIa8+QjsG5Xh/5c0SAouwl3Y38AVc4S64SxRRB/WL7J1awtMp
-	 IrJ7nZxqjMyFhdbgUThSPlpC6Os7E43SaE46whDA=
+	b=VQnWBrboQ0nZ+4HCZ3PyzD5Z40XLiO7H54T7JjApKVpnys4UD7JGf6TXMOYAlVxpG
+	 SMJyxqvaqujAtLDhMJ06hscC4UTo8CvnLiVd+7apzq49xalnSvhioV4YyZgf9WaoM7
+	 pz5qwzGGdt+URp24JCwCc8khqu8uwlsFbxf0KYnI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416400AbgDORMF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1416401AbgDORMF (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 15 Apr 2020 13:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42568 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410720AbgDORLA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:11:00 -0400
+        id S2410715AbgDORK7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:10:59 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DE3621D93;
-        Wed, 15 Apr 2020 17:11:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D82BA21D7E;
+        Wed, 15 Apr 2020 17:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970660;
-        bh=HKQ+woHhGtl4OllltC1lRFunVAzpZUkFuZ2hz9tJ/8w=;
+        s=default; t=1586970659;
+        bh=WED0g8p0VyucPsEGiI66uD3UYudFeJSY415JzZLv8Fc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dwEJP9sAmOJGw6ueYuEcXKyG5pxn+L8uOez8zVGnh89mchj8YZ1B7x1ANE7c1wJrN
-         lOlY8r77JrsD99tpjQOMtq4yiRH/3Rw8bkoobJoHsab7DHj5vKUpe0P7xZHzEft32c
-         JSVPEkrVN5Vd6DZEKa02o9vr4mW+E7er4kjIFEWA=
+        b=qxIw+Zx/ct1YPIg20lIHBBg3MKTgzwGJ7fNdBKuq5TRtu36drSJfW8kTs/yxeUXLu
+         YEyuPtKsgHG5bs1kFACaPG/q4bUucCMyF5JycXMRfXRXDJbtZHRL0LVwU6/9BlYWFR
+         DrycPIpYxFh6GNsoqzt8/SHZ2And77cZ2kKBoU8w=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/19] rcu: Get rid of some doc warnings in update.c
-Date:   Wed, 15 Apr 2020 10:10:48 -0700
-Message-Id: <20200415171054.9013-13-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/19] drm: Make drm_dp_mst_dsc_aux_for_port() safe for old compilers
+Date:   Wed, 15 Apr 2020 10:10:44 -0700
+Message-Id: <20200415171054.9013-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -59,51 +58,34 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit escapes *ret, because otherwise the documentation system
-thinks that this is an incomplete emphasis block:
+Older compilers either want two extra pairs of curly braces around the
+initializer for local variable desc, or they want a single pair of curly
+braces with nothing inside.  Because current Linux-kernel practice favors
+the latter, this commit makes it so.
 
-	./kernel/rcu/update.c:65: WARNING: Inline emphasis start-string without end-string.
-	./kernel/rcu/update.c:65: WARNING: Inline emphasis start-string without end-string.
-	./kernel/rcu/update.c:70: WARNING: Inline emphasis start-string without end-string.
-	./kernel/rcu/update.c:82: WARNING: Inline emphasis start-string without end-string.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Suggested-by: Chris Wilson <chris@chris-wilson.co.uk>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 28a8bdc..72461dd8 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -63,12 +63,12 @@ module_param(rcu_normal_after_boot, int, 0);
-  * rcu_read_lock_held_common() - might we be in RCU-sched read-side critical section?
-  * @ret:	Best guess answer if lockdep cannot be relied on
-  *
-- * Returns true if lockdep must be ignored, in which case *ret contains
-+ * Returns true if lockdep must be ignored, in which case ``*ret`` contains
-  * the best guess described below.  Otherwise returns false, in which
-- * case *ret tells the caller nothing and the caller should instead
-+ * case ``*ret`` tells the caller nothing and the caller should instead
-  * consult lockdep.
-  *
-- * If CONFIG_DEBUG_LOCK_ALLOC is selected, set *ret to nonzero iff in an
-+ * If CONFIG_DEBUG_LOCK_ALLOC is selected, set ``*ret`` to nonzero iff in an
-  * RCU-sched read-side critical section.  In absence of
-  * CONFIG_DEBUG_LOCK_ALLOC, this assumes we are in an RCU-sched read-side
-  * critical section unless it can prove otherwise.  Note that disabling
-@@ -82,7 +82,7 @@ module_param(rcu_normal_after_boot, int, 0);
-  *
-  * Note that if the CPU is in the idle loop from an RCU point of view (ie:
-  * that we are in the section between rcu_idle_enter() and rcu_idle_exit())
-- * then rcu_read_lock_held() sets *ret to false even if the CPU did an
-+ * then rcu_read_lock_held() sets ``*ret`` to false even if the CPU did an
-  * rcu_read_lock().  The reason for this is that RCU ignores CPUs that are
-  * in such a section, considering these as in extended quiescent state,
-  * so such a CPU is effectively never in an RCU read-side critical section
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 70c4b7a..c409867 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -5494,7 +5494,7 @@ struct drm_dp_aux *drm_dp_mst_dsc_aux_for_port(struct drm_dp_mst_port *port)
+ {
+ 	struct drm_dp_mst_port *immediate_upstream_port;
+ 	struct drm_dp_mst_port *fec_port;
+-	struct drm_dp_desc desc = { 0 };
++	struct drm_dp_desc desc = { };
+ 	u8 endpoint_fec;
+ 	u8 endpoint_dsc;
+ 
 -- 
 2.9.5
 
