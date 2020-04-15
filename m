@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A8DC3815B
-	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46FD4C2BB85
+	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7169021835
+	by mail.kernel.org (Postfix) with ESMTP id BAA8621744
 	for <rcu@archiver.kernel.org>; Wed, 15 Apr 2020 17:11:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1586970666;
-	bh=DQWTvjwnLmiCUalD0XDh/DYIC8pSGj8yRWhtzs+grG0=;
+	bh=lpFMDx1GHWoEhhhCxtAnj/ZvLR/eoqZCj41D8tbU86Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=DZFLEgb3J2+rwDyvImMLTCaZ4wgKsM4KTC4J3YLG3MiEGfwHtfMNsYfbCp+KAeMSl
-	 UZi6dbg9t/Ab45R383ClfUgMjMcGdishiOWrAFEZBXPIdiz/n/H1lqjzuw9VmNP8+P
-	 Qc1H04GoZcQzCyZWUleanFY/N87uOdkUSYXTpj/A=
+	b=BHJlwbyWIyACmSD5f+yIiNyuNZeXCVCEEmLwRE2aJZPPnnYT3Kmi6Xc1B2Tj8OvT2
+	 pkX+k2eL/OXMOcafabcwjjZBT6D/Xn3PoZA76gaprGKAwQBPs/L8uT0rVOBnH2ioSZ
+	 ej3JSazyenTm7MUmAHkuMZ2KHIfYfAC4fMy+k/tA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410732AbgDORLE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Apr 2020 13:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
+        id S2410738AbgDORLG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Apr 2020 13:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410714AbgDORK7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Apr 2020 13:10:59 -0400
+        id S2410722AbgDORLB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Apr 2020 13:11:01 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33DC121D7D;
-        Wed, 15 Apr 2020 17:10:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E604A21D92;
+        Wed, 15 Apr 2020 17:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586970658;
-        bh=DQWTvjwnLmiCUalD0XDh/DYIC8pSGj8yRWhtzs+grG0=;
+        s=default; t=1586970661;
+        bh=lpFMDx1GHWoEhhhCxtAnj/ZvLR/eoqZCj41D8tbU86Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YdszHhMt3nNLyzjKCYkrwkUc+iB93Ncr2T/qpHjl0w497k0w12iNnJL+rajNCZ5TR
-         At7G1e3d1sVuNA1iG/qnYwArW92SmtZolgy9wgDpsXIfPaCDMd/YTnaky4+PUHu92Z
-         Ei353dYQI5tkBmwboNXXu5mQUDfMJ/O2N9E5Mg4s=
+        b=xnEloBK6wDRrC35S/xGj4klu/kQpmx47AIKoOrdvUmiR3m45cSxKP7TXsd4mpjyxz
+         jzGcPKa+MMC3Q7WYHqxL3ileCcIKUKrTAZ00eJ9AWaQWP8CTL9C0Ns/aw1npH1tRru
+         01SYKgm59MpjRMvuihVK1d4QpMKvb92ZdYfTAPKQ=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/19] rcu: Add WRITE_ONCE() to rcu_node ->boost_tasks
-Date:   Wed, 15 Apr 2020 10:10:42 -0700
-Message-Id: <20200415171054.9013-7-paulmck@kernel.org>
+        Jules Irenge <jbi.octave@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 15/19] rcu: Replace assigned pointer ret value by corresponding boolean value
+Date:   Wed, 15 Apr 2020 10:10:50 -0700
+Message-Id: <20200415171054.9013-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200415171017.GA7821@paulmck-ThinkPad-P72>
 References: <20200415171017.GA7821@paulmck-ThinkPad-P72>
@@ -58,42 +59,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Jules Irenge <jbi.octave@gmail.com>
 
-The rcu_node structure's ->boost_tasks field is read locklessly, so this
-commit adds the WRITE_ONCE() to an update in order to provide proper
-documentation and READ_ONCE()/WRITE_ONCE() pairing.
+Coccinelle reports warnings at rcu_read_lock_held_common()
 
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely.
+WARNING: Assignment of 0/1 to bool variable
 
+To fix this,
+the assigned  pointer ret values are replaced by corresponding boolean value.
+Given that ret is a pointer of bool type
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/update.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index ed6bb46..664d0aa 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -505,7 +505,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 			/* Snapshot ->boost_mtx ownership w/rnp->lock held. */
- 			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx) == t;
- 			if (&t->rcu_node_entry == rnp->boost_tasks)
--				rnp->boost_tasks = np;
-+				WRITE_ONCE(rnp->boost_tasks, np);
- 		}
- 
- 		/*
-@@ -1082,7 +1082,7 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
- 	     rnp->qsmask == 0 &&
- 	     (ULONG_CMP_GE(jiffies, rnp->boost_time) || rcu_state.cbovld))) {
- 		if (rnp->exp_tasks == NULL)
--			rnp->boost_tasks = rnp->gp_tasks;
-+			WRITE_ONCE(rnp->boost_tasks, rnp->gp_tasks);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		rcu_wake_cond(rnp->boost_kthread_task,
- 			      READ_ONCE(rnp->boost_kthread_status));
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 72461dd8..17f2356 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -98,15 +98,15 @@ module_param(rcu_normal_after_boot, int, 0);
+ static bool rcu_read_lock_held_common(bool *ret)
+ {
+ 	if (!debug_lockdep_rcu_enabled()) {
+-		*ret = 1;
++		*ret = true;
+ 		return true;
+ 	}
+ 	if (!rcu_is_watching()) {
+-		*ret = 0;
++		*ret = false;
+ 		return true;
+ 	}
+ 	if (!rcu_lockdep_current_cpu_online()) {
+-		*ret = 0;
++		*ret = false;
+ 		return true;
+ 	}
+ 	return false;
 -- 
 2.9.5
 
