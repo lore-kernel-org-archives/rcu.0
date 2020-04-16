@@ -2,335 +2,216 @@ Return-Path: <SRS0=pJ0D=6A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2CA6C2BB55
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 13:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FDFDC2BB85
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 14:43:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 620E4206E9
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 13:18:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4AA0B21D94
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 14:43:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="rpIPcafZ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="gbLblsjc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895058AbgDPNSG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Apr 2020 09:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        id S2392640AbgDPOnM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Apr 2020 10:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2894983AbgDPNSC (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 16 Apr 2020 09:18:02 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A88AC061A0F
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 06:17:47 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id o19so13862103qkk.5
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 06:17:47 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2403745AbgDPOm4 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 16 Apr 2020 10:42:56 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5074DC061A0C
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 07:42:56 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w29so16141226qtv.3
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 07:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eR5I4E4T4/4IxSicnYUr1AFVo0A/LtIPYrGBPrB2/04=;
-        b=rpIPcafZ4VdWvQi/EUbIUk6OPIpu2cqkTR9znN28OoXOPxV9dh2le9vWUaRTFHECXB
-         51vgWhOIGhCHWh/CoORjkuU9gkv9Q1OlEaCSdZvoTwVNFjQD9kPDqTxTCtyeOVQG8jqo
-         gTWskFIfjD1u928/59/2fQyK8n996XcKgPPjw=
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=2Y0HHoxKbmIqd4tykPOdy+1wN9gUwXEV3GmjArqRwkw=;
+        b=gbLblsjcfzfP7rguZiBD7Zg1IHbAdDo6rk+7oveePF06b4bSQn0OZ6q8zrqaAgCP1P
+         MSUyaGacoNXqS6LAoLEsYe6Vyt9InzJjkmy9HOYsUviyw9xw1TplFBXwiwbaG1DHe6e7
+         4g9jzwdTbqvebZJQAya0/bswQLNg8/q6LimGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eR5I4E4T4/4IxSicnYUr1AFVo0A/LtIPYrGBPrB2/04=;
-        b=ahhUJF3Nk67UAHP8LdQ6jFMdwmQLnqg2sy85rRPeEGK+lSaDhmzYLYpfIn8o0AaB1P
-         QyJbEXsozxu916aoREgU8+Ftwcw48Do7uVMEiEFwtF2lD0J/r8S4R8q1Oc+K3TRomk0m
-         0gYsgstewpA/LexH5tCJYRDwoQpa3/U7WfjtnzmfM1z0rC0JMvt/xDdazl7bNyunY8YB
-         upng7T3VYxIV9FyceUcfRSupngebD1rFO3mJm5hAsFlRiDnxpJrkuWAsrCcfnajrhsyi
-         hFtsIJMIiAQS3UPfzj99Cpq1w+ICvRNSINuv/SmiF2xAepAjDcs7VvV6ei259vpcVeFx
-         sXjw==
-X-Gm-Message-State: AGi0PuanCpz29pwHCWBVlWmfk9sZ2VQyAtSBMee0GSy7lwbwHMnLduJG
-        fqBD4HaxKAKWoK9brL/q7ksz1/OeWaw=
-X-Google-Smtp-Source: APiQypJZHeSuH696w1N1+pBEt6HXR6rAeDmFv3fXRVtzpa2ny4Lxkx2vFr4DA0DZtPyLNE/ijMI+5g==
-X-Received: by 2002:a05:620a:2054:: with SMTP id d20mr18143094qka.496.1587043066238;
-        Thu, 16 Apr 2020 06:17:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Y0HHoxKbmIqd4tykPOdy+1wN9gUwXEV3GmjArqRwkw=;
+        b=kroVUy7lE0TGDYOYQGQqTItvcgT1S0gIhFdaJd4CHlf+fFRy2OGx6J2KOLiPJiHqs1
+         zsOy4qkE4lH3GxuXXijegpY1oNY2ubNfxDrkygzXE3kyFlVzQ3QLuN6swlO7atTYJnB/
+         xEPGHSdd4cjU9TzCVfl03cNqcBz8FCsvPoBXlSWen8jS5tm4KylKJu2IADIqgldbTtW4
+         JMvwy3hfH4vu1Fp7rK+HpVZd9BXwfBt4SjxZUycF/PRMJd4vjzPlU0r8kZdGoFx2Kaf0
+         3AO5jE4ohadwbDal+ATmgIy5PYW11mniTp9WSLjZrO/ujoVtWMDJXACViDnSgPaSqNNS
+         Ao9w==
+X-Gm-Message-State: AGi0PuZjObOwOZctJw8aC37jUj6yDnUhSabefpvILl7j0smWkUki2YYz
+        NGYlbHJOjABU87YtEJEpJoJ//A==
+X-Google-Smtp-Source: APiQypLEWzYYqgws0QYNQAxHVduY4HjlebwxwQC+I4HnxRNastuiVExp2L+GldMIDWdoz4bWOvx/LA==
+X-Received: by 2002:ac8:23e3:: with SMTP id r32mr6725909qtr.268.1587048175258;
+        Thu, 16 Apr 2020 07:42:55 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id j90sm15174409qte.20.2020.04.16.06.17.45
+        by smtp.gmail.com with ESMTPSA id n4sm14678901qkh.38.2020.04.16.07.42.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 06:17:45 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 09:17:45 -0400
+        Thu, 16 Apr 2020 07:42:54 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 10:42:54 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org,
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH RFC] rcu/tree: Refactor object allocation and try harder
- for array allocation
-Message-ID: <20200416131745.GA90777@google.com>
-References: <20200413211504.108086-1-joel@joelfernandes.org>
- <20200414194353.GQ17661@paulmck-ThinkPad-P72>
- <20200416103007.GA3925@pc636>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
+Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
+Message-ID: <20200416144254.GC90777@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416103007.GA3925@pc636>
+In-Reply-To: <20200415160034.662274-2-bigeasy@linutronix.de>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 12:30:07PM +0200, Uladzislau Rezki wrote:
-> Hello, Paul, Joel.
++Vlad
+
+Hi Sebastian,
+
+On Wed, Apr 15, 2020 at 06:00:32PM +0200, Sebastian Andrzej Siewior wrote:
+> The per-CPU variable is initialized at runtime in
+> kfree_rcu_batch_init(). This function is invoked before
+> `rcu_scheduler_active' is set to `RCU_SCHEDULER_RUNNING'. After the
+> initialisation, `->initialized' is to true.
 > 
-> See my comments below. They are for better understanding a
-> whole strategy and the best way how to drive headless objects :)
-
-Thanks for the comments on the RFC patch :) I am on the same page and Ok with
-being more conservative on memory allocation.
-
-> > > This is a small code refactor and also removes the restriction that
-> > > headless kfree_rcu() users cannot sleep for allocation of the per-cpu
-> > > array where their pointers will be placed . Since they are always called
-> > > in a sleepable context, we can use this information to try harder during
-> > > the array allocation stage to allocate the per-cpu array.
-> > 
-> > In kernels, needing to do allocations in order to free memory must be
-> > regarded with great suspicion.  It -might- be kind-of sort-of OK here,
-> > but only if we never impede reclaim, I/O, or OOM handling.  Even then,
-> > this can be made to work only given that it is possible to fall back
-> > on a direct call to synchronize_rcu() in the case where absolutely no
-> > memory is available.
-> > 
-> I see your point and agree. So, the idea is to do progress instead of
-> doing OOM, I/O or direct reclaiming. It means that we should avoid of
-> using any allocations flags which will trigger such effects, directly
-> or indirectly. I think we are on the same base now.
-
-Right.
- 
-> > > Also there is a possible bug-fix for a migration scenario where a
-> > > kfree_rcu() headless user can get migrated during the
-> > > sleepable-allocation and end up on another CPU and restoring the wrong
-> > > CPU's flags. To remedy this, we store only the IRQ state on the stack
-> > > and save/restore IRQ state from there. Sure, for the headless case we
-> > > don't need to restore flags. But the code saving/restoring state is
-> > > common between headless and with-head kfree_rcu() variants, so it
-> > > handles all scenarios sampling/restoring just the IRQ state and not
-> > > saving/restoring all the flags.
-> > 
-> > I will suspend disbelief while I look at the patch, but this indirect flag
-> > handling sounds like an accident waiting to happen.  So in the meantime,
-> > is there a way to structure the code to make the flag handling more
-> > explicitly visible at the top level?
-> > 
-> > In addition, the usual way to conditionally disable interrupts
-> > is local_irq_save(flags) rather than conditionally invoking
-> > local_irq_disable().
-
-I agree with the below suggestions and that would remove the need for the
-conditional disabling of interrupts.
-
-> > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > > 
-> > > This is just RFC and is based on top of Vlad's latest patches:
-> > > https://lkml.org/lkml/2020/4/2/383
-> > > 
-> > > The git tree containing this patch is at:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/log/?h=rcu/dev
-> > > 
-> > > (This patch will be a part of a much large series in the future).
-> > > 
-> > > 
-> > >  kernel/rcu/tree.c | 150 +++++++++++++++++++++++++++++++---------------
-> > >  1 file changed, 103 insertions(+), 47 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 744d04d8b7724..2e0eaec929059 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3104,11 +3104,95 @@ static void kfree_rcu_monitor(struct work_struct *work)
-> > >  		spin_unlock_irqrestore(&krcp->lock, flags);
-> > >  }
-> > >  
-> > > +static inline struct kfree_rcu_cpu *krc_this_cpu_lock(bool irqs_disabled)
-> > > +{
-> > > +	struct kfree_rcu_cpu *krcp;
-> > > +
-> > > +	// For safely calling this_cpu_ptr().
-> > > +	if (!irqs_disabled)
-> > > +		local_irq_disable();
-> > 
-> > Again, local_irq_save() is the usual approach here.  And local_irq_restore()
-> > in krc_this_cpu_unlock() below.
-> > 
-> We discussed that with Joel and i also think that keeping previous
-> variant of the krc_this_cpu_lock()/krc_this_cpu_unlock() is better
-> and what is more important is easy, i.e. we do not really need to
-> understand whether IRQs are disabled or not, instead just save flags
-> and restore and that is it.
-
-Sounds good, if we are avoiding any possiblity of direct-reclaim, then that
-removes the need for dropping the lock and thus removes the chance of
-migrations that I was concerned about.
-
-> > > +	krcp = this_cpu_ptr(&krc);
-> > > +	if (likely(krcp->initialized))
-> > > +		spin_lock(&krcp->lock);
-> > > +
-> > > +	return krcp;
-> > > +}
-> > > +
-> > > +static inline void
-> > > +krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, bool irqs_disabled)
-> > > +{
-> > > +	if (likely(krcp->initialized))
-> > > +		spin_unlock(&krcp->lock);
-> > > +
-> > > +	if (!irqs_disabled)
-> > > +		local_irq_enable();
-> > > +}
-> > > +
-> > > +// alloc_object_locked - Try to allocate an object of size while dropping the lock.
-> > > +//
-> > > +// @size: Size of the object to internally allocate for kfree_rcu().
-> > > +// @slab: Do we allocate on slab or using buddy.
-> > > +// @can_sleep: Was kfree_rcu() called in sleepable context?
-> > > +// @krcp: The pointer to krcp. Needed if when relocking, we got migrated.
-> > > +//
-> > > +// Caveats:
-> > > +//
-> > > +// 1. Per-cpu krc's lock must be held with interrupts disabled.
-> > > +//
-> > > +// 2. Failure to allocate returns NULL and does not cause a warning.
-> > > +//
-> > > +// 3. Caller is responsible for using the correct free() APIs. If size == PAGE_SIZE,
-> > > +//    then free_page() should be called for freeing. Otherwise kfree().
-> > > +//
-> > > +static inline void *alloc_object_locked(size_t size, bool slab, bool can_sleep,
-> > > +					struct kfree_rcu_cpu **krcpp)
-> > > +{
-> > > +	void *ptr;
-> > > +	gfp_t gfp_flags, wmark_flags, reclaim_flags;
-> > > +	struct kfree_rcu_cpu *krcp = *krcpp;
-> > > +
-> > > +	WARN_ON_ONCE(size == PAGE_SIZE && slab);
-> > > +
-> > > +	// Decompose the flags:
-> > > +	// wmark_flags   - affect the watermark to control reserve access.
-> > > +	// reclaim_flags - these effect how reclaim works but would
-> > > +	//                 have no-affect in atomic or nowait context.
-> > > +	wmark_flags = (__GFP_HIGH | __GFP_ATOMIC);
-> > > +	reclaim_flags = (__GFP_RETRY_MAYFAIL);
-> > 
-> > You have a __GFP_RETRY_MAYFAIL here, which is good.  However, if
-> > this CPU has quite a few 4K blocks of memory already allocated for
-> > kfree_rcu(), at some point __GFP_NORETRY becomes necessary.  Again,
-> > single-argument kfree_rcu() has the option of invoking synchronize_rcu()
-> > and most other memory allocators do not.  And double-argument kfree_rcu()
-> > has a pre-allocated rcu_head in the structure that it can fall back on.
-> > 
-> > So let's please not get too memory-greedy here!
-> > 
-> As i see, your point is to use "light" allocations flags which will
-> not initiate direct reclaim, OOM, I/O waiting and so on. Please correct
-> me if i miss something.
-
-I agree. One thing I want to add is any allocation however small has an
-effect either directly or indirectly, but I agree trying too hard may further
-avoid another unrelated needy user getting the memory they may need.
-
-> > Note also that most systems will normally invoke an RCU callback on the
-> > same CPU that registered it.  This allows easy maintenance of an
-> > emergency cache for these situations.
-> > 
-> I have a patch that specifies number of pages to be cached, but i will
-> send out it later when we sort things like that out.
-
-Sounds good. I am assuming that you are going to make it such that there are
-2 pages per-cpu by default which can be used for either vfree or kfree
-arrays and further caching being made user-configurable. But either way
-looking forward to the patch.
-
-> > Exceptions include systems doing frequent CPU-hotplug operations and
-> > rcu_nocbs CPUs.
-
-Per my understanding, the CPU hotplug has an effect on migrating callbacks so
-that's why CPU hotplug has an effect of not invoking callbacks on the same
-CPU that they were queued on, but please let me know if my understanding is
-not correct.
-
-> > > +
-> > > +	// These flags will be common to all allocations, whether we want to
-> > > +	// wait or sleep or reclaim will be controlled with additional flags
-> > > +	// later during the actual allocation.
-> > > +	gfp_flags = (wmark_flags | reclaim_flags | __GFP_NOWARN);
-> > > +
-> > > +	// First, do an allocation without waiting.
-> > > +	ptr = (size == PAGE_SIZE) ? (void *)__get_free_page(gfp_flags | GFP_NOWAIT)
-> > > +				  : (void *)kmalloc(size, gfp_flags | GFP_NOWAIT);
-> > > +	// If we cannot sleep, we are done.
-> > > +	if (ptr || !can_sleep)
-> > > +		return ptr;
-> > > +
-> > > +	// Now try to do it with more relaxed flags, we may enter direct-reclaim.
-> > > +	//
-> > > +	// IRQs were not enabled since can_sleep == true. So there's no need to
-> > > +	// save/restore flags.
-> > > +	krc_this_cpu_unlock(krcp, false);
-> > > +	ptr = (size == PAGE_SIZE) ? (void *)__get_free_page(gfp_flags | GFP_KERNEL)
-> > > +				  : (void *)kmalloc(size, gfp_flags | GFP_KERNEL);
-> > 
-> > Dropping the possibility of small allocations also simplifies this code,
-> > and also simplifies a fair amount of code elsewhere.
-> > 
-> I have a question about dynamic attaching of the rcu_head. Do you think
-> that we should drop it? We have it because of it requires 8 + syzeof(struct rcu_head)
-> bytes and is used when we can not allocate 1 page what is much more for array purpose.
-> Therefore, dynamic attaching can succeed because of using SLAB and requesting much
-> less memory then one page. There will be higher chance of bypassing synchronize_rcu()
-> and inlining freeing on a stack.
+> The spin_lock is only acquired if `->initialized' is set to true. The
+> worqueue item is only used if `rcu_scheduler_active' set to
+> RCU_SCHEDULER_RUNNING' which happens after initialisation.
 > 
-> I agree that we should not use GFP_* flags instead we could go with GFP_NOWAIT |
-> __GFP_NOWARN when head attaching only. Also dropping GFP_ATOMIC to keep
-> atomic reserved memory for others.
-
-I also have same question. Just to add here, previous patches added a warning
-to synchronize_rcu(). Should that warning be dropped then if it is more
-normal for kfree_rcu() to enter the synchronous path when the user had not
-passed in an rcu_head?
-
-> > >  			if (head == NULL)
-> > > -				goto inline_return;
-> > > -
-> > > -			/* Take it back. */
-> > > -			krcp = krc_this_cpu_lock(&flags);
-> > > +				goto unlock_return;
-> > >  
-> > >  			/*
-> > >  			 * Tag the headless object. Such objects have a back-pointer
-> > > @@ -3280,9 +3337,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > >  	}
-> > >  
-> > >  unlock_return:
-> > > -	krc_this_cpu_unlock(krcp, flags);
-> > > +	krc_this_cpu_unlock(krcp, irqs_disabled);
-> > >  
-> > > -inline_return:
-> > >  	/*
-> > >  	 * High memory pressure, so inline kvfree() after
-> > >  	 * synchronize_rcu(). We can do it from might_sleep()
-> > > -- 
-> > > 2.26.0.110.g2183baf09c-goog
+> Use a static initializer for krc.lock and remove the runtime
+> initialisation of the lock. Since the lock can now be always acquired,
+> remove the `->initialized' check.
+> The local_irq_save() is removed and raw_cpu_ptr() + spin_lock_irqsave()
+> is used. The worst case scenario is that after raw_cpu_ptr() the code
+> has been moved to another CPU. This is "okay" because the data strucure
+> itself is protected with a lock.
+> Add a warning in kfree_rcu_batch_init() to ensure that this function is
+> invoked before `RCU_SCHEDULER_RUNNING' to ensure that the worker is not
+> used earlier.
 > 
-> I know Joel will also write some comments because we has discussed it
-> via IRC. The idea is to find common view, and do it
-> as best as we can :)
+> Reported-by: Mike Galbraith <efault@gmx.de>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  kernel/rcu/tree.c | 22 +++++++---------------
+>  1 file changed, 7 insertions(+), 15 deletions(-)
 > 
-> Thanks Paul for good comments!
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index f288477ee1c26..5b0b63dd04b02 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2893,7 +2893,6 @@ struct kfree_rcu_cpu_work {
+>   * @lock: Synchronize access to this structure
+>   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+>   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+> - * @initialized: The @lock and @rcu_work fields have been initialized
+>   *
+>   * This is a per-CPU structure.  The reason that it is not included in
+>   * the rcu_data structure is to permit this code to be extracted from
+> @@ -2908,12 +2907,13 @@ struct kfree_rcu_cpu {
+>  	spinlock_t lock;
+>  	struct delayed_work monitor_work;
+>  	bool monitor_todo;
+> -	bool initialized;
+>  	// Number of objects for which GP not started
+>  	int count;
+>  };
+>  
+> -static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
+> +static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> +	.lock	= __SPIN_LOCK_UNLOCKED(krc.lock),
+> +};
+>  
+>  static __always_inline void
+>  debug_rcu_head_unqueue_bulk(struct rcu_head *head)
+> @@ -3080,9 +3080,6 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+>  {
+>  	struct kfree_rcu_bulk_data *bnode;
+>  
+> -	if (unlikely(!krcp->initialized))
+> -		return false;
+> -
+>  	lockdep_assert_held(&krcp->lock);
+>  
+>  	/* Check if a new block is required. */
+> @@ -3139,10 +3136,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	unsigned long flags;
+>  	struct kfree_rcu_cpu *krcp;
+>  
+> -	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+> -	krcp = this_cpu_ptr(&krc);
+> -	if (krcp->initialized)
+> -		spin_lock(&krcp->lock);
+> +	krcp = raw_cpu_ptr(&krc);
+> +	spin_lock_irqsave(&krcp->lock, flags);
 
-Thanks a lot for all the comments to both of you :)
+I agree with the patch, except for this bit. Would it be ok to split the
+other parts of this patch into separate patch(es)?
+
+For this part of the patch, I am wondering what is the value in it. For one,
+we don't want migration between sampling the value of the pointer, and
+actually using it. One reason at least is because we have certain resources
+in the per-cpu structure that take advantage of cache locality (such as the
+kfree_rcu_cpu::krw_arr array). In the common case, the callback would be
+executed on the same CPU it is queued on. All of the access is local to the
+CPU.
+
+I know the work item can still be handled on other CPUs so we are not
+strictly doing it in the worst case (however per my understanding, the work
+item is executed in the same CPU most of the time).
+
+Also on a slightly related note, could you share with me why this_cpu_ptr()
+is unsafe to call in non-preemptible context, but raw_cpu_ptr() is ok? Just
+curious on that.
+
+thanks,
 
  - Joel
 
+
+>  
+>  	// Queue the object but don't yet schedule the batch.
+>  	if (debug_rcu_head_queue(head)) {
+> @@ -3172,9 +3167,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	}
+>  
+>  unlock_return:
+> -	if (krcp->initialized)
+> -		spin_unlock(&krcp->lock);
+> -	local_irq_restore(flags);
+> +	spin_unlock_irqrestore(&krcp->lock, flags);
+>  }
+>  EXPORT_SYMBOL_GPL(kfree_call_rcu);
+>  
+> @@ -4137,17 +4130,16 @@ static void __init kfree_rcu_batch_init(void)
+>  	int cpu;
+>  	int i;
+>  
+> +	WARN_ON(rcu_scheduler_active == RCU_SCHEDULER_RUNNING);
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+> -		spin_lock_init(&krcp->lock);
+>  		for (i = 0; i < KFREE_N_BATCHES; i++) {
+>  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+>  			krcp->krw_arr[i].krcp = krcp;
+>  		}
+>  
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+> -		krcp->initialized = true;
+>  	}
+>  	if (register_shrinker(&kfree_rcu_shrinker))
+>  		pr_err("Failed to register kfree_rcu() shrinker!\n");
+> -- 
+> 2.26.0
+> 
