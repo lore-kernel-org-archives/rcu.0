@@ -2,116 +2,106 @@ Return-Path: <SRS0=pJ0D=6A=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 216EAC2BA2B
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 20:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96013C2BA2B
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 20:36:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE70121BE5
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 20:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587068733;
-	bh=Ax1s2+btAiN+vSGF1aYBcHBbwhlqjrzq5iHzB3zx0iM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=mDIud7tulYzPq8PD9MadJy6KUbHynGvMnuXx1LaEthV0PKO+Nk+dR3IoVUBohbyCl
-	 dQ3+ul7AYFcBx7DFGiVLlsmxvTBGKoZWa4ZD+kqBTIciqxEB80Ddp3+YoLm9GSgQqQ
-	 1cfihuy2hovfyN2MNzMU1M1AcuTFGusYoXwBPSqc=
+	by mail.kernel.org (Postfix) with ESMTP id 70E4A206A2
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 20:36:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="dx8vfodY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgDPUZc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Apr 2020 16:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727863AbgDPUZc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Apr 2020 16:25:32 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14BF22076D;
-        Thu, 16 Apr 2020 20:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587068731;
-        bh=Ax1s2+btAiN+vSGF1aYBcHBbwhlqjrzq5iHzB3zx0iM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kiAqfzSuWI7lEgbkfg8RtUZQJf33jXd2/KL4vYexl9ADwohfpHNWp2c2FduTJaOek
-         YInAY+L+/Gff6ZbW60W7flFFsnYSVxzDtHUaKH7RbUJnLI9ltFy2v6nYGOOiSDz7DQ
-         Q+/lp5H5V0cYGqFMYjeRMEuP2cW5+jcjj3iI6EQ4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D92E83522859; Thu, 16 Apr 2020 13:25:30 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 13:25:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        id S1728256AbgDPUgl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Apr 2020 16:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726114AbgDPUgk (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 16 Apr 2020 16:36:40 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E05C061A0C
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 13:36:39 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id x66so52836qkd.9
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 13:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q0vd3JQ3YK/q3AttaSjev2rbg1zUfXEqBIcNF6yVS2w=;
+        b=dx8vfodYb6vFoLlXS7T6LCTTxWj+cj5T1GaWlDiKF69HmqNUDGvSflSRWQYE9nix+G
+         tdmrtyehxwPq5/ItRV2lOANjeH5uZY8lhJhOUO9HVyK+oDFWURL03bI0kXxRQxTS2PYh
+         Pvn0PWvR7v6CR13qFWlFrtov7NTHjqa2r7/uc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q0vd3JQ3YK/q3AttaSjev2rbg1zUfXEqBIcNF6yVS2w=;
+        b=hd2ZWbYkLQ73mBDA41QqMMJT3NbPt//XzicEgLw5z+nHMp5ImBzU6FmZVM82RfL6w2
+         hSVVC2IRwa8oc0JLQhMRqn3WN9ofWfULAZ47hLd2TNcNjqCtvKyNLXtQHrcB3AzLiSyy
+         UdYSRJh7O1KW8FxsBkE/Kx2FYqmoE+VW7MhafldoK9eixtqQiX4oPfDFO93H+gkLKLqQ
+         Uy5FBrf4Xh2SkPIvFpfQNF19Sse4eVAk4sPqAlkVDr50zuRz5xGgZV1EaDYdkV/o64yR
+         pvIlmJeU4JzBi4MPSFgtp9nlnApiskjfMQ8NwN8tDCGq8CtADrjzG4LJ/ek+TBI6qKK2
+         xOlw==
+X-Gm-Message-State: AGi0PuYzK/aQ8fSveK3LmBCu834b5US4pN95kdqf5Ar4B99G2Gq+i7P8
+        3F0Fu2Q76ryjVvtGhBHfMg1qhA==
+X-Google-Smtp-Source: APiQypL/EwWTzNhyDbIdg6UUsnuuJNq+3rA2Tq97RtlmJBOmyBaKIABN40Zbw/+hSfZ4rfFypwKyGA==
+X-Received: by 2002:a05:620a:556:: with SMTP id o22mr21866240qko.166.1587069398289;
+        Thu, 16 Apr 2020 13:36:38 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id d189sm15804599qkf.118.2020.04.16.13.36.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 13:36:37 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 16:36:37 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
+        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
 Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200416202530.GX17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200416203637.GA176663@google.com>
 References: <20200415160034.662274-2-bigeasy@linutronix.de>
  <20200416144254.GC90777@google.com>
  <20200416151824.a372pdiphube3x3l@linutronix.de>
  <20200416184112.GA149999@google.com>
  <20200416185934.GD149999@google.com>
  <20200416152623.48125628@gandalf.local.home>
- <20200416195327.GW17661@paulmck-ThinkPad-P72>
- <20200416200557.GA11301@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416200557.GA11301@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200416152623.48125628@gandalf.local.home>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 10:05:57PM +0200, Uladzislau Rezki wrote:
-> On Thu, Apr 16, 2020 at 12:53:27PM -0700, Paul E. McKenney wrote:
-> > On Thu, Apr 16, 2020 at 03:26:23PM -0400, Steven Rostedt wrote:
-> > > On Thu, 16 Apr 2020 14:59:34 -0400
-> > > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > 
-> > > > But, then will it be safe for kfree_rcu() callers from hard IRQ context to
-> > > > call this in PREEMPT_RT? That could would just break then as you cannot sleep
-> > > > in hard IRQ context even on PREEMPT_RT.
-> > > 
-> > > But where in PREEMPT_RT would it be called in hard IRQ context?
-> > 
-> > I believe that call_rcu() is invoked with raw spinlocks held, so we should
-> > allow kfree_rcu() to be invoked from similar contexts.  It obviously
-> > cannot allocate memory in such contexts, so perhaps the rule is that
-> > single-argument kfree_rcu() cannot be invoked within hard IRQ contexts
-> > or with raw spinlocks held.  In those contexts, you would instead need
-> > to invoke two-argument kfree_rcu(), which never needs to allocate memory.
-> > 
-> > Seem reasonable?
-> > 
-> Paul, just to make it more clear, even invoking two arguments fkree_rcu()
-> currently does an allocation. We maintain an array that contains pointers
-> for "bulk logic". 
+On Thu, Apr 16, 2020 at 03:26:23PM -0400, Steven Rostedt wrote:
+> On Thu, 16 Apr 2020 14:59:34 -0400
+> Joel Fernandes <joel@joelfernandes.org> wrote:
+> 
+> > But, then will it be safe for kfree_rcu() callers from hard IRQ context to
+> > call this in PREEMPT_RT? That could would just break then as you cannot sleep
+> > in hard IRQ context even on PREEMPT_RT.
+> 
+> But where in PREEMPT_RT would it be called in hard IRQ context?
 
-True, but that is an optimization rather than an absolute necessity.
-In addition, most two-argument kfree_rcu() callers will take another slot
-from the array that has already been allocated.  So one alternative is
-to do the allocation only if both interrupts and preemption are enabled.
-As long as most kfree_rcu() invocations can allocate, you get good
-performance and things work nicely in -rt.
+I am not saying that it is called now, but in the future if it is called for
+an interrupt that is not threaded on -rt, it would be a problem right?
 
-Another alternative is to check to see what currently invokes kfree_rcu()
-and work out what to do about any that are invoked from an environment
-in which -rt does not allow memory allocation.  And deal with future
-additions of kfree_rcu() to such environments.
+> Note, most interrupt handlers in PREEMPT_RT are turned into threads (except
+> for a very few, which shouldn't be calling kfree_rcu()).
 
-Given that most people don't test -rt, the second alternative has
-the potential of handing Sebastian an endless stream of bugs that are
-kfree_rcu() usage bugs only in -rt.  But maybe he is OK with that?
-(I wouldn't be, but I will let him speak for himself.)
+Yes those very few is what I was referring to. It also sounds like from the
+other thread, Paul is saying it should be allowed to be called from some
+contexts that are not sleepable. In those cases also the rtmutex will fall
+apart.
 
-							Thanx, Paul
+thanks,
+
+ - Joel
+
