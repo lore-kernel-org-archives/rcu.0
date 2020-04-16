@@ -6,154 +6,104 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97A4DC2BB55
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 18:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA9B6C2BB55
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 18:43:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F483206E9
-	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 18:41:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9A683206A2
+	for <rcu@archiver.kernel.org>; Thu, 16 Apr 2020 18:43:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TUzNdm53"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kGTMON9V"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729042AbgDPSlP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Apr 2020 14:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S1729284AbgDPSnv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Apr 2020 14:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728815AbgDPSlO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Apr 2020 14:41:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399C2C061A0C
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 11:41:14 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id m67so22399962qke.12
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 11:41:14 -0700 (PDT)
+        with ESMTP id S1728815AbgDPSnu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Apr 2020 14:43:50 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94033C061A0C
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 11:43:50 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id m67so22409989qke.12
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 11:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=1hhXP3OcbwBpqChTg2qy0UYmtrJF5n+UqwwBxvvO0Xg=;
-        b=TUzNdm53+tWpiU+ybdGUa4Xsr5DsHcBseB2373zHPgQ1LznWR2nhtXxJlCrIPelRMC
-         AVcFSUodz6RZB3yd5DMiPPjNlFwvXsfWcNxycchVQefi0JavuOi+3u+G08tVV8jaiedh
-         R2qNC0tYHp5cdM5/vmK4H/ED2nAjGZFA4cJ6g=
+        bh=C2vAstrjhAJ56IKYjJzFmkIkwEEcyH1H0MarRmZYyf8=;
+        b=kGTMON9V7azjzPr2Ol8kSgQROb9u8GSyCkZUaRTS3SmQtZNGt2T6c2LYsEq0ID3tmv
+         UeYtnBVmFC2zWfwKWmGYZe4bVBMhgVuIr0WUpV+oqy/GVb/vY4hfUw2xljgD1+UzMAVM
+         Gyi+MU60Cu9za9XEnAVWFsborbXiVTkTT/uTk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1hhXP3OcbwBpqChTg2qy0UYmtrJF5n+UqwwBxvvO0Xg=;
-        b=DSSAbI3qdCLjSuU7dj7DLCJRr0Ibk1h3H7vd9IAY7Du3O9c+80YH6esEJWwLO3OUOX
-         pbnlaIkUa72XhbgkhPWwrlRZBDs4E9KSWNrcAEBqsvFOd9JHJ/ZeCCCBXQk+FtFjUGn+
-         Wf9oAfTECITEIU3Kk3j41jIYihE5L8XTpXneyNkI3O0pHRpe121P4UYD373JLshFcBZE
-         qUQzVRfDtnJB8KHd/bxeQxnsVMzg9uY/H80zi6iyO9dUrchbOsQ5EdQmQwzUrtmV3EO4
-         xZMCF+S23soStoi5VcdgiAZhtyQHR/ji/za22Z2Rk4fCDTV41h1g34wTTaSzU/eDz+kl
-         eYFw==
-X-Gm-Message-State: AGi0PuYmLG8TxTcHBHsuu3/o4U4D9V4Zj+3PXazR+Km5sa618Q2QthnN
-        sbDrXg5NG7j7Ju9f1eNIok7IsA==
-X-Google-Smtp-Source: APiQypLVhqUxpjIJparKX8fAFNwNwU3EDavmLe0cLnenoZwaUfPSj96ncDKVIpia8paqZ9ULyzizbg==
-X-Received: by 2002:a05:620a:16cf:: with SMTP id a15mr17844283qkn.156.1587062473149;
-        Thu, 16 Apr 2020 11:41:13 -0700 (PDT)
+        bh=C2vAstrjhAJ56IKYjJzFmkIkwEEcyH1H0MarRmZYyf8=;
+        b=NjFO2B/RniojQvW3Q1YNNXYVOhcDGkVo/LwYLBvVBPz2YAPMQIGnfdNC+VRtWlEKKn
+         Rx3bYBnlJPcSYyqQF9ipFgVKjTW3Ihw/GJFNUrecKHJAbXFkrBCmaHwpx4BO+eK7A/fI
+         TUFnVYnd9qiCuCR/K1nWFT8csEGZlUV9QIfRRKK+XDaDmqk5cRyoFTk+GufuorPhjNrt
+         5nfNz33NXbvRauGiR1i3s6n6dRsMTt3bCoANwaLvyRGDR9UHo3RAQstq4uZTX/5bbMlG
+         oppz+oP8tJnmRrpxTmtO2JDI2JOwYK2Q9rEZZEmoT/KqoejYf7JUZHHWNXZkTCQXn8IJ
+         R80g==
+X-Gm-Message-State: AGi0Pub1iFqG2k3I0KaPMHwydzI4wHeZAiCrG5iKR611peeKwGKpAkq7
+        kr62t8X7b6IwoGOFXOiVlF6bWA==
+X-Google-Smtp-Source: APiQypK6f8uorydN1YEyAMrKL6+hgbZ5lp4CsCpZJPwU2I5bGFWsXQJchoXEYuySFm64uCKhs7TV3w==
+X-Received: by 2002:a05:620a:b03:: with SMTP id t3mr31214331qkg.209.1587062629791;
+        Thu, 16 Apr 2020 11:43:49 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l13sm12682796qtj.17.2020.04.16.11.41.12
+        by smtp.gmail.com with ESMTPSA id t15sm16559616qtc.64.2020.04.16.11.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 11:41:12 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 14:41:12 -0400
+        Thu, 16 Apr 2020 11:43:49 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 14:43:48 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
+        Mike Galbraith <efault@gmx.de>
 Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200416184112.GA149999@google.com>
-References: <20200415160034.662274-2-bigeasy@linutronix.de>
- <20200416144254.GC90777@google.com>
- <20200416151824.a372pdiphube3x3l@linutronix.de>
+Message-ID: <20200416184348.GB149999@google.com>
+References: <20200416152027.wkpxr2fvuf4jkgct@linutronix.de>
+ <20200416153844.GA8191@pc636>
+ <20200416154647.ceotefna34pdxpfi@linutronix.de>
+ <20200416160129.GA8337@pc636>
+ <20200416161149.lkvkfwevanff36kb@linutronix.de>
+ <20200416161819.GA8551@pc636>
+ <20200416163302.3fsroillwk2om5dh@linutronix.de>
+ <20200416172953.GR17661@paulmck-ThinkPad-P72>
+ <20200416182309.zytrgowlngpewxbt@linutronix.de>
+ <20200416182948.GV17661@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200416151824.a372pdiphube3x3l@linutronix.de>
+In-Reply-To: <20200416182948.GV17661@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 05:18:24PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-04-16 10:42:54 [-0400], Joel Fernandes wrote:
-> > Hi Sebastian,
-> Hi Joel,
-> 
-> > > @@ -3139,10 +3136,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > >  	unsigned long flags;
-> > >  	struct kfree_rcu_cpu *krcp;
-> > >  
-> > > -	local_irq_save(flags);	// For safely calling this_cpu_ptr().
-> > > -	krcp = this_cpu_ptr(&krc);
-> > > -	if (krcp->initialized)
-> > > -		spin_lock(&krcp->lock);
-> > > +	krcp = raw_cpu_ptr(&krc);
-> > > +	spin_lock_irqsave(&krcp->lock, flags);
+On Thu, Apr 16, 2020 at 11:29:48AM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 16, 2020 at 08:23:09PM +0200, Sebastian Andrzej Siewior wrote:
+> > On 2020-04-16 10:29:53 [-0700], Paul E. McKenney wrote:
+> > > > migrate_disable() would work.
+> > > 
+> > > Or moving to a raw spinlock, correct?
 > > 
-> > I agree with the patch, except for this bit. Would it be ok to split the
-> > other parts of this patch into separate patch(es)?
+> > I'm currently in favour of that migrate_disable(). raw spinlock does not
+> > work because there is memory allocation via get_page() later on.
 > 
-> if you want, I could split it. Part of the goal is to get rid of the
-> local_irq_save(). I don't mind if it happens a patch later :)
+> Fair enough!  IIRC, get_page() uses non-raw spinlocks, so...
 
-Considering the other parts of your patch are less contentious, it makes
-sense to me to split it, while we discuss this particular part ;)
+Oh, I see Paul made the same suggestion I did for raw spinlocks.
 
-> > For this part of the patch, I am wondering what is the value in it. For one,
-> 
-> local_irq_save() + spin_lock() is the problem, see
->     https://www.kernel.org/doc/html/latest/locking/locktypes.html#spinlock-t-and-rwlock-t
-> 
-> (the link-instead-explaining part is nice)
+migrate_disable() is fine, but note that in the later code we will not be
+sleeping even during the get_page(), so I don't see a problem with raw
+spinlock... did I miss something?
 
-This problem can be fixed simply by using raw_spin_lock above right? That
-would solve the rtmutex problem in PREEMPT_RT.
-
-> > Also on a slightly related note, could you share with me why this_cpu_ptr()
-> > is unsafe to call in non-preemptible context, but raw_cpu_ptr() is ok? Just
-> > curious on that.
-
-Here I meant 'in preemptible context'.
-
-> 
-> I wouldn't use safe/unsafe as a term to describe the situation. Both do
-> the same however this_cpu_ptr() raises a warning (given it is enabled)
-> if the current context can migrate to another CPU
-> (check_preemption_disabled()).
-> If you know what you do and it does not matter whether migration happens
-> or not, you can use raw_cpu_ptr() to avoid the warning. In this case it
-> is okay because CPU migration does not matter here since the data
-> structure is protected with a lock. Using the data structure from
-> another CPU (due to accidental migration) is not ideal but _no_
-> assumption happens later on for dealing with the current or further
-> data. The timer/worker will be scheduled on the "wrong" CPU but this
-> again has no bad consequences. The timer and worker use container_of()
-> so they operate on the correct resources. Would they instead use
-> per_cpu_ptr(krc, smp_processor_id()) then it would operate on the wrong
-> data.
-> 
-> Regarding the safe/unsafe: Would this_cpu_ptr() trigger a warning and
-> you add preempt_disable() around the block, where you use the per-CPU
-> data, then you would silence the warning and everything would look fine.
-> If this per-CPU data structure would also be accessed from interrupt
-> context then you would get inconsistent data and no warning.
-> What I'm trying to say is that even this_cpu_ptr() is not "safe" if used
-> without a thought.
-
-Thanks a lot for the background information on the 2 APIs!!
-
-It got confusing to me when rcu_raw_ptr() would not warn but this_cpu_ptr)_
-would. I guess it is about semantics, and this_cpu_ptr() is more explicit
-about accessing the same local CPU's data.
+thanks,
 
  - Joel
 
-> 
-> > thanks,
-> > 
-> >  - Joel
-> 
-> Sebastian
