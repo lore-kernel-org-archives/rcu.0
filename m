@@ -2,292 +2,253 @@ Return-Path: <SRS0=YclE=6B=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1072C2BA2B
-	for <rcu@archiver.kernel.org>; Fri, 17 Apr 2020 03:05:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 602A3C2BB55
+	for <rcu@archiver.kernel.org>; Fri, 17 Apr 2020 06:53:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86F1520771
-	for <rcu@archiver.kernel.org>; Fri, 17 Apr 2020 03:05:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3BB72221EA
+	for <rcu@archiver.kernel.org>; Fri, 17 Apr 2020 06:53:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ObpO3u9F"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OtXjWj0z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbgDQDFS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Apr 2020 23:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S1728098AbgDQGxk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Apr 2020 02:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726261AbgDQDFR (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 16 Apr 2020 23:05:17 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94ABC061A0C
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 20:05:17 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id l13so885211qtr.7
-        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 20:05:17 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726050AbgDQGxj (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 17 Apr 2020 02:53:39 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4080BC061A0F
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 23:53:39 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id o139so502781ybc.11
+        for <rcu@vger.kernel.org>; Thu, 16 Apr 2020 23:53:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i2a8UTQaL6W1oNm4+doN+Wr9ifKTFP8mw2o9MkaEolo=;
-        b=ObpO3u9FvOQ1yWbEY6q7biKOOQ+/enidM7mBqwt7eJuc4E9jCES3ZZxfw+VZs7Vgb9
-         ZFTvefqqFbku3iSvDgv0H8R1Gast917G3qg91a8l4lV87Y0CY4zlsXHfxSXUHp7kIVgt
-         /jStzn4dQyugZhg85JGmGOyoum40XfcC90GKU=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Yxn0m71LOQ+yfqIoKnaxQru/WU+91bOpFnDXhCTjaGY=;
+        b=OtXjWj0ztDLuiReEQ27WKPoBs2lsPAa9IF/+OZD7Iyl/nWfWbpiwJ434B1vBDRmH+D
+         +6oD7sa1GH4ArE8FxGxF6zbNagFaVn3L5fR4gSss0wZsjUCE90kuDe78JTUFCc3G4E3C
+         2nhTCZQSx8Y791TPEZVQAlUNZyIuYRC+7n/scGUo+RI6qiNfdhdoXFHc3RXYNHtw02qD
+         jLFxyuqc3Q+96Yniy2doYOsKskRCsgWZq3lj6CjVQoZ47oV7sGJi6xAe6Qc06cmXBpYm
+         d8170t75hYb8OOrTvY5B89s413DQ1a3cZA24lqaHf2E3nT6rH3brIzPC92CySeOxeh36
+         daoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i2a8UTQaL6W1oNm4+doN+Wr9ifKTFP8mw2o9MkaEolo=;
-        b=ectxRbsskk+VIDEaVSV9gNn/oUen/DBdOGOZwQV/HAdU2VSl3kpcZ19MjkP0ncUAMY
-         zS6qULbVIu5ESkv623RcuKCVgkRTZZSzvvL+DWGwn9Dy+FIlfXk6muTfd7tCET1Ovns/
-         +Ekn4JNLuhnPizRxreFJZqrONC6SyuWrqTeUjVwu6igCCGqDwQ/lCwYaXOxG/ixfaBX7
-         2OkWABZffdKnWl0cNzwxrfswLAcUgId0ib70jKANX/LK7jff0SfwNDTcRdAU6fbA4PKI
-         IQOgdroZEbnvj1ZuHXOVpSK2soacq4UX6cG9OTICgkzWLQ/vbUq/4eVzNUjuEsGS8qTO
-         mM0w==
-X-Gm-Message-State: AGi0PuZuSylxhpO4CdFbl5WPWImcyW4caMIxkc/aRwWDSTuzNYYjFzwa
-        pul7J0JovQXWIttWAzVeDGaNuA==
-X-Google-Smtp-Source: APiQypJyVsktlBF4f981yjXGdlMK6NXDOZjf/2DRaB/jGjsrh7+uWWh+xcHu02A1pvSeyLU1sWti6g==
-X-Received: by 2002:ac8:164e:: with SMTP id x14mr938310qtk.196.1587092716636;
-        Thu, 16 Apr 2020 20:05:16 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id x8sm16110535qti.51.2020.04.16.20.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 20:05:16 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 23:05:15 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
-Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200417030515.GE176663@google.com>
-References: <20200415160034.662274-2-bigeasy@linutronix.de>
- <20200416144254.GC90777@google.com>
- <20200416151824.a372pdiphube3x3l@linutronix.de>
- <20200416184112.GA149999@google.com>
- <20200416185934.GD149999@google.com>
- <20200416152623.48125628@gandalf.local.home>
- <20200416203637.GA176663@google.com>
- <20200416210057.GY17661@paulmck-ThinkPad-P72>
- <20200416213444.4cc6kzxmwl32s2eh@linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Yxn0m71LOQ+yfqIoKnaxQru/WU+91bOpFnDXhCTjaGY=;
+        b=VrUwQ3RLwkGxhkvETJ+yOoukpaZedP5oXl3nBJSSP1NjX1xElBSSSOuyoRfSsszimR
+         3/w717D3p3OSNo+RqHc5EOX2y3Dg87OGrPJshLLtTZMCQsMXR0dGHovm2fDeFRb+wiad
+         3jSNW7TT+wlhFQch4pPhYWPbPc50vZ8by3AKiPpxEIHLbrHPaW9MGX1m6zJNYfdrUjA4
+         APsDTvDW2miZeJgOzVL5/yGUeRF+5L0yRHqoWdUB5TtG++U68gWAt6x6vcZxB4lcAnkd
+         Wr4w1cAvnDlEJD+HVyD50FYtJa2Ecx5Yv93/FXuc6L7UChrPeI0Xwo6dcaIOnS2FS0P/
+         6C+A==
+X-Gm-Message-State: AGi0PuYiAkJmvii8ZTxIfivnZsJ+B4dULKK7DvpA7YAoWCk58U74ZYOD
+        uG6X8iSmhkhk686xrK/AH4eSGWa3zb7ubbt/K1vWUQ==
+X-Google-Smtp-Source: APiQypJhD2GihUBl8eAMpn/dweoXChUqbWXvNvgzEZ0Bo54Gt61TIkG3TcQ0qGerVwZMLd5XLzfaqLuncNzYkwjwcgc=
+X-Received: by 2002:a5b:d51:: with SMTP id f17mr3148187ybr.87.1587106418318;
+ Thu, 16 Apr 2020 23:53:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416213444.4cc6kzxmwl32s2eh@linutronix.de>
+References: <CA+G9fYtYRc_mKPDN-Gryw7fhjPNGBUP=KemTXaXR6UBU94M3hw@mail.gmail.com>
+In-Reply-To: <CA+G9fYtYRc_mKPDN-Gryw7fhjPNGBUP=KemTXaXR6UBU94M3hw@mail.gmail.com>
+From:   Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Date:   Fri, 17 Apr 2020 15:53:27 +0900
+Message-ID: <CAA93ih2To3YN=L7VSa_RzVRV5OH9DTffd0zdKWB2M4CfE0Gp1Q@mail.gmail.com>
+Subject: Re: WARNING: events/ipi.h:36 suspicious rcu_dereference_check() usage!
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux- stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        rcu@vger.kernel.org, lkft-triage@lists.linaro.org,
+        Leo Yan <leo.yan@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>, zanussi@kernel.org,
+        svens@linux.ibm.com, Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 11:34:44PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-04-16 14:00:57 [-0700], Paul E. McKenney wrote:
-> > 
-> > We might need different calling-context restrictions for the two variants
-> > of kfree_rcu().  And we might need to come up with some sort of lockdep
-> > check for "safe to use normal spinlock in -rt".
-> 
-> Oh. We do have this already, it is called CONFIG_PROVE_RAW_LOCK_NESTING.
-> This one will scream if you do
-> 	raw_spin_lock();
-> 	spin_lock();
-> 
-> Sadly, as of today, there is code triggering this which needs to be
-> addressed first (but it is one list of things to do).
-> 
-> Given the thread so far, is it okay if I repost the series with
-> migrate_disable() instead of accepting a possible migration before
-> grabbing the lock? I would prefer to avoid the extra RT case (avoiding
-> memory allocations in a possible atomic context) until we get there.
+Hello,
 
-I prefer something like the following to make it possible to invoke
-kfree_rcu() from atomic context considering call_rcu() is already callable
-from such contexts. Thoughts?
+It seems that *arm/arm64 specific* IPI trace event has caused this issue.
+From the stacktrace, __update_max_tr() is invoked from do_idle() context.
 
-(Only build tested)
----8<-----------------------
+------
+__update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu)
+{
+[SNIP]
+        /* record this tasks comm */
+        tracing_record_cmdline(tsk);
+        latency_fsnotify(tr);  <<------here
+}
+------
+And via latency_fsnotify(), it calls irq_work_queue().
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH] rcu/tree: Avoid allocating in non-preemptible context for
- PREEMPT_RT kernels
+------
+void latency_fsnotify(struct trace_array *tr)
+{
+        if (!fsnotify_wq)
+                return;
+        /*
+         * We cannot call queue_work(&tr->fsnotify_work) from here because =
+it's
+         * possible that we are called from __schedule() or do_idle(), whic=
+h
+         * could cause a deadlock.
+         */
+        irq_work_queue(&tr->fsnotify_irqwork); <<------- here
+}
+------
+Please NOTE(*) that the above comment said that irq_work_queue()
+should be SAFE from calling in do_idle(), this means it doesn't touch
+any RCU.
 
-Per recent discussions, kfree_rcu() is a low-level facility which should be
-callable in atomic context (raw spinlock sections, IRQ disable sections etc).
+And the irq_work_queue() finally kicks IPI via arch_irq_work_raise()
+which causes an IPI.
 
-However, it depends on page allocation which acquires sleeping locks on
-PREEMPT_RT.
+--------<arm64: arch/arm64/kernel/smp.c>--------
+#ifdef CONFIG_IRQ_WORK
+void arch_irq_work_raise(void)
+{
+        if (__smp_cross_call)
+                smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK=
+);
+}
+#endif
 
-In order to support all usecases, avoid the allocation of pages for
-PREEMPT_RT. The page allocation is just an optimization which does not
-break functionality. Further, in future patches the pages will be
-pre-allocated reducing the likelihood that page allocations will be
-needed.
+static void smp_cross_call(const struct cpumask *target, unsigned int ipinr=
+)
+{
+        trace_ipi_raise(target, ipi_types[ipinr]);  <<----- This
+causes a warning!
+        __smp_cross_call(target, ipinr);
+}
+-------
+And trace_* macro touch the RCU. See include/linux/tracepoint.h:231
+------
+#define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
+        extern struct tracepoint __tracepoint_##name;                   \
+        static inline void trace_##name(proto)                          \
+        {                                                               \
+                if (static_key_false(&__tracepoint_##name.key))         \
+                        __DO_TRACE(&__tracepoint_##name,                \
+                                TP_PROTO(data_proto),                   \
+                                TP_ARGS(data_args),                     \
+                                TP_CONDITION(cond), 0);                 \
+                if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {             \
+                        rcu_read_lock_sched_notrace();                  \
+                        rcu_dereference_sched(__tracepoint_##name.funcs);\
+                        rcu_read_unlock_sched_notrace();                \
+                }                                                       \
+        }
+------
 
-We also convert the spinlock_t to raw_spinlock_t so that does not sleep
-in PREEMPT_RT's raw atomic critical sections.
+BTW, this ipi_raise trace event is only used in arm/arm64.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 42 +++++++++++++++++++++++++-----------------
- 1 file changed, 25 insertions(+), 17 deletions(-)
+$ git grep trace_ipi_raise
+arch/arm/kernel/smp.c:  trace_ipi_raise_rcuidle(target, ipi_types[ipinr]);
+arch/arm64/kernel/smp.c:        trace_ipi_raise(target, ipi_types[ipinr]);
+include/trace/events/ipi.h: * __tracepoint_string, ideally the same as
+used with trace_ipi_raise
+include/trace/events/ipi.h: * __tracepoint_string, ideally the same as
+used with trace_ipi_raise for
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f288477ee1c26..ba831712fb307 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2905,7 +2905,7 @@ struct kfree_rcu_cpu {
- 	struct kfree_rcu_bulk_data *bhead;
- 	struct kfree_rcu_bulk_data *bcached;
- 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
--	spinlock_t lock;
-+	raw_spinlock_t lock;
- 	struct delayed_work monitor_work;
- 	bool monitor_todo;
- 	bool initialized;
-@@ -2939,12 +2939,12 @@ static void kfree_rcu_work(struct work_struct *work)
- 	krwp = container_of(to_rcu_work(work),
- 			    struct kfree_rcu_cpu_work, rcu_work);
- 	krcp = krwp->krcp;
--	spin_lock_irqsave(&krcp->lock, flags);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
- 	bhead = krwp->bhead_free;
- 	krwp->bhead_free = NULL;
--	spin_unlock_irqrestore(&krcp->lock, flags);
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 	/* "bhead" is now private, so traverse locklessly. */
- 	for (; bhead; bhead = bnext) {
-@@ -3047,14 +3047,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
- 	krcp->monitor_todo = false;
- 	if (queue_kfree_rcu_work(krcp)) {
- 		// Success! Our job is done here.
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 		return;
- 	}
- 
- 	// Previous RCU batch still in progress, try again later.
- 	krcp->monitor_todo = true;
- 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
--	spin_unlock_irqrestore(&krcp->lock, flags);
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
- /*
-@@ -3067,16 +3067,16 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
- 						 monitor_work.work);
- 
--	spin_lock_irqsave(&krcp->lock, flags);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
- 	if (krcp->monitor_todo)
- 		kfree_rcu_drain_unlock(krcp, flags);
- 	else
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
- static inline bool
- kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
--	struct rcu_head *head, rcu_callback_t func)
-+	struct rcu_head *head, rcu_callback_t func, bool alloc)
- {
- 	struct kfree_rcu_bulk_data *bnode;
- 
-@@ -3092,6 +3092,10 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
- 		if (!bnode) {
- 			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
- 
-+			/* If allocation is not allowed, don't do it. */
-+			if (!alloc)
-+				return false;
-+
- 			bnode = (struct kfree_rcu_bulk_data *)
- 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
- 		}
-@@ -3138,11 +3142,15 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
-+	bool alloc = true;
-+
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !preemptible())
-+		alloc = false;
- 
- 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
- 	if (krcp->initialized)
--		spin_lock(&krcp->lock);
-+		raw_spin_lock(&krcp->lock);
- 
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(head)) {
-@@ -3156,7 +3164,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	 * Under high memory pressure GFP_NOWAIT can fail,
- 	 * in that case the emergency path is maintained.
- 	 */
--	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func))) {
-+	if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func, alloc))) {
- 		head->func = func;
- 		head->next = krcp->head;
- 		krcp->head = head;
-@@ -3173,7 +3181,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- unlock_return:
- 	if (krcp->initialized)
--		spin_unlock(&krcp->lock);
-+		raw_spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(kfree_call_rcu);
-@@ -3205,11 +3213,11 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
--		spin_lock_irqsave(&krcp->lock, flags);
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
- 		else
--			spin_unlock_irqrestore(&krcp->lock, flags);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 		sc->nr_to_scan -= count;
- 		freed += count;
-@@ -3236,15 +3244,15 @@ void __init kfree_rcu_scheduler_running(void)
- 	for_each_online_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
--		spin_lock_irqsave(&krcp->lock, flags);
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (!krcp->head || krcp->monitor_todo) {
--			spin_unlock_irqrestore(&krcp->lock, flags);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 			continue;
- 		}
- 		krcp->monitor_todo = true;
- 		schedule_delayed_work_on(cpu, &krcp->monitor_work,
- 					 KFREE_DRAIN_JIFFIES);
--		spin_unlock_irqrestore(&krcp->lock, flags);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- }
- 
-@@ -4140,7 +4148,7 @@ static void __init kfree_rcu_batch_init(void)
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
--		spin_lock_init(&krcp->lock);
-+		raw_spin_lock_init(&krcp->lock);
- 		for (i = 0; i < KFREE_N_BATCHES; i++) {
- 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
--- 
-2.26.1.301.g55bc3eb7cb9-goog
+Thus, this only occurs on arm64 platform, but not on x86.
 
+To fix this, maybe we need to remove this event or mark this is under
+rcu watched (but is it really watched?)
+
+Thank you,
+
+2020=E5=B9=B44=E6=9C=888=E6=97=A5(=E6=B0=B4) 18:31 Naresh Kamboju <naresh.k=
+amboju@linaro.org>:
+
+>
+> On arm64 qemu_arm64, juno-r2 and dragonboard-410c while running kselftest=
+ ftrace
+> on stable rc 5.5.1-rc1 to till today 5.5.16-rc2 and 5.6  found this
+> kernel warning.
+>
+> [  386.349099] kselftest: Running tests in ftrace
+> [  393.984018]
+> [  393.984290] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [  393.984781] WARNING: suspicious RCU usage
+> [  393.988690] 5.6.3-rc2 #1 Not tainted
+> [  393.992679] -----------------------------
+> [  393.996327] /usr/src/kernel/include/trace/events/ipi.h:36
+> suspicious rcu_dereference_check() usage!
+> [  394.000241]
+> [  394.000241] other info that might help us debug this:
+> [  394.000241]
+> [  394.009094]
+> [  394.009094] RCU used illegally from idle CPU!
+> [  394.009094] rcu_scheduler_active =3D 2, debug_locks =3D 1
+> [  394.017084] RCU used illegally from extended quiescent state!
+> [  394.028187] 1 lock held by swapper/3/0:
+> [  394.033826]  #0: ffff80001237b6a8 (max_trace_lock){....}, at:
+> check_critical_timing+0x7c/0x1a8
+> [  394.037480]
+> [  394.037480] stack backtrace:
+> [  394.046158] CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.6.3-rc2 #1
+> [  394.050584] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (D=
+T)
+> [  394.056663] Call trace:
+> [  394.063515]  dump_backtrace+0x0/0x1e0
+> [  394.065686]  show_stack+0x24/0x30
+> [  394.069505]  dump_stack+0xe8/0x150
+> [  394.072805]  lockdep_rcu_suspicious+0xcc/0x110
+> [  394.076106]  arch_irq_work_raise+0x208/0x210
+> [  394.080533]  __irq_work_queue_local+0x5c/0x80
+> [  394.084959]  irq_work_queue+0x38/0x78
+> [  394.089212]  __update_max_tr+0x150/0x218
+> [  394.092858]  update_max_tr_single.part.82+0x98/0x100
+> [  394.096851]  update_max_tr_single+0x1c/0x28
+> [  394.101798]  check_critical_timing+0x198/0x1a8
+> [  394.105705]  stop_critical_timings+0x128/0x148
+> [  394.110221]  cpuidle_enter_state+0x74/0x4f8
+> [  394.114645]  cpuidle_enter+0x3c/0x50
+> [  394.118726]  call_cpuidle+0x44/0x80
+> [  394.122542]  do_idle+0x22c/0x2d0
+> [  394.125755]  cpu_startup_entry+0x28/0x48
+> [  394.129229]  secondary_start_kernel+0x1b4/0x210
+>
+>
+> metadata:
+>   git branch: linux-5.5.y and linux-5.6.y
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
+stable-rc.git
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-s=
+table-rc-5.5/65/config
+>
+> Full test log,
+> 5.6 test logs,
+> https://lkft.validation.linaro.org/scheduler/job/1350627#L12612
+> https://lkft.validation.linaro.org/scheduler/job/1350731#L9509
+>
+> 5.5 test logs,
+> https://lkft.validation.linaro.org/scheduler/job/1322704#L9777
+> https://lkft.validation.linaro.org/scheduler/job/1153369#L9745
+> https://lkft.validation.linaro.org/scheduler/job/1351155#L8982
+> https://lkft.validation.linaro.org/scheduler/job/1351065#L12349
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+
+
+
+--
+Masami Hiramatsu
