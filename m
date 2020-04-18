@@ -2,193 +2,186 @@ Return-Path: <SRS0=hY+h=6C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-11.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25E29C3A5A0
-	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 12:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D103C2BA19
+	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 22:02:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 00D22206D9
-	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 12:38:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D247721974
+	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 22:02:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gTCc1oSI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F/DcX3qn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgDRMh7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 18 Apr 2020 08:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725804AbgDRMh6 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sat, 18 Apr 2020 08:37:58 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E92C061A0C
-        for <rcu@vger.kernel.org>; Sat, 18 Apr 2020 05:37:57 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u15so4828466ljd.3
-        for <rcu@vger.kernel.org>; Sat, 18 Apr 2020 05:37:57 -0700 (PDT)
+        id S1727927AbgDRWCL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 18 Apr 2020 18:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgDRWCK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 18 Apr 2020 18:02:10 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317A0C061A0C;
+        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q10so4528062ile.0;
+        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CRDVgZ9W5HNWXaxz6RVHrX96wEn/AbgBRYcLl4zTD8c=;
-        b=gTCc1oSIC23aQuN2g2cjJvHLyFt9/aep/W+cB1ULQFIxOHyupn6uwSgbtCpJGZKY/E
-         cHJ894hXU9XL1lm0uLXnPROY/96FVuYoO1jnqP6CU7MpisrTsZGX8w16VO7/+0iharl9
-         03FO8ClR0Kg+NLB+J84M9m3HZ3mID/Hl4ZNPuZq0LFnH5EvaYFpLnVJkLeKyJVUL9Qvq
-         EGq5WrvdUugFTzDcmCTm8VgFn//m+wCdPl72D2ISeMrhKQclrmdD9KYLnS1Em3yCJ8Ju
-         gqb5Cx527OfNpsH7TTdckwy0xwPvtvByIB5DM4/LMqTYAwJlRSU6HQs6RDAaNQsBDY8M
-         cAjw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
+        b=F/DcX3qn0mWP3wxePs/f6Ber+8vcImQLEQ1CnbNQTcIfCmABYQGfIKgMiyysqaCEL/
+         t90eT6S1ZjddO24lMhbAMC2HLortBaB77fS2qG+7q98k3eyT2Z2DWO/6uMtB1ap4ln0a
+         jAYld2+pC/YdCQf8AunPt9C7hDJRYHbT+nbebEVsFwuaW54I01nc8i2TmQB9ioCJb9Zq
+         OrQXNVF/JswexSm6WLEkxiidIfrvi78E95/ZjahRUOUamjJJ404iE775MJsQbOFTWdJH
+         KoTGv6MK30ZK1Pa/TJon0K7fVbjB49hVTNztmqJsFug7Izfg2MhnwZ+Dll0OnNhTUVj8
+         qk9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CRDVgZ9W5HNWXaxz6RVHrX96wEn/AbgBRYcLl4zTD8c=;
-        b=Nx6++4VuNQjH03QsUE1U5eBS+ampcCTIZnMHqMHPy5YuTIc0jOktNmlJZCHMpHA5Bj
-         m5eZHFUMnRVnhak10uOHc/VwEV5cKajr/jeD0NKype889FKS9JjflBVO5GDIc9vazVSK
-         3JeWOBwjJ+3GR1kc+5fn8xY5KSW894sprT1XF8s9rmY9dpiKpNsrlikRqTttY4JU3d8U
-         9gZN4PHqwWBYZxGh4NAFAD2qUCr08l7oaMuWBYVT4NG1K+6RAHOpeoBrQYUua68yD34E
-         Vq6R8HKqYFu8M79dwYhoxTARBQ5W0/3sJNNJcXPxEjV3bABxU/CbGRijK6JLI9ofw8/R
-         gXRg==
-X-Gm-Message-State: AGi0Pub6NtATJW2VC0Jzk3rXLCDBu7TRZvN8KuozCxRkRL+qSv+iWdMG
-        YDnc2AQ/pXeX5044ro367PA=
-X-Google-Smtp-Source: APiQypKKxjHISQ9WxUvKJMvQ8VsDvLc4SiuCZxF/nLKlXoUycTOzqlIIwseXGRg9vZ7qWbq95fld2A==
-X-Received: by 2002:a2e:7815:: with SMTP id t21mr4778746ljc.146.1587213476258;
-        Sat, 18 Apr 2020 05:37:56 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id g5sm18529445ljl.106.2020.04.18.05.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 05:37:55 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sat, 18 Apr 2020 14:37:48 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
-Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200418123748.GA3306@pc636>
-References: <20200416184112.GA149999@google.com>
- <20200416185934.GD149999@google.com>
- <20200416152623.48125628@gandalf.local.home>
- <20200416203637.GA176663@google.com>
- <20200416210057.GY17661@paulmck-ThinkPad-P72>
- <20200416213444.4cc6kzxmwl32s2eh@linutronix.de>
- <20200417030515.GE176663@google.com>
- <20200417150442.gyrxhjymvfwsvum5@linutronix.de>
- <20200417182641.GB168907@google.com>
- <20200417185449.GM17661@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
+        b=XNWeOnN6cb9LlcHTOIs7pq6wiQaF8VXG74BVvJ41VKXRhKg8everwam/iNzVRzwq9A
+         tCJBpeWR9g11/sevzDMqgMaB0x49cF3q9bst+cJ+tF2rmIt3z/R0E2f+Y4l0SONprY6Q
+         3MOVT6prPU0NkRN8GE5SEQB8ve5gKjw7qSienTAfkkGIZdwE9CmN5k8yWS/9cwM/ZEc0
+         RmGPbLsBugk+C+nAW1Yf2CwawiWqAwsbBg0LpDidjISHZELmbMl7UGrG3WgiYdjwzq3c
+         0N/AOUNY+sLcNZ2p0EMHoFSwZRDsRiZv7QzJSggR7V7HH552cKuQQHX7Zr0l3YMCXd+J
+         1TPg==
+X-Gm-Message-State: AGi0PuZQ+fqF0BjTeFaqj/gr+5xHnMG8A4JhyMQAXgGDeWnE37qNXA7y
+        J7bwGsKCSRkf6wXN3p3+UDBI7diyAWdUvgmF1hA=
+X-Google-Smtp-Source: APiQypLGAnldNe44/T7TrOcehDST8OjwjHDaKCPvui7D2rvzpgvBzbQYc1MKCX0pK+dGDGtCanJ0ygeCeyDEHHYaggU=
+X-Received: by 2002:a05:6e02:790:: with SMTP id q16mr8812413ils.60.1587247328320;
+ Sat, 18 Apr 2020 15:02:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417185449.GM17661@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200417213951.29837-1-richard.weiyang@gmail.com> <20200418031922.GR17661@paulmck-ThinkPad-P72>
+In-Reply-To: <20200418031922.GR17661@paulmck-ThinkPad-P72>
+From:   Wei Yang <richard.weiyang@gmail.com>
+Date:   Sun, 19 Apr 2020 06:02:12 +0800
+Message-ID: <CADZGycYVL9j7jbE1ZY_ZOv2XXv9XwWGPykoE63nJ79VrXwwUCg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: simplify the calculation of rcu_state.ncpus
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     josh@joshtriplett.org, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:54:49AM -0700, Paul E. McKenney wrote:
-> On Fri, Apr 17, 2020 at 02:26:41PM -0400, Joel Fernandes wrote:
-> > On Fri, Apr 17, 2020 at 05:04:42PM +0200, Sebastian Andrzej Siewior wrote:
-> > > On 2020-04-16 23:05:15 [-0400], Joel Fernandes wrote:
-> > > > On Thu, Apr 16, 2020 at 11:34:44PM +0200, Sebastian Andrzej Siewior wrote:
-> > > > > On 2020-04-16 14:00:57 [-0700], Paul E. McKenney wrote:
-> > > > > > 
-> > > > > > We might need different calling-context restrictions for the two variants
-> > > > > > of kfree_rcu().  And we might need to come up with some sort of lockdep
-> > > > > > check for "safe to use normal spinlock in -rt".
-> > > > > 
-> > > > > Oh. We do have this already, it is called CONFIG_PROVE_RAW_LOCK_NESTING.
-> > > > > This one will scream if you do
-> > > > > 	raw_spin_lock();
-> > > > > 	spin_lock();
-> > > > > 
-> > > > > Sadly, as of today, there is code triggering this which needs to be
-> > > > > addressed first (but it is one list of things to do).
-> > > > > 
-> > > > > Given the thread so far, is it okay if I repost the series with
-> > > > > migrate_disable() instead of accepting a possible migration before
-> > > > > grabbing the lock? I would prefer to avoid the extra RT case (avoiding
-> > > > > memory allocations in a possible atomic context) until we get there.
-> > > > 
-> > > > I prefer something like the following to make it possible to invoke
-> > > > kfree_rcu() from atomic context considering call_rcu() is already callable
-> > > > from such contexts. Thoughts?
-> > > 
-> > > So it looks like it would work. However, could we please delay this
-> > > until we have an actual case on RT? I just added
-> > > 	WARN_ON(!preemptible());
-> > 
-> > I am not sure if waiting for it to break in the future is a good idea. I'd
-> > rather design it in a forward thinking way. There could be folks replacing
-> > "call_rcu() + kfree in a callback" with kfree_rcu() for example. If they were
-> > in !preemptible(), we'd break on page allocation.
-> > 
-> > Also as a sidenote, the additional pre-allocation of pages that Vlad is
-> > planning on adding would further reduce the need for pages from the page
-> > allocator.
-> > 
-> > Paul, what is your opinion on this?
-> 
-> My experience with call_rcu(), of which kfree_rcu() is a specialization,
-> is that it gets invoked with preemption disabled, with interrupts
-> disabled, and during early boot, as in even before rcu_init() has been
-> invoked.  This experience does make me lean towards raw spinlocks.
-> 
-> But to Sebastian's point, if we are going to use raw spinlocks, we need
-> to keep the code paths holding those spinlocks as short as possible.
-> I suppose that the inability to allocate memory with raw spinlocks held
-> helps, but it is worth checking.
+On Sat, Apr 18, 2020 at 11:19 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-How about reducing the lock contention even further?
+> On Fri, Apr 17, 2020 at 09:39:51PM +0000, Wei Yang wrote:
+> > There is only 1 bit set in mask, which means the difference between
+> > oldmask and the new one would be at the position where the bit is set in
+> > mask.
+> >
+> > Based on this knowledge, rcu_state.ncpus could be calculated by checking
+> > whether mask is already set in oldmask.
+>
+> Nice!!!  Good eyes!
+>
+> > BTW, the comment at the last of this line is mysterious. Not sure it
+> > could be removed or not.
+>
+> The "^^^" in that comment says to look at the comment on the preceding
+> line.  Memory-ordering functions like smp_store_release() are supposed
+> to have comments indicating what they are ordering.  ;-)
+>
+> Could you please do the following things and resubmit?
+>
+> 1.      Forward-port to -rcu branch dev?  This tree lives here:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+>
+> 2.      Given that oldmask is used only to test to see if a new bit
+>         was set, why not just replace oldmask with a bool variable
+>         that is set to "!(rnp->expmaskinitnext & mask)" before the
+>         bit is ORed into rnp->expmaskinitnext?
+>
+> 3.      Put the comment inside the "if" statement with the
+>         smp_store_release().
+>
+> 4.      In -rcu, you will find a ASSERT_EXCLUSIVE_WRITER() statement
+>         that should also be placed inside the "if" statement with
+>         the smp_store_release().
+>
 
-<snip>
+Oops, my email client EAT this mail. Hope this mail will not be banned.
+
+I adjust the code a little according to your suggestion like below. Is this
+what you expected?
+
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f288477ee1c2..fb916e065784 100644
+index f288477ee1c2..f01367a80b70 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3053,7 +3053,8 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+@@ -3732,10 +3732,9 @@ void rcu_cpu_starting(unsigned int cpu)
+ {
+        unsigned long flags;
+        unsigned long mask;
+-       int nbits;
+-       unsigned long oldmask;
+        struct rcu_data *rdp;
+        struct rcu_node *rnp;
++       bool has_seen;
 
-        // Previous RCU batch still in progress, try again later.
-        krcp->monitor_todo = true;
--       schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+       schedule_delayed_work_on(raw_smp_processor_id(),
-+               &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-        spin_unlock_irqrestore(&krcp->lock, flags);
- }
+        if (per_cpu(rcu_cpu_started, cpu))
+                return;
+@@ -3747,13 +3746,13 @@ void rcu_cpu_starting(unsigned int cpu)
+        mask = rdp->grpmask;
+        raw_spin_lock_irqsave_rcu_node(rnp, flags);
+        WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+-       oldmask = rnp->expmaskinitnext;
++       has_seen = rnp->expmaskinitnext & mask;
+        rnp->expmaskinitnext |= mask;
+-       oldmask ^= rnp->expmaskinitnext;
+-       nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+-       /* Allow lockless access for expedited grace periods. */
+-       smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
+-       ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
++       if (!has_seen) {
++               /* Allow lockless access for expedited grace periods. */
++               smp_store_release(&rcu_state.ncpus, rcu_state.ncpus +
+1); /* ^^^ */
++               ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
++       }
+        rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+        rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+        rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
 
-@@ -3168,7 +3169,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-        if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-            !krcp->monitor_todo) {
-                krcp->monitor_todo = true;
--               schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-+               schedule_delayed_work_on(raw_smp_processor_id(),
-+                       &krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-        }
-
- unlock_return:
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 891ccad5f271..49fcc50469f4 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1723,7 +1723,9 @@ static void rcu_work_rcufn(struct rcu_head *rcu)
-
-        /* read the comment in __queue_work() */
-        local_irq_disable();
--       __queue_work(WORK_CPU_UNBOUND, rwork->wq, &rwork->work);
-+
-+       /* Just for illustration. Can have queue_rcu_work_on(). */
-+       __queue_work(raw_smp_processor_id(), rwork->wq, &rwork->work);
-        local_irq_enable();
- }
-<snip>
-
-Thoughts?
-
---
-Vlad Rezki
+>                                                         Thanx, Paul
+>
+> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> > ---
+> >  kernel/rcu/tree.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d91c9156fab2..f0d9251fa663 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3364,7 +3364,6 @@ void rcu_cpu_starting(unsigned int cpu)
+> >  {
+> >       unsigned long flags;
+> >       unsigned long mask;
+> > -     int nbits;
+> >       unsigned long oldmask;
+> >       struct rcu_data *rdp;
+> >       struct rcu_node *rnp;
+> > @@ -3381,10 +3380,9 @@ void rcu_cpu_starting(unsigned int cpu)
+> >       rnp->qsmaskinitnext |= mask;
+> >       oldmask = rnp->expmaskinitnext;
+> >       rnp->expmaskinitnext |= mask;
+> > -     oldmask ^= rnp->expmaskinitnext;
+> > -     nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
+> >       /* Allow lockless access for expedited grace periods. */
+> > -     smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
+> > +     if (!(oldmask & mask))
+> > +             smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + 1); /* ^^^ */
+> >       rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+> >       rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+> >       rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+> > --
+> > 2.23.0
+> >
