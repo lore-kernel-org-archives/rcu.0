@@ -1,187 +1,283 @@
-Return-Path: <SRS0=hY+h=6C=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=xcwz=6D=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D103C2BA19
-	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 22:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E511C38A30
+	for <rcu@archiver.kernel.org>; Sun, 19 Apr 2020 12:15:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D247721974
-	for <rcu@archiver.kernel.org>; Sat, 18 Apr 2020 22:02:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BE7E214AF
+	for <rcu@archiver.kernel.org>; Sun, 19 Apr 2020 12:15:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F/DcX3qn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JF+nfrIO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgDRWCL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 18 Apr 2020 18:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgDRWCK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 18 Apr 2020 18:02:10 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317A0C061A0C;
-        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id q10so4528062ile.0;
-        Sat, 18 Apr 2020 15:02:09 -0700 (PDT)
+        id S1725905AbgDSMPR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Apr 2020 08:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725845AbgDSMPR (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 19 Apr 2020 08:15:17 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF386C061A0C
+        for <rcu@vger.kernel.org>; Sun, 19 Apr 2020 05:15:16 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 198so5561926lfo.7
+        for <rcu@vger.kernel.org>; Sun, 19 Apr 2020 05:15:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
-        b=F/DcX3qn0mWP3wxePs/f6Ber+8vcImQLEQ1CnbNQTcIfCmABYQGfIKgMiyysqaCEL/
-         t90eT6S1ZjddO24lMhbAMC2HLortBaB77fS2qG+7q98k3eyT2Z2DWO/6uMtB1ap4ln0a
-         jAYld2+pC/YdCQf8AunPt9C7hDJRYHbT+nbebEVsFwuaW54I01nc8i2TmQB9ioCJb9Zq
-         OrQXNVF/JswexSm6WLEkxiidIfrvi78E95/ZjahRUOUamjJJ404iE775MJsQbOFTWdJH
-         KoTGv6MK30ZK1Pa/TJon0K7fVbjB49hVTNztmqJsFug7Izfg2MhnwZ+Dll0OnNhTUVj8
-         qk9g==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=p7hZZodF2p57khG2SoTH4UCblGTeJsz2+ImtzVFXqPA=;
+        b=JF+nfrIOqI+Wmh/NHNXwIUexHu2up01LfpiTAdoACV07G3c8dtc2dNqpVjjPCM6Rkw
+         JK+JoOCnVwkL6YSbVApMppbfZLGfSxKQOacFPKhbWUANhl3W6BmJaEwwajnRrcVzg7bX
+         jwCd/V7dPXCg4437UWDTWJW5T4UfJWf18g6n17BXDHVTuEDI+BNrQG8wrIA8qnF0nEGt
+         +flpSX27cn8UA/L0fCDev+u2qvfQnXgnDmoUMEZQla5l+JFnX5esx5zTY4AhZjpntEqt
+         yztDeMVuJmVyofPsnOVO9SDC/uIGWOZyhK9TXAVRyCeqUDvFLmhmS8fyiJEfGYIGy69x
+         GWLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k2F1YT95vbFuray7AER8KtaCXNMm/Pj9Jbm9f59uato=;
-        b=XNWeOnN6cb9LlcHTOIs7pq6wiQaF8VXG74BVvJ41VKXRhKg8everwam/iNzVRzwq9A
-         tCJBpeWR9g11/sevzDMqgMaB0x49cF3q9bst+cJ+tF2rmIt3z/R0E2f+Y4l0SONprY6Q
-         3MOVT6prPU0NkRN8GE5SEQB8ve5gKjw7qSienTAfkkGIZdwE9CmN5k8yWS/9cwM/ZEc0
-         RmGPbLsBugk+C+nAW1Yf2CwawiWqAwsbBg0LpDidjISHZELmbMl7UGrG3WgiYdjwzq3c
-         0N/AOUNY+sLcNZ2p0EMHoFSwZRDsRiZv7QzJSggR7V7HH552cKuQQHX7Zr0l3YMCXd+J
-         1TPg==
-X-Gm-Message-State: AGi0PuZQ+fqF0BjTeFaqj/gr+5xHnMG8A4JhyMQAXgGDeWnE37qNXA7y
-        J7bwGsKCSRkf6wXN3p3+UDBI7diyAWdUvgmF1hA=
-X-Google-Smtp-Source: APiQypLGAnldNe44/T7TrOcehDST8OjwjHDaKCPvui7D2rvzpgvBzbQYc1MKCX0pK+dGDGtCanJ0ygeCeyDEHHYaggU=
-X-Received: by 2002:a05:6e02:790:: with SMTP id q16mr8812413ils.60.1587247328320;
- Sat, 18 Apr 2020 15:02:08 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p7hZZodF2p57khG2SoTH4UCblGTeJsz2+ImtzVFXqPA=;
+        b=i+L2v2s/Fqi1LiqIejugWLuASaao5nwI43umIaONvzuilo+r242lxaMylY1MBb2pvx
+         qg2LuUKKcejaf6Xn8wZE8hpn+CdnTPyaWB3BuRj7of3X0s067bmvXARlB7e7EtEuzvEP
+         FQbu5FqGCEWNO0RvYirfui71JnYFbrBViB+RHuHVZ0El7GL3ceszGCpq4NR2vAThg4Yz
+         pgKeipkhN4E2lqOwdz1hgQu8FkeXLzvml0ACahlAWMLTgwnp24cuCxURBJPGqcF9r1mY
+         SB9IeU7lNkhbYNKtr4GY5+rMYk7UvpJFZ+2/hr+g53ojaCdKGiBgY3twc5y4q+QF0j7m
+         jgYg==
+X-Gm-Message-State: AGi0PuZ3l6ukNVOTf1RY7J2+6N9ZzPKDfn/I9Ic6/ofcbjo2z+5cgA9R
+        zILRyhnHEjz/uNkvgckhX0Q=
+X-Google-Smtp-Source: APiQypKNGYQXcXhWqmY/kVZz5KyaDFXlzYbAITnzsWpR8F+YXWUtp4I0hJ1v9oIhcXIqB42Mph7RvA==
+X-Received: by 2002:ac2:5f73:: with SMTP id c19mr7727091lfc.29.1587298515036;
+        Sun, 19 Apr 2020 05:15:15 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id b28sm22927913lfo.46.2020.04.19.05.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Apr 2020 05:15:13 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 19 Apr 2020 14:15:06 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>, urezki@gmail.com
+Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
+Message-ID: <20200419121506.GA5324@pc636>
+References: <20200415160034.662274-2-bigeasy@linutronix.de>
+ <20200416144254.GC90777@google.com>
+ <20200416151824.a372pdiphube3x3l@linutronix.de>
+ <20200416184112.GA149999@google.com>
+ <20200416185934.GD149999@google.com>
+ <20200416152623.48125628@gandalf.local.home>
+ <20200416203637.GA176663@google.com>
+ <20200416210057.GY17661@paulmck-ThinkPad-P72>
+ <20200416213444.4cc6kzxmwl32s2eh@linutronix.de>
+ <20200417030515.GE176663@google.com>
 MIME-Version: 1.0
-References: <20200417213951.29837-1-richard.weiyang@gmail.com> <20200418031922.GR17661@paulmck-ThinkPad-P72>
-In-Reply-To: <20200418031922.GR17661@paulmck-ThinkPad-P72>
-From:   Wei Yang <richard.weiyang@gmail.com>
-Date:   Sun, 19 Apr 2020 06:02:12 +0800
-Message-ID: <CADZGycYVL9j7jbE1ZY_ZOv2XXv9XwWGPykoE63nJ79VrXwwUCg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: simplify the calculation of rcu_state.ncpus
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     josh@joshtriplett.org, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417030515.GE176663@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 11:19 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Apr 17, 2020 at 09:39:51PM +0000, Wei Yang wrote:
-> > There is only 1 bit set in mask, which means the difference between
-> > oldmask and the new one would be at the position where the bit is set in
-> > mask.
-> >
-> > Based on this knowledge, rcu_state.ncpus could be calculated by checking
-> > whether mask is already set in oldmask.
->
-> Nice!!!  Good eyes!
->
-> > BTW, the comment at the last of this line is mysterious. Not sure it
-> > could be removed or not.
->
-> The "^^^" in that comment says to look at the comment on the preceding
-> line.  Memory-ordering functions like smp_store_release() are supposed
-> to have comments indicating what they are ordering.  ;-)
->
-> Could you please do the following things and resubmit?
->
-> 1.      Forward-port to -rcu branch dev?  This tree lives here:
->         git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->
-> 2.      Given that oldmask is used only to test to see if a new bit
->         was set, why not just replace oldmask with a bool variable
->         that is set to "!(rnp->expmaskinitnext & mask)" before the
->         bit is ORed into rnp->expmaskinitnext?
->
-> 3.      Put the comment inside the "if" statement with the
->         smp_store_release().
->
-> 4.      In -rcu, you will find a ASSERT_EXCLUSIVE_WRITER() statement
->         that should also be placed inside the "if" statement with
->         the smp_store_release().
->
+On Thu, Apr 16, 2020 at 11:05:15PM -0400, Joel Fernandes wrote:
+> On Thu, Apr 16, 2020 at 11:34:44PM +0200, Sebastian Andrzej Siewior wrote:
+> > On 2020-04-16 14:00:57 [-0700], Paul E. McKenney wrote:
+> > > 
+> > > We might need different calling-context restrictions for the two variants
+> > > of kfree_rcu().  And we might need to come up with some sort of lockdep
+> > > check for "safe to use normal spinlock in -rt".
+> > 
+> > Oh. We do have this already, it is called CONFIG_PROVE_RAW_LOCK_NESTING.
+> > This one will scream if you do
+> > 	raw_spin_lock();
+> > 	spin_lock();
+> > 
+> > Sadly, as of today, there is code triggering this which needs to be
+> > addressed first (but it is one list of things to do).
+> > 
+> > Given the thread so far, is it okay if I repost the series with
+> > migrate_disable() instead of accepting a possible migration before
+> > grabbing the lock? I would prefer to avoid the extra RT case (avoiding
+> > memory allocations in a possible atomic context) until we get there.
+> 
+> I prefer something like the following to make it possible to invoke
+> kfree_rcu() from atomic context considering call_rcu() is already callable
+> from such contexts. Thoughts?
+> 
+> (Only build tested)
+> ---8<-----------------------
+> 
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Subject: [PATCH] rcu/tree: Avoid allocating in non-preemptible context for
+>  PREEMPT_RT kernels
+> 
+> Per recent discussions, kfree_rcu() is a low-level facility which should be
+> callable in atomic context (raw spinlock sections, IRQ disable sections etc).
+> 
+> However, it depends on page allocation which acquires sleeping locks on
+> PREEMPT_RT.
+> 
+> In order to support all usecases, avoid the allocation of pages for
+> PREEMPT_RT. The page allocation is just an optimization which does not
+> break functionality. Further, in future patches the pages will be
+> pre-allocated reducing the likelihood that page allocations will be
+> needed.
+> 
+> We also convert the spinlock_t to raw_spinlock_t so that does not sleep
+> in PREEMPT_RT's raw atomic critical sections.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.c | 42 +++++++++++++++++++++++++-----------------
+>  1 file changed, 25 insertions(+), 17 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index f288477ee1c26..ba831712fb307 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2905,7 +2905,7 @@ struct kfree_rcu_cpu {
+>  	struct kfree_rcu_bulk_data *bhead;
+>  	struct kfree_rcu_bulk_data *bcached;
+>  	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+> -	spinlock_t lock;
+> +	raw_spinlock_t lock;
+>  	struct delayed_work monitor_work;
+>  	bool monitor_todo;
+>  	bool initialized;
+> @@ -2939,12 +2939,12 @@ static void kfree_rcu_work(struct work_struct *work)
+>  	krwp = container_of(to_rcu_work(work),
+>  			    struct kfree_rcu_cpu_work, rcu_work);
+>  	krcp = krwp->krcp;
+> -	spin_lock_irqsave(&krcp->lock, flags);
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+>  	head = krwp->head_free;
+>  	krwp->head_free = NULL;
+>  	bhead = krwp->bhead_free;
+>  	krwp->bhead_free = NULL;
+> -	spin_unlock_irqrestore(&krcp->lock, flags);
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+>  	/* "bhead" is now private, so traverse locklessly. */
+>  	for (; bhead; bhead = bnext) {
+> @@ -3047,14 +3047,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+>  	krcp->monitor_todo = false;
+>  	if (queue_kfree_rcu_work(krcp)) {
+>  		// Success! Our job is done here.
+> -		spin_unlock_irqrestore(&krcp->lock, flags);
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  		return;
+>  	}
+>  
+>  	// Previous RCU batch still in progress, try again later.
+>  	krcp->monitor_todo = true;
+>  	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> -	spin_unlock_irqrestore(&krcp->lock, flags);
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  }
+>  
+>  /*
+> @@ -3067,16 +3067,16 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
+>  						 monitor_work.work);
+>  
+> -	spin_lock_irqsave(&krcp->lock, flags);
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+>  	if (krcp->monitor_todo)
+>  		kfree_rcu_drain_unlock(krcp, flags);
+>  	else
+> -		spin_unlock_irqrestore(&krcp->lock, flags);
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  }
+>  
+>  static inline bool
+>  kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+> -	struct rcu_head *head, rcu_callback_t func)
+> +	struct rcu_head *head, rcu_callback_t func, bool alloc)
+>  {
+>  	struct kfree_rcu_bulk_data *bnode;
+>  
+> @@ -3092,6 +3092,10 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+>  		if (!bnode) {
+>  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+>  
+> +			/* If allocation is not allowed, don't do it. */
+> +			if (!alloc)
+> +				return false;
+> +
+>  			bnode = (struct kfree_rcu_bulk_data *)
+>  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+>  		}
+Joel, we also need to drop the lock before alloc_pages(). We are not
+allowed to allocate under raw_spin_lock held, because of it uses
+sleepable spinlocks. If i miss something, please fix me :)
 
-Oops, my email client EAT this mail. Hope this mail will not be banned.
-
-I adjust the code a little according to your suggestion like below. Is this
-what you expected?
-
+<snip>
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f288477ee1c2..f01367a80b70 100644
+index ba831712fb30..9a334e3c7f96 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3732,10 +3732,9 @@ void rcu_cpu_starting(unsigned int cpu)
+@@ -3076,7 +3076,8 @@ static void kfree_rcu_monitor(struct work_struct *work)
+
+ static inline bool
+ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+-       struct rcu_head *head, rcu_callback_t func, bool alloc)
++       struct rcu_head *head, rcu_callback_t func, bool alloc,
++       unsigned long *flags)
  {
-        unsigned long flags;
-        unsigned long mask;
--       int nbits;
--       unsigned long oldmask;
-        struct rcu_data *rdp;
-        struct rcu_node *rnp;
-+       bool has_seen;
+        struct kfree_rcu_bulk_data *bnode;
 
-        if (per_cpu(rcu_cpu_started, cpu))
-                return;
-@@ -3747,13 +3746,13 @@ void rcu_cpu_starting(unsigned int cpu)
-        mask = rdp->grpmask;
-        raw_spin_lock_irqsave_rcu_node(rnp, flags);
-        WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
--       oldmask = rnp->expmaskinitnext;
-+       has_seen = rnp->expmaskinitnext & mask;
-        rnp->expmaskinitnext |= mask;
--       oldmask ^= rnp->expmaskinitnext;
--       nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
--       /* Allow lockless access for expedited grace periods. */
--       smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
--       ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
-+       if (!has_seen) {
-+               /* Allow lockless access for expedited grace periods. */
-+               smp_store_release(&rcu_state.ncpus, rcu_state.ncpus +
-1); /* ^^^ */
-+               ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
-+       }
-        rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
-        rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
-        rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+@@ -3096,8 +3097,22 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+                        if (!alloc)
+                                return false;
 
->                                                         Thanx, Paul
->
-> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> > ---
-> >  kernel/rcu/tree.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d91c9156fab2..f0d9251fa663 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3364,7 +3364,6 @@ void rcu_cpu_starting(unsigned int cpu)
-> >  {
-> >       unsigned long flags;
-> >       unsigned long mask;
-> > -     int nbits;
-> >       unsigned long oldmask;
-> >       struct rcu_data *rdp;
-> >       struct rcu_node *rnp;
-> > @@ -3381,10 +3380,9 @@ void rcu_cpu_starting(unsigned int cpu)
-> >       rnp->qsmaskinitnext |= mask;
-> >       oldmask = rnp->expmaskinitnext;
-> >       rnp->expmaskinitnext |= mask;
-> > -     oldmask ^= rnp->expmaskinitnext;
-> > -     nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
-> >       /* Allow lockless access for expedited grace periods. */
-> > -     smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
-> > +     if (!(oldmask & mask))
-> > +             smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + 1); /* ^^^ */
-> >       rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
-> >       rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
-> >       rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
-> > --
-> > 2.23.0
-> >
++                       /* Drop the lock. */
++                       if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++                               migrate_disable();
++                               raw_spin_unlock(&krcp->lock);
++                               local_irq_restore(*flags);
++                       }
++
+                        bnode = (struct kfree_rcu_bulk_data *)
+                                __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
++
++                       /* Grab the lock back. */
++                       if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++                               local_irq_save(*flags);
++                               raw_spin_lock(&krcp->lock);
++                               migrate_enable();
++                       }
+                }
+
+                /* Switch to emergency path. */
+@@ -3164,7 +3179,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+         * Under high memory pressure GFP_NOWAIT can fail,
+         * in that case the emergency path is maintained.
+         */
+-       if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func, alloc))) {
++       if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func, alloc, &flags))) {
+                head->func = func;
+                head->next = krcp->head;
+                krcp->head = head;
+<snip>
+
+If everyone agrees to go with such solution, let's split this work into
+at least two patches, one is converting to raw spinlocks and second one
+is an allocation fix for RT case.
+
+?
+
+--
+Vlad Rezki
