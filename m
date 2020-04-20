@@ -2,159 +2,134 @@ Return-Path: <SRS0=AG5q=6E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98B9AC3815B
-	for <rcu@archiver.kernel.org>; Mon, 20 Apr 2020 18:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE00C3815B
+	for <rcu@archiver.kernel.org>; Mon, 20 Apr 2020 18:19:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 783E021744
-	for <rcu@archiver.kernel.org>; Mon, 20 Apr 2020 18:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587406400;
-	bh=NGYdlkQpBRCIJcghQ3EYvAq/2L+qTXwwCcoPLpO5gYQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=WId7g3w+8OFa6x1cKxBeAVT0G6VQkBOgNxJ5pcz6XhN1aMPREeX28KJqCllYqd7HD
-	 JZDUK2Njixh9yg80Jawjt87Ge4Q/qIzuaWhjl7fcPYTYoMq1r2w4oVpKotSr5ndLkr
-	 MWMLhIIYG0UH8BSYGE7HX/Lzd4VpEYq72VUj/Cp0=
+	by mail.kernel.org (Postfix) with ESMTP id 0B258206B8
+	for <rcu@archiver.kernel.org>; Mon, 20 Apr 2020 18:19:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="mhJZK62y"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgDTSNU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Apr 2020 14:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgDTSNT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Apr 2020 14:13:19 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D96BD2084D;
-        Mon, 20 Apr 2020 18:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587406398;
-        bh=NGYdlkQpBRCIJcghQ3EYvAq/2L+qTXwwCcoPLpO5gYQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=D7qNe54NLWPxkPvaPbqoZUXiZargmJ2r9Np8yFGiH9StP6Emdynyp78kwnX4bK+aR
-         2a4K3qyTBeKhyOPbs8g2kmdito+fK2RhLgVPzxpHPsuaRdoRSWPYrzhC2LlaVRb4tP
-         eOyZ3VBHC3RU3onTmzSjXBoYxiSskj01XaA8IVyU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id ABE113523398; Mon, 20 Apr 2020 11:13:18 -0700 (PDT)
-Date:   Mon, 20 Apr 2020 11:13:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        id S1727894AbgDTSTt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Apr 2020 14:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgDTSTt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Apr 2020 14:19:49 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41439C061A0C
+        for <rcu@vger.kernel.org>; Mon, 20 Apr 2020 11:19:49 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id q17so9389012qtp.4
+        for <rcu@vger.kernel.org>; Mon, 20 Apr 2020 11:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wbj5Jn5Vw1aw1JPpmJhE17asrFe9woSoR8mVODQoPqk=;
+        b=mhJZK62yxd1Yt8t6+e73NqmCAyFLNSwOAD3UGKApIsnrGptryq3MQchKcLvkJr7AYd
+         mF4qLwxJlib0XfyJLGWFBhZikt5+atLR6e1BuhwE9eJl3ZRnRFy7zfEAlw4sqI+nfk8Y
+         Wk8A8CcA4NLyU9SCD8W1IHeJeltDBvfUiCXRU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wbj5Jn5Vw1aw1JPpmJhE17asrFe9woSoR8mVODQoPqk=;
+        b=SZon/JuLwn1GPw3Nonn5R0UxWLthgX1U+87UipKkZdRX9LlFHmffk4hc8fVtDB5w3a
+         CL+595YD2DnVbvMTXXypLqyyXh4Oh/hFhK7cx/0aYe/bGyk+e1ck+j5RAXtXHdjVoPCl
+         0W0huKl9Py2XxpbF89Ic7BZjStpSweYwLAVmnpoOAUYBKRuFCuWB1wi6ov0KEBza8QvW
+         rvEPb3jLNkfMmXhiTwcF/Jby+dGTf+OK0O/LxEDsBqsJ9XTa9CPFUF9m8YbG3Z9+KJQZ
+         uX9chawPc9oIf1BZ/zPB052ro/cUo0ZLcWn7wxKZ7b7L9UTyXuQQ3eC/K86vn0h3QehK
+         DQJw==
+X-Gm-Message-State: AGi0PuaWiDttXIvRwxMbYNFjgC25p3mGQXRWchf9s6Gxl5fZpw7nHY/z
+        Wbl34eD3s6S9p1jAUYMA3wI7vg==
+X-Google-Smtp-Source: APiQypK5aRYcjAbwnF0DrucCOVmO+azYt8ByKi1esZgOEhz+FFAE8PfIMu7anl08Bx6LRK++QnQIrg==
+X-Received: by 2002:ac8:1b97:: with SMTP id z23mr17149912qtj.294.1587406788282;
+        Mon, 20 Apr 2020 11:19:48 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id b5sm181704qkf.131.2020.04.20.11.19.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 11:19:47 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 14:19:47 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200420181318.GI17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200420130003.GA10470@pc636>
- <20200420132601.GY17661@paulmck-ThinkPad-P72>
- <20200420160847.GA11451@pc636>
- <20200420162534.GD17661@paulmck-ThinkPad-P72>
- <20200420162900.GA11867@pc636>
- <20200420164657.GE17661@paulmck-ThinkPad-P72>
- <20200420165924.GA12078@pc636>
- <20200420172126.GG17661@paulmck-ThinkPad-P72>
- <20200420174019.GB12196@pc636>
- <20200420175750.GA229870@google.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH rcu/dev -fixes 3/4] rcu/tree: Avoid using xchg() in
+ kfree_call_rcu_add_ptr_to_bulk()
+Message-ID: <20200420181947.GD90777@google.com>
+References: <20200420153837.194532-1-joel@joelfernandes.org>
+ <20200420153837.194532-4-joel@joelfernandes.org>
+ <20200420171829.GA12196@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200420175750.GA229870@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200420171829.GA12196@pc636>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 01:57:50PM -0400, Joel Fernandes wrote:
-> On Mon, Apr 20, 2020 at 07:40:19PM +0200, Uladzislau Rezki wrote:
-> > On Mon, Apr 20, 2020 at 10:21:26AM -0700, Paul E. McKenney wrote:
-> [...]
-> > > > > > > > > > <snip>
-> > > > > > > > > > /**
-> > > > > > > > > >  * queue_work_on - queue work on specific cpu
-> > > > > > > > > >  * @cpu: CPU number to execute work on
-> > > > > > > > > >  * @wq: workqueue to use
-> > > > > > > > > >  * @work: work to queue
-> > > > > > > > > >  *
-> > > > > > > > > >  * We queue the work to a specific CPU, the caller must ensure it
-> > > > > > > > > >  * can't go away.
-> > > > > > > > > >  *
-> > > > > > > > > >  * Return: %false if @work was already on a queue, %true otherwise.
-> > > > > > > > > >  */
-> > > > > > > > > > <snip>
-> > > > > > > > > > 
-> > > > > > > > > > It says, how i see it, we should ensure it can not go away. So, if
-> > > > > > > > > > we drop the lock we should do like:
-> > > > > > > > > > 
-> > > > > > > > > > get_online_cpus();
-> > > > > > > > > > check a CPU is onlen;
-> > > > > > > > > > queue_work_on();
-> > > > > > > > > > put_online_cpus();
-> > > > > > > > > > 
-> > > > > > > > > > but i suspect we do not want to do it :)
-> > > > > > > > > 
-> > > > > > > > > Indeed, it might impose a few restrictions and a bit of overhead that
-> > > > > > > > > might not be welcome at some point in the future.  ;-)
-> > > > > > > > > 
-> > > > > > > > > On top of this there are potential load-balancing concerns.  By specifying
-> > > > > > > > > the CPU, you are limiting workqueue's and scheduler's ability to adjust to
-> > > > > > > > > any sudden changes in load.  Maybe not enough to matter in most cases, but
-> > > > > > > > > might be an issue if there is a sudden flood of  kfree_rcu() invocations.
-> > > > > > > > > 
-> > > > > > > > Agree. Let's keep it as it is now :)
-> > > > > > > 
-> > > > > > > I am not sure which "as it is now" you are referring to, but I suspect
-> > > > > > > that the -rt guys prefer two short interrupts-disabled regions to one
-> > > > > > > longer interrupts-disabled region.
-> > > > > > 
-> > > > > > I mean to run schedule_delayed_work() under spinlock.
-> > > > > 
-> > > > > Which is an interrupt-disabled spinlock, correct?
-> > > > > 
-> > > > To do it under holding the lock, currently it is spinlock, but it is
-> > > > going to be(if you agree :)) raw ones, which keeps IRQs disabled. I
-> > > > saw Joel sent out patches.
-> > > 
-> > > Then please move the schedule_delayed_work() and friends out from
-> > > under the spinlock.  Unless Sebastian has some reason why extending
-> > > an interrupts-disabled critical section (and thus degrading real-time
-> > > latency) is somehow OK in this case.
-> > > 
-> > Paul, if move outside of the lock we may introduce unneeded migration
-> > issues, plus it can introduce higher memory footprint(i have not tested).
-> > I have described it in more detail earlier in this mail thread. I do not
-> > think that waking up the work is an issue for RT from latency point of
-> > view. But let's ask Sebastian to confirm.
+On Mon, Apr 20, 2020 at 07:18:29PM +0200, Uladzislau Rezki wrote:
+> On Mon, Apr 20, 2020 at 11:38:36AM -0400, Joel Fernandes (Google) wrote:
+> > From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > 
+> > There is no need to use xchg(), the access is serialized by krcp->lock.
+> > The xchg() function adds some atomic barriers which remain hidden in
+> > x86's disassembly but are visible on ARM for instance.
+> > 
+> > Replace xchg() with a load + store.
+> > 
+> > Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > ---
+> >  kernel/rcu/tree.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index cd61649e1b001..f6eb3aee0935e 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3088,7 +3088,8 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+> >  	/* Check if a new block is required. */
+> >  	if (!krcp->bhead ||
+> >  			krcp->bhead->nr_records == KFREE_BULK_MAX_ENTR) {
+> > -		bnode = xchg(&krcp->bcached, NULL);
+> > +		bnode = krcp->bcached;
+> > +		krcp->bcached = NULL;
+> >  		if (!bnode) {
+> >  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+> >  
+> >
+> But we populate the cache without holding the krcp->lock. That is why it
+> is xchg here. See below:
 > 
-> I was also a bit concerned about migration. If we moved it outside of lock,
-> then even on !PREEMPT_RT, we could be migrated before the work is
-> scheduled. Then we'd lose the benefit of executing the work on the same CPU
-> where it is queued. There's no migrate_disable() in non-PREEMPT_RT when I
-> recently checked as well :-\ (PeterZ mentioned that migrate_disable() is hard
-> to achieve on !PREEMPT_RT).
+> <snip>
+>   if (cmpxchg(&krcp->bcached, NULL, bhead))
+>      free_page((unsigned long) bhead);
+> <snip>
 > 
-> > Sebastian, do you think that placing a work on current CPU is an issue?
-> > If we do it under raw spinlock?
-> 
-> Yes, I am also curious if calling schedule_delayed_work can cause long
-> delays at all. Considering that workqueue code uses raw spinlocks as Mike
-> mentioned, I was under the impression that this code should not be causing
-> such issues, and the fact that it is called in many places from IRQ-disabled
-> sections as well.
-> 
-> Let us definitely double-check and discuss it more to be sure.
+> we do not hold any krcp->lock here, we do not need it.
 
-Just to be clear, I am not trying to NAK this approach.  Yet, anyway.
-Just trying to make sure that we think it through.  Because it is easier
-to get it right now than it ever will be in the future.  ;-)
+You are right. This patch is not helpful in this situation even though it
+does not break things. Let us drop this patch. Please review the other 3 and
+provide your Reviewed-by tag if they look Ok to you, thanks.
 
-							Thanx, Paul
+For the workqueue one that Paul asked us to look into - we are continuing to
+discuss there if we need to move it outside the lock or not. If we decide to
+move it outside lock, we can add that as one more patch to this series and
+I'll send a v2.
+
+thanks,
+
+ - Joel
+
