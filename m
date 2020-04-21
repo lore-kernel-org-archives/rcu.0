@@ -2,108 +2,151 @@ Return-Path: <SRS0=neSi=6F=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8580C54FCC
-	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 15:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D68C54FC9
+	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 17:04:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 906B7206F4
-	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 15:41:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2390620753
+	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 17:04:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587483662;
-	bh=1lhnjJWsMC3T1WrP3jwmJrjJJT6cw2ZsGtYZY9lYdJE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=aW5uTHMjZ0Xam1vvy2uFpvMW7UUn0Pbj619dm9rvI7XcPAu1el08OZ27TEhCtAWn+
-	 0f4fCK3AJQj51wHuxWKcMwvkf+XJgaG/Oheu9Kb3TJSM1Kb4Ww5h8ozz6qEtsoOqxy
-	 II9oHsOqQRHpHWUbMzqBMoyhz7FJ2pxkwLN1mu7U=
+	s=default; t=1587488655;
+	bh=CxnQgYfmQMbfwv1N4rTe+ZDNd9dR0rBI+32iF1QViMs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=Nazwe87B77zJWQk3/qQnivhE3Pew0A5zSFTsZOsrqrazvvggOjZJ4Hag1GSOi1rYN
+	 hvr7vJ32cqhEe4W5y9jllQ+4snrptD0+wdfaSr1XMq94/q6PzOLAlXhaZ78UyJnqN4
+	 HIryO70PnIAjO7pBrYjRgk683Rt/h9nSgDtVMMcA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgDUPlC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Apr 2020 11:41:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
+        id S1729003AbgDUREO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Apr 2020 13:04:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725613AbgDUPlC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Apr 2020 11:41:02 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1726018AbgDUREO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Apr 2020 13:04:14 -0400
+Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6034206E9;
-        Tue, 21 Apr 2020 15:41:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE3EE206E9;
+        Tue, 21 Apr 2020 17:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587483661;
-        bh=1lhnjJWsMC3T1WrP3jwmJrjJJT6cw2ZsGtYZY9lYdJE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CkVltaQ9XEXGd0RayPpj4Gy9M2fBxEgiKm0wBTCv8miKh5vvvRarfhYz2L7WDI7CJ
-         VRoiZEstKVUk91d2UnHlUhZ2UjcRi7V4hdfYuGpS3KvBRhv6slnbR1Trkkw8B4rmUO
-         wKBXNal/JB0TDUu04r4zByxzqicT88gvdQ03tqSw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6B9B33523432; Tue, 21 Apr 2020 08:41:01 -0700 (PDT)
-Date:   Tue, 21 Apr 2020 08:41:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        s=default; t=1587488654;
+        bh=CxnQgYfmQMbfwv1N4rTe+ZDNd9dR0rBI+32iF1QViMs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PVHJ73MlSx2cAaQU3Mf4LugojmeeBE6nmyuM9FrvgbHAq/RC5cjHkc7iZocO+L7uN
+         Jh74ZuOTvQICo6yRdxKQFBShPVn5mbIudOUQ6VMxc841jh3lUcdfr0BSXxec95kKY5
+         6Tdq63GKe7MNCYFgFSP8neZXMKt1w2ZBeDndCV40=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jQwJg-00CmLW-2R; Tue, 21 Apr 2020 19:04:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200421154101.GN17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200420130003.GA10470@pc636>
- <20200420132601.GY17661@paulmck-ThinkPad-P72>
- <20200420160847.GA11451@pc636>
- <20200420162534.GD17661@paulmck-ThinkPad-P72>
- <20200420162900.GA11867@pc636>
- <20200420164657.GE17661@paulmck-ThinkPad-P72>
- <20200420165924.GA12078@pc636>
- <20200420172126.GG17661@paulmck-ThinkPad-P72>
- <20200420174019.GB12196@pc636>
- <20200421133947.cmdchrx73ru7szuz@linutronix.de>
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 01/10] docs: RCU: convert checklist.txt to ReST
+Date:   Tue, 21 Apr 2020 19:04:02 +0200
+Message-Id: <d289ae5cfaa2ff556a1b18e9ed009cb7063275c1.1587488137.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.2
+In-Reply-To: <cover.1587488137.git.mchehab+huawei@kernel.org>
+References: <cover.1587488137.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421133947.cmdchrx73ru7szuz@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 03:39:47PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-04-20 19:40:19 [+0200], Uladzislau Rezki wrote:
-> > Paul, if move outside of the lock we may introduce unneeded migration
-> > issues, plus it can introduce higher memory footprint(i have not tested).
-> > I have described it in more detail earlier in this mail thread. I do not
-> > think that waking up the work is an issue for RT from latency point of
-> > view. But let's ask Sebastian to confirm.
-> > 
-> > Sebastian, do you think that placing a work on current CPU is an issue?
-> > If we do it under raw spinlock?
-> 
-> I sent one simple patch to address the issues I see now. It was raised
-> that the patch may introduce a performance regression (`may' since we
-> had no numbers back it up) in case where we the context would be
-> migrated from one CPU to another between "this" and "spin_lock". It was
-> suggested to use migrate_disable() to avoid it.
-> 
-> It was then decided to address possible future problems and make the
-> lock raw which brings us here.
-> 
-> Invoking queue_work() is not a problem locking wise. It does however
-> extend the length of the critical section (which is not yet needed).
+- Add a SPDX header;
+- Adjust document title;
+- Some whitespace fixes and new line breaks;
+- Use the right list markups;
+- Add it to RCU/index.rst.
 
-I am guessing that by "which is not yet needed" you were meaning that
-it is not absolutely necessary to extend the length of the critical
-section.  Please correct me if my guess is wrong.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../RCU/{checklist.txt => checklist.rst}        | 17 ++++++++++++-----
+ Documentation/RCU/index.rst                     |  3 +++
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+ rename Documentation/RCU/{checklist.txt => checklist.rst} (98%)
 
-In the meantime, plunging ahead...
+diff --git a/Documentation/RCU/checklist.txt b/Documentation/RCU/checklist.rst
+similarity index 98%
+rename from Documentation/RCU/checklist.txt
+rename to Documentation/RCU/checklist.rst
+index e98ff261a438..2efed9926c3f 100644
+--- a/Documentation/RCU/checklist.txt
++++ b/Documentation/RCU/checklist.rst
+@@ -1,4 +1,8 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++================================
+ Review Checklist for RCU Patches
++================================
+ 
+ 
+ This document contains a checklist for producing and reviewing patches
+@@ -411,18 +415,21 @@ over a rather long period of time, but improvements are always welcome!
+ 	__rcu sparse checks to validate your RCU code.	These can help
+ 	find problems as follows:
+ 
+-	CONFIG_PROVE_LOCKING: check that accesses to RCU-protected data
++	CONFIG_PROVE_LOCKING:
++		check that accesses to RCU-protected data
+ 		structures are carried out under the proper RCU
+ 		read-side critical section, while holding the right
+ 		combination of locks, or whatever other conditions
+ 		are appropriate.
+ 
+-	CONFIG_DEBUG_OBJECTS_RCU_HEAD: check that you don't pass the
++	CONFIG_DEBUG_OBJECTS_RCU_HEAD:
++		check that you don't pass the
+ 		same object to call_rcu() (or friends) before an RCU
+ 		grace period has elapsed since the last time that you
+ 		passed that same object to call_rcu() (or friends).
+ 
+-	__rcu sparse checks: tag the pointer to the RCU-protected data
++	__rcu sparse checks:
++		tag the pointer to the RCU-protected data
+ 		structure with __rcu, and sparse will warn you if you
+ 		access that pointer without the services of one of the
+ 		variants of rcu_dereference().
+@@ -442,8 +449,8 @@ over a rather long period of time, but improvements are always welcome!
+ 
+ 	You instead need to use one of the barrier functions:
+ 
+-	o	call_rcu() -> rcu_barrier()
+-	o	call_srcu() -> srcu_barrier()
++	-	call_rcu() -> rcu_barrier()
++	-	call_srcu() -> srcu_barrier()
+ 
+ 	However, these barrier functions are absolutely -not- guaranteed
+ 	to wait for a grace period.  In fact, if there are no call_rcu()
+diff --git a/Documentation/RCU/index.rst b/Documentation/RCU/index.rst
+index 81a0a1e5f767..c1ba4d130bb0 100644
+--- a/Documentation/RCU/index.rst
++++ b/Documentation/RCU/index.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: GPL-2.0
++
+ .. _rcu_concepts:
+ 
+ ============
+@@ -8,6 +10,7 @@ RCU concepts
+    :maxdepth: 3
+ 
+    arrayRCU
++   checklist
+    rcubarrier
+    rcu_dereference
+    whatisRCU
+-- 
+2.25.2
 
-One approach might be to move queue_work() and friends out of the critical
-section, but only enable interrupts between the two critical sections
-under CONFIG_PREEMPT_RT_FULL.  Would that be a reasonable approach?
-
-							Thanx, Paul
