@@ -2,145 +2,108 @@ Return-Path: <SRS0=neSi=6F=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF3B4C54FD0
-	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 13:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8580C54FCC
+	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 15:41:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9072720672
-	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 13:45:47 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/h0HwZw"
+	by mail.kernel.org (Postfix) with ESMTP id 906B7206F4
+	for <rcu@archiver.kernel.org>; Tue, 21 Apr 2020 15:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1587483662;
+	bh=1lhnjJWsMC3T1WrP3jwmJrjJJT6cw2ZsGtYZY9lYdJE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=aW5uTHMjZ0Xam1vvy2uFpvMW7UUn0Pbj619dm9rvI7XcPAu1el08OZ27TEhCtAWn+
+	 0f4fCK3AJQj51wHuxWKcMwvkf+XJgaG/Oheu9Kb3TJSM1Kb4Ww5h8ozz6qEtsoOqxy
+	 II9oHsOqQRHpHWUbMzqBMoyhz7FJ2pxkwLN1mu7U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbgDUNpr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Apr 2020 09:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728479AbgDUNpq (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 21 Apr 2020 09:45:46 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7E3C061A10
-        for <rcu@vger.kernel.org>; Tue, 21 Apr 2020 06:45:46 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u6so14047557ljl.6
-        for <rcu@vger.kernel.org>; Tue, 21 Apr 2020 06:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jgND+vYKjZ2Frd/vEGKk4vcUm9XKaFngOUPSU0cv0iY=;
-        b=S/h0HwZwFEUOfFjkRgVUOVKLt6Rn4vXV8pV6DLmWY+V2SSyLb+aavi18zuOCn0ylM9
-         tZ4xyWeA2WxL/klZEvZu3CvYvs+/zmjmTiaWAlSJpeDl/jrYUgjiIDiORhrtlAgWQFYC
-         zJ0gGYvS268jSue0xGCFt9pzQYPiTc61QpzAevLcasioylWzZ4JFHo+f+TfGTy1gHsRr
-         qjBmWnqdvXNqQOZ32HI1bRuREnhwasqABQAmEAC1+5d654ACzFEr6eeloe4I6fjHhCdv
-         SrRZqu7Ux6deemycZYpfF2JDCav2qghEJ/PSTWwa/fiB00Uuipe5RZQa3shL8lT63Mfz
-         JKmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jgND+vYKjZ2Frd/vEGKk4vcUm9XKaFngOUPSU0cv0iY=;
-        b=uoLaBlxpekpuEf3VxlNs1neznJw/2nurKOlcV0QVURibpH/7qZI6I7YI3nrS+zBs5b
-         302rhY+OkBJBJe2cjiTbqz/cBsgd8sRmwbXnFaOzD7DBp4v+7dJZliKBVi/36PY4ro3k
-         MaBEr4X+rqFBr2hl/vM7ltg8OV+/dKui0GKZ9VFwT4UDxBEquLmYjqEhphjMKYCo/GVD
-         ur9EuJw/RCTJ9zkC7h4jII+rNS7iPKrkf2ut99Aj4vUxQY10MwupOU5L8uRVDYFMlzU8
-         cTzsEpA3ZKp8JVL9T6Zzl5vc55zU8Asaf44t16gcMaAOYVgXPNArBcVrzW9FKaQVhmCz
-         jLVA==
-X-Gm-Message-State: AGi0PubFEhe6DGUS4GognVCLaQHQG8xGGiz6Ts9AXs7JesQnkUxAEj4b
-        RgwNy7O254U4NGx3y+xWFCwtPbQx9ZvEcA==
-X-Google-Smtp-Source: APiQypK3nVIS0HXF6f5JYZB2ZkwijqJ0GDgwzsOtNZM82GdRPgCtgP+DH+jtzIW0C9XWoHD+mIq0XA==
-X-Received: by 2002:a2e:9817:: with SMTP id a23mr13843030ljj.71.1587476744849;
-        Tue, 21 Apr 2020 06:45:44 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id o25sm2091211lfg.41.2020.04.21.06.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2020 06:45:44 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 21 Apr 2020 15:45:37 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
+        id S1725870AbgDUPlC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Apr 2020 11:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725613AbgDUPlC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Apr 2020 11:41:02 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6034206E9;
+        Tue, 21 Apr 2020 15:41:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587483661;
+        bh=1lhnjJWsMC3T1WrP3jwmJrjJJT6cw2ZsGtYZY9lYdJE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CkVltaQ9XEXGd0RayPpj4Gy9M2fBxEgiKm0wBTCv8miKh5vvvRarfhYz2L7WDI7CJ
+         VRoiZEstKVUk91d2UnHlUhZ2UjcRi7V4hdfYuGpS3KvBRhv6slnbR1Trkkw8B4rmUO
+         wKBXNal/JB0TDUu04r4zByxzqicT88gvdQ03tqSw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6B9B33523432; Tue, 21 Apr 2020 08:41:01 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 08:41:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, joel@joelfernandes.org,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Mike Galbraith <efault@gmx.de>
 Subject: Re: [PATCH 1/3] rcu: Use static initializer for krc.lock
-Message-ID: <20200421134537.GA5952@pc636>
-References: <20200420164657.GE17661@paulmck-ThinkPad-P72>
+Message-ID: <20200421154101.GN17661@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200420130003.GA10470@pc636>
+ <20200420132601.GY17661@paulmck-ThinkPad-P72>
+ <20200420160847.GA11451@pc636>
+ <20200420162534.GD17661@paulmck-ThinkPad-P72>
+ <20200420162900.GA11867@pc636>
+ <20200420164657.GE17661@paulmck-ThinkPad-P72>
  <20200420165924.GA12078@pc636>
  <20200420172126.GG17661@paulmck-ThinkPad-P72>
  <20200420174019.GB12196@pc636>
- <20200420175915.GH17661@paulmck-ThinkPad-P72>
- <20200420190650.GA12775@pc636>
- <20200420201723.GA4192@pc636>
- <20200420212257.4332734f@oasis.local.home>
- <20200421051805.GA5124@pc636>
- <20200421093008.7a0d55ab@gandalf.local.home>
+ <20200421133947.cmdchrx73ru7szuz@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200421093008.7a0d55ab@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200421133947.cmdchrx73ru7szuz@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> Uladzislau Rezki <urezki@gmail.com> wrote:
-> 
-> > <snip>
-> > root@pc636:/sys/kernel/debug/tracing# cat set_ftrace_filter
-> > measure_schedule_delayed_work.constprop.86
-> > root@pc636:/sys/kernel/debug/tracing# cat tracing_thresh
-> > 5
-> > root@pc636:/sys/kernel/debug/tracing# cat current_tracer
-> > function_graph
-> > root@pc636:/sys/kernel/debug/tracing#
-> > <snip>
+On Tue, Apr 21, 2020 at 03:39:47PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-04-20 19:40:19 [+0200], Uladzislau Rezki wrote:
+> > Paul, if move outside of the lock we may introduce unneeded migration
+> > issues, plus it can introduce higher memory footprint(i have not tested).
+> > I have described it in more detail earlier in this mail thread. I do not
+> > think that waking up the work is an issue for RT from latency point of
+> > view. But let's ask Sebastian to confirm.
 > > 
-> > Also i set 5 microseconds threshold to filter out what is less
-> > and added the latency-format trace option.
+> > Sebastian, do you think that placing a work on current CPU is an issue?
+> > If we do it under raw spinlock?
 > 
-> Ah, I forgot that tracing_thresh affects function graph tracing.
+> I sent one simple patch to address the issues I see now. It was raised
+> that the patch may introduce a performance regression (`may' since we
+> had no numbers back it up) in case where we the context would be
+> migrated from one CPU to another between "this" and "spin_lock". It was
+> suggested to use migrate_disable() to avoid it.
 > 
-> The tracing infrastructure has so many features, I can't even keep up ;-)
+> It was then decided to address possible future problems and make the
+> lock raw which brings us here.
 > 
-No problem :)
+> Invoking queue_work() is not a problem locking wise. It does however
+> extend the length of the critical section (which is not yet needed).
 
-BTW, i decided to perform manual measurement of the schedule_delayed_work()
-duration, just in case:
+I am guessing that by "which is not yet needed" you were meaning that
+it is not absolutely necessary to extend the length of the critical
+section.  Please correct me if my guess is wrong.
 
-test PC: laptop with Intel(R) Core(TM) i5-3320M CPU @ 2.60GHz
+In the meantime, plunging ahead...
 
-<snip>
-static void noinline
-measure_schedule_delayed_work(struct kfree_rcu_cpu *krcp)
-{
-       u64 delta;
+One approach might be to move queue_work() and friends out of the critical
+section, but only enable interrupts between the two critical sections
+under CONFIG_PREEMPT_RT_FULL.  Would that be a reasonable approach?
 
-       delta = sched_clock();
-       schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
-       delta = sched_clock() - delta;
-
-       if (delta > 100)
-               trace_printk("-> took %llu nanoseconds.\n", delta);
-}
-<snip>
-
-I get the following figures of taken time:
-
-MEDIAN: 831 nanoseconds
-MAX: 4423 nanoseconds
-MIN: 123 nanoseconds
-
-The data you can find here: ftp://vps418301.ovh.net/incoming/measure_schedule_delayed_work.txt
-
---
-Vlad Rezki
+							Thanx, Paul
