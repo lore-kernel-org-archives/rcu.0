@@ -2,62 +2,62 @@ Return-Path: <SRS0=nxXf=6M=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DCC9C83000
-	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C83C83008
+	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 761002137B
-	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E47E214D8
+	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5kQXV+8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IiSiQD7I"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgD1U7Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Apr 2020 16:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
+        id S1726739AbgD1U73 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Apr 2020 16:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726284AbgD1U7Y (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 28 Apr 2020 16:59:24 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647DAC03C1AC;
-        Tue, 28 Apr 2020 13:59:24 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a21so188927ljj.11;
-        Tue, 28 Apr 2020 13:59:24 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726355AbgD1U72 (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 28 Apr 2020 16:59:28 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1FEC03C1AC;
+        Tue, 28 Apr 2020 13:59:28 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id l19so196562lje.10;
+        Tue, 28 Apr 2020 13:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ToRrXq0h+MaIe9sAtKeR8JTVBkLIVLUGFF5zgLnrWbE=;
-        b=Z5kQXV+8tkklTAuR5SI1mnHMcTTLiyrBbuwhPBZ+eRzQdGmjAWBHuMjWXtMspoZ5e+
-         t5qlAcc2T7SNDzLJ73Uv9q3pWoITYvf/jDHykamSrEb/sJh8kVvfU6dPwf7nzEa/BudV
-         UUJcKJU7Ua5XI/A02JF4hmmCcfzN7FkNDOrQrr5htpFGT/6kOGjrE3GQ8SrCQyWuFa4r
-         MR6yjODmqOAQdqeswobSP0j2LNqECRnELdxYcLJbxfOmeXU4RhqTxT4x52Gt2eKoblh5
-         9+bY787BLoeOTZrLtAsblH1Q+Z2s4LN9aj7IXy2Ey2zmqLeJuTum7eYtR5AFU995qZKF
-         yPJw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=20juLYXIkeuaSxH0ZOfDE2aYGH0+hGPgd5TgVWNgKV0=;
+        b=IiSiQD7Iu4uhe8rSKiFsy+4MM1PYZAifb/4X08Jtk+cZrudizBa+RKHTmspM1N+54J
+         zqJhTvKu/5RQ6kvBm1U2XnFtEFoT5WK+zwPhKmJkjxoJF7GUThJw2k4x9UKsHyN3uVGr
+         t1obO+H+JCn5et6c+tkfu4seuB0gVaBP66MA3RnOVoiWWR6yNpPVLWRXguro8HTAimgy
+         dWMKPS6AWlRiBSdUP8vLP6smxvt8NoPstE7Me+W9nAo+jVxPe1UXCLY3/kLTgCPzwEGN
+         UqOgOltC5P1qNzlwU+eozjY3EfiF2YNtHyaDio7PldqVoXdf4YBXbYJs+pJcbBW0vSZH
+         qZLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ToRrXq0h+MaIe9sAtKeR8JTVBkLIVLUGFF5zgLnrWbE=;
-        b=aqEax/eeD5A5CCIruDZeaP08ymbkTAxgE3bnIiq1/VmRKto1Pw2GoEdcOxhjcnTnSr
-         Fx3iJ2J/hJwS9JJamvBEbG5+4s6d5SdwAh8TN2bPqv3q2JK+/87x8+Q6F6BFEFDggwDi
-         fo+oB1dYUROcH5+oAy5qx3W6L7zBCCfl//lm7UcmMBSqjfTWclxUT+lYZ5neIGf0VRfy
-         fjB7Yq4nNWIjtxlDj2/r5UfnYglTMlXmLGQY8fMJuroB309bQNZtny1S47JUQlSjoXOz
-         S4N/5HVCKOqfsbddFVRZbtkdp3tStECQh187LVPaXb7xJFamc0Qe9w204ZkRtwErdbaB
-         Zalw==
-X-Gm-Message-State: AGi0PuYYf2pkcOHjhwmK1ExUdgEeou/NxazDvoIby71WLDMycbnyix7c
-        HruRn/wXXbyHl6JrY/GsQiXwd4ViiKkcGA==
-X-Google-Smtp-Source: APiQypKTGjtBGw5u0Ua2elBmcIbrbUs22iIyVyOyKgKBKPCo/mdX0gwKSUUXa/EMkhV8jKwaJGtBDg==
-X-Received: by 2002:a2e:870d:: with SMTP id m13mr18464164lji.64.1588107562381;
-        Tue, 28 Apr 2020 13:59:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=20juLYXIkeuaSxH0ZOfDE2aYGH0+hGPgd5TgVWNgKV0=;
+        b=D5x6PWvjIvvDkOlzC8ZGQs1HuuFnrOMAAIYq+ZZHzMOMPBOus0fb77G2T+Xoa5Thyu
+         u+t26XNum7+iX54g2DUx8HqVkSpsOLhpxnfWOYze8SkK60JhOE7oeTgyGI4P9GwioFnk
+         adjPimzfU7Tt84YWSUNYPyFrmUgpVj0qlFu0LSWMSU8C8LUD3tppEiX+kQed90/dXG1V
+         8U+eFxUZfD2fuxvM2bYU2cXQaxJbd2iDsfCayVlVS6fQAtZHOkecmP+LixOttB5WJ2Z6
+         ry/OJL3WtEiu1U2GYtJoYBqU+rGU4IbsdHZ+y6XZhlwGZZ4fkgnNxLZub0RcoLiQ3uMi
+         1D8Q==
+X-Gm-Message-State: AGi0Pualo/iUg5MrGqFrJlcC5JRxqSz9iTaIoY4OZUedSDoK2Sn1wILt
+        b3X9NXAA9fIl/a6CSVsl0F60TabnnBY9tg==
+X-Google-Smtp-Source: APiQypIzU/HDHdtBEfR5w4aVQIlns0HcLgmvrgZUF/xNsiisHjiPOjyV2oZEMK3gwdyuCi4Uq6EsKQ==
+X-Received: by 2002:a19:7008:: with SMTP id h8mr20057304lfc.43.1588107566139;
+        Tue, 28 Apr 2020 13:59:26 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.21
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:21 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:23 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -66,11 +66,14 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 00/24] Introduce kvfree_rcu(1 or 2 arguments)
-Date:   Tue, 28 Apr 2020 22:58:39 +0200
-Message-Id: <20200428205903.61704-1-urezki@gmail.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        bigeasy@linutronix.de
+Subject: [PATCH 01/24] rcu/tree: Keep kfree_rcu() awake during lock contention
+Date:   Tue, 28 Apr 2020 22:58:40 +0200
+Message-Id: <20200428205903.61704-2-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
+References: <20200428205903.61704-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
@@ -78,168 +81,146 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Motivation
-----------
-There were some discussions and demand in having kvfree_rcu()
-interface for different purposes. Basically to have a simple
-interface like:
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-<snip>
-    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
-        if (ptr)
-            kvfree_rcu(ptr);
-<snip>
+On PREEMPT_RT kernels, contending on the krcp spinlock can cause
+sleeping as on these kernels, the spinlock is converted to an rt-mutex.
+To prevent breakage of possible usage of kfree_rcu() now or in the
+future, make use of raw spinlocks which are not subject to such
+conversions.
 
-For example, please have a look at ext4 discussion here:
-    https://lkml.org/lkml/2020/2/19/1372
+Vetting all code paths, there is no reason to believe that the raw
+spinlock will be held for long time so PREEMPT_RT should not suffer from
+lengthy acquirals of the lock.
 
-due to lack of the interface that is in question, the ext4 specific
-workaround has been introduced, to kvfree() after a grace period:
+Cc: bigeasy@linutronix.de
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-<snip>
-void ext4_kvfree_array_rcu(void *to_free)
-{
-	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
-
-	if (ptr) {
-		ptr->ptr = to_free;
-		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
-		return;
-	}
-	synchronize_rcu();
-	kvfree(ptr);
-}
-<snip>
-
-there are also similar places there which could be replaced by the new
-interface, that is much more efficient then just call synchronize_rcu()
-and release a memory.
-
-Please have a look at another places in the kernel where people do not
-embed the rcu_head into their stuctures for some reason and do like:
-
-<snip>
-    synchronize_rcu();
-    kfree(p);
-<snip>
-
-<snip>
-urezki@pc638:~/data/coding/linux-rcu.git$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
-./fs/nfs/sysfs.c-113-           kfree(old);
-./fs/ext4/super.c-1708- kfree(old_qname);
-./kernel/trace/ftrace.c-5079-                   kfree(direct);
-./kernel/trace/ftrace.c-5156-                   kfree(direct);
-./kernel/trace/trace_probe.c-1087-      kfree(link);
-./kernel/module.c-3910- kfree(mod->args);
-./net/core/sysctl_net_core.c-143-                               kfree(cur);
-./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
-./drivers/mfd/dln2.c-183-               kfree(i);
-./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
-./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
-./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
-./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
-./drivers/block/drbd/drbd_receiver.c-3805-      kfree(old_net_conf);
-./drivers/block/drbd/drbd_receiver.c-4177-                      kfree(old_disk_conf);
-./drivers/ipack/carriers/tpci200.c-189- kfree(slot_irq);
-./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
-./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3583-        kfree(mgp->ss);
-./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
-./drivers/net/ethernet/mellanox/mlxsw/core.c-1574-      kfree(rxl_item);
-./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6642- kfree(adapter->mbox_log);
-./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6644- kfree(adapter);
-./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
-./drivers/infiniband/core/device.c:2164:                         * synchronize_rcu before the netdev is kfreed, so we
-./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
-./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
-./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
-urezki@pc638:~/data/coding/linux-rcu.git$
-<snip>
-
-so all of it can be replaced by the introduced interface and that
-is actually aim and motivation. All that can replaced by the single
-kvfree_rcu() logic.
-
-As for double argument of the kvfree_rcu() we have only one user
-so far, it is "mm/list_lru.c". But it costs nothing to add it.
-
-Description
------------
-This small series introduces kvfree_rcu() macro that is used
-for free memory after a grace period. It can be called either
-with one or two arguments. kvfree_rcu() as it derives from its
-name can handle two types of pointers, SLAB and vmalloc ones.
-
-As a result we get two ways how to use kvfree_rcu() macro, see
-below two examples.
-
-a) kvfree_rcu(ptr, rhf);
-    struct X {
-        struct rcu_head rhf;
-        unsigned char data[100];
-    };
-
-    void *ptr = kvmalloc(sizeof(struct X), GFP_KERNEL);
-    if (ptr)
-        kvfree_rcu(ptr, rhf);
-
-b) kvfree_rcu(ptr);
-    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
-    if (ptr)
-        kvfree_rcu(ptr);
-
-Last one, we name it headless variant, only needs one argument,
-means it does not require any rcu_head to be present within the
-type of ptr. There is a restriction the (b) context has to fall
-into might_sleep() annotation. To check that, please activate
-the CONFIG_DEBUG_ATOMIC_SLEEP option in your kernel.
-
-This series is based on:
-git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git
-"origin/rcu/dev" branch, what is the same as Paul's almost
-latest dev.2020.04.13c branch.
-
-Appreciate for any comments and feedback.
-
-Joel Fernandes (Google) (5):
-  rcu/tree: Keep kfree_rcu() awake during lock contention
-  rcu/tree: Skip entry into the page allocator for PREEMPT_RT
-  rcu/tree: Use consistent style for comments
-  rcu/tree: Simplify debug_objects handling
-  rcu/tree: Make kvfree_rcu() tolerate any alignment
-
-Sebastian Andrzej Siewior (1):
-  rcu/tree: Use static initializer for krc.lock
-
-Uladzislau Rezki (Sony) (18):
-  rcu/tree: Repeat the monitor if any free channel is busy
-  rcu/tree: Simplify KFREE_BULK_MAX_ENTR macro
-  rcu/tree: move locking/unlocking to separate functions
-  rcu/tree: cache specified number of objects
-  rcu/tree: add rcutree.rcu_min_cached_objs description
-  rcu/tree: Maintain separate array for vmalloc ptrs
-  rcu/tiny: support vmalloc in tiny-RCU
-  rcu: Rename rcu_invoke_kfree_callback/rcu_kfree_callback
-  rcu: Rename __is_kfree_rcu_offset() macro
-  rcu: Rename kfree_call_rcu() to the kvfree_call_rcu().
-  mm/list_lru.c: Rename kvfree_rcu() to local variant
-  rcu: Introduce 2 arg kvfree_rcu() interface
-  mm/list_lru.c: Remove kvfree_rcu_local() function
-  rcu/tree: Support reclaim for head-less object
-  rcu/tiny: move kvfree_call_rcu() out of header
-  rcu/tiny: support reclaim for head-less object
-  rcu: Introduce 1 arg kvfree_rcu() interface
-  lib/test_vmalloc.c: Add test cases for kvfree_rcu()
-
- .../admin-guide/kernel-parameters.txt         |   8 +
- include/linux/rcupdate.h                      |  53 +-
- include/linux/rcutiny.h                       |   6 +-
- include/linux/rcutree.h                       |   2 +-
- include/trace/events/rcu.h                    |   8 +-
- kernel/rcu/tiny.c                             | 168 ++++++-
- kernel/rcu/tree.c                             | 454 +++++++++++++-----
- lib/test_vmalloc.c                            | 103 +++-
- mm/list_lru.c                                 |  11 +-
- 9 files changed, 662 insertions(+), 151 deletions(-)
-
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f288477ee1c2..cf68d3d9f5b8 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2905,7 +2905,7 @@ struct kfree_rcu_cpu {
+ 	struct kfree_rcu_bulk_data *bhead;
+ 	struct kfree_rcu_bulk_data *bcached;
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+-	spinlock_t lock;
++	raw_spinlock_t lock;
+ 	struct delayed_work monitor_work;
+ 	bool monitor_todo;
+ 	bool initialized;
+@@ -2939,12 +2939,12 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	krwp = container_of(to_rcu_work(work),
+ 			    struct kfree_rcu_cpu_work, rcu_work);
+ 	krcp = krwp->krcp;
+-	spin_lock_irqsave(&krcp->lock, flags);
++	raw_spin_lock_irqsave(&krcp->lock, flags);
+ 	head = krwp->head_free;
+ 	krwp->head_free = NULL;
+ 	bhead = krwp->bhead_free;
+ 	krwp->bhead_free = NULL;
+-	spin_unlock_irqrestore(&krcp->lock, flags);
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 
+ 	/* "bhead" is now private, so traverse locklessly. */
+ 	for (; bhead; bhead = bnext) {
+@@ -3047,14 +3047,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+ 	krcp->monitor_todo = false;
+ 	if (queue_kfree_rcu_work(krcp)) {
+ 		// Success! Our job is done here.
+-		spin_unlock_irqrestore(&krcp->lock, flags);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 		return;
+ 	}
+ 
+ 	// Previous RCU batch still in progress, try again later.
+ 	krcp->monitor_todo = true;
+ 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+-	spin_unlock_irqrestore(&krcp->lock, flags);
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
+ /*
+@@ -3067,11 +3067,11 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
+ 						 monitor_work.work);
+ 
+-	spin_lock_irqsave(&krcp->lock, flags);
++	raw_spin_lock_irqsave(&krcp->lock, flags);
+ 	if (krcp->monitor_todo)
+ 		kfree_rcu_drain_unlock(krcp, flags);
+ 	else
+-		spin_unlock_irqrestore(&krcp->lock, flags);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
+ static inline bool
+@@ -3142,7 +3142,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+ 	krcp = this_cpu_ptr(&krc);
+ 	if (krcp->initialized)
+-		spin_lock(&krcp->lock);
++		raw_spin_lock(&krcp->lock);
+ 
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(head)) {
+@@ -3173,7 +3173,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ unlock_return:
+ 	if (krcp->initialized)
+-		spin_unlock(&krcp->lock);
++		raw_spin_unlock(&krcp->lock);
+ 	local_irq_restore(flags);
+ }
+ EXPORT_SYMBOL_GPL(kfree_call_rcu);
+@@ -3205,11 +3205,11 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count = krcp->count;
+-		spin_lock_irqsave(&krcp->lock, flags);
++		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (krcp->monitor_todo)
+ 			kfree_rcu_drain_unlock(krcp, flags);
+ 		else
+-			spin_unlock_irqrestore(&krcp->lock, flags);
++			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 
+ 		sc->nr_to_scan -= count;
+ 		freed += count;
+@@ -3236,15 +3236,15 @@ void __init kfree_rcu_scheduler_running(void)
+ 	for_each_online_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+-		spin_lock_irqsave(&krcp->lock, flags);
++		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (!krcp->head || krcp->monitor_todo) {
+-			spin_unlock_irqrestore(&krcp->lock, flags);
++			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 			continue;
+ 		}
+ 		krcp->monitor_todo = true;
+ 		schedule_delayed_work_on(cpu, &krcp->monitor_work,
+ 					 KFREE_DRAIN_JIFFIES);
+-		spin_unlock_irqrestore(&krcp->lock, flags);
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 	}
+ }
+ 
+@@ -4140,7 +4140,7 @@ static void __init kfree_rcu_batch_init(void)
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+-		spin_lock_init(&krcp->lock);
++		raw_spin_lock_init(&krcp->lock);
+ 		for (i = 0; i < KFREE_N_BATCHES; i++) {
+ 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
 -- 
 2.20.1
+
