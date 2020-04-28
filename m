@@ -1,73 +1,76 @@
-Return-Path: <SRS0=HwWG=6L=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=nxXf=6M=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B654C5519C
-	for <rcu@archiver.kernel.org>; Mon, 27 Apr 2020 11:11:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DCC9C83000
+	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C8332063A
-	for <rcu@archiver.kernel.org>; Mon, 27 Apr 2020 11:11:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 761002137B
+	for <rcu@archiver.kernel.org>; Tue, 28 Apr 2020 20:59:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OXEYwn2Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5kQXV+8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgD0LLl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Apr 2020 07:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S1726697AbgD1U7Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Apr 2020 16:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726604AbgD0LLl (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 27 Apr 2020 07:11:41 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8FCC0610D5
-        for <rcu@vger.kernel.org>; Mon, 27 Apr 2020 04:11:40 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u10so13447039lfo.8
-        for <rcu@vger.kernel.org>; Mon, 27 Apr 2020 04:11:40 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726284AbgD1U7Y (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 28 Apr 2020 16:59:24 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647DAC03C1AC;
+        Tue, 28 Apr 2020 13:59:24 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a21so188927ljj.11;
+        Tue, 28 Apr 2020 13:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5ldgJ4636CVVH5K09ieY2CjYskH7FkK4YIkv15ewvcg=;
-        b=OXEYwn2ZMuWXXCHmC9HNP3jNT4y5HIqH+Ikzlkys80/gyZ+2dAxoD6qAmgR6BjSxNk
-         3IjoRoFzjzkEdS/jd77MHalB3P1bK7Z0Z5wRoDj82dBD13UvtximgEa+e6Q0kdAUncpR
-         IrJPs6TYJdsu/aRrd23dReAvNds9+/lFz9CX4MrNvmlP7Iy0xzBHTFfzLnM1NUmWRZzv
-         3KplJV8ZHmAqYAZXQ/gD2O/2soogtdnGhnDPBNWEa1lWNaZ2e7tHHjNQ1JWGLMZDba8x
-         exCKp0ebus2G20rMEQNvj+CgqUjFp8cCsE3n2Q59ADhf1w1eOPIAYY4pv2gZNKbC7wOO
-         5D7w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ToRrXq0h+MaIe9sAtKeR8JTVBkLIVLUGFF5zgLnrWbE=;
+        b=Z5kQXV+8tkklTAuR5SI1mnHMcTTLiyrBbuwhPBZ+eRzQdGmjAWBHuMjWXtMspoZ5e+
+         t5qlAcc2T7SNDzLJ73Uv9q3pWoITYvf/jDHykamSrEb/sJh8kVvfU6dPwf7nzEa/BudV
+         UUJcKJU7Ua5XI/A02JF4hmmCcfzN7FkNDOrQrr5htpFGT/6kOGjrE3GQ8SrCQyWuFa4r
+         MR6yjODmqOAQdqeswobSP0j2LNqECRnELdxYcLJbxfOmeXU4RhqTxT4x52Gt2eKoblh5
+         9+bY787BLoeOTZrLtAsblH1Q+Z2s4LN9aj7IXy2Ey2zmqLeJuTum7eYtR5AFU995qZKF
+         yPJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5ldgJ4636CVVH5K09ieY2CjYskH7FkK4YIkv15ewvcg=;
-        b=cDSfpzuxsi9KgGFNAKldDopwuKzMrcpKVlJO9aYL9A8DZsZsToO6lW4cZcdPfQkmsa
-         IZ1fDpx09ot7dXPjNI6HqKYMaEHEa5+SmnNNI+PGXDbNpiqjwP98T+CO4jJHWbCnoP+l
-         Rp1MvqOE8Uof2zZYHI8B33hT3IcJcgnSc/+gFBmutJx40hRlDO697i9nVxW9NAC8I4pb
-         2NSWnAZ9kwxWCaL5bbuK9NYl8Q2p+gRvi+sTcSbp7FWYaO8j5/FdZZQ2GrzobBR3j5Fe
-         +dAqC0NHIaAqDc3ZVxay+AWEHYYov/wnOlGrMdpg0u99/m1D38EolA2Mw9dMtMsCPeYL
-         c8yw==
-X-Gm-Message-State: AGi0PuYjlga+OL8cWEu8hlufq/JtOpLrX+V6z68LSEOAHfWRAgM3ZhNl
-        GJByTxEonD296O8AaqT4aPE=
-X-Google-Smtp-Source: APiQypIwWu1Txq59pLktC8m8z8//IexkdKjlp79unijhEdHYYu4QYyxMjlqT9kfBeuSUEA/iLjVZjg==
-X-Received: by 2002:ac2:5e65:: with SMTP id a5mr14989449lfr.189.1587985898826;
-        Mon, 27 Apr 2020 04:11:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ToRrXq0h+MaIe9sAtKeR8JTVBkLIVLUGFF5zgLnrWbE=;
+        b=aqEax/eeD5A5CCIruDZeaP08ymbkTAxgE3bnIiq1/VmRKto1Pw2GoEdcOxhjcnTnSr
+         Fx3iJ2J/hJwS9JJamvBEbG5+4s6d5SdwAh8TN2bPqv3q2JK+/87x8+Q6F6BFEFDggwDi
+         fo+oB1dYUROcH5+oAy5qx3W6L7zBCCfl//lm7UcmMBSqjfTWclxUT+lYZ5neIGf0VRfy
+         fjB7Yq4nNWIjtxlDj2/r5UfnYglTMlXmLGQY8fMJuroB309bQNZtny1S47JUQlSjoXOz
+         S4N/5HVCKOqfsbddFVRZbtkdp3tStECQh187LVPaXb7xJFamc0Qe9w204ZkRtwErdbaB
+         Zalw==
+X-Gm-Message-State: AGi0PuYYf2pkcOHjhwmK1ExUdgEeou/NxazDvoIby71WLDMycbnyix7c
+        HruRn/wXXbyHl6JrY/GsQiXwd4ViiKkcGA==
+X-Google-Smtp-Source: APiQypKTGjtBGw5u0Ua2elBmcIbrbUs22iIyVyOyKgKBKPCo/mdX0gwKSUUXa/EMkhV8jKwaJGtBDg==
+X-Received: by 2002:a2e:870d:: with SMTP id m13mr18464164lji.64.1588107562381;
+        Tue, 28 Apr 2020 13:59:22 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id l18sm9853867lje.19.2020.04.27.04.11.37
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 04:11:38 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:21 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>, rcu@vger.kernel.org
-Subject: [PATCH 18/24] mm/list_lru.c: Remove kvfree_rcu_local() function
-Date:   Mon, 27 Apr 2020 13:11:07 +0200
-Message-Id: <20200427111113.5956-18-urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 00/24] Introduce kvfree_rcu(1 or 2 arguments)
+Date:   Tue, 28 Apr 2020 22:58:39 +0200
+Message-Id: <20200428205903.61704-1-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200427111113.5956-1-urezki@gmail.com>
-References: <20200427111113.5956-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
@@ -75,66 +78,168 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Since there is newly introduced kvfree_rcu() API, there is no need in
-queuing and using call_rcu() to kvfree() an object after the GP.
+Motivation
+----------
+There were some discussions and demand in having kvfree_rcu()
+interface for different purposes. Basically to have a simple
+interface like:
 
-Remove kvfree_rcu_local() function and replace call_rcu() by new
-kvfree_rcu() API that does the same but in more efficient way.
+<snip>
+    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+        if (ptr)
+            kvfree_rcu(ptr);
+<snip>
 
-Cc: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: rcu@vger.kernel.org
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- mm/list_lru.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+For example, please have a look at ext4 discussion here:
+    https://lkml.org/lkml/2020/2/19/1372
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 42c95bcb53ca..a0b08b27a9b9 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -12,6 +12,7 @@
- #include <linux/slab.h>
- #include <linux/mutex.h>
- #include <linux/memcontrol.h>
-+#include <linux/rcupdate.h>
- #include "slab.h"
- 
- #ifdef CONFIG_MEMCG_KMEM
-@@ -373,21 +374,13 @@ static void memcg_destroy_list_lru_node(struct list_lru_node *nlru)
- 	struct list_lru_memcg *memcg_lrus;
- 	/*
- 	 * This is called when shrinker has already been unregistered,
--	 * and nobody can use it. So, there is no need to use kvfree_rcu_local().
-+	 * and nobody can use it. So, there is no need to use kvfree_rcu().
- 	 */
- 	memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
- 	__memcg_destroy_list_lru_node(memcg_lrus, 0, memcg_nr_cache_ids);
- 	kvfree(memcg_lrus);
- }
- 
--static void kvfree_rcu_local(struct rcu_head *head)
--{
--	struct list_lru_memcg *mlru;
--
--	mlru = container_of(head, struct list_lru_memcg, rcu);
--	kvfree(mlru);
--}
--
- static int memcg_update_list_lru_node(struct list_lru_node *nlru,
- 				      int old_size, int new_size)
- {
-@@ -419,7 +412,7 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
- 	rcu_assign_pointer(nlru->memcg_lrus, new);
- 	spin_unlock_irq(&nlru->lock);
- 
--	call_rcu(&old->rcu, kvfree_rcu_local);
-+	kvfree_rcu(old, rcu);
- 	return 0;
- }
- 
+due to lack of the interface that is in question, the ext4 specific
+workaround has been introduced, to kvfree() after a grace period:
+
+<snip>
+void ext4_kvfree_array_rcu(void *to_free)
+{
+	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
+
+	if (ptr) {
+		ptr->ptr = to_free;
+		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
+		return;
+	}
+	synchronize_rcu();
+	kvfree(ptr);
+}
+<snip>
+
+there are also similar places there which could be replaced by the new
+interface, that is much more efficient then just call synchronize_rcu()
+and release a memory.
+
+Please have a look at another places in the kernel where people do not
+embed the rcu_head into their stuctures for some reason and do like:
+
+<snip>
+    synchronize_rcu();
+    kfree(p);
+<snip>
+
+<snip>
+urezki@pc638:~/data/coding/linux-rcu.git$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
+./fs/nfs/sysfs.c-113-           kfree(old);
+./fs/ext4/super.c-1708- kfree(old_qname);
+./kernel/trace/ftrace.c-5079-                   kfree(direct);
+./kernel/trace/ftrace.c-5156-                   kfree(direct);
+./kernel/trace/trace_probe.c-1087-      kfree(link);
+./kernel/module.c-3910- kfree(mod->args);
+./net/core/sysctl_net_core.c-143-                               kfree(cur);
+./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
+./drivers/mfd/dln2.c-183-               kfree(i);
+./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
+./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
+./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
+./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
+./drivers/block/drbd/drbd_receiver.c-3805-      kfree(old_net_conf);
+./drivers/block/drbd/drbd_receiver.c-4177-                      kfree(old_disk_conf);
+./drivers/ipack/carriers/tpci200.c-189- kfree(slot_irq);
+./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
+./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3583-        kfree(mgp->ss);
+./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
+./drivers/net/ethernet/mellanox/mlxsw/core.c-1574-      kfree(rxl_item);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6642- kfree(adapter->mbox_log);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6644- kfree(adapter);
+./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
+./drivers/infiniband/core/device.c:2164:                         * synchronize_rcu before the netdev is kfreed, so we
+./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
+./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
+./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
+urezki@pc638:~/data/coding/linux-rcu.git$
+<snip>
+
+so all of it can be replaced by the introduced interface and that
+is actually aim and motivation. All that can replaced by the single
+kvfree_rcu() logic.
+
+As for double argument of the kvfree_rcu() we have only one user
+so far, it is "mm/list_lru.c". But it costs nothing to add it.
+
+Description
+-----------
+This small series introduces kvfree_rcu() macro that is used
+for free memory after a grace period. It can be called either
+with one or two arguments. kvfree_rcu() as it derives from its
+name can handle two types of pointers, SLAB and vmalloc ones.
+
+As a result we get two ways how to use kvfree_rcu() macro, see
+below two examples.
+
+a) kvfree_rcu(ptr, rhf);
+    struct X {
+        struct rcu_head rhf;
+        unsigned char data[100];
+    };
+
+    void *ptr = kvmalloc(sizeof(struct X), GFP_KERNEL);
+    if (ptr)
+        kvfree_rcu(ptr, rhf);
+
+b) kvfree_rcu(ptr);
+    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+    if (ptr)
+        kvfree_rcu(ptr);
+
+Last one, we name it headless variant, only needs one argument,
+means it does not require any rcu_head to be present within the
+type of ptr. There is a restriction the (b) context has to fall
+into might_sleep() annotation. To check that, please activate
+the CONFIG_DEBUG_ATOMIC_SLEEP option in your kernel.
+
+This series is based on:
+git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git
+"origin/rcu/dev" branch, what is the same as Paul's almost
+latest dev.2020.04.13c branch.
+
+Appreciate for any comments and feedback.
+
+Joel Fernandes (Google) (5):
+  rcu/tree: Keep kfree_rcu() awake during lock contention
+  rcu/tree: Skip entry into the page allocator for PREEMPT_RT
+  rcu/tree: Use consistent style for comments
+  rcu/tree: Simplify debug_objects handling
+  rcu/tree: Make kvfree_rcu() tolerate any alignment
+
+Sebastian Andrzej Siewior (1):
+  rcu/tree: Use static initializer for krc.lock
+
+Uladzislau Rezki (Sony) (18):
+  rcu/tree: Repeat the monitor if any free channel is busy
+  rcu/tree: Simplify KFREE_BULK_MAX_ENTR macro
+  rcu/tree: move locking/unlocking to separate functions
+  rcu/tree: cache specified number of objects
+  rcu/tree: add rcutree.rcu_min_cached_objs description
+  rcu/tree: Maintain separate array for vmalloc ptrs
+  rcu/tiny: support vmalloc in tiny-RCU
+  rcu: Rename rcu_invoke_kfree_callback/rcu_kfree_callback
+  rcu: Rename __is_kfree_rcu_offset() macro
+  rcu: Rename kfree_call_rcu() to the kvfree_call_rcu().
+  mm/list_lru.c: Rename kvfree_rcu() to local variant
+  rcu: Introduce 2 arg kvfree_rcu() interface
+  mm/list_lru.c: Remove kvfree_rcu_local() function
+  rcu/tree: Support reclaim for head-less object
+  rcu/tiny: move kvfree_call_rcu() out of header
+  rcu/tiny: support reclaim for head-less object
+  rcu: Introduce 1 arg kvfree_rcu() interface
+  lib/test_vmalloc.c: Add test cases for kvfree_rcu()
+
+ .../admin-guide/kernel-parameters.txt         |   8 +
+ include/linux/rcupdate.h                      |  53 +-
+ include/linux/rcutiny.h                       |   6 +-
+ include/linux/rcutree.h                       |   2 +-
+ include/trace/events/rcu.h                    |   8 +-
+ kernel/rcu/tiny.c                             | 168 ++++++-
+ kernel/rcu/tree.c                             | 454 +++++++++++++-----
+ lib/test_vmalloc.c                            | 103 +++-
+ mm/list_lru.c                                 |  11 +-
+ 9 files changed, 662 insertions(+), 151 deletions(-)
+
 -- 
 2.20.1
-
