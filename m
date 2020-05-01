@@ -2,48 +2,40 @@ Return-Path: <SRS0=yzHE=6P=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E14C0C4724C
-	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 19:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0974FC35280
+	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:02:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BEC4621775
-	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 19:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1588359956;
-	bh=WFEAbiJuGiBc56bdGlx6e9LjlEwFLSX5UruuTUgU1Hw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=WXUapcuNc6W9Q1zRkfwQtHyDG0k1pxWrdTq58LC4ZI6lWErVeSp6mdHLwPwQ4GBYz
-	 WnEtsysl8xFhiBcLHToTEJxAahaaKg+3Bdo99PntSuiO1ezXYWX5ZrMNR3rD1tiJVD
-	 4atD1bGWUn3/EPRNZR+Tm6vOqpQRB+V7LnO7M3oY=
+	by mail.kernel.org (Postfix) with ESMTP id DFC34208C3
+	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:02:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbgEATF4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 1 May 2020 15:05:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729766AbgEATF4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 1 May 2020 15:05:56 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BCE02173E;
-        Fri,  1 May 2020 19:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588359955;
-        bh=WFEAbiJuGiBc56bdGlx6e9LjlEwFLSX5UruuTUgU1Hw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pr5OeNBQ9DlPdUbXC1upaqlySgvnzxf7IjJ5D1ZaEqkSSgYR5nbxiSxqKSifLtb5V
-         cQ1pBuL2NKxRxDUjmzKtMC1S4QTm+2MJULv2G5TEcro1JUbSqLGtkVwRVhWafBzY87
-         yPfNfp7lIruW6+KsTw6sEcr8WyRKs0FGb6xhZg1w=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3E7503522690; Fri,  1 May 2020 12:05:55 -0700 (PDT)
-Date:   Fri, 1 May 2020 12:05:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+        id S1726336AbgEAVCG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 1 May 2020 17:02:06 -0400
+Received: from smtprelay0018.hostedemail.com ([216.40.44.18]:47626 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726045AbgEAVCG (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 1 May 2020 17:02:06 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 May 2020 17:02:06 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id E6DDF1803190B
+        for <rcu@vger.kernel.org>; Fri,  1 May 2020 20:52:50 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 9AC98181D3025;
+        Fri,  1 May 2020 20:52:49 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: balls69_358bf361e1e3c
+X-Filterd-Recvd-Size: 2389
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  1 May 2020 20:52:47 +0000 (UTC)
+Message-ID: <93f764ad743082f2bbab4595eb892c2004e61b44.camel@perches.com>
+Subject: Re: [PATCH 03/24] rcu/tree: Use consistent style for comments
+From:   Joe Perches <joe@perches.com>
+To:     paulmck@kernel.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
@@ -51,104 +43,52 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 03/24] rcu/tree: Use consistent style for comments
-Message-ID: <20200501190555.GB7560@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Date:   Fri, 01 May 2020 13:52:46 -0700
+In-Reply-To: <20200501190555.GB7560@paulmck-ThinkPad-P72>
 References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-4-urezki@gmail.com>
+         <20200428205903.61704-4-urezki@gmail.com>
+         <20200501190555.GB7560@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428205903.61704-4-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:58:42PM +0200, Uladzislau Rezki (Sony) wrote:
-> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+On Fri, 2020-05-01 at 12:05 -0700, Paul E. McKenney wrote:
+> On Tue, Apr 28, 2020 at 10:58:42PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Simple clean up of comments in kfree_rcu() code to keep it consistent
+> > with majority of commenting styles.
+[]
+> on /* */ style?
 > 
-> Simple clean up of comments in kfree_rcu() code to keep it consistent
-> with majority of commenting styles.
-> 
-> Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> I am (slowly) moving RCU to "//" for those reasons.  ;-)
 
-Hmmm...
+I hope c99 comment styles are more commonly used soon too.
+checkpatch doesn't care.
 
-Exactly why is three additional characters per line preferable?  Or in
-the case of block comments, either one or two additional lines, depending
-on /* */ style?
+Perhaps a change to coding-style.rst
+---
+ Documentation/process/coding-style.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I am (slowly) moving RCU to "//" for those reasons.  ;-)
+diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+index acb2f1b..fee647 100644
+--- a/Documentation/process/coding-style.rst
++++ b/Documentation/process/coding-style.rst
+@@ -565,6 +565,11 @@ comments is a little different.
+ 	 * but there is no initial almost-blank line.
+ 	 */
+ 
++.. code-block:: c
++
++	// Single line and inline comments may also use the c99 // style
++	// Block comments as well
++
+ It's also important to comment data, whether they are basic types or derived
+ types.  To this end, use just one data declaration per line (no commas for
+ multiple data declarations).  This leaves you room for a small comment on each
 
-							Thanx, Paul
 
-> ---
->  kernel/rcu/tree.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cd61649e1b00..1487af8e11e8 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3043,15 +3043,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
->  static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
->  					  unsigned long flags)
->  {
-> -	// Attempt to start a new batch.
-> +	/* Attempt to start a new batch. */
->  	krcp->monitor_todo = false;
->  	if (queue_kfree_rcu_work(krcp)) {
-> -		// Success! Our job is done here.
-> +		/* Success! Our job is done here. */
->  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
->  		return;
->  	}
->  
-> -	// Previous RCU batch still in progress, try again later.
-> +	/* Previous RCU batch still in progress, try again later. */
->  	krcp->monitor_todo = true;
->  	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
->  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> @@ -3151,14 +3151,14 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	unsigned long flags;
->  	struct kfree_rcu_cpu *krcp;
->  
-> -	local_irq_save(flags);	// For safely calling this_cpu_ptr().
-> +	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
->  	krcp = this_cpu_ptr(&krc);
->  	if (krcp->initialized)
->  		raw_spin_lock(&krcp->lock);
->  
-> -	// Queue the object but don't yet schedule the batch.
-> +	/* Queue the object but don't yet schedule the batch. */
->  	if (debug_rcu_head_queue(head)) {
-> -		// Probable double kfree_rcu(), just leak.
-> +		/* Probable double kfree_rcu(), just leak. */
->  		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
->  			  __func__, head);
->  		goto unlock_return;
-> @@ -3176,7 +3176,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
->  
->  	WRITE_ONCE(krcp->count, krcp->count + 1);
->  
-> -	// Set timer to drain after KFREE_DRAIN_JIFFIES.
-> +	/* Set timer to drain after KFREE_DRAIN_JIFFIES. */
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
->  	    !krcp->monitor_todo) {
->  		krcp->monitor_todo = true;
-> @@ -3722,7 +3722,7 @@ int rcutree_offline_cpu(unsigned int cpu)
->  
->  	rcutree_affinity_setting(cpu, cpu);
->  
-> -	// nohz_full CPUs need the tick for stop-machine to work quickly
-> +	/* nohz_full CPUs need the tick for stop-machine to work quickly */
->  	tick_dep_set(TICK_DEP_BIT_RCU);
->  	return 0;
->  }
-> -- 
-> 2.20.1
-> 
