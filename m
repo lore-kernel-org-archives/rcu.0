@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D12AC35280
-	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D4B3C35280
+	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:27:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2FAEE2166E
-	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:17:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 78DAC2166E
+	for <rcu@archiver.kernel.org>; Fri,  1 May 2020 21:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1588367825;
-	bh=gcWqVApgJs+BB978Fby692FvXoFwUlGeY+pFd8nhOMY=;
+	s=default; t=1588368471;
+	bh=NWlmAira+mPxNuaLftUpDW0u05XoE7uY8FHaaXYMwOI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=jsDzq+2SUM+qycUPD9FWHCGzpFTpp1dVg/7uS9gE55jt4C2X/9JOicmCJdzS/KrLP
-	 yFcAFZEz7j9RfThwmMoigFGYxvoytK9WpQHrd8965p/dAtSzgolZEwObmN9HFnf4GL
-	 xayp0ywy1nar5ixeGEwEvz4WsNlJJveWqQIKgEfU=
+	b=t9mDwuvQtW1hNBAK2glbOZrVxJanCSqB1rmWF6kMWnAzyk4vnVqGGZnrwt6yOMDcB
+	 HvSRDUjJiywhMEY/WPiEBi2xcWG52i4FX92PL/EmtpJEV4V26kPEE38MrdArx13/f5
+	 sTGzyC35eyuN/jstW6qVByvC3Aktz6beOXuI+rJs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgEAVRE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 1 May 2020 17:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
+        id S1726430AbgEAV1v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 1 May 2020 17:27:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgEAVRE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 1 May 2020 17:17:04 -0400
+        id S1726045AbgEAV1u (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 1 May 2020 17:27:50 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF8A22073E;
-        Fri,  1 May 2020 21:17:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21D9420857;
+        Fri,  1 May 2020 21:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588367823;
-        bh=gcWqVApgJs+BB978Fby692FvXoFwUlGeY+pFd8nhOMY=;
+        s=default; t=1588368470;
+        bh=NWlmAira+mPxNuaLftUpDW0u05XoE7uY8FHaaXYMwOI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bH738pactjRZOPIK/6+Eo1lOB7GMdmeQ8itFo5KMUOx6C55Y4n5/hvcRJRpZEhOcy
-         oKilnMUoRczmYFwKycghRDoRcQ6yI/ww+82eqziDVZunSRhtiOLvtld0N/34+o9YHA
-         l0CK/CfLUvzXsZwSMYH+jOpcKiTG6d74tOAX8VlA=
+        b=y9RQZAwDuEiN9HY9CIl8SJmt2D/CyanMKITJPwx7U1hqRKPhKifd+vhkETRN71rMH
+         qaWEztYBans2o3wRBYR7CUtgBEgt7S4d1z6g+KvJcdkpKp54B5lNWaKWRR9HRJp+U2
+         djl45Th9NlPi+Do+Ewi0+mD9WlIrf+D7P62dRIXM=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 94DA63522B72; Fri,  1 May 2020 14:17:03 -0700 (PDT)
-Date:   Fri, 1 May 2020 14:17:03 -0700
+        id F287E3522B72; Fri,  1 May 2020 14:27:49 -0700 (PDT)
+Date:   Fri, 1 May 2020 14:27:49 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
@@ -50,105 +50,186 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Matthew Wilcox <willy@infradead.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 08/24] rcu/tree: Use static initializer for krc.lock
-Message-ID: <20200501211703.GC7560@paulmck-ThinkPad-P72>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 09/24] rcu/tree: cache specified number of objects
+Message-ID: <20200501212749.GD7560@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-9-urezki@gmail.com>
+ <20200428205903.61704-10-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428205903.61704-9-urezki@gmail.com>
+In-Reply-To: <20200428205903.61704-10-urezki@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:58:47PM +0200, Uladzislau Rezki (Sony) wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Tue, Apr 28, 2020 at 10:58:48PM +0200, Uladzislau Rezki (Sony) wrote:
+> Cache some extra objects per-CPU. During reclaim process
+> some pages are cached instead of releasing by linking them
+> into the list. Such approach provides O(1) access time to
+> the cache.
 > 
-> The per-CPU variable is initialized at runtime in
-> kfree_rcu_batch_init(). This function is invoked before
-> 'rcu_scheduler_active' is set to 'RCU_SCHEDULER_RUNNING'.
-> After the initialisation, '->initialized' is to true.
+> That reduces number of requests to the page allocator, also
+> that makes it more helpful if a low memory condition occurs.
 > 
-> The raw_spin_lock is only acquired if '->initialized' is
-> set to true. The worqueue item is only used if 'rcu_scheduler_active'
-> set to RCU_SCHEDULER_RUNNING which happens after initialisation.
+> A parameter reflecting the minimum allowed pages to be
+> cached per one CPU is propagated via sysfs, it is read
+> only, the name is "rcu_min_cached_objs".
 > 
-> Use a static initializer for krc.lock and remove the runtime
-> initialisation of the lock. Since the lock can now be always
-> acquired, remove the '->initialized' check.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > ---
->  kernel/rcu/tree.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
+>  kernel/rcu/tree.c | 64 ++++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 60 insertions(+), 4 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index bc6c2bc8fa32..89e9ca3f4e3e 100644
+> index 89e9ca3f4e3e..d8975819b1c9 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -2892,7 +2892,7 @@ struct kfree_rcu_cpu_work {
+> @@ -178,6 +178,14 @@ module_param(gp_init_delay, int, 0444);
+>  static int gp_cleanup_delay;
+>  module_param(gp_cleanup_delay, int, 0444);
+>  
+> +/*
+> + * This rcu parameter is read-only, but can be write also.
+
+You mean that although the parameter is read-only, you see no reason
+why it could not be converted to writeable?
+
+If it was writeable, and a given CPU had the maximum numbr of cached
+objects, the rcu_min_cached_objs value was decreased, but that CPU never
+saw another kfree_rcu(), would the number of cached objects change?
+
+(Just curious, not asking for a change in functionality.)
+
+> + * It reflects the minimum allowed number of objects which
+> + * can be cached per-CPU. Object size is equal to one page.
+> + */
+> +int rcu_min_cached_objs = 2;
+> +module_param(rcu_min_cached_objs, int, 0444);
+> +
+>  /* Retrieve RCU kthreads priority for rcutorture */
+>  int rcu_get_gp_kthreads_prio(void)
+>  {
+> @@ -2887,7 +2895,6 @@ struct kfree_rcu_cpu_work {
+>   * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
+>   * @head: List of kfree_rcu() objects not yet waiting for a grace period
+>   * @bhead: Bulk-List of kfree_rcu() objects not yet waiting for a grace period
+> - * @bcached: Keeps at most one object for later reuse when build chain blocks
+>   * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
 >   * @lock: Synchronize access to this structure
 >   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
->   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
-> - * @initialized: The @lock and @rcu_work fields have been initialized
-> + * @initialized: The @rcu_work fields have been initialized
->   *
->   * This is a per-CPU structure.  The reason that it is not included in
->   * the rcu_data structure is to permit this code to be extracted from
-> @@ -2912,7 +2912,9 @@ struct kfree_rcu_cpu {
+> @@ -2902,7 +2909,6 @@ struct kfree_rcu_cpu_work {
+>  struct kfree_rcu_cpu {
+>  	struct rcu_head *head;
+>  	struct kfree_rcu_bulk_data *bhead;
+> -	struct kfree_rcu_bulk_data *bcached;
+>  	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+>  	raw_spinlock_t lock;
+>  	struct delayed_work monitor_work;
+> @@ -2910,6 +2916,15 @@ struct kfree_rcu_cpu {
+>  	bool initialized;
+>  	// Number of objects for which GP not started
 >  	int count;
+> +
+> +	/*
+> +	 * Number of cached objects which are queued into
+> +	 * the lock-less list. This cache is used by the
+> +	 * kvfree_call_rcu() function and as of now its
+> +	 * size is static.
+> +	 */
+> +	struct llist_head bkvcache;
+> +	int nr_bkv_objs;
 >  };
 >  
-> -static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
-> +static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
-> +	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
-> +};
->  
->  static __always_inline void
->  debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
-> @@ -2930,10 +2932,9 @@ krc_this_cpu_lock(unsigned long *flags)
->  {
->  	struct kfree_rcu_cpu *krcp;
->  
-> -	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
-> +	local_irq_save(*flags);	/* For safely calling this_cpu_ptr(). */
-
-And here as well.  ;-)
-
-							Thanx, Paul
-
->  	krcp = this_cpu_ptr(&krc);
-> -	if (likely(krcp->initialized))
-> -		raw_spin_lock(&krcp->lock);
-> +	raw_spin_lock(&krcp->lock);
->  
->  	return krcp;
->  }
-> @@ -2941,8 +2942,7 @@ krc_this_cpu_lock(unsigned long *flags)
->  static inline void
->  krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
->  {
-> -	if (likely(krcp->initialized))
-> -		raw_spin_unlock(&krcp->lock);
-> +	raw_spin_unlock(&krcp->lock);
+>  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> @@ -2946,6 +2961,31 @@ krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
 >  	local_irq_restore(flags);
 >  }
 >  
-> @@ -4168,7 +4168,6 @@ static void __init kfree_rcu_batch_init(void)
+> +static inline struct kfree_rcu_bulk_data *
+> +get_cached_bnode(struct kfree_rcu_cpu *krcp)
+> +{
+> +	if (!krcp->nr_bkv_objs)
+> +		return NULL;
+> +
+> +	krcp->nr_bkv_objs--;
+> +	return (struct kfree_rcu_bulk_data *)
+> +		llist_del_first(&krcp->bkvcache);
+> +}
+> +
+> +static inline bool
+> +put_cached_bnode(struct kfree_rcu_cpu *krcp,
+> +	struct kfree_rcu_bulk_data *bnode)
+> +{
+> +	/* Check the limit. */
+> +	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+> +		return false;
+> +
+> +	llist_add((struct llist_node *) bnode, &krcp->bkvcache);
+> +	krcp->nr_bkv_objs++;
+> +	return true;
+> +
+> +}
+> +
+>  /*
+>   * This function is invoked in workqueue context after a grace period.
+>   * It frees all the objects queued on ->bhead_free or ->head_free.
+> @@ -2981,7 +3021,12 @@ static void kfree_rcu_work(struct work_struct *work)
+>  		kfree_bulk(bhead->nr_records, bhead->records);
+>  		rcu_lock_release(&rcu_callback_map);
+>  
+> -		if (cmpxchg(&krcp->bcached, NULL, bhead))
+> +		krcp = krc_this_cpu_lock(&flags);
+
+Presumably the list can also be accessed without holding this lock,
+because otherwise we shouldn't need llist...
+
+							Thanx, Paul
+
+> +		if (put_cached_bnode(krcp, bhead))
+> +			bhead = NULL;
+> +		krc_this_cpu_unlock(krcp, flags);
+> +
+> +		if (bhead)
+>  			free_page((unsigned long) bhead);
+>  
+>  		cond_resched_tasks_rcu_qs();
+> @@ -3114,7 +3159,7 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+>  	/* Check if a new block is required. */
+>  	if (!krcp->bhead ||
+>  			krcp->bhead->nr_records == KFREE_BULK_MAX_ENTR) {
+> -		bnode = xchg(&krcp->bcached, NULL);
+> +		bnode = get_cached_bnode(krcp);
+>  		if (!bnode) {
+>  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+>  
+> @@ -4167,12 +4212,23 @@ static void __init kfree_rcu_batch_init(void)
+>  
 >  	for_each_possible_cpu(cpu) {
 >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> +		struct kfree_rcu_bulk_data *bnode;
 >  
-> -		raw_spin_lock_init(&krcp->lock);
 >  		for (i = 0; i < KFREE_N_BATCHES; i++) {
 >  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
 >  			krcp->krw_arr[i].krcp = krcp;
+>  		}
+>  
+> +		for (i = 0; i < rcu_min_cached_objs; i++) {
+> +			bnode = (struct kfree_rcu_bulk_data *)
+> +				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> +
+> +			if (bnode)
+> +				put_cached_bnode(krcp, bnode);
+> +			else
+> +				pr_err("Failed to preallocate for %d CPU!\n", cpu);
+> +		}
+> +
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+>  		krcp->initialized = true;
+>  	}
 > -- 
 > 2.20.1
 > 
