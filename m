@@ -2,61 +2,48 @@ Return-Path: <SRS0=5yYX=6S=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2A45C47258
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 00:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1941BC28CBC
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 00:26:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 83F0A20735
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 00:24:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="vpgZTmS7"
+	by mail.kernel.org (Postfix) with ESMTP id EB4CF2073B
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 00:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1588552018;
+	bh=W6t3E4EZJAnQ4nVRYsdBeojJbKvYJRy93rI6IDIiy4c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=l1RGgMST9d/La74jFtq1qqTEnlk/UsZIOtdd8OAQbK2uLQvNlmLznrMLKs+9xuCY3
+	 nKhGWtsTZ1VwcXfBEhuH1b1mqaaYeuaxO3QPYhEYVWh/9penoNJd3oNxSamWWQCRwC
+	 JO0A2dxRAjqFEbU+L2eOsfe/pHPw7gH8yRVfVDS4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgEDAYl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 3 May 2020 20:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726377AbgEDAYl (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sun, 3 May 2020 20:24:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F8C061A0E
-        for <rcu@vger.kernel.org>; Sun,  3 May 2020 17:24:39 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 23so15112804qkf.0
-        for <rcu@vger.kernel.org>; Sun, 03 May 2020 17:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xI7Qm85+J9yYa3BECz1PpAq35SrAJXBLbUl+ywDnfIo=;
-        b=vpgZTmS7D85XFaWuubB35aigMgPfNH5vS1YnNRzviB7wv/20FlsbirhRkjg9zOgEEA
-         7iLGF4H8xJvd1bNUd0FCIkaDFGVwxN3nHI38lr3P/K/eOgye89BTBZzGIz5jaXEjes/a
-         NIGFyOoAYZFX4lZRDVkIolGMfeBq08naC9rLE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xI7Qm85+J9yYa3BECz1PpAq35SrAJXBLbUl+ywDnfIo=;
-        b=fFsAEU7QQyvW7BWkYbqprB26wNvA08Lvm7ZA5MwLNDbMJ+pSY57Gmn0B2/g4oCZ3OO
-         LUKwmveYtvrX+2nHdSgtwMC933/DDaSeDi9wLvuEIstagNqyXJQ16rnQgTOT+hQUvLX7
-         4BfuPYX+saBayx9oVvHr00Zy00tntShVegxtgsi2fL+d4tVRtzgRFE6jt8py/fhofYTy
-         IFSSA5N0Lzn9pXxCVfRzp12RIYvApobpgn6idRXQxeHiMXiaWuSFVazzTjKDSLWfi2mH
-         aGW8SxzdLZBq9yohlr0WtOWHcpIepIWwaAeIO23yOUHaqENBwKjgIFdHMG3pZlf5FNEr
-         U+eA==
-X-Gm-Message-State: AGi0PuaejmUR9j/BPsfJqFPPMQHHCIYZAbBEzlJ0E/ChM2MCQ6X4wvJd
-        p7yUafKQ3xcLA9KIZtawvMu7eg==
-X-Google-Smtp-Source: APiQypLzxAGctzs8HcSpHXiYBWEZS0iGP3Ge6vZbGNZgWlf7z6MAH+MfKEicRMukpaZPrAXHEY5pGg==
-X-Received: by 2002:a05:620a:89c:: with SMTP id b28mr1490696qka.380.1588551878821;
-        Sun, 03 May 2020 17:24:38 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id d69sm7491203qkc.106.2020.05.03.17.24.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 May 2020 17:24:38 -0700 (PDT)
-Date:   Sun, 3 May 2020 20:24:37 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S1726579AbgEDA05 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 3 May 2020 20:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726420AbgEDA05 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 3 May 2020 20:26:57 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68A9A20735;
+        Mon,  4 May 2020 00:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588552016;
+        bh=W6t3E4EZJAnQ4nVRYsdBeojJbKvYJRy93rI6IDIiy4c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cWo5gYokFtgi+jPhd48Yh9ZFJ5Jf2Pc5T4QxayhrbPoo4GFSLIaqfMxwHLQC3Vt9k
+         dn3GUV3GHT2HI39opOpDmuv+HwbawDxMAVlCd7layBR95viYKAiV3r1R76otGHXl+j
+         zVOxAoO6sCo7enlCIjtAlGQbXmQaWIXp8nItjFQk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 416433520D7D; Sun,  3 May 2020 17:26:56 -0700 (PDT)
+Date:   Sun, 3 May 2020 17:26:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -64,72 +51,129 @@ Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Matthew Wilcox <willy@infradead.org>,
         RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 20/24] rcu/tree: Make kvfree_rcu() tolerate any alignment
-Message-ID: <20200504002437.GA212435@google.com>
+Subject: Re: [PATCH 03/24] rcu/tree: Use consistent style for comments
+Message-ID: <20200504002656.GE2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-21-urezki@gmail.com>
- <20200501230052.GG7560@paulmck-ThinkPad-P72>
+ <20200428205903.61704-4-urezki@gmail.com>
+ <20200501190555.GB7560@paulmck-ThinkPad-P72>
+ <20200503235213.GC197097@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200501230052.GG7560@paulmck-ThinkPad-P72>
+In-Reply-To: <20200503235213.GC197097@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 01, 2020 at 04:00:52PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 28, 2020 at 10:58:59PM +0200, Uladzislau Rezki (Sony) wrote:
-> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+On Sun, May 03, 2020 at 07:52:13PM -0400, Joel Fernandes wrote:
+> On Fri, May 01, 2020 at 12:05:55PM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 28, 2020 at 10:58:42PM +0200, Uladzislau Rezki (Sony) wrote:
+> > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > > 
+> > > Simple clean up of comments in kfree_rcu() code to keep it consistent
+> > > with majority of commenting styles.
+> > > 
+> > > Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > > 
-> > Handle cases where the the object being kvfree_rcu()'d is not aligned by
-> > 2-byte boundaries.
+> > Hmmm...
 > > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/rcu/tree.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > Exactly why is three additional characters per line preferable?  Or in
+> > the case of block comments, either one or two additional lines, depending
+> > on /* */ style?
+> 
+> I prefer to keep the code consistent and then bulk convert it later. Its a
+> bit ugly to read when its mixed up with "//" and "/* */" right now. We can
+> convert it to // all at once later but until then it'll be good to keep it
+> consistent in this file IMO. When I checked the kfree_rcu() code, it had more
+> "/* */" than not, so this small change is less churn for now.
+
+Please just drop this patch along with the other "//"-to-"/* */"
+regressions.
+
+If you want to convert more comments to "//" within the confines of the
+kfree_rcu() code, I am probably OK with that.  But again, a big-bang
+change of this sort often causes problems due to lots of potential
+rebase/merge conflicts.
+
+							Thanx, Paul
+
+> thanks,
+> 
+>  - Joel
+> 
 > > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 501cac02146d..649bad7ad0f0 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2877,6 +2877,9 @@ struct kvfree_rcu_bulk_data {
-> >  #define KVFREE_BULK_MAX_ENTR \
-> >  	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
-> >  
-> > +/* Encoding the offset of a fake rcu_head to indicate the head is a wrapper. */
-> > +#define RCU_HEADLESS_KFREE BIT(31)
-> 
-> Did I miss the check for freeing something larger than 2GB?  Or is this
-> impossible, even on systems with many terabytes of physical memory?
-> Even if it is currently impossible, what prevents it from suddenly
-> becoming all too possible at some random point in the future?  If you
-> think that this will never happen, please keep in mind that the first
-> time I heard "640K ought to be enough for anybody", it sounded eminently
-> reasonable to me.
-> 
-> Besides...
-> 
-> Isn't the offset in question the offset of an rcu_head struct within
-> the enclosing structure? If so, why not keep the current requirement
-> that this be at least 16-bit aligned, especially given that some work
-> is required to make that alignment less than pointer sized?  Then you
-> can continue using bit 0.
-> 
-> This alignment requirement is included in the RCU requirements
-> documentation and is enforced within the __call_rcu() function.
-> 
-> So let's leave this at bit 0.
-
-This patch is needed only if we are growing the fake rcu_head. Since you
-mentioned in a previous patch in this series that you don't want to do that,
-and just rely on availability of the array of pointers or synchronize_rcu(),
-we can drop this patch. If we are not dropping that earlier patch, let us
-discuss more.
-
-thanks,
-
- - Joel
-
+> > I am (slowly) moving RCU to "//" for those reasons.  ;-)
+> > 
+> > 							Thanx, Paul
+> > 
+> > > ---
+> > >  kernel/rcu/tree.c | 16 ++++++++--------
+> > >  1 file changed, 8 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index cd61649e1b00..1487af8e11e8 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3043,15 +3043,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> > >  static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > >  					  unsigned long flags)
+> > >  {
+> > > -	// Attempt to start a new batch.
+> > > +	/* Attempt to start a new batch. */
+> > >  	krcp->monitor_todo = false;
+> > >  	if (queue_kfree_rcu_work(krcp)) {
+> > > -		// Success! Our job is done here.
+> > > +		/* Success! Our job is done here. */
+> > >  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > >  		return;
+> > >  	}
+> > >  
+> > > -	// Previous RCU batch still in progress, try again later.
+> > > +	/* Previous RCU batch still in progress, try again later. */
+> > >  	krcp->monitor_todo = true;
+> > >  	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> > >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > @@ -3151,14 +3151,14 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >  	unsigned long flags;
+> > >  	struct kfree_rcu_cpu *krcp;
+> > >  
+> > > -	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+> > > +	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
+> > >  	krcp = this_cpu_ptr(&krc);
+> > >  	if (krcp->initialized)
+> > >  		raw_spin_lock(&krcp->lock);
+> > >  
+> > > -	// Queue the object but don't yet schedule the batch.
+> > > +	/* Queue the object but don't yet schedule the batch. */
+> > >  	if (debug_rcu_head_queue(head)) {
+> > > -		// Probable double kfree_rcu(), just leak.
+> > > +		/* Probable double kfree_rcu(), just leak. */
+> > >  		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+> > >  			  __func__, head);
+> > >  		goto unlock_return;
+> > > @@ -3176,7 +3176,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >  
+> > >  	WRITE_ONCE(krcp->count, krcp->count + 1);
+> > >  
+> > > -	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+> > > +	/* Set timer to drain after KFREE_DRAIN_JIFFIES. */
+> > >  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> > >  	    !krcp->monitor_todo) {
+> > >  		krcp->monitor_todo = true;
+> > > @@ -3722,7 +3722,7 @@ int rcutree_offline_cpu(unsigned int cpu)
+> > >  
+> > >  	rcutree_affinity_setting(cpu, cpu);
+> > >  
+> > > -	// nohz_full CPUs need the tick for stop-machine to work quickly
+> > > +	/* nohz_full CPUs need the tick for stop-machine to work quickly */
+> > >  	tick_dep_set(TICK_DEP_BIT_RCU);
+> > >  	return 0;
+> > >  }
+> > > -- 
+> > > 2.20.1
+> > > 
