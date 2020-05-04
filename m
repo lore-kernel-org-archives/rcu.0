@@ -7,127 +7,125 @@ X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 049F1C3A5A9
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 14:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BDC4C3A5A9
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 14:25:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C95B620721
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 14:21:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57EA620752
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 14:25:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jIHpH8tC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtaY+wOl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgEDOV7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 May 2020 10:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S1728187AbgEDOZz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 May 2020 10:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728168AbgEDOV7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 May 2020 10:21:59 -0400
+        with ESMTP id S1728165AbgEDOZy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 May 2020 10:25:54 -0400
 Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA7AC061A0E;
-        Mon,  4 May 2020 07:21:58 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id s9so4702521lfp.1;
-        Mon, 04 May 2020 07:21:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7700BC061A0E;
+        Mon,  4 May 2020 07:25:54 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b26so117755lfa.5;
+        Mon, 04 May 2020 07:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=TjQIadq6DfkSuMtzgbVyqx7eozFCGzVHUTUogoGl7xY=;
-        b=jIHpH8tCYXoUS/6yaeKsETWsdPAiDMK0RP02iwGzjzLK/nJ8eRqBiYJJ6etliXLip1
-         8PlROGndEGmJOkQb+GS9LVPB3FjI/MyuzkbiZRHX56/PrN7HKjF2MNK1lcG9iht/JBKj
-         hLlEk94jUha/lV4BWoFcV0WMPSo7uT2Jd/gVUmwmSdtW5KGcs6BhIPFLRhAgiP5Pxv+v
-         BDvR1GlfLHarnpA6VBkpl5OLGpVFPs5Q4OEZHGxcJNpQiO6jXq/ERSTvVesCLxKVONId
-         VMWRwzA4I0+tRUnuEkWEW7ZJY7TQNm00e0rgLEzgjIKJvhmvUgcnnwT8X7qCQfIuQttN
-         ZFaw==
+        bh=Hhx3Y7SsgO+0pmQCmi95Yty7DE5Dn2yrj/e7yZMXjG0=;
+        b=gtaY+wOls/Wn72DXE5zrDNRZapha54YHqFjI7tLPSTVE3KhJjRF9XPiL/Kif8hfE2b
+         zw6O0NMqzNQslRstDGtK/vor9xwnlKEcS5gXZR5fMxNbXG/XcWKL7KHAFMr4CCROyJkv
+         9aQopC0oR42Cm+ssDOYsF/HbYTIW0Ou0VONYSct3LJ1arO43L/LmjP7LMlmk4XGMEi4N
+         +sBdvzuYpExABl2O/vYbyDeZKT1HEkfVm/zqkjI6w4wmozdhQVj2e+BdqlELb54VlSSA
+         3fDJxPBDW29sk1fNkfeW+kbPFHOejCma3mmuau/PE2wF0UyCH6qbRhUksS2TtRpP9mOI
+         cKbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TjQIadq6DfkSuMtzgbVyqx7eozFCGzVHUTUogoGl7xY=;
-        b=K2frAgdxWXGL0XWJSaUpWGKdrq255SBlQqOoLPOKmmBtA8ZoB/XLqPV7k63SPDlnof
-         mQ7OXCQlh6ZetAQ//79DGSgWE7ov7H+Fw8gIV1R7+1M3lKjb3zNZnl/vLIIfDf2xdZqy
-         +PTuYVRJr0f1gh9na0E2ogYR6ny7dEDupNqdDmyyaL9DI6oIEiY3/eh6B53rPs1WDk1c
-         R9Te8g7jjMxQOlvkQrCFshFGPVu4cxPpD12zq6H78Gr7zUXI6yd5sHm91WtS2UBO0FZj
-         +DjenE47ZW+FxvINZqn52jV++/kRyLkwrGnrHgWncsXVVKXW5x3d+V8XFrF3Kv8RUdqV
-         su9A==
-X-Gm-Message-State: AGi0PuZZoDja/zqWVXue3J0o/xGCemk+Rnt9oarHN38WMhkrq7orlNJ+
-        XxFnbaCjWiEbt0cGi5HqUQVdCNcPxz8e5Q==
-X-Google-Smtp-Source: APiQypILiwgc6kOVf1Dh9xb4iNYqSTwVc8ILuaP2SqMOrOHSXjRr2sAkPPlMPKjIkNV0biK7ivNAUA==
-X-Received: by 2002:a05:6512:31d6:: with SMTP id j22mr11613555lfe.83.1588602117162;
-        Mon, 04 May 2020 07:21:57 -0700 (PDT)
+        bh=Hhx3Y7SsgO+0pmQCmi95Yty7DE5Dn2yrj/e7yZMXjG0=;
+        b=jYRdl2GSe0pShoqhElHgtUYDbXC4rMSvmADyJkDfsNh4G/iXhaZWgK8rTEhUgMuw1h
+         +VeiD1y4slcvf20msGQoHmNCGOsilZX9/7BzbIb9XCRHwxf+ckv4uOw+9OFjrF707FBV
+         B5xqE6hi8dmDiLjFrfcPtyxVYiwqdLvfTB8ba5dhE5uqtf8+8A3VOdJnxUkZywpngCpq
+         gr95seXJbd5mh7feAcffbGdWWJZtpf3r0rWe08UIAtiyZjYLSOyvKzmdw8uRSkuPZmZr
+         1Thki29fSt6j5JMcXStWPiVVyhMYG4/Wooj89AJ2t/SshkZ9hKFvqDs+dLf8R48MiVXt
+         UPEA==
+X-Gm-Message-State: AGi0PuaGb00hgD6cUoDeuiktlLShS13LLcdLMD85vEZvC/zkYyf+oDVz
+        uQcuWeWANRsGa53YlLQthJw=
+X-Google-Smtp-Source: APiQypJ4dL9JmnH70gQO29PoJf3xiH1hPxzW7b8U0rWIhC+A4/ca4FoDEcrtO/IXLdtwMMZISYRNxA==
+X-Received: by 2002:a19:f00b:: with SMTP id p11mr4500062lfc.210.1588602352950;
+        Mon, 04 May 2020 07:25:52 -0700 (PDT)
 Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id a2sm8363646ljj.53.2020.05.04.07.21.55
+        by smtp.gmail.com with ESMTPSA id i20sm10279354lfe.15.2020.05.04.07.25.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 07:21:55 -0700 (PDT)
+        Mon, 04 May 2020 07:25:51 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 May 2020 16:21:53 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+Date:   Mon, 4 May 2020 16:25:49 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 19/24] rcu/tree: Support reclaim for head-less object
-Message-ID: <20200504142153.GG17577@pc636>
+Subject: Re: [PATCH 11/24] rcu/tree: Maintain separate array for vmalloc ptrs
+Message-ID: <20200504142549.GH17577@pc636>
 References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-20-urezki@gmail.com>
- <20200501223909.GF7560@paulmck-ThinkPad-P72>
- <20200504001258.GD197097@google.com>
- <20200504002855.GF2869@paulmck-ThinkPad-P72>
- <20200504003237.GD212435@google.com>
+ <20200428205903.61704-12-urezki@gmail.com>
+ <20200501213753.GE7560@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200504003237.GD212435@google.com>
+In-Reply-To: <20200501213753.GE7560@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > > 
-> > > If we are not doing single-pointer allocation, then that would also eliminate
-> > > entering the low-level page allocator for single-pointer allocations.
-> > > 
-> > > Or did you mean entry into the allocator for the full-page allocations
-> > > related to the pointer array for PREEMPT_RT? Even if we skip entry into the
-> > > allocator for those, we will still have additional caching which further
-> > > reduces chances of getting a full page. In the event of such failure, we can
-> > > simply queue the rcu_head.
-> > > 
-> > > Thoughts?
-> > 
-> > I was just trying to guess why you kept the single-pointer allocation.
-> > It looks like I guessed wrong.  ;-)
-> > 
-> > If, as you say above, you make it go straight to synchronize_rcu()
-> > upon full-page allocation failure, that would be good!
+> > @@ -3072,21 +3105,34 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> >  		krwp = &(krcp->krw_arr[i]);
+> >  
+> >  		/*
+> > -		 * Try to detach bhead or head and attach it over any
+> > +		 * Try to detach bkvhead or head and attach it over any
+> >  		 * available corresponding free channel. It can be that
+> >  		 * a previous RCU batch is in progress, it means that
+> >  		 * immediately to queue another one is not possible so
+> >  		 * return false to tell caller to retry.
+> >  		 */
+> > -		if ((krcp->bhead && !krwp->bhead_free) ||
+> > +		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
+> > +			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
+> >  				(krcp->head && !krwp->head_free)) {
+> > -			/* Channel 1. */
+> > -			if (!krwp->bhead_free) {
+> > -				krwp->bhead_free = krcp->bhead;
+> > -				krcp->bhead = NULL;
+> > +			/*
+> > +			 * Channel 1 corresponds to SLAB ptrs.
+> > +			 */
+> > +			if (!krwp->bkvhead_free[0]) {
+> > +				krwp->bkvhead_free[0] = krcp->bkvhead[0];
+> > +				krcp->bkvhead[0] = NULL;
+> >  			}
+> >  
+> > -			/* Channel 2. */
+> > +			/*
+> > +			 * Channel 2 corresponds to vmalloc ptrs.
+> > +			 */
+> > +			if (!krwp->bkvhead_free[1]) {
+> > +				krwp->bkvhead_free[1] = krcp->bkvhead[1];
+> > +				krcp->bkvhead[1] = NULL;
+> > +			}
 > 
-> Paul, sounds good. Vlad, are you also Ok with that?
+> Why not a "for" loop here?  Duplicate code is most certainly not what
+> we want, as it can cause all sorts of trouble down the road.
 > 
-OK, let's drop it and keep it simple :)
-
-BTW, for PREEMPT_RT we still can do a page allocation for single
-argument of kvfree_rcu(). In case of double we just revert everything
-to the rcu_head if no cache.
-
-For single argument we can drop the lock before the entry to the page
-allocator. Because it follows might_sleep() anotation we avoid of having
-a situation when spinlock(rt mutex) is taken from any atomic context.
-
-Since the lock is dropped the current context can be interrupted by
-an IRQ which in its turn can also call kvfree_rcu() on current CPU.
-In that case it must be double argument(single is not allowed) kvfree_rcu()
-call. For PREEMPT_RT if no cache everything is reverted to rcu_head usage,
-i.e. the entry to page allocator is bypassed.
-
-It can be addressed as a separate patch and send out later on if we
-are on the same page.
-
-Paul, Joel what are your opinions?
+Agree. Can be done. Thanks :)
 
 --
 Vlad Rezki
+
+
