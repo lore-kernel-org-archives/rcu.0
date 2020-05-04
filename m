@@ -2,139 +2,120 @@ Return-Path: <SRS0=5yYX=6S=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE09FC47254
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 12:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10730C3A5A9
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 12:46:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C915420757
-	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 12:45:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DEC082071C
+	for <rcu@archiver.kernel.org>; Mon,  4 May 2020 12:46:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jcA9NxlZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5hrseaH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgEDMp0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 May 2020 08:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S1726467AbgEDMqC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 May 2020 08:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726467AbgEDMpZ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 4 May 2020 08:45:25 -0400
+        by vger.kernel.org with ESMTP id S1727950AbgEDMqC (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Mon, 4 May 2020 08:46:02 -0400
 Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDFFC061A0E;
-        Mon,  4 May 2020 05:45:24 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id j3so9472366ljg.8;
-        Mon, 04 May 2020 05:45:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E773CC061A0E;
+        Mon,  4 May 2020 05:46:01 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w20so9544537ljj.0;
+        Mon, 04 May 2020 05:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=cObmNJWQhpMjg4TLyfHtW5v/IhhmWX2FOHpf6uHBZHo=;
-        b=jcA9NxlZ6L0c9hBTeHkL+6ZWV3WMvNq5hmd5o3BKUGFT05J4wSfTVkPPtd7ZPMKrRb
-         N1WKJ93oae9Huxf1IDfhSLAOl0onP+QuYfXmUjBTbCWGse19Rf6dklWp3v8QO+yyavv4
-         u9edXDa+OdxM1SqSN0p7s1hlD2aWJSaRRhDBkU4HEsbVhbzioCoC+so3+2mBSnq3XY2m
-         rDSsEMllnnMybQ0nUpGYpyhowW33Z2u/8MgCu6jo6edb12QXklFdjpkiaVit8/vvOvUB
-         VkfkoBoG4ouFI9vbOsu+S6voPhEvjlbOoW9ixlYs5tDAipPT+1glfqBJz+g9jhUy5+h0
-         0XrA==
+        bh=MxtvJADHQyF2Bfyd3shzrzOV9msYv3TiT6BAQiW+KhI=;
+        b=f5hrseaHOwjQMXJt8bBACt6DaEIHexL3hv/OOA/rVyWM1tWtk+sIH+NdF5cNVNVhN5
+         qKA3GFB/imTK1sicAOYYj5xW2DmIA1vbJtN3nk43C2BxXlCOZGvEx5+HaoDiOr0gEe8P
+         b9lbbtykY/8gFZ6dtFAMjZILSNyQvimUYRYp/7Hoj4yjX7fjaJVEZZZkmghiiaVuqkxJ
+         Izl12k3Dleo6+leSUvmD8e66qM+dCmn9I9WhvGAhO02Ng8NufCBXJ1FPhKWQKrWb0gER
+         m293HKARydc4lfUPPSyYtWXgHLYleszKk75AXRlG6i2h/n+v1SbECwX4b1SjTDdKXb/s
+         QFtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cObmNJWQhpMjg4TLyfHtW5v/IhhmWX2FOHpf6uHBZHo=;
-        b=e8YpF0P1iVm7TeLVjr1YrhIQKS6XuEL7Eo4iEsFlN3NFktqJW/YPwF0XPIqtEUuvov
-         PXy/wA6dKkQGPTGoRagY/olhBLnizc7qIZTqzg6EL1TdYZzI48QktgiT0gFXt4gfWCWl
-         jIQ2SP8WLdcDqzkhUS2RC9rvlcIp99OYReuZRAbP+EVgBqHrmqvXlzhKoZGVQWtYiLVb
-         MLhN0oqrErgImJhBCiFm/aPqGcRvtmlFCEQnkTb0GRAWrO6fSpWTvsgMSewsrLVNXGmP
-         UwcxuZ8DlTzLcVzesYXqsCduGb186j8yO9H7JLKqZiA6LjjI6zVpkcZ3g1HMH0cVwx97
-         p5PA==
-X-Gm-Message-State: AGi0PuZmHsCbZ/QCOjrmed/nreScLfQLr2NB5jWp9U7GSVGdeCIw2HfH
-        NjHL3nqPzHXroITbZgWhj1d0jk9CnEMPbQ==
-X-Google-Smtp-Source: APiQypJXhT/ViTAl6h4ti7rqTDMwxGMrUxUDQkVVA6TeUrECI9C7Ng7Ry4jNrt/7FS9j+EVuatustw==
-X-Received: by 2002:a05:651c:3c6:: with SMTP id f6mr10141274ljp.229.1588596323191;
-        Mon, 04 May 2020 05:45:23 -0700 (PDT)
+        bh=MxtvJADHQyF2Bfyd3shzrzOV9msYv3TiT6BAQiW+KhI=;
+        b=A1eWNLWpdckPYK5/KZrtmCgO3IzRlea3sLVCe+DcKl4JyRIPpFarTNPu6PWAd1gz1q
+         hoJNQSVaMH1gP4mE9+u8JN/DuWn7vpm1jeEDWYbx8mE9o8bTdPl4lnyCetf0DfORNFwL
+         6yAwvZp/p18f1XpC3YM+2bPMNi1ZqifyaqMkNcaM0HaXMvReYNE0pyqfoxE7uAZ79His
+         VLuPph7EJqZGiihAi9Ml4kuJZA1eV6scvp3uQiWQ7Fj2Vgl5Kg04hKJ8rxyneGfDOgu6
+         A3holIqiIU+9lv9omOWX4p+yTfE1TyR0UMIe3bfxl/FuupgSexrFcyGa9vxaHzz/08Po
+         j3Tg==
+X-Gm-Message-State: AGi0PuYUldTYuzvmQ6poLR6PM2r++iMEi3UXHVFNl+KKqXvxVQZCNG7M
+        GFBMKuIoaZUYBGx6naYphgk=
+X-Google-Smtp-Source: APiQypJTSD+9jSx9npyWswKL3jKL6Fr3OUB38jOmcbJ2+udY4w2QdHHBJWxIzAa5v4c/b0ZTMcE0BA==
+X-Received: by 2002:a2e:9048:: with SMTP id n8mr10552753ljg.122.1588596360414;
+        Mon, 04 May 2020 05:46:00 -0700 (PDT)
 Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id l8sm8096189ljo.5.2020.05.04.05.45.22
+        by smtp.gmail.com with ESMTPSA id s8sm9570030lfd.61.2020.05.04.05.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 05:45:22 -0700 (PDT)
+        Mon, 04 May 2020 05:45:59 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 May 2020 14:45:20 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+Date:   Mon, 4 May 2020 14:45:57 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 21/24] rcu/tiny: move kvfree_call_rcu() out of header
-Message-ID: <20200504124520.GC17577@pc636>
+Subject: Re: [PATCH 22/24] rcu/tiny: support reclaim for head-less object
+Message-ID: <20200504124557.GD17577@pc636>
 References: <20200428205903.61704-1-urezki@gmail.com>
- <20200428205903.61704-22-urezki@gmail.com>
- <20200501230359.GH7560@paulmck-ThinkPad-P72>
+ <20200428205903.61704-23-urezki@gmail.com>
+ <20200501230638.GI7560@paulmck-ThinkPad-P72>
+ <20200504002700.GB212435@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200501230359.GH7560@paulmck-ThinkPad-P72>
+In-Reply-To: <20200504002700.GB212435@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 01, 2020 at 04:03:59PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 28, 2020 at 10:59:00PM +0200, Uladzislau Rezki (Sony) wrote:
-> > Move inlined kvfree_call_rcu() function out of the
-> > header file. This step is a preparation for head-less
-> > support.
+On Sun, May 03, 2020 at 08:27:00PM -0400, Joel Fernandes wrote:
+> On Fri, May 01, 2020 at 04:06:38PM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 28, 2020 at 10:59:01PM +0200, Uladzislau Rezki (Sony) wrote:
+> > > Make a kvfree_call_rcu() function to support head-less
+> > > freeing. Same as for tree-RCU, for such purpose we store
+> > > pointers in array. SLAB and vmalloc ptrs. are mixed and
+> > > coexist together.
+> > > 
+> > > Under high memory pressure it can be that maintaining of
+> > > arrays becomes impossible. Objects with an rcu_head are
+> > > released via call_rcu(). When it comes to the head-less
+> > > variant, the kvfree() call is directly inlined, i.e. we
+> > > do the same as for tree-RCU:
+> > >     a) wait until a grace period has elapsed;
+> > >     b) direct inlining of the kvfree() call.
+> > > 
+> > > Thus the current context has to follow might_sleep()
+> > > annotation. Also please note that for tiny-RCU any
+> > > call of synchronize_rcu() is actually a quiescent
+> > > state, therefore (a) does nothing.
 > > 
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  include/linux/rcutiny.h | 6 +-----
-> >  kernel/rcu/tiny.c       | 6 ++++++
-> >  2 files changed, 7 insertions(+), 5 deletions(-)
+> > Please, please, please just do synchronize_rcu() followed by kvfree()
+> > for single-argument kfree_rcu() and friends in Tiny RCU.
 > > 
-> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> > index 0c6315c4a0fe..7eb66909ae1b 100644
-> > --- a/include/linux/rcutiny.h
-> > +++ b/include/linux/rcutiny.h
-> > @@ -34,11 +34,7 @@ static inline void synchronize_rcu_expedited(void)
-> >  	synchronize_rcu();
-> >  }
-> >  
-> > -static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > -{
-> > -	call_rcu(head, func);
-> > -}
-> > -
-> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
-> >  void rcu_qs(void);
-> >  
-> >  static inline void rcu_softirq_qs(void)
-> > diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> > index aa897c3f2e92..508c82faa45c 100644
-> > --- a/kernel/rcu/tiny.c
-> > +++ b/kernel/rcu/tiny.c
-> > @@ -177,6 +177,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  }
-> >  EXPORT_SYMBOL_GPL(call_rcu);
-> >  
-> > +void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > +{
-> > +	call_rcu(head, func);
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+> > Way simpler and probably way faster as well.  And given that Tiny RCU
+> > runs only on uniprocessor systems, the complexity probably is buying
+> > you very little, if anything.
 > 
-> This increases the size of Tiny RCU.  Plus in Tiny RCU, the overhead of
-> synchronize_rcu() is exactly zero.  So why not make the single-argument
-> kvfree_call_rcu() just unconditionally do synchronize_rcu() followed by
-> kvfree() or whatever?  That should go just fine into the header file.
+> Agreed.
 > 
-I was thinking about it. That makes sense. Let me rework it then :)
+Cool. Agree also :)
 
 --
 Vlad Rezki
