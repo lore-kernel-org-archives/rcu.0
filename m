@@ -2,254 +2,260 @@ Return-Path: <SRS0=Rnls=6Z=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33081C38A2A
-	for <rcu@archiver.kernel.org>; Mon, 11 May 2020 02:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27325C47255
+	for <rcu@archiver.kernel.org>; Mon, 11 May 2020 15:44:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0507A208E4
-	for <rcu@archiver.kernel.org>; Mon, 11 May 2020 02:44:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 04AA620746
+	for <rcu@archiver.kernel.org>; Mon, 11 May 2020 15:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589165069;
-	bh=8L9FDF4no7+/puiAJxaaBkaIAsM7CjahfcFOlftQHgc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=TAKfOQ1n1kYEzJrVUoEw+v3AR9IYuQxGeF3HnUw0tV5uhrChXs8JMZS3qFYgrYO0x
-	 v+x+XVFvCK+sFzondzrUHo6PgZrtTbCNKYoM8p055nCwem+POG1R5eNUG/y3TOLIPt
-	 4YL2WvdZrBPc6NxLkcqdeI36tQx6kLITFwZmYyCQ=
+	s=default; t=1589211849;
+	bh=XQZ4bTetd/fEUJV+XnMbIowvtB5da1w3aAqHnAGU8c0=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=clByAM9pKx7Q98MiTqtApQ7Hmzu4z/EtcYcTwqS5cMKOhEI35L35zn2rK+BfxhU5Y
+	 rsa5L/XTLih2sFhzE8en087eCjOetYsErj1nj0oIOi/CVjVqKOYCBpS13xx9KPAlLR
+	 280R0r5Fbfd4BW3Faroh+EarCs1SwZVXADXywqTY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgEKCo2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 May 2020 22:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
+        id S1726934AbgEKPoI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 May 2020 11:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgEKCo2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 May 2020 22:44:28 -0400
+        id S1726687AbgEKPoI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 May 2020 11:44:08 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4116920820;
-        Mon, 11 May 2020 02:44:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD632206A3;
+        Mon, 11 May 2020 15:44:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589165067;
-        bh=8L9FDF4no7+/puiAJxaaBkaIAsM7CjahfcFOlftQHgc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ev2EyPPf/NnjFauStDQEsb4T5AgD+bMqxYlm/LPj/HZcINHp1hYnFMbh4NqKhU+CX
-         se5sO+i1hhq6OOKDJdLuMThOGSjV3HC9ROA+cUMMJaNHYWGXeYnFbgrrXFNmXzs1QE
-         wh+vrMfowggESChHpbWmmygsKO2XiixQZZVKuUAY=
+        s=default; t=1589211846;
+        bh=XQZ4bTetd/fEUJV+XnMbIowvtB5da1w3aAqHnAGU8c0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=MLqDZakSYs62ZPuIZdkUfcpRX9x9SmZmITSckPBAOmUgYYWJ+stI3msZLLOCWXoeZ
+         MReq5d0k1wS7QuCmt2vb3etQdAG7uL5Eu7hvc2FZ8dg+SO7mX0lQqmgdVA/m5eMv+n
+         lZ7s9ASHMmU7a3K7WpQwKQjD/AKSK9+b3nHh2XaU=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 233BC3523303; Sun, 10 May 2020 19:44:27 -0700 (PDT)
-Date:   Sun, 10 May 2020 19:44:27 -0700
+        id 5C42135226DF; Mon, 11 May 2020 08:44:06 -0700 (PDT)
+Date:   Mon, 11 May 2020 08:44:06 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "kernel-team@fb.com," <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>, dipankar <dipankar@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH RFC tip/core/rcu 09/16] rcu-tasks: Add an RCU-tasks rude
- variant
-Message-ID: <20200511024427.GT2869@paulmck-ThinkPad-P72>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kernel-team@vger.kernel.org, jbi.octave@gmail.com,
+        j.neuschaefer@gmx.net, joel@joelfernandes.org,
+        laijs@linux.alibaba.com, mchehab+huawei@kernel.org,
+        rdunlap@infradead.org, yanaijie@huawei.com, zhangzl2013@126.com
+Subject: [GIT PULL tip/core/rcu] RCU commits for v5.8
+Message-ID: <20200511154406.GA32144@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200312181702.8443-9-paulmck@kernel.org>
- <20200316194754.GA172196@google.com>
- <CAEXW_YREzQ8hMP_vGiQFiNAtwxPn_C0TG6mH68QaS8cES-Jr3Q@mail.gmail.com>
- <20200316203241.GB3199@paulmck-ThinkPad-P72>
- <20200316173219.1f8b7443@gandalf.local.home>
- <CAEXW_YRtGhiaz+86pTL2WTyx5tqrpjB-bgQbnMLXjSQXPCmYfw@mail.gmail.com>
- <20200316180352.4816cb99@gandalf.local.home>
- <CAJhGHyAaktwgv63XcUaLduKyYSwA+OuTLU_h7XAgyD6CKZp5Mg@mail.gmail.com>
- <20200510154908.GR2869@paulmck-ThinkPad-P72>
- <CAJhGHyB4xQqKpYwOZdznVTzGjLaJuDPy4upDny9mdnUb1oAKCg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAJhGHyB4xQqKpYwOZdznVTzGjLaJuDPy4upDny9mdnUb1oAKCg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 11, 2020 at 08:06:29AM +0800, Lai Jiangshan wrote:
-> On Sun, May 10, 2020 at 11:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, May 10, 2020 at 05:59:27PM +0800, Lai Jiangshan wrote:
-> > > On Tue, Mar 17, 2020 at 6:03 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > >
-> > > > On Mon, 16 Mar 2020 17:45:40 -0400
-> > > > Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > > >
-> > > > > > Same for the function side (if not even more so). This would require adding
-> > > > > > a srcu_read_lock() to all functions that can be traced! That would be a huge
-> > > > > > kill in performance. Probably to the point no one would bother even using
-> > > > > > function tracer.
-> > > > >
-> > > > > Point well taken! Thanks,
-> > > >
-> > > > Actually, it's worse than that. (We talked about this on IRC but I wanted
-> > > > it documented here too).
-> > > >
-> > > > You can't use any type of locking, unless you insert it around all the
-> > > > callers of the nops (which is unreasonable).
-> > > >
-> > > > That is, we have gcc -pg -mfentry that creates at the start of all traced
-> > > > functions:
-> > > >
-> > > >  <some_func>:
-> > > >     call __fentry__
-> > > >     [code for function here]
-> > > >
-> > > > At boot up (or even by the compiler itself) we convert that to:
-> > > >
-> > > >  <some_func>:
-> > > >     nop
-> > > >     [code for function here]
-> > > >
-> > > >
-> > > > When we want to trace this function we use text_poke (with current kernels)
-> > > > and convert it to this:
-> > > >
-> > > >  <some_func>:
-> > > >     call trace_trampoline
-> > > >     [code for function here]
-> > > >
-> > > >
-> > > > That trace_trampoline can be allocated, which means when its no longer
-> > > > needed, it must be freed. But when do we know it's safe to free it? Here's
-> > > > the issue.
-> > > >
-> > > >
-> > > >  <some_func>:
-> > > >     call trace_trampoline  <- interrupt happens just after the jump
-> > > >     [code for function here]
-> > > >
-> > > > Now the task has just executed the call to the trace_trampoline. Which
-> > > > means the instruction pointer is set to the start of the trampoline. But it
-> > > > has yet executed that trampoline.
-> > > >
-> > > > Now if the task is preempted, and a real time hog is keeping it from
-> > > > running for minutes at a time (which is possible!). And in the mean time,
-> > > > we are done with that trampoline and free it. What happens when that task
-> > > > is scheduled back? There's no more trampoline to execute even though its
-> > > > instruction pointer is to execute the first operand on the trampoline!
-> > > >
-> > > > I used the analogy of jumping off the cliff expecting a magic carpet to be
-> > > > there to catch you, and just before you land, it disappears. That would be
-> > > > a very bad day indeed!
-> > > >
-> > > > We have no way to add a grace period between the start of a function (can
-> > > > be *any* function) and the start of the trampoline.
-> > >
-> > > Hello
-> > >
-> > > I think adding a small number of instructions to preempt_schedule_irq()
-> > > is sufficient to create the needed protected region between the start
-> > > of a function and the trampoline body.
-> > >
-> > > preempt_schedule_irq() {
-> > > +  if (unlikely(is_trampoline_page(page_of(interrupted_ip)))) {
-> > > +      return; // don't do preempt schedule
-> > > +
-> > > +  }
-> > >   preempt_schedule_irq() original body
-> > > }
-> > >
-> > > // generated on trampoline pages
-> > > trace_trampoline() {
-> > >    preempt_disable();
-> > >    trace_trampoline body
-> > >    jmp preempt_enable_traced(clobbers)
-> > > }
-> > >
-> > > asm(kernel text):
-> > > preempt_enable_traced:
-> > >    preempt_enable_notrace();
-> > >    restore cobblers
-> > >    return(the return ip on the stack is traced_function_start_code)
-> > >
-> > >
-> > > If the number of instructions added in preempt_schedule_irq() and
-> > > the complexity to make trampoline ip detectable(is_trampoline_page(),
-> > > or is_trampoline_range()) are small, and tasks_rcu is rendered useless,
-> > > I think it will be win-win.
-> >
-> > It certainly would provide a nice reduction in code size!
-> >
-> > This would provide a zero-instructions preempt_disable() at the beginning
-> > of the trampoline and a zero-instructions preempt_enable_no_resched() at
-> > the end, correct?  If so, wouldn't this create a potentially long (though
-> > "weak") preempt-disable region extending to the next preempt_enable(),
-> > local_bh_enable(), schedule(), interrupt, transition to userspace,
-> > or similar?  This could be quite some time.  Note that cond_resched()
-> > wouldn't help, given that this is only in PREEMPT=y kernels.
-> >
-> > The "weak" refers to the fact that if a second resched IPI arrived in the
-> > meantime, preemption would then happen.  But without that second IPI,
-> > the request for preemption could be ignored for quite some time.
-> >
-> > Or am I missing something here?
-> 
-> Hello,
-> 
-> I'm sorry to note that preempt_enable_traced() is in *kernel text*, it
-> is *not* in trace_trampoline_protected region. So preempt_enable_traced()
-> can be preempted. And preempt_enable_notrace() in it checks any previous
-> resched requested during the trampoline. So no resched request is lost.
-> 
-> The idea is that "semi-automatically preempt-disable-protecting"
-> the trampoline. "semi" means the trampoline still needs
-> preempt_disable() and the beginning, and preempt_enable() at
-> the end after leaving trace_trampoline_preempt_protected region.
-> "automatically" means the region between the start ip of
-> trampoline and the first preempt_disable() is also protected.
-> This automatically protected region is IP based, which means the
-> code should be put in "trace_trampoline_preempt_protected".
+Hello!
 
-Good point, and I did fail to connect the dots in your earlier email.
+This pull request contains the following changes:
 
-> In my previous email, "trace_trampoline_preempt_protected" is detected
-> by information in the "struct page". But the trampolines are often
-> created in module_alloc() region, if so, 13-page bitmap is sufficient
-> to store "is this virtual-page-frame-number in trace_trampoline?" info
-> for all vpfn in 1520 MB module_alloc() region. If the bitmap
-> is too big for some cases, we might need to use bloom filter
-> for the fast path. I still don't know what is the best way to control
-> the ip of trace_trampoline or attach info to it and to fast detect it.
+1.	Miscellaneous fixes.
 
-Or perhaps use a different approach to trampoline allocation as Masami
-suggests.
+	https://lore.kernel.org/lkml/20200415171017.GA7821@paulmck-ThinkPad-P72
 
-							Thanx, Paul
+2.	kfree_rcu() updates.
 
-> Thanks,
-> Lai
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > >
-> > > Lai
-> > >
-> > > > Since the problem is
-> > > > that the task was non-voluntarily preempted before it could execute the
-> > > > trampoline, and that trampolines are not allowed (suppose) to call
-> > > > schedule, then we have our quiescent state to track (voluntary scheduling).
-> > > > When all tasks have either voluntarily scheduled, or entered user space
-> > > > after disconnecting a trampoline from a function, we know that it is safe to
-> > > > free the trampoline.
-> > > >
-> > > > -- Steve
+	https://lore.kernel.org/lkml/20200415171924.GA9270@paulmck-ThinkPad-P72
+
+3.	Remove scheduler locking restriction
+
+	https://lore.kernel.org/lkml/20200415175543.GA10416@paulmck-ThinkPad-P72
+
+4.	RCU-tasks update, including addition of RCU Tasks Trace for
+	BPF use and RCU Tasks Rude.  (This branch is on top of #3 due
+	to overlap of changed code.)
+
+	https://lore.kernel.org/lkml/20200415181856.GA11037@paulmck-ThinkPad-P72
+
+5.	RCU CPU stall warning updates.
+
+	https://lore.kernel.org/lkml/20200415172341.GA9519@paulmck-ThinkPad-P72
+
+6.	Torture-test updates.
+
+	https://lore.kernel.org/lkml/20200415173037.GA9768@paulmck-ThinkPad-P72
+
+All of these have been subjected to the kbuild test robot and -next
+testing, and are available in the git repository based on v5.7-rc2 at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+
+for you to fetch changes up to f736e0f1a55a88cb258b73da77463573739e9ac9:
+
+  Merge branches 'fixes.2020.04.27a', 'kfree_rcu.2020.04.27a', 'rcu-tasks.2020.04.27a', 'stall.2020.04.27a' and 'torture.2020.05.07a' into HEAD (2020-05-07 10:18:32 -0700)
+
+----------------------------------------------------------------
+Jason Yan (1):
+      rcutorture: Make rcu_fwds and rcu_fwd_emergency_stop static
+
+Joel Fernandes (Google) (3):
+      rcuperf: Add ability to increase object allocation size
+      rcu/tree: Add a shrinker to prevent OOM due to kfree_rcu() batching
+      rcu/tree: Count number of batched kfree_rcu() locklessly
+
+Jonathan Neuschäfer (1):
+      Revert "rculist: Describe variadic macro argument in a Sphinx-compatible way"
+
+Jules Irenge (2):
+      rcu: Replace assigned pointer ret value by corresponding boolean value
+      rcu: Replace 1 by true
+
+Lai Jiangshan (3):
+      rcu: Don't set nesting depth negative in rcu_preempt_deferred_qs()
+      rcu: Remove unused ->rcu_read_unlock_special.b.deferred_qs field
+      rcu: Don't use negative nesting depth in __rcu_read_unlock()
+
+Mauro Carvalho Chehab (1):
+      rcu: Get rid of some doc warnings in update.c
+
+Paul E. McKenney (74):
+      rcu: Add KCSAN stubs
+      srcu: Add KCSAN stubs
+      rcu: Mark rcu_state.ncpus to detect concurrent writes
+      rcu: Add *_ONCE() and data_race() to rcu_node ->exp_tasks plus locking
+      rcu: Add READ_ONCE and data_race() to rcu_node ->boost_tasks
+      srcu: Add data_race() to ->srcu_lock_count and ->srcu_unlock_count arrays
+      rcu: Add WRITE_ONCE() to rcu_node ->boost_tasks
+      rcu: Use data_race() for RCU CPU stall-warning prints
+      drm: Make drm_dp_mst_dsc_aux_for_port() safe for old compilers
+      rcu: Expedite first two FQS scans under callback-overload conditions
+      rcu: Mark rcu_state.gp_seq to detect more concurrent writes
+      rcu: Convert ULONG_CMP_GE() to time_after() for jiffy comparison
+      rcu: Convert rcu_initiate_boost() ULONG_CMP_GE() to time_after()
+      rcu: Convert rcu_nohz_full_cpu() ULONG_CMP_LT() to time_before()
+      rcu: Add rcu_gp_might_be_stalled()
+      rcu: Add KCSAN stubs to update.c
+      rcu: Make rcu_read_unlock_special() safe for rq/pi locks
+      rcutorture: Add test of holding scheduler locks across rcu_read_unlock()
+      rcu: Add comments marking transitions between RCU watching and not
+      rcu-tasks: Use context-switch hook for PREEMPT=y kernels
+      sched/core: Add function to sample state of locked-down task
+      rcu: Add per-task state to RCU CPU stall warnings
+      rcu-tasks: Move Tasks RCU to its own file
+      rcu-tasks: Create struct to hold state information
+      rcu: Reinstate synchronize_rcu_mult()
+      rcutorture: Add a test for synchronize_rcu_mult()
+      rcu-tasks: Refactor RCU-tasks to allow variants to be added
+      rcu-tasks: Add an RCU-tasks rude variant
+      rcutorture: Add torture tests for RCU Tasks Rude
+      rcu-tasks: Use unique names for RCU-Tasks kthreads and messages
+      rcu-tasks: Further refactor RCU-tasks to allow adding more variants
+      rcu-tasks: Code movement to allow more Tasks RCU variants
+      rcu-tasks: Add an RCU Tasks Trace to simplify protection of tracing hooks
+      rcutorture: Add torture tests for RCU Tasks Trace
+      rcu-tasks: Add stall warnings for RCU Tasks Trace
+      rcu-tasks: Move #ifdef into tasks.h
+      rcu-tasks: Add RCU tasks to rcutorture writer stall output
+      rcu-tasks: Make rcutorture writer stall output include GP state
+      rcu-tasks: Make RCU Tasks Trace make use of RCU scheduler hooks
+      rcu-tasks: Add a grace-period start time for throttling and debug
+      rcu-tasks: Provide boot parameter to delay IPIs until late in grace period
+      rcu-tasks: Split ->trc_reader_need_end
+      rcu-tasks: Add grace-period and IPI counts to statistics
+      rcu-tasks: Add Kconfig option to mediate smp_mb() vs. IPI
+      rcu-tasks: Avoid IPIing userspace/idle tasks if kernel is so built
+      rcu-tasks: Allow rcu_read_unlock_trace() under scheduler locks
+      rcu-tasks: Disable CPU hotplug across RCU tasks trace scans
+      rcu-tasks: Handle the running-offline idle-task special case
+      rcu-tasks: Make RCU tasks trace also wait for idle tasks
+      rcu-tasks: Add rcu_dynticks_zero_in_eqs() effectiveness statistics
+      rcu-tasks: Add count for idle tasks on offline CPUs
+      rcutorture: Add TRACE02 scenario enabling RCU Tasks Trace IPIs
+      rcu-tasks: Add IPI failure count to statistics
+      rcu-tasks: Allow standalone use of TASKS_{TRACE_,}RCU
+      ftrace: Use synchronize_rcu_tasks_rude() instead of ftrace_sync()
+      rcu: Use data_race() for RCU expedited CPU stall-warning prints
+      rcu: When GP kthread is starved, tag idle threads as false positives
+      rcu: Remove self-stack-trace when all quiescent states seen
+      rcutorture: Add KCSAN stubs
+      rcutorture: Make kvm-recheck-rcu.sh handle truncated lines
+      rcutorture: Mark data-race potential for rcu_barrier() test statistics
+      rcutorture: Add flag to produce non-busy-wait task stalls
+      rcutorture: Right-size TREE10 CPU consumption
+      rcu: Allow rcutorture to starve grace-period kthread
+      torture: Add --kcsan argument to top-level kvm.sh script
+      torture: Make --kcsan argument also create a summary
+      torture: Eliminate duplicate #CHECK# from ConfigFragment
+      torture: Abstract application of additional Kconfig options
+      torture: Allow --kconfig options to override --kcsan defaults
+      torture: Allow scenario-specific Kconfig options to override CFcommon
+      torture: Save a few lines by using config_override_param initially
+      torture: Add a --kasan argument
+      rcutorture: Convert ULONG_CMP_LT() to time_before()
+      Merge branches 'fixes.2020.04.27a', 'kfree_rcu.2020.04.27a', 'rcu-tasks.2020.04.27a', 'stall.2020.04.27a' and 'torture.2020.05.07a' into HEAD
+
+Randy Dunlap (1):
+      locktorture.c: Fix if-statement empty body warnings
+
+Zhaolong Zhang (1):
+      rcu: Fix the (t=0 jiffies) false positive
+
+ .../RCU/Design/Requirements/Requirements.rst       |   61 +-
+ Documentation/admin-guide/kernel-parameters.txt    |   19 +
+ drivers/gpu/drm/drm_dp_mst_topology.c              |    2 +-
+ include/linux/rculist.h                            |    4 +-
+ include/linux/rcupdate.h                           |   53 +-
+ include/linux/rcupdate_trace.h                     |   88 ++
+ include/linux/rcupdate_wait.h                      |   19 +
+ include/linux/rcutiny.h                            |    3 +-
+ include/linux/rcutree.h                            |    1 +
+ include/linux/sched.h                              |   10 +-
+ include/linux/torture.h                            |    2 +-
+ include/linux/wait.h                               |    2 +
+ init/init_task.c                                   |    5 +
+ kernel/fork.c                                      |    5 +
+ kernel/rcu/Kconfig                                 |   46 +-
+ kernel/rcu/Kconfig.debug                           |    4 +
+ kernel/rcu/rcu.h                                   |    7 +
+ kernel/rcu/rcuperf.c                               |    5 +-
+ kernel/rcu/rcutorture.c                            |  155 ++-
+ kernel/rcu/srcutree.c                              |   21 +-
+ kernel/rcu/tasks.h                                 | 1193 ++++++++++++++++++++
+ kernel/rcu/tree.c                                  |  179 ++-
+ kernel/rcu/tree.h                                  |    3 +
+ kernel/rcu/tree_exp.h                              |   50 +-
+ kernel/rcu/tree_plugin.h                           |   86 +-
+ kernel/rcu/tree_stall.h                            |  144 ++-
+ kernel/rcu/update.c                                |  394 +------
+ kernel/sched/core.c                                |   48 +
+ kernel/trace/Kconfig                               |    1 +
+ kernel/trace/ftrace.c                              |   17 +-
+ .../selftests/rcutorture/bin/kcsan-collapse.sh     |   22 +
+ .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |   16 +-
+ .../selftests/rcutorture/bin/kvm-recheck.sh        |    9 +
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     |   52 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |   11 +
+ .../selftests/rcutorture/configs/rcu/CFLIST        |    3 +
+ .../selftests/rcutorture/configs/rcu/RUDE01        |   10 +
+ .../selftests/rcutorture/configs/rcu/RUDE01.boot   |    1 +
+ .../selftests/rcutorture/configs/rcu/TRACE01       |   11 +
+ .../selftests/rcutorture/configs/rcu/TRACE01.boot  |    1 +
+ .../selftests/rcutorture/configs/rcu/TRACE02       |   11 +
+ .../selftests/rcutorture/configs/rcu/TRACE02.boot  |    1 +
+ .../selftests/rcutorture/configs/rcu/TREE10        |    2 +-
+ 43 files changed, 2156 insertions(+), 621 deletions(-)
+ create mode 100644 include/linux/rcupdate_trace.h
+ create mode 100644 kernel/rcu/tasks.h
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE01.boot
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
