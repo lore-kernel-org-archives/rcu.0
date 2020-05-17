@@ -1,48 +1,36 @@
-Return-Path: <SRS0=BJlB=66=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=GvEc=67=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD82C433DF
-	for <rcu@archiver.kernel.org>; Sat, 16 May 2020 17:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA61BC433E0
+	for <rcu@archiver.kernel.org>; Sun, 17 May 2020 10:27:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 81BE6206D4
-	for <rcu@archiver.kernel.org>; Sat, 16 May 2020 17:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589649144;
-	bh=7BUjCabPx6WoCwcfAvKuiYbT/eq0evFo0tCNOJ2KFsM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=CCfiptj7jFeBWH2yT4lk/fLOT2C92nB9KTa1uvP0ef9Pc/Ue8eWeSFnkdOu9fEkST
-	 KQzi1Lspy/Si8fy0wpZFBMCtbqxA7a5MnQUqEtLysBCBl58NA756Z+krANZTCE4HUB
-	 YGa3DzvSd7eD3ZVxrj5rG4y9f6eY0OXsgs7uhUIk=
+	by mail.kernel.org (Postfix) with ESMTP id B9D4520657
+	for <rcu@archiver.kernel.org>; Sun, 17 May 2020 10:27:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgEPRMY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 16 May 2020 13:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726242AbgEPRMY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 16 May 2020 13:12:24 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E2092065C;
-        Sat, 16 May 2020 17:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589649143;
-        bh=7BUjCabPx6WoCwcfAvKuiYbT/eq0evFo0tCNOJ2KFsM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JJk+NRs1XPcDLScVdcaOk7kheXGKiId/Gke6W0uGSSBCrwAHJM2Ty1N8rpgRzRUdk
-         gG8Tyu0OhI5somHQWbjFl4ilsWabZ0//10pCHq3/aITEPfm67l3PkbJskG1QMXAcm6
-         6vDmsyDosxt02PzG80CidglZdIUlA2myPiFUQ7os=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 37F4C3522CED; Sat, 16 May 2020 10:12:23 -0700 (PDT)
-Date:   Sat, 16 May 2020 10:12:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        id S1727122AbgEQK1a (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 17 May 2020 06:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727081AbgEQK1a (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 17 May 2020 06:27:30 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FC9C061A0C;
+        Sun, 17 May 2020 03:27:29 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jaGVI-0001pW-Da; Sun, 17 May 2020 12:26:44 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id CBD0A100F17; Sun, 17 May 2020 12:26:43 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     paulmck@kernel.org,
+        "Joel Fernandes \(Google\)" <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Frederic Weisbecker <fweisbec@gmail.com>, frextrite@gmail.com,
         Ingo Molnar <mingo@redhat.com>,
@@ -51,65 +39,56 @@ Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         madhuparnabhowmik04@gmail.com,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         peterz@infradead.org, Petr Mladek <pmladek@suse.com>,
-        rcu@vger.kernel.org, rostedt@goodmis.org, tglx@linutronix.de,
-        vpillai@digitalocean.com
+        rcu@vger.kernel.org, rostedt@goodmis.org, vpillai@digitalocean.com
 Subject: Re: [PATCH v3 0/5] RCU dyntick nesting counter cleanups for rcu -dev
-Message-ID: <20200516171223.GC2639@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200504120505.89351-1-joel@joelfernandes.org>
- <20200504171532.GR2869@paulmck-ThinkPad-P72>
- <20200504174413.GA8883@paulmck-ThinkPad-P72>
+In-Reply-To: <20200516171223.GC2639@paulmck-ThinkPad-P72>
+References: <20200504120505.89351-1-joel@joelfernandes.org> <20200504171532.GR2869@paulmck-ThinkPad-P72> <20200504174413.GA8883@paulmck-ThinkPad-P72> <20200516171223.GC2639@paulmck-ThinkPad-P72>
+Date:   Sun, 17 May 2020 12:26:43 +0200
+Message-ID: <87wo5adfh8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200504174413.GA8883@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 04, 2020 at 10:44:13AM -0700, Paul E. McKenney wrote:
-> On Mon, May 04, 2020 at 10:15:32AM -0700, Paul E. McKenney wrote:
-> > On Mon, May 04, 2020 at 08:05:00AM -0400, Joel Fernandes (Google) wrote:
-> > > These patches clean up the usage of dynticks nesting counters simplifying the
-> > > code, while preserving the usecases.
-> > > 
-> > > It is a much needed simplification, makes the code less confusing, and prevents
-> > > future bugs such as those that arise from forgetting that the
-> > > dynticks_nmi_nesting counter is not a simple counter and can be "crowbarred" in
-> > > common situations.
-> > > 
-> > > rcutorture testing with all TREE RCU configurations succeed with
-> > > CONFIG_RCU_EQS_DEBUG=y and CONFIG_PROVE_LOCKING=y.
-> > > 
-> > > v1->v2:
-> > > - Rebase on v5.6-rc6
-> > > 
-> > > v2->v3:
-> > > - Rebase on rcu/dev with adjustments for tasks-RCU.
-> > 
-> > Thank you!
-> > 
-> > But this does not apply to any of v5.6-rc6, v5.7-rc1, or v5.7-rc2.
-> > 
-> > Where should I be trying to apply it?
-> 
-> OK, morning blindness overcome.  I new see the "rcu/dev" in v2->v3.
-> 
-> Please accept my apologies for the noise.
+Paul,
 
-And I have allegedly resolved the conflicts with Thomas's and Peter's
-series, or at least the noinstr-rcu-nmi-2020-05-15 branch of that series.
-At least one conflict was completely invisible to "git rebase" (but
-fortunately blindingly obvious to the compiler).  This naturally makes
-me suspect that additional adjustments might be needed.  Especially
-given that misplaced instrumentation_begin() and instrumentation_end()
-calls are invisible not only to the compiler, but also to rcutorture in
-my setup.  (For example, tracing before instrumentation_begin() or after
-instrumentation_end() is a bug.)
+"Paul E. McKenney" <paulmck@kernel.org> writes:
+> And I have allegedly resolved the conflicts with Thomas's and Peter's
+> series, or at least the noinstr-rcu-nmi-2020-05-15 branch of that series.
+> At least one conflict was completely invisible to "git rebase" (but
+> fortunately blindingly obvious to the compiler).  This naturally makes
+> me suspect that additional adjustments might be needed.  Especially
+> given that misplaced instrumentation_begin() and instrumentation_end()
+> calls are invisible not only to the compiler, but also to rcutorture in
+> my setup.  (For example, tracing before instrumentation_begin() or after
+> instrumentation_end() is a bug.)
 
-So could you please carefully check these commits?  They are now on the
--rcu tree's "dev" branch.
+there is tooling to verify that. If you merge
 
-							Thanx, Paul
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v7-full
+
+into your dev branch (trivial conflict) and after building it, run:
+
+ objtool check -fal $BUILDIR/vmlinux.o
+
+Note: This only covers built-in code. So if you have code you want to
+check make sure it's not built as module.
+
+Just did that and it complains about:
+
+../build/vmlinux.o: warning: objtool: rcu_eqs_enter.constprop.0()+0xa9: call to rcu_preempt_deferred_qs() leaves .noinstr.text section
+
+But that's even the case on my branch without your changes.
+
+The call to rcu_preempt_deferred_qs() is definitely before
+instrumentation_end() so this needs to be investigated on the objtool
+side. Peter?
+
+Thanks,
+
+        tglx
