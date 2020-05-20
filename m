@@ -2,32 +2,51 @@ Return-Path: <SRS0=9J+a=7C=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A0EFC433DF
-	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 18:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7F1C433E0
+	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 18:36:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 518D420671
-	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 18:28:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 478DF2072C
+	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 18:36:00 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="csPiNuNP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgETS2i convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Wed, 20 May 2020 14:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        id S1726789AbgETSgA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 May 2020 14:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgETS2h (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 May 2020 14:28:37 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE59C061A0E;
-        Wed, 20 May 2020 11:28:37 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jbTRg-0008Qk-Ns; Wed, 20 May 2020 20:28:00 +0200
-Date:   Wed, 20 May 2020 20:28:00 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S1726510AbgETSf7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 May 2020 14:35:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84DBC061A0E;
+        Wed, 20 May 2020 11:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=LpP3njNeRQlE8pQN/rNMBpiRJ3syO8fJUum3/qmawto=; b=csPiNuNPAaI8C2B9I7+3BVXpP6
+        t2g4rmNFkmh5xBRnw1JA3qY7k2C2Id0r36b3orlPJYdmJO9YZVdWLxwXeSuOV7ap2bMKwaFTWHbc6
+        s3Osf4Bxet3PqhUXCZTzEz1DCTrOWYkB/LhuSe6LDNLTcb9M7caoRKXReq798pBgQhwf8ARAJCEfq
+        OSJ5rgh1oiuoy90omdSEAqNyUrZudjJI7FmEPg78njYambgqwf3B3xo3I5hzCmIWnEXFx9xAZMkw3
+        3oNHhfgxTGkUR3uZteTjCsrRdInH9SE7eQxjzOIPvcYF9qHewQ+4pV8lDAg+Zo10CfTseFOJalRNm
+        NQqkffMA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbTYy-0005GP-LJ; Wed, 20 May 2020 18:35:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C76D2305EEE;
+        Wed, 20 May 2020 20:35:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2A10E20C3437F; Wed, 20 May 2020 20:35:29 +0200 (CEST)
+Date:   Wed, 20 May 2020 20:35:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
@@ -40,83 +59,36 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         rcu@vger.kernel.org
 Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
  access
-Message-ID: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
+Message-ID: <20200520183529.GR317569@hirez.programming.kicks-ass.net>
 References: <20200519201912.1564477-1-bigeasy@linutronix.de>
  <20200519201912.1564477-4-bigeasy@linutronix.de>
  <20200520102407.GF317569@hirez.programming.kicks-ass.net>
  <20200520120608.mwros5jurmidxxfv@linutronix.de>
  <20200520174259.GA247557@google.com>
+ <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200520174259.GA247557@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
-> Hi Sebastian,
-Hi Joel,
-
-> For pointer stability, can we just use get_local_ptr() and put_local_ptr()
-> instead of adding an extra lock? This keeps the pointer stable while keeping
-> the section preemptible on -rt. And we already have a lock in rcu_data, I
-> prefer not to add another lock if possible.
-
-What is this get_local_ptr() doing? I can't find it anywhere…
-
-> I wrote a diff below with get_local_ptr() (just build tested). Does this
-> solve your issue?
-
-see below.
-
-> > I remember Paul looked at that patch a few years ago and he said that
-> > that disabling interrupts here is important and matches the other part
-> > instance where the interrupts are disabled. Looking at it now, it seems
-> > that there is just pointer stability but I can't tell if
-> > rcu_segcblist_pend_cbs() needs more than just this.
+On Wed, May 20, 2020 at 08:28:00PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
+> > Hi Sebastian,
+> Hi Joel,
 > 
-> Which 'other part' are you referring to? Your patch removed local_irq_save()
-> from other places as well right?
-
-The patch converted hunks.
-
-> thanks,
+> > For pointer stability, can we just use get_local_ptr() and put_local_ptr()
+> > instead of adding an extra lock? This keeps the pointer stable while keeping
+> > the section preemptible on -rt. And we already have a lock in rcu_data, I
+> > prefer not to add another lock if possible.
 > 
->  - Joel
-> 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 8ff71e5d0fe8b..5f49919205317 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -778,13 +778,17 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
->  	unsigned long tlast;
->  
->  	/* If the local srcu_data structure has callbacks, not idle.  */
-> -	local_irq_save(flags);
-> -	sdp = this_cpu_ptr(ssp->sda);
-> +	sdp = get_local_ptr(ssp->sda);
-> +	spin_lock_irqsave_rcu_node(sdp, flags);
+> What is this get_local_ptr() doing? I can't find it anywhere…
 
-You acquire the node lock which was not acquired before. Is that okay?
-How is get_local_ptr() different to raw_cpu_ptr()?
+I suspect it is ({ preempt_disable(); this_cpu_ptr(ptr); }), or
+something along those lines.
 
->  	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
-> -		local_irq_restore(flags);
-> +		spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +		put_local_ptr(sdp);
->  		return false; /* Callbacks already present, so not idle. */
->  	}
-> -	local_irq_restore(flags);
-> +
-> +	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +	put_local_ptr(sdp);
->  
->  	/*
->  	 * No local callbacks, so probabalistically probe global state.
-
-Sebastian
+But yeah, I can't find it either.
