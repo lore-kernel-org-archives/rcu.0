@@ -1,68 +1,37 @@
-Return-Path: <SRS0=9J+a=7C=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=+13V=7E=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 510DDC433E0
-	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 19:00:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52315C433DF
+	for <rcu@archiver.kernel.org>; Fri, 22 May 2020 15:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 24402207D3
-	for <rcu@archiver.kernel.org>; Wed, 20 May 2020 19:00:00 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="xqOCj1hi"
+	by mail.kernel.org (Postfix) with ESMTP id 266EE205CB
+	for <rcu@archiver.kernel.org>; Fri, 22 May 2020 15:13:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgETTAA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 May 2020 15:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
+        id S1730038AbgEVPNN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 May 2020 11:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgETS77 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 May 2020 14:59:59 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D79FC061A0E
-        for <rcu@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id c24so3449922qtw.7
-        for <rcu@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
-        b=xqOCj1hi7zsdkF4h7T7VpVsacljZUmQ98KBXk4BC/Dbn1LZa5faEmx2QjtoDIrVUFb
-         P6lu0RuOXjmco5U/CykEp8x4g7RdNl7UvG4m0sChWHzGk3hIX45vYFUqw7L/RamVwzoI
-         IUgUbP9dHwHRi8zBAlVHX2JlNghk6esJwZciA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
-        b=FvpXWO0h9gnqkBnZflZjaovk5DO1SakY/zRNLbOPt0iwjYHCKjpzUeu50E3O8cwWjy
-         0adGOc1l33G/vGah0vSE0HSPqdLTDa0nw69tI9Lgv1dDBnzBIoqE2tBNH06j4At31zn6
-         j/rE5kYnCKWQnfgADHjmZ1ngRjGyMGvBOWcet89HHNAEr9tki8DTPgLR3BwCIhIOhKsO
-         P3esgvLby8XI0bBuh9CwoEgahrd1ogFEhM1Y+rudMAsCDqHtJYULYfy9Gj/EhUUAmk2f
-         n+Vo7XeBh28NULy4T3ewMFv+8TQX/vdJhiSHDrYKofjn0N4o5UrdyA9C78+k8y08Cipj
-         gI8w==
-X-Gm-Message-State: AOAM531eCNDXSnkzHhTd7ISRXdRA2ZIHbTgICU0KpKdV/x4hrqRD2UXn
-        Oh8mE1/JrvAbMqwcSt7OhPQZBQ==
-X-Google-Smtp-Source: ABdhPJxKFQ4mBEMmbP/Kvr56rfPGG/twBhTQVRIoKgmz5lGIunly4e1J2W2rXX4eFpW+AV4T6MpO7A==
-X-Received: by 2002:ac8:6a09:: with SMTP id t9mr6859997qtr.7.1590001198693;
-        Wed, 20 May 2020 11:59:58 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h12sm3428451qte.31.2020.05.20.11.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 11:59:58 -0700 (PDT)
-Date:   Wed, 20 May 2020 14:59:57 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+        with ESMTP id S1729929AbgEVPNN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 May 2020 11:13:13 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658BAC061A0E;
+        Fri, 22 May 2020 08:13:13 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jc9Lz-0007Ty-9D; Fri, 22 May 2020 17:12:55 +0200
+Date:   Fri, 22 May 2020 17:12:55 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -70,82 +39,108 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         rcu@vger.kernel.org
 Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
  access
-Message-ID: <20200520185957.GB261674@google.com>
+Message-ID: <20200522151255.rtqnuk2cl3dpruou@linutronix.de>
 References: <20200519201912.1564477-1-bigeasy@linutronix.de>
  <20200519201912.1564477-4-bigeasy@linutronix.de>
  <20200520102407.GF317569@hirez.programming.kicks-ass.net>
  <20200520120608.mwros5jurmidxxfv@linutronix.de>
- <20200520174259.GA247557@google.com>
- <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
+ <20200520184345.GU2869@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
+In-Reply-To: <20200520184345.GU2869@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 20, 2020 at 08:28:00PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
-> > Hi Sebastian,
-> Hi Joel,
+On 2020-05-20 11:43:45 [-0700], Paul E. McKenney wrote:
 > 
-> > For pointer stability, can we just use get_local_ptr() and put_local_ptr()
-> > instead of adding an extra lock? This keeps the pointer stable while keeping
-> > the section preemptible on -rt. And we already have a lock in rcu_data, I
-> > prefer not to add another lock if possible.
+> Yes, that CPU's rcu_segcblist structure does need mutual exclusion in
+> this case.  This is because rcu_segcblist_pend_cbs() looks not just
+> at the ->tails[] pointer, but also at the pointer referenced by the
+> ->tails[] pointer.  This last pointer is in an rcu_head structure, and
+> not just any rcu_head structure, but one that is ready to be invoked.
+> So this callback could vanish into the freelist (or worse) at any time.
+> But callback invocation runs on the CPU that enqueued the callbacks
+> (as long as that CPU remains online, anyway), so disabling interrupts
+> suffices in mainline.
 > 
-> What is this get_local_ptr() doing? I can't find it anywhere…
+> Now, we could have srcu_might_be_idle() instead acquire the sdp->lock
+> to protect the structure.
 
-I replied about it in the other thread.
+Joel suggested that.
 
+> What would be really nice is a primitive that acquires such a per-CPU
+> lock and remains executing on that CPU, whether by the graces of
+> preempt_disable(), local_irq_save(), migrate_disable(), or what have you.
+
+It depends on what is required. migrate_disable() would limit you to
+executing one CPU but would allow preemption. You would need a lock to
+ensure exclusive access to the data structure. preempt_disable() /
+local_irq_save() guarantee more than that.
+
+Looking at the two call-sites there is no damage there is a CPU
+migration after obtaining the per-CPU pointer. There could be a
+CPU-migration before and after the pointer has been obtained so the code
+before and after this function can not make any assumptions.
+
+Would something like this work: ?
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -764,14 +764,15 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+ 	unsigned long t;
+ 	unsigned long tlast;
  
-> > > I remember Paul looked at that patch a few years ago and he said that
-> > > that disabling interrupts here is important and matches the other part
-> > > instance where the interrupts are disabled. Looking at it now, it seems
-> > > that there is just pointer stability but I can't tell if
-> > > rcu_segcblist_pend_cbs() needs more than just this.
-> > 
-> > Which 'other part' are you referring to? Your patch removed local_irq_save()
-> > from other places as well right?
-> 
-> The patch converted hunks.
-> 
++	check_init_srcu_struct(ssp);
+ 	/* If the local srcu_data structure has callbacks, not idle.  */
+-	local_irq_save(flags);
+-	sdp = this_cpu_ptr(ssp->sda);
++	sdp = raw_cpu_ptr(ssp->sda);
++	spin_lock_irqsave_rcu_node(sdp, flags);
+ 	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
+-		local_irq_restore(flags);
++		spin_unlock_irqrestore_rcu_node(sdp, flags);
+ 		return false; /* Callbacks already present, so not idle. */
+ 	}
+-	local_irq_restore(flags);
++	spin_unlock_irqrestore_rcu_node(sdp, flags);
+ 
+ 	/*
+ 	 * No local callbacks, so probabalistically probe global state.
+@@ -851,9 +852,8 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 	}
+ 	rhp->func = func;
+ 	idx = srcu_read_lock(ssp);
+-	local_irq_save(flags);
+-	sdp = this_cpu_ptr(ssp->sda);
+-	spin_lock_rcu_node(sdp);
++	sdp = raw_cpu_ptr(ssp->sda);
++	spin_lock_irqsave_rcu_node(sdp, flags);
+ 	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_gp_seq));
 
-So then there are no other local_irq_save() to match with. Or may be I did
-not understand your concern, could you share any threads from past
-discussions about disabling interrupts in this code? You mentioned about a
-discussion from few years ago.
 
-> > 
-> >  - Joel
-> > 
-> > ---8<-----------------------
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 8ff71e5d0fe8b..5f49919205317 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -778,13 +778,17 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> >  	unsigned long tlast;
-> >  
-> >  	/* If the local srcu_data structure has callbacks, not idle.  */
-> > -	local_irq_save(flags);
-> > -	sdp = this_cpu_ptr(ssp->sda);
-> > +	sdp = get_local_ptr(ssp->sda);
-> > +	spin_lock_irqsave_rcu_node(sdp, flags);
-> 
-> You acquire the node lock which was not acquired before. Is that okay?
-> How is get_local_ptr() different to raw_cpu_ptr()?
+That check_init_srcu_struct() is needed, because otherwise:
 
-get_cpu_ptr() disables preemption which you might not want, right?
+| BUG: spinlock bad magic on CPU#2, swapper/0/1
+|  lock: 0xffff88803ed28ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+| CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc6+ #81
+| Call Trace:
+|  dump_stack+0x71/0xa0
+|  do_raw_spin_lock+0x6c/0xb0
+|  _raw_spin_lock_irqsave+0x33/0x40
+|  synchronize_srcu+0x24/0xc9
+|  wakeup_source_remove+0x4d/0x70
+|  wakeup_source_unregister.part.0+0x9/0x40
+|  device_wakeup_enable+0x99/0xc0
 
-Most (all?) other paths are accessing the cblist under lock so I added it
-here to be safe. This is anyway called from a slowpath. Do you see a problem?
+I'm not sure if there should be an explicit init of `wakeup_srcu' or if
+an srcu function (like call_srcu()) is supposed to do it.
 
-thanks,
+> 							Thanx, Paul
 
- - Joel
-
+Sebastian
