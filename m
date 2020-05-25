@@ -2,113 +2,131 @@ Return-Path: <SRS0=Lsu2=7H=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57AD4C433E0
-	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 18:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4826AC433DF
+	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 21:48:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27EC2207D8
-	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 18:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590429855;
-	bh=XgHlHnjCGUNTBTmrn5NBPKNl/rr2R/fQ/zB+IqMDgS4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=RGt9Sh4NWuWU2XFv6fmZwg5gqeIFuwUeGMRs3arcPGhWGodc07joke1z46P8WuffE
-	 zw1xENHlgnDoVPVQBqxBGeLk+WrKV05bgzdnkqcSvb6l6ESjl2qmMUpJchGCjtz8Yn
-	 RlkQNnjauORxKf3Cgy2Kxhr+KI4VaFWloLD97D0Q=
+	by mail.kernel.org (Postfix) with ESMTP id 2529620825
+	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 21:48:13 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s5doM9LO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389433AbgEYSEP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 25 May 2020 14:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388621AbgEYSEO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 25 May 2020 14:04:14 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32035207DA;
-        Mon, 25 May 2020 18:04:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590429854;
-        bh=XgHlHnjCGUNTBTmrn5NBPKNl/rr2R/fQ/zB+IqMDgS4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fSJWlSwRmK/t4Wnfucbt3AIiTph7ZdShkIc+/oaSDZlUJUVgzQiB2HeaucFbT1dYx
-         dglgOyqFUIwqg0pYmEy+0eUhetu/u8D3scJj0XldNPovquwRiiLwKPLXL/iIryCbQ1
-         xFc9nxh2Z1EuY9sj5PO7lhOTmA8xZW050u8A8VKE=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 18CA13522846; Mon, 25 May 2020 11:04:14 -0700 (PDT)
-Date:   Mon, 25 May 2020 11:04:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/2] rcuperf: Remove useless while loops around wait_event
-Message-ID: <20200525180414.GA2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200525043648.152547-1-joel@joelfernandes.org>
+        id S1726937AbgEYVsM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 25 May 2020 17:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgEYVsM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 25 May 2020 17:48:12 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963A9C061A0E;
+        Mon, 25 May 2020 14:48:11 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b6so22188270ljj.1;
+        Mon, 25 May 2020 14:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQInU0916PNBneM+14O7BbOheS8JSAcYzX9gJpm38/0=;
+        b=s5doM9LODG25aDd2E7u/5vjcryloRBJtNYWudVya935NtAdZKrp0I1wCzyNdEdLaFS
+         v801EJtFd5hFmgAoASGPtLDUzh7jGmxV0JzlOwAQyuPFJoCvJKro6lSiBo2o6Z6m6cWF
+         826PjgQmXHESMXIqmNgUiwEwOT9XDSzdX+gd1X6OGyJ8n9p22SREG/FKLJ/Ae1aqQO1X
+         ABwhPEFS+w0NtNIt0SuJevVUJOw+G43tegm7vyUS+X+Ke427d403NINDi/Lgm7hJ8mRb
+         8eUL8NUEuI+AqDp9rrpM7G61XmgYTFJ0mv3u2NyRCtgi03TP8Kx947lRgnx2TORljniv
+         gfgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SQInU0916PNBneM+14O7BbOheS8JSAcYzX9gJpm38/0=;
+        b=TDpnBE0o86RkWRFnWZGRmz5JBQm3r/EJnl+3gRyhXY3tXOEKL80hkVoxU+1ti4jIei
+         wxc0UCvhpH/G8fPDZd5vjTVlGdMroIwEdZWK6PsfW9Kx5Q29ivGj2qD8H0ErxW+TtzXc
+         kvxpXWoPIr6IEUPxo1CpuiK9tmYBr9RzxWGldtJlALFfXUsKE/uPjvA+j7iSSXvp2d5s
+         I4lgX06Qm64r4jdWR6FGfFt/VqVTCgiV/A8SET4T2pPr1LFXhxho5HTznZeYAAfIps4W
+         9iqswwdCT47tHyjYvPZ5bDg1qjoZYT8DaDkornNitXE9oa2R4MGKUkQmRmCu1AObLbOl
+         ATVQ==
+X-Gm-Message-State: AOAM532Gbah7nSR3eZFBVf/+6qsYLh9R58oS+D6Bu6IATMtx8nQoCMCb
+        tuRdRO8pKzejZMsgSNb+2fxxipEA56E1Rw==
+X-Google-Smtp-Source: ABdhPJwcnuFHWd0AlFd25w3mPH8hnUWSjWPFIkEbWtMsd55xIv2VvAGEVKWegIcMc6d/B/3mksTjEg==
+X-Received: by 2002:a2e:7001:: with SMTP id l1mr12185404ljc.388.1590443289777;
+        Mon, 25 May 2020 14:48:09 -0700 (PDT)
+Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id a6sm2280044lji.29.2020.05.25.14.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 14:48:09 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH v2 00/16] Introduce kvfree_rcu(1 or 2 arguments)
+Date:   Mon, 25 May 2020 23:47:44 +0200
+Message-Id: <20200525214800.93072-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525043648.152547-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 25, 2020 at 12:36:47AM -0400, Joel Fernandes (Google) wrote:
-> wait_event() already retries if the condition for the wake up is not
-> satisifed after wake up. Remove them from the rcuperf test.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+This is a v2 of the https://lkml.org/lkml/2020/4/28/1626 series.
+Please have look at v1 to find out more about motivation and details.
+It is based on the latest dev.2020.05.17a Paul's branch.
 
-Queued the series, thank you, Joel!
+Short changelog (v1 -> v2):
+    - Combine some patches, thus reduce the overall number;
+    - Switch one line comment type from "/* */" to "//";
+    - Improve commit messages of some patches;
+    - For tiny-RCU we just do synchronize_rcu() followed by kvfree()
+      for single-argument of kvfree_rcu();
+    - Drop the dynamic rcu_head attaching techniques + related patches;
+    - Reduce duplication of code in some functions;
+    - Added more comments for better understanding of code.
 
-							Thanx, Paul
+There is one patch related to "mm": "Rename kvfree_rcu() to local variant"
+please note, it does not change any functionality, only renaming is done.
 
-> ---
->  kernel/rcu/rcuperf.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> index 16dd1e6b7c09f..246da8fe199e8 100644
-> --- a/kernel/rcu/rcuperf.c
-> +++ b/kernel/rcu/rcuperf.c
-> @@ -576,11 +576,8 @@ static int compute_real(int n)
->  static int
->  rcu_perf_shutdown(void *arg)
->  {
-> -	do {
-> -		wait_event(shutdown_wq,
-> -			   atomic_read(&n_rcu_perf_writer_finished) >=
-> -			   nrealwriters);
-> -	} while (atomic_read(&n_rcu_perf_writer_finished) < nrealwriters);
-> +	wait_event(shutdown_wq,
-> +		   atomic_read(&n_rcu_perf_writer_finished) >= nrealwriters);
->  	smp_mb(); /* Wake before output. */
->  	rcu_perf_cleanup();
->  	kernel_power_off();
-> @@ -693,11 +690,8 @@ kfree_perf_cleanup(void)
->  static int
->  kfree_perf_shutdown(void *arg)
->  {
-> -	do {
-> -		wait_event(shutdown_wq,
-> -			   atomic_read(&n_kfree_perf_thread_ended) >=
-> -			   kfree_nrealthreads);
-> -	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
-> +	wait_event(shutdown_wq,
-> +		   atomic_read(&n_kfree_perf_thread_ended) >= kfree_nrealthreads);
->  
->  	smp_mb(); /* Wake before output. */
->  
-> -- 
-> 2.27.0.rc0.183.gde8f92d652-goog
-> 
+Joel Fernandes (Google) (3):
+  rcu/tree: Keep kfree_rcu() awake during lock contention
+  rcu/tree: Skip entry into the page allocator for PREEMPT_RT
+  rcu/tree: Make debug_objects logic independent of rcu_head
+
+Sebastian Andrzej Siewior (1):
+  rcu/tree: Use static initializer for krc.lock
+
+Uladzislau Rezki (Sony) (12):
+  rcu/tree: Repeat the monitor if any free channel is busy
+  rcu/tree: Simplify KFREE_BULK_MAX_ENTR macro
+  rcu/tree: Move kfree_rcu_cpu locking/unlocking to separate functions
+  rcu/tree: cache specified number of objects
+  rcu/tree: Maintain separate array for vmalloc ptrs
+  rcu/tiny: support vmalloc in tiny-RCU
+  rcu: Rename *_kfree_callback/*_kfree_rcu_offset/kfree_call_*
+  mm/list_lru.c: Rename kvfree_rcu() to local variant
+  rcu: Introduce 2 arg kvfree_rcu() interface
+  rcu: Support reclaim for head-less object
+  rcu: Introduce single argument kvfree_rcu() interface
+  lib/test_vmalloc.c: Add test cases for kvfree_rcu()
+
+ .../admin-guide/kernel-parameters.txt         |   8 +
+ include/linux/rcupdate.h                      |  53 ++-
+ include/linux/rcutiny.h                       |  20 +-
+ include/linux/rcutree.h                       |   2 +-
+ include/trace/events/rcu.h                    |   8 +-
+ kernel/rcu/tiny.c                             |   7 +-
+ kernel/rcu/tree.c                             | 381 ++++++++++++------
+ lib/test_vmalloc.c                            | 103 ++++-
+ mm/list_lru.c                                 |   6 +-
+ 9 files changed, 446 insertions(+), 142 deletions(-)
+
+-- 
+2.20.1
+
