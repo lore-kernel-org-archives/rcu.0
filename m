@@ -2,112 +2,119 @@ Return-Path: <SRS0=Lsu2=7H=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65676C433E0
-	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 03:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67D3AC433E0
+	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 04:36:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43CFD207DA
-	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 03:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590377239;
-	bh=8e3jh3bZdGATOCnKBrKDXIxxoT45/hVK4lQxxIz2yY0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=nkfVCvdPXzDWdtrNzcLVLOe+pnIpd4UoLTSx9ywZizX3WYSZ17iFwUFdByLOxF6Sr
-	 h2owu0diY9UPP5pGoPJVU7GeltMlE7VC26cjGzGyKsm36cVUepy9eSJU45aPVYVLNV
-	 RoSh+uu3rg92C1sRgBbDUz1x57ghaS5/T8DJKA0Q=
+	by mail.kernel.org (Postfix) with ESMTP id 332B82071A
+	for <rcu@archiver.kernel.org>; Mon, 25 May 2020 04:36:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="JMKM6a35"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388776AbgEYD1T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 24 May 2020 23:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388466AbgEYD1S (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 24 May 2020 23:27:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 282C72073B;
-        Mon, 25 May 2020 03:27:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590377238;
-        bh=8e3jh3bZdGATOCnKBrKDXIxxoT45/hVK4lQxxIz2yY0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=xY45brw2iaBl1vMDI1prK92l6gDN9y5D9qgXIdA2mnNIZg2oeadMb4vAtnmplbRLF
-         kszKYSUehId2+43wb+xRanEklEO1o3eG1ZTFobssgQ+tvQJFTs02/XJ4TYT8RqwEJe
-         kslDhIUa2fqUqq7U0WCFhMRwJQVR2xpwbGTW0SMw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 056413522681; Sun, 24 May 2020 20:27:18 -0700 (PDT)
-Date:   Sun, 24 May 2020 20:27:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1726007AbgEYEgx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 25 May 2020 00:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgEYEgx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 25 May 2020 00:36:53 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA01C061A0E
+        for <rcu@vger.kernel.org>; Sun, 24 May 2020 21:36:53 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id o19so13006994qtr.10
+        for <rcu@vger.kernel.org>; Sun, 24 May 2020 21:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBPHTpLy/9QWLr/aIBq8Hs4cOMBIV6k4rc/Eb2CKDIA=;
+        b=JMKM6a35mSptNJYaIw3nBoQMdqoyk7i7z7oZ3Malix0oflaA2hVVapoAirhBvRG3nJ
+         TqYRK55svrq9Neom7Y0qefb5Qj+Z9yDcBEulJYlDWEAe1RBvQvmg1FSttwGxGf0Ojaye
+         +APXz9HZ9uM3MfVfw+Knbzxb0BeQe3WbdNtS0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBPHTpLy/9QWLr/aIBq8Hs4cOMBIV6k4rc/Eb2CKDIA=;
+        b=CfoV6fMbBcDRiCvMzms7YPLtd4QqsO2wtzJzU6339IOTDJEjtHyHsdJAOVyZDgd4Ra
+         dvFc53xXR2CW8SI9QEfh7GCxbE13H3PpWEY2BAyvIpiz+PmiVfulrZwMLmt50reuEq4Y
+         5fg+ln2/4wFmZIIPQvqfVoRQMNjOz6rCKPl5Xxm9PR6n5K74Y5N1fadWZ/8WyRK8Ttit
+         RaZYZm4ALlazAYT/asEPf7+mSKr64FkpHeVsjAfs5PZjAAi305631Qo0wPv/7pyzz1oN
+         Kw0jRmSJgDK4aY5FQio74rHDv7F8Tp9CbRDds32FB7yVlXampgcTBHQDHRKQMieM/3vG
+         qWPA==
+X-Gm-Message-State: AOAM533zAZZUGwyu3nX3eKNhK5PSI1Lqr6qhhoeMeY6vM46Cgc3fwEn4
+        KS9R3txq9p5zUUVzlQiKugxr9A==
+X-Google-Smtp-Source: ABdhPJz7kK8+gBrYJE2/gAEQd8LEG0beqhF9eolqo/LtET8sEp8ucbBAXJSHJ0S21ElLPFxQ0FKIfA==
+X-Received: by 2002:ac8:34d0:: with SMTP id x16mr2216011qtb.300.1590381412275;
+        Sun, 24 May 2020 21:36:52 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id g66sm13917019qkb.122.2020.05.24.21.36.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 21:36:51 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
- access
-Message-ID: <20200525032717.GV2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
- <20200519201912.1564477-4-bigeasy@linutronix.de>
- <20200520102407.GF317569@hirez.programming.kicks-ass.net>
- <20200520120608.mwros5jurmidxxfv@linutronix.de>
- <20200520184345.GU2869@paulmck-ThinkPad-P72>
- <20200522151255.rtqnuk2cl3dpruou@linutronix.de>
- <20200522173953.GI2869@paulmck-ThinkPad-P72>
- <20200523150831.wdrthklakwm6wago@linutronix.de>
- <20200524190356.eqohmrmbilonm4u7@linutronix.de>
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 1/2] rcuperf: Remove useless while loops around wait_event
+Date:   Mon, 25 May 2020 00:36:47 -0400
+Message-Id: <20200525043648.152547-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200524190356.eqohmrmbilonm4u7@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, May 24, 2020 at 09:03:56PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-05-23 17:08:32 [+0200], To Paul E. McKenney wrote:
-> > On 2020-05-22 10:39:53 [-0700], Paul E. McKenney wrote:
-> > > It looks good to me, but I have not yet tested it.  (Happy to let you
-> > > take the first crack at rcutorture in any case, scenarios SRCU-P and
-> > > SRCU-N.)
-> > 
-> > on it.
-> 
-> |tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 32 --duration 240 --configs 8*SRCU-N
-> |SRCU-N ------- 2127126 GPs (147.717/s) [srcu: g26566592 f0x0 ]
-> |SRCU-N.2 ------- 2123520 GPs (147.467/s) [srcu: g26563696 f0x0 ]
-> |SRCU-N.3 ------- 2122181 GPs (147.374/s) [srcu: g26549140 f0x0 ]
-> |SRCU-N.4 ------- 2126099 GPs (147.646/s) [srcu: g26564232 f0x0 ]
-> |SRCU-N.5 ------- 2127107 GPs (147.716/s) [srcu: g26590168 f0x0 ]
-> |SRCU-N.6 ------- 2125489 GPs (147.603/s) [srcu: g26545616 f0x0 ]
-> |SRCU-N.7 ------- 2128308 GPs (147.799/s) [srcu: g26591524 f0x0 ]
-> |SRCU-N.8 ------- 2126432 GPs (147.669/s) [srcu: g26586816 f0x0 ]
-> |
-> |tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 32 --duration 240 --configs 8*SRCU-P
-> |SRCU-P ------- 565751 GPs (39.2883/s) [srcud: g5034676 f0x0 ]
-> |SRCU-P.2 ------- 569508 GPs (39.5492/s) [srcud: g5062872 f0x0 ]
-> |SRCU-P.3 ------- 574240 GPs (39.8778/s) [srcud: g5098488 f0x0 ]
-> |SRCU-P.4 ------- 564376 GPs (39.1928/s) [srcud: g5031244 f0x0 ]
-> |SRCU-P.5 ------- 563705 GPs (39.1462/s) [srcud: g5024720 f0x0 ]
-> |SRCU-P.6 ------- 565043 GPs (39.2391/s) [srcud: g5030272 f0x0 ]
-> |SRCU-P.7 ------- 567450 GPs (39.4062/s) [srcud: g5046392 f0x0 ]
-> |SRCU-P.8 ------- 566496 GPs (39.34/s) [srcud: g5039396 f0x0 ]
-> 
-> Results at
->    https://breakpoint.cc/res.tar.xz
+wait_event() already retries if the condition for the wake up is not
+satisifed after wake up. Remove them from the rcuperf test.
 
-Looks good, thank you!
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-							Thanx, Paul
+---
+ kernel/rcu/rcuperf.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index 16dd1e6b7c09f..246da8fe199e8 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -576,11 +576,8 @@ static int compute_real(int n)
+ static int
+ rcu_perf_shutdown(void *arg)
+ {
+-	do {
+-		wait_event(shutdown_wq,
+-			   atomic_read(&n_rcu_perf_writer_finished) >=
+-			   nrealwriters);
+-	} while (atomic_read(&n_rcu_perf_writer_finished) < nrealwriters);
++	wait_event(shutdown_wq,
++		   atomic_read(&n_rcu_perf_writer_finished) >= nrealwriters);
+ 	smp_mb(); /* Wake before output. */
+ 	rcu_perf_cleanup();
+ 	kernel_power_off();
+@@ -693,11 +690,8 @@ kfree_perf_cleanup(void)
+ static int
+ kfree_perf_shutdown(void *arg)
+ {
+-	do {
+-		wait_event(shutdown_wq,
+-			   atomic_read(&n_kfree_perf_thread_ended) >=
+-			   kfree_nrealthreads);
+-	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
++	wait_event(shutdown_wq,
++		   atomic_read(&n_kfree_perf_thread_ended) >= kfree_nrealthreads);
+ 
+ 	smp_mb(); /* Wake before output. */
+ 
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
