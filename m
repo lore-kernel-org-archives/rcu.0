@@ -2,65 +2,41 @@ Return-Path: <SRS0=NM8h=7M=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17516C433E0
-	for <rcu@archiver.kernel.org>; Sat, 30 May 2020 03:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7628DC433E0
+	for <rcu@archiver.kernel.org>; Sat, 30 May 2020 08:01:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DBB3E20810
-	for <rcu@archiver.kernel.org>; Sat, 30 May 2020 03:52:35 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JwhUp+XC"
+	by mail.kernel.org (Postfix) with ESMTP id 5A41E2075A
+	for <rcu@archiver.kernel.org>; Sat, 30 May 2020 08:01:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgE3Dwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 May 2020 23:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728297AbgE3Dwf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 29 May 2020 23:52:35 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E351BC08C5C9;
-        Fri, 29 May 2020 20:52:34 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x18so1979552pll.6;
-        Fri, 29 May 2020 20:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kPOEe0JbVvrLWjGaJsUspJAO9HZgDhlEO7PFO+DveQY=;
-        b=JwhUp+XC4a1LWTAe8MZOAmnETNMbz6+6Zg7TXk0gxk2/vNOv/Slq/wzn113wv05uE8
-         TexJwxstEMyX527uiIIuZ4ekfScAY+F0RHP2mGlntzFZVWQMMP9uk8Uszp/vAf4XJTcQ
-         83wljVSm5fcXv2z4Z8QIOu97g9CBXY2rXrO1DXHrF7+ds2hADVTy69jj78r5K3w/r9X6
-         rEEfbXmDA2OVXmzhDq+eUPS2iCfDA3jANYlITsDJNLxVhPAFWmtrZ7QcWcWhYUTFAqnF
-         PadvIN8ZuHCLj4NHueaiNhFs5xUn4oEtYVnXKfEtNsSj5czjHTNUUECNbi/5oHsj78Ml
-         57yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kPOEe0JbVvrLWjGaJsUspJAO9HZgDhlEO7PFO+DveQY=;
-        b=lYw5eRyVa2fg8w2hCIwuwBxvFsSCBU/AGGUZEE7yy6m3u6U/sV//E39wy24VT53VlM
-         nLLhFjt6kXDGZNbeZNPTCbUHRH/CgSjAuvdaUQ0JRs/xK45RJjfTHZyvFYNnyXJGeFIU
-         IlhJOtXHFe+ynYAX88dG9JUsLewM3bZLw54Z+k8r1VzigJCsEdn862fiSdYqgk4LSZQu
-         YmzmT+G4d/M06IilRGuIHIbR0igOUB/Fn2KvdO31wT4ZWS4725lg4iNfgqVY2oBh3G/f
-         lAlfKefZe89+MKns5649fP51kZrzzja6Oy2+ez5FkZ0rLnWEyz5T8JIUxQDTRF4S/R3/
-         0nxg==
-X-Gm-Message-State: AOAM533GCDO/75PkSb678shX9vo5ouSkEDqYOMNRP4wHm4r/TVN42xxf
-        FDvJNmU7bclx+Ck7tNnDBoM=
-X-Google-Smtp-Source: ABdhPJy+/Cu2agx0IBXD8cxTeInLVAkrgdDBRiWPqaIqKU3YAm9YiTFMMZrZcVNapJyX3yPVkoGUvw==
-X-Received: by 2002:a17:902:aa0c:: with SMTP id be12mr5466742plb.241.1590810754080;
-        Fri, 29 May 2020 20:52:34 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id gz19sm731850pjb.33.2020.05.29.20.52.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 20:52:33 -0700 (PDT)
-Date:   Fri, 29 May 2020 20:52:30 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
+        id S1728762AbgE3IBz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 30 May 2020 04:01:55 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:39935 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgE3IBz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 30 May 2020 04:01:55 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MnagF-1jG5w709Uz-00jX0u; Sat, 30 May 2020 10:01:54 +0200
+Received: by mail-qt1-f175.google.com with SMTP id q14so3679165qtr.9;
+        Sat, 30 May 2020 01:01:53 -0700 (PDT)
+X-Gm-Message-State: AOAM530B+ku2d6iHmd2yJqKfwaJHzm+EJIpgjUUp+7daGv9Yj9RELk+Y
+        wuVxF1QHILVctjxBCQX5w3mB6YW99EfUbjr3iNU=
+X-Google-Smtp-Source: ABdhPJxmyT8ot6qLbB50xkaVnfH4mv37VsInUjUpW94wGwYh1g3q9/Pe7QCtNDdk1U1eGmXhk2Z/y0tQ5V8pbhXHaL4=
+X-Received: by 2002:ac8:2b98:: with SMTP id m24mr6055346qtm.7.1590825712838;
+ Sat, 30 May 2020 01:01:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200529201600.493808-1-arnd@arndb.de> <20200530035230.GA2019114@ubuntu-s3-xlarge-x86>
+In-Reply-To: <20200530035230.GA2019114@ubuntu-s3-xlarge-x86>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 30 May 2020 10:01:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
+Message-ID: <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
+Subject: Re: [PATCH] refperf: work around 64-bit division
+To:     Nathan Chancellor <natechancellor@gmail.com>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -68,72 +44,58 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] refperf: work around 64-bit division
-Message-ID: <20200530035230.GA2019114@ubuntu-s3-xlarge-x86>
-References: <20200529201600.493808-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529201600.493808-1-arnd@arndb.de>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:wtWiFxZOUGa3PCJvcZJ2bjzyE4UfE/ifCl2J0pYX1nQ6OhtYM8z
+ ssh4yfR3hg3M8QelOlWY5TiReLfIcHzaYv+cpoW0qKW4zf2JKVCUid21Ziauxg6/wT995rE
+ HIwy91VYbB3f+hCG3Mn7XDlYAMpVXrS+yC6mIyBIoeFu/Imk7f4aLqHQ9S7Tba3wkSLZv+N
+ E/8QDuY3z6jrWyyMiuVaw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QIWUM9NyUR8=:xD1Z/B+IzJG9ARuJZPdq1e
+ FrU8OTctougHVPTXWe8vCwspWMJMxL7GudWR8c1lFLaTZjYtyN+jZaS4Cqjzk1GfWjYChHdiE
+ Nc1F5M3uJNQ7C+e6+LKlhuvuQh7YD5TVTP+UjmjAkfoQREWXoVL2IrO4YYXH3UGRv8aanhqkR
+ hDA5QGlRh5ngB5bUb+vOD9RqMC0WKAb9tchZ4LWRzRbHkPbZUnNMg5iLOqmHelwAFHyJwmx8u
+ PClSq3gu9NB81qa80ddTnyjVyEtKEPhTwbqP1K257yEbzy5CWMJoNp4rLj+PxvoiRzTj5W3MM
+ sFmkipiwmMEZh8HlrElD8mu6DUF2x5JWGjw0Rauf3AY4/dBsvM+8KzH3Zkcp5cgki2k/9zP61
+ RNSH+MrHXrYlGfYnb2a9e6ocRjKSw2S/M1RApb4zjvyDMGWbP7jjJV/XebHaeYm2UYlArKy+v
+ MoB4gnAwLg3oB6kjyZ+ncsxySizegXiKkIVFBRATUYl/3E2D1nw03OB5lkBTvKlGZ88SAN7Cu
+ SqWkQlvFgaYD/qKxKzMJ14IZeRnKkYUR13gssRNHjVWsecp8X5VC21Fzb/l9ZIzK2aWmznEVw
+ +MwDRcimAy0YkVFDhGD6gf6vWl9cZcesrDCnyTuClojcRCDVF6yiA67QCn4QP85ZaRaESCmNW
+ vfTcpogWd2N3kslUF1mskY/FvOjZr9GDMAj85TiTs4WuUtLptruU2V/ngictxgIn6Zoz5NoXh
+ qW8eyOPWcelMNib6F3r6t3WvYRAKFALuYKAH0QwH80l/HCIeC9xbhUPimyNJR0CZrpqdgKC8l
+ YLgpz2FIZSEMow57JlHw3TCRs4Y9YXc8YDEGxhxtNu4bLyRal8=
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 29, 2020 at 10:15:51PM +0200, Arnd Bergmann wrote:
-> A 64-bit division was introduced in refperf, breaking compilation
-> on all 32-bit architectures:
-> 
-> kernel/rcu/refperf.o: in function `main_func':
-> refperf.c:(.text+0x57c): undefined reference to `__aeabi_uldivmod'
-> 
-> Work it by using div_u64 to mark the expensive operation.
-> 
-> Fixes: bd5b16d6c88d ("refperf: Allow decimal nanoseconds")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/rcu/refperf.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-> index 47df72c492b3..c2366648981d 100644
-> --- a/kernel/rcu/refperf.c
-> +++ b/kernel/rcu/refperf.c
-> @@ -386,7 +386,7 @@ static int main_func(void *arg)
->  		if (torture_must_stop())
->  			goto end;
->  
-> -		result_avg[exp] = 1000 * process_durations(nreaders) / (nreaders * loops);
-> +		result_avg[exp] = div_u64(1000 * process_durations(nreaders), nreaders * loops);
->  	}
->  
->  	// Print the average of all experiments
-> @@ -397,9 +397,14 @@ static int main_func(void *arg)
->  	strcat(buf, "Threads\tTime(ns)\n");
->  
->  	for (exp = 0; exp < nruns; exp++) {
-> +		u64 avg;
-> +		u32 rem;
-> +
->  		if (errexit)
->  			break;
-> -		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
-> +
-> +		avg = div_s64_rem(result_avg[exp], 1000, &rem);
+On Sat, May 30, 2020 at 5:52 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+> On Fri, May 29, 2020 at 10:15:51PM +0200, Arnd Bergmann wrote:
+> >       strcat(buf, "Threads\tTime(ns)\n");
+> >
+> >       for (exp = 0; exp < nruns; exp++) {
+> > +             u64 avg;
+> > +             u32 rem;
+> > +
+> >               if (errexit)
+> >                       break;
+> > -             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
+> > +
+> > +             avg = div_s64_rem(result_avg[exp], 1000, &rem);
+>
+> Shouldn't this be div_u64_rem? result_avg is u64.
 
-Shouldn't this be div_u64_rem? result_avg is u64.
+Yes, you are right. Actually that would be an important optimization
+since div_u64_rem() optimizes for constant divisors while div_s64_rem
+uses the slow path.
 
-> +		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, avg, rem);
+> > +             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, avg, rem);
+>
+> Would %03u be the better specifier since rem is u32?
 
-Would %03u be the better specifier since rem is u32?
+Yes, though this makes no difference in practice.
 
->  		strcat(buf, buf1);
->  	}
->  
-> -- 
-> 2.26.2
-> 
+Paul, should I send a fixup for these two, or do you prefer to just
+edit it in place?
 
-Cheers,
-Nathan
+    Arnd
