@@ -1,158 +1,150 @@
-Return-Path: <SRS0=Gue3=7N=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=avCC=7O=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFB25C433DF
-	for <rcu@archiver.kernel.org>; Sun, 31 May 2020 20:03:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A868C433DF
+	for <rcu@archiver.kernel.org>; Mon,  1 Jun 2020 18:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A8C0220707
-	for <rcu@archiver.kernel.org>; Sun, 31 May 2020 20:03:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590955398;
-	bh=hmtgDdWC6lZ/nUwL2krWFTtauOgTMQ9x1SlpzJjdqP8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=gUJf4QPQ2WOy2JUQCiklverGPZc+KiDHtScprKKPRgCfah0mtgGwNJJIC/JmrGPUw
-	 2s2WVFEuaXVZQoPzaV9Ogdh54HZ6dqtXpIkqh78nFjaTUhxteHr7KtQcRIrJE6K4KJ
-	 Skh+odAnAHlstNCFQbLqE11M36wEvsFgh11ezrYI=
+	by mail.kernel.org (Postfix) with ESMTP id 049BB206C3
+	for <rcu@archiver.kernel.org>; Mon,  1 Jun 2020 18:46:38 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dg3D+wHo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgEaUDS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 31 May 2020 16:03:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgEaUDS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 31 May 2020 16:03:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C24B8206E2;
-        Sun, 31 May 2020 20:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590955397;
-        bh=hmtgDdWC6lZ/nUwL2krWFTtauOgTMQ9x1SlpzJjdqP8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hmDMC/NM4dZOkaLqatA3i8RqE/h/hTc/ADdTRvzAP2J1g1kuRs0BD+fX7zZWEl0Tv
-         aGxKn7sq7f9OF+8orDu1cJFMO9vWwxJ5i/ZvEkA1dRZLf4iZCqy/YII/ypL69D0rbp
-         BuDEEKfZxESYguh8dKY0xHvh3Q7oTfvINIkqvtq8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9F7F135229BA; Sun, 31 May 2020 13:03:17 -0700 (PDT)
-Date:   Sun, 31 May 2020 13:03:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        id S1730232AbgFASqh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Jun 2020 14:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729021AbgFASqP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 Jun 2020 14:46:15 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B74C03E96F;
+        Mon,  1 Jun 2020 11:46:14 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v19so519000wmj.0;
+        Mon, 01 Jun 2020 11:46:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=hJp2ZjtOYUiPR+RzNNoJ5Ibq8AZ/CLg09w6+zqv3O4s=;
+        b=Dg3D+wHocJvZsHivriwfg0RRFtY7NI35fI2KR5NyR9JxiOu0SNmfDKsUdwiEwqHbiX
+         c9tDt8rNdM6LGJecc9awddOyKIATMHJg7GVQ3Pni/8/qoSHoNT5skwdpDVtDkQFGhqWq
+         aVssyRd60yeWEMTXIaZ3zuMur0b8ztAbtYXg46N07/6jjrspfKmGx4uFxa3dZUS2Y8S1
+         adBadO6+BDs+iNcDTUf7vIVnkfA+JQVUHdXpoWV/285PMRNbwSXf1YbAhuHqoJM/JfZx
+         nNUF30k8jzLhDslPNAxDHAlXu2KPr2/uQjB4itgCsgY7+G0GWKk8Kt8OisFxx1qGNKBj
+         gJGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=hJp2ZjtOYUiPR+RzNNoJ5Ibq8AZ/CLg09w6+zqv3O4s=;
+        b=dbpzeZodnjY/FZELKAEQmnFObX1vNU4EQwmTIdH27NJQPn8m+flvE5NgXZOLTEK9yi
+         hc390Du+ByLS8aJHQIyJMxdyNYjxDmMC+83Ig1YMNEEy3Qmf0VU/WWiFOUHjch2fqpbz
+         XJt2yy/oF04nksjI/S3ItkPQZfm9fnjqFA43Rad7HjCzbclXxGO30uLEXuSBCNg5E0Gw
+         9tXYhZ4MvD7QDV0f+DpYlznBd4bkIa5SoSZGcvydWaongnKS0KoUU3Z6Xk3zq2F/DObz
+         4ybUDDxi7rFK14izKoAdIy8/uVB3Azvs7Cb0YZETpDfyavSSF0uvnLcK4jZ3+9Nr9ybA
+         YObA==
+X-Gm-Message-State: AOAM532DacG+0iS50bLrk4rlUARqjtqnJObbU1NoxAmHNG5HC5i8cf2d
+        fc8Q51RNb9b6pQp/qrbMjsqZ/VQ6VQ/4
+X-Google-Smtp-Source: ABdhPJy5Tf+kWCTOUilgIKj5/UCgCVwphb0tSKUwSZOuDsIQLq/Isy+3f1imXqdG/EdvMAnbpemHgw==
+X-Received: by 2002:a1c:c908:: with SMTP id f8mr606567wmb.150.1591037173064;
+        Mon, 01 Jun 2020 11:46:13 -0700 (PDT)
+Received: from earth3.lan (host-92-15-172-76.as43234.net. [92.15.172.76])
+        by smtp.googlemail.com with ESMTPSA id 23sm302229wmg.10.2020.06.01.11.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 11:46:12 -0700 (PDT)
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, paulmck@kernel.org, mingo@redhat.com,
+        boqun.feng@gmail.com, Jules Irenge <jbi.octave@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, rcu@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] refperf: work around 64-bit division
-Message-ID: <20200531200317.GN2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200529201600.493808-1-arnd@arndb.de>
- <20200530035230.GA2019114@ubuntu-s3-xlarge-x86>
- <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a3UB2M7Wv8BZx3-ASbsvxD3KHbHCCQ_04xTLPwkEB6twQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu@vger.kernel.org (open list:READ-COPY UPDATE (RCU))
+Subject: [PATCH 3/5] rcu: replace + with |
+Date:   Mon,  1 Jun 2020 19:45:50 +0100
+Message-Id: <20200601184552.23128-4-jbi.octave@gmail.com>
+X-Mailer: git-send-email 2.18.2
+In-Reply-To: <20200601184552.23128-1-jbi.octave@gmail.com>
+References: <20200601184552.23128-1-jbi.octave@gmail.com>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, May 30, 2020 at 10:01:36AM +0200, Arnd Bergmann wrote:
-> On Sat, May 30, 2020 at 5:52 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> > On Fri, May 29, 2020 at 10:15:51PM +0200, Arnd Bergmann wrote:
-> > >       strcat(buf, "Threads\tTime(ns)\n");
-> > >
-> > >       for (exp = 0; exp < nruns; exp++) {
-> > > +             u64 avg;
-> > > +             u32 rem;
-> > > +
-> > >               if (errexit)
-> > >                       break;
-> > > -             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
-> > > +
-> > > +             avg = div_s64_rem(result_avg[exp], 1000, &rem);
-> >
-> > Shouldn't this be div_u64_rem? result_avg is u64.
-> 
-> Yes, you are right. Actually that would be an important optimization
-> since div_u64_rem() optimizes for constant divisors while div_s64_rem
-> uses the slow path.
-> 
-> > > +             sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, avg, rem);
-> >
-> > Would %03u be the better specifier since rem is u32?
-> 
-> Yes, though this makes no difference in practice.
-> 
-> Paul, should I send a fixup for these two, or do you prefer to just
-> edit it in place?
+Coccinelle reports warnings at rcu_preempt_ctxt_queue()
 
-And here is the update, thank you all!
+WARNING: sum of probable bitmasks, consider |
 
-							Thanx, Paul
+The root cause is the use of addition operator + for bitmask defined macros variables
+Replacing + with | fixes the issue.
 
-------------------------------------------------------------------------
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/rcu/tree_plugin.h | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-commit 0dd4132157c2cf6bec2a0a6e04163067323abdb1
-Author: Arnd Bergmann <arnd@arndb.de>
-Date:   Fri May 29 14:36:26 2020 -0700
-
-    refperf: Work around 64-bit division
-    
-    A 64-bit division was introduced in refperf, breaking compilation
-    on all 32-bit architectures:
-    
-    kernel/rcu/refperf.o: in function `main_func':
-    refperf.c:(.text+0x57c): undefined reference to `__aeabi_uldivmod'
-    
-    Fix this by using div_u64 to mark the expensive operation.
-    
-    [ paulmck: Update primitive and format per Nathan Chancellor. ]
-    Fixes: bd5b16d6c88d ("refperf: Allow decimal nanoseconds")
-    Reported-by: kbuild test robot <lkp@intel.com>
-    Reported-by: Valdis Klētnieks <valdis.kletnieks@vt.edu>
-    Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 99434e7..3b72925 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -478,7 +478,7 @@ static int main_func(void *arg)
- 		if (torture_must_stop())
- 			goto end;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 097635c41135..a20135ece06a 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -153,9 +153,9 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	switch (blkd_state) {
+ 	case 0:
+ 	case                RCU_EXP_TASKS:
+-	case                RCU_EXP_TASKS + RCU_GP_BLKD:
++	case                RCU_EXP_TASKS | RCU_GP_BLKD:
+ 	case RCU_GP_TASKS:
+-	case RCU_GP_TASKS + RCU_EXP_TASKS:
++	case RCU_GP_TASKS | RCU_EXP_TASKS:
  
--		result_avg[exp] = 1000 * process_durations(nreaders) / (nreaders * loops);
-+		result_avg[exp] = div_u64(1000 * process_durations(nreaders), nreaders * loops);
- 	}
+ 		/*
+ 		 * Blocking neither GP, or first task blocking the normal
+@@ -168,10 +168,10 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
  
- 	// Print the average of all experiments
-@@ -489,9 +489,13 @@ static int main_func(void *arg)
- 	strcat(buf, "Runs\tTime(ns)\n");
+ 	case                                              RCU_EXP_BLKD:
+ 	case                                RCU_GP_BLKD:
+-	case                                RCU_GP_BLKD + RCU_EXP_BLKD:
+-	case RCU_GP_TASKS +                               RCU_EXP_BLKD:
+-	case RCU_GP_TASKS +                 RCU_GP_BLKD + RCU_EXP_BLKD:
+-	case RCU_GP_TASKS + RCU_EXP_TASKS + RCU_GP_BLKD + RCU_EXP_BLKD:
++	case                                RCU_GP_BLKD | RCU_EXP_BLKD:
++	case RCU_GP_TASKS |                               RCU_EXP_BLKD:
++	case RCU_GP_TASKS |                 RCU_GP_BLKD | RCU_EXP_BLKD:
++	case RCU_GP_TASKS | RCU_EXP_TASKS | RCU_GP_BLKD | RCU_EXP_BLKD:
  
- 	for (exp = 0; exp < nruns; exp++) {
-+		u64 avg;
-+		u32 rem;
-+
- 		if (errexit)
- 			break;
--		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
-+		avg = div_u64_rem(result_avg[exp], 1000, &rem);
-+		sprintf(buf1, "%d\t%llu.%03u\n", exp + 1, avg, rem);
- 		strcat(buf, buf1);
- 	}
+ 		/*
+ 		 * First task arriving that blocks either GP, or first task
+@@ -184,9 +184,9 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
+ 		list_add_tail(&t->rcu_node_entry, &rnp->blkd_tasks);
+ 		break;
  
+-	case                RCU_EXP_TASKS +               RCU_EXP_BLKD:
+-	case                RCU_EXP_TASKS + RCU_GP_BLKD + RCU_EXP_BLKD:
+-	case RCU_GP_TASKS + RCU_EXP_TASKS +               RCU_EXP_BLKD:
++	case                RCU_EXP_TASKS |               RCU_EXP_BLKD:
++	case                RCU_EXP_TASKS | RCU_GP_BLKD | RCU_EXP_BLKD:
++	case RCU_GP_TASKS | RCU_EXP_TASKS |               RCU_EXP_BLKD:
+ 
+ 		/*
+ 		 * Second or subsequent task blocking the expedited GP.
+@@ -197,8 +197,8 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
+ 		list_add(&t->rcu_node_entry, rnp->exp_tasks);
+ 		break;
+ 
+-	case RCU_GP_TASKS +                 RCU_GP_BLKD:
+-	case RCU_GP_TASKS + RCU_EXP_TASKS + RCU_GP_BLKD:
++	case RCU_GP_TASKS |                 RCU_GP_BLKD:
++	case RCU_GP_TASKS | RCU_EXP_TASKS | RCU_GP_BLKD:
+ 
+ 		/*
+ 		 * Second or subsequent task blocking the normal GP.
+-- 
+2.18.2
+
