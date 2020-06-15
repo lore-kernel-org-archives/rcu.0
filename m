@@ -2,95 +2,85 @@ Return-Path: <SRS0=TgV7=74=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1B43C433DF
-	for <rcu@archiver.kernel.org>; Mon, 15 Jun 2020 06:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96941C433E0
+	for <rcu@archiver.kernel.org>; Mon, 15 Jun 2020 16:03:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A269B2067B
-	for <rcu@archiver.kernel.org>; Mon, 15 Jun 2020 06:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592203738;
-	bh=a4n/BPdOkDbvDmgaE3yBM9LRJio/PspIgVLZ/Qy/444=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=2EPE0k3nEIZHLslsXDI9M5jQzcbzAMf4jMzbNRle3Q68v4WFyXIr7Dkz2/bLleP8u
-	 eLYNQ8An7FcogBEkvOnaQDYohCWhjfMdt3QLfKESPw/MPBofJlVMFcVKG0R7aBRTSA
-	 gKuJfUZpscGEygKwIbPWL7bnZi67Cu/1cABtWzkI=
+	by mail.kernel.org (Postfix) with ESMTP id 7755220679
+	for <rcu@archiver.kernel.org>; Mon, 15 Jun 2020 16:03:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgFOGrO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 Jun 2020 02:47:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728436AbgFOGrN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 Jun 2020 02:47:13 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBAC02083E;
-        Mon, 15 Jun 2020 06:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592203632;
-        bh=a4n/BPdOkDbvDmgaE3yBM9LRJio/PspIgVLZ/Qy/444=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2nubpUEZmnCHJck92I9MHv2PTLviZpuuSsuJOuO2nlqtNozSMYnDH3Uud5mazM5yk
-         qZ6Oq0gANbUHOVIT0rRudzJ/0v2+JdgIqF91ffGgvEzC2QgFXv3mL4zQm8to7cVulS
-         sfbi1Ujn4aO406jvOoyHBeKhVjB4sXBZDjIrdieU=
-Received: from mchehab by mail.kernel.org with local (Exim 4.93)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jkith-009nmb-LR; Mon, 15 Jun 2020 08:47:09 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 10/29] rcu: fix some kernel-doc warnings
-Date:   Mon, 15 Jun 2020 08:46:49 +0200
-Message-Id: <442c913556cba30f2f411e54efedcb97508f01a9.1592203542.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1592203542.git.mchehab+huawei@kernel.org>
-References: <cover.1592203542.git.mchehab+huawei@kernel.org>
+        id S1730545AbgFOQC7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 15 Jun 2020 12:02:59 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:55470 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727785AbgFOQC6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 15 Jun 2020 12:02:58 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jkrZX-0000Jz-9p; Mon, 15 Jun 2020 10:02:55 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jkrZS-0006kj-Th; Mon, 15 Jun 2020 10:02:54 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <477ac099-e272-b873-fccf-c68c5b729fe9@infradead.org>
+Date:   Mon, 15 Jun 2020 10:58:38 -0500
+In-Reply-To: <477ac099-e272-b873-fccf-c68c5b729fe9@infradead.org> (Randy
+        Dunlap's message of "Sun, 14 Jun 2020 20:45:07 -0700")
+Message-ID: <87a714cocx.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jkrZS-0006kj-Th;;;mid=<87a714cocx.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/yVMbGMInvS5dqSamTLx7OYsQlVCtOJTs=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH] <linux/rculist.h>: fix kernel-doc notation & warning
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are some kernel-doc warnings:
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-	./kernel/rcu/tree.c:2915: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
-	./include/linux/rculist.h:517: warning: bad line:                           [@right ][node2 ... ]
-	./include/linux/rculist.h:2: WARNING: Unexpected indentation.
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix a kernel-doc warning due to missing a beginning '*' on the
+> comment line.
+>
+> ../include/linux/rculist.h:515: warning: bad line:                           [@right ][node2 ... ]
+>
 
-Move the comment for "count" to the kernel-doc markup and add
-a missing "*" on one kernel-doc continuation line.
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- include/linux/rculist.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index df587d181844..7eed65b5f713 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
-  * @right: The hlist head on the right
-  *
-  * The lists start out as [@left  ][node1 ... ] and
--                          [@right ][node2 ... ]
-+ *                        [@right ][node2 ... ]
-  * The lists end up as    [@left  ][node2 ... ]
-  *                        [@right ][node1 ... ]
-  */
--- 
-2.26.2
-
+> Fixes: 35fc0e3b0bd5 ("rculist: Add hlists_swap_heads_rcu")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: rcu@vger.kernel.org
+> ---
+>  include/linux/rculist.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- lnx-58-rc1.orig/include/linux/rculist.h
+> +++ lnx-58-rc1/include/linux/rculist.h
+> @@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(str
+>   * @right: The hlist head on the right
+>   *
+>   * The lists start out as [@left  ][node1 ... ] and
+> -                          [@right ][node2 ... ]
+> + *                        [@right ][node2 ... ]
+>   * The lists end up as    [@left  ][node2 ... ]
+>   *                        [@right ][node1 ... ]
+>   */
