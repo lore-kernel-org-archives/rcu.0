@@ -2,131 +2,194 @@ Return-Path: <SRS0=B8+c=75=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E41BC433DF
-	for <rcu@archiver.kernel.org>; Tue, 16 Jun 2020 16:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A68C433E0
+	for <rcu@archiver.kernel.org>; Tue, 16 Jun 2020 17:42:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1AE2F208B8
-	for <rcu@archiver.kernel.org>; Tue, 16 Jun 2020 16:52:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B5290214F1
+	for <rcu@archiver.kernel.org>; Tue, 16 Jun 2020 17:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592326344;
-	bh=XeB8RfXxntVxzyrTfg70RUh4UjEGQCPWv1lwVLpthu8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=xJAnxGYUU6KUoycrOfz4/xPJGpFewHmEioStuleurb3NZJ1yjyenb52Dmgww5rvPu
-	 JnWBDGpMHKurvFWsOT2f/R4Xq2yxhqWEw9weO3dNNCZjDbhI3LfNmB+ppm/hcbjVjZ
-	 lGD8NfhXrKSqslEKInZhIqaICqatx+J1mEYiEsF4=
+	s=default; t=1592329344;
+	bh=TO5m+hfFv6LoWMR+qPaBMb/tllGHxEHiNIkPu+8psFI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=qb2kZyhFAEBK6KuYKrxa6MwfTyVWoErkZ0t8lf9UgQwmIxx6yh5SiuLDrfVhMDREC
+	 STbSPqcIV+3VzRixlJ58dEtoFKB0+r5SqRhgN9xGwujuDv/RiiCrM/dCuOJkYYYhKd
+	 tRa6wXRt+1BQeRIb9yr9Dfi5wyYvv0TcYTapMvgg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgFPQwX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Jun 2020 12:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48820 "EHLO mail.kernel.org"
+        id S1730040AbgFPRmY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Jun 2020 13:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgFPQwX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Jun 2020 12:52:23 -0400
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729771AbgFPRmY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Jun 2020 13:42:24 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47C3A21534
-        for <rcu@vger.kernel.org>; Tue, 16 Jun 2020 16:52:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2514F214D8;
+        Tue, 16 Jun 2020 17:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592326342;
-        bh=XeB8RfXxntVxzyrTfg70RUh4UjEGQCPWv1lwVLpthu8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IopV3ocfvIbZY5iNuUz+Prt9RPPcu8j9dNlB7uwO1RMYdecRi7THhpTXOEoTowsEM
-         I/mnPkLPie9GPfiDwXuDqlNw6KgxP6GsVbE7C+nqZQPeNHvFDOh6jMvhmW+VsPNbyE
-         CMgboltnVR4XKIZMf4g/dutOH0Ilj0je4P3ug9/s=
-Received: by mail-wr1-f48.google.com with SMTP id b6so2366297wrs.11
-        for <rcu@vger.kernel.org>; Tue, 16 Jun 2020 09:52:22 -0700 (PDT)
-X-Gm-Message-State: AOAM531TbL8hMV5AVtdm8SFu2EQcaNQuGWmDks+xXpGihyXC4Lj70ql7
-        dNpSmCGl7MXvGsMJWE+eXwLGo8ftoJOgiHtTla3k4Q==
-X-Google-Smtp-Source: ABdhPJya86zs5ua3UHDfJ8AyO/vlLTTEAa2ptum00sS1wlyK4hLZRdXce+xtjtmf6hy8V9J+uddsFUOnEBmn45Ic2iw=
-X-Received: by 2002:adf:ea11:: with SMTP id q17mr3891054wrm.75.1592326340746;
- Tue, 16 Jun 2020 09:52:20 -0700 (PDT)
+        s=default; t=1592329343;
+        bh=TO5m+hfFv6LoWMR+qPaBMb/tllGHxEHiNIkPu+8psFI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=G3cg1bakLwDh6Ob7BoH5jyuwgaHWma0WMo98q8Kcy2vVTB+LWLBjXwKS/JDtnBvFx
+         vuIzWocX3gyf3PPVykHQRrLh+x2RryajRt1mNjPDgqxv7wyQ3k4wu3a8KjR75kYQJV
+         YLok4gPc+HtlfVb48VgC/iW1q7gcHCjGNuviqGwQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BB3AC352264F; Tue, 16 Jun 2020 10:42:22 -0700 (PDT)
+Date:   Tue, 16 Jun 2020 10:42:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel@vger.kernel.org, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, shuah@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] torture: Pass --kmake-arg to all make invocations
+Message-ID: <20200616174222.GB2723@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200616094924.159539-1-elver@google.com>
+ <20200616160524.GW2723@paulmck-ThinkPad-P72>
+ <20200616164202.GA208325@google.com>
 MIME-Version: 1.0
-References: <20200611235305.GA32342@paulmck-ThinkPad-P72> <CALCETrWo-zpiDsYGtKvm8LzW6CQ5L19a3+Ag_9g8aL4wHaJj9g@mail.gmail.com>
- <871rmkzcc8.fsf@nanos.tec.linutronix.de> <87wo4cxubv.fsf@nanos.tec.linutronix.de>
- <20200615201647.GC12037@google.com> <871rmfcskb.fsf@nanos.tec.linutronix.de> <20200616143018.GD12037@google.com>
-In-Reply-To: <20200616143018.GD12037@google.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 16 Jun 2020 09:52:09 -0700
-X-Gmail-Original-Message-ID: <CALCETrViTVCaqmF1wQCAdPR7k9ZYOvRDdzjkVBMwrVH6nh3zMg@mail.gmail.com>
-Message-ID: <CALCETrViTVCaqmF1wQCAdPR7k9ZYOvRDdzjkVBMwrVH6nh3zMg@mail.gmail.com>
-Subject: Re: [PATCH x86/entry: Force rcu_irq_enter() when in idle task
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616164202.GA208325@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 7:30 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Tue, Jun 16, 2020 at 10:40:04AM +0200, Thomas Gleixner wrote:
-> > Joel,
-> >
-> > Joel Fernandes <joel@joelfernandes.org> writes:
-> > > On Fri, Jun 12, 2020 at 03:55:00PM +0200, Thomas Gleixner wrote:
-> > >> This is also correct vs. user mode entries in NOHZ full scenarios because
-> > >> user mode entries bring RCU out of EQS and force the RCU irq nesting state
-> > >
-> > > I had to re-read this sentence a couple of times. The 'user mode entries'
-> > > sounds like 'entry into user mode'. It would be good to reword it to 'IRQ
-> > > entry in user mode'.
-> >
-> > :)
-> >
-> > > My knowledge predates the rcu-watching reworks so apologies on the below
-> > > question but I still didn't fully follow why when the idle task behaves
-> > > differently from being in user mode. Even with user mode we should have:
-> > >
-> > > <user mode>  (in EQS)
-> > >   <irq entry>   <---------- exits EQS so now rcu is watching
-> > >      <softirq entry in the exit path>
-> > >         <timer tick irq entry>  <-- the buggy !watching logic prevents rcu_irq_enter
-> > >         -> report QS since tick thinks it is first level.
-> > >
-> > > Is there a subtlety here I'm missing? I checked the RCU code and I did not
-> > > see anywhere that rcu_user_enter() makes it behave differently. Both
-> > > rcu_user_enter() and rcu_idle_enter() call rcu_eqs_enter().
-> >
-> > The interrupt hit user mode entry does:
-> >
-> >     idtentry_enter_cond_rcu()
-> >       if (user_mode(regs))
-> >          enter_from_user_mode()
-> >            user_exit_irqoff()
-> >              __context_tracking_exit(CONTEXT_USER)
-> >                rcu_user_exit()
-> >                  rcu_eqs_exit(1)
-> >                    ...
-> >                    WRITE_ONCE(rdp->dynticks_nmi_nesting,
-> >                               DYNTICK_IRQ_NONIDLE);
-> >
-> > i.e. for interrupts which enter from user mode we are not invoking
-> > rcu_irq_enter() at all.
-> >
-> > The return from interrupt path has nothing to do with that because
-> > that's an entry in kernel mode.
->
-> Hi Thomas,
-> Ah, IRQ entry in user mode triggers the context-tracking path. Makes sense now, thanks.
->
-> This will help me when I have to propose to get rid of dynticks_nmi_nesting again :)
->
+On Tue, Jun 16, 2020 at 06:42:02PM +0200, Marco Elver wrote:
+> On Tue, Jun 16 2020 at 09:05AM -0700, Paul E. McKenney wrote:
+> 
+> > On Tue, Jun 16, 2020 at 11:49:24AM +0200, Marco Elver wrote:
+> > > We need to pass the arguments provided to --kmake-arg to all make
+> > > invocations. In particular, the make invocations generating the configs
+> > > need to see the final make arguments, e.g. if config variables depend on
+> > > particular variables that are passed to make.
+> > > 
+> > > For example, when using '--kcsan --kmake-arg CC=clang-11', we would lose
+> > > CONFIG_KCSAN=y due to 'make oldconfig' not seeing that we want to use a
+> > > compiler that supports KCSAN.
+> > > 
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > 
+> > Queued and pushed, thank you!
+> > 
+> > Would the following patch make sense, at least until such time
+> > as some other compiler supports KCSAN?
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit 88bcaa730b6d40ddf69b09ed6f0a14803d087d99
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Tue Jun 16 09:02:34 2020 -0700
+> > 
+> >     torture: Make --kcsan default to using Clang 11
+> >     
+> >     Currently, Clang 11 is the only compiler that can support KCSAN.
+> >     Therefore, as a convenience to the KCSAN user, this commit causes
+> >     --kcsan to specify Clang 11 unless a "CC=" argument was already
+> >     specified via the --kmake-arg argument.
+> 
+> As soon as more compilers support KCSAN (e.g. clang-12, etc...) we run
+> the risk of actually inconveniencing ourselves more because then we
+> really need to say '--kmake-arg CC=clang-1X' to not use the old
+> compiler. Or revert this in time.
+> 
+> My command-line looks more like this right now:
+> 
+> 	kvm.sh ... --kmake-arg "CC="${HOME}/local/<gcc-or-clang>-11.kcsan/local/bin/<gcc-or-clang>" ...
+> 
+> I think the safer alternative would be to error if CONFIG_KCSAN=y is not
+> in the config, and simply suggest "Did you forget to switch your
+> compiler with '--kmake-arg CC=<cc-that-supports-kcsan>'?" (of course, a
+> 'gcc' in $PATH that supports KCSAN would also be fine -- see below).
+> Eventually, when the default compilers support KCSAN, this will resolve
+> itself gracefully.
+> 
+> Also, I'm going to send a series later this week to re-enable GCC
+> support. ;-)
 
-Propose away, but just keep in mind that horrible architectures like
-x86 really can nest non-maskable interrupts that hit kernel code more
-than one deep.
+OK, sounds like I should leave well enough alone, then.  ;-)
 
---Andy
+In its current state, specifying "--kcsan" without a KCSAN-capable
+compiler does get you this:
+
+:CONFIG_KCSAN=y: improperly set
+:CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+:CONFIG_KCSAN_VERBOSE=y: improperly set
+:CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+Clean KCSAN run in /home/git/linux-rcu/tools/testing/selftests/rcutorture/res/2020.06.16-09.53.16
+
+Which admittedly is a bit obtuse, especially that last line.  So how
+about the following patch, which instead results in this?
+
+:CONFIG_KCSAN=y: improperly set
+:CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+:CONFIG_KCSAN_VERBOSE=y: improperly set
+:CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+Did you forget to switch your compiler with --kmake-arg CC=<cc-that-supports-kcsan>?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit f571795b1146007407851675a258b6685ea2d589
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Jun 16 10:38:57 2020 -0700
+
+    torture: Improve diagnostic for KCSAN-incapable compilers
+    
+    Using --kcsan when the compiler does not support KCSAN results in this:
+    
+    :CONFIG_KCSAN=y: improperly set
+    :CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+    :CONFIG_KCSAN_VERBOSE=y: improperly set
+    :CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+    Clean KCSAN run in /home/git/linux-rcu/tools/testing/selftests/rcutorture/res/2020.06.16-09.53.16
+    
+    This is a bit obtuse, so this commit adds checks resulting in this:
+    
+    :CONFIG_KCSAN=y: improperly set
+    :CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+    :CONFIG_KCSAN_VERBOSE=y: improperly set
+    :CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+    Did you forget to switch your compiler with --kmake-arg CC=<cc-that-supports-kcsan>?
+    
+    Suggested-by: Marco Elver <elver@google.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index 357899c..837643a 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -44,7 +44,8 @@ do
+ 			then
+ 				echo QEMU killed
+ 			fi
+-			configcheck.sh $i/.config $i/ConfigFragment
++			configcheck.sh $i/.config $i/ConfigFragment > $T 2>&1
++			cat $T
+ 			if test -r $i/Make.oldconfig.err
+ 			then
+ 				cat $i/Make.oldconfig.err
+@@ -73,7 +74,10 @@ do
+ 	done
+ 	if test -f "$rd/kcsan.sum"
+ 	then
+-		if test -s "$rd/kcsan.sum"
++		if grep -q CONFIG_KCSAN=y $T
++		then
++			echo Did you forget to switch your compiler with '--kmake-arg CC=<cc-that-supports-kcsan>'?
++		elif test -s "$rd/kcsan.sum"
+ 		then
+ 			echo KCSAN summary in $rd/kcsan.sum
+ 		else
