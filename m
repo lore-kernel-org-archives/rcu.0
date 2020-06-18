@@ -7,178 +7,222 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27301C433DF
-	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 22:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68592C433E0
+	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 23:09:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F39B2206F1
-	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 22:40:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35EF82071A
+	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 23:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592520060;
-	bh=mSTGr0z1t50V+4PETgkloUEYdLRH7d9JFYjF022gv9c=;
+	s=default; t=1592521776;
+	bh=H6IO8yxoUcYmqjy//mv0HgVprmtMPdFrIekLt6GlDl0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=nxZVmf7njc3+0Cn6otEvwrKAdOoblGHDKuIVjU9Tf/r2cKi2cstgJfwpVEU0GheUf
-	 9IqVGfAxn3NQobpPT3tpUrJrFTsraUE01cWQituRznuTyHjdWU6OyPtiXMusqfk7XC
-	 cxKJuY2is7OHJOwM84KDZPdw2x1V2JZPjtmNiPLY=
+	b=AsxiPcwKSStJ2xgb6OsjpGV9YgECnsaMb9red1kx6dQ923WCRQIAXxT/6FvVel+Yi
+	 P0DGGV5GRKyo1wOnMrd0gV2rJMs30wMm9m47BCltSu/EBxz+/2jrinpaNjCArF+Qra
+	 /kQqotwbU86dJ1V+AcD6GtZO9m3CDtyYg9itIEgk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgFRWk7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jun 2020 18:40:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
+        id S1727787AbgFRXJg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jun 2020 19:09:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726835AbgFRWk7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:40:59 -0400
+        id S1727776AbgFRXJf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jun 2020 19:09:35 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BF7C206E2;
-        Thu, 18 Jun 2020 22:40:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AFFB206F1;
+        Thu, 18 Jun 2020 23:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592520058;
-        bh=mSTGr0z1t50V+4PETgkloUEYdLRH7d9JFYjF022gv9c=;
+        s=default; t=1592521774;
+        bh=H6IO8yxoUcYmqjy//mv0HgVprmtMPdFrIekLt6GlDl0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XK29KKgqdhmppO7VOvmr16E5m0h0Kc/cOA9G/gfzf0jRQVvvmoNhP664RVYenDmNC
-         2KuGOE9ZMZyPDSiUdl8sqF9R1BoYSes4VAxk9Ss92yVCI8DuDuWEhcl/injAPw/PyP
-         5fHWk9sK6Rum4ecg+o/x/XkvxbqUJTWOMzY67btQ=
+        b=oXclqOsqiaFDbwxelChz35mjJPApOJ2t6/OJYOhfj6dU7zgftmHcmoDdH/grPVi8R
+         qiBRLHyfXup4jsmkOF9JETm2t/hdfECKSaZz5fI0ZuvHvBzdfS3g27cednpHK1kjMh
+         1LqZbZcH/yUlpFyewNUgD2uv831LZ7LXAVdeYAW0=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 801DE352264E; Thu, 18 Jun 2020 15:40:58 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 15:40:58 -0700
+        id 85C83352264E; Thu, 18 Jun 2020 16:09:34 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 16:09:34 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+Cc:     linux-kernel@vger.kernel.org, urezki@gmail.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
         Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Marco Elver <elver@google.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH 6/7] rcutorture: Add support to get the number of wakeups
- of main GP kthread
-Message-ID: <20200618224058.GD2723@paulmck-ThinkPad-P72>
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/7] rcu/segcblist: Prevent useless GP start if no CBs to
+ accelerate
+Message-ID: <20200618230934.GA31937@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20200618202955.4024-1-joel@joelfernandes.org>
- <20200618202955.4024-6-joel@joelfernandes.org>
+ <20200618221119.GX2723@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618202955.4024-6-joel@joelfernandes.org>
+In-Reply-To: <20200618221119.GX2723@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 04:29:54PM -0400, Joel Fernandes (Google) wrote:
-> This is useful to check for any improvements or degradation related to
-> number of GP kthread wakeups during testing.
+On Thu, Jun 18, 2020 at 03:11:19PM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 18, 2020 at 04:29:49PM -0400, Joel Fernandes (Google) wrote:
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> First, this looks like a very nice optimization, thank you!
+> 
+> > rcu_segcblist_accelerate() returns true if a GP is to be
+> > started/requested and false if not. During tracing, I found that it is
+> > asking that GPs be requested
+> 
+> s/GPs/unnecessary GPs/?  Plus "." at end of the sentence.
+> 
+> > The exact flow seems to be something like:
+> > 1. Callbacks are queued on CPU A - into the NEXT list.
+> > 2. softirq runs on CPU A, accelerate all CBs from NEXT->WAIT and request a GP X.
+> > 3. GP thread wakes up on another CPU, starts the GP X and requests QS from CPU A.
+> > 4. CPU A's softirq runs again presumably because of #3.
+> 
+> Yes, that is one reason RCU softirq might run again.
+> 
+> > 5. CPU A's softirq now does acceleration again, this time no CBs are
+> >    accelerated since last attempt, but it still requests GP X+1 which
+> >    could be useless.
+> 
+> I can't think of a case where this request helps.  How about: "but
+> it still unnecessarily requests GP X+1"?
+> 
+> > The fix is, prevent the useless GP start if we detect no CBs are there
+> > to accelerate.
+> > 
+> > With this, we have the following improvement in short runs of
+> > rcutorture (5 seconds each):
+> > +----+-------------------+-------------------+
+> > | #  | Number of GPs     | Number of Wakeups |
+> > +====+=========+=========+=========+=========+
+> > | 1  | With    | Without | With    | Without |
+> > +----+---------+---------+---------+---------+
+> > | 2  |      75 |      89 |     113 |     119 |
+> > +----+---------+---------+---------+---------+
+> > | 3  |      62 |      91 |     105 |     123 |
+> > +----+---------+---------+---------+---------+
+> > | 4  |      60 |      79 |      98 |     110 |
+> > +----+---------+---------+---------+---------+
+> > | 5  |      63 |      79 |      99 |     112 |
+> > +----+---------+---------+---------+---------+
+> > | 6  |      57 |      89 |      96 |     123 |
+> > +----+---------+---------+---------+---------+
+> > | 7  |      64 |      85 |      97 |     118 |
+> > +----+---------+---------+---------+---------+
+> > | 8  |      58 |      83 |      98 |     113 |
+> > +----+---------+---------+---------+---------+
+> > | 9  |      57 |      77 |      89 |     104 |
+> > +----+---------+---------+---------+---------+
+> > | 10 |      66 |      82 |      98 |     119 |
+> > +----+---------+---------+---------+---------+
+> > | 11 |      52 |      82 |      83 |     117 |
+> > +----+---------+---------+---------+---------+
+> 
+> So the reductions in wakeups ranges from 5% to 40%, with almost a 20%
+> overall reduction in wakeups across all the runs.  That should be of
+> some use to someone.  ;-)
+> 
+> I do run rcutorture quite a bit, but is there a more real-world
+> benchmark that could be tried?
+> 
+> > Cc: urezki@gmail.com
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-This was a good way to collect the data for your testing, but
-we can expect rcutorture to only do so much.  ;-)
+As discussed over IRC, I updated the patch as shown below.  Does that
+work for you?
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/Kconfig.debug |  1 +
->  kernel/rcu/rcu.h         |  2 ++
->  kernel/rcu/rcutorture.c  | 23 ++++++++++++++++++++++-
->  kernel/rcu/tree.c        |  7 +++++++
->  4 files changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> index 3cf6132a4bb9f..3323e3378af5a 100644
-> --- a/kernel/rcu/Kconfig.debug
-> +++ b/kernel/rcu/Kconfig.debug
-> @@ -50,6 +50,7 @@ config RCU_TORTURE_TEST
->  	select TASKS_RCU
->  	select TASKS_RUDE_RCU
->  	select TASKS_TRACE_RCU
-> +	select SCHEDSTATS
->  	default n
->  	help
->  	  This option provides a kernel module that runs torture tests
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index cf66a3ccd7573..7e867e81d9738 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -511,6 +511,7 @@ srcu_batches_completed(struct srcu_struct *sp) { return 0; }
->  static inline void rcu_force_quiescent_state(void) { }
->  static inline void show_rcu_gp_kthreads(void) { }
->  static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
-> +static inline struct task_struct *rcu_get_main_gp_kthread(void) { return 0; }
->  static inline void rcu_fwd_progress_check(unsigned long j) { }
->  #else /* #ifdef CONFIG_TINY_RCU */
->  bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
-> @@ -519,6 +520,7 @@ unsigned long rcu_exp_batches_completed(void);
->  unsigned long srcu_batches_completed(struct srcu_struct *sp);
->  void show_rcu_gp_kthreads(void);
->  int rcu_get_gp_kthreads_prio(void);
-> +struct task_struct *rcu_get_main_gp_kthread(void);
->  void rcu_fwd_progress_check(unsigned long j);
->  void rcu_force_quiescent_state(void);
->  extern struct workqueue_struct *rcu_gp_wq;
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index d0d265304d147..959a1f84d6904 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -23,6 +23,7 @@
->  #include <linux/rcupdate_wait.h>
->  #include <linux/interrupt.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/sched/stat.h>
->  #include <uapi/linux/sched/types.h>
->  #include <linux/atomic.h>
->  #include <linux/bitops.h>
-> @@ -460,9 +461,29 @@ static void rcu_sync_torture_init(void)
->  	INIT_LIST_HEAD(&rcu_torture_removed);
->  }
->  
-> +unsigned long rcu_gp_nr_wakeups;
-> +
-> +static void rcu_flavor_init(void)
-> +{
-> +	rcu_sync_torture_init();
-> +
-> +	/* Make sure schedstat is enabled for GP thread wakeup count. */
-> +	force_schedstat_enabled();
-> +	rcu_gp_nr_wakeups = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
-> +}
-> +
-> +static void rcu_flavor_cleanup(void)
-> +{
-> +	unsigned long now_nr = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
-> +
-> +	pr_alert("End-test: Cleanup: Total GP-kthread wakeups: %lu\n",
-> +		now_nr - rcu_gp_nr_wakeups);
-> +}
-> +
->  static struct rcu_torture_ops rcu_ops = {
->  	.ttype		= RCU_FLAVOR,
-> -	.init		= rcu_sync_torture_init,
-> +	.init		= rcu_flavor_init,
-> +	.cleanup	= rcu_flavor_cleanup,
->  	.readlock	= rcu_torture_read_lock,
->  	.read_delay	= rcu_read_delay,
->  	.readunlock	= rcu_torture_read_unlock,
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index c3bae7a83d792..a3a175feb310a 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -175,6 +175,13 @@ int rcu_get_gp_kthreads_prio(void)
->  }
->  EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
->  
-> +/* Retrieve RCU's main GP kthread task_struct */
-> +struct task_struct *rcu_get_main_gp_kthread(void)
-> +{
-> +	return rcu_state.gp_kthread;
-> +}
-> +EXPORT_SYMBOL_GPL(rcu_get_main_gp_kthread);
-> +
->  /*
->   * Number of grace periods between delays, normalized by the duration of
->   * the delay.  The longer the delay, the more the grace periods between
-> -- 
-> 2.27.0.111.gc72c7da667-goog
-> 
+------------------------------------------------------------------------
+
+commit ec037e1f438074eb16fd68a63d699fc419c9ba0c
+Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+Date:   Thu Jun 18 16:29:49 2020 -0400
+
+    rcu/segcblist: Prevent useless GP start if no CBs to accelerate
+    
+    The rcu_segcblist_accelerate() function returns true iff it is necessary
+    to request another grace period.  A tracing session showed that this
+    function unnecessarily requests grace periods.
+    
+    For exmaple, consider the following sequence of events:
+    1. Callbacks are queued only on the NEXT segment of CPU A's callback list.
+    2. CPU A runs RCU_SOFTIRQ, accelerating these callbacks from NEXT to WAIT.
+    3. Thus rcu_segcblist_accelerate() returns true, requesting grace period N.
+    4. RCU's grace-period kthread wakes up on CPU B and starts grace period N.
+    4. CPU A notices the new grace period and invokes RCU_SOFTIRQ.
+    5. CPU A's RCU_SOFTIRQ again invokes rcu_segcblist_accelerate(), but
+       there are no new callbacks.  However, rcu_segcblist_accelerate()
+       nevertheless (uselessly) requests a new grace period N+1.
+    
+    This extra grace period results in additional lock contention and also
+    additional wakeups, all for no good reason.
+    
+    This commit therefore adds a check to rcu_segcblist_accelerate() that
+    prevents the return of true when there are no new callbacks.
+    
+    This change reduces the number of grace periods (GPs) and wakeups in each
+    of eleven five-second rcutorture runs as follows:
+    
+    +----+-------------------+-------------------+
+    | #  | Number of GPs     | Number of Wakeups |
+    +====+=========+=========+=========+=========+
+    | 1  | With    | Without | With    | Without |
+    +----+---------+---------+---------+---------+
+    | 2  |      75 |      89 |     113 |     119 |
+    +----+---------+---------+---------+---------+
+    | 3  |      62 |      91 |     105 |     123 |
+    +----+---------+---------+---------+---------+
+    | 4  |      60 |      79 |      98 |     110 |
+    +----+---------+---------+---------+---------+
+    | 5  |      63 |      79 |      99 |     112 |
+    +----+---------+---------+---------+---------+
+    | 6  |      57 |      89 |      96 |     123 |
+    +----+---------+---------+---------+---------+
+    | 7  |      64 |      85 |      97 |     118 |
+    +----+---------+---------+---------+---------+
+    | 8  |      58 |      83 |      98 |     113 |
+    +----+---------+---------+---------+---------+
+    | 9  |      57 |      77 |      89 |     104 |
+    +----+---------+---------+---------+---------+
+    | 10 |      66 |      82 |      98 |     119 |
+    +----+---------+---------+---------+---------+
+    | 11 |      52 |      82 |      83 |     117 |
+    +----+---------+---------+---------+---------+
+    
+    The reduction in the number of wakeups ranges from 5% to 40%.
+    
+    Cc: urezki@gmail.com
+    [ paulmck: Rework commit log and comment. ]
+    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 9a0f661..2d2a6b6b9 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -475,8 +475,16 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	 * Also advance to the oldest segment of callbacks whose
+ 	 * ->gp_seq[] completion is at or after that passed in via "seq",
+ 	 * skipping any empty segments.
++	 *
++	 * Note that segment "i" (and any lower-numbered segments
++	 * containing older callbacks) will be unaffected, and their
++	 * grace-period numbers remain unchanged.  For example, if i ==
++	 * WAIT_TAIL, then neither WAIT_TAIL nor DONE_TAIL will be touched.
++	 * Instead, the CBs in NEXT_TAIL will be merged with those in
++	 * NEXT_READY_TAIL and the grace-period number of NEXT_READY_TAIL
++	 * would be updated.  NEXT_TAIL would then be empty.
+ 	 */
+-	if (++i >= RCU_NEXT_TAIL)
++	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
+ 		return false;
+ 
+ 	/*
