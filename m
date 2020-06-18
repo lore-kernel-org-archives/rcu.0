@@ -2,137 +2,151 @@ Return-Path: <SRS0=xc3B=77=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51E88C433E0
-	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 20:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13676C433E0
+	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 20:30:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3029220890
-	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 20:03:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E38B8208C3
+	for <rcu@archiver.kernel.org>; Thu, 18 Jun 2020 20:30:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZTh/FsJ"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="RDc8PBr8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbgFRUDm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jun 2020 16:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S1729850AbgFRUaG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jun 2020 16:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgFRUDl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:03:41 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655DEC06174E;
-        Thu, 18 Jun 2020 13:03:41 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n23so8790551ljh.7;
-        Thu, 18 Jun 2020 13:03:41 -0700 (PDT)
+        with ESMTP id S1729632AbgFRUaF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jun 2020 16:30:05 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948CBC06174E
+        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 13:30:05 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id l6so3288142qkc.6
+        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 13:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xY2HlaoZmjAUGYdihKpKBP2AgWF7hu3wdXSeYzOnmxw=;
-        b=aZTh/FsJiZ5SD2HR+wSHizlouOjCpprPqkaO6K7VCoUivCKDqeLnncjaUB1vZTOpgP
-         F2/DxicoJsbd3MQGD1l5dhb7Fxy4M6+G96bwagnKmLF8RhNq1Q7gPwmHNY38jxHchvM0
-         wMyDeLHWCmwQPTr8CN9pj99lDo1BU2EWpNvJua5F1KqY4XrFA6NY4fI4g8piLTmAekBN
-         +yMl6Nq2XiofgZ7cXsRtt6HEQ9szs9yvpBWI0G3l0Sh75qOA/Il1volU1dQOsKxnznyc
-         z6ye/WJBA8e+VpAVb0rcbuGPprWnxz42B2owD8QlMMnVnzD6khNCHCusmgaVGyFKq+qt
-         LGKA==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gMOtZLcID+RRbq+QbVzKX+Sw9GzEGaMQc8XZ1xKu5m8=;
+        b=RDc8PBr85lcjVAicltmfcfy4dzfexCk/dEiGFvqbM8lScWjY1PkBHl6o4/PY8wgxcB
+         ToIPTtkxdMT5FTrFrESjJb4ugVU0nqz/g2iczQzFDJvRCCnkvM1x9V1NEa97zCQJZANT
+         d1tQkqFlCcKx5WaxCSHtW4Dag3Mv3IL4nzxWs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xY2HlaoZmjAUGYdihKpKBP2AgWF7hu3wdXSeYzOnmxw=;
-        b=WED+xD0n5Q9F0+mwU0rrtIvMDsqeO14G+S4WZcPAukJqZnqoERHQhhaJA9zCPU+nbj
-         mXrjQJKJ5cjRzodzeAV0qANcUSLMmW0/MPZizOkjeTKYf24WBw2sNIzclsNryP8bMh9H
-         CWiXlIuvsQDv9dCTNJnLoqs8P/Xgezbpo3+gQQ3KzcVDezT95CAMRkrl15w5PEoKhv/b
-         clTkWnTXLwAiW69005G4tkfxOs7UN9j1Tt+0G4oQSo0WeFR9i7Pk4/r5Z/aqe5Pm0L4V
-         F0wws03dJAIgGNFGmF8xMkuDIVQSK1JA6yEvmABFmzAdiCQsw5uu8xkxZiQ2tK3+syDR
-         v/3A==
-X-Gm-Message-State: AOAM531cKW76FoF+FC/pP8sqTjp1zGqs0U3mOAXxsL4gxIPe4cUU7RTL
-        REOTGZ/llhv4IwStUYIBwLQ=
-X-Google-Smtp-Source: ABdhPJwvDka/mu2unJaC+48s8sys0a9/bvBa/N3yCvh4tyOHu1/jfxDrJbZyZcwjoCv4Fg8Uh45pXw==
-X-Received: by 2002:a2e:954c:: with SMTP id t12mr20653ljh.287.1592510619839;
-        Thu, 18 Jun 2020 13:03:39 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id s62sm472931lja.100.2020.06.18.13.03.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gMOtZLcID+RRbq+QbVzKX+Sw9GzEGaMQc8XZ1xKu5m8=;
+        b=p0rXhlDRWVSgSg42ncoxtpG996zs11/QJCLpwzwGN8NHyrv4YmaNf9Jj3Ci//HyoMi
+         Z14RTY2z6qBSp1E6WFuMDjbvYzt++0DNz4dkDxC93By6ntrUvarp9izfw9U38puAzNPO
+         WePfdLjHpMQZS7c/qqi1jxF6WUyjVuQUGi7CAuCYYwDwBztutAk3wg9/7nr95Fl9a5+P
+         OKR3SsJREpl857p444JYA8W20f4wliFSVHAVR05rHLsj4eHQbwqzzhuJ+DNyAejQKcer
+         2P49tND0F0DVRc8FZ422xKews2q4X/8/1WzPjBhQRMm9bQEKeNlKX8jiWnwXUX4Q6dfb
+         lp8Q==
+X-Gm-Message-State: AOAM531j/Rnt0tb4c0zfuOo/UbZm2mqyjH0m1sEAV5Vf03v4Tbmjz0bA
+        1y8zbVyJNJB9cgDemgN5iX1MhWrrgow=
+X-Google-Smtp-Source: ABdhPJyl20IvgCOTKAwxqcbjW4LHgQZsAQJwZpjVLTJInQQ4agKEp/55HP5ET6rkjXy5z2a9EkkwEA==
+X-Received: by 2002:ae9:e10f:: with SMTP id g15mr205435qkm.285.1592512204709;
+        Thu, 18 Jun 2020 13:30:04 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id v3sm4027503qkh.130.2020.06.18.13.30.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 13:03:36 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 18 Jun 2020 22:03:33 +0200
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200618200333.GA16976@pc636>
-References: <20200525214800.93072-1-urezki@gmail.com>
- <20200525214800.93072-10-urezki@gmail.com>
- <20200617234609.GA10087@paulmck-ThinkPad-P72>
- <20200618005214.GN8681@bombadil.infradead.org>
- <20200618173049.GB14613@pc636>
- <20200618173527.GR8681@bombadil.infradead.org>
+        Thu, 18 Jun 2020 13:30:04 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        urezki@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 1/7] rcu/segcblist: Prevent useless GP start if no CBs to accelerate
+Date:   Thu, 18 Jun 2020 16:29:49 -0400
+Message-Id: <20200618202955.4024-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618173527.GR8681@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 10:35:27AM -0700, Matthew Wilcox wrote:
-> On Thu, Jun 18, 2020 at 07:30:49PM +0200, Uladzislau Rezki wrote:
-> > > I'd suggest:
-> > > 
-> > >  			rcu_lock_acquire(&rcu_callback_map);
-> > > 			trace_rcu_invoke_kfree_bulk_callback(rcu_state.name,
-> > > 				bkvhead[i]->nr_records, bkvhead[i]->records);
-> > >  			if (i == 0) {
-> > >  				kfree_bulk(bkvhead[i]->nr_records,
-> > >  					bkvhead[i]->records);
-> > >  			} else {
-> > >  				for (j = 0; j < bkvhead[i]->nr_records; j++) {
-> > >  					vfree(bkvhead[i]->records[j]);
-> > >  				}
-> > >  			}
-> > >  			rcu_lock_release(&rcu_callback_map);
-> > >
-> > There are two different trace functions, one for "bulk" tracing
-> > messages, and another one is per one call of kfree(), though we use 
-> > to indicate vfree() call.
-> > 
-> > Probably we can rename it to: trace_rcu_invoke_kvfree_callback();
-> > 
-> > What do you think?
-> 
-> Works for me!
-> 
-OK. I will send out the patch that will rename that trace function
-that makes clear that the pointer that is freed can belong to SLAB
-or vmalloc.
+rcu_segcblist_accelerate() returns true if a GP is to be
+started/requested and false if not. During tracing, I found that it is
+asking that GPs be requested
 
-> > > But I'd also suggest a vfree_bulk be added.  There are a few things
-> > > which would be better done in bulk as part of the vfree process
-> > > (we batch them up already, but i'm sure we could do better).
-> > 
-> > I was thinking to implement of vfree_bulk() API, but i guess it can
-> > be done as future work.
-> > 
-> > Does that sound good?
-> 
-> Yes, definitely a future piece of work.
->
-You have already been doing it.
+The exact flow seems to be something like:
+1. Callbacks are queued on CPU A - into the NEXT list.
+2. softirq runs on CPU A, accelerate all CBs from NEXT->WAIT and request a GP X.
+3. GP thread wakes up on another CPU, starts the GP X and requests QS from CPU A.
+4. CPU A's softirq runs again presumably because of #3.
+5. CPU A's softirq now does acceleration again, this time no CBs are
+   accelerated since last attempt, but it still requests GP X+1 which
+   could be useless.
 
-Thank you, Matthew :)
+The fix is, prevent the useless GP start if we detect no CBs are there
+to accelerate.
 
---
-Vlad Rezki
+With this, we have the following improvement in short runs of
+rcutorture (5 seconds each):
++----+-------------------+-------------------+
+| #  | Number of GPs     | Number of Wakeups |
++====+=========+=========+=========+=========+
+| 1  | With    | Without | With    | Without |
++----+---------+---------+---------+---------+
+| 2  |      75 |      89 |     113 |     119 |
++----+---------+---------+---------+---------+
+| 3  |      62 |      91 |     105 |     123 |
++----+---------+---------+---------+---------+
+| 4  |      60 |      79 |      98 |     110 |
++----+---------+---------+---------+---------+
+| 5  |      63 |      79 |      99 |     112 |
++----+---------+---------+---------+---------+
+| 6  |      57 |      89 |      96 |     123 |
++----+---------+---------+---------+---------+
+| 7  |      64 |      85 |      97 |     118 |
++----+---------+---------+---------+---------+
+| 8  |      58 |      83 |      98 |     113 |
++----+---------+---------+---------+---------+
+| 9  |      57 |      77 |      89 |     104 |
++----+---------+---------+---------+---------+
+| 10 |      66 |      82 |      98 |     119 |
++----+---------+---------+---------+---------+
+| 11 |      52 |      82 |      83 |     117 |
++----+---------+---------+---------+---------+
+
+Cc: urezki@gmail.com
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/rcu_segcblist.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 9a0f66133b4b3..4782cf17bf4f9 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -475,8 +475,15 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	 * Also advance to the oldest segment of callbacks whose
+ 	 * ->gp_seq[] completion is at or after that passed in via "seq",
+ 	 * skipping any empty segments.
++	 *
++	 * Note that "i" is the youngest segment of the list after which
++	 * any older segments than "i" would not be mutated or assigned
++	 * GPs. For example, if i == WAIT_TAIL, then neither WAIT_TAIL,
++	 * nor DONE_TAIL will be touched. Only CBs in NEXT_TAIL will be
++	 * merged with NEXT_READY_TAIL and the GP numbers of both of
++	 * them would be updated.
+ 	 */
+-	if (++i >= RCU_NEXT_TAIL)
++	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
+ 		return false;
+ 
+ 	/*
+-- 
+2.27.0.111.gc72c7da667-goog
+
