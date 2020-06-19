@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40F4EC433E0
-	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 00:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E4AC433E0
+	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 00:12:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 117D3207D8
-	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 00:12:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A1862207FC
+	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 00:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592525524;
-	bh=o/6ftf0SIW23MnOVn346R8OA6P9Ar4V6dfwN5oVQdvc=;
+	s=default; t=1592525565;
+	bh=rvKW+hIbAYj73rdDZn2HVrADx6qXHZ+iJvUCz4FW/R0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=KJbti3cpAL4yBhw9JVAjDeeTE0WA1U3xeNGQcm8LsVBL2wjJr50143mHDiSXjngZD
-	 2elv+aRGz4kiUvdPZl4t0tJXJxsUnq9WjZQhviyYAyMn340x3H0nvLw6LZ2v40ocRe
-	 Zr5DXmwEOJ3vKDpLLKsQenoeCdZjUAtbdl7TKobg=
+	b=w3g6COsZW9NnK5LV+JgDaOlKOr/CEmv+O3OU0aGW/JlOEK1aoo/hr+hk05yjb9gb6
+	 cdHcANFgwOuJrfzbtP2zQRQHbGSJN/lFnJWDXpPRrh1SLv0b/z6jrCS9DptDTJwGYA
+	 cX9/JQKcr1uO3h2hbBAalm9QCccrB+SChjX/G6Ms=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgFSAMD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jun 2020 20:12:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42384 "EHLO mail.kernel.org"
+        id S1726478AbgFSAMp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jun 2020 20:12:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbgFSAMD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jun 2020 20:12:03 -0400
+        id S1726001AbgFSAMo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jun 2020 20:12:44 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE94420720;
-        Fri, 19 Jun 2020 00:12:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D303207D8;
+        Fri, 19 Jun 2020 00:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592525521;
-        bh=o/6ftf0SIW23MnOVn346R8OA6P9Ar4V6dfwN5oVQdvc=;
+        s=default; t=1592525564;
+        bh=rvKW+hIbAYj73rdDZn2HVrADx6qXHZ+iJvUCz4FW/R0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KYBvtMvr0o39vL8lkIoC1mMfXz+u+Y5JW7EUwESRqZNYyj2mYTS+CSeP+UyotK8Rq
-         C2VJWuvuV5jjSjF6cCnfNQgcmFYYY9f8YQdPlT089uj1HNCVptu9TaNTEb9DBwX1jI
-         6dKqvIqO4SBQyUVHGT/dDRsxEfNPzeDU86VZMogU=
+        b=TNBs43wjOzdALfUplj59a+kTlLH+H9Z379NZlhBs5fGCYaOiZWhWWYV/tHwe7Eeyl
+         sH+VWs/bKXp/+TfQpxSv5YKqdi+UYPmhMhTcSHyDnqERGgzt9G0OU0hWb7xYL7O+UK
+         GRNFWESs8XHNxUbvDXm/sUvPgwDetB56EntYkfJs=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 92F87352264E; Thu, 18 Jun 2020 17:12:01 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 17:12:01 -0700
+        id 5806B352264E; Thu, 18 Jun 2020 17:12:44 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 17:12:44 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
@@ -52,46 +52,38 @@ Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH 3/7] rcu/trace: Add name of the source for gp_seq
-Message-ID: <20200619001201.GF2723@paulmck-ThinkPad-P72>
+Subject: Re: [PATCH 6/7] rcutorture: Add support to get the number of wakeups
+ of main GP kthread
+Message-ID: <20200619001244.GG2723@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20200618202955.4024-1-joel@joelfernandes.org>
- <20200618202955.4024-3-joel@joelfernandes.org>
- <20200618221901.GZ2723@paulmck-ThinkPad-P72>
- <20200618235117.GA40119@google.com>
+ <20200618202955.4024-6-joel@joelfernandes.org>
+ <20200618224058.GD2723@paulmck-ThinkPad-P72>
+ <20200619000156.GD40119@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618235117.GA40119@google.com>
+In-Reply-To: <20200619000156.GD40119@google.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 07:51:17PM -0400, Joel Fernandes wrote:
-> On Thu, Jun 18, 2020 at 03:19:01PM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 18, 2020 at 04:29:51PM -0400, Joel Fernandes (Google) wrote:
-> > > The gp_seq value can come from either of rdp, rsp or rnp.
+On Thu, Jun 18, 2020 at 08:01:56PM -0400, Joel Fernandes wrote:
+> On Thu, Jun 18, 2020 at 03:40:58PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jun 18, 2020 at 04:29:54PM -0400, Joel Fernandes (Google) wrote:
+> > > This is useful to check for any improvements or degradation related to
+> > > number of GP kthread wakeups during testing.
 > > > 
-> > > Only the rsp is the global source of truth (most accurate GP info). The
-> > > rnp can be off by ~1 and the rdp can be off by way more. Add some more
-> > > context to traces to clarify where it comes from.
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > > 
-> > This would be better done in scripting that processes the trace messages.
-> > I must pass on this one.
+> > This was a good way to collect the data for your testing, but
+> > we can expect rcutorture to only do so much.  ;-)
 > 
-> I don't think so. I think people reading traces would get confused.  Recently
-> I had to talk with someone about this as well when going over traces. I
-> myself struggle with it.
-> 
-> > For future reference, the TPS() around strings is not optional.  Without
-> > it, trace messages from crash dumps are garbled, if I remember correctly.
-> 
-> Ok. I will fix that.
+> np, I will push this one into a git tag for the next time I need it ;)
 
-Then please sort this patch after the others.  I am quite unconvinced
-about this one, but some of the others looked quite valuable.
+Sounds like a plan!
 
 							Thanx, Paul
 
@@ -99,208 +91,109 @@ about this one, but some of the others looked quite valuable.
 > 
 >  - Joel
 > 
-> > 
+> 
 > > 							Thanx, Paul
 > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > > > ---
-> > >  include/trace/events/rcu.h | 12 ++++++++----
-> > >  kernel/rcu/tree.c          | 32 ++++++++++++++++----------------
-> > >  kernel/rcu/tree_plugin.h   |  2 +-
-> > >  3 files changed, 25 insertions(+), 21 deletions(-)
+> > >  kernel/rcu/Kconfig.debug |  1 +
+> > >  kernel/rcu/rcu.h         |  2 ++
+> > >  kernel/rcu/rcutorture.c  | 23 ++++++++++++++++++++++-
+> > >  kernel/rcu/tree.c        |  7 +++++++
+> > >  4 files changed, 32 insertions(+), 1 deletion(-)
 > > > 
-> > > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> > > index a6d49864dcc27..cb5363564f7ed 100644
-> > > --- a/include/trace/events/rcu.h
-> > > +++ b/include/trace/events/rcu.h
-> > > @@ -68,24 +68,28 @@ TRACE_EVENT(rcu_utilization,
-> > >   */
-> > >  TRACE_EVENT_RCU(rcu_grace_period,
+> > > diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+> > > index 3cf6132a4bb9f..3323e3378af5a 100644
+> > > --- a/kernel/rcu/Kconfig.debug
+> > > +++ b/kernel/rcu/Kconfig.debug
+> > > @@ -50,6 +50,7 @@ config RCU_TORTURE_TEST
+> > >  	select TASKS_RCU
+> > >  	select TASKS_RUDE_RCU
+> > >  	select TASKS_TRACE_RCU
+> > > +	select SCHEDSTATS
+> > >  	default n
+> > >  	help
+> > >  	  This option provides a kernel module that runs torture tests
+> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > > index cf66a3ccd7573..7e867e81d9738 100644
+> > > --- a/kernel/rcu/rcu.h
+> > > +++ b/kernel/rcu/rcu.h
+> > > @@ -511,6 +511,7 @@ srcu_batches_completed(struct srcu_struct *sp) { return 0; }
+> > >  static inline void rcu_force_quiescent_state(void) { }
+> > >  static inline void show_rcu_gp_kthreads(void) { }
+> > >  static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
+> > > +static inline struct task_struct *rcu_get_main_gp_kthread(void) { return 0; }
+> > >  static inline void rcu_fwd_progress_check(unsigned long j) { }
+> > >  #else /* #ifdef CONFIG_TINY_RCU */
+> > >  bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
+> > > @@ -519,6 +520,7 @@ unsigned long rcu_exp_batches_completed(void);
+> > >  unsigned long srcu_batches_completed(struct srcu_struct *sp);
+> > >  void show_rcu_gp_kthreads(void);
+> > >  int rcu_get_gp_kthreads_prio(void);
+> > > +struct task_struct *rcu_get_main_gp_kthread(void);
+> > >  void rcu_fwd_progress_check(unsigned long j);
+> > >  void rcu_force_quiescent_state(void);
+> > >  extern struct workqueue_struct *rcu_gp_wq;
+> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > > index d0d265304d147..959a1f84d6904 100644
+> > > --- a/kernel/rcu/rcutorture.c
+> > > +++ b/kernel/rcu/rcutorture.c
+> > > @@ -23,6 +23,7 @@
+> > >  #include <linux/rcupdate_wait.h>
+> > >  #include <linux/interrupt.h>
+> > >  #include <linux/sched/signal.h>
+> > > +#include <linux/sched/stat.h>
+> > >  #include <uapi/linux/sched/types.h>
+> > >  #include <linux/atomic.h>
+> > >  #include <linux/bitops.h>
+> > > @@ -460,9 +461,29 @@ static void rcu_sync_torture_init(void)
+> > >  	INIT_LIST_HEAD(&rcu_torture_removed);
+> > >  }
 > > >  
-> > > -	TP_PROTO(const char *rcuname, unsigned long gp_seq, const char *gpevent),
-> > > +	TP_PROTO(const char *rcuname, const char *gp_seq_src,
-> > > +		unsigned long gp_seq, const char *gpevent),
-> > >  
-> > > -	TP_ARGS(rcuname, gp_seq, gpevent),
-> > > +	TP_ARGS(rcuname, gp_seq_src, gp_seq, gpevent),
-> > >  
-> > >  	TP_STRUCT__entry(
-> > >  		__field(const char *, rcuname)
-> > > +		__field(const char *, gp_seq_src)
-> > >  		__field(unsigned long, gp_seq)
-> > >  		__field(const char *, gpevent)
-> > >  	),
-> > >  
-> > >  	TP_fast_assign(
-> > >  		__entry->rcuname = rcuname;
-> > > +		__entry->gp_seq_src = gp_seq_src;
-> > >  		__entry->gp_seq = gp_seq;
-> > >  		__entry->gpevent = gpevent;
-> > >  	),
-> > >  
-> > > -	TP_printk("%s %lu %s",
-> > > -		  __entry->rcuname, __entry->gp_seq, __entry->gpevent)
-> > > +	TP_printk("%s %s_gp_seq=%lu %s",
-> > > +		  __entry->rcuname, __entry->gp_seq_src,
-> > > +		  __entry->gp_seq, __entry->gpevent)
-> > >  );
-> > >  
-> > >  /*
+> > > +unsigned long rcu_gp_nr_wakeups;
+> > > +
+> > > +static void rcu_flavor_init(void)
+> > > +{
+> > > +	rcu_sync_torture_init();
+> > > +
+> > > +	/* Make sure schedstat is enabled for GP thread wakeup count. */
+> > > +	force_schedstat_enabled();
+> > > +	rcu_gp_nr_wakeups = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
+> > > +}
+> > > +
+> > > +static void rcu_flavor_cleanup(void)
+> > > +{
+> > > +	unsigned long now_nr = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
+> > > +
+> > > +	pr_alert("End-test: Cleanup: Total GP-kthread wakeups: %lu\n",
+> > > +		now_nr - rcu_gp_nr_wakeups);
+> > > +}
+> > > +
+> > >  static struct rcu_torture_ops rcu_ops = {
+> > >  	.ttype		= RCU_FLAVOR,
+> > > -	.init		= rcu_sync_torture_init,
+> > > +	.init		= rcu_flavor_init,
+> > > +	.cleanup	= rcu_flavor_cleanup,
+> > >  	.readlock	= rcu_torture_read_lock,
+> > >  	.read_delay	= rcu_read_delay,
+> > >  	.readunlock	= rcu_torture_read_unlock,
 > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index c61af6a33fbfd..81df1b837dd9d 100644
+> > > index c3bae7a83d792..a3a175feb310a 100644
 > > > --- a/kernel/rcu/tree.c
 > > > +++ b/kernel/rcu/tree.c
-> > > @@ -1334,7 +1334,7 @@ static bool rcu_start_this_gp(struct rcu_node *rnp_start, struct rcu_data *rdp,
-> > >  		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("NoGPkthread"));
-> > >  		goto unlock_out;
-> > >  	}
-> > > -	trace_rcu_grace_period(rcu_state.name, data_race(rcu_state.gp_seq), TPS("newreq"));
-> > > +	trace_rcu_grace_period(rcu_state.name, "rsp", data_race(rcu_state.gp_seq), TPS("newreq"));
-> > >  	ret = true;  /* Caller must wake GP kthread. */
-> > >  unlock_out:
-> > >  	/* Push furthest requested GP to leaf node and rcu_data structure. */
-> > > @@ -1437,9 +1437,9 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
-> > >  
-> > >  	/* Trace depending on how much we were able to accelerate. */
-> > >  	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
-> > > -		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccWaitCB"));
-> > > +		trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("AccWaitCB"));
-> > >  	else
-> > > -		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccReadyCB"));
-> > > +		trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("AccReadyCB"));
-> > >  
-> > >  	/* Count CBs for tracing. */
-> > >  	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-> > > @@ -1543,7 +1543,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
-> > >  		if (!offloaded)
-> > >  			ret = rcu_advance_cbs(rnp, rdp); /* Advance CBs. */
-> > >  		rdp->core_needs_qs = false;
-> > > -		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuend"));
-> > > +		trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("cpuend"));
-> > >  	} else {
-> > >  		if (!offloaded)
-> > >  			ret = rcu_accelerate_cbs(rnp, rdp); /* Recent CBs. */
-> > > @@ -1559,7 +1559,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
-> > >  		 * set up to detect a quiescent state, otherwise don't
-> > >  		 * go looking for one.
-> > >  		 */
-> > > -		trace_rcu_grace_period(rcu_state.name, rnp->gp_seq, TPS("cpustart"));
-> > > +		trace_rcu_grace_period(rcu_state.name, "rnp", rnp->gp_seq, TPS("cpustart"));
-> > >  		need_qs = !!(rnp->qsmask & rdp->grpmask);
-> > >  		rdp->cpu_no_qs.b.norm = need_qs;
-> > >  		rdp->core_needs_qs = need_qs;
-> > > @@ -1660,7 +1660,7 @@ static bool rcu_gp_init(void)
-> > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > >  	rcu_seq_start(&rcu_state.gp_seq);
-> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > -	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> > > +	trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq, TPS("start"));
-> > >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > >  
-> > >  	/*
-> > > @@ -1828,7 +1828,7 @@ static void rcu_gp_fqs_loop(void)
-> > >  			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
-> > >  				   jiffies + (j ? 3 * j : 2));
-> > >  		}
-> > > -		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +		trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  				       TPS("fqswait"));
-> > >  		rcu_state.gp_state = RCU_GP_WAIT_FQS;
-> > >  		ret = swait_event_idle_timeout_exclusive(
-> > > @@ -1843,7 +1843,7 @@ static void rcu_gp_fqs_loop(void)
-> > >  		/* If time for quiescent-state forcing, do it. */
-> > >  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
-> > >  		    (gf & RCU_GP_FLAG_FQS)) {
-> > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +			trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  					       TPS("fqsstart"));
-> > >  			rcu_gp_fqs(first_gp_fqs);
-> > >  			gf = 0;
-> > > @@ -1851,7 +1851,7 @@ static void rcu_gp_fqs_loop(void)
-> > >  				first_gp_fqs = false;
-> > >  				gf = rcu_state.cbovld ? RCU_GP_FLAG_OVLD : 0;
-> > >  			}
-> > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +			trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  					       TPS("fqsend"));
-> > >  			cond_resched_tasks_rcu_qs();
-> > >  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> > > @@ -1862,7 +1862,7 @@ static void rcu_gp_fqs_loop(void)
-> > >  			cond_resched_tasks_rcu_qs();
-> > >  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> > >  			WARN_ON(signal_pending(current));
-> > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +			trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  					       TPS("fqswaitsig"));
-> > >  			ret = 1; /* Keep old FQS timing. */
-> > >  			j = jiffies;
-> > > @@ -1945,7 +1945,7 @@ static void rcu_gp_cleanup(void)
-> > >  	raw_spin_lock_irq_rcu_node(rnp); /* GP before ->gp_seq update. */
-> > >  
-> > >  	/* Declare grace period done, trace first to use old GP number. */
-> > > -	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
-> > > +	trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq, TPS("end"));
-> > >  	rcu_seq_end(&rcu_state.gp_seq);
-> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > >  	rcu_state.gp_state = RCU_GP_IDLE;
-> > > @@ -1962,7 +1962,7 @@ static void rcu_gp_cleanup(void)
-> > >  	if ((offloaded || !rcu_accelerate_cbs(rnp, rdp)) && needgp) {
-> > >  		WRITE_ONCE(rcu_state.gp_flags, RCU_GP_FLAG_INIT);
-> > >  		WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
-> > > -		trace_rcu_grace_period(rcu_state.name,
-> > > +		trace_rcu_grace_period(rcu_state.name, "rsp",
-> > >  				       rcu_state.gp_seq,
-> > >  				       TPS("newreq"));
-> > >  	} else {
-> > > @@ -1982,7 +1982,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
-> > >  
-> > >  		/* Handle grace-period start. */
-> > >  		for (;;) {
-> > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +			trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  					       TPS("reqwait"));
-> > >  			rcu_state.gp_state = RCU_GP_WAIT_GPS;
-> > >  			swait_event_idle_exclusive(rcu_state.gp_wq,
-> > > @@ -1996,7 +1996,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
-> > >  			cond_resched_tasks_rcu_qs();
-> > >  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> > >  			WARN_ON(signal_pending(current));
-> > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > +			trace_rcu_grace_period(rcu_state.name, "rsp", rcu_state.gp_seq,
-> > >  					       TPS("reqwaitsig"));
-> > >  		}
-> > >  
-> > > @@ -2240,7 +2240,7 @@ int rcutree_dying_cpu(unsigned int cpu)
-> > >  		return 0;
-> > >  
-> > >  	blkd = !!(rnp->qsmask & rdp->grpmask);
-> > > -	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-> > > +	trace_rcu_grace_period(rcu_state.name, "rsp", READ_ONCE(rnp->gp_seq),
-> > >  			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
-> > >  	return 0;
+> > > @@ -175,6 +175,13 @@ int rcu_get_gp_kthreads_prio(void)
 > > >  }
-> > > @@ -3733,7 +3733,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
-> > >  	rdp->core_needs_qs = false;
-> > >  	rdp->rcu_iw_pending = false;
-> > >  	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
-> > > -	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
-> > > +	trace_rcu_grace_period(rcu_state.name, "rdp", rdp->gp_seq, TPS("cpuonl"));
-> > >  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > >  	rcu_prepare_kthreads(cpu);
-> > >  	rcu_spawn_cpu_nocb_kthread(cpu);
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > index 982fc5be52698..32f761cf16c33 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -262,7 +262,7 @@ static void rcu_qs(void)
-> > >  {
-> > >  	RCU_LOCKDEP_WARN(preemptible(), "rcu_qs() invoked with preemption enabled!!!\n");
-> > >  	if (__this_cpu_read(rcu_data.cpu_no_qs.s)) {
-> > > -		trace_rcu_grace_period(TPS("rcu_preempt"),
-> > > +		trace_rcu_grace_period(TPS("rcu_preempt"), "rdp",
-> > >  				       __this_cpu_read(rcu_data.gp_seq),
-> > >  				       TPS("cpuqs"));
-> > >  		__this_cpu_write(rcu_data.cpu_no_qs.b.norm, false);
+> > >  EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
+> > >  
+> > > +/* Retrieve RCU's main GP kthread task_struct */
+> > > +struct task_struct *rcu_get_main_gp_kthread(void)
+> > > +{
+> > > +	return rcu_state.gp_kthread;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(rcu_get_main_gp_kthread);
+> > > +
+> > >  /*
+> > >   * Number of grace periods between delays, normalized by the duration of
+> > >   * the delay.  The longer the delay, the more the grace periods between
 > > > -- 
 > > > 2.27.0.111.gc72c7da667-goog
 > > > 
