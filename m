@@ -2,62 +2,61 @@ Return-Path: <SRS0=nBXm=AA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BFA3C433DF
-	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 01:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CF17C433DF
+	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 02:07:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 23DAD20809
-	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 01:37:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB12120773
+	for <rcu@archiver.kernel.org>; Fri, 19 Jun 2020 02:07:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MNCqe6WD"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ovUhanm8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgFSBg7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Jun 2020 21:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
+        id S1728868AbgFSCHW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Jun 2020 22:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730435AbgFSBgt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Jun 2020 21:36:49 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB858C0613EE
-        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 18:36:48 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id ec10so3752997qvb.5
-        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 18:36:48 -0700 (PDT)
+        with ESMTP id S1727109AbgFSCHV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Jun 2020 22:07:21 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252AFC06174E
+        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 19:07:20 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x62so2785293qtd.3
+        for <rcu@vger.kernel.org>; Thu, 18 Jun 2020 19:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ILh8pXdwwkspY2rtatfl7bOAa7tRdkNG/ybhL3LfCEw=;
-        b=MNCqe6WDs6hqVevKhLr65JJFpohkYO64QOEoOs66C466QTc3u/2d2TGmhYZUy4rMbx
-         ao6sobWJTBfmifm0NGW+X1qpCPvEYB/qGUeuI7s9vM+j3JnlGP/UPEuerUsFGQZYDXWQ
-         5yto/AIVPwdTsuFxEI5npzayD9VBfE2ebrw5I=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VSAwCY/ZmSm8oTcK0Zsy9KPDecHsitrkayxPpbpBu+E=;
+        b=ovUhanm83wVlXIJLufBdonsiTLRbkjAe/Gn9wbpkwh4BZMhG9AjWoGQbrLKJjAHrQ3
+         X7lzK2E/2iqnNSj0vw9sF0rk51AnHSQ/TKcMfdMYSNSE0zx7PMeXQ7ul0InzyBz9h4lG
+         30sXgMFW8BlBZ6U8BQq2lDehbt8EbkFTt4C4Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ILh8pXdwwkspY2rtatfl7bOAa7tRdkNG/ybhL3LfCEw=;
-        b=Njy83LIjgXpsJw2qZD5Sp3zRwoeV5Wm0t60Y76GAmgg7ciruZOcbYvzLb2bf3s8Xaw
-         YbSbk9S88uav1w5p0Xt+Sr/ai3G8DjVViG7cgC+tQz2+EtQiqjXKRt13REpx4BnWdUNF
-         76o8Cvxn8F6GajMUrETGhnzgp65uWvdJxK6QEm/EQe8n2EGqES4szzBQVPUklCNEfCC8
-         Z6pG8SP0bzrzTyFh86BiIVdBggKhj6u6m0Re+M7QaWRxL0Tys4zVWmgtRT1he2yhiojt
-         mI0EjxqQg4LVyH2sMqNrH2icnkjVBKxCVafk1S36MVGSrz/NTowIMb/sDgVILQ85tSOC
-         ohcw==
-X-Gm-Message-State: AOAM533wzdm3lYHfuTNhANS2Xday4hH+3B1ODVktQqva64eiP9amYUUp
-        BUgbPSMS8L8dqb42OzUT7iFpxA==
-X-Google-Smtp-Source: ABdhPJyL5oV0nisqpEMa7x4yK6mlKgt+tr8VxTyV4nQ2v0py/S44mbukzukRo2Ay4yWJSyF+jrpz6A==
-X-Received: by 2002:a05:6214:13e6:: with SMTP id ch6mr6559466qvb.29.1592530608139;
-        Thu, 18 Jun 2020 18:36:48 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id s15sm5379570qtc.95.2020.06.18.18.36.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VSAwCY/ZmSm8oTcK0Zsy9KPDecHsitrkayxPpbpBu+E=;
+        b=J1prCTqm59zNobxBzrynQ6vktwEWD06lYZGjnwmtigX6exGnH7NZo2ydiCNRNQTFgu
+         q48gUvfcGteyE6Nx4nxx4XJ2sjxXt0VWqYhEBs7KJevV6phj1P03j9xJn26b9HiFCNtH
+         1FaAELzWyzksPXObg0FqqtrqNXhMtytft5l1A71WxOSzXO3AoD4L+dZ6nm+yeC5CJukl
+         kVH6grrXjx1YLGBcSNzsAUXbdOzEAXuF5j8KIJa4+lYAg526LJ7jTzr1/dSQe7TzvUhT
+         oOw7sdKYcUV/XVo/FcxK8V9r7HSJfr93fCHEFk+a4duVfMyK10faduyG13LbLPjjqNEp
+         m6iQ==
+X-Gm-Message-State: AOAM530XgEAFdf9EgTFdVhutgDfeXV/KCMy0AL5j+7+ueH5t3dkSSFbf
+        ldBYYu1MUxG/QFMLlOxB4lRlTQ==
+X-Google-Smtp-Source: ABdhPJy45jlIU4mw1Xr0HOiQZfCMLMbPSd/j3kDmzlb7hZxO/MqAQYzxZGLHEr1pYZ7UzOhQj5/pmg==
+X-Received: by 2002:ac8:7b5a:: with SMTP id m26mr1255149qtu.381.1592532439381;
+        Thu, 18 Jun 2020 19:07:19 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id e16sm5324679qtc.71.2020.06.18.19.07.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 18:36:47 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        Thu, 18 Jun 2020 19:07:18 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 22:07:18 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
+Cc:     Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
@@ -65,49 +64,39 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: [PATCH 2/3] rcu/trace: Use gp_seq_req in acceleration's rcu_grace_period tracepoint
-Date:   Thu, 18 Jun 2020 21:36:40 -0400
-Message-Id: <20200619013641.63453-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-In-Reply-To: <20200619013641.63453-1-joel@joelfernandes.org>
+Subject: Re: [PATCH 3/3] rcu/trace: Add name of the source for gp_seq to
+ prevent confusion
+Message-ID: <20200619020718.GA74764@google.com>
 References: <20200619013641.63453-1-joel@joelfernandes.org>
+ <20200619013641.63453-3-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619013641.63453-3-joel@joelfernandes.org>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-During acceleration of CB, the rsp's gp_seq is rcu_seq_snap'd. This is
-the value used for acceleration - it is the value of gp_seq at which it
-is safe the execute all callbacks in the callback list.
+On Thu, Jun 18, 2020 at 09:36:41PM -0400, Joel Fernandes (Google) wrote:
+[...]
+> @@ -2019,7 +2019,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
+>  			cond_resched_tasks_rcu_qs();
+>  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
+>  			WARN_ON(signal_pending(current));
+> -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+> +			trace_rcu_grace_period(rcu_state.name, TPS("rsp"), rcu_state.gp_seq,
+>  					       TPS("reqwaitsig"));
+>  		}
+>  
+> @@ -2263,7 +2263,7 @@ int rcutree_dying_cpu(unsigned int cpu)
+>  		return 0;
+>  
+>  	blkd = !!(rnp->qsmask & rdp->grpmask);
+> -	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+> +	trace_rcu_grace_period(rcu_state.name, TPS("rsp"), READ_ONCE(rnp->gp_seq),
 
-The rdp's gp_seq is not very useful for this scenario. Make
-rcu_grace_period report the gp_seq_req instead as it allows one to
-reason about how the acceleration works.
+This should be: TPS("rnp")  :-(
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9ef68dd249e1d..d0988a1c1079d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1464,9 +1464,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
- 
- 	/* Trace depending on how much we were able to accelerate. */
- 	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
--		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccWaitCB"));
-+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccWaitCB"));
- 	else
--		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("AccReadyCB"));
-+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
-+
- 	return ret;
- }
- 
--- 
-2.27.0.111.gc72c7da667-goog
+Happy to fix it up and resend if you'd like. Thanks!
 
