@@ -1,112 +1,88 @@
-Return-Path: <SRS0=jbur=AB=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=yaJD=AC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E07C6C433DF
-	for <rcu@archiver.kernel.org>; Sat, 20 Jun 2020 15:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE679C433DF
+	for <rcu@archiver.kernel.org>; Sun, 21 Jun 2020 18:37:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAF3A20786
-	for <rcu@archiver.kernel.org>; Sat, 20 Jun 2020 15:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592667919;
-	bh=KahgNShgI+rYus9N9esjq/Bo8FVrHZeP7m0+5CCnMsI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=xyBVZ/zH/Kdy+KA/6HHi++GG9SMjSyuc3eKJ3vUtFfVIydgDUwaFzERYeNHLw8/6Y
-	 tRpMIkMtwptGbIkBzAvFZRGT4nlYy6w3+LrR9QSZ9YagMvgAEWGMOQwLuaLeLGjbkv
-	 6/hqtUIfxCDbcZQh3gMA3mJErinjOYOjcRZgeKaA=
+	by mail.kernel.org (Postfix) with ESMTP id B58772522E
+	for <rcu@archiver.kernel.org>; Sun, 21 Jun 2020 18:37:44 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="DRFUrJXJ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgFTPpT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 20 Jun 2020 11:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgFTPpS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 20 Jun 2020 11:45:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728649AbgFUShn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 21 Jun 2020 14:37:43 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50010 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728822AbgFUShm (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 21 Jun 2020 14:37:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592764662; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1m9LqaPA7q87uBqQLzmBOLr4aMCHc+FIo6y028MdmMU=; b=DRFUrJXJQ2GfKGh1c1YbwZphNqcpQpKekloqzwdmqMTd2tH8RUSbPYKZnUhfXOI3TrR4fiq2
+ uYchsyrOPIhyCeFaPbtUfJO/L3IR9GdZ5PqHqOclIUX85KWhdeofJ9QBIopmpPH4M3TpjdN2
+ ItdCLOoUgiLSpSkZKNbu7QMEtjw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5eefa8ed0206ad41d1d3b703 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 21 Jun 2020 18:37:33
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A659FC4339C; Sun, 21 Jun 2020 18:37:32 +0000 (UTC)
+Received: from localhost (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECD7820706;
-        Sat, 20 Jun 2020 15:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592667918;
-        bh=KahgNShgI+rYus9N9esjq/Bo8FVrHZeP7m0+5CCnMsI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QIC8IeVdwoIztnWGw4mc7Bo4cycDl5ubesDoouGrsd5aSTuNr8zDZPbBwqoTmGr3b
-         3WX0Lb9t1TLrz2AqoF27iOFTF7nUM1kDO+Mv1scJ5VUYwVIxOL3wg1jMlbD1raNAhs
-         9GuJYCQfmnUzQ2Jx0SicZOzqZewUJhawdkbSoOaU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D1A503522658; Sat, 20 Jun 2020 08:45:17 -0700 (PDT)
-Date:   Sat, 20 Jun 2020 08:45:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH 3/3] rcu/trace: Add name of the source for gp_seq to
- prevent confusion
-Message-ID: <20200620154517.GA14328@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200619013641.63453-1-joel@joelfernandes.org>
- <20200619013641.63453-3-joel@joelfernandes.org>
- <20200619020718.GA74764@google.com>
- <20200619174001.GL2723@paulmck-ThinkPad-P72>
- <20200620053608.GC9005@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200620053608.GC9005@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E9DDC433CA;
+        Sun, 21 Jun 2020 18:37:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5E9DDC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu/tree: Force quiescent state on callback overload
+Date:   Mon, 22 Jun 2020 00:07:27 +0530
+Message-Id: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 01:36:08AM -0400, Joel Fernandes wrote:
-> On Fri, Jun 19, 2020 at 10:40:01AM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 18, 2020 at 10:07:18PM -0400, Joel Fernandes wrote:
-> > > On Thu, Jun 18, 2020 at 09:36:41PM -0400, Joel Fernandes (Google) wrote:
-> > > [...]
-> > > > @@ -2019,7 +2019,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
-> > > >  			cond_resched_tasks_rcu_qs();
-> > > >  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
-> > > >  			WARN_ON(signal_pending(current));
-> > > > -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> > > > +			trace_rcu_grace_period(rcu_state.name, TPS("rsp"), rcu_state.gp_seq,
-> > > >  					       TPS("reqwaitsig"));
-> > > >  		}
-> > > >  
-> > > > @@ -2263,7 +2263,7 @@ int rcutree_dying_cpu(unsigned int cpu)
-> > > >  		return 0;
-> > > >  
-> > > >  	blkd = !!(rnp->qsmask & rdp->grpmask);
-> > > > -	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-> > > > +	trace_rcu_grace_period(rcu_state.name, TPS("rsp"), READ_ONCE(rnp->gp_seq),
-> > > 
-> > > This should be: TPS("rnp")  :-(
-> > > 
-> > > Happy to fix it up and resend if you'd like. Thanks!
-> > 
-> > I queued and pushed 1/2 and 2/2.
-> 
-> Thanks!
-> 
-> > but again, I am still not at all
-> > convinced by 3/3.  If you want to make RCU trace output human
-> > readable, post-processing will be needed.
-> 
-> Or I could post-process the code before building it since the pattern seems
-> easy to parse ;-)
+On callback overload, we want to force quiescent state immediately,
+for the first and second fqs. Enforce the same, by including
+RCU_GP_FLAG_OVLD flag, in fqsstart check.
 
-For this one thing, perhaps.  For most other information of interest,
-doing so in-kernel would not be so good, for example, from a
-lock-contention viewpoint.
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d0988a1..6226bfb 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1865,7 +1865,7 @@ static void rcu_gp_fqs_loop(void)
+ 			break;
+ 		/* If time for quiescent-state forcing, do it. */
+ 		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+-		    (gf & RCU_GP_FLAG_FQS)) {
++		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+ 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+ 					       TPS("fqsstart"));
+ 			rcu_gp_fqs(first_gp_fqs);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
