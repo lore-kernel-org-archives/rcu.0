@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 069AEC433E1
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:39:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E28C433DF
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:46:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D86642075A
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:39:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6DEC5206C1
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592872754;
-	bh=KJkwD6p1qCSl7EBe3fI9NMkvfieRs25n+b49quf8hic=;
+	s=default; t=1592873193;
+	bh=GEtRn6ShHcSD6Jdy9oodqMO5ml/6w8ONxFJR6aTEUEA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=DUyaQDk2B6or2/uzjpI1gs+NfaQ82tVnKT4uGfU/54oep1hkiyq5ePuq1sFG6WufL
-	 AeKbFN6Kc+ALl2v9vxnB2f/HYKFVRnWOPQSDA9eEOEoydN7zudTER+2oW0iVwtvARq
-	 VYzTpF8KNKNjVDSB/GTzTmoW6KJormL/VEM8G6e0=
+	b=LzQnpBp+IA9g0M76gvZtNZNgbSBcjzRYgFUmr+fhUtbEk1KQ8tv8xfnqbHFovqtiF
+	 QHXjtMyJeCH6xnowkG/3ib28bKNBWGbyJcishRggcnjTZc4H8mM/fVlamMwGdmuUvl
+	 UsWPQJHGDZCUrl3V6bmjeieMfnuDYqSC7qjQfV2c=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbgFWAjO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33598 "EHLO mail.kernel.org"
+        id S1732128AbgFWAqc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:46:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731745AbgFWAhz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:37:55 -0400
+        id S1731566AbgFWAqU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:46:20 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4EFB208DB;
-        Tue, 23 Jun 2020 00:37:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 949B22158C;
+        Tue, 23 Jun 2020 00:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872675;
-        bh=KJkwD6p1qCSl7EBe3fI9NMkvfieRs25n+b49quf8hic=;
+        s=default; t=1592872678;
+        bh=GEtRn6ShHcSD6Jdy9oodqMO5ml/6w8ONxFJR6aTEUEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OgSg/ZDKkEz4CkK4cNt9G8n3aO+wk4kFztAS0Wj2ax645TzFBxvDIYz2HAJuUVheO
-         RE0hkCvlen3xw0UjCzfOWrZdoM0pc4O27vRmqcXmNNnQ1faVklhoBad24uNg/5yxsr
-         zj2tbBoCPa5mYtIkADGVGlp/wCHiV0fBKNgpYFhY=
+        b=x1IXHoRN6s96XfOhfJj9jztpOj4XVSSWA0E1yVw9pL5oGxXIe5/v3IRieWw0g714B
+         tePPB39ev52FKfOI1yyvuCM/VReT9MenSgSjC+HUdBa4clJXJ8+uHhGXrwfB1wH5Wq
+         tuHyyssQ151aaFB4u3vSjsUMCT3j5NRMKBp4F5zk=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/23] torture: Set configfile variable to current scenario
-Date:   Mon, 22 Jun 2020 17:37:34 -0700
-Message-Id: <20200623003752.26872-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 23/23] rcutorture: Remove KCSAN stubs
+Date:   Mon, 22 Jun 2020 17:37:52 -0700
+Message-Id: <20200623003752.26872-23-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
 References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
@@ -60,30 +60,39 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The torture-test recheck logic fails to set the configfile variable to
-the current scenario, so this commit properly initializes this variable.
-This change isn't critical given that all errors for a given scenario
-follow that scenario's heading, but it is easier on the eyes to repeat it.
-And this repetition also prevents confusion as to whether a given message
-goes with the previous heading or the next one.
+KCSAN is now in mainline, so this commit removes the stubs for the
+data_race(), ASSERT_EXCLUSIVE_WRITER(), and ASSERT_EXCLUSIVE_ACCESS()
+macros.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-recheck.sh | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/rcutorture.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-index 736f047..2261aa6 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-@@ -31,6 +31,7 @@ do
- 			head -1 $resdir/log
- 		fi
- 		TORTURE_SUITE="`cat $i/../TORTURE_SUITE`"
-+		configfile=`echo $i | sed -e 's,^.*/,,'`
- 		rm -f $i/console.log.*.diags
- 		kvm-recheck-${TORTURE_SUITE}.sh $i
- 		if test -f "$i/qemu-retval" && test "`cat $i/qemu-retval`" -ne 0 && test "`cat $i/qemu-retval`" -ne 137
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 9c31001..f78c646 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -52,19 +52,6 @@
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@joshtriplett.org>");
+ 
+-#ifndef data_race
+-#define data_race(expr)							\
+-	({								\
+-		expr;							\
+-	})
+-#endif
+-#ifndef ASSERT_EXCLUSIVE_WRITER
+-#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
+-#endif
+-#ifndef ASSERT_EXCLUSIVE_ACCESS
+-#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
+-#endif
+-
+ /* Bits for ->extendables field, extendables param, and related definitions. */
+ #define RCUTORTURE_RDR_SHIFT	 8	/* Put SRCU index in upper bits. */
+ #define RCUTORTURE_RDR_MASK	 ((1 << RCUTORTURE_RDR_SHIFT) - 1)
 -- 
 2.9.5
 
