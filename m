@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D304C433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F83C433E1
 	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:21:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6386320890
+	by mail.kernel.org (Postfix) with ESMTP id A3BEB20874
 	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1592871712;
-	bh=fU6W1mx7Mvw4FUa7SJkFbMPJ0L55/o+J4pVf+Hoys1M=;
+	bh=l/5OxXTJUaadxs5ujpcQB3Tr8YHob3UxwmULMGrr83k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=pxmw4L/B3+ZRuAflcrgcMkajcNL37OGyFJrqTboBScEuNSFe6SR8KOvRu4xAv+g/b
-	 7kNJ4OgmMphFo0hJNjJSIvXVIeGsHG9iinmCc0Il/47eF4+bzP+IIu9KmV0Ep/CCVV
-	 tmlK4WL5eWKuwykvHaPyYOfV8JpSLNB+VbJdviLQ=
+	b=xcTCHUeqCIoLRAioBEKzZD+dBX3KKRSLgCBOJOLZO6X4fLJZM3j014I7LvZ/gcKRr
+	 Dh3k4aml1Qq+9eJRimdQohnMmtALTg3a8MiKojCC8vTfZnLuXQ+giRLsdUQMQ5g4Aw
+	 hafYIGxrcvdzC8XxKkJv7UPSf1ckaS1Fyp5p6Idg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731526AbgFWAVv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48060 "EHLO mail.kernel.org"
+        id S1731534AbgFWAVw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:21:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730497AbgFWAVu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1731479AbgFWAVu (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 22 Jun 2020 20:21:50 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0F73207BC;
-        Tue, 23 Jun 2020 00:21:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43C1A2082F;
+        Tue, 23 Jun 2020 00:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592871709;
-        bh=fU6W1mx7Mvw4FUa7SJkFbMPJ0L55/o+J4pVf+Hoys1M=;
+        s=default; t=1592871710;
+        bh=l/5OxXTJUaadxs5ujpcQB3Tr8YHob3UxwmULMGrr83k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x9Sh0nM8yges2us8955FZJzV7I0kAwHJVRCTssPeL72l6wxi7YI8zy5e1dZ5r1QPK
-         CUUFrE/v7g0tXGqhtNthXNj8TQ5DKaEUfD7TlU3oAw4i0fPOYTGAgCZwt+gpPdCz56
-         JvFvGvUlJPRg3dsA6G8zG2dXO2dsfU2+CVawudRo=
+        b=xPTGQVb6yr3I+9W7K0uCD4WJah4Bz7UQCd6b4XB2tTZe0Pa4+uOH7ONbQnqSszbxj
+         RGM1XukcgVomK/xwfm94OXelj96gGk/QpAUv/xox5sgLvc5U9E/NE8Q6OItso9ff4m
+         j6Dx+i4AJEqrwtoBdHuxymjEjt6k53r03jPTamAY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/26] rcu: Simplify the calculation of rcu_state.ncpus
-Date:   Mon, 22 Jun 2020 17:21:24 -0700
-Message-Id: <20200623002147.25750-3-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/26] rcu: Add comment documenting rcu_callback_map's purpose
+Date:   Mon, 22 Jun 2020 17:21:26 -0700
+Message-Id: <20200623002147.25750-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -59,50 +58,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Wei Yang <richard.weiyang@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-There is only 1 bit set in mask, which means that the only difference
-between oldmask and the new one will be at the position where the bit is
-set in mask.  This commit therefore updates rcu_state.ncpus by checking
-whether the bit in mask is already set in rnp->expmaskinitnext.
+The rcu_callback_map lockdep_map structure was added back in 2013, but
+its purpose has become obscure.  This commit therefore documments that the
+purpose of rcu_callback map is, in the words of commit 24ef659a857 ("rcu:
+Provide better diagnostics for blocking in RCU callback functions"),
+to help lockdep to tie an "inappropriate voluntary context switch back
+to the fact that the function is being invoked from within a callback."
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ kernel/rcu/update.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c716ead..9caaeee 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3824,10 +3824,9 @@ void rcu_cpu_starting(unsigned int cpu)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	int nbits;
--	unsigned long oldmask;
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
-+	bool newcpu;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index f5a82e1..ca17b77 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -279,6 +279,7 @@ struct lockdep_map rcu_sched_lock_map = {
+ };
+ EXPORT_SYMBOL_GPL(rcu_sched_lock_map);
  
- 	if (per_cpu(rcu_cpu_started, cpu))
- 		return;
-@@ -3839,12 +3838,10 @@ void rcu_cpu_starting(unsigned int cpu)
- 	mask = rdp->grpmask;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
--	oldmask = rnp->expmaskinitnext;
-+	newcpu = !(rnp->expmaskinitnext & mask);
- 	rnp->expmaskinitnext |= mask;
--	oldmask ^= rnp->expmaskinitnext;
--	nbits = bitmap_weight(&oldmask, BITS_PER_LONG);
- 	/* Allow lockless access for expedited grace periods. */
--	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + nbits); /* ^^^ */
-+	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + newcpu); /* ^^^ */
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
- 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
- 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
++// Tell lockdep when RCU callbacks are being invoked.
+ static struct lock_class_key rcu_callback_key;
+ struct lockdep_map rcu_callback_map =
+ 	STATIC_LOCKDEP_MAP_INIT("rcu_callback", &rcu_callback_key);
 -- 
 2.9.5
 
