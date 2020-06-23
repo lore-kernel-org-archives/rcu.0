@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E55A8C433DF
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ECB9C433E1
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDA7D2053B
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 306212053B
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592872308;
-	bh=vsWLwEM2zL/AkX3vJvTMHn7tUWtKduFj/He0315EYPM=;
+	s=default; t=1592872309;
+	bh=ZDfG0P7ylzy19vMVGWl1TZy1vCbWxB7/o0OTYOQnG3Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=LGim9jO8dk1iN30sIJ41a/OPO4i1HpbLQzKZ8uGR7fjHvOPUurkXw8dYCJVN7KGSD
-	 bdRm0vwA0Q4ihYQ6syCAtVWOBiSpQlxs1Kh91Wxi3Lpzq7w+5ctrjviC0pp2DewLRh
-	 yCxXzOj+3BfWo9bCGukJ1lLhiwGyh2/Ukgg2vCBQ=
+	b=pCEAYAaZ7Qq3jMFh+87EdJ3nrm0PiAfvvOOsNUuM/Tzqh4fBgONkX9b6l4EJmLufL
+	 yxU8OjKfbSYRtqWSIhRaItFttbcCgwEzj+TRiK9OtffEK6vygVu1kdaMJzgTwKdzBQ
+	 yZh5el4D7IcYVlsQEzn+vguzZExUwz3SUSDUxE0M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbgFWAbY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:31:24 -0400
+        id S1731686AbgFWAaT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:30:19 -0400
 Received: from mail.kernel.org ([198.145.29.99]:55336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731684AbgFWAaT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:19 -0400
+        id S1731656AbgFWAaS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:18 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1165F20720;
-        Tue, 23 Jun 2020 00:30:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3413B207BC;
+        Tue, 23 Jun 2020 00:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872219;
-        bh=vsWLwEM2zL/AkX3vJvTMHn7tUWtKduFj/He0315EYPM=;
+        s=default; t=1592872217;
+        bh=ZDfG0P7ylzy19vMVGWl1TZy1vCbWxB7/o0OTYOQnG3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PjM56YrgSiu1KZqRWHd5TbNP7lArjBUTCRoS5WM+6RavWNUP2n1fyM729HVYYjRBz
-         YDJHcupZtQ9ex3p17JVKU5t09oWpyz4pa3Uige3ZmxwjL8EoIGK6wXTT7tYmIbPYxH
-         HbJhdLwhx66p9y71Xu3PxhNOV1dupPoNFZhspSjw=
+        b=gZQhR0XTjWdpIhXDG3G2Xqfq1N/OykxSvLpo6BGE0UmK8GzSsEwMQJYI6DKFhf5tr
+         pBfpMKH6NeQUu/11IMJhLtYjorPwZjq4If3VAgScZlm6LY4rAe6QHtJ9QrUpKplQ4L
+         XyOvWPW4EIHQ+smNQfNBFKX4rvKn8cTcKeta2FD8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/30] refperf: Simplify initialization-time wakeup protocol
-Date:   Mon, 22 Jun 2020 17:30:02 -0700
-Message-Id: <20200623003013.26252-19-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/30] refperf: Dynamically allocate experiment-summary output buffer
+Date:   Mon, 22 Jun 2020 17:29:53 -0700
+Message-Id: <20200623003013.26252-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -60,54 +60,80 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit moves the reader-launch wait loop from ref_perf_init()
-to main_func(), removing one layer of wakeup and allowing slightly
-faster system boot.
+Currently, the buffer used to accumulate the experiment-summary output
+is fixed size, which will cause problems if someone decides to run
+one hundred experiments.  This commit therefore dynamically allocates
+this buffer.
 
 Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ kernel/rcu/refperf.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 2d2d227..7839237 100644
+index 6324449..75b9cce 100644
 --- a/kernel/rcu/refperf.c
 +++ b/kernel/rcu/refperf.c
-@@ -369,13 +369,14 @@ static int main_func(void *arg)
- 		VERBOSE_PERFOUT_ERRSTRING("out of memory");
- 		errexit = true;
- 	}
--	atomic_inc(&n_init);
--
--	// Wait for all threads to start.
--	wait_event(main_wq, atomic_read(&n_init) == (nreaders + 1));
- 	if (holdoff)
- 		schedule_timeout_interruptible(holdoff * HZ);
+@@ -333,9 +333,10 @@ u64 process_durations(int n)
+ // point all the timestamps are printed.
+ static int main_func(void *arg)
+ {
++	bool errexit = false;
+ 	int exp, r;
+ 	char buf1[64];
+-	char buf[512];
++	char *buf;
+ 	u64 *result_avg;
  
-+	// Wait for all threads to start.
-+	atomic_inc(&n_init);
-+	while (atomic_read(&n_init) < nreaders + 1)
-+		schedule_timeout_uninterruptible(1);
-+
+ 	set_cpus_allowed_ptr(current, cpumask_of(nreaders % nr_cpu_ids));
+@@ -343,8 +344,11 @@ static int main_func(void *arg)
+ 
+ 	VERBOSE_PERFOUT("main_func task started");
+ 	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
+-	if (!result_avg)
++	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
++	if (!result_avg || !buf) {
+ 		VERBOSE_PERFOUT_ERRSTRING("out of memory");
++		errexit = true;
++	}
+ 	atomic_inc(&n_init);
+ 
+ 	// Wait for all threads to start.
+@@ -354,7 +358,7 @@ static int main_func(void *arg)
+ 
  	// Start exp readers up per experiment
  	for (exp = 0; exp < nruns && !torture_must_stop(); exp++) {
- 		if (errexit)
-@@ -565,14 +566,6 @@ ref_perf_init(void)
- 	firsterr = torture_create_kthread(main_func, NULL, main_task);
- 	if (firsterr)
- 		goto unwind;
--	schedule_timeout_uninterruptible(1);
--
--
--	// Wait until all threads start
--	while (atomic_read(&n_init) < nreaders + 1)
--		schedule_timeout_uninterruptible(1);
--
--	wake_up(&main_wq);
+-		if (!result_avg)
++		if (errexit)
+ 			break;
+ 		if (torture_must_stop())
+ 			goto end;
+@@ -391,13 +395,13 @@ static int main_func(void *arg)
+ 	strcat(buf, "Threads\tTime(ns)\n");
  
- 	torture_init_end();
+ 	for (exp = 0; exp < nruns; exp++) {
+-		if (!result_avg)
++		if (errexit)
+ 			break;
+ 		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
+ 		strcat(buf, buf1);
+ 	}
+ 
+-	if (result_avg)
++	if (!errexit)
+ 		PERFOUT("%s", buf);
+ 
+ 	// This will shutdown everything including us.
+@@ -412,6 +416,8 @@ static int main_func(void *arg)
+ 
+ end:
+ 	torture_kthread_stopping("main_func");
++	kfree(result_avg);
++	kfree(buf);
  	return 0;
+ }
+ 
 -- 
 2.9.5
 
