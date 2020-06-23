@@ -2,167 +2,111 @@ Return-Path: <SRS0=Avjt=AE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C61AAC433DF
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 06:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72D14C433E1
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 15:42:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A2C9D206E2
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 06:21:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4D19B2072E
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 15:42:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="q4KNA4Xp"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FPBrUaqD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgFWGVy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 23 Jun 2020 02:21:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19079 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728800AbgFWGVy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:21:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592893313; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5ZAFSKQuOxtflxXUrt8WGXtwebbL5g0a4E24JJ4kqw8=; b=q4KNA4XptlM9WOxnMlbPTe9RH+6jEBZezEt6GzXX8h5A2d9chMW6NXsNaLHb/TNOBgagBSqZ
- oyRvFVVX1MUg/nhVDSB4Mz9DCsjr0S678WmCDQZsDBQmI6aItpC0cSqGqm6EX/f+wKo0TbIN
- hmT9fCVBwslf+BYb7kYDX6QQcH0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-east-1.postgun.com with SMTP id
- 5ef19f81bfb34e631ca52f13 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jun 2020 06:21:53
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6900C43395; Tue, 23 Jun 2020 06:21:52 +0000 (UTC)
-Received: from [192.168.0.100] (unknown [124.123.165.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4CADC433C6;
-        Tue, 23 Jun 2020 06:21:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B4CADC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        id S1733054AbgFWPmR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 23 Jun 2020 11:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733007AbgFWPmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:42:16 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CC1C061573
+        for <rcu@vger.kernel.org>; Tue, 23 Jun 2020 08:42:16 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id cv17so9827250qvb.13
+        for <rcu@vger.kernel.org>; Tue, 23 Jun 2020 08:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k9npaZkB/RX+A77Mjxy8tZOLesXDgVyirFfZLx7RsY8=;
+        b=FPBrUaqD+INXJNZq97GAZ8wt0va9XMksIvOQgUMsCLh5PhfHnsz+Efu5Na78VXWJDy
+         1XGzChK2G0CNZjY7N2MBk7hQmzSCtWqq7r6C/3RhPhMC7Ezb5WuUmKtWAZG5o1xssGYG
+         JfuM2ZMrklYBBVcoZO2EY1qioMp/UBzxm+s4I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k9npaZkB/RX+A77Mjxy8tZOLesXDgVyirFfZLx7RsY8=;
+        b=JHrYbKqAb7Q11xCq7cWo4j8RlXfBGGMq01me1Bu9BBDBe6maz1CnB5LXnwUSq1IWMO
+         7Mo4lTDLqrq71LhXbLs7OB+zG3IY4L1K+528Mx1lmjQVacfLXYn/n59kCX4ci4AJ+e7D
+         HbzVYjoQB8t+UrwduNZI77icJ4+5AQUtb/GHglVQqU75Vp4cvIIh2N2+Zx16fAEhnzW9
+         n3nyGBSckWi33LMnNos69N5qk788chTnAA135vrAw4PLjKx7zuPcAo7IFUxcogzpL6av
+         XB0S3SwdLP9FwNnUCbYKwyDAbxy229FIsPg1kaR33qGykRMmGlWqoY8AR387/laa0IvN
+         d4Mw==
+X-Gm-Message-State: AOAM533ZZlFnlzakgYPpl3/pTN5T3Z/yxULVWSBW8bvPoLYTC0yUmiVs
+        PnLDvqAMiv064t6s0s/gccPi0A==
+X-Google-Smtp-Source: ABdhPJzCnBPX85hWbeFdqNNPtt+wSv9RuuKhMXclYBSr+NMQYCtrb2esRWUO8PeTG4ifuFQWlIHL7g==
+X-Received: by 2002:ad4:4f23:: with SMTP id fc3mr27529525qvb.25.1592926935691;
+        Tue, 23 Jun 2020 08:42:15 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id g4sm843079qka.97.2020.06.23.08.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 08:42:14 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 11:42:14 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1592849223-17774-1-git-send-email-neeraju@codeaurora.org>
- <20200622231829.GV9247@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <b30ee288-7a84-1ecd-b2dd-776f810b9ddc@codeaurora.org>
-Date:   Tue, 23 Jun 2020 11:51:47 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Force quiescent state on callback overload
+Message-ID: <20200623154214.GE9005@google.com>
+References: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200622231829.GV9247@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Mon, Jun 22, 2020 at 12:07:27AM +0530, Neeraj Upadhyay wrote:
+> On callback overload, we want to force quiescent state immediately,
+> for the first and second fqs. Enforce the same, by including
+> RCU_GP_FLAG_OVLD flag, in fqsstart check.
+> 
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> ---
 
-On 6/23/2020 4:48 AM, Paul E. McKenney wrote:
-> On Mon, Jun 22, 2020 at 11:37:03PM +0530, Neeraj Upadhyay wrote:
->> Remove CONFIG_PREMPT_RCU check in force_qs_rnp(). Originally,
->> this check was required to skip executing fqs failsafe
->> for rcu-sched, which was added in commit a77da14ce9af ("rcu:
->> Yet another fix for preemption and CPU hotplug"). However,
->> this failsafe has been removed, since then. So, cleanup the
->> code to avoid any confusion around the need for boosting,
->> for !CONFIG_PREMPT_RCU.
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> 
-> Good point, there is a !PREEMPT definition of the function
-> rcu_preempt_blocked_readers_cgp() that unconditionally returns zero.
-> And if !PREEMPT kernels, the same things happens in the "if"
-> body as after it, so behavior is not changed.
-> 
-> I have queued and pushed this with an upgraded commit log as
-> shown below.
-> 
-> 						Thanx, Paul
-> 
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Thanks! patch looks good to me!
+And I think needs fixes tag:
+Fixes: 1fca4d12f4637 ("rcu: Expedite first two FQS scans under callback-overload conditions")
 
-Thanks
-Neeraj
+thanks,
 
->> ---
->>   kernel/rcu/tree.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 6226bfb..57c904b 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -2514,8 +2514,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->>   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->>   		rcu_state.cbovldnext |= !!rnp->cbovldmask;
->>   		if (rnp->qsmask == 0) {
->> -			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
->> -			    rcu_preempt_blocked_readers_cgp(rnp)) {
->> +			if (rcu_preempt_blocked_readers_cgp(rnp)) {
->>   				/*
->>   				 * No point in scanning bits because they
->>   				 * are all zero.  But we might need to
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
-> 
-> ------------------------------------------------------------------------
-> 
-> commit a4600389c35010aef414b89e2817d4a527e751b5
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Mon Jun 22 23:37:03 2020 +0530
-> 
->      rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp()
->      
->      Originally, the call to rcu_preempt_blocked_readers_cgp() from
->      force_qs_rnp() had to be conditioned on CONFIG_PREEMPT_RCU=y, as in
->      commit a77da14ce9af ("rcu: Yet another fix for preemption and CPU
->      hotplug").  However, there is now a CONFIG_PREEMPT_RCU=n definition of
->      rcu_preempt_blocked_readers_cgp() that unconditionally returns zero, so
->      invoking it is now safe.  In addition, the CONFIG_PREEMPT_RCU=n definition
->      of rcu_initiate_boost() simply releases the rcu_node structure's ->lock,
->      which is what happens when the "if" condition evaluates to false.
->      
->      This commit therefore drops the IS_ENABLED(CONFIG_PREEMPT_RCU) check,
->      so that rcu_initiate_boost() is called only in CONFIG_PREEMPT_RCU=y
->      kernels when there are readers blocking the current grace period.
->      This does not change the behavior, but reduces code-reader confusion by
->      eliminating non-CONFIG_PREEMPT_RCU=y calls to rcu_initiate_boost().
->      
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+ - Joel
+
+
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 6226bfb..57c904b 100644
+> index d0988a1..6226bfb 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -2514,8 +2514,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->   		rcu_state.cbovldnext |= !!rnp->cbovldmask;
->   		if (rnp->qsmask == 0) {
-> -			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
-> -			    rcu_preempt_blocked_readers_cgp(rnp)) {
-> +			if (rcu_preempt_blocked_readers_cgp(rnp)) {
->   				/*
->   				 * No point in scanning bits because they
->   				 * are all zero.  But we might need to
+> @@ -1865,7 +1865,7 @@ static void rcu_gp_fqs_loop(void)
+>  			break;
+>  		/* If time for quiescent-state forcing, do it. */
+>  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> -		    (gf & RCU_GP_FLAG_FQS)) {
+> +		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+>  			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+>  					       TPS("fqsstart"));
+>  			rcu_gp_fqs(first_gp_fqs);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
