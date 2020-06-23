@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4FC433DF
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7007C433E0
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C6190208B8
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:21:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A3FE20720
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592871718;
-	bh=WsPggT1GQk7FhVlxqPY2V/TwO4RZGy9PKukXKLCaOak=;
+	s=default; t=1592871738;
+	bh=r3YQlkrypRFAwl8abpt+y6+ctUtgkovtXQKlmEun+L8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=OY2VYM3fGNnU97DM2eJdXrYOBsITHNH5DMbQ8wr7Ur9imEjbgEc2F3RD3JABhRV7u
-	 ZnkP8ssjbmSvj9D6xrPrdm9v7ifzKV1huYzJWTri29zQv9SzZQDz6Uu9ETwKWW59sq
-	 T6owv10/fLzw5JcE099nAq4pJaevowhUMhGLvHGU=
+	b=H6gi3hjHZQzuBmBUAgUCC6gT7DfPVt3fM7x1nRzqI7t2vTMYQeK0eo5WPOT3Mwezj
+	 KSa8vsN/x7vEz4JM0c3gobFQHlgPMltHC38U3biJgmWgnKqBNwgChcdwNJBeXuWDFU
+	 kwzMiBUJqcwJmPopyTr2wb0j+hPQerBpjE2JCvVo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgFWAV6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:21:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
+        id S1731607AbgFWAV4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731590AbgFWAVz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1731591AbgFWAVz (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 22 Jun 2020 20:21:55 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5361920C09;
+        by mail.kernel.org (Postfix) with ESMTPSA id 23F7F20874;
         Tue, 23 Jun 2020 00:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871714;
-        bh=WsPggT1GQk7FhVlxqPY2V/TwO4RZGy9PKukXKLCaOak=;
+        bh=r3YQlkrypRFAwl8abpt+y6+ctUtgkovtXQKlmEun+L8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V4sJDvlYjmZWoY6dtcPFyFzG0KNOWiJ7o0txVrx/Q8vW3jOnD3k4+oS01uFgpO+pO
-         dXqJyCJWtmcGogvm+4+9MsiIABqXbhNt6CXtORSQ2AfYfKFb9XSDQjevgt6pc/kqk+
-         sNvDW2tuPSUSOt+XSOsaK8ZkknvTwVIK9IdIOHYI=
+        b=vNlndGzevWypBHYfeC6hrByKn5ZpdU8V/wpVeINe2+jB/oanP5XaSsLrFgixKEMJN
+         RUV8AnvdRp0iY6HV26nuET9MDQlaLKOOfMRhQO1YR7DcVwF6kC6bw9zP43G7HC84ar
+         EMa2dG0QC210S6IWRsjE6ZHHkebIjwochbydNrRM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 25/26] rcu: Remove KCSAN stubs
-Date:   Mon, 22 Jun 2020 17:21:46 -0700
-Message-Id: <20200623002147.25750-25-paulmck@kernel.org>
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/26] rcu: fix some kernel-doc warnings
+Date:   Mon, 22 Jun 2020 17:21:45 -0700
+Message-Id: <20200623002147.25750-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -58,41 +59,36 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-KCSAN is now in mainline, so this commit removes the stubs for the
-data_race(), ASSERT_EXCLUSIVE_WRITER(), and ASSERT_EXCLUSIVE_ACCESS()
-macros.
+There are some kernel-doc warnings:
 
+	./kernel/rcu/tree.c:2915: warning: Function parameter or member 'count' not described in 'kfree_rcu_cpu'
+	./include/linux/rculist.h:517: warning: bad line:                           [@right ][node2 ... ]
+	./include/linux/rculist.h:2: WARNING: Unexpected indentation.
+
+Move the comment for "count" to the kernel-doc markup and add
+a missing "*" on one kernel-doc continuation line.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ include/linux/rculist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e7161e0..6422870 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -67,19 +67,6 @@
- #endif
- #define MODULE_PARAM_PREFIX "rcutree."
- 
--#ifndef data_race
--#define data_race(expr)							\
--	({								\
--		expr;							\
--	})
--#endif
--#ifndef ASSERT_EXCLUSIVE_WRITER
--#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
--#endif
--#ifndef ASSERT_EXCLUSIVE_ACCESS
--#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
--#endif
--
- /* Data structures. */
- 
- /*
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index df587d1..7eed65b 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -512,7 +512,7 @@ static inline void hlist_replace_rcu(struct hlist_node *old,
+  * @right: The hlist head on the right
+  *
+  * The lists start out as [@left  ][node1 ... ] and
+-                          [@right ][node2 ... ]
++ *                        [@right ][node2 ... ]
+  * The lists end up as    [@left  ][node2 ... ]
+  *                        [@right ][node1 ... ]
+  */
 -- 
 2.9.5
 
