@@ -2,97 +2,163 @@ Return-Path: <SRS0=Avjt=AE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E28C433DF
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9850C433DF
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:47:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6DEC5206C1
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592873193;
-	bh=GEtRn6ShHcSD6Jdy9oodqMO5ml/6w8ONxFJR6aTEUEA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=LzQnpBp+IA9g0M76gvZtNZNgbSBcjzRYgFUmr+fhUtbEk1KQ8tv8xfnqbHFovqtiF
-	 QHXjtMyJeCH6xnowkG/3ib28bKNBWGbyJcishRggcnjTZc4H8mM/fVlamMwGdmuUvl
-	 UsWPQJHGDZCUrl3V6bmjeieMfnuDYqSC7qjQfV2c=
+	by mail.kernel.org (Postfix) with ESMTP id 88A3F206C1
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:47:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YkuJYpxX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbgFWAqc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731566AbgFWAqU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:46:20 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 949B22158C;
-        Tue, 23 Jun 2020 00:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872678;
-        bh=GEtRn6ShHcSD6Jdy9oodqMO5ml/6w8ONxFJR6aTEUEA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x1IXHoRN6s96XfOhfJj9jztpOj4XVSSWA0E1yVw9pL5oGxXIe5/v3IRieWw0g714B
-         tePPB39ev52FKfOI1yyvuCM/VReT9MenSgSjC+HUdBa4clJXJ8+uHhGXrwfB1wH5Wq
-         tuHyyssQ151aaFB4u3vSjsUMCT3j5NRMKBp4F5zk=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 23/23] rcutorture: Remove KCSAN stubs
-Date:   Mon, 22 Jun 2020 17:37:52 -0700
-Message-Id: <20200623003752.26872-23-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
-References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
+        id S1731803AbgFWAre (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731716AbgFWArd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:47:33 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358A2C061795
+        for <rcu@vger.kernel.org>; Mon, 22 Jun 2020 17:47:32 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id x18so21415801lji.1
+        for <rcu@vger.kernel.org>; Mon, 22 Jun 2020 17:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wtdbOX5oThYTDJM/yZ7loxNE7l9NJR90MLvrHTPjroE=;
+        b=YkuJYpxXvdEL7yoEauC9MJGL4fib0h9/hPyEoQNua/x651UUThCLvRj/xjLWmZU6UO
+         YGPqNogOE8kx2yYabzpI88Lu955G6M0TmqFCJA0/Wl9BM870ahCsHhy4Ay2jWsvHxXPB
+         MTDDLu5EniwwcBR4EvOhPuD/cRvMfy/EsS/avB8xiZHBWD6oI6JoZWSQP2DFX5hTuTXa
+         1ek7r8D77SmBHJ0rrl7FN9hWh874kcm4hBaC/maBiGUwlfLbGsQ3TqGTWRJtGw/jh/ik
+         e04xUD5/povonUgqdwOL3arsqgMcTuITn93KR0jhV5JvYXIMmMygkFo9qhWslpOSKXjk
+         1LEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wtdbOX5oThYTDJM/yZ7loxNE7l9NJR90MLvrHTPjroE=;
+        b=HPTGq+Qd3KfmrgzT3qxhJWjEfiasgcyyBYKlG9xRzzs7C8kI9++zd30ixs9XcnOIfc
+         zawxhPH+jNfn4d8Jdqab+mqHBKOLiIfqfYNPljY+pI4rKtyu2Aaop9HgpnGTGabMjrTf
+         d6266e7zfXaSKottCMvRT73f63h1zdouOdP9ikHZVkzo2H4l5AsolHALUcjb7dMIv4Wh
+         AYXQ+NOEhjs0IKWKF7JbWC2GFVkC8KYV+B1CaVbU4UCa7jf+1fgkH/xnLCRC5A1PvcgK
+         /tVBhalPUG1gmaP+anZ9+f6ingVhyMjHtuOvVpY5Gtu7Oe4IuMlzFVoVWDsmETrod3AL
+         Io1A==
+X-Gm-Message-State: AOAM530xO9tAMYZY0Cb/BpznwHO069fXmCiGmO4KAbbHNof/3JnHQyRg
+        YRfPpIvLyXKOKB5A7AWEi97zavPMFzKDmZGkf4BEgw==
+X-Google-Smtp-Source: ABdhPJwd98jM9BRU2cXbE2BpTTuTTR91cyjV/GkqiL/DYfU/k2t4CLNN4nFu2jsYOQL7F3pAft5IhpPF7OzVZchP6R4=
+X-Received: by 2002:a2e:a58a:: with SMTP id m10mr10003481ljp.347.1592873250358;
+ Mon, 22 Jun 2020 17:47:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200623002128.GA25456@paulmck-ThinkPad-P72> <20200623002147.25750-2-paulmck@kernel.org>
+In-Reply-To: <20200623002147.25750-2-paulmck@kernel.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 22 Jun 2020 17:47:19 -0700
+Message-ID: <CALvZod4yjC5dDsVHLLhW405pBeMLCcq1b6FYq77ZAxUOtsNCFQ@mail.gmail.com>
+Subject: Re: [PATCH tip/core/rcu 02/26] mm/mmap.c: Add cond_resched() for
+ exit_mmap() CPU stalls
+To:     paulmck@kernel.org, David Rientjes <rientjes@google.com>
+Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        josh@joshtriplett.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
+        oleg@redhat.com, Joel Fernandes <joel@joelfernandes.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Mon, Jun 22, 2020 at 5:22 PM <paulmck@kernel.org> wrote:
+>
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+>
+> A large process running on a heavily loaded system can encounter the
+> following RCU CPU stall warning:
+>
+>   rcu: INFO: rcu_sched self-detected stall on CPU
+>   rcu: \x093-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
+>   \x09(t=21013 jiffies g=1005461 q=132576)
+>   NMI backtrace for cpu 3
+>   CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
+>   Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
+>   Call Trace:
+>    <IRQ>
+>    dump_stack+0x46/0x60
+>    nmi_cpu_backtrace.cold.3+0x13/0x50
+>    ? lapic_can_unplug_cpu.cold.27+0x34/0x34
+>    nmi_trigger_cpumask_backtrace+0xba/0xca
+>    rcu_dump_cpu_stacks+0x99/0xc7
+>    rcu_sched_clock_irq.cold.87+0x1aa/0x397
+>    ? tick_sched_do_timer+0x60/0x60
+>    update_process_times+0x28/0x60
+>    tick_sched_timer+0x37/0x70
+>    __hrtimer_run_queues+0xfe/0x270
+>    hrtimer_interrupt+0xf4/0x210
+>    smp_apic_timer_interrupt+0x5e/0x120
+>    apic_timer_interrupt+0xf/0x20
+>    </IRQ>
+>   RIP: 0010:kmem_cache_free+0x223/0x300
+>   Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
+>   RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
+>   RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
+>   RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
+>   RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
+>   R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
+>   R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
+>    ? remove_vma+0x4f/0x60
+>    remove_vma+0x4f/0x60
+>    exit_mmap+0xd6/0x160
+>    mmput+0x4a/0x110
+>    do_exit+0x278/0xae0
+>    ? syscall_trace_enter+0x1d3/0x2b0
+>    ? handle_mm_fault+0xaa/0x1c0
+>    do_group_exit+0x3a/0xa0
+>    __x64_sys_exit_group+0x14/0x20
+>    do_syscall_64+0x42/0x100
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
+> for a very long time given a large process.  This commit therefore adds
+> a cond_resched() to this loop, providing RCU any needed quiescent states.
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: <linux-mm@kvack.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-KCSAN is now in mainline, so this commit removes the stubs for the
-data_race(), ASSERT_EXCLUSIVE_WRITER(), and ASSERT_EXCLUSIVE_ACCESS()
-macros.
+We have exactly the same change in our internal kernel since 2018. We
+mostly observed the need_resched warnings on the processes mapping the
+hugetlbfs.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 13 -------------
- 1 file changed, 13 deletions(-)
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 9c31001..f78c646 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -52,19 +52,6 @@
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@joshtriplett.org>");
- 
--#ifndef data_race
--#define data_race(expr)							\
--	({								\
--		expr;							\
--	})
--#endif
--#ifndef ASSERT_EXCLUSIVE_WRITER
--#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
--#endif
--#ifndef ASSERT_EXCLUSIVE_ACCESS
--#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
--#endif
--
- /* Bits for ->extendables field, extendables param, and related definitions. */
- #define RCUTORTURE_RDR_SHIFT	 8	/* Put SRCU index in upper bits. */
- #define RCUTORTURE_RDR_MASK	 ((1 << RCUTORTURE_RDR_SHIFT) - 1)
--- 
-2.9.5
-
+> ---
+>  mm/mmap.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 59a4682..972f839 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -3159,6 +3159,7 @@ void exit_mmap(struct mm_struct *mm)
+>                 if (vma->vm_flags & VM_ACCOUNT)
+>                         nr_accounted += vma_pages(vma);
+>                 vma = remove_vma(vma);
+> +               cond_resched();
+>         }
+>         vm_unacct_memory(nr_accounted);
+>  }
+> --
+> 2.9.5
+>
