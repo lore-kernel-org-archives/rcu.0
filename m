@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E43EFC433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9079C433DF
 	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C646B20842
+	by mail.kernel.org (Postfix) with ESMTP id A70EB2053B
 	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1592872261;
-	bh=A0kI0wgoQ5BHwgm1QZZGGbhuj1grYtYeE5ffgxbMsBk=;
+	bh=ZnfhGx5U6A8JH7MyaM8fTjw6ysA6x6Vvaxq31qKSurw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=LTOsH2BoCtQAvC5vVmQjwfHFp6rCU0YBfRrlub4NqpRlbgr4WgP5fzyEzsDlwdTJg
-	 Xq3NdAGXKjJXQyxsF18c/9EWJllbDSBlNudOJH9Lr7ZF1xL8X3Cc/jJXo4qhGuDAIa
-	 jsXJE+B33nhRuc8Tv5fkuKSPYDq/Mge5UlKvyKaI=
+	b=p8C0HjUM+prZwI2ajeXkLPI7hK93QFWCJq6waC5Pvzwg/4rB/bbYJJ9O9YLqk6eBA
+	 xveJjORcygjpaD8tH6IMoAz8qlvrCASakYH2X6q1vWrWG5TI2giry1qUIItBBnCz2R
+	 1h7qQnMJLXCfwbdx/0YT1mZnhilY7AZwuSCTWoxw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731813AbgFWAap (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55360 "EHLO mail.kernel.org"
+        id S1731819AbgFWAaq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731720AbgFWAaV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1731717AbgFWAaV (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 22 Jun 2020 20:30:21 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D87DB208C9;
+        by mail.kernel.org (Postfix) with ESMTPSA id A8A1320DD4;
         Tue, 23 Jun 2020 00:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872221;
-        bh=A0kI0wgoQ5BHwgm1QZZGGbhuj1grYtYeE5ffgxbMsBk=;
+        s=default; t=1592872220;
+        bh=ZnfhGx5U6A8JH7MyaM8fTjw6ysA6x6Vvaxq31qKSurw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u1fpf9hiqfN08S5A50Hpz51JFfRFT9lR2NVGpa6vT24Fq37ADcG5c0euycCN39phD
-         rWgIR0mr51IZHBwFA+2b9pbiEYb5JS00zA16javDfGhqAfkDzcbsQG6vtw/s5DTW92
-         mjL7c7c/O1dXUucSjUL6fh89bpfqcutFmGRx3WAw=
+        b=2XQ5dIPkX4LJFwIoydcGNNZn/mzT6mYv0oOZXfN2jbVAJDArpWGVnJWBq64u7vGdF
+         eQo/yP6g4QFsLm+wmjKCgAJaua8dI6SA9xstsJ63ctrmU3tkA+lJr0RqDDFtgVFyhb
+         e+QExg75zR+31DAkMFih+xbVXYqQAWSyL9zr7r7I=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 28/30] refperf: Rename RCU_REF_PERF_TEST to RCU_REF_SCALE_TEST
-Date:   Mon, 22 Jun 2020 17:30:11 -0700
-Message-Id: <20200623003013.26252-28-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 27/30] rcu-tasks: Fix synchronize_rcu_tasks_trace() header comment
+Date:   Mon, 22 Jun 2020 17:30:10 -0700
+Message-Id: <20200623003013.26252-27-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -60,85 +60,54 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The old Kconfig option name is all too easy to conflate with the
-unrelated "perf" feature, so this commit renames RCU_REF_PERF_TEST to
-RCU_REF_SCALE_TEST.
+The synchronize_rcu_tasks_trace() header comment incorrectly claims that
+any number of things delimit RCU Tasks Trace read-side critical sections,
+when in fact only rcu_read_lock_trace() and rcu_read_unlock_trace() do so.
+This commit therefore fixes this comment, and, while in the area, fixes
+a typo in the rcu_read_lock_trace() header comment.
 
-Reported-by: Ingo Molnar <mingo@kernel.org>
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug                                    | 4 ++--
- kernel/rcu/Makefile                                         | 2 +-
- kernel/rcu/refperf.c                                        | 6 +++---
- tools/testing/selftests/rcutorture/configs/refperf/CFcommon | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ include/linux/rcupdate_trace.h | 4 ++--
+ kernel/rcu/tasks.h             | 9 ++++-----
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 858765b..3cf6132 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -61,8 +61,8 @@ config RCU_TORTURE_TEST
- 	  Say M if you want the RCU torture tests to build as a module.
- 	  Say N if you are unsure.
- 
--config RCU_REF_PERF_TEST
--	tristate "Performance tests for read-side synchronization (RCU and others)"
-+config RCU_REF_SCALE_TEST
-+	tristate "Scalability tests for read-side synchronization (RCU and others)"
- 	depends on DEBUG_KERNEL
- 	select TORTURE_TEST
- 	select SRCU
-diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-index ba7d826..45d562d 100644
---- a/kernel/rcu/Makefile
-+++ b/kernel/rcu/Makefile
-@@ -12,7 +12,7 @@ obj-$(CONFIG_TREE_SRCU) += srcutree.o
- obj-$(CONFIG_TINY_SRCU) += srcutiny.o
- obj-$(CONFIG_RCU_TORTURE_TEST) += rcutorture.o
- obj-$(CONFIG_RCU_PERF_TEST) += rcuperf.o
--obj-$(CONFIG_RCU_REF_PERF_TEST) += refperf.o
-+obj-$(CONFIG_RCU_REF_SCALE_TEST) += refperf.o
- obj-$(CONFIG_TREE_RCU) += tree.o
- obj-$(CONFIG_TINY_RCU) += tiny.o
- obj-$(CONFIG_RCU_NEED_SEGCBLIST) += rcu_segcblist.o
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 2bfdcdc..7c98057 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- //
--// Performance test comparing RCU vs other mechanisms
-+// Scalability test comparing RCU vs other mechanisms
- // for acquiring references on objects.
- //
- // Copyright (C) Google, 2020.
-@@ -59,7 +59,7 @@ MODULE_PARM_DESC(perf_type, "Type of test (rcu, srcu, refcnt, rwsem, rwlock.");
- torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
- 
- // Wait until there are multiple CPUs before starting test.
--torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_PERF_TEST) ? 10 : 0,
-+torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_SCALE_TEST) ? 10 : 0,
- 	      "Holdoff time before test start (s)");
- // Number of loops per experiment, all readers execute operations concurrently.
- torture_param(long, loops, 10000, "Number of loops per experiment.");
-@@ -656,7 +656,7 @@ ref_perf_init(void)
- 		for (i = 0; i < ARRAY_SIZE(perf_ops); i++)
- 			pr_cont(" %s", perf_ops[i]->name);
- 		pr_cont("\n");
--		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_PERF_TEST));
-+		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_SCALE_TEST));
- 		firsterr = -EINVAL;
- 		cur_ops = NULL;
- 		goto unwind;
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/CFcommon b/tools/testing/selftests/rcutorture/configs/refperf/CFcommon
-index 8ba5ba2..a98b58b 100644
---- a/tools/testing/selftests/rcutorture/configs/refperf/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/refperf/CFcommon
-@@ -1,2 +1,2 @@
--CONFIG_RCU_REF_PERF_TEST=y
-+CONFIG_RCU_REF_SCALE_TEST=y
- CONFIG_PRINTK_TIME=y
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index 4c25a41..d9015aa 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -36,8 +36,8 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
+ /**
+  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
+  *
+- * When synchronize_rcu_trace() is invoked by one task, then that task
+- * is guaranteed to block until all other tasks exit their read-side
++ * When synchronize_rcu_tasks_trace() is invoked by one task, then that
++ * task is guaranteed to block until all other tasks exit their read-side
+  * critical sections.  Similarly, if call_rcu_trace() is invoked on one
+  * task while other tasks are within RCU read-side critical sections,
+  * invocation of the corresponding RCU callback is deferred until after
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index ce23f6c..a77298c 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1118,11 +1118,10 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks_trace);
+  * synchronize_rcu_tasks_trace - wait for a trace rcu-tasks grace period
+  *
+  * Control will return to the caller some time after a trace rcu-tasks
+- * grace period has elapsed, in other words after all currently
+- * executing rcu-tasks read-side critical sections have elapsed.  These
+- * read-side critical sections are delimited by calls to schedule(),
+- * cond_resched_tasks_rcu_qs(), userspace execution, and (in theory,
+- * anyway) cond_resched().
++ * grace period has elapsed, in other words after all currently executing
++ * rcu-tasks read-side critical sections have elapsed.  These read-side
++ * critical sections are delimited by calls to rcu_read_lock_trace()
++ * and rcu_read_unlock_trace().
+  *
+  * This is a very specialized primitive, intended only for a few uses in
+  * tracing and other situations requiring manipulation of function preambles
 -- 
 2.9.5
 
