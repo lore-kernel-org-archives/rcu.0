@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF66C433E2
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0529FC433E0
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:30:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0526E208FE
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:30:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D55742076A
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592872220;
-	bh=gcsrvQt82tIqA0kDxinUmEZN2K/AwFRgqEUqjBE/FbY=;
+	s=default; t=1592872222;
+	bh=1veGT3UQhfKYOYux03q+oos70fj1Q5bSyqp9pTfmx8M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=RWzm4muZ2qBwfIr0l7W+LqPWJP55EhQCnItK1lfYMydQZ8z+YRzsI01Q5+TTe540s
-	 2RowqunZBWCTAcIedkjZCLK51Wa6MlAu9REN18Id5MA25wXltrN5ScEWaEFf7B8RGu
-	 hxdXMLk/HMpiMjpmLet8PxzLmuFfa4areM8fHqlQ=
+	b=RdQEfZy/bp44hyEKzaPItiDTC/LUpOGVdUl2SD7SCCIiastIzJ2ewTUYiCoDyf96N
+	 TZpfwSUXMv/q7vQOJFuLaiSZ88oGq6epGdmKbIUwe27swXYZZ/V4TMhN/9d/bCMHzn
+	 4G3H6YJNBbyvs/I2CAopJ63qCYMV0PwGvGKSEUlE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731692AbgFWAaT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:30:19 -0400
+        id S1731737AbgFWAaW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:30:22 -0400
 Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731667AbgFWAaS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:18 -0400
+        id S1731700AbgFWAaU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:20 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8AB22083B;
-        Tue, 23 Jun 2020 00:30:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4C03208E4;
+        Tue, 23 Jun 2020 00:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872217;
-        bh=gcsrvQt82tIqA0kDxinUmEZN2K/AwFRgqEUqjBE/FbY=;
+        s=default; t=1592872219;
+        bh=1veGT3UQhfKYOYux03q+oos70fj1Q5bSyqp9pTfmx8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHVgrjQPkBtOvSTCX6XXvg7b9aO7FpTsN6jSD+mBKu1D0HH7Y2beuzJdxfsddWK6w
-         BmTFONlYldodYb7SapO0lYLoJlNfO2B/oBLj2fNbvY2r/+63dAjFe+Z4B/uaXrItR5
-         NrXzA9ne9QapVMkKFrPCga4jA1y6s2Yw/5Ojl40s=
+        b=smdLsBMM4wYdtb1RNQqD2UdLdew6AuyAhJzFsw40C0S5QjlxVJ1bFyg6fzIwkT/GU
+         nmrN8PHhH1hFDKiM1uboqrqgJnxglNcfJ52uO915Di56VURpdNeUgyVRD2zFNKsYof
+         ii0QBguO2Xt4pbkoG8n7aTbgtafYQAF+zhuj3dAE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/30] refperf: Tune reader measurement interval
-Date:   Mon, 22 Jun 2020 17:29:56 -0700
-Message-Id: <20200623003013.26252-13-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 22/30] doc: Document rcuperf's module parameters
+Date:   Mon, 22 Jun 2020 17:30:05 -0700
+Message-Id: <20200623003013.26252-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -60,60 +60,61 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit moves a printk() out of the measurement interval, converts
-a atomic_dec()/atomic_read() pair to atomic_dec_and_test(), and adds
-a smp_mb__before_atomic() to avoid potential wake/wait hangs.  These
-changes have the added benefit of reducing the number of loops required
-for amortizing loop overhead for CONFIG_PREEMPT=n RCU measurements from
-1,000,000 to 10,000.  This reduction in turn shortens the test, reducing
-the probability of interference.
+This commit adds documentation for the rcuperf module parameters.
 
 Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 36 +++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 0a900f3..8815ccf 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -252,15 +252,16 @@ ref_perf_reader(void *arg)
- 	// Make sure that the CPU is affinitized appropriately during testing.
- 	WARN_ON_ONCE(smp_processor_id() != me);
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index fb95fad..20cd00b 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4407,6 +4407,42 @@
+ 			      reboot_cpu is s[mp]#### with #### being the processor
+ 					to be used for rebooting.
  
-+	smp_mb__before_atomic();
- 	atomic_dec(&rt->start);
- 
-+	VERBOSE_PERFOUT("ref_perf_reader %ld: experiment %d started", me, exp_idx);
++	refperf.holdoff= [KNL]
++			Set test-start holdoff period.  The purpose of
++			this parameter is to delay the start of the
++			test until boot completes in order to avoid
++			interference.
 +
- 	// To prevent noise, keep interrupts disabled. This also has the
- 	// effect of preventing entries into slow path for rcu_read_unlock().
- 	local_irq_save(flags);
- 	start = ktime_get_mono_fast_ns();
- 
--	VERBOSE_PERFOUT("ref_perf_reader %ld: experiment %d started", me, exp_idx);
--
- 	cur_ops->readsection(loops);
- 
- 	duration = ktime_get_mono_fast_ns() - start;
-@@ -268,14 +269,12 @@ ref_perf_reader(void *arg)
- 
- 	rt->last_duration_ns = WARN_ON_ONCE(duration < 0) ? 0 : duration;
- 
--	atomic_dec(&nreaders_exp);
-+	if (atomic_dec_and_test(&nreaders_exp))
-+		wake_up(&main_wq);
- 
- 	VERBOSE_PERFOUT("ref_perf_reader %ld: experiment %d ended, (readers remaining=%d)",
- 			me, exp_idx, atomic_read(&nreaders_exp));
- 
--	if (!atomic_read(&nreaders_exp))
--		wake_up(&main_wq);
--
- 	if (!torture_must_stop())
- 		goto repeat;
- end:
++	refperf.loops= [KNL]
++			Set the number of loops over the synchronization
++			primitive under test.  Increasing this number
++			reduces noise due to loop start/end overhead,
++			but the default has already reduced the per-pass
++			noise to a handful of picoseconds on ca. 2020
++			x86 laptops.
++
++	refperf.nreaders= [KNL]
++			Set number of readers.  The default value of -1
++			selects N, where N is roughly 75% of the number
++			of CPUs.  A value of zero is an interesting choice.
++
++	refperf.nruns= [KNL]
++			Set number of runs, each of which is dumped onto
++			the console log.
++
++	refperf.readdelay= [KNL]
++			Set the read-side critical-section duration,
++			measured in microseconds.
++
++	refperf.shutdown= [KNL]
++			Shut down the system at the end of the performance
++			test.  This defaults to 1 (shut it down) when
++			rcuperf is built into the kernel and to 0 (leave
++			it running) when rcuperf is built as a module.
++
++	refperf.verbose= [KNL]
++			Enable additional printk() statements.
++
+ 	relax_domain_level=
+ 			[KNL, SMP] Set scheduler's default relax_domain_level.
+ 			See Documentation/admin-guide/cgroup-v1/cpusets.rst.
 -- 
 2.9.5
 
