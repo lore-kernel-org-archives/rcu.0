@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A43E4C433E1
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94C60C433DF
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A2972082F
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7502E20780
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592871783;
-	bh=LDFnUwOht1bq6TZpOOZC8ylOHnKpb1HgN49AER6vNMA=;
+	s=default; t=1592871787;
+	bh=iCKOvbCRfqkVczFsIKppK3kQNn2OlK2C2edwVd11wls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=JWQSRNwBUVXBa4YofOUzSFoSvpuzg1nAnEr5dytppgUaxA0cDsd4f5AkN1kc1yup+
-	 5TLSSR++HxW4nkMJrT1A207APNrGut6N/4cg7iQ2GqhDTSteODKCE00TXRmBaMHWI9
-	 f1cQLdDVcKZlZ2kMCHCbKjEzmKyErIm4LwQl9cQk=
+	b=JHqxfn77YY4FrpM9wWLwDM8Rgxl/U80qqhNzmqv2dZbJR3iTOR9IdI6ZJbjue9vWk
+	 EKBuEFUP1Wxkvgz1pYVAMlxgahHX7IbIlCN37k1/BQTXiFUxkZu59Ord1//c1SjABK
+	 t+vE3x4elwHKTHdcZQ1oYRQT5hsoweOpCMVRG0/A=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731556AbgFWAVw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48220 "EHLO mail.kernel.org"
+        id S1731732AbgFWAXD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731513AbgFWAVv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:21:51 -0400
+        id S1731524AbgFWAVw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:21:52 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1559120842;
+        by mail.kernel.org (Postfix) with ESMTPSA id 72DEC20809;
         Tue, 23 Jun 2020 00:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871711;
-        bh=LDFnUwOht1bq6TZpOOZC8ylOHnKpb1HgN49AER6vNMA=;
+        bh=iCKOvbCRfqkVczFsIKppK3kQNn2OlK2C2edwVd11wls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKmkEyoB3QgJhf5Cc0HDNNaY327EqfKEwggi7+lFIi4LeM1kcsrJdxk03gSgggcYh
-         pBsCDWJn1Pu0Zj3nljNB1x8cu0qnhRiVOZbV9BN7jgXSAjTAqe9h3Y+PFesdCvjIbq
-         bytuAgVTGbIZYKooUZcwgoh0mGzEvNOeGrg53LuA=
+        b=UvTK9Bf9uANAh8kx4Yr3cThD+XvHhN/0pYIXS4WbTn+/tQwioQ9QGt3uYYBhuAM1T
+         CdIFEcYSQQjoTuyRgCgA1NA8H9k3KvDhaBTfpaKrlWUyj+dbg9YbwjWOLvW2ht9+W7
+         KRHMQh3tflCZPfTQCTJuGCn3feKVV6T5zSFWMU88=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/26] rcu: No-CBs-related sleeps to idle priority
-Date:   Mon, 22 Jun 2020 17:21:30 -0700
-Message-Id: <20200623002147.25750-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/26] fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls
+Date:   Mon, 22 Jun 2020 17:21:32 -0700
+Message-Id: <20200623002147.25750-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -60,28 +60,55 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit converts the schedule_timeout_interruptible() call used by
-RCU's no-CBs grace-period kthreads to schedule_timeout_idle().  This
-conversion avoids polluting the load-average with RCU-related sleeping.
+Very large I/Os can cause the following RCU CPU stall warning:
+
+RIP: 0010:rb_prev+0x8/0x50
+Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
+89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
+RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
+RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
+RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
+RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
+R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
+R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
+ __lookup_extent_mapping+0xa0/0x110
+ try_release_extent_mapping+0xdc/0x220
+ btrfs_releasepage+0x45/0x70
+ shrink_page_list+0xa39/0xb30
+ shrink_inactive_list+0x18f/0x3b0
+ shrink_lruvec+0x38e/0x6b0
+ shrink_node+0x14d/0x690
+ do_try_to_free_pages+0xc6/0x3e0
+ try_to_free_mem_cgroup_pages+0xe6/0x1e0
+ reclaim_high.constprop.73+0x87/0xc0
+ mem_cgroup_handle_over_high+0x66/0x150
+ exit_to_usermode_loop+0x82/0xd0
+ do_syscall_64+0xd4/0x100
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+On a PREEMPT=n kernel, the try_release_extent_mapping() function's
+"while" loop might run for a very long time on a large I/O.  This commit
+therefore adds a cond_resched() to this loop, providing RCU any needed
+quiescent states.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/extent_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 25296c1..982fc5b 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2005,7 +2005,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 		/* Polling, so trace if first poll in the series. */
- 		if (gotcbs)
- 			trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Poll"));
--		schedule_timeout_interruptible(1);
-+		schedule_timeout_idle(1);
- 	} else if (!needwait_gp) {
- 		/* Wait for callbacks to appear. */
- 		trace_rcu_nocb_wake(rcu_state.name, cpu, TPS("Sleep"));
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 68c9605..7042395 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4515,6 +4515,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
+ 
+ 			/* once for us */
+ 			free_extent_map(em);
++
++			cond_resched(); /* Allow large-extent preemption. */
+ 		}
+ 	}
+ 	return try_release_extent_state(tree, page, mask);
 -- 
 2.9.5
 
