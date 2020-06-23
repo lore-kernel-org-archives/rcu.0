@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2792FC433E1
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21368C433E0
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB2A720720
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F15B820702
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592871745;
-	bh=gn1tlwBQjxEjJ+FHG1AG7XldVGYaI61VBRJCKCiU2DM=;
+	s=default; t=1592871759;
+	bh=33gHmx2Zc4RUbwNmQo8hCICSdmeVLoBN8tfdIBgRlxI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=X7njHE1ElTSVaY8aP33Q8AjolIjvhWKoH4R8a078Ie9gs+aU+G2AcSWzkvHbXI5D7
-	 6NQ1d0xNmwyhTVHBdsfuZza6s3n5UF+50Rx0xPXDFbktySxfdYwdCfIXIXVsg2d1JK
-	 B+WBc7ya1k1PG9Rk9zB9oqe+1261ImM0Or2kqp0E=
+	b=rBWP0lbAi6szKpch6OcWdyLBV+ft+4fQgE+O3mgrUTVncNTxZEHBj29/y6algGKbu
+	 IaUPpTgxe/HP1QkPsgGSDyUDJSNfjnWP8jqApWvaRhViIuf4Jzjo7D0IuDfgnuRpBX
+	 spwvWsGQDCyU73Sp15azGrSVckIcp2Sy5K//UV5w=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgFWAWY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1731679AbgFWAWY (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 22 Jun 2020 20:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731569AbgFWAVx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1731566AbgFWAVx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 22 Jun 2020 20:21:53 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 236F420CC7;
-        Tue, 23 Jun 2020 00:21:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0E5820B80;
+        Tue, 23 Jun 2020 00:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871713;
-        bh=gn1tlwBQjxEjJ+FHG1AG7XldVGYaI61VBRJCKCiU2DM=;
+        bh=33gHmx2Zc4RUbwNmQo8hCICSdmeVLoBN8tfdIBgRlxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXnbh+t22d35FG9OlbLp5MSiXiqvzq6bBxBXBV3j1g1MxjMz2T6Tzntuu4Ck5QU2+
-         7wvoWUmUztzBONHKMxmF3syFetF6YuI0vBQt2IP7TOLZLRXUenhDtx7e/+nUkZYaKO
-         JExNMDxWhVKK8YgWQHnzbZh1zs+8rsaTTRweDDsE=
+        b=0gAWaAN5qmZUm2GdGs6FWAwoo3/4m9ic+6JZzr5MB5kM+FlmzjwUWr0Qk7lGQxJgR
+         IrWsPaabvZI5EGVVMyVDH9Ca1GvSc/FfMXDR9fpKjV+u4dGUmNcBg53yaQXYiEpSEj
+         qrpSPgUQPs37ovbGy3eqmYgS+wRnLcMzqERITQBE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Peter Enderborg <peter.enderborg@sony.com>,
+        Jules Irenge <jbi.octave@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/26] rcu: Stop shrinker loop
-Date:   Mon, 22 Jun 2020 17:21:40 -0700
-Message-Id: <20200623002147.25750-19-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 18/26] rcu: Replace 1 with true
+Date:   Mon, 22 Jun 2020 17:21:39 -0700
+Message-Id: <20200623002147.25750-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -59,33 +59,35 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Peter Enderborg <peter.enderborg@sony.com>
+From: Jules Irenge <jbi.octave@gmail.com>
 
-The count and scan can be separated in time, and there is a fair chance
-that all work is already done when the scan starts, which might in turn
-result in a needless retry.  This commit therefore avoids this retry by
-returning SHRINK_STOP.
+Coccinelle reports a warning
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+WARNING: Assignment of 0/1 to bool variable
+
+The root cause is that the variable lastphase is a bool, but is
+initialised with integer 1.  This commit therefore replaces the 1 with
+a true.
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
+ kernel/rcu/update.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 67912ad..0806762 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3314,7 +3314,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 			break;
- 	}
- 
--	return freed;
-+	return freed == 0 ? SHRINK_STOP : freed;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index ca17b77..a0ba885 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -207,7 +207,7 @@ void rcu_end_inkernel_boot(void)
+ 	rcu_unexpedite_gp();
+ 	if (rcu_normal_after_boot)
+ 		WRITE_ONCE(rcu_normal, 1);
+-	rcu_boot_ended = 1;
++	rcu_boot_ended = true;
  }
  
- static struct shrinker kfree_rcu_shrinker = {
+ /*
 -- 
 2.9.5
 
