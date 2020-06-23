@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A788BC433E0
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 646FBC433DF
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80A3520780
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A71E20702
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592871788;
-	bh=fRzC9I2fzQqk+PaLvwfzjI6019SUcEan0gSkO5l4SRA=;
+	s=default; t=1592871792;
+	bh=f4PXroet3kk9dCV8EekSuydwLuif35P7Fjo5XqU/DcI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Sw1jzYcK87oiJb+ShGNCBrvEcoPigO2YaLUkOsIQuaZj0RM0L1tPPddjc6nbjqmtC
-	 YFnhFKe3rcTxyCM+BEbW+UdozxI55G1WrgshjFDOdG+j584ob5ua3fcacQCfKsSl4C
-	 j6yOjgPg6bHBsOckanLqIcBRg58mO1TBmwML8C6E=
+	b=JmWSfV4OPmuMW5EVoxwgMQWT3h7W0S6DnN50GlUTYrFHLjpcVdCxeFi3pIGypZe3+
+	 yucGsUoyI948Lz4jqtu60n7x5Q+rpRcUH690xP4Kn/gyWgt6dxttLSBUQpK6Jo3cHQ
+	 gNS3Z2Rd0EDqlkQLQdfev9U1uYC6+ba5+5UDqFpk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731524AbgFWAXI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
+        id S1731789AbgFWAXL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731480AbgFWAVv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1730309AbgFWAVv (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 22 Jun 2020 20:21:51 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC286207DD;
+        by mail.kernel.org (Postfix) with ESMTPSA id 753AD2083B;
         Tue, 23 Jun 2020 00:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871710;
-        bh=fRzC9I2fzQqk+PaLvwfzjI6019SUcEan0gSkO5l4SRA=;
+        bh=f4PXroet3kk9dCV8EekSuydwLuif35P7Fjo5XqU/DcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZOG5LWQJ/FEuBKuFDC//U0LEavLhdLfKfjN0rUGiwGF38hISqMkECEPcMjuWIt/Lo
-         01J3G+hivki9yeKTGTGIihRRccJK5Pl5FKZVHPORxjhKQ4TV7H1sU87B/tAArZ/hOh
-         MC+GZdt7S098+qXS6+dm9Rf39DE0o/Viw8EkVZvQ=
+        b=tXbe1t1pgutHiniEPFQnC68ybenwwIK7wkHrIgWdUU2Vj8WCmfLzEUsn2dgFJgPKm
+         75bcFCBqssuKSbe78GDMuQja6ir4v6+MO4yK69hEouYIAt82JPC878b+ZlNqdVWZ1b
+         3DR1rl4Dsd2NYxf0r+L4mGn7kuLNC4GkenEEH8ig=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/26] rcu: Grace-period-kthread related sleeps to idle priority
-Date:   Mon, 22 Jun 2020 17:21:28 -0700
-Message-Id: <20200623002147.25750-7-paulmck@kernel.org>
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/26] trace: events: rcu: Change description of rcu_dyntick trace event
+Date:   Mon, 22 Jun 2020 17:21:27 -0700
+Message-Id: <20200623002147.25750-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -58,49 +59,47 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-This commit converts the long-standing schedule_timeout_interruptible()
-and schedule_timeout_uninterruptible() calls used by RCU's grace-period
-kthread to schedule_timeout_idle().  This conversion avoids polluting
-the load-average with RCU-related sleeping.
+The different strings used for describing the polarity are
+Start, End and StillNonIdle. Since StillIdle is not used in any trace
+point for rcu_dyntick, it can be removed and StillNonIdle can be added
+in the description. Because StillNonIdle is used in a few tracepoints for
+rcu_dyntick.
 
+Similarly, USER, IDLE and IRQ are used for describing context in
+the rcu_dyntick tracepoints. Since, "KERNEL" is not used for any
+of the rcu_dyntick tracepoints, remove it from the description.
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/trace/events/rcu.h | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index db17ffe..48ae673 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1620,7 +1620,7 @@ static void rcu_gp_slow(int delay)
- 	if (delay > 0 &&
- 	    !(rcu_seq_ctr(rcu_state.gp_seq) %
- 	      (rcu_num_nodes * PER_RCU_NODE_PERIOD * delay)))
--		schedule_timeout_uninterruptible(delay);
-+		schedule_timeout_idle(delay);
- }
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index f9a7811..af274d1 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -435,11 +435,12 @@ TRACE_EVENT_RCU(rcu_fqs,
+ #endif /* #if defined(CONFIG_TREE_RCU) */
  
- static unsigned long sleep_duration;
-@@ -1643,7 +1643,7 @@ static void rcu_gp_torture_wait(void)
- 	duration = xchg(&sleep_duration, 0UL);
- 	if (duration > 0) {
- 		pr_alert("%s: Waiting %lu jiffies\n", __func__, duration);
--		schedule_timeout_uninterruptible(duration);
-+		schedule_timeout_idle(duration);
- 		pr_alert("%s: Wait complete\n", __func__);
- 	}
- }
-@@ -2709,7 +2709,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
- 	}
- 	*statusp = RCU_KTHREAD_YIELDING;
- 	trace_rcu_utilization(TPS("Start CPU kthread@rcu_yield"));
--	schedule_timeout_interruptible(2);
-+	schedule_timeout_idle(2);
- 	trace_rcu_utilization(TPS("End CPU kthread@rcu_yield"));
- 	*statusp = RCU_KTHREAD_WAITING;
- }
+ /*
+- * Tracepoint for dyntick-idle entry/exit events.  These take a string
+- * as argument: "Start" for entering dyntick-idle mode, "Startirq" for
+- * entering it from irq/NMI, "End" for leaving it, "Endirq" for leaving it
+- * to irq/NMI, "--=" for events moving towards idle, and "++=" for events
+- * moving away from idle.
++ * Tracepoint for dyntick-idle entry/exit events.  These take 2 strings
++ * as argument:
++ * polarity: "Start", "End", "StillNonIdle" for entering, exiting or still not
++ *            being in dyntick-idle mode.
++ * context: "USER" or "IDLE" or "IRQ".
++ * NMIs nested in IRQs are inferred with dynticks_nesting > 1 in IRQ context.
+  *
+  * These events also take a pair of numbers, which indicate the nesting
+  * depth before and after the event of interest, and a third number that is
 -- 
 2.9.5
 
