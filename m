@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19398C433E0
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA62AC433DF
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E517820720
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A1A0F2053B
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592872309;
-	bh=2MReE7tg93XK7F6VlsZb0HBX0126pFFv2a8PRqW+SfI=;
+	s=default; t=1592872318;
+	bh=3XxXc/vNDqGq7CdQmSK0xiKg/uFoGBJdCE+lcZMiNG0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=JhVL7QB5Co/ENyzDpHvwrN+L8ycmvTjZpw8cxR+XcNxpalloN47qDY6K87BOBJGyJ
-	 sW3CLYgx4Y4hhe7lLzHO9RA6s3aA2y9QbCIVc8B/ykyCPgzAnYzfogbzrPBXrAit+j
-	 ehgg5YCVTG2fXuTObyQxZuUBdADt4+sNNVDp9xSI=
+	b=KbPDIWpFdCxm/giv8AO1fPrMQuAnzuHgtcPopOthWcLXyTZ3Y9JYphgp+yCDxcmyK
+	 yZmlH15tajGSxpe1KwxzTDiBMys5L9xmb+MzXi9F8wgiD0cLW77bQwth8/Ltq4vzND
+	 IrFUgnCSe5vmw9Hkj9LXKH5Er1odEHDqm1V+Bg3I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731582AbgFWAbY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55174 "EHLO mail.kernel.org"
+        id S1731442AbgFWAbt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731693AbgFWAaT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:19 -0400
+        id S1731670AbgFWAaS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:18 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7546D20C56;
-        Tue, 23 Jun 2020 00:30:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3763720890;
+        Tue, 23 Jun 2020 00:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872219;
-        bh=2MReE7tg93XK7F6VlsZb0HBX0126pFFv2a8PRqW+SfI=;
+        s=default; t=1592872218;
+        bh=3XxXc/vNDqGq7CdQmSK0xiKg/uFoGBJdCE+lcZMiNG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQWwDhXfgF5kKnk2R86QhLsyW8Hg/qgizlzB99udRv59rxm7u/xfFQeHDYKKRP52I
-         YH+rDQwGTgEc4O/Kj7HfQGMC9E3aCn+qClVaZJMMyvx7VCf4rzBI9ahcHcO+5LbQbQ
-         vxG1YnuyC7szbTqTHl+m4aGKq4NP9BsOGFdofM0g=
+        b=hfCcutqR4Zj8Ey3NlqfJgqRPVNHih4rhp5YP9bARscI2zhrHLhRTt5iXbJG9nU9Vk
+         Fgs0+qmouLEm1EvA4CMUOEtvY3zUV4Ug+gSlo91/12FTlRA01Pi956I5CCWS/Go2NT
+         3ObunPeBedG2j4jwfExFZ2rnsrZbM2sDKVUq6iKE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 21/30] refperf: Adjust refperf.loop default value
-Date:   Mon, 22 Jun 2020 17:30:04 -0700
-Message-Id: <20200623003013.26252-21-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 15/30] refperf: More closely synchronize reader start times
+Date:   Mon, 22 Jun 2020 17:29:58 -0700
+Message-Id: <20200623003013.26252-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -60,28 +60,53 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-With the various measurement optimizations, 10,000 loops normally
-suffices.  This commit therefore reduces the refperf.loops default value
-from 10,000,000 to 10,000.
+Currently, readers are awakened individually.  On most systems, this
+results in significant wakeup delay from one reader to the next, which
+can result in the first and last reader having sole access to the
+synchronization primitive in question.  If that synchronization primitive
+involves shared memory, those readers will rack up a huge number of
+operations in a very short time, causing large perturbations in the
+results.
 
+This commit therefore has the readers busy-wait after being awakened,
+and uses a new n_started variable to synchronize their start times.
+
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/refperf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 57a750b..063eeb0 100644
+index 2fd3ed1..234bb0e 100644
 --- a/kernel/rcu/refperf.c
 +++ b/kernel/rcu/refperf.c
-@@ -61,7 +61,7 @@ torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
- torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_PERF_TEST) ? 10 : 0,
- 	      "Holdoff time before test start (s)");
- // Number of loops per experiment, all readers execute operations concurrently.
--torture_param(long, loops, 10000000, "Number of loops per experiment.");
-+torture_param(long, loops, 10000, "Number of loops per experiment.");
- // Number of readers, with -1 defaulting to about 75% of the CPUs.
- torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
- // Number of runs.
+@@ -99,6 +99,7 @@ static atomic_t nreaders_exp;
+ 
+ // Use to wait for all threads to start.
+ static atomic_t n_init;
++static atomic_t n_started;
+ 
+ // Track which experiment is currently running.
+ static int exp_idx;
+@@ -253,6 +254,9 @@ ref_perf_reader(void *arg)
+ 	WARN_ON_ONCE(smp_processor_id() != me);
+ 
+ 	WRITE_ONCE(rt->start_reader, 0);
++	if (!atomic_dec_return(&n_started))
++		while (atomic_read_acquire(&n_started))
++			cpu_relax();
+ 
+ 	VERBOSE_PERFOUT("ref_perf_reader %ld: experiment %d started", me, exp_idx);
+ 
+@@ -367,6 +371,7 @@ static int main_func(void *arg)
+ 
+ 		reset_readers();
+ 		atomic_set(&nreaders_exp, nreaders);
++		atomic_set(&n_started, nreaders);
+ 
+ 		exp_idx = exp;
+ 
 -- 
 2.9.5
 
