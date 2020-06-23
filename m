@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 541B5C433E0
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE2FBC433E0
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 291462053B
-	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C951D2053B
+	for <rcu@archiver.kernel.org>; Tue, 23 Jun 2020 00:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592872284;
-	bh=kYiQhMrNluGmJ/gH/lJElNvisMeCFkHWqBFYmA0RsSw=;
+	s=default; t=1592872285;
+	bh=HAS4qKnnRBhugP+ZvtmNNZcrbU4ltYBHsKHxblEzTk4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=NYyB4BDpiftboSMgglxVIRKF8TvVKUUBU4cyRZrTlK8CRMIXfOT1ZCwsttaZ8fL5K
-	 Srtxke6YzuzPjtTd63iztJEcN464PYMnyuXnqhbP3OFCFi9nnna3EW4kVTtkrjpbCq
-	 eFttWV6PfaragG8p6abv0mVj5zgecwwnAjsKwFM0=
+	b=ZI5mBTx83zXfZeAJvbrbjpkhd5TJr4BbCoS9ABeLZSx8KSKAJ43kkdzqaCTTJKXRK
+	 lSw7t/eRJ040FMBg6ugCcnQMFtUpWCDRB6M16SBnY6J+t1w6ybpRM2CfP5n1nxOAhC
+	 5yAgMKTx6NPbiiJ2Hxk4c6ACDcXdzYb6LjQM/5c0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbgFWAbL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Jun 2020 20:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        id S1731883AbgFWAbZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Jun 2020 20:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731716AbgFWAaU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:20 -0400
+        id S1731676AbgFWAaT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:19 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 734892100A;
-        Tue, 23 Jun 2020 00:30:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D40820EDD;
+        Tue, 23 Jun 2020 00:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872220;
-        bh=kYiQhMrNluGmJ/gH/lJElNvisMeCFkHWqBFYmA0RsSw=;
+        s=default; t=1592872218;
+        bh=HAS4qKnnRBhugP+ZvtmNNZcrbU4ltYBHsKHxblEzTk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KUd852T7roU9GgtDSLSmezRpfvEPxLihZ7g2DqSsaukAztKX4/YoxgwCSKw0mtp8t
-         mCzEMKcL5+qlzuYD3JsCGsq8OWdhOW7n1B8WI1c9nDz8BJKccXcaUairBuLJLk4miR
-         ESsi4+xBwAZgfchQf+BR/zlegUp/TWngip5eA7Zk=
+        b=XReSa3XArAS8trhFo9pU5TChytKDykjy2RSEWz0zLGt6Y+zs6CG9DF9KegOfpjtka
+         RPzsx8OPhqJL2tQwghwL2MNFIiDclHCLLz/TQA80rzRraGoLyAhdhwCuzjLCyC7QFw
+         cgxSxH3BvS0Bw1RfzNOjMnhr+YAx1X57vm9cTbRg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/30] refperf: Add test for RCU Tasks readers
-Date:   Mon, 22 Jun 2020 17:30:09 -0700
-Message-Id: <20200623003013.26252-26-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/30] refperf: Add warmup and cooldown processing phases
+Date:   Mon, 22 Jun 2020 17:29:59 -0700
+Message-Id: <20200623003013.26252-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -60,61 +60,70 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds testing for RCU Tasks readers to the refperf module.
-This also applies to RCU Rude readers, as both flavors have empty
-(as in non-existent) read-side markers.
+This commit causes all the readers to start running unmeasured load
+until all readers have done at least one such run (thus having warmed
+up), then run the measured load, and then run unmeasured load until all
+readers have completed their measured load.  This approach avoids any
+thread running measured load while other readers are idle.
 
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ kernel/rcu/refperf.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index da7de9a..2bfdcdc 100644
+index 234bb0e..445190b 100644
 --- a/kernel/rcu/refperf.c
 +++ b/kernel/rcu/refperf.c
-@@ -192,6 +192,31 @@ static struct ref_perf_ops srcu_ops = {
- 	.name		= "srcu"
- };
+@@ -100,6 +100,8 @@ static atomic_t nreaders_exp;
+ // Use to wait for all threads to start.
+ static atomic_t n_init;
+ static atomic_t n_started;
++static atomic_t n_warmedup;
++static atomic_t n_cooleddown;
  
-+// Definitions for RCU Tasks ref perf testing: Empty read markers.
-+// These definitions also work for RCU Rude readers.
-+static void rcu_tasks_ref_perf_read_section(const int nloops)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--)
-+		continue;
-+}
-+
-+static void rcu_tasks_ref_perf_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--)
-+		un_delay(udl, ndl);
-+}
-+
-+static struct ref_perf_ops rcu_tasks_ops = {
-+	.init		= rcu_sync_perf_init,
-+	.readsection	= rcu_tasks_ref_perf_read_section,
-+	.delaysection	= rcu_tasks_ref_perf_delay_section,
-+	.name		= "rcu-tasks"
-+};
-+
- // Definitions for RCU Tasks Trace ref perf testing.
- static void rcu_trace_ref_perf_read_section(const int nloops)
- {
-@@ -613,7 +638,8 @@ ref_perf_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static struct ref_perf_ops *perf_ops[] = {
--		&rcu_ops, &srcu_ops, &rcu_trace_ops, &refcnt_ops, &rwlock_ops, &rwsem_ops,
-+		&rcu_ops, &srcu_ops, &rcu_trace_ops, &rcu_tasks_ops,
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops,
- 	};
+ // Track which experiment is currently running.
+ static int exp_idx;
+@@ -260,8 +262,15 @@ ref_perf_reader(void *arg)
  
- 	if (!torture_init_begin(perf_type, verbose))
+ 	VERBOSE_PERFOUT("ref_perf_reader %ld: experiment %d started", me, exp_idx);
+ 
+-	// To prevent noise, keep interrupts disabled. This also has the
+-	// effect of preventing entries into slow path for rcu_read_unlock().
++
++	// To reduce noise, do an initial cache-warming invocation, check
++	// in, and then keep warming until everyone has checked in.
++	cur_ops->readsection(loops);
++	if (!atomic_dec_return(&n_warmedup))
++		while (atomic_read_acquire(&n_warmedup))
++			cur_ops->readsection(loops);
++	// Also keep interrupts disabled.  This also has the effect
++	// of preventing entries into slow path for rcu_read_unlock().
+ 	local_irq_save(flags);
+ 	start = ktime_get_mono_fast_ns();
+ 
+@@ -271,6 +280,11 @@ ref_perf_reader(void *arg)
+ 	local_irq_restore(flags);
+ 
+ 	rt->last_duration_ns = WARN_ON_ONCE(duration < 0) ? 0 : duration;
++	// To reduce runtime-skew noise, do maintain-load invocations until
++	// everyone is done.
++	if (!atomic_dec_return(&n_cooleddown))
++		while (atomic_read_acquire(&n_cooleddown))
++			cur_ops->readsection(loops);
+ 
+ 	if (atomic_dec_and_test(&nreaders_exp))
+ 		wake_up(&main_wq);
+@@ -372,6 +386,8 @@ static int main_func(void *arg)
+ 		reset_readers();
+ 		atomic_set(&nreaders_exp, nreaders);
+ 		atomic_set(&n_started, nreaders);
++		atomic_set(&n_warmedup, nreaders);
++		atomic_set(&n_cooleddown, nreaders);
+ 
+ 		exp_idx = exp;
+ 
 -- 
 2.9.5
 
