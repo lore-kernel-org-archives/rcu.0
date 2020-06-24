@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4769AC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 665CAC433E1
 	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2346E20823
+	by mail.kernel.org (Postfix) with ESMTP id 4ABF42084D
 	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1593029594;
-	bh=WMtWKuWdgvCD4A+DhTMHuc/p48EQB1ZIjEEVdQlrlHQ=;
+	bh=A/PWzn/Vgn/G2nP7MVtJX0MzzVuuQ12qSrEPDu13suE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=xqZxd/1d0m66mw/OO48QhdNwQ3Y9gELP6zgfF7ayRUTNU8Oa3rAcqYRCKpRr+BGaA
-	 blJ/4xD7FjBgZGFPUMbfb9rCcKb7PmfhxXBHBjNEaOwhcZsVzQNUEFtNJf3HdkrCFO
-	 /hDnwoQQp3I+RihKPpUXbMV5Q6eMCaNY4jAEaySY=
+	b=cBLEV+Elm5WQSNs39gHn8nNCAeWv2tYGo1i8m2mTt7R76qyAN1+zIraOZOYQ05h43
+	 viTfDbF60xi2gHYuGp40ovRnVtAV3InM1780Chjb2Gfv0Qh7UXmJ/BdgmkvdFmOEc4
+	 0iryzyYZeApcxcN3M1t71nfdC3PQf7e2kb1AM9mI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406472AbgFXUNF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Jun 2020 16:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406395AbgFXUMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S2406399AbgFXUMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 24 Jun 2020 16:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406382AbgFXUMa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:12:30 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B6021556;
-        Wed, 24 Jun 2020 20:12:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 704BF214D8;
+        Wed, 24 Jun 2020 20:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029551;
-        bh=WMtWKuWdgvCD4A+DhTMHuc/p48EQB1ZIjEEVdQlrlHQ=;
+        s=default; t=1593029549;
+        bh=A/PWzn/Vgn/G2nP7MVtJX0MzzVuuQ12qSrEPDu13suE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BBYDQViezzLMyK6hA/HwSUC0gFmze990uNbrXnZVr/L0IHO4MCkj266CxHggvGVhC
-         qez9aE/X6JieYVa5Dw3paUD47AVWaeHR9E2JRnsJjFka7OYhT/9O5zegdrVHc9PG3L
-         31dQ0cmnSu7zp+PRyWGJpbRYE4iy+qL48JaG6Hzo=
+        b=yMu3jdXVtsGu3nvHhWaUww+aMfcmHsqc71ASFlP4Pm/sjjnKm5633fVR4G0bjMGg0
+         IMY8ZxAqMQI1BX1fpMq3yRkHhx7y/wmAGgOaI3dByMhauWbu0ra9kVpGvGjT4TZFch
+         Jr20O73U4hEtHcV6m2iuUDbBI+oGUmkO+cdxmyso=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 14/17] rcu: Introduce 2 arg kvfree_rcu() interface
-Date:   Wed, 24 Jun 2020 13:12:23 -0700
-Message-Id: <20200624201226.21197-14-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/17] rcu/tree: Move kfree_rcu_cpu locking/unlocking to separate functions
+Date:   Wed, 24 Jun 2020 13:12:16 -0700
+Message-Id: <20200624201226.21197-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200624201200.GA28901@paulmck-ThinkPad-P72>
 References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
@@ -61,56 +61,73 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-kvmalloc() can allocate two types of objects: SLAB backed
-and vmalloc backed. How it behaves depends on requested
-object's size and memory pressure.
+Introduce helpers to lock and unlock per-cpu "kfree_rcu_cpu"
+structures. That will make kfree_call_rcu() more readable
+and prevent programming errors.
 
-Add a kvfree_rcu() interface that can free memory allocated
-via kvmalloc(). It is a simple alias to kfree_rcu() which
-can now handle either type of object.
-
-<snip>
-    struct test_kvfree_rcu {
-        struct rcu_head rcu;
-        unsigned char array[100];
-    };
-
-    struct test_kvfree_rcu *p;
-
-    p = kvmalloc(10 * PAGE_SIZE);
-    if (p)
-        kvfree_rcu(p, rcu);
-<snip>
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/rcu/tree.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b344fc8..51b26ab 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -875,6 +875,15 @@ do {									\
- 		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
- } while (0)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 519a3f5..edc512e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3017,6 +3017,27 @@ debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
+ #endif
+ }
  
-+/**
-+ * kvfree_rcu() - kvfree an object after a grace period.
-+ * @ptr:	pointer to kvfree
-+ * @rhf:	the name of the struct rcu_head within the type of @ptr.
-+ *
-+ * Same as kfree_rcu(), just simple alias.
-+ */
-+#define kvfree_rcu(ptr, rhf) kfree_rcu(ptr, rhf)
++static inline struct kfree_rcu_cpu *
++krc_this_cpu_lock(unsigned long *flags)
++{
++	struct kfree_rcu_cpu *krcp;
++
++	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
++	krcp = this_cpu_ptr(&krc);
++	if (likely(krcp->initialized))
++		raw_spin_lock(&krcp->lock);
++
++	return krcp;
++}
++
++static inline void
++krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
++{
++	if (likely(krcp->initialized))
++		raw_spin_unlock(&krcp->lock);
++	local_irq_restore(flags);
++}
 +
  /*
-  * Place this after a lock-acquisition primitive to guarantee that
-  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3242,11 +3263,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	struct kfree_rcu_cpu *krcp;
+ 	void *ptr;
+ 
+-	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+-	krcp = this_cpu_ptr(&krc);
+-	if (krcp->initialized)
+-		raw_spin_lock(&krcp->lock);
+-
++	krcp = krc_this_cpu_lock(&flags);
+ 	ptr = (void *)head - (unsigned long)func;
+ 
+ 	// Queue the object but don't yet schedule the batch.
+@@ -3277,9 +3294,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	}
+ 
+ unlock_return:
+-	if (krcp->initialized)
+-		raw_spin_unlock(&krcp->lock);
+-	local_irq_restore(flags);
++	krc_this_cpu_unlock(krcp, flags);
+ }
+ EXPORT_SYMBOL_GPL(kfree_call_rcu);
+ 
 -- 
 2.9.5
 
