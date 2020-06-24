@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3718C433DF
-	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66F15C433E1
+	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:12:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7AEC62100A
-	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:12:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3CC7321548
+	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593029551;
-	bh=+Ml9K6OhgREHxq/Lrb5RMnmhVEQ5vipDFbL6KJkj7LI=;
+	s=default; t=1593029554;
+	bh=0nMQg5rm3SZnSAL196mvtNrlDJeMTB9eWBLOQfyEsMY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=pM2c28Y216SrFT6cSe+TsDAOkZvjwd2CpmXcF/GtE/sCCH7DuFkfLrL6fwNC/pOaL
-	 X3ti9fiuN2x98rNIWJlLM6V9F0wi30SZrM0JRDCDIqYyG/jC7dkpLewVKXXYS3rBiZ
-	 mtTNG9IL1mQ/9HN6HbQMtvUg78oQusFaYq3pfIbA=
+	b=yccRgA9kL4DNw26otuLoiCgAfIRlKcbbvvdQivgOJPi2ioY3akBfuzrVARPw5ybjy
+	 uhMWc/9qjVjtoj0riKmMsDPLPInSjjOjAt3RshB9s9p3qFU0Tu9jeUPXmsKoqUB9gr
+	 hUqXQ46vhyuJBZOHbf99PmYNAYPNYulL2mH4i5bA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406385AbgFXUMa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Jun 2020 16:12:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        id S2406407AbgFXUMd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Jun 2020 16:12:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406370AbgFXUM3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:12:29 -0400
+        id S2406393AbgFXUMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:12:31 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8474120CC7;
-        Wed, 24 Jun 2020 20:12:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C17BC21527;
+        Wed, 24 Jun 2020 20:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029548;
-        bh=+Ml9K6OhgREHxq/Lrb5RMnmhVEQ5vipDFbL6KJkj7LI=;
+        s=default; t=1593029550;
+        bh=0nMQg5rm3SZnSAL196mvtNrlDJeMTB9eWBLOQfyEsMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9HkoC7/4m/5Ft1DtFJyQAd73lsyyBDWOnfij9dL2kAcc9hJnZ/z8MI7H5K/yMlkN
-         YXGVAUPtfLFTXDeynOwalw9ybOhiPp1MgL9LT3uHXKot7mPoELzxAFW3LrQGq9d4FU
-         BUxiRsR4MzT+PBZ/ZpGp7JEMYzpiIFNJEU7VYgDA=
+        b=nw9ewvEyv1H9E0BBM2SJUHYvtyy9uQbimANYea2WdMedw+FY2mgTfgDAQtQZUO6U8
+         CPlSbJywJrIcfZlEtjYWYalzeo661FibBBBtqBkZPPJWi3fMAC4DSFG/gWJ2UN2HRQ
+         AvPnRpdVtRSO2qIqEMhbsqXIH94Gs1dT3aES4UZQ=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,12 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page allocator for PREEMPT_RT
-Date:   Wed, 24 Jun 2020 13:12:12 -0700
-Message-Id: <20200624201226.21197-3-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/17] mm/list_lru.c: Rename kvfree_rcu() to local variant
+Date:   Wed, 24 Jun 2020 13:12:22 -0700
+Message-Id: <20200624201226.21197-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200624201200.GA28901@paulmck-ThinkPad-P72>
 References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
@@ -60,54 +59,54 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-To keep the kfree_rcu() code working in purely atomic sections on RT,
-such as non-threaded IRQ handlers and raw spinlock sections, avoid
-calling into the page allocator which uses sleeping locks on RT.
+Rename kvfree_rcu() function to the kvfree_rcu_local() one.
+The purpose is to prevent a conflict of two same function
+declarations. The kvfree_rcu() will be globally visible
+what would lead to a build error. No functional change.
 
-In fact, even if the  caller is preemptible, the kfree_rcu() code is
-not, as the krcp->lock is a raw spinlock.
-
-Calling into the page allocator is optional and avoiding it should be
-Ok, especially with the page pre-allocation support in future patches.
-Such pre-allocation would further avoid the a need for a dynamically
-allocated page in the first place.
-
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-Co-developed-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: linux-mm@kvack.org
+Cc: rcu@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ mm/list_lru.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 64592b4..dbdd509 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3184,6 +3184,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
- 		if (!bnode) {
- 			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index 9222910..e825804 100644
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -373,14 +373,14 @@ static void memcg_destroy_list_lru_node(struct list_lru_node *nlru)
+ 	struct list_lru_memcg *memcg_lrus;
+ 	/*
+ 	 * This is called when shrinker has already been unregistered,
+-	 * and nobody can use it. So, there is no need to use kvfree_rcu().
++	 * and nobody can use it. So, there is no need to use kvfree_rcu_local().
+ 	 */
+ 	memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
+ 	__memcg_destroy_list_lru_node(memcg_lrus, 0, memcg_nr_cache_ids);
+ 	kvfree(memcg_lrus);
+ }
  
-+			/*
-+			 * To keep this path working on raw non-preemptible
-+			 * sections, prevent the optional entry into the
-+			 * allocator as it uses sleeping locks. In fact, even
-+			 * if the caller of kfree_rcu() is preemptible, this
-+			 * path still is not, as krcp->lock is a raw spinlock.
-+			 * With additional page pre-allocation in the works,
-+			 * hitting this return is going to be much less likely.
-+			 */
-+			if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+				return false;
-+
- 			bnode = (struct kfree_rcu_bulk_data *)
- 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
- 		}
+-static void kvfree_rcu(struct rcu_head *head)
++static void kvfree_rcu_local(struct rcu_head *head)
+ {
+ 	struct list_lru_memcg *mlru;
+ 
+@@ -419,7 +419,7 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
+ 	rcu_assign_pointer(nlru->memcg_lrus, new);
+ 	spin_unlock_irq(&nlru->lock);
+ 
+-	call_rcu(&old->rcu, kvfree_rcu);
++	call_rcu(&old->rcu, kvfree_rcu_local);
+ 	return 0;
+ }
+ 
 -- 
 2.9.5
 
