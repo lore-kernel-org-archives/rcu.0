@@ -1,113 +1,110 @@
-Return-Path: <SRS0=iUCR=AF=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ZPNo=AG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11325C433DF
-	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD49C433E0
+	for <rcu@archiver.kernel.org>; Thu, 25 Jun 2020 01:25:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE8A920885
-	for <rcu@archiver.kernel.org>; Wed, 24 Jun 2020 20:13:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593029618;
-	bh=qZiGFZJ7CbgHMHQDzAwiU/MwuJbSwOc7xfMxb2POM70=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=AUu1E/lbEhqFQiYWlRDnFakS0W8dFj+GkMmzf9eaHkvYng8/v0mWC+JEXucRV/3AD
-	 D1Q7e34O4ofJL55fgMcnLjKkDfP8tkoZsR7m0MwEqv16wokcH1BdBwUvc5cLHw6UjZ
-	 jmRD2HEDiNaDP9plQIwqBoNY+lajFcoiZht3VvxU=
+	by mail.kernel.org (Postfix) with ESMTP id 9AE432078D
+	for <rcu@archiver.kernel.org>; Thu, 25 Jun 2020 01:25:24 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="P1LfKqFc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406522AbgFXUN1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 Jun 2020 16:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406378AbgFXUM3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:12:29 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2389182AbgFYBZY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 Jun 2020 21:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388928AbgFYBZX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 Jun 2020 21:25:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F299DC061573;
+        Wed, 24 Jun 2020 18:25:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE6F32137B;
-        Wed, 24 Jun 2020 20:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029548;
-        bh=qZiGFZJ7CbgHMHQDzAwiU/MwuJbSwOc7xfMxb2POM70=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XRtnN15DHCLVpUxcpepum/t4ehq5kOCp9+gqEP0sZDHsfH4Be6YMnZ+vsiYb8iPTU
-         KOUm2MT0YRADhRVhluZ/fhAw3Uhk8RbrtQsMD8Qh7/0Vdc+Ji6GTK+AWX9b861Cjoi
-         mFk4qYeY8pQG3FL1RRc0IvigdyFHMv7bjY5QfOBo=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/17] rcu/tree: Repeat the monitor if any free channel is busy
-Date:   Wed, 24 Jun 2020 13:12:13 -0700
-Message-Id: <20200624201226.21197-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200624201200.GA28901@paulmck-ThinkPad-P72>
-References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49sj4c29Z7z9sSt;
+        Thu, 25 Jun 2020 11:25:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593048321;
+        bh=wZqYCZ4rzjYy8J0Uc//CISQWPwtAY2uNSf3i5tgRVVc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P1LfKqFcSwtX9D0asb00y5WoSuSk2j7NvHv1XE/LT3TXlwVwM+gB8N8UpdgSojiA/
+         ZokR68IqW22ZB+xz7paQqsPkUENIOyCq4VFTy6IFUbUnKZrwKexu6J/W6lgOyLhZxh
+         8BhnXrFGNWvOJDQUrLu3DohcQa+Zv1dOMnYV7Li4rQ0Wo/NEwurKEIQdm/mEZVM24c
+         aEbRSa1PUnRtLF63tmmkeCLZCSiQTfH/hJJaSkUj6fdi84kN5esGUxBo1URiEBMAR1
+         lgol+MoKlXXu5JX5A1ajBQF6zwwTiNcOKJ7V7eQj2eDhxSTXPJBT2PwEsnKkreYYye
+         Z5p2zVngSmqgw==
+Date:   Thu, 25 Jun 2020 11:25:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Qian Cai <cai@lca.pw>
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        paulmck@kernel.org, rcu@vger.kernel.org,
+        torvalds@linux-foundation.org
+Subject: Re: Null-ptr-deref due to "vfs, fsinfo: Add an RCU safe per-ns
+ mount list"
+Message-ID: <20200625112517.4cf8f3a9@canb.auug.org.au>
+In-Reply-To: <20200624155707.GA1259@lca.pw>
+References: <31941725-BEB0-4839-945A-4952C2B5ADC7@lca.pw>
+        <2961585.1589326192@warthog.procyon.org.uk>
+        <20200624155707.GA1259@lca.pw>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/t.bTb4R9aiObfQs2q7bZVl/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+--Sig_/t.bTb4R9aiObfQs2q7bZVl/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-It is possible that one of the channels cannot be detached
-because its free channel is busy and previously queued data
-has not been processed yet. On the other hand, another
-channel can be successfully detached causing the monitor
-work to stop.
+Hi all,
 
-Prevent that by rescheduling the monitor work if there are
-any channels in the pending state after a detach attempt.
+On Wed, 24 Jun 2020 11:57:07 -0400 Qian Cai <cai@lca.pw> wrote:
+>
+> On Wed, May 13, 2020 at 12:29:52AM +0100, David Howells wrote:
+> > Qian Cai <cai@lca.pw> wrote:
+> >  =20
+> > > Reverted the linux-next commit ee8ad8190cb1 (=E2=80=9Cvfs, fsinfo: Ad=
+d an RCU safe per-ns mount list=E2=80=9D) fixed the null-ptr-deref. =20
+> >=20
+> > Okay, I'm dropping this commit for now. =20
+>=20
+> What's the point of re-adding this buggy patch to linux-next again since
+> 0621 without fixing the previous reported issue at all? Reverting the
+> commit will still fix the crash below immediately, i.e.,
+>=20
+> dbc87e74d022 ("vfs, fsinfo: Add an RCU safe per-ns mount list")
 
-Fixes: 34c881745549e ("rcu: Support kfree_bulk() interface in kfree_rcu()")
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+I have added a revert of that commit to linux-next today.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index dbdd509..31d3b2c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3087,7 +3087,7 @@ static void kfree_rcu_work(struct work_struct *work)
- static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- {
- 	struct kfree_rcu_cpu_work *krwp;
--	bool queued = false;
-+	bool repeat = false;
- 	int i;
- 
- 	lockdep_assert_held(&krcp->lock);
-@@ -3125,11 +3125,14 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 			 * been detached following each other, one by one.
- 			 */
- 			queue_rcu_work(system_wq, &krwp->rcu_work);
--			queued = true;
- 		}
-+
-+		/* Repeat if any "free" corresponding channel is still busy. */
-+		if (krcp->bhead || krcp->head)
-+			repeat = true;
- 	}
- 
--	return queued;
-+	return !repeat;
- }
- 
- static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
--- 
-2.9.5
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/t.bTb4R9aiObfQs2q7bZVl/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7z/P0ACgkQAVBC80lX
+0GzqtggAhCC4k0Z3m35GbDRg7iW8yoeoyG5WHwIfVompDg7cqrbQs6XjVthYCghl
+B+/FDUDfo3wfGBy5PH1NdJRoZxwqYXWu69YvqA2jP+sNqDdsqu1uziKd2sDvthed
+FOEtxYWPYWQitRelIp2XF6T4K3wlsyP7nGZUUx987veQeL0Za8QFGln5LiGVywZr
+ZulkTHbDrMZBcDfUNjU4WHE1cVF0SfdwrknS7biVgJNtduBVVqCn3IVWJew3Z76R
+sv00DDNGe2FJiwvRPh48yXGjXLuDLFtJXnegEx2aojP8W/c09a5jsinmpnFRD70r
+O/xQWiHBqS8361DqqE09QtGStQFtpw==
+=/b6E
+-----END PGP SIGNATURE-----
+
+--Sig_/t.bTb4R9aiObfQs2q7bZVl/--
