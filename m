@@ -1,108 +1,129 @@
-Return-Path: <SRS0=cFCT=AH=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ktYI=AL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0023FC433E0
-	for <rcu@archiver.kernel.org>; Fri, 26 Jun 2020 14:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA1C2C433E0
+	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 16:45:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4FB7207D8
-	for <rcu@archiver.kernel.org>; Fri, 26 Jun 2020 14:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593181878;
-	bh=/kBNAzvVFhfi6jKdA/b/fP+qMcs9P70aySHGpjntgoU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=xrPGakMvtfX1zSKkVHiE3ojsgfJH4jrsCioQaE/dXqLLvKCMCK9tHKQewYT0FPdfe
-	 MuSufUZ07y/bGldnOIpT7fpxxwyumRS70u5CDfCzR/ZxUaB7jWAhEe9g3shvtQhqKd
-	 zuyAAwgTOxzqQE6AvxCEoHVuxTYll8TsB441I8rE=
+	by mail.kernel.org (Postfix) with ESMTP id 91F0120723
+	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 16:45:52 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gVLp5Z8j";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="whEEw8J5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725788AbgFZObS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 Jun 2020 10:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbgFZObS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 Jun 2020 10:31:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6196206DD;
-        Fri, 26 Jun 2020 14:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593181877;
-        bh=/kBNAzvVFhfi6jKdA/b/fP+qMcs9P70aySHGpjntgoU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=zhk5TC0u79WVwW3y79YHjBQVtTxhMpeq6glkB6pAHuSJC0RXIR0YgoBKG2yFQCGOG
-         6Ki44tLgLaJsnhSyGa5KqAlWRhqZtMwyn9QR/IrDU+n/TpDnyzyGnJqLVxaZb/euB1
-         i9i+/gz4Aqf+gWogZZR4uHItiXrtB9LHQq8g+OB0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AA7103522788; Fri, 26 Jun 2020 07:31:17 -0700 (PDT)
-Date:   Fri, 26 Jun 2020 07:31:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org, tglx@linutronix.de
-Cc:     peterz@infradead.org, x86@kernel.org, elver@google.com,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [GIT RFC PULL rcu/urgent] Fix noinstr warnings for KCSAN
-Message-ID: <20200626143117.GA1532@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200626041232.GA10544@paulmck-ThinkPad-P72>
+        id S2389488AbgF3Qpu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jun 2020 12:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbgF3Qpu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Jun 2020 12:45:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32134C061755
+        for <rcu@vger.kernel.org>; Tue, 30 Jun 2020 09:45:50 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 18:45:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593535545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WKzUY+hmQUu/W4w+kArUyMIrhlys8QtCqB3RBXTws4o=;
+        b=gVLp5Z8jdAB/EZKmgGSiSlpoIpwwchn9I2vLKuZ9KKWJjuDpll4+SWIihzscdnxaDZMqN4
+        MZceui4yk56Opq+OdBkC8mD4uLVyaHV4fIGeI/hvopvJgOHan8GcTzZ8G8MED4z5mxR87j
+        tMFcoRGBUXy3rvvFkt1k5QYFcCTYioWqGDwQPRdpIYBmd1EmtorPkFyhbsjDPscvqhiR+j
+        kz4VU4vIyc4XnWSYIqB/4/hl2J1ZAuxb30P+zc77TOnpuQEHcAWLNoeLLsEaA0ST0n59zc
+        igoYQ/coSbgHjr4a7Qnv0hgxri7sntKVFu020M2Cv4hYIzQqAL/2uI4IpjbmkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593535545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WKzUY+hmQUu/W4w+kArUyMIrhlys8QtCqB3RBXTws4o=;
+        b=whEEw8J5kOhJKqD0Lg6sELfcqODNNGzov72aoYNZiUGNWyKt7a7dsS8ttp2yBYb4OLe8ZP
+        aGZqRbaHEwEcnaDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     paulmck@kernel.org, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
+ allocator for PREEMPT_RT
+Message-ID: <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
+References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+ <20200624201226.21197-3-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200626041232.GA10544@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200624201226.21197-3-paulmck@kernel.org>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 09:12:32PM -0700, Paul E. McKenney wrote:
-> Hello!
+On 2020-06-24 13:12:12 [-0700], paulmck@kernel.org wrote:
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 > 
-> This pull request contains a single commit that uses "arch_" atomic
-> operations to avoid the instrumentation that comes with the non-"arch_"
-> versions.  In preparation for that commit, it also has another commit
-> that makes these "arch_" atomic operations available to generic code.
+> To keep the kfree_rcu() code working in purely atomic sections on RT,
+> such as non-threaded IRQ handlers and raw spinlock sections, avoid
+> calling into the page allocator which uses sleeping locks on RT.
 > 
-> Without these commits, KCSAN uses can see pointless errors.
+> In fact, even if the  caller is preemptible, the kfree_rcu() code is
+> not, as the krcp->lock is a raw spinlock.
 > 
-> This pull request is currently RFC pending ongoing -next testing.
+> Calling into the page allocator is optional and avoiding it should be
+> Ok, especially with the page pre-allocation support in future patches.
+> Such pre-allocation would further avoid the a need for a dynamically
+> allocated page in the first place.
+> 
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> Co-developed-by: Uladzislau Rezki <urezki@gmail.com>
+> Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 64592b4..dbdd509 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3184,6 +3184,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+>  		if (!bnode) {
+>  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+>  
+> +			/*
+> +			 * To keep this path working on raw non-preemptible
+> +			 * sections, prevent the optional entry into the
+> +			 * allocator as it uses sleeping locks. In fact, even
+> +			 * if the caller of kfree_rcu() is preemptible, this
+> +			 * path still is not, as krcp->lock is a raw spinlock.
+> +			 * With additional page pre-allocation in the works,
+> +			 * hitting this return is going to be much less likely.
+> +			 */
+> +			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +				return false;
 
-And it has now cleared a round of -next testing!  ;-)
+This is not going to work together with the "wait context validator"
+(CONFIG_PROVE_RAW_LOCK_NESTING). As of -rc3 it should complain about
+printk() which is why it is still disabled by default.
 
-						Thanx, Paul
+So assume that this is fixed and enabled then on !PREEMPT_RT it will
+complain that you have a raw_spinlock_t acquired (the one from patch
+02/17) and attempt to acquire a spinlock_t in the memory allocator.
 
-> This was not entirely free of drama, with Stephen needing to handle
-> a merge conflict:
-> 
-> https://lore.kernel.org/lkml/20200626131425.73ee4e27@canb.auug.org.au/
-> 
-> However, the resolution looks straightforward to me.  In addition,
-> these two commits pass rcutorture testing and associated KCSAN testing.
-> 
-> The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
-> 
->   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/urgent
-> 
-> for you to fetch changes up to b58e733fd774f3f4b49d9e7640d172a57e35200e:
-> 
->   rcu: Fixup noinstr warnings (2020-06-25 08:24:32 -0700)
-> 
-> ----------------------------------------------------------------
-> Peter Zijlstra (2):
->       locking/atomics: Provide the arch_atomic_ interface to generic code
->       rcu: Fixup noinstr warnings
-> 
->  include/linux/atomic-fallback.h       | 236 +++++++++++++++++++++++++++++++++-
->  include/linux/compiler.h              |   2 +-
->  kernel/rcu/tree.c                     |  32 ++++-
->  scripts/atomic/gen-atomic-fallback.sh |  31 +++++
->  4 files changed, 292 insertions(+), 9 deletions(-)
+>  			bnode = (struct kfree_rcu_bulk_data *)
+>  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+>  		}
+
+Sebastian
