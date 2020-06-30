@@ -2,144 +2,141 @@ Return-Path: <SRS0=ktYI=AL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C97B8C433E1
-	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 17:46:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9171FC433E1
+	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 18:35:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AEB642074D
-	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 17:46:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tjY1jjdE"
+	by mail.kernel.org (Postfix) with ESMTP id 7045A206C3
+	for <rcu@archiver.kernel.org>; Tue, 30 Jun 2020 18:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593542138;
+	bh=RYKTZT8L2YCF69DV1EdcAmR1v9iwHZlvoOwk9RIUBfI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=jPAlhHy1c/4JMgHxBQXmd4MJDc/LfsWcIdvKQj/LCoPptfvKmjGw34jXhrX/nm/+Y
+	 F1utDa3hgJQQPxBMB3RbtN++E/sdTqOL4XrCIgjvRVQ62WO6L9kKeBv/KAfSszoQPk
+	 ZyKv2HIYGWvGyIs9q4qpr3qN9M6Pe6FUlh5JITKU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgF3Rqy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 30 Jun 2020 13:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbgF3Rqx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 30 Jun 2020 13:46:53 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB00C061755;
-        Tue, 30 Jun 2020 10:46:53 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s9so23558703ljm.11;
-        Tue, 30 Jun 2020 10:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tjMV2HhxwqIY48F0IP3MOiKFidan1PF9zaHZx5HX7l0=;
-        b=tjY1jjdEVyJZGgANPC64TKpHUZrkSS8EEBBY/YSYskUqJ4iHiJyvY/SRKdbUQ+i8A6
-         mKZGquZKcCYFChv95JDvgtkN3ZV/xibcDqKYEEHIpMJi/A6cAJZGE6pZhE171nGMtmAA
-         nodVM9EiODNeIbtgN3HbrGNAFmMg6N/7B6AzBwFaweyZLIhRUFG+yAwcZWD13JLlh+i0
-         OZ1CEWk/Wj8zu1vB4nlqcy7Xn1NsxZjROarkiYk+/vU/ui4t6L9I0QuT/GLPP4zUT4cf
-         ZsQtGTxKQOVJoHF5wbc0na/+t70V/horF7+xmrRSJ+LCxEtZNCscsWvKeg5fkcmngreJ
-         JhPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tjMV2HhxwqIY48F0IP3MOiKFidan1PF9zaHZx5HX7l0=;
-        b=EWI5fQpaxAaujw/K+alYLCcPAVae6BxmveHPcs1us9GsKT4GcK2ArKl5fZducDhvHk
-         ss9/Q4/PdNK7NV47tuAjoSp6T/pacvuIQqscAVKSl7f9nc2lt3/gFBGHWC7lRfFdAsd1
-         bL1o9nKlnBQ+MEXZC+8KagjTCvsea5vr3THNFzckBeOf4PV68XaiEBoaAB7yWUP18Yx/
-         UmAr3oSlzDeKliaWa0q4ChDxK0pIiqXOGaEGYLDSmGEEMuuyvItJgGj7GPY/7c15ewT/
-         zOAXxDQJcflsnp6HblGVxKyYk7Ba54iFN0uaCGOWAjEnA3nHKxs+l4ODHCBVvDKEFqWw
-         V7UQ==
-X-Gm-Message-State: AOAM533Cwx9bCXDzDDy3J5lpcLyIDCEY8v1u/nO+rvHCKH2YWGTcqUca
-        Ppz5UPbVPXLWegLzmWnFHIbs1ScTaw+bhQ==
-X-Google-Smtp-Source: ABdhPJyeD0L2OQDPsATlLehiaJUOlO6qfctubWWbNJHqTUbySuntBVH0jItLh5nWGXKBUGu1EU7PZw==
-X-Received: by 2002:a2e:9b94:: with SMTP id z20mr9220985lji.404.1593539211578;
-        Tue, 30 Jun 2020 10:46:51 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id y24sm1042122lfy.49.2020.06.30.10.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 10:46:49 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 30 Jun 2020 19:46:47 +0200
-To:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-        vbabka@suse.cz, mhocko@suse.com
-Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200630174647.GA27057@pc636>
-References: <20200618183448.GA15136@pc636>
- <20200618190359.GU2723@paulmck-ThinkPad-P72>
- <20200618203557.GB16976@pc636>
- <20200618203821.GU8681@bombadil.infradead.org>
- <20200618211709.GA17263@pc636>
- <20200618213427.GV2723@paulmck-ThinkPad-P72>
- <20200619154652.GA19990@pc636>
- <20200619162555.GJ2723@paulmck-ThinkPad-P72>
- <20200622190406.GA3787@pc636>
- <20200622195329.GN9247@paulmck-ThinkPad-P72>
+        id S1731749AbgF3Sff (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 30 Jun 2020 14:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725963AbgF3Sff (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 30 Jun 2020 14:35:35 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A66392068F;
+        Tue, 30 Jun 2020 18:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593542134;
+        bh=RYKTZT8L2YCF69DV1EdcAmR1v9iwHZlvoOwk9RIUBfI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Jo7cYQcSnqavmJu3py5reMUEBjHqYsP72S5+fGaXFuuliQXf7MQYLdi8xzpH6+94s
+         yOpBKjGschI641wSf53+P5BFQnemkANvqB/pnhkl8YlF25Q+M5ykes5xA3/hcfIss2
+         1gLogO1nUHFCaKYCML6eGu8CDKtrccY50qPfZMmw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 74B173522640; Tue, 30 Jun 2020 11:35:34 -0700 (PDT)
+Date:   Tue, 30 Jun 2020 11:35:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
+ allocator for PREEMPT_RT
+Message-ID: <20200630183534.GG9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+ <20200624201226.21197-3-paulmck@kernel.org>
+ <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622195329.GN9247@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:53:29PM -0700, Paul E. McKenney wrote:
-> On Mon, Jun 22, 2020 at 09:04:06PM +0200, Uladzislau Rezki wrote:
-> > > > > 
-> > > > > Very good.  When does kfree_rcu() and friends move out of kernel/rcu?
-> > > > > 
-> > > > Do you mean to move the whole logic of kfree_rcu() from top to down to mm/?
-> > > 
-> > > I do mean exactly that.
-> > > 
-> > > That was my goal some years back when Rao Shoaib was making the first
-> > > attempt along these lines, and it remains my goal.  After all, if this
-> > > effort is at all successful, the coupling between kfree_rcu() with
-> > > slab/slob/slub will become much tighter than that between kfree_rcu()
-> > > and RCU.
-> > > 
-> > > There will need to be some additional RCU APIs used by kfree_rcu(),
-> > > for example, something to tell RCU how many blocks are awaiting a
-> > > grace period.  But these are narrow and easily defined APIs.
-> > >
-> > I also think that k[v]free_rcu() should reside somewhere under "mm/".
-> > Currently they are defined as macros under "linux/rcupdate.h". So i
-> > am not sure if definitions should stay there or moved also.
-> 
-> I am not as worried about the high-level macros as I am about the code
-> that does the bulk of the work, but they should still move as well.
-> Otherwise, changes involving both the macros and the underlying
-> implementation are harder than needed.
-> 
-> > Implementation of the k[v]free_rcu() is under rcu/tree.c and for tiny
-> > variant is under rcutiny.h. It can be moved to the mm/slab_common.c
-> > or independent files can be created. I think, mm people should consult
-> > what is the best way to go :)
+On Tue, Jun 30, 2020 at 06:45:43PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-06-24 13:12:12 [-0700], paulmck@kernel.org wrote:
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 > > 
-> > Any thoughts on it?
+> > To keep the kfree_rcu() code working in purely atomic sections on RT,
+> > such as non-threaded IRQ handlers and raw spinlock sections, avoid
+> > calling into the page allocator which uses sleeping locks on RT.
+> > 
+> > In fact, even if the  caller is preemptible, the kfree_rcu() code is
+> > not, as the krcp->lock is a raw spinlock.
+> > 
+> > Calling into the page allocator is optional and avoiding it should be
+> > Ok, especially with the page pre-allocation support in future patches.
+> > Such pre-allocation would further avoid the a need for a dynamically
+> > allocated page in the first place.
+> > 
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> > Co-developed-by: Uladzislau Rezki <urezki@gmail.com>
+> > Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tree.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 64592b4..dbdd509 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3184,6 +3184,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+> >  		if (!bnode) {
+> >  			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+> >  
+> > +			/*
+> > +			 * To keep this path working on raw non-preemptible
+> > +			 * sections, prevent the optional entry into the
+> > +			 * allocator as it uses sleeping locks. In fact, even
+> > +			 * if the caller of kfree_rcu() is preemptible, this
+> > +			 * path still is not, as krcp->lock is a raw spinlock.
+> > +			 * With additional page pre-allocation in the works,
+> > +			 * hitting this return is going to be much less likely.
+> > +			 */
+> > +			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +				return false;
 > 
-> I don't have any opinion on exactly where in mm the underlying
-> implementation code should go.  You suggestion of mm/slab_common.c
-> seems fine to me.  ;-)
+> This is not going to work together with the "wait context validator"
+> (CONFIG_PROVE_RAW_LOCK_NESTING). As of -rc3 it should complain about
+> printk() which is why it is still disabled by default.
+
+Fixing that should be "interesting".  In particular, RCU CPU stall
+warnings rely on the raw spin lock to reduce false positives due
+to race conditions.  Some thought will be required here.
+
+> So assume that this is fixed and enabled then on !PREEMPT_RT it will
+> complain that you have a raw_spinlock_t acquired (the one from patch
+> 02/17) and attempt to acquire a spinlock_t in the memory allocator.
+
+Given that the slab allocator doesn't acquire any locks until it gets
+a fair way in, wouldn't it make sense to allow a "shallow" allocation
+while a raw spinlock is held?  This would require yet another GFP_ flag,
+but that won't make all that much of a difference in the total.  ;-)
+
+							Thanx, Paul
+
+> >  			bnode = (struct kfree_rcu_bulk_data *)
+> >  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> >  		}
 > 
-OK :)
-
-Then i would like to hear an opinion from the "mm" people where
-kfree_rcu() and friends could potentially be moved.
-
-Matthew, Michal, Vlastimil could you please share your view?
-
-Thanks!
-
---
-Vlad Rezki
+> Sebastian
