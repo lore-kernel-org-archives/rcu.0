@@ -2,132 +2,121 @@ Return-Path: <SRS0=c9Wv=AN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4909BC433E0
-	for <rcu@archiver.kernel.org>; Thu,  2 Jul 2020 16:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B2BC433E0
+	for <rcu@archiver.kernel.org>; Thu,  2 Jul 2020 17:06:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 26C6920870
-	for <rcu@archiver.kernel.org>; Thu,  2 Jul 2020 16:48:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC8A120760
+	for <rcu@archiver.kernel.org>; Thu,  2 Jul 2020 17:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593708508;
-	bh=gWp3jFwoo4iUwOhF7lEopC3ZlQExz1kCNh2JXCd9Fcg=;
+	s=default; t=1593709565;
+	bh=or8Qpv+19yw15VzooHf8b1gkihnCUCJqFvQER+QDAzc=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=vZnV+AofNjtJs7y9EKaRfshCztgxjLIIF6daHyq5cIWnUecpCPCSRCkRshGOj2npT
-	 ZmFm4U8Q8x/huAnldbV0umxIXioAvJo3hT1n0s84fFsO4J6fMK1VNjlYHtwabF+HfO
-	 In5XiwegU4UqHSKX1wGwelbgL/U7L0Rt3ol6rGFs=
+	b=SzpbKTBcvfqbAl91dktmtY/oO7HNk5n2JP7JAkGzFNPcri2UTTmxnxvDRL0qWid2g
+	 ONP5zgwDPfmh/pbMNj+wDM4seA5nTYQO0i4OMK9iAA7T0r/96QnqGnQ3R7uqc8vF1N
+	 DSuZ3dV+f3LsDkYNw7+kTx1ASqZSmMPq18pfAcC0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgGBQs1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Jul 2020 12:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
+        id S1726733AbgGBRGF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Jul 2020 13:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgGBQs1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:48:27 -0400
+        id S1726726AbgGBRGF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:06:05 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2E362084C;
-        Thu,  2 Jul 2020 16:48:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E774220720;
+        Thu,  2 Jul 2020 17:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593708506;
-        bh=gWp3jFwoo4iUwOhF7lEopC3ZlQExz1kCNh2JXCd9Fcg=;
+        s=default; t=1593709564;
+        bh=or8Qpv+19yw15VzooHf8b1gkihnCUCJqFvQER+QDAzc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2b+9C9Nyes63VcSQV+cryOA7jsr1vqfWy4nwf81la+HGYN7YnBVUyFaf6P20GtKk1
-         qfbrvZKpCWKVPpdhe7T1sk4GaZ7M3aWrCUo//dt4fStvpVZzJQjJj9eUTdC4E4cdgV
-         77Xa30CfU8RtOF8TOrvOgs16YElPGsco2vw9q4vM=
+        b=ASiaWKOifENrKL6OMa9IRWWNSQ0ofxbwm3ZKGZTA5PjBMrXyF86Wm7ggWvYwxlW9x
+         Y8Hqs/8CF8CvnwgEOp9QwEeNLNYn5RUfYcSbk0jsPG55pIYmxWr6aUy36VbQazFkyd
+         snpsHpfxR+DT7TPaIw+p/vOMdBzV8NtaHwz08Xlg=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 909F435232F8; Thu,  2 Jul 2020 09:48:26 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 09:48:26 -0700
+        id CB0D13523164; Thu,  2 Jul 2020 10:06:04 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 10:06:04 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
- allocator for PREEMPT_RT
-Message-ID: <20200702164826.GQ9247@paulmck-ThinkPad-P72>
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: fix kerneldoc comments in rcuupdate.h
+Message-ID: <20200702170604.GT9247@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
- <20200624201226.21197-3-paulmck@kernel.org>
- <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
- <20200630183534.GG9247@paulmck-ThinkPad-P72>
- <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
+References: <20200702162557.30734-1-tklauser@distanz.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
+In-Reply-To: <20200702162557.30734-1-tklauser@distanz.ch>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 04:12:16PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-06-30 11:35:34 [-0700], Paul E. McKenney wrote:
-> > > This is not going to work together with the "wait context validator"
-> > > (CONFIG_PROVE_RAW_LOCK_NESTING). As of -rc3 it should complain about
-> > > printk() which is why it is still disabled by default.
-> > 
-> > Fixing that should be "interesting".  In particular, RCU CPU stall
-> > warnings rely on the raw spin lock to reduce false positives due
-> > to race conditions.  Some thought will be required here.
+On Thu, Jul 02, 2020 at 06:25:57PM +0200, Tobias Klauser wrote:
+> Fix the kerneldoc comments for rcu_read_unlock_bh(),
+> rcu_read_unlock_sched() and rcu_head_after_call_rcu() so they e.g. get
+> properly linked in the API documentation.
 > 
-> I don't get this part. Can you explain/give me an example where to look
-> at?
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-Starting from the scheduler-clock interrupt's call into RCU,
-we have rcu_sched_clock_irq() which calls rcu_pending() which
-calls check_cpu_stall() which calls either print_cpu_stall() or
-print_other_cpu_stall(), depending on whether the stall is happening on
-the current CPU or on some other CPU, respectively.
+The addition of the second "*" is clearly needed, good eyes and thank you!
+But where do these entries link to?  As in does adding the "()" link
+somewhere else, and if so, where?  If it instead links to the entry
+created by the corresponding docbook comment, is that really helpful?
 
-Both of these last functions acquire the rcu_node structure's raw ->lock
-and expect to do printk()s while holding it.
-
-Not that the lock matters all that much given that all of this code is
-in hardirq context.  Which is necessary if RCU CPU stall warnings are
-to be at all reliable.  Yeah, yeah, they would be even more reliable if
-invoked in NMI context but that would prevent them from acquiring the
-->lock that is used to resolve races between multiple concurrent stall
-warnings and between a stall warning and the end of that stall.  ;-)
-
-I could imagine accumulating the data in hardirq context and then
-using a workqueue or some such to print it all out, but that
-requires that workqueues be fully operational for RCU CPU stall
-warnings to appear.  :-(
-
-Thoughts?
-
-> > > So assume that this is fixed and enabled then on !PREEMPT_RT it will
-> > > complain that you have a raw_spinlock_t acquired (the one from patch
-> > > 02/17) and attempt to acquire a spinlock_t in the memory allocator.
-> > 
-> > Given that the slab allocator doesn't acquire any locks until it gets
-> > a fair way in, wouldn't it make sense to allow a "shallow" allocation
-> > while a raw spinlock is held?  This would require yet another GFP_ flag,
-> > but that won't make all that much of a difference in the total.  ;-)
-> 
-> That would be one way of dealing with. But we could go back to
-> spinlock_t and keep the memory allocation even for RT as is. I don't see
-> a downside of this. And we would worry about kfree_rcu() from real
-> IRQ-off region once we get to it.
-
-Once we get to it, your thought would be to do per-CPU queuing of
-memory from IRQ-off kfree_rcu(), and have IRQ work or some such clean
-up after it?  Or did you have some other trick in mind?
+What am I missing here?
 
 							Thanx, Paul
 
-> > > >  			bnode = (struct kfree_rcu_bulk_data *)
-> > > >  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > > >  		}
+> ---
+>  include/linux/rcupdate.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> Sebastian
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index d15d46db61f7..b47d6b66665e 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -709,8 +709,8 @@ static inline void rcu_read_lock_bh(void)
+>  			 "rcu_read_lock_bh() used illegally while idle");
+>  }
+>  
+> -/*
+> - * rcu_read_unlock_bh - marks the end of a softirq-only RCU critical section
+> +/**
+> + * rcu_read_unlock_bh() - marks the end of a softirq-only RCU critical section
+>   *
+>   * See rcu_read_lock_bh() for more information.
+>   */
+> @@ -751,10 +751,10 @@ static inline notrace void rcu_read_lock_sched_notrace(void)
+>  	__acquire(RCU_SCHED);
+>  }
+>  
+> -/*
+> - * rcu_read_unlock_sched - marks the end of a RCU-classic critical section
+> +/**
+> + * rcu_read_unlock_sched() - marks the end of a RCU-classic critical section
+>   *
+> - * See rcu_read_lock_sched for more information.
+> + * See rcu_read_lock_sched() for more information.
+>   */
+>  static inline void rcu_read_unlock_sched(void)
+>  {
+> @@ -945,7 +945,7 @@ static inline void rcu_head_init(struct rcu_head *rhp)
+>  }
+>  
+>  /**
+> - * rcu_head_after_call_rcu - Has this rcu_head been passed to call_rcu()?
+> + * rcu_head_after_call_rcu() - Has this rcu_head been passed to call_rcu()?
+>   * @rhp: The rcu_head structure to test.
+>   * @f: The function passed to call_rcu() along with @rhp.
+>   *
+> -- 
+> 2.27.0
+> 
