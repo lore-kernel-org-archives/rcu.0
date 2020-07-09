@@ -2,88 +2,70 @@ Return-Path: <SRS0=ITGo=AU=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DE32C433E0
-	for <rcu@archiver.kernel.org>; Thu,  9 Jul 2020 13:06:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B263DC433DF
+	for <rcu@archiver.kernel.org>; Thu,  9 Jul 2020 13:09:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 424E32076A
-	for <rcu@archiver.kernel.org>; Thu,  9 Jul 2020 13:06:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9CA212076A
+	for <rcu@archiver.kernel.org>; Thu,  9 Jul 2020 13:09:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgGINGC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Jul 2020 09:06:02 -0400
-Received: from sym2.noone.org ([178.63.92.236]:33192 "EHLO sym2.noone.org"
+        id S1726358AbgGINJz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Jul 2020 09:09:55 -0400
+Received: from sym2.noone.org ([178.63.92.236]:33974 "EHLO sym2.noone.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgGINGC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:06:02 -0400
+        id S1726320AbgGINJz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Jul 2020 09:09:55 -0400
 Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4B2byb5mjYzvjc1; Thu,  9 Jul 2020 15:05:59 +0200 (CEST)
+        id 4B2c355l5mzvjc1; Thu,  9 Jul 2020 15:09:53 +0200 (CEST)
+Date:   Thu, 9 Jul 2020 15:09:52 +0200
 From:   Tobias Klauser <tklauser@distanz.ch>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     rcu@vger.kernel.org
-Subject: [PATCH v2] rcu: fix kerneldoc comments in rcuupdate.h
-Date:   Thu,  9 Jul 2020 15:05:59 +0200
-Message-Id: <20200709130559.25588-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: fix kerneldoc comments in rcuupdate.h
+Message-ID: <20200709130952.o6huqi7s4ktmehhe@distanz.ch>
+References: <20200702162557.30734-1-tklauser@distanz.ch>
+ <20200702170604.GT9247@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702170604.GT9247@paulmck-ThinkPad-P72>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Fix the kerneldoc comments for rcu_read_unlock_bh(),
-rcu_read_unlock_sched() and rcu_head_after_call_rcu() so they e.g. get
-properly linked in the API documentation. Also add parenthesis after
-function names to match the notation used in other kerneldoc comments in
-the same file.
+Hi Paul
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
-v2: extend commit message to explain added "()" after functio  names
+On 2020-07-02 at 19:06:04 +0200, Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Thu, Jul 02, 2020 at 06:25:57PM +0200, Tobias Klauser wrote:
+> > Fix the kerneldoc comments for rcu_read_unlock_bh(),
+> > rcu_read_unlock_sched() and rcu_head_after_call_rcu() so they e.g. get
+> > properly linked in the API documentation.
+> > 
+> > Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> 
+> The addition of the second "*" is clearly needed, good eyes and thank you!
+> But where do these entries link to?  As in does adding the "()" link
+> somewhere else, and if so, where?  If it instead links to the entry
+> created by the corresponding docbook comment, is that really helpful?
+> 
+> What am I missing here?
 
- include/linux/rcupdate.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+I've sent v2 of the patch [1] which amends the commit message to mention
+which the "()" were added.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d15d46db61f7..b47d6b66665e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -709,8 +709,8 @@ static inline void rcu_read_lock_bh(void)
- 			 "rcu_read_lock_bh() used illegally while idle");
- }
- 
--/*
-- * rcu_read_unlock_bh - marks the end of a softirq-only RCU critical section
-+/**
-+ * rcu_read_unlock_bh() - marks the end of a softirq-only RCU critical section
-  *
-  * See rcu_read_lock_bh() for more information.
-  */
-@@ -751,10 +751,10 @@ static inline notrace void rcu_read_lock_sched_notrace(void)
- 	__acquire(RCU_SCHED);
- }
- 
--/*
-- * rcu_read_unlock_sched - marks the end of a RCU-classic critical section
-+/**
-+ * rcu_read_unlock_sched() - marks the end of a RCU-classic critical section
-  *
-- * See rcu_read_lock_sched for more information.
-+ * See rcu_read_lock_sched() for more information.
-  */
- static inline void rcu_read_unlock_sched(void)
- {
-@@ -945,7 +945,7 @@ static inline void rcu_head_init(struct rcu_head *rhp)
- }
- 
- /**
-- * rcu_head_after_call_rcu - Has this rcu_head been passed to call_rcu()?
-+ * rcu_head_after_call_rcu() - Has this rcu_head been passed to call_rcu()?
-  * @rhp: The rcu_head structure to test.
-  * @f: The function passed to call_rcu() along with @rhp.
-  *
--- 
-2.27.0
+[1] https://lore.kernel.org/rcu/20200709130559.25588-1-tklauser@distanz.ch/
 
+As noted in the previous message [2], adding the "()" doesn't change
+anything with regards to whether a link gets created and where it points
+to. Thus, I mentiond in the v2 commit message that this is only for
+consistency with kerneldoc comments of other functions in the same file.
+
+[2] https://lore.kernel.org/rcu/20200702194306.uc4sumrk7ahuk23l@distanz.ch/
+
+Thanks
+Tobias
