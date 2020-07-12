@@ -2,115 +2,111 @@ Return-Path: <SRS0=XlIL=AX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D9CC433E5
-	for <rcu@archiver.kernel.org>; Sun, 12 Jul 2020 13:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8205EC433E2
+	for <rcu@archiver.kernel.org>; Sun, 12 Jul 2020 16:09:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7304420674
-	for <rcu@archiver.kernel.org>; Sun, 12 Jul 2020 13:10:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDx8EbSN"
+	by mail.kernel.org (Postfix) with ESMTP id 5872A2068F
+	for <rcu@archiver.kernel.org>; Sun, 12 Jul 2020 16:09:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1594570153;
+	bh=IjxKA104PBTV6rYMTFQjKnY3pbyLHFYG4ujpSbcRzzM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=FRpi48ifK/i2EQ/JRX8BBvB+6YRKBAaZWpd43ntAdr6caRMtb7g6A3TazZeX4nraK
+	 T3/MgSdtd44mIRTiLndmEuo9eY8W4AMz77etnKB8Vv/WbfA8mCp/+zJkFVfP1c2X6d
+	 NyC+lnHsJXCpkUDoGOIBIrD9u+pZdLrYq5ySCTTo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgGLNK3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 12 Jul 2020 09:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728857AbgGLNK1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 12 Jul 2020 09:10:27 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36DCC061794;
-        Sun, 12 Jul 2020 06:10:27 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x72so4784506pfc.6;
-        Sun, 12 Jul 2020 06:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QlHdcq1NMFZUiVr/PWZTQMUwB+nApvKctneHSUoV9JI=;
-        b=CDx8EbSNzRbyCNhyw7LW1mm97sOqmMXjqAFWs4mxTiPuHBDb0GM1lk1UwKagomOVR5
-         pFVN5rAHmjjq0wHMbWdUctDF6J0OpGVsK21gv74z/DHVdqRe5Cv0V4OkzuaqOKRu0VDc
-         3tUtThRmTJNUYnY/olbPHMAUcalI2BDfArzx0sfEk26J8q21cHTwII/j0FwMwPCBNZyy
-         7ACuD6Ua+HhLe4dh9NmV0YWtHilYo+WvHMXXGIr8Lu3Sy7gHi1RC4Q8ehTMGvQ3DJq6+
-         hMcnS9E7DoQ/qiqvzI58Ye1eQ5fc2U3FyqXTfIRE+TQCDhRH6S7kaOUDIz8tmxyAaN2k
-         yCkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QlHdcq1NMFZUiVr/PWZTQMUwB+nApvKctneHSUoV9JI=;
-        b=BXGEm/TW7bWqZ8wZO/nYWXPy420IVu7s/mFp0HvEiYg8W4omPnY06C5Ps72oJ9CUI0
-         Qbqw8zvFEerjLWDJ6ansvx4vRa2Tj4mEJLI9Modox69LvmM3Dpix/ZiXlQuyFAtcz1Ve
-         izCZIg2C/1s4ATsIx+s28gdkaSiPe1N/c+8/IJIigfKD6UWcbzvVNb+GvUIk6bf2WWjj
-         AYv98ymZtz8vLYAJ4Ab+nDCtCl8ZdsGGo4fZcAktKo8d5HfoK6qoEJhI3HSitXHEoHM7
-         IDZIeMGgBwYv/svo8bgNv/Iwk06L2yQ2vyX4zO+g8xF9//UxenBv3sGi0ubzIIMZaUtQ
-         Z/eQ==
-X-Gm-Message-State: AOAM533DkuRoVrjx+dISyVlzc67zyclnv77C9Dhk6tTYipDNDhyqDmy9
-        5BaYaZNrNzFawgf5nabfzg==
-X-Google-Smtp-Source: ABdhPJzGCWqeGrl0pmni+0aENWLJwun+oPUDiRCIjS3IwjlN3XTVOCk6hJo4EVWSlnu21qMCqiR/Cg==
-X-Received: by 2002:a62:b413:: with SMTP id h19mr17778687pfn.142.1594559427253;
-        Sun, 12 Jul 2020 06:10:27 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4071:200a:9520:4919:edd3:5dbd:ffec])
-        by smtp.gmail.com with ESMTPSA id q24sm12093014pfg.95.2020.07.12.06.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 06:10:26 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     paulmck@kernel.org, josh@joshtriplett.org, joel@joelfernandes.org,
-        pbonzini@redhat.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        kvm@vger.kernel.org, frextrite@gmail.com,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-Date:   Sun, 12 Jul 2020 18:40:03 +0530
-Message-Id: <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+        id S1728942AbgGLQI5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 12 Jul 2020 12:08:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728844AbgGLQI4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 12 Jul 2020 12:08:56 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3176820702;
+        Sun, 12 Jul 2020 16:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594570136;
+        bh=IjxKA104PBTV6rYMTFQjKnY3pbyLHFYG4ujpSbcRzzM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PP9B2G7OaMHY9x0QwoC8yRG5NYPF0b+HiNfn4yoO7QJL9aNOrpN3gVHmBDKGys1xj
+         aFEB3n1dMxVoqWZTg74k6j+2i+MRjdavFrMwxE3fK+vpLilB/nP034ZbVqjts96dXK
+         R6O9Lfaga6TGbp6+Wht6LXiZGWrEH0g8r4tPQ45g=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1753E3522A6D; Sun, 12 Jul 2020 09:08:56 -0700 (PDT)
+Date:   Sun, 12 Jul 2020 09:08:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     madhuparnabhowmik10@gmail.com
+Cc:     josh@joshtriplett.org, joel@joelfernandes.org, pbonzini@redhat.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        kvm@vger.kernel.org, frextrite@gmail.com
+Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
+Message-ID: <20200712160856.GW9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+ <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Sun, Jul 12, 2020 at 06:40:03PM +0530, madhuparnabhowmik10@gmail.com wrote:
+> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> 
+> Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
+> as it also checkes if the right lock is held.
+> Using hlist_for_each_entry_rcu() with a condition argument will not
+> report the cases where a SRCU protected list is traversed using
+> rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
+> 
+> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
-as it also checkes if the right lock is held.
-Using hlist_for_each_entry_rcu() with a condition argument will not
-report the cases where a SRCU protected list is traversed using
-rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
+I queued both for testing and review, thank you!
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- arch/x86/kvm/mmu/page_track.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+In particular, this one needs an ack by the maintainer.
 
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index a7bcde34d1f2..a9cd17625950 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
- 		return;
- 
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_write)
- 			n->track_write(vcpu, gpa, new, bytes, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
-@@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 		return;
- 
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_flush_slot)
- 			n->track_flush_slot(kvm, slot, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
--- 
-2.17.1
+							Thanx, Paul
 
+> ---
+>  arch/x86/kvm/mmu/page_track.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> index a7bcde34d1f2..a9cd17625950 100644
+> --- a/arch/x86/kvm/mmu/page_track.c
+> +++ b/arch/x86/kvm/mmu/page_track.c
+> @@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
+>  		return;
+>  
+>  	idx = srcu_read_lock(&head->track_srcu);
+> -	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
+> +	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
+> +				srcu_read_lock_held(&head->track_srcu))
+>  		if (n->track_write)
+>  			n->track_write(vcpu, gpa, new, bytes, n);
+>  	srcu_read_unlock(&head->track_srcu, idx);
+> @@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+>  		return;
+>  
+>  	idx = srcu_read_lock(&head->track_srcu);
+> -	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
+> +	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
+> +				srcu_read_lock_held(&head->track_srcu))
+>  		if (n->track_flush_slot)
+>  			n->track_flush_slot(kvm, slot, n);
+>  	srcu_read_unlock(&head->track_srcu, idx);
+> -- 
+> 2.17.1
+> 
