@@ -2,138 +2,120 @@ Return-Path: <SRS0=oPal=A3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32C06C433DF
-	for <rcu@archiver.kernel.org>; Thu, 16 Jul 2020 14:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB54C433E0
+	for <rcu@archiver.kernel.org>; Thu, 16 Jul 2020 14:47:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0E65C20825
-	for <rcu@archiver.kernel.org>; Thu, 16 Jul 2020 14:45:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56E02206F5
+	for <rcu@archiver.kernel.org>; Thu, 16 Jul 2020 14:47:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GEjIqLiP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="s0u/HAsC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgGPOpL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Jul 2020 10:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S1726963AbgGPOrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Jul 2020 10:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgGPOpI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:45:08 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA6DC08C5CE
-        for <rcu@vger.kernel.org>; Thu, 16 Jul 2020 07:45:08 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q4so7503562lji.2
-        for <rcu@vger.kernel.org>; Thu, 16 Jul 2020 07:45:08 -0700 (PDT)
+        with ESMTP id S1728150AbgGPOrc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Jul 2020 10:47:32 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6023AC061755;
+        Thu, 16 Jul 2020 07:47:32 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q7so7506110ljm.1;
+        Thu, 16 Jul 2020 07:47:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KEqbgXg5bolFCkaEREfRLUaB6wjIdNl0kMgYuxyNxpI=;
-        b=GEjIqLiPxGWf30Xto3dr/VRzc+jve2MqdPGTM9sUQj6SX8bHj0uzqXyVE5K8msut3n
-         LcgTNQNJqtw7IemIFS+OMy8vmAQJCY2yQD7IgTshitTlPFcWnVmsuYJ0Z2hDwfzIKbUJ
-         cKheZtsoJichKATZ899iNX3ePelWfAebfy3ARo5wiIs/R4Ud+5wEUK8+rmEAaUYXT4EQ
-         dVl7m668gegN7uHOzqeusAgXDr24DBP48h/z5g7LjaM5rNfYR1pD6vD7nw/+P7k2Db7a
-         4tu57r9py1rEFDd2fujZs9B4aNhKOTlR4jVM85AT7LS+H2TzMmskAYFNea1MPtilOpHP
-         uxxQ==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZK+12jCm5MTg9xTYbE2yZv4zQUftKp93X+3l7pCSao4=;
+        b=s0u/HAsCNUtZR50BTvHEvUbFZTcNF5MMv/OtOPlBrTusN+bAJzQ6jwX8yWN292TZUJ
+         hvy6W37KFJgsC0GfRQuFT+npoqDJajMcD1xyOnAb66OCFeioKWl7V9UoQSiue+Zg0rl9
+         uF9Cj0VICMZot1rrggzjhl+haD44TvEQ364maW3y3yK9kpfEv4AapC2UKYXj7Cu2ZB9R
+         MY7c0SuMOqSXHw+SptBOs+TlgSI2rOMcYO0qctkPJMkNhG66ZbqA+qIto+uZ07Yf2c/E
+         dYtqXhY2dr5Gv0FOvfyu4qGnv5Y6x/PdR2f4efTbkUlQcmGhgSFPioOom1xtNNEghyXB
+         SPwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KEqbgXg5bolFCkaEREfRLUaB6wjIdNl0kMgYuxyNxpI=;
-        b=hs8lTAW6EAWLCcCKiqllo2xfl/U/iBgKcKzkNR8B4JGqe5vSfI/5CZ0XxEJGSAytgO
-         uV99MqmLn0nmO3KucO//pLhfJfpvIILgomN3NrLVN/Atqe7AwLW4gqT0ONQFouHwbd8M
-         mp3fVci5cX/dXitThUmBwR9AP4Ni5lxv6VKUcS4crix3BqAtH7/RWbW8C/OVDlMk6eZa
-         9tdHXCrsOfEEbh4LgZOhDIrE1+8E7qeiLY6gOvO0UaoomCYB1c/fyefRGOg2xQT0i9Rv
-         sUHtQFi+KOpLBF8K7j0gIsRmpBxRc5sd++fQxvmPQ8g56Ujs3zCZlz8mgi3lAxBPiotF
-         xHPw==
-X-Gm-Message-State: AOAM532t5Xqzh6l7OoSs+tdNqyEZQYxfq2x15u2/+ubhy3TFstxC9qDT
-        UB2qkt6v+3SSJM1cpEYyaigM+GF00mWVjzgKh+0zgA==
-X-Google-Smtp-Source: ABdhPJwJEhKsmRxsAvPniebMSKL4vf5R0zcd380KCBeBrDwpEZAgDNUsbbYigJ6CStV4ZzKU0+7UrLBBBKm2jdUPO50=
-X-Received: by 2002:a2e:b054:: with SMTP id d20mr2073091ljl.55.1594910706505;
- Thu, 16 Jul 2020 07:45:06 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZK+12jCm5MTg9xTYbE2yZv4zQUftKp93X+3l7pCSao4=;
+        b=fkfKWCBObHrEoclvDvUvlRx+hVZizavhj3+vVljVDiEg17AB3y1a0MYdUy2Eh83PJX
+         dSTRm6PV4SmAl80owRkGJtxc2WrgdKb5n5giDhttFJQ6y6zLsPL/5+GuVxiKw9+RW7Av
+         zQrk8GrwE9L1w2CElEg1i3lDNOuV1HQYFhbwez82LlhNVQ5QweMkJbt4gSACiAgxFbfp
+         j2nqoPrLfqNs8yGlgKbM1M2v9nwJchzS29IWuFBATwOZApTNMT7Tn5aX8qRO0+ightng
+         WVLhV1V/wS2++CeX00Qoh1mHBki0b1YoP0J8LxqvY1lozBdabNXQFOKMEFnq1U47r3w6
+         giRw==
+X-Gm-Message-State: AOAM530udnB8lLkDYAL1LpDuql6qDc0ftT53Fdx36wsfe96R3HGeCGle
+        6oBx1/vZ02HoeQVht1NNgHs=
+X-Google-Smtp-Source: ABdhPJw7FKB1H+uh2YcUwLfPEd3YRdVWzZdnBADWD+s29180OuS+ew/Uqhk6AcX0ISyzUJDeBtHMGA==
+X-Received: by 2002:a2e:961a:: with SMTP id v26mr2323209ljh.467.1594910850791;
+        Thu, 16 Jul 2020 07:47:30 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id m1sm1224034lfa.22.2020.07.16.07.47.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 07:47:30 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 16 Jul 2020 16:47:28 +0200
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/1] rcu/tree: Drop the lock before entering to page
+ allocator
+Message-ID: <20200716144728.GA31046@pc636>
+References: <20200715183537.4010-1-urezki@gmail.com>
+ <20200715185628.7b4k3o5efp4gnbla@linutronix.de>
+ <CAEXW_YRoTvQfqqcM9fi+MkMxCPEaoJh4zHRM3qNYkv=-nAVuBQ@mail.gmail.com>
+ <20200716091913.GA28595@pc636>
+ <20200716142537.ecp4icsq7kg6qhdx@linutronix.de>
 MIME-Version: 1.0
-References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
- <20200712131003.23271-2-madhuparnabhowmik10@gmail.com> <20200712160856.GW9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200712160856.GW9247@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 16 Jul 2020 20:14:54 +0530
-Message-ID: <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-To:     madhuparnabhowmik10@gmail.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     josh@joshtriplett.org, Joel Fernandes <joel@joelfernandes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        frextrite@gmail.com, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716142537.ecp4icsq7kg6qhdx@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 12 Jul 2020 at 21:39, Paul E. McKenney <paulmck@kernel.org> wrote:
+On Thu, Jul 16, 2020 at 04:25:37PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-07-16 11:19:13 [+0200], Uladzislau Rezki wrote:
+> > Sebastian, could you please confirm that if that patch that is in
+> > question fixes it?
+> > 
+> > It would be appreciated!
+> 
+> So that preempt disable should in terms any warnings. However I don't
+> think that it is strictly needed and from scheduling point of view you
+> forbid a CPU migration which might be good otherwise.
 >
-> On Sun, Jul 12, 2020 at 06:40:03PM +0530, madhuparnabhowmik10@gmail.com wrote:
-> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> >
-> > Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
-> > as it also checkes if the right lock is held.
-> > Using hlist_for_each_entry_rcu() with a condition argument will not
-> > report the cases where a SRCU protected list is traversed using
-> > rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
-> >
-> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
->
-> I queued both for testing and review, thank you!
->
-> In particular, this one needs an ack by the maintainer.
->
->                                                         Thanx, Paul
->
-> >  arch/x86/kvm/mmu/page_track.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> > index a7bcde34d1f2..a9cd17625950 100644
-> > --- a/arch/x86/kvm/mmu/page_track.c
-> > +++ b/arch/x86/kvm/mmu/page_track.c
-> > @@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
-> >               return;
-> >
-> >       idx = srcu_read_lock(&head->track_srcu);
-> > -     hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-> > +     hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-> > +                             srcu_read_lock_held(&head->track_srcu))
+Please elaborate your point regarding "i do not think it is strictly needed".
 
-x86 build failed on linux -next 20200716.
+Actually i can rework the patch to remove even such preempt_enable/disable
+to stay on the same CPU, but i do not see the point of doing it.
 
-arch/x86/kvm/mmu/page_track.c: In function 'kvm_page_track_write':
-include/linux/rculist.h:727:30: error: left-hand operand of comma
-expression has no effect [-Werror=unused-value]
-  for (__list_check_srcu(cond),     \
-                              ^
-arch/x86/kvm/mmu/page_track.c:232:2: note: in expansion of macro
-'hlist_for_each_entry_srcu'
-  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-  ^~~~~~~~~~~~~~~~~~~~~~~~~
-arch/x86/kvm/mmu/page_track.c: In function 'kvm_page_track_flush_slot':
-include/linux/rculist.h:727:30: error: left-hand operand of comma
-expression has no effect [-Werror=unused-value]
-  for (__list_check_srcu(cond),     \
-                              ^
-arch/x86/kvm/mmu/page_track.c:258:2: note: in expansion of macro
-'hlist_for_each_entry_srcu'
-  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-  ^~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[3]: *** [arch/x86/kvm/mmu/page_track.o] Error 1
+Do you see the point?
 
-build link,
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-lkft/815/consoleText
+As for scheduling point of view. Well, there are many places when there
+is a demand in memory or pages from atomic context. Also, getting a page
+is not considered as a hot path in the kfree_rcu(). 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+>
+> Also if interrupts and everything is enabled then someone else might
+> invoke kfree_rcu() from BH context for instance.
+> 
+And what? What is a problem here, please elaborate if you see any
+issues.
+
+--
+Vlad Rezki
