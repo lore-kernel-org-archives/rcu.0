@@ -1,71 +1,51 @@
-Return-Path: <SRS0=0hMd=A4=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ruEF=A5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 892A7C433E5
-	for <rcu@archiver.kernel.org>; Fri, 17 Jul 2020 19:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70D83C433E1
+	for <rcu@archiver.kernel.org>; Sat, 18 Jul 2020 00:13:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 688062064C
-	for <rcu@archiver.kernel.org>; Fri, 17 Jul 2020 19:05:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UMpy7eBg"
+	by mail.kernel.org (Postfix) with ESMTP id 474C120829
+	for <rcu@archiver.kernel.org>; Sat, 18 Jul 2020 00:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595031201;
+	bh=6U990pCrqx8gF6az8xcughhGYyeg5SgkZ15i21TePlc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=IasGGMWUFocVcF0Nei8InIdO/5yh14yLe1jq4gUL3HnfbR9vTER+G8hMWkYMifGMK
+	 kDHFZF1miXUyn09Ma+ALUjCwbRBHRDnYoqYCj/ZERBfuNnGa26w7sCJMnIM+6KtDSF
+	 XAHV51bM6vUMjrmzMSymCcVlLG4xmnrguXHu6jP4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgGQTFc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Jul 2020 15:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728453AbgGQTF1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Jul 2020 15:05:27 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13721C0619D3
-        for <rcu@vger.kernel.org>; Fri, 17 Jul 2020 12:05:27 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h22so13868925lji.9
-        for <rcu@vger.kernel.org>; Fri, 17 Jul 2020 12:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EHhwNWLvCGKwFX6ZeCk25F8g9x2pupMKT7Bn+2O6siI=;
-        b=UMpy7eBg0VQk13Zh0CsA8daqqCqMYLR/yLgZvVSL0lJ8/e5Ix44NjgigL3+q8XJArC
-         +CoZF6icBgyJrPruDpKiDqs3SPz2T9oivrXhdcRHtNzZ1eOY09EfmGogrMEiKoqjN8Tf
-         QfSD4InjPcIuMhztE9TSwtLzGwGlEqO2hK1TlNN3tpgoD/IpL93Q8TOpldntF8RTIa9i
-         C8ukkczG2UxL4WrwjzmXVCfquGoET/KgUjsKal4Q1IavPiGqE2sp7z7Ky8vMrNAWrbHJ
-         dh1pCRPAhK/qgJYywFwZzK5mejpW5pcI+fhWKbs7znm9DT4r7gpOB4C5y4W8oNfI1t7j
-         EZsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EHhwNWLvCGKwFX6ZeCk25F8g9x2pupMKT7Bn+2O6siI=;
-        b=bjz0pIl0JJBwPgz8hajSAxlOc8V1fUI2hqJpJs/5tgJVgTKX7wR0u3bJqa16OgTmAz
-         hfYNNdeTfhjYb7jFWmXa6zcCwXVa6X8fF4fbs+7y8RoH4Jl5BdPl0FGsx0781qVtViNN
-         PtYYPM/46H/xz0TdAYieUPbjl+Sjm+X5aaHdSJwcXcYBdjj47rbokpaE/3cgZp1c0Iwt
-         as0T+2VH2MGjH0eMWWHrfDJr12F5KyRrR93Z0qkvDHP+NAfeTZgXq4V5eYEzu0WVoOdB
-         UlL4i5pWjbD98WQkQaIf/Mlemv+lPl9dCHokrF5RJQCD2KZP7HXCyszl74uZV9BNqyzI
-         IHcw==
-X-Gm-Message-State: AOAM5309YGV81u+HYg+SmTjW8OKScxOpO+R11s6YeCjOM7Q65oc5lZIr
-        nleJouyn1foldcYTzg4FeReeA48YjaoAYCwPw1ApfA==
-X-Google-Smtp-Source: ABdhPJzA2lclNj5LaSPAOhsYYmx7y36gm/usqNFraHHlhKV4rNqxpPH0IXWB5YiqK4pOf3QGE+Q7RO/aAlHNo2NWhrU=
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr4877549ljj.102.1595012725372;
- Fri, 17 Jul 2020 12:05:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
- <20200712131003.23271-2-madhuparnabhowmik10@gmail.com> <20200712160856.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
- <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com> <20200717170747.GW9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200717170747.GW9247@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 18 Jul 2020 00:35:12 +0530
-Message-ID: <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        madhuparnabhowmik10@gmail.com
-Cc:     Dexuan-Linux Cui <dexuan.linux@gmail.com>,
+        id S1727981AbgGRANA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Jul 2020 20:13:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727946AbgGRANA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Jul 2020 20:13:00 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C18C520768;
+        Sat, 18 Jul 2020 00:12:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595031179;
+        bh=6U990pCrqx8gF6az8xcughhGYyeg5SgkZ15i21TePlc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=yoIF14ITjXcQAKyJR8qBJ+VnsYRCwcHRgk0ySLlYAHyhDb17CruZQZJHiMzxYfLYv
+         Tibk3rxtm5JiGHKxsHN0hAsylHTl2kKVVDs0aJzcIZJj5pkmSNzXyZHWjra9Mzw3FF
+         T1Fy4GNLH5f8r60NTY29YCBd7U6pP5XlA8FqiALQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A6BB035231DA; Fri, 17 Jul 2020 17:12:59 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 17:12:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     madhuparnabhowmik10@gmail.com,
+        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
@@ -73,80 +53,52 @@ Cc:     Dexuan-Linux Cui <dexuan.linux@gmail.com>,
         X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
         frextrite@gmail.com, lkft-triage@lists.linaro.org,
         Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
+Message-ID: <20200718001259.GY9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
+ <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
+ <20200712160856.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
+ <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
+ <20200717170747.GW9247@paulmck-ThinkPad-P72>
+ <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
+> Hi Paul,
+> 
+> > I am not seeing this here.
+> 
+> Do you notice any warnings while building linux next master
+> for x86_64 architecture ?
 
-> I am not seeing this here.
+Idiot here was failing to enable building of KVM.  With that, I do see
+the error.  The patch resolves it for me.  Does it help for you?
 
-Do you notice any warnings while building linux next master
-for x86_64 architecture ?
+							Thanx, Paul
 
-> Could you please let us know what compiler
-> and command-line options you are using to generate this?
+------------------------------------------------------------------------
 
-We have two build systems one showing it as error and build breaks
-and another one showing it as warning and build pass.
-tool chain: gcc 9.3.0
-build command:
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dx86 HOSTCC=3Dgcc
-CC=3D"sccache gcc" O=3Dbuild
-
-metadata:
-    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
-xt.git,
-    target_arch: x86,
-    toolchain: gcc-9,
-    git_short_log: aab7ee9f8ff0 (\Add linux-next specific files for 2020071=
-7\),
-    git_sha: aab7ee9f8ff0110bfcd594b33dc33748dc1baf46,
-    git_describe: next-20200717,
-    kernel_version: 5.8.0-rc5,
-
-warning log,
---
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dx86 HOSTCC=3Dgcc
-CC=3D"sccache gcc" O=3Dbuild
-#
-In file included from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../include/linux/kvm_host.h:12,
-                 from ../arch/x86/kvm/mmu/page_track.c:14:
-../arch/x86/kvm/mmu/page_track.c: In function =E2=80=98kvm_page_track_write=
-=E2=80=99:
-../include/linux/rculist.h:727:30: warning: left-hand operand of comma
-expression has no effect [-Wunused-value]
-  727 |  for (__list_check_srcu(cond),     \
-      |                              ^
-../arch/x86/kvm/mmu/page_track.c:232:2: note: in expansion of macro
-=E2=80=98hlist_for_each_entry_srcu=E2=80=99
-  232 |  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
-../arch/x86/kvm/mmu/page_track.c: In function =E2=80=98kvm_page_track_flush=
-_slot=E2=80=99:
-../include/linux/rculist.h:727:30: warning: left-hand operand of comma
-expression has no effect [-Wunused-value]
-  727 |  for (__list_check_srcu(cond),     \
-      |                              ^
-../arch/x86/kvm/mmu/page_track.c:258:2: note: in expansion of macro
-=E2=80=98hlist_for_each_entry_srcu=E2=80=99
-  258 |  hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
-arch/x86/kvm/svm/svm.o: warning: objtool: svm_flush_tlb_gva()+0x12:
-call without frame pointer save/setup
-kernel/bpf/core.o: warning: objtool: ___bpf_prog_run.cold()+0x7: call
-without frame pointer save/setup
-
-ref:
-https://gitlab.com/Linaro/lkft/kernel-runs/-/jobs/643978120
-
-
->                                                         Thanx, Paul
-
-- Naresh
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index de9385b..f8633d3 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+ #define __list_check_rcu(dummy, cond, extra...)				\
+ 	({ check_arg_count_one(extra); })
+ 
+-#define __list_check_srcu(cond) true
++#define __list_check_srcu(cond) ({ })
+ #endif
+ 
+ /*
