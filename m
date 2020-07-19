@@ -2,120 +2,104 @@ Return-Path: <SRS0=SldO=A6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D93DEC433E2
-	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 12:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA57BC433E1
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 16:07:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B57F1207DD
-	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 12:22:59 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z3NKGYHb"
+	by mail.kernel.org (Postfix) with ESMTP id B477A21741
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 16:07:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595174868;
+	bh=2BfF/nA6ErAFY5oFLxZej205Ou61k5E8QwnjkOKRk+0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=1wYeyuerTCLMfkJAhRCAFb+/bFx8mikdrUwto7u0i+mCD4na55FKNkAot1wov16lp
+	 EFEN6qMPG/OjVyph6zg4cFCcgj4mWqNqqwqBvMV4IPmYrLIVOMDJIMZJPt5xC38N5I
+	 2Nm+FeqDlve9b2aTr/FOoR7yUbNZYd0bW9UscBNQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgGSMW7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 19 Jul 2020 08:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgGSMW6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 19 Jul 2020 08:22:58 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844DBC0619D4
-        for <rcu@vger.kernel.org>; Sun, 19 Jul 2020 05:22:58 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id k17so8329151lfg.3
-        for <rcu@vger.kernel.org>; Sun, 19 Jul 2020 05:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WujZ/7jho1fGoHN1cxPxG4EtZF1JYD29nSTtD3mfiTI=;
-        b=Z3NKGYHbByVNND6TEr1PvZw2+i2FuU6IdWaDdBS6ScSxzk5cjT//fNt1hUxNDPkSw0
-         FXuLvFP9PwMdml6Sxti2Ms5+ap+rwrp95GzzTfaUN3h7s4l7PLxO22xQI24VdT9fJp/2
-         P1jp4fIfcrdi0oVjI4lt45ERxxj/h0G77Mq5bz6/lZ4hZ1mgUHbafiwHqCgwIEU1g+uK
-         Cmv02LKa+rghpupsCicTz3ERrUIAWPN7o4y9twvr7m7fGqOvcN9KAkpYp3UsgdhXqb5I
-         u6maFfi/l0T7pjjrEDcxAzOTdEZ8Pv8HMOVAikbQ1XukhxEataY0hsp0F3yzX1pu2Zrc
-         9wnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WujZ/7jho1fGoHN1cxPxG4EtZF1JYD29nSTtD3mfiTI=;
-        b=k6N+Kp8Ob9r00vz21PeH6f0BQhT+NO/LhXbHlWX6/ctpz6SsqSAFyXFx32PL/tLPUn
-         2HyMT/kWpkD+3UUYNbTcfUTKyFt+540d92QJFuHPpWknb/OBE7kdEPJ33ZHCAsEd74RS
-         fxyqei2vZtdpi0aWkWhwWyaeORyV0ckSUmGxBwgUmWhUnvkTgDzQOK5HKea6fJaq19I5
-         WsX6N+6V7sAOcBrzFK3l7CyIgQZdxh+BI+26r0rhXtoJOJiMbKKw2D8OqnPmom+df8sb
-         L+dutxr8VRe9ynASv7BSaYZ5ct39Oz/RINJ7yneiK9s4X5wfYa/k1fZt9chgHIjKSXhf
-         30Zw==
-X-Gm-Message-State: AOAM532W40snvOs6Beln1YAogBglkvSs7ag3XtrZepVL9VdQ9qC3vNqD
-        GpTmXO5csc5or8c5nFWi9fu0T1jTDnRgK1u1sKrAOA==
-X-Google-Smtp-Source: ABdhPJy6emGfmf/9lRBLLDOFNbaaEr1iR97/eYQylRnx0qjqmuhyKlX/PtXMK8DwtCQ71KPW+GxR2WtI7IlzFc5AD9Y=
-X-Received: by 2002:a19:e45:: with SMTP id 66mr5284234lfo.82.1595161376814;
- Sun, 19 Jul 2020 05:22:56 -0700 (PDT)
+        id S1726264AbgGSQHs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Jul 2020 12:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726135AbgGSQHs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 19 Jul 2020 12:07:48 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB42920B1F;
+        Sun, 19 Jul 2020 16:07:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595174867;
+        bh=2BfF/nA6ErAFY5oFLxZej205Ou61k5E8QwnjkOKRk+0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GmqHxtkWB4ds/QN/SoElqW7DkCtXZvxM/FlSlXH2lEzzBioNABMrbzVq6YcRDfT8U
+         e8lfW9CsDVg0onGmBK4sVlyfbE0koxvYjRkepb4/3XrocRM3w0337rrOKsQRYdBBUV
+         NGpfUUgDdCdtlCg1UlB/pK0bF0WzSZvdEDwcs2t4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BB3A53522960; Sun, 19 Jul 2020 09:07:47 -0700 (PDT)
+Date:   Sun, 19 Jul 2020 09:07:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, madhuparnabhowmik10@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rculist: Silence unused-value warning.
+Message-ID: <20200719160747.GE9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200719105037.GA21010@blackclown>
 MIME-Version: 1.0
-References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
- <20200712131003.23271-2-madhuparnabhowmik10@gmail.com> <20200712160856.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
- <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
- <20200717170747.GW9247@paulmck-ThinkPad-P72> <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
- <20200718001259.GY9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200718001259.GY9247@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 19 Jul 2020 17:52:44 +0530
-Message-ID: <CA+G9fYs7s34mmtard-ETjH2r94psgQFLDJWayznvN6UTvMYh5g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     madhuparnabhowmik10@gmail.com,
-        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        frextrite@gmail.com, lkft-triage@lists.linaro.org,
-        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200719105037.GA21010@blackclown>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, 18 Jul 2020 at 05:43, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
-> > Hi Paul,
-> >
-> > > I am not seeing this here.
-> >
-> > Do you notice any warnings while building linux next master
-> > for x86_64 architecture ?
->
-> Idiot here was failing to enable building of KVM.  With that, I do see
-> the error.  The patch resolves it for me.  Does it help for you?
+On Sun, Jul 19, 2020 at 04:20:37PM +0530, Suraj Upadhyay wrote:
+> The macro __list_check_srcu is used as a statement inside a for loop.
+> 
+> __list_check_srcu becomes "true" when CONFIG_PROVE_RCU_LIST is not defined.
+> This results in compiler warning about an unused value ("true").
+> 
+> Silence the compiler warning about the unused value "true"
+> by replacing it with an empty expression.
+> 
+> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 
-yes.
-The below patch applied on top of linux -next 20200717 tag
-and build pass.
+Like this, you mean, give or take whitespace?  ;-)
 
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
+https://lore.kernel.org/lkml/20200718001259.GY9247@paulmck-ThinkPad-P72/
+
+May I add your Tested-by?
+
+							Thanx, Paul
+
+> ---
+>  include/linux/rculist.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> index de9385b..f8633d3 100644
+> index de9385b9158e..8b8e0584c473 100644
 > --- a/include/linux/rculist.h
 > +++ b/include/linux/rculist.h
 > @@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
->  #define __list_check_rcu(dummy, cond, extra...)                                \
->         ({ check_arg_count_one(extra); })
->
+>  #define __list_check_rcu(dummy, cond, extra...)				\
+>  	({ check_arg_count_one(extra); })
+>  
 > -#define __list_check_srcu(cond) true
-> +#define __list_check_srcu(cond) ({ })
+> +#define __list_check_srcu(cond) ({})
 >  #endif
->
+>  
 >  /*
+> -- 
+> 2.17.1
+> 
 
-- Naresh
+
