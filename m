@@ -1,104 +1,318 @@
-Return-Path: <SRS0=ruEF=A5=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=SldO=A6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70D83C433E1
-	for <rcu@archiver.kernel.org>; Sat, 18 Jul 2020 00:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2987CC433E1
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 03:42:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 474C120829
-	for <rcu@archiver.kernel.org>; Sat, 18 Jul 2020 00:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595031201;
-	bh=6U990pCrqx8gF6az8xcughhGYyeg5SgkZ15i21TePlc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=IasGGMWUFocVcF0Nei8InIdO/5yh14yLe1jq4gUL3HnfbR9vTER+G8hMWkYMifGMK
-	 kDHFZF1miXUyn09Ma+ALUjCwbRBHRDnYoqYCj/ZERBfuNnGa26w7sCJMnIM+6KtDSF
-	 XAHV51bM6vUMjrmzMSymCcVlLG4xmnrguXHu6jP4=
+	by mail.kernel.org (Postfix) with ESMTP id F40D32076A
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 03:42:21 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="gh6Ak5mD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgGRANA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Jul 2020 20:13:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727946AbgGRANA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Jul 2020 20:13:00 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C18C520768;
-        Sat, 18 Jul 2020 00:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595031179;
-        bh=6U990pCrqx8gF6az8xcughhGYyeg5SgkZ15i21TePlc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=yoIF14ITjXcQAKyJR8qBJ+VnsYRCwcHRgk0ySLlYAHyhDb17CruZQZJHiMzxYfLYv
-         Tibk3rxtm5JiGHKxsHN0hAsylHTl2kKVVDs0aJzcIZJj5pkmSNzXyZHWjra9Mzw3FF
-         T1Fy4GNLH5f8r60NTY29YCBd7U6pP5XlA8FqiALQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A6BB035231DA; Fri, 17 Jul 2020 17:12:59 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 17:12:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     madhuparnabhowmik10@gmail.com,
-        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+        id S1726381AbgGSDmV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 18 Jul 2020 23:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgGSDmV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 18 Jul 2020 23:42:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7D2C0619D2
+        for <rcu@vger.kernel.org>; Sat, 18 Jul 2020 20:42:20 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q2so1499760qkc.8
+        for <rcu@vger.kernel.org>; Sat, 18 Jul 2020 20:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fY9o1t8e8sG+JO7jEG+2eTqOGSQI+xJHynD2kEHDWCw=;
+        b=gh6Ak5mDuEglr56h5ylgIon14jSInTer3CxXVkSMSNRKZ14Epu+ntUJf2INM7ogyDF
+         1xMO7aXBBDO9DJqGYmoWKpFlyPhG2K0m4Bv50OlXpGLL0rE/HZ8nTpPTbD9a0mteBzj8
+         FoxDLUC2IK+Pq1LoF5XSPOd6MpI/wxYNC1IwQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fY9o1t8e8sG+JO7jEG+2eTqOGSQI+xJHynD2kEHDWCw=;
+        b=MPxRrx4C36Iea9iMq51LbPPxUhWov4z8yI05ChNPBg8K+ACuD4YoviST7m1ayqv/j7
+         K6364wXi9aHZ0dL8ApICGfl2BwPtiQPaNDNjCzbL7PaqCin/Az2TBhpyoXeQVHq6yMBj
+         5+eTrRqV7CbFPYfA7uqK3fO+doKs6TdMckIhFM5WfIbputoJygwJ4EKsBlde8mnNRc9C
+         StutgihUbubBDFURMJvuXFd0HcVaMfLYhLBKg0ewlBIywlG/CNqCpCk8bNgMM7jiGEDC
+         GPBgAmQYu8xyIaLtd4a5TA39i/lsueG34vMPOqk9G2M7Tib///YUbnDjhzX6b6JrSwXM
+         Tlkw==
+X-Gm-Message-State: AOAM530eXyzbnpqsW16E4n8oEkEQre+5+04PYVzxt62jBMp6CvSkLd5D
+        FMEUPMNPmmCAyb/QyxEHYAEkjA==
+X-Google-Smtp-Source: ABdhPJyx7jDtrgjWcFzFlbvM7mzEXGf5sucOy8BduR0/xI3KGjiQGkbYhC9dovQGSAIVUbXRE3Yq4A==
+X-Received: by 2002:a05:620a:79a:: with SMTP id 26mr16279539qka.169.1595130139716;
+        Sat, 18 Jul 2020 20:42:19 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id a203sm1261550qkg.30.2020.07.18.20.42.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jul 2020 20:42:19 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Fernandes <joelaf@google.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        frextrite@gmail.com, lkft-triage@lists.linaro.org,
-        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-Message-ID: <20200718001259.GY9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200712131003.23271-1-madhuparnabhowmik10@gmail.com>
- <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
- <20200712160856.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
- <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
- <20200717170747.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [PATCH RFC] rcu/segcblist: Add counters to segcblist datastructure
+Date:   Sat, 18 Jul 2020 23:42:10 -0400
+Message-Id: <20200719034210.2382053-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
-> Hi Paul,
-> 
-> > I am not seeing this here.
-> 
-> Do you notice any warnings while building linux next master
-> for x86_64 architecture ?
+From: Joel Fernandes <joelaf@google.com>
 
-Idiot here was failing to enable building of KVM.  With that, I do see
-the error.  The patch resolves it for me.  Does it help for you?
+Add counting of segment lengths of segmented callback list.
 
-							Thanx, Paul
+This will be useful for a number of things such as knowing how big the
+ready-to-execute segment have gotten. The immediate benefit is ability
+to trace how the callbacks in the segmented callback list change.
 
-------------------------------------------------------------------------
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index de9385b..f8633d3 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
- #define __list_check_rcu(dummy, cond, extra...)				\
- 	({ check_arg_count_one(extra); })
- 
--#define __list_check_srcu(cond) true
-+#define __list_check_srcu(cond) ({ })
+---
+ include/linux/rcu_segcblist.h |  2 +
+ kernel/rcu/rcu_segcblist.c    | 96 +++++++++++++++++++++++++++++++----
+ 2 files changed, 89 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index b36afe7b22c9..d462ae5e340a 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -69,8 +69,10 @@ struct rcu_segcblist {
+ 	unsigned long gp_seq[RCU_CBLIST_NSEGS];
+ #ifdef CONFIG_RCU_NOCB_CPU
+ 	atomic_long_t len;
++	atomic_long_t seglen[RCU_CBLIST_NSEGS];
+ #else
+ 	long len;
++	long seglen[RCU_CBLIST_NSEGS];
  #endif
+ 	u8 enabled;
+ 	u8 offloaded;
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 9a0f66133b4b..8d4ade6523b8 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -79,15 +79,66 @@ struct rcu_head *rcu_cblist_dequeue(struct rcu_cblist *rclp)
+ }
+ 
+ /* Set the length of an rcu_segcblist structure. */
+-static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
++void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+ {
+ #ifdef CONFIG_RCU_NOCB_CPU
+-	atomic_long_set(&rsclp->len, v);
++       atomic_long_set(&rsclp->len, v);
+ #else
+-	WRITE_ONCE(rsclp->len, v);
++       WRITE_ONCE(rsclp->len, v);
++#endif
++}
++
++/* Get the length of a segment of the rcu_segcblist structure. */
++static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
++{
++#ifdef CONFIG_RCU_NOCB_CPU
++	return atomic_long_read(&rsclp->seglen[seg]);
++#else
++	return READ_ONCE(rsclp->seglen[seg]);
++#endif
++}
++
++/* Set the length of a segment of the rcu_segcblist structure. */
++static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
++{
++#ifdef CONFIG_RCU_NOCB_CPU
++	atomic_long_set(&rsclp->seglen[seg], v);
++#else
++	WRITE_ONCE(rsclp->seglen[seg], v);
++#endif
++}
++
++/* Return number of callbacks in a segment of the segmented callback list. */
++static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
++{
++#ifdef CONFIG_RCU_NOCB_CPU
++	smp_mb__before_atomic(); /* Up to the caller! */
++	atomic_long_add(v, &rsclp->seglen[seg]);
++	smp_mb__after_atomic(); /* Up to the caller! */
++#else
++	smp_mb(); /* Up to the caller! */
++	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
++	smp_mb(); /* Up to the caller! */
+ #endif
+ }
+ 
++/* Move from's segment length to to's segment. */
++static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
++{
++	long len = rcu_segcblist_get_seglen(rsclp, from);
++
++	if (!len || from == to)
++		return;
++	rcu_segcblist_add_seglen(rsclp, to, len);
++	rcu_segcblist_set_seglen(rsclp, from, 0);
++}
++
++/* Increment segment's length. */
++static void rcu_segcblist_inc_seglen(struct rcu_segcblist *rsclp, int seg)
++{
++	rcu_segcblist_add_seglen(rsclp, seg, 1);
++}
++
+ /*
+  * Increase the numeric length of an rcu_segcblist structure by the
+  * specified amount, which can be negative.  This can cause the ->len
+@@ -149,8 +200,11 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
+ 	BUILD_BUG_ON(RCU_NEXT_TAIL + 1 != ARRAY_SIZE(rsclp->gp_seq));
+ 	BUILD_BUG_ON(ARRAY_SIZE(rsclp->tails) != ARRAY_SIZE(rsclp->gp_seq));
+ 	rsclp->head = NULL;
+-	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
++	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+ 		rsclp->tails[i] = &rsclp->head;
++		rcu_segcblist_set_seglen(rsclp, i, 0);
++	}
++
+ 	rcu_segcblist_set_len(rsclp, 0);
+ 	rsclp->enabled = 1;
+ }
+@@ -245,6 +299,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
+ 			   struct rcu_head *rhp)
+ {
+ 	rcu_segcblist_inc_len(rsclp);
++	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
+ 	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
+ 	rhp->next = NULL;
+ 	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
+@@ -274,6 +329,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
+ 	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
+ 		if (rsclp->tails[i] != rsclp->tails[i - 1])
+ 			break;
++	rcu_segcblist_inc_seglen(rsclp, i);
+ 	WRITE_ONCE(*rsclp->tails[i], rhp);
+ 	for (; i <= RCU_NEXT_TAIL; i++)
+ 		WRITE_ONCE(rsclp->tails[i], &rhp->next);
+@@ -307,6 +363,9 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+ 
+ 	if (!rcu_segcblist_ready_cbs(rsclp))
+ 		return; /* Nothing to do. */
++
++	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_DONE_TAIL);
++
+ 	*rclp->tail = rsclp->head;
+ 	WRITE_ONCE(rsclp->head, *rsclp->tails[RCU_DONE_TAIL]);
+ 	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
+@@ -314,6 +373,8 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+ 	for (i = RCU_CBLIST_NSEGS - 1; i >= RCU_DONE_TAIL; i--)
+ 		if (rsclp->tails[i] == rsclp->tails[RCU_DONE_TAIL])
+ 			WRITE_ONCE(rsclp->tails[i], &rsclp->head);
++
++	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+ }
  
  /*
+@@ -330,11 +391,19 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
+ 
+ 	if (!rcu_segcblist_pend_cbs(rsclp))
+ 		return; /* Nothing to do. */
++
++	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
++		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
++		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
++
+ 	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
+ 	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
++
+ 	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
+-	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
++	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
+ 		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
++		rcu_segcblist_set_seglen(rsclp, i, 0);
++	}
+ }
+ 
+ /*
+@@ -359,8 +428,11 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
+ 
+ 	if (!rclp->head)
+ 		return; /* No callbacks to move. */
++
++	rcu_segcblist_add_seglen(rsclp, RCU_DONE_TAIL, rclp->len);
+ 	*rclp->tail = rsclp->head;
+ 	WRITE_ONCE(rsclp->head, rclp->head);
++
+ 	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
+ 		if (&rsclp->head == rsclp->tails[i])
+ 			WRITE_ONCE(rsclp->tails[i], rclp->tail);
+@@ -379,6 +451,8 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
+ {
+ 	if (!rclp->head)
+ 		return; /* Nothing to do. */
++
++	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
+ 	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
+ 	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
+ }
+@@ -403,6 +477,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+ 		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
+ 			break;
+ 		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
++		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
+ 	}
+ 
+ 	/* If no callbacks moved, nothing more need be done. */
+@@ -419,10 +494,9 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	 * callbacks.  The overall effect is to copy down the later pointers
+ 	 * into the gap that was created by the now-ready segments.
+ 	 */
+-	for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++, j++) {
+-		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
+-			break;  /* No more callbacks. */
++	for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL && j < RCU_NEXT_TAIL; i++, j++) {
+ 		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
++		rcu_segcblist_move_seglen(rsclp, i, j);
+ 		rsclp->gp_seq[j] = rsclp->gp_seq[i];
+ 	}
+ }
+@@ -444,7 +518,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+  */
+ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+ {
+-	int i;
++	int i, j;
+ 
+ 	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
+ 	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
+@@ -479,6 +553,10 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+ 	if (++i >= RCU_NEXT_TAIL)
+ 		return false;
+ 
++	/* Accounting: everything below i is about to get merged into i. */
++	for (j = i; j <= RCU_NEXT_TAIL; j++)
++		rcu_segcblist_move_seglen(rsclp, j, i);
++
+ 	/*
+ 	 * Merge all later callbacks, including newly arrived callbacks,
+ 	 * into the segment located by the for-loop above.  Assign "seq"
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
+
