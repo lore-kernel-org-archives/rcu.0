@@ -2,125 +2,89 @@ Return-Path: <SRS0=SldO=A6=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 752C1C433DF
-	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 18:42:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA542C433E0
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 21:05:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4ADDE21744
-	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 18:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595184134;
-	bh=8Jhex8q677bAeQY5l1CdHaRAfACyJJQuxKDmrWhsjaI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=BQD0WS1kDZ72oExyfnwIT3gtBHwqt44tbrV/QRwEVioViFkBCgEWHeI2Ya4GAF/oA
-	 wWeCEmI6xnXtQ/ITqh6VTETC1ouXViGfM6ogEec0mkfmkImgR8rg4EOIzi/SGOSSWD
-	 sNw2HKs9fPZwyLhHkmrSU1wQNnuzZYAuVJamV/Vo=
+	by mail.kernel.org (Postfix) with ESMTP id 7112020691
+	for <rcu@archiver.kernel.org>; Sun, 19 Jul 2020 21:05:46 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="ArOEP/Bx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgGSSmO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 19 Jul 2020 14:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgGSSmN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 19 Jul 2020 14:42:13 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 443C1208DB;
-        Sun, 19 Jul 2020 18:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595184133;
-        bh=8Jhex8q677bAeQY5l1CdHaRAfACyJJQuxKDmrWhsjaI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kQFGfsk55Rjwx7U+98D9FPL+JWQo4LM6PaZM9mDKZjlCGvzfNJaqB4k9js/nKVISu
-         Gi4BUS78knKjkztq3L/i7H9wzhC7VWmEtySmkAdQ8s+MyveAehFYxHnOHXCtHXBC3A
-         XxcChNjM1QIME/OVwGIfN4x/bcxPAjJFzM45ZZAA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 243613522C28; Sun, 19 Jul 2020 11:42:13 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 11:42:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, madhuparnabhowmik10@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rculist: Silence unused-value warning.
-Message-ID: <20200719184213.GJ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200719105037.GA21010@blackclown>
- <20200719160747.GE9247@paulmck-ThinkPad-P72>
- <CAGbbQbG5ZLRhc+nxLqM35K3_cbXKw3AM1hXPm0fkyBEfRRhAnA@mail.gmail.com>
+        id S1726508AbgGSVFq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Jul 2020 17:05:46 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:55679 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgGSVFp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 19 Jul 2020 17:05:45 -0400
+Date:   Sun, 19 Jul 2020 21:05:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1595192743;
+        bh=AEf/lKVcafYbJAEyj9uCe9GegX+iiFz2trUb0jWkN3M=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=ArOEP/BxVldY3h3OkP+A5Qs/DQlPr1k6qa56jgaMrcOLw91RV+qStWCrPVK4yH6tu
+         zgC9Ni8LZCYD2m6wsEJAcOyEkOWH1KmKlES5FiicdG49qo2myX6i+KR1jVWj4lt1tV
+         Kkm/BmoE7Mmdk30YVw6FqXN90vzwFy8E/HZfv4l0=
+To:     paulmck@kernel.org, josh@joshtriplett.org
+From:   Colton Lewis <colton.w.lewis@protonmail.com>
+Cc:     rcu@vger.kernel.org, Colton Lewis <colton.w.lewis@protonmail.com>
+Reply-To: Colton Lewis <colton.w.lewis@protonmail.com>
+Subject: [PATCH 1/2] rcu: Correct kernel-doc inconsistency
+Message-ID: <20200719210533.152080-1-colton.w.lewis@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGbbQbG5ZLRhc+nxLqM35K3_cbXKw3AM1hXPm0fkyBEfRRhAnA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jul 19, 2020 at 10:53:05PM +0530, Suraj Upadhyay wrote:
-> On Sun 19 Jul, 2020, 21:37 Paul E. McKenney, <paulmck@kernel.org> wrote:
-> 
-> > On Sun, Jul 19, 2020 at 04:20:37PM +0530, Suraj Upadhyay wrote:
-> > > The macro __list_check_srcu is used as a statement inside a for loop.
-> > >
-> > > __list_check_srcu becomes "true" when CONFIG_PROVE_RCU_LIST is not
-> > defined.
-> > > This results in compiler warning about an unused value ("true").
-> > >
-> > > Silence the compiler warning about the unused value "true"
-> > > by replacing it with an empty expression.
-> > >
-> > > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> >
-> > Like this, you mean, give or take whitespace?  ;-)
-> >
-> > https://lore.kernel.org/lkml/20200718001259.GY9247@paulmck-ThinkPad-P72/
-> >
-> > May I add your Tested-by?
-> >
-> >                                                         Thanx, Paul
-> >
-> 
-> Yeah sure.
+Silence documentation build warnings by correcting kernel-doc comment
+for rcu_nmi_enter function and kfree_rcu_cpu struct.
 
-Thank you, I have applied it and it will be public on my next rebase.
-And thank you for your testing efforts!
+./kernel/rcu/tree.c:969: warning: Excess function parameter 'irq' descripti=
+on in 'rcu_nmi_enter'
+./kernel/rcu/tree.c:3024: warning: Function parameter or member 'count' not=
+ described in 'kfree_rcu_cpu'
 
-							Thanx, Paul
+Signed-off-by: Colton Lewis <colton.w.lewis@protonmail.com>
+---
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> Thanks,
-> 
-> Suraj Upadhyay.
-> 
-> > ---
-> > >  include/linux/rculist.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> > > index de9385b9158e..8b8e0584c473 100644
-> > > --- a/include/linux/rculist.h
-> > > +++ b/include/linux/rculist.h
-> > > @@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head
-> > *list)
-> > >  #define __list_check_rcu(dummy, cond, extra...)
-> >       \
-> > >       ({ check_arg_count_one(extra); })
-> > >
-> > > -#define __list_check_srcu(cond) true
-> > > +#define __list_check_srcu(cond) ({})
-> > >  #endif
-> > >
-> > >  /*
-> > > --
-> > > 2.17.1
-> > >
-> >
-> >
-> >
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6c6569e0586c..f38a51b96027 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -954,7 +954,6 @@ void __rcu_irq_enter_check_tick(void)
+=20
+ /**
+  * rcu_nmi_enter - inform RCU of entry to NMI context
+- * @irq: Is this call from rcu_irq_enter?
+  *
+  * If the CPU was idle from RCU's viewpoint, update rdp->dynticks and
+  * rdp->dynticks_nmi_nesting to let the RCU grace-period handling know
+@@ -3004,6 +3003,7 @@ struct kfree_rcu_cpu_work {
+  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+  * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+  * @initialized: The @lock and @rcu_work fields have been initialized
++ * @count: number of objects for which GP is not started
+  *
+  * This is a per-CPU structure.  The reason that it is not included in
+  * the rcu_data structure is to permit this code to be extracted from
+@@ -3019,7 +3019,6 @@ struct kfree_rcu_cpu {
+ =09struct delayed_work monitor_work;
+ =09bool monitor_todo;
+ =09bool initialized;
+-=09// Number of objects for which GP not started
+ =09int count;
+ };
+=20
+--=20
+2.26.2
+
+
