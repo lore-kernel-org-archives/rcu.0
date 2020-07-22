@@ -1,110 +1,240 @@
-Return-Path: <SRS0=GZkA=A7=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=BHDS=BB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E449C433E1
-	for <rcu@archiver.kernel.org>; Mon, 20 Jul 2020 23:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E636EC433E4
+	for <rcu@archiver.kernel.org>; Wed, 22 Jul 2020 07:44:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D6A522B4D
-	for <rcu@archiver.kernel.org>; Mon, 20 Jul 2020 23:31:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595287874;
-	bh=sAPZKVWX3Z8asrnYoZ23NOhUHIa2gorGKKngOC75NsM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=QcGkEy0AuPVTWlpaCnP/n5QjJnNfOhYC68SZYk2POUxCtGOW9zI780Oz0+UWN+T8m
-	 x2HMzieFEcryBDnxgARXcpgHR0+iJqrsIAysMs+Yiv1YpFv5+9oJ22ucLGRRiUl+kG
-	 FHqXMSV28DbhYvdns6dc+7aMMYnTvFAwJFqaB9yE=
+	by mail.kernel.org (Postfix) with ESMTP id B901720714
+	for <rcu@archiver.kernel.org>; Wed, 22 Jul 2020 07:44:04 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WazGxzeN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgGTXbO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Jul 2020 19:31:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbgGTXbN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Jul 2020 19:31:13 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B0E22080D;
-        Mon, 20 Jul 2020 23:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595287873;
-        bh=sAPZKVWX3Z8asrnYoZ23NOhUHIa2gorGKKngOC75NsM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=upDieZqHbOoq/fK1dHSW9gTNGzedB0zxg6JJqHBt9ph+uNVg5Nkkrr8yM/xOq2uDz
-         0aK7TDrhL4X+b4paWaWnJ6CONxXoHDFWLRabSdXdxN7KyCdp1zwDJ1436/gf7dnVnP
-         la9is/HX+QJ+cplZJ+7+PonYNwZADJTZvdomY62Q=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0E3DA3522C1A; Mon, 20 Jul 2020 16:31:13 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 16:31:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     madhuparnabhowmik10@gmail.com,
-        Dexuan-Linux Cui <dexuan.linux@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        frextrite@gmail.com, lkft-triage@lists.linaro.org,
-        Dexuan Cui <decui@microsoft.com>, juhlee@microsoft.com,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Subject: Re: [PATCH 2/2] kvm: mmu: page_track: Fix RCU list API usage
-Message-ID: <20200720233113.GZ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200712131003.23271-2-madhuparnabhowmik10@gmail.com>
- <20200712160856.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYuVmTcttBpVtegwPbKxufupPOtk_WqEtOdS+HDQi7WS9Q@mail.gmail.com>
- <CAA42JLY2L6xFju_qZsVguGtXvDMqfCKbO_h1K9NJPjmqJEav=Q@mail.gmail.com>
- <20200717170747.GW9247@paulmck-ThinkPad-P72>
- <CA+G9fYvtYr0ri6j-auNOTs98xVj-a1AoZtUfwokwnvuFFWtFdQ@mail.gmail.com>
- <20200718001259.GY9247@paulmck-ThinkPad-P72>
- <CA+G9fYs7s34mmtard-ETjH2r94psgQFLDJWayznvN6UTvMYh5g@mail.gmail.com>
- <20200719160824.GF9247@paulmck-ThinkPad-P72>
- <CA+G9fYueEA0g4arZYQpZo803FHsYvh3WCq=PhYGULHEDa86pSg@mail.gmail.com>
+        id S1728127AbgGVHoE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Jul 2020 03:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgGVHoE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Jul 2020 03:44:04 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7955C0619DE
+        for <rcu@vger.kernel.org>; Wed, 22 Jul 2020 00:44:03 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id m6so623431vsl.12
+        for <rcu@vger.kernel.org>; Wed, 22 Jul 2020 00:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=wOEP+pwUVQsgHVXob/375FdwlURvMnczGmpY3wb5bhk=;
+        b=WazGxzeNj603XO2IHVRXVhloh6g5GP+ftAlM9ZEpy30D76hLCMs5eVlPxIhsJa/pGN
+         WpOiy7QWV+e4dPHDuoVF9g7aYBT49b5lIn/b5EATgbAwAnPJQVbf2IkoQ6Dc0WBdEBtI
+         jubIFEyXlhR1B0UzQIcxnUsBUdpD21EysSU0y7e2YHB/8qeYfM70FZ5NW/Bjyqsgl+iA
+         5cwcSGyuJ0a7EocFwLwYwW0cAapCloN9ULpgN+bak2Nq3NXjZtXCpGHaLRln+6D7WTva
+         j4//wIP191BYVIM9D8i0TR0+LBXjl/kR/su22Rr4T3kRLP4fYn0EjXSwyOdUQ61qucwi
+         GXQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=wOEP+pwUVQsgHVXob/375FdwlURvMnczGmpY3wb5bhk=;
+        b=VvaQTVykynMKeiiv91epIVGs67eG6F7vW7aFbkJ86wsWDUPJxhoahCI4IBDVv/Ruql
+         oXJIhmGGOxeni9DsbEvqKu+4l7FiIiR4xFM2CxoO+WEqVlxw0cgi8AIwWWg7KR+dJ192
+         SHPwnQ8jX/eLvy6EdcE6xTTcvV4CXR4YfXfC2Zttdn/Y1gIxzOImL9j5z3DX8/xK12uj
+         dcEIwENgVtl1ojF1Zw/W2CZZHWAb6QX/bN2MnjHmtfXuPbRCMEWf1/KtBCWpefG83vOY
+         fV0hskgESN7lm5sz8FaBK8aVB+p9atop4nSeJ7Z7LnOcNsaFCk8V2x2DZlkpPBZCNjpj
+         RUrA==
+X-Gm-Message-State: AOAM532R4Uig5CUZrzp8b/wfs/Ze1sD5EZGyHmJ024Pc84Gqzk6/O1qh
+        qaVn+sgDkXVH/X/2kMk8jBnZSB1motDgt6syd+xNeQ==
+X-Google-Smtp-Source: ABdhPJyt2Ci5BEPXcREIIvI00ROSNBPx5lrmJHbrpb/koSQgCVQeA4lkKjdSW+YjH4EwL1yWF/lttfN9exI3b43EiG0=
+X-Received: by 2002:a67:2d0e:: with SMTP id t14mr21133095vst.22.1595403842698;
+ Wed, 22 Jul 2020 00:44:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYueEA0g4arZYQpZo803FHsYvh3WCq=PhYGULHEDa86pSg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 Jul 2020 13:13:51 +0530
+Message-ID: <CA+G9fYvHH7nDRYE6-tZL6+QmyX21D4OOQ4YU+v+okE6FEqqkhg@mail.gmail.com>
+Subject: BUG: sleeping function called from invalid context at
+ kernel/locking/mutex.c db410c
+To:     open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>, walter-zh.wu@mediatek.com,
+        neeraju@codeaurora.org, Vinod Koul <vinod.koul@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:43:50PM +0530, Naresh Kamboju wrote:
-> On Sun, 19 Jul 2020 at 21:38, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, Jul 19, 2020 at 05:52:44PM +0530, Naresh Kamboju wrote:
-> > > On Sat, 18 Jul 2020 at 05:43, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Sat, Jul 18, 2020 at 12:35:12AM +0530, Naresh Kamboju wrote:
-> > > > > Hi Paul,
-> > > > >
-> > > > > > I am not seeing this here.
-> > > > >
-> > > > > Do you notice any warnings while building linux next master
-> > > > > for x86_64 architecture ?
-> > > >
-> > > > Idiot here was failing to enable building of KVM.  With that, I do see
-> > > > the error.  The patch resolves it for me.  Does it help for you?
-> > >
-> > > yes.
-> > > The below patch applied on top of linux -next 20200717 tag
-> > > and build pass.
-> >
-> > Thank you!  May I add your Tested-by?
-> 
-> That would be great please add
-> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> 
-> Thank you !
+Kernel BUG noticed on arm64 db410c device while booting linux next 20200721 tag.
+Continually popping up these BUG messages on the boot console and kernel warning
+also noticed.
 
-Done, and thank you for spotting this!
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: de2e69cfe54a8f2ed4b75f09d3110c514f45d38e
+  git describe: next-20200721
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818/config
+  build-location:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818
 
-							Thanx, Paul
+Crash log:
+[    0.444349] BUG: sleeping function called from invalid context at
+/usr/src/kernel/kernel/locking/mutex.c:935
+[    0.444422] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+30, name: kworker/0:1
+[    0.444458] 2 locks held by kworker/0:1/30:
+[    0.444489]  #0: ffff00000eb15138
+((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[    0.444627]  #1: ffff800013713df0
+((work_completion)(&sdp->work)){+.+.}-{0:0}, at:
+process_one_work+0x208/0x768
+[    0.444761] CPU: 0 PID: 30 Comm: kworker/0:1 Not tainted
+5.8.0-rc6-next-20200721 #1
+[    0.444787] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    0.444817] Workqueue: rcu_gp srcu_invoke_callbacks
+[    0.444856] Call trace:
+[    0.444883]  dump_backtrace+0x0/0x1f8
+[    0.444910]  show_stack+0x2c/0x38
+[    0.444939]  dump_stack+0xf0/0x16c
+[    0.444969]  ___might_sleep+0x144/0x208
+[    0.444996]  __might_sleep+0x54/0x90
+[    0.445027]  __mutex_lock+0x64/0x970
+[    0.445055]  mutex_lock_nested+0x54/0x70
+[    0.445084]  device_del+0x44/0x3c0
+[    0.445110]  device_unregister+0x24/0x78
+[    0.445138]  __device_link_free_srcu+0x64/0x70
+[    0.445164]  srcu_invoke_callbacks+0x10c/0x1a0
+[    0.445191]  process_one_work+0x2b0/0x768
+[    0.445218]  worker_thread+0x48/0x498
+[    0.445246]  kthread+0x158/0x168
+[    0.445274]  ret_from_fork+0x10/0x1c
+
+<>
+
+[   13.015528] BUG: sleeping function called from invalid context at
+/usr/src/kernel/kernel/locking/mutex.c:935
+[   13.015588] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+188, name: kworker/2:4
+[   13.025268] 2 locks held by kworker/2:4/188:
+[   13.032647]  #0: ffff00000eb15138
+((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[   13.036920]  #1: ffff80001426bdf0
+((work_completion)(&sdp->work)){+.+.}-{0:0}, at:
+process_one_work+0x208/0x768
+[   13.046032] CPU: 2 PID: 188 Comm: kworker/2:4 Tainted: G        W
+      5.8.0-rc6-next-20200721 #1
+[   13.056039] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[   13.065417] Workqueue: rcu_gp srcu_invoke_callbacks
+[   13.072091] Call trace:
+[   13.076695]  dump_backtrace+0x0/0x1f8
+[   13.079124]  show_stack+0x2c/0x38
+[   13.082944]  dump_stack+0xf0/0x16c
+[   13.086243]  ___might_sleep+0x144/0x208
+[   13.089542]  __might_sleep+0x54/0x90
+[   13.093274]  __mutex_lock+0x64/0x970
+[   13.097094]  mutex_lock_nested+0x54/0x70
+[   13.100654]  device_del+0x44/0x3c0
+[   13.104556]  device_unregister+0x24/0x78
+[   13.107771]  __device_link_free_srcu+0x64/0x70
+[   13.111850]  srcu_invoke_callbacks+0x10c/0x1a0
+[   13.116103]  process_one_work+0x2b0/0x768
+[   13.120530]  worker_thread+0x48/0x498
+[   13.124610]  kthread+0x158/0x168
+[   13.128254]  ret_from_fork+0x10/0x1c
+[   13.131818] BUG: scheduling while atomic: kworker/2:4/188/0x00000201
+[   13.135243] 3 locks held by kworker/2:4/188:
+[   13.141558]  #0: ffff00000eb15138
+((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[   13.145834]  #1: ffff80001426bdf0
+((work_completion)(&sdp->work)){+.+.}-{0:0}, at:
+process_one_work+0x208/0x768
+[   13.154924]  #2: ffff8000127f2fd0 (kernfs_mutex){+.+.}-{3:3}, at:
+__kernfs_remove+0x304/0x378
+[   13.164952] Modules linked in: mdt_loader videobuf2_common
+drm_kms_helper qcom_rng i2c_qcom_cci display_connector drm socinfo
+rmtfs_mem rfkill qrtr ns fuse
+[   13.173653] CPU: 2 PID: 188 Comm: kworker/2:4 Tainted: G        W
+      5.8.0-rc6-next-20200721 #1
+[   13.187296] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[   13.196666] Workqueue: rcu_gp srcu_invoke_callbacks
+[   13.203340] Call trace:
+[[0;32m  OK  [0m] Started Network Manager Script Dispatcher Servic[
+13.207942]  dump_backtrace+0x0/0x1f8
+e.[   13.221350]  __schedule_bug+0x74/0xa0
+[   13.221386]  __schedule+0x890/0x938
+[   13.224160]  schedule+0x48/0x110
+[   13.227462]  schedule_preempt_disabled+0x1c/0x30
+[   13.230933]  __mutex_lock+0x814/0x970
+[   13.235533]  mutex_lock_nested+0x54/0x70
+[   13.239091]  __kernfs_remove+0x304/0x378
+[   13.243085]  kernfs_remove_by_name_ns+0x5c/0xc0
+[   13.246991]  sysfs_remove_link+0x30/0x60
+[   13.251246]  device_remove_class_symlinks+0x78/0xa8
+[   13.255411]  device_del+0xb8/0x3c0
+
+[   13.260011]  device_unregister+0x24/0x78
+[   13.263744]  __device_link_free_srcu+0x64/0x70
+[   13.267746]  srcu_invoke_callbacks+0x10c/0x1a0
+[   13.271992]  process_one_work+0x2b0/0x768
+[   13.276417]  worker_thread+0x48/0x498
+[   13.280499]  kthread+0x158/0x168
+[   13.284144]  ret_from_fork+0x10/0x1c
+[   13.289062] BUG: workqueue leaked lock or atomic: kworker/2:4/0xfffffe00/188
+[   13.289062]      last function: srcu_invoke_callbacks
+[   13.291056] no locks held by kworker/2:4/188.
+[   13.302935] CPU: 2 PID: 188 Comm: kworker/2:4 Tainted: G        W
+      5.8.0-rc6-next-20200721 #1
+[   13.305703] rtc-pm8xxx 200f000.spmi:pm8916@0:rtc@6000: registered as rtc0
+[   13.307317] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[   13.307333] Workqueue: rcu_gp srcu_invoke_callbacks
+[   13.307349] Call trace:
+[   13.307360]  dump_backtrace+0x0/0x1f8
+[   13.307369]  show_stack+0x2c/0x38
+[   13.307381]  dump_stack+0xf0/0x16c
+[   13.307392]  process_one_work+0x624/0x768
+[   13.347424]  worker_thread+0x48/0x498
+[   13.351501]  kthread+0x158/0x168
+[   13.355146]  ret_from_fork+0x10/0x1c
+[   13.358487] BUG: scheduling while atomic: kworker/2:4/188/0xfffffe01
+[   13.362056] no locks held by kworker/2:4/188.
+[   13.363536] rtc-pm8xxx 200f000.spmi:pm8916@0:rtc@6000: setting
+system clock to 1970-01-01T00:00:19 UTC (19)
+[   13.368361] Modules linked in: rtc_pm8xxx(+) videobuf2_memops
+videobuf2_v4l2 mdt_loader videobuf2_common drm_kms_helper qcom_rng
+i2c_qcom_cci display_connector drm socinfo rmtfs_mem rfkill qrtr ns
+fuse
+[   13.382197] CPU: 2 PID: 188 Comm: kworker/2:4 Tainted: G        W
+      5.8.0-rc6-next-20200721 #1
+[   13.400208] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[   13.409418] Workqueue:  0x0 (rcu_gp)
+[   13.416084] Call trace:
+[   13.419646]  dump_backtrace+0x0/0x1f8
+[   13.421815]  show_stack+0x2c/0x38
+[   13.425635]  dump_stack+0xf0/0x16c
+[   13.428933]  __schedule_bug+0x74/0xa0
+[   13.432234]  __schedule+0x890/0x938
+[   13.435967]  schedule+0x48/0x110
+[   13.439262]  worker_thread+0xc0/0x498
+[   13.442735]  kthread+0x158/0x168
+[   13.446294]  ret_from_fork+0x10/0x1c
+
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200721/testrun/2972385/suite/linux-log-parser/test/check-kernel-warning-1595062/log
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
