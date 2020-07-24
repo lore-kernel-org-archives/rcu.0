@@ -1,164 +1,225 @@
-Return-Path: <SRS0=BHDS=BB=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ycG7=BD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0491C433E2
-	for <rcu@archiver.kernel.org>; Wed, 22 Jul 2020 15:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8FCEC433E5
+	for <rcu@archiver.kernel.org>; Fri, 24 Jul 2020 19:35:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BADC12071A
-	for <rcu@archiver.kernel.org>; Wed, 22 Jul 2020 15:26:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C207206F6
+	for <rcu@archiver.kernel.org>; Fri, 24 Jul 2020 19:35:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NOZ6Uetu"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qJfJnqhI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732709AbgGVP0K (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Jul 2020 11:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S1726493AbgGXTfB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Jul 2020 15:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732628AbgGVP0J (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:26:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CCBC0619DC
-        for <rcu@vger.kernel.org>; Wed, 22 Jul 2020 08:26:09 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id f16so1570237pjt.0
-        for <rcu@vger.kernel.org>; Wed, 22 Jul 2020 08:26:09 -0700 (PDT)
+        with ESMTP id S1726411AbgGXTfB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:35:01 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A9AC0619E5
+        for <rcu@vger.kernel.org>; Fri, 24 Jul 2020 12:35:00 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q75so2777960iod.1
+        for <rcu@vger.kernel.org>; Fri, 24 Jul 2020 12:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CzLOOS//hUD8q9wPH1hxqf0po1Wm9sGqsog9+/iTqAI=;
-        b=NOZ6UetuWCJDo0hzkrmh3VMWWV8D9oRUMNZ4pDO/kd+xEWZ3QyxKqGDHqUhauU42FT
-         lJzbINvNQ1ipDKEiN6giuu5cmLuuCZzH9aWilbHEM/+yYaK0n5KkbpzB3e+7nRY92qp9
-         BJfGq3Hc4KULpAJlLg0z7bJ8+wchj3TY7lAYpqgPBp9T0FMfvwvM8UI7gAqZ1aQNc05l
-         /COONQpsGm7VOPJuN4srq76cyOU5+y1lnlFGsR46MxI863bKkBEhKiPHnLRRwjqGRU3D
-         lk1WvdlrwxYRZussgyknvro6EMDvVT5va4jpcOh16Ex9YhZvZ2xr5u2kMB/OOB5Mx7Ap
-         kmwg==
+        bh=gfXUqywojfTyPVAtr3dZJqxRQaBJzeI+7fUn5bNK71A=;
+        b=qJfJnqhIA6GWl/EQVKkfUjcNv/yM4zbW5MlLKnr3EacZlE/oTx7DBET5AWCXSaoNla
+         gP6BBvuYBTdolIYzEh8qR8Bm0zEIlSVkpoH2v8u3xxUy5ZBFm2sO1ff7RKAuTbcFbK6W
+         t3Wy80oJ6tlUHSo7iZCPsEHjx4pxZo4u7WCIQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CzLOOS//hUD8q9wPH1hxqf0po1Wm9sGqsog9+/iTqAI=;
-        b=V4h1lg8/cU4tJEjuQqarVnK2qmz7/+XfRF9XeHU5vFtTee1Wj0OkeH0u1JVIbjlTil
-         98SFPnIdjy7n1y39Ir3JntiEYUYIrjHkJ8fVK3yuFaJBMEJZhOkHYTVVwj3xjfbe2dnm
-         QLmGdnRB4pUIwMineOctYObiNOAB+FFihb8uvNF+3lKhPYsSfo7fL2XRdkb4hjovjfbe
-         Lrgyb3ovWorHuPqz8uP81pmXoxb2nprOniEq+9+RAWYoS4Z68zudBZ1zU75K/jPu3e9v
-         7Wh9oFPX7zd7jDNjtXYRlkhRvcyqJjsjUN73Axm4O9xyXS4j4DFow4Hv7ev63glhXNns
-         dmuw==
-X-Gm-Message-State: AOAM532i20XQY3oHoMR6sc9Qc+3l/nw/ro/HPXsjuNRWa6pHIOU/HJj4
-        Zr/amPLVMKM2Kbs+6zc82PEorLwuCikNNVwMSnqrcQ==
-X-Google-Smtp-Source: ABdhPJxwGbDkiUfVo298yjBOWU/WqwCHTeJkyyPq+H7SlytcoTd3ErvS9165gVdX0ddyHf3f1m9/coLUoxNHm/YzU3c=
-X-Received: by 2002:a17:90b:3683:: with SMTP id mj3mr10501433pjb.91.1595431568642;
- Wed, 22 Jul 2020 08:26:08 -0700 (PDT)
+        bh=gfXUqywojfTyPVAtr3dZJqxRQaBJzeI+7fUn5bNK71A=;
+        b=m85XSYXKfdQKbRRcvs24qqiBbaZ5F4YloSsbmULtiUqy/N8Go47mPeSj59c43EG6Mi
+         WbMGfDpLi7id86hf674J3rJ6gH3z8lGgMthAhL/aML+ddEo9aqtmgd9GAuCyly2r00OW
+         92K7UYaxzzhC566eNiMownUaO/6/JP+qdsm02y1ShI27Bu24zDx2V8772G2Vw7rp1L+2
+         BcT76VHv5wRBj9Z+pOh9LUtsqh8DZUVP1prKF4hCXFUmzpwZKWh5Medi9kgCNNAXoIpn
+         rTaqDIWDfqwrfzoqKmRT/pFF7bu60XBes88O2W7LD6yRPt+B2JS4JBlJZvVAIWlVVPwk
+         leQQ==
+X-Gm-Message-State: AOAM532xnVGV7kL+rtHHms6OK76Z1ROmg8Dof3gDaf4eA2AcdWBTDOtn
+        Bx3NRSuS4PeorF516WX+LLxC0dIf+UInr9zCZ6BH6w==
+X-Google-Smtp-Source: ABdhPJy/C/8/7t9G5BmZSyZZzr/kQM/LFbD0WPZmgFsJ5u93Ru2xsRRtyO4TPeyXyPagSucpoAPLysM+CNVKgGb86ao=
+X-Received: by 2002:a05:6638:1ec:: with SMTP id t12mr12402601jaq.86.1595619300093;
+ Fri, 24 Jul 2020 12:35:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYvHH7nDRYE6-tZL6+QmyX21D4OOQ4YU+v+okE6FEqqkhg@mail.gmail.com>
- <CAK8P3a01smLHy0vyPX0WxDRWWPxDCbZhRCBB5qGFvMCnsghwjg@mail.gmail.com> <20200722130109.GO9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200722130109.GO9247@paulmck-ThinkPad-P72>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 22 Jul 2020 08:25:32 -0700
-Message-ID: <CAGETcx9xjyPw01gmhtu9XShmkmXriTPgoc8UfSQgHhkQg5S=VQ@mail.gmail.com>
-Subject: Re: BUG: sleeping function called from invalid context at
- kernel/locking/mutex.c db410c
-To:     paulmck@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+References: <20200719035518.2386828-1-joel@joelfernandes.org>
+ <CAEXW_YQhYiYQZOJ95dqBcu_fAZ_6k7HGbrw53eTgPrgXU+5few@mail.gmail.com>
+ <20200719041841.GA2398236@google.com> <20200720082211.GA35358@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+In-Reply-To: <20200720082211.GA35358@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 24 Jul 2020 15:34:46 -0400
+Message-ID: <CAEXW_YR4dxuPV+Yu9HcYCSAdiV1H=9Rk9HJgCST-YMMc7J2Mgg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2] rcu/segcblist: Add counters to segcblist datastructure
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        walter-zh.wu@mediatek.com, neeraju@codeaurora.org,
-        Vinod Koul <vinod.koul@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 6:01 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Mon, Jul 20, 2020 at 4:22 AM <boqun.feng@gmail.com> wrote:
 >
-> On Wed, Jul 22, 2020 at 10:04:21AM +0200, Arnd Bergmann wrote:
-> > On Wed, Jul 22, 2020 at 9:44 AM Naresh Kamboju
-> > <naresh.kamboju@linaro.org> wrote:
-> > >
-> > > Kernel BUG noticed on arm64 db410c device while booting linux next 20200721 tag.
-> > > Continually popping up these BUG messages on the boot console and kernel warning
-> > > also noticed.
-> > >
-> > > metadata:
-> > >   git branch: master
-> > >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > >   git commit: de2e69cfe54a8f2ed4b75f09d3110c514f45d38e
-> > >   git describe: next-20200721
-> > >   kernel-config:
-> > > http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818/config
-> > >   build-location:
-> > > http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818
-> > >
-> > > Crash log:
-> > > [    0.444349] BUG: sleeping function called from invalid context at
-> > > /usr/src/kernel/kernel/locking/mutex.c:935
-> > > [    0.444422] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
-> > > 30, name: kworker/0:1
-> > > [    0.444458] 2 locks held by kworker/0:1/30:
-> > > [    0.444489]  #0: ffff00000eb15138
-> > > ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x208/0x768
-> > > [    0.444627]  #1: ffff800013713df0
-> > > ((work_completion)(&sdp->work)){+.+.}-{0:0}, at:
-> > > process_one_work+0x208/0x768
-> > > [    0.444761] CPU: 0 PID: 30 Comm: kworker/0:1 Not tainted
-> > > 5.8.0-rc6-next-20200721 #1
-> > > [    0.444787] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> > > [    0.444817] Workqueue: rcu_gp srcu_invoke_callbacks
-> > > [    0.444856] Call trace:
-> > > [    0.444883]  dump_backtrace+0x0/0x1f8
-> > > [    0.444910]  show_stack+0x2c/0x38
-> > > [    0.444939]  dump_stack+0xf0/0x16c
-> > > [    0.444969]  ___might_sleep+0x144/0x208
-> > > [    0.444996]  __might_sleep+0x54/0x90
-> > > [    0.445027]  __mutex_lock+0x64/0x970
-> > > [    0.445055]  mutex_lock_nested+0x54/0x70
-> > > [    0.445084]  device_del+0x44/0x3c0
-> > > [    0.445110]  device_unregister+0x24/0x78
-> > > [    0.445138]  __device_link_free_srcu+0x64/0x70
-> > > [    0.445164]  srcu_invoke_callbacks+0x10c/0x1a0
-> >
-> > The device_unregister() was added to __device_link_free_srcu() as part
-> > of commit 287905e68dd2 ("driver core: Expose device link details in sysfs")
-> >
-> > I'm fairly sure this is what introduced the console output, though the
-> > code before it is already suspicious:
-> >
-> > call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
-> >
-> > According to the documentation, call_srcu() must not call any sleeping
-> > functions, which is what the 'in_atomic(): 1' above is about.
->
-> Yes, the callback function, in this case __device_link_free_srcu(),
-> will execute from softirq context.
->
-> > However, from what I can tell, the put_device() and pm_runtime_put()
-> > calls in device_link_free() can also potentially sleep even if they normally
-> > don't warn about that.
->
-> The usual workaround is to have __device_link_free_srcu() schedule a
-> workqueue that invokes the potentially sleeping functions.
->
->                                                         Thanx, Paul
+> Hi Joel,
 
-Thanks for reporting. It was already reported and fixed last week.
-Waiting on Greg to pull it in.
-https://lore.kernel.org/lkml/CAGETcx9quqtV9TeD8WEcLLijGeV+7hXqnyiMv7F8xo+vyF_7iw@mail.gmail.com/#t
+Sorry for the late reply as I was on vacation last several days.
 
+>
+> On Sun, Jul 19, 2020 at 12:18:41AM -0400, Joel Fernandes wrote:
+> > On Sun, Jul 19, 2020 at 12:06:28AM -0400, Joel Fernandes wrote:
+> > > On Sat, Jul 18, 2020 at 11:55 PM Joel Fernandes (Google)
+> > > <joel@joelfernandes.org> wrote:
+> > > [...]
+> > > >         /* If no callbacks moved, nothing more need be done. */
+> > > > @@ -419,10 +494,9 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+> > > >          * callbacks.  The overall effect is to copy down the later pointers
+> > > >          * into the gap that was created by the now-ready segments.
+> > > >          */
+> > > > -       for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++, j++) {
+> > > > -               if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
+> > > > -                       break;  /* No more callbacks. */
+> > > > +       for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL && j < RCU_NEXT_TAIL; i++, j++) {
+> > > >                 WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
+> > > > +               rcu_segcblist_move_seglen(rsclp, i, j);
+> > > >                 rsclp->gp_seq[j] = rsclp->gp_seq[i];
+> > > >         }
+> > >
+> > > Unfortunately I broke this code, _sigh_.  I need to reinstate the
+> > > if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL]) , I completely
+> > > misunderstood that.
+> >
+> > And hopefully, third time's a charm with various extra newlines removed:
+> >
+> > ---8<-----------------------
+> >
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > Subject: [PATCH v3] rcu/segcblist: Add counters to segcblist datastructure
+> >
+> > Add counting of segment lengths of segmented callback list.
+> >
+> > This will be useful for a number of things such as knowing how big the
+> > ready-to-execute segment have gotten. The immediate benefit is ability
+> > to trace how the callbacks in the segmented callback list change.
+> >
+> > Tested by profusely reading traces when segcblist counts updated.
+> >
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > v1->v3: minor nits.
+> > ---
+> >  include/linux/rcu_segcblist.h |  2 +
+> >  kernel/rcu/rcu_segcblist.c    | 77 +++++++++++++++++++++++++++++++++--
+> >  2 files changed, 76 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+> > index b36afe7b22c9..d462ae5e340a 100644
+> > --- a/include/linux/rcu_segcblist.h
+> > +++ b/include/linux/rcu_segcblist.h
+> > @@ -69,8 +69,10 @@ struct rcu_segcblist {
+> >       unsigned long gp_seq[RCU_CBLIST_NSEGS];
+> >  #ifdef CONFIG_RCU_NOCB_CPU
+> >       atomic_long_t len;
+> > +     atomic_long_t seglen[RCU_CBLIST_NSEGS];
+> >  #else
+> >       long len;
+> > +     long seglen[RCU_CBLIST_NSEGS];
+> >  #endif
+> >       u8 enabled;
+> >       u8 offloaded;
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 9a0f66133b4b..c5841efcd38e 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -88,6 +88,57 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+> >  #endif
+> >  }
+> >
+> > +/* Get the length of a segment of the rcu_segcblist structure. */
+> > +static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+> > +{
+> > +#ifdef CONFIG_RCU_NOCB_CPU
+> > +     return atomic_long_read(&rsclp->seglen[seg]);
+> > +#else
+> > +     return READ_ONCE(rsclp->seglen[seg]);
+> > +#endif
+> > +}
+> > +
+> > +/* Set the length of a segment of the rcu_segcblist structure. */
+> > +static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> > +{
+> > +#ifdef CONFIG_RCU_NOCB_CPU
+> > +     atomic_long_set(&rsclp->seglen[seg], v);
+> > +#else
+> > +     WRITE_ONCE(rsclp->seglen[seg], v);
+> > +#endif
+>
+> These #ifdef really make me uncomfortable ;-) Since we are allowed to
+> use the '_Generic' key from C11 (see include/linux/compiler_types.h), I
+> wonder whether it's better if we have a few "generic" primitives like:
+>
+>         #define gen_long_read(x) _Generic((x),                                          \
+>                                           atomic_long_t: atomic_long_read(&x, v),       \
+>                                           long: READ_ONCE(x)),                          \
+>                                           ...
+>
+>         #define gen_long_set(x, v) _Generic((x),                                        \
+>                                             atomic_long_t: atomic_long_set(&x, v),      \
+>                                             long: WRITE_ONCE(x, v)),                    \
+>                                             ...
+>
+> , and similar for _xchg and _add.
 
--Saravana
+This sounds like a good idea. But isn't the kernel compiled with -std=gnu89
+
+Here are the KBUILD_CFLAGS
+
+KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
+                   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
+                   -Werror=implicit-function-declaration -Werror=implicit-int \
+                   -Wno-format-security \
+                   -std=gnu89
+
+With "make kernel/rcu/tree.o V=1" confirming it as well:
+
+  gcc -Wp,-MD,kernel/rcu/.tree.o.d  -nostdinc -isystem
+/usr/lib/gcc/x86_64-linux-gnu/9/include -I./arch/x86/include
+-I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi
+-I./arch/x86/include/generated/uapi -I./include/uapi
+-I./include/generated/uapi -include ./include/linux/kconfig.h -include
+./include/linux/compiler_types.h -D__KERNEL__ -Wall -Wundef
+-Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing
+-fno-common -fshort-wchar -fno-PIE
+-Werror=implicit-function-declaration -Werror=implicit-int
+-Wno-format-security -std=gnu89
+
+>
+> With these primitives introduced, you can avoid () to add those
+> rcu_segcblist_*_seglen() which have #ifdefs in them. Of course, an
+> alternative would be that we implement rcu_segcblist_*_seglen() using
+> _Generic, but I think someone else may have the similar problems or
+> requirement (already or in the future), so it might be worthwhile to
+> introduce the gen_ primitives for broader usage.
+
+One issue is code using memory barriers around the operation, such as
+in rcu_segcblist_add_len() where you use smp_mb__before_atomic() for
+the atomic version, and regular smp_mb() for the non-atomic version.
+So ifdef will still exist to some degree.
+
+thanks,
+
+ - Joel
