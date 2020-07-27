@@ -2,321 +2,188 @@ Return-Path: <SRS0=qouz=BG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1B2C433F7
-	for <rcu@archiver.kernel.org>; Mon, 27 Jul 2020 13:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B2F6C433E3
+	for <rcu@archiver.kernel.org>; Mon, 27 Jul 2020 21:10:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0F6C82073E
-	for <rcu@archiver.kernel.org>; Mon, 27 Jul 2020 13:49:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17BB920786
+	for <rcu@archiver.kernel.org>; Mon, 27 Jul 2020 21:10:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3QBk1Xa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iP+7r2dt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgG0Ntb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Jul 2020 09:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S1726433AbgG0VKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Jul 2020 17:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgG0Ntb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:49:31 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5E4C061794;
-        Mon, 27 Jul 2020 06:49:31 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id x6so1621766qvr.8;
-        Mon, 27 Jul 2020 06:49:31 -0700 (PDT)
+        with ESMTP id S1726140AbgG0VKW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Jul 2020 17:10:22 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45611C061794;
+        Mon, 27 Jul 2020 14:10:22 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id i80so9772396lfi.13;
+        Mon, 27 Jul 2020 14:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ys5tpR5z0WknQnFG2eW96i+fTqWp/FuE3f3knG67cMM=;
-        b=T3QBk1XaUNia5fyKu9JWJvEdI5u12HIHt6qZ8fOipa8tvRQweGXZrz03VxnipCgRtD
-         quiU5X/OZDElax37XfkhxB5bwBfD082eQToSHHwkmDlfZXrHoE3WoorWytTMJzRQPXnJ
-         Yw/LOEWh3vIKBRPcxRpDDTq2IE8Sb9a9sdnpgp4ZFCetRG7pkqIT7cW3KhHDf+Ep5zY6
-         R2LJGKlJa3yyBHaqaU+B/J/vBdTQo6FMJ8bqK4/91uGvyRPnaMQK9sqruWyXKbGvqMyE
-         UMBmrhRwopQc5vp/NVzyFbcLGC8aIvHe3eDjk2zvvMKY/zQ3U54FKFAn9+CAWjjMwNOF
-         ezwQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCi4uQupGH9wlbYDIIaXDuhHkIJkqnW5jRCmhH4yzys=;
+        b=iP+7r2dt0mrERD07SdS+TGzP3SyiL1AoMitm778mxLBgJZrySPoHh14xUJfzeLz3EW
+         daetsozIsLIZLGcVVraW3Pmc5VAuA2+odgfJLWBYul6shRJ9hh0Qgp/svRTItr1aTWTe
+         RxWRKJCIdxzKFXV/QM9dPDBoGbmKArmISv250T5rYezYh69L6dIp0+NntO7tF00HJwr2
+         R1KkIYCfuDYF3NKEpywJJuDXrFTbw83C9pNgaChmhw5v05WuAFe1eTxpXzAkoMG+dPLP
+         DsRsoV7FL6PuFxs1I+S81exnBP7IBPH+DBS7qPlw8yaNONrobm9F0AqURFY18yLGtnSC
+         k0lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ys5tpR5z0WknQnFG2eW96i+fTqWp/FuE3f3knG67cMM=;
-        b=YsDDO3Ty6MAcbgxI8mGjNahkEpf/KftUWr4EMFe1pM3TnSsIWsCluQ9QaWuN/c8Jg5
-         3Jl8QMP7kCk89QNqJWZE9RTv3ShjPhY3yGKDx3kubT7QzLCR6zGX8lFZRC5kihMbEuMt
-         tbdAYRwlYnPo25xF+J7qjfwSWKq6Uy+Qjszv6GcLC8fEODf7fGhVGyRLrVfgtKnsiJ4s
-         CL+6LOm69i9F9SiYpsM65wyt0nBHxjoSmCOZWqaMxI1wsoyBc3GZjNPw50C1nXoDZiEX
-         /KSbpqp8bHdrwXYSGyWzP126slWq6TlPO+lQNLa4Db6JlmVVHkl3MJRrzx3oEEAoLqBA
-         gbAg==
-X-Gm-Message-State: AOAM531/jENhnR6J+qd/Ac49MqkpE8OSuCuvlkYp1VSqqiY1Q4fEMtne
-        3d6S36o3B5czqdYb9OMGeig=
-X-Google-Smtp-Source: ABdhPJw5D+FN76Jc+8iebnuT+fysb1WTePuYNYSdQyTUjR9R5RGZjl/ltV8fmGNNtG7NAEsmhH2nrQ==
-X-Received: by 2002:a0c:e5c4:: with SMTP id u4mr3011357qvm.109.1595857770327;
-        Mon, 27 Jul 2020 06:49:30 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id t8sm5091588qke.7.2020.07.27.06.49.28
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Jul 2020 06:49:29 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 661B727C005A;
-        Mon, 27 Jul 2020 09:49:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 27 Jul 2020 09:49:28 -0400
-X-ME-Sender: <xms:Z9seXzuuwIAWJBZNLzmt8mPLZarfUnkECBDwGHUso6Z2ZlnOgZzk-g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedtgdejtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeegleejheekueegteffkeduiedvteegveevtdeffeetudefheffudduheefgfef
-    geenucffohhmrghinhepghhnuhdrohhrghenucfkphephedvrdduheehrdduuddurdejud
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhq
-    uhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqud
-    ejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgv
-    rdhnrghmvg
-X-ME-Proxy: <xmx:Z9seX0dN7f7wUFF4hWkg-K3JxduQkXnGQGfY0lEN6NjhiXNdg9TbMg>
-    <xmx:Z9seX2wJTIV_EwcXwTEPG6ZelDmGe4JT0Jncvz-wghM_MaHdjFlXEw>
-    <xmx:Z9seXyN3Sq7lzi2DCGjOxhJTI5wCe_tBlGZQb9e55vUAkzBj5eUWbQ>
-    <xmx:aNseXzwYcvDyc0tHFt-qbbzaj-QpD_2wRYCkR0kFGJsw3u8ZmFIRCA>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5FE163280064;
-        Mon, 27 Jul 2020 09:49:27 -0400 (EDT)
-Date:   Mon, 27 Jul 2020 21:49:25 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH RFC v2] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20200727134925.GB79404@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200719035518.2386828-1-joel@joelfernandes.org>
- <CAEXW_YQhYiYQZOJ95dqBcu_fAZ_6k7HGbrw53eTgPrgXU+5few@mail.gmail.com>
- <20200719041841.GA2398236@google.com>
- <20200720082211.GA35358@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <CAEXW_YR4dxuPV+Yu9HcYCSAdiV1H=9Rk9HJgCST-YMMc7J2Mgg@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCi4uQupGH9wlbYDIIaXDuhHkIJkqnW5jRCmhH4yzys=;
+        b=njxqLsWRPkpAbi7HqUA+39SJw/UM+zx0VFlLuQmO2qfQJgVAR24z07NOzpdl0QhhN9
+         alvBrpWCBwjmzoEO2B43x/HHlNOzR9LyWdaRTryyP7T+rkN0LBt+6zVYbW9TfvyEVor7
+         8QXeoPKj1sKSnow6hQTXZElda3DoaqUT/oE6QRIBiLpnjt8iYYrTVWf6rwcybLM63gha
+         YDvnGpNQFnQPdNg4I4ThDRVWzYV67GtKeSPSRXa6r5oGfB5cuaPKE2bF+ExvSHqAvIqn
+         zD0nbxZHVRQIjZDAXq75wtAuxRUmv3KY12yh+HnLsliE38EZt8NJ21MJr4e1KtP7WozL
+         uYEQ==
+X-Gm-Message-State: AOAM532jd9m04i0YoTwEKoIINIlMyAM7BjYLQD1mf4E2vzLD/9fiyREg
+        98M0r6INbzg20mkH5iUc3w4icDii850=
+X-Google-Smtp-Source: ABdhPJwJkrQ26iT00/yNlcmK6rwCV8JlV2VJHQdUO53NwZI5VUUccB9yeYw2y0rV9rMYW2G9Uff4ag==
+X-Received: by 2002:a05:6512:10ca:: with SMTP id k10mr12911706lfg.177.1595884220130;
+        Mon, 27 Jul 2020 14:10:20 -0700 (PDT)
+Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id s1sm3266078lfi.76.2020.07.27.14.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 14:10:19 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH v2 1/1] rcu/tree: Drop the lock before entering to page allocator
+Date:   Mon, 27 Jul 2020 23:10:12 +0200
+Message-Id: <20200727211012.30948-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YR4dxuPV+Yu9HcYCSAdiV1H=9Rk9HJgCST-YMMc7J2Mgg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 03:34:46PM -0400, Joel Fernandes wrote:
-> On Mon, Jul 20, 2020 at 4:22 AM <boqun.feng@gmail.com> wrote:
-> >
-> > Hi Joel,
-> 
-> Sorry for the late reply as I was on vacation last several days.
-> 
-> >
-> > On Sun, Jul 19, 2020 at 12:18:41AM -0400, Joel Fernandes wrote:
-> > > On Sun, Jul 19, 2020 at 12:06:28AM -0400, Joel Fernandes wrote:
-> > > > On Sat, Jul 18, 2020 at 11:55 PM Joel Fernandes (Google)
-> > > > <joel@joelfernandes.org> wrote:
-> > > > [...]
-> > > > >         /* If no callbacks moved, nothing more need be done. */
-> > > > > @@ -419,10 +494,9 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
-> > > > >          * callbacks.  The overall effect is to copy down the later pointers
-> > > > >          * into the gap that was created by the now-ready segments.
-> > > > >          */
-> > > > > -       for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL; i++, j++) {
-> > > > > -               if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
-> > > > > -                       break;  /* No more callbacks. */
-> > > > > +       for (j = RCU_WAIT_TAIL; i < RCU_NEXT_TAIL && j < RCU_NEXT_TAIL; i++, j++) {
-> > > > >                 WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
-> > > > > +               rcu_segcblist_move_seglen(rsclp, i, j);
-> > > > >                 rsclp->gp_seq[j] = rsclp->gp_seq[i];
-> > > > >         }
-> > > >
-> > > > Unfortunately I broke this code, _sigh_.  I need to reinstate the
-> > > > if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL]) , I completely
-> > > > misunderstood that.
-> > >
-> > > And hopefully, third time's a charm with various extra newlines removed:
-> > >
-> > > ---8<-----------------------
-> > >
-> > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > Subject: [PATCH v3] rcu/segcblist: Add counters to segcblist datastructure
-> > >
-> > > Add counting of segment lengths of segmented callback list.
-> > >
-> > > This will be useful for a number of things such as knowing how big the
-> > > ready-to-execute segment have gotten. The immediate benefit is ability
-> > > to trace how the callbacks in the segmented callback list change.
-> > >
-> > > Tested by profusely reading traces when segcblist counts updated.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > v1->v3: minor nits.
-> > > ---
-> > >  include/linux/rcu_segcblist.h |  2 +
-> > >  kernel/rcu/rcu_segcblist.c    | 77 +++++++++++++++++++++++++++++++++--
-> > >  2 files changed, 76 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> > > index b36afe7b22c9..d462ae5e340a 100644
-> > > --- a/include/linux/rcu_segcblist.h
-> > > +++ b/include/linux/rcu_segcblist.h
-> > > @@ -69,8 +69,10 @@ struct rcu_segcblist {
-> > >       unsigned long gp_seq[RCU_CBLIST_NSEGS];
-> > >  #ifdef CONFIG_RCU_NOCB_CPU
-> > >       atomic_long_t len;
-> > > +     atomic_long_t seglen[RCU_CBLIST_NSEGS];
-> > >  #else
-> > >       long len;
-> > > +     long seglen[RCU_CBLIST_NSEGS];
-> > >  #endif
-> > >       u8 enabled;
-> > >       u8 offloaded;
-> > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > > index 9a0f66133b4b..c5841efcd38e 100644
-> > > --- a/kernel/rcu/rcu_segcblist.c
-> > > +++ b/kernel/rcu/rcu_segcblist.c
-> > > @@ -88,6 +88,57 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-> > >  #endif
-> > >  }
-> > >
-> > > +/* Get the length of a segment of the rcu_segcblist structure. */
-> > > +static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
-> > > +{
-> > > +#ifdef CONFIG_RCU_NOCB_CPU
-> > > +     return atomic_long_read(&rsclp->seglen[seg]);
-> > > +#else
-> > > +     return READ_ONCE(rsclp->seglen[seg]);
-> > > +#endif
-> > > +}
-> > > +
-> > > +/* Set the length of a segment of the rcu_segcblist structure. */
-> > > +static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-> > > +{
-> > > +#ifdef CONFIG_RCU_NOCB_CPU
-> > > +     atomic_long_set(&rsclp->seglen[seg], v);
-> > > +#else
-> > > +     WRITE_ONCE(rsclp->seglen[seg], v);
-> > > +#endif
-> >
-> > These #ifdef really make me uncomfortable ;-) Since we are allowed to
-> > use the '_Generic' key from C11 (see include/linux/compiler_types.h), I
-> > wonder whether it's better if we have a few "generic" primitives like:
-> >
-> >         #define gen_long_read(x) _Generic((x),                                          \
-> >                                           atomic_long_t: atomic_long_read(&x, v),       \
-> >                                           long: READ_ONCE(x)),                          \
-> >                                           ...
-> >
-> >         #define gen_long_set(x, v) _Generic((x),                                        \
-> >                                             atomic_long_t: atomic_long_set(&x, v),      \
-> >                                             long: WRITE_ONCE(x, v)),                    \
-> >                                             ...
-> >
-> > , and similar for _xchg and _add.
-> 
-> This sounds like a good idea. But isn't the kernel compiled with -std=gnu89
-> 
-> Here are the KBUILD_CFLAGS
-> 
-> KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
->                    -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
->                    -Werror=implicit-function-declaration -Werror=implicit-int \
->                    -Wno-format-security \
->                    -std=gnu89
-> 
-> With "make kernel/rcu/tree.o V=1" confirming it as well:
-> 
->   gcc -Wp,-MD,kernel/rcu/.tree.o.d  -nostdinc -isystem
-> /usr/lib/gcc/x86_64-linux-gnu/9/include -I./arch/x86/include
-> -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi
-> -I./arch/x86/include/generated/uapi -I./include/uapi
-> -I./include/generated/uapi -include ./include/linux/kconfig.h -include
-> ./include/linux/compiler_types.h -D__KERNEL__ -Wall -Wundef
-> -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing
-> -fno-common -fshort-wchar -fno-PIE
-> -Werror=implicit-function-declaration -Werror=implicit-int
-> -Wno-format-security -std=gnu89
-> 
+If the kernel is built with CONFIG_PROVE_RAW_LOCK_NESTING
+option, the lockedp will complain about violation of the
+nesting rules:
 
-Note that gnu89 is not equal to c89, according to gcc manual:
+<snip>
+[   28.060389] =============================
+[   28.060389] [ BUG: Invalid wait context ]
+[   28.060389] 5.8.0-rc3-rcu #211 Tainted: G            E
+[   28.060389] -----------------------------
+[   28.060390] vmalloc_test/0/523 is trying to lock:
+[   28.060390] ffff96df7ffe0228 (&zone->lock){-.-.}-{3:3}, at: get_page_from_freelist+0xcf0/0x16d0
+[   28.060391] other info that might help us debug this:
+[   28.060391] context-{5:5}
+[   28.060392] 2 locks held by vmalloc_test/0/523:
+[   28.060392]  #0: ffffffffc06750d0 (prepare_for_test_rwsem){++++}-{4:4}, at: test_func+0x76/0x240 [test_vmalloc]
+[   28.060393]  #1: ffff96df5fa1d390 (krc.lock){..-.}-{2:2}, at: kvfree_call_rcu+0x5c/0x230
+[   28.060395] stack backtrace:
+[   28.060395] CPU: 0 PID: 523 Comm: vmalloc_test/0 Tainted: G            E     5.8.0-rc3-rcu #211
+[   28.060395] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+[   28.060396] Call Trace:
+[   28.060397]  dump_stack+0x96/0xd0
+[   28.060397]  __lock_acquire.cold.65+0x166/0x2d7
+[   28.060398]  ? find_held_lock+0x2d/0x90
+[   28.060399]  lock_acquire+0xad/0x370
+[   28.060400]  ? get_page_from_freelist+0xcf0/0x16d0
+[   28.060401]  ? mark_held_locks+0x48/0x70
+[   28.060402]  _raw_spin_lock+0x25/0x30
+[   28.060403]  ? get_page_from_freelist+0xcf0/0x16d0
+[   28.060404]  get_page_from_freelist+0xcf0/0x16d0
+[   28.060405]  ? __lock_acquire+0x3ee/0x1b90
+[   28.060407]  __alloc_pages_nodemask+0x16a/0x3a0
+[   28.060408]  __get_free_pages+0xd/0x30
+[   28.060409]  kvfree_call_rcu+0x18a/0x230
+<snip>
 
-	https://gcc.gnu.org/onlinedocs/gcc/Standards.html#C-Language
+Internally the kfree_rcu() uses raw_spinlock_t whereas the
+page allocator internally deals with spinlock_t to access
+to its zones.
 
-"""
-By default, GCC provides some extensions to the C language that, on
-rare occasions conflict with the C standard. See Extensions to the C
-Language Family. Some features that are part of the C99 standard are
-accepted as extensions in C90 mode, and some features that are part of
-the C11 standard are accepted as extensions in C90 and C99 modes. Use of
-the -std options listed above disables these extensions where they
-conflict with the C standard version selected. You may also select an
-extended version of the C language explicitly with -std=gnu90 (for C90
-with GNU extensions), -std=gnu99 (for C99 with GNU extensions) or
--std=gnu11 (for C11 with GNU extensions).
-"""
+In order to prevent such vialation that is in question we
+can drop the internal raw_spinlock_t before entering to
+the page allocaor.
 
-So C11 features are available to gnu89 as extensions, also I tried to
-compile the following code with -std=gnu89:
+Short changelog (v1 -> v2):
+    - rework the commit message;
+    - rework the patch making it smaller;
+    - add more comments.
 
-	#include <stdio.h>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-	typedef struct {
-		int a;
-	} atomic_t;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 21c2fa5bd8c3..2de112404121 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3287,6 +3287,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 		return false;
+ 
+ 	lockdep_assert_held(&krcp->lock);
++	lockdep_assert_irqs_disabled();
++
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+@@ -3306,6 +3308,29 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 				return false;
+ 
++			/*
++			 * If built with CONFIG_PROVE_RAW_LOCK_NESTING option,
++			 * the lockedp will complain about violation of the
++			 * nesting rules. It does the raw_spinlock vs. spinlock
++			 * nesting checks.
++			 *
++			 * That is why we drop the raw lock. Please note IRQs are
++			 * still disabled it guarantees that the "current" stays
++			 * on the same CPU later on when the raw lock is taken
++			 * back.
++			 *
++			 * It is important because if the page allocator is invoked
++			 * in fully preemptible context, it can be that we get a page
++			 * but end up on another CPU. That another CPU might not need
++			 * a page because of having some extra spots in its internal
++			 * array for pointer collecting. Staying on same CPU eliminates
++			 * described issue.
++			 *
++			 * Dropping the lock also reduces the critical section by
++			 * the time taken by the page allocator to obtain a page.
++			 */
++			raw_spin_unlock(&krcp->lock);
++
+ 			/*
+ 			 * NOTE: For one argument of kvfree_rcu() we can
+ 			 * drop the lock and get the page in sleepable
+@@ -3315,6 +3340,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 			 */
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
++
++			raw_spin_lock(&krcp->lock);
+ 		}
+ 
+ 		/* Switch to emergency path. */
+-- 
+2.20.1
 
-	void g(void) {
-		printf("this is g\n");
-	}
-
-	void h(void) {
-		printf("this is f\n");
-	}
-
-	#define gen(x) _Generic((x), atomic_t : h(), int : g())
-
-	int main(void) {
-		int a;
-		atomic_t b;
-		gen(a);
-		gen(b);
-		gen(b);
-	}
-
-, and it worked.
-
-Besides, please note that in include/linux/compiler_types.h, _Generic is
-already used.
-
-> >
-> > With these primitives introduced, you can avoid () to add those
-> > rcu_segcblist_*_seglen() which have #ifdefs in them. Of course, an
-> > alternative would be that we implement rcu_segcblist_*_seglen() using
-> > _Generic, but I think someone else may have the similar problems or
-> > requirement (already or in the future), so it might be worthwhile to
-> > introduce the gen_ primitives for broader usage.
-> 
-> One issue is code using memory barriers around the operation, such as
-> in rcu_segcblist_add_len() where you use smp_mb__before_atomic() for
-> the atomic version, and regular smp_mb() for the non-atomic version.
-> So ifdef will still exist to some degree.
-> 
-
-Right, I think we can have two functions: long_add_mb() and
-atomic_long_add_mb(), this part is similar to ifdef approach, but we can
-make a gen_long_add_mb() based on these two functions, and
-gen_long_add_mb() simply switches between those functions according to
-the actual type of the field, which I think is better than ifdef
-approach at readability and maintenance.
-
-Regards,
-Boqun
-
-> thanks,
-> 
->  - Joel
