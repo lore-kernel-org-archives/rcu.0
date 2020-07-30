@@ -7,141 +7,120 @@ X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCF47C433E0
-	for <rcu@archiver.kernel.org>; Thu, 30 Jul 2020 16:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7672C433DF
+	for <rcu@archiver.kernel.org>; Thu, 30 Jul 2020 16:35:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B977C20838
-	for <rcu@archiver.kernel.org>; Thu, 30 Jul 2020 16:22:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83E77206F5
+	for <rcu@archiver.kernel.org>; Thu, 30 Jul 2020 16:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596126120;
-	bh=9cFcZnfkur34WPfSqhU2MSEk1J8+VuHGVPWpxsCK54w=;
+	s=default; t=1596126921;
+	bh=hNBBVsAK7K6IcrJd08DZpbBqe4GepnxNtHeJL5JztiE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=ddWlW53lubGRJHzn9xuSSzIizBDCaV9FoJT9ObiaOaZ0DnFV4rzQY/j3ydZ+MxhzW
-	 Lo2+3e4RKGmiZHv0n9Y/QS+ZixqfF+vU5c4GdyiQJiF8T59r6jxo8MPmKvTOrFD66K
-	 6sfJdvRLn68Bj+ZLfQUuefoNcisjq1YA+cufXYeU=
+	b=YGL9xTKGW9TWUp2g1lZr4+slxxNNfi3guRIrgYgdM5+HP0jQqY2QVBquAa7qCUfH7
+	 i1wn0XfUgVmri0RPde13GvPUyMPI1J+Fe/iJBvMOleOYjfKOfWuUmzd6mEtsvqv6kE
+	 cOxcY4WDNCttzU+IBUWzg90mymMSUQCclQ1z5v6g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgG3QWA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Jul 2020 12:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S1728466AbgG3QfV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Jul 2020 12:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728452AbgG3QWA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Jul 2020 12:22:00 -0400
+        id S1727072AbgG3QfV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Jul 2020 12:35:21 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 605E72082E;
-        Thu, 30 Jul 2020 16:21:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CE6120838;
+        Thu, 30 Jul 2020 16:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596126119;
-        bh=9cFcZnfkur34WPfSqhU2MSEk1J8+VuHGVPWpxsCK54w=;
+        s=default; t=1596126920;
+        bh=hNBBVsAK7K6IcrJd08DZpbBqe4GepnxNtHeJL5JztiE=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TncS1nvGzCSVxo7Sr9KeUFeJ9Hf7ZU3kLdn7SE8bAdJk0A0ZMURGgMlECP2pumm53
-         6tWH0uMI2b1S14bMdB7abLeZ8a2DXC1NVJF7ufKI/L6OtfQZi2GVv7pssf6Xd4VYfE
-         F76ZjRPJUR/396oUNHZmuovdnxoHygXq8vFc0meA=
+        b=Ohrm45PFR1lVtNFaZNbS4QemNQYgYgOGBMmEUSZTPR8FaiM9lcm/ORDHZHKJCtiYO
+         siGSMfGsHaCPcXa/LIXzxV66y6kzjeBdFnJZ+2IvC/y1olSo26XgDHjjcnEeost/nK
+         TbQze0WFlxxA519abjLTyOIUTqhVkn/y/C3MeCmU=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3E5EF3520751; Thu, 30 Jul 2020 09:21:59 -0700 (PDT)
-Date:   Thu, 30 Jul 2020 09:21:59 -0700
+        id 6669D3520751; Thu, 30 Jul 2020 09:35:20 -0700 (PDT)
+Date:   Thu, 30 Jul 2020 09:35:20 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/2] rcu/tree: Add a warning if CPU being onlined did not
- report QS already
-Message-ID: <20200730162159.GZ9247@paulmck-ThinkPad-P72>
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] rcu/tree: Clarify comments about FQS loop reporting
+ quiescent states
+Message-ID: <20200730163520.GA9247@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
 References: <20200730030221.705255-1-joel@joelfernandes.org>
+ <20200730030221.705255-2-joel@joelfernandes.org>
+ <CAEXW_YSbad9Cium_9f1eA1RfZ2Me9JcX2S-KMe-jRQo8W6AaBg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200730030221.705255-1-joel@joelfernandes.org>
+In-Reply-To: <CAEXW_YSbad9Cium_9f1eA1RfZ2Me9JcX2S-KMe-jRQo8W6AaBg@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 11:02:20PM -0400, Joel Fernandes (Google) wrote:
-> Add a warning if CPU being onlined did not report QS already. This is to
-> simplify the code in the CPU onlining path and also to make clear about
-> where QS is reported. The act of QS reporting in CPU onlining path is
-> is likely unnecessary as shown by code reading and testing with
-> rcutorture's TREE03 and hotplug parameters.
-
-How about something like this for the commit log?
-
-------------------------------------------------------------------------
-
-Currently, rcu_cpu_starting() checks to see if the RCU core expects a
-quiescent state from the incoming CPU.  However, the current interaction
-between RCU quiescent-state reporting and CPU-hotplug operations should
-mean that the incoming CPU never needs to report a quiescent state.
-First, the outgoing CPU reports a quiescent state if needed.  Second,
-the race where the CPU is leaving just as RCU is initializing a new
-grace period is handled by an explicit check for this condition.  Third,
-the CPU's leaf rcu_node structure's ->lock serializes these checks.
-
-This means that if rcu_cpu_starting() ever feels the need to report
-a quiescent state, then there is a bug somewhere in the CPU hotplug
-code or the RCU grace-period handling code.  This commit therefore
-adds a WARN_ON_ONCE() to bring that bug to everyone's attention.
-
-------------------------------------------------------------------------
-
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Wed, Jul 29, 2020 at 11:25:19PM -0400, Joel Fernandes wrote:
+> On Wed, Jul 29, 2020 at 11:02 PM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > At least since v4.19, the FQS loop no longer reports quiescent states
 > 
-> ---
->  kernel/rcu/tree.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+> I meant here, "FQS loop no longer reports quiescent states for offline CPUs."
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 65e1b5e92319..1e51962b565b 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3996,7 +3996,19 @@ void rcu_cpu_starting(unsigned int cpu)
->  	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
->  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
->  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
-> -	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
-> +
-> +	/*
-> +	 * Delete QS reporting from here, by June 2021, if warning does not
-> +	 * fire. Let us make the rules for reporting QS for an offline CPUs
-> +	 * more explicit. The CPU onlining path does not need to report QS for
-> +	 * an offline CPU. Either the QS should have reported during CPU
-> +	 * offlining, or during rcu_gp_init() if it detected a race with either
-> +	 * CPU offlining or task unblocking on previously offlined CPUs. Note
-> +	 * that the FQS loop also does not report QS for an offline CPU any
-> +	 * longer (unless it splats due to an offline CPU blocking the GP for
-> +	 * too long).
-> +	 */
+> Sorry,
 
-Let's leave at least the WARN_ON_ONCE() indefinitely.  If you don't
-believe me, remove this code in your local tree, have someone give you
-several branches, some with bugs injected, and then try to figure out
-which have the bugs and then try to find those bugs.
+You did have me going there for a bit.  ;-)
 
-This is not a fastpath, so the overhead of the check is not a concern.
-Believe me, the difficulty of bug location without this check is a very
-real concern!  ;-)
+No period (".") at the end though, unless you fix up the following
+to start a new sentence.
 
-On the other hand, I fully agree with the benefits of documenting the
-design rules.  But is this really the best place to do that from the
-viewpoint of someone who is trying to figure out how RCU works?
+> > unless it is a dire situation where an offlined CPU failed to report
+> > a quiescent state. Let us clarify the comment in rcu_gp_init() inorder
+> > to keep the comment current.
 
-							Thanx, Paul
+How about the following for this last sentence?
 
-> +	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
->  		rcu_disable_urgency_upon_qs(rdp);
->  		/* Report QS -after- changing ->qsmaskinitnext! */
->  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
-> -- 
-> 2.28.0.rc0.142.g3c755180ce-goog
-> 
+"This commit therefore fixes the comment in rcu_gp_init() to match
+the current code."
+
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 1e51962b565b..929568ff5989 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1701,8 +1701,8 @@ static bool rcu_gp_init(void)
+> >
+> >         /*
+> >          * Apply per-leaf buffered online and offline operations to the
+> > -        * rcu_node tree.  Note that this new grace period need not wait
+> > -        * for subsequent online CPUs, and that quiescent-state forcing
+> > +        * rcu_node tree.  Note that this new grace period need not wait for
+> > +        * subsequent online CPUs, and that RCU hooks in CPU offlining path
+> >          * will handle subsequent offline CPUs.
+
+How about something like this?
+
+	...  Note that this new grace period ned not wait for subsequent
+	online CPUs, and that RCU hooks in the CPU offlining path, when
+	combined with checks in this function, will handle CPUs that
+	are currently going offline and that go offline later.
+
+						Thanx, Paul
+
+> >          */
+> >         rcu_state.gp_state = RCU_GP_ONOFF;
+> > --
+> > 2.28.0.rc0.142.g3c755180ce-goog
+> >
