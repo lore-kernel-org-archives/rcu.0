@@ -2,144 +2,146 @@ Return-Path: <SRS0=1SSE=BR=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A21BC433E0
-	for <rcu@archiver.kernel.org>; Fri,  7 Aug 2020 22:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 906CFC433E0
+	for <rcu@archiver.kernel.org>; Fri,  7 Aug 2020 23:05:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3312B2224D
-	for <rcu@archiver.kernel.org>; Fri,  7 Aug 2020 22:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596838817;
-	bh=Fm5/4RuQm0wDj6D+otx5tHEIW5qEfI5jVQNjzwNCMso=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=kAg1KlxXvUY3TQ/HUf8TRvYQIozGKTM8emNRSc+jhs+Ufod6wN1LAnKGLjvNK13WC
-	 YKBuEWG4qegUJIUIm/vqWzElLV6XAJRcVLlnx26isUwGo1co2BX8eCVxDyqiV4g5nc
-	 NGhp3NPDgYeYLuM3VMOpyJW2OV96LxdzYXaXRkT8=
+	by mail.kernel.org (Postfix) with ESMTP id 69A8D2224D
+	for <rcu@archiver.kernel.org>; Fri,  7 Aug 2020 23:05:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g6bV/kLG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgHGWUR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Aug 2020 18:20:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgHGWUQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Aug 2020 18:20:16 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C31622177B;
-        Fri,  7 Aug 2020 22:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596838815;
-        bh=Fm5/4RuQm0wDj6D+otx5tHEIW5qEfI5jVQNjzwNCMso=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YUZZuOLAoeOlhwxJVG96PwhK+uS+rsTVcfzF+TYi8vINVqkBuOJ1VQTBF++3dGeAw
-         3e3RH0CyKUQoSd4/Wyi8A6Si+KF9RW+Xdyb6iLTCrxZb014o2I8dKP3gPrfhgwveBq
-         wKlfhiBO0WnS3mhkN54yeOIClqirC+CGeHh1dygM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A05043522BB6; Fri,  7 Aug 2020 15:20:15 -0700 (PDT)
-Date:   Fri, 7 Aug 2020 15:20:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Johan =?iso-8859-1?B?S2729nM=?= <jknoos@google.com>,
+        id S1726155AbgHGXFu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Aug 2020 19:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgHGXFt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Aug 2020 19:05:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398CCC061756
+        for <rcu@vger.kernel.org>; Fri,  7 Aug 2020 16:05:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r2so3017265wrs.8
+        for <rcu@vger.kernel.org>; Fri, 07 Aug 2020 16:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qErUDeFm8T3iarG3Vx1bCv71tfEovrViLZBYkKZrTGo=;
+        b=g6bV/kLG6MH5flIrt2yp5ymYMBgvwyuYCyb62eKGIKqU2fNZbgcIs90nbi7QOgPSh+
+         tWgQhv183+GChWgqR6ewTA0KuiiPjHTBZBV3jjckVs6PK2ax4ekk2lPpGzZUdZ86oquG
+         M6KKBSLRy8Rs8neqi2iArawBEhcKghgRuYWUoCxIo1mjD06NfpXAyALHg15kUReE+4G4
+         F2i+HGjwowY4NDSDqRDh0VjOcvNK0lo9NH7fQVIaP9dcyLsavIw4Ft8UubCjV6mc7zr1
+         TVfDuP+qgyiWmO5oQlei1vvPU1yvMtOMbrqOPCv5a5Mud0HAtb1vXP6xe3E2zyaAt6Ym
+         P8YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qErUDeFm8T3iarG3Vx1bCv71tfEovrViLZBYkKZrTGo=;
+        b=t/PdkDO1yni/lbF2lCXXsKVtlWgK+zXszewxFSdkEU/gsME1gG++7IgE1zRfeL4kwc
+         2A18SAX7gHbVd0ztCWpgKfn0fSFlIg1M9KFLdniNPirqB2RQdLtVw2yXg9IblwA2709+
+         PHVA+VjbNohgutyBGSS9A6aNBiA7N2wa23wsQ4exgM12vmTDTLaxB3Ba5gdH33WX3REc
+         WWxznc+BIJYeNOtFd6pq8OQT+KTAf2sd9708XXr9mjSi/6MToYzsh3NskkoaJC3ive4K
+         PmNDwzTVNfdkcLYhbmBfRcjPqSrpD7rxdgLqAjyMpobXOEYHufyyZsLVc666XEwemImG
+         JlFQ==
+X-Gm-Message-State: AOAM532fcYhWIh95d9wCXkJ4m8TP4zX4k60Urfpc5VfqpYeMnZ839gsY
+        s5AfNDisnFhEveqQAyHk8XoI+nAsg4ld4Pi9mUHi
+X-Google-Smtp-Source: ABdhPJzJtEEvpg6OzdSL+10Wp1Juq7Hf/WV20LzG+/QpHUP5sbgvLYD+rthmh0roq3U8esmv9893HeKoUwGGxlfL/FE=
+X-Received: by 2002:a5d:42c2:: with SMTP id t2mr13853698wrr.396.1596841547635;
+ Fri, 07 Aug 2020 16:05:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+Sh73MJhqs7PBk6OV2AhzVjYvE1foUQUnwP5DwWR44LHZRZ9w@mail.gmail.com>
+ <58be64c5-9ae4-95ff-629e-f55e47ff020b@gmail.com> <CA+Sh73NeNr+UNZYDfD1nHUXCY-P8mT1vJdm0cEY4MPwo_0PtzQ@mail.gmail.com>
+ <CAEXW_YSSL5+_DjtrYpFp35kGrem782nBF6HuVbgWJ_H3=jeX4A@mail.gmail.com> <20200807222015.GZ4295@paulmck-ThinkPad-P72>
+In-Reply-To: <20200807222015.GZ4295@paulmck-ThinkPad-P72>
+From:   =?UTF-8?B?Sm9oYW4gS27DtsO2cw==?= <jknoos@google.com>
+Date:   Fri, 7 Aug 2020 16:05:36 -0700
+Message-ID: <CA+Sh73O25w4ktkvnxTpjckX857C7ACqZmrSLyM-NgowADpt-yA@mail.gmail.com>
+Subject: Re: [ovs-discuss] Double free in recent kernels after memleak fix
+To:     paulmck@kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Gregory Rose <gvrose8192@gmail.com>, bugs@openvswitch.org,
         Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         Netdev <netdev@vger.kernel.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         rcu <rcu@vger.kernel.org>
-Subject: Re: [ovs-discuss] Double free in recent kernels after memleak fix
-Message-ID: <20200807222015.GZ4295@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CA+Sh73MJhqs7PBk6OV2AhzVjYvE1foUQUnwP5DwWR44LHZRZ9w@mail.gmail.com>
- <58be64c5-9ae4-95ff-629e-f55e47ff020b@gmail.com>
- <CA+Sh73NeNr+UNZYDfD1nHUXCY-P8mT1vJdm0cEY4MPwo_0PtzQ@mail.gmail.com>
- <CAEXW_YSSL5+_DjtrYpFp35kGrem782nBF6HuVbgWJ_H3=jeX4A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSSL5+_DjtrYpFp35kGrem782nBF6HuVbgWJ_H3=jeX4A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 07, 2020 at 04:47:56PM -0400, Joel Fernandes wrote:
-> Hi,
-> Adding more of us working on RCU as well. Johan from another team at
-> Google discovered a likely issue in openswitch, details below:
-> 
-> On Fri, Aug 7, 2020 at 11:32 AM Johan Knöös <jknoos@google.com> wrote:
+On Fri, Aug 7, 2020 at 3:20 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Aug 07, 2020 at 04:47:56PM -0400, Joel Fernandes wrote:
+> > Hi,
+> > Adding more of us working on RCU as well. Johan from another team at
+> > Google discovered a likely issue in openswitch, details below:
 > >
-> > On Tue, Aug 4, 2020 at 8:52 AM Gregory Rose <gvrose8192@gmail.com> wrote:
+> > On Fri, Aug 7, 2020 at 11:32 AM Johan Kn=C3=B6=C3=B6s <jknoos@google.co=
+m> wrote:
 > > >
-> > >
-> > >
-> > > On 8/3/2020 12:01 PM, Johan Knöös via discuss wrote:
-> > > > Hi Open vSwitch contributors,
+> > > On Tue, Aug 4, 2020 at 8:52 AM Gregory Rose <gvrose8192@gmail.com> wr=
+ote:
 > > > >
-> > > > We have found openvswitch is causing double-freeing of memory. The
-> > > > issue was not present in kernel version 5.5.17 but is present in
-> > > > 5.6.14 and newer kernels.
 > > > >
-> > > > After reverting the RCU commits below for debugging, enabling
-> > > > slub_debug, lockdep, and KASAN, we see the warnings at the end of this
-> > > > email in the kernel log (the last one shows the double-free). When I
-> > > > revert 50b0e61b32ee890a75b4377d5fbe770a86d6a4c1 ("net: openvswitch:
-> > > > fix possible memleak on destroy flow-table"), the symptoms disappear.
-> > > > While I have a reliable way to reproduce the issue, I unfortunately
-> > > > don't yet have a process that's amenable to sharing. Please take a
-> > > > look.
 > > > >
-> > > > 189a6883dcf7 rcu: Remove kfree_call_rcu_nobatch()
-> > > > 77a40f97030b rcu: Remove kfree_rcu() special casing and lazy-callback handling
-> > > > e99637becb2e rcu: Add support for debug_objects debugging for kfree_rcu()
-> > > > 0392bebebf26 rcu: Add multiple in-flight batches of kfree_rcu() work
-> > > > 569d767087ef rcu: Make kfree_rcu() use a non-atomic ->monitor_todo
-> > > > a35d16905efc rcu: Add basic support for kfree_rcu() batching
-> 
-> Note that these reverts were only for testing the same code, because
-> he was testing 2 different kernel versions. One of them did not have
-> this set. So I asked him to revert. There's no known bug in the
-> reverted code itself. But somehow these patches do make it harder for
-> him to reproduce the issue.
-
-Perhaps they adjust timing?
-
-> > > > Thanks,
-> > > > Johan Knöös
-> > >
-> > > Let's add the author of the patch you reverted and the Linux netdev
-> > > mailing list.
-> > >
-> > > - Greg
+> > > > On 8/3/2020 12:01 PM, Johan Kn=C3=B6=C3=B6s via discuss wrote:
+> > > > > Hi Open vSwitch contributors,
+> > > > >
+> > > > > We have found openvswitch is causing double-freeing of memory. Th=
+e
+> > > > > issue was not present in kernel version 5.5.17 but is present in
+> > > > > 5.6.14 and newer kernels.
+> > > > >
+> > > > > After reverting the RCU commits below for debugging, enabling
+> > > > > slub_debug, lockdep, and KASAN, we see the warnings at the end of=
+ this
+> > > > > email in the kernel log (the last one shows the double-free). Whe=
+n I
+> > > > > revert 50b0e61b32ee890a75b4377d5fbe770a86d6a4c1 ("net: openvswitc=
+h:
+> > > > > fix possible memleak on destroy flow-table"), the symptoms disapp=
+ear.
+> > > > > While I have a reliable way to reproduce the issue, I unfortunate=
+ly
+> > > > > don't yet have a process that's amenable to sharing. Please take =
+a
+> > > > > look.
+> > > > >
+> > > > > 189a6883dcf7 rcu: Remove kfree_call_rcu_nobatch()
+> > > > > 77a40f97030b rcu: Remove kfree_rcu() special casing and lazy-call=
+back handling
+> > > > > e99637becb2e rcu: Add support for debug_objects debugging for kfr=
+ee_rcu()
+> > > > > 0392bebebf26 rcu: Add multiple in-flight batches of kfree_rcu() w=
+ork
+> > > > > 569d767087ef rcu: Make kfree_rcu() use a non-atomic ->monitor_tod=
+o
+> > > > > a35d16905efc rcu: Add basic support for kfree_rcu() batching
 > >
-> > I found we also sometimes get warnings from
-> > https://elixir.bootlin.com/linux/v5.5.17/source/kernel/rcu/tree.c#L2239
-> > under similar conditions even on kernel 5.5.17, which I believe may be
-> > related. However, it's much rarer and I don't have a reliable way of
-> > reproducing it. Perhaps 50b0e61b32ee890a75b4377d5fbe770a86d6a4c1 only
-> > increases the frequency of a pre-existing bug.
-> 
-> This is interesting, because I saw kbuild warn me recently [1] about
-> it as well. Though, I was actually intentionally messing with the
-> segcblist. I plan to debug it next week, but the warning itself is
-> unlikely to be caused by my patch IMHO (since it is slightly
-> orthogonal to what I changed).
-> 
-> [1] https://lore.kernel.org/lkml/20200720005334.GC19262@shao2-debian/
-> 
-> But then again, I have not heard reports of this warning firing. Paul,
-> has this come to your radar recently?
+> > Note that these reverts were only for testing the same code, because
+> > he was testing 2 different kernel versions. One of them did not have
+> > this set. So I asked him to revert. There's no known bug in the
+> > reverted code itself. But somehow these patches do make it harder for
+> > him to reproduce the issue.
 
-I have not seen any recent WARNs in rcu_do_batch().  I am guessing that
-this is one of the last two in that function?
+I'm not certain the frequency of the issue changes with and without
+these commits on 5.6.14, but at least the symptoms/definition of the
+issue changes. To clarify, this is what I've observed with different
+kernels:
+* 5.6.14:  "kernel BUG at mm/slub.c:304!". Easily reproducible.
+* 5.6.14 with the above RCU commits reverted: the warnings reported in
+my original email. Easily reproducible.
+* 5.6.14 with the above RCU commits reverted and
+50b0e61b32ee890a75b4377d5fbe770a86d6a4c1 reverted: no warnings
+observed (the frequency might be the same as on 5.5.17).
+* 5.5.17: warning at kernel/rcu/tree.c#L2239. Difficult to reproduce.
+Maybe a different root cause.
 
-If so, have you tried using CONFIG_DEBUG_OBJECTS_RCU_HEAD=y?  That Kconfig
-option is designed to help locate double frees via RCU.
-
-							Thanx, Paul
+> Perhaps they adjust timing?
