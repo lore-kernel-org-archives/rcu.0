@@ -2,86 +2,106 @@ Return-Path: <SRS0=sv12=BS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=BAYES_05,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94ADAC433E0
-	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 21:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9A36C433DF
+	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 22:09:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E6B5206C3
-	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 21:19:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPSE6jVA"
+	by mail.kernel.org (Postfix) with ESMTP id 9F489206C3
+	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 22:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1596924572;
+	bh=q4JBzf8Zsry7M1Qasj9UBYrOF27loPu9rc129Jvj2Aw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=CQy1OduTUZddq2yMv96QQlRZviwXKvZQ08dlGdGMXIB4YYvQk7HIXYpo0E2FcSEB8
+	 njbY5CM/mdsGmoQiqdlllK+gMftXijip/QOK/siWuNCibqXmC7LDGgRAxahL7KJKvC
+	 bZf6au2c+uLEBx4vlGaYNKCLMh/SpZ2zk11BhfUw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgHHVT6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 8 Aug 2020 17:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgHHVT5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 8 Aug 2020 17:19:57 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EAFC061756
-        for <rcu@vger.kernel.org>; Sat,  8 Aug 2020 14:19:57 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id i10so5754004ljn.2
-        for <rcu@vger.kernel.org>; Sat, 08 Aug 2020 14:19:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Efx0eQPWFDiEtI3TMpmnl3HA23YdCerjflULEQ2RJss=;
-        b=dPSE6jVA7mjuPzTNxz7AINP5VT9h+DzrV0Ec0uhoUIFyxSxyfHyAp47nfvYzzrM7A5
-         Y138f2WNlqWJmFImLQeDjvqPWOD25DpNemzzh0AtNYZCjtdtN8d/NFcczWPNkB1EDKt5
-         OnM99x2SaunnCXRk13Gtthe1ySAH6eAh3qiouksUx2RLxzhQlSLpBHekLUcV/ipvv0Y8
-         AlITUHXXf+FlK775AjSThvuq8UMLmyz8Ac24Im5TmYT9wMsPDyPiRN2SujuT62tO/4Br
-         9KGiDMxScnFMuoV/t3ntN4cmo9J/9b6To+2P5CjplNR/n8AHP6mxCEZklXKR3+oLHu3x
-         IFFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Efx0eQPWFDiEtI3TMpmnl3HA23YdCerjflULEQ2RJss=;
-        b=PbGk1zbo4RqzGBHasaHsVvX7LR6NrKm5XnVI3+1kv2CrKGWy+2kkPyWQx9ebJqnrZX
-         af4Uw702eNJb59L0EQSbbFbcbLD2DGrQKEAAbPhXnQfcUFgu0soVFCWWxUAEqV3IhkRd
-         KbMALuS5TgIQiiJ3aGlBk0FO6VFFuxshCTfYZImW2y+CT5XVuLsuuakTmWuu+MdxveZ2
-         Ywe1+f0MfJrTnxAiZK2lMX236PdQq4oJRN2cJLRXUBJ+G94M7pN7b6WEQDjnLHFd90CE
-         8Iwmx7h46yKbS9HOQmop8sqSlUO6boGRaQyV191Ho/rJPSflp0N05qLng+Lk33Orvs29
-         V6Tg==
-X-Gm-Message-State: AOAM532zsOpV/Kp3B1Kj7jy5Mpq1xw/HSbwtl1hJTOyDOJYYQcdf4m7L
-        XQsZuPHWjc5Fe0A6LQK9AXtVH/uxn5R1f7PCxQJQRUOg
-X-Google-Smtp-Source: ABdhPJz21rq8Ak4JsVQJb5F74WIDOqcskKjz11cW15qaQtUrPiZDql02VsNKHjEXg/W6jyt4FxAgQlM0yTvqyS2fhOY=
-X-Received: by 2002:a2e:8904:: with SMTP id d4mr8593999lji.400.1596921594787;
- Sat, 08 Aug 2020 14:19:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAF8i9mNFFrSqfoREnQoR-vrt+b_auq=xd9-yEP0eK-q1J-PvwA@mail.gmail.com>
- <CAF8i9mO3AcW+dnXvGsiJ7STu42OQEuqkTG0PGaCpZT=9OQq=Ug@mail.gmail.com>
-In-Reply-To: <CAF8i9mO3AcW+dnXvGsiJ7STu42OQEuqkTG0PGaCpZT=9OQq=Ug@mail.gmail.com>
-From:   William Tambe <tambewilliam@gmail.com>
-Date:   Sat, 8 Aug 2020 16:19:42 -0500
-Message-ID: <CAF8i9mMJCdadZkVDxCENhQbEVD4wmA1hU50nBo6AOhU16Y6cMg@mail.gmail.com>
+        id S1725988AbgHHWJc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 8 Aug 2020 18:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725950AbgHHWJc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 8 Aug 2020 18:09:32 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57FAE206C3;
+        Sat,  8 Aug 2020 22:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596924570;
+        bh=q4JBzf8Zsry7M1Qasj9UBYrOF27loPu9rc129Jvj2Aw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FDPVsDNXcM4GOS9vwLDGmyr+vyK6rg7HWCo52YPhkEeEvleBZ0hb3qkeIPbK0dwT3
+         pRNz64WZTU7nix7pyKJUqAt3xzS76qdxrBsYpfUjepJprZ5QLoybSXcpoELVd1sv2U
+         PsTJZSKtNAcix2dRHUeTxsG2prrE9gWIcOKEo3lU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 308693522636; Sat,  8 Aug 2020 15:09:30 -0700 (PDT)
+Date:   Sat, 8 Aug 2020 15:09:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     William Tambe <tambewilliam@gmail.com>
+Cc:     rcu@vger.kernel.org
 Subject: Re: delayed_put_task_struct() used through call_rcu() by
  put_task_struct_rcu_user() never gets called
-To:     rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200808220930.GD4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAF8i9mNFFrSqfoREnQoR-vrt+b_auq=xd9-yEP0eK-q1J-PvwA@mail.gmail.com>
+ <CAF8i9mO3AcW+dnXvGsiJ7STu42OQEuqkTG0PGaCpZT=9OQq=Ug@mail.gmail.com>
+ <CAF8i9mMJCdadZkVDxCENhQbEVD4wmA1hU50nBo6AOhU16Y6cMg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF8i9mMJCdadZkVDxCENhQbEVD4wmA1hU50nBo6AOhU16Y6cMg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Aug 8, 2020 at 4:17 PM William Tambe <tambewilliam@gmail.com> wrote:
->
-> On Sat, Aug 8, 2020 at 1:21 PM William Tambe <tambewilliam@gmail.com> wrote:
+On Sat, Aug 08, 2020 at 04:19:42PM -0500, William Tambe wrote:
+> On Sat, Aug 8, 2020 at 4:17 PM William Tambe <tambewilliam@gmail.com> wrote:
 > >
-> > I am having an issue in my kernel where delayed_put_task_struct() used
-> > through call_rcu() by put_task_struct_rcu_user() never gets called.
->
-> I am able to trace this issue to invoke_rcu_core() not getting called
-> in __call_rcu_core() due to rcu_is_watching() always returning true.
->
-> Any idea why I am seeing such an issue ?
-
-Also, the issue is not happening when using highres=off .
-
->
+> > On Sat, Aug 8, 2020 at 1:21 PM William Tambe <tambewilliam@gmail.com> wrote:
+> > >
+> > > I am having an issue in my kernel where delayed_put_task_struct() used
+> > > through call_rcu() by put_task_struct_rcu_user() never gets called.
 > >
-> > Any idea ?
+> > I am able to trace this issue to invoke_rcu_core() not getting called
+> > in __call_rcu_core() due to rcu_is_watching() always returning true.
+
+That in fact should be the common case.  Normally, you would be invoking
+call_rcu() and thus __call_rcu_core() from a context that RCU is watching.
+
+But what happens after that in __call_rcu_core()?
+
+> > Any idea why I am seeing such an issue ?
+
+One way would be if every single one of your call_rcu() invocations was
+done with irqs disabled.  And if the scheduling-clock interrupt was turned
+off.  And if the CPU in question never received any other interrupts.
+
+As in all of those things have to be in effect in order to indefinitely
+postpone the call to delayed_put_task_struct().  In this case, v5.8's
+__call_rcu_core() would always exit via this path:
+
+	if (irqs_disabled_flags(flags) || cpu_is_offline(smp_processor_id()))
+		return;
+
+> Also, the issue is not happening when using highres=off .
+
+Might highres=off be forcing the scheduling-clock interrupt to be
+enabled?
+
+> > > Any idea ?
+
+If you are running oldish kernels and the CPU in question is a nohz_full
+CPU, the scheduling-clock interrupt would be turned off.  (In more recent
+kernel versions, RCU will force it back on if things are not progressing.)
+
+To say more, I would need your exact kernel version (including any
+patches and any other out-of-tree source code) and your .config file.
+
+							Thanx, Paul
