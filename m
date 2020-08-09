@@ -1,116 +1,203 @@
-Return-Path: <SRS0=sv12=BS=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=RTr5=BT=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9F6DC433E0
-	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 23:37:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887FEC433E0
+	for <rcu@archiver.kernel.org>; Sun,  9 Aug 2020 02:31:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C2D920829
-	for <rcu@archiver.kernel.org>; Sat,  8 Aug 2020 23:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596929872;
-	bh=vHQKLvC3sJRLNXwWVjhFUagzEPs+oh0rPWSpdLoSuLI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=1kxgfXB5mbq9136OG4/Sy5AB8Yint9yejBYizfEgXf7Srmgct45D03KMf/xsg6dDv
-	 XbcocI+onethWr/wFBwgrsOPa17A9ot7P+yh3Dj8b//f7RfYGeH94GV8VXZelhEeTf
-	 Kgao72tdUYQkxhWhIIUD+oRzz76ru005nmRP8U5s=
+	by mail.kernel.org (Postfix) with ESMTP id 5D4862067D
+	for <rcu@archiver.kernel.org>; Sun,  9 Aug 2020 02:31:28 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vR5NpTCx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgHHXhu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 8 Aug 2020 19:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728082AbgHHXht (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 8 Aug 2020 19:37:49 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF424208E4;
-        Sat,  8 Aug 2020 23:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596929868;
-        bh=vHQKLvC3sJRLNXwWVjhFUagzEPs+oh0rPWSpdLoSuLI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttOVhPt2R6CAqhsqdawICCPK77OA9sOeNu1ole8lbYqThsZukXEmKO+NwXOBUSOFX
-         rN3vM5OurOJ0/BogOWcIpcsjYotwBRaPx8sR3eGwAz+NcqfiFBcIokSbK8HAg6ZBi6
-         EzadXFhvuLuwDao+I576oQ2R/b5oKfSCGrvuv1S0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 18/58] rcu/tree: Repeat the monitor if any free channel is busy
-Date:   Sat,  8 Aug 2020 19:36:44 -0400
-Message-Id: <20200808233724.3618168-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808233724.3618168-1-sashal@kernel.org>
-References: <20200808233724.3618168-1-sashal@kernel.org>
+        id S1726093AbgHICb2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 8 Aug 2020 22:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbgHICb1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 8 Aug 2020 22:31:27 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEF9C061756
+        for <rcu@vger.kernel.org>; Sat,  8 Aug 2020 19:31:26 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id h19so6030354ljg.13
+        for <rcu@vger.kernel.org>; Sat, 08 Aug 2020 19:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bRAjS3+tkvgTpiTNv/xLXAY72qAg5x+du22av1rW7q8=;
+        b=vR5NpTCxEoMmixkPF/mcwDEwFIRz2bqGI1IuRX3K6Gw6IfrSfLljGZT7pRyFMD+0t9
+         FHbq4A5X77kzuL27LMH+xGYaT6JNEtNmeUNkoSsbf6w1SAS3BUc3EW7tBCoiX/9rF/Cn
+         M35XyhwhPLM2BVDgE/btz/61WXkXy6KE56WlZOT6Tjs75xRE2h+W20rtyWJ7cPF0eVIU
+         pfclrFMmDW3iesfoiwJyCJAX6WQzGa3P897jbEK1uaaHT40x47GBOgNZo2S5Krs7lBNa
+         vAB3c9RPRMgrGBh9rs0ALEi4gT4vd3sviyjd/WlG3us3ijDIeGVoYR25FM3NDwcSqmYk
+         1uCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bRAjS3+tkvgTpiTNv/xLXAY72qAg5x+du22av1rW7q8=;
+        b=mPOBHatLQrZF3xKw0lDivX41Ro+o5ovK8pCaRQNJq/9ra+kkJ8a4BpbfVzBDWQqw0N
+         dNInt3yytB7PiC0q7Bxo9hWCaVxjuMJABP4LMF+7u8xglGmuuZX0OHmOTdZLPLLu7Lhm
+         qwhrzGpBt289o1XVTgHA1GDRf+BI/wppETYYGi3s3BMl8ukjhGozSrxDM46OFBJdAHy7
+         ZMSAJlYUwg81iC0sZ+/Sw60exSJUBBrSoaggTHLc5o14nclljzrZtU/qBSnKmnMduAa7
+         8LhGfvbBGT49Tnf8OKngZXDfFoG+/nuE2i9SHTbcqQ671oBa5mn5lFCfGBndxq9rTPHh
+         GVng==
+X-Gm-Message-State: AOAM5333JUW6Cw5SVdTBiSSb+Wy9scqfJqoIbq4FMa2ZHQn8MHU9C97J
+        kcXjOp+z8XWLzqxbuTuyQh+2OSGJCEP4P32W5optveyS
+X-Google-Smtp-Source: ABdhPJzocR7x9fTIyN5YRfVMlroxnukyK4wnTxZMK7MxlSDM0nNUFC/kulhyPt5fammpEfS+A3iNelqpUyGJPpiDUhc=
+X-Received: by 2002:a2e:9396:: with SMTP id g22mr10287872ljh.446.1596940283934;
+ Sat, 08 Aug 2020 19:31:23 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <CAF8i9mNFFrSqfoREnQoR-vrt+b_auq=xd9-yEP0eK-q1J-PvwA@mail.gmail.com>
+ <CAF8i9mO3AcW+dnXvGsiJ7STu42OQEuqkTG0PGaCpZT=9OQq=Ug@mail.gmail.com>
+ <CAF8i9mMJCdadZkVDxCENhQbEVD4wmA1hU50nBo6AOhU16Y6cMg@mail.gmail.com> <20200808220930.GD4295@paulmck-ThinkPad-P72>
+In-Reply-To: <20200808220930.GD4295@paulmck-ThinkPad-P72>
+From:   William Tambe <tambewilliam@gmail.com>
+Date:   Sat, 8 Aug 2020 21:31:11 -0500
+Message-ID: <CAF8i9mNTYhbOsA5QScM6EAZZz70Fa40JoTitxzLB-xoez5nLzw@mail.gmail.com>
+Subject: Re: delayed_put_task_struct() used through call_rcu() by
+ put_task_struct_rcu_user() never gets called
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+On Sat, Aug 8, 2020 at 5:09 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Sat, Aug 08, 2020 at 04:19:42PM -0500, William Tambe wrote:
+> > On Sat, Aug 8, 2020 at 4:17 PM William Tambe <tambewilliam@gmail.com> wrote:
+> > >
+> > > On Sat, Aug 8, 2020 at 1:21 PM William Tambe <tambewilliam@gmail.com> wrote:
+> > > >
+> > > > I am having an issue in my kernel where delayed_put_task_struct() used
+> > > > through call_rcu() by put_task_struct_rcu_user() never gets called.
+> > >
+> > > I am able to trace this issue to invoke_rcu_core() not getting called
+> > > in __call_rcu_core() due to rcu_is_watching() always returning true.
+>
+> That in fact should be the common case.  Normally, you would be invoking
+> call_rcu() and thus __call_rcu_core() from a context that RCU is watching.
+>
+> But what happens after that in __call_rcu_core()?
+>
+> > > Any idea why I am seeing such an issue ?
+>
+> One way would be if every single one of your call_rcu() invocations was
+> done with irqs disabled.  And if the scheduling-clock interrupt was turned
+> off.  And if the CPU in question never received any other interrupts.
+>
+> As in all of those things have to be in effect in order to indefinitely
+> postpone the call to delayed_put_task_struct().  In this case, v5.8's
+> __call_rcu_core() would always exit via this path:
+>
+>         if (irqs_disabled_flags(flags) || cpu_is_offline(smp_processor_id()))
+>                 return;
+>
+> > Also, the issue is not happening when using highres=off .
+>
+> Might highres=off be forcing the scheduling-clock interrupt to be
+> enabled?
+>
+> > > > Any idea ?
+>
+> If you are running oldish kernels and the CPU in question is a nohz_full
+> CPU, the scheduling-clock interrupt would be turned off.  (In more recent
+> kernel versions, RCU will force it back on if things are not progressing.)
 
-[ Upstream commit 594aa5975b9b5cfe9edaec06170e43b8c0607377 ]
+I am running v5.8.
 
-It is possible that one of the channels cannot be detached
-because its free channel is busy and previously queued data
-has not been processed yet. On the other hand, another
-channel can be successfully detached causing the monitor
-work to stop.
+I further observed that without highres=off, the function
+tick_nohz_handler() is not getting called, hence
+update_process_times() and rcu_sched_clock_irq() are not getting
+called.
 
-Prevent that by rescheduling the monitor work if there are
-any channels in the pending state after a detach attempt.
+How can I debug why tick_nohz_handler() is not getting called when
+booting without highres=off ?
 
-Fixes: 34c881745549e ("rcu: Support kfree_bulk() interface in kfree_rcu()")
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tree.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+The timer interrupt is implemented as follow:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d9a49cd6065a2..a3aa129cc8f5f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2895,7 +2895,7 @@ static void kfree_rcu_work(struct work_struct *work)
- static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- {
- 	struct kfree_rcu_cpu_work *krwp;
--	bool queued = false;
-+	bool repeat = false;
- 	int i;
- 
- 	lockdep_assert_held(&krcp->lock);
-@@ -2931,11 +2931,14 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 			 * been detached following each other, one by one.
- 			 */
- 			queue_rcu_work(system_wq, &krwp->rcu_work);
--			queued = true;
- 		}
-+
-+		/* Repeat if any "free" corresponding channel is still busy. */
-+		if (krcp->bhead || krcp->head)
-+			repeat = true;
- 	}
- 
--	return queued;
-+	return !repeat;
- }
- 
- static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
--- 
-2.25.1
+void timer_intr (void) {
+     arch_local_irq_disable();
+     irq_enter();
+     struct clock_event_device *e =
+     per_cpu(clkevtdevs, smp_processor_id());
+     e->event_handler(e);
+    irq_exit();
+    arch_local_irq_enable();
+}
 
+>
+> To say more, I would need your exact kernel version (including any
+> patches and any other out-of-tree source code) and your .config file.
+
+I am using v5.8; currently unable to release out-of-tree source.
+
+The defconfig is as follow:
+CONFIG_NO_HZ_IDLE=y
+CONFIG_HIGH_RES_TIMERS=y
+CONFIG_PREEMPT=y
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
+CONFIG_KALLSYMS_ALL=y
+CONFIG_USERFAULTFD=y
+CONFIG_EMBEDDED=y
+# CONFIG_SLUB_DEBUG is not set
+CONFIG_SIMHDD=y
+# CONFIG_MQ_IOSCHED_DEADLINE is not set
+# CONFIG_MQ_IOSCHED_KYBER is not set
+CONFIG_BINFMT_MISC=y
+CONFIG_NET=y
+CONFIG_PACKET=y
+CONFIG_PACKET_DIAG=y
+CONFIG_UNIX=y
+CONFIG_UNIX_DIAG=y
+CONFIG_INET=y
+CONFIG_INET_UDP_DIAG=y
+CONFIG_INET_RAW_DIAG=y
+CONFIG_INET_DIAG_DESTROY=y
+# CONFIG_IPV6 is not set
+CONFIG_BRIDGE=y
+CONFIG_NETLINK_DIAG=y
+# CONFIG_WIRELESS is not set
+# CONFIG_ETHTOOL_NETLINK is not set
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+CONFIG_BLK_DEV_LOOP=y
+CONFIG_VT_HW_CONSOLE_BINDING=y
+# CONFIG_LEGACY_PTYS is not set
+# CONFIG_VGA_CONSOLE is not set
+# CONFIG_VIRTIO_MENU is not set
+# CONFIG_VHOST_MENU is not set
+CONFIG_EXT4_FS=y
+CONFIG_TMPFS=y
+CONFIG_TMPFS_POSIX_ACL=y
+# CONFIG_MISC_FILESYSTEMS is not set
+CONFIG_NFS_FS=y
+CONFIG_NFS_V3_ACL=y
+CONFIG_NFS_V4=y
+CONFIG_NFS_V4_1=y
+CONFIG_DEBUG_INFO=y
+CONFIG_GDB_SCRIPTS=y
+CONFIG_DEBUG_KMEMLEAK=y
+CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF=y
+CONFIG_SCHED_STACK_END_CHECK=y
+CONFIG_DEBUG_MEMORY_INIT=y
+CONFIG_PANIC_TIMEOUT=1
+CONFIG_SOFTLOCKUP_DETECTOR=y
+CONFIG_WQ_WATCHDOG=y
+# CONFIG_RCU_TRACE is not set
+CONFIG_RCU_EQS_DEBUG=y
+# CONFIG_RUNTIME_TESTING_MENU is not set
+CONFIG_MEMTEST=y
+
+>
+>                                                         Thanx, Paul
