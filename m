@@ -2,152 +2,184 @@ Return-Path: <SRS0=7B7l=BU=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54A71C433DF
-	for <rcu@archiver.kernel.org>; Mon, 10 Aug 2020 19:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 304F7C433E4
+	for <rcu@archiver.kernel.org>; Mon, 10 Aug 2020 19:26:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 31ECA22BF3
-	for <rcu@archiver.kernel.org>; Mon, 10 Aug 2020 19:25:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE5C72080C
+	for <rcu@archiver.kernel.org>; Mon, 10 Aug 2020 19:26:05 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TQhmmfhV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729474AbgHJTZc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Aug 2020 15:25:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730039AbgHJTZ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:25:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71F94AE24;
-        Mon, 10 Aug 2020 19:25:46 +0000 (UTC)
-Date:   Mon, 10 Aug 2020 21:25:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200810192525.GG4773@dhcp22.suse.cz>
-References: <20200809204354.20137-1-urezki@gmail.com>
- <20200809204354.20137-2-urezki@gmail.com>
- <20200810123141.GF4773@dhcp22.suse.cz>
- <20200810160739.GA29884@pc636>
+        id S1729713AbgHJT0E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Aug 2020 15:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730361AbgHJTZ4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:25:56 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EC8C061788
+        for <rcu@vger.kernel.org>; Mon, 10 Aug 2020 12:25:56 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id l13so4802144qvt.10
+        for <rcu@vger.kernel.org>; Mon, 10 Aug 2020 12:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6NK05E7+a+qY74gt/Y7cgaAf4SZZd8DleX0uQk2zvrs=;
+        b=TQhmmfhVaS669gpgbmJwtN8zKhBJrHFRetxkFoyMGpTXDsCSiIj8FIUKwG18hC6REk
+         WGkNqZPxoSQOlx3g1CzHmp/CUGmIZDygfWfvPr8Rz1zQkzZISdn9BfkM0PFqGcRHQyCG
+         OurWHcPnB0OF7wRSEFPzecRXkd7EV5+xWLNw0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6NK05E7+a+qY74gt/Y7cgaAf4SZZd8DleX0uQk2zvrs=;
+        b=kBruRFoWizlJnxQ3MaGrnqwrREjSaZNy0nx5Y+1/xYwdWa+PJmaszL+PKOZ41pJGGN
+         69wQ3DHjZ9eU9lu/qBW/4M9Ck+kE2TaMXeuoK8vE5HciOY/Wa8YIdulu+jyQ3YplpH/j
+         n5H+OM/FUsCMZ2aROVDzqpjlVSvnVZ5dEB5hUTKcbsM++Jac2rLeBmy7sG2lZVIflrMD
+         C5qei14CtryG8inXTtaozW3hR5SUTZdngVzmwg1tTLIfhl+AcTwIlISW9O4lOUQTG+Y2
+         FvKWPwLi/sXjraNcpQuDmGLufvc0LTIanw4NYVtW8igpPYloNwLnFl8OsLs4JDnXXrwI
+         5MPA==
+X-Gm-Message-State: AOAM5324VKFAB5qOglSsZj9kGtL2u0ae03L/hTAeBcnEW0MPnPXpvgCb
+        qK+n8SDvxKzx+GI340szew11ag==
+X-Google-Smtp-Source: ABdhPJx/vyIwl+B3fOFDD/Vgmeqhfn1LxXfLfu/hHAOEA9OP+Z6H4TYDhWBp1/KSnU/UR2uNvK+NIA==
+X-Received: by 2002:ad4:54c6:: with SMTP id j6mr30088230qvx.126.1597087555155;
+        Mon, 10 Aug 2020 12:25:55 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id 128sm14479207qkk.101.2020.08.10.12.25.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 12:25:54 -0700 (PDT)
+Date:   Mon, 10 Aug 2020 15:25:54 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        peterz@infradead.org, Randy Dunlap <rdunlap@infradead.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        tglx@linutronix.de, vineethrp@gmail.com
+Subject: Re: [PATCH v4 1/5] rcu/tree: Add a warning if CPU being onlined did
+ not report QS already
+Message-ID: <20200810192554.GD2865655@google.com>
+References: <20200807170722.2897328-1-joel@joelfernandes.org>
+ <20200807170722.2897328-2-joel@joelfernandes.org>
+ <20200810154654.GJ4295@paulmck-ThinkPad-P72>
+ <20200810173931.GB2253395@google.com>
+ <20200810175717.GM4295@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200810160739.GA29884@pc636>
+In-Reply-To: <20200810175717.GM4295@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon 10-08-20 18:07:39, Uladzislau Rezki wrote:
-> > On Sun 09-08-20 22:43:53, Uladzislau Rezki (Sony) wrote:
-> > [...]
-> > > Limitations and concerns (Main part)
-> > > ====================================
-> > > The current memmory-allocation interface presents to following
-> > > difficulties that this patch is designed to overcome:
+On Mon, Aug 10, 2020 at 10:57:17AM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 10, 2020 at 01:39:31PM -0400, Joel Fernandes wrote:
+> > On Mon, Aug 10, 2020 at 08:46:54AM -0700, Paul E. McKenney wrote:
+> > > On Fri, Aug 07, 2020 at 01:07:18PM -0400, Joel Fernandes (Google) wrote:
+> > > > Currently, rcu_cpu_starting() checks to see if the RCU core expects a
+> > > > quiescent state from the incoming CPU.  However, the current interaction
+> > > > between RCU quiescent-state reporting and CPU-hotplug operations should
+> > > > mean that the incoming CPU never needs to report a quiescent state.
+> > > > First, the outgoing CPU reports a quiescent state if needed.  Second,
+> > > > the race where the CPU is leaving just as RCU is initializing a new
+> > > > grace period is handled by an explicit check for this condition.  Third,
+> > > > the CPU's leaf rcu_node structure's ->lock serializes these checks.
+> > > > 
+> > > > This means that if rcu_cpu_starting() ever feels the need to report
+> > > > a quiescent state, then there is a bug somewhere in the CPU hotplug
+> > > > code or the RCU grace-period handling code.  This commit therefore
+> > > > adds a WARN_ON_ONCE() to bring that bug to everyone's attention.
+> > > > 
+> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > ---
+> > > >  kernel/rcu/tree.c | 9 ++++++++-
+> > > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 65e1b5e92319..a49fa3b60faa 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3996,7 +3996,14 @@ void rcu_cpu_starting(unsigned int cpu)
+> > > >  	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+> > > >  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+> > > >  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+> > > > -	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
+> > > > +
+> > > > +	/*
+> > > > +	 * XXX: The following rcu_report_qs_rnp() is redundant. If the below
+> > > > +	 * warning does not fire, consider replacing it with the "else" block,
+> > > > +	 * by June 2021 or so (while keeping the warning). Refer to RCU's
+> > > > +	 * Requirements documentation for the rationale.
 > > > 
-> > > a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-> > >    complain about violation("BUG: Invalid wait context") of the
-> > >    nesting rules. It does the raw_spinlock vs. spinlock nesting
-> > >    checks, i.e. it is not legal to acquire a spinlock_t while
-> > >    holding a raw_spinlock_t.
+> > > Let's suppose that this change is made, and further that in a year or
+> > > two the "if" statement below is replaced with its "else" block.
 > > > 
-> > >    Internally the kfree_rcu() uses raw_spinlock_t(in rcu-dev branch)
-> > >    whereas the "page allocator" internally deals with spinlock_t to
-> > >    access to its zones. The code also can be broken from higher level
-> > >    of view:
-> > >    <snip>
-> > >        raw_spin_lock(&some_lock);
-> > >        kfree_rcu(some_pointer, some_field_offset);
-> > >    <snip>
+> > > Now let's suppose that (some years after that) a hard-to-trigger bug
+> > > makes its way into RCU's CPU-hotplug code that would have resulted in
+> > > the WARN_ON_ONCE() triggering, but that this bug turns out to be not so
+> > > hard to trigger in certain large production environments.
+> > > 
+> > > Let's suppose further that you have moved on to where you are responsible
+> > > for one of these large production environments.  How would this
+> > > hypothetical RCU/CPU-hotplug bug manifest?
 > > 
-> > Is there any fundamental problem to make zone raw_spin_lock?
+> > It could manifest as an RCU stall (after the warning triggers) since RCU
+> > would wait forever.
 > > 
-> Good point. Converting a regular spinlock to the raw_* variant can solve 
-> an issue and to me it seems partly reasonable. Because there are other
-> questions if we do it:
+> > Were you thinking it is not worth doing this? I thought we wanted to remove
+> > the reundant rcu_report_qs_rnp here to solidify everyone's understanding of
+> > the code and fail early if there's something misunderstood (since such
+> > misunderstanding could mean there are other hidden bugs somewhere). The
+> > counter-argument to that being, making the code robust is more important for
+> > the large production failure scenario where failures are costly.
 > 
-> a) what to do with kswapd and "wake-up path" that uses sleepable lock:
->     wakeup_kswapd() -> wake_up_interruptible(&pgdat->kswapd_wait).
+> The benefits of removing code that is in theory redundant was my thought
+> at one point, but sleeping on this several times since has made me much
+> less favorable to this change.  And perhaps my experiences with my new
+> employer have affected my views on this as well.  You never know!  ;-)
 
-If there is no RT friendly variant for waking up process from the atomic
-context then we might need to special case this for the RT tree.
+Can we just keep the warning then, and delete the comments to revisit?
 
-> b) How RT people reacts on it? I guess they will no be happy.
+IMHO a comment saying this rcu_report_qs_rnp() is not necessary here but is
+done anyway, would be quite useful to a code reader, (with appropriate
+comments to point to RCU requirements section and the added warning) :-)
 
-zone->lock should be held for a very limited amount of time.
+thanks,
 
-> As i described before, calling the __get_free_page(0) with 0 as argument
-> will solve the (a). How correctly is it? From my point of view the logic
-> that bypass the wakeup path should be explicitly defined.
-
-gfp_mask == 0 is GFP_NOWAIT (aka an atomic allocation request) which
-doesn't wake up kswapd. So if the wakeup is a problem then this would be
-a way to go.
-
-> Or we can enter the allocator with (__GFP_HIGH|__GFP_ATOMIC) that bypass
-> the __GFP_KSWAPD_RECLAIM as well.
-
-This would be an alternative which consumes memory reserves. Is this
-really needed for the particular case?
+ - Joel
 
 > 
-> Any thoughts here? Please comment.
+> 							Thanx, Paul
 > 
-> Having proposed flag will not heart RT latency and solve all concerns.
-> 
-> > > b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-> > >    is converted into sleepable variant. Invoking the page allocator from
-> > >    atomic contexts leads to "BUG: scheduling while atomic".
+> > thanks,
 > > 
-> > [...]
+> >  - Joel
 > > 
-> > > Proposal
-> > > ========
-> > > 1) Make GFP_* that ensures that the allocator returns NULL rather
-> > > than acquire its own spinlock_t. Having such flag will address a and b
-> > > limitations described above. It will also make the kfree_rcu() code
-> > > common for RT and regular kernel, more clean, less handling corner
-> > > cases and reduce the code size.
 > > 
-> > I do not think this is a good idea. Single purpose gfp flags that tend
-> > to heavily depend on the current implementation of the page allocator
-> > have turned out to be problematic. Users used to misunderstand their
-> > meaning resulting in a lot of abuse which was not trivial to remove.
-> > This flag seem to fall into exactly this sort of category. If there is a
-> > problem in nesting then that should be addressed rather than a new flag
-> > exported IMHO. If that is absolutely not possible for some reason then
-> > we can try to figure out what to do but that really need a very strong
-> > justification.
-> > 
-> The problem that i see is we can not use the page allocator from atomic
-> contexts, what is our case:
-> 
-> <snip>
->     local_irq_save(flags) or preempt_disable() or raw_spinlock();
->     __get_free_page(GFP_ATOMIC);
-> <snip>
-> 
-> So if we can convert the page allocator to raw_* lock it will be appreciated,
-> at least from our side, IMHO, not from RT one. But as i stated above we need
-> to sort raised questions out if converting is done.
-> 
-> What is your view?
-
-To me it would make more sense to support atomic allocations also for
-the RT tree. Having both GFP_NOWAIT and GFP_ATOMIC which do not really
-work for atomic context in RT sounds subtle and wrong.
--- 
-Michal Hocko
-SUSE Labs
+> > > 							Thanx, Paul
+> > > 
+> > > > +	 */
+> > > > +	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
+> > > >  		rcu_disable_urgency_upon_qs(rdp);
+> > > >  		/* Report QS -after- changing ->qsmaskinitnext! */
+> > > >  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+> > > > -- 
+> > > > 2.28.0.236.gb10cc79966-goog
+> > > > 
