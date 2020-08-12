@@ -3,160 +3,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5428CC433DF
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDFCAC433DF
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:43:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 245AA2076C
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:13:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA96F2080C
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:43:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aHoygjWd";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9gP+Z/SD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AGwNrYDo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgHLANa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Aug 2020 20:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S1726483AbgHLAnY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Aug 2020 20:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgHLAN3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Aug 2020 20:13:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B7AC06174A;
-        Tue, 11 Aug 2020 17:13:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597191205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=9o2xocBmMKWGpKJOBWpYqCTq3dBqHfmmP5MZZ+TNn/k=;
-        b=aHoygjWdGZLlY8I2asIR9AK7/L1qaNlfnKbQF77c8rvEbH0zI4dH5SbFfMnzz+pShD31Hr
-        6FTMVMX69bLPxLQnGDRnq7P6FVSUcQ/r8et1bEoz9mgSTLYT/9ZuvEr83H8wsJLHwcHPw6
-        X0QM/TzIG1LZN3aGLkFcg5D8zadEXmq9q5RsnRkRa69xeYPS5W3ZfhbzwO8Gc1tiHtnve+
-        caiGNa0gySL2o171pqgUUT5lZTehMRpGl1Zvd+xLXYmYcR/N0e2Hu5gikapcZFIOJ+3bU+
-        xMQj0rNpG52+nR6yxYlQv+y3f9AVbBxYCE7fuJJGEsO86iRJFA07Odr+1msthA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597191205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=9o2xocBmMKWGpKJOBWpYqCTq3dBqHfmmP5MZZ+TNn/k=;
-        b=9gP+Z/SDK+tLZqCqOYjUwckIMb00/9iARm/1+28b1XjOnsTDRjNgOuOtlQi5M96ompf4ZV
-        7sTn42mKQdyuS2Bg==
-To:     paulmck@kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
-Date:   Wed, 12 Aug 2020 02:13:25 +0200
-Message-ID: <874kp87mca.fsf@nanos.tec.linutronix.de>
+        with ESMTP id S1726143AbgHLAnY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Aug 2020 20:43:24 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2A4C06174A;
+        Tue, 11 Aug 2020 17:43:23 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id a5so746899ioa.13;
+        Tue, 11 Aug 2020 17:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0gxCB4LFN53sqzraQKq3UjqnGVcpUsM6dzmdWjPEs14=;
+        b=AGwNrYDol6Qtfab4zHV6aV/y3MisWBpx2N2CEzY2APq2464W0eEnqfBhCjmuAZjADG
+         Js1E0cqmmu811mG/+yLmTDePrk1iyuykjY+G34KjJvmHQtTOKXeN6oih4kJFPEGky2Vw
+         E898E+UijVqxBPtt/65qEAXA9SO+Fa2/0SZ6/jQw6MVmnEh9Ylte4cxtiyPkoO7ZBRPH
+         WdaeRNymra27WBeaMTdyhZJZbeWNXvcns8YTLopiZNacTgL8l9w+bFaINyCA7JLrzmAu
+         5Y5l0Cvqu/ZMXCZuiRuNwjDlQmrqWOpH2GXsS1vYiyFaVw8lCcdyni2y4XZfxJmbpz02
+         NnNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0gxCB4LFN53sqzraQKq3UjqnGVcpUsM6dzmdWjPEs14=;
+        b=LLrCT2OeQwuo63gALe9mayXM9y6mpTy17VCR/ym+ibjnUuisyRg3YMyJnQSiDeEtf5
+         ptAsQKqCIwdaxHyOk85bJpPYHSN7+kRsK/ZSkdPnvo72bsWUW3GMUjqjgNLpHyWphX6G
+         2k0wMbqvV0zVQgydozs2SPMLx3cJhBCF+XsW7ML2w9kfsU6BZ6jZbYbO+80vNNcGkbJc
+         STUMqQ57GIT/ks7rP6/EAAPFdZVUrEODshmn4ltO/pR1sDoBYIGD61d4luv6mA1tTvcU
+         DlpZG3l0sFPboPU1YdCCD0Pse/S1abCwCfk03aNu6aQRDaEaLgcQWfIYp45Gxbx6v4Jp
+         LBAA==
+X-Gm-Message-State: AOAM533sbPTTiNTUIwDo84GUdGopULDwK4IXtT6zgEAK8CmT3ZARXg4b
+        7dg9jTZLJ1mrLay2UjCXxkVqLpRn1R/hXGYd0ps=
+X-Google-Smtp-Source: ABdhPJylObqqKs64qR0L8Wbrv0/Una9oMdhXKPYux6BBMYXRA+z0MUNupme7j/RsGqRvs58DUmc2GIXhcgrHHwyPiz8=
+X-Received: by 2002:a05:6602:1d6:: with SMTP id w22mr9619879iot.64.1597193002988;
+ Tue, 11 Aug 2020 17:43:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CA+Sh73MJhqs7PBk6OV2AhzVjYvE1foUQUnwP5DwWR44LHZRZ9w@mail.gmail.com>
+ <58be64c5-9ae4-95ff-629e-f55e47ff020b@gmail.com> <CA+Sh73NeNr+UNZYDfD1nHUXCY-P8mT1vJdm0cEY4MPwo_0PtzQ@mail.gmail.com>
+ <CAEXW_YSSL5+_DjtrYpFp35kGrem782nBF6HuVbgWJ_H3=jeX4A@mail.gmail.com>
+ <20200807222015.GZ4295@paulmck-ThinkPad-P72> <20200810200859.GF2865655@google.com>
+ <20200810202813.GP4295@paulmck-ThinkPad-P72> <CAMDZJNWrPf8AkZE8496g6v5GXvLUbQboXeAhHy=1U1Qhemo8bA@mail.gmail.com>
+ <CAM_iQpXBHSYdqb8Q3ifG8uwa1YfJmGBexHC2BusRoshU0M5X5g@mail.gmail.com>
+ <CAMDZJNU5Cpkcrn5sy=7u_vTGcdMjDfCqzSCJ0WLk-3M5RROh=Q@mail.gmail.com>
+ <CAM_iQpVoHtQn07j9wHp7Qj3XkU8SYFdYzaexx6jeBH5mqYNw6A@mail.gmail.com> <CAMDZJNX2G2dOkqFv52ztBMM5CZCY4b0rSz-knv4GY2JP9kbDmg@mail.gmail.com>
+In-Reply-To: <CAMDZJNX2G2dOkqFv52ztBMM5CZCY4b0rSz-knv4GY2JP9kbDmg@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 11 Aug 2020 17:43:11 -0700
+Message-ID: <CAM_iQpWTdfrPvYQNa5sbq44+a0Qu3R4qKu=dmErsHQMOJGXuOw@mail.gmail.com>
+Subject: Re: [ovs-discuss] Double free in recent kernels after memleak fix
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        =?UTF-8?B?Sm9oYW4gS27DtsO2cw==?= <jknoos@google.com>,
+        Gregory Rose <gvrose8192@gmail.com>,
+        bugs <bugs@openvswitch.org>, Netdev <netdev@vger.kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-> Hence Ulad's work on kfree_rcu().  The approach is to allocate a
-> page-sized array to hold all the pointers, then fill in the rest of these
-> pointers on each subsequent kfree_rcu() call.  These arrays of pointers
-> also allows use of kfree_bulk() instead of kfree(), which can improve
-> performance yet more.  It is no big deal if kfree_rcu()'s allocation
-> attempts fail occasionally because it can simply fall back to the old
-> linked-list approach.  And given that the various lockless caches in
-> the memory allocator are almost never empty, in theory life is good.
-
-Of course, it's always the damned reality which ruins the fun.
-
-> But in practice, mainline now has CONFIG_PROVE_RAW_LOCK_NESTING,
-> and for good reason -- this Kconfig option makes it at least a
-> little bit harder for mainline developers to mess up RT.  But with
-> CONFIG_PROVE_RAW_LOCK_NESTING=y and lockdep enabled, mainline will now
-> sometimes complain if you invoke kfree_rcu() while holding a raw spinlock.
-> This happens when kfree_rcu() needs to invoke the memory allocator and
-> the memory allocator's caches are empty, thus resulting in the memory
-> allocator attempting to acquire a non-raw spinlock.
-
-Right.
-
-> Because kfree_rcu() has a fallback available (just using the old linked
-> list), kfree_rcu() would work well given a way to tell the memory
-> allocator to return NULL instead of acquiring a non-raw spinlock.
-> Which is exactly what Ulad's recent patches are intended to do.
-
-That much I understood, but I somehow failed to figure the why out
-despite the elaborate changelog. 2 weeks of 30+C seem to have cooked my
-brain :)
-
-> Since then, this thread has discussed various other approaches,
-> including using existing combinations of GFP_ flags, converting
-> the allocator's zone lock to a raw spinlock, and so on.
+On Mon, Aug 10, 2020 at 10:59 PM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
 >
-> Does that help, or am I missing the point of your question?
+> On Tue, Aug 11, 2020 at 12:08 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > On Mon, Aug 10, 2020 at 8:27 PM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
+> > >
+> > > On Tue, Aug 11, 2020 at 10:24 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > >
+> > > > On Mon, Aug 10, 2020 at 6:16 PM Tonghao Zhang <xiangxia.m.yue@gmail.com> wrote:
+> > > > > Hi all, I send a patch to fix this. The rcu warnings disappear. I
+> > > > > don't reproduce the double free issue.
+> > > > > But I guess this patch may address this issue.
+> > > > >
+> > > > > http://patchwork.ozlabs.org/project/netdev/patch/20200811011001.75690-1-xiangxia.m.yue@gmail.com/
+> > > >
+> > > > I don't see how your patch address the double-free, as we still
+> > > > free mask array twice after your patch: once in tbl_mask_array_realloc()
+> > > > and once in ovs_flow_tbl_destroy().
+> > > Hi Cong.
+> > > Before my patch, we use the ovsl_dereference
+> > > (rcu_dereference_protected) in the rcu callback.
+> > > ovs_flow_tbl_destroy
+> > > ->table_instance_destroy
+> > > ->table_instance_flow_free
+> > > ->flow_mask_remove
+> > > ASSERT_OVSL(will print warning)
+> > > ->tbl_mask_array_del_mask
+> > > ovsl_dereference(rcu usage warning)
+> > >
+> >
+> > I understand how your patch addresses the RCU annotation issue,
+> > which is different from double-free.
+> >
+> >
+> > > so we should invoke the table_instance_destroy or others under
+> > > ovs_lock to avoid (ASSERT_OVSL and rcu usage warning).
+> >
+> > Of course... I never doubt it.
+> >
+> >
+> > > with this patch, we reallocate the mask_array under ovs_lock, and free
+> > > it in the rcu callback. Without it, we  reallocate and free it in the
+> > > rcu callback.
+> > > I think we may fix it with this patch.
+> >
+> > Does it matter which context tbl_mask_array_realloc() is called?
+> > Even with ovs_lock, we can still double free:
+> >
+> > ovs_lock()
+> > tbl_mask_array_realloc()
+> >  => call_rcu(&old->rcu, mask_array_rcu_cb);
+> > ovs_unlock()
+> > ...
+> > ovs_flow_tbl_destroy()
+> >  => call_rcu(&old->rcu, mask_array_rcu_cb);
+> >
+> > So still twice, right? To fix the double-free, we have to eliminate one
+> > of them, don't we? ;)
+> No
+> Without my patch: in rcu callback:
+> ovs_flow_tbl_destroy
+> ->call_rcu(&ma->rcu, mask_array_rcu_cb);
+> ->table_instance_destroy
+> ->tbl_mask_array_realloc(Shrink the mask array if necessary)
+> ->call_rcu(&old->rcu, mask_array_rcu_cb);
+>
+> With the patch:
+> ovs_lock
+> table_instance_flow_flush (free the flow)
+> tbl_mask_array_realloc(shrink the mask array if necessary, will free
+> mask_array in rcu(mask_array_rcu_cb) and rcu_assign_pointer new
+> mask_array)
+> ovs_unlock
+>
+> in rcu callback:
+> ovs_flow_tbl_destroy
+> call_rcu(&ma->rcu, mask_array_rcu_cb);(that is new mask_array)
 
-Yes, that helps so far that I understand what the actual problem is. It
-does not really help to make me more happy. :)
+Ah, I see, I thought the mask array was cached in caller and passed along,
+it is in fact refetched via &dp->table.
 
-That said, we can support atomic allocations on RT up to the point where
-zone->lock comes into play. We don't know yet exactly where the
-zone->lock induced damage happens. Presumably it's inside
-free_pcppages_bulk() - at least that's where I have faint bad memories
-from 15+ years ago. Aside of that I seriously doubt that it can be made
-work within a reasonable time frame.
-
-But what makes me really unhappy is that my defense line against
-allocations from truly atomic contexts (from RT POV) which was enforced
-on RT gets a real big gap shot into it.
-
-It becomes pretty hard to argue why atomic allocations via kmalloc() or
-kmem_cache_alloc() should be treated any different. Technically they can
-work similar to the page allocations up to the point where regular
-spinlocks come into play or the slab cache is exhausted. Where to draw
-the line?
-
-It's also unclear for the page allocator case whether we can and should
-stick a limit on the number of pages and/or the pageorder.
-
-Myself and others spent a considerable amount of time to kill off these
-kind of allocations from various interesting places including the guts
-of send IPI, the affinity setting path and others where people just
-slapped allocations into them because the stack checker warned or
-because they happened to copy the code from some other place.
-
-RT was pretty much a quick crap detector whenever new incarnations of
-this got added and to some extent continuous education about these
-issues made them less prominent over the years. Using atomic allocations
-should always have a real good rationale, not only in the cases where
-they collide with RT.
-
-I can understand your rationale and what you are trying to solve. So, if
-we can actually have a distinct GFP variant:
-
-  GFP_I_ABSOLUTELY_HAVE_TO_DO_THAT_AND_I_KNOW_IT_CAN_FAIL_EARLY
-
-which is easy to grep for then having the page allocator go down to the
-point where zone lock gets involved is not the end of the world for
-RT in theory - unless that damned reality tells otherwise. :)
-
-The page allocator allocations should also have a limit on the number of
-pages and eventually also page order (need to stare at the code or let
-Michal educate me that the order does not matter).
-
-To make it consistent the same GFP_ variant should allow the slab
-allocator go to the point where the slab cache is exhausted.
-
-Having a distinct and clearly defined GFP_ variant is really key to
-chase down offenders and to make reviewers double check upfront why this
-is absolutely required.
-
-Thanks,
-
-        tglx
+Thanks.
