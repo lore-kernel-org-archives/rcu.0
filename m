@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23DFEC433DF
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 22:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 608B9C433E0
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 22:58:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F3E5122BF3
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 22:57:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3ADA622BF5
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 22:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597273074;
-	bh=tdQj/IvKGyp501KGFNfZ9iZJnP8uG6XPd6pg3TN+CVQ=;
+	s=default; t=1597273080;
+	bh=CW/aiQFmNWSWU6f2QI56vpnzZ0xECq7LXPOVqeXxrh0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=xdPifI58A0ETtv32ESWvEfz+WeyGT5lehp3HtkNbGZtA/iUpWqNhBWlUwFlHUPmmr
-	 l/HTVaQyHp5JDoi57cV9ZxJCBJrRfj8na47RH1KFD+d9KmQH6odLOgxBtnO6LES4QE
-	 YCnTungMIb+bv6tsQ+nEHGZKPxXQQ7BmP2O2DPtg=
+	b=JYoPFFhsiDTdGkqpbFnR0Rh6TZu7F53swh1RgD780aqTnZK6Mj3hcE1Lr7D4Zp8xf
+	 q37LxSAt6Kwxf2kDczzHkjAkuw5QHk+SJHop7BMAYrGkoKACIoHQtZSE7DQt7jxn9Y
+	 3PjTPm52vs4ItywqbxVvheb0j03V04lxsuTQjMj4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgHLW5u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Aug 2020 18:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49024 "EHLO mail.kernel.org"
+        id S1726778AbgHLW5y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Aug 2020 18:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726673AbgHLW5h (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Aug 2020 18:57:37 -0400
+        id S1726627AbgHLW5g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Aug 2020 18:57:36 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E65E622BEA;
-        Wed, 12 Aug 2020 22:57:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB25A22B43;
+        Wed, 12 Aug 2020 22:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597273057;
-        bh=tdQj/IvKGyp501KGFNfZ9iZJnP8uG6XPd6pg3TN+CVQ=;
+        s=default; t=1597273055;
+        bh=CW/aiQFmNWSWU6f2QI56vpnzZ0xECq7LXPOVqeXxrh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n4xrOQ3L3QLUzlvrII896+fn+z0DDwSmuYV/YG0cT1ps86cUwhykTC2GSifVJIuc/
-         N4CwVr8Mzey4/mtIVnmAh/b4EdWb5eH6qQvH5589fjlm5h8V/ts3jKhar/Z0vmjO8h
-         pnVrvWuy60B/IeDlkaZAHtAcpGpxe9fSWZ5CSNjY=
+        b=CF18Bh5zZd1ef4p5C5HDp8ufrUjEmyeKyoVdapM3e1bCEUAObxp5rBWTv1jo2/oWv
+         ukvFHokvenfhcEC0SGMBzh4/JWHzYQzyMHgp4/NUl3tPFPwXlnHWAhF0cHLUnvhU/g
+         fnyIA3vfrdyiBFhSPhtHk1XIlY6e3ME39sq2UpRE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         elver@google.com, dvyukov@google.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/12] rcu: Report QS for outermost PREEMPT=n rcu_read_unlock() for strict GPs
-Date:   Wed, 12 Aug 2020 15:57:32 -0700
-Message-Id: <20200812225732.20068-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/12] rcu: Attempt QS when CPU discovers GP for strict GPs
+Date:   Wed, 12 Aug 2020 15:57:27 -0700
+Message-Id: <20200812225732.20068-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200812225632.GA19759@paulmck-ThinkPad-P72>
 References: <20200812225632.GA19759@paulmck-ThinkPad-P72>
@@ -61,110 +61,58 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The CONFIG_PREEMPT=n instance of rcu_read_unlock is even more
-aggressively than that of CONFIG_PREEMPT=y in deferring reporting
-quiescent states to the RCU core.  This is just what is wanted in normal
-use because it reduces overhead, but the resulting delay is not what
-is wanted for kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-This commit therefore adds an rcu_read_unlock_strict() function that
-checks for exceptional conditions, and reports the newly started
-quiescent state if it is safe to do so, also doing a spin-delay if
-requested via rcutree.rcu_unlock_delay.  This commit also adds a call
-to rcu_read_unlock_strict() from the CONFIG_PREEMPT=n instance of
-__rcu_read_unlock().
+A given CPU normally notes a new grace period during one RCU_SOFTIRQ,
+but avoids reporting the corresponding quiescent state until some later
+RCU_SOFTIRQ.  This leisurly approach improves efficiency by increasing
+the number of update requests served by each grace period, but is not
+what is needed for kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
 
-[ paulmck: Fixed bug located by kernel test robot <lkp@intel.com> ]
+This commit therefore adds a new rcu_strict_gp_check_qs() function
+which, in CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, simply enters and
+immediately exist an RCU read-side critical section.  If the CPU is
+in a quiescent state, the rcu_read_unlock() will attempt to report an
+immediate quiescent state.  This rcu_strict_gp_check_qs() function is
+invoked from note_gp_changes(), so that a CPU just noticing a new grace
+period might immediately report a quiescent state for that grace period.
+
 Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h |  7 +++++++
- kernel/rcu/tree.c        |  6 ++++++
- kernel/rcu/tree_plugin.h | 23 +++++++++++++++++------
- 3 files changed, 30 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b47d6b6..7c1ceff 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -55,6 +55,12 @@ void __rcu_read_unlock(void);
- 
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
-+#ifdef CONFIG_TINY_RCU
-+#define rcu_read_unlock_strict() do { } while (0)
-+#else
-+void rcu_read_unlock_strict(void);
-+#endif
-+
- static inline void __rcu_read_lock(void)
- {
- 	preempt_disable();
-@@ -63,6 +69,7 @@ static inline void __rcu_read_lock(void)
- static inline void __rcu_read_unlock(void)
- {
- 	preempt_enable();
-+	rcu_read_unlock_strict();
- }
- 
- static inline int rcu_preempt_depth(void)
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ac37343..78852ef 100644
+index 08cc91c..4353a1a 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -164,6 +164,12 @@ module_param(gp_init_delay, int, 0444);
- static int gp_cleanup_delay;
- module_param(gp_cleanup_delay, int, 0444);
- 
-+// Add delay to rcu_read_unlock() for strict grace periods.
-+static int rcu_unlock_delay;
-+#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
-+module_param(rcu_unlock_delay, int, 0444);
-+#endif
-+
- /*
-  * This rcu parameter is runtime-read-only. It reflects
-  * a minimum allowed number of objects which can be cached
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 25c9ee4..0881aef 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -430,12 +430,6 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
- 	return !list_empty(&rnp->blkd_tasks);
+@@ -1557,6 +1557,19 @@ static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
  }
  
--// Add delay to rcu_read_unlock() for strict grace periods.
--static int rcu_unlock_delay;
--#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
--module_param(rcu_unlock_delay, int, 0444);
--#endif
--
  /*
-  * Report deferred quiescent states.  The deferral time can
-  * be quite short, for example, in the case of the call from
-@@ -785,6 +779,23 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
- /*
-+ * If strict grace periods are enabled, and if the calling
-+ * __rcu_read_unlock() marks the beginning of a quiescent state, immediately
-+ * report that quiescent state and, if requested, spin for a bit.
++ * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, attempt to generate a
++ * quiescent state.  This is intended to be invoked when the CPU notices
++ * a new grace period.
 + */
-+void rcu_read_unlock_strict(void)
++static void rcu_strict_gp_check_qs(void)
 +{
-+	struct rcu_data *rdp;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-+	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-+		return;
-+	rdp = this_cpu_ptr(&rcu_data);
-+	rcu_report_qs_rdp(rdp->cpu, rdp);
-+	udelay(rcu_unlock_delay);
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
++		rcu_read_lock();
++		rcu_read_unlock();
++	}
 +}
 +
 +/*
-  * Tell them what RCU they are running.
-  */
- static void __init rcu_bootup_announce(void)
+  * Update CPU-local rcu_data state to record the beginnings and ends of
+  * grace periods.  The caller must hold the ->lock of the leaf rcu_node
+  * structure corresponding to the current CPU, and must have irqs disabled.
+@@ -1626,6 +1639,7 @@ static void note_gp_changes(struct rcu_data *rdp)
+ 	}
+ 	needwake = __note_gp_changes(rnp, rdp);
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	rcu_strict_gp_check_qs();
+ 	if (needwake)
+ 		rcu_gp_kthread_wake();
+ }
 -- 
 2.9.5
 
