@@ -2,133 +2,215 @@ Return-Path: <SRS0=nsBp=BW=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4060FC433E0
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 08:32:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8765BC433E0
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 09:58:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A50620781
-	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 08:32:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BF0E204EC
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 09:58:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yWMINxLW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/j3AyygA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P8IbN2Az"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgHLIcx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Aug 2020 04:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S1726755AbgHLJ6D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Aug 2020 05:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgHLIcw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:32:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D89EC06174A;
-        Wed, 12 Aug 2020 01:32:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597221170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MAwJcfEssf3mKlF+HdVBaVk4dp6ivOrkJynhQoue1SE=;
-        b=yWMINxLW+9od8/8sqEvNhnJrUK0Y+a0ar3rxTG28EJMccMKPYyKoUm4c1fyolm/zWG+0oj
-        ktvAb2eTOzWNgOK8y+wv3RjQzMsW5Lwz+Z0XeUI46CXMITYURDd/2H/o5TlsSw0g+9aobB
-        L2TQ5TU2ahGTrEABcrrbpvbl45/hxMZmPTFhIUCHCbb/BIx3dx3LVQ4pkpfWe2tIQcSgC9
-        XlO8R1er6wKFx3z2Kg6/wQJsyQGr/nFauZwKfBfng5qlPG8VPOQ3tFUG/WvrgTJ25zT2/W
-        Wdy38R8QK6UirADIlyFUL7ULLFKD+O7BuSO9ZKWmN41LcvBZZ9r2jjZ/g1ykZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597221170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MAwJcfEssf3mKlF+HdVBaVk4dp6ivOrkJynhQoue1SE=;
-        b=/j3AyygAVKvcEW2Sit7ct2yF8hIlZL/rW92tWnbMxohm8wxnmzsw76/vyxqEigP3nmQElP
-        4t1imSePuF/DOrBA==
-To:     paulmck@kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <20200812042945.GB4295@paulmck-ThinkPad-P72>
-References: <20200811210931.GZ4295@paulmck-ThinkPad-P72> <874kp87mca.fsf@nanos.tec.linutronix.de> <20200812042945.GB4295@paulmck-ThinkPad-P72>
-Date:   Wed, 12 Aug 2020 10:32:50 +0200
-Message-ID: <871rkc6z7x.fsf@nanos.tec.linutronix.de>
+        with ESMTP id S1726722AbgHLJ6D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:58:03 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0995CC06174A;
+        Wed, 12 Aug 2020 02:58:03 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s15so768594pgc.8;
+        Wed, 12 Aug 2020 02:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/KV5Nu4GOqpdobD0Vy0F5Lm8c2lLHadx20/MZj2JEU=;
+        b=P8IbN2Az2JiBC5X19oePGVFkVCdEwe5FgB6rEiPXaq6H2i8JwHd2A0jPvgpF5YnrgA
+         Hi++xCJtKlpq5nYC/qjwFPtHKSIB1Yw4UvGUO1ASGbroVdalS0mWXo9OzW2ET+jtj4Wb
+         W/98cGUwha6w9GoR0Tmg16k5spcTKvkLCqRFqcwx94oxv3DhJwi+CAFXTQFiT1zy+qjo
+         8qO6S27/S67qJpIhBqM33dXN3AptS8jCyPDKz8pw+dcsc00Gyv1gNfwoCKn1Wil8IqOf
+         D9nupC1ugpswEsK00jbmJJohVMOpNhp0WNXarh9zT1i8Z1fX2S8hI/ZhQ8+PIoQ6+kD5
+         lH8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P/KV5Nu4GOqpdobD0Vy0F5Lm8c2lLHadx20/MZj2JEU=;
+        b=PGJBqYXmmQhxPEgr3niMdHLtCOtD38+xygojyT5F/3oHVkZNb186fgG1pi+zHN7II/
+         VNL+fAxTHMKuAVsBaiBA8/+GQxGfYYNJQtmQVa5YaQcAWs8Ypi0mIvxhqXh1P4Tlfa9t
+         SANlI6jqVvb6XyYoKMyxy7pAFK6nwxWF59h5Q1fib2QhgHXtLuIYzM6eEMUw2tKCylBL
+         i6VKbYzA67btEo+Sa0fD8F9Po1YxOH9bOez+rt8cobFPQrcV7JS2I7W9m2E5ghptSBEg
+         p0+kPQfC8KBC8wldECMfiEAmOy0NgfVq5K5Bhxav1z6H+Fr4MmQkiiItlqNJzkzgvqon
+         EGQg==
+X-Gm-Message-State: AOAM530CVgVHiL63So323YNYNx4oHZCNHD1EWbt600OjZicrW+Bn2m0x
+        UgpcAEaxS8xBvsA6OpJ1OZXc4NYUlJ8I/Q==
+X-Google-Smtp-Source: ABdhPJx7wNeffIDFr8Fk0CGV9iuJuBFDAXnJ24eVMRJnIZ10RsoP0jmt3qxSSpIIvMlAuIcFbyujDg==
+X-Received: by 2002:a63:6dcd:: with SMTP id i196mr4585271pgc.70.1597226282202;
+        Wed, 12 Aug 2020 02:58:02 -0700 (PDT)
+Received: from localhost.localdomain ([106.39.149.188])
+        by smtp.gmail.com with ESMTPSA id p9sm1698436pjm.1.2020.08.12.02.57.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Aug 2020 02:58:01 -0700 (PDT)
+From:   xiangxia.m.yue@gmail.com
+To:     joel@joelfernandes.org, jknoos@google.com, gvrose8192@gmail.com,
+        urezki@gmail.com, paulmck@kernel.org
+Cc:     dev@openvswitch.org, netdev@vger.kernel.org, rcu@vger.kernel.org,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Subject: [PATCH v2] net: openvswitch: introduce common code for flushing flows
+Date:   Wed, 12 Aug 2020 17:56:39 +0800
+Message-Id: <20200812095639.4062-1-xiangxia.m.yue@gmail.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Paul,
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-> On Wed, Aug 12, 2020 at 02:13:25AM +0200, Thomas Gleixner wrote:
->> That much I understood, but I somehow failed to figure the why out
->> despite the elaborate changelog. 2 weeks of 30+C seem to have cooked my
->> brain :)
->
-> Ouch!!!  And what on earth is Germany doing being that warm???
+To avoid some issues, for example RCU usage warning and double free,
+we should flush the flows under ovs_lock. This patch refactors
+table_instance_destroy and introduces table_instance_flow_flush
+which can be invoked by __dp_destroy or ovs_flow_tbl_flush.
 
-The hot air exhaustion of politicians, managers and conspiracy
-mythomaniacs seens to have contributed extensivly to global warming
-lately.
+Fixes: 50b0e61b32ee ("net: openvswitch: fix possible memleak on destroy flow-table")
+Reported-by: Johan Knöös <jknoos@google.com>
+Reported-at: https://mail.openvswitch.org/pipermail/ovs-discuss/2020-August/050489.html
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+---
+v2:
+* Change local var coding style
+* Add reported and fixed tag
+---
+ net/openvswitch/datapath.c   | 10 +++++++++-
+ net/openvswitch/flow_table.c | 35 +++++++++++++++--------------------
+ net/openvswitch/flow_table.h |  3 +++
+ 3 files changed, 27 insertions(+), 21 deletions(-)
 
->> But what makes me really unhappy is that my defense line against
->> allocations from truly atomic contexts (from RT POV) which was enforced
->> on RT gets a real big gap shot into it.
->
-> Understood, and agreed:  We do need to keep the RT degradation in
-> check.
+diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
+index 42f8cc70bb2c..6e47ef7ef036 100644
+--- a/net/openvswitch/datapath.c
++++ b/net/openvswitch/datapath.c
+@@ -1756,6 +1756,7 @@ static int ovs_dp_cmd_new(struct sk_buff *skb, struct genl_info *info)
+ /* Called with ovs_mutex. */
+ static void __dp_destroy(struct datapath *dp)
+ {
++	struct flow_table *table = &dp->table;
+ 	int i;
+ 
+ 	for (i = 0; i < DP_VPORT_HASH_BUCKETS; i++) {
+@@ -1774,7 +1775,14 @@ static void __dp_destroy(struct datapath *dp)
+ 	 */
+ 	ovs_dp_detach_port(ovs_vport_ovsl(dp, OVSP_LOCAL));
+ 
+-	/* RCU destroy the flow table */
++	/* Flush sw_flow in the tables. RCU cb only releases resource
++	 * such as dp, ports and tables. That may avoid some issues
++	 * such as RCU usage warning.
++	 */
++	table_instance_flow_flush(table, ovsl_dereference(table->ti),
++				  ovsl_dereference(table->ufid_ti));
++
++	/* RCU destroy the ports, meters and flow tables. */
+ 	call_rcu(&dp->rcu, destroy_dp_rcu);
+ }
+ 
+diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
+index 8c12675cbb67..e2235849a57e 100644
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -473,19 +473,15 @@ static void table_instance_flow_free(struct flow_table *table,
+ 	flow_mask_remove(table, flow->mask);
+ }
+ 
+-static void table_instance_destroy(struct flow_table *table,
+-				   struct table_instance *ti,
+-				   struct table_instance *ufid_ti,
+-				   bool deferred)
++/* Must be called with OVS mutex held. */
++void table_instance_flow_flush(struct flow_table *table,
++			       struct table_instance *ti,
++			       struct table_instance *ufid_ti)
+ {
+ 	int i;
+ 
+-	if (!ti)
+-		return;
+-
+-	BUG_ON(!ufid_ti);
+ 	if (ti->keep_flows)
+-		goto skip_flows;
++		return;
+ 
+ 	for (i = 0; i < ti->n_buckets; i++) {
+ 		struct sw_flow *flow;
+@@ -497,18 +493,16 @@ static void table_instance_destroy(struct flow_table *table,
+ 
+ 			table_instance_flow_free(table, ti, ufid_ti,
+ 						 flow, false);
+-			ovs_flow_free(flow, deferred);
++			ovs_flow_free(flow, true);
+ 		}
+ 	}
++}
+ 
+-skip_flows:
+-	if (deferred) {
+-		call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
+-		call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
+-	} else {
+-		__table_instance_destroy(ti);
+-		__table_instance_destroy(ufid_ti);
+-	}
++static void table_instance_destroy(struct table_instance *ti,
++				   struct table_instance *ufid_ti)
++{
++	call_rcu(&ti->rcu, flow_tbl_destroy_rcu_cb);
++	call_rcu(&ufid_ti->rcu, flow_tbl_destroy_rcu_cb);
+ }
+ 
+ /* No need for locking this function is called from RCU callback or
+@@ -523,7 +517,7 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
+ 
+ 	call_rcu(&mc->rcu, mask_cache_rcu_cb);
+ 	call_rcu(&ma->rcu, mask_array_rcu_cb);
+-	table_instance_destroy(table, ti, ufid_ti, false);
++	table_instance_destroy(ti, ufid_ti);
+ }
+ 
+ struct sw_flow *ovs_flow_tbl_dump_next(struct table_instance *ti,
+@@ -641,7 +635,8 @@ int ovs_flow_tbl_flush(struct flow_table *flow_table)
+ 	flow_table->count = 0;
+ 	flow_table->ufid_count = 0;
+ 
+-	table_instance_destroy(flow_table, old_ti, old_ufid_ti, true);
++	table_instance_flow_flush(flow_table, old_ti, old_ufid_ti);
++	table_instance_destroy(old_ti, old_ufid_ti);
+ 	return 0;
+ 
+ err_free_ti:
+diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
+index 74ce48fecba9..6e7d4ac59353 100644
+--- a/net/openvswitch/flow_table.h
++++ b/net/openvswitch/flow_table.h
+@@ -105,5 +105,8 @@ void ovs_flow_mask_key(struct sw_flow_key *dst, const struct sw_flow_key *src,
+ 		       bool full, const struct sw_flow_mask *mask);
+ 
+ void ovs_flow_masks_rebalance(struct flow_table *table);
++void table_instance_flow_flush(struct flow_table *table,
++			       struct table_instance *ti,
++			       struct table_instance *ufid_ti);
+ 
+ #endif /* flow_table.h */
+-- 
+2.23.0
 
-Not only that. It's bad practice in general to do memory allocations
-from such contexts if not absolutely necessary and the majority of cases
-which we cleaned up over time were just from the "works for me and why
-should I care and start to think" departement.
-
->> I can understand your rationale and what you are trying to solve. So, if
->> we can actually have a distinct GFP variant:
->> 
->>   GFP_I_ABSOLUTELY_HAVE_TO_DO_THAT_AND_I_KNOW_IT_CAN_FAIL_EARLY
->> 
->> which is easy to grep for then having the page allocator go down to the
->> point where zone lock gets involved is not the end of the world for
->> RT in theory - unless that damned reality tells otherwise. :)
->
-> I have no objection to an otherwise objectionable name in this particular
-> case.  After all, we now have 100 characters per line, right?  ;-)
-
-Hehe. I can live with the proposed NO_LOCK name or anything distinct
-which the mm people can agree on.
-
->> To make it consistent the same GFP_ variant should allow the slab
->> allocator go to the point where the slab cache is exhausted.
->
-> Why not wait until someone has an extremely good reason for needing
-> this functionality from the slab allocators?  After all, leaving out
-> the slab allocators would provide a more robust defense line.  Yes,
-> consistent APIs are very good things as a general rule, but maybe this
-> situation is one of the exceptions to that rule.
-
-Fair enough.
-
->> Having a distinct and clearly defined GFP_ variant is really key to
->> chase down offenders and to make reviewers double check upfront why this
->> is absolutely required.
->
-> Checks for that GFP_ variant could be added to automation, though reality
-> might eventually prove that to be a mixed blessing.
-
-Did you really have to remind me and destroy my illusions before I was
-able to marvel at them?
-
-Thanks,
-
-        tglx
