@@ -1,48 +1,48 @@
-Return-Path: <SRS0=EzCL=BV=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=nsBp=BW=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 754F6C433E0
-	for <rcu@archiver.kernel.org>; Tue, 11 Aug 2020 21:09:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5428CC433DF
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:13:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C9DF20756
-	for <rcu@archiver.kernel.org>; Tue, 11 Aug 2020 21:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597180174;
-	bh=yO8dq+GYzKI3pBmtfR9dJRqDFTQTGZRWKVu+t+LvkGY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=eR9WOtG1RDELsVhHLBwFCHPie6wbuxStHiXWXsWWg2Y3ZQN0JHlvWm9saIeOzXPoQ
-	 B1MIF0HkBdyKW7XgzLj3tDOgtf2CCnNfFqB8YNxGNQmJYM87eZk7cas7OE9fZl2Vyd
-	 L+cyQfkfj2JG3OYgEDNE0479mhmgj2kFUb7beTc4=
+	by mail.kernel.org (Postfix) with ESMTP id 245AA2076C
+	for <rcu@archiver.kernel.org>; Wed, 12 Aug 2020 00:13:30 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aHoygjWd";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9gP+Z/SD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgHKVJe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Aug 2020 17:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgHKVJd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Aug 2020 17:09:33 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3EDE205CB;
-        Tue, 11 Aug 2020 21:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597180172;
-        bh=yO8dq+GYzKI3pBmtfR9dJRqDFTQTGZRWKVu+t+LvkGY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eabVjfNhhkM5oPD2ZYU8CFXQe9OethQy5zj/0wymPHd/AZuPQFcgFvb7/wkaLXEF7
-         nDhpYDRcHUrW1hOqn1EcW60ZFHF0EnXxkSBRCPDxwsmTX/avbFmTCum2lYYPsWMBoF
-         Xvfs32vaa6yEFdZYPRt6oS8b0WlAFALL7KuX72RM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DB696352308E; Tue, 11 Aug 2020 14:09:31 -0700 (PDT)
-Date:   Tue, 11 Aug 2020 14:09:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
+        id S1726255AbgHLANa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Aug 2020 20:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbgHLAN3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Aug 2020 20:13:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B7AC06174A;
+        Tue, 11 Aug 2020 17:13:29 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597191205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=9o2xocBmMKWGpKJOBWpYqCTq3dBqHfmmP5MZZ+TNn/k=;
+        b=aHoygjWdGZLlY8I2asIR9AK7/L1qaNlfnKbQF77c8rvEbH0zI4dH5SbFfMnzz+pShD31Hr
+        6FTMVMX69bLPxLQnGDRnq7P6FVSUcQ/r8et1bEoz9mgSTLYT/9ZuvEr83H8wsJLHwcHPw6
+        X0QM/TzIG1LZN3aGLkFcg5D8zadEXmq9q5RsnRkRa69xeYPS5W3ZfhbzwO8Gc1tiHtnve+
+        caiGNa0gySL2o171pqgUUT5lZTehMRpGl1Zvd+xLXYmYcR/N0e2Hu5gikapcZFIOJ+3bU+
+        xMQj0rNpG52+nR6yxYlQv+y3f9AVbBxYCE7fuJJGEsO86iRJFA07Odr+1msthA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597191205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=9o2xocBmMKWGpKJOBWpYqCTq3dBqHfmmP5MZZ+TNn/k=;
+        b=9gP+Z/SDK+tLZqCqOYjUwckIMb00/9iARm/1+28b1XjOnsTDRjNgOuOtlQi5M96ompf4ZV
+        7sTn42mKQdyuS2Bg==
+To:     paulmck@kernel.org
 Cc:     Michal Hocko <mhocko@suse.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
@@ -54,102 +54,109 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200809204354.20137-1-urezki@gmail.com>
- <20200809204354.20137-2-urezki@gmail.com>
- <20200810123141.GF4773@dhcp22.suse.cz>
- <20200810160739.GA29884@pc636>
- <20200810192525.GG4773@dhcp22.suse.cz>
- <87pn7x6y4a.fsf@nanos.tec.linutronix.de>
- <20200811153327.GW4295@paulmck-ThinkPad-P72>
- <87h7t96ve3.fsf@nanos.tec.linutronix.de>
- <87eeod6kgx.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
+Date:   Wed, 12 Aug 2020 02:13:25 +0200
+Message-ID: <874kp87mca.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eeod6kgx.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 09:39:10PM +0200, Thomas Gleixner wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
-> > "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> On Tue, Aug 11, 2020 at 04:44:21PM +0200, Thomas Gleixner wrote:
-> >>> Now RCU creates a new thing which enforces to make page allocation in
-> >>> atomic context possible on RT. What for?
-> >>> 
-> >>> What's the actual use case in truly atomic context for this new thing on
-> >>> an RT kernel?
-> >>
-> >> It is not just RT kernels.  CONFIG_PROVE_RAW_LOCK_NESTING=y propagates
-> >> this constraint to all configurations, and a patch in your new favorite
-> >> subsystem really did trigger this lockdep check in a non-RT kernel.
-> >>
-> >>> The actual RCU code disabling interrupts is an implementation detail
-> >>> which can easily be mitigated with a local lock.
-> >>
-> >> In this case, we are in raw-spinlock context on entry to kfree_rcu().
-> >
-> > Where?
-> 
-> And aside of the where, wasn't kfree_rcu() from within raw spinlock held
-> regions possible all the time? Either I'm missing something or you are
-> fundamentally changing RCU internals. kfree_rcu() saved RT in various
-> ways where invoking kfree() was just not an option. Confused...
+"Paul E. McKenney" <paulmck@kernel.org> writes:
+> Hence Ulad's work on kfree_rcu().  The approach is to allocate a
+> page-sized array to hold all the pointers, then fill in the rest of these
+> pointers on each subsequent kfree_rcu() call.  These arrays of pointers
+> also allows use of kfree_bulk() instead of kfree(), which can improve
+> performance yet more.  It is no big deal if kfree_rcu()'s allocation
+> attempts fail occasionally because it can simply fall back to the old
+> linked-list approach.  And given that the various lockless caches in
+> the memory allocator are almost never empty, in theory life is good.
 
-Back in the old days (months ago!), it was possible to invoke kfree_rcu()
-while holding a raw spinlock because kfree_rcu() didn't acquire any locks.
-It didn't need to because it was just a wrapper around call_rcu().
-And call_rcu(), along with the rest of RCU's internals, has used raw
-spinlocks since near the beginnings of RT, which meant that it wasn't
-a problem in the rare cases where call_rcu() needed to acquire one of
-RCU's locks (for example, when call_rcu() sees that the current CPU has
-accumulated more than 10,000 callbacks).
+Of course, it's always the damned reality which ruins the fun.
 
-But one problem with the old kfree_rcu() approach is that the memory to
-be freed is almost always cold in the cache by the time that the grace
-period ends.  And this was made worse by the fact that the rcu_do_batch()
-function traverses the list of objects to be freed as a linked list,
-thus incurring a cache miss on each and every object.  The usual fix
-for this sort of performance problem is to use arrays of pointers,
-which on a 64-bit system with 64-byte cache lines reduces the number of
-cache misses by a factor of eight.  In addition, decreasing the number
-of post-grace-period cache misses increases the stability of RCU with
-respect to callback flooding:  Because the kfree()s happen faster, it
-is harder to overrun RCU with tight loops posting callbacks (as happened
-some time back with certain types of ACLs).
+> But in practice, mainline now has CONFIG_PROVE_RAW_LOCK_NESTING,
+> and for good reason -- this Kconfig option makes it at least a
+> little bit harder for mainline developers to mess up RT.  But with
+> CONFIG_PROVE_RAW_LOCK_NESTING=y and lockdep enabled, mainline will now
+> sometimes complain if you invoke kfree_rcu() while holding a raw spinlock.
+> This happens when kfree_rcu() needs to invoke the memory allocator and
+> the memory allocator's caches are empty, thus resulting in the memory
+> allocator attempting to acquire a non-raw spinlock.
 
-Hence Ulad's work on kfree_rcu().  The approach is to allocate a
-page-sized array to hold all the pointers, then fill in the rest of these
-pointers on each subsequent kfree_rcu() call.  These arrays of pointers
-also allows use of kfree_bulk() instead of kfree(), which can improve
-performance yet more.  It is no big deal if kfree_rcu()'s allocation
-attempts fail occasionally because it can simply fall back to the old
-linked-list approach.  And given that the various lockless caches in
-the memory allocator are almost never empty, in theory life is good.
+Right.
 
-But in practice, mainline now has CONFIG_PROVE_RAW_LOCK_NESTING,
-and for good reason -- this Kconfig option makes it at least a
-little bit harder for mainline developers to mess up RT.  But with
-CONFIG_PROVE_RAW_LOCK_NESTING=y and lockdep enabled, mainline will now
-sometimes complain if you invoke kfree_rcu() while holding a raw spinlock.
-This happens when kfree_rcu() needs to invoke the memory allocator and
-the memory allocator's caches are empty, thus resulting in the memory
-allocator attempting to acquire a non-raw spinlock.
+> Because kfree_rcu() has a fallback available (just using the old linked
+> list), kfree_rcu() would work well given a way to tell the memory
+> allocator to return NULL instead of acquiring a non-raw spinlock.
+> Which is exactly what Ulad's recent patches are intended to do.
 
-Because kfree_rcu() has a fallback available (just using the old linked
-list), kfree_rcu() would work well given a way to tell the memory
-allocator to return NULL instead of acquiring a non-raw spinlock.
-Which is exactly what Ulad's recent patches are intended to do.
+That much I understood, but I somehow failed to figure the why out
+despite the elaborate changelog. 2 weeks of 30+C seem to have cooked my
+brain :)
 
-Since then, this thread has discussed various other approaches,
-including using existing combinations of GFP_ flags, converting
-the allocator's zone lock to a raw spinlock, and so on.
+> Since then, this thread has discussed various other approaches,
+> including using existing combinations of GFP_ flags, converting
+> the allocator's zone lock to a raw spinlock, and so on.
+>
+> Does that help, or am I missing the point of your question?
 
-Does that help, or am I missing the point of your question?
+Yes, that helps so far that I understand what the actual problem is. It
+does not really help to make me more happy. :)
 
-							Thanx, Paul
+That said, we can support atomic allocations on RT up to the point where
+zone->lock comes into play. We don't know yet exactly where the
+zone->lock induced damage happens. Presumably it's inside
+free_pcppages_bulk() - at least that's where I have faint bad memories
+from 15+ years ago. Aside of that I seriously doubt that it can be made
+work within a reasonable time frame.
+
+But what makes me really unhappy is that my defense line against
+allocations from truly atomic contexts (from RT POV) which was enforced
+on RT gets a real big gap shot into it.
+
+It becomes pretty hard to argue why atomic allocations via kmalloc() or
+kmem_cache_alloc() should be treated any different. Technically they can
+work similar to the page allocations up to the point where regular
+spinlocks come into play or the slab cache is exhausted. Where to draw
+the line?
+
+It's also unclear for the page allocator case whether we can and should
+stick a limit on the number of pages and/or the pageorder.
+
+Myself and others spent a considerable amount of time to kill off these
+kind of allocations from various interesting places including the guts
+of send IPI, the affinity setting path and others where people just
+slapped allocations into them because the stack checker warned or
+because they happened to copy the code from some other place.
+
+RT was pretty much a quick crap detector whenever new incarnations of
+this got added and to some extent continuous education about these
+issues made them less prominent over the years. Using atomic allocations
+should always have a real good rationale, not only in the cases where
+they collide with RT.
+
+I can understand your rationale and what you are trying to solve. So, if
+we can actually have a distinct GFP variant:
+
+  GFP_I_ABSOLUTELY_HAVE_TO_DO_THAT_AND_I_KNOW_IT_CAN_FAIL_EARLY
+
+which is easy to grep for then having the page allocator go down to the
+point where zone lock gets involved is not the end of the world for
+RT in theory - unless that damned reality tells otherwise. :)
+
+The page allocator allocations should also have a limit on the number of
+pages and eventually also page order (need to stare at the code or let
+Michal educate me that the order does not matter).
+
+To make it consistent the same GFP_ variant should allow the slab
+allocator go to the point where the slab cache is exhausted.
+
+Having a distinct and clearly defined GFP_ variant is really key to
+chase down offenders and to make reviewers double check upfront why this
+is absolutely required.
+
+Thanks,
+
+        tglx
