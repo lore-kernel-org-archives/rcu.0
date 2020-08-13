@@ -2,83 +2,84 @@ Return-Path: <SRS0=6iKH=BX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C72E0C433E3
-	for <rcu@archiver.kernel.org>; Thu, 13 Aug 2020 17:22:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52D50C433DF
+	for <rcu@archiver.kernel.org>; Thu, 13 Aug 2020 17:22:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91BB320774
-	for <rcu@archiver.kernel.org>; Thu, 13 Aug 2020 17:22:23 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S54VwkqF"
+	by mail.kernel.org (Postfix) with ESMTP id 3088220716
+	for <rcu@archiver.kernel.org>; Thu, 13 Aug 2020 17:22:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgHMRWX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 13 Aug 2020 13:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgHMRWW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 13 Aug 2020 13:22:22 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ABAC061757
-        for <rcu@vger.kernel.org>; Thu, 13 Aug 2020 10:22:22 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id k63so1374458oob.1
-        for <rcu@vger.kernel.org>; Thu, 13 Aug 2020 10:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=C4dUS/W3AY+La0y5eMDLrhZCz6pWvP5bo1JzAo1BDEs=;
-        b=S54VwkqFFwVFCsaZc7krxnwXIGcSIS4onPffWCkXcY34QyJeIxyjyIOcOYGf07IDLR
-         pQzMt8SR9BHvcCUdHjjDrRKb9AgQ4iBocoW9wYH0n72HIvp+9HK7/m6P4sHE3oKwjKNd
-         pkslF4UsAisLbzpwFJv2J0qd6IfvN+pUBRkDA7Mj2YQN95VID9N5FLfgWZG0HBXhfLxm
-         HinR2zljBbwYnqCjmmjJDwj1ro4N1NwNKxOBLOjoF3KOmcCbHXo871BVbmZqeseANgeL
-         QXfcOHlSPRDT0rQUmBQv2ZCpOnCFVHwzIy9hljIRh01d1IJlANjCwG/hqH8lh0nZg1nK
-         eEkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=C4dUS/W3AY+La0y5eMDLrhZCz6pWvP5bo1JzAo1BDEs=;
-        b=kp8gwPHwE+p0uVybT8UVFN8LnpNFzb8JcunGFZwDjZkHBvEIwso8mZnd1bpMREeZ8D
-         /wJMzvXu7d8MIHVe9FCbeOqrtEZBX56UWPy6rQcMV5Y4LdY0hqiLM1e+/BR+EVsOGiSf
-         FyEp28ACXWKYnSignSbU2jMFzDrvsFATemuH77hT58+tzuM5fuQ6NzGHn8W4QNhq5AlY
-         ZQZmLhIDZbQp1ibN5HlHHWg7p27z61b/YtR7BLRF9tmUnYgYT17YQ4xSmRS44ZKD1QRG
-         2R3Xio/0unLlIjNS0KRHidknK0Nc604tnsrpOZpBo4/SpTutiQZppEL2M9gyWOBuowcw
-         K9mQ==
-X-Gm-Message-State: AOAM53323bp0J6Y0kvmRe9dibzBnYZLm+VQ8wLHczWImbqYkIAge+ZHO
-        HAB7g2BYNa99+5y/FcGuTO2nA2aeBxrYtCwWyuiMjkuOvMI=
-X-Google-Smtp-Source: ABdhPJzRnUawJd+G31myahAudi6LY+4Uuef7/YX8ch0q3CZOWNI24zeo9MVctIjS1oBQsVy0yuYmnpJ1DZJZeVAwBL8=
-X-Received: by 2002:a4a:3b0f:: with SMTP id s15mr5503185oos.71.1597339339950;
- Thu, 13 Aug 2020 10:22:19 -0700 (PDT)
+        id S1726248AbgHMRWk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Aug 2020 13:22:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35918 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726174AbgHMRWj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Aug 2020 13:22:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 83168B676;
+        Thu, 13 Aug 2020 17:23:00 +0000 (UTC)
+Date:   Thu, 13 Aug 2020 19:22:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200813172237.GU9477@dhcp22.suse.cz>
+References: <20200811210931.GZ4295@paulmck-ThinkPad-P72>
+ <874kp87mca.fsf@nanos.tec.linutronix.de>
+ <20200813075027.GD9477@dhcp22.suse.cz>
+ <20200813095840.GA25268@pc636>
+ <874kp6llzb.fsf@nanos.tec.linutronix.de>
+ <20200813133308.GK9477@dhcp22.suse.cz>
+ <87sgcqty0e.fsf@nanos.tec.linutronix.de>
+ <20200813145335.GN9477@dhcp22.suse.cz>
+ <87lfiitquu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-From:   Chao Zhou <chaozhou1018@gmail.com>
-Date:   Thu, 13 Aug 2020 10:22:09 -0700
-Message-ID: <CAJdzfEd6nf9xBw7w26EdsM5ukpDEhKNc0L6PW7SKKJDCgtt+Sg@mail.gmail.com>
-Subject: Allow multiple GP misses before Panic
-To:     rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfiitquu.fsf@nanos.tec.linutronix.de>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Thu 13-08-20 19:09:29, Thomas Gleixner wrote:
+> Michal Hocko <mhocko@suse.com> writes:
+> > On Thu 13-08-20 16:34:57, Thomas Gleixner wrote:
+[...]
 
-Some RCU stalls are transient and a system is fully capable to recover
-after that, but we do want Panic after certain amount of GP misses.
+I will go though the rest of the email tomorrow.
 
-Current module parameter rcu_cpu_stall_panic only turn on/off Panic,
-and 1 GP miss will trigger Panic when it is enabled.
+> >> Really, if your primary lockless caches are empty then any allocation
+> >> which comes from deep atomic context should simply always fail. Being
+> >> stuck in an interrupt handler or even deeper for 200+ microseconds
+> >> waiting for zone lock is just bonkers IMO.
+> >
+> > That would require changing NOWAIT/ATOMIC allocations semantic quite
+> > drastically for !RT kernels as well. I am not sure this is something we
+> > can do. Or maybe I am just missing your point.
+> 
+> I really do not understand why you think that it affects everything. 
 
-Plan to add a module parameter for users to fine-tune how many GP
-misses are allowed before Panic.
+We are likely not on the same page here. Are you talking about the
+original proposal in this thread (aka a new flag) or a way to reuse
+existing gfp space (http://lkml.kernel.org/r/20200813075027.GD9477@dhcp22.suse.cz)
+with a modification that would both silence the lockdep and keep the
+existing NOWAIT semantic?
 
-To save our precious time, a diff has been tested on our systems and
-it works and solves our problem in transient RCU stall events.
-
-Your insights and guidance is highly appreciated.
-
-Thanks!
-
-Chao
+Sorry bear with me but I am getting lost in this thread.
+-- 
+Michal Hocko
+SUSE Labs
