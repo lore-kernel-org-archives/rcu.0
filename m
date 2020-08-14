@@ -2,48 +2,50 @@ Return-Path: <SRS0=bMVE=BY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82048C433E1
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 16:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAEBDC433E1
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 16:19:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5CF3D20791
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 16:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597421468;
-	bh=1eHtnTQKd6vwBqrROLmEzpSpv+XROEYdwyl4yv71Ks8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=HK0Rd4AoxfXRDe+dyONOtGwNyiEweZ0aeLdIVPHlnvs6lW0KY/M2T37QFukhTD81+
-	 lU085wNpmNfkxoWdH75+kWkj6f4/p3CLKtP/w0TKnYkWPx+zAjdUm0xVRV+l/pTZFg
-	 qoS3wqe6cyONTn48kUNXCIThJ97a1ghNjVtN6Qss=
+	by mail.kernel.org (Postfix) with ESMTP id 8570720768
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 16:19:20 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FPguHYO9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgHNQLI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Aug 2020 12:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726742AbgHNQLH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Aug 2020 12:11:07 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        id S1727890AbgHNQTU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Aug 2020 12:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727886AbgHNQTT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Aug 2020 12:19:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3DCC061384;
+        Fri, 14 Aug 2020 09:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tjapFxFFmZX6lmNO1XlptdG6KqxDjEYgdAJY4Ema6jg=; b=FPguHYO9I8AfNvioH+7lUzP1gQ
+        CFMl3oLA9FcEo67U8z1RMVYd4Fh11bFWGEpXjVYRETUMUVOr7zMCoCmG9uZgq/ueWOReN9tp+IGdo
+        cU5vt7xkNEywdg6soqI7QwtXMcgWNkghEY0ay6z/ZCvZJR+tdZ0jRyrpZveByxNQMUGppQ5PcoNq1
+        OPgRfESetOz4gF0uI9n3ty7IyVp9B8x0OCLp10W8vqGxawLLQhJaaMlDO2TWU4zEqZZCDjIrrxnPf
+        CgD6/+5pgLSGjZ4oJHli7tdMTrBNkud6WF/dI+9v0VmFo2CqmJsxI5eyJsc08fztffWMX4K0JcurH
+        Yr7K1Mlg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k6cQ6-0003nf-Te; Fri, 14 Aug 2020 16:19:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CCB72078D;
-        Fri, 14 Aug 2020 16:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597421467;
-        bh=1eHtnTQKd6vwBqrROLmEzpSpv+XROEYdwyl4yv71Ks8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y6z5CY1nwi7oy57gblgg9EAFAoluxSg6wt4kSl2xd4o66tgT04GaKNVnM+9ED/gV0
-         wUTN14LksC3gedJTY60VNrKRLnpO3SY7UcY/xYH40sU+YxoYi4rFKMtvPM9ki/pFgk
-         29u7pPcFm2QM3eIcNWhmVBOnRVYgtat6UnBX+hh4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C4F1E3522A0E; Fri, 14 Aug 2020 09:11:06 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 09:11:06 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD7D53011F0;
+        Fri, 14 Aug 2020 18:19:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE55E2C369E57; Fri, 14 Aug 2020 18:19:04 +0200 (CEST)
+Date:   Fri, 14 Aug 2020 18:19:04 +0200
+From:   peterz@infradead.org
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Michal Hocko <mhocko@suse.com>,
         Uladzislau Rezki <urezki@gmail.com>,
@@ -56,8 +58,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200814161106.GA13853@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200814161904.GD2674@hirez.programming.kicks-ass.net>
 References: <20200813095840.GA25268@pc636>
  <874kp6llzb.fsf@nanos.tec.linutronix.de>
  <20200813133308.GK9477@dhcp22.suse.cz>
@@ -72,27 +73,61 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200814141425.GM4295@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Fri, Aug 14, 2020 at 07:14:25AM -0700, Paul E. McKenney wrote:
-> On Fri, Aug 14, 2020 at 10:30:37AM +0200, Peter Zijlstra wrote:
-> > On Fri, Aug 14, 2020 at 01:59:04AM +0200, Thomas Gleixner wrote:
 
-[ . . . ]
+> Doing this to kfree_rcu() is the first step.  We will also be doing this
+> to call_rcu(), which has some long-standing invocations from various
+> raw contexts, including hardirq handler.
 
-> > > > 3.	Reusing existing GFP_ flags/values/whatever to communicate
-> > > >	the raw-context information that was to be communicated by
-> > > >	the new GFP_ flag.
-> > > >
-> > > > 4.	Making lockdep forgive acquiring spinlocks while holding
-> > > >	raw spinlocks, but only in CONFIG_PREEMPT_NONE=y kernels.
+Most hardirq handler are not raw on RT due to threaded interrupts.
+Lockdep knows about this.
+
+> > >   4) As kfree_rcu() can be used from any context except NMI and RT
+> > >      relies on it we ran into a circular dependency problem.
 > > 
-> > Uhh, !CONFIG_PREEMPT_RT, the rest is 'fine'.
+> > Well, which actual usage sites are under a raw spinlock? Most of the
+> > ones I could find are not.
 > 
+> There are some on their way in, but this same optimization will be applied
+> to call_rcu(), and there are no shortage of such call sites in that case.
+> And these call sites have been around for a very long time.
+
+Luckily there is lockdep to help you find the ones that need converting
+to raw_call_rcu() :-)
+
+> > >   Clearly the simplest solution but not Pauls favourite and
+> > >   unfortunately he has a good reason.
+> > 
+> > Which isn't actually stated anywhere I suppose ?
+> 
+> Several times, but why not one more?  ;-)
+> 
+> In CONFIG_PREEMPT_NONE=y kernels, which are heavily used, and for which
+> the proposed kfree_rcu() and later call_rcu() optimizations are quite
+> important, there is no way to tell at runtime whether or you are in
+> atomic raw context.
+
+CONFIG_PREEMPT_NONE has nothing what so ever to do with any of this.
+
+> > > > 2.	Adding a GFP_ flag.
+> > > 
+> > >   Michal does not like the restriction for !RT kernels and tries to
+> > >   avoid the introduction of a new allocation mode.
+> > 
+> > Like above, I tend to be with Michal on this, just wrap the actual
+> > allocation in CONFIG_PREEMPT_RT, the code needs to handle a NULL pointer
+> > there anyway.
+> 
+> That disables the optimization in the CONFIG_PREEMPT_NONE=y case,
+> where it really is needed.
+
+No, it disables it for CONFIG_PREEMPT_RT.
+
 > I would be OK with either.  In CONFIG_PREEMPT_NONE=n kernels, the
 > kfree_rcu() code could use preemptible() to determine whether it was safe
 > to invoke the allocator.  The code in kfree_rcu() might look like this:
@@ -104,51 +139,33 @@ On Fri, Aug 14, 2020 at 07:14:25AM -0700, Paul E. McKenney wrote:
 > Is your point is that the usual mistakes would then be caught by the
 > usual testing on CONFIG_PREEMPT_NONE=n kernels?
 
-Just to make sure we are talking about the same thing, please see below
-for an untested patch that illustrates how I was interpreting your words.
-Was this what you had in mind?
+	mem = NULL;
+#if !defined(CONFIG_PREEMPT_RT) && !defined(CONFIG_PROVE_LOCKING)
+	mem = __get_free_page(...)
+#endif
+	if (!mem)
 
-							Thanx, Paul
+But I _really_ would much rather have raw_kfree_rcu() and raw_call_rcu()
+variants for the few places that actually need it.
 
-------------------------------------------------------------------------
+> > >  These are not seperate of each other as #3 requires #4. The most
+> > >  horrible solution IMO from a technical POV as it proliferates
+> > >  inconsistency for no good reaosn.
+> > > 
+> > >  Aside of that it'd be solving a problem which does not exist simply
+> > >  because kfree_rcu() does not depend on it and we really don't want to
+> > >  set precedence and encourage the (ab)use of this in any way.
+> > 
+> > My preferred solution is 1, if you want to use an allocator, you simply
+> > don't get to play under raw_spinlock_t. And from a quick grep, most
+> > kfree_rcu() users are not under raw_spinlock_t context.
+> 
+> There is at least one on its way in, but more to the point, we will
+> need to apply this same optimization to call_rcu(), which is used in
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 62a382d..42d0ff1 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -579,7 +579,7 @@ do {									\
- # define lockdep_assert_preemption_disabled() do { } while (0)
- #endif
- 
--#ifdef CONFIG_PROVE_RAW_LOCK_NESTING
-+#ifdef CONFIG_PROVE_RAW_LOCK_NESTING_EFFECTIVE
- 
- # define lockdep_assert_RT_in_threaded_ctx() do {			\
- 		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index bb35b44..70867d58 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -20,7 +20,7 @@ enum lockdep_wait_type {
- 	LD_WAIT_FREE,		/* wait free, rcu etc.. */
- 	LD_WAIT_SPIN,		/* spin loops, raw_spinlock_t etc.. */
- 
--#ifdef CONFIG_PROVE_RAW_LOCK_NESTING
-+#ifdef PROVE_RAW_LOCK_NESTING_EFFECTIVE
- 	LD_WAIT_CONFIG,		/* CONFIG_PREEMPT_LOCK, spinlock_t etc.. */
- #else
- 	LD_WAIT_CONFIG = LD_WAIT_SPIN,
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index e068c3c..e02de40 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1215,6 +1215,9 @@ config PROVE_RAW_LOCK_NESTING
- 
- 	 If unsure, select N.
- 
-+config PROVE_RAW_LOCK_NESTING_EFFECTIVE
-+	def_bool PROVE_RAW_LOCK_NESTING && !PREEMPTION
-+
- config LOCK_STAT
- 	bool "Lock usage statistics"
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+There is no need, call_rcu() works perfectly fine today, thank you.
+You might want to, but that's an entirely different thing.
+
+> raw atomic context, including from hardirq handlers.
+
+Threaded IRQs. There really is very little code that is 'raw' on RT.
