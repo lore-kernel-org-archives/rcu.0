@@ -2,106 +2,104 @@ Return-Path: <SRS0=bMVE=BY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6D09C433DF
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 19:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89EDCC433DF
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 19:33:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE58120791
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 19:28:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5FF4620771
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 19:33:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k2FaGmcZ"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yQDheluV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TUe5+Mzi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgHNT2B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Aug 2020 15:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S1728368AbgHNTdu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Aug 2020 15:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728232AbgHNT2B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Aug 2020 15:28:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C852C061386
-        for <rcu@vger.kernel.org>; Fri, 14 Aug 2020 12:28:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f7so9296346wrw.1
-        for <rcu@vger.kernel.org>; Fri, 14 Aug 2020 12:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0TJz1kLb0QG2pucP32+cKX2tfonFz920DYFhEJML22g=;
-        b=k2FaGmcZP7IT82JsWX8cTC8sRSrjfZFeXTjmEndRypH8yKwLApSKFznE+ioaSs0EhS
-         CMl2vpGDjLsDmqVQai/05M6DPxPIiulpenp3ovpEV570vLl24dENz6ukKMNaQS5lnFJE
-         odqWhDKWBBxtu9NjZJySWPfL7LqBJFB0gp85S8cCNtz2UngaJySwd+5SDHcNVP6vnnCm
-         5DKWTOvf9+CXD/4IFTuejKfSCoosVt1vPIvGFUfXWlRLSP+3yTjgwEzPjRZklTpQJVg6
-         TZ5S3FEYFb/PDlcY/QqGJRovOnrqssELeelK7ANBavON8z5QtbaWPQARpdyeBGhOTMUT
-         x9WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0TJz1kLb0QG2pucP32+cKX2tfonFz920DYFhEJML22g=;
-        b=RgrakD2Z4Tar1wJuhvhIcnfZ2Bad3uqwX9Oq6rwmC+jjXVzVfw8IzIEoT9PE1sE8GO
-         r4gnCGnkABJ0bA1bQHWPk1hPsBnJSROgKMcRq8qbzKV7TX3UqpfRCl8s7csyj9c7ja+f
-         PwHX2ThRkbmztLBCN7L5MeTaYYadQgCwEzJxDTNQ8YITc0+kgimD6vloP9HWtYINgYcF
-         iqQ8gY8Q9NaCMTFtYNJM9L2d1GvPYe7niSo9ObzrPeMW4A7A0NKBRfN2Blaa9xAc5zh7
-         EgvsFz8Uee6m0g3eLJjNihWP4owKCI+7EZLy2KuYbfch/F7vgYl4VLwypj39WLua028M
-         q5nw==
-X-Gm-Message-State: AOAM530nYNeoq7Wn4cGgIvmpRGLuDfsQdq4bYoJtiIn5rIhEvI9URZvd
-        KQwSCxF1ajYNG78qyl8u/pKttjEQFbi4Ylf+HQBo
-X-Google-Smtp-Source: ABdhPJxbDEXKOBmxkzJaC7PVVpd1jbi1yF1/ZgMNNO04fETUUB/XMAV8Sl86m1rlxIl5fwU53bY2VtdRm2jLtk4TlvE=
-X-Received: by 2002:adf:8405:: with SMTP id 5mr3878667wrf.393.1597433279392;
- Fri, 14 Aug 2020 12:27:59 -0700 (PDT)
+        with ESMTP id S1728243AbgHNTdt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Aug 2020 15:33:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1FFC061385;
+        Fri, 14 Aug 2020 12:33:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597433627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pL+B8OyjhLBSkxUefg7i783iQfZZ1Nuc+PYJfkfMVFU=;
+        b=yQDheluV3/try5pfwSxsqW1/f0KvC6bxVcqiD4v5fJJ4mz6V5ILbuenhNZ43A9eJeBDdjl
+        am8Rzg3DqPJJjzWEGqsnkIeF62JNgb43D5v7e+zp3PLwEOC14vANCVdzLcs/8HJKd0Uu/I
+        X+G9yjhDqh5jwIUXiXLnl52lxlE+Kd95QjIdZpNEiIfNEOb54m0eJMmaMRLkqJWC7rOPxU
+        M3F39oCHzYUrD72Ypn65xVWWwg9OgkexuJH+bkWyzYQfUZqC99wrsbL1zH4CCKNF5kcO5m
+        wUVPK8G1TubCUxSm8HREZzTN7RVilxZMVrn/5pz7QRihf3HQlw+RQ9Vocf2y6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597433627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pL+B8OyjhLBSkxUefg7i783iQfZZ1Nuc+PYJfkfMVFU=;
+        b=TUe5+Mzif0ZKrAD73mHhOpVJtNOHVlmw13luhlgxevkyGMV+dt3IpjwaCw8/6NyMkWJqm6
+        tuh92+A62Ch0mKBA==
+To:     paulmck@kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+In-Reply-To: <20200814180224.GQ4295@paulmck-ThinkPad-P72>
+References: <20200813133308.GK9477@dhcp22.suse.cz> <87sgcqty0e.fsf@nanos.tec.linutronix.de> <20200813182618.GX2674@hirez.programming.kicks-ass.net> <20200813185257.GF4295@paulmck-ThinkPad-P72> <20200813220619.GA2674@hirez.programming.kicks-ass.net> <875z9m3xo7.fsf@nanos.tec.linutronix.de> <20200814083037.GD3982@worktop.programming.kicks-ass.net> <20200814141425.GM4295@paulmck-ThinkPad-P72> <20200814161106.GA13853@paulmck-ThinkPad-P72> <20200814174924.GI3982@worktop.programming.kicks-ass.net> <20200814180224.GQ4295@paulmck-ThinkPad-P72>
+Date:   Fri, 14 Aug 2020 21:33:47 +0200
+Message-ID: <875z9lkoo4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20200812095639.4062-1-xiangxia.m.yue@gmail.com> <20200813.155348.1997626107228415421.davem@davemloft.net>
-In-Reply-To: <20200813.155348.1997626107228415421.davem@davemloft.net>
-From:   =?UTF-8?B?Sm9oYW4gS27DtsO2cw==?= <jknoos@google.com>
-Date:   Fri, 14 Aug 2020 12:27:47 -0700
-Message-ID: <CA+Sh73OVgGEVyhqenXm7HpT4fQfLeZVc+SHWO90iiW2QXkcEQg@mail.gmail.com>
-Subject: Re: [PATCH v2] net: openvswitch: introduce common code for flushing flows
-To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Gregory Rose <gvrose8192@gmail.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, dev@openvswitch.org,
-        Netdev <netdev@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        David Miller <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 3:53 PM David Miller <davem@davemloft.net> wrote:
+On Fri, Aug 14 2020 at 11:02, Paul E. McKenney wrote:
+> On Fri, Aug 14, 2020 at 07:49:24PM +0200, Peter Zijlstra wrote:
+>> On Fri, Aug 14, 2020 at 09:11:06AM -0700, Paul E. McKenney wrote:
+>> > Just to make sure we are talking about the same thing, please see below
+>> > for an untested patch that illustrates how I was interpreting your words.
+>> > Was this what you had in mind?
+>> 
+>> No, definitely not.
+>> 
+>> Also, since we used to be able to use call_rcu() _everywhere_, including
+>> under zone->lock, how's that working with you calling the
+>> page-allocating from it?
 >
-> From: xiangxia.m.yue@gmail.com
-> Date: Wed, 12 Aug 2020 17:56:39 +0800
->
-> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >
-> > To avoid some issues, for example RCU usage warning and double free,
-> > we should flush the flows under ovs_lock. This patch refactors
-> > table_instance_destroy and introduces table_instance_flow_flush
-> > which can be invoked by __dp_destroy or ovs_flow_tbl_flush.
-> >
-> > Fixes: 50b0e61b32ee ("net: openvswitch: fix possible memleak on destroy=
- flow-table")
-> > Reported-by: Johan Kn=C3=B6=C3=B6s <jknoos@google.com>
-> > Reported-at: https://mail.openvswitch.org/pipermail/ovs-discuss/2020-Au=
-gust/050489.html
-> > Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->
-> Applied, thank you.
+> Indeed, that is exactly the problem we are trying to solve.
 
-Tonghao, does the following change to your commit make sense to be
-able to apply it on 5.6.14 (e3ac9117b18596b7363d5b7904ab03a7d782b40c)?
+Wait a moment. Why are we discussing RT induced raw non raw lock
+ordering at all?
 
-@@ -393,7 +387,7 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
+Whatever kernel you variant you look at this is not working:
 
-        free_percpu(table->mask_cache);
-        kfree_rcu(rcu_dereference_raw(table->mask_array), rcu);
--       table_instance_destroy(table, ti, ufid_ti, false);
-+       table_instance_destroy(ti, ufid_ti);
- }
+  lock(zone)  call_rcu() lock(zone)
+
+It's a simple recursive dead lock, nothing else.
+
+And that enforces the GFP_NOLOCK allocation mode or some other solution
+unless you make a new rule that calling call_rcu() is forbidden while
+holding zone lock or any other lock which might be nested inside the
+GFP_NOWAIT zone::lock held region.
+
+Thanks,
+
+        tglx
+
+
+
+
