@@ -2,50 +2,48 @@ Return-Path: <SRS0=bMVE=BY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D26C9C433DF
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 23:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01807C433DF
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 23:40:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9C5120774
-	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 23:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597447665;
-	bh=GPjCjOBy4/MES/6xwTtupSAhE2pRWrieYpnW2v2mWIY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=q/Bcvi1EuYL5WihWbXUSwHgsVuD5KoMsgOIW/SfX/WqIBY3PkZ1UjD1pfgwOHcFm0
-	 8OWzeCQiaa+ww9FJREvyXxd44pr8wtgEYxip2UiuTmAEtQ0jV/Upz3tEOFyVw63XwJ
-	 7sBnsf93aUaPoaIaautgzMojzCfo1UAhVlUmByBk=
+	by mail.kernel.org (Postfix) with ESMTP id CCDC9206B2
+	for <rcu@archiver.kernel.org>; Fri, 14 Aug 2020 23:40:34 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wQEpHbzY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YY9WNXQ1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgHNX1p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Aug 2020 19:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726795AbgHNX1p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Aug 2020 19:27:45 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EFC820768;
-        Fri, 14 Aug 2020 23:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597447664;
-        bh=GPjCjOBy4/MES/6xwTtupSAhE2pRWrieYpnW2v2mWIY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HvU9bzcZLYnzdJR10tU7jmktoTLxECTfl1592MQ0btRmVKPDyYxeX+5c/Cau6KbMf
-         +7RSeUurYeeS5/b1PkHxL7kD90k3yUvHMgn5ZBiyLKgXWuhT+m7qkl9DcJh3CVaQnW
-         R/fOqJkGx/heLGwwJuNemyzyo/fzO0U7xo9S0Ej8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2CD063522B27; Fri, 14 Aug 2020 16:27:44 -0700 (PDT)
-Date:   Fri, 14 Aug 2020 16:27:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Michal Hocko <mhocko@suse.com>,
+        id S1726834AbgHNXke (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Aug 2020 19:40:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39776 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgHNXkd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Aug 2020 19:40:33 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1597448432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ur7uXpcRbGymuHNjafxl0I8hYKYlxBpQY8FlNgJDhJk=;
+        b=wQEpHbzY2xfKCvU09A8XAPHp9dEn4XZ5bueEHTSjPQWBj/BQWQnwF6vxjh+yBj6z0GDYIo
+        B3P4xDxaH17JdvAyMMTCCvBMiypPGJPYOSi14lvpV5VBNgySl+19ON/FGT4eiatymgU8PK
+        c39pMe3oP8BiQVw/gVHMo54h8bIKJnbGKl8UFLUFUpok5QKvHLajxkW5OzsJIlynR29KuU
+        mV8ezdiZLCjoY4OYC5v7mu5Brm911kU+oXwK+Tupr6pdUQsK6rANcizbXr4EbuGekskhZ5
+        L6oiZ/7+usJzQIHuyBQ0Ru1EdLySJUFxnx5ZaYVtQVdUa8Sj7Vj9JMS+1I6K5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1597448432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ur7uXpcRbGymuHNjafxl0I8hYKYlxBpQY8FlNgJDhJk=;
+        b=YY9WNXQ1vA6t2lXkSOA6fbk+zoHlmPBW9/5IdhvbiirJsFuu1TJkay7LJU/LuiHny5ED5F
+        sDDCiIpi+2ijmvCg==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
@@ -56,102 +54,49 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200814232744.GU4295@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200813220619.GA2674@hirez.programming.kicks-ass.net>
- <875z9m3xo7.fsf@nanos.tec.linutronix.de>
- <20200814083037.GD3982@worktop.programming.kicks-ass.net>
- <20200814141425.GM4295@paulmck-ThinkPad-P72>
- <20200814161106.GA13853@paulmck-ThinkPad-P72>
- <20200814174924.GI3982@worktop.programming.kicks-ass.net>
- <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20200814215206.GL3982@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200813185257.GF4295@paulmck-ThinkPad-P72> <20200813220619.GA2674@hirez.programming.kicks-ass.net> <875z9m3xo7.fsf@nanos.tec.linutronix.de> <20200814083037.GD3982@worktop.programming.kicks-ass.net> <20200814141425.GM4295@paulmck-ThinkPad-P72> <20200814161106.GA13853@paulmck-ThinkPad-P72> <20200814174924.GI3982@worktop.programming.kicks-ass.net> <20200814180224.GQ4295@paulmck-ThinkPad-P72> <875z9lkoo4.fsf@nanos.tec.linutronix.de> <20200814204140.GT4295@paulmck-ThinkPad-P72> <20200814215206.GL3982@worktop.programming.kicks-ass.net>
+Date:   Sat, 15 Aug 2020 01:40:31 +0200
+Message-ID: <87imdkkd8w.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 11:52:06PM +0200, Peter Zijlstra wrote:
+On Fri, Aug 14 2020 at 23:52, Peter Zijlstra wrote:
 > On Fri, Aug 14, 2020 at 01:41:40PM -0700, Paul E. McKenney wrote:
-> > > And that enforces the GFP_NOLOCK allocation mode or some other solution
-> > > unless you make a new rule that calling call_rcu() is forbidden while
-> > > holding zone lock or any other lock which might be nested inside the
-> > > GFP_NOWAIT zone::lock held region.
-> > 
-> > Again, you are correct.  Maybe the forecasted weekend heat will cause
-> > my brain to hallucinate a better solution, but in the meantime, the
-> > GFP_NOLOCK approach looks good from this end.
-> 
+>> > And that enforces the GFP_NOLOCK allocation mode or some other solution
+>> > unless you make a new rule that calling call_rcu() is forbidden while
+>> > holding zone lock or any other lock which might be nested inside the
+>> > GFP_NOWAIT zone::lock held region.
+>> 
+>> Again, you are correct.  Maybe the forecasted weekend heat will cause
+>> my brain to hallucinate a better solution, but in the meantime, the
+>> GFP_NOLOCK approach looks good from this end.
+>
 > So I hate __GFP_NO_LOCKS for a whole number of reasons:
-> 
+>
 >  - it should be called __GFP_LOCKLESS if anything
 >  - it sprinkles a bunch of ugly branches around the allocator fast path
 >  - it only works for order==0
-> 
+>
 > Combined I really odn't think this should be a GFP flag. How about a
 > special purpose allocation function, something like so..
 
-This looks entirely reasonable to me!
+No. No. No.
 
-							Thanx, Paul
+It's not requried at all after the context got set straight and my brain
+started working again.
 
-> ---
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 901a21f61d68..cdec9c99fba7 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4875,6 +4875,47 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
->  }
->  EXPORT_SYMBOL(__alloc_pages_nodemask);
->  
-> +struct page *__rmqueue_lockless(struct zone *zone, struct per_cpu_pages *pcp)
-> +{
-> +	struct list_head *list;
-> +	struct page *page;
-> +	int migratetype;
-> +
-> +	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++) {
-> +		list = &pcp->list[migratetype];
-> +		page = list_first_entry_or_null(list, struct page, lru);
-> +		if (page && check_new_pcp(page)) {
-> +			list_del(&page->lru);
-> +			pcp->count--;
-> +			return page;
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +struct page *__alloc_page_lockless(void)
-> +{
-> +	struct zonelist *zonelist = node_zonelist(numa_node_id(), GFP_KERNEL);
-> +	struct per_cpu_pages *pcp;
-> +	struct page *page = NULL;
-> +	unsigned long flags;
-> +	struct zoneref *z;
-> +	struct zone *zone;
-> +
-> +	for_each_zone_zonelist(zone, z, zonelist, ZONE_NORMAL) {
-> +		local_irq_save(flags);
-> +		pcp = &this_cpu_ptr(zone->pageset)->pcp;
-> +		page = __rmqueue_lockless(zone, pcp);
-> +		local_irq_restore(flags);
-> +
-> +		if (page)
-> +			break;
-> +	}
-> +
-> +	return page;
-> +}
-> +
->  /*
->   * Common helper functions. Never use with __GFP_HIGHMEM because the returned
->   * address cannot represent highmem pages. Use alloc_pages and then kmap if
+There is no need to provide such a thing which tries to "optimize"
+unfixable problems and as a consequence makes other people use it for
+the completely wrong reasons all over the place.
+
+We have plenty of that stuff already. No need for more ...
+
+Thanks,
+
+        tglx
+ 
