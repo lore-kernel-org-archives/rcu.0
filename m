@@ -2,153 +2,158 @@ Return-Path: <SRS0=FxgN=B2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC46C433E1
-	for <rcu@archiver.kernel.org>; Sun, 16 Aug 2020 18:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EF67C433E3
+	for <rcu@archiver.kernel.org>; Sun, 16 Aug 2020 22:57:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 94AEC20829
-	for <rcu@archiver.kernel.org>; Sun, 16 Aug 2020 18:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597600899;
-	bh=/9r6IbF8e59Xv39Uoi0I+/R+320IQ9PbohZJBZC6N18=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=j/V6iPLIYkXFmHIEaSlqJ5jEvP2Xz1/sdbb+RaJywcuJxUz4esUho+MX0KhX9uJaf
-	 fwqDubhFU/Q+gG0VKKxSd3qiVLOjcRYBVcPAd6frLS95mAbTT6S+U5wodTEoxDRw/4
-	 dhXcOpBa3+iCcfhPXUd2798RU7ImPqrY2KSpGzO8=
+	by mail.kernel.org (Postfix) with ESMTP id 54AF1206F4
+	for <rcu@archiver.kernel.org>; Sun, 16 Aug 2020 22:57:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tozs28+Q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgHPSBj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 16 Aug 2020 14:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgHPSBi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 16 Aug 2020 14:01:38 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDB9220829;
-        Sun, 16 Aug 2020 18:01:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597600897;
-        bh=/9r6IbF8e59Xv39Uoi0I+/R+320IQ9PbohZJBZC6N18=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ULRx2uIC7t1znyRP8JrVQfG1e+FEezBXa4pQlOjdyeNcg6UHib5irtk993CiF04p0
-         R27t0r+blZu/QPnDqHfAAewJh4ZEnMOmgJPGGEia0z0X1DQEowJd91PgmJuqUY2yCN
-         35qylvcmifbEFOH9otAZR9DDJzylz2jc2KAjDiW4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9464635226F6; Sun, 16 Aug 2020 11:01:37 -0700 (PDT)
-Date:   Sun, 16 Aug 2020 11:01:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Chao Zhou <chaozhou1018@gmail.com>
-Cc:     rcu@vger.kernel.org
-Subject: Re: Allow multiple GP misses before Panic
-Message-ID: <20200816180137.GA23602@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJdzfEd6nf9xBw7w26EdsM5ukpDEhKNc0L6PW7SKKJDCgtt+Sg@mail.gmail.com>
- <20200813181941.GD4295@paulmck-ThinkPad-P72>
- <CAJdzfEcgsCDyvVRm4dW1BAfWKKYwgfwjuEimr2wAm+sRO0JFzg@mail.gmail.com>
- <CAJdzfEdfCFqF4t8kNL4UriBW8xTMtsgx7FNjQZwPHzTFQaATiA@mail.gmail.com>
+        id S1726288AbgHPW5D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 16 Aug 2020 18:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgHPW5B (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 16 Aug 2020 18:57:01 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EA7C061786;
+        Sun, 16 Aug 2020 15:57:00 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id m22so15413302ljj.5;
+        Sun, 16 Aug 2020 15:57:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3ISqgAr5mVsqcVa5T/RQjHidddeXrpowXieFk+y0N8M=;
+        b=Tozs28+Qr6u9Y2FikwR+jDpH9HiXrIZYuArZFgKGp6L+61g+WIW8akdKsM8pV6R5rf
+         zPoM3Dqd71cnXwoXmfKE+pm/QJUO/9lbJgEaogX9I1++lIJu+Co37tPr/fYD6kcuZPXR
+         HN49bkQ7vRNngQUZCBgEPszGRnQ5DhQtYTVc3qidPucZ/6sjdd3bYtNMMal5enKQoQov
+         O/GxVyvlP0sI22J876DhcRauqgbPl2x5mFBZjxjr0l8zkguCWhFmj3jXZaDv3rBJteNC
+         v5v0/pIbtWP0qCP4brtQ2Qidqk36Nip/rWFcFDmlm/SHpwNxXZqh+aoF3MPGZFIGjRrt
+         zeEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3ISqgAr5mVsqcVa5T/RQjHidddeXrpowXieFk+y0N8M=;
+        b=nIpAG48h/xGqR0STmkhO5U7KQOxc0+IjTbPqUe+YR4P6ggTsn149wJLRDC+1vVCg4E
+         7TlAVUfDMYhEnLDIdXGfBG9VU6xVim3J3GJCmzSWH5259Ag76ck4B+K2aFYFwYqtJcFA
+         nt/UizvynnFTnnf2NmjAhMbisBpUIm7KTtOIj9d4sAfATtrlxEvhGu66b5XT8eVna+tq
+         q74wEwQlcxyeT3jAE8NzYWaEf5KT8D/bhhBH4DtEBiOPJJvxLCI/s6RyBPlkcDATQZPF
+         bV+lmblz/Q36YWgkpV3JaSf55WMjr6J8vosQYcKrc/pwbMH/2XOndN8pGrCzbLb9mn/u
+         W7ew==
+X-Gm-Message-State: AOAM532Ui74pScBdhi1jnmxGmHiAoOL4NrgxwbO85RHJ4qP51pRP3E5X
+        44LVM8Nn4KbEOwp9fNdU3sI=
+X-Google-Smtp-Source: ABdhPJygnaGyT1ZhEKzm7pUMmPKtXAXP6IeR+TsG4iwr2FYwxzI3Aop8J8fPG/+EY1xIjca9gaMHiA==
+X-Received: by 2002:a2e:9f46:: with SMTP id v6mr5755863ljk.66.1597618619303;
+        Sun, 16 Aug 2020 15:56:59 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id s1sm4634109lfi.76.2020.08.16.15.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2020 15:56:57 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 17 Aug 2020 00:56:55 +0200
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200816225655.GA17869@pc636>
+References: <20200813220619.GA2674@hirez.programming.kicks-ass.net>
+ <875z9m3xo7.fsf@nanos.tec.linutronix.de>
+ <20200814083037.GD3982@worktop.programming.kicks-ass.net>
+ <20200814141425.GM4295@paulmck-ThinkPad-P72>
+ <20200814161106.GA13853@paulmck-ThinkPad-P72>
+ <20200814174924.GI3982@worktop.programming.kicks-ass.net>
+ <20200814180224.GQ4295@paulmck-ThinkPad-P72>
+ <875z9lkoo4.fsf@nanos.tec.linutronix.de>
+ <20200814204140.GT4295@paulmck-ThinkPad-P72>
+ <20200814215206.GL3982@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJdzfEdfCFqF4t8kNL4UriBW8xTMtsgx7FNjQZwPHzTFQaATiA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200814215206.GL3982@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:00:07PM -0700, Chao Zhou wrote:
-> Hi Paul,
+On Fri, Aug 14, 2020 at 11:52:06PM +0200, Peter Zijlstra wrote:
+> On Fri, Aug 14, 2020 at 01:41:40PM -0700, Paul E. McKenney wrote:
+> > > And that enforces the GFP_NOLOCK allocation mode or some other solution
+> > > unless you make a new rule that calling call_rcu() is forbidden while
+> > > holding zone lock or any other lock which might be nested inside the
+> > > GFP_NOWAIT zone::lock held region.
+> > 
+> > Again, you are correct.  Maybe the forecasted weekend heat will cause
+> > my brain to hallucinate a better solution, but in the meantime, the
+> > GFP_NOLOCK approach looks good from this end.
 > 
-> Because sysctl panic_on_rcu_stall is public interface, it might have
-> already been used by adopters, will the change break them? Will a new
-> sysctl max_rcu_stall_to_panic be more un-interruptive? Appreciate your
-> insights about this .
+> So I hate __GFP_NO_LOCKS for a whole number of reasons:
+> 
+>  - it should be called __GFP_LOCKLESS if anything
+>  - it sprinkles a bunch of ugly branches around the allocator fast path
+>  - it only works for order==0
+> 
+I had a look at your proposal, that is below. An underlying logic stays
+almost the same as what has been proposed by this RFC. I mean i do not
+see any difference in your approach that does exactly the same - providing
+lock-less access to the per-cpu-lists. I am not talking about implementation
+details and farther improvements, like doing also a search over zonelist -> ZONE_NORMAL.
 
-It is a public interface, but using the previously forbidden values
-other than zero and one is fine.
+Also, please note. The patch was tagged as RFC.
 
-							Thanx, Paul
+>
+> Combined I really odn't think this should be a GFP flag. How about a
+> special purpose allocation function, something like so..
+> 
+I agree with you. Also i think, Michal, does not like the GFP flag, it introduces
+more complexity to the page allocator. So, providing lock-less access as a separate
+function is better approach, IMHO.
 
-> On Thu, Aug 13, 2020 at 11:50 AM Chao Zhou <chaozhou1018@gmail.com> wrote:
-> >
-> > Thanks Paul for the insights!
-> >
-> > I studied the 3 options and think that #1+#3 offers both flexibility
-> > to users and coverage of boundary user cases.
-> >
-> > For example, as an user of RCU, we want the warnings to be spilled at
-> > the default 21 seconds so that we know such events are happening. At
-> > the same time, we want Panic to happen if the stall is long enough to
-> > significantly affect available system memory on our system.
-> >
-> > Here is the plan based on our discussion, please advise if not inline
-> > with the idea:
-> > 1. modify panic_on_rcu_stall to be the maximum number of consecutive
-> > warnings to trigger Panic.
-> >     1) change its name to max_rcu_stall_to_panic,
-> >     2) default value to 1, which is the same behavior as today's.
-> > 2. use ((struct rcu_state *)->gpnum - (struct rcu_data *)->gpnum) >=
-> > max_rcu_stall_to_panic as condition to trigger Panic;
-> > 3. reset (struct rcu_data *)->gpnum to (struct rcu_state *)->gpnum
-> > every time a new grace period starts;
-> > 4. add a new member (struct rcu_data *)->gpmiss that is incremented at
-> > each miss to track how many misses so far for statistics/debug
-> > purpose.
-> >
-> > Your insights and advice are highly appreciated.
-> >
-> > Thanks!
-> >
-> > Chao
-> >
-> > On Thu, Aug 13, 2020 at 11:19 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Thu, Aug 13, 2020 at 10:22:09AM -0700, Chao Zhou wrote:
-> > > > Hi,
-> > > >
-> > > > Some RCU stalls are transient and a system is fully capable to recover
-> > > > after that, but we do want Panic after certain amount of GP misses.
-> > > >
-> > > > Current module parameter rcu_cpu_stall_panic only turn on/off Panic,
-> > > > and 1 GP miss will trigger Panic when it is enabled.
-> > > >
-> > > > Plan to add a module parameter for users to fine-tune how many GP
-> > > > misses are allowed before Panic.
-> > > >
-> > > > To save our precious time, a diff has been tested on our systems and
-> > > > it works and solves our problem in transient RCU stall events.
-> > > >
-> > > > Your insights and guidance is highly appreciated.
-> > >
-> > > Please feel free to post a patch.  I could imagine a number of things
-> > > you might be doing from your description above:
-> > >
-> > > 1.      Having a different time for panic, so that (for example) an
-> > >         RCU CPU stall warning appears at 21 seconds (in mainline), and
-> > >         if the grace period still has not ended at some time specified
-> > >         by some kernel parameter.  For example, one approach would be
-> > >         to make the existing panic_on_rcu_stall sysctl take an integer
-> > >         instead of a boolean, and to make that integer specify how old
-> > >         the stall-warned grace period must be before panic() is invoked.
-> > >
-> > > 2.      Instead use the number of RCU CPU stall warning messages to
-> > >         trigger the panic, so that (for example), the panic would happen
-> > >         on the tenth message.  Again, the panic_on_rcu_stall sysctl
-> > >         might be used for this.
-> > >
-> > > 3.      Like #2, but reset the count every time a new grace period
-> > >         starts.  So if the panic_on_rcu_stall sysctl was set to
-> > >         ten, there would need to be ten RCU CPU stall warnings for
-> > >         the same grace period before panic() was invoked.
-> > >
-> > > Of the above three, #1 and #3 seem the most attractive, with a slight
-> > > preference for #1.
-> > >
-> > > Or did you have something else in mind?
-> > >
-> > >                                                         Thanx, Paul
+Michal asked to provide some data regarding how many pages we need and how
+"lockless allocation" behaves when it comes to success vs failed scenarios.
+
+Please see below some results. The test case is a tight loop of 1 000 000 allocations
+doing kmalloc() and kfree_rcu():
+
+sudo ./test_vmalloc.sh run_test_mask=2048 single_cpu_test=1
+
+<snip>
+ for (i = 0; i < 1 000 000; i++) {
+  p = kmalloc(sizeof(*p), GFP_KERNEL);
+  if (!p)
+   return -1;
+
+  p->array[0] = 'a';
+  kvfree_rcu(p, rcu);
+ }
+<snip>
+
+wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_0.png
+wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
+
+Also i would like to underline, that kfree_rcu() reclaim logic can be improved further,
+making the drain logic more efficient when it comes to time, thus to reduce a footprint
+as a result number of required pages.
+
+--
+Vlad Rezki
