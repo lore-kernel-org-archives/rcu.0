@@ -2,166 +2,124 @@ Return-Path: <SRS0=6ydw=B3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE939C433DF
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 10:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D737FC433E3
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 20:14:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8EB4120758
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 10:36:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B56D0205CB
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 20:14:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvqQz4Rb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QtIODdVO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgHQKgL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Aug 2020 06:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S1729317AbgHQUOM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Aug 2020 16:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgHQKgG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Aug 2020 06:36:06 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BF8C061389;
-        Mon, 17 Aug 2020 03:36:06 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id v15so8084653lfg.6;
-        Mon, 17 Aug 2020 03:36:05 -0700 (PDT)
+        with ESMTP id S1726133AbgHQUOI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Aug 2020 16:14:08 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8FC061389
+        for <rcu@vger.kernel.org>; Mon, 17 Aug 2020 13:14:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id p20so16199399wrf.0
+        for <rcu@vger.kernel.org>; Mon, 17 Aug 2020 13:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nzEOEMP8zmWx/Zstp1QUlIIiZZVtnurHnSvzhhPb3MY=;
-        b=FvqQz4Rbw7s1IQt3Gp4JHY1UxdkLvhn8wkKutwI0+s/DKDlsbG/6NYGx4VNQxTSTBh
-         ZQ8oivHkYhTjQY5odA9+Cd6AuvrcTZbxcgdvABT0yu4wZ2jY9wglK4ca38b1gQM837D7
-         NR6HAUAh8gw8vPRThkb99xzdDPp79AA4B/8j5JK0HE5ycxHxqsEHUklqXptWe548SdOz
-         KLg/hGSLSr+vYTofycNwBJyG1e7AA2RBtjRQ71eNubFGfuRO2LYj/XxIQaazmU30FfU+
-         S2r/fKF4gb9MiqBZU8+aI4BhsSwH+v2QHf8LfanPflStW2xY98rFBZl6YmnCBINZBHFZ
-         xcOQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8VlkLFchI+j8VaN0Aa8KueyIpTf4adrrVs7ROxwTX3o=;
+        b=QtIODdVO4ECiuttSSX3ZDUVbTPmyWrAuSPKfDKZFglzWehHVe2G3AJtaJ7uM5fEz8z
+         XiE8f3jtzjDEcNkhsK1h18fLiQ2KDlUQqNt25w3fHnCnaZYJzEK6Y798KGC62A7xZTOT
+         DV+aZ+sVVonRzPxVJI5mg8UZmMB7sCLCTYyCCnFmpXWIbWt0mUFCz5HMh5QhPQEDCWdm
+         IMWeHCuaZR4RZ4fVA9bDKTFXgIoH46xoD7xgO7gwLcWl1LWK9AStoAM5LB8S9boZbLdo
+         iIxhmMDo5lWxRKkzGC/86mhvnLiD5+ffSFSHAja3FEq7eIaCt7Pdurngv0xrxSwePrLi
+         0IGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nzEOEMP8zmWx/Zstp1QUlIIiZZVtnurHnSvzhhPb3MY=;
-        b=gzbGASiwG35Y1O3nr2m3Hpb2dB8em+RRCIp1kqqQQng4C0nY221nfjspq8tsdZjRVY
-         b3gTZUJiJ6QOfiUeujv1YEXDBN9whN8OyMd3tg4NjiT/sAzGB8ZX1UkG9JHwmdsyZlRp
-         bszalab3EFAEz5gXohXTFRKNleCqpDkvg5CcSkOsjnH+QZk7MP4/Y71e46a+I+Xzzypq
-         WKTCSsd/+7qwEruSbtjiCEuXvCB0+j57wecgSIzHpnFdJz5e/VU12BjQRuUqm7/R+LCO
-         b5JalrA8q2kk+tMIT71uZ6ZjeZ2GXwNGJ1TAEeNxRp9T4JHnm/Kd0FDvJd+ISBR5YViL
-         1HAw==
-X-Gm-Message-State: AOAM531U4chtY5xbAURJn3G7xS4StlKWJqmEEYWWraprYkuX4//2kp1i
-        BjyrM0F34xlMwNlKsC/dTv3kyExNk2Ie9S92
-X-Google-Smtp-Source: ABdhPJyiRuXWljUwy5ryxFo5pj4eBtXayzEjI7XPWhPy7phXXETM8i9A7yP3T8y9+iQ8aH6pTU0Dbg==
-X-Received: by 2002:a19:408d:: with SMTP id n135mr7027225lfa.192.1597660563981;
-        Mon, 17 Aug 2020 03:36:03 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id o16sm4963204ljc.66.2020.08.17.03.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Aug 2020 03:36:02 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 17 Aug 2020 12:36:00 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200817103600.GA21301@pc636>
-References: <20200814083037.GD3982@worktop.programming.kicks-ass.net>
- <20200814141425.GM4295@paulmck-ThinkPad-P72>
- <20200814161106.GA13853@paulmck-ThinkPad-P72>
- <20200814174924.GI3982@worktop.programming.kicks-ass.net>
- <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
- <20200816225655.GA17869@pc636>
- <20200817082849.GA28270@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8VlkLFchI+j8VaN0Aa8KueyIpTf4adrrVs7ROxwTX3o=;
+        b=rnVsve1PlhOR637LSBVG7R6b5sv3qw9bJeJCelZ6YiDKE9flS+TW1dR2RGYnlmbG9s
+         UwLakRpL0x95bEll4u9Y7tZ7epcLnoDDfxLzk1AS50FRx0Dc1SQoRXbOoXyJQO4g4mQ7
+         47Wuu6JHybQf8dykddb2UqfOiPitO3Ia71ng6diRRJo1UVchpp5a7BnjJSL2Pfq315lW
+         xqGVEh/775Kmbk4RtEFtjNqbpPQr80LGgwPMJhhB8lhPHzCy7pGHEH1pCnSWbnUcZ3KW
+         qDl8ZNgD1CNDDzvaVvADbKLeQCyApAvYxJUQo+uKGOik8t55eYKLTsWnG7vMG/tSjGmY
+         FR8w==
+X-Gm-Message-State: AOAM5336sRS/ONGkBZeXlauXJObXWFg8oA7XaMByWkHh0tS6Us1Sx9/K
+        BgJP+i2Z/NCYam3I1nIG2WBPYCYtNh6rn+LLSm3E
+X-Google-Smtp-Source: ABdhPJxyZaqqSl0OTSUqQ8fWDmcJcY7jgNucGRAF1HCmjJHz2qICLDYAnof5gVgT4zP/CdkDSQQCo2m/z0EwaqJka6A=
+X-Received: by 2002:adf:dcc9:: with SMTP id x9mr18550540wrm.153.1597695246800;
+ Mon, 17 Aug 2020 13:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817082849.GA28270@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200812095639.4062-1-xiangxia.m.yue@gmail.com>
+ <20200813.155348.1997626107228415421.davem@davemloft.net> <CA+Sh73OVgGEVyhqenXm7HpT4fQfLeZVc+SHWO90iiW2QXkcEQg@mail.gmail.com>
+ <CAMDZJNV4uMn-6KYNHMmDGMHtDHw4zVyxxYyr47gArW-jBmxPSw@mail.gmail.com>
+In-Reply-To: <CAMDZJNV4uMn-6KYNHMmDGMHtDHw4zVyxxYyr47gArW-jBmxPSw@mail.gmail.com>
+From:   =?UTF-8?B?Sm9oYW4gS27DtsO2cw==?= <jknoos@google.com>
+Date:   Mon, 17 Aug 2020 13:13:55 -0700
+Message-ID: <CA+Sh73Nk_gDiqsFqQpD=HxgQBpFzyzhAggvkczQWizgk47daWw@mail.gmail.com>
+Subject: Re: [PATCH v2] net: openvswitch: introduce common code for flushing flows
+To:     Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gregory Rose <gvrose8192@gmail.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        ovs dev <dev@openvswitch.org>, Netdev <netdev@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>, David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 10:28:49AM +0200, Michal Hocko wrote:
-> On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
-> [...]
-> > Michal asked to provide some data regarding how many pages we need and how
-> > "lockless allocation" behaves when it comes to success vs failed scenarios.
-> > 
-> > Please see below some results. The test case is a tight loop of 1 000 000 allocations
-> > doing kmalloc() and kfree_rcu():
-> 
-> It would be nice to cover some more realistic workloads as well.
-> 
-Hmm.. I tried to show syntactic worst case when a "flood" occurs.
-In such conditions we can get fails what is expectable and we have
-fallback mechanism for it.
+On Sat, Aug 15, 2020 at 12:48 AM Tonghao Zhang <xiangxia.m.yue@gmail.com> w=
+rote:
+>
+> On Sat, Aug 15, 2020 at 3:28 AM Johan Kn=C3=B6=C3=B6s <jknoos@google.com>=
+ wrote:
+> >
+> > On Thu, Aug 13, 2020 at 3:53 PM David Miller <davem@davemloft.net> wrot=
+e:
+> > >
+> > > From: xiangxia.m.yue@gmail.com
+> > > Date: Wed, 12 Aug 2020 17:56:39 +0800
+> > >
+> > > > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> > > >
+> > > > To avoid some issues, for example RCU usage warning and double free=
+,
+> > > > we should flush the flows under ovs_lock. This patch refactors
+> > > > table_instance_destroy and introduces table_instance_flow_flush
+> > > > which can be invoked by __dp_destroy or ovs_flow_tbl_flush.
+> > > >
+> > > > Fixes: 50b0e61b32ee ("net: openvswitch: fix possible memleak on des=
+troy flow-table")
+> > > > Reported-by: Johan Kn=C3=B6=C3=B6s <jknoos@google.com>
+> > > > Reported-at: https://mail.openvswitch.org/pipermail/ovs-discuss/202=
+0-August/050489.html
+> > > > Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> > >
+> > > Applied, thank you.
+> >
+> > Tonghao, does the following change to your commit make sense to be
+> > able to apply it on 5.6.14 (e3ac9117b18596b7363d5b7904ab03a7d782b40c)?
+> Not applied cleanly, if necessary I can send v3 for 5.6.14.
 
-> > sudo ./test_vmalloc.sh run_test_mask=2048 single_cpu_test=1
-> > 
-> > <snip>
-> >  for (i = 0; i < 1 000 000; i++) {
-> >   p = kmalloc(sizeof(*p), GFP_KERNEL);
-> >   if (!p)
-> >    return -1;
-> > 
-> >   p->array[0] = 'a';
-> >   kvfree_rcu(p, rcu);
+That would be appreciated. Thanks!
+
+> > @@ -393,7 +387,7 @@ void ovs_flow_tbl_destroy(struct flow_table *table)
+> >
+> >         free_percpu(table->mask_cache);
+> >         kfree_rcu(rcu_dereference_raw(table->mask_array), rcu);
+> > -       table_instance_destroy(table, ti, ufid_ti, false);
+> > +       table_instance_destroy(ti, ufid_ti);
 > >  }
-> > <snip>
-> > 
-> > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_0.png
-> 
-> If I understand this correctly then this means that failures happen very
-> often because pcp pages are not recycled quicklly enough.
-> 
-Yep, it happens and that is kind of worst scenario(flood one). Therefore we
-have a fallback and is expectable. Also, i did not provide the number of pages
-in a loop. On my test machine we need approximately ~300/400 pages to cover
-that flood case until we recycles or return back the pages to the pcp.
-
-Please note, as i mentioned before. Our drain part is not optimal for sure,
-it means that we can rework it a bit making it more efficient. For example,
-when a flood occurs, instead of delaying "reclaimer logic" thread, it can be
-placed to a run-queue right away. We can use separate "flush workqueue"
-that is tagged with WQ_MEM_RECLAIM raising a priority of drain context.
-
-i.e. there is a room for reducing such page footprint.
-
-> > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
-> 
-> 1/8 of the memory in pcp lists is quite large and likely not something
-> used very often.
-> 
-Just for illustration. When percpu_pagelist_fractio is set to 8, i do
-not see any page fail on a single CPU flood case. If i run simultaneously
-such flood on all available CPUs there will be fails for sure. 
-
-> Both these numbers just make me think that a dedicated pool of page
-> pre-allocated for RCU specifically might be a better solution. I still
-> haven't read through that branch of the email thread though so there
-> might be some pretty convincing argments to not do that.
-> 
-> > Also i would like to underline, that kfree_rcu() reclaim logic can be improved further,
-> > making the drain logic more efficient when it comes to time, thus to reduce a footprint
-> > as a result number of required pages.
-> > 
-> > --
-> > Vlad Rezki
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+>
+>
+>
+> --
+> Best regards, Tonghao
