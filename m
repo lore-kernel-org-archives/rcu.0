@@ -2,132 +2,126 @@ Return-Path: <SRS0=6ydw=B3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2922AC433E1
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 22:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11DD7C433E8
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 22:28:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 01A542072E
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 22:04:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="WuXgw7h5"
+	by mail.kernel.org (Postfix) with ESMTP id DEF6E2072D
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 22:28:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1597703285;
+	bh=NUONv9kLCShilfn9ZT/o30cFFqVc/L2+Z/w6nr7C0zk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=TG5xfDJ2iR4B20wUoCvj+XQoxLU6g8cP9tkNnUJgBz9fGOthKcFgjelqn9ewAiXfy
+	 lam3au9OnD/tyK4mrSl1foMrJRecjGJQPsmUBA0TfXkHofFMi0ojylxYCQcHtMyEEq
+	 V7p78TqClaKEwGV3VITXpzimNBZ/o0QY37ByNSyg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbgHQWES (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Aug 2020 18:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729610AbgHQWEG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Aug 2020 18:04:06 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3073C061342
-        for <rcu@vger.kernel.org>; Mon, 17 Aug 2020 15:04:05 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t13so15849299ile.9
-        for <rcu@vger.kernel.org>; Mon, 17 Aug 2020 15:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rsk5Ufj3tfIrfJ6olRq6fz/kGxDaBkxSgkFEQIO90T0=;
-        b=WuXgw7h5Tk/E8vBdglUWikqi5bOy/Fv7Dz5TpYV61NOH5v0fYibnTBhld7LUAQD9+f
-         V885kObZX10TGAufYJ4zdF6DfQ+Q0bYtM9jKwntIDFC5/1SzDgmpkQDkIYWUDnfY+SmI
-         WfHyMjkDaoJjWt16UnDCUpTHm1vWxfxa6BNV8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rsk5Ufj3tfIrfJ6olRq6fz/kGxDaBkxSgkFEQIO90T0=;
-        b=BYj2Dpf0xvMlQygSDGfJz6P1/H6Q4ULdReSrCpqinKTzumDisvWnBfk+4/yxom7xXt
-         WblOyUtpjuUAKim+xe5/buQgBlS7yjqFCLN3xSjz4cM/r32SKvKdo+vkUK9FLpnu1uri
-         dXE2aSjkrnRhtCRMLnkl4H1wa3/ES2bR6ZCInV+HtOUyOHWmx1nbenftxiYXL2gldJ82
-         6MBbCXnrGQgJE+h47gIglg3TeSnXJ2FGQtKt4UrPVASqEC9h1l+W0U9WV9XFqzNoWC7Y
-         KfwCTzKn7/wh7N1dagc/tB/QZqQIMzWhxXxHV60vxp+wa2vQj6lMJlwPHDYgTuEOwWwS
-         zNKA==
-X-Gm-Message-State: AOAM530uFFMQuYQinRD0bHydnnu50+Dmw7BJzNKPyWNVpdwFYn62JlOS
-        HKVnFzmR/ru3C5b1YhpORKTLbC0nTRHU3OhnZWeghQ==
-X-Google-Smtp-Source: ABdhPJwVqUdh5f3MtVp+PN/4FBPFUThmsxhqFPPDpKDQbD+YoOrCuEY86js8DzeXsUKLUQLuBrDjvEdRu9nj3su3Vxc=
-X-Received: by 2002:a92:340d:: with SMTP id b13mr16328101ila.78.1597701845210;
- Mon, 17 Aug 2020 15:04:05 -0700 (PDT)
+        id S1726793AbgHQW2F (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Aug 2020 18:28:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726778AbgHQW2F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Aug 2020 18:28:05 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AC39204EC;
+        Mon, 17 Aug 2020 22:28:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597703284;
+        bh=NUONv9kLCShilfn9ZT/o30cFFqVc/L2+Z/w6nr7C0zk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=z2inuekbTwOWe5b25wv8EliIvOxNuBYdsAw0rDxdv8Tx1PeutqY/VjF5lmu44RB7h
+         11nUJyqzMMgH8lXsbxK2+PVorRtEXuGvPQXRL5rtuxd2GNLaKnBPuwzPIHkYG9klAk
+         kKI2Pc2NooJe/okdbcRDEET3yYg5bItBBn++/0jQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DA17C3522617; Mon, 17 Aug 2020 15:28:03 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 15:28:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200817222803.GE23602@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200814083037.GD3982@worktop.programming.kicks-ass.net>
+ <20200814141425.GM4295@paulmck-ThinkPad-P72>
+ <20200814161106.GA13853@paulmck-ThinkPad-P72>
+ <20200814174924.GI3982@worktop.programming.kicks-ass.net>
+ <20200814180224.GQ4295@paulmck-ThinkPad-P72>
+ <875z9lkoo4.fsf@nanos.tec.linutronix.de>
+ <20200814204140.GT4295@paulmck-ThinkPad-P72>
+ <20200814215206.GL3982@worktop.programming.kicks-ass.net>
+ <20200816225655.GA17869@pc636>
+ <20200817082849.GA28270@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20200814064557.17365-1-qiang.zhang@windriver.com> <20200814185124.GA2113@pc636>
-In-Reply-To: <20200814185124.GA2113@pc636>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 17 Aug 2020 18:03:54 -0400
-Message-ID: <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: shrink each possible cpu krcp
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     qiang.zhang@windriver.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817082849.GA28270@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 2:51 PM Uladzislau Rezki <urezki@gmail.com> wrote:
->
-> > From: Zqiang <qiang.zhang@windriver.com>
-> >
-> > Due to cpu hotplug. some cpu may be offline after call "kfree_call_rcu"
-> > func, if the shrinker is triggered at this time, we should drain each
-> > possible cpu "krcp".
-> >
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > ---
-> >  kernel/rcu/tree.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8ce77d9ac716..619ccbb3fe4b 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3443,7 +3443,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
-> >       unsigned long count = 0;
-> >
-> >       /* Snapshot count of all CPUs */
-> > -     for_each_online_cpu(cpu) {
-> > +     for_each_possible_cpu(cpu) {
-> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >
-> >               count += READ_ONCE(krcp->count);
-> > @@ -3458,7 +3458,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >       int cpu, freed = 0;
-> >       unsigned long flags;
-> >
-> > -     for_each_online_cpu(cpu) {
-> > +     for_each_possible_cpu(cpu) {
-> >               int count;
-> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >
-> > @@ -3491,7 +3491,7 @@ void __init kfree_rcu_scheduler_running(void)
-> >       int cpu;
-> >       unsigned long flags;
-> >
-> > -     for_each_online_cpu(cpu) {
-> > +     for_each_possible_cpu(cpu) {
-> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> >
-> >               raw_spin_lock_irqsave(&krcp->lock, flags);
-> >
-> I agree that it can happen.
->
-> Joel, what is your view?
+On Mon, Aug 17, 2020 at 10:28:49AM +0200, Michal Hocko wrote:
+> On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
 
-Yes I also think it is possible. The patch LGTM. Another fix could be
-to drain the caches in the CPU offline path and save the memory. But
-then it will take hit during __get_free_page(). If CPU
-offlining/online is not frequent, then it will save the lost memory.
+[ . . . ]
 
-I wonder how other per-cpu caches in the kernel work in such scenarios.
+> > wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
+> 
+> 1/8 of the memory in pcp lists is quite large and likely not something
+> used very often.
+> 
+> Both these numbers just make me think that a dedicated pool of page
+> pre-allocated for RCU specifically might be a better solution. I still
+> haven't read through that branch of the email thread though so there
+> might be some pretty convincing argments to not do that.
 
-Thoughts?
+To avoid the problematic corner cases, we would need way more dedicated
+memory than is reasonable, as in well over one hundred pages per CPU.
+Sure, we could choose a smaller number, but then we are failing to defend
+against flooding, even on systems that have more than enough free memory
+to be able to do so.  It would be better to live within what is available,
+taking the performance/robustness hit only if there isn't enough.
 
-thanks,
+My current belief is that we need a combination of (1) either the
+GFP_NOLOCK flag or Peter Zijlstra's patch and (2) Thomas Gleixner's
+delayed allocation approach.  As you say and as Uladislau's measurements
+suggest, if we only have Peter's approach, although we could handle short
+floods just fine, we could not handle longer-term floods.  And Thomas's
+approach is in fact designed to handle these longer-term floods.
 
- - Joel
+Except that if we have only Thomas's approach, then we have to handle the
+possibility that RCU_SOFTIRQ happened on the back of an interrupt that
+happened while the interrupted process was holding a memory-allocator
+lock.  This means further deferral, such as going into a workqueue,
+which would allow better memory-allocator results, but which would also
+mean further delays from the time that memory was needed until the time
+that it was actually supplied.  Delays that could be bridged by either
+a GFP_NOLOCK flag or Peter's patch.
+
+So again, it looks like this is not an either/or situation, but rather
+an need-both situation.
+
+I freely confess that one of my hopes almost 30 years ago was that a
+high-quality parallel memory allocator would eliminate the need for
+special-purpose allocators, but as has been noted several times on this
+thread, reality does not always seem to be compelled to take such
+hopes into account.
+
+							Thanx, Paul
