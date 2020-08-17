@@ -6,28 +6,26 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACC9C433E3
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 08:29:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48467C433E3
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 08:48:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02EC72063A
-	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 08:29:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 31496207DF
+	for <rcu@archiver.kernel.org>; Mon, 17 Aug 2020 08:48:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgHQI2y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Aug 2020 04:28:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50480 "EHLO mx2.suse.de"
+        id S1728072AbgHQIr7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Aug 2020 04:47:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37936 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728104AbgHQI2x (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:28:53 -0400
+        id S1726457AbgHQIrW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Aug 2020 04:47:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B44B9AC1C;
-        Mon, 17 Aug 2020 08:29:15 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 10:28:49 +0200
+        by mx2.suse.de (Postfix) with ESMTP id 5E9B4AE8C;
+        Mon, 17 Aug 2020 08:47:45 +0000 (UTC)
+Date:   Mon, 17 Aug 2020 10:47:19 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>,
@@ -35,73 +33,84 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Joel Fernandes <joel@joelfernandes.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-Message-ID: <20200817082849.GA28270@dhcp22.suse.cz>
-References: <875z9m3xo7.fsf@nanos.tec.linutronix.de>
- <20200814083037.GD3982@worktop.programming.kicks-ass.net>
- <20200814141425.GM4295@paulmck-ThinkPad-P72>
- <20200814161106.GA13853@paulmck-ThinkPad-P72>
- <20200814174924.GI3982@worktop.programming.kicks-ass.net>
- <20200814180224.GQ4295@paulmck-ThinkPad-P72>
- <875z9lkoo4.fsf@nanos.tec.linutronix.de>
- <20200814204140.GT4295@paulmck-ThinkPad-P72>
- <20200814215206.GL3982@worktop.programming.kicks-ass.net>
- <20200816225655.GA17869@pc636>
+Message-ID: <20200817084719.GB28270@dhcp22.suse.cz>
+References: <20200814180141.GP4295@paulmck-ThinkPad-P72>
+ <87tux4kefm.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200816225655.GA17869@pc636>
+In-Reply-To: <87tux4kefm.fsf@nanos.tec.linutronix.de>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon 17-08-20 00:56:55, Uladzislau Rezki wrote:
+On Sat 15-08-20 01:14:53, Thomas Gleixner wrote:
 [...]
-> Michal asked to provide some data regarding how many pages we need and how
-> "lockless allocation" behaves when it comes to success vs failed scenarios.
+> For normal operations a couple of pages which can be preallocated are
+> enough. What you are concerned of is the case where you run out of
+> pointer storage space.
 > 
-> Please see below some results. The test case is a tight loop of 1 000 000 allocations
-> doing kmalloc() and kfree_rcu():
-
-It would be nice to cover some more realistic workloads as well.
-
-> sudo ./test_vmalloc.sh run_test_mask=2048 single_cpu_test=1
+> There are two reasons why that can happen:
 > 
-> <snip>
->  for (i = 0; i < 1 000 000; i++) {
->   p = kmalloc(sizeof(*p), GFP_KERNEL);
->   if (!p)
->    return -1;
+>       1) RCU call flooding
+>       2) RCU not being able to run and mop up the backlog
 > 
->   p->array[0] = 'a';
->   kvfree_rcu(p, rcu);
->  }
-> <snip>
+> #1 is observable by looking at the remaining storage space and the RCU
+>    call frequency
 > 
-> wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_0.png
-
-If I understand this correctly then this means that failures happen very
-often because pcp pages are not recycled quicklly enough.
-
-> wget ftp://vps418301.ovh.net/incoming/1000000_kmalloc_kfree_rcu_proc_percpu_pagelist_fractio_is_8.png
-
-1/8 of the memory in pcp lists is quite large and likely not something
-used very often.
-
-Both these numbers just make me think that a dedicated pool of page
-pre-allocated for RCU specifically might be a better solution. I still
-haven't read through that branch of the email thread though so there
-might be some pretty convincing argments to not do that.
-
-> Also i would like to underline, that kfree_rcu() reclaim logic can be improved further,
-> making the drain logic more efficient when it comes to time, thus to reduce a footprint
-> as a result number of required pages.
+> #2 is uninteresting because it's caused by RCU being stalled / delayed
+>    e.g. by a runaway of some sorts or a plain RCU usage bug.
+>    
+>    Allocating more memory in that case does not solve or improve anything.
 > 
-> --
-> Vlad Rezki
+> So the interesting case is #1. Which means we need to look at the
+> potential sources of the flooding:
+> 
+>     1) User space via syscalls, e.g. open/close
+>     2) Kernel thread
+>     3) Softirq
+>     4) Device interrupt
+>     5) System interrupts, deep atomic context, NMI ...
+> 
+> #1 trivial fix is to force switching to an high prio thread or a soft
+>    interrupt which does the allocation
+> 
+> #2 Similar to #1 unless that thread loops with interrupts, softirqs or
+>    preemption disabled. If that's the case then running out of RCU
+>    storage space is the least of your worries.
+> 
+> #3 Similar to #2. The obvious candidates (e.g. NET) for monopolizing a
+>    CPU have loop limits in place already. If there is a bug which fails
+>    to care about the limit, why would RCU care and allocate more memory?
+> 
+> #4 Similar to #3. If the interrupt handler loops forever or if the
+>    interrupt is a runaway which prevents task/softirq processing then
+>    RCU free performance is the least of your worries.
+> 
+> #5 Clearly a bug and making RCU accomodate for that is beyond silly.
+> 
+> So if call_rcu() detects that the remaining storage space for pointers
+> goes below the critical point or if it observes high frequency calls
+> then it simply should force a soft interrupt which does the allocation.
+>
+> Allocating from softirq context obviously without holding the raw lock
+> which is used inside call_rcu() is safe on all configurations.
+> 
+> If call_rcu() is forced to use the fallback for a few calls until this
+> happens then that's not the end of the world. It is not going to be a
+> problem ever for the most obvious issue #1, user space madness, because
+> that case cannot delay the softirq processing unless there is a kernel
+> bug which makes again RCU free performance irrelevant.
 
+Yes, this makes perfect sense to me! I really do not think we want to
+optimize for a userspace abuse to allow complete pcp allocator memory
+depletion (or a control in a worse case).
+
+Thanks!
 -- 
 Michal Hocko
 SUSE Labs
