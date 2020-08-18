@@ -2,57 +2,69 @@ Return-Path: <SRS0=c1tG=B4=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72B0DC433DF
-	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 22:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98301C433E1
+	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 23:25:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D6E22075E
-	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 22:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597788168;
-	bh=1+DOAQheH/OwRAil4lTQxvoHBbLQAX/AVotFbA0ovo4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=I26E1JHn6JEr5PXoGeTMQURUzuva5znPUDpALmNlgVYuwWCEC7w++aQCh3hbKJuaJ
-	 hDprKmoumVJY4huCePMAlquPo4FKPpmYstBVdcEW0lkNxwDCKM7Ox84cLUX2MvOiP1
-	 hpuYg1e8vU8wYFCqYZOn2SItaFn7NCSZ4DGDZ58g=
+	by mail.kernel.org (Postfix) with ESMTP id 6299D20786
+	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 23:25:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TnIpN1bc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgHRWCr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Aug 2020 18:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgHRWCr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Aug 2020 18:02:47 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E11B2067C;
-        Tue, 18 Aug 2020 22:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597788166;
-        bh=1+DOAQheH/OwRAil4lTQxvoHBbLQAX/AVotFbA0ovo4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aWRpvkF9tcMfw7ZDZ2F5Pr28Ax7+eDgyyLOX5Whzs1o3G/4dwWXMCiDOIsx3RwzrM
-         dAVRN46acN+4UF9ICTIeF87IfvcSlUjZOko5IRYHpGANsrj9Zeiym2Ashh1K5+WzYz
-         RgcgGUMKkcqdsujNyDrgGzPWwSfcTa8D7cyD0ces=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D7A9A35228F5; Tue, 18 Aug 2020 15:02:45 -0700 (PDT)
-Date:   Tue, 18 Aug 2020 15:02:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        id S1727107AbgHRXZ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Aug 2020 19:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgHRXZ6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Aug 2020 19:25:58 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C0BC061389
+        for <rcu@vger.kernel.org>; Tue, 18 Aug 2020 16:25:57 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id d27so16505340qtg.4
+        for <rcu@vger.kernel.org>; Tue, 18 Aug 2020 16:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cBg9mi2UQh4TtluEe91dZKWnRgC9OEpeXNhSZdpu+Ew=;
+        b=TnIpN1bcBTX0J/2DTuL5XFSifIOkz7CxM6D5SGYHsrce+haqRHEisFuAV2YYXGTIb9
+         wFEqv5KV6AWWxJOBUleQgfIzPg4o9+PoXhbVRR662QnNkD7/fGMVvawdagDF2A9mbRfG
+         AZXIk1g4GW4ksCJM5JVZZksmVv/a+VygXxj8k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cBg9mi2UQh4TtluEe91dZKWnRgC9OEpeXNhSZdpu+Ew=;
+        b=tflHzZdIWp8xxpYPpiGtTAvIWIyL1QLxT1otdTWztuZjZIqXEKZ3C3/b41CXJ+aJ+u
+         rrF2UwiiHXkjmZ4VItaFwzo67JiSTIUYT5P1urHZ60XSxrycDHb6Po83MbOhkkgtWl2+
+         L6/FePELQz5snVY70Fh/57tLPPerXUi3n8jZg6wi4WgYhCllLFUeuAMIxmlHx8mK7RQD
+         HHbKSsENIbzCZ+l8P5RuHNu9pVaLB9YsGsd/S8FJDYrOUy8Tg8cEuZwycBITzbpHYCku
+         YuwlCNXtaAXumgFvvCfc6nQXfoHsFPp1x67Z3Ky4XniRbL4KJxqL1qlMiZPvQWSSk6Qj
+         MoQw==
+X-Gm-Message-State: AOAM5328HSFh39qtiVJMgNT8s/A7qvxRrKYsejoHqcBi5UZnkGIfff+F
+        7FwMCc42FzCsPse7DrKENlbPoA==
+X-Google-Smtp-Source: ABdhPJxbQnp4gZT2pntan3aGDyvxjijLq9LHKEwfJ+zv8BQ2Dfg5TwuA+u9y+wUwsP9WVOm8Ts8rUQ==
+X-Received: by 2002:ac8:7205:: with SMTP id a5mr20339399qtp.235.1597793155779;
+        Tue, 18 Aug 2020 16:25:55 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id j15sm21679007qkl.63.2020.08.18.16.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Aug 2020 16:25:55 -0700 (PDT)
+Date:   Tue, 18 Aug 2020 19:25:54 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, qiang.zhang@windriver.com,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, qiang.zhang@windriver.com,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] rcu: shrink each possible cpu krcp
-Message-ID: <20200818220245.GO27891@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Message-ID: <20200818232554.GA2850477@google.com>
 References: <20200814064557.17365-1-qiang.zhang@windriver.com>
  <20200814185124.GA2113@pc636>
  <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
@@ -64,7 +76,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200818215511.GA2538@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -202,9 +213,7 @@ On Tue, Aug 18, 2020 at 11:55:11PM +0200, Uladzislau Rezki wrote:
 > >
 > 
 > Should we just clean a krc of a CPU when it goes offline?
-
-That is equally valid from my viewpoint.
-
+> 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 > index b8ccd7b5af82..6decb9ad2421 100644
 > --- a/kernel/rcu/tree.c
@@ -225,8 +234,21 @@ That is equally valid from my viewpoint.
 > 
 > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
 > Maybe be never.
+> 
 
-Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
-hard time getting too worried about it.  ;-)
+Yes that is a bug as we discussed on IRC, thanks for following up as well.
 
-							Thanx, Paul
+We need to acquire the krcp->lock too if no monitor is scheduled then nothing
+to do so it does not race with the kfree_rcu_work. So same as what shrinker
+does:
+
+		raw_spin_lock_irqsave(&krcp->lock, flags);
+		if (krcp->monitor_todo)
+			kfree_rcu_drain_unlock(krcp, flags);
+		else
+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
+
+thanks!
+
+ - Joel
+
