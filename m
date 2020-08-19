@@ -2,247 +2,268 @@ Return-Path: <SRS0=uuXb=B5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47F85C433E1
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAA6C433E3
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 23:07:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1DD392078D
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:58:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MfxJxqRX"
+	by mail.kernel.org (Postfix) with ESMTP id 185E0207DE
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 23:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1597878459;
+	bh=V20LGmDT5Ym2io0jzlLtfcTqRvub5BXCbJCCdhw306k=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=mG1ClcoM4k22oDyR/iGhy9JH6zD1b1/WaI+VOj0P4R/NEygkw0dN5f0f1gZNHMpWV
+	 UKsX5KKm0eyH5rEvjOk+1GgwcmLSDrZ94tQLwR/5DbEapa+hbYoLVqk6NM1HLy/Ncw
+	 lnbZYMuOv9d6mToTTjO3ZX7Q7IJp7zTFk/0+psEA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgHSP6R (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Aug 2020 11:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgHSP6N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:58:13 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B86C061757;
-        Wed, 19 Aug 2020 08:58:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f26so25941867ljc.8;
-        Wed, 19 Aug 2020 08:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=WpkGfu0CGdUr929P6iq5nI7Pjfdnb6xj4if00/aDIi0=;
-        b=MfxJxqRXXA2RQuHXtMcg2GAIh3wztVuChyqJRWq3BqpaYelSSoYL8iUtLnwpk4QX1t
-         KEe8j6ydTfRWQtvh1MY0EbpdZfyC15B8pxOF1dq6tYwlH5YqP46Fh2hs0bAOXHiiKfEa
-         qipcrMNjVorQEJGiybSULJ3e46hfRXEDMykJ5SE7zs5tumWeW5hSk6xHWAqd/QUswRf+
-         qMeq0D6hBWmsVYNHZY/WppnZk5adcRKycDhMc5ljjKMHHfF6mkrI15fLUXpRQbNwtMHr
-         LXZWK139vk9eVhe9Np798fOf7l8vSSqKphxAql4XvdcCVyxyisu8be+3gkA7DU7U7Tm1
-         TmaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=WpkGfu0CGdUr929P6iq5nI7Pjfdnb6xj4if00/aDIi0=;
-        b=n3N40ORAgjVELBPI9LnkAx/e/5vso0pfWsV/ynlBZJBy5Hf59TI9doWibNSOMrq+Vs
-         w4c0p9X4W5mobFV1urOaB8wEzG/UN+6hHqrP4madnPy6LvzEDF0nISKBIR+c7skVWbbm
-         gxOKMbavPGz5rhm1//4nCJ68FO5+2iD13K9AR4XDfh88dXPknA8353YG6TCUI7+f4ibH
-         yQtkOTZDaO/07/B6nXtN+xtvln3Oj42dSnx1GdkurlnOhsX3kSrNL+yBA03OcoB3uVix
-         VdjXzX8kUlFvAKnMbjTEYgJzLEViI/3TyPxdq9y4u9Gg7nPcq4UIMPTfwEiX/GLQ+N7j
-         0dTw==
-X-Gm-Message-State: AOAM530ECS9+fERT4Vk3Pci904qNeu0cErLXHyJXqC6+9xoRUNygHO/k
-        bLepO5PP5he+Q6ECpnCSUM4=
-X-Google-Smtp-Source: ABdhPJw8Jk8NbRv1zVECV/5+Fr24imvCrzsJaQfMCdfSEvgfxA4oF6wNgtAF/IYcZZNgNdGSv18/tg==
-X-Received: by 2002:a2e:8642:: with SMTP id i2mr13245375ljj.368.1597852691270;
-        Wed, 19 Aug 2020 08:58:11 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id i26sm6756363ljj.102.2020.08.19.08.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 08:58:10 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 19 Aug 2020 17:58:08 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        id S1727864AbgHSXHi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Aug 2020 19:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726209AbgHSXHi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Aug 2020 19:07:38 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1C5920758;
+        Wed, 19 Aug 2020 23:07:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597878456;
+        bh=V20LGmDT5Ym2io0jzlLtfcTqRvub5BXCbJCCdhw306k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TllzW/8MDihvt4DhcI+Wq3hNAL4xl3gRBHZQ1PA6ayPTYAQxsY73BI4VvUf7GH/Ik
+         xE4NXwkJvPwlXcjvTD4UatEI5EAtIpsEtgVwLKzvLVRC0S+Eu70qOa5PKeLYJaOiLD
+         hQaPlQ8j7QHCpGnpBfIzvixCQSGM3jxzmNNGn+c0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C51753520855; Wed, 19 Aug 2020 16:07:35 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 16:07:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
- possible cpu krcp
-Message-ID: <20200819155808.GA8817@pc636>
-References: <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
- <20200818171807.GI27891@paulmck-ThinkPad-P72>
- <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
- <20200818210355.GM27891@paulmck-ThinkPad-P72>
- <20200818215511.GA2538@pc636>
- <20200818220245.GO27891@paulmck-ThinkPad-P72>
- <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200819135654.GB3875610@google.com>
- <20200819152159.GX27891@paulmck-ThinkPad-P72>
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
+Message-ID: <20200819230735.GS27891@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200816225655.GA17869@pc636>
+ <20200817082849.GA28270@dhcp22.suse.cz>
+ <20200817222803.GE23602@paulmck-ThinkPad-P72>
+ <20200818074344.GL28270@dhcp22.suse.cz>
+ <20200818135327.GF23602@paulmck-ThinkPad-P72>
+ <87o8n8hv5p.fsf@nanos.tec.linutronix.de>
+ <20200818161355.GE27891@paulmck-ThinkPad-P72>
+ <87lfibj3m8.fsf@nanos.tec.linutronix.de>
+ <20200818171330.GH27891@paulmck-ThinkPad-P72>
+ <87h7szilit.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200819152159.GX27891@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87h7szilit.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 08:21:59AM -0700, Paul E. McKenney wrote:
-> On Wed, Aug 19, 2020 at 09:56:54AM -0400, Joel Fernandes wrote:
-> > On Wed, Aug 19, 2020 at 03:00:55AM +0000, Zhang, Qiang wrote:
-> > > 
-> > > 
-> > > ________________________________________
-> > > 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 Joel Fernandes <joel@joelfernandes.org>
-> > > 发送时间: 2020年8月19日 8:04
-> > > 收件人: Paul E. McKenney
-> > > 抄送: Uladzislau Rezki; Zhang, Qiang; Josh Triplett; Steven Rostedt; Mathieu Desnoyers; Lai Jiangshan; rcu; LKML
-> > > 主题: Re: [PATCH] rcu: shrink each possible cpu krcp
-> > > 
-> > > On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index b8ccd7b5af82..6decb9ad2421 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > > > >  {
-> > > > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> > > > > +       struct kfree_rcu_cpu *krcp;
-> > > > >
-> > > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > > > >                 return 0;
-> > > > >
-> > > > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
-> > > > > +       krcp = this_cpu_ptr(&krc)
-> > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > > > +
-> > > > >
-> > > > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
-> > > > > Maybe be never.
-> > > >
-> > > > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
-> > > > hard time getting too worried about it.  ;-)
-> > > 
-> > > >Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
-> > > >on the cache reaper who's job is to flush the per-cpu caches. So I
-> > > >believe during CPU offlining, the per-cpu slab caches are flushed.
-> > > >
-> > > >thanks,
-> > > >
-> > >  >- Joel
-> > > 
-> > > When cpu going offline, the slub or slab only flush free objects in offline
-> > > cpu cache,  put these free objects in node list  or return buddy system,
-> > > for those who are still in use, they still stay offline cpu cache.
-> > > 
-> > > If we want clean per-cpu "krcp" objects when cpu going offline.  we should
-> > > free "krcp" cache objects in "rcutree_offline_cpu", this func be called
-> > > before other rcu cpu offline func. and then "rcutree_offline_cpu" will be
-> > > called in "cpuhp/%u" per-cpu thread.
-> > > 
-> > 
-> > Could you please wrap text properly when you post to mailing list, thanks. I
-> > fixed it for you above.
-> > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 8ce77d9ac716..1812d4a1ac1b 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3959,6 +3959,7 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > >         unsigned long flags;
-> > >         struct rcu_data *rdp;
-> > >         struct rcu_node *rnp;
-> > > +       struct kfree_rcu_cpu *krcp;
-> > >  
-> > >         rdp = per_cpu_ptr(&rcu_data, cpu);
-> > >         rnp = rdp->mynode;
-> > > @@ -3970,6 +3971,11 @@ int rcutree_offline_cpu(unsigned int cpu)
-> > >  
-> > >         // nohz_full CPUs need the tick for stop-machine to work quickly
-> > >         tick_dep_set(TICK_DEP_BIT_RCU);
-> > > +
-> > > +       krcp = per_cpu_ptr(&krc, cpu);
-> > > +       raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > +       raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > >         return 0;
-> > 
-> > I realized the above is not good enough for what this is trying to do. Unlike
-> > the slab, the new kfree_rcu objects cannot always be drained / submitted to
-> > RCU because the previous batch may still be waiting for a grace period. So
-> > the above code could very well return with the yet-to-be-submitted kfree_rcu
-> > objects still in the cache.
-> > 
-> > One option is to spin-wait here for monitor_todo to be false and keep calling
-> > kfree_rcu_drain_unlock() till then.
-> > 
-> > But then that's not good enough either, because if new objects are queued
-> > when interrupts are enabled in the CPU offline path, then the cache will get
-> > new objects after the previous set was drained. Further, spin waiting may
-> > introduce deadlocks.
-> > 
-> > Another option is to switch the kfree_rcu() path to non-batching (so new
-> > objects cannot be cached in the offline path and are submitted directly to
-> > RCU), wait for a GP and then submit the work. But then not sure if 1-argument
-> > kfree_rcu() will like that.
+On Wed, Aug 19, 2020 at 01:26:02AM +0200, Thomas Gleixner wrote:
+> Paul,
 > 
-> Or spawn a workqueue that does something like this:
+> On Tue, Aug 18 2020 at 10:13, Paul E. McKenney wrote:
+> > On Tue, Aug 18, 2020 at 06:55:11PM +0200, Thomas Gleixner wrote:
+> >> On Tue, Aug 18 2020 at 09:13, Paul E. McKenney wrote:
+> >> > On Tue, Aug 18, 2020 at 04:43:14PM +0200, Thomas Gleixner wrote:
+> >> >> Throttling the flooder is incresing robustness far more than reducing
+> >> >> cache misses.
+> >> >
+> >> > True, but it takes time to identify a flooding event that needs to be
+> >> > throttled (as in milliseconds).  This time cannot be made up.
+> >> 
+> >> Not really. A flooding event will deplete your preallocated pages very
+> >> fast, so you have to go into the allocator and get new ones which
+> >> naturally throttles the offender.
+> >
+> > Should it turn out that we can in fact go into the allocator, completely
+> > agreed.
 > 
-> 1.	Get any pending kvfree_rcu() requests sent off to RCU.
+> You better can for any user space controllable flooding source.
+
+For the memory being passed to kvfree_rcu(), but of course.
+
+However, that memory has just as good a chance of going deeply into the
+allocator when being freed as when being allocated.  In contrast, the
+page of pointers that kvfree_rcu() attempts to allocate can be handed back
+via per-CPU variables, avoiding lengthy time on the allocator's free path.
+
+Yes, yes, in theory we could make a devil's pact with potential flooders
+so that RCU directly handed memory back to them via a back channel as
+well, but in practice that sounds like an excellent source of complexity
+and bugs.
+
+> >> So if your open/close thing uses the new single argument free which has
+> >> to be called from sleepable context then the allocation either gives you
+> >> a page or that thing has to wait. No fancy extras.
+> >
+> > In the single-argument kvfree_rcu() case, completely agreed.
+> >
+> >> You still can have a page reserved for your other regular things and
+> >> once that it gone, you have to fall back to the linked list for
+> >> those. But when that happens the extra cache misses are not your main
+> >> problem anymore.
+> >
+> > The extra cache misses are a problem in that case because they throttle
+> > the reclamation, which anti-throttles the producer, especially in the
+> > case where callback invocation is offloaded.
 > 
-> 2.	Do an rcu_barrier().
+> You still did not explain which contexts can create flooding. I gave you
+> a complete list a few mails ago, but you still did not tell which of the
+> contexts can cause flooding.
+
+Message-ID: <87tux4kefm.fsf@nanos.tec.linutronix.de>, correct?
+
+In case #1 (RCU call flooding), the page of pointers is helpful.
+
+In case #2 (RCU not being able to run and mop up the backlog), allocating
+pages of pointers is unhelpful, given that doing so simply speeds up the
+potential OOM.  My thought is to skip kvfree_rcu()/call_rcu() pointer-page
+allocation once the current grace period's duration exceeds one second.
+
+> If it's any context which is not sleepable or controllable in any way,
+> then any attempt to mitigate it is a lost battle:
 > 
-> 3.	Do the cleanup actions.
+>   A dependency on allocating memory to free memory is a dead end by
+>   definition.
+
+Any attempt to mitigate that -lacks- -a- -fallback- is a losing battle.
+
+> Any flooder which is uncontrollable is a bug and no matter what kind of
+> hacks you provide, it will be able to bring the whole thing down.
+
+On to the sources of flooding, based on what reality has managed to
+teach me thus far:
+
+1) User space via syscalls, e.g. open/close
+
+	These are definitely in scope.
+
+2) Kernel thread
+
+	In general, these are out of scope, as you would expect.
+
+	For completeness, based on rcutorture-induced callback flooding,
+	if the kernel thread's loop contains at least one cond_resched()
+	for CONFIG_PREEMPT_NONE=y on the one hand, at least one schedule()
+	for preemptible kernels running NO_HZ_FULL, and at least one
+	point during which preemption is possible otherwise.
+
+	As discussed at Plumbers last year, the sysadm can always
+	configure callback offloading in such a way that RCU has no
+	chance of keeping up with a flood.  Then again, the sysadm can
+	also always crash the system in all sorts of interesting ways,
+	so what is one more?
+
+	But please note that rcutorture does -not- recycle the flooded
+	memory via kfree(), and thus avoids any problems with kfree()
+	needing to dive deep into the allocator.  What rcutorture
+	does instead is to pass the memory back to the flooder using
+	a dedicated queue.  At the end of the test, the whole mess
+	is kfree()ed.
+
+	And all of these will be solved (as you would hope) by "Don't do
+	that!!!", as laid out in the paragraphs above.	Of course, the
+	exact form of "Don't do that" will no doubt change over time, but
+	this code is in the kernel and therefore can be changed as needed.
+
+3) Softirq
+
+	Flooding from within the confines of a single softirq handler
+	is of course out of scope.  There are all sorts of ways for the
+	softirq-handler writer to deal with this, for example, dropping
+	into workqueue context to do the allocation, which brings things
+	back to #2 (kernel thread).
+
+	I have not experimented with this, nor do I intend to.
+
+4) Device interrupt
+
+	Likewise, flooding from within the confines of a single device
+	interrupt handler is out of scope.  As with softirq handlers,
+	there are all sorts of ways for the device-driver writer to deal
+	with this, for example, dropping into workqueue context to do
+	the allocation, which brings things back to #2 (kernel thread).
+
+	Again, as with softirq, I have not experimented with this,
+	nor do I intend to.
+
+5) System interrupts, deep atomic context, NMI ...
+
+	System interrupts have the same callback-flooding constraints
+	as device interrupts, correct?	(I am thinking that by "system
+	interrupt" you mean things like the scheduling-clock interrupt,
+	except that I have always thought of this interrupt as being a
+	form of device interrupt.)
+
+	I have no idea what "deep atomic context" but it does sound
+	intriguing.  ;-)  If you mean the entry/exit code that is not
+	allowed to be traced, then you cannot allocate, call_rcu(),
+	kfree_rcu, or kvfree_rcu() from that context anyway.
+
+	NMI handlers are not allowed to allocate or to invoke either
+	call_rcu(), kfree_rcu(), or kvfree_rcu(), so they are going to
+	need help from some other execution context if they are going
+	to do any flooding at all.
+
+In short, the main concern is flooding driven one way or another from
+user space, whether via syscalls, traps, exceptions, or whatever.
+Therefore, of the above list, I am worried only about #1.
+
+(OK, OK, I am worried about #2-#4, but only from the perspective of
+knowing what to tell the developer not to do.)
+
+> So far this looks like you're trying to cure the symptoms, which is
+> wrong to begin with.
 > 
-> > Probably Qian's original fix for for_each_possible_cpus() is good enough for
-> > the shrinker case, and then we can tackle the hotplug one.
-> 
-> It might take some experimentation to find the best solution.
-> 
+> If the flooder is controllable then there is no problem with cache
+> misses at all unless the RCU free callbacks are not able to catch up
+> which is yet another problem which you can't cure by allocating more
+> memory.
 
-<snip>
-static void do_idle(void)
-{
-...
- while (!need_resched()) {
-  rmb();
+As much as I might like to agree with that statement, the possibility
+of freeing (not just allocation) going deep into the allocator leads me
+to believe that reality might have a rather different opinion.
 
-  local_irq_disable();
+And the only way to find out is to try it.  I therefore propose that
+the eventual patch series be split into three parts:
 
-  if (cpu_is_offline(cpu)) {
-   tick_nohz_idle_stop_tick();
-   cpuhp_report_idle_dead();
-       -> cpuhp_report_idle_dead(void)
-              -> rcu_report_dead(smp_processor_id());
-   arch_cpu_idle_dead();
-  }
-...
-<snip>
+1.	Maintain separate per-CPU cache of pages of pointers dedicated
+	to kfree_rcu() and kvfree_rcu(), and later also to call_rcu().
+	If a given cache is empty, the code takes the fallback (either
+	use the rcu_head structure or block on synchronize_rcu(),
+	depending), but the code also asks for an allocation from a
+	sleepable context in order to replenish the cache.  (We could
+	use softirq for kfree_rcu() and kvfree_rcu(), but call_rcu()
+	would have deadlock issues with softirq.)
 
-We have the rcu_report_dead() callback. When it gets called IRQs are off
-and CPU that is in question is offline.
+2.	Peter's patch or similar.
 
-    krcp = per_cpu_ptr(&krc, cpu);
-    raw_spin_lock_irqsave(&krcp->lock, flags);
-    krcp->monotro_todo = true;
-    schedule_delayed_work(&krcp->monitor_work, 0);
-    raw_spin_unlock_irqrestore(&krcp->lock, flags);
+3.	Use of Peter's patch.
 
-If there is a batch that is in progress, the job will rearm itself.
-But i agree, it requires more experiments.
+If the need for #2 and #3 are convincing, well and good.  If not, I
+create a tag for them in the -rcu tree so that they can be found quickly
+in case reality decides to express its opinion at some inconvenient time
+at some inconvenient scale.
 
+Thoughts?
 
---
-Vlad Rezki
+							Thanx, Paul
