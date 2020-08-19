@@ -1,127 +1,108 @@
-Return-Path: <SRS0=c1tG=B4=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=uuXb=B5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E556C433DF
-	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 23:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 297CFC433E1
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 00:04:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB19A2075E
-	for <rcu@archiver.kernel.org>; Tue, 18 Aug 2020 23:26:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE8832075E
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 00:04:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4hnDKA8g";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6uNUzzxE"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="iRxnC/nO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgHRX0F (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Aug 2020 19:26:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34348 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgHRX0F (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Aug 2020 19:26:05 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1597793162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsT/0OAQ5/ZDSq/ihICMFWx4yum70SDMT61SJDGYMcQ=;
-        b=4hnDKA8g4FYwEMnNg0BpZdAzJdyfcZz5JDZMaXDOX5zC6L/fT7PoJODo7o17ysaJT1GYQL
-        9CTob4RdKVbziw3UtPsl7MD/LeUdjeNACI72ThT2pluudrpaK8TZsOkIFilsWeww09tPa6
-        3MfDpGv1LD5HLt46hfir3sv1KN8HsZBY/6peJGJE/AfGcQOTGP2Pa0jZaPPB0st71d/ZKw
-        m9qzT2jaQoLX8xHnOTWE34jJ7Z9fXx7Twd1dEtRNKVfg23mJysAkZRlnl4tGBVF07sPxMs
-        PkslYHPWrxavRNPmZR2X4xWI9TkSamv89NVZXs7dExo42oRGsGezK+hz2Dg3mg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1597793162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsT/0OAQ5/ZDSq/ihICMFWx4yum70SDMT61SJDGYMcQ=;
-        b=6uNUzzxEc+H2c2LGBTOGz6gqzlIqZYy3ucuvixXsNHtJV1BHf6sqUqY/z+ppZupN/lSh2B
-        KLJlxjS89TXkY0Ag==
-To:     paulmck@kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 1/2] mm: Add __GFP_NO_LOCKS flag
-In-Reply-To: <20200818171330.GH27891@paulmck-ThinkPad-P72>
-References: <20200814204140.GT4295@paulmck-ThinkPad-P72> <20200814215206.GL3982@worktop.programming.kicks-ass.net> <20200816225655.GA17869@pc636> <20200817082849.GA28270@dhcp22.suse.cz> <20200817222803.GE23602@paulmck-ThinkPad-P72> <20200818074344.GL28270@dhcp22.suse.cz> <20200818135327.GF23602@paulmck-ThinkPad-P72> <87o8n8hv5p.fsf@nanos.tec.linutronix.de> <20200818161355.GE27891@paulmck-ThinkPad-P72> <87lfibj3m8.fsf@nanos.tec.linutronix.de> <20200818171330.GH27891@paulmck-ThinkPad-P72>
-Date:   Wed, 19 Aug 2020 01:26:02 +0200
-Message-ID: <87h7szilit.fsf@nanos.tec.linutronix.de>
+        id S1727040AbgHSAEc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Aug 2020 20:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbgHSAEc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Aug 2020 20:04:32 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08B9C061389
+        for <rcu@vger.kernel.org>; Tue, 18 Aug 2020 17:04:31 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t13so19162644ile.9
+        for <rcu@vger.kernel.org>; Tue, 18 Aug 2020 17:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tSr61lwzUj+xHSrVPasO0EWAim4EWvQCGpCMT13xijE=;
+        b=iRxnC/nOppybcAojsVo0p009Ul4zniX0CYq561gKj8/PGz6vtBky6WbKCJrbe18woB
+         5Gvd5XtTTWz91U/YGzWZbeMIl2nAmOC04oYv1IbPzj9MHxd2KH0zLxsJpbs6p8q6BZre
+         QQaR2gGM+yBASU5DXhq6FjMbneA1G2B1uEYTU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tSr61lwzUj+xHSrVPasO0EWAim4EWvQCGpCMT13xijE=;
+        b=FpqbullickZoAe+nt5phoRAbKwvSQb8R4qI9HTYrQPmgTOqqKC/bmYoMnyXOOMZpjv
+         qIqP6EjnIRp4MIMzeQFBmT0qPYAGtnp0VmARpR0cI0Dc99U487+Iatrwi4KgcDOv10cD
+         VjBkYr4v9zZ8b/gk4MK+PDtyOek4I7In4nrUxeIYXN7kFmbk9W+P3TJ9eJEEa7Fl7vCz
+         LTeFukufOVzvqjfI6fgNN4BpdOp1LRjEeZI42ZJwyL7Vigfe9OvF/9t6Ckmv9pLT7o5S
+         MIe9JyvfQTcP0EKkDBLVF7HNEuwGv9vTsa8Gq4gyzmh1npBgtNhw8YG/ppAfr266GF8e
+         rYNA==
+X-Gm-Message-State: AOAM531tBXCFti/ACd/3sJqNO1G/9TIxqOCOx5GB8HCNsI5x2It6GUoz
+        VY/dNF8f25qTc5FfMWJ5pHuTi0UcOtD5TxyUFmN0xQ==
+X-Google-Smtp-Source: ABdhPJyjicQKK5V/J7U3GZuUT4FkgXC3VrgTQLkpPiyoQZ8ZkEKKjjrWqZbrDqtBGQ5xliwSol1cNNHVoDy1sY6cHN0=
+X-Received: by 2002:a92:660e:: with SMTP id a14mr20285569ilc.262.1597795471360;
+ Tue, 18 Aug 2020 17:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200814064557.17365-1-qiang.zhang@windriver.com>
+ <20200814185124.GA2113@pc636> <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
+ <20200818171807.GI27891@paulmck-ThinkPad-P72> <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
+ <20200818210355.GM27891@paulmck-ThinkPad-P72> <20200818215511.GA2538@pc636> <20200818220245.GO27891@paulmck-ThinkPad-P72>
+In-Reply-To: <20200818220245.GO27891@paulmck-ThinkPad-P72>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 18 Aug 2020 20:04:20 -0400
+Message-ID: <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+Subject: Re: [PATCH] rcu: shrink each possible cpu krcp
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, qiang.zhang@windriver.com,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Paul,
+On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 
-On Tue, Aug 18 2020 at 10:13, Paul E. McKenney wrote:
-> On Tue, Aug 18, 2020 at 06:55:11PM +0200, Thomas Gleixner wrote:
->> On Tue, Aug 18 2020 at 09:13, Paul E. McKenney wrote:
->> > On Tue, Aug 18, 2020 at 04:43:14PM +0200, Thomas Gleixner wrote:
->> >> Throttling the flooder is incresing robustness far more than reducing
->> >> cache misses.
->> >
->> > True, but it takes time to identify a flooding event that needs to be
->> > throttled (as in milliseconds).  This time cannot be made up.
->> 
->> Not really. A flooding event will deplete your preallocated pages very
->> fast, so you have to go into the allocator and get new ones which
->> naturally throttles the offender.
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index b8ccd7b5af82..6decb9ad2421 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
+> >  {
+> >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> > +       struct kfree_rcu_cpu *krcp;
+> >
+> >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> >                 return 0;
+> >
+> > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
+> > +       krcp = this_cpu_ptr(&krc)
+> > +       schedule_delayed_work(&krcp->monitor_work, 0);
+> > +
+> >
+> > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
+> > Maybe be never.
 >
-> Should it turn out that we can in fact go into the allocator, completely
-> agreed.
+> Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
+> hard time getting too worried about it.  ;-)
 
-You better can for any user space controllable flooding source.
+Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
+on the cache reaper who's job is to flush the per-cpu caches. So I
+believe during CPU offlining, the per-cpu slab caches are flushed.
 
->> So if your open/close thing uses the new single argument free which has
->> to be called from sleepable context then the allocation either gives you
->> a page or that thing has to wait. No fancy extras.
->
-> In the single-argument kvfree_rcu() case, completely agreed.
->
->> You still can have a page reserved for your other regular things and
->> once that it gone, you have to fall back to the linked list for
->> those. But when that happens the extra cache misses are not your main
->> problem anymore.
->
-> The extra cache misses are a problem in that case because they throttle
-> the reclamation, which anti-throttles the producer, especially in the
-> case where callback invocation is offloaded.
+thanks,
 
-You still did not explain which contexts can create flooding. I gave you
-a complete list a few mails ago, but you still did not tell which of the
-contexts can cause flooding.
-
-If it's any context which is not sleepable or controllable in any way,
-then any attempt to mitigate it is a lost battle:
-
-  A dependency on allocating memory to free memory is a dead end by
-  definition.
-
-Any flooder which is uncontrollable is a bug and no matter what kind of
-hacks you provide, it will be able to bring the whole thing down.
-
-So far this looks like you're trying to cure the symptoms, which is
-wrong to begin with.
-
-If the flooder is controllable then there is no problem with cache
-misses at all unless the RCU free callbacks are not able to catch up
-which is yet another problem which you can't cure by allocating more
-memory.
-
-Thanks,
-
-        tglx
+ - Joel
