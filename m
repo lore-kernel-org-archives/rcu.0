@@ -2,63 +2,71 @@ Return-Path: <SRS0=uuXb=B5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE5BFC433DF
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47F85C433E1
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:58:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA51D2063A
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:54:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1DD392078D
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 15:58:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="SlHEI38y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MfxJxqRX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbgHSPys (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Aug 2020 11:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
+        id S1726632AbgHSP6R (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Aug 2020 11:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728758AbgHSPyp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Aug 2020 11:54:45 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C06C061383
-        for <rcu@vger.kernel.org>; Wed, 19 Aug 2020 08:54:45 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id w9so18131855qts.6
-        for <rcu@vger.kernel.org>; Wed, 19 Aug 2020 08:54:45 -0700 (PDT)
+        with ESMTP id S1726570AbgHSP6N (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Aug 2020 11:58:13 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B86C061757;
+        Wed, 19 Aug 2020 08:58:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f26so25941867ljc.8;
+        Wed, 19 Aug 2020 08:58:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Q60onHid8iSpku+qZJQw6fYbSE4YurtiDVuXIPIGP8k=;
-        b=SlHEI38yuJz9o8rfXLjxWgFh5evie2N52TntNYjdNI3QKdNjfV2hrS0H0D9Apq/91I
-         jyU3Yf/xQyrDL1YgD4ykelSilkw501q0jfvs3neauYK+hg/jz9p1m7143P2DBmmybcUp
-         gouVlF0T+Kbyl2phbd72SkVbJa6tPK7daI30w=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=WpkGfu0CGdUr929P6iq5nI7Pjfdnb6xj4if00/aDIi0=;
+        b=MfxJxqRXXA2RQuHXtMcg2GAIh3wztVuChyqJRWq3BqpaYelSSoYL8iUtLnwpk4QX1t
+         KEe8j6ydTfRWQtvh1MY0EbpdZfyC15B8pxOF1dq6tYwlH5YqP46Fh2hs0bAOXHiiKfEa
+         qipcrMNjVorQEJGiybSULJ3e46hfRXEDMykJ5SE7zs5tumWeW5hSk6xHWAqd/QUswRf+
+         qMeq0D6hBWmsVYNHZY/WppnZk5adcRKycDhMc5ljjKMHHfF6mkrI15fLUXpRQbNwtMHr
+         LXZWK139vk9eVhe9Np798fOf7l8vSSqKphxAql4XvdcCVyxyisu8be+3gkA7DU7U7Tm1
+         TmaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Q60onHid8iSpku+qZJQw6fYbSE4YurtiDVuXIPIGP8k=;
-        b=KjDhSJegGVbKRVwO9xKux8Wl+l/VGM2fuR2iMMVKc/3zw/ldL7JraW0LFgIeXEZLbh
-         VAJktIjGOn6r/Kbq80cvXJFNTcBDFsrStnns0iK4jX7XBDGyOn6KyfwfuKFnZ7Rz5L+Q
-         i/lHfpkDcy3ZnDjAprCfPU6v0dF9rk5FVDyUzsP38MNwCgsnEWg3CsQKNc3KDL5m9tQ3
-         fEBvlCkj8H+WQ5DkS9w9cqiJGBZN8n+IEaPHbOgWaYTTZhIinGPPECY3P+p3Gu3CESre
-         gtcm9CjvIiQuw10YAK/hNKQeggFL0WBy3QCQ2LxfIpT1Ei46eeJlo/7OmWwn3NWSsb/o
-         BOJg==
-X-Gm-Message-State: AOAM532x2kAisuRh2dgn1F3ILvHYjirBKRdCjEEMgmYk5uEIY1EuyOa7
-        JQmoJ2DxiSA5cCHcNaNnIxqlaw==
-X-Google-Smtp-Source: ABdhPJwuqNnu315lY6/3tSnYh9rDredR6PTDLHDsn5O+4PtRCIBUtcQiE3KGhRPebhzBHeDJ2OBnJg==
-X-Received: by 2002:ac8:24d9:: with SMTP id t25mr23509783qtt.15.1597852481203;
-        Wed, 19 Aug 2020 08:54:41 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id f39sm30015550qta.59.2020.08.19.08.54.40
+         :in-reply-to:user-agent;
+        bh=WpkGfu0CGdUr929P6iq5nI7Pjfdnb6xj4if00/aDIi0=;
+        b=n3N40ORAgjVELBPI9LnkAx/e/5vso0pfWsV/ynlBZJBy5Hf59TI9doWibNSOMrq+Vs
+         w4c0p9X4W5mobFV1urOaB8wEzG/UN+6hHqrP4madnPy6LvzEDF0nISKBIR+c7skVWbbm
+         gxOKMbavPGz5rhm1//4nCJ68FO5+2iD13K9AR4XDfh88dXPknA8353YG6TCUI7+f4ibH
+         yQtkOTZDaO/07/B6nXtN+xtvln3Oj42dSnx1GdkurlnOhsX3kSrNL+yBA03OcoB3uVix
+         VdjXzX8kUlFvAKnMbjTEYgJzLEViI/3TyPxdq9y4u9Gg7nPcq4UIMPTfwEiX/GLQ+N7j
+         0dTw==
+X-Gm-Message-State: AOAM530ECS9+fERT4Vk3Pci904qNeu0cErLXHyJXqC6+9xoRUNygHO/k
+        bLepO5PP5he+Q6ECpnCSUM4=
+X-Google-Smtp-Source: ABdhPJw8Jk8NbRv1zVECV/5+Fr24imvCrzsJaQfMCdfSEvgfxA4oF6wNgtAF/IYcZZNgNdGSv18/tg==
+X-Received: by 2002:a2e:8642:: with SMTP id i2mr13245375ljj.368.1597852691270;
+        Wed, 19 Aug 2020 08:58:11 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id i26sm6756363ljj.102.2020.08.19.08.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Aug 2020 08:54:40 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 11:54:40 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>, boqun.feng@gmail.com
-Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Wed, 19 Aug 2020 08:58:10 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 19 Aug 2020 17:58:08 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -67,7 +75,7 @@ Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
  possible cpu krcp
-Message-ID: <20200819155440.GD3886445@google.com>
+Message-ID: <20200819155808.GA8817@pc636>
 References: <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
  <20200818171807.GI27891@paulmck-ThinkPad-P72>
  <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
@@ -83,6 +91,7 @@ Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <20200819152159.GX27891@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -196,28 +205,44 @@ On Wed, Aug 19, 2020 at 08:21:59AM -0700, Paul E. McKenney wrote:
 > 2.	Do an rcu_barrier().
 > 
 > 3.	Do the cleanup actions.
-
-One more thing I'n not sure about is if this will even be an issue  because
-the delayed-work to run the monitor could be migrated to another (both timers
-and wq get migrated).  So in that case, the draining of the kfree_rcu objects
-will happened on another CPU.
-
-Adding Boqun as well since I believe he knows a lot about wq and hotplug as
-well.
-
-Basically my question is does delayed_work get migrated to another CPU when
-one CPU is offline?  If so, I am assuming all races between new
-schedule_delayed_work invocations and CPU offlining are handled as well, such
-that at some point those new invocations are queued on another CPU.
-
+> 
 > > Probably Qian's original fix for for_each_possible_cpus() is good enough for
 > > the shrinker case, and then we can tackle the hotplug one.
 > 
 > It might take some experimentation to find the best solution.
+> 
 
-Sure.
+<snip>
+static void do_idle(void)
+{
+...
+ while (!need_resched()) {
+  rmb();
 
-thanks,
+  local_irq_disable();
 
- - Joel
+  if (cpu_is_offline(cpu)) {
+   tick_nohz_idle_stop_tick();
+   cpuhp_report_idle_dead();
+       -> cpuhp_report_idle_dead(void)
+              -> rcu_report_dead(smp_processor_id());
+   arch_cpu_idle_dead();
+  }
+...
+<snip>
 
+We have the rcu_report_dead() callback. When it gets called IRQs are off
+and CPU that is in question is offline.
+
+    krcp = per_cpu_ptr(&krc, cpu);
+    raw_spin_lock_irqsave(&krcp->lock, flags);
+    krcp->monotro_todo = true;
+    schedule_delayed_work(&krcp->monitor_work, 0);
+    raw_spin_unlock_irqrestore(&krcp->lock, flags);
+
+If there is a batch that is in progress, the job will rearm itself.
+But i agree, it requires more experiments.
+
+
+--
+Vlad Rezki
