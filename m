@@ -2,59 +2,69 @@ Return-Path: <SRS0=uuXb=B5=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26C9BC433DF
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 13:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B049C433DF
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 13:26:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 027462054F
-	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 13:05:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597842301;
-	bh=iPKJsd2CPYvEph/ZHo1goct6k2TFLrE0+PJtMV8UXOI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=yRQ6RgBjYeP2XcUhW0U7dHuXS7JrXf0yGn2IpcDxFkJ8Qmo4jZ0GWmCJzCaG83Njt
-	 Mm1Rm/8fA2ZZ6N8OeJ5O4m96gC4KvZRxr74Q6AFA+1AI8zMBNwclwEM5gaFliHzTkn
-	 jV/MJjUtLi6GXk4xin6hAvBMkpipjzKco37oZq84=
+	by mail.kernel.org (Postfix) with ESMTP id 63FE7206FA
+	for <rcu@archiver.kernel.org>; Wed, 19 Aug 2020 13:26:19 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="msumWpjb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgHSNE7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Aug 2020 09:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728592AbgHSNEo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Aug 2020 09:04:44 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87F3D2054F;
-        Wed, 19 Aug 2020 13:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597842283;
-        bh=iPKJsd2CPYvEph/ZHo1goct6k2TFLrE0+PJtMV8UXOI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ycbsyyPyp5UjYWhPDWd97T5apLaI0ZAd4pB3Imn5XklopAsDBCsK1V3oJsqvOxGm4
-         A9NlX58n/x9eM8cNam4mWnseahtjMIWOW7FVhPRmgqkoK6tpaZ/ERYa+PP1Par6q/2
-         tBQ3NBOw36vzbvIdADKRuNctRoR/h7hfZGNHWWWk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5DDD03522728; Wed, 19 Aug 2020 06:04:43 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 06:04:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        id S1728343AbgHSN0S (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Aug 2020 09:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbgHSNZv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Aug 2020 09:25:51 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC32C061383
+        for <rcu@vger.kernel.org>; Wed, 19 Aug 2020 06:25:49 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c12so17724314qtn.9
+        for <rcu@vger.kernel.org>; Wed, 19 Aug 2020 06:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Oub4DT+nxeyPZAIUHhbv2Qd15f55cLS7blrm9y7LqSs=;
+        b=msumWpjbrhePPIDAQHg1nPaSE6QdJ/aagtAu8huGWKROwE7Lm5xEcnwQEk+fEcE3mT
+         2wNeytscDzHCfUzb8oqpmWCUrFsI+JPLDn9OjfXVxKjdW8u9BvFNGEsQ7Z8TIa0heSlQ
+         wHRS1ejxR8mCzVMfuWJ2dkU9a2To2cXLqzYPk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oub4DT+nxeyPZAIUHhbv2Qd15f55cLS7blrm9y7LqSs=;
+        b=cHob/zCjtZtkXNES+JdfFsr05UDkUZQSqzKtTSqPObXuL7PuAKAiLbiwj7AkU+tNul
+         CTb/chnUrzhAPdWCsGgp+skNBoMwb9TQnjAjP5g7/gia+aFcTT4t+uaQjPRKy7t/N77Z
+         J/N3A0z2VuYANGPZBeb7bXTJe4YAhclv9oyxbV4CkY7/ONqOYSg6YD3aZMGQGZIffwhO
+         kzYRFIm6+R65V6XTdbbHDeG3azmGlllERXgjF97uM2aM8fIxAWoHb6DHowLFUIue36LX
+         j0awJizQ8LVvYleDAZpykMMnOMdl1UFEBw7OZYOYt1YQxuSH7Udj7m+JgM+fJuIz7LeO
+         X1gw==
+X-Gm-Message-State: AOAM531Q3jMQvMPU0iV6gfRrqRgN57L4yTN2RJ0Jm0BXnj7YcT0gNPLJ
+        c/IZwrSvtHDGJE+/YXeRwn7gIg==
+X-Google-Smtp-Source: ABdhPJz5vi0T0gUjoJrUvVQETHNZvLci7q8Qs7ZwHUh1LP4fyY8aJVk5SiwojcZd2bCP4rmEHGFnQQ==
+X-Received: by 2002:ac8:6052:: with SMTP id k18mr22205327qtm.60.1597843548673;
+        Wed, 19 Aug 2020 06:25:48 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id d8sm27287911qtr.12.2020.08.19.06.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 06:25:47 -0700 (PDT)
+Date:   Wed, 19 Aug 2020 09:25:47 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, qiang.zhang@windriver.com,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
- possible cpu krcp
-Message-ID: <20200819130443.GR27891@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Subject: Re: [PATCH] rcu: shrink each possible cpu krcp
+Message-ID: <20200819132547.GA3875610@google.com>
 References: <20200814064557.17365-1-qiang.zhang@windriver.com>
  <20200814185124.GA2113@pc636>
  <CAEXW_YSJXHQq=z+fhHH+ZAVBDRnOYAzo6wHTFaqd9AQYHhQ6yg@mail.gmail.com>
@@ -64,96 +74,54 @@ References: <20200814064557.17365-1-qiang.zhang@windriver.com>
  <20200818215511.GA2538@pc636>
  <20200818220245.GO27891@paulmck-ThinkPad-P72>
  <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819112225.GA6177@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200819112225.GA6177@pc636>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 03:00:55AM +0000, Zhang, Qiang wrote:
-> 
-> 
-> ________________________________________
-> 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 Joel Fernandes <joel@joelfernandes.org>
-> 发送时间: 2020年8月19日 8:04
-> 收件人: Paul E. McKenney
-> 抄送: Uladzislau Rezki; Zhang, Qiang; Josh Triplett; Steven Rostedt; Mathieu Desnoyers; Lai Jiangshan; rcu; LKML
-> 主题: Re: [PATCH] rcu: shrink each possible cpu krcp
-> 
-> On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index b8ccd7b5af82..6decb9ad2421 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > >  {
-> > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
-> > > +       struct kfree_rcu_cpu *krcp;
+On Wed, Aug 19, 2020 at 01:22:25PM +0200, Uladzislau Rezki wrote:
+> On Tue, Aug 18, 2020 at 08:04:20PM -0400, Joel Fernandes wrote:
+> > On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index b8ccd7b5af82..6decb9ad2421 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
+> > > >  {
+> > > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> > > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> > > > +       struct kfree_rcu_cpu *krcp;
+> > > >
+> > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> > > >                 return 0;
+> > > >
+> > > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
+> > > > +       krcp = this_cpu_ptr(&krc)
+> > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
+> > > > +
+> > > >
+> > > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
+> > > > Maybe be never.
 > > >
-> > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
-> > >                 return 0;
-> > >
-> > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
-> > > +       krcp = this_cpu_ptr(&krc)
-> > > +       schedule_delayed_work(&krcp->monitor_work, 0);
-> > > +
-> > >
-> > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
-> > > Maybe be never.
-> >
-> > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
-> > hard time getting too worried about it.  ;-)
-> 
-> >Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
-> >on the cache reaper who's job is to flush the per-cpu caches. So I
-> >believe during CPU offlining, the per-cpu slab caches are flushed.
-> >
-> >thanks,
-> >
->  >- Joel
-> 
-> When cpu going offline, the slub or slab only flush free objects in offline cpu cache,  put these free objects in node list  or return buddy system,  for those who are still in use, they still stay offline cpu cache.
-> 
-> If we want clean per-cpu "krcp" objects when cpu going offline.
->  we should free "krcp" cache objects in "rcutree_offline_cpu", this func be called before other rcu cpu offline func. and then "rcutree_offline_cpu" will be called in "cpuhp/%u" per-cpu thread.
+> > > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
+> > > hard time getting too worried about it.  ;-)
+> > 
+> > Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
+> > on the cache reaper who's job is to flush the per-cpu caches. So I
+> > believe during CPU offlining, the per-cpu slab caches are flushed.
+> > 
+> SLAB does it for sure, same as page allocator. There are special CPU-offline
+> callbacks for both cases to perform cleanup when CPU dies.
 
-If Joel and Uladislau are good with this, would you be willing to
-resend with a commit log and your Signed-off-by?
+Got it, thanks for confirming, makes sense.
 
-							Thanx, Paul
+thanks,
 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8ce77d9ac716..1812d4a1ac1b 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3959,6 +3959,7 @@ int rcutree_offline_cpu(unsigned int cpu)
->         unsigned long flags;
->         struct rcu_data *rdp;
->         struct rcu_node *rnp;
-> +       struct kfree_rcu_cpu *krcp;
->  
->         rdp = per_cpu_ptr(&rcu_data, cpu);
->         rnp = rdp->mynode;
-> @@ -3970,6 +3971,11 @@ int rcutree_offline_cpu(unsigned int cpu)
->  
->         // nohz_full CPUs need the tick for stop-machine to work quickly
->         tick_dep_set(TICK_DEP_BIT_RCU);
-> +
-> +       krcp = per_cpu_ptr(&krc, cpu);
-> +       raw_spin_lock_irqsave(&krcp->lock, flags);
-> +       schedule_delayed_work(&krcp->monitor_work, 0);
-> +       raw_spin_unlock_irqrestore(&krcp->lock, flags);
->         return 0;
->  }
-> 
-> thanks,
-> 
-> Zqiang
+ - Joel
+
