@@ -2,116 +2,107 @@ Return-Path: <SRS0=ANd2=CD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75BE7C433DF
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:23:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19C50C433E3
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 16:04:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5070A20786
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:23:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D579620782
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 16:04:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OD7envjW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SUyNE8yq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgHYPXQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Aug 2020 11:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
+        id S1727042AbgHYQD7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 12:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgHYPXO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:23:14 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A69BC061574;
-        Tue, 25 Aug 2020 08:23:14 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F31BB9A5;
-        Tue, 25 Aug 2020 17:23:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598368989;
-        bh=+ill/ZwwkhuFoJdnovdknow0Na//rSUqB2CNf3qkpuU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OD7envjWQAJrEAml+0DQ2452TNNYSfRGvyFs6++IeKv77xLHT9sFX9xSd09l+q0nU
-         1KbzerxZC2aFrQgCZbTznmP2opljNjrFaAHjd9JqFJHLwp5UvL2EdOgOOj6TlVQ6e7
-         RYJWa3VGMbigE/9h05xk2/3iUzXFsOU/YdCLUFDE=
-Date:   Tue, 25 Aug 2020 18:22:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix compilation warning with
- !CONFIG_TASKS_RCU and CONFIG_TINY_RCU
-Message-ID: <20200825152249.GF6767@pendragon.ideasonboard.com>
-References: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
- <20200825150222.GP2855@paulmck-ThinkPad-P72>
+        with ESMTP id S1726813AbgHYQDy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Aug 2020 12:03:54 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FAFC061756;
+        Tue, 25 Aug 2020 09:03:53 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n23so1036582otq.11;
+        Tue, 25 Aug 2020 09:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NrY5BOuEwv9i/y8I9V7tOuPskohUHoY8aphMXsMirGg=;
+        b=SUyNE8yqNHVDU6hmseYbFHMbdJh28npASqQH8+lsX2+q8J43/la3WuU4nTWHozAyNC
+         Ef3AkdJnXy6bIzyafNRhgNN5CnRQgjpzlBIKe/BxV3qovna6b8tF85TXZIlORoW5AX0t
+         xbwn2L0iOCsAW3LG8P85E8ZW6G4ebfMvzRUjbLLFD7UyzYclK4mmeqWEo3xo52BDvjil
+         lMKN9qzJNGjelYec9j38yxaXf/nnhwuVy95JJXvVxUtAhh28avDjYrBRmZIzqfKBAx27
+         FO7pgKLOB5LZU5jgHGfZRrfs73Ym37auz/f0Bw7Osi9pnshdlQv10VwMC6MnqrFZ5nyJ
+         43ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NrY5BOuEwv9i/y8I9V7tOuPskohUHoY8aphMXsMirGg=;
+        b=SDxrE47eIx1+ncjDYhZc6L+9NJXWPzKygLOwxSXxZXr4dH3PGJ8tbI6kM6Zby41awM
+         NRRGR7sla4gNxSHV3bS6L1dc1dUf60eDTz+uABSa1aYDfVy82g1lvernJo1o62K42oCI
+         U1XiK/n+xWHz2uq87I+sewBNdNZdvf2wbGjXa9FWL0ss2MQXVwxs2VYWQyaK1CfOIURk
+         FiY2dudSNFmchAvsX9bsdE0kYk7ZBCn5R2/SBHciCOGOkKVRzzKW/ypb3vMXutoUFVN9
+         qS/dz/vMjKTdbKRkAtdGFEO38Rojmu+ljOQrGdpDJfyCmWPXZOHIr8RneL+I0sHd34+g
+         bw0Q==
+X-Gm-Message-State: AOAM532loyzI/CoIbY0fJK+0tawOJL/uz5d2OOfFoyLYCmK8GCEc/jt3
+        ieK86k2IHXMZTn71dTbqJ0NZEHJ/0W0sX/m/gtdDcG4uAh4=
+X-Google-Smtp-Source: ABdhPJwWdmRmDKE4N6Btm3wLta95ynS2EhPrCo70ZTrdpipMICVOnawkuwLRCWblppUQ5BBmGvXUJ0tYOFW804h5m+M=
+X-Received: by 2002:a05:6830:16d8:: with SMTP id l24mr6897361otr.89.1598371433072;
+ Tue, 25 Aug 2020 09:03:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200825150222.GP2855@paulmck-ThinkPad-P72>
+References: <20200825152045.1719298-1-omosnace@redhat.com> <20200825152045.1719298-2-omosnace@redhat.com>
+In-Reply-To: <20200825152045.1719298-2-omosnace@redhat.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Tue, 25 Aug 2020 12:02:26 -0400
+Message-ID: <CAEjxPJ5vPX1bp6kq_H4pU1bg2=NERt1_irdzMpdJ7R_Jfb3Q4g@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] selinux: simplify away security_policydb_len()
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Tue, Aug 25, 2020 at 11:20 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> Remove the security_policydb_len() calls from sel_open_policy() and
+> instead update the inode size from the size returned from
+> security_read_policy().
+>
+> Since after this change security_policydb_len() is only called from
+> security_load_policy(), remove it entirely and just open-code it there.
+>
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
 
-On Tue, Aug 25, 2020 at 08:02:22AM -0700, Paul E. McKenney wrote:
-> On Sun, Aug 23, 2020 at 06:04:05AM +0300, Laurent Pinchart wrote:
-> > Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
-> > show_rcu_tasks_gp_kthreads()") introduced conditional compilation of
-> > several functions, but forgot one occurrence of
-> > show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
-> > an unused static function. Fix it.
-> > 
-> > Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
-> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > ---
-> >  kernel/rcu/tasks.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 835e2df8590a..bddf3968c1eb 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -590,7 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-> >  }
-> >  
-> >  #else /* #ifdef CONFIG_TASKS_RCU */
-> > +#ifndef CONFIG_TINY_RCU
-> >  static void show_rcu_tasks_classic_gp_kthread(void) { }
-> > +#endif /* #ifndef CONFIG_TINY_RCU */
-> >  void exit_tasks_rcu_start(void) { }
-> >  void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
-> 
-> Good catch!!!
-> 
-> But does the following addition of "static inline" work for you?
+> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> index 8381614627569..ec4570d6c38f7 100644
+> --- a/security/selinux/ss/services.c
+> +++ b/security/selinux/ss/services.c
+> @@ -3915,7 +3899,10 @@ int security_read_policy(struct selinux_state *state,
+>         if (!selinux_initialized(state))
+>                 return -EINVAL;
+>
+> -       *len = security_policydb_len(state);
+> +       rcu_read_lock();
+> +       policy = rcu_dereference(state->policy);
+> +       *len = policy->policydb.len;
+> +       rcu_read_unlock();
+>
+>         *data = vmalloc_user(*len);
+>         if (!*data)
 
-They do. I initially added a static inline, and realized #ifdef was used
-extensively when trying to find the proper Fixes: tag, so I went for
-that. I don't mind either way, as long as this gets fixed :-)
-
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 835e2df..3dc3ffc 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -590,9 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
->  }
->  
->  #else /* #ifdef CONFIG_TASKS_RCU */
-> -static void show_rcu_tasks_classic_gp_kthread(void) { }
-> -void exit_tasks_rcu_start(void) { }
-> -void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> +static inline void show_rcu_tasks_classic_gp_kthread(void) { }
-> +static inline void exit_tasks_rcu_start(void) { }
-> +static inline void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
->  #endif /* #else #ifdef CONFIG_TASKS_RCU */
->  
->  #ifdef CONFIG_TASKS_RUDE_RCU
-
--- 
-Regards,
-
-Laurent Pinchart
+We don't actually need to take rcu_read_lock() here at all, and can
+use rcu_dereference_check(..., 1) or rcu_deference_protected() because
+the fsi->mutex is held.  We should also fix the code immediately below
+this diff context to not double dereference the policy pointer and
+just reuse the already dereferenced pointer (also not requiring
+rcu_read_lock).
