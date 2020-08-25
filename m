@@ -2,114 +2,105 @@ Return-Path: <SRS0=ANd2=CD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5C67C433E1
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9180C433E3
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:20:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90E542075F
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598367744;
-	bh=EWXCfn+yLhyBqO/zrO7TUrH2Em82II3ljBHbuhdiox4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=B8+qHFx0OrmZ0ql1QVYeK87r8VAL2b3RoidG4/VjCRPfXFovvZ1y/HtyI3cPEZ0e4
-	 XnQ5gyF26QXE0LTcxDU9mnvc/li0T9F5TQgHU1tBNX5Om7/OBGiFPS3YPYbj6gG5Qg
-	 XhZzDCBnOVP9+v7W892PH0OUGvJkKzIBJUjBYuWc=
+	by mail.kernel.org (Postfix) with ESMTP id B8854207F7
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 15:20:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fbiUHZiF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgHYPCY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Aug 2020 11:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726230AbgHYPCX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Aug 2020 11:02:23 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE7D92076C;
-        Tue, 25 Aug 2020 15:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598367743;
-        bh=EWXCfn+yLhyBqO/zrO7TUrH2Em82II3ljBHbuhdiox4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l27BGtTIplay4T0/9noTF3u6YB/jYAvvJFn16+pBpAZMXQcxApR7w7d2jGohGB9E8
-         iNtvHTTwZTcQd59ZwwRHQmKaogS7yys0bSEcX7TY5tZjLRkda/jRUqKnHRmzD+Q0zI
-         GwlAfNYLN6s42+Uwfd4j02wrpD7fbuxDmDQokwr0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B9F4235226AE; Tue, 25 Aug 2020 08:02:22 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 08:02:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix compilation warning with
- !CONFIG_TASKS_RCU and CONFIG_TINY_RCU
-Message-ID: <20200825150222.GP2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
+        id S1727106AbgHYPU4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 11:20:56 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60454 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726723AbgHYPUx (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 25 Aug 2020 11:20:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598368851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PRLiRxkWVw8uTvuarrIDiLBzVWFZWORQt/5QoxhrJxA=;
+        b=fbiUHZiFdNxw4KTmOopsc2tFKa/dKO8d/3rCTwFPES61eXmmPJwCKlrDXPuuxjC0u4AHEZ
+        396pZxPZB5nwfjprGhOWBp3qPeNj5ZN/wUyOJMcI9RbC3gnFjr1R173HxVnT++6jcuWZ/b
+        Kin5NrMuPdnJc1Sny1ZXS8hEIKBdor0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-tRdsJcMGPCa3laS6hskGQQ-1; Tue, 25 Aug 2020 11:20:49 -0400
+X-MC-Unique: tRdsJcMGPCa3laS6hskGQQ-1
+Received: by mail-wm1-f70.google.com with SMTP id a66so1059966wmc.4
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 08:20:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PRLiRxkWVw8uTvuarrIDiLBzVWFZWORQt/5QoxhrJxA=;
+        b=I7C1XvEqRt6ByRfl7APeqJnk8zshlNKNPgC+8zLtLpbVSPFd8twdWccZ3QMKh2SlbN
+         zJoyLERtc0CreJUOkrPCgyj3fGprMjWMxU9bIxYRAne0MlXyOWTaEOqy4QUVxA05spq4
+         jGEhlmT0jPJmdiRLKQVpZAKw4t/MHyU6dUBhz1pOoNli2famebP9GdTbONOOq+VNyKnJ
+         h0DjA+ylqC5lSaEocWXxaRw1hHnGzYJuoD24+1Y6GmyM0zgfkL2+lBH/DG5eBZYESrL6
+         erqkBcJ5P/gVr2+D8Aou0pAXkdFg7YvA209YHqYZndMcFFuBGVWKwRHODE7TBGF5GReu
+         +3Qw==
+X-Gm-Message-State: AOAM532N8zmPvhrOwh4kFydjvWlS+cPL6P5chKc52+ma89ikc3EWdSCO
+        0slQNIOc8ERHKdzUQgvDbnF9hZmTw8ca25dsvVcN8x750mjcHzOZ4qLCSKGqZm3vNzmOeFkDoid
+        x5G+pRipqvkOI
+X-Received: by 2002:a7b:c255:: with SMTP id b21mr2470277wmj.41.1598368848240;
+        Tue, 25 Aug 2020 08:20:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6u1BK1xJdgzgmskFYwZx+KYbOhF8q7VKxPrVClSKeJ0A3wK1x3Uij62v5xqRYBXItNyeDiA==
+X-Received: by 2002:a7b:c255:: with SMTP id b21mr2470255wmj.41.1598368847976;
+        Tue, 25 Aug 2020 08:20:47 -0700 (PDT)
+Received: from omos.redhat.com ([2a02:8308:b103:4000:e83d:a4fb:e589:6902])
+        by smtp.gmail.com with ESMTPSA id t4sm28372514wre.30.2020.08.25.08.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 08:20:47 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [RFC PATCH 0/3] selinux: RCU conversion follow-ups
+Date:   Tue, 25 Aug 2020 17:20:42 +0200
+Message-Id: <20200825152045.1719298-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 23, 2020 at 06:04:05AM +0300, Laurent Pinchart wrote:
-> Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
-> show_rcu_tasks_gp_kthreads()") introduced conditional compilation of
-> several functions, but forgot one occurrence of
-> show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
-> an unused static function. Fix it.
-> 
-> Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
->  kernel/rcu/tasks.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 835e2df8590a..bddf3968c1eb 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -590,7 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
->  }
->  
->  #else /* #ifdef CONFIG_TASKS_RCU */
-> +#ifndef CONFIG_TINY_RCU
->  static void show_rcu_tasks_classic_gp_kthread(void) { }
-> +#endif /* #ifndef CONFIG_TINY_RCU */
->  void exit_tasks_rcu_start(void) { }
->  void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
->  #endif /* #else #ifdef CONFIG_TASKS_RCU */
+This series contains some follow-up patches for the policy rwlock to RCU
+conversion that has been merged recently. The first two are quite
+straightforward, but I marked this series as RFC mainly because of the
+last patch, which may need some more careful review/testing.
 
-Good catch!!!
+Note that the last patch also opens up the possiblity to implement
+security_read_policy_kernel() from the IMA measurement patch [1] in a
+simple way without race conditions.
 
-But does the following addition of "static inline" work for you?
+I only did quick basic testing of these patches, so there may be some
+bugs. I hope to do more thorough testing tomorrow. I'd just like to give
+people chance to give some early feedback, especially on the last patch.
 
-							Thanx, Paul
+[1] https://lore.kernel.org/selinux/CAHC9VhQP7_rV+Oi6weLjVhrx2d8iu9UJ8zeE=ZcqnBMqngrJ4Q@mail.gmail.com/T/#mcb727e45670c8ee1f2da2ea0927e97f25e2395ad
 
-------------------------------------------------------------------------
+Ondrej Mosnacek (3):
+  selinux: simplify away security_policydb_len()
+  selinux: remove the 'initialized' flag from selinux_state
+  selinux: track policy lifetime with refcount
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 835e2df..3dc3ffc 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -590,9 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
- }
- 
- #else /* #ifdef CONFIG_TASKS_RCU */
--static void show_rcu_tasks_classic_gp_kthread(void) { }
--void exit_tasks_rcu_start(void) { }
--void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-+static inline void show_rcu_tasks_classic_gp_kthread(void) { }
-+static inline void exit_tasks_rcu_start(void) { }
-+static inline void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- #endif /* #else #ifdef CONFIG_TASKS_RCU */
- 
- #ifdef CONFIG_TASKS_RUDE_RCU
+ security/selinux/include/security.h |  11 +-
+ security/selinux/selinuxfs.c        |  12 +-
+ security/selinux/ss/services.c      | 327 +++++++++++++---------------
+ security/selinux/ss/services.h      |   6 +
+ 4 files changed, 165 insertions(+), 191 deletions(-)
+
+-- 
+2.26.2
+
