@@ -5,64 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56EE7C433E1
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 16:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3C82C433E1
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 17:21:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 366E020782
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 16:48:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C4C5220706
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 17:21:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RrvH7ImV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iorw+Q2E"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgHYQsr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Aug 2020 12:48:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51581 "EHLO
+        id S1726413AbgHYRVR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 13:21:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42064 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726090AbgHYQsr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Aug 2020 12:48:47 -0400
+        with ESMTP id S1726336AbgHYRVK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Aug 2020 13:21:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598374125;
+        s=mimecast20190719; t=1598376068;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dSmmLdkc7RSVC8EfmtZm/2Ty1INyRIvxtQ55lfyUZGw=;
-        b=RrvH7ImVtpnVZnhkNZUJ7sDX73vQlKEUxwdaNKL4Ix/2hJwFJoBeRonG+G5ll+zkxQtXJC
-        D2g6+fwJVbdIAcBz50mhEylKY+v8njwNjF4MVgwB9DH+LhxSzLQUC2koLw12bFpJVXYsJM
-        j8QL6xPqFXyrTk28qxEoVqzoPaz67yQ=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-MOD8Bnw8Noe34pPPCrjqDQ-1; Tue, 25 Aug 2020 12:48:41 -0400
-X-MC-Unique: MOD8Bnw8Noe34pPPCrjqDQ-1
-Received: by mail-lj1-f199.google.com with SMTP id h5so3946203ljj.10
-        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 09:48:40 -0700 (PDT)
+        bh=KxD7IxUp1X3Xkrm/hgADWFiOoNeg3viNvay8AmcqOCE=;
+        b=iorw+Q2EEqZZqa4bjT5k0/iUdoLmRUo/3sPiDgYho8O3QInuBulnpjkSAQtDvG+P+rOAXD
+        4oTA3cLp87CDfaIqknSdqjIq9yZDJ4KU9PGt+Y3oCOf1NX5yyvR5lzyBt30HqxJ88El1HZ
+        m0mEhKt2tnRAQCLgXn+Jj9ZOrujOi84=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-kRqvkiRsMmqHSFBTPqwFtQ-1; Tue, 25 Aug 2020 13:21:06 -0400
+X-MC-Unique: kRqvkiRsMmqHSFBTPqwFtQ-1
+Received: by mail-lj1-f200.google.com with SMTP id t9so3985214ljt.13
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 10:21:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dSmmLdkc7RSVC8EfmtZm/2Ty1INyRIvxtQ55lfyUZGw=;
-        b=idQkxEyFrPH8Dtvg42HfuHDd1CJSt60mQ0hDumhcB/oLBpmioXOthctuuWJi/4Y4M2
-         bML9fSNus8H5bTpa2doHTumkgAYdXWJv9bnIGOhR2TTK8ZhhuafdiCt9zjTZMCt4YD4n
-         WvwvrLjRPPOBLz5JnpNlwTESF97nwhoPSRdjZ7f7Vw5jL8jWo5G5HDBvdU1g5TRwbb2f
-         GRsFFNC2b1Tm25E2D2pqtZUSqbaGkmGVundKKQyelKhaNyzUAg1a6ju+JfL4NAeCV8Fr
-         PH20YoQIWU1thklwSQeTG+WRfBXn8c5NxciysO0ukojdEPoy4KtCJkFRQF0+gLKZ4nnN
-         gP0w==
-X-Gm-Message-State: AOAM532/cnShpzaEyWjI4d49R4Ua2DWwzm+9TBb1sI5CpVF6kymAWrBS
-        VL6YOMkdZMk6lxT/3L11J3kXvqe5ETaJeSTJEb1JwbKzInnbmFLu4zYqEQC1GfKVq54pZulSmkX
-        apVKw2gzAbeTcCQeKo1m5WiQr04N0
-X-Received: by 2002:a2e:8798:: with SMTP id n24mr4759266lji.217.1598374119640;
-        Tue, 25 Aug 2020 09:48:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMsrVlgwrlencGw12QSrptvlcPe/P14ZKF5kt9y0nhGDvkfTqXv7bs70IR+paKpdK/SGRrAV22j+fEJU6X5AE=
-X-Received: by 2002:a2e:8798:: with SMTP id n24mr4759256lji.217.1598374119424;
- Tue, 25 Aug 2020 09:48:39 -0700 (PDT)
+        bh=KxD7IxUp1X3Xkrm/hgADWFiOoNeg3viNvay8AmcqOCE=;
+        b=ocKD5tD1YEmjbj8jEEphuVZvKIso8GUDrXNLA6/ojXqLPBljeJf9+CU6DJMRXBw/g+
+         GxkKvcMvRrVtUpQiaHtxE8r+5XjZl1bQYr4N7JCVuEgeCfPrbmTk4p9pIWxszPIrXlrv
+         +mj9ybI2yAICG+VQjaL8ovc6vMLMiSrske8/Tr6QfjQTJOfRddx7gFMw1/mo8SNJdteX
+         EmOVLXk+H0nO7/sghORDwyinOd5tGajs/VHVqt2jtYYttu0bICMOsoY14rHtJ6bMr68d
+         cmInFDk0d9mvXQp19NygHykYLidaxCMVXIa7i+t7FL4nHLRsOLfIVLSRrXomsCuL7DuN
+         R7bg==
+X-Gm-Message-State: AOAM530zNAJlztzd3QKjSLM+J3N+dkYE8RmdpeIOpgvcIJwh0yTq+hPt
+        y2gJ9mrc8+HvGzTATgXdg/RVVnOet3H2s99FaJexKlWSRkKV1f27cIzoEvdo4q0lQtCCe25lUpS
+        f9oG0tHV10uVO8yeCcMb0kFKkhw6J
+X-Received: by 2002:a05:651c:217:: with SMTP id y23mr5092982ljn.123.1598376064738;
+        Tue, 25 Aug 2020 10:21:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWbndphIDnuCUBz7OoPBUXMnneOsMof6eVfG09lVKfMhU0U1FDx7L52k+O+mOnyYRYkGdaUME/ZTziDS2UoK0=
+X-Received: by 2002:a05:651c:217:: with SMTP id y23mr5092968ljn.123.1598376064496;
+ Tue, 25 Aug 2020 10:21:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825152045.1719298-1-omosnace@redhat.com> <20200825152045.1719298-2-omosnace@redhat.com>
- <CAEjxPJ5vPX1bp6kq_H4pU1bg2=NERt1_irdzMpdJ7R_Jfb3Q4g@mail.gmail.com>
-In-Reply-To: <CAEjxPJ5vPX1bp6kq_H4pU1bg2=NERt1_irdzMpdJ7R_Jfb3Q4g@mail.gmail.com>
+References: <20200825152045.1719298-1-omosnace@redhat.com> <20200825152045.1719298-3-omosnace@redhat.com>
+ <CAEjxPJ4UYV5OqtumoN9tK5wAQbOjuP0tUKW6dTPgftWxbY+R-w@mail.gmail.com>
+In-Reply-To: <CAEjxPJ4UYV5OqtumoN9tK5wAQbOjuP0tUKW6dTPgftWxbY+R-w@mail.gmail.com>
 From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Tue, 25 Aug 2020 18:48:28 +0200
-Message-ID: <CAFqZXNvfpT6th=0bgCvhFFaxX-ss3=A1gPPjaBzXeYHs=ahdLg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] selinux: simplify away security_policydb_len()
+Date:   Tue, 25 Aug 2020 19:20:53 +0200
+Message-ID: <CAFqZXNtLn_Tw_t1bnzYJ+cH_Kw8CUjs7kBdHKbMTp5WYBw7Fmw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] selinux: remove the 'initialized' flag from selinux_state
 To:     Stephen Smalley <stephen.smalley.work@gmail.com>
 Cc:     SElinux list <selinux@vger.kernel.org>,
         Paul Moore <paul@paul-moore.com>,
@@ -74,47 +74,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 6:03 PM Stephen Smalley
+On Tue, Aug 25, 2020 at 6:07 PM Stephen Smalley
 <stephen.smalley.work@gmail.com> wrote:
->
 > On Tue, Aug 25, 2020 at 11:20 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
 > >
-> > Remove the security_policydb_len() calls from sel_open_policy() and
-> > instead update the inode size from the size returned from
-> > security_read_policy().
-> >
-> > Since after this change security_policydb_len() is only called from
-> > security_load_policy(), remove it entirely and just open-code it there.
+> > After the RCU conversion, it is possible to simply check the policy
+> > pointer against NULL instead.
 > >
 > > Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 > > ---
 >
 > > diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-> > index 8381614627569..ec4570d6c38f7 100644
+> > index ec4570d6c38f7..d863b23f2a670 100644
 > > --- a/security/selinux/ss/services.c
 > > +++ b/security/selinux/ss/services.c
-> > @@ -3915,7 +3899,10 @@ int security_read_policy(struct selinux_state *state,
-> >         if (!selinux_initialized(state))
-> >                 return -EINVAL;
+> > @@ -2221,20 +2218,19 @@ void selinux_policy_commit(struct selinux_state *state,
+> >         /* Load the policycaps from the new policy */
+> >         security_load_policycaps(state, newpolicy);
 > >
-> > -       *len = security_policydb_len(state);
-> > +       rcu_read_lock();
-> > +       policy = rcu_dereference(state->policy);
-> > +       *len = policy->policydb.len;
-> > +       rcu_read_unlock();
-> >
-> >         *data = vmalloc_user(*len);
-> >         if (!*data)
+> > -       if (!selinux_initialized(state)) {
+> > +       if (!oldpolicy) {
+> >                 /*
+> >                  * After first policy load, the security server is
+> >                  * marked as initialized and ready to handle requests and
+> >                  * any objects created prior to policy load are then labeled.
+> >                  */
+> > -               selinux_mark_initialized(state);
+> >                 selinux_complete_init();
 >
-> We don't actually need to take rcu_read_lock() here at all, and can
-> use rcu_dereference_check(..., 1) or rcu_deference_protected() because
-> the fsi->mutex is held.  We should also fix the code immediately below
-> this diff context to not double dereference the policy pointer and
-> just reuse the already dereferenced pointer (also not requiring
-> rcu_read_lock).
+> This isn't quite equivalent. The difference is whether
+> security_load_policycaps() has completed.  Not sure of the
+> implications but could yield different behavior.
 
-OK, I'll fix this up to just fetch the pointer as you suggest (and
-adapt the corresponding hunks in the other patches).
+Good point... And you just reminded me of my plan to eliminate the
+selinux_state::policycap[] array and replace it with calls to
+security_policycap_supported(). That should have no more race
+conditions than the current code at least... I'll try to splice such a
+patch below this one for the next revision. Or is there some
+compelling reason to keep the array?
 
 -- 
 Ondrej Mosnacek
