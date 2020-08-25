@@ -2,58 +2,59 @@ Return-Path: <SRS0=ANd2=CD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CF34C433DF
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C43C433E1
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:53:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E08F62074A
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:51:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 518E42075F
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:53:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="cmK3KVNW"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BEu8CJSV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgHYWvH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Aug 2020 18:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S1726788AbgHYWxP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 18:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgHYWvF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Aug 2020 18:51:05 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A27C061755
-        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:51:05 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id i20so155150qkk.8
-        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:51:05 -0700 (PDT)
+        with ESMTP id S1726786AbgHYWxM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Aug 2020 18:53:12 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B3BC061574
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:53:12 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 92so3760qtb.6
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lz7Ete1HXeK/9NWmX4iXi72UXTwnQy+boNBkraeiIfc=;
-        b=cmK3KVNWwPBBD9n9vWY41oNG3RxLjaxZospd1pU/v7R/iAUTgif12lQMVixLmu6tQr
-         Irff7h1Iydpwxjk3t9humO3YYGtxvDSIeO2GfofyEtqh2UZW6WB0aitNRMPtRhYbsmKX
-         DtFzdi4NpFs1+rZYJ3ISGDFgYgT/KFg8wxuMs=
+        bh=WEE3G9povgJWPCtYpPqFiQBf651eDMpa+71/slW/h98=;
+        b=BEu8CJSVBli/z0qbfaqpochzBmN0GZzDkrHjJSWt89ZURiB0L2nUlQbj+fuo8tW1TT
+         5/BBKHljCrW0hTKQK5nU0M59+rb/NPI1E+Elvt5t5HcF6lkkv/Bqrqm+0DrrAs4rCjXX
+         XbGLNvOqk5K8KNTCFJ4zAlT1VVk5lGBMBfDKo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lz7Ete1HXeK/9NWmX4iXi72UXTwnQy+boNBkraeiIfc=;
-        b=K73XEXi+7PJjLftzrhpeDyXIr0PcejvBd0w5bgHWUsTLVKlX5LkBb6NeuUn6zUFQpK
-         co41mDeTwSEl2st+2ayqT715LlT6LVWTrVHsO/TBKhXa6jQdj6HVXXBqO6gVsFxDdCkN
-         zmdOulIc3wuASeH6SO2ECOI4GTI47lETDu3kmesXdX7t4apzVK+sHkNcD2PluMKAP8DP
-         kFRyMtKMiSuNUw/lRJ4KUjq/GWgzp73eV3CcQYJgBD9CUhnnsyJJzXsB4wf7xN/oa6kV
-         wmH1Ee7Da9GNT6BDvosh9sBB2v/nZU3aQEmzK1qk0WaT8BYE/majDw7IBjqrJ84b7G0H
-         f+tA==
-X-Gm-Message-State: AOAM5320+7v7P7RmqPe9bbdJNgPBFLXV7Ph2oGRnV8IknN+BUlt7VNxi
-        6jTId7G5Wd2byz2BRDjJPhX5dA==
-X-Google-Smtp-Source: ABdhPJypySxBnDrgu9Hicp7OFuSSI3r1KMRBPIfCicxTuNz4D+e2vSDO294m6TNJyQ27V8a9L6DWaQ==
-X-Received: by 2002:a37:ae03:: with SMTP id x3mr11322595qke.313.1598395864585;
-        Tue, 25 Aug 2020 15:51:04 -0700 (PDT)
+        bh=WEE3G9povgJWPCtYpPqFiQBf651eDMpa+71/slW/h98=;
+        b=r+J6pLiSMQhowLCPRZob37oLxGc6K6SWboycd2JITP9R7a2i+OSygdr9eShIUjqrs3
+         +PwyMBuVpp2jfjVmF6Cp9CdwYkZU6IJYpUuuMCGzcFrKqYiMtGdjmA92q6jMPHPtFJVs
+         +2qsKpRo5Zx5RUlmBkSY7BE0FkDBRj00+fkCLgHEeO/t9OcE+OvFL378nrc1FCEPMy5G
+         O7Vkia9R8cDXgLlov54IUX9oTUuBuQEf+peL0rOY+7U5xP0nRsjYW8e4EY9VRVkkJVH1
+         PYlo2i9gKoYIviK4ejYFglIm50y1xGHwTGIW5gLKy6r3FT9o4Fz2wWj1np6OIfv9/Ywc
+         WoqA==
+X-Gm-Message-State: AOAM530HwFODwi1RRpkP6O/ApW+l3qykzgsTTB7k1USvgkaoHDNvCtg/
+        KZlSkDMf+TW8vAPobJ6r+woLfg==
+X-Google-Smtp-Source: ABdhPJy/rtz/jM7D4+DuSv7oTaW8xYvaWG7TlTJV3jYQ2IVRSMNT+lcrvzaxz70DvqzIquKijC+STg==
+X-Received: by 2002:ac8:6bc2:: with SMTP id b2mr11687288qtt.115.1598395991672;
+        Tue, 25 Aug 2020 15:53:11 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id k3sm233628qkb.95.2020.08.25.15.51.03
+        by smtp.gmail.com with ESMTPSA id i14sm424928qtq.33.2020.08.25.15.53.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 15:51:04 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 18:51:03 -0400
+        Tue, 25 Aug 2020 15:53:11 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 18:53:10 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
@@ -65,42 +66,106 @@ Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
         neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: Re: [PATCH v4 -rcu 3/4] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20200825225103.GC579506@google.com>
+Subject: Re: [PATCH v4 -rcu 4/4] rcu/trace: Add tracing for how segcb list
+ changes
+Message-ID: <20200825225310.GD579506@google.com>
 References: <20200825024842.3408659-1-joel@joelfernandes.org>
- <20200825024842.3408659-4-joel@joelfernandes.org>
- <20200825215338.GA16846@paulmck-ThinkPad-P72>
+ <20200825024842.3408659-5-joel@joelfernandes.org>
+ <20200825215553.GB16846@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825215338.GA16846@paulmck-ThinkPad-P72>
+In-Reply-To: <20200825215553.GB16846@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 02:53:38PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 24, 2020 at 10:48:41PM -0400, Joel Fernandes (Google) wrote:
-> > Add counting of segment lengths of segmented callback list.
+On Tue, Aug 25, 2020 at 02:55:53PM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 24, 2020 at 10:48:42PM -0400, Joel Fernandes (Google) wrote:
+> > Track how the segcb list changes before/after acceleration, during
+> > queuing and during dequeuing.
 > > 
-> > This will be useful for a number of things such as knowing how big the
-> > ready-to-execute segment have gotten. The immediate benefit is ability
-> > to trace how the callbacks in the segmented callback list change.
+> > This has proved useful to discover an optimization to avoid unwanted GP
+> > requests when there are no callbacks accelerated. The overhead is minimal as
+> > each segment's length is now stored in the respective segment.
 > > 
-> > Tested by profusely reading traces when segcblist counts updated.
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> Might I recommend a more repeatable and sustainable test methodology?
-> (Sorry, couldn't resist, given that you left yourself wide open for
-> that one...)
+> Speaking of tracing, diagnostics, and debugging, a few instances of
+> ASSERT_EXCLUSIVE_WRITER() in the previous patch might save a lot
+> of debugging.  Help KCSAN help us.
 
-Ah, this message was from an older series :-(. I did test it with rcutorture
-for many hours. But I forgot to update this commit message. :-(
+Ok, I will look into it, thanks.
 
-I will respond to other comments soon, I am still stuck on the comment about
-rcl.len and rcu_barrier interaction that you brought up in 1/4 and 2/4.
+> >  include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+> >  kernel/rcu/rcu_segcblist.c | 27 +++++++++++++++++++++++++++
+> >  kernel/rcu/rcu_segcblist.h |  7 +++++++
+> >  kernel/rcu/tree.c          | 23 +++++++++++++++++++++++
+> >  4 files changed, 82 insertions(+)
+> > 
+> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> > index 155b5cb43cfd..7b84df3c95df 100644
+> > --- a/include/trace/events/rcu.h
+> > +++ b/include/trace/events/rcu.h
+> > @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+> >  		  __entry->qlen)
+> >  );
+> >  
+> > +TRACE_EVENT_RCU(rcu_segcb,
+> > +
+> > +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> > +
+> > +		TP_ARGS(ctx, cb_count, gp_seq),
+> > +
+> > +		TP_STRUCT__entry(
+> > +			__field(const char *, ctx)
+> > +			__array(int, cb_count, 4)
+> > +			__array(unsigned long, gp_seq, 4)
+> > +		),
+> > +
+> > +		TP_fast_assign(
+> > +			__entry->ctx = ctx;
+> > +			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
+> > +			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
+> > +		),
+> > +
+> > +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> > +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> > +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> > +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> > +
+> > +);
+> > +
+> >  /*
+> >   * Tracepoint for the registration of a single RCU callback of the special
+> >   * kvfree() form.  The first argument is the RCU type, the second argument
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 73a103464ea4..6419dbbaecde 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -378,6 +378,33 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+> >  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+> >  }
+> >  
+> > +/*
+> > + * Return how many CBs each segment along with their gp_seq values.
+> > + *
+> > + * This function is O(N) where N is the number of callbacks. Only used from
+> > + * tracing code which is usually disabled in production.
+> > + */
+> > +#ifdef CONFIG_RCU_TRACE
+> > +void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> > +			 int cbcount[RCU_CBLIST_NSEGS],
+> > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> > +{
+> 
+> Why not declare the arrays here and invoke the new trace event from
+> here also?  That would simplify the usage and save a few lines of code.
 
-Thanks!
+True! I will do it that way.
+
+thanks,
 
  - Joel
 
