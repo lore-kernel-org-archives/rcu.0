@@ -2,48 +2,61 @@ Return-Path: <SRS0=ANd2=CD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CD0C433E1
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 21:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD5CC433E3
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:47:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55D6A20738
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 21:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598392555;
-	bh=GkXzOxPvKqAlXfXqK4iEZQTpxUw94ZFAMY00sROf4Y8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=FpnZHiGseDqP9EwdCiIjtnXbmJZdes6POIIqpPLaR439wPn9+mfe8pQJeO3VXFdA/
-	 UQaRUBr4AssnEy0M3uEL9+it77UniWSQUP1p10Mnqm+lyznmjyvhSyD94ZRg8kfZP9
-	 bl2EYjZDH84YsY0U6oEBpA+2t46m/LNgrxFDQUvs=
+	by mail.kernel.org (Postfix) with ESMTP id 66CB820767
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 22:47:28 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="LkSY7dm+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgHYVzz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Aug 2020 17:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgHYVzy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Aug 2020 17:55:54 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 875002071E;
-        Tue, 25 Aug 2020 21:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598392553;
-        bh=GkXzOxPvKqAlXfXqK4iEZQTpxUw94ZFAMY00sROf4Y8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=S0x8+TuY+lokER/QMwot7w3n8bRkZHbNZwBHloxeagOwNemlPINHwRxm4/Zz/P6Lu
-         tKoonFNZmwfw5x0tUnHgi9Lkacv/GUEq9SYSD13veJqMenkXLpoiwbq9yQ/EG5xyAY
-         WyabEHIw/abOgINJu1oXlRQ6kMIZm4yRBuaRv47w=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4CEE0352304D; Tue, 25 Aug 2020 14:55:53 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 14:55:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+        id S1726580AbgHYWr1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 18:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgHYWrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Aug 2020 18:47:25 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46B2C061574
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:47:25 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id y65so8477qtd.2
+        for <rcu@vger.kernel.org>; Tue, 25 Aug 2020 15:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lCOMEyRgRSwvt59dfkS7SB7QIanjWNqkuVUXG9Hrk1s=;
+        b=LkSY7dm+GJquyQ2aFOOspi9gf4IzwOKX8QtWMY8qrKiQuZYQaAAB1nz6G5pDu9w2Wp
+         H6IL84OhwsjQbAXsT42VBpEDMiJq/OErETA7iJr8xl7R3T9ZAAT/Tvxq3iMDQgq6s9Vm
+         4sQBfzltT3NmrwUVKRQewC0SyG2IEgHcw4qgA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lCOMEyRgRSwvt59dfkS7SB7QIanjWNqkuVUXG9Hrk1s=;
+        b=qA0YPIzL2tJkdFudLw6sYfq7pPxnOIYxUC3ZiOAONKt/wcAOsgiBN1G3e8HiD8jyjZ
+         uLdMbPmOUIQTpuEk/v7Dku20J5IyeBQWMQNKELsSU9znM5aDTiWUJ721RE66b+mO7SvD
+         pfxQ6EXr5Dsvntg8wi92vM1kgd4AjTAiXQsT/pXKqI7r7XfOPFMOysQcvtQg06/oDIpa
+         mgAGMaelnJRXrzYc56rCi5WxHmBy/fPtGpczoH9Gs27KtAzlfyzzR71bWpm9TmeVO9VT
+         tnF4EB+KeedPrYWEDSYZDazBAzf61lBpS/mmDxM0KdAm0uI/wjlbmgTGpSAgjOkNFoBU
+         yQaQ==
+X-Gm-Message-State: AOAM531CDsB4chYLhBCZ/O9L55hBKMCnjqPRPfx+6yncIH3ZpXxafcI8
+        tSijGgjQrUtoBkk+zzokXb3X8w==
+X-Google-Smtp-Source: ABdhPJw34rAEpjroAciCdCwuez0cuPpe8NoXAXEgfUK0puUjr8f5sWkSK4wODCYRfgPSNVmByQjmWQ==
+X-Received: by 2002:ac8:23a3:: with SMTP id q32mr3897181qtq.361.1598395644732;
+        Tue, 25 Aug 2020 15:47:24 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id l13sm374104qth.77.2020.08.25.15.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Aug 2020 15:47:24 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 18:47:23 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
         dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -53,214 +66,120 @@ Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
         neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: Re: [PATCH v4 -rcu 4/4] rcu/trace: Add tracing for how segcb list
- changes
-Message-ID: <20200825215553.GB16846@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Subject: Re: [PATCH v4 -rcu 1/4] rcu/segcblist: Do not depend on rcl->len to
+ store the segcb len during merge
+Message-ID: <20200825224723.GB579506@google.com>
 References: <20200825024842.3408659-1-joel@joelfernandes.org>
- <20200825024842.3408659-5-joel@joelfernandes.org>
+ <20200825024842.3408659-2-joel@joelfernandes.org>
+ <20200825200809.GW2855@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825024842.3408659-5-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200825200809.GW2855@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:48:42PM -0400, Joel Fernandes (Google) wrote:
-> Track how the segcb list changes before/after acceleration, during
-> queuing and during dequeuing.
+Hi Paul,
+
+On Tue, Aug 25, 2020 at 01:08:09PM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 24, 2020 at 10:48:39PM -0400, Joel Fernandes (Google) wrote:
+> > The donecbs's ->len field is used to store the total count of the segmented
+> > callback list's length. This ->len field is then added to the destination segcb
+> > list.
+> > 
+> > However, this presents a problem for per-segment length counting which is added
+> > in a future patch. This future patch sets the rcl->len field as we move
+> > segments of callbacks between source and destination lists, thus becoming
+> > incompatible with the donecb's ->len field.
 > 
-> This has proved useful to discover an optimization to avoid unwanted GP
-> requests when there are no callbacks accelerated. The overhead is minimal as
-> each segment's length is now stored in the respective segment.
+> OK, I will bite.  What is "rcl"?  A placeholder for donecbs and pendcbs?
+> If so, please just name them both.  If not, please explain.
+
+Ok will fix.
+
+> > This commit therefore avoids depending on the ->len field in this way. IMHO,
+> > this is also less error-prone and is more accurate - the donecb's ->len field
+> > should be the length of the done segment and not just used as a temporarily
+> > variable.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Please also mention why ->len is handled specially at all, namely
+> interactions between rcu_barrier() and callback invocation.  This is
+> the answer to "why not just make all this work like normal lists?"
+> This might go well in the first paragraph.
 
-Speaking of tracing, diagnostics, and debugging, a few instances of
-ASSERT_EXCLUSIVE_WRITER() in the previous patch might save a lot
-of debugging.  Help KCSAN help us.
+Are you referring to the cblist structures ->len?  I know the segcblist's
+->len field is what rcu_barrier() samples but I am not changing that behavior
+at all in this patch. This patch is only about the donecb's len (which is a
+cblist structure on the stack).
 
-> ---
->  include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
->  kernel/rcu/rcu_segcblist.c | 27 +++++++++++++++++++++++++++
->  kernel/rcu/rcu_segcblist.h |  7 +++++++
->  kernel/rcu/tree.c          | 23 +++++++++++++++++++++++
->  4 files changed, 82 insertions(+)
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/rcu_segcblist.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 2d2a6b6b9dfb..b70d4154433c 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -513,14 +513,18 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+> >  {
+> >  	struct rcu_cblist donecbs;
+> >  	struct rcu_cblist pendcbs;
+> > +	long src_len;
+> >  
+> >  	rcu_cblist_init(&donecbs);
+> >  	rcu_cblist_init(&pendcbs);
+> > -	rcu_segcblist_extract_count(src_rsclp, &donecbs);
+> > +
+> > +	src_len = rcu_segcblist_xchg_len(src_rsclp, 0);
 > 
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 155b5cb43cfd..7b84df3c95df 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
->  		  __entry->qlen)
->  );
->  
-> +TRACE_EVENT_RCU(rcu_segcb,
-> +
-> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-> +
-> +		TP_ARGS(ctx, cb_count, gp_seq),
-> +
-> +		TP_STRUCT__entry(
-> +			__field(const char *, ctx)
-> +			__array(int, cb_count, 4)
-> +			__array(unsigned long, gp_seq, 4)
-> +		),
-> +
-> +		TP_fast_assign(
-> +			__entry->ctx = ctx;
-> +			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
-> +			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
-> +		),
-> +
-> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-> +
-> +);
-> +
->  /*
->   * Tracepoint for the registration of a single RCU callback of the special
->   * kvfree() form.  The first argument is the RCU type, the second argument
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 73a103464ea4..6419dbbaecde 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -378,6 +378,33 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
->  }
->  
-> +/*
-> + * Return how many CBs each segment along with their gp_seq values.
-> + *
-> + * This function is O(N) where N is the number of callbacks. Only used from
-> + * tracing code which is usually disabled in production.
-> + */
-> +#ifdef CONFIG_RCU_TRACE
-> +void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> +			 int cbcount[RCU_CBLIST_NSEGS],
-> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-> +{
+> Given that both rcu_segcblist_xchg_len() and rcu_segcblist_extract_count()
+> have only one callsite each, why not get rid of one of them?
 
-Why not declare the arrays here and invoke the new trace event from
-here also?  That would simplify the usage and save a few lines of code.
+Good point, I will do that.
 
-						Thanx, Paul
-
-> +	struct rcu_head **cur_tail;
-> +	int i;
-> +
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-> +		cbcount[i] = 0;
-> +
-> +	cur_tail = &(rsclp->head);
-> +
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-> +		gpseq[i] = rsclp->gp_seq[i];
-> +		cur_tail = rsclp->tails[i];
-> +	}
-> +}
-> +#endif
-> +
->  /*
->   * Extract only those callbacks still pending (not yet ready to be
->   * invoked) from the specified rcu_segcblist structure and place them in
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index b90725f81d77..5f7cdfed0ba4 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -105,3 +105,10 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
->  bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
->  void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  			 struct rcu_segcblist *src_rsclp);
-> +#ifdef CONFIG_RCU_TRACE
-> +void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> +			 int cbcount[RCU_CBLIST_NSEGS],
-> +			 unsigned long gpseq[RCU_CBLIST_NSEGS]);
-> +#else
-> +#define rcu_segcblist_countseq(...)
-> +#endif
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 51348144a4ea..16ad99a9ebba 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1476,6 +1476,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  {
->  	unsigned long gp_seq_req;
->  	bool ret = false;
-> +	int cbs[RCU_CBLIST_NSEGS];
-> +	unsigned long gps[RCU_CBLIST_NSEGS];
->  
->  	rcu_lockdep_assert_cblist_protected(rdp);
->  	raw_lockdep_assert_held_rcu_node(rnp);
-> @@ -1484,6 +1486,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
->  		return false;
->  
-> +	/* Count CBs for tracing. */
-> +	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-> +	trace_rcu_segcb("SegCbPreAcc", cbs, gps);
-> +
->  	/*
->  	 * Callbacks are often registered with incomplete grace-period
->  	 * information.  Something about the fact that getting exact
-> @@ -1504,6 +1510,10 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->  	else
->  		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
->  
-> +	/* Count CBs for tracing. */
-> +	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-> +	trace_rcu_segcb("SegCbPostAcc", cbs, gps);
-> +
->  	return ret;
->  }
->  
-> @@ -2421,6 +2431,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
->  	long bl, count = 0;
->  	long pending, tlimit = 0;
-> +	int cbs[RCU_CBLIST_NSEGS];
-> +	unsigned long gps[RCU_CBLIST_NSEGS];
->  
->  	/* If no callbacks are ready, just return. */
->  	if (!rcu_segcblist_ready_cbs(&rdp->cblist)) {
-> @@ -2461,6 +2473,11 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	/* Invoke callbacks. */
->  	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
->  	rhp = rcu_cblist_dequeue(&rcl);
-> +
-> +	/* Count CBs for tracing. */
-> +	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-> +	trace_rcu_segcb("SegCbDequeued", cbs, gps);
-> +
->  	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
->  		rcu_callback_t f;
->  
-> @@ -2929,6 +2946,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	unsigned long flags;
->  	struct rcu_data *rdp;
->  	bool was_alldone;
-> +	int cbs[RCU_CBLIST_NSEGS];
-> +	unsigned long gps[RCU_CBLIST_NSEGS];
->  
->  	/* Misaligned rcu_head! */
->  	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
-> @@ -2974,6 +2993,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
->  		trace_rcu_callback(rcu_state.name, head,
->  				   rcu_segcblist_n_cbs(&rdp->cblist));
->  
-> +	/* Count CBs for tracing. */
-> +	rcu_segcblist_countseq(&rdp->cblist, cbs, gps);
-> +	trace_rcu_segcb("SegCBQueued", cbs, gps);
-> +
->  	/* Go handle any RCU core processing required. */
->  	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
->  	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
-> -- 
-> 2.28.0.297.g1956fa8f8d-goog
+> Or better yet, please see below, which should allow getting rid of both
+> of them.
 > 
+> >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
+> >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
+> > -	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
+> > +
+> > +	rcu_segcblist_add_len(dst_rsclp, src_len);
+> >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
+> >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
+> 
+> Rather than adding the blank lines, why not have the rcu_cblist structures
+> carry the lengths?  You are already adjusting one of the two call sites
+> that care (rcu_do_batch()), and the other is srcu_invoke_callbacks().
+> That should shorten this function a bit more.  And make callback handling
+> much more approachable, I suspect.
+
+Sorry, I did not understand. The rcu_cblist structure already has a length
+field. I do modify rcu_segcblist_extract_done_cbs() and
+rcu_segcblist_extract_pend_cbs() to carry the length already, in a later
+patch.
+
+Just to emphasize, this patch is just a small refactor to avoid an issue in
+later patches. It aims to keep current functionality unchanged.
+
+thanks,
+
+ - Joel
+
+> 
+> There would still be the callback-invocation need to be careful with
+> ->cblist.len due to rcu_barrier() and srcu_barrier().  But both of
+> those should be excluded by this code.  (But don't take my word for it,
+> ask KCSAN.)
+> 
+> 							Thanx, Paul
+> 
+> > +
+> >  	rcu_segcblist_init(src_rsclp);
+> >  }
+> > -- 
+> > 2.28.0.297.g1956fa8f8d-goog
+> > 
