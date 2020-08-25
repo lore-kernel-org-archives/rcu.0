@@ -2,74 +2,111 @@ Return-Path: <SRS0=ANd2=CD=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25187C433E1
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 19:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C406C433E1
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 19:58:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18B162074D
-	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 19:11:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F4122075F
+	for <rcu@archiver.kernel.org>; Tue, 25 Aug 2020 19:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1598385485;
+	bh=gTvnzTg+mh28yy9zqmATxGIIdaAhnLyvMTWA22zHNvs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=hb3H0OlkkfPyQx9XbgtgPxbmzKXbIiHOaBW2prxgi/sPqNn5J8JMOjT/eoPmooIu7
+	 KQzP6Ucaw5xUxNMFcH1TKeWHoa1oBEUYqvZE89eGlStDpAwTrb4yurIwInVmSYIFgO
+	 sMC4Myt/wNmEojQRnyUagQ6XMQt+SyLTa3yzf6cI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgHYTLY convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Tue, 25 Aug 2020 15:11:24 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:14398 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgHYTLY (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 25 Aug 2020 15:11:24 -0400
-X-Greylist: delayed 1205 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 Aug 2020 15:11:23 EDT
-Subject: Re: [RFC PATCH 3/3] selinux: track policy lifetime with refcount
-To:     Ondrej Mosnacek <omosnace@redhat.com>, <selinux@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-CC:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        <rcu@vger.kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200825152045.1719298-1-omosnace@redhat.com>
- <20200825152045.1719298-4-omosnace@redhat.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <748e4541-7608-ae51-bdd1-1356deedb105@sony.com>
-Date:   Tue, 25 Aug 2020 20:51:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726713AbgHYT6F (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Aug 2020 15:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726593AbgHYT6E (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Aug 2020 15:58:04 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F71B2074D;
+        Tue, 25 Aug 2020 19:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598385483;
+        bh=gTvnzTg+mh28yy9zqmATxGIIdaAhnLyvMTWA22zHNvs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DCaCFv42ZpU14KZD7iJxSZtD5MEEWCdwE3yFALD9cUx3kcX+BDXKUHx8/D2xJKQ2h
+         +/3lqsihXNrjV6iCNYTKhYNDzS8tHaZJpKsfwsb4Eq3+xI09MdsozZc3bFL1C18xNK
+         uq0s0U75OVIolNI0SamqgtHr4mM39LbaVyyfcWks=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 30B1135226AE; Tue, 25 Aug 2020 12:58:03 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 12:58:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
+        dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
+Subject: Re: [PATCH v4 -rcu 0/4] Maintain the length of each segment in the
+ segcblist
+Message-ID: <20200825195803.GV2855@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200825024842.3408659-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-In-Reply-To: <20200825152045.1719298-4-omosnace@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=dtal9Go4 c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=y4yBn9ojGxQA:10 a=20KFwNOVAAAA:8 a=L_wMz1sGHkmsje8T-zAA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825024842.3408659-1-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 8/25/20 5:20 PM, Ondrej Mosnacek wrote:
-> Instead of holding the RCU read lock the whole time while accessing the
-> policy, add a simple refcount mechanism to track its lifetime. After
-> this, the RCU read lock is held only for a brief time when fetching the
-> policy pointer and incrementing the refcount. The policy struct is then
-> guaranteed to stay alive until the refcount is decremented.
->
-> Freeing of the policy remains the responsibility of the task that does
-> the policy reload. In case the refcount drops to zero in a different
-> task, the policy load task is notified via a completion.
->
-> The advantage of this change is that the operations that access the
-> policy can now do sleeping allocations, since they don't need to hold
-> the RCU read lock anymore. This patch so far only leverages this in
-> security_read_policy() for the vmalloc_user() allocation (although this
-> function is always called under fsi->mutex and could just access the
-> policy pointer directly). The conversion of affected GFP_ATOMIC
-> allocations to GFP_KERNEL is left for a later patch, since auditing
-> which code paths may still need GFP_ATOMIC is not very easy.
->
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
->
-Very clever. But is it the right prioritization? We get a lot more
-cpu synchronization need with two RCU in-out and refcounts inc/dec
-instead of only one RCU in-out.  What is the problem with the atomic
-allocations? And this if for each syscall, all caches are on the inside?
+On Mon, Aug 24, 2020 at 10:48:38PM -0400, Joel Fernandes (Google) wrote:
+> This is required for several usecases identified. One of them being tracing how
+> the segmented callback list changes. Tracing this has identified issues in RCU
+> code in the past. The trace patch is the last one in this series.
 
+Thank you for doing this!  Another use case is of course more accurately
+determining whether a given CPU's large pile of callbacks can be best
+served by making grace periods go faster, invoking callbacks more
+vigorously, or both.  It should also be possible to simplify some of
+the callback handling a bit, given that some of the unnatural acts are
+due to there having been no per-batch counts.
+
+							Thanx, Paul
+
+> Passes 30 minutes of TREE01, TREE03, TREE07.  Testing of other TREE configs is
+> in progress.
+> 
+> Patches are based on -rcu commit:
+> 4f43de2a419a ("Merge branch 'lkmm-dev.2020.08.24a' into HEAD")
+> 
+> Revision history:
+> v4: Restructured rcu_do_batch() and segcblist merging to avoid issues.
+>     Fixed minor nit from Davidlohr.
+> v1->v3: minor nits.
+> (https://lore.kernel.org/lkml/20200719034210.2382053-1-joel@joelfernandes.org/)
+> 
+> Joel Fernandes (Google) (4):
+> rcu/segcblist: Do not depend on rcl->len to store the segcb len during
+> merge
+> rcu/tree: Make rcu_do_batch count how many callbacks were executed
+> rcu/segcblist: Add counters to segcblist datastructure
+> rcu/trace: Add tracing for how segcb list changes
+> 
+> include/linux/rcu_segcblist.h |   2 +
+> include/trace/events/rcu.h    |  25 +++++++
+> kernel/rcu/rcu_segcblist.c    | 119 ++++++++++++++++++++++++++++++++--
+> kernel/rcu/rcu_segcblist.h    |   8 +++
+> kernel/rcu/tree.c             |  32 +++++++--
+> 5 files changed, 175 insertions(+), 11 deletions(-)
+> 
+> --
+> 2.28.0.297.g1956fa8f8d-goog
+> 
