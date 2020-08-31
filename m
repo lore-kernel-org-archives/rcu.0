@@ -1,247 +1,242 @@
-Return-Path: <SRS0=EKFO=CG=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=RBzz=CJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3659C433E6
-	for <rcu@archiver.kernel.org>; Fri, 28 Aug 2020 14:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2F4C433E6
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:32:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6FD59208C9
-	for <rcu@archiver.kernel.org>; Fri, 28 Aug 2020 14:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598624339;
-	bh=HfZz+xtTrt5QVush0A2tAYGofQihbn5nJWHYOS6GXZk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=zqfVLaQffC0+jNOuQAoIdo8pTn+1j//iKDN7k4x6VvcYHlQy7VTF+bxtiAt5jnIaC
-	 /n8VFK2f4TeugK+1RgvdqOfugndLXwczirbrzvKvf9TueZgzJDm8rQbbXba6nL5JW+
-	 ev6u2zA8SlBjTaALqzdfBIGT6DA3mow9aY+xuKB0=
+	by mail.kernel.org (Postfix) with ESMTP id D0447206B5
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:32:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cMuyRTSx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgH1OS7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Aug 2020 10:18:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgH1OS5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Aug 2020 10:18:57 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2952B20872;
-        Fri, 28 Aug 2020 14:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598624336;
-        bh=HfZz+xtTrt5QVush0A2tAYGofQihbn5nJWHYOS6GXZk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=arfN5bhon4muxjyRb65RwWzeffZvpmP2r/NuNWnOZipcH+G7xRtTpzcAAqgnluSya
-         XIkfuEPH1w/DaA97Zx/BwWfoJl+VwarnWI30b+TzwNaVKv1d6uAx6TRq3L6P5FkCWv
-         oSsbLr5i9tzG/H+OKt9VBG9o5b2EhXK1GZqLvMRc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id ED0373522679; Fri, 28 Aug 2020 07:18:55 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 07:18:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
-        dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: Re: [PATCH v4 -rcu 1/4] rcu/segcblist: Do not depend on rcl->len to
- store the segcb len during merge
-Message-ID: <20200828141855.GO2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200825024842.3408659-1-joel@joelfernandes.org>
- <20200825024842.3408659-2-joel@joelfernandes.org>
- <20200825200809.GW2855@paulmck-ThinkPad-P72>
- <20200825224723.GB579506@google.com>
- <20200826142028.GN2855@paulmck-ThinkPad-P72>
- <20200827225518.GB3821640@google.com>
+        id S1725937AbgHaGcr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 02:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgHaGcn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 02:32:43 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB578C061573
+        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:32:43 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id j188so2664417vsd.2
+        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=JL5FY/OPoxC6HDWJYlv4yemjpNN92vvIN4CMSxtN6co=;
+        b=cMuyRTSxyhExkZY0IKNSWlVvO8PuH5Ok63c4pQ9nutHuvq2NWmeGFZJRG1IDHzqY8Q
+         cIZwp2JhXWSUOq9UojMJbh+mQk+yzS31Vc23awkX6gzCudYOuf6XYs4UgNnH8S1DzvEY
+         JWZ5xdwn/SRpSX9QhihOqPOXU5UBEItfwrSuL8nsYby9QjLXgzxdNBPiMnoMMqxinIt8
+         f2aZ8fGRQqOG4lprhboGisuN+ZPhkiHTi2In5WeKxBRsfdDnwybgFMFWcNF8W476CJky
+         qX2XGIpLab2UOus7H6JYxviic+Dp12HREV7rndufZMvTSyj1yGME0SzW19qdzw2jWbJ5
+         hTYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=JL5FY/OPoxC6HDWJYlv4yemjpNN92vvIN4CMSxtN6co=;
+        b=LDJU+7wBuWlQd0maQNjp02N1Xkou0mNFRxP3cmlVQwNl4oTNMlsdkGN7Xam17fqdAg
+         xmPCd/WFPPdJZJ57zVpo9hq6IDkoPItQQn/wKEYiA294G7dsxIqd+qna5FnInAmltNYA
+         quasZJwsuqHrvoT1vzu9JrEVO/ZQh9Hgy4w/QVagZjZeedSQqhlojrrmNwjJZFFIFr+B
+         UJaOR0VGXRnLY1dMbuT+3bqdQwiS3wH7jsamqWCvLPi12kM84z+Axy8a2XutzUklYP64
+         EJHSBWlpgPlxMwiD7Bc6uuLDyF70iXcXInwKF7w1/g3j5hPRep3zFiOy+46U29rCnT2W
+         HSeA==
+X-Gm-Message-State: AOAM533yLkAd4+UhLnIdIkBOtId3W7AjU0AYHjY7rXNnUjyEUyeBIRi0
+        ODZzdoEoO7/vCFLYUfbtylZ6CgWX6UyFoj9kfAe2xg==
+X-Google-Smtp-Source: ABdhPJzOO76mzWnFTJKnD/SXT05L8mq2/oW90RWTXbauVOOkxUkgcAw1KvyWdnOAxbqvkf4WnYp37Ns7eHcYcwoOJXg=
+X-Received: by 2002:a67:7905:: with SMTP id u5mr41080vsc.179.1598855562545;
+ Sun, 30 Aug 2020 23:32:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827225518.GB3821640@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 31 Aug 2020 12:02:31 +0530
+Message-ID: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+Subject: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and OF
+ driver helper
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 06:55:18PM -0400, Joel Fernandes wrote:
-> On Wed, Aug 26, 2020 at 07:20:28AM -0700, Paul E. McKenney wrote:
-> [...]
-> > > > Or better yet, please see below, which should allow getting rid of both
-> > > > of them.
-> > > > 
-> > > > >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
-> > > > >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-> > > > > -	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-> > > > > +
-> > > > > +	rcu_segcblist_add_len(dst_rsclp, src_len);
-> > > > >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
-> > > > >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-> > > > 
-> > > > Rather than adding the blank lines, why not have the rcu_cblist structures
-> > > > carry the lengths?  You are already adjusting one of the two call sites
-> > > > that care (rcu_do_batch()), and the other is srcu_invoke_callbacks().
-> > > > That should shorten this function a bit more.  And make callback handling
-> > > > much more approachable, I suspect.
-> > > 
-> > > Sorry, I did not understand. The rcu_cblist structure already has a length
-> > > field. I do modify rcu_segcblist_extract_done_cbs() and
-> > > rcu_segcblist_extract_pend_cbs() to carry the length already, in a later
-> > > patch.
-> > > 
-> > > Just to emphasize, this patch is just a small refactor to avoid an issue in
-> > > later patches. It aims to keep current functionality unchanged.
-> > 
-> > True enough.  I am just suggesting that an equally small refactor in
-> > a slightly different direction should get to a better place.  The key
-> > point enabling this slightly different direction is that this code is
-> > an exception to the "preserve ->cblist.len" rule because it is invoked
-> > only from the CPU hotplug code.
-> > 
-> > So you could use the rcu_cblist .len field to update the ->cblist.len
-> > field, thus combining the _cbs and _count updates.  One thing that helps
-> > is that setting th e rcu_cblist .len field doesn't hurt the other use
-> > cases that require careful handling of ->cblist.len.
-> 
-> Thank you for the ideas. I am trying something like this on top of this
-> series based on the ideas. One thing I concerned a bit is if getting rid of
-> the rcu_segcblist_xchg_len() function (which has memory barriers in them)
-> causes issues in the hotplug path. I am now directly updating the length
-> without additional memory barriers. I will test it more and try to reason
-> more about it as well.
+While booting linux mainline kernel on arm64 db410c this kernel warning
+noticed.
 
-In this particular case, the CPU-hotplug locks prevent rcu_barrier()
-from running concurrently, so it should be OK.  Is there an easy way
-to make lockdep help us check this?  Does lockdep_assert_cpus_held()
-suffice, or is it too easily satisfied?
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+  git commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+  git describe: v5.9-rc3
+  make_kernelversion: 5.9.0-rc3
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2965/config
 
-> ---8<-----------------------
-> 
-> From: Joel Fernandes <joelaf@google.com>
-> Date: Thu, 27 Aug 2020 18:30:25 -0400
-> Subject: [PATCH] fixup! rcu/segcblist: Do not depend on donecbs ->len to store
->  the segcb len during merge
-> 
-> Signed-off-by: Joel Fernandes <joelaf@google.com>
-> ---
->  kernel/rcu/rcu_segcblist.c | 38 ++++----------------------------------
->  1 file changed, 4 insertions(+), 34 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 79c2cbe388c5..c33abbc97a07 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -175,26 +175,6 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
->  	rcu_segcblist_add_len(rsclp, 1);
->  }
->  
-> -/*
-> - * Exchange the numeric length of the specified rcu_segcblist structure
-> - * with the specified value.  This can cause the ->len field to disagree
-> - * with the actual number of callbacks on the structure.  This exchange is
-> - * fully ordered with respect to the callers accesses both before and after.
-> - */
-> -static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
-> -{
-> -#ifdef CONFIG_RCU_NOCB_CPU
-> -	return atomic_long_xchg(&rsclp->len, v);
-> -#else
-> -	long ret = rsclp->len;
-> -
-> -	smp_mb(); /* Up to the caller! */
-> -	WRITE_ONCE(rsclp->len, v);
-> -	smp_mb(); /* Up to the caller! */
-> -	return ret;
-> -#endif
-> -}
-> -
+Boot log,
 
-This looks nice!
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd030]
+[    0.000000] Linux version 5.9.0-rc3 (oe-user@oe-host)
+(aarch64-linaro-linux-gcc (GCC) 7.3.0, GNU ld (GNU Binutils)
+2.30.0.20180208) #1 SMP PREEMPT Mon Aug 31 00:23:15 UTC 2020
+[    0.000000] Machine model: Qualcomm Technologies, Inc. APQ 8016 SBC
+<>
+[    5.299090] sdhci: Secure Digital Host Controller Interface driver
+[    5.299140] sdhci: Copyright(c) Pierre Ossman
+[    5.304313]
+[    5.307771] Synopsys Designware Multimedia Card Interface Driver
+[    5.308588] =============================
+[    5.308593] WARNING: suspicious RCU usage
+[    5.316628] sdhci-pltfm: SDHCI platform and OF driver helper
+[    5.320052] 5.9.0-rc3 #1 Not tainted
+[    5.320057] -----------------------------
+[    5.320063] /usr/src/kernel/include/trace/events/lock.h:37
+suspicious rcu_dereference_check() usage!
+[    5.320068]
+[    5.320068] other info that might help us debug this:
+[    5.320068]
+[    5.320074]
+[    5.320074] rcu_scheduler_active = 2, debug_locks = 1
+[    5.320078] RCU used illegally from extended quiescent state!
+[    5.320084] no locks held by swapper/0/0.
+[    5.320089]
+[    5.320089] stack backtrace:
+[    5.320098] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+[    5.346354] sdhci_msm 7864900.sdhci: Got CD GPIO
+[    5.346446] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.346452] Call trace:
+[    5.346463]  dump_backtrace+0x0/0x1f8
+[    5.346471]  show_stack+0x2c/0x38
+[    5.346480]  dump_stack+0xec/0x15c
+[    5.346490]  lockdep_rcu_suspicious+0xd4/0xf8
+[    5.346499]  lock_acquire+0x3d0/0x440
+[    5.346510]  _raw_spin_lock_irqsave+0x80/0xb0
+[    5.413118]  __pm_runtime_suspend+0x34/0x1d0
+[    5.417457]  psci_enter_domain_idle_state+0x4c/0xb0
+[    5.421795]  cpuidle_enter_state+0xc8/0x610
+[    5.426392]  cpuidle_enter+0x3c/0x50
+[    5.430561]  call_cpuidle+0x44/0x80
+[    5.434378]  do_idle+0x240/0x2a0
+[    5.437589]  cpu_startup_entry+0x2c/0x78
+[    5.441063]  rest_init+0x1ac/0x280
+[    5.444970]  arch_call_rest_init+0x14/0x1c
+[    5.448180]  start_kernel+0x50c/0x544
+[    5.452395]
+[    5.452399]
+[    5.452403] =============================
+[    5.452406] WARNING: suspicious RCU usage
+[    5.452409] 5.9.0-rc3 #1 Not tainted
+[    5.452412] -----------------------------
+[    5.452417] /usr/src/kernel/include/trace/events/ipi.h:36
+suspicious rcu_dereference_check() usage!
+[    5.452420]
+[    5.452424] other info that might help us debug this:
+[    5.452426]
+[    5.452429]
+[    5.452432] rcu_scheduler_active = 2, debug_locks = 1
+[    5.452436] RCU used illegally from extended quiescent state!
+[    5.452440] 1 lock held by swapper/0/0:
+[    5.452443]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
+vprintk_emit+0xb0/0x358
+[    5.452458]
+[    5.452461] stack backtrace:
+[    5.452465] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+[    5.452469] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.452472] Call trace:
+[    5.452476]  dump_backtrace+0x0/0x1f8
+[    5.452479]  show_stack+0x2c/0x38
+[    5.452481]  dump_stack+0xec/0x15c
+[    5.452485]  lockdep_rcu_suspicious+0xd4/0xf8
+[    5.452489]  arch_irq_work_raise+0x208/0x210
+[    5.452493]  __irq_work_queue_local+0x64/0x88
+[    5.452495]  irq_work_queue+0x3c/0x88
+[    5.452499]  printk_safe_log_store+0x148/0x178
+[    5.452502]  vprintk_func+0x1cc/0x2b8
+[    5.452506]  printk+0x74/0x94
+[    5.452509]  lockdep_rcu_suspicious+0x28/0xf8
+[    5.452512]  lock_release+0x338/0x360
+[    5.452516]  _raw_spin_unlock+0x3c/0xa0
+[    5.452519]  vprintk_emit+0xf8/0x358
+[    5.452522]  vprintk_default+0x48/0x58
+[    5.452526]  vprintk_func+0xec/0x2b8
+[    5.452528]  printk+0x74/0x94
+[    5.452532]  lockdep_rcu_suspicious+0x28/0xf8
+[    5.452535]  lock_acquire+0x3d0/0x440
+[    5.452538]  _raw_spin_lock_irqsave+0x80/0xb0
+[    5.452542]  __pm_runtime_suspend+0x34/0x1d0
+[    5.452545]  psci_enter_domain_idle_state+0x4c/0xb0
+[    5.452549]  cpuidle_enter_state+0xc8/0x610
+[    5.452552]  cpuidle_enter+0x3c/0x50
+[    5.452555]  call_cpuidle+0x44/0x80
+[    5.452559]  do_idle+0x240/0x2a0
+[    5.452562]  cpu_startup_entry+0x2c/0x78
+[    5.452564]  rest_init+0x1ac/0x280
+[    5.452568]  arch_call_rest_init+0x14/0x1c
+[    5.452571]  start_kernel+0x50c/0x544
+[    5.452575] =============================
+[    5.452578] WARNING: suspicious RCU usage
+[    5.452582] 5.9.0-rc3 #1 Not tainted
+[    5.452585] -----------------------------
+[    5.452590] /usr/src/kernel/include/trace/events/lock.h:63
+suspicious rcu_dereference_check() usage!
+[    5.452593]
+[    5.452596] other info that might help us debug this:
+[    5.452599]
+[    5.452601]
+[    5.452605] rcu_scheduler_active = 2, debug_locks = 1
+[    5.452609] RCU used illegally from extended quiescent state!
+[    5.452612] 1 lock held by swapper/0/0:
+[    5.452615]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
+vprintk_emit+0xb0/0x358
+[    5.452630]
+[    5.452633] stack backtrace:
+[    5.452636] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+[    5.452640] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.452643] Call trace:
+[    5.452646]  dump_backtrace+0x0/0x1f8
+[    5.452649]  show_stack+0x2c/0x38
+[    5.452652]  dump_stack+0xec/0x15c
+[    5.452656]  lockdep_rcu_suspicious+0xd4/0xf8
+[    5.452659]  lock_release+0x338/0x360
+[    5.452662]  _raw_spin_unlock+0x3c/0xa0
+[    5.452665]  vprintk_emit+0xf8/0x358
+[    5.452669]  vprintk_default+0x48/0x58
+[    5.452671]  vprintk_func+0xec/0x2b8
+[    5.452674]  printk+0x74/0x94
+[    5.452677]  lockdep_rcu_suspicious+0x28/0xf8
+[    5.452680]  lock_acquire+0x3d0/0x440
+[    5.452683]  _raw_spin_lock_irqsave+0x80/0xb0
+[    5.452686]  __pm_runtime_suspend+0x34/0x1d0
+[    5.452690]  psci_enter_domain_idle_state+0x4c/0xb0
+[    5.452693]  cpuidle_enter_state+0xc8/0x610
+[    5.452696]  cpuidle_enter+0x3c/0x50
+[    5.452698]  call_cpuidle+0x44/0x80
+[    5.452701]  do_idle+0x240/0x2a0
+[    5.452704]  cpu_startup_entry+0x2c/0x78
+[    5.452708]  rest_init+0x1ac/0x280
+[    5.452711]  arch_call_rest_init+0x14/0x1c
+[    5.452714]  start_kernel+0x50c/0x544
 
->  /*
->   * Initialize an rcu_segcblist structure.
->   */
-> @@ -361,6 +341,7 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  		if (rsclp->tails[i] == rsclp->tails[RCU_DONE_TAIL])
->  			WRITE_ONCE(rsclp->tails[i], &rsclp->head);
->  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
-> +	rcu_segcblist_add_len(rsclp, -(rclp->len));
->  }
->  
->  /*
-> @@ -414,17 +395,7 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
->  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
->  		rcu_segcblist_set_seglen(rsclp, i, 0);
->  	}
-> -}
-> -
-> -/*
-> - * Insert counts from the specified rcu_cblist structure in the
-> - * specified rcu_segcblist structure.
-> - */
-> -void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
-> -				struct rcu_cblist *rclp)
-> -{
-> -	rcu_segcblist_add_len(rsclp, rclp->len);
-> -	rclp->len = 0;
-> +	rcu_segcblist_add_len(rsclp, -(rclp->len));
+full test log link,
+https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.9-rc3/testrun/3137660/suite/linux-log-parser/test/check-kernel-warning-1722813/log
 
-As does this.  ;-)
-
->  }
->  
->  /*
-> @@ -448,6 +419,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
->  			break;
->  	rclp->head = NULL;
->  	rclp->tail = &rclp->head;
-> +	rcu_segcblist_add_len(rsclp, rclp->len);
-
-Does there need to be a compensating action in rcu_do_batch(), or is
-this the point of the "rcu_segcblist_add_len(rsclp, -(rclp->len));"
-added to rcu_segcblist_extract_done_cbs() above?
-
-If so, a comment would be good.
-
->  }
->  
->  /*
-> @@ -463,6 +435,7 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
->  	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
->  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
-> +	rcu_segcblist_add_len(rsclp, rclp->len);
->  }
->  
->  /*
-> @@ -601,16 +574,13 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  {
->  	struct rcu_cblist donecbs;
->  	struct rcu_cblist pendcbs;
-> -	long src_len;
->  
->  	rcu_cblist_init(&donecbs);
->  	rcu_cblist_init(&pendcbs);
->  
-> -	src_len = rcu_segcblist_xchg_len(src_rsclp, 0);
->  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
->  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
->  
-> -	rcu_segcblist_add_len(dst_rsclp, src_len);
->  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
->  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-
-Can we now pair the corresponding _extract_ and _insert_ calls, thus
-requiring only one rcu_cblist structure?  This would drop two more lines
-of code.  Or would that break something?
-
-							Thanx, Paul
+-- 
+Linaro LKFT
+https://lkft.linaro.org
