@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C66EC433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8E2FC433E6
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 06DE02083E
+	by mail.kernel.org (Postfix) with ESMTP id 900C62083E
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1598897013;
-	bh=1xaEATgxVssMo8h40PwAundYZZ+vcxu3i/w1PXTLMjE=;
+	bh=Zv8CPkwO+8Sx8yjhF3kXqyIGO3+PF6wlIFtXzoJQavw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GtP0t+h3iZNSTa2l4n8gD9e8XIWORnsRAsxTb0QaqVkZCclPpk/lJZdwYJJpyg10r
-	 OlrerwIjzjdhipmJywE0H6xsWHWfLezuZuMfva+vr9XOTlnOMzRUnCBJypMEzdIsrt
-	 ncS2TeN6+Tpd1AdYpYuEMJnbg3Fg27NQtDzJvIxI=
+	b=mpmjKW24n0ABSH/yHCdKb4Gnb9XsVrL+UPj0HJoHhTgVx/FWdJUP3GerDzLOFHC4j
+	 A9ow5TCg2T+ERiXYTb2GTToEGP9HTk+zwfB9knW7npup0h4ABCqC9ja4EGJ1YQI9Bm
+	 +JYDRiKBBzp1M3FcgeGRB3ql4P4obFhXmW9v1oio=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbgHaSC6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1729207AbgHaSC6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 31 Aug 2020 14:02:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728714AbgHaSBX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:23 -0400
+        id S1728756AbgHaSBY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:24 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B06121548;
-        Mon, 31 Aug 2020 18:01:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9086920866;
+        Mon, 31 Aug 2020 18:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896882;
-        bh=1xaEATgxVssMo8h40PwAundYZZ+vcxu3i/w1PXTLMjE=;
+        s=default; t=1598896883;
+        bh=Zv8CPkwO+8Sx8yjhF3kXqyIGO3+PF6wlIFtXzoJQavw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPRgrEuDfiRl2NCyQlI7gIrzFRX38r5iDcewFZDLkIYkMZ96EynY1w5bHmwNh4P45
-         epl+t+fAUU2QiuN+dJTxwKkigEt2w2k964+2Kg6wbZ2freYryN3tQhypTFQZJkB+uh
-         6yrN3gxo3LFghBdU2hy5DPxRAJz0iuffjdvWvh6E=
+        b=nUkdiMtGmBH5rc5Mis/B3HC1DZ2jg4moYq59lTM1pi+jCF+8uF53hFRAEG0kaEh6U
+         vtWWFAzdNfoxNgjfoSt7B/8jQnL6HsNQif2qJLMiZlkrKemgRzBicK1fmat3BXhckM
+         K1x04Wc8X+PZ7kkmFkzK4mCE26xSlkTn0Z61//MA=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/24] nocb: Remove show_rcu_nocb_state() false positive printout
-Date:   Mon, 31 Aug 2020 11:01:02 -0700
-Message-Id: <20200831180116.32690-10-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/24] rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_resched_ns
+Date:   Mon, 31 Aug 2020 11:01:04 -0700
+Message-Id: <20200831180116.32690-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -60,38 +60,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_data structure's ->nocb_timer field is used to defer wakeups of
-the corresponding no-CBs CPU's grace-period kthread ("rcuog*"), and that
-structure's ->nocb_defer_wakeup field is used to track such deferral.
-This means that the show_rcu_nocb_state() printing an error when those
-fields are set for a CPU not corresponding to a no-CBs grace-period
-kthread is erroneous.
-
-This commit therefore switches the check from ->nocb_timer to
-->nocb_bypass_timer and removes the check of ->nocb_defer_wakeup.
+Given that sysfs can change the value of rcu_resched_ns at any time,
+this commit adds a READ_ONCE() to the sole access to that variable.
+While in the area, this commit also adds bounds checking, clamping the
+value to at least a millisecond, but no longer than a second.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index bbc0c07..4d63ee3 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2411,10 +2411,9 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		return;
- 
- 	waslocked = raw_spin_is_locked(&rdp->nocb_gp_lock);
--	wastimer = timer_pending(&rdp->nocb_timer);
-+	wastimer = timer_pending(&rdp->nocb_bypass_timer);
- 	wassleep = swait_active(&rdp->nocb_gp_wq);
--	if (!rdp->nocb_defer_wakeup && !rdp->nocb_gp_sleep &&
--	    !waslocked && !wastimer && !wassleep)
-+	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
- 		return;  /* Nothing untowards. */
- 
- 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1dca14c..da05afc 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2394,8 +2394,12 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+ 	bl = max(rdp->blimit, pending >> div);
+-	if (unlikely(bl > 100))
+-		tlimit = local_clock() + rcu_resched_ns;
++	if (unlikely(bl > 100)) {
++		long rrn = READ_ONCE(rcu_resched_ns);
++
++		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
++		tlimit = local_clock() + rrn;
++	}
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
 -- 
 2.9.5
 
