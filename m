@@ -2,241 +2,138 @@ Return-Path: <SRS0=RBzz=CJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2F4C433E6
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6789BC433E2
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:42:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D0447206B5
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:32:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4434D206F0
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 06:42:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cMuyRTSx"
+	dkim=pass (1024-bit key) header.d=eero.com header.i=@eero.com header.b="mMuV++7k"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgHaGcr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 02:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S1726255AbgHaGmP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 02:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgHaGcn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 02:32:43 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB578C061573
-        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:32:43 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id j188so2664417vsd.2
-        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:32:43 -0700 (PDT)
+        with ESMTP id S1726102AbgHaGmL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 02:42:11 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7F9C061575
+        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:42:11 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m8so71850pfh.3
+        for <rcu@vger.kernel.org>; Sun, 30 Aug 2020 23:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=JL5FY/OPoxC6HDWJYlv4yemjpNN92vvIN4CMSxtN6co=;
-        b=cMuyRTSxyhExkZY0IKNSWlVvO8PuH5Ok63c4pQ9nutHuvq2NWmeGFZJRG1IDHzqY8Q
-         cIZwp2JhXWSUOq9UojMJbh+mQk+yzS31Vc23awkX6gzCudYOuf6XYs4UgNnH8S1DzvEY
-         JWZ5xdwn/SRpSX9QhihOqPOXU5UBEItfwrSuL8nsYby9QjLXgzxdNBPiMnoMMqxinIt8
-         f2aZ8fGRQqOG4lprhboGisuN+ZPhkiHTi2In5WeKxBRsfdDnwybgFMFWcNF8W476CJky
-         qX2XGIpLab2UOus7H6JYxviic+Dp12HREV7rndufZMvTSyj1yGME0SzW19qdzw2jWbJ5
-         hTYg==
+        d=eero.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=lePqauQjz9Sd2dUbMGeNvcTItQagQt9MRkoKef7xMoE=;
+        b=mMuV++7kXi9DX4iUzgcE1l87I/NJm1DIKfEzEPkGIItjHYZmg/qZvA5Bj98Rdkhmj/
+         WwWA3GyDuYKpVcv3CgtUoUNg86K79TX8txJoQ5T6+v5RPPhXso2d/cVeovgp7TYEmHNr
+         yI0NiYcUl7bPBU7v6bsGSFU0w08apfXEy5ecM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=JL5FY/OPoxC6HDWJYlv4yemjpNN92vvIN4CMSxtN6co=;
-        b=LDJU+7wBuWlQd0maQNjp02N1Xkou0mNFRxP3cmlVQwNl4oTNMlsdkGN7Xam17fqdAg
-         xmPCd/WFPPdJZJ57zVpo9hq6IDkoPItQQn/wKEYiA294G7dsxIqd+qna5FnInAmltNYA
-         quasZJwsuqHrvoT1vzu9JrEVO/ZQh9Hgy4w/QVagZjZeedSQqhlojrrmNwjJZFFIFr+B
-         UJaOR0VGXRnLY1dMbuT+3bqdQwiS3wH7jsamqWCvLPi12kM84z+Axy8a2XutzUklYP64
-         EJHSBWlpgPlxMwiD7Bc6uuLDyF70iXcXInwKF7w1/g3j5hPRep3zFiOy+46U29rCnT2W
-         HSeA==
-X-Gm-Message-State: AOAM533yLkAd4+UhLnIdIkBOtId3W7AjU0AYHjY7rXNnUjyEUyeBIRi0
-        ODZzdoEoO7/vCFLYUfbtylZ6CgWX6UyFoj9kfAe2xg==
-X-Google-Smtp-Source: ABdhPJzOO76mzWnFTJKnD/SXT05L8mq2/oW90RWTXbauVOOkxUkgcAw1KvyWdnOAxbqvkf4WnYp37Ns7eHcYcwoOJXg=
-X-Received: by 2002:a67:7905:: with SMTP id u5mr41080vsc.179.1598855562545;
- Sun, 30 Aug 2020 23:32:42 -0700 (PDT)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 31 Aug 2020 12:02:31 +0530
-Message-ID: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
-Subject: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and OF
- driver helper
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lePqauQjz9Sd2dUbMGeNvcTItQagQt9MRkoKef7xMoE=;
+        b=CuTQyH/VvKU26E8pj2CAa22gbc60xVPsJYuKT2f4lWd0i5qe/TGtaKk0jg+ogjIag1
+         XI6LpKOBvRVTj2v945aG2jas3izwPaEUXrJplGCz9jNLJPJAABwp0G8lorosrKB6b0BX
+         HoIg3Clt09StIo0EP+8K0ELQ3Wl72S876wmHU1sx5pUAg3qI9AwHd3EsHXBf2FaO+39s
+         ouO1KX6iNe7+XkyZpqjSK8YXCjpf05D2RMTHftABYGIKAJHI2m27TxVaG4Bpxc+J7o7O
+         8H1hkzW8IZVm7K6P9IMkEDmpVmboGPHpCopD9lzUaDKfFUve33lxFEW7I9xqaVXuEMd/
+         8r6Q==
+X-Gm-Message-State: AOAM531t8t1iY+Xmtgh+k2p5KeGY/a5A7JI7YJsYYuqza15z7djVRdhW
+        m265m5VdgDEUpL7KHeBMdpkMOJnJlYjbvSkm
+X-Google-Smtp-Source: ABdhPJzcbcXUZYCwB3meJr2TFj9fHrqbxRCp30+LZPJlad6BHtdL2x/t2akM9egg/i14APPq22uCaQ==
+X-Received: by 2002:a62:3641:: with SMTP id d62mr172887pfa.82.1598856130951;
+        Sun, 30 Aug 2020 23:42:10 -0700 (PDT)
+Received: from ubuntu.localdomain (c-73-170-162-203.hsd1.ca.comcast.net. [73.170.162.203])
+        by smtp.googlemail.com with ESMTPSA id o9sm6026346pjs.47.2020.08.30.23.42.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 30 Aug 2020 23:42:10 -0700 (PDT)
+From:   chao <chao@eero.com>
+To:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     chao <chao@eero.com>
+Subject: [PATCH] rcu: allow multiple stalls before panic
+Date:   Sun, 30 Aug 2020 23:41:17 -0700
+Message-Id: <1598856077-58603-1-git-send-email-chao@eero.com>
+X-Mailer: git-send-email 2.7.4
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-While booting linux mainline kernel on arm64 db410c this kernel warning
-noticed.
+Some stalls are transient and system can fully recover.
+Allow users to configure the number of stalls experienced
+to trigger kernel Panic.
 
-metadata:
-  git branch: master
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-  git commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
-  git describe: v5.9-rc3
-  make_kernelversion: 5.9.0-rc3
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2965/config
+Signed-off-by: chao <chao@eero.com>
+---
+ include/linux/kernel.h  |  1 +
+ kernel/rcu/tree_stall.h |  6 ++++++
+ kernel/sysctl.c         | 11 +++++++++++
+ 3 files changed, 18 insertions(+)
 
-Boot log,
-
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd030]
-[    0.000000] Linux version 5.9.0-rc3 (oe-user@oe-host)
-(aarch64-linaro-linux-gcc (GCC) 7.3.0, GNU ld (GNU Binutils)
-2.30.0.20180208) #1 SMP PREEMPT Mon Aug 31 00:23:15 UTC 2020
-[    0.000000] Machine model: Qualcomm Technologies, Inc. APQ 8016 SBC
-<>
-[    5.299090] sdhci: Secure Digital Host Controller Interface driver
-[    5.299140] sdhci: Copyright(c) Pierre Ossman
-[    5.304313]
-[    5.307771] Synopsys Designware Multimedia Card Interface Driver
-[    5.308588] =============================
-[    5.308593] WARNING: suspicious RCU usage
-[    5.316628] sdhci-pltfm: SDHCI platform and OF driver helper
-[    5.320052] 5.9.0-rc3 #1 Not tainted
-[    5.320057] -----------------------------
-[    5.320063] /usr/src/kernel/include/trace/events/lock.h:37
-suspicious rcu_dereference_check() usage!
-[    5.320068]
-[    5.320068] other info that might help us debug this:
-[    5.320068]
-[    5.320074]
-[    5.320074] rcu_scheduler_active = 2, debug_locks = 1
-[    5.320078] RCU used illegally from extended quiescent state!
-[    5.320084] no locks held by swapper/0/0.
-[    5.320089]
-[    5.320089] stack backtrace:
-[    5.320098] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
-[    5.346354] sdhci_msm 7864900.sdhci: Got CD GPIO
-[    5.346446] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[    5.346452] Call trace:
-[    5.346463]  dump_backtrace+0x0/0x1f8
-[    5.346471]  show_stack+0x2c/0x38
-[    5.346480]  dump_stack+0xec/0x15c
-[    5.346490]  lockdep_rcu_suspicious+0xd4/0xf8
-[    5.346499]  lock_acquire+0x3d0/0x440
-[    5.346510]  _raw_spin_lock_irqsave+0x80/0xb0
-[    5.413118]  __pm_runtime_suspend+0x34/0x1d0
-[    5.417457]  psci_enter_domain_idle_state+0x4c/0xb0
-[    5.421795]  cpuidle_enter_state+0xc8/0x610
-[    5.426392]  cpuidle_enter+0x3c/0x50
-[    5.430561]  call_cpuidle+0x44/0x80
-[    5.434378]  do_idle+0x240/0x2a0
-[    5.437589]  cpu_startup_entry+0x2c/0x78
-[    5.441063]  rest_init+0x1ac/0x280
-[    5.444970]  arch_call_rest_init+0x14/0x1c
-[    5.448180]  start_kernel+0x50c/0x544
-[    5.452395]
-[    5.452399]
-[    5.452403] =============================
-[    5.452406] WARNING: suspicious RCU usage
-[    5.452409] 5.9.0-rc3 #1 Not tainted
-[    5.452412] -----------------------------
-[    5.452417] /usr/src/kernel/include/trace/events/ipi.h:36
-suspicious rcu_dereference_check() usage!
-[    5.452420]
-[    5.452424] other info that might help us debug this:
-[    5.452426]
-[    5.452429]
-[    5.452432] rcu_scheduler_active = 2, debug_locks = 1
-[    5.452436] RCU used illegally from extended quiescent state!
-[    5.452440] 1 lock held by swapper/0/0:
-[    5.452443]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
-vprintk_emit+0xb0/0x358
-[    5.452458]
-[    5.452461] stack backtrace:
-[    5.452465] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
-[    5.452469] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[    5.452472] Call trace:
-[    5.452476]  dump_backtrace+0x0/0x1f8
-[    5.452479]  show_stack+0x2c/0x38
-[    5.452481]  dump_stack+0xec/0x15c
-[    5.452485]  lockdep_rcu_suspicious+0xd4/0xf8
-[    5.452489]  arch_irq_work_raise+0x208/0x210
-[    5.452493]  __irq_work_queue_local+0x64/0x88
-[    5.452495]  irq_work_queue+0x3c/0x88
-[    5.452499]  printk_safe_log_store+0x148/0x178
-[    5.452502]  vprintk_func+0x1cc/0x2b8
-[    5.452506]  printk+0x74/0x94
-[    5.452509]  lockdep_rcu_suspicious+0x28/0xf8
-[    5.452512]  lock_release+0x338/0x360
-[    5.452516]  _raw_spin_unlock+0x3c/0xa0
-[    5.452519]  vprintk_emit+0xf8/0x358
-[    5.452522]  vprintk_default+0x48/0x58
-[    5.452526]  vprintk_func+0xec/0x2b8
-[    5.452528]  printk+0x74/0x94
-[    5.452532]  lockdep_rcu_suspicious+0x28/0xf8
-[    5.452535]  lock_acquire+0x3d0/0x440
-[    5.452538]  _raw_spin_lock_irqsave+0x80/0xb0
-[    5.452542]  __pm_runtime_suspend+0x34/0x1d0
-[    5.452545]  psci_enter_domain_idle_state+0x4c/0xb0
-[    5.452549]  cpuidle_enter_state+0xc8/0x610
-[    5.452552]  cpuidle_enter+0x3c/0x50
-[    5.452555]  call_cpuidle+0x44/0x80
-[    5.452559]  do_idle+0x240/0x2a0
-[    5.452562]  cpu_startup_entry+0x2c/0x78
-[    5.452564]  rest_init+0x1ac/0x280
-[    5.452568]  arch_call_rest_init+0x14/0x1c
-[    5.452571]  start_kernel+0x50c/0x544
-[    5.452575] =============================
-[    5.452578] WARNING: suspicious RCU usage
-[    5.452582] 5.9.0-rc3 #1 Not tainted
-[    5.452585] -----------------------------
-[    5.452590] /usr/src/kernel/include/trace/events/lock.h:63
-suspicious rcu_dereference_check() usage!
-[    5.452593]
-[    5.452596] other info that might help us debug this:
-[    5.452599]
-[    5.452601]
-[    5.452605] rcu_scheduler_active = 2, debug_locks = 1
-[    5.452609] RCU used illegally from extended quiescent state!
-[    5.452612] 1 lock held by swapper/0/0:
-[    5.452615]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
-vprintk_emit+0xb0/0x358
-[    5.452630]
-[    5.452633] stack backtrace:
-[    5.452636] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
-[    5.452640] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[    5.452643] Call trace:
-[    5.452646]  dump_backtrace+0x0/0x1f8
-[    5.452649]  show_stack+0x2c/0x38
-[    5.452652]  dump_stack+0xec/0x15c
-[    5.452656]  lockdep_rcu_suspicious+0xd4/0xf8
-[    5.452659]  lock_release+0x338/0x360
-[    5.452662]  _raw_spin_unlock+0x3c/0xa0
-[    5.452665]  vprintk_emit+0xf8/0x358
-[    5.452669]  vprintk_default+0x48/0x58
-[    5.452671]  vprintk_func+0xec/0x2b8
-[    5.452674]  printk+0x74/0x94
-[    5.452677]  lockdep_rcu_suspicious+0x28/0xf8
-[    5.452680]  lock_acquire+0x3d0/0x440
-[    5.452683]  _raw_spin_lock_irqsave+0x80/0xb0
-[    5.452686]  __pm_runtime_suspend+0x34/0x1d0
-[    5.452690]  psci_enter_domain_idle_state+0x4c/0xb0
-[    5.452693]  cpuidle_enter_state+0xc8/0x610
-[    5.452696]  cpuidle_enter+0x3c/0x50
-[    5.452698]  call_cpuidle+0x44/0x80
-[    5.452701]  do_idle+0x240/0x2a0
-[    5.452704]  cpu_startup_entry+0x2c/0x78
-[    5.452708]  rest_init+0x1ac/0x280
-[    5.452711]  arch_call_rest_init+0x14/0x1c
-[    5.452714]  start_kernel+0x50c/0x544
-
-full test log link,
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.9-rc3/testrun/3137660/suite/linux-log-parser/test/check-kernel-warning-1722813/log
-
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 500def6..fc2dd3f 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -536,6 +536,7 @@ extern int panic_on_warn;
+ extern unsigned long panic_on_taint;
+ extern bool panic_on_taint_nousertaint;
+ extern int sysctl_panic_on_rcu_stall;
++extern int sysctl_max_rcu_stall_to_panic;
+ extern int sysctl_panic_on_stackoverflow;
+ 
+ extern bool crash_kexec_post_notifiers;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b5d3b47..2047423 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -13,6 +13,7 @@
+ 
+ /* panic() on RCU Stall sysctl. */
+ int sysctl_panic_on_rcu_stall __read_mostly;
++int sysctl_max_rcu_stall_to_panic __read_mostly;
+ 
+ #ifdef CONFIG_PROVE_RCU
+ #define RCU_STALL_DELAY_DELTA		(5 * HZ)
+@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
+ /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+ static void panic_on_rcu_stall(void)
+ {
++	static int cpu_stall;
++
++	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
++		return;
++
+ 	if (sysctl_panic_on_rcu_stall)
+ 		panic("RCU Stall\n");
+ }
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 287862f..1bca490 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2651,6 +2651,17 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= SYSCTL_ONE,
+ 	},
+ #endif
++#if defined(CONFIG_TREE_RCU)
++	{
++		.procname	= "max_rcu_stall_to_panic",
++		.data		= &sysctl_max_rcu_stall_to_panic,
++		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_INT_MAX,
++	},
++#endif
+ #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
+ 	{
+ 		.procname	= "stack_erasing",
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.7.4
+
