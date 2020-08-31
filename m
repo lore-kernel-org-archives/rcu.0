@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A803C433E2
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77BF0C433E2
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:05:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF1C12083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:05:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 366B02083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897108;
-	bh=iMkwxDd3YrTJpp4F9jO9Wr9+IbHF1XwKyVCOl8Pmq9E=;
+	s=default; t=1598897123;
+	bh=X+Gfo49GgR55lBjvGR+id3dRzylSAtZ6yU+i1JNWHCw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=RiYv2BFHmZnn5KKEBee7kaA9/8yQ4XxlKy7RKHD8ZAa0z0UfwjZzqrQWtNuPzXCTX
-	 BScAyYej2x6+A3nvH4f8cA1JwEkg/ZdKMHBu0nlyWj1d9WXJj/kUjGZCKmOuI2Aygc
-	 BiVc9L2bKJvlZ/yYA5xipgGLhkpoelxiVP6/1Io0=
+	b=DpU3jMWYSfdpwTmp+V/QIolfb8HaCsaFdENMGKB/f0FmyGj5K9UvVXDXvdqlcRdfP
+	 Pb6PaF0d94mWU7EuKSTsOEHKWKTxGeGHsPco/kFzDZblARkOalv3Gnzij1EOaozTIL
+	 Fx2M2Jq91/0Wf8umr8PoLed2gNfFD9zMS8RI1yoU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgHaSEK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        id S1729142AbgHaSFG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728241AbgHaSEI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:04:08 -0400
+        id S1728375AbgHaSEJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:04:09 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21DEA2145D;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8871021527;
         Mon, 31 Aug 2020 18:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897048;
-        bh=iMkwxDd3YrTJpp4F9jO9Wr9+IbHF1XwKyVCOl8Pmq9E=;
+        bh=X+Gfo49GgR55lBjvGR+id3dRzylSAtZ6yU+i1JNWHCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpTHqBWVFhjftHHF6xyoTDtxFFb+j1zJcGS+5rDT2OqyCmKepzMPp9v2Pc5TpICnE
-         EE1RfvTxThPWFQLAY/y9UNG/ZUQmvHs/WcH+k5yCxNYoGiv2pfTMBVCjEY7DL6G8XT
-         2FdcZhq94sUYsWdieeXUmu7Wo1rkabHmeLWONyOc=
+        b=FGfPICwUz4+G3P6HuIc8g6oQIYpPPRxLr1koyqq9yyHkh2hF8nO/3NeLj9R0MuKWg
+         49K41DeA4hoe2i/KOXJwfasEvevM6cIITLvsZBOuC1vdwPGv2hVPQIYxkMxSx30mW7
+         Wt6vZcO24Eo0pzCaWyoTfqtBHH9EhoDat9O2LSTY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/14] rcutorture: Output number of elapsed grace periods
-Date:   Mon, 31 Aug 2020 11:03:54 -0700
-Message-Id: <20200831180406.494-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/14] torture: document --allcpus argument added to the kvm.sh script
+Date:   Mon, 31 Aug 2020 11:03:55 -0700
+Message-Id: <20200831180406.494-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180348.GA416@paulmck-ThinkPad-P72>
 References: <20200831180348.GA416@paulmck-ThinkPad-P72>
@@ -58,66 +59,26 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-This commit adds code to print the grace-period number at the start
-of the test along with both the grace-period number and the number of
-elapsed grace periods at the end of the test.  Note that variants of
-RCU)without the notion of a grace-period number (for example, Tiny RCU)
-just print zeroes.
-
-[ paulmck: Adjust commit log. ]
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index db37861..c8206ff 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -172,6 +172,7 @@ static long n_barrier_successes; /* did rcu_barrier test succeed? */
- static unsigned long n_read_exits;
- static struct list_head rcu_torture_removed;
- static unsigned long shutdown_jiffies;
-+static unsigned long start_gp_seq;
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index e655983..0a08463 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -46,6 +46,7 @@ jitter="-1"
  
- static int rcu_torture_writer_state;
- #define RTWS_FIXED_DELAY	0
-@@ -2469,8 +2470,9 @@ rcu_torture_cleanup(void)
- 
- 	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
--	pr_alert("%s:  End-test grace-period state: g%lu f%#x\n",
--		 cur_ops->name, gp_seq, flags);
-+	pr_alert("%s:  End-test grace-period state: g%ld f%#x total-gps=%ld\n",
-+		 cur_ops->name, (long)gp_seq, flags,
-+		 rcutorture_seq_diff(gp_seq, start_gp_seq));
- 	torture_stop_kthread(rcu_torture_stats, stats_task);
- 	torture_stop_kthread(rcu_torture_fqs, fqs_task);
- 	if (rcu_torture_can_boost())
-@@ -2594,6 +2596,8 @@ rcu_torture_init(void)
- 	long i;
- 	int cpu;
- 	int firsterr = 0;
-+	int flags = 0;
-+	unsigned long gp_seq = 0;
- 	static struct rcu_torture_ops *torture_ops[] = {
- 		&rcu_ops, &rcu_busted_ops, &srcu_ops, &srcud_ops,
- 		&busted_srcud_ops, &tasks_ops, &tasks_rude_ops,
-@@ -2636,6 +2640,11 @@ rcu_torture_init(void)
- 			nrealreaders = 1;
- 	}
- 	rcu_torture_print_module_parms(cur_ops, "Start of test");
-+	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
-+	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
-+	start_gp_seq = gp_seq;
-+	pr_alert("%s:  Start-test grace-period state: g%ld f%#x\n",
-+		 cur_ops->name, (long)gp_seq, flags);
- 
- 	/* Set up the freelist. */
- 
+ usage () {
+ 	echo "Usage: $scriptname optional arguments:"
++	echo "       --allcpus"
+ 	echo "       --bootargs kernel-boot-arguments"
+ 	echo "       --bootimage relative-path-to-kernel-boot-image"
+ 	echo "       --buildonly"
 -- 
 2.9.5
 
