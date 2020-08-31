@@ -2,98 +2,250 @@ Return-Path: <SRS0=RBzz=CJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63C15C433E7
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:14:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A80C433E2
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 19:44:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F23B2068E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:14:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC647206E3
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 19:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897680;
-	bh=Box1kWeVc7CIfTF+goBNe9r4zO+NG/VypJiI1JWoJqc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=dMMRB2Muk91IfF0JNSe3SJk5GyEf3XU8BsNap7B4v771TvVYM7SNpr+9M9IlQsuSP
-	 2VdurG0QogKKekcv4NHqOb2nv2BT8BASRzIDzYVqPs1O2wflwHwfx86xCrXYrs9uWd
-	 PKU7ELEgxHtUOC3fEc3ElHRvLw1y7WerqilOtMHA=
+	s=default; t=1598903048;
+	bh=9B6/M6/43/N+VrQX6UwnkiY8uNrfSqXz8/e67LODxn8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=A6Enbc240El4Duk86L78Oa/Mp+e6yYg+N1jM8eUtbKbwgV4DMKY/i7wEPIj0X+NQo
+	 5SKLB6IvA1tCESCXSaOpYD4cVIbJtiV7dchfiUk5PVxxZp8rIbEuKCwO0j7kRtS6px
+	 G4PQLcjtqOuVQALYf4LiqDDBvuhv5JX6rrlhNmdU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgHaSOV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42840 "EHLO mail.kernel.org"
+        id S1728692AbgHaToD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 15:44:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgHaSOT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:14:19 -0400
+        id S1726755AbgHaToD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 15:44:03 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 579A2214DB;
-        Mon, 31 Aug 2020 18:14:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53792206E3;
+        Mon, 31 Aug 2020 19:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897659;
-        bh=Box1kWeVc7CIfTF+goBNe9r4zO+NG/VypJiI1JWoJqc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ht1rfbEdnBdWZjF7Fvey/mpqC+FPpcoC/qwMHWOfcEfg6TM+oYuWymsa3clnxIaiK
-         +tWYAn+XGSaVdxh9SBxyzicp02RKjaN5Q1euZY72Rj9nxIUDu26cOV+zVcRw9qcbJ/
-         a39+UmDzS/hK+sj1YvxMbdH+S60qHevV7dvcP3uQ=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH tip/core/rcu 4/4] smp: Make symbol 'csd_bug_count' static
-Date:   Mon, 31 Aug 2020 11:14:17 -0700
-Message-Id: <20200831181417.1378-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200831181356.GA1224@paulmck-ThinkPad-P72>
-References: <20200831181356.GA1224@paulmck-ThinkPad-P72>
+        s=default; t=1598903042;
+        bh=9B6/M6/43/N+VrQX6UwnkiY8uNrfSqXz8/e67LODxn8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=w8hFO41BDU39LCL9ZCa1qgGOdeuxpAELFO0uNMmN+YWn0MQE0cqn/xsnvz7GmpE0i
+         Idi3UfMleZwXdWRWcy8+s2LBiyXN9+KTwpuUelORm8OFRQs1kGO1+7KG4KRrPrIIqv
+         04mCkuDoeGVSo+I13lAazkwxXcbztxOIKCmnxBG4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 36D2B35230F1; Mon, 31 Aug 2020 12:44:02 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 12:44:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        peterz@infrdead.org
+Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
+ OF driver helper
+Message-ID: <20200831194402.GD2855@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+On Mon, Aug 31, 2020 at 12:02:31PM +0530, Naresh Kamboju wrote:
+> While booting linux mainline kernel on arm64 db410c this kernel warning
+> noticed.
+> 
+> metadata:
+>   git branch: master
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>   git commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+>   git describe: v5.9-rc3
+>   make_kernelversion: 5.9.0-rc3
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2965/config
+> 
+> Boot log,
+> 
+> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd030]
+> [    0.000000] Linux version 5.9.0-rc3 (oe-user@oe-host)
+> (aarch64-linaro-linux-gcc (GCC) 7.3.0, GNU ld (GNU Binutils)
+> 2.30.0.20180208) #1 SMP PREEMPT Mon Aug 31 00:23:15 UTC 2020
+> [    0.000000] Machine model: Qualcomm Technologies, Inc. APQ 8016 SBC
+> <>
+> [    5.299090] sdhci: Secure Digital Host Controller Interface driver
+> [    5.299140] sdhci: Copyright(c) Pierre Ossman
+> [    5.304313]
+> [    5.307771] Synopsys Designware Multimedia Card Interface Driver
+> [    5.308588] =============================
+> [    5.308593] WARNING: suspicious RCU usage
+> [    5.316628] sdhci-pltfm: SDHCI platform and OF driver helper
+> [    5.320052] 5.9.0-rc3 #1 Not tainted
+> [    5.320057] -----------------------------
+> [    5.320063] /usr/src/kernel/include/trace/events/lock.h:37
+> suspicious rcu_dereference_check() usage!
+> [    5.320068]
+> [    5.320068] other info that might help us debug this:
+> [    5.320068]
+> [    5.320074]
+> [    5.320074] rcu_scheduler_active = 2, debug_locks = 1
+> [    5.320078] RCU used illegally from extended quiescent state!
+> [    5.320084] no locks held by swapper/0/0.
+> [    5.320089]
+> [    5.320089] stack backtrace:
+> [    5.320098] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+> [    5.346354] sdhci_msm 7864900.sdhci: Got CD GPIO
+> [    5.346446] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [    5.346452] Call trace:
+> [    5.346463]  dump_backtrace+0x0/0x1f8
+> [    5.346471]  show_stack+0x2c/0x38
+> [    5.346480]  dump_stack+0xec/0x15c
+> [    5.346490]  lockdep_rcu_suspicious+0xd4/0xf8
+> [    5.346499]  lock_acquire+0x3d0/0x440
+> [    5.346510]  _raw_spin_lock_irqsave+0x80/0xb0
+> [    5.413118]  __pm_runtime_suspend+0x34/0x1d0
+> [    5.417457]  psci_enter_domain_idle_state+0x4c/0xb0
+> [    5.421795]  cpuidle_enter_state+0xc8/0x610
+> [    5.426392]  cpuidle_enter+0x3c/0x50
+> [    5.430561]  call_cpuidle+0x44/0x80
+> [    5.434378]  do_idle+0x240/0x2a0
 
-The sparse tool complains as follows:
+RCU ignores CPUs in the idle loop, which means that you cannot use
+rcu_read_lock() from the idle loop without use of something like
+RCU_NONIDLE().  If this is due to event tracing, you should use the
+_rcuidle() variant of the event trace statement.
 
-kernel/smp.c:107:10: warning:
- symbol 'csd_bug_count' was not declared. Should it be static?
+Note also that Peter Zijlstra (CCed) is working to shrink the portion
+of the idle loop that RCU ignores.  Not sure that it covers your
+case, but it is worth checking.
 
-Because variable is not used outside of smp.c, this commit marks it
-static.
+							Thanx, Paul
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/smp.c b/kernel/smp.c
-index c5d3188..b25383d 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -106,7 +106,7 @@ static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
- static DEFINE_PER_CPU(void *, cur_csd_info);
- 
- #define CSD_LOCK_TIMEOUT (5ULL * NSEC_PER_SEC)
--atomic_t csd_bug_count = ATOMIC_INIT(0);
-+static atomic_t csd_bug_count = ATOMIC_INIT(0);
- 
- /* Record current CSD work for current CPU, NULL to erase. */
- static void csd_lock_record(call_single_data_t *csd)
--- 
-2.9.5
-
+> [    5.437589]  cpu_startup_entry+0x2c/0x78
+> [    5.441063]  rest_init+0x1ac/0x280
+> [    5.444970]  arch_call_rest_init+0x14/0x1c
+> [    5.448180]  start_kernel+0x50c/0x544
+> [    5.452395]
+> [    5.452399]
+> [    5.452403] =============================
+> [    5.452406] WARNING: suspicious RCU usage
+> [    5.452409] 5.9.0-rc3 #1 Not tainted
+> [    5.452412] -----------------------------
+> [    5.452417] /usr/src/kernel/include/trace/events/ipi.h:36
+> suspicious rcu_dereference_check() usage!
+> [    5.452420]
+> [    5.452424] other info that might help us debug this:
+> [    5.452426]
+> [    5.452429]
+> [    5.452432] rcu_scheduler_active = 2, debug_locks = 1
+> [    5.452436] RCU used illegally from extended quiescent state!
+> [    5.452440] 1 lock held by swapper/0/0:
+> [    5.452443]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
+> vprintk_emit+0xb0/0x358
+> [    5.452458]
+> [    5.452461] stack backtrace:
+> [    5.452465] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+> [    5.452469] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [    5.452472] Call trace:
+> [    5.452476]  dump_backtrace+0x0/0x1f8
+> [    5.452479]  show_stack+0x2c/0x38
+> [    5.452481]  dump_stack+0xec/0x15c
+> [    5.452485]  lockdep_rcu_suspicious+0xd4/0xf8
+> [    5.452489]  arch_irq_work_raise+0x208/0x210
+> [    5.452493]  __irq_work_queue_local+0x64/0x88
+> [    5.452495]  irq_work_queue+0x3c/0x88
+> [    5.452499]  printk_safe_log_store+0x148/0x178
+> [    5.452502]  vprintk_func+0x1cc/0x2b8
+> [    5.452506]  printk+0x74/0x94
+> [    5.452509]  lockdep_rcu_suspicious+0x28/0xf8
+> [    5.452512]  lock_release+0x338/0x360
+> [    5.452516]  _raw_spin_unlock+0x3c/0xa0
+> [    5.452519]  vprintk_emit+0xf8/0x358
+> [    5.452522]  vprintk_default+0x48/0x58
+> [    5.452526]  vprintk_func+0xec/0x2b8
+> [    5.452528]  printk+0x74/0x94
+> [    5.452532]  lockdep_rcu_suspicious+0x28/0xf8
+> [    5.452535]  lock_acquire+0x3d0/0x440
+> [    5.452538]  _raw_spin_lock_irqsave+0x80/0xb0
+> [    5.452542]  __pm_runtime_suspend+0x34/0x1d0
+> [    5.452545]  psci_enter_domain_idle_state+0x4c/0xb0
+> [    5.452549]  cpuidle_enter_state+0xc8/0x610
+> [    5.452552]  cpuidle_enter+0x3c/0x50
+> [    5.452555]  call_cpuidle+0x44/0x80
+> [    5.452559]  do_idle+0x240/0x2a0
+> [    5.452562]  cpu_startup_entry+0x2c/0x78
+> [    5.452564]  rest_init+0x1ac/0x280
+> [    5.452568]  arch_call_rest_init+0x14/0x1c
+> [    5.452571]  start_kernel+0x50c/0x544
+> [    5.452575] =============================
+> [    5.452578] WARNING: suspicious RCU usage
+> [    5.452582] 5.9.0-rc3 #1 Not tainted
+> [    5.452585] -----------------------------
+> [    5.452590] /usr/src/kernel/include/trace/events/lock.h:63
+> suspicious rcu_dereference_check() usage!
+> [    5.452593]
+> [    5.452596] other info that might help us debug this:
+> [    5.452599]
+> [    5.452601]
+> [    5.452605] rcu_scheduler_active = 2, debug_locks = 1
+> [    5.452609] RCU used illegally from extended quiescent state!
+> [    5.452612] 1 lock held by swapper/0/0:
+> [    5.452615]  #0: ffff8000127408f8 (logbuf_lock){-...}-{2:2}, at:
+> vprintk_emit+0xb0/0x358
+> [    5.452630]
+> [    5.452633] stack backtrace:
+> [    5.452636] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+> [    5.452640] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> [    5.452643] Call trace:
+> [    5.452646]  dump_backtrace+0x0/0x1f8
+> [    5.452649]  show_stack+0x2c/0x38
+> [    5.452652]  dump_stack+0xec/0x15c
+> [    5.452656]  lockdep_rcu_suspicious+0xd4/0xf8
+> [    5.452659]  lock_release+0x338/0x360
+> [    5.452662]  _raw_spin_unlock+0x3c/0xa0
+> [    5.452665]  vprintk_emit+0xf8/0x358
+> [    5.452669]  vprintk_default+0x48/0x58
+> [    5.452671]  vprintk_func+0xec/0x2b8
+> [    5.452674]  printk+0x74/0x94
+> [    5.452677]  lockdep_rcu_suspicious+0x28/0xf8
+> [    5.452680]  lock_acquire+0x3d0/0x440
+> [    5.452683]  _raw_spin_lock_irqsave+0x80/0xb0
+> [    5.452686]  __pm_runtime_suspend+0x34/0x1d0
+> [    5.452690]  psci_enter_domain_idle_state+0x4c/0xb0
+> [    5.452693]  cpuidle_enter_state+0xc8/0x610
+> [    5.452696]  cpuidle_enter+0x3c/0x50
+> [    5.452698]  call_cpuidle+0x44/0x80
+> [    5.452701]  do_idle+0x240/0x2a0
+> [    5.452704]  cpu_startup_entry+0x2c/0x78
+> [    5.452708]  rest_init+0x1ac/0x280
+> [    5.452711]  arch_call_rest_init+0x14/0x1c
+> [    5.452714]  start_kernel+0x50c/0x544
+> 
+> full test log link,
+> https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5.9-rc3/testrun/3137660/suite/linux-log-parser/test/check-kernel-warning-1722813/log
+> 
+> -- 
+> Linaro LKFT
+> https://lkft.linaro.org
