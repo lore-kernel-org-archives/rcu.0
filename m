@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 621E8C433E7
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1920C43461
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3C98D2083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7F6AE20EDD
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897095;
-	bh=nh1GGNKPbtqYSrwuoMf0Ipvgb15nX5tMd1UAwYKuSvw=;
+	s=default; t=1598897096;
+	bh=IDjZSku/tK67QHlgrC59Pps37RT68a2m1he5aAMny40=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ngZVck82vyJW0T/khoW4Jv3Cgt/qUCXwUGhynPnRJ5oOKJSSjLKLVyZt/5Sn4yljf
-	 NvU+VtUWZWh4gZgIhCLZcqR87Cuu6vsbUNeSrHQXzNwxqjEZw3ArdFho3muJtVx0Nb
-	 zWWpnG8XKkVYGs+Q9PZ+z5Lqp7kBNT17Hqq19xPo=
+	b=qAnmQIb2c2yBIIFCZVliOZDggCmLZWW5GYp4v/ZQsixXAgXkwDs1Arzq78ozY+5z4
+	 SpuI58bpi0Mx2sKezs3hUMc0PKH1OEImOKS0a2fs8UV0mCj8sJ1/AHlyH54XOVueTs
+	 GSCw/ww0vfheThj+sjRSVozl0UDp71TW1gpagd8M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbgHaSEi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44472 "EHLO mail.kernel.org"
+        id S1729019AbgHaSEf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:04:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728909AbgHaSEL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:04:11 -0400
+        id S1729369AbgHaSEM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:04:12 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6CE12158C;
-        Mon, 31 Aug 2020 18:04:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3C682176B;
+        Mon, 31 Aug 2020 18:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897051;
-        bh=nh1GGNKPbtqYSrwuoMf0Ipvgb15nX5tMd1UAwYKuSvw=;
+        s=default; t=1598897052;
+        bh=IDjZSku/tK67QHlgrC59Pps37RT68a2m1he5aAMny40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aAoEHOi6xCG+5OdN7NZvbkJvxCT5suIaFcHYRcPgS707aK2y9n35V6nFL/JptLMZg
-         CtjcrP7eXo8X46yx6OMGzUuVDey3hZugPGkrwBDHd+7UYNnhOpMDq/vx83nPB2pLpk
-         MR7mbAxfResIYhUwViXfK0DPeIds+DtGEKI3Q9vY=
+        b=PvL3RzoVPQfsSrGzSkMdm/vUqq6slxQbChmqnSiEXZXXLF4bO4+y7D1C0DZIOGNN0
+         jogahDGTCHL3gdw7K+K3gPpN8XLB/1GPHHmwIQbGafrLrFC5GST8mtD3OsVFN8NMgS
+         FTVWchSbyasILKeo5c+v7qf4IRn+h/7rZSKUr2Eg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/14] rcutorture: Properly set rcu_fwds for OOM handling
-Date:   Mon, 31 Aug 2020 11:04:01 -0700
-Message-Id: <20200831180406.494-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/14] rcutorture: Allow pointer leaks to test diagnostic code
+Date:   Mon, 31 Aug 2020 11:04:05 -0700
+Message-Id: <20200831180406.494-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180348.GA416@paulmck-ThinkPad-P72>
 References: <20200831180348.GA416@paulmck-ThinkPad-P72>
@@ -60,52 +60,68 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The conversion of rcu_fwds to dynamic allocation failed to actually
-allocate the required structure.  This commit therefore allocates it,
-frees it, and updates rcu_fwds accordingly.  While in the area, it
-abstracts the cleanup actions into rcu_torture_fwd_prog_cleanup().
+This commit adds an rcutorture.leakpointer module parameter that
+intentionally leaks an RCU-protected pointer out of the RCU read-side
+critical section and checks to see if the corresponding grace period
+has elapsed, emitting a WARN_ON_ONCE() if so.  This module parameter can
+be used to test facilities like CONFIG_RCU_STRICT_GRACE_PERIOD that end
+grace periods quickly.
 
-Fixes: 5155be9994e5 ("rcutorture: Dynamically allocate rcu_fwds structure")
-Reported-by: kernel test robot <rong.a.chen@intel.com>
+While in the area, also document rcutorture.irqreader, which was
+previously left out.
+
+Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++++
+ kernel/rcu/rcutorture.c                         |  4 ++++
+ 2 files changed, 16 insertions(+)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index bdc1f33..6d984f1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4269,6 +4269,18 @@
+ 			are zero, rcutorture acts as if is interpreted
+ 			they are all non-zero.
+ 
++	rcutorture.irqreader= [KNL]
++			Run RCU readers from irq handlers, or, more
++			accurately, from a timer handler.  Not all RCU
++			flavors take kindly to this sort of thing.
++
++	rcutorture.leakpointer= [KNL]
++			Leak an RCU-protected pointer out of the reader.
++			This can of course result in splats, and is
++			intended to test the ability of things like
++			CONFIG_RCU_STRICT_GRACE_PERIOD=y to detect
++			such leaks.
++
+ 	rcutorture.n_barrier_cbs= [KNL]
+ 			Set callbacks/threads for rcu_barrier() testing.
+ 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index c8206ff..7942be4 100644
+index 983f82f..916ea4f 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2148,9 +2148,20 @@ static int __init rcu_torture_fwd_prog_init(void)
- 		return -ENOMEM;
- 	spin_lock_init(&rfp->rcu_fwd_lock);
- 	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
-+	rcu_fwds = rfp;
- 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
- }
+@@ -87,6 +87,7 @@ torture_param(bool, gp_normal, false,
+ 	     "Use normal (non-expedited) GP wait primitives");
+ torture_param(bool, gp_sync, false, "Use synchronous GP wait primitives");
+ torture_param(int, irqreader, 1, "Allow RCU readers from irq handlers");
++torture_param(int, leakpointer, 0, "Leak pointer dereferences from readers");
+ torture_param(int, n_barrier_cbs, 0,
+ 	     "# of callbacks/kthreads for barrier testing");
+ torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
+@@ -1401,6 +1402,9 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
+ 	preempt_enable();
+ 	rcutorture_one_extend(&readstate, 0, trsp, rtrsp);
+ 	WARN_ON_ONCE(readstate & RCUTORTURE_RDR_MASK);
++	// This next splat is expected behavior if leakpointer, especially
++	// for CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels.
++	WARN_ON_ONCE(leakpointer && READ_ONCE(p->rtort_pipe_count) > 1);
  
-+static void rcu_torture_fwd_prog_cleanup(void)
-+{
-+	struct rcu_fwd *rfp;
-+
-+	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
-+	rfp = rcu_fwds;
-+	rcu_fwds = NULL;
-+	kfree(rfp);
-+}
-+
- /* Callback function for RCU barrier testing. */
- static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
- {
-@@ -2448,7 +2459,7 @@ rcu_torture_cleanup(void)
- 	show_rcu_gp_kthreads();
- 	rcu_torture_read_exit_cleanup();
- 	rcu_torture_barrier_cleanup();
--	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
-+	rcu_torture_fwd_prog_cleanup();
- 	torture_stop_kthread(rcu_torture_stall, stall_task);
- 	torture_stop_kthread(rcu_torture_writer, writer_task);
- 
+ 	/* If error or close call, record the sequence of reader protections. */
+ 	if ((pipe_count > 1 || completed > 1) && !xchg(&err_segs_recorded, 1)) {
 -- 
 2.9.5
 
