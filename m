@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69391C433E6
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF32C433E7
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 404B82083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:01:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A6E920866
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598896898;
-	bh=CVEWYQgFpWW6NMnuqYywOVmxspLm8FhkQXA5CJO8Ees=;
+	s=default; t=1598896971;
+	bh=WQvxHjrMr7Wy1mM1Q9O6pBb2oem88hcom7Xn7VGv8vA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vr6hwveXI1LvZpTu0y8JiSHw/KVvJqCo9Bz+NYjdvSjqwpHLBvvHMnYmlidmP7LJW
-	 DDVWy+ahXL8jO/3R8PxpeNTFdEoeQwZomJb9b4kXBaVF6lhJEXxA/jSjDxt1h0OKlv
-	 K2om7H8TGS8aBBZY1RfW2zsxx8M9rFy7fs15frOw=
+	b=VMPS22+R1DXZ9HxKnImYzrjPJf1QW8e7UbQjqLWyYOiBNfCaRneYSe+hIh17V2rG3
+	 aVnggTeDwpfOWU1WeH3dWpZBDZeSjupXRStbjt0pQkGy0ZvTMMzsvKEMzkvN/Hh5Lb
+	 HXTGk2RRyODBsjomc+FFNpINJGAQB2nkuifGN6cI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgHaSBf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36568 "EHLO mail.kernel.org"
+        id S1728957AbgHaSBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728873AbgHaSB2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1728856AbgHaSB2 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:28 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F18E8217A0;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BD052177B;
         Mon, 31 Aug 2020 18:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896888;
-        bh=CVEWYQgFpWW6NMnuqYywOVmxspLm8FhkQXA5CJO8Ees=;
+        s=default; t=1598896887;
+        bh=WQvxHjrMr7Wy1mM1Q9O6pBb2oem88hcom7Xn7VGv8vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hzH/NCDXmBcU8l7HCQfsqdAh760TKym4+LQGpGjTb5ypVB5oGVMFLn/W5XVZbdh78
-         SJ65c01nA1AYXhHMx2GPAjsq9XoCGHNi6Jy0P4nY3zUTxPaTaSQhcId4xsx1tSZQ9f
-         08Sy2vr58Fqw3FvH1wRW6r8uhrR1zzWrq6sEkMtE=
+        b=E1XE8aLZE3u0Zn5cC+qugfbR65bAwSIpUsQ+aJhgXiSoa6Wi7noX3BKTKnPwpGQgX
+         Vs2gbyRaqccUalEojdxQ0PuTSs4FnU9GD3k14inWZDK2BTc9laL6n2fOn8o8y6qMpt
+         FoMBdgnMEqSXX7UTnG2jOZFPkxS9XpBhLhFmgsow=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        urezki@gmail.com, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 23/24] rcu/segcblist: Prevent useless GP start if no CBs to accelerate
-Date:   Mon, 31 Aug 2020 11:01:15 -0700
-Message-Id: <20200831180116.32690-23-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Subject: [PATCH tip/core/rcu 22/24] rcu: Remove unused __rcu_is_watching() function
+Date:   Mon, 31 Aug 2020 11:01:14 -0700
+Message-Id: <20200831180116.32690-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -58,89 +61,78 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_segcblist_accelerate() function returns true iff it is necessary
-to request another grace period.  A tracing session showed that this
-function unnecessarily requests grace periods.
+The x86/entry work removed all uses of __rcu_is_watching(), therefore
+this commit removes it entirely.
 
-For exmaple, consider the following sequence of events:
-1. Callbacks are queued only on the NEXT segment of CPU A's callback list.
-2. CPU A runs RCU_SOFTIRQ, accelerating these callbacks from NEXT to WAIT.
-3. Thus rcu_segcblist_accelerate() returns true, requesting grace period N.
-4. RCU's grace-period kthread wakes up on CPU B and starts grace period N.
-4. CPU A notices the new grace period and invokes RCU_SOFTIRQ.
-5. CPU A's RCU_SOFTIRQ again invokes rcu_segcblist_accelerate(), but
-   there are no new callbacks.  However, rcu_segcblist_accelerate()
-   nevertheless (uselessly) requests a new grace period N+1.
-
-This extra grace period results in additional lock contention and also
-additional wakeups, all for no good reason.
-
-This commit therefore adds a check to rcu_segcblist_accelerate() that
-prevents the return of true when there are no new callbacks.
-
-This change reduces the number of grace periods (GPs) and wakeups in each
-of eleven five-second rcutorture runs as follows:
-
-+----+-------------------+-------------------+
-| #  | Number of GPs     | Number of Wakeups |
-+====+=========+=========+=========+=========+
-| 1  | With    | Without | With    | Without |
-+----+---------+---------+---------+---------+
-| 2  |      75 |      89 |     113 |     119 |
-+----+---------+---------+---------+---------+
-| 3  |      62 |      91 |     105 |     123 |
-+----+---------+---------+---------+---------+
-| 4  |      60 |      79 |      98 |     110 |
-+----+---------+---------+---------+---------+
-| 5  |      63 |      79 |      99 |     112 |
-+----+---------+---------+---------+---------+
-| 6  |      57 |      89 |      96 |     123 |
-+----+---------+---------+---------+---------+
-| 7  |      64 |      85 |      97 |     118 |
-+----+---------+---------+---------+---------+
-| 8  |      58 |      83 |      98 |     113 |
-+----+---------+---------+---------+---------+
-| 9  |      57 |      77 |      89 |     104 |
-+----+---------+---------+---------+---------+
-| 10 |      66 |      82 |      98 |     119 |
-+----+---------+---------+---------+---------+
-| 11 |      52 |      82 |      83 |     117 |
-+----+---------+---------+---------+---------+
-
-The reduction in the number of wakeups ranges from 5% to 40%.
-
-Cc: urezki@gmail.com
-[ paulmck: Rework commit log and comment. ]
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: <x86@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu_segcblist.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ include/linux/rcutiny.h | 1 -
+ include/linux/rcutree.h | 1 -
+ kernel/entry/common.c   | 2 +-
+ kernel/rcu/tree.c       | 5 -----
+ 4 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 9a0f661..2d2a6b6b9 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -475,8 +475,16 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
- 	 * Also advance to the oldest segment of callbacks whose
- 	 * ->gp_seq[] completion is at or after that passed in via "seq",
- 	 * skipping any empty segments.
-+	 *
-+	 * Note that segment "i" (and any lower-numbered segments
-+	 * containing older callbacks) will be unaffected, and their
-+	 * grace-period numbers remain unchanged.  For example, if i ==
-+	 * WAIT_TAIL, then neither WAIT_TAIL nor DONE_TAIL will be touched.
-+	 * Instead, the CBs in NEXT_TAIL will be merged with those in
-+	 * NEXT_READY_TAIL and the grace-period number of NEXT_READY_TAIL
-+	 * would be updated.  NEXT_TAIL would then be empty.
- 	 */
--	if (++i >= RCU_NEXT_TAIL)
-+	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
- 		return false;
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 5cc9637..7c1ecdb 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -103,7 +103,6 @@ static inline void rcu_scheduler_starting(void) { }
+ static inline void rcu_end_inkernel_boot(void) { }
+ static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
+ static inline bool rcu_is_watching(void) { return true; }
+-static inline bool __rcu_is_watching(void) { return true; }
+ static inline void rcu_momentary_dyntick_idle(void) { }
+ static inline void kfree_rcu_scheduler_running(void) { }
+ static inline bool rcu_gp_might_be_stalled(void) { return false; }
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index d2f4064..59eb5cd 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -64,7 +64,6 @@ extern int rcu_scheduler_active __read_mostly;
+ void rcu_end_inkernel_boot(void);
+ bool rcu_inkernel_boot_has_ended(void);
+ bool rcu_is_watching(void);
+-bool __rcu_is_watching(void);
+ #ifndef CONFIG_PREEMPTION
+ void rcu_all_qs(void);
+ #endif
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 9852e0d..ad794a1 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -278,7 +278,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * terminate a grace period, if and only if the timer interrupt is
+ 	 * not nested into another interrupt.
+ 	 *
+-	 * Checking for __rcu_is_watching() here would prevent the nesting
++	 * Checking for rcu_is_watching() here would prevent the nesting
+ 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
+ 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
+ 	 * assume that it is the first interupt and eventually claim
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 396abe0..2323622 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1077,11 +1077,6 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+ 	}
+ }
  
- 	/*
+-noinstr bool __rcu_is_watching(void)
+-{
+-	return !rcu_dynticks_curr_cpu_in_eqs();
+-}
+-
+ /**
+  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+  *
 -- 
 2.9.5
 
