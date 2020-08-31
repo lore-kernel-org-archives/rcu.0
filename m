@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 281AFC433E2
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F314FC433E6
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE7AA20866
+	by mail.kernel.org (Postfix) with ESMTP id C90CE2083E
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598896976;
-	bh=VfLU9LD+04vt7A1OohC/jg5ul0BHrmZJ47kzIFGG+7I=;
+	s=default; t=1598896975;
+	bh=Vpctbcz91EPQKPK/qQzLu3zabu/JJYgSbl7lkU+PAQw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=sVMdND/5L+Y4kVuFOKC3K0PvsoyZL+gmDgR1EcxIYX3b28S6DNKhTDu8YjtwsEV7U
-	 aILnMIZtcSzC56N3taSMmIb4a9ULOHSYwTnoEOhRwiaCoo5S7sd8KIGnsyu9vfRJWv
-	 47Eav4Dq5QpSnYS5ef4okfll2f+Lx/MTS97XHk8g=
+	b=c0JZtP/dOFVKBLEufb4n+5BzYtv+unpa6sfgZj4xBfJDz8AQ6PjqTlk0zqa7Cppqf
+	 bI5wvPOdPs1N054Fa8Z/8Ga+lkUVQL9PDV9SGS95WcavBZYO8hKNTO/TkvAKa2lvp/
+	 FEPY2HHFWYAvWzyNQU9/+oxEXeHMRxLOc/IcrkQs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgHaSBf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36600 "EHLO mail.kernel.org"
+        id S1728936AbgHaSBg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:01:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728875AbgHaSB3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:29 -0400
+        id S1728845AbgHaSB1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:27 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 860C721897;
-        Mon, 31 Aug 2020 18:01:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F14DB2176B;
+        Mon, 31 Aug 2020 18:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896888;
-        bh=VfLU9LD+04vt7A1OohC/jg5ul0BHrmZJ47kzIFGG+7I=;
+        s=default; t=1598896887;
+        bh=Vpctbcz91EPQKPK/qQzLu3zabu/JJYgSbl7lkU+PAQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SphRx8EQQcIeFaXcEOCbF5k7rswtq/0JO00YCuA9Xo3pO9r4EIA9hr+e2vSD1aLP
-         bye6p074QAKJSLyQ/axeYT2QjUsrXFTVofxxDjU5OsVX0lWq+EQIJIO6C9umZkKJ2Y
-         r/Lq/C2FraIDfaFqG28ccdQCJnbjJdM3FsF4v13k=
+        b=sKa2exXWTCXoVOhpueE/EFMwdsuqmcF/yxZmvlLvlUuFVgzgXKOQckgYMLle2IlSF
+         tRy3xenqLhqIizipDix4pizP1ywWcJtyoV6R8vnzn3Gu3PAoZPGqoQJIQ0a6g1uFB7
+         BMlqQseZ0Rx8ANg1OeJJ2Hk882UaM+6rZefvszGo=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Zqiang <qiang.zhang@windriver.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 24/24] rcu: Shrink each possible cpu krcp
-Date:   Mon, 31 Aug 2020 11:01:16 -0700
-Message-Id: <20200831180116.32690-24-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 21/24] rcu: Make FQS more aggressive in complaining about offline CPUs
+Date:   Mon, 31 Aug 2020 11:01:13 -0700
+Message-Id: <20200831180116.32690-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -59,51 +58,69 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-CPUs can go offline shortly after kfree_call_rcu() has been invoked,
-which can leave memory stranded until those CPUs come back online.
-This commit therefore drains the kcrp of each CPU, not just the
-ones that happen to be online.
+The RCU grace-period kthread's force-quiescent state (FQS) loop should
+never see an offline CPU that has not yet reported a quiescent state.
+After all, the offline CPU should have reported a quiescent state
+during the CPU-offline process, or, failing that, by rcu_gp_init()
+if it ran concurrently with either the CPU going offline or the last
+task on a leaf rcu_node structure exiting its RCU read-side critical
+section while all CPUs corresponding to that structure are offline.
+The FQS loop should therefore complain if it does see an offline CPU
+that has not yet reported a quiescent state.
 
-Acked-by: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+And it does, but only once the grace period has been in force for a
+full second.  This commit therefore makes this warning more aggressive,
+so that it will trigger as soon as the condition makes its appearance.
+
+Light testing with TREE03 and hotplug shows no warnings.  This commit
+also converts the warning to WARN_ON_ONCE() in order to stave off possible
+log spam.
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2323622..9245064 100644
+index 2c7afe4..396abe0 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3450,7 +3450,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- 	unsigned long count = 0;
+@@ -1214,13 +1214,28 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+ 		return 1;
+ 	}
  
- 	/* Snapshot count of all CPUs */
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-	/* If waiting too long on an offline CPU, complain. */
+-	if (!(rdp->grpmask & rcu_rnp_online_cpus(rnp)) &&
+-	    time_after(jiffies, rcu_state.gp_start + HZ)) {
++	/*
++	 * Complain if a CPU that is considered to be offline from RCU's
++	 * perspective has not yet reported a quiescent state.  After all,
++	 * the offline CPU should have reported a quiescent state during
++	 * the CPU-offline process, or, failing that, by rcu_gp_init()
++	 * if it ran concurrently with either the CPU going offline or the
++	 * last task on a leaf rcu_node structure exiting its RCU read-side
++	 * critical section while all CPUs corresponding to that structure
++	 * are offline.  This added warning detects bugs in any of these
++	 * code paths.
++	 *
++	 * The rcu_node structure's ->lock is held here, which excludes
++	 * the relevant portions the CPU-hotplug code, the grace-period
++	 * initialization code, and the rcu_read_unlock() code paths.
++	 *
++	 * For more detail, please refer to the "Hotplug CPU" section
++	 * of RCU's Requirements documentation.
++	 */
++	if (WARN_ON_ONCE(!(rdp->grpmask & rcu_rnp_online_cpus(rnp)))) {
+ 		bool onl;
+ 		struct rcu_node *rnp1;
  
- 		count += READ_ONCE(krcp->count);
-@@ -3465,7 +3465,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 	int cpu, freed = 0;
- 	unsigned long flags;
- 
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		int count;
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
-@@ -3498,7 +3498,7 @@ void __init kfree_rcu_scheduler_running(void)
- 	int cpu;
- 	unsigned long flags;
- 
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		WARN_ON(1);  /* Offline CPUs are supposed to report QS! */
+ 		pr_info("%s: grp: %d-%d level: %d ->gp_seq %ld ->completedqs %ld\n",
+ 			__func__, rnp->grplo, rnp->grphi, rnp->level,
+ 			(long)rnp->gp_seq, (long)rnp->completedqs);
 -- 
 2.9.5
 
