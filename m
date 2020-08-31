@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27F88C433E6
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C66EC433E2
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E18AB2083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06DE02083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598896978;
-	bh=OmfxcQkO9tPXDAZoIKbop8+V1AlPI5ns3hO/MeI9xj8=;
+	s=default; t=1598897013;
+	bh=1xaEATgxVssMo8h40PwAundYZZ+vcxu3i/w1PXTLMjE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=lOEaqR27AAr/fPNeu9CeXWc7j0pICSyg1M5EerWJHpGGIqtfQ8FlZEm86E64MrVFH
-	 PKGcUT+H0zu3N7Y5nVk7BjupSIoj1G3rW8hB3vd6SyUZwVCXc+8L/cLDxbCmstCdbv
-	 ZER3GMnWZeKth2kCDLv/aN6fUs16WjtZwjcZqNig=
+	b=GtP0t+h3iZNSTa2l4n8gD9e8XIWORnsRAsxTb0QaqVkZCclPpk/lJZdwYJJpyg10r
+	 OlrerwIjzjdhipmJywE0H6xsWHWfLezuZuMfva+vr9XOTlnOMzRUnCBJypMEzdIsrt
+	 ncS2TeN6+Tpd1AdYpYuEMJnbg3Fg27NQtDzJvIxI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgHaSC4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
+        id S1729211AbgHaSC6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:02:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728809AbgHaSB0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:26 -0400
+        id S1728714AbgHaSBX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:23 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A104F21655;
-        Mon, 31 Aug 2020 18:01:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B06121548;
+        Mon, 31 Aug 2020 18:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896884;
-        bh=OmfxcQkO9tPXDAZoIKbop8+V1AlPI5ns3hO/MeI9xj8=;
+        s=default; t=1598896882;
+        bh=1xaEATgxVssMo8h40PwAundYZZ+vcxu3i/w1PXTLMjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zyPH6g52qSxkUx762cYe0ColQOdT6q4zZ5yBzIJPZRfPooWPDnW1xOAAI0pb3r6HK
-         53SsZ8DETvQS1IM/+NVg9UbBQtpA9D85y3hUJ2jTPWTn6/7HwdzbA3DdPjhH6sGFoW
-         8/W0v++d1fEcNCphQDwvpp8qouBuE7pSSEGxq7wU=
+        b=JPRgrEuDfiRl2NCyQlI7gIrzFRX38r5iDcewFZDLkIYkMZ96EynY1w5bHmwNh4P45
+         epl+t+fAUU2QiuN+dJTxwKkigEt2w2k964+2Kg6wbZ2freYryN3tQhypTFQZJkB+uh
+         6yrN3gxo3LFghBdU2hy5DPxRAJz0iuffjdvWvh6E=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Tobias Klauser <tklauser@distanz.ch>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/24] rcu: Fix kerneldoc comments in rcupdate.h
-Date:   Mon, 31 Aug 2020 11:01:07 -0700
-Message-Id: <20200831180116.32690-15-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/24] nocb: Remove show_rcu_nocb_state() false positive printout
+Date:   Mon, 31 Aug 2020 11:01:02 -0700
+Message-Id: <20200831180116.32690-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -59,58 +58,40 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Tobias Klauser <tklauser@distanz.ch>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit fixes the kerneldoc comments for rcu_read_unlock_bh(),
-rcu_read_unlock_sched() and rcu_head_after_call_rcu() so they e.g. get
-properly linked in the API documentation. Also add parenthesis after
-function names to match the notation used in other kerneldoc comments in
-the same file.
+The rcu_data structure's ->nocb_timer field is used to defer wakeups of
+the corresponding no-CBs CPU's grace-period kthread ("rcuog*"), and that
+structure's ->nocb_defer_wakeup field is used to track such deferral.
+This means that the show_rcu_nocb_state() printing an error when those
+fields are set for a CPU not corresponding to a no-CBs grace-period
+kthread is erroneous.
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+This commit therefore switches the check from ->nocb_timer to
+->nocb_bypass_timer and removes the check of ->nocb_defer_wakeup.
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/tree_plugin.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d15d46d..b47d6b6 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -709,8 +709,8 @@ static inline void rcu_read_lock_bh(void)
- 			 "rcu_read_lock_bh() used illegally while idle");
- }
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index bbc0c07..4d63ee3 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2411,10 +2411,9 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+ 		return;
  
--/*
-- * rcu_read_unlock_bh - marks the end of a softirq-only RCU critical section
-+/**
-+ * rcu_read_unlock_bh() - marks the end of a softirq-only RCU critical section
-  *
-  * See rcu_read_lock_bh() for more information.
-  */
-@@ -751,10 +751,10 @@ static inline notrace void rcu_read_lock_sched_notrace(void)
- 	__acquire(RCU_SCHED);
- }
+ 	waslocked = raw_spin_is_locked(&rdp->nocb_gp_lock);
+-	wastimer = timer_pending(&rdp->nocb_timer);
++	wastimer = timer_pending(&rdp->nocb_bypass_timer);
+ 	wassleep = swait_active(&rdp->nocb_gp_wq);
+-	if (!rdp->nocb_defer_wakeup && !rdp->nocb_gp_sleep &&
+-	    !waslocked && !wastimer && !wassleep)
++	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
+ 		return;  /* Nothing untowards. */
  
--/*
-- * rcu_read_unlock_sched - marks the end of a RCU-classic critical section
-+/**
-+ * rcu_read_unlock_sched() - marks the end of a RCU-classic critical section
-  *
-- * See rcu_read_lock_sched for more information.
-+ * See rcu_read_lock_sched() for more information.
-  */
- static inline void rcu_read_unlock_sched(void)
- {
-@@ -945,7 +945,7 @@ static inline void rcu_head_init(struct rcu_head *rhp)
- }
- 
- /**
-- * rcu_head_after_call_rcu - Has this rcu_head been passed to call_rcu()?
-+ * rcu_head_after_call_rcu() - Has this rcu_head been passed to call_rcu()?
-  * @rhp: The rcu_head structure to test.
-  * @f: The function passed to call_rcu() along with @rhp.
-  *
+ 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
 -- 
 2.9.5
 
