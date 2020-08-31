@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B64C433E7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95945C43461
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:11:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 102352083E
+	by mail.kernel.org (Postfix) with ESMTP id 7D3C02068E
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1598897506;
-	bh=BrvLViBsThaXkvt7qUFESDZ3SWqAijf66Epo+FLqfRo=;
+	bh=Md1F4JPJeRjrVLa/O8zZqOK+IKqCvmD2zTJEeJk3ut8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ZDp9miVsXDTI2NCPMRUF73RBaadPgXvjD7W143KBIG8vYgdeUrWkn115Qd8I7On+H
-	 0MM5FUjwxxvKK2Wr3jmhAwXqSjHnwwF2eX9UBI3iYCIsFxbuFqfTM3MnEuUlcPfxy5
-	 ZXwAvlr5IoihbSB+rlQftiZ220EZmnc8+wT2X7Zo=
+	b=q26bg6H+tbalskGV6ZAN1PdOacFbi2IXArz31EBUOeSeebaLU3nH9gQ6Dk7vTY1o7
+	 U1kOhxh+6xf1gqwIOC4FOStYT0tLsmYJZC7SbR6+8rrDYwenr1ZTKH0JpLpoDxU1jY
+	 4oU3yHk3eLKoZxr5sYGDqZaJkgSLn03pOAErEtxc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729352AbgHaSL3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35846 "EHLO mail.kernel.org"
+        id S1729040AbgHaSLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728973AbgHaSLX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:11:23 -0400
+        id S1729325AbgHaSL1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:11:27 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 968FD21527;
-        Mon, 31 Aug 2020 18:11:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E3D22151B;
+        Mon, 31 Aug 2020 18:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897482;
-        bh=BrvLViBsThaXkvt7qUFESDZ3SWqAijf66Epo+FLqfRo=;
+        s=default; t=1598897484;
+        bh=Md1F4JPJeRjrVLa/O8zZqOK+IKqCvmD2zTJEeJk3ut8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRXQyfBl7ufLW4JZc5lugfOqhqVasBvOlpmFo7YnGNUucqh74XfB9spFuD8qm73kD
-         n7v45sKwgu0EVy8VhDElHXl/Dsaqifct5Z5yKk3jtAz8Z0YVrSaE+eywtF5W9SpKHn
-         jmPuUX9yN91y2wuOGP9z2g34egKFbTBR3CSQDnw8=
+        b=jqEr/u1O+dXKVsOTUmIwBfv416WKGJi58bEDo6EiTwcjyI12RC70aPxu7VTqlSVyp
+         Wj8chE+TKuUQQ7xBJ5SAjihTDcZtqoTZSVrHSWxFETZSDyObqQ078o7rid/JlcQahQ
+         g8KrN2YZ3gP5VCqOHWa+sSnTVdEBVtuRtwclikww=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/13] rcu: Force DEFAULT_RCU_BLIMIT to 1000 for strict RCU GPs
-Date:   Mon, 31 Aug 2020 11:11:11 -0700
-Message-Id: <20200831181120.1044-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/13] rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()
+Date:   Mon, 31 Aug 2020 11:11:20 -0700
+Message-Id: <20200831181120.1044-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831181101.GA950@paulmck-ThinkPad-P72>
 References: <20200831181101.GA950@paulmck-ThinkPad-P72>
@@ -60,49 +60,81 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The value of DEFAULT_RCU_BLIMIT is normally set to 10, the idea being to
-avoid needless response-time degradation due to RCU callback invocation.
-However, when CONFIG_RCU_STRICT_GRACE_PERIOD=y it is better to avoid
-throttling callback execution in order to better detect pointer
-leaks from RCU read-side critical sections.  This commit therefore
-sets the value of DEFAULT_RCU_BLIMIT to 1000 in kernels built with
-CONFIG_RCU_STRICT_GRACE_PERIOD=y.
+The "cpu" parameter to rcu_report_qs_rdp() is not used, with rdp->cpu
+being used instead.  Furtheremore, every call to rcu_report_qs_rdp()
+invokes it on rdp->cpu.  This commit therefore removes this unused "cpu"
+parameter and converts a check of rdp->cpu against smp_processor_id()
+to a WARN_ON_ONCE().
 
-Reported-by Jann Horn <jannh@google.com>
+Reported-by: Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c        | 8 ++++----
+ kernel/rcu/tree_plugin.h | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8551159..4436857 100644
+index a295cadf..c612765 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -468,17 +468,18 @@ static int rcu_is_cpu_rrupt_from_idle(void)
- 	return __this_cpu_read(rcu_data.dynticks_nesting) == 0;
+@@ -2240,7 +2240,7 @@ rcu_report_unblock_qs_rnp(struct rcu_node *rnp, unsigned long flags)
+  * structure.  This must be called from the specified CPU.
+  */
+ static void
+-rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
++rcu_report_qs_rdp(struct rcu_data *rdp)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+@@ -2249,6 +2249,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+ 			       rcu_segcblist_is_offloaded(&rdp->cblist);
+ 	struct rcu_node *rnp;
+ 
++	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+ 	rnp = rdp->mynode;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+@@ -2265,8 +2266,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+ 		return;
+ 	}
+ 	mask = rdp->grpmask;
+-	if (rdp->cpu == smp_processor_id())
+-		rdp->core_needs_qs = false;
++	rdp->core_needs_qs = false;
+ 	if ((rnp->qsmask & mask) == 0) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	} else {
+@@ -2315,7 +2315,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
+ 	 * Tell RCU we are done (but rcu_report_qs_rdp() will be the
+ 	 * judge of that).
+ 	 */
+-	rcu_report_qs_rdp(rdp->cpu, rdp);
++	rcu_report_qs_rdp(rdp);
  }
  
--#define DEFAULT_RCU_BLIMIT 10     /* Maximum callbacks per rcu_do_batch ... */
--#define DEFAULT_MAX_RCU_BLIMIT 10000 /* ... even during callback flood. */
-+#define DEFAULT_RCU_BLIMIT (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ? 1000 : 10)
-+				// Maximum callbacks per rcu_do_batch ...
-+#define DEFAULT_MAX_RCU_BLIMIT 10000 // ... even during callback flood.
- static long blimit = DEFAULT_RCU_BLIMIT;
--#define DEFAULT_RCU_QHIMARK 10000 /* If this many pending, ignore blimit. */
-+#define DEFAULT_RCU_QHIMARK 10000 // If this many pending, ignore blimit.
- static long qhimark = DEFAULT_RCU_QHIMARK;
--#define DEFAULT_RCU_QLOMARK 100   /* Once only this many pending, use blimit. */
-+#define DEFAULT_RCU_QLOMARK 100   // Once only this many pending, use blimit.
- static long qlowmark = DEFAULT_RCU_QLOMARK;
- #define DEFAULT_RCU_QOVLD_MULT 2
- #define DEFAULT_RCU_QOVLD (DEFAULT_RCU_QOVLD_MULT * DEFAULT_RCU_QHIMARK)
--static long qovld = DEFAULT_RCU_QOVLD; /* If this many pending, hammer QS. */
--static long qovld_calc = -1;	  /* No pre-initialization lock acquisitions! */
-+static long qovld = DEFAULT_RCU_QOVLD; // If this many pending, hammer QS.
-+static long qovld_calc = -1;	  // No pre-initialization lock acquisitions!
- 
- module_param(blimit, long, 0444);
- module_param(qhimark, long, 0444);
+ /*
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 25a676d..ca31be0 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -461,7 +461,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 	t->rcu_read_unlock_special.s = 0;
+ 	if (special.b.need_qs) {
+ 		if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
+-			rcu_report_qs_rdp(rdp->cpu, rdp);
++			rcu_report_qs_rdp(rdp);
+ 			udelay(rcu_unlock_delay);
+ 		} else {
+ 			rcu_qs();
+@@ -791,7 +791,7 @@ void rcu_read_unlock_strict(void)
+ 	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
+ 		return;
+ 	rdp = this_cpu_ptr(&rcu_data);
+-	rcu_report_qs_rdp(rdp->cpu, rdp);
++	rcu_report_qs_rdp(rdp);
+ 	udelay(rcu_unlock_delay);
+ }
+ EXPORT_SYMBOL_GPL(rcu_read_unlock_strict);
 -- 
 2.9.5
 
