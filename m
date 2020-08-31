@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0D95C43461
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 621E8C433E7
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80D492083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C98D2083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897078;
-	bh=kKicyu7ptqG+ii+QgMaz1nq0PeJHubdSZmknmoN0U+Q=;
+	s=default; t=1598897095;
+	bh=nh1GGNKPbtqYSrwuoMf0Ipvgb15nX5tMd1UAwYKuSvw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GlFgRXfGHpK9l34LCOR/sbqaVjGLzoKOVrPsbYQ1TtzLHFUlpjomgihuvuv+nYb/U
-	 YrzxbJY/NiMndz2bO21krQ54/ZANz5Yfvytth2Ke7U9uvVOADMBKD+419fCrs5rYD4
-	 aRlT8FpLKmiaVuf5h1BQxy4J9na+HNAzL/0p0FvM=
+	b=ngZVck82vyJW0T/khoW4Jv3Cgt/qUCXwUGhynPnRJ5oOKJSSjLKLVyZt/5Sn4yljf
+	 NvU+VtUWZWh4gZgIhCLZcqR87Cuu6vsbUNeSrHQXzNwxqjEZw3ArdFho3muJtVx0Nb
+	 zWWpnG8XKkVYGs+Q9PZ+z5Lqp7kBNT17Hqq19xPo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729416AbgHaSEi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1729419AbgHaSEi (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 31 Aug 2020 14:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44548 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbgHaSEL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1728909AbgHaSEL (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 31 Aug 2020 14:04:11 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 665B521734;
-        Mon, 31 Aug 2020 18:04:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6CE12158C;
+        Mon, 31 Aug 2020 18:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897051;
-        bh=kKicyu7ptqG+ii+QgMaz1nq0PeJHubdSZmknmoN0U+Q=;
+        bh=nh1GGNKPbtqYSrwuoMf0Ipvgb15nX5tMd1UAwYKuSvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IF7C5HhCzAMAVRaj1hDsut81buQNGzp7E13VsqlWuRpoF67OKQ5Ni7T29ETOkPVYY
-         rxEVYZemmgxfUUMUnC5s/YOshtoS4VhXiT3jXa8LMPq15IrdX+/tatP1WFANVnFf1p
-         6CAlB5ixP8ZaoxVzh35GhdB+QEnPQlPndDq58ipM=
+        b=aAoEHOi6xCG+5OdN7NZvbkJvxCT5suIaFcHYRcPgS707aK2y9n35V6nFL/JptLMZg
+         CtjcrP7eXo8X46yx6OMGzUuVDey3hZugPGkrwBDHd+7UYNnhOpMDq/vx83nPB2pLpk
+         MR7mbAxfResIYhUwViXfK0DPeIds+DtGEKI3Q9vY=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Colin Ian King <colin.king@canonical.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/14] refperf: Avoid null pointer dereference when buf fails to allocate
-Date:   Mon, 31 Aug 2020 11:04:03 -0700
-Message-Id: <20200831180406.494-11-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/14] rcutorture: Properly set rcu_fwds for OOM handling
+Date:   Mon, 31 Aug 2020 11:04:01 -0700
+Message-Id: <20200831180406.494-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180348.GA416@paulmck-ThinkPad-P72>
 References: <20200831180348.GA416@paulmck-ThinkPad-P72>
@@ -59,39 +58,54 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently in the unlikely event that buf fails to be allocated it
-is dereferenced a few times.  Use the errexit flag to determine if
-buf should be written to to avoid the null pointer dereferences.
+The conversion of rcu_fwds to dynamic allocation failed to actually
+allocate the required structure.  This commit therefore allocates it,
+frees it, and updates rcu_fwds accordingly.  While in the area, it
+abstracts the cleanup actions into rcu_torture_fwd_prog_cleanup().
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: f518f154ecef ("refperf: Dynamically allocate experiment-summary output buffer")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 5155be9994e5 ("rcutorture: Dynamically allocate rcu_fwds structure")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/rcu/rcutorture.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index d9291f8..952595c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -546,9 +546,11 @@ static int main_func(void *arg)
- 	// Print the average of all experiments
- 	SCALEOUT("END OF TEST. Calculating average duration per loop (nanoseconds)...\n");
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index c8206ff..7942be4 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2148,9 +2148,20 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 		return -ENOMEM;
+ 	spin_lock_init(&rfp->rcu_fwd_lock);
+ 	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
++	rcu_fwds = rfp;
+ 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
+ }
  
--	buf[0] = 0;
--	strcat(buf, "\n");
--	strcat(buf, "Runs\tTime(ns)\n");
-+	if (!errexit) {
-+		buf[0] = 0;
-+		strcat(buf, "\n");
-+		strcat(buf, "Runs\tTime(ns)\n");
-+	}
++static void rcu_torture_fwd_prog_cleanup(void)
++{
++	struct rcu_fwd *rfp;
++
++	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rfp = rcu_fwds;
++	rcu_fwds = NULL;
++	kfree(rfp);
++}
++
+ /* Callback function for RCU barrier testing. */
+ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
+ {
+@@ -2448,7 +2459,7 @@ rcu_torture_cleanup(void)
+ 	show_rcu_gp_kthreads();
+ 	rcu_torture_read_exit_cleanup();
+ 	rcu_torture_barrier_cleanup();
+-	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rcu_torture_fwd_prog_cleanup();
+ 	torture_stop_kthread(rcu_torture_stall, stall_task);
+ 	torture_stop_kthread(rcu_torture_writer, writer_task);
  
- 	for (exp = 0; exp < nruns; exp++) {
- 		u64 avg;
 -- 
 2.9.5
 
