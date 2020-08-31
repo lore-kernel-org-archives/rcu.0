@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55859C433E6
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:08:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86C90C433E6
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:08:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 22F6C2083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:08:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BE662083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897334;
-	bh=AoFABMNuUMuKavziJ+CJ7gaWS+Jxe+OMPXmajLA1ulY=;
+	s=default; t=1598897336;
+	bh=jjAdQOb2DvCbOXuoKkbDDkv1j8pMSjYUmKzNcvABNNM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=rijfYIa+QAqbis3om6q1HHRyK1czVByrZ0QhnVOR/lFh0hzFdIQrCp1Z+lvo8Z22x
-	 Ttc9LLDW1O7Ef2pCn/ug3d+qYxmWj2QE3RwR/8sT4p69cVD6SRaa+MfkQFD54mO37/
-	 eIqXYwx8GRAM6XIHIEwn3pE9FNacWsyCqxAaIDYI=
+	b=EwXQ8MVFdpwA7itL0F8WppLiAfQ2QchLhfp2hJJnwjbsr3kneph7J+HeBnwrjmZiA
+	 tNmyo/GBe4U/xjfVGAg0V0DRucKukJG+9cgiuwL4tOnw0PY3lK/32uM/slzCP0ADgr
+	 Tsihw+0VQOMjDTPODE3/0+VVcVMNabjNCTo/EfOY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbgHaSIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:08:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55902 "EHLO mail.kernel.org"
+        id S1729354AbgHaSIL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:08:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729276AbgHaSH4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:07:56 -0400
+        id S1729306AbgHaSH6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:07:58 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 311DE2158C;
-        Mon, 31 Aug 2020 18:07:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 238CE2166E;
+        Mon, 31 Aug 2020 18:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897274;
-        bh=AoFABMNuUMuKavziJ+CJ7gaWS+Jxe+OMPXmajLA1ulY=;
+        s=default; t=1598897275;
+        bh=jjAdQOb2DvCbOXuoKkbDDkv1j8pMSjYUmKzNcvABNNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXZrD7ndmQd7jEa4Ce6Z2C8dgcrrsnJZ/8Ajjbep7/Y5JVhqiVyorp+uowTqTc2Ni
-         QJlZyWGXqeh6mNk2rvB75UhdP35qtaTJQBpgmNz73q1hc4k9kunGutctxr48p+mq2r
-         3r7TdB5WRMJ2y4NafeNFLVuCunFQ8G8gON3Zz/2k=
+        b=UjndsHj/sKgkuG7EeozZvpX8oR2zp6sxUvQ8UhjPBXK5y7/+9D2WPiWe52UXyzDV9
+         b9d9Qfue28tERO3x/9jSAUTPXSBfNJ8u37bl/QrcTZQ4Oead8o/EA3jmyBwfNye8RB
+         +z6lY3KYt01R+9z489VfmaSFN6ogTbAMflrPa7co=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/19] scftorture: Flag errors in torture-compatible manner
-Date:   Mon, 31 Aug 2020 11:07:42 -0700
-Message-Id: <20200831180749.843-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/19] scftorture: Block scftorture_invoker() kthreads for offline CPUs
+Date:   Mon, 31 Aug 2020 11:07:46 -0700
+Message-Id: <20200831180749.843-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180731.GA582@paulmck-ThinkPad-P72>
 References: <20200831180731.GA582@paulmck-ThinkPad-P72>
@@ -60,58 +60,53 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit prints error counts on the statistics line and also adds a
-"!!!" if any of the counters are non-zero.  Allocation failures are
-(somewhat) forgiven, but all other errors result in a "FAILURE" print
-at the end of the test.
+Currently, CPU-hotplug operations might result in all but two
+of (say) 100 CPUs being offline, which in turn might result in
+false-positive diagnostics due to overload.  This commit therefore
+causes scftorture_invoker() kthreads for offline CPUs to loop blocking
+for 200 milliseconds at a time, thus continuously adjusting the number
+of threads to match the number of online CPUs.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/scftorture.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 8ab72e5..880c2ce 100644
+index d9c01c7..04d3a42 100644
 --- a/kernel/scftorture.c
 +++ b/kernel/scftorture.c
-@@ -132,6 +132,7 @@ static atomic_t n_mb_in_errs;
- static atomic_t n_mb_out_errs;
- static atomic_t n_alloc_errs;
- static bool scfdone;
-+static char *bangstr = "";
+@@ -381,11 +381,14 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ // smp_call_function() family of functions.
+ static int scftorture_invoker(void *arg)
+ {
++	int cpu;
+ 	DEFINE_TORTURE_RANDOM(rand);
+ 	struct scf_statistics *scfp = (struct scf_statistics *)arg;
++	bool was_offline = false;
  
- DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
+ 	VERBOSE_SCFTORTOUT("scftorture_invoker %d: task started", scfp->cpu);
+-	set_cpus_allowed_ptr(current, cpumask_of(scfp->cpu % nr_cpu_ids));
++	cpu = scfp->cpu % nr_cpu_ids;
++	set_cpus_allowed_ptr(current, cpumask_of(cpu));
+ 	set_user_nice(current, MAX_NICE);
+ 	if (holdoff)
+ 		schedule_timeout_interruptible(holdoff * HZ);
+@@ -408,6 +411,14 @@ static int scftorture_invoker(void *arg)
  
-@@ -156,12 +157,17 @@ static void scf_torture_stats_print(void)
- 		scfs.n_all += scf_stats_p[i].n_all;
- 		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
- 	}
--	pr_alert("%s scf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
--		 SCFTORT_FLAG, isdone ? "VER" : "ver", invoked_count,
-+	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
-+	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
-+		bangstr = "!!! ";
-+	pr_alert("%s %sscf_invoked_count %s: %lld single: %lld/%lld single_ofl: %lld/%lld many: %lld/%lld all: %lld/%lld ",
-+		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count,
- 		 scfs.n_single, scfs.n_single_wait, scfs.n_single_ofl, scfs.n_single_wait_ofl,
- 		 scfs.n_many, scfs.n_many_wait, scfs.n_all, scfs.n_all_wait);
- 	torture_onoff_stats();
--	pr_cont("\n");
-+	pr_cont("ste: %d stnmie: %d stnmoe: %d staf: %d\n", atomic_read(&n_errs),
-+		atomic_read(&n_mb_in_errs), atomic_read(&n_mb_out_errs),
-+		atomic_read(&n_alloc_errs));
- }
+ 	do {
+ 		scftorture_invoke_one(scfp, &rand);
++		while (cpu_is_offline(cpu) && !torture_must_stop()) {
++			schedule_timeout_interruptible(HZ / 5);
++			was_offline = true;
++		}
++		if (was_offline) {
++			set_cpus_allowed_ptr(current, cpumask_of(cpu));
++			was_offline = false;
++		}
+ 	} while (!torture_must_stop());
  
- // Periodically prints torture statistics, if periodic statistics printing
-@@ -431,7 +437,7 @@ static void scf_torture_cleanup(void)
- 	kfree(scf_stats_p);  // -After- the last stats print has completed!
- 	scf_stats_p = NULL;
- 
--	if (atomic_read(&n_errs))
-+	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) || atomic_read(&n_mb_out_errs))
- 		scftorture_print_module_parms("End of test: FAILURE");
- 	else if (torture_onoff_failures())
- 		scftorture_print_module_parms("End of test: LOCK_HOTPLUG");
+ 	VERBOSE_SCFTORTOUT("scftorture_invoker %d ended", scfp->cpu);
 -- 
 2.9.5
 
