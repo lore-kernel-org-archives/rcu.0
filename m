@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1920C43461
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DEF5C2BB4D
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7F6AE20EDD
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 181EB2083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897096;
-	bh=IDjZSku/tK67QHlgrC59Pps37RT68a2m1he5aAMny40=;
+	s=default; t=1598897097;
+	bh=m6UCktBqgdRYQ/JJ5bZgpv5rgKSrubvrhWuJp5E5F4c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=qAnmQIb2c2yBIIFCZVliOZDggCmLZWW5GYp4v/ZQsixXAgXkwDs1Arzq78ozY+5z4
-	 SpuI58bpi0Mx2sKezs3hUMc0PKH1OEImOKS0a2fs8UV0mCj8sJ1/AHlyH54XOVueTs
-	 GSCw/ww0vfheThj+sjRSVozl0UDp71TW1gpagd8M=
+	b=WxbstHTLDa5Vp0UEe6BRI4YuIi+EBTn0/5PXbkduLr3r8TCfjsaGntNg8DFFhEbVx
+	 1nxs+vaAVbw1Sv9iDgnnVUuVI5s3eSb+y5+92FDq1SH1mUoqKxX+5t/H03pJnvrJsF
+	 wE76E1QQ34/6bCIZslTglqDp1lDoAnFkNnmS1hcs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgHaSEf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44666 "EHLO mail.kernel.org"
+        id S1728901AbgHaSE4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729369AbgHaSEM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:04:12 -0400
+        id S1729358AbgHaSEK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:04:10 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3C682176B;
-        Mon, 31 Aug 2020 18:04:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D22DC214DB;
+        Mon, 31 Aug 2020 18:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897052;
-        bh=IDjZSku/tK67QHlgrC59Pps37RT68a2m1he5aAMny40=;
+        s=default; t=1598897050;
+        bh=m6UCktBqgdRYQ/JJ5bZgpv5rgKSrubvrhWuJp5E5F4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PvL3RzoVPQfsSrGzSkMdm/vUqq6slxQbChmqnSiEXZXXLF4bO4+y7D1C0DZIOGNN0
-         jogahDGTCHL3gdw7K+K3gPpN8XLB/1GPHHmwIQbGafrLrFC5GST8mtD3OsVFN8NMgS
-         FTVWchSbyasILKeo5c+v7qf4IRn+h/7rZSKUr2Eg=
+        b=kTvHEVC1c07w9AXNoSHJL/mvI1WuhML0YnUX9rk0ulItmjW8DkD1oQAD03KHQuloS
+         mDF1N4ZeANi8xIrnpWFamny/mlXk1laOeeeH7nkglmRlQIhx39MtcZ9iLAMRVmR/pf
+         wyaytkX5I3AOuTh7j+9RuYKNXBLNTswCXOSDSaiU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/14] rcutorture: Allow pointer leaks to test diagnostic code
-Date:   Mon, 31 Aug 2020 11:04:05 -0700
-Message-Id: <20200831180406.494-13-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/14] torture: Update initrd documentation
+Date:   Mon, 31 Aug 2020 11:03:58 -0700
+Message-Id: <20200831180406.494-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180348.GA416@paulmck-ThinkPad-P72>
 References: <20200831180348.GA416@paulmck-ThinkPad-P72>
@@ -60,68 +60,110 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds an rcutorture.leakpointer module parameter that
-intentionally leaks an RCU-protected pointer out of the RCU read-side
-critical section and checks to see if the corresponding grace period
-has elapsed, emitting a WARN_ON_ONCE() if so.  This module parameter can
-be used to test facilities like CONFIG_RCU_STRICT_GRACE_PERIOD that end
-grace periods quickly.
+The rcu-test-image.txt documentation covers a very uncommon case where
+a real userspace environment is required.  However, someone reading this
+document might reasonably conclude that this is in fact a prerequisite.
+In addition, the initrd.txt file mentions dracut, which is no longer used.
+This commit therefore provides the needed updates.
 
-While in the area, also document rcutorture.irqreader, which was
-previously left out.
-
-Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++++
- kernel/rcu/rcutorture.c                         |  4 ++++
- 2 files changed, 16 insertions(+)
+ tools/testing/selftests/rcutorture/doc/initrd.txt  | 36 +++++-----------------
+ .../selftests/rcutorture/doc/rcu-test-image.txt    | 35 ++++++++++++++++++---
+ 2 files changed, 37 insertions(+), 34 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bdc1f33..6d984f1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4269,6 +4269,18 @@
- 			are zero, rcutorture acts as if is interpreted
- 			they are all non-zero.
+diff --git a/tools/testing/selftests/rcutorture/doc/initrd.txt b/tools/testing/selftests/rcutorture/doc/initrd.txt
+index 933b4fd..41a4255 100644
+--- a/tools/testing/selftests/rcutorture/doc/initrd.txt
++++ b/tools/testing/selftests/rcutorture/doc/initrd.txt
+@@ -1,12 +1,11 @@
+-The rcutorture scripting tools automatically create the needed initrd
+-directory using dracut.  Failing that, this tool will create an initrd
+-containing a single statically linked binary named "init" that loops
+-over a very long sleep() call.  In both cases, this creation is done
+-by tools/testing/selftests/rcutorture/bin/mkinitrd.sh.
++The rcutorture scripting tools automatically create an initrd containing
++a single statically linked binary named "init" that loops over a
++very long sleep() call.  In both cases, this creation is done by
++tools/testing/selftests/rcutorture/bin/mkinitrd.sh.
  
-+	rcutorture.irqreader= [KNL]
-+			Run RCU readers from irq handlers, or, more
-+			accurately, from a timer handler.  Not all RCU
-+			flavors take kindly to this sort of thing.
+-However, if you are attempting to run rcutorture on a system that does
+-not have dracut installed, and if you don't like the notion of static
+-linking, you might wish to press an existing initrd into service:
++However, if you don't like the notion of statically linked bare-bones
++userspace environments, you might wish to press an existing initrd
++into service:
+ 
+ ------------------------------------------------------------------------
+ cd tools/testing/selftests/rcutorture
+@@ -15,24 +14,3 @@ mkdir initrd
+ cd initrd
+ cpio -id < /tmp/initrd.img.zcat
+ # Manually verify that initrd contains needed binaries and libraries.
+-------------------------------------------------------------------------
+-
+-Interestingly enough, if you are running rcutorture, you don't really
+-need userspace in many cases.  Running without userspace has the
+-advantage of allowing you to test your kernel independently of the
+-distro in place, the root-filesystem layout, and so on.  To make this
+-happen, put the following script in the initrd's tree's "/init" file,
+-with 0755 mode.
+-
+-------------------------------------------------------------------------
+-#!/bin/sh
+-
+-while :
+-do
+-	sleep 10
+-done
+-------------------------------------------------------------------------
+-
+-This approach also allows most of the binaries and libraries in the
+-initrd filesystem to be dispensed with, which can save significant
+-space in rcutorture's "res" directory.
+diff --git a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+index cc280ba..b2fc247 100644
+--- a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
++++ b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+@@ -1,8 +1,33 @@
+-This document describes one way to create the rcu-test-image file
+-that contains the filesystem used by the guest-OS kernel.  There are
+-probably much better ways of doing this, and this filesystem could no
+-doubt be smaller.  It is probably also possible to simply download
+-an appropriate image from any number of places.
++Normally, a minimal initrd is created automatically by the rcutorture
++scripting.  But minimal really does mean "minimal", namely just a single
++root directory with a single statically linked executable named "init":
 +
-+	rcutorture.leakpointer= [KNL]
-+			Leak an RCU-protected pointer out of the reader.
-+			This can of course result in splats, and is
-+			intended to test the ability of things like
-+			CONFIG_RCU_STRICT_GRACE_PERIOD=y to detect
-+			such leaks.
++$ size tools/testing/selftests/rcutorture/initrd/init
++   text    data     bss     dec     hex filename
++    328       0       8     336     150 tools/testing/selftests/rcutorture/initrd/init
 +
- 	rcutorture.n_barrier_cbs= [KNL]
- 			Set callbacks/threads for rcu_barrier() testing.
++Suppose you need to run some scripts, perhaps to monitor or control
++some aspect of the rcutorture testing.  This will require a more fully
++filled-out userspace, perhaps containing libraries, executables for
++the shell and other utilities, and soforth.  In that case, place your
++desired filesystem here:
++
++	tools/testing/selftests/rcutorture/initrd
++
++For example, your tools/testing/selftests/rcutorture/initrd/init might
++be a script that does any needed mount operations and starts whatever
++scripts need starting to properly monitor or control your testing.
++The next rcutorture build will then incorporate this filesystem into
++the kernel image that is passed to qemu.
++
++Or maybe you need a real root filesystem for some reason, in which case
++please read on!
++
++The remainder of this document describes one way to create the
++rcu-test-image file that contains the filesystem used by the guest-OS
++kernel.  There are probably much better ways of doing this, and this
++filesystem could no doubt be smaller.  It is probably also possible to
++simply download an appropriate image from any number of places.
  
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 983f82f..916ea4f 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -87,6 +87,7 @@ torture_param(bool, gp_normal, false,
- 	     "Use normal (non-expedited) GP wait primitives");
- torture_param(bool, gp_sync, false, "Use synchronous GP wait primitives");
- torture_param(int, irqreader, 1, "Allow RCU readers from irq handlers");
-+torture_param(int, leakpointer, 0, "Leak pointer dereferences from readers");
- torture_param(int, n_barrier_cbs, 0,
- 	     "# of callbacks/kthreads for barrier testing");
- torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
-@@ -1401,6 +1402,9 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
- 	preempt_enable();
- 	rcutorture_one_extend(&readstate, 0, trsp, rtrsp);
- 	WARN_ON_ONCE(readstate & RCUTORTURE_RDR_MASK);
-+	// This next splat is expected behavior if leakpointer, especially
-+	// for CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels.
-+	WARN_ON_ONCE(leakpointer && READ_ONCE(p->rtort_pipe_count) > 1);
+ That said, here are the commands:
  
- 	/* If error or close call, record the sequence of reader protections. */
- 	if ((pipe_count > 1 || completed > 1) && !xchg(&err_segs_recorded, 1)) {
 -- 
 2.9.5
 
