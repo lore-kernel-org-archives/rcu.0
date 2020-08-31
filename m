@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF32C433E7
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 281AFC433E2
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6A6E920866
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE7AA20866
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598896971;
-	bh=WQvxHjrMr7Wy1mM1Q9O6pBb2oem88hcom7Xn7VGv8vA=;
+	s=default; t=1598896976;
+	bh=VfLU9LD+04vt7A1OohC/jg5ul0BHrmZJ47kzIFGG+7I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=VMPS22+R1DXZ9HxKnImYzrjPJf1QW8e7UbQjqLWyYOiBNfCaRneYSe+hIh17V2rG3
-	 aVnggTeDwpfOWU1WeH3dWpZBDZeSjupXRStbjt0pQkGy0ZvTMMzsvKEMzkvN/Hh5Lb
-	 HXTGk2RRyODBsjomc+FFNpINJGAQB2nkuifGN6cI=
+	b=sVMdND/5L+Y4kVuFOKC3K0PvsoyZL+gmDgR1EcxIYX3b28S6DNKhTDu8YjtwsEV7U
+	 aILnMIZtcSzC56N3taSMmIb4a9ULOHSYwTnoEOhRwiaCoo5S7sd8KIGnsyu9vfRJWv
+	 47Eav4Dq5QpSnYS5ef4okfll2f+Lx/MTS97XHk8g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728957AbgHaSBi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36492 "EHLO mail.kernel.org"
+        id S1728909AbgHaSBf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:01:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728856AbgHaSB2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:28 -0400
+        id S1728875AbgHaSB3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:29 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BD052177B;
-        Mon, 31 Aug 2020 18:01:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 860C721897;
+        Mon, 31 Aug 2020 18:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896887;
-        bh=WQvxHjrMr7Wy1mM1Q9O6pBb2oem88hcom7Xn7VGv8vA=;
+        s=default; t=1598896888;
+        bh=VfLU9LD+04vt7A1OohC/jg5ul0BHrmZJ47kzIFGG+7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1XE8aLZE3u0Zn5cC+qugfbR65bAwSIpUsQ+aJhgXiSoa6Wi7noX3BKTKnPwpGQgX
-         Vs2gbyRaqccUalEojdxQ0PuTSs4FnU9GD3k14inWZDK2BTc9laL6n2fOn8o8y6qMpt
-         FoMBdgnMEqSXX7UTnG2jOZFPkxS9XpBhLhFmgsow=
+        b=1SphRx8EQQcIeFaXcEOCbF5k7rswtq/0JO00YCuA9Xo3pO9r4EIA9hr+e2vSD1aLP
+         bye6p074QAKJSLyQ/axeYT2QjUsrXFTVofxxDjU5OsVX0lWq+EQIJIO6C9umZkKJ2Y
+         r/Lq/C2FraIDfaFqG28ccdQCJnbjJdM3FsF4v13k=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,13 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Subject: [PATCH tip/core/rcu 22/24] rcu: Remove unused __rcu_is_watching() function
-Date:   Mon, 31 Aug 2020 11:01:14 -0700
-Message-Id: <20200831180116.32690-22-paulmck@kernel.org>
+        Zqiang <qiang.zhang@windriver.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/24] rcu: Shrink each possible cpu krcp
+Date:   Mon, 31 Aug 2020 11:01:16 -0700
+Message-Id: <20200831180116.32690-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -61,78 +59,51 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang.zhang@windriver.com>
 
-The x86/entry work removed all uses of __rcu_is_watching(), therefore
-this commit removes it entirely.
+CPUs can go offline shortly after kfree_call_rcu() has been invoked,
+which can leave memory stranded until those CPUs come back online.
+This commit therefore drains the kcrp of each CPU, not just the
+ones that happen to be online.
 
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: <x86@kernel.org>
+Acked-by: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcutiny.h | 1 -
- include/linux/rcutree.h | 1 -
- kernel/entry/common.c   | 2 +-
- kernel/rcu/tree.c       | 5 -----
- 4 files changed, 1 insertion(+), 8 deletions(-)
+ kernel/rcu/tree.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 5cc9637..7c1ecdb 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -103,7 +103,6 @@ static inline void rcu_scheduler_starting(void) { }
- static inline void rcu_end_inkernel_boot(void) { }
- static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
- static inline bool rcu_is_watching(void) { return true; }
--static inline bool __rcu_is_watching(void) { return true; }
- static inline void rcu_momentary_dyntick_idle(void) { }
- static inline void kfree_rcu_scheduler_running(void) { }
- static inline bool rcu_gp_might_be_stalled(void) { return false; }
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index d2f4064..59eb5cd 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -64,7 +64,6 @@ extern int rcu_scheduler_active __read_mostly;
- void rcu_end_inkernel_boot(void);
- bool rcu_inkernel_boot_has_ended(void);
- bool rcu_is_watching(void);
--bool __rcu_is_watching(void);
- #ifndef CONFIG_PREEMPTION
- void rcu_all_qs(void);
- #endif
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 9852e0d..ad794a1 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -278,7 +278,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 	 * terminate a grace period, if and only if the timer interrupt is
- 	 * not nested into another interrupt.
- 	 *
--	 * Checking for __rcu_is_watching() here would prevent the nesting
-+	 * Checking for rcu_is_watching() here would prevent the nesting
- 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
- 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
- 	 * assume that it is the first interupt and eventually claim
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 396abe0..2323622 100644
+index 2323622..9245064 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1077,11 +1077,6 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
- 	}
- }
+@@ -3450,7 +3450,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 	unsigned long count = 0;
  
--noinstr bool __rcu_is_watching(void)
--{
--	return !rcu_dynticks_curr_cpu_in_eqs();
--}
--
- /**
-  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
-  *
+ 	/* Snapshot count of all CPUs */
+-	for_each_online_cpu(cpu) {
++	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
+@@ -3465,7 +3465,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 	int cpu, freed = 0;
+ 	unsigned long flags;
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_possible_cpu(cpu) {
+ 		int count;
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+@@ -3498,7 +3498,7 @@ void __init kfree_rcu_scheduler_running(void)
+ 	int cpu;
+ 	unsigned long flags;
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
 -- 
 2.9.5
 
