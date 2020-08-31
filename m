@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D6F5C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E032FC433E2
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0AE7F2083E
+	by mail.kernel.org (Postfix) with ESMTP id B5D982083E
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1598897017;
-	bh=G1iH+/QCY280fAQFzIdvytLD1XQc88ODiVu9Ro09iw0=;
+	bh=NnGBpXZSq43kSLTyDI5C4JhFIRLf2MDu2t6S3WvNpMw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=sOka1WqGsUU3BKsdina/dIOj5NRJ2JfKt9M10kPQiVPMBkt9z+GAMtuFxfXP1lpnI
-	 OwN9xSisOgn3VFqamk++m8ufyorbuPPm5CvVUvWyjf7EE6Tr5CTAXNMPUZNceqAEMx
-	 cZqY39Fc3SkqrDqf9k7Tf8/XKvQgXopc2kJWKCh0=
+	b=E+DYXTkRYy/OVfGczaul8r4r7RwgXIxkFQU9akHv4U1d+nao2EPytXndSzER1JLLa
+	 C7xXlIqgYyagDiTl0txTg2NkRGqZO8BdxoFeOcV0cuiB64sBQu2iMBYEVkAvvleRFv
+	 RRH9XtgmJ/3BEaoBb3d7gIls6FDeQb6cFwEEUMwg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgHaSC4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36290 "EHLO mail.kernel.org"
+        id S1727058AbgHaSDh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728815AbgHaSB0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:26 -0400
+        id S1728651AbgHaSBX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:23 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E4432168B;
-        Mon, 31 Aug 2020 18:01:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35A4020E65;
+        Mon, 31 Aug 2020 18:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896885;
-        bh=G1iH+/QCY280fAQFzIdvytLD1XQc88ODiVu9Ro09iw0=;
+        s=default; t=1598896882;
+        bh=NnGBpXZSq43kSLTyDI5C4JhFIRLf2MDu2t6S3WvNpMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DU8uCbCylnrnZOH8dD87Y+JCYVHjfpJYEwY5+H/xHHdfEmrR+irf4GbMQZ6sHgjcV
-         78yp/HohQdx54beSNjuMFkBvuXtDaKBYL0tczVVeZ/F5YHyea6TlDDfdFornMLz9Bj
-         fUdXBLg3+3KEXU+EYH5ease/PcanM7FNGpu5ofJ8=
+        b=xoxcJ1hEipPyQBXUNQoix5s52okU3v66/+hDxo/vDOaksDOFWDjAtoNoktp5TOf1l
+         j/YXMwojSX7SHU/RMUhypVUrd1ijYQUYAnnZlhWiKW3aLcD77s4EpCQuceK5rkkbul
+         Swj/ibwBMRo2/EObs9Aj79WyrTuosFm+pStBkHUg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kvm@vger.kernel.org
-Subject: [PATCH tip/core/rcu 17/24] kvm: mmu: page_track: Fix RCU list API usage
-Date:   Mon, 31 Aug 2020 11:01:09 -0700
-Message-Id: <20200831180116.32690-17-paulmck@kernel.org>
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/24] rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp()
+Date:   Mon, 31 Aug 2020 11:01:01 -0700
+Message-Id: <20200831180116.32690-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -59,46 +59,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
-as it also checkes if the right lock is held.
-Using hlist_for_each_entry_rcu() with a condition argument will not
-report the cases where a SRCU protected list is traversed using
-rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
+Originally, the call to rcu_preempt_blocked_readers_cgp() from
+force_qs_rnp() had to be conditioned on CONFIG_PREEMPT_RCU=y, as in
+commit a77da14ce9af ("rcu: Yet another fix for preemption and CPU
+hotplug").  However, there is now a CONFIG_PREEMPT_RCU=n definition of
+rcu_preempt_blocked_readers_cgp() that unconditionally returns zero, so
+invoking it is now safe.  In addition, the CONFIG_PREEMPT_RCU=n definition
+of rcu_initiate_boost() simply releases the rcu_node structure's ->lock,
+which is what happens when the "if" condition evaluates to false.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+This commit therefore drops the IS_ENABLED(CONFIG_PREEMPT_RCU) check,
+so that rcu_initiate_boost() is called only in CONFIG_PREEMPT_RCU=y
+kernels when there are readers blocking the current grace period.
+This does not change the behavior, but reduces code-reader confusion by
+eliminating non-CONFIG_PREEMPT_RCU=y calls to rcu_initiate_boost().
+
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: <kvm@vger.kernel.org>
 ---
- arch/x86/kvm/mmu/page_track.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index a84a141..8443a67 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
- 		return;
- 
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_write)
- 			n->track_write(vcpu, gpa, new, bytes, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
-@@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 		return;
- 
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_flush_slot)
- 			n->track_flush_slot(kvm, slot, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 4770d77..acc926f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2533,8 +2533,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		rcu_state.cbovldnext |= !!rnp->cbovldmask;
+ 		if (rnp->qsmask == 0) {
+-			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
+-			    rcu_preempt_blocked_readers_cgp(rnp)) {
++			if (rcu_preempt_blocked_readers_cgp(rnp)) {
+ 				/*
+ 				 * No point in scanning bits because they
+ 				 * are all zero.  But we might need to
 -- 
 2.9.5
 
