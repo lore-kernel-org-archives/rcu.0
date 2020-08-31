@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB5FC43461
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE957C433E7
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:09:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5D3252083E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:09:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C651B2083E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897359;
-	bh=LmVslC1dU5CCoRMoEl6kiVj9HhpjeVhgru+RnSIzBRY=;
+	s=default; t=1598897358;
+	bh=IqBPY769hzDOI/BG43saaXqPp2h4NGr/1gHwqrCupjg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=A+2bxXlnGG13JDzxUmKFcXL8B90d4NHUY9DjhSyYE4Sxauqqcm5QbCjmFjUW8glis
-	 DBVxZHC3LhbZCW67TnqBis7nTqBCLDi7MDpCFmQBKEwDDXoi2dL2foUNo5JHo8RiJr
-	 zfrW2MTMTdYlGP9pA/xxsY6bOTZEmpk173qWgB3s=
+	b=y4Wqz1PLyymqN3lNeIZ3Oud71+7Knl+STBlC/vX6hCNS7iosGfNl/kKwkIkWw53Ss
+	 YWJPMv+VwvkxEUKLzQp7Gz698BgUadmB7dwbF74pP54jgtO1plNHaeK60M2tD2rgzX
+	 zkm/Ra3bzfvESCHuC7XI9/GeJLh86pbDEDjsoYt0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgHaSJT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        id S1729469AbgHaSJA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:09:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729246AbgHaSHz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:07:55 -0400
+        id S1729275AbgHaSH4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:07:56 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 533D521527;
-        Mon, 31 Aug 2020 18:07:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A24062168B;
+        Mon, 31 Aug 2020 18:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897273;
-        bh=LmVslC1dU5CCoRMoEl6kiVj9HhpjeVhgru+RnSIzBRY=;
+        s=default; t=1598897274;
+        bh=IqBPY769hzDOI/BG43saaXqPp2h4NGr/1gHwqrCupjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zzk+nlOXerMYMhcMLhxutunfy2aKWT/opTfzRgMWDAE2A1JliF6SsFhTasaoajT8f
-         XkQWO56jABFEFb0JTlNPRzOgIYGeZBmqOm3xHal4whXgQchEaM6YhVRKCFlOmxpJJn
-         9B7c55XjOKNBQYRSNQFOwc9XpNCcxwxEEnrT5+sU=
+        b=Df+lVwCVMCkuzMXd7Y9uIrz9ce9YZ7hjMpIUJvwmg+UQEupsMuYhipaAXkxOGWjKW
+         f30Y3wPkh/JYqEjCVk2cCh0xKXxHJp+tclLABZ91V/c5p3md3b6dHnNVuO/WGuKsH4
+         8+XmJHZg92/bhHr5HC1nlo44wC7Mesilf4RhYKH0=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/19] scftorture: Add smp_call_function_many() memory-ordering checks
-Date:   Mon, 31 Aug 2020 11:07:38 -0700
-Message-Id: <20200831180749.843-8-paulmck@kernel.org>
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 14/19] scftorture: Make symbol 'scf_torture_rand' static
+Date:   Mon, 31 Aug 2020 11:07:44 -0700
+Message-Id: <20200831180749.843-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180731.GA582@paulmck-ThinkPad-P72>
 References: <20200831180731.GA582@paulmck-ThinkPad-P72>
@@ -58,71 +59,36 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-This commit adds checks for memory misordering across calls to and
-returns from smp_call_function_many() in the case where the caller waits.
-Misordering results in a splat.
+The sparse tool complains as follows
 
-Note that in contrast to smp_call_function_single(), this code does not
-test memory ordering into the handler in the no-wait case because none
-of the handlers would be able to free the scf_check structure without
-introducing heavy synchronization to work out which was last.
+kernel/scftorture.c:124:1: warning:
+ symbol '__pcpu_scope_scf_torture_rand' was not declared. Should it be static?
 
-[ paulmck: s/GFP_KERNEL/GFP_ATOMIC/ per kernel test robot feedback. ]
+And this per-CPU variable is not used outside of scftorture.c,
+so this commit marks it static.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/scftorture.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ kernel/scftorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 9b42271..3519ad1 100644
+index 8349681..9180de7 100644
 --- a/kernel/scftorture.c
 +++ b/kernel/scftorture.c
-@@ -240,8 +240,11 @@ static void scf_handler(void *scfc_in)
- 	unsigned long r = torture_random(this_cpu_ptr(&scf_torture_rand));
- 	struct scf_check *scfcp = scfc_in;
+@@ -134,7 +134,7 @@ static atomic_t n_alloc_errs;
+ static bool scfdone;
+ static char *bangstr = "";
  
--	if (likely(scfcp) && WARN_ON_ONCE(unlikely(!READ_ONCE(scfcp->scfc_in))))
--		atomic_inc(&n_mb_in_errs);
-+	if (likely(scfcp)) {
-+		WRITE_ONCE(scfcp->scfc_out, false); // For multiple receivers.
-+		if (WARN_ON_ONCE(unlikely(!READ_ONCE(scfcp->scfc_in))))
-+			atomic_inc(&n_mb_in_errs);
-+	}
- 	this_cpu_inc(scf_invoked_count);
- 	if (longwait <= 0) {
- 		if (!(r & 0xffc0))
-@@ -325,11 +328,28 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
- 		}
- 		break;
- 	case SCF_PRIM_MANY:
-+		if (scfsp->scfs_wait) {
-+			scfcp = kmalloc(sizeof(*scfcp), GFP_ATOMIC);
-+			if (WARN_ON_ONCE(!scfcp))
-+				atomic_inc(&n_alloc_errs);
-+		}
- 		if (scfsp->scfs_wait)
- 			scfp->n_many_wait++;
- 		else
- 			scfp->n_many++;
--		smp_call_function_many(cpu_online_mask, scf_handler, NULL, scfsp->scfs_wait);
-+		if (scfcp) {
-+			scfcp->scfc_cpu = -1;
-+			scfcp->scfc_wait = true;
-+			scfcp->scfc_out = false;
-+			scfcp->scfc_in = true;
-+		}
-+		smp_call_function_many(cpu_online_mask, scf_handler, scfcp, scfsp->scfs_wait);
-+		if (scfcp) {
-+			if (WARN_ON_ONCE(!scfcp->scfc_out))
-+				atomic_inc(&n_mb_out_errs);  // Leak rather than trash!
-+			else
-+				kfree(scfcp);
-+		}
- 		break;
- 	case SCF_PRIM_ALL:
- 		if (scfsp->scfs_wait)
+-DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
++static DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
+ 
+ // Print torture statistics.  Caller must ensure serialization.
+ static void scf_torture_stats_print(void)
 -- 
 2.9.5
 
