@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 188E9C43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD5DC433E2
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:12:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ED4392068E
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:12:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE9092068E
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1598897522;
-	bh=ViAWtvn3usd66rqJtaroi085cgtiibnhS55Z9A5KbxY=;
+	bh=RT8zUpvBeGSNkpNMBCtjwCvDmhV5N9JXCZ8P2M0fqTM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=hyNOE/h6AgKkOvupfXBHPcUB4rU1aYkA/nsnhY1lTzkRMixIQF6rJgIFKy+0i64tr
-	 2/TrC044EEe12IZXJC1bh4qm8ZzU9edFDgTXGqRjguW8ZCuaxJ9NEKszIOpSZwa1Om
-	 z4mFxR3jb3EOR57r8pP63f7YaXI6WCQQ57xo4JR4=
+	b=UfyfduqXtdLLbYG/ftS2Dy0n5PTH0bq84KWOHgA8MJOFnRreoduSIvpSy3Xd9/t/P
+	 ujbMCybsIdsqQwcUJUBnehJ9yPaElokSnMN3mkHW1LPLcBe02kBx2wuj68bYPcPW3b
+	 qYKMeQ/Occ94ZJA4bSGeYc8qgvevr2rQrCQNrV/E=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729314AbgHaSLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Aug 2020 14:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
+        id S1729323AbgHaSL0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Aug 2020 14:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729324AbgHaSL1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:11:27 -0400
+        id S1728480AbgHaSLW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:11:22 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20B3121655;
-        Mon, 31 Aug 2020 18:11:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3778A20E65;
+        Mon, 31 Aug 2020 18:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897484;
-        bh=ViAWtvn3usd66rqJtaroi085cgtiibnhS55Z9A5KbxY=;
+        s=default; t=1598897482;
+        bh=RT8zUpvBeGSNkpNMBCtjwCvDmhV5N9JXCZ8P2M0fqTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xGTFkfipwcUJE9esrk7E770I5q7i2oQmElZxEMayhZhhVI01aZzCKP2kuY6UO/c46
-         nAKdj1QmC2kdPhppcOqho/em7ZDQj1c++R8am5nb1uMl3q8uImH5tEApVzT9Xe5WUF
-         793ysbgm0Fn6Bfv4rQC/IUkenwUsFySm0FA7MCfI=
+        b=q3MEF7sMIx+W869ni9dtu7ZxfvJOLDLQ2pNq3AHsOAv/bJ/UvrWyEuuDmZMlD+WM5
+         Qhn1HWDJyTdWEZb1SpvUxEsF4vgTk+XnLCNSsL/Ye6xy71qFlDSIRdgz0sKvz3/SFI
+         NCLJBkMK9MvSs+yZs7pNvm32HU1HUBlJkcfAIprA=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/13] rcu: Report QS for outermost PREEMPT=n rcu_read_unlock() for strict GPs
-Date:   Mon, 31 Aug 2020 11:11:19 -0700
-Message-Id: <20200831181120.1044-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/13] rcu: Reduce leaf fanout for strict RCU grace periods
+Date:   Mon, 31 Aug 2020 11:11:09 -0700
+Message-Id: <20200831181120.1044-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831181101.GA950@paulmck-ThinkPad-P72>
 References: <20200831181101.GA950@paulmck-ThinkPad-P72>
@@ -60,111 +60,44 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The CONFIG_PREEMPT=n instance of rcu_read_unlock is even more
-aggressively than that of CONFIG_PREEMPT=y in deferring reporting
-quiescent states to the RCU core.  This is just what is wanted in normal
-use because it reduces overhead, but the resulting delay is not what
-is wanted for kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-This commit therefore adds an rcu_read_unlock_strict() function that
-checks for exceptional conditions, and reports the newly started
-quiescent state if it is safe to do so, also doing a spin-delay if
-requested via rcutree.rcu_unlock_delay.  This commit also adds a call
-to rcu_read_unlock_strict() from the CONFIG_PREEMPT=n instance of
-__rcu_read_unlock().
+Because strict RCU grace periods will complete more quickly, they will
+experience greater lock contention on each leaf rcu_node structure's
+->lock.  This commit therefore reduces the leaf fanout in order to reduce
+this lock contention.
 
-[ paulmck: Fixed bug located by kernel test robot <lkp@intel.com> ]
+Note that this also has the effect of reducing the number of CPUs
+supported to 16 in the case of CONFIG_RCU_FANOUT_LEAF=2 or 81 in the
+case of CONFIG_RCU_FANOUT_LEAF=3.  However, greater numbers of CPUs are
+probably a bad idea when using CONFIG_RCU_STRICT_GRACE_PERIOD=y.  Those
+wishing to live dangerously are free to edit their kernel/rcu/Kconfig
+files accordingly.
+
 Reported-by Jann Horn <jannh@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h |  7 +++++++
- kernel/rcu/tree.c        |  6 ++++++
- kernel/rcu/tree_plugin.h | 24 ++++++++++++++++++------
- 3 files changed, 31 insertions(+), 6 deletions(-)
+ kernel/rcu/Kconfig | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d15d46d..522529a 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -55,6 +55,12 @@ void __rcu_read_unlock(void);
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 0ebe15a..b71e21f 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -135,10 +135,12 @@ config RCU_FANOUT
  
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
-+#ifdef CONFIG_TINY_RCU
-+#define rcu_read_unlock_strict() do { } while (0)
-+#else
-+void rcu_read_unlock_strict(void);
-+#endif
-+
- static inline void __rcu_read_lock(void)
- {
- 	preempt_disable();
-@@ -63,6 +69,7 @@ static inline void __rcu_read_lock(void)
- static inline void __rcu_read_unlock(void)
- {
- 	preempt_enable();
-+	rcu_read_unlock_strict();
- }
- 
- static inline int rcu_preempt_depth(void)
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 31995b3..a295cadf 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -178,6 +178,12 @@ module_param(gp_init_delay, int, 0444);
- static int gp_cleanup_delay;
- module_param(gp_cleanup_delay, int, 0444);
- 
-+// Add delay to rcu_read_unlock() for strict grace periods.
-+static int rcu_unlock_delay;
-+#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
-+module_param(rcu_unlock_delay, int, 0444);
-+#endif
-+
- /*
-  * This rcu parameter is runtime-read-only. It reflects
-  * a minimum allowed number of objects which can be cached
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 3f3a4ff..25a676d 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -430,12 +430,6 @@ static bool rcu_preempt_has_tasks(struct rcu_node *rnp)
- 	return !list_empty(&rnp->blkd_tasks);
- }
- 
--// Add delay to rcu_read_unlock() for strict grace periods.
--static int rcu_unlock_delay;
--#ifdef CONFIG_RCU_STRICT_GRACE_PERIOD
--module_param(rcu_unlock_delay, int, 0444);
--#endif
--
- /*
-  * Report deferred quiescent states.  The deferral time can
-  * be quite short, for example, in the case of the call from
-@@ -785,6 +779,24 @@ dump_blkd_tasks(struct rcu_node *rnp, int ncheck)
- #else /* #ifdef CONFIG_PREEMPT_RCU */
- 
- /*
-+ * If strict grace periods are enabled, and if the calling
-+ * __rcu_read_unlock() marks the beginning of a quiescent state, immediately
-+ * report that quiescent state and, if requested, spin for a bit.
-+ */
-+void rcu_read_unlock_strict(void)
-+{
-+	struct rcu_data *rdp;
-+
-+	if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-+	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-+		return;
-+	rdp = this_cpu_ptr(&rcu_data);
-+	rcu_report_qs_rdp(rdp->cpu, rdp);
-+	udelay(rcu_unlock_delay);
-+}
-+EXPORT_SYMBOL_GPL(rcu_read_unlock_strict);
-+
-+/*
-  * Tell them what RCU they are running.
-  */
- static void __init rcu_bootup_announce(void)
+ config RCU_FANOUT_LEAF
+ 	int "Tree-based hierarchical RCU leaf-level fanout value"
+-	range 2 64 if 64BIT
+-	range 2 32 if !64BIT
++	range 2 64 if 64BIT && !RCU_STRICT_GRACE_PERIOD
++	range 2 32 if !64BIT && !RCU_STRICT_GRACE_PERIOD
++	range 2 3 if RCU_STRICT_GRACE_PERIOD
+ 	depends on TREE_RCU && RCU_EXPERT
+-	default 16
++	default 16 if !RCU_STRICT_GRACE_PERIOD
++	default 2 if RCU_STRICT_GRACE_PERIOD
+ 	help
+ 	  This option controls the leaf-level fanout of hierarchical
+ 	  implementations of RCU, and allows trading off cache misses
 -- 
 2.9.5
 
