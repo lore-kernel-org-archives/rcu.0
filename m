@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06C7DC433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44E10C43461
 	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CCE6120E65
-	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 19F1C20E65
+	for <rcu@archiver.kernel.org>; Mon, 31 Aug 2020 18:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598897073;
-	bh=5ZSZxK/kV1hZegsiFZ8O9K44GQMHY/0mzvIOGJ1aFmw=;
+	s=default; t=1598897074;
+	bh=4AuojR95FSb5tOK6DNtw+xzMg2K0zUYedN74DX3J48o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=X7TPrbSgS/4XOaEs5LsPYIl+xz9vhDVffDXHPDdBlqkzGO7cfvMgFdc7FxnP8YG8p
-	 5BtGXT4KsdLLEmND7l/jCUhTpBFlQQL2lrITZ2V9Frxbej6Wrp1agZWg2h/b3T3U77
-	 fKjGZsbPT3d1kujXWO2IK0dM8l0BGTC0i8k//6K0=
+	b=uo3wmvBVeizQ2Hr8uGanrBn/YEIWbaPmCsrg6tZnlPxYZUYJbL5jLjy+MCm7iCBaP
+	 DGiOKmhzO9UBRk41+4/XLnw6Wz+KPc6CKAw+1SpJrxqllzSvbc+w+M8xQuBT50t/cO
+	 8PV2QNy9quuwJaHvb+an1+cxOTLOG+KdsiHTKvZ8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgHaSEP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1729371AbgHaSEP (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 31 Aug 2020 14:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44434 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729365AbgHaSEL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:04:11 -0400
+        id S1729357AbgHaSEK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:04:10 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EC4C21707;
-        Mon, 31 Aug 2020 18:04:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E34C20866;
+        Mon, 31 Aug 2020 18:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897050;
-        bh=5ZSZxK/kV1hZegsiFZ8O9K44GQMHY/0mzvIOGJ1aFmw=;
+        s=default; t=1598897049;
+        bh=4AuojR95FSb5tOK6DNtw+xzMg2K0zUYedN74DX3J48o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SqgsJ9kSlOV1KM6FdO52S3Mxu1W7dxQPCqmmWhO1172zAmaRs3u/jqF5o8pVqmmty
-         4ASjzhLWLNZ0VXB1e4+MIcNCZ0A07Qo48pzV8s2t4WUsX5Bj7K4FqhxgfdIkYXxkCp
-         6Lr5BhZrYcmwAmWkjwU5qlAmH0ejTjPORmqWU/QQ=
+        b=w5sof7pW2UOxew2g3qI8k3wfzXyh5mmPAxdDWyq4OofffDkHhQ3/xqmWwgk3Ykbrb
+         KvbtCxnwWok06lpEDnEtBb+Sknpem8n3iuoRxocD9T9AAlhU6vVQH3KYYqZDPnjUth
+         ZO+2tAwUSlPjnt4pCHTmM4Hk5NYSO8KVvQrxJtMs=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/14] torture: Add kvm.sh --help and update help message
-Date:   Mon, 31 Aug 2020 11:04:00 -0700
-Message-Id: <20200831180406.494-8-paulmck@kernel.org>
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/14] rcutorture: Replace HTTP links with HTTPS ones
+Date:   Mon, 31 Aug 2020 11:03:57 -0700
+Message-Id: <20200831180406.494-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180348.GA416@paulmck-ThinkPad-P72>
 References: <20200831180348.GA416@paulmck-ThinkPad-P72>
@@ -58,51 +59,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 
-This commit adds a --help argument (along with its synonym -h) to display
-the help text.  While in the area, this commit also updates the help text.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/doc/rcu-test-image.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 0a08463..fc15b52 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -56,17 +56,18 @@ usage () {
- 	echo "       --defconfig string"
- 	echo "       --dryrun sched|script"
- 	echo "       --duration minutes"
-+	echo "       --help"
- 	echo "       --interactive"
- 	echo "       --jitter N [ maxsleep (us) [ maxspin (us) ] ]"
- 	echo "       --kconfig Kconfig-options"
- 	echo "       --kmake-arg kernel-make-arguments"
- 	echo "       --mac nn:nn:nn:nn:nn:nn"
--	echo "       --memory megabytes | nnnG"
-+	echo "       --memory megabytes|nnnG"
- 	echo "       --no-initrd"
- 	echo "       --qemu-args qemu-arguments"
- 	echo "       --qemu-cmd qemu-system-..."
- 	echo "       --results absolute-pathname"
--	echo "       --torture rcu"
-+	echo "       --torture lock|rcu|rcuperf|refscale|scf"
- 	echo "       --trust-make"
- 	exit 1
- }
-@@ -127,6 +128,9 @@ do
- 		dur=$(($2*60))
- 		shift
- 		;;
-+	--help|-h)
-+		usage
-+		;;
- 	--interactive)
- 		TORTURE_QEMU_INTERACTIVE=1; export TORTURE_QEMU_INTERACTIVE
- 		;;
+diff --git a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+index 449cf57..cc280ba 100644
+--- a/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
++++ b/tools/testing/selftests/rcutorture/doc/rcu-test-image.txt
+@@ -36,7 +36,7 @@ References:
+ 	https://help.ubuntu.com/community/JeOSVMBuilder
+ 	http://wiki.libvirt.org/page/UbuntuKVMWalkthrough
+ 	http://www.moe.co.uk/2011/01/07/pci_add_option_rom-failed-to-find-romfile-pxe-rtl8139-bin/ -- "apt-get install kvm-pxe"
+-	http://www.landley.net/writing/rootfs-howto.html
+-	http://en.wikipedia.org/wiki/Initrd
+-	http://en.wikipedia.org/wiki/Cpio
++	https://www.landley.net/writing/rootfs-howto.html
++	https://en.wikipedia.org/wiki/Initrd
++	https://en.wikipedia.org/wiki/Cpio
+ 	http://wiki.libvirt.org/page/UbuntuKVMWalkthrough
 -- 
 2.9.5
 
