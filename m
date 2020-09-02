@@ -1,52 +1,72 @@
-Return-Path: <SRS0=vVGi=CK=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=INMp=CL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 910CEC433E6
-	for <rcu@archiver.kernel.org>; Tue,  1 Sep 2020 17:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C397C433E2
+	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 06:49:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6DC72207D3
-	for <rcu@archiver.kernel.org>; Tue,  1 Sep 2020 17:42:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2783120665
+	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 06:49:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="stdjs9CM"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DH/HQXxy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgIARma (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Sep 2020 13:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S1726312AbgIBGtz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Sep 2020 02:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728516AbgIARm3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:42:29 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5E8C061244;
-        Tue,  1 Sep 2020 10:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L5+iKG5i9fFPHpLQKtEzdQO5HXzkEnTIXwpxe3If020=; b=stdjs9CM1DFY4aiDaHudhWDJKU
-        s6Hpvn/DWs26Mh7Z8oSw5OtKqQbVdj5SUUKsJ1RzZsqkZ39iCtnmLzLab8+w9xopeoSAKgcoJn6jZ
-        ZUdshd6E0AdA9iKpriv90RAayQNk0C70iq733aVy7W2zU/HsFVzkiBnQAP3pbXRftxhNJfEHVTJ9u
-        UmFULOER0xmaxEZN3kArygBpf/4g90Zo7eLjoRZkwxRpRaG5MPMPil2KZzQTNGZvVKsOilhf4aK+b
-        pMi98ShaxU07nrCWfxpRZlQ+p1FZxTk+EQKLdULpiD/p+qzQGDZ3px05LdXW42p9dOheyfnLt3CAr
-        aL9eBGIg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDAIU-0000zX-AR; Tue, 01 Sep 2020 17:42:19 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 26867980D85; Tue,  1 Sep 2020 19:42:16 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 19:42:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Lina Iyer <ilina@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        with ESMTP id S1726323AbgIBGtt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Sep 2020 02:49:49 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E78AC061245
+        for <rcu@vger.kernel.org>; Tue,  1 Sep 2020 23:49:49 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id p185so1998683vsp.8
+        for <rcu@vger.kernel.org>; Tue, 01 Sep 2020 23:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hJdPXnIz2xIWHYrNu+/mihG3qKNrHnPr5aFl3WHMv10=;
+        b=DH/HQXxy9pUzTsk+32nhzeQi4lCS6j4pbWuCnV+ayRhusVyJE+GfGavXVg3FzjLLMC
+         LK8OEBTw0weBcfnbI/aDRKUU8aoucy4lRc0ONubyzuLNR6ESaRQHJOV8kzKIOVrmsDhx
+         6sKNDVNPazQAYMQ8wDo9Wj710fZ3dk88e7r6+SY+TrooZOJgOc2C+e9DCdb5gQukJaW0
+         RdR8ylrolO6R0EguiY5+55r0YzTCwBYMAaA4Ppj4bW9q2Na5GTgd7iYIJmUaS2n/yESH
+         K5HJquYhKKBPyu0ab/hNPzVNSoSK28EBgg+kpF7M4Fm+DIDbuPkOLQenP+FdV1AcEj1S
+         e3/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hJdPXnIz2xIWHYrNu+/mihG3qKNrHnPr5aFl3WHMv10=;
+        b=PYWRe50YpcnwwR9Eq/PD05i5sXTLsSVb6qJ4sG72XHgO9HVylgGWOcVbhLw8FEJZlH
+         I/TK6wNGMQwlLfvUdlvKn7B+n/WO1dUKCXVkI6d8tSBGZwyUkvJznXN1VqsZDR1LyU/6
+         hpyXqeYyrJ7q2Q0ccclZyyenCfhhcJBPRiwxG1jiPq9A+r13ioMIQh9rvmnsNBbzOq2u
+         Vp72A7HxFFIgeVPznBkZi5Y9/vBdXPCaWuYdwAxQwaN4sDfLnlOeD8s5//P40FpzC1Qb
+         hFbeWiPCrnIes2nbWhfJ+85KnknE4Ga5YssUUjmTuetCLfFVgLVJac5tVGBnSusL2shz
+         BfUA==
+X-Gm-Message-State: AOAM533gk1zUbj1I7ZBBnueb4EWHTNXbuzFC3Tv9N1K63bdJi0KTTcxy
+        g6VTWWR1YnEXmQuYYRtDEL0rQydzK0gIECdavt/w3Q==
+X-Google-Smtp-Source: ABdhPJzUS+wRt0IpiVg53IZAX+dmleKyjNHbOJx7Kll4a+k/osLJVVjBMrHaFOMzv26GWMEY8wxkUT2x0u85LLknh70=
+X-Received: by 2002:a05:6102:5a:: with SMTP id k26mr4733338vsp.52.1599029388083;
+ Tue, 01 Sep 2020 23:49:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+ <20200831194402.GD2855@paulmck-ThinkPad-P72> <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
+ <20200901150047.GB29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200901150047.GB29330@paulmck-ThinkPad-P72>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 2 Sep 2020 08:49:11 +0200
+Message-ID: <CAPDyKFptZK-OqnAuJYGnpfPbZ1qw-iSd4t5SuE7SmWic=ms48Q@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
+ OF driver helper
+To:     paulmck@kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Saravana Kannan <saravanak@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
         open list <linux-kernel@vger.kernel.org>,
         linux-mmc <linux-mmc@vger.kernel.org>,
         lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
@@ -60,54 +80,153 @@ Cc:     Lina Iyer <ilina@codeaurora.org>,
         madhuparnabhowmik10@gmail.com,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
- OF driver helper
-Message-ID: <20200901174216.GJ29142@worktop.programming.kicks-ass.net>
-References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
- <20200831194402.GD2855@paulmck-ThinkPad-P72>
- <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
- <CAPDyKFrTERjpLrPOFtkqLyNsk2T_58Ye2FQ1mPf-0u78aWW=Xw@mail.gmail.com>
- <20200901104206.GU1362448@hirez.programming.kicks-ass.net>
- <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
- <CAPDyKFrv+DTF8=twZZk_tenB-sLg6H-CFn9HVDVA5S2kK2=U5Q@mail.gmail.com>
- <20200901154417.GD20303@codeaurora.org>
- <20200901155014.GF2674@hirez.programming.kicks-ass.net>
- <20200901161340.GC29330@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901161340.GC29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        peterz@infrdead.org, Lina Iyer <ilina@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 09:13:40AM -0700, Paul E. McKenney wrote:
-> On Tue, Sep 01, 2020 at 05:50:14PM +0200, peterz@infradead.org wrote:
-> > On Tue, Sep 01, 2020 at 09:44:17AM -0600, Lina Iyer wrote:
-> > > > > > > > I could add RCU_NONIDLE for the calls to pm_runtime_put_sync_suspend()
-> > > > > > > > and pm_runtime_get_sync() in psci_enter_domain_idle_state(). Perhaps
-> > > > > > > > that's the easiest approach, at least to start with.
-> > 
-> > > I think this would be nice. This should also cover the case, where PM domain
-> > > power off notification callbacks call trace function internally. Right?
-> > 
-> > That's just more crap for me to clean up later :-(
-> > 
-> > trace_*_rcuidle() and RCU_NONIDLE() need to die, not proliferate.
-> 
-> Moving the idle-entry boundary further in is good in any number of ways.
-> But experience indicates that no matter how far you move it, there will
-> be something complex further in.  Unless you are pushing it all the way
-> into all the arch-specific code down as far as it can possibly go?
+On Tue, 1 Sep 2020 at 17:00, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Sep 01, 2020 at 08:46:54AM +0200, Ulf Hansson wrote:
+> > + Saravanna, Rafael, Lina
+> >
+> > On Mon, 31 Aug 2020 at 21:44, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Mon, Aug 31, 2020 at 12:02:31PM +0530, Naresh Kamboju wrote:
+> > > > While booting linux mainline kernel on arm64 db410c this kernel warning
+> > > > noticed.
+> > > >
+> > > > metadata:
+> > > >   git branch: master
+> > > >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > >   git commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+> > > >   git describe: v5.9-rc3
+> > > >   make_kernelversion: 5.9.0-rc3
+> > > >   kernel-config:
+> > > > http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-mainline/2965/config
+> > > >
+> > > > Boot log,
+> > > >
+> > > > [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd030]
+> > > > [    0.000000] Linux version 5.9.0-rc3 (oe-user@oe-host)
+> > > > (aarch64-linaro-linux-gcc (GCC) 7.3.0, GNU ld (GNU Binutils)
+> > > > 2.30.0.20180208) #1 SMP PREEMPT Mon Aug 31 00:23:15 UTC 2020
+> > > > [    0.000000] Machine model: Qualcomm Technologies, Inc. APQ 8016 SBC
+> > > > <>
+> > > > [    5.299090] sdhci: Secure Digital Host Controller Interface driver
+> > > > [    5.299140] sdhci: Copyright(c) Pierre Ossman
+> > > > [    5.304313]
+> > > > [    5.307771] Synopsys Designware Multimedia Card Interface Driver
+> > > > [    5.308588] =============================
+> > > > [    5.308593] WARNING: suspicious RCU usage
+> > > > [    5.316628] sdhci-pltfm: SDHCI platform and OF driver helper
+> > > > [    5.320052] 5.9.0-rc3 #1 Not tainted
+> > > > [    5.320057] -----------------------------
+> > > > [    5.320063] /usr/src/kernel/include/trace/events/lock.h:37
+> > > > suspicious rcu_dereference_check() usage!
+> > > > [    5.320068]
+> > > > [    5.320068] other info that might help us debug this:
+> > > > [    5.320068]
+> > > > [    5.320074]
+> > > > [    5.320074] rcu_scheduler_active = 2, debug_locks = 1
+> > > > [    5.320078] RCU used illegally from extended quiescent state!
+> > > > [    5.320084] no locks held by swapper/0/0.
+> > > > [    5.320089]
+> > > > [    5.320089] stack backtrace:
+> > > > [    5.320098] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #1
+> > > > [    5.346354] sdhci_msm 7864900.sdhci: Got CD GPIO
+> > > > [    5.346446] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> > > > [    5.346452] Call trace:
+> > > > [    5.346463]  dump_backtrace+0x0/0x1f8
+> > > > [    5.346471]  show_stack+0x2c/0x38
+> > > > [    5.346480]  dump_stack+0xec/0x15c
+> > > > [    5.346490]  lockdep_rcu_suspicious+0xd4/0xf8
+> > > > [    5.346499]  lock_acquire+0x3d0/0x440
+> > > > [    5.346510]  _raw_spin_lock_irqsave+0x80/0xb0
+> > > > [    5.413118]  __pm_runtime_suspend+0x34/0x1d0
+> > > > [    5.417457]  psci_enter_domain_idle_state+0x4c/0xb0
+> > > > [    5.421795]  cpuidle_enter_state+0xc8/0x610
+> > > > [    5.426392]  cpuidle_enter+0x3c/0x50
+> > > > [    5.430561]  call_cpuidle+0x44/0x80
+> > > > [    5.434378]  do_idle+0x240/0x2a0
+> > >
+> > > RCU ignores CPUs in the idle loop, which means that you cannot use
+> > > rcu_read_lock() from the idle loop without use of something like
+> > > RCU_NONIDLE().  If this is due to event tracing, you should use the
+> > > _rcuidle() variant of the event trace statement.
+> >
+> > In the runtime suspend path, the runtime PM core calls
+> > device_links_read_lock() - if the device in question has any links to
+> > suppliers (to allow them to be suspended too).
+> >
+> > device_links_read_lock() calls srcu_read_lock().
+>
+> Except that it is perfectly legal to invoke srcu_read_lock() from the
+> idle loop.  The problem is instead rcu_read_lock() and similar.
 
-Not all; the simple cpuidle drivers should be good already. The more
-complicated ones need some help.
+Hmm. Sounds like more debugging is needed then, to narrow down the problem.
 
-The patch provided earlier:
+>
+> > It turns out that the device in question (the CPU device that is
+> > attached to genpd) didn't have any links before - but that seems to
+> > have changed, due to the work done by Saravana (links become created
+> > on a per resource basis, parsed from DT during boot).
+> >
+> > > Note also that Peter Zijlstra (CCed) is working to shrink the portion
+> > > of the idle loop that RCU ignores.  Not sure that it covers your
+> > > case, but it is worth checking.
+> >
+> > Thanks for letting me know. Let's see what Peter thinks about this then.
+> >
+> > Apologize for my ignorance, but from a cpuidle point of view, what
+> > does it mean using RCU_NONIDLE()? I guess we should avoid RCU_NONIDLE
+> > on bigger code paths?
+>
+> It means that as far as RCU (and only RCU) is concerned there is an
+> exit from idle state for just long enough to execute RCU_NONIDLE()'s
+> argument.  This involves an atomic operation on both entry to and exit
+> from RCU_NONIDLE(), which in most cases won't be noticeable.  But in some
+> cases you might (for example) want to enclose a loop in RCU_NONIDLE()
+> rather than doing RCU_NONIDLE() on each pass through the loop.
+>
+> > I could add RCU_NONIDLE for the calls to pm_runtime_put_sync_suspend()
+> > and pm_runtime_get_sync() in psci_enter_domain_idle_state(). Perhaps
+> > that's the easiest approach, at least to start with.
+> >
+> > Or do you have any other ideas?
+>
+> Here is the list, though it is early in the morning here:
+>
+> 1.      RCU_NONIDLE().
+>
+> 2.      Peter's patch, if it turns out to hoist your code out of what
+>         RCU considers to be the idle loop.
+>
+> 3.      If the problem is trace events, use the _rcuidle() variant of the
+>         trace event.  Instead of trace_blah(), use trace_blah_rcuidle().
+>
+> 4.      Switch from RCU (as in rcu_read_lock()) to SRCU (as in
+>         srcu_read_lock()).
+>
+> 5.      Take Peter's patch a step further, moving the rcu_idle_enter()
+>         and rcu_idle_exit() calls as needed.  But please keep in mind
+>         that these two functions require that irqs be disabled by their
+>         callers.
+>
+> 6.      If RCU_NONIDLE() in inconvenient due to early exits and such,
+>         you could use the rcu_irq_enter_irqson() and rcu_irq_exit_irqson()
+>         functions that it calls.
+>
+> Do any of those help?
 
-  https://lkml.kernel.org/r/20200901104206.GU1362448@hirez.programming.kicks-ass.net
+Yes, they will, in one way or the other. Thanks for providing me with
+all the available options.
 
-should allow the complicated drivers to take over and DTRT.
+BTW, I still don't get what good rcu_idle_enter|exit() does, but I am
+assuming those need to be called at some point before the CPU goes to
+sleep.
+
+Kind regards
+Uffe
