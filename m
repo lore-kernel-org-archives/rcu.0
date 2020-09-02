@@ -2,55 +2,50 @@ Return-Path: <SRS0=INMp=CL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE84C433E2
-	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 12:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ECDCC433E2
+	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 14:59:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 306F0206F0
-	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 12:14:35 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cNHyhKqU"
+	by mail.kernel.org (Postfix) with ESMTP id EF9A52078E
+	for <rcu@archiver.kernel.org>; Wed,  2 Sep 2020 14:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1599058779;
+	bh=s6nqfBIuq3dFoDRkLqgA8cQMjG1yVZ4UtRlISUFc8VE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=z8GjQ+BiTLR9xQ1+dywUW/Dc1tVwOPOKvJLO4zDbmZZx49RZlbsdJfkPaYzHNtqe2
+	 RcRRyOWcotqmOSjdrFTkX6Xd0vhqguZ0Gno9WR4xj15Z0GUm1Ce9s6sznnlq8AAt0k
+	 Gc17KesUUs3Wrnd6LxlZsoz8SjtAfOrAhUqpLj1k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgIBMOR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Sep 2020 08:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgIBMOL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:14:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150C9C061244;
-        Wed,  2 Sep 2020 05:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NadokaudFgFu9nMqgW3AlEN/gjoKd9NcBHIQBLterQc=; b=cNHyhKqUc+bx3k9nQ7UUWDCZaU
-        S3o+RQdCG0YXb+ogIN83rwNSwWanJEnCLsxrjV8MtSAGJG1RjGRPQ3GcUaecix2yWLKI0q9Hgiyt/
-        JtAfRFzWy8t15wcwatM8mJr/KXTngtKdH3XlLhkh5dyNPVsWgCRIe7QkCo0YKXjp/bvq1Rr/gsCHP
-        hXlbG7hbnps9N+UP/GAgKgl0JeD57Zbx0oZiLqNsqnVx9Pyrcz3PEGfXn9yp7vUPHG4plQsq5/CSD
-        NK06IP8lJJjJ9NGZ4Il1Wt3x2S1pjySa6oKFp3C7y7qs/ct4VF2zYuTL55+GR8C1qENhjWzsfAndD
-        0NlgetLg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDReH-0007On-AX; Wed, 02 Sep 2020 12:13:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727997AbgIBO7S (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Sep 2020 10:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727037AbgIBNwD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:52:03 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB1E93003E5;
-        Wed,  2 Sep 2020 14:13:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A43C123D3D72C; Wed,  2 Sep 2020 14:13:55 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 14:13:55 +0200
-From:   peterz@infradead.org
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D3F020767;
+        Wed,  2 Sep 2020 13:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599054722;
+        bh=s6nqfBIuq3dFoDRkLqgA8cQMjG1yVZ4UtRlISUFc8VE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IbeQzyFkL0L1Xx0MynJJM3KNt2ZzKm747XMqTTSZrHK5HGG1gK3K6+OcBg5Zpw390
+         8UBtwQJ/QuRKdnq6FdcKrsbpA98aFmiAnH7wlT2JxLVtma/p5+Ma9v005KFEEZT76T
+         Q6zZtSxr2fDTjJhybaShUyWoecF+njvfmRhpJL3M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0D17F3520DED; Wed,  2 Sep 2020 06:52:02 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 06:52:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Saravana Kannan <saravanak@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
         open list <linux-kernel@vger.kernel.org>,
         linux-mmc <linux-mmc@vger.kernel.org>,
         lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
@@ -64,42 +59,67 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         madhuparnabhowmik10@gmail.com,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+        peterz@infrdead.org, Lina Iyer <ilina@codeaurora.org>
 Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
  OF driver helper
-Message-ID: <20200902121355.GE1362448@hirez.programming.kicks-ass.net>
-References: <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
- <CAPDyKFrTERjpLrPOFtkqLyNsk2T_58Ye2FQ1mPf-0u78aWW=Xw@mail.gmail.com>
- <20200901104206.GU1362448@hirez.programming.kicks-ass.net>
- <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
- <CAPDyKFrv+DTF8=twZZk_tenB-sLg6H-CFn9HVDVA5S2kK2=U5Q@mail.gmail.com>
- <20200901154417.GD20303@codeaurora.org>
- <20200901155014.GF2674@hirez.programming.kicks-ass.net>
- <20200901161340.GC29330@paulmck-ThinkPad-P72>
- <20200901174216.GJ29142@worktop.programming.kicks-ass.net>
- <CAPDyKFqPh7bg16AsitGv2QQHgwOPnWx9DiPPCMuD1EGA5TFFdg@mail.gmail.com>
+Message-ID: <20200902135202.GG29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+ <20200831194402.GD2855@paulmck-ThinkPad-P72>
+ <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
+ <20200901150047.GB29330@paulmck-ThinkPad-P72>
+ <CAPDyKFptZK-OqnAuJYGnpfPbZ1qw-iSd4t5SuE7SmWic=ms48Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFqPh7bg16AsitGv2QQHgwOPnWx9DiPPCMuD1EGA5TFFdg@mail.gmail.com>
+In-Reply-To: <CAPDyKFptZK-OqnAuJYGnpfPbZ1qw-iSd4t5SuE7SmWic=ms48Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 09:03:37AM +0200, Ulf Hansson wrote:
-> Lots of cpuidle drivers are using CPU_PM notifiers (grep for
-> cpu_pm_enter and you will see) from their idlestates ->enter()
-> callbacks. And for those we are already calling
-> rcu_irq_enter_irqson|off() in cpu_pm_notify() when firing them.
+On Wed, Sep 02, 2020 at 08:49:11AM +0200, Ulf Hansson wrote:
+> On Tue, 1 Sep 2020 at 17:00, Paul E. McKenney <paulmck@kernel.org> wrote:
 
-Yeah, that particular trainwreck is on my todo list already ... then
-again, that list is forever overflowing.
+[ . . . ]
 
-I'm thinking cpu_pm_unregister_notifier() is not a common thing? The few
-I looked at seem to suggest 'never' is a good approximation.
+> > Here is the list, though it is early in the morning here:
+> >
+> > 1.      RCU_NONIDLE().
+> >
+> > 2.      Peter's patch, if it turns out to hoist your code out of what
+> >         RCU considers to be the idle loop.
+> >
+> > 3.      If the problem is trace events, use the _rcuidle() variant of the
+> >         trace event.  Instead of trace_blah(), use trace_blah_rcuidle().
+> >
+> > 4.      Switch from RCU (as in rcu_read_lock()) to SRCU (as in
+> >         srcu_read_lock()).
+> >
+> > 5.      Take Peter's patch a step further, moving the rcu_idle_enter()
+> >         and rcu_idle_exit() calls as needed.  But please keep in mind
+> >         that these two functions require that irqs be disabled by their
+> >         callers.
+> >
+> > 6.      If RCU_NONIDLE() in inconvenient due to early exits and such,
+> >         you could use the rcu_irq_enter_irqson() and rcu_irq_exit_irqson()
+> >         functions that it calls.
+> >
+> > Do any of those help?
+> 
+> Yes, they will, in one way or the other. Thanks for providing me with
+> all the available options.
+> 
+> BTW, I still don't get what good rcu_idle_enter|exit() does, but I am
+> assuming those need to be called at some point before the CPU goes to
+> sleep.
 
-It would be fairly trivial to replace the atomic_notifier usage with a
-raw_notifier a lock and either stop-machine or IPIs. Better still would
-be if we can get rid of it entirely, but I can't tell in a hurry if that
-is possible.
+These functions allow RCU to leave idle CPUs undisturbed.  If they
+were not invoked, RCU would periodically IPI idle CPUs to verify that
+there were no RCU readers running on them.  This would be quite bad for
+battery lifetime, among other things.  So the call to rcu_idle_enter()
+tells RCU that it may safely completely ignore this CPU until its next
+call to rcu_idle_exit().
+
+							Thanx, Paul
