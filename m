@@ -2,70 +2,70 @@ Return-Path: <SRS0=JZbX=CN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F9CC433E2
-	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 03:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7936C433E2
+	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 04:05:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 56D05206D4
-	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 03:31:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E156206CA
+	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 04:05:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ONq6z4Rt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rRfF1Fgm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgIDDb1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Sep 2020 23:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        id S1726185AbgIDEFm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Sep 2020 00:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgIDDbZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Sep 2020 23:31:25 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F13BC061244;
-        Thu,  3 Sep 2020 20:31:25 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id p65so3719521qtd.2;
-        Thu, 03 Sep 2020 20:31:25 -0700 (PDT)
+        with ESMTP id S1725765AbgIDEFl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Sep 2020 00:05:41 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A26C061244;
+        Thu,  3 Sep 2020 21:05:40 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id j3so2426962qvi.7;
+        Thu, 03 Sep 2020 21:05:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3XehbrPYRfRYUCZ13XbEG2FB/0APg52ndRCkIBeff8I=;
-        b=ONq6z4Rtfr0mqoWNUDNn+uiJu/F+nB1j+lmTZFPOdzJ7EpSBlW4+65Y7KPrNzNTay+
-         L5+LAWRClVwkgBUxOYeGSO8zkwt96J4HUJjwkncvE/n6ol5H3F7HDFyU4+aV0AR8VA82
-         yvqbmTQX+v1nwTupWaHZa/6j3zExUKUoe4RY4oMz8spi5rVwpi6ADoyWRaEeUgaaqu+/
-         RsbDlEZYmjYDx+1DREDmMMJrTn7WYguJIpnjaCecemakWAjyMDrZG8XvYhDOg+5GFKTb
-         lTaFe88KhamycwheHl/TEYf7tXmhEJjGkx2NEeXkHJ3WJ4wZl9DUMCKhMR3ADtyF8an2
-         GdRA==
+        bh=CCg96ChsXARi8LqwOKl/DczJmljgCpaoYipr+OeW0wA=;
+        b=rRfF1FgmYfdVZBV5tSyjJWxsFPSuhj2lBE7+eXaXhAvQslNNmo0mesaONMASeE2j6R
+         9cLifyuxmqxmnIPYbLaPOPK35kvkeLuoalTWJF/nTnlj6ZLlquqidDCQbTUptRmugC02
+         6kukQ7dAifHJ1ipwgaLMHsHXtIMM8QOLgm8LLjFBbazm1sVhetG0lMlYc5dyFQszXqmp
+         j0yEKWj6jkATuw1cRlEddEiZlkT3/F07J8kqIcgcIwABV3TvxINMAMGB1RS5ZcoArTij
+         sSzy7d7YBD8tBrIUr56Q/+sUEjGgOfcEPSbrNaPiXhpr7t4uJcaebyRV+f41gU2oIyUa
+         UNmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3XehbrPYRfRYUCZ13XbEG2FB/0APg52ndRCkIBeff8I=;
-        b=lQOlvFFTzlEi+5xaRPtrbWDNkPZoSx2fg4pSyce0xgmnsnV89Kxs9+eZ0yiccY3w5j
-         dz/nngjWHxAhiQWw2AoYTsnPBV9nIAGr+NHXABIsqbLAZku7ymRWC4kbts9MZ/wdHl10
-         BjpWK7XL8ZwwiWH8qy5B8HA+29PUraQzzJK6UeFnO1rNudV743oyKtVWxmpZAIMntjYM
-         M/lI4Xbg/81APRW2muuT77qSeoczZMGA72fkn5mLhJffxGTP3sNRtrL+xbfdf0A2dfrg
-         KlkuCDyeLsODssvrnF/fWsnb/sNfnfcYMCSrjFAFoPXWPx1N0/xTrzndZPgUlpAmFj53
-         BDwA==
-X-Gm-Message-State: AOAM532wlGHnA7EOWzC20vG13Q8qbOnb2SUDgnghH6f09I7vynaQJ53F
-        C5PvWqof5T74ySkdcr/hkJc=
-X-Google-Smtp-Source: ABdhPJzaTKiqJKuVCZPCElrgIOpiv5d6Uz/0jrPpMGW3V7yulFncqtybbESUJb4BHI/nEboIRfw1rg==
-X-Received: by 2002:ac8:7b95:: with SMTP id p21mr6754715qtu.139.1599190284599;
-        Thu, 03 Sep 2020 20:31:24 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id y18sm3528037qkf.93.2020.09.03.20.31.23
+        bh=CCg96ChsXARi8LqwOKl/DczJmljgCpaoYipr+OeW0wA=;
+        b=hl+WwJY9IQlE1PmidzZejAGtQcFaS7C1IhqgL/qryUMA8XSlOV0dIAmz52KrQ5C/ZE
+         a0iXX9ztqqfHWV3DGfcid3HKbqq7H68/zHlK6+oT8BJBQdBn2D9m3Qo7qu8vysRG1PQh
+         5BHQpTb3M7pzPJGPN2gOCa6VnXVMPvQBzqUERSP90pz647s+EODsz2ZuXz64I1DSYpbw
+         iAar6nW6BdLfZNFcKb0wiZctQisfm2hWc2kZzR5ANsYjb0J0ZKb1L1wXjfp1jTigqLBS
+         pLYmld8BHVkhxiDS7ZzdAv++177fcyrsS42IzGEXS6uuBD4FQPIy5fdjJa85bwAN0NKe
+         6ZPw==
+X-Gm-Message-State: AOAM530RHqqnnbgSBMHyTe/Dgh8jKNowUx61KG4QWRg+NAbQXYIYYRT/
+        gDsFJODiN58guSODS9neJUU=
+X-Google-Smtp-Source: ABdhPJymOWrRLpReazQNKLhn/K/UuhwgeMYPrmybPIF4vthRLgt9+vm42YpYnjNag3+PlqfF+r9QXQ==
+X-Received: by 2002:a0c:eac5:: with SMTP id y5mr5174350qvp.2.1599192339263;
+        Thu, 03 Sep 2020 21:05:39 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id g12sm3633714qkm.27.2020.09.03.21.05.37
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Sep 2020 20:31:24 -0700 (PDT)
+        Thu, 03 Sep 2020 21:05:38 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 2D45127C0054;
-        Thu,  3 Sep 2020 23:31:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 03 Sep 2020 23:31:23 -0400
-X-ME-Sender: <xms:CbVRXxFW47fUDIn7uNUFa569dFf0XzxHxULgUB4eF-hMXfugso_wOQ>
-    <xme:CbVRX2UHwejbW8o2dbZ4gbN9i3MSNANj8HlHR_l1NBoR7I9Y1ugj1PwYdRIGzMPcD
-    -6qLJ7-8R0FZwBwNA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgjedvucetufdoteggodetrfdotf
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7DEDB27C0058;
+        Fri,  4 Sep 2020 00:05:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 04 Sep 2020 00:05:37 -0400
+X-ME-Sender: <xms:EL1RXy3OyomDGfMuGW1gJnocUrhhBbQIeMxJvXE7DC-g8z4jVvHd0g>
+    <xme:EL1RX1FTCEDKtjcCG_EJXIpj5SQeJCYyjZTqLWUODpSRSdixp732lznE-4ptiXEFf
+    Dx-OT3_-5Ve11bDbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgjeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
     dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
@@ -75,14 +75,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgjedvucetufdoteggod
     hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
     udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
     gvrdhnrghmvg
-X-ME-Proxy: <xmx:CbVRXzI8UeVS6iNNLMtFBk-mxMFCzdMSO1yaLGgIe04hiNBePBe48Q>
-    <xmx:CbVRX3H5pr4nJg2rg_mAGDr3qhP4_b2b_FuUy8zp3Rh5Y7j2aZReDg>
-    <xmx:CbVRX3V_o1_ui1FCeADVCxhPDGLlJU_pNaKFXxlnkcjNQjPZVDM-bQ>
-    <xmx:C7VRX5bOkrWilOUuTQERFKKAP8s2OPuWI3YvZVkOg7nHIky6YCPOxgb6gw0>
+X-ME-Proxy: <xmx:EL1RX66XcsL-23NKjnqiCmK1QnfpgylSaMZ7oGNZWvpgsHs2aAjZkQ>
+    <xmx:EL1RXz1VXLwIWWStLxXo5Pq7d2IZ6sBcm_6HJmERurLEL3IkRGkW-g>
+    <xmx:EL1RX1HdZN7XtsL9I6IHt-oImsK3MpSmmHsX8JDTWTOK0ZFfjoJ_6A>
+    <xmx:Eb1RX7UypgdBPgiJlWNBXL9x036DWE39Cfe9-XVSPrs7lsbyxmBQkVQcEC8>
 Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EBA14306005C;
-        Thu,  3 Sep 2020 23:31:20 -0400 (EDT)
-Date:   Fri, 4 Sep 2020 11:31:19 +0800
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3F306328005E;
+        Fri,  4 Sep 2020 00:05:36 -0400 (EDT)
+Date:   Fri, 4 Sep 2020 12:05:34 +0800
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     paulmck@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -91,121 +91,90 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH tip/core/rcu 3/4] kernel/smp: Provide CSD lock timeout
- diagnostics
-Message-ID: <20200904033119.GC7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200831181356.GA1224@paulmck-ThinkPad-P72>
- <20200831181417.1378-3-paulmck@kernel.org>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 05/13] rcu: Always set .need_qs from
+ __rcu_read_lock() for strict GPs
+Message-ID: <20200904040534.GD7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <20200831181101.GA950@paulmck-ThinkPad-P72>
+ <20200831181120.1044-5-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831181417.1378-3-paulmck@kernel.org>
+In-Reply-To: <20200831181120.1044-5-paulmck@kernel.org>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:14:16AM -0700, paulmck@kernel.org wrote:
-[...]
-> +static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
-> +{
-> +	int cpu = -1;
-> +	int cpux;
-> +	bool firsttime;
-> +	u64 ts2, ts_delta;
-> +	call_single_data_t *cpu_cur_csd;
-> +	unsigned int flags = READ_ONCE(csd->flags);
-> +
-> +	if (!(flags & CSD_FLAG_LOCK)) {
-> +		if (!unlikely(*bug_id))
-> +			return true;
-> +		cpu = csd_lock_wait_getcpu(csd);
-> +		pr_alert("csd: CSD lock (#%d) got unstuck on CPU#%02d, CPU#%02d released the lock.\n",
-> +			 *bug_id, raw_smp_processor_id(), cpu);
-> +		return true;
-> +	}
-> +
-> +	ts2 = sched_clock();
-> +	ts_delta = ts2 - *ts1;
-> +	if (likely(ts_delta <= CSD_LOCK_TIMEOUT))
-> +		return false;
-> +
-> +	firsttime = !*bug_id;
-> +	if (firsttime)
-> +		*bug_id = atomic_inc_return(&csd_bug_count);
-> +	cpu = csd_lock_wait_getcpu(csd);
-> +	if (WARN_ONCE(cpu < 0 || cpu >= nr_cpu_ids, "%s: cpu = %d\n", __func__, cpu))
-> +		cpux = 0;
-> +	else
-> +		cpux = cpu;
-> +	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
-> +	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
-> +		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
-> +		 cpu, csd->func, csd->info);
-> +	if (cpu_cur_csd && csd != cpu_cur_csd) {
-> +		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
-> +			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
-> +			 READ_ONCE(per_cpu(cur_csd_info, cpux)));
-> +	} else {
-> +		pr_alert("\tcsd: CSD lock (#%d) %s.\n",
-> +			 *bug_id, !cpu_cur_csd ? "unresponsive" : "handling this request");
-> +	}
-> +	if (cpu >= 0) {
-> +		if (!trigger_single_cpu_backtrace(cpu))
-> +			dump_cpu_task(cpu);
-> +		if (!cpu_cur_csd) {
-> +			pr_alert("csd: Re-sending CSD lock (#%d) IPI from CPU#%02d to CPU#%02d\n", *bug_id, raw_smp_processor_id(), cpu);
-> +			arch_send_call_function_single_ipi(cpu);
-> +		}
-> +	}
-> +	dump_stack();
-> +	*ts1 = ts2;
-> +
-> +	return false;
-> +}
-> +
->  /*
->   * csd_lock/csd_unlock used to serialize access to per-cpu csd resources
->   *
-> @@ -105,8 +205,28 @@ void __init call_function_init(void)
->   */
->  static __always_inline void csd_lock_wait(call_single_data_t *csd)
->  {
-> +	int bug_id = 0;
-> +	u64 ts0, ts1;
-> +
-> +	ts1 = ts0 = sched_clock();
-> +	for (;;) {
-> +		if (csd_lock_wait_toolong(csd, ts0, &ts1, &bug_id))
-> +			break;
-> +		cpu_relax();
-> +	}
-> +	smp_acquire__after_ctrl_dep();
+Hi Paul,
 
-It's a little difficult here to figure out what operation we want to add
-ACQUIRE semantics. So maybe a few lines of comments?
+On Mon, Aug 31, 2020 at 11:11:12AM -0700, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> The ->rcu_read_unlock_special.b.need_qs field in the task_struct
+> structure indicates that the RCU core needs a quiscent state from the
+> corresponding task.  The __rcu_read_unlock() function checks this (via
+> an eventual call to rcu_preempt_deferred_qs_irqrestore()), and if set
+> reports a quiscent state immediately upon exit from the outermost RCU
+> read-side critical section.
+> 
+> Currently, this flag is only set when the scheduling-clock interrupt
+> decides that the current RCU grace period is too old, as in about
+> one full second too old.  But if the kernel has been built with
+> CONFIG_RCU_STRICT_GRACE_PERIOD=y, we clearly do not want to wait that
+> long.  This commit therefore sets the .need_qs field immediately at the
+> start of the RCU read-side critical section from within __rcu_read_lock()
+> in order to unconditionally enlist help from __rcu_read_unlock().
+> 
 
-	/* 
-  	 * Add the ACQUIRE semantics for the read of csd->flags in
-	 * csd_lock_wait_toolong().
-	 */
+So why not make rcu_preempt_deferred_qs_irqrestore() always treat
+need_qs is true if CONFIG_RCU_STRICT_GRACE_PERIOD = y? IOW:
+
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 982fc5be5269..2a9f31545453 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -449,6 +449,8 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 	 * t->rcu_read_unlock_special cannot change.
+ 	 */
+ 	special = t->rcu_read_unlock_special;
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) && rcu_state.gp_kthread)
++		special.b.need_qs = true;
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	if (!special.s && !rdp->exp_deferred_qs) {
+ 		local_irq_restore(flags);
+
+, and in this way, you can save one store for each rcu_read_lock() ;-)
 
 Regards,
 Boqun
 
-> +}
-> +
-> +#else
-> +static void csd_lock_record(call_single_data_t *csd)
-> +{
-> +}
-> +
-> +static __always_inline void csd_lock_wait(call_single_data_t *csd)
-> +{
->  	smp_cond_load_acquire(&csd->flags, !(VAL & CSD_FLAG_LOCK));
+> But note the additional check for rcu_state.gp_kthread, which prevents
+> attempts to awaken RCU's grace-period kthread during early boot before
+> there is a scheduler.  Leaving off this check results in early boot hangs.
+> So early that there is no console output.  Thus, this additional check
+> fails until such time as RCU's grace-period kthread has been created,
+> avoiding these empty-console hangs.
+> 
+> Reported-by Jann Horn <jannh@google.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree_plugin.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 44cf77d..668bbd2 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -376,6 +376,8 @@ void __rcu_read_lock(void)
+>  	rcu_preempt_read_enter();
+>  	if (IS_ENABLED(CONFIG_PROVE_LOCKING))
+>  		WARN_ON_ONCE(rcu_preempt_depth() > RCU_NEST_PMAX);
+> +	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) && rcu_state.gp_kthread)
+> +		WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
+>  	barrier();  /* critical section after entry code. */
 >  }
-> +#endif
->  
-[...]
+>  EXPORT_SYMBOL_GPL(__rcu_read_lock);
+> -- 
+> 2.9.5
+> 
