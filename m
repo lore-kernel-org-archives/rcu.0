@@ -1,206 +1,147 @@
-Return-Path: <SRS0=JZbX=CN=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=YNU/=CO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1,
+	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B9B8C43461
-	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 21:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5741FC433E2
+	for <rcu@archiver.kernel.org>; Sat,  5 Sep 2020 21:33:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA2FC2087C
-	for <rcu@archiver.kernel.org>; Fri,  4 Sep 2020 21:21:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13D952073B
+	for <rcu@archiver.kernel.org>; Sat,  5 Sep 2020 21:33:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=eero.com header.i=@eero.com header.b="s7F2RaTj"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Z6yDMcI2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgIDVVH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Sep 2020 17:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726842AbgIDVVF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Sep 2020 17:21:05 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545B4C061245
-        for <rcu@vger.kernel.org>; Fri,  4 Sep 2020 14:21:03 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c8so7392610edv.5
-        for <rcu@vger.kernel.org>; Fri, 04 Sep 2020 14:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eero.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d/bbf2Btlz4O8O7mwAo6eW49nsY6yI+2OlbwP4d2f1k=;
-        b=s7F2RaTjJUzNuzYVM/OOWKjs/bBR734diSeL5TizFjBzV+Jjmt6y3Crw3MWPBkyBqd
-         XUwG5Xtln2yLXufHduRVqMS3WW4PcMcKI7u7qMKujF+yVipwbXAEUCIDKRRVnlwWaWjR
-         QmZXWJj2BL37kkqol1X/umWXOQuDKGtAOPUvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d/bbf2Btlz4O8O7mwAo6eW49nsY6yI+2OlbwP4d2f1k=;
-        b=smuarhrO5cjIyO0un2bQe+6sJ1cX2QmSA1pac7xqwCqCHxCjc4iga2E0chTMdWq+QS
-         Lx9fwIhIpMb4P906Lnz1WRiYIwHtJGerKCkNsBHow0VHpOq5G/WtxsRnvvO3fBAKDz6X
-         L5QHJXVuPOdWToOLeqc7mI0nuAcNnZwzn7XCBBvjwHedKIniNMuPGtCB4pQtHev7VlWC
-         UOLvzIoX/XiMgCbgq0vO8OIOcYGMllbc4LWfvORpVg2QTo9wHzAG8keTPR5NxEun6/Vj
-         qv8aVGkcjGczIBceH3Sif4FdEAt0a1kVTDeK8NL63e/gx/hM5OftQU/KjJFvZ8l/qTjv
-         twFQ==
-X-Gm-Message-State: AOAM533NaFVm2wYeRLLYXESVdu9S5LIqD8I1t7dfpZwvO5AcXJmkLkHs
-        C/zIdZ+0RRvr+TnwwmuvCRyoKD1FFSP1IycV5IvNSKAGwZc2Ww==
-X-Google-Smtp-Source: ABdhPJz3MVW+ImiihsCu1nXqsWPXiyjxjt9c0fteSDxJXpiLt0CzU9YiT2w63Ulx0de/K6Ucmx8QjnnsQ9l69toGduE=
-X-Received: by 2002:a05:6402:12d1:: with SMTP id k17mr10489575edx.323.1599254461608;
- Fri, 04 Sep 2020 14:21:01 -0700 (PDT)
+        id S1728589AbgIEVdh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 5 Sep 2020 17:33:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56302 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728449AbgIEVdh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 5 Sep 2020 17:33:37 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 034AE2074C44;
+        Sat,  5 Sep 2020 14:33:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 034AE2074C44
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1599341616;
+        bh=H9Vsi/pVwVxCNbRlPgq/caoc0oPkYDr/d6WGCbCoAQE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Z6yDMcI2kvp/Qg2VKF++Fhh78LM6ErZdtSJX4Z4iSRJ38qXXiP9AetOmjsZATURCn
+         iH4gR7ZCzL5499XMJfjHNEgYrpAYS9SJq7Lus5sB8Jcz9HCsNOFA5/vNdaP+SZfsaG
+         MjvhFq7r293+AI/qHoeo3QvTxF11cnFMDFCRMIq0=
+Subject: Re: [RFC PATCH 3/3] selinux: track policy lifetime with refcount
+To:     Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
+References: <20200825152045.1719298-1-omosnace@redhat.com>
+ <20200825152045.1719298-4-omosnace@redhat.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <d82b0a33-6e52-0dda-2f74-cc5b7bdb898a@linux.microsoft.com>
+Date:   Sat, 5 Sep 2020 14:33:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1598856077-58603-1-git-send-email-chao@eero.com>
- <20200904175007.GG29330@paulmck-ThinkPad-P72> <CAOr4Z-uwhX3LY=2x84da_uqAnX3dgpsgGSztQJLE6YEduCrR0w@mail.gmail.com>
- <20200904203718.GO29330@paulmck-ThinkPad-P72>
-In-Reply-To: <20200904203718.GO29330@paulmck-ThinkPad-P72>
-From:   Chao Zhou <chao@eero.com>
-Date:   Fri, 4 Sep 2020 14:20:50 -0700
-Message-ID: <CAOr4Z-u6yvcJZojrfMt_eeBxUfY8H7ede1rQRKi6PtPkKK9DxQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu: allow multiple stalls before panic
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200825152045.1719298-4-omosnace@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thanks Paul, sounds good!
+On 8/25/20 8:20 AM, Ondrej Mosnacek wrote:
 
-Much appreciated your guidance.
+Hi Ondrej,
 
-Chao
+I am just trying understand the expected behavior w.r.t the usage of 
+rcu_dereference_protected() for accessing SELinux policy. Could you 
+please clarify?
 
-eero inc.
+> Instead of holding the RCU read lock the whole time while accessing the
+> policy, add a simple refcount mechanism to track its lifetime. After
+> this, the RCU read lock is held only for a brief time when fetching the
+> policy pointer and incrementing the refcount. The policy struct is then
+> guaranteed to stay alive until the refcount is decremented.
+> 
+> Freeing of the policy remains the responsibility of the task that does
+> the policy reload. In case the refcount drops to zero in a different
+> task, the policy load task is notified via a completion.
+> 
+> The advantage of this change is that the operations that access the
+> policy can now do sleeping allocations, since they don't need to hold
+> the RCU read lock anymore. This patch so far only leverages this in
+> security_read_policy() for the vmalloc_user() allocation (although this
+> function is always called under fsi->mutex and could just access the
+> policy pointer directly). The conversion of affected GFP_ATOMIC
+> allocations to GFP_KERNEL is left for a later patch, since auditing
+> which code paths may still need GFP_ATOMIC is not very easy.
+> 
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
+>   security/selinux/ss/services.c | 286 ++++++++++++++++-----------------
+>   security/selinux/ss/services.h |   6 +
+>   2 files changed, 147 insertions(+), 145 deletions(-)
 
-660 3rd St, 4th Floor
+int security_read_policy(struct selinux_state *state,
+			 void **data, size_t *len)
+{
+	struct selinux_policy *policy;
 
-San Francisco, CA 94107
+	policy = rcu_dereference_protected(
+			state->policy,
+                         lockdep_is_held(&state->policy_mutex));
+	if (!policy)
+		return -EINVAL;
+...
+}
 
+If "policy_mutex" is not held by the caller of security_read_policy() I 
+was expecting the above rcu_dereference_protected() call to return NULL, 
+but policy is non-NULL and I see the following messages in "dmesg" log.
 
+Is this expected?
 
-On Fri, Sep 4, 2020 at 1:37 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Sep 04, 2020 at 12:40:29PM -0700, Chao Zhou wrote:
-> > Thanks Paul. Appreciated it.
-> >
-> > Initial intent was to give users a way to make their system more
-> > tolerable, but prudent enough to recover if suspicious behavior
-> > reaches a watermark. If a system experiences multiple stalls in one
-> > lifetime, no matter how healthy it looks or whether the stalls are
-> > from different sources, we still want it to dramatically recover.
-> > Please share your guidance?
->
-> I have no guidance in this case.  I was just wanting to verify that the
-> patch was in fact doing what you want it to.  And it sounds like it does,
-> so good!
->
-> I have queued this for testing and further review.  If all goes well,
-> I would submit it upstream for the v5.11 merge window, that is, not the
-> upcoming merge window, but the one after that.
->
->                                                         Thanx, Paul
->
-> > eero inc.
-> >
-> > 660 3rd St, 4th Floor
-> >
-> > San Francisco, CA 94107
-> >
-> >
-> >
-> > On Fri, Sep 4, 2020 at 11:05 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Sun, Aug 30, 2020 at 11:41:17PM -0700, chao wrote:
-> > > > Some stalls are transient and system can fully recover.
-> > > > Allow users to configure the number of stalls experienced
-> > > > to trigger kernel Panic.
-> > > >
-> > > > Signed-off-by: chao <chao@eero.com>
-> > >
-> > > Hearing no objections, I have queued this with wordsmithing as shown
-> > > below.  Please let me know if I messed something up.
-> > >
-> > > One question, though.  It looks like setting this to (say) 5 would panic
-> > > after the fifth RCU CPU stall warning message, regardless whether all
-> > > five were reporting the same RCU CPU stall event or whether they instead
-> > > were five widely separated transient RCU CPU stall events, where the
-> > > system fully recovered from each event.  Is this the intent?
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > ------------------------------------------------------------------------
-> > >
-> > > commit e710c928fb52d8e56bc6173515805301da6aa22b
-> > > Author: chao <chao@eero.com>
-> > > Date:   Sun Aug 30 23:41:17 2020 -0700
-> > >
-> > >     rcu: Panic after fixed number of stalls
-> > >
-> > >     Some stalls are transient, so that system fully recovers.  This commit
-> > >     therefore allows users to configure the number of stalls that must happen
-> > >     in order to trigger kernel panic.
-> > >
-> > >     Signed-off-by: chao <chao@eero.com>
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> > > index 500def6..fc2dd3f 100644
-> > > --- a/include/linux/kernel.h
-> > > +++ b/include/linux/kernel.h
-> > > @@ -536,6 +536,7 @@ extern int panic_on_warn;
-> > >  extern unsigned long panic_on_taint;
-> > >  extern bool panic_on_taint_nousertaint;
-> > >  extern int sysctl_panic_on_rcu_stall;
-> > > +extern int sysctl_max_rcu_stall_to_panic;
-> > >  extern int sysctl_panic_on_stackoverflow;
-> > >
-> > >  extern bool crash_kexec_post_notifiers;
-> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > index 0fde39b..228c55f 100644
-> > > --- a/kernel/rcu/tree_stall.h
-> > > +++ b/kernel/rcu/tree_stall.h
-> > > @@ -13,6 +13,7 @@
-> > >
-> > >  /* panic() on RCU Stall sysctl. */
-> > >  int sysctl_panic_on_rcu_stall __read_mostly;
-> > > +int sysctl_max_rcu_stall_to_panic __read_mostly;
-> > >
-> > >  #ifdef CONFIG_PROVE_RCU
-> > >  #define RCU_STALL_DELAY_DELTA          (5 * HZ)
-> > > @@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
-> > >  /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
-> > >  static void panic_on_rcu_stall(void)
-> > >  {
-> > > +       static int cpu_stall;
-> > > +
-> > > +       if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-> > > +               return;
-> > > +
-> > >         if (sysctl_panic_on_rcu_stall)
-> > >                 panic("RCU Stall\n");
-> > >  }
-> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > > index 287862f..1bca490 100644
-> > > --- a/kernel/sysctl.c
-> > > +++ b/kernel/sysctl.c
-> > > @@ -2651,6 +2651,17 @@ static struct ctl_table kern_table[] = {
-> > >                 .extra2         = SYSCTL_ONE,
-> > >         },
-> > >  #endif
-> > > +#if defined(CONFIG_TREE_RCU)
-> > > +       {
-> > > +               .procname       = "max_rcu_stall_to_panic",
-> > > +               .data           = &sysctl_max_rcu_stall_to_panic,
-> > > +               .maxlen         = sizeof(sysctl_max_rcu_stall_to_panic),
-> > > +               .mode           = 0644,
-> > > +               .proc_handler   = proc_dointvec_minmax,
-> > > +               .extra1         = SYSCTL_ONE,
-> > > +               .extra2         = SYSCTL_INT_MAX,
-> > > +       },
-> > > +#endif
-> > >  #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
-> > >         {
-> > >                 .procname       = "stack_erasing",
+[   78.627152] =============================
+[   78.627155] WARNING: suspicious RCU usage
+[   78.627159] 5.9.0-rc1+ #10 Not tainted
+[   78.627162] -----------------------------
+[   78.627166] security/selinux/ss/services.c:3950 suspicious 
+rcu_dereference_protected() usage!
+[   78.627169]
+                other info that might help us debug this:
+
+[   78.627173]
+                rcu_scheduler_active = 2, debug_locks = 1
+[   78.627177] 1 lock held by bash/2446:
+[   78.627179]  #0: ffff939ef5f69448 (sb_writers#7){.+.+}-{0:0}, at: 
+vfs_write+0x1b8/0x230
+[   78.627199]
+                stack backtrace:
+[   78.627205] CPU: 10 PID: 2446 Comm: bash Not tainted 5.9.0-rc1+ #10
+[   78.627208] Hardware name: LENOVO 30BFS07500/1036, BIOS S03KT33A 
+08/06/2019
+[   78.627211] Call Trace:
+[   78.627222]  dump_stack+0x9f/0xe5
+[   78.627231]  lockdep_rcu_suspicious+0xce/0xf0
+[   78.627256]  security_read_policy_kernel+0x10a/0x140
+[   78.627268]  selinux_measure_state+0x1dc/0x270
+[   78.627282]  sel_write_checkreqprot+0x129/0x1a0
+[   78.627296]  vfs_write+0xdd/0x230
+[   78.627300]  ? sel_read_handle_unknown+0xb0/0xb0
+[   78.627304]  ? vfs_write+0xdd/0x230
+[   78.627313]  ksys_write+0xad/0xf0
+[   78.627324]  __x64_sys_write+0x1a/0x20
+[   78.627333]  do_syscall_64+0x37/0x80
+[   78.627341]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   78.627346] RIP: 0033:0x7faabb210264
+[   78.627351] Code: 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 
+00 00 00 66 90 48 8d 05 a1 06 2e 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 
+05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 41 54 55 49 89 d4 53 48 89 f5
+
+thanks,
+  -lakshmi
