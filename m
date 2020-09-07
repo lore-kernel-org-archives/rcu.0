@@ -1,147 +1,198 @@
-Return-Path: <SRS0=YNU/=CO=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=L9Fg=CQ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1,
-	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5741FC433E2
-	for <rcu@archiver.kernel.org>; Sat,  5 Sep 2020 21:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE8FC43461
+	for <rcu@archiver.kernel.org>; Mon,  7 Sep 2020 00:12:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 13D952073B
-	for <rcu@archiver.kernel.org>; Sat,  5 Sep 2020 21:33:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 95A242080A
+	for <rcu@archiver.kernel.org>; Mon,  7 Sep 2020 00:12:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Z6yDMcI2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXr9q2yZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgIEVdh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 5 Sep 2020 17:33:37 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56302 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728449AbgIEVdh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 5 Sep 2020 17:33:37 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 034AE2074C44;
-        Sat,  5 Sep 2020 14:33:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 034AE2074C44
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599341616;
-        bh=H9Vsi/pVwVxCNbRlPgq/caoc0oPkYDr/d6WGCbCoAQE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Z6yDMcI2kvp/Qg2VKF++Fhh78LM6ErZdtSJX4Z4iSRJ38qXXiP9AetOmjsZATURCn
-         iH4gR7ZCzL5499XMJfjHNEgYrpAYS9SJq7Lus5sB8Jcz9HCsNOFA5/vNdaP+SZfsaG
-         MjvhFq7r293+AI/qHoeo3QvTxF11cnFMDFCRMIq0=
-Subject: Re: [RFC PATCH 3/3] selinux: track policy lifetime with refcount
-To:     Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        rcu@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-References: <20200825152045.1719298-1-omosnace@redhat.com>
- <20200825152045.1719298-4-omosnace@redhat.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <d82b0a33-6e52-0dda-2f74-cc5b7bdb898a@linux.microsoft.com>
-Date:   Sat, 5 Sep 2020 14:33:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726564AbgIGAMG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 6 Sep 2020 20:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgIGAMF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 6 Sep 2020 20:12:05 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA4BC061573;
+        Sun,  6 Sep 2020 17:12:04 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lo4so15876155ejb.8;
+        Sun, 06 Sep 2020 17:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7IHuLoZTszc6cbgJPnkqQ2lqOVg60Edt4SQc7fvbdlk=;
+        b=LXr9q2yZYz/wfipdWLCcqDyD4wGQl2yZ+gijgtVQLkNsfU42bhnucieA33a4a7zBvK
+         VsAL8TYHpdfPeIP6BBKtV61Cg7leuOQDzXXsQiI/3cYVZDLXT0FPZ9l60K+aO8hHfMQS
+         MWdtJijUlh9rWkxqaV0YllHdfLvEqTCeW1XeGSvRcQ6BkIskY3tYgqKPt+d5hhp3/y9k
+         Blu+MAXr2H5vGTAzyw0dAuqBKMnxexNjidcRCBQi9kQoarpIayVWkUWsNgFTFs0rNwJw
+         hx0VHcXcdaXvx+Yfs51JIQvl6+qw9AKte79jZZinbOcystxkLv6wWgoVwjaRNvf6z1fe
+         67Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7IHuLoZTszc6cbgJPnkqQ2lqOVg60Edt4SQc7fvbdlk=;
+        b=l+QhdAxsRGlhWe2t98iAiXi03Oeak3T+kdetr6ie85ItJeGI2A8fqPFmSOAoxCK+TH
+         TK+mC6pat2lm+Mp7gP5cD8gQbBW0OKPmKjajYwW0JtmGfisXYA0TlxhAUNsrge0eOGW5
+         st9pBijJiSPbQbtMqQOC6NECW7dMUMtYZ2lVMn9ReI/1Qlr8U62MiNlrT0iMpQppAWQ8
+         6sjwIJdDU99AGAbAstdys8ThyEua43vFDF2efSgBzdTBMZCUvkIveJ+AejV8vYu2FlTP
+         y0yHwjmDebxqF1mWTj68Qre8aen7Z0AjFB7LfmWBAxdFLxbslKhyp6CvUFcDKhY15q+g
+         zA/w==
+X-Gm-Message-State: AOAM5319955Ah2zbr+EX4j/z9Qe4e1O3YqmsAHei/zxMuEps50fOe15c
+        iMXOJBmvxJR0TefLGC6V7SU=
+X-Google-Smtp-Source: ABdhPJy7a+NzSC9oiAZBsO04AnbBX9MO3YumsPRajGetgRBGZb3nJ5bNUeaKqcKv21aGH9G0SXPQWQ==
+X-Received: by 2002:a17:906:bcd5:: with SMTP id lw21mr18745846ejb.430.1599437523171;
+        Sun, 06 Sep 2020 17:12:03 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id a18sm13640669ejy.71.2020.09.06.17.12.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Sep 2020 17:12:02 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id DE22427C0054;
+        Sun,  6 Sep 2020 20:11:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 06 Sep 2020 20:11:59 -0400
+X-ME-Sender: <xms:zXpVXx1fAhho8O-3J_U8dO9UjswQjwQqDmsQq_flH9ZyVLNaUse8pw>
+    <xme:zXpVX4GpKHcM06R2werJHOODOxZtAY6pjZrfGe68HMm6mH0xOmNifpv2lp03gk1hm
+    AHM5tBSqItWjAclUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegkedgvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppeehvddrudehhedrudduuddrjedunecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:zXpVXx5q5lylayRB9Ob41m0e9rowSvQgDWoWYy3RcNGRPwqxbklj_g>
+    <xmx:zXpVX-2O_a3O3cDBA52IzzuBej2gQuYkbmnoav8H4wrjKvWwpvXggw>
+    <xmx:zXpVX0GNHmjxey42VaDtMbhaopozIeqgO_wu0wbD-NKkw7fus4b1Og>
+    <xmx:z3pVXyXfBCXxa97FEr9_jikGBRdBa2i_ut6WWpybmgIvbPsrZLOgYO5_VXg>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DC3B4306467D;
+        Sun,  6 Sep 2020 20:11:56 -0400 (EDT)
+Date:   Mon, 7 Sep 2020 08:11:55 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 05/13] rcu: Always set .need_qs from
+ __rcu_read_lock() for strict GPs
+Message-ID: <20200907001155.GG7503@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <20200831181101.GA950@paulmck-ThinkPad-P72>
+ <20200831181120.1044-5-paulmck@kernel.org>
+ <20200904040534.GD7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <20200904134142.GB29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20200825152045.1719298-4-omosnace@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904134142.GB29330@paulmck-ThinkPad-P72>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 8/25/20 8:20 AM, Ondrej Mosnacek wrote:
-
-Hi Ondrej,
-
-I am just trying understand the expected behavior w.r.t the usage of 
-rcu_dereference_protected() for accessing SELinux policy. Could you 
-please clarify?
-
-> Instead of holding the RCU read lock the whole time while accessing the
-> policy, add a simple refcount mechanism to track its lifetime. After
-> this, the RCU read lock is held only for a brief time when fetching the
-> policy pointer and incrementing the refcount. The policy struct is then
-> guaranteed to stay alive until the refcount is decremented.
+On Fri, Sep 04, 2020 at 06:41:42AM -0700, Paul E. McKenney wrote:
+> On Fri, Sep 04, 2020 at 12:05:34PM +0800, Boqun Feng wrote:
+> > Hi Paul,
+> > 
+> > On Mon, Aug 31, 2020 at 11:11:12AM -0700, paulmck@kernel.org wrote:
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > 
+> > > The ->rcu_read_unlock_special.b.need_qs field in the task_struct
+> > > structure indicates that the RCU core needs a quiscent state from the
+> > > corresponding task.  The __rcu_read_unlock() function checks this (via
+> > > an eventual call to rcu_preempt_deferred_qs_irqrestore()), and if set
+> > > reports a quiscent state immediately upon exit from the outermost RCU
+> > > read-side critical section.
+> > > 
+> > > Currently, this flag is only set when the scheduling-clock interrupt
+> > > decides that the current RCU grace period is too old, as in about
+> > > one full second too old.  But if the kernel has been built with
+> > > CONFIG_RCU_STRICT_GRACE_PERIOD=y, we clearly do not want to wait that
+> > > long.  This commit therefore sets the .need_qs field immediately at the
+> > > start of the RCU read-side critical section from within __rcu_read_lock()
+> > > in order to unconditionally enlist help from __rcu_read_unlock().
+> > > 
+> > 
+> > So why not make rcu_preempt_deferred_qs_irqrestore() always treat
+> > need_qs is true if CONFIG_RCU_STRICT_GRACE_PERIOD = y? IOW:
+> > 
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 982fc5be5269..2a9f31545453 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -449,6 +449,8 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+> >  	 * t->rcu_read_unlock_special cannot change.
+> >  	 */
+> >  	special = t->rcu_read_unlock_special;
+> > +	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) && rcu_state.gp_kthread)
+> > +		special.b.need_qs = true;
+> >  	rdp = this_cpu_ptr(&rcu_data);
+> >  	if (!special.s && !rdp->exp_deferred_qs) {
+> >  		local_irq_restore(flags);
+> > 
+> > , and in this way, you can save one store for each rcu_read_lock() ;-)
 > 
-> Freeing of the policy remains the responsibility of the task that does
-> the policy reload. In case the refcount drops to zero in a different
-> task, the policy load task is notified via a completion.
+> Because unless I am missing something subtle, if the .need_qs
+> flag is not set, execution is not guaranteed to reach
+> rcu_preempt_deferred_qs_irqrestore().
 > 
-> The advantage of this change is that the operations that access the
-> policy can now do sleeping allocations, since they don't need to hold
-> the RCU read lock anymore. This patch so far only leverages this in
-> security_read_policy() for the vmalloc_user() allocation (although this
-> function is always called under fsi->mutex and could just access the
-> policy pointer directly). The conversion of affected GFP_ATOMIC
-> allocations to GFP_KERNEL is left for a later patch, since auditing
-> which code paths may still need GFP_ATOMIC is not very easy.
+
+Fair enough. Although I think we can also add IS_ENABLED(...) check to
+make the outermost rcu_read_unlock() to call rcu_read_unlock_special()
+unconditionally, but that's too much I think.
+
+Regards,
+Boqun
+
+> 							Thanx, Paul
 > 
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->   security/selinux/ss/services.c | 286 ++++++++++++++++-----------------
->   security/selinux/ss/services.h |   6 +
->   2 files changed, 147 insertions(+), 145 deletions(-)
-
-int security_read_policy(struct selinux_state *state,
-			 void **data, size_t *len)
-{
-	struct selinux_policy *policy;
-
-	policy = rcu_dereference_protected(
-			state->policy,
-                         lockdep_is_held(&state->policy_mutex));
-	if (!policy)
-		return -EINVAL;
-...
-}
-
-If "policy_mutex" is not held by the caller of security_read_policy() I 
-was expecting the above rcu_dereference_protected() call to return NULL, 
-but policy is non-NULL and I see the following messages in "dmesg" log.
-
-Is this expected?
-
-[   78.627152] =============================
-[   78.627155] WARNING: suspicious RCU usage
-[   78.627159] 5.9.0-rc1+ #10 Not tainted
-[   78.627162] -----------------------------
-[   78.627166] security/selinux/ss/services.c:3950 suspicious 
-rcu_dereference_protected() usage!
-[   78.627169]
-                other info that might help us debug this:
-
-[   78.627173]
-                rcu_scheduler_active = 2, debug_locks = 1
-[   78.627177] 1 lock held by bash/2446:
-[   78.627179]  #0: ffff939ef5f69448 (sb_writers#7){.+.+}-{0:0}, at: 
-vfs_write+0x1b8/0x230
-[   78.627199]
-                stack backtrace:
-[   78.627205] CPU: 10 PID: 2446 Comm: bash Not tainted 5.9.0-rc1+ #10
-[   78.627208] Hardware name: LENOVO 30BFS07500/1036, BIOS S03KT33A 
-08/06/2019
-[   78.627211] Call Trace:
-[   78.627222]  dump_stack+0x9f/0xe5
-[   78.627231]  lockdep_rcu_suspicious+0xce/0xf0
-[   78.627256]  security_read_policy_kernel+0x10a/0x140
-[   78.627268]  selinux_measure_state+0x1dc/0x270
-[   78.627282]  sel_write_checkreqprot+0x129/0x1a0
-[   78.627296]  vfs_write+0xdd/0x230
-[   78.627300]  ? sel_read_handle_unknown+0xb0/0xb0
-[   78.627304]  ? vfs_write+0xdd/0x230
-[   78.627313]  ksys_write+0xad/0xf0
-[   78.627324]  __x64_sys_write+0x1a/0x20
-[   78.627333]  do_syscall_64+0x37/0x80
-[   78.627341]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   78.627346] RIP: 0033:0x7faabb210264
-[   78.627351] Code: 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 
-00 00 00 66 90 48 8d 05 a1 06 2e 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 
-05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 41 54 55 49 89 d4 53 48 89 f5
-
-thanks,
-  -lakshmi
+> > Regards,
+> > Boqun
+> > 
+> > > But note the additional check for rcu_state.gp_kthread, which prevents
+> > > attempts to awaken RCU's grace-period kthread during early boot before
+> > > there is a scheduler.  Leaving off this check results in early boot hangs.
+> > > So early that there is no console output.  Thus, this additional check
+> > > fails until such time as RCU's grace-period kthread has been created,
+> > > avoiding these empty-console hangs.
+> > > 
+> > > Reported-by Jann Horn <jannh@google.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  kernel/rcu/tree_plugin.h | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > index 44cf77d..668bbd2 100644
+> > > --- a/kernel/rcu/tree_plugin.h
+> > > +++ b/kernel/rcu/tree_plugin.h
+> > > @@ -376,6 +376,8 @@ void __rcu_read_lock(void)
+> > >  	rcu_preempt_read_enter();
+> > >  	if (IS_ENABLED(CONFIG_PROVE_LOCKING))
+> > >  		WARN_ON_ONCE(rcu_preempt_depth() > RCU_NEST_PMAX);
+> > > +	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) && rcu_state.gp_kthread)
+> > > +		WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
+> > >  	barrier();  /* critical section after entry code. */
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(__rcu_read_lock);
+> > > -- 
+> > > 2.9.5
+> > > 
