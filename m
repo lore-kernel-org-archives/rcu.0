@@ -2,82 +2,124 @@ Return-Path: <SRS0=z7K1=CR=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C42C433E2
-	for <rcu@archiver.kernel.org>; Tue,  8 Sep 2020 17:16:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5059EC433E2
+	for <rcu@archiver.kernel.org>; Tue,  8 Sep 2020 17:37:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 456FD20936
-	for <rcu@archiver.kernel.org>; Tue,  8 Sep 2020 17:16:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BEC520738
+	for <rcu@archiver.kernel.org>; Tue,  8 Sep 2020 17:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1599586620;
+	bh=humf0A3eNdO8QjtSSneT0F+BBfk0pmqd3HPslVbaHBk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=UvdoMU+Ak38IaDtfFXEf+EkVNAi1iywDhoQkKnFOMsjDW11Crth35XfR0qOJBaecV
+	 xgieyR+zV27cJwg3wPTQTeihcaabzYbLDpKmdIobGfOuhP3e/nonR+yBuPrxzVrYaZ
+	 +tiX+MmaQ29t/XZgAU1JE44qWc/aTXVNXoYMWk/A=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730508AbgIHRQZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Sep 2020 13:16:25 -0400
-Received: from 107-174-27-60-host.colocrossing.com ([107.174.27.60]:48248 "EHLO
-        ozlabs.ru" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1731638AbgIHQSb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:31 -0400
-X-Greylist: delayed 2642 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 12:18:30 EDT
-Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 03ED9AE80120;
-        Tue,  8 Sep 2020 10:42:51 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     rcu@vger.kernel.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH kernel] srcu: Fix static initialization
-Date:   Wed,  9 Sep 2020 00:43:06 +1000
-Message-Id: <20200908144306.33355-1-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.17.1
+        id S1731761AbgIHRg4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Sep 2020 13:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731792AbgIHRgi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:36:38 -0400
+Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74EA020738;
+        Tue,  8 Sep 2020 17:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599586597;
+        bh=humf0A3eNdO8QjtSSneT0F+BBfk0pmqd3HPslVbaHBk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DciE04eFKvHvjJ7XF6N0n3Si+qtHP9qGXwdngsUmp+sAPCiJpzZ0Lnf1LlQXuixLU
+         emhBnuqX8+n90KJXCys2P5uVNRbfcN4s/r3deI31XhIjzLFcN65eCf2g5Kd1KJfo3b
+         lRUvkTrPdssWJQMoaqD/rHGw2DbZC5peMFgsd3kc=
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, paulmck@kernel.org, joel@joelfernandes.org,
+        josh@joshtriplett.org, peterz@infradead.org,
+        christian.brauner@ubuntu.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nikolay@cumulusnetworks.com,
+        sfr@canb.auug.org.au, roopa@nvidia.com,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+Date:   Tue,  8 Sep 2020 10:36:24 -0700
+Message-Id: <20200908173624.160024-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-init_srcu_struct_nodes() is called with is_static==true only internally
-and when this happens, the srcu->sda is not initialized in
-init_srcu_struct_fields() and we crash on dereferencing @sdp.
+We run into a unused variable warning in bridge code when
+variable is only used inside the condition of
+rcu_dereference_protected().
 
-This fixes the crash by moving "if (is_static)" out of the loop which
-only does useful work for is_static=false case anyway.
+ #define mlock_dereference(X, br) \
+	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
 
-Found by syzkaller.
+Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
+compiles to nothing the compiler doesn't see the variable use.
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Prevent the warning by adding the condition as dead code.
+We need to un-hide the declaration of lockdep_tasklist_lock_is_held()
+and fix a bug the crept into a net/sched header.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- kernel/rcu/srcutree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/rcupdate.h   | 2 +-
+ include/linux/sched/task.h | 2 --
+ include/net/sch_generic.h  | 2 +-
+ 3 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c100acf332ed..49b54a50bde8 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 				   levelspread[level - 1];
- 	}
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d15d46db61f7..cf3d3ba3f3e4 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -320,7 +320,7 @@ static inline void rcu_preempt_sleep_check(void) { }
  
-+	if (is_static)
-+		return;
-+
- 	/*
- 	 * Initialize the per-CPU srcu_data array, which feeds into the
- 	 * leaves of the srcu_node tree.
-@@ -161,8 +164,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
- 		sdp->ssp = ssp;
- 		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
--		if (is_static)
--			continue;
+ #else /* #ifdef CONFIG_PROVE_RCU */
  
- 		/* Dynamically allocated, better be no srcu_read_locks()! */
- 		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
+-#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
++#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+ #define rcu_sleep_check() do { } while (0)
+ 
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index a98965007eef..9f943c391df9 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+ extern union thread_union init_thread_union;
+ extern struct task_struct init_task;
+ 
+-#ifdef CONFIG_PROVE_RCU
+ extern int lockdep_tasklist_lock_is_held(void);
+-#endif /* #ifdef CONFIG_PROVE_RCU */
+ 
+ extern asmlinkage void schedule_tail(struct task_struct *prev);
+ extern void init_idle(struct task_struct *idle, int cpu);
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index d60e7c39d60c..eb68cc6e4e79 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -443,7 +443,7 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+ 	return lockdep_is_held(&tp->lock);
+ }
+ #else
+-static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
++static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
+ {
+ 	return true;
+ }
 -- 
-2.17.1
+2.24.1
 
