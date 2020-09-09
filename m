@@ -1,170 +1,114 @@
-Return-Path: <SRS0=F17Q=CT=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=NFG3=CS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D199DC433E2
-	for <rcu@archiver.kernel.org>; Thu, 10 Sep 2020 18:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09216C433E2
+	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 06:35:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 858442087C
-	for <rcu@archiver.kernel.org>; Thu, 10 Sep 2020 18:54:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1599764052;
-	bh=siiRw7n02QPHZqLsAI1o12gJA+B9z/i5S2t9am34BFI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=niRmxnDYmt50THF1NK9oy+h7snyy+04Uxf434CY7nNAIn370RuH2X9PReryy/4X2m
-	 iQRj0Luz6ycbF334z3FhMtCG4yLGkW+faRcmdJwO35shrfG23/sz6snscu7hI7V34H
-	 WxfZKvqz+kb75I2gpVPX39Il+t044cOGX3Zp4hE8=
+	by mail.kernel.org (Postfix) with ESMTP id A285E20936
+	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 06:35:23 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="V8gp7+Uf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgIJSyK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Sep 2020 14:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgIJSxy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:53:54 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7E15214F1;
-        Thu, 10 Sep 2020 18:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599764033;
-        bh=siiRw7n02QPHZqLsAI1o12gJA+B9z/i5S2t9am34BFI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r9t9cTNDWy4a4WVYDUDu4fn2k6wzRCikshOkIcbGiPfZjhiy6ibJrypAPzf6sQOkA
-         93/XddU3b4RL4EwCz1kXStmecK+FvwEPcAGqF+PSXFIExOJlXIQgGk+omsVrcy5XJP
-         lyW42wxHoKkvczrKGLhejlv2k4zdbC7YiTBthcEc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 768903523080; Thu, 10 Sep 2020 11:53:53 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 11:53:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S1726293AbgIIGfV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Sep 2020 02:35:21 -0400
+Received: from mail-dm6nam10on2058.outbound.protection.outlook.com ([40.107.93.58]:51332
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725772AbgIIGfT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:35:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BnJsPekNsIRIfPsg8GVj+H1gqbwm4d7QmPXsc5H9anFYWBrlHhztu101oFyhvMGpX+B6T7DO/0t5wp35wXJrB0McZ8RaVWd5PUvIcaRvxkAzZF0Y8L9IP4CmA0OXlMzeP77Lz4ZbZ90eNYOQLZXafwFsG9kmRtsl1XfjnLR37t96pUuHlNoqE4z5XV+QMqAiQQwLQfvj/uqbnFs87Hgxac7TlhbKaUNO8KIywoTOuBbW9GjklG1wO/e8S01SssSM8YeEHY3BBBmeJOVWUu0+0B7RHD60rAbI5aNx2CKvcbzZywjcACotieXEgYC8AN0wAswLlpp1EqeC+vyE4YxkAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXJwQd38f+IHVl577VmS/wGUJR59m9LWT0KYwlDj+OU=;
+ b=e112pPIOFRs9qcO8mFJsXbkGj3zKTL59i+KWEJBJHi30SWwwly4YlKOwuwI4h2lzvtppQnTf16i+exHELyUbNx3xR2TMmA0z2hZLZTq7d/XtklCAJYCCXavEV2czrLmc/spXt8y9oLvgI0l5Vw3xgW10DzoQJS0ppiQiUyIYmS/bPEuY1jjbASQNm5T5WEmkx5nj3I69Hm56zWEovtv18bPwRZ9Z2hqR2qSfq++kuKO2joov1gnX1X6h9ULSjq0wKGN5Gql1XO1VT09pabhPFUClNRTmrxO86vuarkW35vn5TnCgUTh3k8m767tnox/dstrcJSAENg8s2FnOrYea8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXJwQd38f+IHVl577VmS/wGUJR59m9LWT0KYwlDj+OU=;
+ b=V8gp7+UfLvfEm3wPlE6RbkM3wrH2ZBkD6niEPAUI7YYn6pqwmrf8sMe70WyT2oIGIgFxZwwHZ607AHHjvuDgQIJN/U9alFqU/1ProJzB2CgPxQspF9tAqIT4TPfPCl+pp4wnpKrwNzKd7UjYgZRIafGpYl3Ubo8co89d2xA12ok=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3111.namprd11.prod.outlook.com (2603:10b6:a03:90::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Wed, 9 Sep
+ 2020 06:35:16 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 06:35:15 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH kernel] srcu: Fix static initialization
-Message-ID: <20200910185353.GS29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200908144306.33355-1-aik@ozlabs.ru>
- <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
- <20200909115010.GG29330@paulmck-ThinkPad-P72>
- <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: 
+Thread-Index: AQHWhnNgdtT3KSvnnU6Qd/KLSreZGQ==
+Date:   Wed, 9 Sep 2020 06:35:15 +0000
+Message-ID: <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
+ <20200818210355.GM27891@paulmck-ThinkPad-P72> <20200818215511.GA2538@pc636>
+ <20200818220245.GO27891@paulmck-ThinkPad-P72>
+ <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+ <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819135654.GB3875610@google.com>
+ <20200819152159.GX27891@paulmck-ThinkPad-P72> <20200819155808.GA8817@pc636>
+ <20200820223957.GB120898@google.com>,<20200821153328.GH2855@paulmck-ThinkPad-P72>
+In-Reply-To: <20200821153328.GH2855@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: joelfernandes.org; dkim=none (message not signed)
+ header.d=none;joelfernandes.org; dmarc=none action=none
+ header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f32c344a-ed2a-4e11-834a-08d8548a8353
+x-ms-traffictypediagnostic: BYAPR11MB3111:
+x-microsoft-antispam-prvs: <BYAPR11MB3111BABF7B22873A77BD6BC8FF260@BYAPR11MB3111.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9WWb7SobxDYpBWvMXUksFebWB4HmtR6+E6bOYhOTYpIrp6zr1ncUG9u7wXSKVa8yCpVP8fMexNpzo21HjDlRCOfzCcS5pJLgwvWz4Js+F92+OnDyuljFsoBr45U7Tp2MAOTOW8DJzgI2M/8pHHAK1V751+zkpZMBlMH4gFJY7oYBSAgms7zEt04nr3sBQJl5Vgzu8FL0pIEpdAVGEuFzb/KeQHCoro+/Y+puxzlxxwF3Ig9g3LxBKKZwJ51h+SHB47yjOxf/1scdrvrWlna0hHeH5GwEMHhBG+pdgEMo4ELKj7wUBDkY5mBbRE0Z1NGa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39840400004)(346002)(136003)(366004)(6506007)(558084003)(2906002)(8936002)(478600001)(7696005)(316002)(33656002)(54906003)(86362001)(110136005)(9686003)(5660300002)(66446008)(71200400001)(66556008)(64756008)(66476007)(66946007)(76116006)(91956017)(55016002)(186003)(26005)(4326008)(5406001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: RbFNcc/IWaPtNjRKq/MPlihLsy5KwzpeHoGlOHKWcNdlRqJoJVJJIgcAX5Ng6/1Vdalk8LliAxC4TDID/PPRMdjLZv4qM6msbC7YDWZIwm9z0yn0qUTwF1WmzZIKBLIBHuJXbTQTOgiRe8SkwleDBPWXiExceT4XeO99+I4cJNJCV5r+u2YwQyWrDKIuQHjzsMvdqTn+LImWK2gol/RkVKhhZOkjTu7euvib0UaFGAJ35I9h2GLKQBx/s6q+CCDefi+BopiT/pETzDzJeDuw+H9ii6GQzaC5+u67OhN9R7/H7x2TGxL39jbChlscfWkFa7KiTvbstOQd7+Qw7+ZAXIb85kHZEEAgvWss5QrD1vd+xWdPZ2oHTPVd+r9x23Twfvkqcsw89WE0Gxjpl3WGqpNMLoC9mUKC0XNX3Bk17TJpBeJrAZqxX8pUWHFWNnkpNgR5pQ4wLnOLpJbHmtTA7QuCO1fs2KqZWb9NwOPBvpQ9xvJWJNQR1YdCHwLRg8ii8T6IpCiSz8RGfz8ljxAwUrJGkjTkVLFQWkIyvvbAOo4zMVgIzMOmOc7DFmBAc0JKbpFU5RhgJZxlIIGyFm6UaiJtPhcK739bpKonBTE1dLoAXMmriE8adK0xEpdshFfVVC0EU4RGP9Ae0ZgIoJCz1Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f32c344a-ed2a-4e11-834a-08d8548a8353
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 06:35:15.6574
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gt5G/gHSdwaWZpDTeFoKfHWIgGJxAiM9QUDn12egN4JBoDdZvpvsxpt3GrPnFOEIs6edbgXcdxpAqQpDxJirm+9GUelz61nAC+Khs7Ofx90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3111
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
-> 
-> 
-> On 09/09/2020 21:50, Paul E. McKenney wrote:
-> > On Wed, Sep 09, 2020 at 07:24:11PM +1000, Alexey Kardashevskiy wrote:
-> >>
-> >>
-> >> On 09/09/2020 00:43, Alexey Kardashevskiy wrote:
-> >>> init_srcu_struct_nodes() is called with is_static==true only internally
-> >>> and when this happens, the srcu->sda is not initialized in
-> >>> init_srcu_struct_fields() and we crash on dereferencing @sdp.
-> >>>
-> >>> This fixes the crash by moving "if (is_static)" out of the loop which
-> >>> only does useful work for is_static=false case anyway.
-> >>>
-> >>> Found by syzkaller.
-> >>>
-> >>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> >>> ---
-> >>>  kernel/rcu/srcutree.c | 5 +++--
-> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >>> index c100acf332ed..49b54a50bde8 100644
-> >>> --- a/kernel/rcu/srcutree.c
-> >>> +++ b/kernel/rcu/srcutree.c
-> >>> @@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
-> >>>  				   levelspread[level - 1];
-> >>>  	}
-> >>>  
-> >>> +	if (is_static)
-> >>> +		return;
-> >>
-> >> Actually, this is needed here too:
-> >>
-> >>  if (!ssp->sda)
-> >>          return;
-> >>
-> >> as
-> >> ssp->sda = alloc_percpu(struct srcu_data)
-> >>
-> >> can fail if the process is killed too soon - it is quite easy to get
-> >> this situation with syzkaller (syscalls fuzzer)
-> >>
-> >> Makes sense?
-> > 
-> > Just to make sure that I understand, these failures occur when the task
-> > running init_srcu_struct_nodes() is killed, correct?
-> 
-> There are multiple user tasks (8) which open /dev/kvm, do 1 ioctl -
-> KVM_CREATE_VM - and terminate, running on 8 vcpus, 8 VMs, crashes every
-> 20min or so, less tasks or vcpus - and the problem does not appear.
-> 
-> 
-> > 
-> > Or has someone managed to invoke (say) synchronize_srcu() on a
-> > dynamically allocated srcu_struct before invoking init_srcu_struct() on
-> > that srcu_struct?  
-> 
-> Nah, none of that :)
-> 
-> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
-> here:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
-> ===
-> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
-> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
-> 			return NULL;
-> ===
-> 
-> I am still up to reading that osr-rcuusage.pdf to provide better
-> analysis :) Thanks,
-
-Ah, got it!  Does the following patch help?
-
-There will likely also need to be changes to cleanup_srcu_struct(),
-but first let's see if I understand the problem.  ;-)
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c13348e..6f7880a 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
- 	if (!is_static)
- 		ssp->sda = alloc_percpu(struct srcu_data);
-+	if (!ssp->sda)
-+		return -ENOMEM;
- 	init_srcu_struct_nodes(ssp, is_static);
- 	ssp->srcu_gp_seq_needed_exp = 0;
- 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
- 	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
--	return ssp->sda ? 0 : -ENOMEM;
-+	return 0;
- }
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
+IFdoZW4gY29uZmlnIHByZWVtcHQgUkNVLCAgaWYgdGFzayBzd2l0Y2ggaGFwcGVuZWQgaW4gcmN1
+ICByZWFkIGNyaXRpY2FsIHJlZ2lvbi4KIHRoZSBjdXJyZW50IHRhc2sgYmUgYWRkIHRvICJybnAt
+PmJsa2RfdGFza3MiIGxpbmsgbGlzdCwgIHRoZXNlIHJucCBpcyBsZWFmIG5vZGUgaW4gUkNVICAg
+IHRyZWUuCiBJbiAicmN1X2dwX2Zxc19sb29wIiBmdW5jLCAKCnN0YXRpYyB2b2lkIHJjdV9ncF9m
+cXNfbG9vcCh2b2lkKQogewoKICAgICAgICAgICAgc3RydWN0IHJjdV9ub2RlICpybnAgPSByY3Vf
+Z2V0X3Jvb3QoKTsKfQo=
