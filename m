@@ -2,148 +2,142 @@ Return-Path: <SRS0=NFG3=CS=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F109C43461
-	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 07:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2433C43461
+	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 09:24:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5515021741
-	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 07:04:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89A0320757
+	for <rcu@archiver.kernel.org>; Wed,  9 Sep 2020 09:24:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="dcYxKeHK"
+	dkim=pass (2048-bit key) header.d=ozlabs-ru.20150623.gappssmtp.com header.i=@ozlabs-ru.20150623.gappssmtp.com header.b="EJ/2Q9mh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgIIHD6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Sep 2020 03:03:58 -0400
-Received: from mail-eopbgr690067.outbound.protection.outlook.com ([40.107.69.67]:57575
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727880AbgIIHDu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:03:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RQgwFluWc+A3SGaDWQ0+cyywz/1ZZe82Av0B4CUPQO2d6agHj3WyO30vXHiahqgkOEEIasLhdxIkmVsF8Ka5uAXcp8vuflCGMvqYX7eocSW4W7yBE1NZp9sqX1cbMMEXr0qBuuXvN0RJborH7Qk6NRmY9l3a+ybBAOvlKFRwO3KgpHNaHTO45pDTL5hmCdvHLA0iBFhE04V3Ux0bhC7KWc7NgKdGnao+cSf0S1KksA0uJkkoIEkunbsmZEo3OQVCKe4da7kom76tsVJGeLLJRrq+4Zxveya8IEz5SYS3adJ61pOlN1g1cH+ZxmYYo68AKVHAxrRYvqGUffigVpnGkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFRgvR+yP81dUw2M6bkGlXt3cC97BC3YMUMIZQZ1gfg=;
- b=Aly+FjPR29cDcgRztZNiKQgiQP+nu2nX2yhquMaJbseI8oTsgnZzmGMV9dYNIVg3B374E1XaHryXj9iHRMVoxBsfK1v7y4vT6e+XP+s3lTofNJ9c4xDNJK3yC7d5OxFYYsmQ9FwOtG4bTY6KHmTbCmY9bsPAUu12S4jv++/twKGq2icq+w80qozTfuHXjqfhw7JDYmd7zFKkBPeTXXaVyFiVWFHnSTSdyt5mGzzzRTT8xNW2UsuY2XzAMj59UHhUIQTry43GF/ZrCLV9fU7LYlJaVAJq52E6lpYyyVnDAg2aHISHIwaVjBLjeRzkZWMiWQcWgFgo2luZYNMjatsYSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1729455AbgIIJYd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Sep 2020 05:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726414AbgIIJYR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:24:17 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AF7C061573
+        for <rcu@vger.kernel.org>; Wed,  9 Sep 2020 02:24:17 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m8so1654794pgi.3
+        for <rcu@vger.kernel.org>; Wed, 09 Sep 2020 02:24:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFRgvR+yP81dUw2M6bkGlXt3cC97BC3YMUMIZQZ1gfg=;
- b=dcYxKeHKo8m0mNisB7EGteTR7548oqY+iK5c0sjwmA8JXqYfbX4rH+MpJeNjoGZuwoHm6gFbmOV7nAs2jnPGQQpI2wfUszk7SHWT/AyiNWoumjbkF2PYT2ZpRSRjlWo4+cF4DAZPEP2bj9jSytHIwWSkQHbuwAABdGq6esBNSJY=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BY5PR11MB3911.namprd11.prod.outlook.com (2603:10b6:a03:18d::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Wed, 9 Sep
- 2020 07:03:39 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 07:03:39 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     Uladzislau Rezki <urezki@gmail.com>,
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w90SDair7JoYZHSRoRms18sB50MZLQwaofVsG2qPpa8=;
+        b=EJ/2Q9mh4RsgGvFBloK2ugShDt2KEkXAUz0NeIxbxLw+gXMFwFOR2UefTyJIGgIvPG
+         ZDQVdt1k2GMTfxz/eCpTmcD/UamwfI+0hYr9HPNEYQLlyoZNXpIDELDe0En9HXsmd5me
+         h01y22hF1VBRWadrSvKeL2m8CjS4CUyHDX3KMH5hi/gp/wU6TLu8NyvxsDj9WDW8esRX
+         hvM8/xVnieYm4raxwIXM4opmZ9lIbzsru80k8koVspDr4Pbvegv0zwDeCqB1ABdcPM74
+         M+9CcWCt/Ycu5ctUDLkPKNJhebloHpyf3VyrsvE5lPJNnOdsRb1j7maQp3OpiBYSsHBF
+         o3tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w90SDair7JoYZHSRoRms18sB50MZLQwaofVsG2qPpa8=;
+        b=ki/9n8rvOIi6lwIYJN/DpmN7mZRcktiYnVFuy9Sb05lNfK2Iue8e3lPw+oGLTgJOZq
+         uz0laotzrqQ/s/Ioq8/1zByCBD0ZDtsrr1TU1+GQhvA/j35iOt6+1WFKh+OzEMPuVv3t
+         LPAsmPwfy4gG7zE9SRvwGZdgPtqbr0v1ar0jch88+kW/GCCh5FrCG6ElVsvNaZIKZDYi
+         v9ecdkKJiMofSGl0SEYX0MmzJeQ51ElAGe1qFLRu/QofSk1pTREeISQ/ctHQJcaBRsNG
+         F0yG/EOPGxJ4UjyD1xQR9gPs9a1bxz99/C4yRnNBZIDYsB6igxskzqXVe0frQ8hK928M
+         5qJg==
+X-Gm-Message-State: AOAM530urLLUhI40eyMtxTB21nRTu92M2QSvViD6U7o+HcIDlvCKP+uR
+        +uHh0LyQ9eIQ4JYGI5JGxYHAug==
+X-Google-Smtp-Source: ABdhPJwDC7CCcMjIw2sNP/CE7OjrggwmsplFHFFErgXAaC/qgWnpNcK/Vyr8gJ9TXcYCtvwwmagIWA==
+X-Received: by 2002:a63:4c57:: with SMTP id m23mr2237110pgl.77.1599643456997;
+        Wed, 09 Sep 2020 02:24:16 -0700 (PDT)
+Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
+        by smtp.gmail.com with ESMTPSA id q5sm2042175pfn.172.2020.09.09.02.24.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 02:24:16 -0700 (PDT)
+Subject: Re: [PATCH kernel] srcu: Fix static initialization
+To:     rcu@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: RCU:  Question   rcu_preempt_blocked_readers_cgp  in  rcu_gp_fqs_loop
- func
-Thread-Topic: RCU:  Question   rcu_preempt_blocked_readers_cgp  in
-  rcu_gp_fqs_loop func
-Thread-Index: AQHWhnNgdtT3KSvnnU6Qd/KLSreZGalf2jJU
-Date:   Wed, 9 Sep 2020 07:03:39 +0000
-Message-ID: <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
- <20200818210355.GM27891@paulmck-ThinkPad-P72> <20200818215511.GA2538@pc636>
- <20200818220245.GO27891@paulmck-ThinkPad-P72>
- <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200819135654.GB3875610@google.com>
- <20200819152159.GX27891@paulmck-ThinkPad-P72> <20200819155808.GA8817@pc636>
- <20200820223957.GB120898@google.com>,<20200821153328.GH2855@paulmck-ThinkPad-P72>,<BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: joelfernandes.org; dkim=none (message not signed)
- header.d=none;joelfernandes.org; dmarc=none action=none
- header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1e6b244d-943e-4366-b639-08d8548e7aaf
-x-ms-traffictypediagnostic: BY5PR11MB3911:
-x-microsoft-antispam-prvs: <BY5PR11MB3911E3876CD657C2FCB7194FFF260@BY5PR11MB3911.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WJ4hU7cEEWSe+1e/0Au1/0mL11CYH53R/3W5VGKtU0RkKBnT6pQtbwO7jpYWY9TyeFhEEvBglJBX6U3MRVY+3Qq2nigoa5q4Qtb1rtwRArEngTs51JJ+gBchm70Anr/1cTc8e7vRykuxPyUQTPHjJ3Hs6Y1i/G3u4Ex12ra7X1V2b41AJtXTrSfdqFYEDCc8/z+otYc6OcShp0Wp2uNrzq5OFMDGiO+us/8hqqUB7WzI2eN7hePuay3vdr1JvoEDemSDpVhJrl6WPYbmwqJZkVfFA0BsP5rTigCZvDxqSezeAZyQSlLN1TzCPu5tBRVsQSvk9A9DDSepTuL2uYD9WA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(39840400004)(136003)(66946007)(316002)(2906002)(2940100002)(8676002)(5660300002)(6506007)(86362001)(8936002)(4326008)(7696005)(478600001)(52536014)(66446008)(110136005)(66556008)(54906003)(71200400001)(66476007)(26005)(186003)(64756008)(91956017)(9686003)(76116006)(55016002)(83380400001)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 16SGaOcT9ObKvYgsIqJXg0o9PQ1MzvyZlPwHoACf3qNwSOb8k/MyFsdpX2hV8SnNKLbNByBzMc3AiTkzDySmsrx3C00YU2XEdumnD0Nq3JdhsSCEh1D1bA5T2UuAOPxQJgf2UxeiFXs+5V8bYKIJ2fnULOCdD5Ly5ZJh2Lgsz7HEPWTMm7UR2QsfYSnuhMbGZE0zHPZtYTjp35iNX1mKzgzlyVe5b4hKmWa5ITMpYJ8FtaxjBWGRRJ0MiLdTPXtuSL6Rcf8ViDrFdHNhduMwKXp35i197lSVF7BkBKkkIUnU0UngsszLDN6K1fl4JA6CHPx0++xT83loA0PmPwGs/CYr86S9vMTxdyfdH3Fnq8tolBFQ4peomOXAVl8/bviYMAiPpMwPLmMDf5hnh4MZmPSmhnMIsNo9OtW/8l541ZagQqYE+p5gWFsUES67AMtMj7IpPOaorNT4ydhAZ/dZOBG9hi7kvcF2+OmIq8za+pumvxJ3yuuhysSmeDHdHLE0xDAK/mM6thos3ws1I1MtjRPEKHXxxkoT9B7VghieprWuXG64cXgHsD4iTGmt2QaeVrWK+bJHfeM8ipQHeDUf6WFwjwgv87CX2Syk4lIl7jvghon3x0USECEGQMrng2UfKHVx79TQhp8eWiOCJz80jw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+References: <20200908144306.33355-1-aik@ozlabs.ru>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
+Date:   Wed, 9 Sep 2020 19:24:11 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e6b244d-943e-4366-b639-08d8548e7aaf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 07:03:39.1531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nFg7EygqXjRoBv04xwdPsGUQ1YuBTy3tmHhN7DFS7aQxwyG5me9gRCbn78WJK1EynLsnqIASVSeFDLHOwW6B0yOSwSJjo+uQwnkDUjQJ2c0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3911
+In-Reply-To: <20200908144306.33355-1-aik@ozlabs.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-CldoZW4gY29uZmlnIHByZWVtcHQgUkNVLCAgYW5kIHRoZW4gIHRoZXJlIGFyZSBtdWx0aXBsZSBs
-ZXZlbHMgIG5vZGUsICB0aGUgY3VycmVudCB0YXNrIGlzIHByZWVtcHRlZCAgaW4gcmN1ICByZWFk
-IGNyaXRpY2FsIHJlZ2lvbi4KdGhlIGN1cnJlbnQgdGFzayBiZSBhZGQgdG8gInJucC0+YmxrZF90
-YXNrcyIgbGluayBsaXN0LCAgYW5kIHRoZSAicm5wLT5ncF90YXNrcyIgIG1heSBiZSBhc3NpZ25l
-ZCBhIHZhbHVlIC4gIHRoZXNlIHJucCBpcyBsZWFmIG5vZGUgaW4gUkNVIHRyZWUuCgpCdXQgaW4g
-InJjdV9ncF9mcXNfbG9vcCIgZnVuYywgd2UgY2hlY2sgYmxvY2tlZCByZWFkZXJzIGluIHJvb3Qg
-bm9kZS4gCgpzdGF0aWMgdm9pZCByY3VfZ3BfZnFzX2xvb3Aodm9pZCkKIHsKICAgICAgICAgICAg
-Li4uLi4KICAgICAgICAgICAgc3RydWN0IHJjdV9ub2RlICpybnAgPSByY3VfZ2V0X3Jvb3QoKTsK
-ICAgICAgICAgICAgLi4uLi4KICAgICAgICAgICAgaWYgKCFSRUFEX09OQ0Uocm5wLT5xc21hc2sp
-ICYmCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAhcmN1X3ByZWVtcHRfYmxvY2tlZF9y
-ZWFkZXJzX2NncChybnApKSAgICAtLS0tLS0+IHJucCBpcyByb290IG5vZGUKICAgICAgICAgICAg
-ICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIC4uLi4KfQoKdGhlIHJvb3Qgbm9kZSdzIGJsa2Rf
-dGFza3MgbmV2ZXIgYWRkIHRhc2ssIHRoZSAicm5wLT5ncF90YXNrcyIgaXMgbmV2ZXIgYmUgYXNz
-aWduZWQgdmFsdWUsICB0aGlzIGNoZWNrIGlzIGludmFpbGVkLgogU2hvdWxkIHdlIGNoZWNrIGxl
-YWYgbm9kZXMgbGlrZSB0aGlzIAoKLS0tIGEva2VybmVsL3JjdS90cmVlLmMKKysrIGIva2VybmVs
-L3JjdS90cmVlLmMKQEAgLTE4NDYsNiArMTg0NiwyNSBAQCBzdGF0aWMgYm9vbCByY3VfZ3BfaW5p
-dCh2b2lkKQogCXJldHVybiB0cnVlOwogfQogCitzdGF0aWMgYm9vbCByY3VfcHJlZW1wdF9ibG9j
-a2VkX3JlYWRlcnModm9pZCkKK3sKKwlzdHJ1Y3QgcmN1X25vZGUgKnJucDsKKwl1bnNpZ25lZCBs
-b25nIGZsYWdzOworCWJvb2wgcmV0ID0gZmFsc2U7CisKKwlyY3VfZm9yX2VhY2hfbGVhZl9ub2Rl
-KHJucCkgeworCQlyYXdfc3Bpbl9sb2NrX2lycXNhdmVfcmN1X25vZGUocm5wLCBmbGFncyk7CisJ
-CWlmIChyY3VfcHJlZW1wdF9ibG9ja2VkX3JlYWRlcnNfY2dwKHJucCkpIHsKKwkJCXJldCA9IHRy
-dWU7CisJCQlyYXdfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZV9yY3Vfbm9kZShybnAsIGZsYWdzKTsK
-KwkJCWJyZWFrOworCQl9CisJCXJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJu
-cCwgZmxhZ3MpOworCX0KKworCXJldHVybiByZXQ7Cit9CisKIC8qCiAgKiBIZWxwZXIgZnVuY3Rp
-b24gZm9yIHN3YWl0X2V2ZW50X2lkbGVfZXhjbHVzaXZlKCkgd2FrZXVwIGF0IGZvcmNlLXF1aWVz
-Y2VudC1zdGF0ZQogICogdGltZS4KQEAgLTE4NjQsNyArMTg4Myw3IEBAIHN0YXRpYyBib29sIHJj
-dV9ncF9mcXNfY2hlY2tfd2FrZShpbnQgKmdmcCkKIAkJcmV0dXJuIHRydWU7CiAKIAkvLyBUaGUg
-Y3VycmVudCBncmFjZSBwZXJpb2QgaGFzIGNvbXBsZXRlZC4KLQlpZiAoIVJFQURfT05DRShybnAt
-PnFzbWFzaykgJiYgIXJjdV9wcmVlbXB0X2Jsb2NrZWRfcmVhZGVyc19jZ3Aocm5wKSkKKwlpZiAo
-IVJFQURfT05DRShybnAtPnFzbWFzaykgJiYgIXJjdV9wcmVlbXB0X2Jsb2NrZWRfcmVhZGVycygp
-KQogCQlyZXR1cm4gdHJ1ZTsKIAogCXJldHVybiBmYWxzZTsKQEAgLTE5MjcsNyArMTk0Niw3IEBA
-IHN0YXRpYyB2b2lkIHJjdV9ncF9mcXNfbG9vcCh2b2lkKQogCQkvKiBMb2NraW5nIHByb3ZpZGVz
-IG5lZWRlZCBtZW1vcnkgYmFycmllcnMuICovCiAJCS8qIElmIGdyYWNlIHBlcmlvZCBkb25lLCBs
-ZWF2ZSBsb29wLiAqLwogCQlpZiAoIVJFQURfT05DRShybnAtPnFzbWFzaykgJiYKLQkJICAgICFy
-Y3VfcHJlZW1wdF9ibG9ja2VkX3JlYWRlcnNfY2dwKHJucCkpCisJCSAgICAhcmN1X3ByZWVtcHRf
-YmxvY2tlZF9yZWFkZXJzKCkpCiAJCQlicmVhazsKIAkJLyogSWYgdGltZSBmb3IgcXVpZXNjZW50
-LXN0YXRlIGZvcmNpbmcsIGRvIGl0LiAqLwogCQlpZiAoIXRpbWVfYWZ0ZXIocmN1X3N0YXRlLmpp
-ZmZpZXNfZm9yY2VfcXMsIGppZmZpZXMpIHx8Ci0tIAoKCnRoYW5rcwpRaWFuZwo=
+
+
+On 09/09/2020 00:43, Alexey Kardashevskiy wrote:
+> init_srcu_struct_nodes() is called with is_static==true only internally
+> and when this happens, the srcu->sda is not initialized in
+> init_srcu_struct_fields() and we crash on dereferencing @sdp.
+> 
+> This fixes the crash by moving "if (is_static)" out of the loop which
+> only does useful work for is_static=false case anyway.
+> 
+> Found by syzkaller.
+> 
+> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
+>  kernel/rcu/srcutree.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index c100acf332ed..49b54a50bde8 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+>  				   levelspread[level - 1];
+>  	}
+>  
+> +	if (is_static)
+> +		return;
+
+Actually, this is needed here too:
+
+ if (!ssp->sda)
+         return;
+
+as
+ssp->sda = alloc_percpu(struct srcu_data)
+
+can fail if the process is killed too soon - it is quite easy to get
+this situation with syzkaller (syscalls fuzzer)
+
+Makes sense?
+
+
+> +
+>  	/*
+>  	 * Initialize the per-CPU srcu_data array, which feeds into the
+>  	 * leaves of the srcu_node tree.
+> @@ -161,8 +164,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+>  		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+>  		sdp->ssp = ssp;
+>  		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> -		if (is_static)
+> -			continue;
+>  
+>  		/* Dynamically allocated, better be no srcu_read_locks()! */
+>  		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
+> 
+
+-- 
+Alexey
