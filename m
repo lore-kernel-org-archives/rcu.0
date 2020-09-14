@@ -2,95 +2,254 @@ Return-Path: <SRS0=r7Mw=CX=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34EB1C43461
-	for <rcu@archiver.kernel.org>; Mon, 14 Sep 2020 20:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15626C43461
+	for <rcu@archiver.kernel.org>; Mon, 14 Sep 2020 22:47:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC09921BE5
-	for <rcu@archiver.kernel.org>; Mon, 14 Sep 2020 20:56:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C7CB520738
+	for <rcu@archiver.kernel.org>; Mon, 14 Sep 2020 22:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600117007;
-	bh=91ZQHPpXzVYPM1kY5tNaht13UGMxQL4Ref/OgbCg9h0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=M/33/nwsaBZN4THN8qONlk9tRYWZTB5GLxY5+7fmclarWAQc8CwQkKTLDInIhu5Jx
-	 qH3vWtXWddvrQ7ikq0HQplQ1a8aC/vCyaaJJl8MOuSZjj1nA8gMwyvU6eYYxu0jyWp
-	 VVTNDHyGgBrPAw9dVqyI12QJ7MBI/M1aWpSHYqEw=
+	s=default; t=1600123662;
+	bh=cIop9C6BjBgivQD3cpfsI52tOmHiKoe8BHAhWW82ptY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=jnhrQFo/bQlTyTIxj6tz61mbK4NcGwXfC9/gTmQ4AtHLdjQAAHVKdcNCwBZZ+edS3
+	 gBE3Wowsr0O8nJwaSp0UFw7CF89rGOmSnTZBaPdPVY42c98WMovkRV8gGbx/bmBdbz
+	 UAvduYNoPzaG+pkAaweoeIWX5Gi/cuL5M9k//P0w=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgINU4p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Sep 2020 16:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
+        id S1725997AbgINWrm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Sep 2020 18:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgINU4m (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:56:42 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        id S1725926AbgINWrm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:47:42 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F09B2193E;
-        Mon, 14 Sep 2020 20:56:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77D6D20732;
+        Mon, 14 Sep 2020 22:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600117002;
-        bh=91ZQHPpXzVYPM1kY5tNaht13UGMxQL4Ref/OgbCg9h0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rUX3bhtctscjf/GF6iRwny6FU/Y4zB+mOFYpGbV8pOvplCLWDQp72DCUpp9qXhbdn
-         q/ifxj3kSWyHz9Bkuj9N3OhbFnwqFzY2jpeazQ9CbvkwhIcsGBmlus5ZQzQqvci3IV
-         +3DkM4GJNK7HvJx5ACofl3KIgHk4JvqEiEP1lpbI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 146F53522718; Mon, 14 Sep 2020 13:56:42 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 13:56:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1600123661;
+        bh=cIop9C6BjBgivQD3cpfsI52tOmHiKoe8BHAhWW82ptY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UJaFlSVe6ta1AnPjXQprQvZR02HgWMtsFhbgD6I8bpOsYt1DUW0mNa6T5w1IdHWTE
+         hzfQTCk+3dyjRzitAQjDTdrgU1WMw9tE8uRGt3CfgG350n6KtK6UGBlqDLDvh7mO4g
+         2BQim3HX0X1CWYwxoPNxzsaMNRiNnlN0mu4Xdv4U=
+Date:   Mon, 14 Sep 2020 15:47:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: RCU: Question on force_qs_rnp
-Message-ID: <20200914205642.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200914194208.GA2579423@google.com>
+Cc:     nikolay@cumulusnetworks.com, davem@davemloft.net,
+        netdev@vger.kernel.org, paulmck@kernel.org, josh@joshtriplett.org,
+        peterz@infradead.org, christian.brauner@ubuntu.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au, roopa@nvidia.com
+Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from
+ swallowing the condition
+Message-ID: <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200914202122.GC2579423@google.com>
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200908173624.160024-1-kuba@kernel.org>
+        <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
+        <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200914202122.GC2579423@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914194208.GA2579423@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
-> On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
-> > Hello Paul
+On Mon, 14 Sep 2020 16:21:22 -0400 Joel Fernandes wrote:
+> On Tue, Sep 08, 2020 at 05:27:51PM -0700, Jakub Kicinski wrote:
+> > On Tue, 08 Sep 2020 21:15:56 +0300 nikolay@cumulusnetworks.com wrote:  
+> > > Ah, you want to solve it for all. :) 
+> > > Looks and sounds good to me, 
+> > > Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>  
 > > 
-> > I have some questions for you .
-> > in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
-> > report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
-> > after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0, 
-> > we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
+> > Actually, I give up, lockdep_is_held() is not defined without
+> > CONFIG_LOCKDEP, let's just go with your patch..  
 > 
-> Could you clarify what good is this going to do? What problem are you trying to
-> address?
-> 
-> You could have a task that is blocked in an RCU leaf node, but the
-> force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
-> CPU could be dyntick-idle and a quiescent state is reported. However, the GP
-> must not end and the rcu leaf node should still be present in its parent
-> intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
-> any relevance.
-> 
-> Or am I missing the point of the question?
+> Care to send a patch just for the RCU macro then? Not sure what Dave is
+> applying but if the net-next tree is not taking the RCU macro change, then
+> send another one with my tag:
 
-Hello, Qiang,
+Seems like quite a few places depend on the macro disappearing its
+argument. I was concerned that it's going to be had to pick out whether
+!LOCKDEP builds should return true or false from LOCKDEP helpers, but
+perhaps relying on the linker errors even more is not such poor taste?
 
-Another way of making Joel's point is to say that the additional check
-you are asking for is already being done, but by rcu_report_qs_rnp().
+Does the patch below look acceptable to you?
 
-							Thanx, Paul
+--->8------------
+
+rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+
+We run into a unused variable warning in bridge code when
+variable is only used inside the condition of
+rcu_dereference_protected().
+
+ #define mlock_dereference(X, br) \
+	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+
+Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
+compiles to nothing the compiler doesn't see the variable use.
+
+Prevent the warning by adding the condition as dead code.
+We need to un-hide the declaration of lockdep_tasklist_lock_is_held(),
+lockdep_sock_is_held(), RCU lock maps and remove some declarations
+in net/sched header, because they have a wrong type.
+
+Add forward declarations of lockdep_is_held(), lock_is_held() which
+will cause a linker errors if actually used with !LOCKDEP.
+At least RCU expects some locks _not_ to be held so it's hard to
+pick true/false for a dummy implementation.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ include/linux/lockdep.h        |  6 ++++++
+ include/linux/rcupdate.h       | 11 ++++++-----
+ include/linux/rcupdate_trace.h |  4 ++--
+ include/linux/sched/task.h     |  2 --
+ include/net/sch_generic.h      | 12 ------------
+ include/net/sock.h             |  2 --
+ 6 files changed, 14 insertions(+), 23 deletions(-)
+
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 6a584b3e5c74..c4b6225ee320 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
+ 
+ #define lockdep_depth(tsk)	(0)
+ 
++/*
++ * Dummy forward declarations, allow users to write less ifdef-y code
++ * and depend on dead code elimination.
++ */
++int lock_is_held(const void *);
++int lockdep_is_held(const void *);
+ #define lockdep_is_held_type(l, r)		(1)
+ 
+ #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d15d46db61f7..50d45781fa99 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -234,6 +234,11 @@ bool rcu_lockdep_current_cpu_online(void);
+ static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
+ #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
+ 
++extern struct lockdep_map rcu_lock_map;
++extern struct lockdep_map rcu_bh_lock_map;
++extern struct lockdep_map rcu_sched_lock_map;
++extern struct lockdep_map rcu_callback_map;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 
+ static inline void rcu_lock_acquire(struct lockdep_map *map)
+@@ -246,10 +251,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
+ 	lock_release(map, _THIS_IP_);
+ }
+ 
+-extern struct lockdep_map rcu_lock_map;
+-extern struct lockdep_map rcu_bh_lock_map;
+-extern struct lockdep_map rcu_sched_lock_map;
+-extern struct lockdep_map rcu_callback_map;
+ int debug_lockdep_rcu_enabled(void);
+ int rcu_read_lock_held(void);
+ int rcu_read_lock_bh_held(void);
+@@ -320,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
+ 
+ #else /* #ifdef CONFIG_PROVE_RCU */
+ 
+-#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
++#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+ #define rcu_sleep_check() do { } while (0)
+ 
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index aaaac8ac927c..25cdef506cae 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -11,10 +11,10 @@
+ #include <linux/sched.h>
+ #include <linux/rcupdate.h>
+ 
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-
+ extern struct lockdep_map rcu_trace_lock_map;
+ 
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++
+ static inline int rcu_read_lock_trace_held(void)
+ {
+ 	return lock_is_held(&rcu_trace_lock_map);
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index a98965007eef..9f943c391df9 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+ extern union thread_union init_thread_union;
+ extern struct task_struct init_task;
+ 
+-#ifdef CONFIG_PROVE_RCU
+ extern int lockdep_tasklist_lock_is_held(void);
+-#endif /* #ifdef CONFIG_PROVE_RCU */
+ 
+ extern asmlinkage void schedule_tail(struct task_struct *prev);
+ extern void init_idle(struct task_struct *idle, int cpu);
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index d60e7c39d60c..1aaa9e3d2e9c 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -432,7 +432,6 @@ struct tcf_block {
+ 	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
+ };
+ 
+-#ifdef CONFIG_PROVE_LOCKING
+ static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
+ {
+ 	return lockdep_is_held(&chain->filter_chain_lock);
+@@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+ {
+ 	return lockdep_is_held(&tp->lock);
+ }
+-#else
+-static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
+-{
+-	return true;
+-}
+-
+-static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+-{
+-	return true;
+-}
+-#endif /* #ifdef CONFIG_PROVE_LOCKING */
+ 
+ #define tcf_chain_dereference(p, chain)					\
+ 	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
+diff --git a/include/net/sock.h b/include/net/sock.h
+index eaa5cac5e836..1c67b1297a72 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1566,13 +1566,11 @@ do {									\
+ 	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
+ } while (0)
+ 
+-#ifdef CONFIG_LOCKDEP
+ static inline bool lockdep_sock_is_held(const struct sock *sk)
+ {
+ 	return lockdep_is_held(&sk->sk_lock) ||
+ 	       lockdep_is_held(&sk->sk_lock.slock);
+ }
+-#endif
+ 
+ void lock_sock_nested(struct sock *sk, int subclass);
+ 
+-- 
+2.24.1
+
