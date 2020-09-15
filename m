@@ -7,48 +7,45 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9372DC2D0E0
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 07:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55727C31E40
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FC8D20897
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 07:25:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FD8E21D7A
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Gm/q+1/L";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MuKXrmlh"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4ZO6BoNl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8ik3d8qu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgIOHZd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 03:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgIOHY4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 03:24:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D540C061788;
-        Tue, 15 Sep 2020 00:24:47 -0700 (PDT)
+        id S1726136AbgIOIjz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 04:39:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40486 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgIOIjx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:39:53 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600154684;
+        s=2020; t=1600159189;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
-        b=Gm/q+1/LmIgUKVhaBfxbtH41gZrDIBH8IS1H4zgztvnc5soB5Q5S9GFvwqD6AMThAJg7Eu
-        ICkbMzhHS8winOchbTgcb1qlmuZD7JVBas9osW7dkmUkrA19fW7G1Z84ERIdydT1XwABtV
-        b3YTiGY6/hGrgHGqtbAMSZ6WiChgMDc5V88LWXOoC6nxdSrZr6KYOF2hnpnoShLvzpGVZ4
-        qfLpRcJbnCwBly7jDRkK74aDmCV0ZOOHMRl3SoG6khP3VCoWYVF9b0W5VeuBj1d+MuAvxt
-        6cYp5N7yEfk2d6IXe87eOWbHI/ZdUwoUn1UDCyhqgpi5uCSq9M8lJDN8rwQv1w==
+        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
+        b=4ZO6BoNleN8HQgP0z8q+4JbOh4PFsXqPl2O1VMMFsqMl6Je+Vd4svU6GjBOnz4JBLm59ef
+        n28q3APVdlSA6QtUBbVtHjAsCDNA9DMNxmpB3Xs8JDO2mhj9om6HKXu9jHt5uTY4drNVe+
+        Xi88yb65/jAIcWHRrtrHzz6pJv5CkGBo0rMdCdV0m6UGwcjwsaPqQyFAYyPj9eb+iOpbLb
+        OyGnJVFkDuM2Xw/Zd91HZnJtSCpZf4n90+HYVnsyWEI2CIiSdIZikeb1E30oqvvQPgJtwy
+        7GKY8eCHlWViBl9/zu9LXs5HqsgBdJJ10OMSGETAETJYeANond9fGhpnX7IhVQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600154684;
+        s=2020e; t=1600159189;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
-        b=MuKXrmlhK1T+BH9XqoTgVQdGqBSQY5pVtsbiA531viHwxJXMJTBsBB/Iwr2EqMuOspN/XP
-        6hM/wG9/ctqUbmCQ==
+        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
+        b=8ik3d8quF/oYipmw+L5R6EnAKiYsBpkerr1Z3ToGRa9dHoJtFKl9KfoiSlZU5EwJHOK7Qp
+        VqVAEKjJfZ9P9ICw==
 To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Valentin Schneider <valentin.schneider@arm.com>,
@@ -91,12 +88,14 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-In-Reply-To: <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com> <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com> <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
-Date:   Tue, 15 Sep 2020 09:24:44 +0200
-Message-ID: <87een35woz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 10:39:48 +0200
+Message-ID: <87bli75t7v.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
@@ -104,38 +103,51 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14 2020 at 23:39, Linus Torvalds wrote:
-> On Mon, Sep 14, 2020 at 11:24 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->> > But another reason I tried to avoid kmap_atomic() is that it disables
->> > preemption unconditionally, even on 64-bit architectures where HIGHMEM
->> > is irrelevant. So using kmap_atomic() here means that the bulk of
->> > WireGuard packet encryption runs with preemption disabled, essentially
->> > for legacy reasons.
+On Mon, Sep 14 2020 at 15:24, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 2:55 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >>
->> Agreed.  We should definitely fix that.
+>> Yes it does generate better code, but I tried hard to spot a difference
+>> in various metrics exposed by perf. It's all in the noise and I only
+>> can spot a difference when the actual preemption check after the
+>> decrement
 >
-> Well, honestly, one big reason for that is debugging.
->
-> The *semantics* of the kmap_atomic() is in the name - you can't sleep
-> in between it and the kunmap_atomic().
->
-> On any sane architecture, kmap_atomic() ends up being a no-op from an
-> implementation standpoint, and sleeping would work just fine.
->
-> But we very much want to make sure that people don't then write code
-> that doesn't work on the bad old 32-bit machines where it really needs
-> that sequence to be safe from preemption.
+> I'm somewhat more worried about the small-device case.
 
-Alternatively we just make highmem a bit more expensive by making these
-maps preemptible. RT is doing this for a long time and it's not that
-horrible.
+I just checked on one of my old UP ARM toys which I run at home. The .text
+increase is about 2% (75k) and none of the tests I ran showed any
+significant difference. Couldn't verify with perf though as the PMU on
+that piece of art is unusable.
 
-The approach is to keep track about the number of active maps in a task
-and on an eventual context switch save them away in the task struct and
-restore them when the task is scheduled back in.
+> That said, the diffstat certainly has its very clear charm, and I do
+> agree that it makes things simpler.
+>
+> I'm just not convinced people should ever EVER do things like that "if
+> (preemptible())" garbage. It sounds like somebody is doing seriously
+> bad things.
+
+OTOH, having a working 'preemptible()' or maybe better named
+'can_schedule()' check makes tons of sense to make decisions about
+allocation modes or other things.
+
+We're currently looking through all of in_atomic(), in_interrupt()
+etc. usage sites and quite some of them are historic and have the clear
+intent of checking whether the code is called from task context or
+hard/softirq context. Lots of them are completely broken or just work by
+chance.
+
+But there is clearly historic precendence that context checks are
+useful, but they only can be useful if we have a consistent mechanism
+which works everywhere.
+
+Of course we could mandate that every interface which might be called
+from one or the other context has a context argument or provides two
+variants of the same thing. But I'm not really convinced whether that's
+a win over having a consistent and reliable set of checks.
 
 Thanks,
 
         tglx
+
+
 
 
