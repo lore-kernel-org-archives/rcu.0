@@ -2,283 +2,150 @@ Return-Path: <SRS0=zZsG=CY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,
+	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11391C433E2
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 01:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64BABC43461
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 03:19:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3B1820829
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 01:34:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BBB7208DB
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 03:19:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wXH4I8gS"
+	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="EXPOtgDA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgIOBeU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Sep 2020 21:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgIOBeJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:34:09 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5570C06178A
-        for <rcu@vger.kernel.org>; Mon, 14 Sep 2020 18:34:06 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id e7so1973695qtj.11
-        for <rcu@vger.kernel.org>; Mon, 14 Sep 2020 18:34:06 -0700 (PDT)
+        id S1726198AbgIODTE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Sep 2020 23:19:04 -0400
+Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:62304
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726091AbgIODS2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Sep 2020 23:18:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tdw+Z9WHXgHy2FqpKHS++XxQqa6qx6hO8YeKJVRisPgpmI8wswp88k0BcMt1+BDM6fRCP03TcsC+OK0W4CUicA3ARmF21LuqtYrq/ZNy4itsvJdCO0g9SjbpqaeSXkU/Q2ifCGKiPg8s2aExquP4QW6EoEgbcD9RCEJmkcW8nwzv7Jd7+5V0F8H3gts/3jpFsFNd/8JBE/fwJVcFpAJpZ8Z35Xx/nfKw7QnmRPtglzHDZU1T7Cxyxpyemm2km5648AGu8krsDd2ZUqQNuZOrZ4hiQ3IDB2Zmt62fI22I5ofQMDGs5fmyWbnEw8osKbnMCZVEmjTh6zg2M5fvFmb6mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
+ b=XrxW7ZE9XhTeOM68xn7wAYQYbwd2p4zDNMPTuZoIeF2BrVtmackpGNzByGRE7Pq9iOCrl55QY9UkI76gI7zEH8OApYM9mdPX+oXgiBCxN61vRbKqES/M+I2lcUclBY8eDWXrlA3dEOSG8MehBzVk4A0+LYLMn9m2OW5gideQSmmJwQ2rsDbDwr3BZDw7OnQq9qizqkOgNzVUYK7jUkL7FRo+9R+nbXJKTbOqka6B9KmbTN7YVCV0IoVz1wu5acUBzOvFkhyl5EPXNdbo4Sf3yX5j7N3P0DOUQ/TCdKYSRgOpX+Ma9SKSOnav/hYWWhVc7fZWGRmu2VE6ktGjThl+eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F8AlCLAV1HscFrgrzr1S9FE6d/dYHSlsoWGmZr5WVpk=;
-        b=wXH4I8gS8cNhd0LTEB+VsCvhZK+09l41Risz3tX+sg/sxyiv+mQBbvP2tjbzVgqsvR
-         7hJXWmnhXun81miYRjI38B5/knaRhNmCw2ll+rct/SsSpY+SxJaCSwzxtdv/P0zCvBVc
-         1nPMkf79oOQYrg6PRm82Vg1p8N4zUv3jdK44c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F8AlCLAV1HscFrgrzr1S9FE6d/dYHSlsoWGmZr5WVpk=;
-        b=T9oZMtXJtYCjETBMT7mDLESlxPt0n7TFs6PWnCm8aLHrKe75kaCKvpyiuvC5ZXXmEA
-         Acrb0VUtSxpbVCE0TPnpfKVwARvsfY7258D6qLQqdZI4AmkDjm4NylrlREhxMMwWjn2h
-         8IBmVz2tArzrA54QWhgRE/lVbGPNgsc/M+Ddnd14Xoyq/zSIYCKG6tfxf3G/28w+ovT2
-         hvb5HDAu34qu5N7YEiBJgzIScF3mMYB04YbWBBuigrd46gHyxU5w+hEI806iaHdzBtd0
-         Y9uq1cQCzROEfuAa2LWyugiD1+qTeg7xffyxrTTXKdGvVANCVOGHtnNA0qFPq/gg+I81
-         S4PA==
-X-Gm-Message-State: AOAM532Pm0ohkq+l7X2WcVX9fsR8wdWdtM6tvybqkwE0jzLepq7KhCOS
-        5zO0b7dLCEw288U57HRe8Z64NQ==
-X-Google-Smtp-Source: ABdhPJy5CUVCmrWoxck70sxGRS8t75c6pstAoCLJMG2wn2bkDlLz3XDYROp4K+otpR7dZLw8LhIG7g==
-X-Received: by 2002:aed:2003:: with SMTP id 3mr15553386qta.356.1600133645847;
-        Mon, 14 Sep 2020 18:34:05 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id v56sm16142158qtc.49.2020.09.14.18.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 18:34:05 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 21:34:04 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     nikolay@cumulusnetworks.com, davem@davemloft.net,
-        netdev@vger.kernel.org, paulmck@kernel.org, josh@joshtriplett.org,
-        peterz@infradead.org, christian.brauner@ubuntu.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au, roopa@nvidia.com
-Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
- the condition
-Message-ID: <20200915013404.GD2579423@google.com>
-References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200908173624.160024-1-kuba@kernel.org>
- <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
- <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200914202122.GC2579423@google.com>
- <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CdHKs6HC+0sfe0Rxk870liWnMB41l/3HASoNmBZkBhw=;
+ b=EXPOtgDAdTFYoz+i/P6yPYbISW2oE3gnBgRB0a/XWJtTVRa73bEOwC9/jHyOJQ+7vh7gO3doaBQwgLS/7byo0DVuKhxNs/axsj8w8JPGe0KfQwEAQRb53XgYS+XOUtp0c72EpMZJ/yDrZFJpJwfG8UjEu0fWZQqnS0QCo2D3vas=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4228.namprd11.prod.outlook.com (2603:10b6:a03:1bd::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
+ 2020 03:18:24 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 03:18:24 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+CC:     Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
+Thread-Topic: RCU: Question on force_qs_rnp
+Thread-Index: AQHWimIP0LPCKhgtykWT7yuEklGOu6loiX8AgAAU1QCAAGeTxQ==
+Date:   Tue, 15 Sep 2020 03:18:23 +0000
+Message-ID: <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>,<20200914205642.GE29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200914205642.GE29330@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 370f35c7-c0de-4898-8163-08d85926017c
+x-ms-traffictypediagnostic: BY5PR11MB4228:
+x-microsoft-antispam-prvs: <BY5PR11MB42282295E521B25E0AD3177CFF200@BY5PR11MB4228.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o+cAZC+x9RdhOrHjzo9dmWG9fQ5YkQ0EyXJS7eQ7g7oARHazDV0JYZfl5kwfn4VNoIIE8GvOQhogI7GQ9paehB5rW11e9OAOM07GeNE8w/1w/J+erTwh2ow28R/tqqoZ7a3XJkewa4uWDrtMgca4T141uvJ7htnCXgE43RdeIFU/n3O0ykuQAgZVled6uupL7M0mWeS6Hqh+zQTUtJo0IO+UVT0yd0qZdkzbW06KvnODmUQ3jxznW7L5lrYyNZzlTpeOIEc7l5JGV0ej5ex1GogyX67QkD71hDb7zwFXqNWBIz/fUAXBYU+YVs7lYQRGF/K3jSLKMfLG6GskV0F/fUBAY0+vd2IP2KXGrQ+wds0ejGLLL7Y8OaqTyNx+pFBn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(346002)(396003)(136003)(26005)(478600001)(110136005)(4326008)(9686003)(76116006)(8936002)(91956017)(316002)(66946007)(5660300002)(66476007)(66446008)(55016002)(64756008)(66556008)(186003)(86362001)(7696005)(224303003)(71200400001)(54906003)(33656002)(2906002)(6506007)(52536014)(83380400001)(66574015);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 1mtrmlDFY5X8UrZw8u1igSvlJ14Hun58ss+A1ACnFTABaX2uHr8lRjkBjjtRcDhcV7PX9pog5ICDQv7guglF8yWiG6ggrbkQSsnOnuwVm0pzoxT/hYTY4eNw6lPCqUg6F7Sz2u1VJpt7QqI/AGuVLu5hNlhGBk735jIdcMXcxUEvixUjAx+4RcSGZAmkXvL7mHX2YE7DemJcrxRYxOhVf8ooWgRarNFH7SKDClrxLZP/NunBBv48G3MgD8loqQfHDKDedX9q8BZCazwR02KHbyBzfRckrCLGjGjfxsjr62+bACBd8KYaqDd0zcmSU1yvGdd+iL5QOCOILcxCX4TEAfQ56P+AOhCilUU6PwSa7kOdcnZ2yZPQs1zKq6sfdCN2xhHef5RgsiluWOPdGN5chWDNbZa11R+AmIetO9vsiSAadcyBtocXxNLHRTaHa1PsvGaKydAwu/O9C/uO31bFfj/FlJ7s/nVnR2y6xa/Z/UYuI6VDi1pnfYSTQgArYB+sn025HoQo4XJJZGautdfRaAoxFeJt+0Kfc2WK0baK44ij9dCCqJ87cY7+5PCtmVleuIJ+D/MeRYeV9o4lOSQRGEng79cAw6QbhjbqpQOq/LiiL3pGdcsyGqYNR23YpQXzWu8Mzh5tB2F56sNtum4NfA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 370f35c7-c0de-4898-8163-08d85926017c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 03:18:23.8592
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bF9DXra+KXF66nWckze2ZuRKNpKBJQepL6LSoOwJGdtRxWUGBs3kE3BelZp7mOyjVZa9+7mVgKPsAEtEDREzk2w10OG7bJS7D4ArMS0Fguw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4228
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:47:38PM -0700, Jakub Kicinski wrote:
-> On Mon, 14 Sep 2020 16:21:22 -0400 Joel Fernandes wrote:
-> > On Tue, Sep 08, 2020 at 05:27:51PM -0700, Jakub Kicinski wrote:
-> > > On Tue, 08 Sep 2020 21:15:56 +0300 nikolay@cumulusnetworks.com wrote:  
-> > > > Ah, you want to solve it for all. :) 
-> > > > Looks and sounds good to me, 
-> > > > Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>  
-> > > 
-> > > Actually, I give up, lockdep_is_held() is not defined without
-> > > CONFIG_LOCKDEP, let's just go with your patch..  
-> > 
-> > Care to send a patch just for the RCU macro then? Not sure what Dave is
-> > applying but if the net-next tree is not taking the RCU macro change, then
-> > send another one with my tag:
-> 
-> Seems like quite a few places depend on the macro disappearing its
-> argument. I was concerned that it's going to be had to pick out whether
-> !LOCKDEP builds should return true or false from LOCKDEP helpers, but
-> perhaps relying on the linker errors even more is not such poor taste?
-> 
-> Does the patch below look acceptable to you?
-> 
-> --->8------------
-> 
-> rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
-> 
-> We run into a unused variable warning in bridge code when
-> variable is only used inside the condition of
-> rcu_dereference_protected().
-> 
->  #define mlock_dereference(X, br) \
-> 	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
-> 
-> Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
-> compiles to nothing the compiler doesn't see the variable use.
-> 
-> Prevent the warning by adding the condition as dead code.
-> We need to un-hide the declaration of lockdep_tasklist_lock_is_held(),
-> lockdep_sock_is_held(), RCU lock maps and remove some declarations
-> in net/sched header, because they have a wrong type.
-> 
-> Add forward declarations of lockdep_is_held(), lock_is_held() which
-> will cause a linker errors if actually used with !LOCKDEP.
-> At least RCU expects some locks _not_ to be held so it's hard to
-> pick true/false for a dummy implementation.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  include/linux/lockdep.h        |  6 ++++++
->  include/linux/rcupdate.h       | 11 ++++++-----
->  include/linux/rcupdate_trace.h |  4 ++--
->  include/linux/sched/task.h     |  2 --
->  include/net/sch_generic.h      | 12 ------------
->  include/net/sock.h             |  2 --
-
-Would it make sense to split it into individual patches?
-
-So 1 for rcu, 1 for lockdep and then 1 for networking. The lockdep ones may
-need PeterZ's ack.
-
-thanks,
-
- - Joel
-
-
->  6 files changed, 14 insertions(+), 23 deletions(-)
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 6a584b3e5c74..c4b6225ee320 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
->  
->  #define lockdep_depth(tsk)	(0)
->  
-> +/*
-> + * Dummy forward declarations, allow users to write less ifdef-y code
-> + * and depend on dead code elimination.
-> + */
-> +int lock_is_held(const void *);
-> +int lockdep_is_held(const void *);
->  #define lockdep_is_held_type(l, r)		(1)
->  
->  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index d15d46db61f7..50d45781fa99 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -234,6 +234,11 @@ bool rcu_lockdep_current_cpu_online(void);
->  static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
->  #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
->  
-> +extern struct lockdep_map rcu_lock_map;
-> +extern struct lockdep_map rcu_bh_lock_map;
-> +extern struct lockdep_map rcu_sched_lock_map;
-> +extern struct lockdep_map rcu_callback_map;
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  
->  static inline void rcu_lock_acquire(struct lockdep_map *map)
-> @@ -246,10 +251,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
->  	lock_release(map, _THIS_IP_);
->  }
->  
-> -extern struct lockdep_map rcu_lock_map;
-> -extern struct lockdep_map rcu_bh_lock_map;
-> -extern struct lockdep_map rcu_sched_lock_map;
-> -extern struct lockdep_map rcu_callback_map;
->  int debug_lockdep_rcu_enabled(void);
->  int rcu_read_lock_held(void);
->  int rcu_read_lock_bh_held(void);
-> @@ -320,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
->  
->  #else /* #ifdef CONFIG_PROVE_RCU */
->  
-> -#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
-> +#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
->  #define rcu_sleep_check() do { } while (0)
->  
->  #endif /* #else #ifdef CONFIG_PROVE_RCU */
-> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-> index aaaac8ac927c..25cdef506cae 100644
-> --- a/include/linux/rcupdate_trace.h
-> +++ b/include/linux/rcupdate_trace.h
-> @@ -11,10 +11,10 @@
->  #include <linux/sched.h>
->  #include <linux/rcupdate.h>
->  
-> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> -
->  extern struct lockdep_map rcu_trace_lock_map;
->  
-> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> +
->  static inline int rcu_read_lock_trace_held(void)
->  {
->  	return lock_is_held(&rcu_trace_lock_map);
-> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> index a98965007eef..9f943c391df9 100644
-> --- a/include/linux/sched/task.h
-> +++ b/include/linux/sched/task.h
-> @@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
->  extern union thread_union init_thread_union;
->  extern struct task_struct init_task;
->  
-> -#ifdef CONFIG_PROVE_RCU
->  extern int lockdep_tasklist_lock_is_held(void);
-> -#endif /* #ifdef CONFIG_PROVE_RCU */
->  
->  extern asmlinkage void schedule_tail(struct task_struct *prev);
->  extern void init_idle(struct task_struct *idle, int cpu);
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index d60e7c39d60c..1aaa9e3d2e9c 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -432,7 +432,6 @@ struct tcf_block {
->  	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
->  };
->  
-> -#ifdef CONFIG_PROVE_LOCKING
->  static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
->  {
->  	return lockdep_is_held(&chain->filter_chain_lock);
-> @@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
->  {
->  	return lockdep_is_held(&tp->lock);
->  }
-> -#else
-> -static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
-> -{
-> -	return true;
-> -}
-> -
-> -static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
-> -{
-> -	return true;
-> -}
-> -#endif /* #ifdef CONFIG_PROVE_LOCKING */
->  
->  #define tcf_chain_dereference(p, chain)					\
->  	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index eaa5cac5e836..1c67b1297a72 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1566,13 +1566,11 @@ do {									\
->  	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
->  } while (0)
->  
-> -#ifdef CONFIG_LOCKDEP
->  static inline bool lockdep_sock_is_held(const struct sock *sk)
->  {
->  	return lockdep_is_held(&sk->sk_lock) ||
->  	       lockdep_is_held(&sk->sk_lock.slock);
->  }
-> -#endif
->  
->  void lock_sock_nested(struct sock *sk, int subclass);
->  
-> -- 
-> 2.24.1
-> 
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
+LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqOdTCMTXI1SA0
+OjU2CsrVvP7IyzogSm9lbCBGZXJuYW5kZXMKs63LzTogWmhhbmcsIFFpYW5nOyBVbGFkemlzbGF1
+IFJlemtpOyBqb3NoQGpvc2h0cmlwbGV0dC5vcmc7IHJvc3RlZHRAZ29vZG1pcy5vcmc7IG1hdGhp
+ZXUuZGVzbm95ZXJzQGVmZmljaW9zLmNvbTsgTGFpIEppYW5nc2hhbjsgcmN1QHZnZXIua2VybmVs
+Lm9yZzsgTEtNTArW98ziOiBSZTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnAKCk9uIE1v
+biwgU2VwIDE0LCAyMDIwIGF0IDAzOjQyOjA4UE0gLTA0MDAsIEpvZWwgRmVybmFuZGVzIHdyb3Rl
+Ogo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDA3OjU1OjE4QU0gKzAwMDAsIFpoYW5nLCBRaWFu
+ZyB3cm90ZToKPiA+IEhlbGxvIFBhdWwKPiA+Cj4gPiBJIGhhdmUgc29tZSBxdWVzdGlvbnMgZm9y
+IHlvdSAuCj4gPiBpbiBmb3JjZV9xc19ybnAgZnVuYyAsICBpZiAgImYocmRwKSIgZnVuYyByZXR1
+cm4gdHJ1ZSB3ZSB3aWxsIGNhbGwgcmN1X3JlcG9ydF9xc19ybnAgZnVuYwo+ID4gcmVwb3J0IGEg
+cXVpZXNjZW50IHN0YXRlIGZvciB0aGlzIHJucCBub2RlLCBhbmQgY2xlYXIgZ3JwbWFzayBmb3Jt
+IHJucC0+cXNtYXNrLgo+ID4gYWZ0ZXIgdGhhdCAsICBjYW4gd2UgbWFrZSBhIGNoZWNrIGZvciB0
+aGlzIHJucC0+cXNtYXNrLCAgaWYgIHJucC0+cXNtYXNrID09IDAsCj4gPiB3ZSB3aWxsIGNoZWNr
+IGJsb2NrZWQgcmVhZGVycyBpbiB0aGlzIHJucCBub2RlLCAgaW5zdGVhZCBvZiBqdW1waW5nIGRp
+cmVjdGx5IHRvIHRoZSBuZXh0IG5vZGUgLgo+Cj4gQ291bGQgeW91IGNsYXJpZnkgd2hhdCBnb29k
+IGlzIHRoaXMgZ29pbmcgdG8gZG8/IFdoYXQgcHJvYmxlbSBhcmUgeW91IHRyeWluZyB0bwo+IGFk
+ZHJlc3M/Cj4KPiBZb3UgY291bGQgaGF2ZSBhIHRhc2sgdGhhdCBpcyBibG9ja2VkIGluIGFuIFJD
+VSBsZWFmIG5vZGUsIGJ1dCB0aGUKPiBmb3JjZV9xc19ybnAoKSBkZWNpZGVkIHRvIGNhbGwgcmN1
+X3JlcG9ydF9xc19ybnAoKS4gVGhpcyBpcyBwZXJmZWN0bHkgT2suIFRoZQo+IENQVSBjb3VsZCBi
+ZSBkeW50aWNrLWlkbGUgYW5kIGEgcXVpZXNjZW50IHN0YXRlIGlzIHJlcG9ydGVkLiBIb3dldmVy
+LCB0aGUgR1AKPiBtdXN0IG5vdCBlbmQgYW5kIHRoZSByY3UgbGVhZiBub2RlIHNob3VsZCBzdGls
+bCBiZSBwcmVzZW50IGluIGl0cyBwYXJlbnQKPiBpbnRlcm1lZGlhdGUgbm9kZXMgLT5xc21hc2su
+IEluIHRoaXMgY2FzZSwgdGhlIC0+cXNtYXNrID09IDAgZG9lcyBub3QgaGF2ZQo+IGFueSByZWxl
+dmFuY2UuCj4KPiBPciBhbSBJIG1pc3NpbmcgdGhlIHBvaW50IG9mIHRoZSBxdWVzdGlvbj8KCj5I
+ZWxsbywgUWlhbmcsCgo+QW5vdGhlciB3YXkgb2YgbWFraW5nIEpvZWwncyBwb2ludCBpcyB0byBz
+YXkgdGhhdCB0aGUgYWRkaXRpb25hbCBjaGVjawo+eW91IGFyZSBhc2tpbmcgZm9yIGlzIGFscmVh
+ZHkgYmVpbmcgZG9uZSwgYnV0IGJ5IHJjdV9yZXBvcnRfcXNfcm5wKCkuCgo+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwgUGF1bAoK
+SGVsbG8gUHVhbCwgIEpvZWwKCldoYXQgSSB3YW50IHRvIGV4cHJlc3MgaXMgYXMgZm9sbG93cyA6
+CgpkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJuZWwvcmN1L3RyZWUuYwppbmRl
+eCA3NjIzMTI4ZDAwMjAuLmJlYjU1NDUzOWYwMSAxMDA2NDQKLS0tIGEva2VybmVsL3JjdS90cmVl
+LmMKKysrIGIva2VybmVsL3JjdS90cmVlLmMKQEAgLTI2MjIsNiArMjYyMiwxMSBAQCBzdGF0aWMg
+dm9pZCBmb3JjZV9xc19ybnAoaW50ICgqZikoc3RydWN0IHJjdV9kYXRhICpyZHApKQogICAgICAg
+ICAgICAgICAgaWYgKG1hc2sgIT0gMCkgewogICAgICAgICAgICAgICAgICAgICAgICAvKiBJZGxl
+L29mZmxpbmUgQ1BVcywgcmVwb3J0IChyZWxlYXNlcyBybnAtPmxvY2spLiAqLwogICAgICAgICAg
+ICAgICAgICAgICAgICByY3VfcmVwb3J0X3FzX3JucChtYXNrLCBybnAsIHJucC0+Z3Bfc2VxLCBm
+bGFncyk7CisgICAgICAgICAgICAgICAgICAgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZV9yY3Vf
+bm9kZShybnAsIGZsYWdzKTsKKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJucC0+cXNtYXNr
+ID09IDAgJiYgcmN1X3ByZWVtcHRfYmxvY2tlZF9yZWFkZXJzX2NncChybnApKQorICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHJjdV9pbml0aWF0ZV9ib29zdChybnAsIGZsYWdzKTsKKyAg
+ICAgICAgICAgICAgICAgICAgICAgZWxzZQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwogICAgICAg
+ICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICAgICAgLyogTm90aGluZyB0byBk
+byBoZXJlLCBzbyBqdXN0IGRyb3AgdGhlIGxvY2suICovCiAgICAgICAgICAgICAgICAgICAgICAg
+IHJhd19zcGluX3VubG9ja19pcnFyZXN0b3JlX3JjdV9ub2RlKHJucCwgZmxhZ3MpOwoKClRoYW5r
+cwoKUWlhbmc=
