@@ -2,190 +2,178 @@ Return-Path: <SRS0=zZsG=CY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2522C43461
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 05:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70712C43461
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 06:21:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 48EF620738
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 05:16:55 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="bhlnk76S"
+	by mail.kernel.org (Postfix) with ESMTP id 3741A20829
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 06:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600150880;
+	bh=yHPOwHAJMf2CyGYn5iaGApE31+NbMN1jtYRrQr3OqtY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=ckgFwlbPPS+KTDd8vAgctWq22uuiiP8zMuuoknWgbC1IgLzBkBsVKxNkwxqrQM8SK
+	 ZYICOjfxNL/1kk4sUbwjeJGpLjmrxvoOmV6fmVq0ADA34cprfoa8N8Uc+EP/W4WzNI
+	 wy1mZ+ThxAXDfPAoU5PeNuDNeVuDnl1UNJF9vDgE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgIOFQy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 01:16:54 -0400
-Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:35009
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726046AbgIOFQw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:16:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jU8C74e38e8Qk07weLp9IIb+/Gkz5XArvyMOko1bUjcYlIHPc7hMU3+WdMZxi0G0GYwRZW7zYZz7UxRexWAB7CSg9AfF6jduzq5LxtDqiLtSvFcQbwTyAF1B8SwqX7gf/e0vIn5ZSYncmzcBMqA8VVbs0kBkxl4JObceO9ELH2vU+r7wDUzrazDH7ke9XWuA5+YhwUeGsEbgwg21ogyFPPb21niTKx4PYD6EjQtKSFoBVEqw1e1OX+/wv+QJpgfF28u10X/+NwrFANHUn73bO6OaEmy7Ffi+HLthRgUsIjJmoAgFSEsqcIJyoFkwnoBJaVFAU990faa1OP0r42sVPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TVVHBu3GQ8+i+xWY7BJYzYjD2c/aKR/1Qz9LNLo4Z0c=;
- b=kV3RZ1/fMhfvNI62g8hGMx7svcFAbQoIZm3X+PhxesycpDNOjRbx1cymCymb0wm9k9YCqlE0vHcSqDGxxBOwOKTkverOkmAzvJEL1YNBOk4IcZI3anuiqpjOfxvxKSUEHm4GrzTjEVVjmKrkNDqk/PN/H3pRnV3Fjn5qDzSGY1iyJshAHhlOy4ntGo/7F0AGsLl7O7vV4Q4PLwAAHxrRRV1oFq5IpuVJ+lvV2pRocfhHWUAgA4G9zcRrco2lTcpes7/bQQ3g0m/av1Hf5p9/1EDeE1sZUmB6OK/FjIUcvkIaxmMTgtHKIb1yKHEYpRQkGbeMbwqTqbMxbnZJptRGJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TVVHBu3GQ8+i+xWY7BJYzYjD2c/aKR/1Qz9LNLo4Z0c=;
- b=bhlnk76SSSbT0F8sbpvaHbS8B0V2dywYCCvA2uiGfHM++BU7zXRIqm0KKURbXjRjqqsepUTSOTSV0/6Ade95J0ciRhs8oAP34WFNdbaJcmtRO70iCDkEBopW/xtbgyXtBRI4t6cUeR5ED/bTtX8P/FhLHOLn97FnmlkswYfMi8Y=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB3557.namprd11.prod.outlook.com (2603:10b6:a03:b4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
- 2020 05:16:48 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 05:16:47 +0000
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogUkNVOiBRdWVzdGlvbiBvbiBmb3JjZV9xc19ybnA=?=
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200914194208.GA2579423@google.com>
- <20200914205642.GE29330@paulmck-ThinkPad-P72>
- <BYAPR11MB263207BFF3AFB6A9D1A7A32FFF200@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200915034139.GK29330@paulmck-ThinkPad-P72>
-From:   "Zhang,Qiang" <qiang.zhang@windriver.com>
-Message-ID: <1079509d-c474-42bd-44e9-18cfa948fbae@windriver.com>
-Date:   Tue, 15 Sep 2020 13:16:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-In-Reply-To: <20200915034139.GK29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: HK0PR03CA0097.apcprd03.prod.outlook.com
- (2603:1096:203:b0::13) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        id S1726114AbgIOGVN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 02:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726033AbgIOGVL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:21:11 -0400
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E769820829;
+        Tue, 15 Sep 2020 06:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600150871;
+        bh=yHPOwHAJMf2CyGYn5iaGApE31+NbMN1jtYRrQr3OqtY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TmmxknEGZyvx8vlGW5CGW73+O4uXGgraFnOf4HjrP8W3fP+hO00OxomgQPDZMrWul
+         TTPtnmKpuFwwNrUFpHPuMsrGwVxISsxidGAMi4sBmKygdDvEVG1y6hO3MT19lxjr8u
+         N8b5Mw4ZsilvmmxhDCjXlk2EUymtxsG5fkzIFbZw=
+Received: by mail-oi1-f181.google.com with SMTP id t76so2601491oif.7;
+        Mon, 14 Sep 2020 23:21:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532JEFrNyVHpVvb+wHWzd3dsPQ590j1jMbQS1d/HZBmAzKD+2EmP
+        mFapXA9Xoy8foO4dBQsD5kaexBIBbd9lTXLeW0Y=
+X-Google-Smtp-Source: ABdhPJyUSykKZBGXRh2yEfSyDpEqCADm2R5enp/Wn0v7qrNEGX7YgMeVQQUInE2Y4YU+sX9Jw9CdsuzBUOw9ncgQn/s=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr2094330oig.47.1600150870261;
+ Mon, 14 Sep 2020 23:21:10 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.183] (60.247.85.82) by HK0PR03CA0097.apcprd03.prod.outlook.com (2603:1096:203:b0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Tue, 15 Sep 2020 05:16:45 +0000
-X-Originating-IP: [60.247.85.82]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 615f5082-94e3-4e53-10e7-08d859368b51
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3557:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3557A85FB1A8FFC49ABCBBBBFF200@BYAPR11MB3557.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qy/2jrNGw9DQYYDjKe3Mt+/8KG5ojTnGoQKj/lA41WhBVXmfknZ8CfHSm95tG9MX6iLLq3W50UkCy7o4EBDfJkW+X6qJpzgArKazSJ5/KoWwOsBZpozdKUCiNH5mN3GmvHWWp/PNqs53FuMTFGUWzYyAHT4VDKGS7Yb2TI0djZnrYsDEE+lYqhzGQZb1m3LiKKgKBZYAUhmnZcUNS/d1LU7GTYveI34oNQcVs27HEo5E3ffg1Oq0yVA5rxu99zBnI4AJeOuxW/U9AP/nhxjtR9jGrrSv+GVFSiWR0l58ujUg0j9nfKXdsN4eihmM5fsQXbr/wcVpA0A/mmzZbr0Rl114A6vS2IvtffQQRFHeuxDZ78rBsp3Ni53uZULDvL6XNVSvjd+GwDm3+EHm/es+KQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(376002)(346002)(366004)(396003)(6486002)(66574015)(36756003)(4326008)(26005)(956004)(316002)(478600001)(31686004)(224303003)(16576012)(2616005)(5660300002)(54906003)(66946007)(66476007)(31696002)(66556008)(6706004)(6916009)(52116002)(2906002)(16526019)(186003)(53546011)(6666004)(86362001)(8936002)(83380400001)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: nVBTRYL1XmiMtERjDu/0nUl44SSmQQMudTB7tO8LamDeeWQ5uwmFA8P2FgQiWTsNpxaO5ZO+WcFe88KiNXvGymrZrvg/lX1bonvpDfQSdU/RftXGhAU7flxV8R4NH6OG/FdZ4HW0GAaT0eV4yc8QXbK0cTP/Xdt5wVNrymdZfaBo2ORSXM/25OgBN+njZGHdbww/bRXai8eo2lBg87LknhY+zc8Lk44k2oBmYpiYNFOYoiG6Q7QJLaWtpRXytQdWibDl70ZsYGjBXNCD0VShXRnR0Vnm07JkkBrSeQTdOhwERbN5yrizuBpStiuQ5mSU13UO8BRZNApSf6oiM/Qon1vo6gpoBbKFkqbYmxpvk+xkmMza+0suzqK4D6kD4rXIwb6zWYeImxdtJg44hkFBlwuZP5m+0gES/gwXepcc/bp7xE7CSyU7G8Ko9bf0gJPj2mSlJoOYqdI7HJAys/9xucuu6V+9g5RsJ3OhOBRfa3k8qoYl56y53TgXlNV3aJIzhmGzBHRoDKp7UGOVNdZnr10QJGVZM0QFxmutZBm0xNAi8BOgiZGxdnyd+NAxbFbkf1Em0+jrTCcX2Rh4DkrHW/ijtu4fzEBcP2CDbJtG+7DpMNq8+oHjtTC8rzjGIiew2A7zAzzxAxQqTQJGnJb1mg==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 615f5082-94e3-4e53-10e7-08d859368b51
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 05:16:47.6315
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AmmOUfw+++qBdnKBnED6uMswIxbGbIg5LBEO4AbibWhmfW2D2XC2NwWpeOwZEmeNvkfUhghsCa/fV71kN4q4IQJHI6TcL/jiYjqc+XXLwDA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3557
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 09:20:59 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, 15 Sep 2020 at 01:43, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, Sep 14, 2020 at 3:24 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Ard and Herbert added to participants: see
+> > chacha20poly1305_crypt_sg_inplace(), which does
+> >
+> >         flags = SG_MITER_TO_SG;
+> >         if (!preemptible())
+> >                 flags |= SG_MITER_ATOMIC;
+> >
+> > introduced in commit d95312a3ccc0 ("crypto: lib/chacha20poly1305 -
+> > reimplement crypt_from_sg() routine").
+>
+> As far as I can tell, the only reason for this all is to try to use
+> "kmap()" rather than "kmap_atomic()".
+>
+> And kmap() actually has the much more complex "might_sleep()" tests,
+> and apparently the "preemptible()" check wasn't even the proper full
+> debug check, it was just a complete hack to catch the one that
+> triggered.
+>
+
+This was not driven by a failing check.
+
+The documentation of kmap_atomic() states the following:
+
+ * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
+ * gives a more generic (and caching) interface. But kmap_atomic can
+ * be used in IRQ contexts, so in some (very limited) cases we need
+ * it.
+
+so if this is no longer accurate, perhaps we should fix it?
+
+But another reason I tried to avoid kmap_atomic() is that it disables
+preemption unconditionally, even on 64-bit architectures where HIGHMEM
+is irrelevant. So using kmap_atomic() here means that the bulk of
+WireGuard packet encryption runs with preemption disabled, essentially
+for legacy reasons.
 
 
-On 9/15/20 11:41 AM, Paul E. McKenney wrote:
-> On Tue, Sep 15, 2020 at 03:18:23AM +0000, Zhang, Qiang wrote:
->>
->>
->> ________________________________________
->> 发件人: Paul E. McKenney <paulmck@kernel.org>
->> 发送时间: 2020年9月15日 4:56
->> 收件人: Joel Fernandes
->> 抄送: Zhang, Qiang; Uladzislau Rezki; josh@joshtriplett.org; rostedt@goodmis.org; mathieu.desnoyers@efficios.com; Lai Jiangshan; rcu@vger.kernel.org; LKML
->> 主题: Re: RCU: Question on force_qs_rnp
->>
->> On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
->>> On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
->>>> Hello Paul
->>>>
->>>> I have some questions for you .
->>>> in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
->>>> report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
->>>> after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0,
->>>> we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
->>>
->>> Could you clarify what good is this going to do? What problem are you trying to
->>> address?
->>>
->>> You could have a task that is blocked in an RCU leaf node, but the
->>> force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
->>> CPU could be dyntick-idle and a quiescent state is reported. However, the GP
->>> must not end and the rcu leaf node should still be present in its parent
->>> intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
->>> any relevance.
->>>
->>> Or am I missing the point of the question?
->>
->>> Hello, Qiang,
->>
->>> Another way of making Joel's point is to say that the additional check
->>> you are asking for is already being done, but by rcu_report_qs_rnp().
->>
->>>                                                         Thanx, Paul
->>
->> Hello Pual,  Joel
->>
->> What I want to express is as follows :
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 7623128d0020..beb554539f01 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -2622,6 +2622,11 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->>                  if (mask != 0) {
->>                          /* Idle/offline CPUs, report (releases rnp->lock). */
->>                          rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
->> +                       raw_spin_lock_irqsave_rcu_node(rnp, flags);
->> +                       if (rnp->qsmask == 0 && rcu_preempt_blocked_readers_cgp(rnp))
->> +                               rcu_initiate_boost(rnp, flags);
->> +                       else
->> +                               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->>                  } else {
->>                          /* Nothing to do here, so just drop the lock. */
->>                          raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> 
-> But in that case, why duplicate the code from rcu_initiate_boost()?
-> 
-> 							Thanx, Paul
-> 
-
-Hello Paul
-
-When we force a qs for rnp, we first check the leaf node "rnp->qsmask" 
-if it is reached zero, will check if there are some blocked readers in 
-this leaf rnp node, if so we need to priority-boost blocked readers.
-if not we will check cpu dyntick-idle and report leaf node qs, after 
-this leaf rnp node report qs, there is may be some blocked readers in 
-this node, should we also need to priority-boost blocked readers?
-
-Thanks
-
-Qiang
-
-
+> From a quick look, that code should probably just get rid of
+> SG_MITER_ATOMIC entirely, and alwayse use kmap_atomic().
+>
+> kmap_atomic() is actually the faster and proper interface to use
+> anyway (never mind that any of this matters on any sane hardware). The
+> old kmap() and kunmap() interfaces should generally be avoided like
+> the plague - yes, they allow sleeping in the middle and that is
+> sometimes required, but if you don't need that, you should never ever
+> use them.
+>
+> We used to have a very nasty kmap_atomic() that required people to be
+> very careful and know exactly which atomic entry to use, and that was
+> admitedly quite nasty.
+>
+> So it _looks_ like this code started using kmap() - probably back when
+> kmap_atomic() was so cumbersome to use - and was then converted
+> (conditionally) to kmap_atomic() rather than just changed whole-sale.
+> Is there actually something that wants to use those sg_miter functions
+> and sleep?
+>
+> Because if there is, that choice should come from the outside, not
+> from inside lib/scatterlist.c trying to make some bad guess based on
+> the wrong thing entirely.
+>
+>                  Linus
