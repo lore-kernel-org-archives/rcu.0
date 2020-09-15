@@ -2,96 +2,164 @@ Return-Path: <SRS0=zZsG=CY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D6F6C433E2
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 19:01:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08EABC2D0E3
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 19:59:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D22FB206A2
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 19:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600196507;
-	bh=IUpCyffZBng6VxFe1zQQa34I+E1YixGJRW8ke5R6BkU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=gB+cd31aQkza05PCdmIzokSz9P4HBkxi7hF+x1uK6szs49PBTRcfeGsiiMuCMCdOm
-	 JlOeZP2udjIJbe7bd8rBXYmo+dAJ2E1jC148RPAhwgUt9H297OUwnrlaafk4TrVJmp
-	 TVy2FC50HwTzwDXpgnLUNxza1U+ZOigLUpsDW10Q=
+	by mail.kernel.org (Postfix) with ESMTP id BB1EE2080C
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 19:59:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R4Zt8iBi";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GHgvirbC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgIOTB0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 15:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727845AbgIORLm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:11:42 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 253A92193E;
-        Tue, 15 Sep 2020 17:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600189339;
-        bh=IUpCyffZBng6VxFe1zQQa34I+E1YixGJRW8ke5R6BkU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=US2HCjeq5zZ7QUapdgMHz7lBhcKDI8o4/0gc5V48E3u5ZnY7Qry05+cAsbbP6UK8w
-         GL0/27NqNOhjC+Ugi35BkiO5QL1ozuwuULmKDZECcGDyvL4AJpmMGghqBLqUs9bVei
-         zAYnUjwmkJNBd1b/FPKRilsTyAC9MnKfC1Ii/Kkg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E824235226B7; Tue, 15 Sep 2020 10:02:18 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 10:02:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        nikolay@cumulusnetworks.com, davem@davemloft.net,
-        netdev@vger.kernel.org, josh@joshtriplett.org,
-        peterz@infradead.org, christian.brauner@ubuntu.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sfr@canb.auug.org.au, roopa@nvidia.com
-Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing
- the condition
-Message-ID: <20200915170218.GN29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200908173624.160024-1-kuba@kernel.org>
- <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
- <20200908172751.4da35d60@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200914202122.GC2579423@google.com>
- <20200914154738.3f4b980a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200915002011.GJ29330@paulmck-ThinkPad-P72>
- <20200914173029.60bdfc02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1727767AbgIOT6f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 15:58:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43642 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgIOT6O (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 15:58:14 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600199857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WUf3cR8tRBv7eifn3bYRJqwOE06JyVH+YNcuAlhPEzY=;
+        b=R4Zt8iBiRf9a+cl1bV87aTb7PzjrsY9fDXMhiBS8K2ot+081OXV43gzpJxoKPhJ+bG/r3d
+        IZ+XMelmwH6I1/IeBzA0fsbvOLaK8KTaPACawTHUg6jjadOJqPR3b3oHieYk1VWz6/0oQm
+        160PfMvRl4sOXnVT35YSXZOTlM61qgXSYzZSMF7oaVHQZW8+sX+YqTW5CPNn3M/4wDy6pz
+        FqyKA3YK/qnHJa+/v8mb9TXFlw3YCbBIJGJZD6NGKFvRIxsCkXAfwQ3qqvw+SkHnN/x3SA
+        Xr1GzKJIli+LvQNZjFraeH3J5TJIjCZBBRyHcln921IMOu/pI6tJi9qyOaIRUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600199857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WUf3cR8tRBv7eifn3bYRJqwOE06JyVH+YNcuAlhPEzY=;
+        b=GHgvirbCN6gxc0oKsh65B0tX+BLegnUGJa5AhDfyLfEqCZ+BxU1R9tgqcRPDwCSIqCwX9J
+        bXubW9jdXnVc0gCA==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+In-Reply-To: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 21:57:37 +0200
+Message-ID: <87y2la4xu6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914173029.60bdfc02@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 05:30:29PM -0700, Jakub Kicinski wrote:
-> On Mon, 14 Sep 2020 17:20:11 -0700 Paul E. McKenney wrote:
-> > > Seems like quite a few places depend on the macro disappearing its
-> > > argument. I was concerned that it's going to be had to pick out whether
-> > > !LOCKDEP builds should return true or false from LOCKDEP helpers, but
-> > > perhaps relying on the linker errors even more is not such poor taste?
-> > > 
-> > > Does the patch below look acceptable to you?  
-> > 
-> > The thing to check would be whether all compilers do sufficient
-> > dead-code elimination (it used to be that they did not).  One way to
-> > get a quick sniff test of this would be to make sure that a dead-code
-> > lockdep_is_held() is in common code, and then expose this patch to kbuild
-> > test robot.
-> 
-> I'm pretty sure it's in common code because kbuild bot complaints were
-> the reason I gave up the first time around ;) 
-> 
-> I'll expose this to kbuild bot via my kernel.org tree in case it
-> doesn't consider scissored patches and report back!
+On Tue, Sep 15 2020 at 10:35, Linus Torvalds wrote:
+> On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> OTOH, having a working 'preemptible()' or maybe better named
+>> 'can_schedule()' check makes tons of sense to make decisions about
+>> allocation modes or other things.
+>
+> No. I think that those kinds of decisions about actual behavior are
+> always simply fundamentally wrong.
+>
+> Note that this is very different from having warnings about invalid
+> use. THAT is correct. It may not warn in all configurations, but that
+> doesn't matter: what matters is that it warns in common enough
+> configurations that developers will catch it.
 
-Sounds good, thank you!
+You wish. I just found a 7 year old bug in a 10G network driver which
+surely would have been found if people would enable debug configs and
+not just run the crap on their PREEMPT_NONE, all debug off kernel. And
+that driver is not subject to bitrot, it gets regular bug fixes from
+people who seem to care (distro folks).
 
-							Thanx, Paul
+> So having a warning in "might_sleep()" that doesn't always trigger,
+> because you have a limited configuration that can't even detect the
+> situation, that's fine and dandy and intentional.
+
+and lets people get away with their crap.
+
+> But having code like
+>
+>        if (can_schedule())
+>            .. do something different ..
+>
+> is fundamentally complete and utter garbage.
+>
+> It's one thing if you test for "am I in hardware interrupt context".
+> Those tests aren't great either, but at least they make sense.
+
+They make sense in limited situations like exception handlers and such
+which really have to know from which context an exception was raised.
+
+But with the above reasoning such checks do not make sense in any other
+general code. 'in hard interrupt context' is just another context where
+you can't do stuff which you can do when in preemptible task context.
+
+Most tests are way broader than a single context. in_interrupt() is true
+for hard interrupt, soft interrupt delivery and all BH disabled
+contexts, which is completely ill defined.
+
+> But a driver - or some library routine - making a difference based on
+> some nebulous "can I schedule" is fundamentally and basically WRONG.
+>
+> If some code changes behavior, it needs to be explicit to the *caller*
+> of that code.
+
+I'm fine with that, but then we have to be consequent and ban _all_ of
+these and not just declare can_schedule() to be a bad one.
+
+Thanks,
+
+        tglx
