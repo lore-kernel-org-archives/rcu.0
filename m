@@ -7,76 +7,79 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F82C433E2
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 17:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA1AAC43461
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 17:55:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E1507208E4
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 17:42:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88D5920731
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 17:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600191723;
-	bh=ZkX4IpJVrUUwnYeEwsTuxnlSCIoNpjg5abSoyxEllB0=;
+	s=default; t=1600192555;
+	bh=zbNV4LoRm2SpxcQFTYkt0SpiZ9LfDT0MD1EunDcGBGg=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=UJ4x5vxOSNi1vwN7vZuvxnXuJKen56+2pwbQELJWSVcn45gomTjaUJU4NGk8Oi9zk
-	 0xicGPt+tOAph5NC2qyzcLoyn3Xs40i5+5veqNwPcZyGv6xsyiGsbeNWouZubio4nq
-	 wCM5QKNlX2Jv8qHcVuQ5ceGfm/r0NnZ1HTqBV4yE=
+	b=acIIcyLy4eUtJtkRV0wdzTkgO+g5dop/gORsHRSwPjr4h5TGPn/endjN8osawhreJ
+	 Vfj5/D5VR4vhuKwnGMcjLPhDiGqtgTO5w6jd/Bx8mJyhQOgdgaTb0zKTF9bJvnRoH1
+	 YY44KP8OANeiLsvXDN4sBg2qbda3I5EmG/W9cGbw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgIORl4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 13:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S1727926AbgIORzY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 13:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727962AbgIORlk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:41:40 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8404DC06174A
-        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:41:40 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i22so6292494eja.5
-        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:41:40 -0700 (PDT)
+        with ESMTP id S1727980AbgIORzL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:55:11 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD87C06174A
+        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:55:10 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i1so3951526edv.2
+        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
-        b=hFeX95/TT9jtwZAL/DonKpuMHGRk/7SCmZequDM1VaRmacKDQZY4lc39NgOcx0VujL
-         ul3l8yb5Ugprhwk3dogs1JqCkfr90spWSTqKGkSLsF9w3lXrIygeRUDRxh1yw1QSoeb3
-         vUCYW8AmUQyz6zbxknLrsvz9nPCTdNe9Dcd+4=
+        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
+        b=HrsWxAPBdchRgJHFmShgtgLo+DYOxZ4XfJAXkzfzzcfRKd+SalkgHXOKOAhxqlhHgQ
+         V1SM0m5nq2pQBoktRVl1X3TADwVGw68gQTnxbkgl/4Ys1lUtjCYE6YOc6zJjNuYpT6Oi
+         cumGXilNIqaAVXq/H8sUmOpuXNhTWtrjfr3qo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
-        b=m1HEOQ/1XUtdEVSxip/nD9You94TRCa73Pxm6MG53SiZSTABEFeS8CuJNUpMUtTL4q
-         7zcddFWK1LIBEWvZ4YE0MFfoiVoRknlRKZKC/YdArtgjKMuwVN1o7faPq6+oKm7Diigt
-         fjjCbYodShoQ6SJxWL9HrLbndiKnm1+W+c7yj854T/DlJHYOiilM10DR22nffyieIGxE
-         eTf6Rf0kM+BqKVthXCo3O4lJrQZdiIrdskjcKSfHDIh5R9LKEY9B0SDm6OBlquyEwv5T
-         HvoI4cmS4Irl7vQ8OZngevFgnkla04dQJxp+OJ10PwKfZHvWFiH+c/lhKz1ys78AkVB4
-         IvHg==
-X-Gm-Message-State: AOAM5316fVK+CFTi0BGut4n9aRCEN6ZFFk9OdZbrNghQbPo6c/T1n67j
-        BF/8I+L3yej7O17ycEzQFF/M4FrpHWLGZA==
-X-Google-Smtp-Source: ABdhPJw6qNLR+QjF4gcLIx6biPafd1uEAumzLCwZzTKtK5nLbbwcW9avSiB0ciOTV+fnaummQsJiQQ==
-X-Received: by 2002:a17:906:f8d2:: with SMTP id lh18mr22110917ejb.44.1600191698988;
-        Tue, 15 Sep 2020 10:41:38 -0700 (PDT)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id e15sm11881686eds.5.2020.09.15.10.41.38
+        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
+        b=Tvyg7ncj/YPxzpTC9fVgnfcS/WeTboDTgdmwCBg2/YkfUUv93P/8fj4QwDh33rEFiu
+         +M4BawapqfAXPFqklZhTi7yLka4fKbK1TN3iYxg25BF3eupilsOvVQbNcGDEilOYWB60
+         VZoUP0v5TUXiHo4EEtrBsIlOMNjB1/jn5PXsY6Z2fqDSlMNczK90RgrUMGtWak42TyAV
+         GiI2c/WMYqqf9DqC5rGoqEGr5xyBRO+J5+acsk8jCBr1PytaqvEt/G+Q1QvidhWE4jVc
+         r3P4amqABco/Lb5VqhqttxZ/538vLIDh3VnLW1Xwrk02NgsmjR+kV3fAe/tQOTec780g
+         3wYw==
+X-Gm-Message-State: AOAM533DKrfCF13c7hQJLh1c53va/v/YuymDIlpKQ4YBxBVxkedV2z28
+        +gjcyMBH/HnHs3hfczPQ4zLfJfTI5mGaag==
+X-Google-Smtp-Source: ABdhPJxCCi5Nj0Iqj5z0E6qKBGm+P1C/AyP6BVXU3R4zSUWbONmYXSYpIjgZol7Dnbr6TSq32FjnHA==
+X-Received: by 2002:a05:6402:305a:: with SMTP id bu26mr24133335edb.262.1600192509443;
+        Tue, 15 Sep 2020 10:55:09 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id e4sm12320108edk.38.2020.09.15.10.55.09
         for <rcu@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 10:41:38 -0700 (PDT)
-Received: by mail-wr1-f44.google.com with SMTP id w5so4212451wrp.8
-        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:41:38 -0700 (PDT)
-X-Received: by 2002:ac2:5594:: with SMTP id v20mr6798322lfg.344.1600191336149;
- Tue, 15 Sep 2020 10:35:36 -0700 (PDT)
+        Tue, 15 Sep 2020 10:55:09 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id i1so3951476edv.2
+        for <rcu@vger.kernel.org>; Tue, 15 Sep 2020 10:55:09 -0700 (PDT)
+X-Received: by 2002:a19:521a:: with SMTP id m26mr7168489lfb.133.1600191006488;
+ Tue, 15 Sep 2020 10:30:06 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
  <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+ <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+ <87een35woz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87een35woz.fsf@nanos.tec.linutronix.de>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 10:35:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
-Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 10:29:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
+Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
 Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
 To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
@@ -120,54 +123,33 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, Sep 15, 2020 at 12:24 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> OTOH, having a working 'preemptible()' or maybe better named
-> 'can_schedule()' check makes tons of sense to make decisions about
-> allocation modes or other things.
+> Alternatively we just make highmem a bit more expensive by making these
+> maps preemptible. RT is doing this for a long time and it's not that
+> horrible.
 
-No. I think that those kinds of decisions about actual behavior are
-always simply fundamentally wrong.
+Ack.
 
-Note that this is very different from having warnings about invalid
-use. THAT is correct. It may not warn in all configurations, but that
-doesn't matter: what matters is that it warns in common enough
-configurations that developers will catch it.
+In fact, I've wanted to start just removing kmap support entirely. At
+some point it's not so much about "I have an old machine that wants
+HIGHMEM" but about "I have an old CPU, and I'll just run an old
+kernel".
 
-So having a warning in "might_sleep()" that doesn't always trigger,
-because you have a limited configuration that can't even detect the
-situation, that's fine and dandy and intentional.
+It's not that 32-bit is irrelevant, it's that 32-bit with large
+amounts of memory is irrelevant.
 
-But having code like
+Last time this was discussed, iirc the main issue was some
+questionable old ARM chips that were still very common in embedded
+environments, even with large memory.
 
-       if (can_schedule())
-           .. do something different ..
+But we could definitely start de-emphasizing HIGHMEM.
 
-is fundamentally complete and utter garbage.
-
-It's one thing if you test for "am I in hardware interrupt context".
-Those tests aren't great either, but at least they make sense.
-
-But a driver - or some library routine - making a difference based on
-some nebulous "can I schedule" is fundamentally and basically WRONG.
-
-If some code changes behavior, it needs to be explicit to the *caller*
-of that code.
-
-So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
-do_something_atomic()" is pure shite.
-
-And I am not IN THE LEAST interested in trying to help people doing
-pure shite. We need to fix them. Like the crypto code is getting
-fixed.
-
-                   Linus
+                     Linus
