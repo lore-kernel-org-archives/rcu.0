@@ -2,86 +2,122 @@ Return-Path: <SRS0=zZsG=CY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 521FCC433E2
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 10:36:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7CDAC43461
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 16:15:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 122BA20735
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 10:36:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="deVBQ6TI"
+	by mail.kernel.org (Postfix) with ESMTP id 91976206E6
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 16:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600186542;
+	bh=h8FrMLmRYTR7EG3ov+53gJbd++NMD57LcgsrZ+W8Sok=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=JwZNUMxpAmy69ug5pcVRy1gLkjvqo9nuDS2Uspy8EAjcYoZZH3doEsMot5fBc2KqK
+	 XrTRfWO49kYXhb5RqxgzW6c/n9yfQXXv5p44xBANZv5a69omOd/EqeLDkyvq8vlkb9
+	 NwD+HgFVGcpa4ndlMpCXH+iSEDIVjiFcRo1sdaZE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgIOKg1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 06:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIOKgY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:36:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4784DC06174A;
-        Tue, 15 Sep 2020 03:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hvBH9n99n7oBLdgOlNEw3Z7fdQr8iLuKKj8rbR9iWPQ=; b=deVBQ6TIRiVTUZ0zB3/0okwYOA
-        rbEP5YPP0/s6nWJA/LqMozIFOiPEcexK9dlQoaX2+oljyaco3rIsgqQXXb/7N998cNNcsb3UnYU7g
-        AtrWzR1ZqrWwv4ykmjHinWHNRT9Os+gddd994F6BdKLIVX1dGqyNqUOZbrDUAWE4A0FLU157j0s4f
-        RZQ4D1X24y6tx+8FYeA5kEDkT0sI/d8zJm1hy6bIoratb2BofjnAmo4RzXjxz0wMbHzlict2UfFZE
-        i/W4CUBpWaGT3zJy1lqdjHAJcIf8HE23nbsQ9MowRvO6ApQGmLpKOUapFfL5kNkuO6oPWm/KIRBi8
-        In92fpJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kI8JL-0006QD-95; Tue, 15 Sep 2020 10:35:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727599AbgIOQPW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 12:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727587AbgIOQLK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 12:11:10 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A9E63050F0;
-        Tue, 15 Sep 2020 12:35:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B2263214EDD4A; Tue, 15 Sep 2020 12:35:39 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 12:35:39 +0200
-From:   peterz@infradead.org
-To:     Qian Cai <cai@redhat.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        rcu@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Linux PM <linux-pm@vger.kernel.org>,
-        ": Paul E. McKenney" <paulmck@kernel.org>,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5369206BE;
+        Tue, 15 Sep 2020 16:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600186258;
+        bh=h8FrMLmRYTR7EG3ov+53gJbd++NMD57LcgsrZ+W8Sok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sO86BqljD5TTUSf3Do5Tr23UIE8zY6Bz1UDtpNwChPTIbD5+keIeFFrqnf8XsRJr0
+         ojiIAWWGP4t8b9bz6D3u0TyrwIrYQfCa/vsL1qeBTtNKTpMduZ7SEC4jTL9i3luICh
+         OrDt1j8SFI8DM7C/qo2V0n/aLixXUHY994PZbfUw=
+Date:   Tue, 15 Sep 2020 17:10:48 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Will Deacon <will@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: WARNING: suspicious RCU usage: race/events/tlb.h:57 suspicious
- rcu_dereference_check() usage!
-Message-ID: <20200915103539.GW1362448@hirez.programming.kicks-ass.net>
-References: <CA+G9fYuRquEtm53yz9SYqa6O5gg4e6d9BCmDn163Fe2VwhWcJw@mail.gmail.com>
- <d7bdc37f6e3f98379289b262aea812e1894cd69b.camel@redhat.com>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [patch 06/13] locking/bitspinlock: Clenaup PREEMPT_COUNT
+ leftovers
+Message-ID: <20200915161047.GA26745@willie-the-truck>
+References: <20200914204209.256266093@linutronix.de>
+ <20200914204441.579902354@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d7bdc37f6e3f98379289b262aea812e1894cd69b.camel@redhat.com>
+In-Reply-To: <20200914204441.579902354@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 01:29:34PM -0400, Qian Cai wrote:
-> On Wed, 2020-09-09 at 10:08 +0530, Naresh Kamboju wrote:
-> > While booting x86_64 with Linux next 20200908 tag kernel this warning
-> > was noticed.
+On Mon, Sep 14, 2020 at 10:42:15PM +0200, Thomas Gleixner wrote:
+> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
+> removed. Cleanup the leftovers before doing so.
 > 
-> This pretty much looks like the same issue in:
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  include/linux/bit_spinlock.h |    4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> https://lore.kernel.org/lkml/20200902035146.GA45826@roeck-us.net/
-> 
-> Can you revert the patchset to see if it is related?
+> --- a/include/linux/bit_spinlock.h
+> +++ b/include/linux/bit_spinlock.h
+> @@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int
+>  {
+>  #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+>  	return test_bit(bitnum, addr);
+> -#elif defined CONFIG_PREEMPT_COUNT
+> -	return preempt_count();
+>  #else
+> -	return 1;
+> +	return preempt_count();
+>  #endif
 
-Don't bother..  I'll be sending patches soon.
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
