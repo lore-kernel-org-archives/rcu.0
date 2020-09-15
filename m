@@ -2,152 +2,86 @@ Return-Path: <SRS0=zZsG=CY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55727C31E40
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 521FCC433E2
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 10:36:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FD8E21D7A
-	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 122BA20735
+	for <rcu@archiver.kernel.org>; Tue, 15 Sep 2020 10:36:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4ZO6BoNl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8ik3d8qu"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="deVBQ6TI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgIOIjz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Sep 2020 04:39:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40486 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgIOIjx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:39:53 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600159189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
-        b=4ZO6BoNleN8HQgP0z8q+4JbOh4PFsXqPl2O1VMMFsqMl6Je+Vd4svU6GjBOnz4JBLm59ef
-        n28q3APVdlSA6QtUBbVtHjAsCDNA9DMNxmpB3Xs8JDO2mhj9om6HKXu9jHt5uTY4drNVe+
-        Xi88yb65/jAIcWHRrtrHzz6pJv5CkGBo0rMdCdV0m6UGwcjwsaPqQyFAYyPj9eb+iOpbLb
-        OyGnJVFkDuM2Xw/Zd91HZnJtSCpZf4n90+HYVnsyWEI2CIiSdIZikeb1E30oqvvQPgJtwy
-        7GKY8eCHlWViBl9/zu9LXs5HqsgBdJJ10OMSGETAETJYeANond9fGhpnX7IhVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600159189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
-        b=8ik3d8quF/oYipmw+L5R6EnAKiYsBpkerr1Z3ToGRa9dHoJtFKl9KfoiSlZU5EwJHOK7Qp
-        VqVAEKjJfZ9P9ICw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
+        id S1726189AbgIOKg1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Sep 2020 06:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIOKgY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:36:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4784DC06174A;
+        Tue, 15 Sep 2020 03:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hvBH9n99n7oBLdgOlNEw3Z7fdQr8iLuKKj8rbR9iWPQ=; b=deVBQ6TIRiVTUZ0zB3/0okwYOA
+        rbEP5YPP0/s6nWJA/LqMozIFOiPEcexK9dlQoaX2+oljyaco3rIsgqQXXb/7N998cNNcsb3UnYU7g
+        AtrWzR1ZqrWwv4ykmjHinWHNRT9Os+gddd994F6BdKLIVX1dGqyNqUOZbrDUAWE4A0FLU157j0s4f
+        RZQ4D1X24y6tx+8FYeA5kEDkT0sI/d8zJm1hy6bIoratb2BofjnAmo4RzXjxz0wMbHzlict2UfFZE
+        i/W4CUBpWaGT3zJy1lqdjHAJcIf8HE23nbsQ9MowRvO6ApQGmLpKOUapFfL5kNkuO6oPWm/KIRBi8
+        In92fpJA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kI8JL-0006QD-95; Tue, 15 Sep 2020 10:35:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A9E63050F0;
+        Tue, 15 Sep 2020 12:35:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B2263214EDD4A; Tue, 15 Sep 2020 12:35:39 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 12:35:39 +0200
+From:   peterz@infradead.org
+To:     Qian Cai <cai@redhat.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        rcu@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Linux PM <linux-pm@vger.kernel.org>,
+        ": Paul E. McKenney" <paulmck@kernel.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-In-Reply-To: <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
-Date:   Tue, 15 Sep 2020 10:39:48 +0200
-Message-ID: <87bli75t7v.fsf@nanos.tec.linutronix.de>
+        Guenter Roeck <linux@roeck-us.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: WARNING: suspicious RCU usage: race/events/tlb.h:57 suspicious
+ rcu_dereference_check() usage!
+Message-ID: <20200915103539.GW1362448@hirez.programming.kicks-ass.net>
+References: <CA+G9fYuRquEtm53yz9SYqa6O5gg4e6d9BCmDn163Fe2VwhWcJw@mail.gmail.com>
+ <d7bdc37f6e3f98379289b262aea812e1894cd69b.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7bdc37f6e3f98379289b262aea812e1894cd69b.camel@redhat.com>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 14 2020 at 15:24, Linus Torvalds wrote:
-> On Mon, Sep 14, 2020 at 2:55 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->>
->> Yes it does generate better code, but I tried hard to spot a difference
->> in various metrics exposed by perf. It's all in the noise and I only
->> can spot a difference when the actual preemption check after the
->> decrement
->
-> I'm somewhat more worried about the small-device case.
+On Mon, Sep 14, 2020 at 01:29:34PM -0400, Qian Cai wrote:
+> On Wed, 2020-09-09 at 10:08 +0530, Naresh Kamboju wrote:
+> > While booting x86_64 with Linux next 20200908 tag kernel this warning
+> > was noticed.
+> 
+> This pretty much looks like the same issue in:
+> 
+> https://lore.kernel.org/lkml/20200902035146.GA45826@roeck-us.net/
+> 
+> Can you revert the patchset to see if it is related?
 
-I just checked on one of my old UP ARM toys which I run at home. The .text
-increase is about 2% (75k) and none of the tests I ran showed any
-significant difference. Couldn't verify with perf though as the PMU on
-that piece of art is unusable.
-
-> That said, the diffstat certainly has its very clear charm, and I do
-> agree that it makes things simpler.
->
-> I'm just not convinced people should ever EVER do things like that "if
-> (preemptible())" garbage. It sounds like somebody is doing seriously
-> bad things.
-
-OTOH, having a working 'preemptible()' or maybe better named
-'can_schedule()' check makes tons of sense to make decisions about
-allocation modes or other things.
-
-We're currently looking through all of in_atomic(), in_interrupt()
-etc. usage sites and quite some of them are historic and have the clear
-intent of checking whether the code is called from task context or
-hard/softirq context. Lots of them are completely broken or just work by
-chance.
-
-But there is clearly historic precendence that context checks are
-useful, but they only can be useful if we have a consistent mechanism
-which works everywhere.
-
-Of course we could mandate that every interface which might be called
-from one or the other context has a context argument or provides two
-variants of the same thing. But I'm not really convinced whether that's
-a win over having a consistent and reliable set of checks.
-
-Thanks,
-
-        tglx
-
-
-
-
+Don't bother..  I'll be sending patches soon.
