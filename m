@@ -2,55 +2,50 @@ Return-Path: <SRS0=+/rT=CZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F516C43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FF2CC433E2
 	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:47:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BD3D820732
+	by mail.kernel.org (Postfix) with ESMTP id 00BE220809
 	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600282051;
-	bh=TidjB1CLdcHX17GrkijsFnb24uaNGbCHwZRDDig+Y9A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vPfAWr6L8GtI3hlwvffE6ucwIGAZg716yH6LVCMut2MtOR5VacNJ4tq1b+xK7SD9Y
-	 Fzd0wnyS+0mr6Ku5/r45qE/f/Q5HwX/ItziqZTt92efijgYzA7ugIlv1Aglbe3VWCU
-	 4Sj70Ckh0hw7v2uMRoBxFW6sM28qql+LG3tJ0Vwg=
+	s=default; t=1600282052;
+	bh=nZOBAZJ8i1B5WAzn9kzW9pRaFqxTgYJjGm/mivE6qmw=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=OkiEcolfa6pSiWC0aZ8XWEm3H8xBYTJvIspmRinHIdQ1eQtmfOzVCUuOQg9Eez6Za
+	 jzeJjUY8tPhxctaHP77mnL4AVIC9bUj2/yYFOnOTfQWYM54QYpuQbVROcHUqWYsCSW
+	 5wOfr18x7odoCxy6rND/X1bG+w16Zk1mIwurLwCo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgIPSrK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Sep 2020 14:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727957AbgIPSqQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1728185AbgIPSqQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 16 Sep 2020 14:46:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728146AbgIPSqF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:46:05 -0400
 Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FCEE22208;
-        Wed, 16 Sep 2020 18:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7611F20809;
+        Wed, 16 Sep 2020 18:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600281970;
-        bh=TidjB1CLdcHX17GrkijsFnb24uaNGbCHwZRDDig+Y9A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2h1IaLXpkde6U5QpHfMM0BRR77jj/AELrC+lj88srCPwLmXW+wzgJA08rPiwPbux3
-         2qKyU+fnNTuAGlAv6O3X9UBYTrAaSwa7qyi1DUwDz2P93eXDV4Iz84mrp0u9aBwqT6
-         TF6rg7ltPV+zZIbreI1xFlhUVv2eRUIVwCD8bdeU=
+        s=default; t=1600281965;
+        bh=nZOBAZJ8i1B5WAzn9kzW9pRaFqxTgYJjGm/mivE6qmw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Jie/Eo0tJ3qXhcAezeLBEEvASq6q5gjMQ35bdggOj357YUbOIkFQe3/fE7YbRPHWQ
+         AALflh1PUDV+9vnLDYvfFOf7H/nxqT+v/hagP8U0JYeUd19yRfKS0nx39LGyfiCqba
+         J3g4XpbWrqpoPyMp++XyYWs1iRbIM5dVtrEV5giI=
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     davem@davemloft.net, paulmck@kernel.org, joel@joelfernandes.org
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
-        christian.brauner@ubuntu.com, Jakub Kicinski <kuba@kernel.org>,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com
-Subject: [PATCH net-next 7/7] rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
-Date:   Wed, 16 Sep 2020 11:45:28 -0700
-Message-Id: <20200916184528.498184-8-kuba@kernel.org>
+        christian.brauner@ubuntu.com, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next 0/7] rcu: prevent RCU_LOCKDEP_WARN() from swallowing  the condition
+Date:   Wed, 16 Sep 2020 11:45:21 -0700
+Message-Id: <20200916184528.498184-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200916184528.498184-1-kuba@kernel.org>
-References: <20200916184528.498184-1-kuba@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: rcu-owner@vger.kernel.org
@@ -58,43 +53,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We run into a unused variable warning in bridge code when
-variable is only used inside the condition of
-rcu_dereference_protected().
+Hi!
 
- #define mlock_dereference(X, br) \
-	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+So I unfolded the RFC patch into smaller chunks and fixed an issue
+in SRCU pointed out by build bot. Build bot has been quiet for
+a day but I'm not 100% sure it's scanning my tree, so let's
+give these patches some ML exposure.
 
-Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
-compiles to nothing the compiler doesn't see the variable use.
+The motivation here is that we run into a unused variable
+warning in networking code because RCU_LOCKDEP_WARN() makes
+its argument disappear with !LOCKDEP / !PROVE_RCU. We marked
+the variable as __maybe_unused, but that's ugly IMHO.
 
-Prevent the warning by adding the condition as dead code.
+This set makes the relevant function declarations visible to
+the compiler and uses (0 && (condition)) to make the compiler
+remove those calls before linker realizes they are never defined.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
---
-CC: paulmck@kernel.org
-CC: josh@joshtriplett.org
-CC: rostedt@goodmis.org
-CC: mathieu.desnoyers@efficios.com
-CC: joel@joelfernandes.org
-CC: jiangshanlai@gmail.com
----
- include/linux/rcupdate.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm tentatively marking these for net-next, but if anyone (Paul?)
+wants to take them into their tree - even better.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 53f9648cb982..50d45781fa99 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -321,7 +321,7 @@ static inline void rcu_preempt_sleep_check(void) { }
- 
- #else /* #ifdef CONFIG_PROVE_RCU */
- 
--#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
-+#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
- #define rcu_sleep_check() do { } while (0)
- 
- #endif /* #else #ifdef CONFIG_PROVE_RCU */
+Jakub Kicinski (7):
+  sched: un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
+  rcu: un-hide lockdep maps for !LOCKDEP
+  net: un-hide lockdep_sock_is_held() for !LOCKDEP
+  net: sched: remove broken definitions and un-hide for !LOCKDEP
+  srcu: use a more appropriate lockdep helper
+  lockdep: provide dummy forward declaration of *_is_held() helpers
+  rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+
+ include/linux/lockdep.h        |  6 ++++++
+ include/linux/rcupdate.h       | 11 ++++++-----
+ include/linux/rcupdate_trace.h |  4 ++--
+ include/linux/sched/task.h     |  2 --
+ include/net/sch_generic.h      | 12 ------------
+ include/net/sock.h             |  2 --
+ kernel/rcu/srcutree.c          |  2 +-
+ 7 files changed, 15 insertions(+), 24 deletions(-)
+
 -- 
 2.26.2
 
