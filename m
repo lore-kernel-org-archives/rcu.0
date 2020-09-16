@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08528C433E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E563C43461
 	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:50:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A76B020809
+	by mail.kernel.org (Postfix) with ESMTP id E1CAC21974
 	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600282230;
-	bh=PizuCKedVSnuiRnh+VWDe8s8rBgOspdAMA6AwoPh/Gc=;
+	s=default; t=1600282231;
+	bh=/obTa5dDgpQbEhPY8NXqfpcnesfsIbZr0kI0nIbHCZc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=YlrDe5AP3itR7KuPbnSLHCzGauf2rD5yCXStY/vae9Xn5n1ntYc9xUauv0CKyJBis
-	 UzZDSphoVr7ELr79WwupnhHeuy/GQDI35EjZMqj1D66nZfOHaB2uSpj7rS5ByyyawL
-	 xduBm/O7gulDem6cVGpybj6mkqT38YWcuUCSBvjQ=
+	b=l09liSkLDYt3DROruxY7wM6QGXMcWwyEO99N1zbHXHcg5PZkxNb4X3sfO6oW8cT6C
+	 INQf659mVxvRQV7d1amxHPar1wUCt9ytMLyGOfEIA4mLiOunVRa+l7VYfKgM072L4L
+	 Wy0O2piGC5r7010K1BM1G/hDJkWICGf47RCknZL8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgIPStN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Sep 2020 14:49:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44254 "EHLO mail.kernel.org"
+        id S1728163AbgIPStO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Sep 2020 14:49:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728153AbgIPSqK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1728067AbgIPSqK (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 16 Sep 2020 14:46:10 -0400
 Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F57B221EC;
-        Wed, 16 Sep 2020 18:46:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2615921974;
+        Wed, 16 Sep 2020 18:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600281968;
-        bh=PizuCKedVSnuiRnh+VWDe8s8rBgOspdAMA6AwoPh/Gc=;
+        s=default; t=1600281965;
+        bh=/obTa5dDgpQbEhPY8NXqfpcnesfsIbZr0kI0nIbHCZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dIU3ykcWb2WBvNWiyT3UXZW4LWEhGDEOphqKmW2ht45g5bHd7arfDoUmqR83zdfya
-         RSIPqoxJqquhj29t20MbqoKanCRyAH/AkBuuiFaiLGmdlQlKDyhhw8ysWuzvPh5nAM
-         Tu8EbtUOhflNPEEgXnGPa9uGCsrC8fgHGfeb9ZsI=
+        b=hicf/gwlNME9c/NAU4/d3YEy3FC62ZR+K4mtyLI+U/UAa7VFyuB8hESAxyAMrPFTj
+         DdkMbTbwb7i84ugxcdWlRgptrF1c5o3x160nWMwrvtm5v7fTXXMYb2YCIiHTv50tt0
+         mBK/Topivrm4mnx5D+z7VBJAnYHTjCOl2xRIT/Oo=
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     davem@davemloft.net, paulmck@kernel.org, joel@joelfernandes.org
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
         christian.brauner@ubuntu.com, Jakub Kicinski <kuba@kernel.org>,
-        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us
-Subject: [PATCH net-next 4/7] net: sched: remove broken definitions and un-hide for !LOCKDEP
-Date:   Wed, 16 Sep 2020 11:45:25 -0700
-Message-Id: <20200916184528.498184-5-kuba@kernel.org>
+        ebiederm@xmission.com, akpm@linux-foundation.org, mingo@kernel.org
+Subject: [PATCH net-next 1/7] sched: un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
+Date:   Wed, 16 Sep 2020 11:45:22 -0700
+Message-Id: <20200916184528.498184-2-kuba@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200916184528.498184-1-kuba@kernel.org>
 References: <20200916184528.498184-1-kuba@kernel.org>
@@ -61,48 +61,33 @@ We're trying to make LOCKDEP-related function declarations
 visible to the compiler and depend on dead code elimination
 to remove them.
 
-Fix up the situation with lockdep_tcf_chain_is_locked() and
-lockdep_tcf_proto_is_locked().
+Make lockdep_tasklist_lock_is_held() visible.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
---
-CC: jhs@mojatatu.com
-CC: xiyou.wangcong@gmail.com
-CC: jiri@resnulli.us
 ---
- include/net/sch_generic.h | 12 ------------
- 1 file changed, 12 deletions(-)
+CC: christian.brauner@ubuntu.com
+CC: peterz@infradead.org
+CC: ebiederm@xmission.com
+CC: akpm@linux-foundation.org
+CC: mingo@kernel.org
+---
+ include/linux/sched/task.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index d60e7c39d60c..1aaa9e3d2e9c 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -432,7 +432,6 @@ struct tcf_block {
- 	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
- };
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index a98965007eef..9f943c391df9 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+ extern union thread_union init_thread_union;
+ extern struct task_struct init_task;
  
--#ifdef CONFIG_PROVE_LOCKING
- static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
- {
- 	return lockdep_is_held(&chain->filter_chain_lock);
-@@ -442,17 +441,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
- {
- 	return lockdep_is_held(&tp->lock);
- }
--#else
--static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
--{
--	return true;
--}
--
--static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
--{
--	return true;
--}
--#endif /* #ifdef CONFIG_PROVE_LOCKING */
+-#ifdef CONFIG_PROVE_RCU
+ extern int lockdep_tasklist_lock_is_held(void);
+-#endif /* #ifdef CONFIG_PROVE_RCU */
  
- #define tcf_chain_dereference(p, chain)					\
- 	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
+ extern asmlinkage void schedule_tail(struct task_struct *prev);
+ extern void init_idle(struct task_struct *idle, int cpu);
 -- 
 2.26.2
 
