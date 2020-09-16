@@ -2,92 +2,136 @@ Return-Path: <SRS0=+/rT=CZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E563C43461
-	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:50:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32E68C43461
+	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 19:31:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E1CAC21974
-	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 18:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600282231;
-	bh=/obTa5dDgpQbEhPY8NXqfpcnesfsIbZr0kI0nIbHCZc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=l09liSkLDYt3DROruxY7wM6QGXMcWwyEO99N1zbHXHcg5PZkxNb4X3sfO6oW8cT6C
-	 INQf659mVxvRQV7d1amxHPar1wUCt9ytMLyGOfEIA4mLiOunVRa+l7VYfKgM072L4L
-	 Wy0O2piGC5r7010K1BM1G/hDJkWICGf47RCknZL8=
+	by mail.kernel.org (Postfix) with ESMTP id BA97720770
+	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 19:31:11 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qie+Isc1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgIPStO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Sep 2020 14:49:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728067AbgIPSqK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:46:10 -0400
-Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2615921974;
-        Wed, 16 Sep 2020 18:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600281965;
-        bh=/obTa5dDgpQbEhPY8NXqfpcnesfsIbZr0kI0nIbHCZc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hicf/gwlNME9c/NAU4/d3YEy3FC62ZR+K4mtyLI+U/UAa7VFyuB8hESAxyAMrPFTj
-         DdkMbTbwb7i84ugxcdWlRgptrF1c5o3x160nWMwrvtm5v7fTXXMYb2YCIiHTv50tt0
-         mBK/Topivrm4mnx5D+z7VBJAnYHTjCOl2xRIT/Oo=
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net, paulmck@kernel.org, joel@joelfernandes.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
-        christian.brauner@ubuntu.com, Jakub Kicinski <kuba@kernel.org>,
-        ebiederm@xmission.com, akpm@linux-foundation.org, mingo@kernel.org
-Subject: [PATCH net-next 1/7] sched: un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
-Date:   Wed, 16 Sep 2020 11:45:22 -0700
-Message-Id: <20200916184528.498184-2-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200916184528.498184-1-kuba@kernel.org>
-References: <20200916184528.498184-1-kuba@kernel.org>
+        id S1727630AbgIPTZ7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Sep 2020 15:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727326AbgIPTYE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:24:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3111DC06174A;
+        Wed, 16 Sep 2020 12:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lu9AW4PaP4+ghxOf92Z5TIuOtrZJHfVdt4GP1kALmko=; b=qie+Isc1xWiVTOH0FpnUHhEdVO
+        U/jpqcMvDRllAqn5p1U7GdefAxVM84Yy20b0cEM1bgiBf5hCnk01e9MB0TfKNwOXtWN1U1K+TKZoh
+        Bf7eW6kpPKuWJAr92A4pFo4s9J4/zlCT/ZybRGMdVlaWMx2Lk0KLJY3uqYA5myPxU7z9T0QBID7Dv
+        QCPTePB01BBKw0BUKhTbux2is2J6jnziOkr8sFb2qrhMyKZ9JnMFHBYx4uJoB16mYi9Z0C/a5HCRA
+        DVWm6Js19jJdrChlv68PKTMdyYhgXX++ENCqsExKeuZiA9F/oE7zG8P2cfvR8n7McmH85zDTJUYAn
+        sSR0hzAg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kId20-0006tV-87; Wed, 16 Sep 2020 19:23:52 +0000
+Date:   Wed, 16 Sep 2020 20:23:52 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200916192352.GO5449@casper.infradead.org>
+References: <20200914204209.256266093@linutronix.de>
+ <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rj4owfn.fsf@nanos.tec.linutronix.de>
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We're trying to make LOCKDEP-related function declarations
-visible to the compiler and depend on dead code elimination
-to remove them.
+On Mon, Sep 14, 2020 at 11:55:24PM +0200, Thomas Gleixner wrote:
+> But just look at any check which uses preemptible(), especially those
+> which check !preemptible():
 
-Make lockdep_tasklist_lock_is_held() visible.
+hmm.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: christian.brauner@ubuntu.com
-CC: peterz@infradead.org
-CC: ebiederm@xmission.com
-CC: akpm@linux-foundation.org
-CC: mingo@kernel.org
----
- include/linux/sched/task.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index a98965007eef..9f943c391df9 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
- extern union thread_union init_thread_union;
- extern struct task_struct init_task;
++++ b/include/linux/preempt.h
+@@ -180,7 +180,9 @@ do { \
  
--#ifdef CONFIG_PROVE_RCU
- extern int lockdep_tasklist_lock_is_held(void);
--#endif /* #ifdef CONFIG_PROVE_RCU */
+ #define preempt_enable_no_resched() sched_preempt_enable_no_resched()
  
- extern asmlinkage void schedule_tail(struct task_struct *prev);
- extern void init_idle(struct task_struct *idle, int cpu);
--- 
-2.26.2
++#ifndef MODULE
+ #define preemptible()  (preempt_count() == 0 && !irqs_disabled())
++#endif
+ 
+ #ifdef CONFIG_PREEMPTION
+ #define preempt_enable() \
 
+
+$ git grep -w preemptible drivers
+(slightly trimmed by hand to remove, eg, comments)
+drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
+drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
+drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
+drivers/firmware/arm_sdei.c:    WARN_ON_ONCE(preemptible());
+drivers/firmware/arm_sdei.c:    WARN_ON(preemptible());
+drivers/firmware/efi/efi-pstore.c:                            preemptible(), record->size, record->psi->buf);
+drivers/irqchip/irq-gic-v4.c:   WARN_ON(preemptible());
+drivers/irqchip/irq-gic-v4.c:   WARN_ON(preemptible());
+drivers/scsi/hisi_sas/hisi_sas_main.c:          if (!preemptible())
+drivers/xen/time.c:     BUG_ON(preemptible());
+
+That only looks like two drivers that need more than WARNectomies.
+
+Although maybe rcu_read_load_sched_held() or rcu_read_lock_any_held()
+might get called from a module ...
