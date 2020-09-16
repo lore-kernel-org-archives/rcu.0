@@ -2,36 +2,69 @@ Return-Path: <SRS0=+/rT=CZ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FBDDC35263
-	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 20:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A25B0C43461
+	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 20:44:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 56FB421582
-	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 20:29:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4636321D24
+	for <rcu@archiver.kernel.org>; Wed, 16 Sep 2020 20:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600289052;
+	bh=MM/OYkhIqW+q1jlzGplM7TRGk23CKIsPg/gtHCbpw/s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=OSnN5hInLB+7xjOQNYVZ3kW5bWaVMz8Hq/fYYYnYcu0hNsKHyuVd+GSxXv0R3t0KC
+	 SBjWt2zkd6y8mehJ3drG1LpK8lfQ6Ead3ZGX0jqquzVFdzchf9+2wieRiLd0V3ZD1i
+	 j5WXCS5x0ER3um/kZOOCUk/+sUjn5DcvwHNQANXA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgIPU3w (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Sep 2020 16:29:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:34378 "EHLO foss.arm.com"
+        id S1728568AbgIPUoF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Sep 2020 16:44:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726983AbgIPRYN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:24:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D4E413D5;
-        Wed, 16 Sep 2020 03:56:31 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 889213F68F;
-        Wed, 16 Sep 2020 03:56:25 -0700 (PDT)
-References: <20200914204209.256266093@linutronix.de> <20200914204441.794954043@linutronix.de>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
+        id S1728562AbgIPUoC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:44:02 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FF7621D7D;
+        Wed, 16 Sep 2020 20:43:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600289039;
+        bh=MM/OYkhIqW+q1jlzGplM7TRGk23CKIsPg/gtHCbpw/s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ePzv3fwWqslNC9hLhuqpPOyt/s8elqT4skklSXCKPyGt5+DSX45Mij1jR0UQAfYSu
+         rlP0OmdNpXpvof5fQPOx2SpQZrxcPIGOMObx61mSVBfXvuGrzip0wCyXdOZekUurt/
+         goh6RQLFx9+QF+bnlf7qV2Wg9jJz35j9g42ob9HA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 14CC43522BA0; Wed, 16 Sep 2020 13:43:59 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 13:43:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
@@ -39,20 +72,11 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>,
         Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
         Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>,
         linux-xtensa@linux-xtensa.org,
@@ -60,63 +84,68 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [patch 08/13] sched: Clenaup PREEMPT_COUNT leftovers
-In-reply-to: <20200914204441.794954043@linutronix.de>
-Date:   Wed, 16 Sep 2020 11:56:23 +0100
-Message-ID: <jhj8sda56so.mognet@arm.com>
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200916204359.GB29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200914204209.256266093@linutronix.de>
+ <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72>
+ <CAHk-=wjsMycgMHJrCmeetR3r+K5bpSRtmVWfd8iaoQCYd_VYAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjsMycgMHJrCmeetR3r+K5bpSRtmVWfd8iaoQCYd_VYAg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: rcu-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Sep 16, 2020 at 11:32:00AM -0700, Linus Torvalds wrote:
+> On Wed, Sep 16, 2020 at 8:29 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > All fair, but some of us need to write code that must handle being
+> > invoked from a wide variety of contexts.
+> 
+> Note that I think that core functionality is different from random drivers.
+> 
+> Of course core code can (and will) look at things like
+> 
+>         if (in_interrupt())
+>             .. schedule work asynchronously ..
+> 
+> because core code ends up being called from odd places, and code like
+> that is expected to have understanding of the rules it plays with.
+> 
+> But something like RCU is a very different beast from some "walk the
+> scatter-gather list" code.
+> 
+> RCU does its work in the background, and works with lots of different
+> things. And it's so core and used everywhere that it knows about these
+> things. I mean, we literally have special code explicitly to let RCU
+> know "we entered kernel context now".
+> 
+> But something like a driver list walking thing should not be doing
+> different things behind peoples back depending on whether they hold
+> spinlocks or not. It should either just work regardless, or there
+> should be a flag (or special interface) for the "you're being called
+> in a crtitical region".
+> 
+> Because dynamically changing behavior really is very confusing.
 
-On 14/09/20 21:42, Thomas Gleixner wrote:
-> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-> removed. Cleanup the leftovers before doing so.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Whew!  I feel much better now.  ;-)
 
-Small nit below;
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-> ---
->  kernel/sched/core.c |    6 +-----
->  lib/Kconfig.debug   |    1 -
->  2 files changed, 1 insertion(+), 6 deletions(-)
->
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3706,8 +3706,7 @@ asmlinkage __visible void schedule_tail(
->        * finish_task_switch() for details.
->        *
->        * finish_task_switch() will drop rq->lock() and lower preempt_count
-> -	 * and the preempt_enable() will end up enabling preemption (on
-> -	 * PREEMPT_COUNT kernels).
-
-I suppose this wanted to be s/PREEMPT_COUNT/PREEMPT/ in the first place,
-which ought to be still relevant.
-
-> +	 * and the preempt_enable() will end up enabling preemption.
->        */
->
->       rq = finish_task_switch(prev);
+							Thanx, Paul
