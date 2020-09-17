@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC408C43464
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B7FC43468
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A54121D43
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC52B2311C
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376885;
-	bh=fbo5hHOzAyJO2AHNabv76vHNoNm0Fsocg9ueEelOuuM=;
+	s=default; t=1600376886;
+	bh=EN8Ux1f40Gwbt7c8BI9OtZebo/fiQdq5Hs8XaO02MuA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Kj1VNVdMutMwhOD7CgAEyukw4Hy5gYpe2x/RDCJlCs0S2cty9gsd+2DRU6PxZrxEw
-	 Vnsyfc7Bfl+rx1+KhW6UzjqTSy0Do/SU2KWOpKhC4/k5NghXxOZKgwORUbAlrTyiWT
-	 v3ZUfru9cmLTEkzpmSPzDnq/lA1CGIsYyUduPxeM=
+	b=mdUV3Fp5X8JPXxgq7OUGw4MFsKiJMBuRUm7Y+ygvaBoaGuPnqRQBF3mjt8QZZV/oj
+	 TqLgoMSHxpe4EklRD5NWB4Ql9UrjAx2muK4WwcySPX8prAmev0XYZ/Eq43cG2xBHQg
+	 pjs8qndm92tsOgMvNvRP/zSogoTsT/gBu6HNEr3g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIQVHx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 17:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45518 "EHLO mail.kernel.org"
+        id S1726170AbgIQVIG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbgIQVHt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726713AbgIQVHt (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 17 Sep 2020 17:07:49 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E429E235F7;
+        by mail.kernel.org (Postfix) with ESMTPSA id 308FF23119;
         Thu, 17 Sep 2020 21:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376869;
-        bh=fbo5hHOzAyJO2AHNabv76vHNoNm0Fsocg9ueEelOuuM=;
+        s=default; t=1600376868;
+        bh=EN8Ux1f40Gwbt7c8BI9OtZebo/fiQdq5Hs8XaO02MuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ke+AYRFUnFQtFJj49ROFc57x36pfAHvz6oj17TVvhABREtisen69OCqHvYXH4ej1Q
-         dXDesA7UW4MJFtEbUnA+F1xkSVgtIrAVUQSO8j0eo5b6UCTSTn4ehtkEGox3s8D0W8
-         8qqTuIGJrfNA+0aeIY/v/cCEEyjqSUo4rSR62R/s=
+        b=cjTVrzbiHcMU0NRDwB8lKpc4C1KnlRFzTH0WWPIu8J4X7Dw9TNhSP52oISLdri4bi
+         XnUZcCQgsaEigeNhQg18LgFMw93qAcqTgQo8Gc0GJcOB3WaMdK/xlVJUI9DVspib5b
+         ynLuxvmhvLtH/Kg/Zdb7IqE4TUMaEEkbEqMjxGcE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,13 +47,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
-        "# 5 . 7 . x" <stable@vger.kernel.org>
-Subject: [PATCH tip/core/rcu 8/8] rcu-tasks: Enclose task-list scan in rcu_read_lock()
-Date:   Thu, 17 Sep 2020 14:07:44 -0700
-Message-Id: <20200917210744.2995-8-paulmck@kernel.org>
+        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org
+Subject: [PATCH tip/core/rcu 5/8] rcu-tasks: Shorten per-grace-period sleep for RCU Tasks Trace
+Date:   Thu, 17 Sep 2020 14:07:41 -0700
+Message-Id: <20200917210744.2995-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
@@ -63,46 +61,82 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_tasks_trace_postgp() function uses for_each_process_thread()
-to scan the task list without the benefit of RCU read-side protection,
-which can result in use-after-free errors on task_struct structures.
-This error was missed because the TRACE01 rcutorture scenario enables
-lockdep, but also builds with CONFIG_PREEMPT_NONE=y.  In this situation,
-preemption is disabled everywhere, so lockdep thinks everywhere can
-be a legitimate RCU reader.  This commit therefore adds the needed
-rcu_read_lock() and rcu_read_unlock().
+The various RCU tasks flavors currently wait 100 milliseconds between each
+grace period in order to prevent CPU-bound loops and to favor efficiency
+over latency.  However, RCU Tasks Trace needs to have a grace-period
+latency of roughly 25 milliseconds, which is completely infeasible given
+the 100-millisecond per-grace-period sleep.  This commit therefore reduces
+this sleep duration to 5 milliseconds (or one jiffy, whichever is longer)
+in kernels built with CONFIG_TASKS_TRACE_RCU_READ_MB=y.
 
-Note that this bug can occur only after an RCU Tasks Trace CPU stall
-warning, which by default only happens after a grace period has extended
-for ten minutes (yes, not a typo, minutes).
-
-Fixes: 4593e772b502 ("rcu-tasks: Add stall warnings for RCU Tasks Trace")
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Link: https://lore.kernel.org/bpf/CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com/
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.7.x
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/tasks.h | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index fcd9c25..d5d9f2d 100644
+index 2b4df23..a0eaed5 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1088,9 +1088,11 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- 		if (ret)
- 			break;  // Count reached zero.
- 		// Stall warning time, so make a list of the offenders.
-+		rcu_read_lock();
- 		for_each_process_thread(g, t)
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
- 				trc_add_holdout(t, &holdouts);
-+		rcu_read_unlock();
- 		firstreport = true;
- 		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list) {
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
+@@ -28,6 +28,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
+  * @gp_func: This flavor's grace-period-wait function.
+  * @gp_state: Grace period's most recent state transition (debugging).
++ * @gp_sleep: Per-grace-period sleep to prevent CPU-bound looping.
+  * @init_fract: Initial backoff sleep interval.
+  * @gp_jiffies: Time of last @gp_state transition.
+  * @gp_start: Most recent grace-period start in jiffies.
+@@ -49,6 +50,7 @@ struct rcu_tasks {
+ 	struct wait_queue_head cbs_wq;
+ 	raw_spinlock_t cbs_lock;
+ 	int gp_state;
++	int gp_sleep;
+ 	int init_fract;
+ 	unsigned long gp_jiffies;
+ 	unsigned long gp_start;
+@@ -233,7 +235,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 			cond_resched();
+ 		}
+ 		/* Paranoid sleep to keep this from entering a tight loop */
+-		schedule_timeout_idle(HZ/10);
++		schedule_timeout_idle(rtp->gp_sleep);
+ 
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 	}
+@@ -557,6 +559,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
+ 
+ static int __init rcu_spawn_tasks_kthread(void)
+ {
++	rcu_tasks.gp_sleep = HZ / 10;
+ 	rcu_tasks.init_fract = 10;
+ 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
+ 	rcu_tasks.pertask_func = rcu_tasks_pertask;
+@@ -690,6 +693,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_rude);
+ 
+ static int __init rcu_spawn_tasks_rude_kthread(void)
+ {
++	rcu_tasks_rude.gp_sleep = HZ / 10;
+ 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
+ 	return 0;
+ }
+@@ -1170,8 +1174,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_trace);
+ static int __init rcu_spawn_tasks_trace_kthread(void)
+ {
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
++		rcu_tasks_trace.gp_sleep = HZ / 10;
+ 		rcu_tasks_trace.init_fract = 10;
+ 	} else {
++		rcu_tasks_trace.gp_sleep = HZ / 200;
++		if (rcu_tasks_trace.gp_sleep <= 0)
++			rcu_tasks_trace.gp_sleep = 1;
+ 		rcu_tasks_trace.init_fract = HZ / 5;
+ 		if (rcu_tasks_trace.init_fract <= 0)
+ 			rcu_tasks_trace.init_fract = 1;
 -- 
 2.9.5
 
