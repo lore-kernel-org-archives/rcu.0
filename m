@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7B17C43463
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 514C9C43466
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A17F02137B
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 11B542137B
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376908;
-	bh=SfAmhvlfMQYT+jzOFWGoEAQ9AA14MQ9NYDdfLyXdGdQ=;
+	s=default; t=1600376909;
+	bh=ZY2LyvjU7wixM4PMHpWWQ8GltjXVaTMrDxcrG1Mcbc8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=x6/EPKEojTZSTQuUUDBN5Vmgaq0EWXs9E1RlCd576AOBxS2Z6HYj/VNPP0aSiRWUC
-	 b6yHePMQICTsSxQZhqJrwqjMTmrpBkg4T+PWjXkP5BJqo13VgJL2qqLQrXMn4GwWoG
-	 UPhz5ZKyPiJZCRPCqVpPBnMx/SPKLOnfAvAQv6Hc=
+	b=uPRUA9gr2aP4M3cMRmu/Mal9hr4uy7BahPI9y7tnElqp50HrXiKoVsUm8L7sG3SZV
+	 ninJ+gh0XFHx5pb8k6dSw6aWZhuof0edoOb9eC0Pt+J1l/tNoB70ffgCEub6unuR+J
+	 rFEuyXv4hhn0tfO4PPEo/qlAs2jRMecfKOpYn4JA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgIQVIS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 17:08:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
+        id S1726736AbgIQVIR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:08:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbgIQVHs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:07:48 -0400
+        id S1726729AbgIQVHt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:07:49 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3FA221D92;
-        Thu, 17 Sep 2020 21:07:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FF2423447;
+        Thu, 17 Sep 2020 21:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376867;
-        bh=SfAmhvlfMQYT+jzOFWGoEAQ9AA14MQ9NYDdfLyXdGdQ=;
+        s=default; t=1600376868;
+        bh=ZY2LyvjU7wixM4PMHpWWQ8GltjXVaTMrDxcrG1Mcbc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jx56C9I5BNAz5//oJr4YZufgyCcQdrg6BE9+i92peH3GVwggSXw4vgyXefqmveZua
-         d0R9ClYL9lpzj0f6Kpg1vqGRpJyuRkWUtHhIg1UN2BsxRg/OTG1Cjf8o8dRPy6p925
-         +zYt/eIKDIqd67uGuBxQyLc7capL/sc3+h1/d8v0=
+        b=j2vqme/DMz88y46udAi42iiKj7i5/M4ZpHEiidzTM6ausTh6Ql1nuR9iaEcv+1Q1W
+         WB9OzK+XzxON/5YXUcRqJUBElV1bQPkXsLB/LlGE2RrKcettHfJwU6CZUA45XxBqSR
+         dtuFAvAqJW+22Iuz8a8EjSr1djcB+SPO4zwzDVok=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,11 +47,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org
-Subject: [PATCH tip/core/rcu 3/8] rcu-tasks: Use more aggressive polling for RCU Tasks Trace
-Date:   Thu, 17 Sep 2020 14:07:39 -0700
-Message-Id: <20200917210744.2995-3-paulmck@kernel.org>
+        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
+        "# 5 . 7 . x" <stable@vger.kernel.org>
+Subject: [PATCH tip/core/rcu 6/8] rcu-tasks: Fix grace-period/unlock race in RCU Tasks Trace
+Date:   Thu, 17 Sep 2020 14:07:42 -0700
+Message-Id: <20200917210744.2995-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
@@ -61,80 +63,108 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The RCU Tasks Trace grace periods are too slow, as in 40x slower than
-those of RCU Tasks.  This is due to my having assumed a one-second grace
-period was OK, and thus not having optimized any further.  This commit
-provides the first step in this optimization process, namely by allowing
-the task_list scan backoff interval to be specified on a per-flavor basis,
-and then speeding up the scans for RCU Tasks Trace.  However, kernels
-built with CONFIG_TASKS_TRACE_RCU_READ_MB=y continue to use the old slower
-backoff, consistent with that Kconfig option's goal of reducing IPIs.
+The more intense grace-period processing resulting from the 50x RCU
+Tasks Trace grace-period speedups exposed the following race condition:
 
-Link: https://lore.kernel.org/bpf/CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com/
-Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+o	Task A running on CPU 0 executes rcu_read_lock_trace(),
+	entering a read-side critical section.
+
+o	When Task A eventually invokes rcu_read_unlock_trace()
+	to exit its read-side critical section, this function
+	notes that the ->trc_reader_special.s flag is zero and
+	and therefore invoke wil set ->trc_reader_nesting to zero
+	using WRITE_ONCE().  But before that happens...
+
+o	The RCU Tasks Trace grace-period kthread running on some other
+	CPU interrogates Task A, but this fails because this task is
+	currently running.  This kthread therefore sends an IPI to CPU 0.
+
+o	CPU 0 receives the IPI, and thus invokes trc_read_check_handler().
+	Because Task A has not yet cleared its ->trc_reader_nesting
+	counter, this function sees that Task A is still within its
+	read-side critical section.  This function therefore sets the
+	->trc_reader_nesting.b.need_qs flag, AKA the .need_qs flag.
+
+	Except that Task A has already checked the .need_qs flag, which
+	is part of the ->trc_reader_special.s flag.  The .need_qs flag
+	therefore remains set until Task A's next rcu_read_unlock_trace().
+
+o	Task A now invokes synchronize_rcu_tasks_trace(), which cannot
+	start a new grace period until the current grace period completes.
+	And thus cannot return until after that time.
+
+	But Task A's .need_qs flag is still set, which prevents the current
+	grace period from completing.  And because Task A is blocked, it
+	will never execute rcu_read_unlock_trace() until its call to
+	synchronize_rcu_tasks_trace() returns.
+
+	We are therefore deadlocked.
+
+This race is improbable, but 80 hours of rcutorture made it happen twice.
+The race was possible before the grace-period speedup, but roughly 50x
+less probable.  Several thousand hours of rcutorture would have been
+necessary to have a reasonable chance of making this happen before this
+50x speedup.
+
+This commit therefore eliminates this deadlock by setting
+->trc_reader_nesting to a large negative number before checking the
+.need_qs and zeroing (or decrementing with respect to its initial
+value) ->trc_reader_nesting.  For its part, the IPI handler's
+trc_read_check_handler() function adds a check for negative values,
+deferring evaluation of the task in this case.  Taken together, these
+changes avoid this deadlock scenario.
+
+Fixes: 276c410448db ("rcu-tasks: Split ->trc_reader_need_end")
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Daniel Borkmann <daniel@iogearbox.net>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: <bpf@vger.kernel.org>
+Cc: <stable@vger.kernel.org> # 5.7.x
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ include/linux/rcupdate_trace.h | 4 ++++
+ kernel/rcu/tasks.h             | 6 ++++++
+ 2 files changed, 10 insertions(+)
 
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index d9015aa..a6a6a3a 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -50,6 +50,7 @@ static inline void rcu_read_lock_trace(void)
+ 	struct task_struct *t = current;
+ 
+ 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
++	barrier();
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+ 	    t->trc_reader_special.b.need_mb)
+ 		smp_mb(); // Pairs with update-side barriers
+@@ -72,6 +73,9 @@ static inline void rcu_read_unlock_trace(void)
+ 
+ 	rcu_lock_release(&rcu_trace_lock_map);
+ 	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
++	barrier(); // Critical section before disabling.
++	// Disable IPI-based setting of .need_qs.
++	WRITE_ONCE(t->trc_reader_nesting, INT_MIN);
+ 	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
+ 		WRITE_ONCE(t->trc_reader_nesting, nesting);
+ 		return;  // We assume shallow reader nesting.
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 978508e..ad8c4f3 100644
+index a0eaed5..e583a2d 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -28,6 +28,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @gp_func: This flavor's grace-period-wait function.
-  * @gp_state: Grace period's most recent state transition (debugging).
-+ * @init_fract: Initial backoff sleep interval.
-  * @gp_jiffies: Time of last @gp_state transition.
-  * @gp_start: Most recent grace-period start in jiffies.
-  * @n_gps: Number of grace periods completed since boot.
-@@ -48,6 +49,7 @@ struct rcu_tasks {
- 	struct wait_queue_head cbs_wq;
- 	raw_spinlock_t cbs_lock;
- 	int gp_state;
-+	int init_fract;
- 	unsigned long gp_jiffies;
- 	unsigned long gp_start;
- 	unsigned long n_gps;
-@@ -329,8 +331,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 	 */
- 	lastreport = jiffies;
- 
--	/* Start off with HZ/10 wait and slowly back off to 1 HZ wait. */
--	fract = 10;
-+	// Start off with initial wait and slowly back off to 1 HZ wait.
-+	fract = rtp->init_fract;
-+	if (fract > HZ)
-+		fract = HZ;
- 
- 	for (;;) {
- 		bool firstreport;
-@@ -553,6 +557,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
- 
- static int __init rcu_spawn_tasks_kthread(void)
- {
-+	rcu_tasks.init_fract = 10;
- 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
- 	rcu_tasks.pertask_func = rcu_tasks_pertask;
- 	rcu_tasks.postscan_func = rcu_tasks_postscan;
-@@ -1163,6 +1168,13 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_trace);
- 
- static int __init rcu_spawn_tasks_trace_kthread(void)
- {
-+	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
-+		rcu_tasks_trace.init_fract = 10;
-+	} else {
-+		rcu_tasks_trace.init_fract = HZ / 5;
-+		if (rcu_tasks_trace.init_fract <= 0)
-+			rcu_tasks_trace.init_fract = 1;
+@@ -830,6 +830,12 @@ static void trc_read_check_handler(void *t_in)
+ 		WRITE_ONCE(t->trc_reader_checked, true);
+ 		goto reset_ipi;
+ 	}
++	// If we are racing with an rcu_read_unlock_trace(), try again later.
++	if (unlikely(t->trc_reader_nesting < 0)) {
++		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
++			wake_up(&trc_wait);
++		goto reset_ipi;
 +	}
- 	rcu_tasks_trace.pregp_func = rcu_tasks_trace_pregp_step;
- 	rcu_tasks_trace.pertask_func = rcu_tasks_trace_pertask;
- 	rcu_tasks_trace.postscan_func = rcu_tasks_trace_postscan;
+ 	WRITE_ONCE(t->trc_reader_checked, true);
+ 
+ 	// Get here if the task is in a read-side critical section.  Set
 -- 
 2.9.5
 
