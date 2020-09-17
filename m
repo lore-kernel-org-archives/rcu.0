@@ -2,154 +2,168 @@ Return-Path: <SRS0=GKHO=C2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38028C43463
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 20:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9117C43463
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:06:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFA58208B8
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 20:58:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B7012137B
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:06:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376328;
-	bh=2PvhM/F1OEUd99gfkwpe+Tfj6xhGmnRpVcP1W3ityHo=;
+	s=default; t=1600376814;
+	bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
 	 From;
-	b=dhxAPvmFrXQyLeQeLn7Sbvo5ddEBsm8wQLEUhYj+S/99bCiODVCGnjukcb32yRy7D
-	 2fgVtn7UMwJ1a7j4DH/G98U1X3tRTbFyXiJhdg8yYY2bxVgwgKpTvmvf4LQKJQCC/C
-	 3yUObLEnmowfzMUtUaUmqoqBXa3FXYLPBGP/uuBU=
+	b=Rhl309byLuLoLJP66uZtmrQR52yCzSaU1Wg8LkHWrfQ/MFT9iX3f45OjdnKR6ItAw
+	 ROCHUaOE8Z1r53I/nHitRfNVrPctT6jHfcGOnafV9odW3LJd+WphxXfVpAIIjjG/09
+	 hs4bfArRndr1uwFZ0gncGZV7GVD7acGOsuvelS2k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgIQU6q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 16:58:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43780 "EHLO mail.kernel.org"
+        id S1726353AbgIQVGy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbgIQU6p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:58:45 -0400
+        id S1726234AbgIQVGx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:06:53 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D34D62087D;
-        Thu, 17 Sep 2020 20:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0044F208E4;
+        Thu, 17 Sep 2020 21:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376324;
-        bh=2PvhM/F1OEUd99gfkwpe+Tfj6xhGmnRpVcP1W3ityHo=;
+        s=default; t=1600376813;
+        bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iTpZ5NG9C4uO/amiNGJ0ti7FHtByUvTqnZr2/4P1ojzW0DzQU9BuW5RX6na4EbViK
-         CqxGRMf1PYNmxm9aGkfo3qvxDN2AnJRN3+jjXayWTj1P7hHxOWDeyqId5OmCwcjYCE
-         k2AYUJYv8AeppkD0w6Zi9Y1EWhXhzcJgMa4vaDt4=
+        b=QT4/jqKXPcV61aUPTXkopvnqF5kR7iijgukjgu1Dfj8xtY30xDG933p4mGkYhDwCa
+         pHgWA1isBxcJzvE2fcKKRoWHU+UngTaUN1B1iOPh9vchbjYXt24AIf6qX1JZVIrx79
+         DVxtPmjKIo932TTLPMlsiW/G5xh1FoHs0htwS8ZQ=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 97FA13522887; Thu, 17 Sep 2020 13:58:44 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:58:44 -0700
+        id C06773522887; Thu, 17 Sep 2020 14:06:52 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:06:52 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        jiangshanlai@gmail.com,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: GPF from __srcu_read_lock() via drm_minor_acquire()
-Message-ID: <20200917205844.GA1978@paulmck-ThinkPad-P72>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        jolsa@redhat.com, bpf@vger.kernel.org, sfr@canb.auug.org.au
+Subject: Re: [PATCH RFC tip/core/rcu 0/4] Accelerate RCU Tasks Trace updates
+Message-ID: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com>
- <20200916213730.GE29330@paulmck-ThinkPad-P72>
+References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916213730.GE29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:37:30PM -0700, Paul E. McKenney wrote:
-> On Wed, Sep 16, 2020 at 01:48:22PM -0700, Nick Desaulniers wrote:
-> > Hey Paul and RCU folks,
-> > I noticed we have a bug report from 2 users that seem to have similar
-> > stack traces in SRCU code;
-> > https://github.com/ClangBuiltLinux/linux/issues/1081
-> > 
-> > Is there a way we should go about starting to debug this?
-> 
-> Hello, Nick,
-> 
-> Huh.  It looks like the per-CPU memory referenced by the srcu_struct
-> structure's ->sda field is unmapped.  That would certainly leave
-> the next __srcu_read_lock() dazed and confused!
-> 
-> The trapping instruction is the increment instruction that I would
-> expect to be there.  The source code is as follows:
-> 
-> 	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
-> 	this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-> 	smp_mb();
-> 
-> Looking at the assembly:
-> 
-> 	  1e:	55                   	push   %ebp
-> 	  1f:	89 e5                	mov    %esp,%ebp
-> 
-> The above is function preamble.
-> 
-> 	  21:	8b 48 68             	mov    0x68(%eax),%ecx
-> 
-> The above instruction does READ_ONCE(ssp->srcu_idx).
-> 
-> 	  24:	8b 40 7c             	mov    0x7c(%eax),%eax
-> 
-> The above instruction fetches ssp->sda into %eax.  I therefore find it
-> quite surprising that the dump contains "EAX: 00000000".  Or is this
-> register value inaccurate?
-> 
-> 	  27:	83 e1 01             	and    $0x1,%ecx
-> 
-> The above instruction does the "& 0x1".  Therefore, at this point,
-> %eax contains the address of the per-CPU srcu_data structure, but
-> without the per-CPU offset having been applied.  Also, %ecx contains
-> the array index, either 0 or 1.  Here we have zero, which is perfectly
-> legitimate.
-> 
-> 	  2a:*	64 ff 04 88          	incl   %fs:(%eax,%ecx,4)
-> 
-> The above instruction does the this_cpu_inc().  Here %fs is presumably
-> this CPU's offset from the base address of the per-CPU ->sda pointer.
-> 
-> 	  2e:	f0 83 44 24 fc 00    	lock addl $0x0,-0x4(%esp)
-> 
-> The above instruction is the smp_mb().
-> 
-> So here are a few questions that I would ask:
+Hello!
 
-Oh, and this one:
+This series accelerates RCU Tasks Trace updates, reducing the average
+grace-period latencies from about a second to about 20 milliseconds on my
+x86 laptop.  These are benchmark numbers, based on a previously posted
+patch to rcuscale.c [1] running on my x86 laptop.  Additional patches
+provide a compiler-warning cleanup and fix several race conditions that
+were exposed by the faster grace periods.  The patches in this series
+are as follows:
 
-0.	Did someone call srcu_read_lock() before init_srcu_struct()
-	had been called on this srcu_struct structure?
+1.	Prevent complaints of unused show_rcu_tasks_classic_gp_kthread().
+	This is not related to the problem at hand, but it is
+	a pre-existing patch that provides a simple cleanup.
+	The grace-period latency thus remains at 980 milliseconds.
+
+2.	Mark variables static, noted during this effort but otherwise
+	unconnected.  This change has no effect, so that the average
+	grace-period latency remains at 980 milliseconds.
+
+3.	Use more aggressive polling for RCU Tasks Trace.  This polling
+	starts at five-millisecond intervals instead of the prior
+	100-millisecond intervals.  As before, the polling interval
+	increases in duration as the grace period ages, and again as
+	before is capped at one second.  This change reduces the
+	average grace-period latency to about 620 milliseconds.
+
+4.	Selectively enable more RCU Tasks Trace IPIs.  This retains
+	the old behavior of suppressing IPIs for grace periods that are
+	younger than 500 milliseconds for CONFIG_TASKS_TRACE_RCU_READ_MB=y
+	kernels, including CONFIG_PREEMPT_RT=y kernels, but allows IPIs
+	immediately on other kernels.  It is quite possible that a more
+	sophisticated decision procedure will be required, and changes
+	to RCU's dyntick-idle code might also be needed.  This change
+	(along with the earlier ones) reduces the average grace-period
+	latency to about 120 milliseconds.
+
+5.	Shorten per-grace-period sleep for RCU Tasks Trace.  The
+	current code sleeps for 100 milliseconds after the end of
+	each grace period, which by itself prevents a back-to-back
+	string of grace-period waits from completing faster than
+	ten per second.  This patch also retains this old behavior
+	for CONFIG_TASKS_TRACE_RCU_READ_MB=y (and again thus also
+	for CONFIG_PREEMPT_RT=y kernels).  For other kernels, this
+	post-grace-period sleep is reduced to five milliseconds.
+	This change (along with the earlier ones) reduced the average
+	grace-period latency to about 18 milliseconds, for an overall
+	factor-of-50 reduction in latency.
+
+6.	Fix a deadlock-inducing race between rcu_read_unlock_trace()
+	and trc_read_check_handler().  The race window was only a few
+	instructions wide, but please see the commit log for the full
+	sad story.  The grace-period speedup made this race 50 times
+	more probable, and thus reduced the rcutorture runtime required
+	to reproduce it from about five months to about four days.
+
+7.	Fix a low-probability race between rcu_read_unlock_trace()
+	and the RCU Tasks Trace CPU stall reporting loop in
+	rcu_tasks_trace_postgp().  This race could result in leaking
+	task_struct structures.
+
+8.	Fix a low-probability race between the RCU Tasks Trace CPU
+	stall reporting loop in rcu_tasks_trace_postgp() and task exit.
+	This race could result in use-after-free errors.
+
+Alexei Starovoitov benchmarked an earlier patch [2], producing results
+that are roughly consistent with the above reduction in latency [3].
+
+Changes since last week's RFC version:
+
+o	Added patch #1, which cleans up a compiler warning.
+
+o	Renumbered patches 1-4 to 2-5.
+
+o	Add Ccs to patches 3, 4, and 5.
+
+o	Add patches 6-8 to fix race conditions exposed by 50x faster
+	grace periods.	These are either rare on the one hand or both
+	rare and occurring only during an RCU Tasks Trace CPU stall
+	warning -and- rare on the other.  Still, they need to be fixed.
+
+o	This series maintains the sub-20-millisecond update-side
+	grace-period delays of the RFC series.
+	
+o	Fixing the first of the race conditions required that a
+	compiler barrier be added to rcu_read_lock_trace() and that
+	another compiler barrier along with a WRITE_ONCE() be added to
+	rcu_read_unlock_trace().  This fix therefore adds a fraction of
+	a nanosecond to read-side overhead.  On my laptop, the increase
+	is from about 2.6 nanoseconds to about 3 nanoseconds.  This
+	small increase should not cause noticeable problems.
 
 							Thanx, Paul
 
-> 1.	Did the init_srcu_struct() for this srcu_struct report an error?
-> 	(Though with current mainline, that memory-allocation failure
-> 	would more likely have page-faulted in init_srcu_struct().)
-> 
-> 2.	Has the srcu_struct in question already been passed to
-> 	cleanup_srcu_struct()?
-> 
-> 3.	Has the value of %fs been clobbered?  Though that seems
-> 	unlikely given that it also happens on aarch64.  Plus, the
-> 	smoking gun seems to me to be the zero value of %eax.
-> 
-> 4.	If the above three questions fail to provide enlightenment,
-> 	I suggest recording the ->sda value and adding debug checks
-> 	to anything that can unmap memory...  And recording the value
-> 	of ->sda somewhere to check to see if it is being changed (it
-> 	should remain constant from init_srcu_struct()'s return through
-> 	the corresponding call to cleanup_srcu_struct()).
-> 
-> Please let me know how it goes!
-> 
-> 							Thanx, Paul
+[1] https://lore.kernel.org/bpf/20200909193900.GK29330@paulmck-ThinkPad-P72/
+[2] https://lore.kernel.org/bpf/20200910052727.GA4351@paulmck-ThinkPad-P72/
+[3] https://lore.kernel.org/bpf/619554b2-4746-635e-22f3-7f0f09d97760@fb.com/
+
+------------------------------------------------------------------------
+
+ include/linux/rcupdate_trace.h |    4 +
+ kernel/rcu/tasks.h             |   92 +++++++++++++++++++++++++++++++----------
+ 2 files changed, 75 insertions(+), 21 deletions(-)
