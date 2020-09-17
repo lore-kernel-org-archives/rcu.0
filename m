@@ -2,47 +2,43 @@ Return-Path: <SRS0=GKHO=C2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9117C43463
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:06:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCD5C43465
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:07:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B7012137B
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:06:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51A8621D43
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376814;
-	bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=Rhl309byLuLoLJP66uZtmrQR52yCzSaU1Wg8LkHWrfQ/MFT9iX3f45OjdnKR6ItAw
-	 ROCHUaOE8Z1r53I/nHitRfNVrPctT6jHfcGOnafV9odW3LJd+WphxXfVpAIIjjG/09
-	 hs4bfArRndr1uwFZ0gncGZV7GVD7acGOsuvelS2k=
+	s=default; t=1600376873;
+	bh=ouGhB+1a+6geKlPYWPlPWaRZ75l/NwH3LH++H6Rzi2I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=oJM1KDWkjTybqYog8MtWWfqmHLxp//TyzC2W7JHiirsivXomf+J3ApY/xe/++ShVg
+	 WgtNm9HhiGN3NxkGpVRioMjZWoHrzKHI/lDw+/5KpW+DB0BE3VJjT3QNBH88lGIw5q
+	 QzkYacFLn03NjpggEVxw0P3ApVX5O4APxBjqhIus=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgIQVGy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 17:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
+        id S1726741AbgIQVHt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726234AbgIQVGx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:06:53 -0400
+        id S1726705AbgIQVHs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:07:48 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0044F208E4;
-        Thu, 17 Sep 2020 21:06:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E137A221EC;
+        Thu, 17 Sep 2020 21:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376813;
-        bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QT4/jqKXPcV61aUPTXkopvnqF5kR7iijgukjgu1Dfj8xtY30xDG933p4mGkYhDwCa
-         pHgWA1isBxcJzvE2fcKKRoWHU+UngTaUN1B1iOPh9vchbjYXt24AIf6qX1JZVIrx79
-         DVxtPmjKIo932TTLPMlsiW/G5xh1FoHs0htwS8ZQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C06773522887; Thu, 17 Sep 2020 14:06:52 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:06:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1600376868;
+        bh=ouGhB+1a+6geKlPYWPlPWaRZ75l/NwH3LH++H6Rzi2I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EaGePX23YySwwnRttUY3XbOQ5SYNm4v3aayZmCxMJUmNAspRIu9UqUXA1fxRxF9w1
+         IUlLwtXfTx/O8iWQzPDorrqDScG+V3k0PPth7S+jxYKaZDBqhNdYPMxoWk6xZVNQKT
+         JM5Omj86OIrYr0zCPVNOkpJTW7UeB68D39yjSx68=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
@@ -50,120 +46,64 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        jolsa@redhat.com, bpf@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: [PATCH RFC tip/core/rcu 0/4] Accelerate RCU Tasks Trace updates
-Message-ID: <20200917210652.GA31242@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org
+Subject: [PATCH tip/core/rcu 4/8] rcu-tasks: Selectively enable more RCU Tasks Trace IPIs
+Date:   Thu, 17 Sep 2020 14:07:40 -0700
+Message-Id: <20200917210744.2995-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
+References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series accelerates RCU Tasks Trace updates, reducing the average
-grace-period latencies from about a second to about 20 milliseconds on my
-x86 laptop.  These are benchmark numbers, based on a previously posted
-patch to rcuscale.c [1] running on my x86 laptop.  Additional patches
-provide a compiler-warning cleanup and fix several race conditions that
-were exposed by the faster grace periods.  The patches in this series
-are as follows:
+Many workloads are quite sensitive to IPIs, and such workloads should
+build kernels with CONFIG_TASKS_TRACE_RCU_READ_MB=y to prevent RCU
+Tasks Trace from using them under normal conditions.  However, other
+workloads are quite happy to permit more IPIs if doing so makes BPF
+program updates go faster.  This commit therefore sets the default
+value for the rcupdate.rcu_task_ipi_delay kernel parameter to zero for
+kernels that have been built with CONFIG_TASKS_TRACE_RCU_READ_MB=n,
+while retaining the old default of (HZ / 10) for kernels that have
+indicated an aversion to IPIs via CONFIG_TASKS_TRACE_RCU_READ_MB=y.
 
-1.	Prevent complaints of unused show_rcu_tasks_classic_gp_kthread().
-	This is not related to the problem at hand, but it is
-	a pre-existing patch that provides a simple cleanup.
-	The grace-period latency thus remains at 980 milliseconds.
+Link: https://lore.kernel.org/bpf/CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com/
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: <bpf@vger.kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-2.	Mark variables static, noted during this effort but otherwise
-	unconnected.  This change has no effect, so that the average
-	grace-period latency remains at 980 milliseconds.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index ad8c4f3..2b4df23 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -83,7 +83,7 @@ static struct rcu_tasks rt_name =					\
+ DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
+ 
+ /* Avoid IPIing CPUs early in the grace period. */
+-#define RCU_TASK_IPI_DELAY (HZ / 2)
++#define RCU_TASK_IPI_DELAY (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) ? HZ / 2 : 0)
+ static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
+ module_param(rcu_task_ipi_delay, int, 0644);
+ 
+@@ -916,7 +916,8 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 
+ 	// If currently running, send an IPI, either way, add to list.
+ 	trc_add_holdout(t, bhp);
+-	if (task_curr(t) && time_after(jiffies, rcu_tasks_trace.gp_start + rcu_task_ipi_delay)) {
++	if (task_curr(t) &&
++	    time_after(jiffies + 1, rcu_tasks_trace.gp_start + rcu_task_ipi_delay)) {
+ 		// The task is currently running, so try IPIing it.
+ 		cpu = task_cpu(t);
+ 
+-- 
+2.9.5
 
-3.	Use more aggressive polling for RCU Tasks Trace.  This polling
-	starts at five-millisecond intervals instead of the prior
-	100-millisecond intervals.  As before, the polling interval
-	increases in duration as the grace period ages, and again as
-	before is capped at one second.  This change reduces the
-	average grace-period latency to about 620 milliseconds.
-
-4.	Selectively enable more RCU Tasks Trace IPIs.  This retains
-	the old behavior of suppressing IPIs for grace periods that are
-	younger than 500 milliseconds for CONFIG_TASKS_TRACE_RCU_READ_MB=y
-	kernels, including CONFIG_PREEMPT_RT=y kernels, but allows IPIs
-	immediately on other kernels.  It is quite possible that a more
-	sophisticated decision procedure will be required, and changes
-	to RCU's dyntick-idle code might also be needed.  This change
-	(along with the earlier ones) reduces the average grace-period
-	latency to about 120 milliseconds.
-
-5.	Shorten per-grace-period sleep for RCU Tasks Trace.  The
-	current code sleeps for 100 milliseconds after the end of
-	each grace period, which by itself prevents a back-to-back
-	string of grace-period waits from completing faster than
-	ten per second.  This patch also retains this old behavior
-	for CONFIG_TASKS_TRACE_RCU_READ_MB=y (and again thus also
-	for CONFIG_PREEMPT_RT=y kernels).  For other kernels, this
-	post-grace-period sleep is reduced to five milliseconds.
-	This change (along with the earlier ones) reduced the average
-	grace-period latency to about 18 milliseconds, for an overall
-	factor-of-50 reduction in latency.
-
-6.	Fix a deadlock-inducing race between rcu_read_unlock_trace()
-	and trc_read_check_handler().  The race window was only a few
-	instructions wide, but please see the commit log for the full
-	sad story.  The grace-period speedup made this race 50 times
-	more probable, and thus reduced the rcutorture runtime required
-	to reproduce it from about five months to about four days.
-
-7.	Fix a low-probability race between rcu_read_unlock_trace()
-	and the RCU Tasks Trace CPU stall reporting loop in
-	rcu_tasks_trace_postgp().  This race could result in leaking
-	task_struct structures.
-
-8.	Fix a low-probability race between the RCU Tasks Trace CPU
-	stall reporting loop in rcu_tasks_trace_postgp() and task exit.
-	This race could result in use-after-free errors.
-
-Alexei Starovoitov benchmarked an earlier patch [2], producing results
-that are roughly consistent with the above reduction in latency [3].
-
-Changes since last week's RFC version:
-
-o	Added patch #1, which cleans up a compiler warning.
-
-o	Renumbered patches 1-4 to 2-5.
-
-o	Add Ccs to patches 3, 4, and 5.
-
-o	Add patches 6-8 to fix race conditions exposed by 50x faster
-	grace periods.	These are either rare on the one hand or both
-	rare and occurring only during an RCU Tasks Trace CPU stall
-	warning -and- rare on the other.  Still, they need to be fixed.
-
-o	This series maintains the sub-20-millisecond update-side
-	grace-period delays of the RFC series.
-	
-o	Fixing the first of the race conditions required that a
-	compiler barrier be added to rcu_read_lock_trace() and that
-	another compiler barrier along with a WRITE_ONCE() be added to
-	rcu_read_unlock_trace().  This fix therefore adds a fraction of
-	a nanosecond to read-side overhead.  On my laptop, the increase
-	is from about 2.6 nanoseconds to about 3 nanoseconds.  This
-	small increase should not cause noticeable problems.
-
-							Thanx, Paul
-
-[1] https://lore.kernel.org/bpf/20200909193900.GK29330@paulmck-ThinkPad-P72/
-[2] https://lore.kernel.org/bpf/20200910052727.GA4351@paulmck-ThinkPad-P72/
-[3] https://lore.kernel.org/bpf/619554b2-4746-635e-22f3-7f0f09d97760@fb.com/
-
-------------------------------------------------------------------------
-
- include/linux/rcupdate_trace.h |    4 +
- kernel/rcu/tasks.h             |   92 +++++++++++++++++++++++++++++++----------
- 2 files changed, 75 insertions(+), 21 deletions(-)
