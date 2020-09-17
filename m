@@ -2,71 +2,118 @@ Return-Path: <SRS0=GKHO=C2=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C84AC2BBD1
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 14:19:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76A0BC43461
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 16:11:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C5552208E4
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 14:19:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E8B4B22210
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 16:11:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fN/clyJL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727299AbgIQOM0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 10:12:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51550 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727315AbgIQOL0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:11:26 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 278EDF9982682377EC19;
-        Thu, 17 Sep 2020 21:52:26 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 21:52:16 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>
-CC:     <linux-kernel@vger.kernel.org>, <houtao1@huawei.com>,
-        <rcu@vger.kernel.org>
-Subject: [PATCH 1/2] locktorture: doesn't check nreaders_stress when no readlock support
-Date:   Thu, 17 Sep 2020 21:59:09 +0800
-Message-ID: <20200917135910.137389-2-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-In-Reply-To: <20200917135910.137389-1-houtao1@huawei.com>
-References: <20200917135910.137389-1-houtao1@huawei.com>
+        id S1728121AbgIQPpa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 11:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728061AbgIQPOw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:14:52 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D92C06178A;
+        Thu, 17 Sep 2020 08:14:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9VdUj82i1voMW0HzA3fhImIu/omKpBsKf5XkZHcle8M=; b=fN/clyJLi0gpSAQ9dY/gHSFtzi
+        B9i3x4sG59TjoaZhhi1PxQfXznlkNpc0JifdCAofvS2cQPUKZjIeOCetK9upe3aGB2zNzF93xKS5N
+        mjU2qL6fjktaSIZZZugRhBN6m5eidycNeMWPgEnPYFf3ey3V0Lg5X0KNkcJAz+oZEXZD/vq+N49/J
+        HnPtKN/dcj/xafFGSMGXV3CLDfQiSyP/Uf0Hb7KdVn80iotliaV6r7uMXmD3m3iIxeBbwxWB9o9wW
+        U6FnyMqd0fQDpsgLHi3FGXF21IaKMLMCnyFIXItEyF0eb4AF51asiik5+y1lzrjlAK2KisKxcGuVY
+        vHmVsaUw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIvcG-00025n-K8; Thu, 17 Sep 2020 15:14:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2BD833011C6;
+        Thu, 17 Sep 2020 17:14:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE97E2BC7FEE6; Thu, 17 Sep 2020 17:14:29 +0200 (CEST)
+Date:   Thu, 17 Sep 2020 17:14:29 +0200
+From:   peterz@infradead.org
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, paulmck@kernel.org, joel@joelfernandes.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, josh@joshtriplett.org,
+        christian.brauner@ubuntu.com, mingo@redhat.com, will@kernel.org
+Subject: Re: [PATCH net-next 6/7] lockdep: provide dummy forward declaration
+ of *_is_held() helpers
+Message-ID: <20200917151429.GJ1362448@hirez.programming.kicks-ass.net>
+References: <20200916184528.498184-1-kuba@kernel.org>
+ <20200916184528.498184-7-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916184528.498184-7-kuba@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-To ensure there is always at least one locking thread.
+On Wed, Sep 16, 2020 at 11:45:27AM -0700, Jakub Kicinski wrote:
+> When CONFIG_LOCKDEP is not set, lock_is_held() and lockdep_is_held()
+> are not declared or defined. This forces all callers to use ifdefs
+> around these checks.
+> 
+> Recent RCU changes added a lot of lockdep_is_held() calls inside
+> rcu_dereference_protected(). rcu_dereference_protected() hides
+> its argument on !LOCKDEP builds, but this may lead to unused variable
+> warnings.
+> 
+> Provide forward declarations of lock_is_held() and lockdep_is_held()
+> but never define them. This way callers can keep them visible to
+> the compiler on !LOCKDEP builds and instead depend on dead code
+> elimination to remove the references before the linker barfs.
+> 
+> We need lock_is_held() for RCU.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> --
+> CC: peterz@infradead.org
+> CC: mingo@redhat.com
+> CC: will@kernel.org
+> ---
+>  include/linux/lockdep.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 6a584b3e5c74..6b5bbc536bf6 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
+>  
+>  #define lockdep_depth(tsk)	(0)
+>  
+> +/*
+> + * Dummy forward declarations, allow users to write less ifdef-y code
+> + * and depend on dead code elimination.
+> + */
+> +int lock_is_held(const void *);
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/locking/locktorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+extern int lock_is_held(const struct lockdep_map *);
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 9cfa5e89cff7f..bebdf98e6cd78 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -868,7 +868,8 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (nwriters_stress == 0 && nreaders_stress == 0) {
-+	if (nwriters_stress == 0 &&
-+	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
- 		firsterr = -EINVAL;
- 		goto unwind;
--- 
-2.25.0.4.g0ad7144999
+> +int lockdep_is_held(const void *);
 
+extern
+
+I suppose we can't pull the lockdep_is_held() definition out from under
+CONFIG_LOCKDEP because it does the ->dep_map dereference and many types
+will simply not have that member.
+
+>  #define lockdep_is_held_type(l, r)		(1)
+>  
+>  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
