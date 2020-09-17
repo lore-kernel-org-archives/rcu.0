@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1C0C43463
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD326C43464
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E43C62137B
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8D1AE214D8
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376911;
-	bh=/tExeEJ8/c6egD6eYM7a6JORIf/FIWn57CX8Gi2aybg=;
+	s=default; t=1600376912;
+	bh=YG58AqGwRC/b1zVwI1vspT5s6BpQVBYT61T44ZLacOI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=eEe9CQI7krNyqyjK6mpxlU6Y5snFwYelkFrIBCedj6ufMnTyW/4mZZ+F21pCuYxYi
-	 OGUYmhU+TLYqr4eMaZmuzdQ6NYXBRVMmSvGHHeIfW5LAa2IFxEXrzuQLzHA1eGmbxb
-	 Gp66M6Op10w7a4OVTl/b3LL7N+tD3w7F67m3Oh+c=
+	b=ZzJlgpzmtLtg6pMZ7aRUdpviTqGzaxh/9VdOkvTpnLjUsfHn4dlWOUQpTH2V20kY1
+	 CBx9DphMQFq3+25FHjSh6HS6lDAxiS0XYfnOrioIsIzwndg2gAddv5nDquWtjxJVQf
+	 jUk+IHvM63RUejpTgnDFFHqV6RQZvHt5PYlrDkbE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIQVHs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 17:07:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S1726643AbgIQVHr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:07:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbgIQVHr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1725900AbgIQVHr (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 17 Sep 2020 17:07:47 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6881A21D7B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 345FE2137B;
         Thu, 17 Sep 2020 21:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600376867;
-        bh=/tExeEJ8/c6egD6eYM7a6JORIf/FIWn57CX8Gi2aybg=;
+        bh=YG58AqGwRC/b1zVwI1vspT5s6BpQVBYT61T44ZLacOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ij7PiVs6QNZN10LFEowyvgKPywEL8rvgsSMi3bjkqV8/WrDnxSHgbqBO2muzxipt0
-         PNfcHhMxOLnH1UZyoQTJ0lMU8OAjuNY6wJ6GhQ7/4r14od6fULuBS0HmpFxRtRrNcw
-         QN2wvQzJ7KZdjUF+bK/nhRbBFAGA8rmLbWVdF39Y=
+        b=E57WJmZQduslOXz7AOIuGgMS6T5RNuKF9YBfPyKXp3v/LJbp8uVTXF9YYxYqD7+oo
+         eKn/LV8O82n1rWn2vJCQlhN7hTCc9qih+c6m7h40k6S/xswfrqbADrkFuRjK9FrNyw
+         leL3cUP1KRZ0ysdtwsB7YX32FUcJ3g0ncW4sE5Gg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/8] rcu-tasks: Mark variables static
-Date:   Thu, 17 Sep 2020 14:07:38 -0700
-Message-Id: <20200917210744.2995-2-paulmck@kernel.org>
+        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
+        "# 5 . 8 . x" <stable@vger.kernel.org>
+Subject: [PATCH tip/core/rcu 1/8] rcu-tasks: Prevent complaints of unused show_rcu_tasks_classic_gp_kthread()
+Date:   Thu, 17 Sep 2020 14:07:37 -0700
+Message-Id: <20200917210744.2995-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
@@ -59,32 +60,35 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The n_heavy_reader_attempts, n_heavy_reader_updates, and
-n_heavy_reader_ofl_updates variables are not used outside of their
-translation unit, so this commit marks them static.
+Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
+show_rcu_tasks_gp_kthreads()") introduced conditional
+compilation of several functions, but forgot one occurrence of
+show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
+an unused static function.  This commit uses "static inline" to avoid
+these complaints and possibly also to avoid emitting an actual definition
+of this function.
 
+Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
+Cc: <stable@vger.kernel.org> # 5.8.x
+Reported-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 05d3e13..978508e 100644
+index 835e2df..05d3e13 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -745,9 +745,9 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
+@@ -590,7 +590,7 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
+ }
  
- // The number of detections of task quiescent state relying on
- // heavyweight readers executing explicit memory barriers.
--unsigned long n_heavy_reader_attempts;
--unsigned long n_heavy_reader_updates;
--unsigned long n_heavy_reader_ofl_updates;
-+static unsigned long n_heavy_reader_attempts;
-+static unsigned long n_heavy_reader_updates;
-+static unsigned long n_heavy_reader_ofl_updates;
- 
- void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
+ #else /* #ifdef CONFIG_TASKS_RCU */
+-static void show_rcu_tasks_classic_gp_kthread(void) { }
++static inline void show_rcu_tasks_classic_gp_kthread(void) { }
+ void exit_tasks_rcu_start(void) { }
+ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU */
 -- 
 2.9.5
 
