@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 514C9C43466
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1C0C43463
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11B542137B
-	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E43C62137B
+	for <rcu@archiver.kernel.org>; Thu, 17 Sep 2020 21:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600376909;
-	bh=ZY2LyvjU7wixM4PMHpWWQ8GltjXVaTMrDxcrG1Mcbc8=;
+	s=default; t=1600376911;
+	bh=/tExeEJ8/c6egD6eYM7a6JORIf/FIWn57CX8Gi2aybg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=uPRUA9gr2aP4M3cMRmu/Mal9hr4uy7BahPI9y7tnElqp50HrXiKoVsUm8L7sG3SZV
-	 ninJ+gh0XFHx5pb8k6dSw6aWZhuof0edoOb9eC0Pt+J1l/tNoB70ffgCEub6unuR+J
-	 rFEuyXv4hhn0tfO4PPEo/qlAs2jRMecfKOpYn4JA=
+	b=eEe9CQI7krNyqyjK6mpxlU6Y5snFwYelkFrIBCedj6ufMnTyW/4mZZ+F21pCuYxYi
+	 OGUYmhU+TLYqr4eMaZmuzdQ6NYXBRVMmSvGHHeIfW5LAa2IFxEXrzuQLzHA1eGmbxb
+	 Gp66M6Op10w7a4OVTl/b3LL7N+tD3w7F67m3Oh+c=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgIQVIR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Sep 2020 17:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45610 "EHLO mail.kernel.org"
+        id S1726688AbgIQVHs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Sep 2020 17:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgIQVHt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:07:49 -0400
+        id S1726600AbgIQVHr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:07:47 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FF2423447;
-        Thu, 17 Sep 2020 21:07:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6881A21D7B;
+        Thu, 17 Sep 2020 21:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376868;
-        bh=ZY2LyvjU7wixM4PMHpWWQ8GltjXVaTMrDxcrG1Mcbc8=;
+        s=default; t=1600376867;
+        bh=/tExeEJ8/c6egD6eYM7a6JORIf/FIWn57CX8Gi2aybg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2vqme/DMz88y46udAi42iiKj7i5/M4ZpHEiidzTM6ausTh6Ql1nuR9iaEcv+1Q1W
-         WB9OzK+XzxON/5YXUcRqJUBElV1bQPkXsLB/LlGE2RrKcettHfJwU6CZUA45XxBqSR
-         dtuFAvAqJW+22Iuz8a8EjSr1djcB+SPO4zwzDVok=
+        b=ij7PiVs6QNZN10LFEowyvgKPywEL8rvgsSMi3bjkqV8/WrDnxSHgbqBO2muzxipt0
+         PNfcHhMxOLnH1UZyoQTJ0lMU8OAjuNY6wJ6GhQ7/4r14od6fULuBS0HmpFxRtRrNcw
+         QN2wvQzJ7KZdjUF+bK/nhRbBFAGA8rmLbWVdF39Y=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,14 +46,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
-        "# 5 . 7 . x" <stable@vger.kernel.org>
-Subject: [PATCH tip/core/rcu 6/8] rcu-tasks: Fix grace-period/unlock race in RCU Tasks Trace
-Date:   Thu, 17 Sep 2020 14:07:42 -0700
-Message-Id: <20200917210744.2995-6-paulmck@kernel.org>
+        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/8] rcu-tasks: Mark variables static
+Date:   Thu, 17 Sep 2020 14:07:38 -0700
+Message-Id: <20200917210744.2995-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
@@ -63,108 +59,32 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The more intense grace-period processing resulting from the 50x RCU
-Tasks Trace grace-period speedups exposed the following race condition:
+The n_heavy_reader_attempts, n_heavy_reader_updates, and
+n_heavy_reader_ofl_updates variables are not used outside of their
+translation unit, so this commit marks them static.
 
-o	Task A running on CPU 0 executes rcu_read_lock_trace(),
-	entering a read-side critical section.
-
-o	When Task A eventually invokes rcu_read_unlock_trace()
-	to exit its read-side critical section, this function
-	notes that the ->trc_reader_special.s flag is zero and
-	and therefore invoke wil set ->trc_reader_nesting to zero
-	using WRITE_ONCE().  But before that happens...
-
-o	The RCU Tasks Trace grace-period kthread running on some other
-	CPU interrogates Task A, but this fails because this task is
-	currently running.  This kthread therefore sends an IPI to CPU 0.
-
-o	CPU 0 receives the IPI, and thus invokes trc_read_check_handler().
-	Because Task A has not yet cleared its ->trc_reader_nesting
-	counter, this function sees that Task A is still within its
-	read-side critical section.  This function therefore sets the
-	->trc_reader_nesting.b.need_qs flag, AKA the .need_qs flag.
-
-	Except that Task A has already checked the .need_qs flag, which
-	is part of the ->trc_reader_special.s flag.  The .need_qs flag
-	therefore remains set until Task A's next rcu_read_unlock_trace().
-
-o	Task A now invokes synchronize_rcu_tasks_trace(), which cannot
-	start a new grace period until the current grace period completes.
-	And thus cannot return until after that time.
-
-	But Task A's .need_qs flag is still set, which prevents the current
-	grace period from completing.  And because Task A is blocked, it
-	will never execute rcu_read_unlock_trace() until its call to
-	synchronize_rcu_tasks_trace() returns.
-
-	We are therefore deadlocked.
-
-This race is improbable, but 80 hours of rcutorture made it happen twice.
-The race was possible before the grace-period speedup, but roughly 50x
-less probable.  Several thousand hours of rcutorture would have been
-necessary to have a reasonable chance of making this happen before this
-50x speedup.
-
-This commit therefore eliminates this deadlock by setting
-->trc_reader_nesting to a large negative number before checking the
-.need_qs and zeroing (or decrementing with respect to its initial
-value) ->trc_reader_nesting.  For its part, the IPI handler's
-trc_read_check_handler() function adds a check for negative values,
-deferring evaluation of the task in this case.  Taken together, these
-changes avoid this deadlock scenario.
-
-Fixes: 276c410448db ("rcu-tasks: Split ->trc_reader_need_end")
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.7.x
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_trace.h | 4 ++++
- kernel/rcu/tasks.h             | 6 ++++++
- 2 files changed, 10 insertions(+)
+ kernel/rcu/tasks.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index d9015aa..a6a6a3a 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -50,6 +50,7 @@ static inline void rcu_read_lock_trace(void)
- 	struct task_struct *t = current;
- 
- 	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-+	barrier();
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
- 	    t->trc_reader_special.b.need_mb)
- 		smp_mb(); // Pairs with update-side barriers
-@@ -72,6 +73,9 @@ static inline void rcu_read_unlock_trace(void)
- 
- 	rcu_lock_release(&rcu_trace_lock_map);
- 	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
-+	barrier(); // Critical section before disabling.
-+	// Disable IPI-based setting of .need_qs.
-+	WRITE_ONCE(t->trc_reader_nesting, INT_MIN);
- 	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
- 		WRITE_ONCE(t->trc_reader_nesting, nesting);
- 		return;  // We assume shallow reader nesting.
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index a0eaed5..e583a2d 100644
+index 05d3e13..978508e 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -830,6 +830,12 @@ static void trc_read_check_handler(void *t_in)
- 		WRITE_ONCE(t->trc_reader_checked, true);
- 		goto reset_ipi;
- 	}
-+	// If we are racing with an rcu_read_unlock_trace(), try again later.
-+	if (unlikely(t->trc_reader_nesting < 0)) {
-+		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
-+			wake_up(&trc_wait);
-+		goto reset_ipi;
-+	}
- 	WRITE_ONCE(t->trc_reader_checked, true);
+@@ -745,9 +745,9 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
  
- 	// Get here if the task is in a read-side critical section.  Set
+ // The number of detections of task quiescent state relying on
+ // heavyweight readers executing explicit memory barriers.
+-unsigned long n_heavy_reader_attempts;
+-unsigned long n_heavy_reader_updates;
+-unsigned long n_heavy_reader_ofl_updates;
++static unsigned long n_heavy_reader_attempts;
++static unsigned long n_heavy_reader_updates;
++static unsigned long n_heavy_reader_ofl_updates;
+ 
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
 -- 
 2.9.5
 
