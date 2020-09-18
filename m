@@ -2,114 +2,117 @@ Return-Path: <SRS0=xZUe=C3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CC2C43464
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 17:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81019C43463
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:21:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2AECF21741
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 17:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600451953;
-	bh=RCXbSmb6TBTU6Nop+hAYsV3487c8KGvxhJr+53EhKec=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=bnA2wSChM8X7hltP0v+VM5tAOAOqWm/hYSJnQgRBNM4Lhk0mFR85Gv6pTSVzD5IiU
-	 VHT396vpbr71hGOgoZOfJEU44kT+d+CtDWPIyhmvu1PjFF1QCok/7YXbq1qd9jRbHQ
-	 Am4NA/+77hlmoK3kl9/p2TE01gBtkUftkLN/y7Kw=
+	by mail.kernel.org (Postfix) with ESMTP id 3D89420872
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:21:14 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BrFbbBt6"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgIRR7N (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Sep 2020 13:59:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726007AbgIRR7M (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:59:12 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00FBC21734;
-        Fri, 18 Sep 2020 17:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600451952;
-        bh=RCXbSmb6TBTU6Nop+hAYsV3487c8KGvxhJr+53EhKec=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ymfu+wGX0x9B5IGQMtA1nMLh/EusxF0K33xJ2JSuxrX8fKlJQsSTWuVJc0yPUewBv
-         mFPmT6E9WrIkc7O2N3jaMFkxkMFIx8UPs+wPukeTQ2+jbY5Nyswc6lh+9iWjmaA/hs
-         uLQMJiFtqU92H73YN52/pcnZv1qoumHyc5yVn5ME=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9781A35226AD; Fri, 18 Sep 2020 10:59:11 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 10:59:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] locktorture: doesn't check nreaders_stress when
- no readlock support
-Message-ID: <20200918175911.GV29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200918033755.GS29330@paulmck-ThinkPad-P72>
- <20200918114424.100852-1-houtao1@huawei.com>
+        id S1726118AbgIRTVM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Sep 2020 15:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRTVM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Sep 2020 15:21:12 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C4DC0613CE
+        for <rcu@vger.kernel.org>; Fri, 18 Sep 2020 12:21:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d19so3505759pld.0
+        for <rcu@vger.kernel.org>; Fri, 18 Sep 2020 12:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8jg3wEb1NvgDFOhn2Df3VYWw1IxYrBP36RODw9akKg=;
+        b=BrFbbBt6GkUcziwd6+MFDUSrm+2lOqEUDUB036iGDk/1c2tqm0EDPPKKQyzKbWmeUR
+         duKOR6RwaTxwTK8Kns9dyufORR+VP1W+Gf/gkO9umkmlJ47sELObWR0HuK0lorOFTIZ0
+         EssJrQSM1teK6ueyn8MHkaLENOlciqG1rQzQhnWSTA+CmqCqB8MOVM5e5AO4Putcq0zv
+         qznsJvLrcoaOmLlTowCV9Wv/HlcizX/2xlpznNZHEkdHKgGOJe+5eaLVXlDiUL8UHZJs
+         LXMwNHs+s7FFi9XvG3OwAcbfTW/uja9av/5XJgnI6Hvw3ESo29tggN72Qb9iFvG+skmr
+         BaMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8jg3wEb1NvgDFOhn2Df3VYWw1IxYrBP36RODw9akKg=;
+        b=HEbCYT9DXSDuX+9IU3ROUSBRktNLavNhrXkpoU3zM1zuu+QEDlOwHGdiVQTxU9LvCP
+         ueGLzeRKbOCM6zpPQJczy+DWolLXRSsg/qq0Cz+eqXpwEc8/5IVT/x0baUcNT075ycD7
+         IZoQn7gWID/Cb12zC2LsCxF7wwcs1LxVxkFXvLnh+RZ6nIe6W/QNeJLr4WLgi2c9PSYI
+         BJa8oiQTKiCtVjiRGz311Y78oWqVIsbXlaoz26SBYwtxHXYf9mN2WthpVhbMbrl7iIvO
+         WQPt5zA/jbF5Jtvf6zl0sS+dsI0h+kyPRkKKprnS+DCOEcopdk+PykHKTBE/8bSUqs8u
+         04Aw==
+X-Gm-Message-State: AOAM531ZQ3ojwvlMvCiSAORkZ4xl2yEEl7tqA0WR7n756MNUKx7l6CVO
+        0QEg1AUs73fkuoASGkXtAh7NrGOYyzwNqLjkmzqZcA==
+X-Google-Smtp-Source: ABdhPJwZ4epeV/+UZA0tq4cdhZ2Gpu6s88cRee3xsgPgUHxTjPd1BQnAQscX1SLefyB6gIX0CXdzGU6d7DLeTJApSnA=
+X-Received: by 2002:a17:902:ed11:b029:d1:f385:f4e7 with SMTP id
+ b17-20020a170902ed11b02900d1f385f4e7mr11647590pld.56.1600456868387; Fri, 18
+ Sep 2020 12:21:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918114424.100852-1-houtao1@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com>
+ <20200916213730.GE29330@paulmck-ThinkPad-P72> <20200917205844.GA1978@paulmck-ThinkPad-P72>
+In-Reply-To: <20200917205844.GA1978@paulmck-ThinkPad-P72>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 18 Sep 2020 12:20:57 -0700
+Message-ID: <CAKwvOdnojrynmPHrK0MM0Xq1e8Ywk_3_=oehnJWZcFN8=HwsJg@mail.gmail.com>
+Subject: Re: GPF from __srcu_read_lock() via drm_minor_acquire()
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        jiangshanlai@gmail.com,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 07:44:24PM +0800, Hou Tao wrote:
-> When do locktorture for exclusive lock which doesn't have readlock
-> support, the following module parameters will be considered as valid:
-> 
->  torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
-> 
-> But locktorture will do nothing useful, so instead of permitting
-> these useless parameters, let's reject these parameters by returning
-> -EINVAL during module init.
-> 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+On Thu, Sep 17, 2020 at 1:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 02:37:30PM -0700, Paul E. McKenney wrote:
+> > So here are a few questions that I would ask:
+>
+> Oh, and this one:
+>
+> 0.      Did someone call srcu_read_lock() before init_srcu_struct()
+>         had been called on this srcu_struct structure?
+>
+>                                                         Thanx, Paul
+>
+> > 1.    Did the init_srcu_struct() for this srcu_struct report an error?
+> >       (Though with current mainline, that memory-allocation failure
+> >       would more likely have page-faulted in init_srcu_struct().)
+> >
+> > 2.    Has the srcu_struct in question already been passed to
+> >       cleanup_srcu_struct()?
+> >
+> > 3.    Has the value of %fs been clobbered?  Though that seems
+> >       unlikely given that it also happens on aarch64.  Plus, the
+> >       smoking gun seems to me to be the zero value of %eax.
+> >
+> > 4.    If the above three questions fail to provide enlightenment,
+> >       I suggest recording the ->sda value and adding debug checks
+> >       to anything that can unmap memory...  And recording the value
+> >       of ->sda somewhere to check to see if it is being changed (it
+> >       should remain constant from init_srcu_struct()'s return through
+> >       the corresponding call to cleanup_srcu_struct()).
+> >
+> > Please let me know how it goes!
 
-Much better, much easier for people a year from now to understand.
-Queued for v5.11, thank you!
-
-I did edit the commit log a bit as shown below, so please let me
-know if I messed anything up.
-
-							Thanx, Paul
-
-commit 4985c52e3b5237666265e59f56856f485ee36e71
-Author: Hou Tao <houtao1@huawei.com>
-Date:   Fri Sep 18 19:44:24 2020 +0800
-
-    locktorture: Ignore nreaders_stress if no readlock support
-    
-    Exclusive locks do not have readlock support, which means that a
-    locktorture run with the following module parameters will do nothing:
-    
-     torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
-    
-    This commit therefore rejects this combination for exclusive locks by
-    returning -EINVAL during module init.
-    
-    Signed-off-by: Hou Tao <houtao1@huawei.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 316531d..046ea2d 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -870,7 +870,8 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (nwriters_stress == 0 && nreaders_stress == 0) {
-+	if (nwriters_stress == 0 &&
-+	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
- 		firsterr = -EINVAL;
- 		goto unwind;
+Thanks for the tips Paul. I've copied your suggestions into the bug
+report with additional suggestions for the reporters to collect more
+info, particularly in the arm64 case.  I will update this thread once
+we've resolved the report.
+-- 
+Thanks,
+~Nick Desaulniers
