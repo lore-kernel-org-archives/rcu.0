@@ -2,69 +2,108 @@ Return-Path: <SRS0=xZUe=C3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 377F2C43464
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 11:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CC2C43464
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 17:59:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 038D822208
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 11:37:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2AECF21741
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 17:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600451953;
+	bh=RCXbSmb6TBTU6Nop+hAYsV3487c8KGvxhJr+53EhKec=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=bnA2wSChM8X7hltP0v+VM5tAOAOqWm/hYSJnQgRBNM4Lhk0mFR85Gv6pTSVzD5IiU
+	 VHT396vpbr71hGOgoZOfJEU44kT+d+CtDWPIyhmvu1PjFF1QCok/7YXbq1qd9jRbHQ
+	 Am4NA/+77hlmoK3kl9/p2TE01gBtkUftkLN/y7Kw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIRLhj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Sep 2020 07:37:39 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13259 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726115AbgIRLhj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:37:39 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6D142A4D0735F1DBFD98;
-        Fri, 18 Sep 2020 19:37:35 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 19:37:29 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-CC:     Josh Triplett <josh@joshtriplett.org>,
+        id S1725955AbgIRR7N (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Sep 2020 13:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726007AbgIRR7M (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Sep 2020 13:59:12 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00FBC21734;
+        Fri, 18 Sep 2020 17:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600451952;
+        bh=RCXbSmb6TBTU6Nop+hAYsV3487c8KGvxhJr+53EhKec=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ymfu+wGX0x9B5IGQMtA1nMLh/EusxF0K33xJ2JSuxrX8fKlJQsSTWuVJc0yPUewBv
+         mFPmT6E9WrIkc7O2N3jaMFkxkMFIx8UPs+wPukeTQ2+jbY5Nyswc6lh+9iWjmaA/hs
+         uLQMJiFtqU92H73YN52/pcnZv1qoumHyc5yVn5ME=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 9781A35226AD; Fri, 18 Sep 2020 10:59:11 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 10:59:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
         Davidlohr Bueso <dave@stgolabs.net>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <houtao1@huawei.com>
-Subject: [PATCH v2 1/2] locktorture: doesn't check nreaders_stress when no readlock support
-Date:   Fri, 18 Sep 2020 19:44:24 +0800
-Message-ID: <20200918114424.100852-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-In-Reply-To: <20200918033755.GS29330@paulmck-ThinkPad-P72>
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] locktorture: doesn't check nreaders_stress when
+ no readlock support
+Message-ID: <20200918175911.GV29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20200918033755.GS29330@paulmck-ThinkPad-P72>
+ <20200918114424.100852-1-houtao1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918114424.100852-1-houtao1@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When do locktorture for exclusive lock which doesn't have readlock
-support, the following module parameters will be considered as valid:
+On Fri, Sep 18, 2020 at 07:44:24PM +0800, Hou Tao wrote:
+> When do locktorture for exclusive lock which doesn't have readlock
+> support, the following module parameters will be considered as valid:
+> 
+>  torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
+> 
+> But locktorture will do nothing useful, so instead of permitting
+> these useless parameters, let's reject these parameters by returning
+> -EINVAL during module init.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
- torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
+Much better, much easier for people a year from now to understand.
+Queued for v5.11, thank you!
 
-But locktorture will do nothing useful, so instead of permitting
-these useless parameters, let's reject these parameters by returning
--EINVAL during module init.
+I did edit the commit log a bit as shown below, so please let me
+know if I messed anything up.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/locking/locktorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+							Thanx, Paul
+
+commit 4985c52e3b5237666265e59f56856f485ee36e71
+Author: Hou Tao <houtao1@huawei.com>
+Date:   Fri Sep 18 19:44:24 2020 +0800
+
+    locktorture: Ignore nreaders_stress if no readlock support
+    
+    Exclusive locks do not have readlock support, which means that a
+    locktorture run with the following module parameters will do nothing:
+    
+     torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
+    
+    This commit therefore rejects this combination for exclusive locks by
+    returning -EINVAL during module init.
+    
+    Signed-off-by: Hou Tao <houtao1@huawei.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 9cfa5e89cff7f..bebdf98e6cd78 100644
+index 316531d..046ea2d 100644
 --- a/kernel/locking/locktorture.c
 +++ b/kernel/locking/locktorture.c
-@@ -868,7 +868,8 @@ static int __init lock_torture_init(void)
+@@ -870,7 +870,8 @@ static int __init lock_torture_init(void)
  		goto unwind;
  	}
  
@@ -74,6 +113,3 @@ index 9cfa5e89cff7f..bebdf98e6cd78 100644
  		pr_alert("lock-torture: must run at least one locking thread\n");
  		firsterr = -EINVAL;
  		goto unwind;
--- 
-2.25.0.4.g0ad7144999
-
