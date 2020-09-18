@@ -5,59 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5609C43464
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 145BAC43466
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:48:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9007321D42
+	by mail.kernel.org (Postfix) with ESMTP id C204E22208
 	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:48:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OsLGoR1E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r4s7af/B"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIRTsl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Sep 2020 15:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S1726159AbgIRTsm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Sep 2020 15:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgIRTsk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:48:40 -0400
+        with ESMTP id S1726335AbgIRTsm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Sep 2020 15:48:42 -0400
 Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED33C0613CE;
-        Fri, 18 Sep 2020 12:48:40 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u21so6021419ljl.6;
-        Fri, 18 Sep 2020 12:48:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84026C0613CE;
+        Fri, 18 Sep 2020 12:48:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s205so6015539lja.7;
+        Fri, 18 Sep 2020 12:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LhLXWlpxd3kg9Dw7Z+xdLIdqyBDd0WYhln7MlbVfq8o=;
-        b=OsLGoR1E8NC1PkjPfwdexAD/f6MYLMg5cdwRLXrWpg0UBZphtr1LtxqUiw66rpXU5H
-         j6LVxbBrzDWbNhVASenQKtUnM4NMvywXwu1Yk/sMflp58j91WXbkkq7bquHulmheLZCg
-         ax1KY2tb7+ydczYpRXm+uusDWZmMlOzK0WIMeR8pmB9N8KA614+R1c1xHhPZ5Xy4mShu
-         F/6gtmo1xPtux3JE5e6e8V4p/UDvPjCc/7IqTsPaHxTF/A7iS+Jv6AWPut9tLxGGViR0
-         2CpyijXyKmRnk27mzzeqD+ZvgTvj1sbA/lPCdPz4/UE8SsvKsxtraV0Ul+GqnJYzm3dl
-         MZXg==
+        bh=zrPxS3Yj7n4laF6P6tQ8nRH7VU6J9VkZ5PhqpQE5VKI=;
+        b=r4s7af/BiH0jC1Zl3uYz3dXaJ6vZCPnYwIoZO+3Dc1VZ1w35Hbsa9IpCC/TqiN2a+Z
+         y1esQ4R0zrFr3zITC1AqpJg+92lbz43G67jtwV7cgoK4fj0vdsnJTfTmsoHSWZ0P7nZH
+         eYJ4SXZXaLNjb2V3e0L+4czSC/V1tfYcLEnT9sERhxnhBQi5YzawKNcpZCFFqOn+AnS/
+         8WVoSyXYDg2/NMEtKWDY4/oMGWcs3qDi+8N7xoUoJpu/HT/VjRYeL1ncBcTJw50qOxXA
+         NE8djn0DGgYnzRYwT0PryBdrF79sGTonY1TymaopAXICF+0ZctGmiBJqgIgeYuGlRI2n
+         8ydQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LhLXWlpxd3kg9Dw7Z+xdLIdqyBDd0WYhln7MlbVfq8o=;
-        b=t2wqIJLkoD0ZMMYf7uwfa4sRe+4WenPKZNYp8PvNgopYHFmZplLc1N7g1YgxhPrtL1
-         8jOOg4r1n9pQmQFxNLPVtoZ4eJeDDGxgS/RsjEJywtnOXjOdd+P4it+o4Ia8Af4hAC14
-         NsC8VvH0WTTQ+xjTB+YLruHDkq85WLa7RsrXRP6MKAjMiza1W4mmiIEgslf9R5aGs2W3
-         jo8V4ITdbR2MvWJuRPNxHPjXiuf5a3g5fdjPPU/nRggQYdRRZyB+lq+DJ8bLXthL1zyv
-         Y7jVzeJZZ4fieWO18nGLy1zO+5HgCYtjp73lNYQiOIquEznJH6qaogBZOmzIFXNYyfVB
-         jemA==
-X-Gm-Message-State: AOAM533Bal2QzO4JyO9NtN7h5WaNH9TC0Q/quk5ClqwF/Nx5J37IlsDk
-        JAUlRBq0mOd1AeTycH3/7RdPWxrnydf8Iwyi
-X-Google-Smtp-Source: ABdhPJxbsbV1YD3UHexm/CMuadg/sM3dvj4yy9obt+hyvmnL1YMSmdfhTYP8qmlhHuu4Bz9bGVGH/Q==
-X-Received: by 2002:a2e:81d7:: with SMTP id s23mr13083916ljg.69.1600458518216;
-        Fri, 18 Sep 2020 12:48:38 -0700 (PDT)
+        bh=zrPxS3Yj7n4laF6P6tQ8nRH7VU6J9VkZ5PhqpQE5VKI=;
+        b=mwD73Emsorf7pA+P2UKa5421hEGYDklk3IPtv5gjJqUu4XbShwSFFt2yf5WsxC4w4z
+         CwRkJS659aqBobwbXQGj8qtLiaMz/oxbIfaJq8oUfBnYpQImDEy81XLR/MTbCoXUpjTD
+         ahjjK1pNZJlA98BQRMKuON+OqDrD3/5zMxTA96GUPMsB+MdDLdjVFBD7RdZHYvVWzaYx
+         VTheaUQNlou2uPpuErQo3HnLtFsx1XmVDyPdHd1TPLtd206hFzuzyqNA4hcW+exfS7ht
+         JpWy3EhNe6GbepIxZf7OzQYV30u6X95XrWWDEN0drRd7bslxNF5JDPJ1nLapKuW+RL3E
+         3aAA==
+X-Gm-Message-State: AOAM5320hzvobA3c+PyFmJS7joGnBpGzrM1xWcTFZc5QGxedMUv2G7DC
+        tu5BoxF2rUT3Bg+5Fow4DIKUhLcQveX1KruV
+X-Google-Smtp-Source: ABdhPJyes5DFJT/9sMzPrZXdk8smFzu2cuLjtVwCBHs/vCZGg1St5rvfEC4t0PRdT0/ANLk5eIUQHQ==
+X-Received: by 2002:a2e:a0d3:: with SMTP id f19mr12804809ljm.325.1600458519346;
+        Fri, 18 Sep 2020 12:48:39 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id a17sm766769lfd.148.2020.09.18.12.48.37
+        by smtp.gmail.com with ESMTPSA id a17sm766769lfd.148.2020.09.18.12.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 12:48:37 -0700 (PDT)
+        Fri, 18 Sep 2020 12:48:38 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
@@ -71,9 +71,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/4] rcu/tree: Add a work to allocate pages from regular context
-Date:   Fri, 18 Sep 2020 21:48:14 +0200
-Message-Id: <20200918194817.48921-2-urezki@gmail.com>
+Subject: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Date:   Fri, 18 Sep 2020 21:48:15 +0200
+Message-Id: <20200918194817.48921-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200918194817.48921-1-urezki@gmail.com>
 References: <20200918194817.48921-1-urezki@gmail.com>
@@ -83,222 +83,220 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The current memmory-allocation interface presents to following
-difficulties that this patch is designed to overcome:
+Some background and kfree_rcu()
+===============================
+The pointers to be freed are stored in the per-cpu array to improve
+performance, to enable an easier-to-use API, to accommodate vmalloc
+memmory and to support a single argument of the kfree_rcu() when only
+a pointer is passed. More details are below.
 
-a) If built with CONFIG_PROVE_RAW_LOCK_NESTING, the lockdep will
-   complain about violation("BUG: Invalid wait context") of the
-   nesting rules. It does the raw_spinlock vs. spinlock nesting
-   checks, i.e. it is not legal to acquire a spinlock_t while
-   holding a raw_spinlock_t.
+In order to maintain such per-CPU arrays there is a need in dynamic
+allocation when a current array is fully populated and a new block is
+required. See below the example:
 
-   Internally the kfree_rcu() uses raw_spinlock_t whereas the
-   "page allocator" internally deals with spinlock_t to access
-   to its zones. The code also can be broken from higher level
-   of view:
+ 0 1 2 3      0 1 2 3
+|p|p|p|p| -> |p|p|p|p| -> NULL
+
+there are two pointer-blocks, each one can store 4 addresses
+which will be freed after a grace period is passed. In reality
+we store PAGE_SIZE / sizeof(void *). So to maintain such blocks
+a single page is obtain via the page allocator:
+
+    bnode = (struct kvfree_rcu_bulk_data *)
+        __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+
+after that it is attached to the "head" and its "next" pointer is
+set to previous "head", so the list of blocks can be maintained and
+grow dynamically until it gets drained by the reclaiming thread.
+
+Please note. There is always a fallback if an allocation fails. In the
+single argument, this is a call to synchronize_rcu() and for the two
+arguments case this is to use rcu_head structure embedded in the object
+being free, and then paying cache-miss penalty, also invoke the kfree()
+per object instead of kfree_bulk() for groups of objects.
+
+Why we maintain arrays/blocks instead of linking objects by the regular
+"struct rcu_head" technique. See below a few but main reasons:
+
+a) A memory can be reclaimed by invoking of the kfree_bulk()
+   interface that requires passing an array and number of
+   entries in it. That reduces the per-object overhead caused
+   by calling kfree() per-object. This reduces the reclamation
+   time.
+
+b) Improves locality and reduces the number of cache-misses, due to
+   "pointer chasing" between objects, which can be far spread between
+   each other.
+
+c) Support a "single argument" in the kvfree_rcu()
+   void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+   if (ptr)
+        kvfree_rcu(ptr);
+
+   We need it when an "rcu_head" is not embed into a stucture but an
+   object must be freed after a grace period. Therefore for the single
+   argument, such objects cannot be queued on a linked list.
+
+   So nowadays, since we do not have a single argument but we see the
+   demand in it, to workaround it people just do a simple not efficient
+   sequence:
    <snip>
-       raw_spin_lock(&some_lock);
-       kfree_rcu(some_pointer, some_field_offset);
+       synchronize_rcu(); /* Can be long and blocks a current context */
+       kfree(p);
    <snip>
 
-b) If built with CONFIG_PREEMPT_RT. Please note, in that case spinlock_t
-   is converted into sleepable variant. Invoking the page allocator from
-   atomic contexts leads to "BUG: scheduling while atomic".
+   More details is here: https://lkml.org/lkml/2020/4/28/1626
 
-c) call_rcu() is invoked from raw atomic context and kfree_rcu()
-   and kvfree_rcu() are expected to be called from atomic raw context
-   as well.
+d) To distinguish vmalloc pointers between SLAB ones. It becomes possible
+   to invoke the right freeing API for the right kind of pointer, kfree_bulk()
+   or TBD: vmalloc_bulk().
 
-Move out a page allocation from contexts which trigger kvfree_rcu()
-function to the separate worker. When a k[v]free_rcu() per-cpu page
-cache is empty a fallback mechanism is used and a special job is
-scheduled to refill the per-cpu cache.
+e) Speeding up the post-grace-period freeing reduces the chance of a flood
+   of callback's OOMing the system.
 
-As a side effect, maintaining of the bulk arrays in the separate
-worker thread and not by request, will introduce other drawbacks.
+Also, please have a look here: https://lkml.org/lkml/2020/7/30/1166
 
-a) There is an extra latency window, a time during which a fallback
-   mechanism is used until pages are obtained via the special worker
-   for further pointers collecting over arrays.
+Proposal
+========
+Introduce a lock-free function that obtain a page from the per-cpu-lists
+on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
 
-b) It is impossible to predict how many pages will be required to
-   cover a demand that is controlled by different workloads on various
-   systems.
+Description
+===========
+The page allocator has two phases, fast path and slow one. We are interested
+in fast path and order-0 allocations. In its turn it is divided also into two
+phases: lock-less and not:
 
-c) Memory overhead since we do not know how much pages should be
-   preloaded.
+1) As a first step the page allocator tries to obtain a page from the
+   per-cpu-list, so each CPU has its own one. That is why this step is
+   lock-less and fast. Basically it disables irqs on current CPU in order
+   to access to per-cpu data and remove a first element from the pcp-list.
+   An element/page is returned to an user.
 
-Above three concerns should be fixed by introducing a lock-free page
-allocation interface.
+2) If there is no any available page in per-cpu-list, the second step is
+   involved. It removes a specified number of elements from the buddy allocator
+   transferring them to the "supplied-list/per-cpu-list" described in [1].
 
+Summarizing. The __rcu_alloc_page_lockless() covers only [1] and can not
+do step [2], due to the fact that [2] requires an access to zone->lock.
+It implies that it is super fast, but a higher rate of fails is also
+expected.
+
+Usage: __rcu_alloc_page_lockless();
+
+Link: https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
+Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 91 +++++++++++++++++++++++++----------------------
- 1 file changed, 48 insertions(+), 43 deletions(-)
+ include/linux/gfp.h |  1 +
+ mm/page_alloc.c     | 82 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 83 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 548404489c04..4bfc46a1e9d1 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -177,7 +177,7 @@ module_param(rcu_unlock_delay, int, 0444);
-  * per-CPU. Object size is equal to one page. This value
-  * can be changed at boot time.
-  */
--static int rcu_min_cached_objs = 2;
-+static int rcu_min_cached_objs = 5;
- module_param(rcu_min_cached_objs, int, 0444);
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 67a0774e080b..c065031b4403 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -565,6 +565,7 @@ extern struct page *alloc_pages_vma(gfp_t gfp_mask, int order,
  
- /* Retrieve RCU kthreads priority for rcutorture */
-@@ -3100,6 +3100,8 @@ struct kfree_rcu_cpu {
- 	 * lockless an access has to be protected by the
- 	 * per-cpu lock.
- 	 */
-+	struct work_struct page_cache_work;
-+	atomic_t work_in_progress;
- 	struct llist_head bkvcache;
- 	int nr_bkv_objs;
- };
-@@ -3217,10 +3219,10 @@ static void kfree_rcu_work(struct work_struct *work)
- 			}
- 			rcu_lock_release(&rcu_callback_map);
+ extern unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
+ extern unsigned long get_zeroed_page(gfp_t gfp_mask);
++extern unsigned long __rcu_alloc_page_lockless(void);
  
--			krcp = krc_this_cpu_lock(&flags);
-+			raw_spin_lock_irqsave(&krcp->lock, flags);
- 			if (put_cached_bnode(krcp, bkvhead[i]))
- 				bkvhead[i] = NULL;
--			krc_this_cpu_unlock(krcp, flags);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 			if (bkvhead[i])
- 				free_page((unsigned long) bkvhead[i]);
-@@ -3347,6 +3349,42 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ void *alloc_pages_exact(size_t size, gfp_t gfp_mask);
+ void free_pages_exact(void *virt, size_t size);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0e2bab486fea..360c68ea3491 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4908,6 +4908,88 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
  }
+ EXPORT_SYMBOL(__alloc_pages_nodemask);
  
-+static void fill_page_cache_func(struct work_struct *work)
++static struct page *__rmqueue_lockless(struct zone *zone, struct per_cpu_pages *pcp)
 +{
-+	struct kvfree_rcu_bulk_data *bnode;
-+	struct kfree_rcu_cpu *krcp =
-+		container_of(work, struct kfree_rcu_cpu,
-+			page_cache_work);
-+	unsigned long flags;
-+	bool pushed;
-+	int i;
++	struct list_head *list;
++	struct page *page;
++	int migratetype;
 +
-+	for (i = 0; i < rcu_min_cached_objs; i++) {
-+		/*
-+		 * We would like to minimize a reclaiming process,
-+		 * that is why GFP_NOWAIT is here. It can wakeup a
-+		 * kswapd, what is fine, because somebody soon or
-+		 * later will kick it to get the freelist back to
-+		 * the watermarks.
-+		 */
-+		bnode = (struct kvfree_rcu_bulk_data *)
-+			__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-+
-+		if (bnode) {
-+			raw_spin_lock_irqsave(&krcp->lock, flags);
-+			pushed = put_cached_bnode(krcp, bnode);
-+			raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+			if (!pushed) {
-+				free_page((unsigned long) bnode);
-+				break;
-+			}
++	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++) {
++		list = &pcp->lists[migratetype];
++		page = list_first_entry_or_null(list, struct page, lru);
++		if (page && !check_new_pcp(page)) {
++			list_del(&page->lru);
++			pcp->count--;
++			return page;
 +		}
 +	}
 +
-+	atomic_set(&krcp->work_in_progress, 0);
++	return NULL;
 +}
 +
- static inline bool
- kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- {
-@@ -3363,32 +3401,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- 	if (!krcp->bkvhead[idx] ||
- 			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
- 		bnode = get_cached_bnode(krcp);
--		if (!bnode) {
--			/*
--			 * To keep this path working on raw non-preemptible
--			 * sections, prevent the optional entry into the
--			 * allocator as it uses sleeping locks. In fact, even
--			 * if the caller of kfree_rcu() is preemptible, this
--			 * path still is not, as krcp->lock is a raw spinlock.
--			 * With additional page pre-allocation in the works,
--			 * hitting this return is going to be much less likely.
--			 */
--			if (IS_ENABLED(CONFIG_PREEMPT_RT))
--				return false;
--
--			/*
--			 * NOTE: For one argument of kvfree_rcu() we can
--			 * drop the lock and get the page in sleepable
--			 * context. That would allow to maintain an array
--			 * for the CONFIG_PREEMPT_RT as well if no cached
--			 * pages are available.
--			 */
--			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
--		}
--
- 		/* Switch to emergency path. */
--		if (unlikely(!bnode))
-+		if (!bnode)
- 			return false;
- 
- 		/* Initialize the new block. */
-@@ -3422,6 +3436,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
-+	bool irq_disabled = irqs_disabled();
- 	bool success;
- 	void *ptr;
- 
-@@ -3452,12 +3467,12 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		goto unlock_return;
- 	}
- 
--	/*
--	 * Under high memory pressure GFP_NOWAIT can fail,
--	 * in that case the emergency path is maintained.
--	 */
- 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
- 	if (!success) {
-+		// TODO: schedule the work from the hrtimer.
-+		if (!irq_disabled && !atomic_xchg(&krcp->work_in_progress, 1))
-+			queue_work(system_highpri_wq, &krcp->page_cache_work);
++/*
++ * Semantic of this function illustrates that a page
++ * is obtained in lock-free maneer. Instead of going
++ * deeper in the page allocator, it uses the pcplists
++ * only. Such way provides lock-less allocation method.
++ *
++ * Some notes are below:
++ * - intended to use for RCU code only;
++ * - it does not use any atomic reserves.
++ */
++unsigned long __rcu_alloc_page_lockless(void)
++{
++	struct zonelist *zonelist =
++		node_zonelist(numa_node_id(), GFP_KERNEL);
++	struct zoneref *z, *preferred_zoneref;
++	struct per_cpu_pages *pcp;
++	struct page *page;
++	unsigned long flags;
++	struct zone *zone;
 +
- 		if (head == NULL)
- 			// Inline if kvfree_rcu(one_arg) call.
- 			goto unlock_return;
-@@ -4449,24 +4464,14 @@ static void __init kfree_rcu_batch_init(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
--		struct kvfree_rcu_bulk_data *bnode;
- 
- 		for (i = 0; i < KFREE_N_BATCHES; i++) {
- 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
- 		}
- 
--		for (i = 0; i < rcu_min_cached_objs; i++) {
--			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
--
--			if (bnode)
--				put_cached_bnode(krcp, bnode);
--			else
--				pr_err("Failed to preallocate for %d CPU!\n", cpu);
--		}
--
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-+		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
++	/*
++	 * If DEBUG_PAGEALLOC is enabled, the post_alloc_hook()
++	 * in the prep_new_page() function also does some extra
++	 * page mappings via __kernel_map_pages(), what is arch
++	 * specific. It is for debug purpose only.
++	 *
++	 * For example, powerpc variant of __kernel_map_pages()
++	 * uses sleep-able locks. Thus a lock-less access can
++	 * not be provided if debug option is activated. In that
++	 * case it is fine to revert and return NULL, since RCU
++	 * code has a fallback mechanism. It is OK if it is used
++	 * for debug kernel.
++	 */
++	if (IS_ENABLED(CONFIG_DEBUG_PAGEALLOC))
++		return 0;
++
++	/*
++	 * Preferred zone is a first one in the zonelist.
++	 */
++	preferred_zoneref = NULL;
++
++	for_each_zone_zonelist(zone, z, zonelist, ZONE_NORMAL) {
++		if (!preferred_zoneref)
++			preferred_zoneref = z;
++
++		local_irq_save(flags);
++		pcp = &this_cpu_ptr(zone->pageset)->pcp;
++		page = __rmqueue_lockless(zone, pcp);
++		if (page) {
++			__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
++			zone_statistics(preferred_zoneref->zone, zone);
++		}
++		local_irq_restore(flags);
++
++		if (page) {
++			prep_new_page(page, 0, 0, 0);
++			return (unsigned long) page_address(page);
++		}
++	}
++
++	return 0;
++}
++
+ /*
+  * Common helper functions. Never use with __GFP_HIGHMEM because the returned
+  * address cannot represent highmem pages. Use alloc_pages and then kmap if
 -- 
 2.20.1
 
