@@ -2,117 +2,111 @@ Return-Path: <SRS0=xZUe=C3=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81019C43463
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5EF2C43466
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:48:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D89420872
-	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:21:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 836DB23119
+	for <rcu@archiver.kernel.org>; Fri, 18 Sep 2020 19:48:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BrFbbBt6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nqW26T8O"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgIRTVM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Sep 2020 15:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S1726280AbgIRTsj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Sep 2020 15:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRTVM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:21:12 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C4DC0613CE
-        for <rcu@vger.kernel.org>; Fri, 18 Sep 2020 12:21:09 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d19so3505759pld.0
-        for <rcu@vger.kernel.org>; Fri, 18 Sep 2020 12:21:09 -0700 (PDT)
+        with ESMTP id S1726159AbgIRTsj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Sep 2020 15:48:39 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26710C0613CE;
+        Fri, 18 Sep 2020 12:48:39 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a22so5983292ljp.13;
+        Fri, 18 Sep 2020 12:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C8jg3wEb1NvgDFOhn2Df3VYWw1IxYrBP36RODw9akKg=;
-        b=BrFbbBt6GkUcziwd6+MFDUSrm+2lOqEUDUB036iGDk/1c2tqm0EDPPKKQyzKbWmeUR
-         duKOR6RwaTxwTK8Kns9dyufORR+VP1W+Gf/gkO9umkmlJ47sELObWR0HuK0lorOFTIZ0
-         EssJrQSM1teK6ueyn8MHkaLENOlciqG1rQzQhnWSTA+CmqCqB8MOVM5e5AO4Putcq0zv
-         qznsJvLrcoaOmLlTowCV9Wv/HlcizX/2xlpznNZHEkdHKgGOJe+5eaLVXlDiUL8UHZJs
-         LXMwNHs+s7FFi9XvG3OwAcbfTW/uja9av/5XJgnI6Hvw3ESo29tggN72Qb9iFvG+skmr
-         BaMg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGRBhoEIYM+I62uhtkzSGBAX+5us/YHtB+9Vgg1zTtY=;
+        b=nqW26T8OmNe5+E2dLewM6NhPfcOBIFPhxmshxeaPCd3/CNcEzUwyciqvYOimc4nCWZ
+         d6ahQ6xO9c03qe4fnvRVpFbGe3BbO1F1IHkhs2HizzY1bNziXGzJsPgkJuMLsmHp7bER
+         +BBGfCAMJKqezojoPek2mjW4+mNscce+qsljzbS+zhN3rZxZuCpll8pE+/SZoUXjyFv8
+         1e41FNCJ5E+DyfiQ78Zf/NKrs9oSsjn0tqD+aAW+GFem3xNt73k94D7Rwdv6hTFW/t8V
+         iEfTfleACAerSnWZOqjud72CkZnzAffr45ahnqzqWLSxtoDTEiB4TKyjLspPkgh4uTQ5
+         LT3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C8jg3wEb1NvgDFOhn2Df3VYWw1IxYrBP36RODw9akKg=;
-        b=HEbCYT9DXSDuX+9IU3ROUSBRktNLavNhrXkpoU3zM1zuu+QEDlOwHGdiVQTxU9LvCP
-         ueGLzeRKbOCM6zpPQJczy+DWolLXRSsg/qq0Cz+eqXpwEc8/5IVT/x0baUcNT075ycD7
-         IZoQn7gWID/Cb12zC2LsCxF7wwcs1LxVxkFXvLnh+RZ6nIe6W/QNeJLr4WLgi2c9PSYI
-         BJa8oiQTKiCtVjiRGz311Y78oWqVIsbXlaoz26SBYwtxHXYf9mN2WthpVhbMbrl7iIvO
-         WQPt5zA/jbF5Jtvf6zl0sS+dsI0h+kyPRkKKprnS+DCOEcopdk+PykHKTBE/8bSUqs8u
-         04Aw==
-X-Gm-Message-State: AOAM531ZQ3ojwvlMvCiSAORkZ4xl2yEEl7tqA0WR7n756MNUKx7l6CVO
-        0QEg1AUs73fkuoASGkXtAh7NrGOYyzwNqLjkmzqZcA==
-X-Google-Smtp-Source: ABdhPJwZ4epeV/+UZA0tq4cdhZ2Gpu6s88cRee3xsgPgUHxTjPd1BQnAQscX1SLefyB6gIX0CXdzGU6d7DLeTJApSnA=
-X-Received: by 2002:a17:902:ed11:b029:d1:f385:f4e7 with SMTP id
- b17-20020a170902ed11b02900d1f385f4e7mr11647590pld.56.1600456868387; Fri, 18
- Sep 2020 12:21:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGRBhoEIYM+I62uhtkzSGBAX+5us/YHtB+9Vgg1zTtY=;
+        b=Qzz9KXjpq93RRi/PMYF0mVQigA7KTmZ6bw4ZAmytJON3pgfgJ6N7rNeD3NY1+RqtHg
+         u7fng0tUltwIsplDWcIv5K1BtDeJiL3j5RbVtV4fXMHFm8kgKMsWQoJmknf+fTSEPQ0X
+         VWeNw1KD6Wv1xHce/iDEkcAbyYHwAeDxPq0fmoM3jW9wbLQq+YRBxq9D8Tu+d+cGFrZr
+         DgmgSTHsI6VLNwW+OP8niSitlr6xUOKbglwDi8qEk9n+NnXETS90Bzsfi0ktQjOVeV2K
+         AskzMLDP/HkW4ziQZLdf6ah1Z09ZkL+TFqD+JH1q/wxoD+b45Je2yzPoUZTtqq/yu3Nd
+         8Xvg==
+X-Gm-Message-State: AOAM530EOLmeNPIpC56TZ74sbCBIYVOuadw5jy2OYrQROrpSlWzVHdAU
+        zYIyd3JxhvwvNtnkG8354di1eJHo66fjQ378
+X-Google-Smtp-Source: ABdhPJyn9sqZurK+0ib9MIFAesyL3MylhyXr116ZbhuJNj3ywoGWgVAqgvt4drq460J31feLyaJP+w==
+X-Received: by 2002:a2e:b6cd:: with SMTP id m13mr13092130ljo.383.1600458517144;
+        Fri, 18 Sep 2020 12:48:37 -0700 (PDT)
+Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id a17sm766769lfd.148.2020.09.18.12.48.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 12:48:36 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 0/4] kvfree_rcu() and _LOCK_NESTING/_PREEMPT_RT 
+Date:   Fri, 18 Sep 2020 21:48:13 +0200
+Message-Id: <20200918194817.48921-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com>
- <20200916213730.GE29330@paulmck-ThinkPad-P72> <20200917205844.GA1978@paulmck-ThinkPad-P72>
-In-Reply-To: <20200917205844.GA1978@paulmck-ThinkPad-P72>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 18 Sep 2020 12:20:57 -0700
-Message-ID: <CAKwvOdnojrynmPHrK0MM0Xq1e8Ywk_3_=oehnJWZcFN8=HwsJg@mail.gmail.com>
-Subject: Re: GPF from __srcu_read_lock() via drm_minor_acquire()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        jiangshanlai@gmail.com,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 1:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Sep 16, 2020 at 02:37:30PM -0700, Paul E. McKenney wrote:
-> > So here are a few questions that I would ask:
->
-> Oh, and this one:
->
-> 0.      Did someone call srcu_read_lock() before init_srcu_struct()
->         had been called on this srcu_struct structure?
->
->                                                         Thanx, Paul
->
-> > 1.    Did the init_srcu_struct() for this srcu_struct report an error?
-> >       (Though with current mainline, that memory-allocation failure
-> >       would more likely have page-faulted in init_srcu_struct().)
-> >
-> > 2.    Has the srcu_struct in question already been passed to
-> >       cleanup_srcu_struct()?
-> >
-> > 3.    Has the value of %fs been clobbered?  Though that seems
-> >       unlikely given that it also happens on aarch64.  Plus, the
-> >       smoking gun seems to me to be the zero value of %eax.
-> >
-> > 4.    If the above three questions fail to provide enlightenment,
-> >       I suggest recording the ->sda value and adding debug checks
-> >       to anything that can unmap memory...  And recording the value
-> >       of ->sda somewhere to check to see if it is being changed (it
-> >       should remain constant from init_srcu_struct()'s return through
-> >       the corresponding call to cleanup_srcu_struct()).
-> >
-> > Please let me know how it goes!
+Hello, folk!
 
-Thanks for the tips Paul. I've copied your suggestions into the bug
-report with additional suggestions for the reporters to collect more
-info, particularly in the arm64 case.  I will update this thread once
-we've resolved the report.
+This is another iteration of fixing kvfree_rcu() issues related
+to CONFIG_PROVE_RAW_LOCK_NESTING and CONFIG_PREEMPT_RT configs.
+
+The first discussion is here https://lkml.org/lkml/2020/8/9/195.
+
+- As an outcome of it, there was a proposal from Peter, instead of
+using a speciall "lock-less" flag it is better to move lock-less
+access to the pcplist to the separate function.
+
+- To add a special worker thread that does prefetching of pages
+if a per-cpu page cache is depleted(what is absolutely normal). 
+
+As usual, thank you for paying attention to it and your help!
+
+Uladzislau Rezki (Sony) (4):
+  rcu/tree: Add a work to allocate pages from regular context
+  mm: Add __rcu_alloc_page_lockless() func.
+  rcu/tree: use __rcu_alloc_page_lockless() func.
+  rcu/tree: Use schedule_delayed_work() instead of WQ_HIGHPRI queue
+
+ include/linux/gfp.h |  1 +
+ kernel/rcu/tree.c   | 90 ++++++++++++++++++++++++---------------------
+ mm/page_alloc.c     | 82 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 132 insertions(+), 41 deletions(-)
+
 -- 
-Thanks,
-~Nick Desaulniers
+2.20.1
+
