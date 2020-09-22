@@ -2,172 +2,154 @@ Return-Path: <SRS0=9ZY9=C7=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78BF7C4727E
-	for <rcu@archiver.kernel.org>; Tue, 22 Sep 2020 00:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F896C2D0E2
+	for <rcu@archiver.kernel.org>; Tue, 22 Sep 2020 03:35:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3053D23A82
-	for <rcu@archiver.kernel.org>; Tue, 22 Sep 2020 00:41:47 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=ozlabs-ru.20150623.gappssmtp.com header.i=@ozlabs-ru.20150623.gappssmtp.com header.b="nXrnj59q"
+	by mail.kernel.org (Postfix) with ESMTP id 373B523A6C
+	for <rcu@archiver.kernel.org>; Tue, 22 Sep 2020 03:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600745757;
+	bh=Zg1voEFK6z5Rkm7iaxnBwo567WXU9h8mw+sC++e4x68=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=WrCtfceUQPEAhoJgzdj0BAz1LD9kaGOcoq6+3KFqFmU6Rm0z3gMvdmyqPm5VfIApr
+	 nntT1Zp1QNv1DuYapinWTI0hKCy06flyEMD0KlZ7JEBPERZ7Q4TDQHIviSUkmG+Yxp
+	 UpRbGrwfAVZ7uKhrZsI97eqFVA1nZRb5FgM5Ii0Q=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729379AbgIVAlq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 21 Sep 2020 20:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729290AbgIVAlp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:41:45 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A74BC061755
-        for <rcu@vger.kernel.org>; Mon, 21 Sep 2020 17:41:44 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so10844520pff.6
-        for <rcu@vger.kernel.org>; Mon, 21 Sep 2020 17:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PNKUy9UbxB71ZPxOMn8QCcnMX+5rNdWeZS8ckF8exiY=;
-        b=nXrnj59q/BigDoGxqrKS+nz+d5zciYsxKnab5vm7DDfjItfKx7YVwSi35TC7Un+CDh
-         CaCSV29g8onW3AURu4PA7jrYgc2cdsuXvYKK1gMhcuIoFBlu8PYRvYzkzrQNHeYBUlEp
-         t5gnPzHVjTyIWVWnDeITKsZN1UX+JVX/FoDb0bxXXQ2I0BAGVV9s9JEojMSDES0Nl3i2
-         VBFgBLIEf1gCPCH4Ddwc3O8ecdHHxnTKpwj/3YhIp0K2xg/XcVNIPRRoZuQ1SfXA4M7q
-         6aFg5oO3RQnIg5/7+/gfjYNzS3FbSJjm23cV5D6NL+zDhaufc3BG9smP4PSbA3PQaoxr
-         FB1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PNKUy9UbxB71ZPxOMn8QCcnMX+5rNdWeZS8ckF8exiY=;
-        b=VyCiZDaPk/x+8Kz7VYeDqyxrSerlgI1MbQ7USA1YvxvoiFqq7LCO+KoIm4AHbjVhHU
-         3A72Z6Ds7yqUJEnCSsYMTzZYXgcHji5djAIerhtT4UMsAAnsnY76e+MNbqHe5R84Et9q
-         QFhRUwgDdrkTAYlzOlS1PNKFHuJ5+FXOvIJtJFEAkCUVBAhvxOmAvoex7YB7fR4235s2
-         1VsqZCO5cIef0QeOcpIGeZV5ZlE8KmVbJ5GQH0uyMM7oQVvWmeeoHg8y2DVUnny1qPH7
-         ERQER9N12IOJpDk3CKUFmR9P7nwrnmXk6Ej9Dp2PqKg9QtflUirfplgfhkCCjEl8/rXT
-         BJjw==
-X-Gm-Message-State: AOAM533qveQgH0fl7kyDCgmLNfmJQAN0ItMsBdFFir4+eUQDYxRqmoZg
-        5MTDwHvrIFa6HZ4kJrAhYGyjKQ==
-X-Google-Smtp-Source: ABdhPJyt79n191zAavGNJS2WkhpFIM6gerGv5gXOsS5aaxptWFBvCmZ1b0l9Msiq85FeDgjXCriePg==
-X-Received: by 2002:a17:902:b186:b029:d1:cc21:9a7d with SMTP id s6-20020a170902b186b02900d1cc219a7dmr2214352plr.8.1600735303844;
-        Mon, 21 Sep 2020 17:41:43 -0700 (PDT)
-Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with ESMTPSA id 17sm12803858pfi.55.2020.09.21.17.41.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 17:41:43 -0700 (PDT)
-Subject: Re: [PATCH kernel] srcu: Fix static initialization
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-References: <20200908144306.33355-1-aik@ozlabs.ru>
- <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
- <20200909115010.GG29330@paulmck-ThinkPad-P72>
- <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
- <20200910185353.GS29330@paulmck-ThinkPad-P72>
- <611a6a87-f673-c5b7-3b60-58805fba580a@ozlabs.ru>
- <20200911135208.GX29330@paulmck-ThinkPad-P72>
- <20200916161224.GA30546@paulmck-ThinkPad-P72>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <ef2179e0-ddad-05c0-2292-9b9dcfd348f9@ozlabs.ru>
-Date:   Tue, 22 Sep 2020 10:41:37 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1728787AbgIVDfy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 21 Sep 2020 23:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728634AbgIVDfy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:35:54 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBC5A23A32;
+        Tue, 22 Sep 2020 03:35:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600745754;
+        bh=Zg1voEFK6z5Rkm7iaxnBwo567WXU9h8mw+sC++e4x68=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=xLzkxeIta7HsB3m7JlSEs6z5XXhdnouoGY7Dz2Us48cNimR5KW5TnxbmCVc1m9pCE
+         OdxIirw8AAnRGZyDoOfR6I4K+hQFLRpukm5FmqQbEz1qyDOP1HO/EJpqORMQMrOtrx
+         vZLsgtqPiNsHjdZPJScyqzSSwmCANVB6rHnY26Pg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BD4D735226C1; Mon, 21 Sep 2020 20:35:53 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 20:35:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200922033553.GU29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200916161224.GA30546@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921160318.GO12990@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 17/09/2020 02:12, Paul E. McKenney wrote:
-> On Fri, Sep 11, 2020 at 06:52:08AM -0700, Paul E. McKenney wrote:
->> On Fri, Sep 11, 2020 at 03:09:41PM +1000, Alexey Kardashevskiy wrote:
->>> On 11/09/2020 04:53, Paul E. McKenney wrote:
->>>> On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
+On Mon, Sep 21, 2020 at 06:03:18PM +0200, Michal Hocko wrote:
+> On Mon 21-09-20 08:45:58, Paul E. McKenney wrote:
+> > On Mon, Sep 21, 2020 at 09:47:16AM +0200, Michal Hocko wrote:
+> > > On Fri 18-09-20 21:48:15, Uladzislau Rezki (Sony) wrote:
+> > > [...]
+> > > > Proposal
+> > > > ========
+> > > > Introduce a lock-free function that obtain a page from the per-cpu-lists
+> > > > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
+> > > 
+> > > I was not happy about this solution when we have discussed this
+> > > last time and I have to say I am still not happy. This is exposing
+> > > an internal allocator optimization and allows a hard to estimate
+> > > consumption of pcp free pages. IIUC this run on pcp cache can be
+> > > controled directly from userspace (close(open) loop IIRC) which makes it
+> > > even bigger no-no.
+> > 
+> > Yes, I do well remember that you are unhappy with this approach.
+> > Unfortunately, thus far, there is no solution that makes all developers
+> > happy.  You might be glad to hear that we are also looking into other
+> > solutions, each of which makes some other developers unhappy.  So we
+> > are at least not picking on you alone.  :-/
 > 
-> [ . . . ]
+> No worries I do not feel like a whipping boy here. But do expect me to
+> argue against the approach. I would also appreciate it if there was some
+> more information on other attempts, why they have failed. E.g. why
+> pre-allocation is not an option that works well enough in most
+> reasonable workloads. I would also appreciate some more thoughts why we
+> need to optimize for heavy abusers of RCU (like close(open) extremes).
+
+Not optimizing for them, but rather defending against them.  Uladzislau
+gave the example of low-memory phones.  And we have quite the array
+of defenses against other userspace bugs including MMUs, the "limit"
+command, and so on.
+
+There have been quite a few successful attempts, starting from the
+introduction of blimit and RCU-bh more than 15 years ago, continuing
+through making call_rcu() jump-start grace periods, IPIing reluctant
+CPUs, tuning RCU callback offloading, and many others.  But these prior
+approaches have only taken us so far.
+
+Other approaches under consideration include making CONFIG_PREEMPT_COUNT
+unconditional and thus allowing call_rcu() and kvfree_rcu() to determine
+whether direct calls to the allocator are safe (some guy named Linus
+doesn't like this one), preallocation (Uladzislau covered this, and
+the amount that would need to be preallocated is excessive), deferring
+allocation to RCU_SOFTIRQ (this would also need CONFIG_PREEMPT_COUNT),
+and deferring to some clean context (which is the best we can do within
+the confines of RCU, but which can have issues with delay).
+
+So it is not the need to address this general problem that is new.
+Far from it!  What is new is the need for changes outside of RCU.
+
+> > > I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
+> > > that this optimization is not aiming at reasonable workloads. Really, go
+> > > with pre-allocated buffer and fallback to whatever slow path you have
+> > > already. Exposing more internals of the allocator is not going to do any
+> > > good for long term maintainability.
+> > 
+> > I suggest that you carefully re-read the thread following that email.
 > 
->>>>> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
->>>>> here:
->>>>>
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
->>>>> ===
->>>>> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
->>>>> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
->>>>> 			return NULL;
->>>>> ===
->>>>>
->>>>> I am still up to reading that osr-rcuusage.pdf to provide better
->>>>> analysis :) Thanks,
->>>>
->>>> Ah, got it!  Does the following patch help?
->>>>
->>>> There will likely also need to be changes to cleanup_srcu_struct(),
->>>> but first let's see if I understand the problem.  ;-)
->>>>
->>>> 							Thanx, Paul
->>>>
->>>> ------------------------------------------------------------------------
->>>>
->>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>>> index c13348e..6f7880a 100644
->>>> --- a/kernel/rcu/srcutree.c
->>>> +++ b/kernel/rcu/srcutree.c
->>>> @@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
->>>>  	INIT_DELAYED_WORK(&ssp->work, process_srcu);
->>>>  	if (!is_static)
->>>>  		ssp->sda = alloc_percpu(struct srcu_data);
->>>> +	if (!ssp->sda)
->>>> +		return -ENOMEM;
->>>>  	init_srcu_struct_nodes(ssp, is_static);
->>>>  	ssp->srcu_gp_seq_needed_exp = 0;
->>>>  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
->>>>  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
->>>
->>> The line above confuses me a bit. What you propose returns without
->>> smp_store_release() called which should not matter I suppose.
->>
->> The idea is that if init_srcu_struct() returns -ENOMEM, the structure
->> has not been initialized and had better not be used.  If the calling code
->> cannot handle that outcome, then the calling code needs to do something
->> to insulate init_srcu_struct() from signals.  One thing that it could
->> do would be to invoke init_srcu_struct() from a workqueue handler and
->> wait for this handler to complete.
->>
->> Please keep in mind that there is nothing init_srcu_struct() can do
->> about this:  The srcu_struct is useless unless alloc_percpu() succeeds.
->>
->> And yes, I do need to update the header comments to make this clear.
->>
->>> Otherwise it should work, although I cannot verify right now as my box
->>> went down and since it is across Pacific - it may take time to power
->>> cycle it :) Thanks,
->>
->> I know that feeling!  And here is hoping that the box is out of reach
->> of the local hot spots.  ;-)
+> I clearly remember Thomas not being particularly happy that you optimize
+> for a corner case. I do not remember there being a consensus that this
+> is the right approach. There was some consensus that this is better than
+> a gfp flag. Still quite bad though if you ask me.
+
+Again, this "optimization" is for robustness more than raw speed.
+
+> > Given a choice between making users unhappy and making developers
+> > unhappy, I will side with the users each and every time.
 > 
-> Just following up...  Did that patch help?
+> Well, let me rephrase. It is not only about me (as a developer) being
+> unhappy but also all the side effects this would have for users when
+> performance of their favorite workload declines for no apparent reason
+> just because pcp caches are depleted by an unrelated process.
 
+But in the close(open()) case, wouldn't the allocations on the open()
+side refill those caches?  Yes, cases where one CPU is doing the
+allocating and another the call_rcu()/kvfree_rcu() need additional
+help, but as Uladzislau noted, we do have patches that ensure that the
+refilling happens.
 
-Yes it did.
-
-Tested-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-
-
-
-> 
-> 							Thanx, Paul
-> 
-
--- 
-Alexey
+							Thanx, Paul
