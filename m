@@ -2,34 +2,69 @@ Return-Path: <SRS0=jKPx=DA=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A06AC2D0A8
-	for <rcu@archiver.kernel.org>; Wed, 23 Sep 2020 10:42:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF1F8C2D0A8
+	for <rcu@archiver.kernel.org>; Wed, 23 Sep 2020 11:27:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E9D1E21D7D
-	for <rcu@archiver.kernel.org>; Wed, 23 Sep 2020 10:42:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84A6B2145D
+	for <rcu@archiver.kernel.org>; Wed, 23 Sep 2020 11:27:26 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kPbMa256"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgIWKmk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Sep 2020 06:42:40 -0400
-Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:59869 "EHLO
-        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIWKmk (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 23 Sep 2020 06:42:40 -0400
-X-Greylist: delayed 329 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 06:42:39 EDT
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 093E1C4A02
-        for <rcu@vger.kernel.org>; Wed, 23 Sep 2020 11:37:08 +0100 (IST)
-Received: (qmail 6294 invoked from network); 23 Sep 2020 10:37:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Sep 2020 10:37:07 -0000
-Date:   Wed, 23 Sep 2020 11:37:06 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Uladzislau Rezki <urezki@gmail.com>
+        id S1726445AbgIWL10 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Sep 2020 07:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWL1Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:27:25 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6990CC0613CE;
+        Wed, 23 Sep 2020 04:27:25 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w3so16903457ljo.5;
+        Wed, 23 Sep 2020 04:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PF60as8MpIwsxJIqqAOINxwtnO5aupgejkBPp4saGRI=;
+        b=kPbMa256EDIOx6B5ZH/I6P8OuhTR0akW/H9eJ7j4yFwMH9vATN3TGA9nPT1oLbicn9
+         9wZ8Kzh23ymfDthKlHUqKejeXwDhmzBUiCJrfrk/ONnzdvxqFP+W2a91PTP+GVw9hkbK
+         pAGvI0PTupNyEXsPZWhK8OAX8B3gGR2gy7Qs+O1Io+Y6gKDu2OZPsMpmIPdSmt1aU8hW
+         wVAGSylLZ396/vgp60qJzCH5WFXiC2PtAG+SOtZrRFUTLqtbXayZDv3Jl7wVig5Gp526
+         dSqbZi1V9DxjWfM2Z5oDfrbgpILRRCb2+RoXIvBYYIZKG3ctB7+n3LN/MzE5WqklTMnn
+         uiCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PF60as8MpIwsxJIqqAOINxwtnO5aupgejkBPp4saGRI=;
+        b=KWp+foSDBtDzLx8nM3zDJ40vWLSstKjNXwW3NJ9J6Uii8GOkcbcc+lEIRE+ZD6Efzw
+         3UHt0ptAQXP+PkIDscWbe+/edxvzXX2Ss2PPu0U8D1i7dl3Anr2baLFkyvFWlh7Ey1pJ
+         dCmnv1PtqPX2V1J0mp+C14x0uWuIfp0QBNzd5uJaW5A+gB+a3oW/mj8JdHZCXaDUiRlm
+         NloG8FYNFSSw9p900KSjx/lvE/5DrOblW8hEKznXQRC4pKfbx+iC/XHbJ24EQfKKBsrm
+         prJAm/b/utKJAEu0K8PPyTvsOaUlQ/G9U6ZC2Gt3Y35SCpmrBamU12lTRtaXXIdFY67E
+         6dJA==
+X-Gm-Message-State: AOAM531DWoSsB1JCdYnphA26ebsc/WYzUESrT95BmD3S9m/70JkpX7iG
+        HuW/JdvVV6FxBSEvaHNCdsw=
+X-Google-Smtp-Source: ABdhPJyjJ7gCM2EyR1iq96O3NkMTgpN2WZZdCb3tyuAX//K2341e1123fZlk9VT2Gj64jWc3o5ySnA==
+X-Received: by 2002:a2e:99c4:: with SMTP id l4mr3211132ljj.428.1600860443667;
+        Wed, 23 Sep 2020 04:27:23 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id g26sm371781ljl.116.2020.09.23.04.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 04:27:22 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 23 Sep 2020 13:27:19 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>
 Cc:     Michal Hocko <mhocko@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -38,133 +73,110 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Joel Fernandes <joel@joelfernandes.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200923103706.GJ3179@techsingularity.net>
+Message-ID: <20200923112719.GA6796@pc636>
 References: <20200918194817.48921-1-urezki@gmail.com>
  <20200918194817.48921-3-urezki@gmail.com>
  <20200921074716.GC12990@dhcp22.suse.cz>
  <20200921154558.GD29330@paulmck-ThinkPad-P72>
  <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
+ <20200922033553.GU29330@paulmck-ThinkPad-P72>
+ <20200922080306.GV12990@dhcp22.suse.cz>
+ <20200922154621.GW29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922131257.GA29241@pc636>
+In-Reply-To: <20200922154621.GW29330@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:12:57PM +0200, Uladzislau Rezki wrote:
-> > > > > Yes, I do well remember that you are unhappy with this approach.
-> > > > > Unfortunately, thus far, there is no solution that makes all developers
-> > > > > happy.  You might be glad to hear that we are also looking into other
-> > > > > solutions, each of which makes some other developers unhappy.  So we
-> > > > > are at least not picking on you alone.  :-/
-> > > > 
-> > > > No worries I do not feel like a whipping boy here. But do expect me to
-> > > > argue against the approach. I would also appreciate it if there was some
-> > > > more information on other attempts, why they have failed. E.g. why
-> > > > pre-allocation is not an option that works well enough in most
-> > > > reasonable workloads.
-> > > Pre-allocating has some drawbacks:
-> > > 
-> > > a) It is impossible to predict how many pages will be required to
-> > >    cover a demand that is controlled by different workloads on
-> > >    various systems.
+> > > Other approaches under consideration include making CONFIG_PREEMPT_COUNT
+> > > unconditional and thus allowing call_rcu() and kvfree_rcu() to determine
+> > > whether direct calls to the allocator are safe (some guy named Linus
+> > > doesn't like this one),
 > > 
-> > Yes, this is not trivial but not a rocket science either. Remember that
-> > you are relying on a very dumb watermark based pcp pool from the
-> > allocator.
-> >
-> We rely on it, indeed. If the pcp-cache is depleted our special work is
-> triggered to charge our local cache(few pages) such way will also initiate
-> the process of pre-featching pages from the buddy allocator populating
-> the depleted pcp-cache. I do not have any concern here.
+> > I assume that the primary argument is the overhead, right? Do you happen
+> > to have any reference?
 > 
-
-It can interfere with ATOMIC allocations in critical paths in extreme
-circumstances as it potentially puts increased pressure on the emergency
-reserve as watermarks are bypassed. That adds to the risk of a functional
-failuure if reclaim fails to make progress.  The number of pages are likely
-to be limited and unpredictable. As it uses any PCP type, it potentially
-causes fragmention issues. For the last point, the allocations may be
-transient in the RCU case now but not guaranteed forever. As the API is
-in gfp.h, it's open to abuse so the next guy that comes along and thinks
-"I am critical no matter what the name says" will cause problems. While
-you could argue that would be caught in review, plenty of GFP flag abuses
-made it through review.
-
-Fundamentally, this is simply shifting the problem from RCU to the page
-allocator because of the locking arrangements and hazard of acquiring zone
-lock is a raw spinlock is held on RT. It does not even make the timing
-predictable as an empty PCU list (for example, a full drain in low memory
-situations) may mean the emergency path is hit anyway. About all it changes
-is the timing of when the emergency path is hit in some circumstances --
-it's not fixing the problem, it's simply changing the shape.
-
-> >
-> > Mimicing a similar implementation shouldn't be all that hard
-> > and you will get your own pool which doesn't affect other page allocator
-> > users as much as a bonus.
-> > 
-> I see your point Michal. As i mentioned before, it is important to avoid of
-> having such own pools, because the aim is not to waste memory resources. A
-> page will be returned back to "page allocator" as soon as a scheduler place  
-> our reclaim thread on a CPU and grace period is passed. So, the resource
-> can be used for other needs. What is important.
+> Jon Corbet wrote a very nice article summarizing the current situation:
+> https://lwn.net/Articles/831678/.  Thomas's measurements show no visible
+> system-level performance impact.  I will let Uladzislau present his more
+> microbenchmarky performance work.
 > 
+I have done some analysis of the !PREEMPT kernel with and without PREEMPT_COUNT
+configuration. The aim is to show a performance impact if the PREEMPT_COUNT is
+unconditionally enabled.
 
-As the emergency path and synchronising can be hit no matter what, why
-not increase the pool temporarily after the emergency path is hit and
-shrink it again later if necessary?
+As for the test i used the refscale kernel module, that does:
 
-> Otherwise a memory footprint is increased what is bad for low memory
-> conditions when OOM is involved.
+<snip>
+static void ref_rcu_read_section(const int nloops)
+{
+ int i;
 
-OOM would only be a major factor if the size of the pools meant the
-machine could not even operate or at least was severely degraded. However,
-depleting the PCPU lists for RCU may slow kswapd making reclaim progress
-and cause an OOM in itself, or at least an intervention by a userspace
-monitor that kills non-critical applications in the background when memory
-pressure exists.
+ for (i = nloops; i >= 0; i--) {
+  rcu_read_lock();
+  rcu_read_unlock();
+ }
+}
+<snip>
 
-> > > As for memory overhead, it is important to reduce it because of
-> > > embedded devices like phones, where a low memory condition is a
-> > > big issue. In that sense pre-allocating is something that we strongly
-> > > would like to avoid.
-> > 
-> > How big "machines" are we talking about here? I would expect that really
-> > tiny machines would have hard times to really fill up thousands of pages
-> > with pointers to free...
-> > 
-> I mentioned above. We can not rely on static model. We would like to
-> have a mechanism that gives back ASAP used pages to page allocator
-> for other needs.
-> 
+How to run the microbenchmark:
 
-After an emergency, temporarily increase the size of the pool to avoid
-hitting the emergency path again in the near future.
+<snip>
+urezki@pc638:~$ sudo modprobe refscale
+<snip>
 
-> >
-> > Would a similar scaling as the page allocator feasible. Really I mostly
-> > do care about shared nature of the pcp allocator list that one user can
-> > easily monopolize with this API.
-> > 
-> I see your concern. pcplist can be monopolized by already existing API:
-> 
->     while (i < 100)
->         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> 
+The below is an average duration per loop (nanoseconds):
 
-That's not the same class of abuse as it can go to the buddy lists to
-refill the correct PCP lists, avoid fragmentation issues, obeys watermarks
-and wakes kswapd if it's not awake already.
+  !PREEMPT_COUNT            PREEMPT_COUNT
+ Runs     Time(ns)         Runc     Time(ns)
+ 1        109.640          1        99.915
+ 2        102.303          2        111.106
+ 3        90.520           3        98.713
+ 4        106.347          4        111.239
+ 5        108.374          5        111.797
+ 6        108.012          6        111.558
+ 7        103.989          7        113.122
+ 8        106.194          8        111.515
+ 9        107.330          9        107.559
+ 10       105.877          10       105.965
+ 11       104.860          11       104.835
+ 12       104.299          12       106.342
+ 13       104.794          13       106.664
+ 14       104.916          14       104.914
+ 15       105.485          15       104.280
+ 16       104.610          16       105.642
+ 17       104.981          17       105.646
+ 18       103.089          18       106.370
+ 19       105.251          19       105.284
+ 20       104.133          20       105.973
+ 21       105.589          21       105.271
+ 22       104.154          22       106.063
+ 23       104.963          23       106.248
+ 24       102.431          24       105.568
+ 25       102.610          25       105.556
+ 26       103.474          26       105.655
+ 27       100.194          27       102.887
+ 28       102.340          28       104.347
+ 29       102.075          29       102.389
+ 30       102.808          30       103.123
 
--- 
-Mel Gorman
-SUSE Labs
+The difference is ~1.8% in average. The maximum value is 109.640 vs 113.122
+The minimum value is 90.520 vs 98.713.
+
+Tested on:
+    processor       : 63
+    vendor_id       : AuthenticAMD
+    cpu family      : 6
+    model           : 6
+    model name      : QEMU Virtual CPU version 2.5+
+    cpu MHz         : 3700.204
+
+I also can do more detailed testing using "perf" tool.
+
+--
+Vlad Rezki
