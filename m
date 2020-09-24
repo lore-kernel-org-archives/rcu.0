@@ -6,44 +6,44 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0BBDC4363D
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 11:16:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E855C4363D
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 11:19:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B6EB2388A
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 11:16:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 487332388A
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 11:19:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EFQMCtvp"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k8+teQds"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgIXLQu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Sep 2020 07:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
+        id S1727195AbgIXLTU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Sep 2020 07:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgIXLQu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:16:50 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D76C0613CE;
-        Thu, 24 Sep 2020 04:16:49 -0700 (PDT)
+        with ESMTP id S1726701AbgIXLTT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:19:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39D4C0613CE;
+        Thu, 24 Sep 2020 04:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L0W7Y57hfB+sKNmMyauoXW4J1vjmTW/bBWQCemTSomo=; b=EFQMCtvpz0VPW66XEnnTwBcq8N
-        tYhRh2uod3w6Q7FSpDE1sn4xQKpv3KWg1K2QSNaFTj/QggNtOG6Q2UKK3YRHEMeELGs//+iv0UV7l
-        tUtjpxTIfrVajvIMBrYTB4c6spS91ujrobtXG6oyhGNCMYaFB8+qGNAEOS/BVhrBQP5tTeFOS8PkI
-        MDSyq8HctjRptuqLmOJm0AjpcrbgDaBqrQovXwppvzhfXlUjtf81lCF7R5BMB8i0T7f1MrLOX7HyQ
-        Ff00LG5TQsqIpfKn4rmUIDJY5XbouPeCo+pYDMLXfl0iBwgL13whg+w3+InWaTvsMsMiyu8fyGqsM
-        DoytgZJw==;
+        bh=xqlwroC0ti6SZtly8XWUIPDjGy4hLoHAIsho3lQ0o/s=; b=k8+teQdsNC7qK5PdZXoGPRYCLa
+        cBlVyfaSePz1y3nZ9iLA7O2VOegTBcHVk6YgGwHuAZN2L3v2D3b8uhIyaI02bM1F7/DROVNUMT6E9
+        aqaKaUQ4UgwsuTcwTC9Snrr7xFw/voABeb9fXzxzT/1/UrrszjLeJ+2pWYL9w89dO4GH+KkmiTmg/
+        L1bZvX6sTfju8bElLob694WDYLqfT3+AiJS7fxHauF8YDI2M0SqSt11hNXAwpXCwmR3kjgNfQAKms
+        kHlfy8z6h5EYkANfjXBn3fuR0CSMWCn7aEBxSW7FIUS/8ok/j77p6ulYCCvIiaArD02YYTmPb9SF9
+        Xv5Jxadg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLPEo-0004PT-6z; Thu, 24 Sep 2020 11:16:34 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLPHI-0001As-5Z; Thu, 24 Sep 2020 11:19:08 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61F27303DA0;
-        Thu, 24 Sep 2020 13:16:32 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A695B300DB4;
+        Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4AD32203161DB; Thu, 24 Sep 2020 13:16:32 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 13:16:32 +0200
+        id 93D6A203161DB; Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 13:19:07 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Uladzislau Rezki <urezki@gmail.com>
 Cc:     Mel Gorman <mgorman@techsingularity.net>,
@@ -59,7 +59,7 @@ Cc:     Mel Gorman <mgorman@techsingularity.net>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
         Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+Message-ID: <20200924111907.GE2628@hirez.programming.kicks-ass.net>
 References: <20200921074716.GC12990@dhcp22.suse.cz>
  <20200921154558.GD29330@paulmck-ThinkPad-P72>
  <20200921160318.GO12990@dhcp22.suse.cz>
@@ -79,17 +79,13 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> Other option is if we had unconditionally enabled PREEMPT_COUNT config.
-> It would be easy to identify a context type and invoke a page allocator
-> if a context is preemtale. But as of now preemptable() is "half" working.
-> Thomas uploaded patches to make it unconditional. But it can be blocked.
+> The key point is "enough". We need pages to make a) fast progress b) support
+> single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> on scheduler latency and vague pre-allocated number of pages, it might
+> be not enough what would require to refill it more and more or we can overshoot
+> that would lead to memory overhead. So we have here timing issues and
+> not accurate model. IMHO.
 
-While I in principle support Thomas' patch, I think this is an abuse and
-still complete wrong.
+I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+requiring memory to free memory.
 
-Not all preemptible() context can deal with GFP_KERNEL (GFP_NOFS
-existing should be a clue). !preemptible context cannot unconditionally
-deal with GFP_NOWAIT, consider using it while holding zone->lock.
-
-The preemption context does not say antying much useful about the
-allocation context.
