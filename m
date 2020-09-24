@@ -2,174 +2,130 @@ Return-Path: <SRS0=Gqt/=DB=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6858C4363D
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 14:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BC6C4727E
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:16:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 66B03212CC
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 14:12:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B94862344C
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:16:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXhYvPy0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgIXOM3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Sep 2020 10:12:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48328 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727859AbgIXOM2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:12:28 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 10A64827C70A2C2D438C;
-        Thu, 24 Sep 2020 22:12:05 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
- 22:12:00 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-CC:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-Subject: [PATCH v2 2/2] locktorture: call percpu_free_rwsem() to do percpu-rwsem cleanup
-Date:   Thu, 24 Sep 2020 22:18:54 +0800
-Message-ID: <20200924141854.134835-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-In-Reply-To: <20200923035137.GN29330@paulmck-ThinkPad-P72>
-References: <20200923035137.GN29330@paulmck-ThinkPad-P72>
+        id S1728413AbgIXPQd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Sep 2020 11:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728273AbgIXPQb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:16:31 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF13C0613CE;
+        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id q8so4353872lfb.6;
+        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
+        b=iXhYvPy0LzzINWscEsEuBJcHyNnMX2Q16bBmhHorBDz03Q5SDV4E7eNcUShLpEy/HA
+         vhLmMSvEojyifVv1TrPHcrueBEvatmn6Ije7kFLzZ2YcCMyu+1pUUJ/t8dXXPXCbN1WJ
+         cDp8Ml8B1Qh0vdg6VB+NaATaAe9MM9LLwW9ttO5mdULIjjk8bxBjVTVX8TSNqp8+3eRq
+         CTPJAS6yi1fwkiUNXWsG61mLH6LuR6lf2xBjZA/hxAfhPooqyF/19VVxZnypaWIyj+VL
+         iVuctOkCFTShInFW8LM2JetY6GJ+kmX+bj/iA39jMNqZo6JHhaRchtpiwGgZ/Gl0eT3+
+         eI0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
+        b=gxBglCQ2YwoZmnEjbG2xxR17W79yE/SLiX7xCPCngJ+r3LRbQEoYQjkO1wbSFl636L
+         l0fN3LHpO0MvnIB0CKwIYoLxb/k6tZYmPcwxn58g+2MDgeDbCTetuHv+EkbpEDhwyXFv
+         dl0UoChW5vITFOSyArUMJL03rZ7lwgEW6+DxwgsQH1cTbFp3YwPrRqAhl4K3spw++xfd
+         bmflYz/if1Bw2r+gt32C9MZwDEJkw3KIIF9iZFBeN0rwBiTPEu3rXLFTgjOW3FzT1Djx
+         faIGNwxrmRR1/W1GnCrFxxarOBVZmXd7rB4BUfeVjdFNHHlI7Y3KNjDatdOPpyG4RRpZ
+         AzCg==
+X-Gm-Message-State: AOAM531GQ86lO2Tc4HZJCb0SG62IC2UeVDYo1RTgosKI6aJiWBIq5ql1
+        D6PYU0rR5xqaibF5OpfP7gs=
+X-Google-Smtp-Source: ABdhPJzK2d/M+AZ9drrmmGdPQ2ZzuwPUEP3T7OwuWubTbWcL2qi9PC3R4p1P1pZ8awnBiEKz6kM71A==
+X-Received: by 2002:a19:430c:: with SMTP id q12mr470114lfa.68.1600960588909;
+        Thu, 24 Sep 2020 08:16:28 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id 193sm2311575lfb.212.2020.09.24.08.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 08:16:27 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 24 Sep 2020 17:16:25 +0200
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200924151625.GA19013@pc636>
+References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200924111632.GD2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When do percpu-rwsem writer lock torture, the RCU callback
-rcu_sync_func() may still be pending after locktorture module
-is removed, and it will lead to the following Oops:
+On Thu, Sep 24, 2020 at 01:16:32PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> > Other option is if we had unconditionally enabled PREEMPT_COUNT config.
+> > It would be easy to identify a context type and invoke a page allocator
+> > if a context is preemtale. But as of now preemptable() is "half" working.
+> > Thomas uploaded patches to make it unconditional. But it can be blocked.
+> 
+> While I in principle support Thomas' patch, I think this is an abuse and
+> still complete wrong.
+> 
+Good that you support it :)
 
-  BUG: unable to handle page fault for address: ffffffffc00eb920
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
-  Oops: 0000 [#1] PREEMPT SMP
-  CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-  RIP: 0010:rcu_cblist_dequeue+0x12/0x30
-  Call Trace:
-   <IRQ>
-   rcu_core+0x1b1/0x860
-   __do_softirq+0xfe/0x326
-   asm_call_on_stack+0x12/0x20
-   </IRQ>
-   do_softirq_own_stack+0x5f/0x80
-   irq_exit_rcu+0xaf/0xc0
-   sysvec_apic_timer_interrupt+0x2e/0xb0
-   asm_sysvec_apic_timer_interrupt+0x12/0x20
+>
+> Not all preemptible() context can deal with GFP_KERNEL (GFP_NOFS
+> existing should be a clue). !preemptible context cannot unconditionally
+> deal with GFP_NOWAIT, consider using it while holding zone->lock.
+> 
+Not sure if i fully follow you here. What i tried to express, if we had
+preemtable() fully working, including !PREEMPT, we can at least detect
+the following:
 
-Fix it by adding an exit hook in lock_torture_ops and
-use it to call percpu_free_rwsem() for percpu rwsem torture
-before the module is removed, so we can ensure rcu_sync_func()
-completes before module exits.
+if (!preemptable())
+    by pass using any ATOMIC/NOWAIT flags because they do not work;
 
-Also needs to call exit hook if lock_torture_init() fails half-way,
-so add init_called field in lock_torture_cxt to indicate that
-init hook has been called.
+as an example you mentioned z->lock that is sleepable.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v2: add init_called field in lock_torture_cxt instead of reusing
-    cxt->cur_ops for error handling
+>
+> The preemption context does not say antying much useful about the
+> allocation context.
+>
+I am talking about taking a decision. 
 
- kernel/locking/locktorture.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index bebdf98e6cd78..1fbbcf76f495b 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
-  */
- struct lock_torture_ops {
- 	void (*init)(void);
-+	void (*exit)(void);
- 	int (*writelock)(void);
- 	void (*write_delay)(struct torture_random_state *trsp);
- 	void (*task_boost)(struct torture_random_state *trsp);
-@@ -90,12 +91,13 @@ struct lock_torture_cxt {
- 	int nrealwriters_stress;
- 	int nrealreaders_stress;
- 	bool debug_lock;
-+	bool init_called;
- 	atomic_t n_lock_torture_errors;
- 	struct lock_torture_ops *cur_ops;
- 	struct lock_stress_stats *lwsa; /* writer statistics */
- 	struct lock_stress_stats *lrsa; /* reader statistics */
- };
--static struct lock_torture_cxt cxt = { 0, 0, false,
-+static struct lock_torture_cxt cxt = { 0, 0, false, false,
- 				       ATOMIC_INIT(0),
- 				       NULL, NULL};
- /*
-@@ -571,6 +573,11 @@ void torture_percpu_rwsem_init(void)
- 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
- }
- 
-+static void torture_percpu_rwsem_exit(void)
-+{
-+	percpu_free_rwsem(&pcpu_rwsem);
-+}
-+
- static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
- {
- 	percpu_down_write(&pcpu_rwsem);
-@@ -595,6 +602,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
- 
- static struct lock_torture_ops percpu_rwsem_lock_ops = {
- 	.init		= torture_percpu_rwsem_init,
-+	.exit		= torture_percpu_rwsem_exit,
- 	.writelock	= torture_percpu_rwsem_down_write,
- 	.write_delay	= torture_rwsem_write_delay,
- 	.task_boost     = torture_boost_dummy,
-@@ -786,9 +794,10 @@ static void lock_torture_cleanup(void)
- 
- 	/*
- 	 * Indicates early cleanup, meaning that the test has not run,
--	 * such as when passing bogus args when loading the module. As
--	 * such, only perform the underlying torture-specific cleanups,
--	 * and avoid anything related to locktorture.
-+	 * such as when passing bogus args when loading the module.
-+	 * However cxt->cur_ops.init() may have been invoked, so beside
-+	 * perform the underlying torture-specific cleanups, cur_ops.exit()
-+	 * will be invoked if needed.
- 	 */
- 	if (!cxt.lwsa && !cxt.lrsa)
- 		goto end;
-@@ -828,6 +837,11 @@ static void lock_torture_cleanup(void)
- 	cxt.lrsa = NULL;
- 
- end:
-+	if (cxt.init_called) {
-+		if (cxt.cur_ops->exit)
-+			cxt.cur_ops->exit();
-+		cxt.init_called = false;
-+	}
- 	torture_cleanup_end();
- }
- 
-@@ -875,8 +889,10 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (cxt.cur_ops->init)
-+	if (cxt.cur_ops->init) {
- 		cxt.cur_ops->init();
-+		cxt.init_called = true;
-+	}
- 
- 	if (nwriters_stress >= 0)
- 		cxt.nrealwriters_stress = nwriters_stress;
--- 
-2.25.0.4.g0ad7144999
-
+--
+Vlad Rezki
