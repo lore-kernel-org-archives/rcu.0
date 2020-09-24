@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BC6C4727E
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AD6EC2D0E2
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:21:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B94862344C
-	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:16:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0FA921D24
+	for <rcu@archiver.kernel.org>; Thu, 24 Sep 2020 15:21:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXhYvPy0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B1cp87nP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgIXPQd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Sep 2020 11:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        id S1728428AbgIXPVR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Sep 2020 11:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728273AbgIXPQb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:16:31 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF13C0613CE;
-        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id q8so4353872lfb.6;
-        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
+        with ESMTP id S1728139AbgIXPVR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:21:17 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1495CC0613CE;
+        Thu, 24 Sep 2020 08:21:17 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id s205so3078440lja.7;
+        Thu, 24 Sep 2020 08:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
-        b=iXhYvPy0LzzINWscEsEuBJcHyNnMX2Q16bBmhHorBDz03Q5SDV4E7eNcUShLpEy/HA
-         vhLmMSvEojyifVv1TrPHcrueBEvatmn6Ije7kFLzZ2YcCMyu+1pUUJ/t8dXXPXCbN1WJ
-         cDp8Ml8B1Qh0vdg6VB+NaATaAe9MM9LLwW9ttO5mdULIjjk8bxBjVTVX8TSNqp8+3eRq
-         CTPJAS6yi1fwkiUNXWsG61mLH6LuR6lf2xBjZA/hxAfhPooqyF/19VVxZnypaWIyj+VL
-         iVuctOkCFTShInFW8LM2JetY6GJ+kmX+bj/iA39jMNqZo6JHhaRchtpiwGgZ/Gl0eT3+
-         eI0Q==
+        bh=U/mZAambhFcl0S7KGEMSUJjg0a7gPmj28sRt8xsxUs0=;
+        b=B1cp87nPpk6fcWkz7WopVAUa9cH5zagTJ8w6MstgYFm2N8S6/lERSognJMXCMS0C+9
+         mToxWz1aWOpujhsqR9EYGB9aw2XcIxz9xCDxeb2nb8zspvfNQZkW8Tp2I9cXqtzox+81
+         Lr4UL51TmMNrEX23ZWzFpDZgumqj8CIWk4F5y8ZygycgvfeL1OmX+TCmn3hA776svmx/
+         04MwvEJGpkbZB+9hzLOATT6IWG9TzXVRVORodjxckIKf+WBADQ/6rwdW1rUFGzVsKLfy
+         TIPf9pJcCBWthYpY4V4YL/Krj1doPvm+fSIvLsBzX4IyRdAb/7q3mafoL3d77UlWomb4
+         eRnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
-        b=gxBglCQ2YwoZmnEjbG2xxR17W79yE/SLiX7xCPCngJ+r3LRbQEoYQjkO1wbSFl636L
-         l0fN3LHpO0MvnIB0CKwIYoLxb/k6tZYmPcwxn58g+2MDgeDbCTetuHv+EkbpEDhwyXFv
-         dl0UoChW5vITFOSyArUMJL03rZ7lwgEW6+DxwgsQH1cTbFp3YwPrRqAhl4K3spw++xfd
-         bmflYz/if1Bw2r+gt32C9MZwDEJkw3KIIF9iZFBeN0rwBiTPEu3rXLFTgjOW3FzT1Djx
-         faIGNwxrmRR1/W1GnCrFxxarOBVZmXd7rB4BUfeVjdFNHHlI7Y3KNjDatdOPpyG4RRpZ
-         AzCg==
-X-Gm-Message-State: AOAM531GQ86lO2Tc4HZJCb0SG62IC2UeVDYo1RTgosKI6aJiWBIq5ql1
-        D6PYU0rR5xqaibF5OpfP7gs=
-X-Google-Smtp-Source: ABdhPJzK2d/M+AZ9drrmmGdPQ2ZzuwPUEP3T7OwuWubTbWcL2qi9PC3R4p1P1pZ8awnBiEKz6kM71A==
-X-Received: by 2002:a19:430c:: with SMTP id q12mr470114lfa.68.1600960588909;
-        Thu, 24 Sep 2020 08:16:28 -0700 (PDT)
+        bh=U/mZAambhFcl0S7KGEMSUJjg0a7gPmj28sRt8xsxUs0=;
+        b=l59+wlLPMtzF7L73hcur+Q//UBglKDl4eV6Kf4Eyj4+MHJooUUNiHqzEuDzRMBtpsI
+         3s9qFspbJN7AKY/ZGBAuNCLkvLd/9NJrqhOopVbie+NSly5dSmGsWi9Y/YGwrbL/Lvbu
+         TLemxxPtnllvDgYslZz5tbakkYTlGBwPMdq54SMMtuPfO4JspUeJ2e1u8ikOPoLWJI1u
+         ENY89ptPLKSmjzK/SLuhg2a5JcLCyiwMRyUt6H3Nl+UTNyql7pIX/4G3K424QV4dsyRA
+         WtWeU8jW0PwUr7vvMmZDDnYg+4bS4g8iQgaBgVM+/70L8i5AIlGuuFp1092MZ8VrH9Kl
+         mtyg==
+X-Gm-Message-State: AOAM533M6HTNiqytfCzEuNNe1o5IhlRVx0bG2DVJ1sIDfiRKaZDp1DdE
+        YEKiDzz9h8UnzrFG4Icev7g=
+X-Google-Smtp-Source: ABdhPJyLv1TmIc/5WfunO6vMcDPwSFsYmXi2nRV7bxMy6gP3CGLrG7hHCdMN/ZXmksdMyAPKbuKlzw==
+X-Received: by 2002:a2e:3008:: with SMTP id w8mr99644ljw.63.1600960875417;
+        Thu, 24 Sep 2020 08:21:15 -0700 (PDT)
 Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id 193sm2311575lfb.212.2020.09.24.08.16.27
+        by smtp.gmail.com with ESMTPSA id o128sm2313144lfa.110.2020.09.24.08.21.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:16:27 -0700 (PDT)
+        Thu, 24 Sep 2020 08:21:14 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 24 Sep 2020 17:16:25 +0200
+Date:   Thu, 24 Sep 2020 17:21:12 +0200
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Mel Gorman <mgorman@techsingularity.net>,
@@ -75,7 +75,7 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
         Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200924151625.GA19013@pc636>
+Message-ID: <20200924152112.GB19013@pc636>
 References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
  <20200921160318.GO12990@dhcp22.suse.cz>
  <20200921194819.GA24236@pc636>
@@ -85,47 +85,69 @@ References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
  <20200923154105.GO29330@paulmck-ThinkPad-P72>
  <20200923232251.GK3179@techsingularity.net>
  <20200924081614.GA14819@pc636>
- <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+ <20200924111907.GE2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200924111907.GE2628@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:16:32PM +0200, Peter Zijlstra wrote:
+On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
 > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> > Other option is if we had unconditionally enabled PREEMPT_COUNT config.
-> > It would be easy to identify a context type and invoke a page allocator
-> > if a context is preemtale. But as of now preemptable() is "half" working.
-> > Thomas uploaded patches to make it unconditional. But it can be blocked.
+> > The key point is "enough". We need pages to make a) fast progress b) support
+> > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> > on scheduler latency and vague pre-allocated number of pages, it might
+> > be not enough what would require to refill it more and more or we can overshoot
+> > that would lead to memory overhead. So we have here timing issues and
+> > not accurate model. IMHO.
 > 
-> While I in principle support Thomas' patch, I think this is an abuse and
-> still complete wrong.
+> I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+> requiring memory to free memory.
 > 
-Good that you support it :)
+Hmm.. The problem is there is a demand in it:
 
->
-> Not all preemptible() context can deal with GFP_KERNEL (GFP_NOFS
-> existing should be a clue). !preemptible context cannot unconditionally
-> deal with GFP_NOWAIT, consider using it while holding zone->lock.
-> 
-Not sure if i fully follow you here. What i tried to express, if we had
-preemtable() fully working, including !PREEMPT, we can at least detect
-the following:
+Please have a look at places in the kernel where people do not
+embed the rcu_head into their stuctures and do like:
 
-if (!preemptable())
-    by pass using any ATOMIC/NOWAIT flags because they do not work;
+<snip>
+    synchronize_rcu();
+    kfree(p);
+<snip>
 
-as an example you mentioned z->lock that is sleepable.
-
->
-> The preemption context does not say antying much useful about the
-> allocation context.
->
-I am talking about taking a decision. 
+<snip>
+urezki@pc638:~/data/coding/linux-rcu.git$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
+./fs/nfs/sysfs.c-113-           kfree(old);
+./fs/ext4/super.c-1708- kfree(old_qname);
+./kernel/trace/ftrace.c-5079-                   kfree(direct);
+./kernel/trace/ftrace.c-5156-                   kfree(direct);
+./kernel/trace/trace_probe.c-1087-      kfree(link);
+./kernel/module.c-3910- kfree(mod->args);
+./net/core/sysctl_net_core.c-143-                               kfree(cur);
+./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
+./drivers/mfd/dln2.c-183-               kfree(i);
+./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
+./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
+./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
+./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
+./drivers/block/drbd/drbd_receiver.c-3805-      kfree(old_net_conf);
+./drivers/block/drbd/drbd_receiver.c-4177-                      kfree(old_disk_conf);
+./drivers/ipack/carriers/tpci200.c-189- kfree(slot_irq);
+./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
+./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3583-        kfree(mgp->ss);
+./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
+./drivers/net/ethernet/mellanox/mlxsw/core.c-1574-      kfree(rxl_item);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6642- kfree(adapter->mbox_log);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6644- kfree(adapter);
+./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
+./drivers/infiniband/core/device.c:2164:                         * synchronize_rcu before the netdev is kfreed, so we
+./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
+./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
+./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
+urezki@pc638:~/data/coding/linux-rcu.git$
+<snip>
 
 --
 Vlad Rezki
