@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A65C4741F
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 10:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92677C4727C
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 15:31:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 54B61206C9
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 10:25:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 526CA20878
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 15:31:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ms1CpZOJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lt0vuLHs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgIYKZh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Sep 2020 06:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        id S1729159AbgIYPbe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 25 Sep 2020 11:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYKZg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:25:36 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24E6C0613CE;
-        Fri, 25 Sep 2020 03:25:35 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id m5so2210651lfp.7;
-        Fri, 25 Sep 2020 03:25:35 -0700 (PDT)
+        with ESMTP id S1728858AbgIYPbe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:31:34 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E86AC0613CE;
+        Fri, 25 Sep 2020 08:31:34 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n25so2820887ljj.4;
+        Fri, 25 Sep 2020 08:31:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=EDTrxzVhPvirc6DaIwHmGU5btp2o0zUWFlr+hQsger8=;
-        b=ms1CpZOJ8k6K5gNyl/8fgGKNeCIOwIQ6pwiWpuxuT4FKuzH19HH+sFPkj62fuhN6S8
-         1bYjfeiG+yABwHGPcSDZZcQTE/Hs/Ej+mdRY8mycu/fY5klH5FgWIjrbM80ENpCLbraC
-         Vedu0Mi8Mxy2Dx5boaxsWDr0xpC8f24hu06JcS510dXmjVtUf4QajWz5bJt9qCrXEv/Y
-         OnbNgPM5fTU/MMX8XsageCxcOINyk9fkC0cnqBEYKMvosHVqYpss0pIPOewyhP313C7g
-         E/FNsmffN6gHhumCx/fQtrHeNfxxvOldTJALDAeOKKUfMEkQFGGS2hSuXr4o1tquOx6m
-         We+w==
+        bh=5yEGyIWYj8YTbWfiEbLmAmKcjf/SQa3FFLnfwTbpM8c=;
+        b=lt0vuLHsBnFXgrwf2Z+Zv36j0XzzDg22ogJtFhIs/98t/uQR2pm2le5pIqlq2/3yq+
+         1UCBpSKp4tbk8XQ1ouhVC0LhFuYP+OQuB3xTg0Saj1gZG0/Ke0fhbWJjyy00U1M7ywQp
+         t+JsY65Shq0uyVwhUgtP2JlUb5xIWDl8ZPmEAesZ82nEyF8ex3SJn9iQDktkrJZJT9pr
+         B4uIVcNcHlzgCkSbhRKNS8TzQqwYnuk0j5p7X96Ef6R18kEGEISBTRX4RxcQUNBfXtXX
+         hxauL+8QMd987nN/OBOI5BoqAHdwVS59xWvKV1S0GtN801NFkYBbuKfdO/8faw5o8534
+         7q6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EDTrxzVhPvirc6DaIwHmGU5btp2o0zUWFlr+hQsger8=;
-        b=oNf4ZKDO3ppb9YceftjOU/JSyHW5iEVZ/+4ibfg0RYr8jEZRClftt2IMRBzqmfYkB/
-         hjBekd+XYtCEABDxeGzqoLq1YVVYtut5x7Tg+YoxuhZaIW+dOYT3FGYIaYb6HH6/bPI9
-         gMoJkgogJK1pb5ecN33cM5wMWetT9BCffUnjGTVTfHMsFVAO/GsLW5Efs9KfDVxTq7eX
-         XmSNpbyUMUxiAYCJAXfxOk7tk3m1QClP2/NhYN2DEQrFVdvQr2s5k72GPypae9LSivLe
-         DnOXiU85sed/jaJiKnH6VR8lol1LWXF1z1t5nELaEsSUSLVLNDK8dR3mwPiPrx1ci11T
-         KwyQ==
-X-Gm-Message-State: AOAM532bUM5wfKjyfRTxkM8jGrfS3BLgPlTX7pziVc0kNsN6M2ZyCMoC
-        YNXwhvpZFC2KCq29ceALJbUv3Lg9VXgP5Ayc
-X-Google-Smtp-Source: ABdhPJzc9jnAUHPreS882WLX0Hodi6O0tyUX+gJK+AO2qpK1Qn4CqGyCxv/4MCfXJNOEbGTn6T0crg==
-X-Received: by 2002:a19:8542:: with SMTP id h63mr1022902lfd.177.1601029534021;
-        Fri, 25 Sep 2020 03:25:34 -0700 (PDT)
+        bh=5yEGyIWYj8YTbWfiEbLmAmKcjf/SQa3FFLnfwTbpM8c=;
+        b=lIpxaFJTT4hvOLEjAQY1wG9Iu+T27MRFI/txNfIOv9nsZNJ3m/H5KYhDOpwFQ6R2z3
+         T1PTP2vItR0J7KkNorC8r14VdfN0DOhFf9ygHhpIxIWRhNFbIHCFG2zkLyjyKz+nz45Z
+         F1tk03ucfXSzZmusauUKxOxehbt4o6Xz0hKXzztUWYAeBo7v8KQeIqNswKVh8qIz7vBA
+         IqnDXbwVknCC+lq/5LOwz9I9MbjuKWsPH/EkurnkGsWMzt+MER79B5rlDgxCS6DQQGnV
+         zYVG9ULclCX+k/5NvmHHqo6tMVghwm/OLGbst0Mnpnmnl9IqNmTCxA/Nr8lTvXKQSR4l
+         1kRw==
+X-Gm-Message-State: AOAM531rFkPJ6nyzOz44vqq4H6N/INSxbX5zWY8W/SUoADRjWTASBMxG
+        vNWwdCk5eJTWq8vec0QCrFs=
+X-Google-Smtp-Source: ABdhPJxUXH6p6tWPW6iokwFFIR3aK2qzMG1DKJtrod/hrQUI71heXqeorSouC/tIqN+kBtGW5avHIQ==
+X-Received: by 2002:a2e:b4fc:: with SMTP id s28mr1497935ljm.305.1601047892588;
+        Fri, 25 Sep 2020 08:31:32 -0700 (PDT)
 Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id 73sm1909342lff.118.2020.09.25.03.25.32
+        by smtp.gmail.com with ESMTPSA id w26sm2635854ljm.30.2020.09.25.08.31.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 03:25:33 -0700 (PDT)
+        Fri, 25 Sep 2020 08:31:31 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 25 Sep 2020 12:25:31 +0200
-To:     Peter Zijlstra <peterz@infradead.org>
+Date:   Fri, 25 Sep 2020 17:31:29 +0200
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
@@ -75,61 +75,112 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
         Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200925102531.GA25350@pc636>
-References: <20200921194819.GA24236@pc636>
+Message-ID: <20200925153129.GB25350@pc636>
+References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
  <20200922075002.GU12990@dhcp22.suse.cz>
  <20200922131257.GA29241@pc636>
  <20200923103706.GJ3179@techsingularity.net>
  <20200923154105.GO29330@paulmck-ThinkPad-P72>
  <20200923232251.GK3179@techsingularity.net>
  <20200924081614.GA14819@pc636>
- <20200924111907.GE2628@hirez.programming.kicks-ass.net>
- <20200924152112.GB19013@pc636>
- <20200925081552.GS2628@hirez.programming.kicks-ass.net>
+ <20200925080503.GC3389@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925081552.GS2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200925080503.GC3389@dhcp22.suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:15:52AM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 24, 2020 at 05:21:12PM +0200, Uladzislau Rezki wrote:
-> > On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> > > > The key point is "enough". We need pages to make a) fast progress b) support
-> > > > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
-> > > > on scheduler latency and vague pre-allocated number of pages, it might
-> > > > be not enough what would require to refill it more and more or we can overshoot
-> > > > that would lead to memory overhead. So we have here timing issues and
-> > > > not accurate model. IMHO.
+> > > > 
+> > > > All good points!
+> > > > 
+> > > > On the other hand, duplicating a portion of the allocator functionality
+> > > > within RCU increases the amount of reserved memory, and needlessly most
+> > > > of the time.
+> > > > 
 > > > 
-> > > I'm firmly opposed to the single argument kvfree_rcu() idea, that's
-> > > requiring memory to free memory.
+> > > But it's very similar to what mempools are for.
 > > > 
-> > Hmm.. The problem is there is a demand in it:
+> > As for dynamic caching or mempools. It requires extra logic on top of RCU
+> > to move things forward and it might be not efficient way. As a side
+> > effect, maintaining of the bulk arrays in the separate worker thread
+> > will introduce other drawbacks:
 > 
-> People demand ponies all the time, the usual answer is: No.
+> This is true but it is also true that it is RCU to require this special
+> logic and we can expect that we might need to fine tune this logic
+> depending on the RCU usage. We definitely do not want to tune the
+> generic page allocator for a very specific usecase, do we?
+> 
+I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+to provide a memory service for contexts which are not allowed to
+sleep, RCU is part of them. Both flags used to provide such ability
+before but not anymore.
+
+Do you agree with it?
+
 >
-I see your view. From the other hand it is clear, there is still
-demand in it:
+> do we?
+>
+If you agree with above, then there is a reasonable question what to
+do. Converting zone->lock into raw variant, the simplest and generic
+solution, has been declined(RT people do not like and see a side effect),
+NO_LOCK flag together with lock-less function were declined. All those
+efforts in terms of suggestions were just to find the best way to go.
+That is why we highlighted it outside of RCU.
 
-<snip>
-void ext4_kvfree_array_rcu(void *to_free)
-{
- struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
+If you do not agree, then at least a documentation of mentioned flags
+should be changed, IMHO. We are, in our turn will focus on fixing it
+differently.
 
- if (ptr) {
-  ptr->ptr = to_free;
-  call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
-  return;
- }
- synchronize_rcu();
- kvfree(ptr);
-}
-<snip>
+> >  a) There is an extra latency window, a time during which a fallback
+> >     mechanism is used until pages are obtained via the special
+> >     worker for further pointers collecting over arrays.
+> 
+> This will be always the case for async refilling. More importantly this
+> will be a bigger problem at the page allocator level which has other
+> users other than RCU so more users are suffering...
+> 
+Agree on that, async refilling has its disadvantages.
+
+> >  b) It is impossible to predict how many pages will be required to
+> >     cover a demand that is controlled by different workloads on
+> >     various systems. It would require a rough value.
+> 
+> I have asked for some actual numbers for real life scenarios this work
+> is meant to cover. There was nothing presented so far. We can hand wave
+> for ever but this will not move us forward much. As I've said in other
+> email, few dozens pages per CPU by default will hardly get noticeable.
+> You have a trivial initial implementation and can build on top in
+> incremental steps. You can kick a background allocator to start new
+> allocations when the pool hits a watermark and aggressivelly remove
+> cached pages when they are not used. You will have quite a freedom to
+> fine tune the scheme which is much harder for the page allocator because
+> there are many other consumers.
+> 
+
+> Anyway, I am afraid that we are going in circles here. We do not have
+> any meaningful numbers to claim memory footprint problems. There is a
+> clear opposition to hook into page allocator for reasons already
+> mentioned. You are looking for a dedicated memory pool and it should be
+> quite trivial to develop one and fine tune it for your specific usecase.
+> All that on top of page allocator. Unless this is seen as completely
+> unfeasible based on some solid arguments then we can start talking about
+> the page allocator itself.
+>
+We have only synthetic tests. As for real life scenarios, on highly
+loaded servers we will have one picture, on small devices like phones
+we will have another one. As i mentioned in my previous emails, in worst
+case on my system it requires ~400 pages to cover the bandwidth.
+
+But, again we would like to find the best way to go. As i mentioned
+if Thomas patches are in place, we do not need to workaround everything
+regarding dynamic caching or async preloading and so on.
+
+Thank you Michal!
 
 --
 Vlad Rezki
