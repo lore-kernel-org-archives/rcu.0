@@ -6,41 +6,51 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C44C4363D
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 08:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E259C4363D
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 08:16:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9397323772
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 08:05:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C331D207C4
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 08:16:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LYeDZE5c"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="F/txyV+e"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbgIYIFH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Sep 2020 04:05:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39270 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbgIYIFG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:05:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601021104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wu5O5609MUWMDOLd2U3iMrF7lBjb3BlJQDZg1BdL0UY=;
-        b=LYeDZE5cGIta2/hiLdCStibnZd+FZQUXseJB+hRUGd31fVkwRpEeXrjKFANxHRzfncrzHQ
-        HdDX5nmRnjpmviKLu81o+AZ4fKwAohh9XMJ67Ixi4x6h3l+Mr7+DEGKTl5SbuaREFz/6nE
-        yZGBNHTAY6g6HpTGPparVQkev4YpO3Y=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5D917AA55;
-        Fri, 25 Sep 2020 08:05:04 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 10:05:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        id S1727608AbgIYIQH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 25 Sep 2020 04:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbgIYIQH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:16:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AC3C0613CE;
+        Fri, 25 Sep 2020 01:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZgLaEQC68e3osNgfcIO9sC8Nptsdd/ClKs7+Bia7+kw=; b=F/txyV+eBo5XBPj0NJcZTnQdIq
+        GNgRwctMGuVIVJZbmGpZgFenxsBE4CYdCw8MBhiea6kPhSZI7ydVJTY6/ldjFu3nBBEJm955Z7gRS
+        XIoiYCcIQmxcrlJ8FoFffN5rVX0Zxz/oLboLPtUxwRSZ0K7azhuqOsn3VuoTgSSfgdqNIOx7fL15+
+        7yBLhuSHc+BvUdtmnsdqnEH4bZWuFlU5+7E7WFDoZFs6fNDBRuYXl8XUsgpY1PqFKfYCsL8+RSvDQ
+        ZCE/n3+2YVeFS5LDyaqZ3ZpMak7NvGBz48LIS+nFrC4W0w8cNMzeAoTZP/5Z5cjXhFRuZhQOo56HB
+        kZevFGIQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLitV-0006lZ-Ij; Fri, 25 Sep 2020 08:15:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8280B302753;
+        Fri, 25 Sep 2020 10:15:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65EAF20BCC910; Fri, 25 Sep 2020 10:15:52 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 10:15:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Uladzislau Rezki <urezki@gmail.com>
 Cc:     Mel Gorman <mgorman@techsingularity.net>,
         "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
@@ -49,10 +59,8 @@ Cc:     Mel Gorman <mgorman@techsingularity.net>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
         Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200925080503.GC3389@dhcp22.suse.cz>
-References: <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
+Message-ID: <20200925081552.GS2628@hirez.programming.kicks-ass.net>
+References: <20200921160318.GO12990@dhcp22.suse.cz>
  <20200921194819.GA24236@pc636>
  <20200922075002.GU12990@dhcp22.suse.cz>
  <20200922131257.GA29241@pc636>
@@ -60,74 +68,29 @@ References: <20200921074716.GC12990@dhcp22.suse.cz>
  <20200923154105.GO29330@paulmck-ThinkPad-P72>
  <20200923232251.GK3179@techsingularity.net>
  <20200924081614.GA14819@pc636>
+ <20200924111907.GE2628@hirez.programming.kicks-ass.net>
+ <20200924152112.GB19013@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924081614.GA14819@pc636>
+In-Reply-To: <20200924152112.GB19013@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu 24-09-20 10:16:14, Uladzislau Rezki wrote:
-> > On Wed, Sep 23, 2020 at 08:41:05AM -0700, Paul E. McKenney wrote:
-> > > > Fundamentally, this is simply shifting the problem from RCU to the page
-> > > > allocator because of the locking arrangements and hazard of acquiring zone
-> > > > lock is a raw spinlock is held on RT. It does not even make the timing
-> > > > predictable as an empty PCU list (for example, a full drain in low memory
-> > > > situations) may mean the emergency path is hit anyway. About all it changes
-> > > > is the timing of when the emergency path is hit in some circumstances --
-> > > > it's not fixing the problem, it's simply changing the shape.
-> > > 
-> > > All good points!
-> > > 
-> > > On the other hand, duplicating a portion of the allocator functionality
-> > > within RCU increases the amount of reserved memory, and needlessly most
-> > > of the time.
-> > > 
+On Thu, Sep 24, 2020 at 05:21:12PM +0200, Uladzislau Rezki wrote:
+> On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> > > The key point is "enough". We need pages to make a) fast progress b) support
+> > > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> > > on scheduler latency and vague pre-allocated number of pages, it might
+> > > be not enough what would require to refill it more and more or we can overshoot
+> > > that would lead to memory overhead. So we have here timing issues and
+> > > not accurate model. IMHO.
 > > 
-> > But it's very similar to what mempools are for.
+> > I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+> > requiring memory to free memory.
 > > 
-> As for dynamic caching or mempools. It requires extra logic on top of RCU
-> to move things forward and it might be not efficient way. As a side
-> effect, maintaining of the bulk arrays in the separate worker thread
-> will introduce other drawbacks:
+> Hmm.. The problem is there is a demand in it:
 
-This is true but it is also true that it is RCU to require this special
-logic and we can expect that we might need to fine tune this logic
-depending on the RCU usage. We definitely do not want to tune the
-generic page allocator for a very specific usecase, do we?
-
->  a) There is an extra latency window, a time during which a fallback
->     mechanism is used until pages are obtained via the special
->     worker for further pointers collecting over arrays.
-
-This will be always the case for async refilling. More importantly this
-will be a bigger problem at the page allocator level which has other
-users other than RCU so more users are suffering...
-
->  b) It is impossible to predict how many pages will be required to
->     cover a demand that is controlled by different workloads on
->     various systems. It would require a rough value.
-
-I have asked for some actual numbers for real life scenarios this work
-is meant to cover. There was nothing presented so far. We can hand wave
-for ever but this will not move us forward much. As I've said in other
-email, few dozens pages per CPU by default will hardly get noticeable.
-You have a trivial initial implementation and can build on top in
-incremental steps. You can kick a background allocator to start new
-allocations when the pool hits a watermark and aggressivelly remove
-cached pages when they are not used. You will have quite a freedom to
-fine tune the scheme which is much harder for the page allocator because
-there are many other consumers.
-
-Anyway, I am afraid that we are going in circles here. We do not have
-any meaningful numbers to claim memory footprint problems. There is a
-clear opposition to hook into page allocator for reasons already
-mentioned. You are looking for a dedicated memory pool and it should be
-quite trivial to develop one and fine tune it for your specific usecase.
-All that on top of page allocator. Unless this is seen as completely
-unfeasible based on some solid arguments then we can start talking about
-the page allocator itself.
--- 
-Michal Hocko
-SUSE Labs
+People demand ponies all the time, the usual answer is: No.
