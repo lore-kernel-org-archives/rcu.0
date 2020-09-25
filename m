@@ -2,42 +2,32 @@ Return-Path: <SRS0=1ltc=DC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07A8BC4363D
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 15:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A843C4727D
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 16:17:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B869021D7A
-	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 15:47:44 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PJtdYSR5"
+	by mail.kernel.org (Postfix) with ESMTP id 4FB4122B2D
+	for <rcu@archiver.kernel.org>; Fri, 25 Sep 2020 16:17:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgIYPro (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 25 Sep 2020 11:47:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728333AbgIYPro (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:47:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601048862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v859nZdRdAvozMlID3w2V9JVl0a2kKP1Gfe6Ju4Q9a8=;
-        b=PJtdYSR5RZRSslz9jEpJc38LfXP/nFtPltVJseci6dvmqYxTfPJkFM6dUs6sSr0GBlmPl4
-        Y0dQ4GEdqYI8qHCcZZ5IOl+TT+vtoLyZVUIrdQB/Ksk621juKWed2hOcCzKDTWr3nwOaij
-        4N405sQxwGwW+/Zq3rcRV2NKxl81r9w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 059D4ACA3;
-        Fri, 25 Sep 2020 15:47:42 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 17:47:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        id S1729432AbgIYQRS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 25 Sep 2020 12:17:18 -0400
+Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:55051 "EHLO
+        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728489AbgIYQRS (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 25 Sep 2020 12:17:18 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id 53A14FAA14
+        for <rcu@vger.kernel.org>; Fri, 25 Sep 2020 17:17:15 +0100 (IST)
+Received: (qmail 28638 invoked from network); 25 Sep 2020 16:17:15 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Sep 2020 16:17:15 -0000
+Date:   Fri, 25 Sep 2020 17:17:12 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
+Cc:     Michal Hocko <mhocko@suse.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
@@ -50,7 +40,7 @@ Cc:     Mel Gorman <mgorman@techsingularity.net>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
         Mel Gorman <mgorman@suse.de>
 Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200925154741.GI3389@dhcp22.suse.cz>
+Message-ID: <20200925161712.GM3179@techsingularity.net>
 References: <20200921160318.GO12990@dhcp22.suse.cz>
  <20200921194819.GA24236@pc636>
  <20200922075002.GU12990@dhcp22.suse.cz>
@@ -62,14 +52,15 @@ References: <20200921160318.GO12990@dhcp22.suse.cz>
  <20200925080503.GC3389@dhcp22.suse.cz>
  <20200925153129.GB25350@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
 In-Reply-To: <20200925153129.GB25350@pc636>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
+On Fri, Sep 25, 2020 at 05:31:29PM +0200, Uladzislau Rezki wrote:
 > > > > > 
 > > > > > All good points!
 > > > > > 
@@ -96,35 +87,13 @@ On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
 > before but not anymore.
 > 
 > Do you agree with it?
+> 
 
-Yes this sucks. But this is something that we likely really want to live
-with. We have to explicitly _document_ that really atomic contexts in RT
-cannot use the allocator. From the past discussions we've had this is
-likely the most reasonable way forward because we do not really want to
-encourage anybody to do something like that and there should be ways
-around that. The same is btw. true also for !RT. The allocator is not
-NMI safe and while we should be able to make it compatible I am not
-convinced we really want to.
+I was led to believe that hte problem was taking the zone lock while
+holding a raw spinlock that was specific to RCU. Are you saying that
+GFP_ATOMIC/GFP_NOWAIT users are also holding raw spinlocks at the same
+time on RT?
 
-Would something like this be helpful wrt documentation?
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 67a0774e080b..9fcd47606493 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -238,7 +238,9 @@ struct vm_area_struct;
-  * %__GFP_FOO flags as necessary.
-  *
-  * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-- * watermark is applied to allow access to "atomic reserves"
-+ * watermark is applied to allow access to "atomic reserves".
-+ * The current implementation doesn't support NMI and other non-preemptive context
-+ * (e.g. raw_spin_lock).
-  *
-  * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
-  * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
-
-[...]
 -- 
-Michal Hocko
+Mel Gorman
 SUSE Labs
