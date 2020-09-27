@@ -2,77 +2,115 @@ Return-Path: <SRS0=B1Sb=DE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.4 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA4BC4346E
-	for <rcu@archiver.kernel.org>; Sun, 27 Sep 2020 13:07:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8EE0C4346E
+	for <rcu@archiver.kernel.org>; Sun, 27 Sep 2020 22:55:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 178E02389F
-	for <rcu@archiver.kernel.org>; Sun, 27 Sep 2020 13:07:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 90D32239E5
+	for <rcu@archiver.kernel.org>; Sun, 27 Sep 2020 22:55:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ivDpjZXA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgI0NH4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 27 Sep 2020 09:07:56 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:51241 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgI0NH4 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sun, 27 Sep 2020 09:07:56 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Sun, 27 Sep 2020 09:07:55 EDT
-X-IronPort-AV: E=Sophos;i="5.77,310,1596492000"; 
-   d="scan'208";a="469726069"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 15:00:29 +0200
-Date:   Sun, 27 Sep 2020 15:00:29 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        id S1726393AbgI0WzW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 27 Sep 2020 18:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgI0WzW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 27 Sep 2020 18:55:22 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DD2C0613CF
+        for <rcu@vger.kernel.org>; Sun, 27 Sep 2020 15:55:21 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id j10so4489704qvk.11
+        for <rcu@vger.kernel.org>; Sun, 27 Sep 2020 15:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dZEAWH40wyXTE3UOii3+/sRujYT6ubIb7i3XFgR2CP8=;
+        b=ivDpjZXAEdfBKlKqV57ib13VDAWPON6jERKmGEPClKawcTLknEtylg6HITs+h39ij/
+         yqDOmIw8HPGTPu4/H1bGe6lOGJBmWm/4v4IZ5/AeqoTWoMqi0wIRnnRA/8mxNjT3ZUXG
+         KXAq93lP0dNneFHZ4uWQcyMvfj2lx2Wa3OTWg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dZEAWH40wyXTE3UOii3+/sRujYT6ubIb7i3XFgR2CP8=;
+        b=Feupd1a2h5pT3RqxRDRmb189QopDWUZfkFxxWlcIIx8fyhOOCGORBLgreWVtdRrHkA
+         rzx1bKoVEGsBVONwbXA++HADO83wad3YxIweXA0w3dI0eYRcEW3AH8x/NI7nr9lI9rxe
+         lZr3H+xHQMsMDg5sdIjo/iI3tRJ+VE103A9VDgg/An4q+L+zY4OF3iGYQExbonokuKSY
+         U1n9Eh6td8+J9cGWXjrH4WBRhR2fBM3TfEZNTtmjKU1tIGXkbWXLcU0hW1q5fJbZkcYQ
+         UoOQoyHXJSyqFpY/0y/R3QB2keegQsnLtdKl0lZbPwr2RQoCd70S51HijgvpJgY/KfMN
+         JMrg==
+X-Gm-Message-State: AOAM532rnEAqrVqyJrk/pdv4RGQdkZEPrfS7OogQw+1dQXMQKZDUY32L
+        X+udFJuEyTLXwyPGrZBfYnftbA==
+X-Google-Smtp-Source: ABdhPJz+7N+M6CU2DY9sq6kbBGoQ9wSXoA5o77ldQ7Nq12zHxNr8KmPX3mvcjL33UbMtDa6Z84ktlA==
+X-Received: by 2002:a05:6214:929:: with SMTP id dk9mr9315766qvb.60.1601247320780;
+        Sun, 27 Sep 2020 15:55:20 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id l5sm8651388qtc.28.2020.09.27.15.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 15:55:20 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 18:55:19 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kvfree_rcu(): fix ifnullfree.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] kvfree_rcu(): fix ifnullfree.cocci warnings
+Message-ID: <20200927225519.GB2800828@google.com>
+References: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Sun, Sep 27, 2020 at 03:00:29PM +0200, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
+> 
+> NULL check before kfree is not needed.
+> 
+> Generated by: scripts/coccinelle/free/ifnullfree.cocci
+> 
+> Fixes: e9bed2a1239b ("kvfree_rcu(): Switch to kmalloc() and kfree() for allocations")
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urezki-pcount.2020.09.26a
+> head:   1a8eee1cc5b0e59c17f5d94c5871e6c70c4a43a1
+> commit: e9bed2a1239b017d78cec5de66adce0560f6d077 [17/18] kvfree_rcu(): Switch to kmalloc() and kfree() for allocations
+> :::::: branch date: 4 hours ago
+> :::::: commit date: 15 hours ago
+> 
+>  tree.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3165,8 +3165,7 @@ static void kfree_rcu_work(struct work_s
+>  				bkvhead[i] = NULL;
+>  			krc_this_cpu_unlock(krcp, flags);
+> 
+> -			if (bkvhead[i])
+> -				kfree(bkvhead[i]);
+> +			kfree(bkvhead[i]);
+> 
 
-NULL check before kfree is not needed.
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Generated by: scripts/coccinelle/free/ifnullfree.cocci
+thanks,
 
-Fixes: e9bed2a1239b ("kvfree_rcu(): Switch to kmalloc() and kfree() for allocations")
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+ - Joel
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urezki-pcount.2020.09.26a
-head:   1a8eee1cc5b0e59c17f5d94c5871e6c70c4a43a1
-commit: e9bed2a1239b017d78cec5de66adce0560f6d077 [17/18] kvfree_rcu(): Switch to kmalloc() and kfree() for allocations
-:::::: branch date: 4 hours ago
-:::::: commit date: 15 hours ago
-
- tree.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3165,8 +3165,7 @@ static void kfree_rcu_work(struct work_s
- 				bkvhead[i] = NULL;
- 			krc_this_cpu_unlock(krcp, flags);
-
--			if (bkvhead[i])
--				kfree(bkvhead[i]);
-+			kfree(bkvhead[i]);
-
- 			cond_resched_tasks_rcu_qs();
- 		}
+>  			cond_resched_tasks_rcu_qs();
+>  		}
