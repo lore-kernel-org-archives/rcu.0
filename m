@@ -2,45 +2,43 @@ Return-Path: <SRS0=f31y=DF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C730DC2D0A8
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51421C4727F
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 908342076A
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:30:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09C7D208FE
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601335847;
-	bh=el6hcOux7y4CUYemcLLD723adYsECOKD0NgIM5zgJ5M=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=HocBf6qHa/Eys5agjJtUpT35VLpmF8RGpSzdQdNbYd4iGP+SpM8GOeZAWaj0q6QR1
-	 M+ERUmcMTQBKYNrAf4XjUKsOMufBZ05aALYkUUHI/5UmCasBZv9nGPitIREqBsf85X
-	 OqgVFSYyvpAiycgX6C6F/8y675s3mKfo6m3ZONI8=
+	s=default; t=1601335865;
+	bh=OGJxMPHPLjuEnrMo2rPzwuZXv15O/IwiP4N5EDWk7d8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=zgQiZWKV/puCqst24L0cbzxN1n6ptw6Bt1htWkeTZGRBCLGGNvj4rW2ebBMmD7Tfc
+	 zA0Dl0lzeDNulNDjccJd5oe/2/UEZ/XxhZJyLEmnSCbGs+y1DhZj7HwzSJFQVZ2CEN
+	 L9BJp2kRi/0InzwdwrGrJynby6HvHzzmKMV6W4xc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgI1Xar (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Sep 2020 19:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53988 "EHLO mail.kernel.org"
+        id S1727010AbgI1XbE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Sep 2020 19:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgI1Xam (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:30:42 -0400
+        id S1726891AbgI1XbE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:31:04 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C744820719;
-        Mon, 28 Sep 2020 23:30:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53D782076A;
+        Mon, 28 Sep 2020 23:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601335841;
-        bh=el6hcOux7y4CUYemcLLD723adYsECOKD0NgIM5zgJ5M=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=uYH+CedD3YAIcZg9MIVq3P/Yf9JoY3cNARjw4yPUThjeZtPjycIG441sjydxbkm53
-         2dnxxSRWXiLl6Lkq8Jt/pEIpNul7zea0PAWXYl18BUcl6Om6YFnmmMI3J6dv/q8qg9
-         srvogTTQv7WfcczNEOctrYS3vcfMX4nerTMgmEn4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8BF4F35227DB; Mon, 28 Sep 2020 16:30:41 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 16:30:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1601335864;
+        bh=OGJxMPHPLjuEnrMo2rPzwuZXv15O/IwiP4N5EDWk7d8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=zL+EWn/zB78lXo7PCgBp7UC4Qek5YEX2MocgZnu0pXF52VLbYAw+XEcUCkcAiwOoq
+         PR5vDP2fETCN2Z0bWuMaIGLFZc9XYx0dFX7X8af4cQOlD1IEcjHEktCqrml3ZVKzA5
+         G+bcco2KVUi7UavdoECSGx1KVqx2Yljmy4wQYKX8=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
@@ -48,77 +46,57 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org
-Subject: [PATCH tip/core/rcu 0/15]
-Message-ID: <20200928233041.GA23230@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/15] lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
+Date:   Mon, 28 Sep 2020 16:30:48 -0700
+Message-Id: <20200928233102.24265-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This is a repost of Thomas Gleixner's "Make preempt count unconditional"
-series [1], but with the addition of a kvfree_rcu() bug-fix patch making
-use of this PREEMPT_COUNT addition.  This series is intended for the
-upcoming v5.10 merge window.
+ARCH_NO_PREEMPT disables the selection of CONFIG_PREEMPT_VOLUNTARY and
+CONFIG_PREEMPT, but architectures which set this config option still
+support preempt count for hard and softirq accounting.
 
-This addition fixes the -rt bug reported by Sebastian Andrzej Siewior
-[2].  Please note that with the advent of the new lockdep Kconfig
-option CONFIG_PROVE_RAW_LOCK_NESTING, this is now also a mainline bug.
-In happy contrast to the surprisingly large number of earlier versions
-of this fix, this version uses only pre-existing kernel interfaces,
-and furthermore uses them in conventional ways.
+There is absolutely no reason to prevent lockdep from using the preempt
+counter nor is there a reason to prevent the enablement of
+CONFIG_DEBUG_ATOMIC_SLEEP on such architectures.
 
-1-13.	Thomas's series [1].
+Remove the dependencies.
 
-14.	Use the newly accurate preemptible() macro to cause kvfree_rcu()
-	to do its allocations only when it is safe to do so, even in
-	CONFIG_PREEMPT_NONE=y kernels, courtesy of Uladzislau Rezki.
-	Again, this fixes the bug reported by Sebastian [2].
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ lib/Kconfig.debug | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-15.	Checkpatch fix removing NULL check guarding kfree(), courtesy
-	of kernel test robot and Julia Lawall.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index e068c3c..f50fbcf 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1161,7 +1161,7 @@ config PROVE_LOCKING
+ 	select DEBUG_RWSEMS
+ 	select DEBUG_WW_MUTEX_SLOWPATH
+ 	select DEBUG_LOCK_ALLOC
+-	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
++	select PREEMPT_COUNT
+ 	select TRACE_IRQFLAGS
+ 	default n
+ 	help
+@@ -1323,7 +1323,6 @@ config DEBUG_ATOMIC_SLEEP
+ 	bool "Sleep inside atomic section checking"
+ 	select PREEMPT_COUNT
+ 	depends on DEBUG_KERNEL
+-	depends on !ARCH_NO_PREEMPT
+ 	help
+ 	  If you say Y here, various routines which may sleep will become very
+ 	  noisy if they are called inside atomic sections: when a spinlock is
+-- 
+2.9.5
 
-In addition, this series reduces the size of the kernel by 100 lines
-of code, about two thirds of which is from Thomas's original series and
-the remaining one third from the bug fix.
-
-Changes from v1 [1]:
-
-o	Fix trivial !SMP build failure.
-o	Apply checkpatch spelling suggestions.
-
-							Thanx, Paul
-
-[1]	https://lore.kernel.org/linux-mm/20200914204209.256266093@linutronix.de/
-[2]	https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
-
-------------------------------------------------------------------------
-
- arch/arm/include/asm/assembler.h                                 |   11 -
- arch/arm/kernel/iwmmxt.S                                         |    2 
- arch/arm/mach-ep93xx/crunch-bits.S                               |    2 
- arch/xtensa/kernel/entry.S                                       |    2 
- drivers/gpu/drm/i915/Kconfig.debug                               |    1 
- drivers/gpu/drm/i915/i915_utils.h                                |    3 
- include/linux/bit_spinlock.h                                     |    4 
- include/linux/lockdep.h                                          |    6 
- include/linux/pagemap.h                                          |    4 
- include/linux/preempt.h                                          |   37 -----
- include/linux/uaccess.h                                          |    6 
- kernel/Kconfig.preempt                                           |    6 
- kernel/rcu/tree.c                                                |   73 ++--------
- kernel/sched/core.c                                              |    6 
- lib/Kconfig.debug                                                |    5 
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-t            |    1 
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-u            |    1 
- tools/testing/selftests/rcutorture/configs/rcu/TINY01            |    1 
- tools/testing/selftests/rcutorture/doc/TINY_RCU.txt              |    5 
- tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt      |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h |    1 
- 21 files changed, 39 insertions(+), 139 deletions(-)
