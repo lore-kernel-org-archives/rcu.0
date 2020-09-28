@@ -2,114 +2,110 @@ Return-Path: <SRS0=f31y=DF=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50313C2D0A8
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 12:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A66AC4741F
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 14:02:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3C4121974
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 12:46:41 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TEKdCS8D"
+	by mail.kernel.org (Postfix) with ESMTP id 4B21A21941
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 14:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601301750;
+	bh=Vobqy5ZNV0BItrof3qaTmqtMGSa+AIkCaHcPJTyJEZU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=AyxLdZ0AvIPyhYTUosweQ8MXkJiux01EJkxe0CarT91C/c5VmL2f7CRGh5S2yO8Xi
+	 xuYWgLD6oHKP7LiceGpCe7foBDCOBqWTCWQeZbwAo0EaPnPXYYaEkgM4Nci+5LrIl2
+	 oDrT2GwpqwFHLvgH68S3M/C/UdIEYJ0GN6qkiNUA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgI1Mqk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Sep 2020 08:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgI1Mqk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:46:40 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEAFC061755
-        for <rcu@vger.kernel.org>; Mon, 28 Sep 2020 05:46:40 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id c18so575216qtw.5
-        for <rcu@vger.kernel.org>; Mon, 28 Sep 2020 05:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbSiDedMj6Fi2FYAEkzpCM05qVLOKb0E2B69e7H8fn8=;
-        b=TEKdCS8Dxi3PrABwVjZpWaEAS70Pbf9sgKwKP0IbyLaSRsiBQ6U3DRPSQ9YYx8UrYI
-         3b4PiAXkBJDmaSXNL6H5E6k68j2iTaYCDj6E6a8oWULeBDCXdMcBjUkwDmZwLIolrbib
-         J/2bbA9sjUn8ymiri3oABrQ4Kin+zyioWXMm0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbSiDedMj6Fi2FYAEkzpCM05qVLOKb0E2B69e7H8fn8=;
-        b=tbcvuTHly209ayydraNnmy2ARvkCEPmXRMur9h9AsrVrRt4Qn5RHp3T/nks6HYB+FH
-         Hogqadz3bH30w7pX7qmtoKTQqJAJe5Pe48Y+2h88sXTFB/GGPqKmEJZX7yOZpoQbWPkA
-         lZu+eJwoidCKvNP/NvLJXS6ThK9PtKwTCogegtx7FhX3sga082nhzdZ+gvNCsoZnsS0N
-         VlE3UsVD4RfrWKA8axXhdygF1DiKEx0ZKA8TfHqoXRnzI2ZjmVQhI9OY+Evv/hOHDL6z
-         Ndxf3FDHjlIKOhWtBx/OUP1p/Z/dfscDc3QZdezQF0VGfZ4C5UKDAOw8NZT4j+zw59Cw
-         7AcA==
-X-Gm-Message-State: AOAM532XN7DY5sf+NnmCs1jNd81RhnGznxEQ0FFn+HpzL3pT0FiTyyKq
-        fUhf2Qq2VQ8uq6RBm4Clo5A+iw==
-X-Google-Smtp-Source: ABdhPJyV1m9Uu4p9yfBBOaGtJeqDobIT55/QnD00o4ONcmno3VrccZPI2W8JOdyLO0F0LiIyGpLLIw==
-X-Received: by 2002:ac8:18da:: with SMTP id o26mr568249qtk.92.1601297199518;
-        Mon, 28 Sep 2020 05:46:39 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id g5sm974902qtx.43.2020.09.28.05.46.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:46:38 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        neeraju@codeaurora.org, fweisbec@gmail.com,
+        id S1726500AbgI1OCa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Sep 2020 10:02:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgI1OC3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:02:29 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64DAA21548;
+        Mon, 28 Sep 2020 14:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601301749;
+        bh=Vobqy5ZNV0BItrof3qaTmqtMGSa+AIkCaHcPJTyJEZU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nyKO0gGTF1gQl/tmCdVhkfepP6Z8kCkb9CuDuRynWwrxhlj+0+s0JSJbiniZ5VPaK
+         oSwrhuTkr5TQLWXwTWXb7RFjiUTNKTMCzwLPFQFogPOWuTdWRG0o6ylAj1GfcqhwWY
+         x5FjpEbSZ7q2fagVjNoXRCXTZu9t8o/uTJ5tib00=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2C91D352077A; Mon, 28 Sep 2020 07:02:29 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 07:02:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, peterz@infradead.org
-Subject: [PATCH] rcu/tree: nocb: Avoid raising softirq when CBs ready to execute
-Date:   Mon, 28 Sep 2020 08:46:25 -0400
-Message-Id: <20200928124625.1677571-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] kvfree_rcu(): fix ifnullfree.cocci warnings
+Message-ID: <20200928140229.GO29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
+ <20200927225519.GB2800828@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927225519.GB2800828@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-During testing, I see it is possible that rcu_pending() returns 1 when
-offloaded callbacks are ready to execute thus raising the RCU softirq.
+On Sun, Sep 27, 2020 at 06:55:19PM -0400, Joel Fernandes wrote:
+> On Sun, Sep 27, 2020 at 03:00:29PM +0200, Julia Lawall wrote:
+> > From: kernel test robot <lkp@intel.com>
+> > 
+> > NULL check before kfree is not needed.
+> > 
+> > Generated by: scripts/coccinelle/free/ifnullfree.cocci
+> > 
+> > Fixes: e9bed2a1239b ("kvfree_rcu(): Switch to kmalloc() and kfree() for allocations")
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> > ---
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urezki-pcount.2020.09.26a
+> > head:   1a8eee1cc5b0e59c17f5d94c5871e6c70c4a43a1
+> > commit: e9bed2a1239b017d78cec5de66adce0560f6d077 [17/18] kvfree_rcu(): Switch to kmalloc() and kfree() for allocations
+> > :::::: branch date: 4 hours ago
+> > :::::: commit date: 15 hours ago
+> > 
+> >  tree.c |    3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3165,8 +3165,7 @@ static void kfree_rcu_work(struct work_s
+> >  				bkvhead[i] = NULL;
+> >  			krc_this_cpu_unlock(krcp, flags);
+> > 
+> > -			if (bkvhead[i])
+> > -				kfree(bkvhead[i]);
+> > +			kfree(bkvhead[i]);
+> > 
+> 
+> Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-However, softirq does not execute offloaded callbacks. They are executed in a
-kthread which is awakened independent of the softirq. The softirq ignores the
-request.
+Applied and pushed, thank you both!
 
-This commit therefore avoids raising the softirq in the first place.
-Considering that the purpose of callback offloading is to reduce softirq
-activity, avoiding the softirq in the first place is the right thing to do
-especially for systems that employ callback offloading to reduce real-time
-jitter.
+							Thanx, Paul
 
-Passed 30 minute tests of TREE01 through TREE09 each.
-
-Cc: neeraju@codeaurora.org
-Cc: fweisbec@gmail.com
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
----
- kernel/rcu/tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 55d3700dd1e7..caea5bfec2c0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3759,7 +3759,8 @@ static int rcu_pending(int user)
- 		return 1;
- 
- 	/* Does this CPU have callbacks ready to invoke? */
--	if (rcu_segcblist_ready_cbs(&rdp->cblist))
-+	if (!rcu_segcblist_is_offloaded(&rdp->cblist) &&
-+	    rcu_segcblist_ready_cbs(&rdp->cblist))
- 		return 1;
- 
- 	/* Has RCU gone idle with this CPU needing another grace period? */
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+> thanks,
+> 
+>  - Joel
+> 
+> >  			cond_resched_tasks_rcu_qs();
+> >  		}
