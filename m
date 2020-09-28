@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52359C4727C
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98433C4727F
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 19F6F21BE5
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 651102076A
+	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601335884;
-	bh=9WDYSIgcM70ZSt1ogPogXsa7pZ4ZwMTDe/YOAI/QvvA=;
+	s=default; t=1601335892;
+	bh=/M6aOJivvPIdAQhbwu27MlHHlosSgfXplSqgr0JOZCU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=FDxY6HtFxH1ZcyRgQK3PbadRd2RP3smxuB/JYYKBsURdiPMN9U3WmmR2sTenM4h1V
-	 h/ts5YeCWqKVxbAy8lRp2Fz1lcf9FrHDtjPRSBr1c1Hk+TbKmrqEprykcgFeqXMKZm
-	 /dZwph7ZFVKxBgj+qSPZMpAWXwgNfFTUHbR4AhXQ=
+	b=IOmE5fYru6WGWFxzyx+4mBZCHRvCBgBEyBrdqnfIWwlhqPCBHs/ReM84C7KvKHGfr
+	 YqYMPD5Fqsji0cTb27bIMl4Gr2HTRn34Tr8abRBp1t0zyLQWtHXXI7HO2VCIt5oT0x
+	 0NVfxaXTMrjWF6Qm4062J1i7kfwyQ0n7zK2fdnpE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgI1XbX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Sep 2020 19:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
+        id S1727303AbgI1XbY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Sep 2020 19:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbgI1XbH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727222AbgI1XbH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 28 Sep 2020 19:31:07 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6D6C23A60;
+        by mail.kernel.org (Postfix) with ESMTPSA id 41F7F221F0;
         Mon, 28 Sep 2020 23:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601335867;
-        bh=9WDYSIgcM70ZSt1ogPogXsa7pZ4ZwMTDe/YOAI/QvvA=;
+        s=default; t=1601335866;
+        bh=/M6aOJivvPIdAQhbwu27MlHHlosSgfXplSqgr0JOZCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TsLNPIIuOtrZsZn0wLFPkQ2L1yhMM5Kt5hm1+rmq5oV0nxYTdPcr42BXPSyiGeR77
-         Hqj1d9+Rh9gGp4uraNtqZc0W4mPdtoyNq8mkwbSyIT2O8E3XuBMomQdLyP9vLRdeLz
-         hTmeQzMa/qbtCYjMacstfNiQa6Eu1ueZr7PFjITM=
+        b=Bia3xpdNCo94eUc8NlGuMBeeV2GiqCLFKuiUuYKGa50jWn44ILMEILwtQvMu4FIdk
+         ex/W9oaFbAcDTc2H/edHbjh3/t+ybv8/OY58zcvClaI+ARyhfYVhdkXQozL6hOxImv
+         wQgaSMz1AUo1X/TR5uSUXKVRigX18feWbMQioz4c=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,11 +47,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
         mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH tip/core/rcu 12/15] rcutorture: Cleanup PREEMPT_COUNT leftovers
-Date:   Mon, 28 Sep 2020 16:30:59 -0700
-Message-Id: <20200928233102.24265-12-paulmck@kernel.org>
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/15] ARM: Cleanup PREEMPT_COUNT leftovers
+Date:   Mon, 28 Sep 2020 16:30:56 -0700
+Message-Id: <20200928233102.24265-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200928233041.GA23230@paulmck-ThinkPad-P72>
 References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
@@ -65,93 +66,72 @@ CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
 removed. Cleanup the leftovers before doing so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: rcu@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-t            | 1 -
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-u            | 1 -
- tools/testing/selftests/rcutorture/configs/rcu/TINY01            | 1 -
- tools/testing/selftests/rcutorture/doc/TINY_RCU.txt              | 5 ++---
- tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt      | 1 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h | 1 -
- 6 files changed, 2 insertions(+), 8 deletions(-)
+ arch/arm/include/asm/assembler.h   | 11 -----------
+ arch/arm/kernel/iwmmxt.S           |  2 --
+ arch/arm/mach-ep93xx/crunch-bits.S |  2 --
+ 3 files changed, 15 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-index 6c78022..553cf65 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-@@ -7,4 +7,3 @@ CONFIG_RCU_TRACE=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_DEBUG_ATOMIC_SLEEP=y
--#CHECK#CONFIG_PREEMPT_COUNT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-index c15ada8..99563da 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-@@ -7,4 +7,3 @@ CONFIG_RCU_TRACE=n
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_PROVE_LOCKING=y
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY01 b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-index 6db705e..9b22b8e 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-@@ -10,4 +10,3 @@ CONFIG_RCU_TRACE=n
- #CHECK#CONFIG_RCU_STALL_COMMON=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt b/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-index a75b169..d30cedf 100644
---- a/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-+++ b/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-@@ -3,11 +3,10 @@ This document gives a brief rationale for the TINY_RCU test cases.
+diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+index feac2c8..fce52eed 100644
+--- a/arch/arm/include/asm/assembler.h
++++ b/arch/arm/include/asm/assembler.h
+@@ -212,7 +212,6 @@
+ /*
+  * Increment/decrement the preempt count.
+  */
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	.macro	inc_preempt_count, ti, tmp
+ 	ldr	\tmp, [\ti, #TI_PREEMPT]	@ get preempt count
+ 	add	\tmp, \tmp, #1			@ increment it
+@@ -229,16 +228,6 @@
+ 	get_thread_info \ti
+ 	dec_preempt_count \ti, \tmp
+ 	.endm
+-#else
+-	.macro	inc_preempt_count, ti, tmp
+-	.endm
+-
+-	.macro	dec_preempt_count, ti, tmp
+-	.endm
+-
+-	.macro	dec_preempt_count_ti, ti, tmp
+-	.endm
+-#endif
  
- Kconfig Parameters:
+ #define USERL(l, x...)				\
+ 9999:	x;					\
+diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
+index 0dcae78..1f845be 100644
+--- a/arch/arm/kernel/iwmmxt.S
++++ b/arch/arm/kernel/iwmmxt.S
+@@ -94,9 +94,7 @@ ENTRY(iwmmxt_task_enable)
+ 	mov	r2, r2				@ cpwait
+ 	bl	concan_save
  
--CONFIG_DEBUG_LOCK_ALLOC -- Do all three and none of the three.
--CONFIG_PREEMPT_COUNT
-+CONFIG_DEBUG_LOCK_ALLOC -- Do both and none of the two.
- CONFIG_RCU_TRACE
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	get_thread_info r10
+-#endif
+ 4:	dec_preempt_count r10, r3
+ 	ret	r9				@ normal exit from exception
  
--The theory here is that randconfig testing will hit the other six possible
-+The theory here is that randconfig testing will hit the other two possible
- combinations of these parameters.
+diff --git a/arch/arm/mach-ep93xx/crunch-bits.S b/arch/arm/mach-ep93xx/crunch-bits.S
+index fb2dbf7..0aabcf4 100644
+--- a/arch/arm/mach-ep93xx/crunch-bits.S
++++ b/arch/arm/mach-ep93xx/crunch-bits.S
+@@ -191,9 +191,7 @@ crunch_load:
+ 	cfldr64		mvdx15, [r0, #CRUNCH_MVDX15]
  
+ 1:
+-#ifdef CONFIG_PREEMPT_COUNT
+ 	get_thread_info r10
+-#endif
+ 2:	dec_preempt_count r10, r3
+ 	ret	lr
  
-diff --git a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-index 1b96d68..cfdd48f 100644
---- a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-+++ b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-@@ -43,7 +43,6 @@ CONFIG_64BIT
- 
- 	Used only to check CONFIG_RCU_FANOUT value, inspection suffices.
- 
--CONFIG_PREEMPT_COUNT
- CONFIG_PREEMPT_RCU
- 
- 	Redundant with CONFIG_PREEMPT, ignore.
-diff --git a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-index 283d710..d0d485d 100644
---- a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-+++ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-@@ -8,7 +8,6 @@
- #undef CONFIG_HOTPLUG_CPU
- #undef CONFIG_MODULES
- #undef CONFIG_NO_HZ_FULL_SYSIDLE
--#undef CONFIG_PREEMPT_COUNT
- #undef CONFIG_PREEMPT_RCU
- #undef CONFIG_PROVE_RCU
- #undef CONFIG_RCU_NOCB_CPU
 -- 
 2.9.5
 
