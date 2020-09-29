@@ -2,205 +2,174 @@ Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D05CC4346E
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 09:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CEDC4346E
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 10:15:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8BD11206B5
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 09:00:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="HSfJ7A4F"
+	by mail.kernel.org (Postfix) with ESMTP id 0054A2075E
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 10:15:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgI2JAK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Sep 2020 05:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgI2JAJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Sep 2020 05:00:09 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112DFC0613D3
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 02:00:09 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so3960872wmi.0
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 02:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l8n+Qtmools068Op1SBkscZ3rmiXf/OnO40zpDWJvQs=;
-        b=HSfJ7A4FNQbt4jfghWagnZ0q3COkKg8qz4BPThTLTJ7eDRMt1DvHHeb7XKEZ522gOH
-         eWGtprOnXgZp5uEMLqACAESKMKR8I99jBaCAbi8CJzl/OnYlzX1P6crhIyasKLf4c1bf
-         2XybbZVEohhAC+dLedQmm8E/GOTp7GyR5iP8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=l8n+Qtmools068Op1SBkscZ3rmiXf/OnO40zpDWJvQs=;
-        b=KfezGhCXUSafrPsjigZk+8NkZlKh0m0c8HD0pTaBdtJfTnaXzDy1w9AckrMpU8OMJv
-         CjXxp7Vry0fTQcDp1kcmcD2Mkhh9s7NIUuFDtVZJzvc8n0gq/6fB5M62Q+/Tlv857vbr
-         Doil0hYD13+J3xtbCDtyoHEm2+77MRcrOtU6AgJM9UBrCiq7ExmBVM8Y8qeUPypvWaJR
-         P9YoDryXora8F1POdGoWgOq8Qm82FinNtqldziaQ5BNE1+qBtpUei+jtCtQ/EPDkzSQf
-         DEgn0AyEFzGqvRhJvbfUG8ItQfFcLxZ1jjBRSH/V6zN7QCgmX1ee+UozRHkyLIcLWo/m
-         pCgw==
-X-Gm-Message-State: AOAM532A72uiD+dNhdU1uB0eO2MJ8xWzYejJRdHhDI7yJAGldH8nNrhQ
-        8cEkoHitUDtxjWzwwIl3lemDiQ==
-X-Google-Smtp-Source: ABdhPJxYoSwWp1/Rwj6+DAZKjozJGei8dnC1WhCd/eu2wZIqXPLzEpFDxM+EMdAcXI41uJyANz2nYw==
-X-Received: by 2002:a1c:a5c8:: with SMTP id o191mr3465483wme.127.1601370007530;
-        Tue, 29 Sep 2020 02:00:07 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z191sm1552480wme.40.2020.09.29.02.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 02:00:06 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 11:00:03 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Brian Cain <bcain@codeaurora.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mel Gorman <mgorman@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        id S1727717AbgI2KPh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 06:15:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgI2KPh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 06:15:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B78E0AD12;
+        Tue, 29 Sep 2020 10:15:34 +0000 (UTC)
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-Message-ID: <20200929090003.GG438822@phenom.ffwll.local>
-Mail-Followup-To: Michal Hocko <mhocko@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Brian Cain <bcain@codeaurora.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>, David Airlie <airlied@linux.ie>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mel Gorman <mgorman@suse.de>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <871rj4owfn.fsf@nanos.tec.linutronix.de>
- <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de>
- <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
- <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
- <20200916152956.GV29330@paulmck-ThinkPad-P72>
- <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
- <20200916205840.GD29330@paulmck-ThinkPad-P72>
- <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
- <20200929081938.GC22035@dhcp22.suse.cz>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+Date:   Tue, 29 Sep 2020 12:15:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929081938.GC22035@dhcp22.suse.cz>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20200918194817.48921-3-urezki@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:19:38AM +0200, Michal Hocko wrote:
-> On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
-> > I can
-> > then figure out whether it's better to risk not spotting issues with
-> > call_rcu vs slapping a memalloc_noio_save/restore around all these
-> > critical section which force-degrades any allocation to GFP_ATOMIC at
+On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
+> Some background and kfree_rcu()
+> ===============================
+> The pointers to be freed are stored in the per-cpu array to improve
+> performance, to enable an easier-to-use API, to accommodate vmalloc
+> memmory and to support a single argument of the kfree_rcu() when only
+> a pointer is passed. More details are below.
 > 
-> did you mean memalloc_noreclaim_* here?
-
-Yeah I picked the wrong one of that family of functions.
-
-> > most, but has the risk that we run into code that assumes "GFP_KERNEL
-> > never fails for small stuff" and has a decidedly less tested fallback
-> > path than rcu code.
+> In order to maintain such per-CPU arrays there is a need in dynamic
+> allocation when a current array is fully populated and a new block is
+> required. See below the example:
 > 
-> Even if the above then please note that memalloc_noreclaim_* or
-> PF_MEMALLOC should be used with an extreme care. Essentially only for
-> internal memory reclaimers. It grants access to _all_ the available
-> memory so any abuse can be detrimental to the overall system operation.
-> Allocation failure in this mode means that we are out of memory and any
-> code relying on such an allocation has to carefuly consider failure.
-> This is not a random allocation mode.
+>  0 1 2 3      0 1 2 3
+> |p|p|p|p| -> |p|p|p|p| -> NULL
+> 
+> there are two pointer-blocks, each one can store 4 addresses
+> which will be freed after a grace period is passed. In reality
+> we store PAGE_SIZE / sizeof(void *). So to maintain such blocks
+> a single page is obtain via the page allocator:
+> 
+>     bnode = (struct kvfree_rcu_bulk_data *)
+>         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> 
+> after that it is attached to the "head" and its "next" pointer is
+> set to previous "head", so the list of blocks can be maintained and
+> grow dynamically until it gets drained by the reclaiming thread.
+> 
+> Please note. There is always a fallback if an allocation fails. In the
+> single argument, this is a call to synchronize_rcu() and for the two
+> arguments case this is to use rcu_head structure embedded in the object
+> being free, and then paying cache-miss penalty, also invoke the kfree()
+> per object instead of kfree_bulk() for groups of objects.
+> 
+> Why we maintain arrays/blocks instead of linking objects by the regular
+> "struct rcu_head" technique. See below a few but main reasons:
+> 
+> a) A memory can be reclaimed by invoking of the kfree_bulk()
+>    interface that requires passing an array and number of
+>    entries in it. That reduces the per-object overhead caused
+>    by calling kfree() per-object. This reduces the reclamation
+>    time.
+> 
+> b) Improves locality and reduces the number of cache-misses, due to
+>    "pointer chasing" between objects, which can be far spread between
+>    each other.
+> 
+> c) Support a "single argument" in the kvfree_rcu()
+>    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
+>    if (ptr)
+>         kvfree_rcu(ptr);
+> 
+>    We need it when an "rcu_head" is not embed into a stucture but an
+>    object must be freed after a grace period. Therefore for the single
+>    argument, such objects cannot be queued on a linked list.
+> 
+>    So nowadays, since we do not have a single argument but we see the
+>    demand in it, to workaround it people just do a simple not efficient
+>    sequence:
+>    <snip>
+>        synchronize_rcu(); /* Can be long and blocks a current context */
+>        kfree(p);
+>    <snip>
+> 
+>    More details is here: https://lkml.org/lkml/2020/4/28/1626
+> 
+> d) To distinguish vmalloc pointers between SLAB ones. It becomes possible
+>    to invoke the right freeing API for the right kind of pointer, kfree_bulk()
+>    or TBD: vmalloc_bulk().
+> 
+> e) Speeding up the post-grace-period freeing reduces the chance of a flood
+>    of callback's OOMing the system.
+> 
+> Also, please have a look here: https://lkml.org/lkml/2020/7/30/1166
+> 
+> Proposal
+> ========
+> Introduce a lock-free function that obtain a page from the per-cpu-lists
+> on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
+> 
+> Description
+> ===========
+> The page allocator has two phases, fast path and slow one. We are interested
+> in fast path and order-0 allocations. In its turn it is divided also into two
+> phases: lock-less and not:
+> 
+> 1) As a first step the page allocator tries to obtain a page from the
+>    per-cpu-list, so each CPU has its own one. That is why this step is
+>    lock-less and fast. Basically it disables irqs on current CPU in order
+>    to access to per-cpu data and remove a first element from the pcp-list.
+>    An element/page is returned to an user.
+> 
+> 2) If there is no any available page in per-cpu-list, the second step is
+>    involved. It removes a specified number of elements from the buddy allocator
+>    transferring them to the "supplied-list/per-cpu-list" described in [1].
+> 
+> Summarizing. The __rcu_alloc_page_lockless() covers only [1] and can not
+> do step [2], due to the fact that [2] requires an access to zone->lock.
+> It implies that it is super fast, but a higher rate of fails is also
+> expected.
+> 
+> Usage: __rcu_alloc_page_lockless();
+> 
+> Link: https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
+> Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Agreed, that's why I don't like having these kind of automagic critical
-sections. It's a bit a shotgun approach. Paul said that the code would
-handle failures, but the problem is that it applies everywhere.
+After reading all the threads and mulling over this, I am going to deflect from
+Mel and Michal and not oppose the idea of lockless allocation. I would even
+prefer to do it via the gfp flag and not a completely separate path. Not using
+the exact code from v1, I think it could be done in a way that we don't actually
+look at the new flag until we find that pcplist is empty - which should not
+introduce overhead to the fast-fast path when pcpclist is not empty. It's more
+maintainable that adding new entry points, IMHO.
 
-Anyway my understanding is that call_rcu will be reworked and gain a pile
-of tricks so that these problems for the callchains leading to call_rcu
-all disappear.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+But there's still the condition that it's sufficiently shown that the allocation
+is useful for RCU. In that case I prefer that the page allocator (or MM in
+general) can give its users what they need without having to work around it.
+Seems like GFP_ATOMIC is insufficient today so if that means we need a new flag
+for the raw spinlock context, so be it. But if your usage of __GFP_NO_LOCKS
+depends on the result of preempt_count() or similar check whether this is a
+context that needs it, I'd prefer to keep this in the caller.
