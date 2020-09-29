@@ -2,141 +2,213 @@ Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-20.9 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A713C4741F
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 16:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAA7C4727C
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:22:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27AF421734
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 16:25:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 29A2B20848
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:22:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItqoUv/Y"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gV8h20zf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgI2QZV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Sep 2020 12:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S1728166AbgI2TWP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 15:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728322AbgI2QZV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Sep 2020 12:25:21 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C3BC061755;
-        Tue, 29 Sep 2020 09:25:19 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y11so6247720lfl.5;
-        Tue, 29 Sep 2020 09:25:19 -0700 (PDT)
+        with ESMTP id S1725554AbgI2TWP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 15:22:15 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA05C061755
+        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:22:15 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id w3so3782639qtn.16
+        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:22:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3h7n0kDoWxJUkwhkiM6hwjpaSHbo+Kpn1WLzHzipkyI=;
-        b=ItqoUv/YfW+YGoIsABPqwUCJ3aW66rxag+E/tYt/pr3c9vgOZqoboOPd/5+G+Jta4u
-         VmOds2eutD86AJOuEwpqr14g03ny82jaLNumOm3y12CtvgwLXNhV37zkqa22rhb0QZz8
-         P58mF/7/sH35NzmpmvuCopz4osPHpHhsA9vTUQiEbr8bljBXd1wkEN5v4ZLd4L2E9etw
-         yl7C2uiqwLjlnYJK8BgFU96NiYrXR74S961ym6CsMYjjHSwIENjqoA+DFtW5aGp1b46U
-         F/CvJksW5nwaNXbW++dT4UPtQzVTtIfSlXUiwrZQd/wJfDYk+dKv0j93mDj+OsjuYmPx
-         yLNw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=yNFH4JjI7UevDixCXbCqUdSjjwvnuGqaLrQwf431SXk=;
+        b=gV8h20zfrVFxUtyCAJXxg+Ppzl8FcNaV2uNURvFS5pG0HppQzvxMtj+QK7sjzL9521
+         FeBeHi7ykCrVVASmJsFujd7yk/ZIPbTjiDhqdczx5uHaknsV7KoFh2W0AMAmiWzSwcmD
+         aGY1LDEKWpaU0yq0qjRBF7jfpjWD+EkdjdL1NTHBy9DEh2tjSC57v4smAPGjc0pptMJb
+         /5zZS+42KAwixkELBE3ca2mPCcoLO8sh+0LHX3OgVh+Ml863wEiphyIZ5ry/iMoGj0yg
+         aQ+5WeaVTDXI7POc7UyeXM06jPQiCWEe4cBwUwoOAhzO62ba/14FMoG0sslNQ95qi9VK
+         gIdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3h7n0kDoWxJUkwhkiM6hwjpaSHbo+Kpn1WLzHzipkyI=;
-        b=iGtQaSxXlW2Cmn5GtU+US9cW3yWS8+ZeI/2GpMWOfBpKWF+9m5wx5xAcmcBnOBMw5d
-         qeHTZa9gkxLpZth1yvpbKLEbkt4Rp5AhjA6gJoDkDRckKSuEdffm0xk1I7zXSsdoCC6o
-         xaVG+1/ErwJ4MmRu8egLxmzvTk1dYQfbpbNHagN3SAsTueCJC7Ch0QSmy3mqHhszvDlV
-         vntbdB8SzvsMZRoYFyiNeMf3/I/QjREa4XxFoL7cM0Zgo2ZlhpuzxTMS5kY77HKzPxCd
-         XSYVTQNZtq2uXJuDTa+Cyz79LxfDcrKNdMQ48uDVINhvAwkjRhXy0hChdNVjAIJfsKxu
-         9Tvw==
-X-Gm-Message-State: AOAM533BSj+iwnyYMv08ApiQr6Es+bUkBLu5uabG5RvmyJrpHRG/s1VH
-        eqnNYw/VdJqGhosl8FXJMFg=
-X-Google-Smtp-Source: ABdhPJypuHLpBjSrh4x5SAP5mpaT+K/3JmAlFT4O+cw8Pet4vn4FOFS90XV3mVEaMASa+nEvO2elOg==
-X-Received: by 2002:a19:a93:: with SMTP id 141mr1439631lfk.292.1601396717818;
-        Tue, 29 Sep 2020 09:25:17 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id q24sm3289429lfo.149.2020.09.29.09.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 09:25:16 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 29 Sep 2020 18:25:14 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200929162514.GA8768@pc636>
-References: <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
- <20200925154741.GI3389@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925154741.GI3389@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=yNFH4JjI7UevDixCXbCqUdSjjwvnuGqaLrQwf431SXk=;
+        b=tHaOLVAgq4CZ1dgwd08LqESE1MUmQJ2ShkFzfNA+Bdn15MGSGbUNi3hWty+rooBirt
+         jajwS5ojrhuwUWE2GMA1x1C/gb5oOZEaJYonw5JfxdHyY7CLqdte6rsiIKVRSUL5yK0E
+         a+OLW4Bs0F8K1U/UJne32kL0IxHHcQyVChiMfwzjTe8l8R5gZO2CsmG3RJ/Hgi3sVZj/
+         44FNG0K1jC8mZVB8iuAl729XFtD1TowcgUDQTeAAcioAdIQY8wHS6B2bC7vY7hQt4Asl
+         np3syt/3/vxsFFtnceio+yJIXzG71qMk+aAAHT8DPPwhuHjmZIDCaZNFa5elTgjW1kpE
+         A8nQ==
+X-Gm-Message-State: AOAM533UrQIwfG7Dzgva2sTP/1ahr/X/qVp0qshpAl2dy+8RBA1DF1DV
+        xmMXdjByMADU3kQJ0Ig3gAbbAhIzOBI6UA/sddU=
+X-Google-Smtp-Source: ABdhPJyXuz9rGQF2NtRDhd7Fu950gnARTyOCnNSw7dmJwka7fHauMlG+OiSOL3R6+Y7L1Dr/RCVTEqeneoA1G3izbeU=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:a085:: with SMTP id
+ c5mr6207453qva.30.1601407334597; Tue, 29 Sep 2020 12:22:14 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 12:22:04 -0700
+Message-Id: <20200929192204.499006-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+Subject: [PATCH] srcu: avoid escaped section names
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> > to provide a memory service for contexts which are not allowed to
-> > sleep, RCU is part of them. Both flags used to provide such ability
-> > before but not anymore.
-> > 
-> > Do you agree with it?
-> 
-> Yes this sucks. But this is something that we likely really want to live
-> with. We have to explicitly _document_ that really atomic contexts in RT
-> cannot use the allocator. From the past discussions we've had this is
-> likely the most reasonable way forward because we do not really want to
-> encourage anybody to do something like that and there should be ways
-> around that. The same is btw. true also for !RT. The allocator is not
-> NMI safe and while we should be able to make it compatible I am not
-> convinced we really want to.
-> 
-> Would something like this be helpful wrt documentation?
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 67a0774e080b..9fcd47606493 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -238,7 +238,9 @@ struct vm_area_struct;
->   * %__GFP_FOO flags as necessary.
->   *
->   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> - * watermark is applied to allow access to "atomic reserves"
-> + * watermark is applied to allow access to "atomic reserves".
-> + * The current implementation doesn't support NMI and other non-preemptive context
-> + * (e.g. raw_spin_lock).
->   *
->   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
->   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
-> 
-To me it is clear. But also above conflicting statement:
+The stringification operator, `#`, in the preprocessor escapes strings.
+For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+they treat section names that contain \".
 
-<snip>
-%GFP_ATOMIC users can not sleep and need the allocation to succeed. A %lower
-<snip>
+The portable solution is to not use a string literal with the
+preprocessor stringification operator.
 
-should be rephrased, IMHO.
+Link: https://bugs.llvm.org/show_bug.cgi?id=42950
+Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/arm/Kconfig         |  1 +
+ arch/arm/mm/Kconfig      | 11 +++++++++++
+ include/linux/srcutree.h |  2 +-
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
---
-Vlad Rezki
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index fe2f17eb2b50..51200e371faf 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -358,6 +358,7 @@ config ARCH_EBSA110
+ 
+ config ARCH_EP93XX
+ 	bool "EP93xx-based"
++	depends on !LD_IS_LLD
+ 	select ARCH_SPARSEMEM_ENABLE
+ 	select ARM_AMBA
+ 	imply ARM_PATCH_PHYS_VIRT
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 65e4482e3849..c06787c9bb48 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -9,6 +9,7 @@ comment "Processor Type"
+ config CPU_ARM7TDMI
+ 	bool
+ 	depends on !MMU
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_LV4T
+ 	select CPU_CACHE_V4
+@@ -23,6 +24,7 @@ config CPU_ARM7TDMI
+ # ARM720T
+ config CPU_ARM720T
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_LV4T
+ 	select CPU_CACHE_V4
+@@ -43,6 +45,7 @@ config CPU_ARM720T
+ config CPU_ARM740T
+ 	bool
+ 	depends on !MMU
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_LV4T
+ 	select CPU_CACHE_V4
+@@ -61,6 +64,7 @@ config CPU_ARM740T
+ config CPU_ARM9TDMI
+ 	bool
+ 	depends on !MMU
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_NOMMU
+ 	select CPU_CACHE_V4
+@@ -75,6 +79,7 @@ config CPU_ARM9TDMI
+ # ARM920T
+ config CPU_ARM920T
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_EV4T
+ 	select CPU_CACHE_V4WT
+@@ -94,6 +99,7 @@ config CPU_ARM920T
+ # ARM922T
+ config CPU_ARM922T
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_EV4T
+ 	select CPU_CACHE_V4WT
+@@ -114,6 +120,7 @@ config CPU_ARM922T
+ # ARM925T
+ config CPU_ARM925T
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_EV4T
+ 	select CPU_CACHE_V4WT
+@@ -153,6 +160,7 @@ config CPU_ARM926T
+ # FA526
+ config CPU_FA526
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4
+ 	select CPU_ABRT_EV4
+ 	select CPU_CACHE_FA
+@@ -172,6 +180,7 @@ config CPU_FA526
+ config CPU_ARM940T
+ 	bool
+ 	depends on !MMU
++	depends on !LD_IS_LLD
+ 	select CPU_32v4T
+ 	select CPU_ABRT_NOMMU
+ 	select CPU_CACHE_VIVT
+@@ -278,6 +287,7 @@ config CPU_ARM1026
+ # SA110
+ config CPU_SA110
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v3 if ARCH_RPC
+ 	select CPU_32v4 if !ARCH_RPC
+ 	select CPU_ABRT_EV4
+@@ -299,6 +309,7 @@ config CPU_SA110
+ # SA1100
+ config CPU_SA1100
+ 	bool
++	depends on !LD_IS_LLD
+ 	select CPU_32v4
+ 	select CPU_ABRT_EV4
+ 	select CPU_CACHE_V4WB
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 9cfcc8a756ae..9de652f4e1bd 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -124,7 +124,7 @@ struct srcu_struct {
+ # define __DEFINE_SRCU(name, is_static)					\
+ 	is_static struct srcu_struct name;				\
+ 	struct srcu_struct * const __srcu_struct_##name			\
+-		__section("___srcu_struct_ptrs") = &name
++		__section(___srcu_struct_ptrs) = &name
+ #else
+ # define __DEFINE_SRCU(name, is_static)					\
+ 	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
+-- 
+2.28.0.709.gb0816b6eb0-goog
+
