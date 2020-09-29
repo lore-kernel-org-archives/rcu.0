@@ -2,174 +2,152 @@ Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CEDC4346E
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 10:15:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D44C4727F
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 12:08:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0054A2075E
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 10:15:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91FFB206CD
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 12:08:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QSXmlLlH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgI2KPh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Sep 2020 06:15:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56814 "EHLO mx2.suse.de"
+        id S1730279AbgI2MIC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 08:08:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32784 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgI2KPh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Sep 2020 06:15:37 -0400
+        id S1731232AbgI2MH7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 08:07:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601381277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y+E7e9BmznoLWTangQs3/fCDuObjLg3n9HsSYF5tPCY=;
+        b=QSXmlLlHtFGfkDHnRvNJNA0fh8V8syNjnREqhSyW7+GYbGyFZm6fRhvPYhMfheHwqWxA6P
+        mejsVWf1rFvsfaUy414sZfMmuy7E33fv1PCFQ+MpEHP9sQy+D3DXGiHVCHH+ap5MJ2oa/b
+        xD8TCfYdiQ2Y+ma9MnoQ9+Dr8kcElfM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B78E0AD12;
-        Tue, 29 Sep 2020 10:15:34 +0000 (UTC)
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
-Date:   Tue, 29 Sep 2020 12:15:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mx2.suse.de (Postfix) with ESMTP id 84435ADC5;
+        Tue, 29 Sep 2020 12:07:57 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 14:07:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200929120756.GC2277@dhcp22.suse.cz>
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200918194817.48921-3-urezki@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928233102.24265-14-paulmck@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
-> Some background and kfree_rcu()
-> ===============================
-> The pointers to be freed are stored in the per-cpu array to improve
-> performance, to enable an easier-to-use API, to accommodate vmalloc
-> memmory and to support a single argument of the kfree_rcu() when only
-> a pointer is passed. More details are below.
-> 
-> In order to maintain such per-CPU arrays there is a need in dynamic
-> allocation when a current array is fully populated and a new block is
-> required. See below the example:
-> 
->  0 1 2 3      0 1 2 3
-> |p|p|p|p| -> |p|p|p|p| -> NULL
-> 
-> there are two pointer-blocks, each one can store 4 addresses
-> which will be freed after a grace period is passed. In reality
-> we store PAGE_SIZE / sizeof(void *). So to maintain such blocks
-> a single page is obtain via the page allocator:
-> 
->     bnode = (struct kvfree_rcu_bulk_data *)
->         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> 
-> after that it is attached to the "head" and its "next" pointer is
-> set to previous "head", so the list of blocks can be maintained and
-> grow dynamically until it gets drained by the reclaiming thread.
-> 
-> Please note. There is always a fallback if an allocation fails. In the
-> single argument, this is a call to synchronize_rcu() and for the two
-> arguments case this is to use rcu_head structure embedded in the object
-> being free, and then paying cache-miss penalty, also invoke the kfree()
-> per object instead of kfree_bulk() for groups of objects.
-> 
-> Why we maintain arrays/blocks instead of linking objects by the regular
-> "struct rcu_head" technique. See below a few but main reasons:
-> 
-> a) A memory can be reclaimed by invoking of the kfree_bulk()
->    interface that requires passing an array and number of
->    entries in it. That reduces the per-object overhead caused
->    by calling kfree() per-object. This reduces the reclamation
->    time.
-> 
-> b) Improves locality and reduces the number of cache-misses, due to
->    "pointer chasing" between objects, which can be far spread between
->    each other.
-> 
-> c) Support a "single argument" in the kvfree_rcu()
->    void *ptr = kvmalloc(some_bytes, GFP_KERNEL);
->    if (ptr)
->         kvfree_rcu(ptr);
-> 
->    We need it when an "rcu_head" is not embed into a stucture but an
->    object must be freed after a grace period. Therefore for the single
->    argument, such objects cannot be queued on a linked list.
-> 
->    So nowadays, since we do not have a single argument but we see the
->    demand in it, to workaround it people just do a simple not efficient
->    sequence:
->    <snip>
->        synchronize_rcu(); /* Can be long and blocks a current context */
->        kfree(p);
->    <snip>
-> 
->    More details is here: https://lkml.org/lkml/2020/4/28/1626
-> 
-> d) To distinguish vmalloc pointers between SLAB ones. It becomes possible
->    to invoke the right freeing API for the right kind of pointer, kfree_bulk()
->    or TBD: vmalloc_bulk().
-> 
-> e) Speeding up the post-grace-period freeing reduces the chance of a flood
->    of callback's OOMing the system.
-> 
-> Also, please have a look here: https://lkml.org/lkml/2020/7/30/1166
-> 
-> Proposal
-> ========
-> Introduce a lock-free function that obtain a page from the per-cpu-lists
-> on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
-> 
-> Description
-> ===========
-> The page allocator has two phases, fast path and slow one. We are interested
-> in fast path and order-0 allocations. In its turn it is divided also into two
-> phases: lock-less and not:
-> 
-> 1) As a first step the page allocator tries to obtain a page from the
->    per-cpu-list, so each CPU has its own one. That is why this step is
->    lock-less and fast. Basically it disables irqs on current CPU in order
->    to access to per-cpu data and remove a first element from the pcp-list.
->    An element/page is returned to an user.
-> 
-> 2) If there is no any available page in per-cpu-list, the second step is
->    involved. It removes a specified number of elements from the buddy allocator
->    transferring them to the "supplied-list/per-cpu-list" described in [1].
-> 
-> Summarizing. The __rcu_alloc_page_lockless() covers only [1] and can not
-> do step [2], due to the fact that [2] requires an access to zone->lock.
-> It implies that it is super fast, but a higher rate of fails is also
-> expected.
-> 
-> Usage: __rcu_alloc_page_lockless();
-> 
-> Link: https://lore.kernel.org/lkml/20200814215206.GL3982@worktop.programming.kicks-ass.net/
-> Not-signed-off-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
+[...]
+> This commit therefore uses preemptible() to determine whether allocation
+> is possible at all for double-argument kvfree_rcu().
 
-After reading all the threads and mulling over this, I am going to deflect from
-Mel and Michal and not oppose the idea of lockless allocation. I would even
-prefer to do it via the gfp flag and not a completely separate path. Not using
-the exact code from v1, I think it could be done in a way that we don't actually
-look at the new flag until we find that pcplist is empty - which should not
-introduce overhead to the fast-fast path when pcpclist is not empty. It's more
-maintainable that adding new entry points, IMHO.
+This deserves a comment. Because GFP_ATOMIC is possible for many
+!preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
+others that are a problem. You are taking a conservative approach which
+is fine but it would be good to articulate that explicitly.
 
-But there's still the condition that it's sufficiently shown that the allocation
-is useful for RCU. In that case I prefer that the page allocator (or MM in
-general) can give its users what they need without having to work around it.
-Seems like GFP_ATOMIC is insufficient today so if that means we need a new flag
-for the raw spinlock context, so be it. But if your usage of __GFP_NO_LOCKS
-depends on the result of preempt_count() or similar check whether this is a
-context that needs it, I'd prefer to keep this in the caller.
+> If !preemptible(),
+> then allocation is not possible, and kvfree_rcu() falls back to using
+> the less cache-friendly rcu_head approach.  Even when preemptible(),
+> the caller might be involved in reclaim, so the GFP_ flags used by
+> double-argument kvfree_rcu() must avoid invoking reclaim processing.
+
+Could you be more specific? Is this about being called directly in the
+reclaim context and you want to prevent a recursion? If that is the
+case, do you really need to special case this in any way? Any memory
+reclaim will set PF_MEMALLOC so allocations called from that context
+will not perform reclaim. So if you are called from the reclaim directly
+then you might want to do GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN.
+That should handle both from-the-recalim and outside of reclaim contexts
+just fine (assuming you don't allocated from !preemptible()) context.
+
+> Note that single-argument kvfree_rcu() must be invoked in sleepable
+> contexts, and that its fallback is the relatively high latency
+> synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
+> GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
+> memory allocator.
+[...]
+>  static inline bool
+> -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> +	unsigned long *flags, void *ptr, bool can_sleep)
+>  {
+>  	struct kvfree_rcu_bulk_data *bnode;
+> +	bool can_alloc_page = preemptible();
+> +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+
+This is quite confusing IMHO. At least without a further explanation.
+can_sleep is not as much about sleeping as it is about the reclaim
+recursion AFAIU your changelog, right?
+
+>  	int idx;
+>  
+> -	if (unlikely(!krcp->initialized))
+> +	*krcp = krc_this_cpu_lock(flags);
+> +	if (unlikely(!(*krcp)->initialized))
+>  		return false;
+>  
+> -	lockdep_assert_held(&krcp->lock);
+>  	idx = !!is_vmalloc_addr(ptr);
+>  
+>  	/* Check if a new block is required. */
+> -	if (!krcp->bkvhead[idx] ||
+> -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> -		bnode = get_cached_bnode(krcp);
+> -		if (!bnode) {
+> -			/*
+> -			 * To keep this path working on raw non-preemptible
+> -			 * sections, prevent the optional entry into the
+> -			 * allocator as it uses sleeping locks. In fact, even
+> -			 * if the caller of kfree_rcu() is preemptible, this
+> -			 * path still is not, as krcp->lock is a raw spinlock.
+> -			 * With additional page pre-allocation in the works,
+> -			 * hitting this return is going to be much less likely.
+> -			 */
+> -			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> -				return false;
+> -
+> -			/*
+> -			 * NOTE: For one argument of kvfree_rcu() we can
+> -			 * drop the lock and get the page in sleepable
+> -			 * context. That would allow to maintain an array
+> -			 * for the CONFIG_PREEMPT_RT as well if no cached
+> -			 * pages are available.
+> -			 */
+> -			bnode = (struct kvfree_rcu_bulk_data *)
+> -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> +	if (!(*krcp)->bkvhead[idx] ||
+> +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> +		bnode = get_cached_bnode(*krcp);
+> +		if (!bnode && can_alloc_page) {
+> +			krc_this_cpu_unlock(*krcp, *flags);
+> +			bnode = kmalloc(PAGE_SIZE, gfp);
+
+What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+using the page allocator directly be better?
+-- 
+Michal Hocko
+SUSE Labs
