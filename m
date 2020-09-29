@@ -2,113 +2,119 @@ Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.9 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A91DBC4727C
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F920C4727C
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:29:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43E0A207F7
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:25:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 16D682083B
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 19:29:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="siCtqrfj"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Ce8LTnc8"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgI2TZz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Sep 2020 15:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        id S1728568AbgI2T3p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 15:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI2TZy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Sep 2020 15:25:54 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D44C061755
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:25:54 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id p20so3171116qvl.4
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:25:54 -0700 (PDT)
+        with ESMTP id S1727740AbgI2T3p (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 15:29:45 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCCEC061755
+        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:29:45 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id r8so4559271qtp.13
+        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 12:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=rYftVaj976XAVBBPD1tw6YKpSPevzCd8/SePPlUAJ1M=;
-        b=siCtqrfjEEMVi2yF63FhGYeZSPJGGgIFsjp02OHmUhBAgvg7nXnxYs0u3Jij+pDOi/
-         aaUOWyxYPvHQwt3ucdhvmboX4cgQ7hu4gbFQ2HpdMx6Is0NFW5ycThzrgub3jJ0Ahb6B
-         0F48VrKa40b1yLeHahn+d8Ym3XS/8/dS4MskZFES19vpRlIa95obeoTN/m13RVVTJEDB
-         fSwqrbc+fQM7+IHe01GrNe09AdxszY23Vc04EF3+xerJYFdHY7rjIqf0qtN8/uoHuYXU
-         xkieDcS2BVxCMzqGonbSb9HE18kY2ttjOYwJx6WH3mIln/0djUiI+YLbBYRODu4QU+7B
-         Ze2g==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HQjBA9NgyL26LnUuoSDLOqhNdN/FWjyvKU8svYcqWsk=;
+        b=Ce8LTnc8e/zH9MehkioLTQWGUhuleeWSeiMQwntLEhQs92eE59HfRttFq9qE61S2Xw
+         0F5HbktYGoepjGQHGS7dw5Re7zLmU4a0zcP3keEqP51Q0tl44DJdrfoSR7VjDnu3kpk9
+         ZjEmjob35yN1LhZLsOSWox4kpZZGaUYjZZ95Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=rYftVaj976XAVBBPD1tw6YKpSPevzCd8/SePPlUAJ1M=;
-        b=nYIIZNO6C0F/fmP+zEe1NuA0VovcFAp5b35gUMKmPm05j9LRQdfJg8dZt5FTMTh2WD
-         D6//vzz1F09tdLVq9naFz9t8Ed1BycbPdKk/nLpfNzGRwsBLaqJcISvnsgSfLoU2PEk7
-         kVLleNZMZ0QnSS3P8XQIYTsoXD525LKwLTnsNEJQEtS71N+dHdC41TZPSevJBk1WtviG
-         tgF+xZ0Ytonbf4d7d03pb46bT3Qxu+aYCkW8yte3k+mVwFSiZo19q/SVCIaa//YElszC
-         fnwWW+aNRn4CAMNHRuQy6ut8Qip5P2TohutynBIcHFwMlIXg6z3QSE5IyakgAEL98z8+
-         uK5A==
-X-Gm-Message-State: AOAM532IFypj/JAqYCWuznooanWyRTehUS+HVARrJaXV5gTp7kjiGhaD
-        MD/Dts/Z2J0pr7TM3t3C998Ueq5OsND2TkB2D2M=
-X-Google-Smtp-Source: ABdhPJwco412wUhwx4p0sbTHmoj7w2c8QO+QNegOV++VsHPsuzZEEydgm6hxQuBFySTARFLRC7RbAziWW5Y0bUifTwA=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:ee6a:: with SMTP id
- n10mr5625188qvs.45.1601407553788; Tue, 29 Sep 2020 12:25:53 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 12:25:49 -0700
-In-Reply-To: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-Message-Id: <20200929192549.501516-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v2] srcu: avoid escaped section names
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HQjBA9NgyL26LnUuoSDLOqhNdN/FWjyvKU8svYcqWsk=;
+        b=ItPIpzF8cOvB1q0/am2HZXq3zvA8zyHfIAGlv9iTSQeMZUHhSuHdqt0gFcMXFCCKga
+         WejQVw3XfKX5sdLAsmXw/3pMHjNS/kDg4tYW4bcaAbTEWbO+uCo9jeFNfhhSha+celf3
+         U/ym6J1RM+Yp5CaHJYnepBlQgaeFYCVL+a/SbdlclEfisK8UvkSOaWMNofQFmdCBC4bs
+         O0LRp+KJ0qol90O2jgIlyXaho3YhsW90w54MbXNdCVPMzif59NCUeGkz+vBr0BimJOay
+         vAt+E7VxLKHvto9UzAha7tsm1ZCpLbXZAnJnv3OkhhmvxqBLRyevvy7R4LBJpgvmuz16
+         y0Bg==
+X-Gm-Message-State: AOAM533SAPxs2pFg2wqnsZCXd56BRokftHK1prQRTNXZ0s7FGAiG4EBq
+        MrIjy+gYFAXTFquLB/C9icfcuQ==
+X-Google-Smtp-Source: ABdhPJy25X9n2PF95bcmGXJqCqVjaGo9NuWiG7UnaK6M9X2h10n1bvAtigH8Vr5rL4Np5meBMDld5A==
+X-Received: by 2002:aed:2f61:: with SMTP id l88mr5024636qtd.262.1601407784422;
+        Tue, 29 Sep 2020 12:29:44 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id n7sm6892887qtf.27.2020.09.29.12.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 12:29:43 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 1/2] rcu/tree: Add a warning if CPU being onlined did not report QS already
+Date:   Tue, 29 Sep 2020 15:29:27 -0400
+Message-Id: <20200929192928.3749502-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The stringification operator, `#`, in the preprocessor escapes strings.
-For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-they treat section names that contain \".
+Currently, rcu_cpu_starting() checks to see if the RCU core expects a
+quiescent state from the incoming CPU.  However, the current interaction
+between RCU quiescent-state reporting and CPU-hotplug operations should
+mean that the incoming CPU never needs to report a quiescent state.
+First, the outgoing CPU reports a quiescent state if needed.  Second,
+the race where the CPU is leaving just as RCU is initializing a new
+grace period is handled by an explicit check for this condition.  Third,
+the CPU's leaf rcu_node structure's ->lock serializes these checks.
 
-The portable solution is to not use a string literal with the
-preprocessor stringification operator.
+This means that if rcu_cpu_starting() ever feels the need to report
+a quiescent state, then there is a bug somewhere in the CPU hotplug
+code or the RCU grace-period handling code.  This commit therefore
+adds a WARN_ON_ONCE() to bring that bug to everyone's attention.
 
-Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
-Changes V1->V2:
-* drop unrelated Kconfig changes accidentally committed in v1.
+ kernel/rcu/tree.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- include/linux/srcutree.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 9cfcc8a756ae..9de652f4e1bd 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -124,7 +124,7 @@ struct srcu_struct {
- # define __DEFINE_SRCU(name, is_static)					\
- 	is_static struct srcu_struct name;				\
- 	struct srcu_struct * const __srcu_struct_##name			\
--		__section("___srcu_struct_ptrs") = &name
-+		__section(___srcu_struct_ptrs) = &name
- #else
- # define __DEFINE_SRCU(name, is_static)					\
- 	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 55d3700dd1e7..5efe0a98ea45 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4119,7 +4119,9 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+ 	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+ 	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+-	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
++
++	/* An incoming CPU should never be blocking a grace period. */
++	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
+ 		rcu_disable_urgency_upon_qs(rdp);
+ 		/* Report QS -after- changing ->qsmaskinitnext! */
+ 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
