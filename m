@@ -1,91 +1,126 @@
-Return-Path: <SRS0=f31y=DF=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69C16C2D0A8
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7AF6C4741F
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 08:19:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 310FF2076A
-	for <rcu@archiver.kernel.org>; Mon, 28 Sep 2020 23:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601335915;
-	bh=eoYp+mSYmZ1ppUAhtwOie70jW0uzDbT+p6LOQaPzRRw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=lGu4uJWfYwrqTSev9hlceWUvMdGQeU6jFYVjdHkRw6lSwv4aUVwXu8AEhoaYIQXy8
-	 ly6+Wpf2qBz3m4pqq5XThPOe189EgtxuvqqnAbzDosGe1P2Yyrkhw2me6/89YeTzWU
-	 s9IBbJZvYbvIwuSyHV93Q0L9JNddS64oJvs9DLQc=
+	by mail.kernel.org (Postfix) with ESMTP id 51859206C1
+	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 08:19:46 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SSpMjosS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgI1Xbp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Sep 2020 19:31:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54392 "EHLO mail.kernel.org"
+        id S1727634AbgI2ITp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 04:19:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59520 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727215AbgI1XbG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:31:06 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97D6421D7F;
-        Mon, 28 Sep 2020 23:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601335865;
-        bh=eoYp+mSYmZ1ppUAhtwOie70jW0uzDbT+p6LOQaPzRRw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jq+onNwb1/7eY13b05zMUB/+/d6eOOk3FqvRGEDxdRYbP33SwyfBvkwc3UJ6VxL4i
-         Zkhbhb/Rnn9603dv5qQV0zTt7/9/KBPSTHtEpDUQkSYAf/7GL1oRez42BdgimuDoja
-         q4cG9WtSyiJjmTFmT0ZhDxepT/SZUhL9I7Kkm+Ho=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/15] locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
-Date:   Mon, 28 Sep 2020 16:30:53 -0700
-Message-Id: <20200928233102.24265-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200928233041.GA23230@paulmck-ThinkPad-P72>
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+        id S1725550AbgI2ITo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 04:19:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601367582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KFyfyEQCS1dcCR4BhfL+zwiQ3CuzyAy4x23tr+VkzjE=;
+        b=SSpMjosSL8o4OPVa55QL9wIlM8PHwJpdBy+0T8Zs2+GxBxG6YA9l00PJ9Y66qcHmMfGLv9
+        u+g+tcEvJ7RxAvAP57LRStfEelxtPsdHOGOgFzbQCNh9qQZDiKdnSarvXzcr1YnPqWmMjI
+        wdLRjalKNBbwgyGfH1Q3bT+vgMo4axA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E86BADD8;
+        Tue, 29 Sep 2020 08:19:42 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 10:19:38 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Brian Cain <bcain@codeaurora.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mel Gorman <mgorman@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200929081938.GC22035@dhcp22.suse.cz>
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72>
+ <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+ <20200916205840.GD29330@paulmck-ThinkPad-P72>
+ <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
+> I can
+> then figure out whether it's better to risk not spotting issues with
+> call_rcu vs slapping a memalloc_noio_save/restore around all these
+> critical section which force-degrades any allocation to GFP_ATOMIC at
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+did you mean memalloc_noreclaim_* here?
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/bit_spinlock.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> most, but has the risk that we run into code that assumes "GFP_KERNEL
+> never fails for small stuff" and has a decidedly less tested fallback
+> path than rcu code.
 
-diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
-index bbc4730..1e03d54 100644
---- a/include/linux/bit_spinlock.h
-+++ b/include/linux/bit_spinlock.h
-@@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
- {
- #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
- 	return test_bit(bitnum, addr);
--#elif defined CONFIG_PREEMPT_COUNT
--	return preempt_count();
- #else
--	return 1;
-+	return preempt_count();
- #endif
- }
- 
+Even if the above then please note that memalloc_noreclaim_* or
+PF_MEMALLOC should be used with an extreme care. Essentially only for
+internal memory reclaimers. It grants access to _all_ the available
+memory so any abuse can be detrimental to the overall system operation.
+Allocation failure in this mode means that we are out of memory and any
+code relying on such an allocation has to carefuly consider failure.
+This is not a random allocation mode.
+
 -- 
-2.9.5
-
+Michal Hocko
+SUSE Labs
