@@ -1,123 +1,405 @@
-Return-Path: <SRS0=CVHC=DG=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=j702=DH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 069F1C4727C
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 23:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF079C4727C
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 01:53:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9BFA8206DC
-	for <rcu@archiver.kernel.org>; Tue, 29 Sep 2020 23:46:02 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QXOBgazQ"
+	by mail.kernel.org (Postfix) with ESMTP id 596C320B1F
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 01:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601430810;
+	bh=lypUyOA1xr9VE/tv0ok7w874fVvfarUizY0sLsP6U/o=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=Y9ZI3p7ZRYl2JAdmTjNQekOAMiOCagVYrVuk7Ni4GLX5qvP0DjJfkx3PHG6JetKsC
+	 tK09coLqCF9ccSu9DBcl9GMs1jKW0iBEe2nHOmdLGRcmJHWUOiz0Wn7v1vCw4ubO8i
+	 0Nv2hiQ/n0n+rSyayT4K6RLvJhBxJjcZZISGopxI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgI2XqC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Sep 2020 19:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgI2XqB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Sep 2020 19:46:01 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39CBC061755
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 16:46:01 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d6so6403968pfn.9
-        for <rcu@vger.kernel.org>; Tue, 29 Sep 2020 16:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BE3IS0ree7QIjSeFdWMob24S2TufDcRFBlLIISZlO6M=;
-        b=QXOBgazQg6wlfqddFVNOmR1+eQ18ANNoedSzhVTOd76Xb9OOzbsuJfr5rFfxMrMfhu
-         YnIJwwUHOi0+iOL5DJILilajKT7+URNJ1ZG8ypreA9OSPm7I8EHA9g+QV2XFZMFeKA1M
-         +eKJ6pajmTC/5hm6LrFI6NNsy1BbxGftvEmb4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BE3IS0ree7QIjSeFdWMob24S2TufDcRFBlLIISZlO6M=;
-        b=f1oTTcgUg1KnrpPcRlQcRsCvzfeqLNyU57RHPKl/i0g81AtAKC9IXQzL9WlbUfqIwf
-         rAWWKYgzQb+FE52fGoLikaRkzx2W/xrEcvG4bucM37cUcVgt/w9pPpJMUPEUnNDSIu5L
-         jWx8YFjjUwk7O/N/hyKaJ9R0NBsyGHvQhmDEF41THj7LqNDzWEWGwilNrWfi2ainzApV
-         FybkE3iUur8YemFkVkDmrUfSvuyOelORG8moYhUrwNYlzznBf7W/qPFqKSW4HJ9hWHRi
-         ntF89HHVvWuaETHaGpNUDNY/Sdu14TQY7yyGQwZfQcbODccPmMrqEhIJz/WMN0WA3odJ
-         c6dg==
-X-Gm-Message-State: AOAM533jaLVsQftdapsq4Q/BfFMG9L517IFYcOKBBRG+b/fhMbM+mr3y
-        V9pKBf5MVMOTU0yYqgzo8iCvtQ==
-X-Google-Smtp-Source: ABdhPJxIkpLcpVnapCDkZNX9W2yXBh/3YDEom0sH8C5ml1NdWeGB1F+0AyKjMGoFTKhuU1viFEF2iA==
-X-Received: by 2002:a63:511d:: with SMTP id f29mr4006pgb.11.1601423161354;
-        Tue, 29 Sep 2020 16:46:01 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i15sm6744827pfk.145.2020.09.29.16.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 16:46:00 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 16:45:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-Message-ID: <202009291645.283040FE80@keescook>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com>
+        id S1729395AbgI3Bxa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Sep 2020 21:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729322AbgI3Bxa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:53:30 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65F9820754;
+        Wed, 30 Sep 2020 01:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601430807;
+        bh=lypUyOA1xr9VE/tv0ok7w874fVvfarUizY0sLsP6U/o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NIH0teORf68xKUmOTOdqkcDdId2HeHp+mmxqSSiRi2vyZg+UQvkOxXSN3dQ51R/m6
+         +NtduLYyM/5ku2zHo31hQ6ukmZkJR62THVF/qHadbVqGSAiw2xvwcUH5yq0cvYThTA
+         ssTRn8DtkS60qWKFmgMDR7j82iCoJGWewFHdPP20=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 187613523039; Tue, 29 Sep 2020 18:53:27 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 18:53:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200930015327.GX29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929192549.501516-1-ndesaulniers@google.com>
+In-Reply-To: <20200929120756.GC2277@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
-> 
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
-> 
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Tue, Sep 29, 2020 at 02:07:56PM +0200, Michal Hocko wrote:
+> On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
+> [...]
 
-Ah, ignore my earlier question about also fixing this instance. Here it
-is! ;)
+Apologies for the delay, but today has not been boring.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> ---
-> Changes V1->V2:
-> * drop unrelated Kconfig changes accidentally committed in v1.
+> > This commit therefore uses preemptible() to determine whether allocation
+> > is possible at all for double-argument kvfree_rcu().
 > 
->  include/linux/srcutree.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..9de652f4e1bd 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -124,7 +124,7 @@ struct srcu_struct {
->  # define __DEFINE_SRCU(name, is_static)					\
->  	is_static struct srcu_struct name;				\
->  	struct srcu_struct * const __srcu_struct_##name			\
-> -		__section("___srcu_struct_ptrs") = &name
-> +		__section(___srcu_struct_ptrs) = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)					\
->  	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+> This deserves a comment. Because GFP_ATOMIC is possible for many
+> !preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
+> others that are a problem. You are taking a conservative approach which
+> is fine but it would be good to articulate that explicitly.
 
--- 
-Kees Cook
+Good point, and so I have added the following as a header comment to
+the add_ptr_to_bulk_krc_lock() function:
+
+// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+// state specified by flags.  If can_sleep is true, the caller must
+// be schedulable and not be holding any locks or mutexes that might be
+// acquired by the memory allocator or anything that it might invoke.
+// If !can_sleep, then if !preemptible() no allocation will be undertaken,
+// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
+// the aforementioned deadlock possibilities.  Returns true iff ptr was
+// successfully recorded, else the caller must use a fallback.
+
+The updated patch is shown below.
+
+Of course, to Vlastimil's point, lockless access to the allocator
+would significantly reduce the level of confusion posed by this code.
+But that is a separate issue at the moment.
+
+> > If !preemptible(),
+> > then allocation is not possible, and kvfree_rcu() falls back to using
+> > the less cache-friendly rcu_head approach.  Even when preemptible(),
+> > the caller might be involved in reclaim, so the GFP_ flags used by
+> > double-argument kvfree_rcu() must avoid invoking reclaim processing.
+> 
+> Could you be more specific? Is this about being called directly in the
+> reclaim context and you want to prevent a recursion? If that is the
+> case, do you really need to special case this in any way? Any memory
+> reclaim will set PF_MEMALLOC so allocations called from that context
+> will not perform reclaim. So if you are called from the reclaim directly
+> then you might want to do GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN.
+> That should handle both from-the-recalim and outside of reclaim contexts
+> just fine (assuming you don't allocated from !preemptible()) context.
+
+My thought was to point you at Daniel Vetter, but you already got in
+touch with him, so thank you for that!
+
+> > Note that single-argument kvfree_rcu() must be invoked in sleepable
+> > contexts, and that its fallback is the relatively high latency
+> > synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
+> > GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
+> > memory allocator.
+> [...]
+> >  static inline bool
+> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > +	unsigned long *flags, void *ptr, bool can_sleep)
+> >  {
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> > +	bool can_alloc_page = preemptible();
+> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+> 
+> This is quite confusing IMHO. At least without a further explanation.
+> can_sleep is not as much about sleeping as it is about the reclaim
+> recursion AFAIU your changelog, right?
+
+No argument on it being confusing, and I hope that the added header
+comment helps.  But specifically, can_sleep==true is a promise by the
+caller to be schedulable and not to be holding any lock/mutex/whatever
+that might possibly be acquired by the memory allocator or by anything
+else that the memory allocator might invoke, to your point, including
+for but one example the reclaim logic.
+
+The only way that can_sleep==true is if this function was invoked due
+to a call to single-argument kvfree_rcu(), which must be schedulable
+because its fallback is to invoke synchronize_rcu().
+
+> >  	int idx;
+> >  
+> > -	if (unlikely(!krcp->initialized))
+> > +	*krcp = krc_this_cpu_lock(flags);
+> > +	if (unlikely(!(*krcp)->initialized))
+> >  		return false;
+> >  
+> > -	lockdep_assert_held(&krcp->lock);
+> >  	idx = !!is_vmalloc_addr(ptr);
+> >  
+> >  	/* Check if a new block is required. */
+> > -	if (!krcp->bkvhead[idx] ||
+> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > -		bnode = get_cached_bnode(krcp);
+> > -		if (!bnode) {
+> > -			/*
+> > -			 * To keep this path working on raw non-preemptible
+> > -			 * sections, prevent the optional entry into the
+> > -			 * allocator as it uses sleeping locks. In fact, even
+> > -			 * if the caller of kfree_rcu() is preemptible, this
+> > -			 * path still is not, as krcp->lock is a raw spinlock.
+> > -			 * With additional page pre-allocation in the works,
+> > -			 * hitting this return is going to be much less likely.
+> > -			 */
+> > -			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> > -				return false;
+> > -
+> > -			/*
+> > -			 * NOTE: For one argument of kvfree_rcu() we can
+> > -			 * drop the lock and get the page in sleepable
+> > -			 * context. That would allow to maintain an array
+> > -			 * for the CONFIG_PREEMPT_RT as well if no cached
+> > -			 * pages are available.
+> > -			 */
+> > -			bnode = (struct kvfree_rcu_bulk_data *)
+> > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> > +	if (!(*krcp)->bkvhead[idx] ||
+> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > +		bnode = get_cached_bnode(*krcp);
+> > +		if (!bnode && can_alloc_page) {
+> > +			krc_this_cpu_unlock(*krcp, *flags);
+> > +			bnode = kmalloc(PAGE_SIZE, gfp);
+> 
+> What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+> using the page allocator directly be better?
+
+Well, you guys gave me considerable heat about abusing internal allocator
+interfaces, and kmalloc() and kfree() seem to be about as non-internal
+as you can get and still be invoking the allocator.  ;-)
+
+Again, please see below for the updated patch.  The only change from
+the earlier verison is the addition of the header comment mentioned above.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 3a8e10ea2a2ecf59a33d7d80ad6c4372c0c27f78
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Tue Sep 22 21:06:22 2020 +0200
+
+    rcu/tree: Allocate a page when caller is preemptible
+    
+    The current memory-allocation interface poses the following challenges:
+    
+    a)      In kernels built with CONFIG_PROVE_RAW_LOCK_NESTING, lockdep
+            complains ("BUG: Invalid wait context").  This complaint is due
+            to the memory allocator acquiring non-raw spinlocks while a raw
+            spinlocks is held.  This problem can also arise if kvfree_rcu()
+            is invoked while holding a raw spinlock.
+    
+    b)      In -rt kernels built with CONFIG_PREEMPT_RT, the situation
+            described in (a) above results in an attempt to acquire a
+            sleeplock while holding a spinlock, which is of course forbidden.
+            This can lead to "BUG: scheduling while atomic".
+    
+    c)      Please note that call_rcu() is invoked from raw atomic context,
+            so that kfree_rcu() and kvfree_rcu() are therefore also expected
+            to be callable from atomic raw context as well.
+    
+    However given that CONFIG_PREEMPT_COUNT is unconditionally enabled
+    by the earlier commits in this series, the preemptible() macro now
+    properly detects preempt-disable code regions even in kernels built
+    with CONFIG_PREEMPT_NONE.
+    
+    This commit therefore uses preemptible() to determine whether allocation
+    is possible at all for double-argument kvfree_rcu().  If !preemptible(),
+    then allocation is not possible, and kvfree_rcu() falls back to using
+    the less cache-friendly rcu_head approach.  Even when preemptible(),
+    the caller might be involved in reclaim, so the GFP_ flags used by
+    double-argument kvfree_rcu() must avoid invoking reclaim processing.
+    
+    Note that single-argument kvfree_rcu() must be invoked in sleepable
+    contexts, and that its fallback is the relatively high latency
+    synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
+    GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
+    memory allocator.
+    
+    Link: https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
+    Fixes: 3042f83f19be ("rcu: Support reclaim for head-less object")
+    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8ce77d9..39ac930 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3166,7 +3166,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 			krc_this_cpu_unlock(krcp, flags);
+ 
+ 			if (bkvhead[i])
+-				free_page((unsigned long) bkvhead[i]);
++				kfree(bkvhead[i]);
+ 
+ 			cond_resched_tasks_rcu_qs();
+ 		}
+@@ -3290,44 +3290,37 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
+ 
++// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
++// state specified by flags.  If can_sleep is true, the caller must
++// be schedulable and not be holding any locks or mutexes that might be
++// acquired by the memory allocator or anything that it might invoke.
++// If !can_sleep, then if !preemptible() no allocation will be undertaken,
++// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
++// the aforementioned deadlock possibilities.  Returns true iff ptr was
++// successfully recorded, else the caller must use a fallback.
+ static inline bool
+-kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
++add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
++	unsigned long *flags, void *ptr, bool can_sleep)
+ {
+ 	struct kvfree_rcu_bulk_data *bnode;
++	bool can_alloc_page = preemptible();
++	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+ 	int idx;
+ 
+-	if (unlikely(!krcp->initialized))
++	*krcp = krc_this_cpu_lock(flags);
++	if (unlikely(!(*krcp)->initialized))
+ 		return false;
+ 
+-	lockdep_assert_held(&krcp->lock);
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+-	if (!krcp->bkvhead[idx] ||
+-			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+-		bnode = get_cached_bnode(krcp);
+-		if (!bnode) {
+-			/*
+-			 * To keep this path working on raw non-preemptible
+-			 * sections, prevent the optional entry into the
+-			 * allocator as it uses sleeping locks. In fact, even
+-			 * if the caller of kfree_rcu() is preemptible, this
+-			 * path still is not, as krcp->lock is a raw spinlock.
+-			 * With additional page pre-allocation in the works,
+-			 * hitting this return is going to be much less likely.
+-			 */
+-			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+-				return false;
+-
+-			/*
+-			 * NOTE: For one argument of kvfree_rcu() we can
+-			 * drop the lock and get the page in sleepable
+-			 * context. That would allow to maintain an array
+-			 * for the CONFIG_PREEMPT_RT as well if no cached
+-			 * pages are available.
+-			 */
+-			bnode = (struct kvfree_rcu_bulk_data *)
+-				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
++	if (!(*krcp)->bkvhead[idx] ||
++			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
++		bnode = get_cached_bnode(*krcp);
++		if (!bnode && can_alloc_page) {
++			krc_this_cpu_unlock(*krcp, *flags);
++			bnode = kmalloc(PAGE_SIZE, gfp);
++			*krcp = krc_this_cpu_lock(flags);
+ 		}
+ 
+ 		/* Switch to emergency path. */
+@@ -3336,15 +3329,15 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+-		bnode->next = krcp->bkvhead[idx];
++		bnode->next = (*krcp)->bkvhead[idx];
+ 
+ 		/* Attach it to the head. */
+-		krcp->bkvhead[idx] = bnode;
++		(*krcp)->bkvhead[idx] = bnode;
+ 	}
+ 
+ 	/* Finally insert. */
+-	krcp->bkvhead[idx]->records
+-		[krcp->bkvhead[idx]->nr_records++] = ptr;
++	(*krcp)->bkvhead[idx]->records
++		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
+ 
+ 	return true;
+ }
+@@ -3382,24 +3375,20 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		ptr = (unsigned long *) func;
+ 	}
+ 
+-	krcp = krc_this_cpu_lock(&flags);
+-
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
+ 
+-		// Mark as success and leave.
+-		success = true;
+-		goto unlock_return;
++		return;
+ 	}
+ 
+ 	/*
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+ 	if (!success) {
+ 		if (head == NULL)
+ 			// Inline if kvfree_rcu(one_arg) call.
+@@ -4394,23 +4383,12 @@ static void __init kfree_rcu_batch_init(void)
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-		struct kvfree_rcu_bulk_data *bnode;
+ 
+ 		for (i = 0; i < KFREE_N_BATCHES; i++) {
+ 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
+ 		}
+ 
+-		for (i = 0; i < rcu_min_cached_objs; i++) {
+-			bnode = (struct kvfree_rcu_bulk_data *)
+-				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+-
+-			if (bnode)
+-				put_cached_bnode(krcp, bnode);
+-			else
+-				pr_err("Failed to preallocate for %d CPU!\n", cpu);
+-		}
+-
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+ 		krcp->initialized = true;
+ 	}
