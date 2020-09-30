@@ -2,215 +2,208 @@ Return-Path: <SRS0=j702=DH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA27BC4363D
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 22:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1C9AC4741F
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 23:22:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 737DB2072E
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 22:56:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AE520206F4
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 23:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601508147;
+	bh=duBLPQvxBptb43fIQLQ12wY3eNwbo2Do/jJyhHozeUM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=OWxdai7GQnOJjLut/oykrwU9P4mjPKJJtdbjYJo//rVF7w/uK9a0NNFXq2X+TzUcg
+	 xtYW4QDh6oO2hgnmUsRinIkVSC7n0HqILNjjzZFdMRJ+yTV6gy5zFogbXx+UMVrQZP
+	 REDsTq7UnKGoSMa7Pn7dPsbZI/TQu5IgL9xSTpdk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731926AbgI3W4K (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Sep 2020 18:56:10 -0400
-Received: from smtprelay0222.hostedemail.com ([216.40.44.222]:43440 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731870AbgI3W4K (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Wed, 30 Sep 2020 18:56:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 45BDB181D330D;
-        Wed, 30 Sep 2020 22:56:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: home48_220463127196
-X-Filterd-Recvd-Size: 8288
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Sep 2020 22:56:06 +0000 (UTC)
-Message-ID: <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Date:   Wed, 30 Sep 2020 15:56:05 -0700
-In-Reply-To: <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
-         <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
-         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1731489AbgI3XWU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Sep 2020 19:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731255AbgI3XVz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:21:55 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C79D5206F4;
+        Wed, 30 Sep 2020 23:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601508114;
+        bh=duBLPQvxBptb43fIQLQ12wY3eNwbo2Do/jJyhHozeUM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KoOkjI1GF/pOSo0R++TWIyd9yKaT3KkwoC3FKeRKFADO1qTWyeZxlAPzBWcxnJ1Fq
+         TylWRvJ1endoyEhUtLnOVxCkdPPPcGHp52T+pjJSOBL87CJm1KP/RsDP0ENIP9zF26
+         YKaC/LnmyIFezzIDk55upoudXt72JYe45cZR1Te4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8F2C7352303F; Wed, 30 Sep 2020 16:21:54 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 16:21:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200930232154.GA29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
+ <20200930015327.GX29330@paulmck-ThinkPad-P72>
+ <20200930084139.GN2277@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930084139.GN2277@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 2020-09-30 at 15:25 -0700, Joe Perches wrote:
-> On Wed, 2020-09-30 at 15:20 -0700, Nick Desaulniers wrote:
-> > On Wed, Sep 30, 2020 at 3:06 PM Joe Perches <joe@perches.com> wrote:
-> > > On Wed, 2020-09-30 at 14:40 -0700, Nick Desaulniers wrote:
-> > > > On Wed, Sep 30, 2020 at 12:16 PM Joe Perches <joe@perches.com> wrote:
-> > > > > Use a more generic form for __section that requires quotes to avoid
-> > > > > complications with clang and gcc differences.
-> > > > > 
-> > > > > Remove the quote operator # from compiler_attributes.h __section macro.
-> > > > > 
-> > > > > Convert all unquoted __section(foo) uses to quoted __section("foo").
-> > > > > Also convert __attribute__((section("foo"))) uses to __section("foo")
-> > > > > even if the __attribute__ has multiple list entry forms.
-> > > > > 
-> > > > > Signed-off-by: Joe Perches <joe@perches.com>
-> > > > > ---
-> > > > > 
-> > > > > This is the current output from the script against next-20200930
-> > > > > attached in this link:
-> > > > > 
-> > > > > https://lore.kernel.org/lkml/0e582a7f5144a33f465978d97701f9b3dcc377f3.camel@perches.com/
-> > > > > 
-> > > > > It might be useful to run the script immediately before
-> > > > > the next -rc1.
-> > > > 
-> > > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
-> > > > powernv_defconfig
-> > > > $ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
-> > > > ...
-> > > > arch/powerpc/boot/main.c:193:44: error: expected ';' after top level declarator
-> > > > static char cmdline[BOOT_COMMAND_LINE_SIZE]
-> > > 
-> > > The script does not convert files in
-> > > 
-> > >         scripts/
-> > >         tools/
-> > >         uapi/
-> > >         and include/linux/compiler_attributes.h
-> > > 
-> > > It otherwise assumes that any __attribute__((__section__
-> > > use should be converted to __section.
-> > > 
-> > > If this ppc file is the only file outside of the
-> > > listed exclusions, I can either exclude it directly
-> > > or add compiler.h to it.
-> > > 
-> > > You have a preference?
+On Wed, Sep 30, 2020 at 10:41:39AM +0200, Michal Hocko wrote:
+> On Tue 29-09-20 18:53:27, Paul E. McKenney wrote:
+> > On Tue, Sep 29, 2020 at 02:07:56PM +0200, Michal Hocko wrote:
+> > > On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
+> > > [...]
 > > 
-> > If compiler_types.h which includes compiler_attributes.h is being
-> > implicitly including by Kbuild add `-include` flags to most
-> > translation units in the kernel, it would be nice to be able to use it
-> > everywhere.  I consider open coded __attribute__'s a portability bug.
-> > So including the header in arch/powerpc/boot/*.c would be my
-> > preference.
+> > Apologies for the delay, but today has not been boring.
 > > 
-> > > Perhaps these are also possible files that need exclusions:
+> > > > This commit therefore uses preemptible() to determine whether allocation
+> > > > is possible at all for double-argument kvfree_rcu().
 > > > 
-> > > ./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
-> > > ./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
-> > > ./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
-> > > ./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
-> > > ./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
-> > > ./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
-> > > ./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
-> > > ./arch/powerpc/boot/main.c:     __section("__builtin_cmdline");
-> > > ./arch/powerpc/boot/ps3.c:      __section("__builtin_cmdline");
+> > > This deserves a comment. Because GFP_ATOMIC is possible for many
+> > > !preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
+> > > others that are a problem. You are taking a conservative approach which
+> > > is fine but it would be good to articulate that explicitly.
+> > 
+> > Good point, and so I have added the following as a header comment to
+> > the add_ptr_to_bulk_krc_lock() function:
+> > 
+> > // Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> > // state specified by flags.  If can_sleep is true, the caller must
+> > // be schedulable and not be holding any locks or mutexes that might be
+> > // acquired by the memory allocator or anything that it might invoke.
+> > // If !can_sleep, then if !preemptible() no allocation will be undertaken,
+> > // otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
+> > // the aforementioned deadlock possibilities.  Returns true iff ptr was
+> > // successfully recorded, else the caller must use a fallback.
+> 
+> OK, not trivial to follow but at least verbose enough to understand the
+> intention after some mulling. Definitely an improvement, thanks!
+
+Glad it helped!  With some luck, perhaps it will improve with time...
+
+> [...]
+> > > > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > > > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > > > +	unsigned long *flags, void *ptr, bool can_sleep)
+> > > >  {
+> > > >  	struct kvfree_rcu_bulk_data *bnode;
+> > > > +	bool can_alloc_page = preemptible();
+> > > > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
 > > > 
-> > > 
+> > > This is quite confusing IMHO. At least without a further explanation.
+> > > can_sleep is not as much about sleeping as it is about the reclaim
+> > > recursion AFAIU your changelog, right?
+> > 
+> > No argument on it being confusing, and I hope that the added header
+> > comment helps.  But specifically, can_sleep==true is a promise by the
+> > caller to be schedulable and not to be holding any lock/mutex/whatever
+> > that might possibly be acquired by the memory allocator or by anything
+> > else that the memory allocator might invoke, to your point, including
+> > for but one example the reclaim logic.
+> > 
+> > The only way that can_sleep==true is if this function was invoked due
+> > to a call to single-argument kvfree_rcu(), which must be schedulable
+> > because its fallback is to invoke synchronize_rcu().
 > 
-> no ppc cross compiler here, so can't test but maybe:
-> ---
->  arch/powerpc/boot/main.c | 2 ++
->  arch/powerpc/boot/ps3.c  | 2 ++
->  2 files changed, 4 insertions(+)
+> OK. I have to say that it is still not clear to me whether this call
+> path can be called from the memory reclaim context. If yes then you need
+> __GFP_NOMEMALLOC as well.
+
+Right now the restriction is that single-argument (AKA can_sleep==true)
+kvfree_rcu() cannot be invoked from memory reclaim context.
+
+But would adding __GFP_NOMEMALLOC to the can_sleep==true GFP_ flags
+allow us to remove this restriction?  If so, I will queue a separate
+patch making this change.  The improved ease of use would be well
+worth it, if I understand correctly (ha!!!).
+
+> [...]
 > 
-> diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
-> index 6a5b937a7f5c..ce6e27798f79 100644
-> --- a/arch/powerpc/boot/main.c
-> +++ b/arch/powerpc/boot/main.c
-> @@ -6,6 +6,8 @@
->   */
->  #include <stdarg.h>
->  #include <stddef.h>
-> +#include <linux/compiler.h>
-> +
->  #include "elf.h"
->  #include "page.h"
->  #include "string.h"
-> diff --git a/arch/powerpc/boot/ps3.c b/arch/powerpc/boot/ps3.c
-> index a71714b454b1..86ca9c30562a 100644
-> --- a/arch/powerpc/boot/ps3.c
-> +++ b/arch/powerpc/boot/ps3.c
-> @@ -8,6 +8,8 @@
->  
->  #include <stdarg.h>
->  #include <stddef.h>
-> +#include <linux/compiler.h>
-> +
->  #include "types.h"
->  #include "elf.h"
->  #include "string.h"
+> > > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+> > > using the page allocator directly be better?
+> > 
+> > Well, you guys gave me considerable heat about abusing internal allocator
+> > interfaces, and kmalloc() and kfree() seem to be about as non-internal
+> > as you can get and still be invoking the allocator.  ;-)
 > 
-> 
+> alloc_pages resp. __get_free_pages is a normal page allocator interface
+> to use for page size granular allocations. kmalloc is for more fine
+> grained allocations.
 
-So I installed the powerpc cross compiler, and
-nope, that doesn't work, it makes a mess.
+OK, in the short term, both work, but I have queued a separate patch
+making this change and recording the tradeoffs.  This is not yet a
+promise to push this patch, but it is a promise not to lose this part
+of the picture.  Please see below.
 
-So it looks like the best option is to exclude these
-2 files from conversion.
+You mentioned alloc_pages().  I reverted to __get_free_pages(), but
+alloc_pages() of course looks nicer.  What are the tradeoffs between
+__get_free_pages() and alloc_pages()?
 
-  BOOTCC  arch/powerpc/boot/main.o
-In file included from ./include/linux/kcsan-checks.h:7,
-                 from ./include/asm-generic/rwonce.h:27,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/linux/compiler_attributes.h:64: warning: "__always_inline" redefined
-   64 | #define __always_inline                 inline __attribute__((__always_inline__))
-      | 
-In file included from ./include/linux/stddef.h:5,
-                 from ./include/uapi/linux/posix_types.h:5,
-                 from ./include/uapi/linux/types.h:14,
-                 from ./include/linux/types.h:6,
-                 from ./include/linux/kasan-checks.h:5,
-                 from ./include/asm-generic/rwonce.h:26,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/uapi/linux/stddef.h:5: note: this is the location of the previous definition
-    5 | #define __always_inline inline
-      | 
-In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ./include/linux/compiler.h:232,
-                 from arch/powerpc/boot/main.c:9:
-./include/asm-generic/rwonce.h:64:31: error: expected ‘;’ before ‘unsigned’
-   64 | static __no_sanitize_or_inline
-      |                               ^
-      |                               ;
-   65 | unsigned long __read_once_word_nocheck(const void *addr)
-      | ~~~~~~~~                       
-./include/asm-generic/rwonce.h:82:28: error: expected ‘;’ before ‘unsigned’
-   82 | static __no_kasan_or_inline
-      |                            ^
-      |                            ;
-   83 | unsigned long read_word_at_a_time(const void *addr)
-      | ~~~~~~~~                    
-In file included from arch/powerpc/boot/ops.h:15,
-                 from arch/powerpc/boot/main.c:15:
+							Thanx, Paul
 
+------------------------------------------------------------------------
 
+commit 490b638d7c241ac06cee168ccf8688bb8b872478
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Sep 30 16:16:39 2020 -0700
+
+    kvfree_rcu(): Switch from kmalloc/kfree to __get_free_page/free_page.
+    
+    The advantages of using kmalloc() and kfree() are a possible small speedup
+    on CONFIG_SLAB=y systems, avoiding the allocation-side cast, and use of
+    more-familiar API members.  The advantages of using __get_free_page()
+    and free_page() are a possible reduction in fragmentation and direct
+    access to the buddy allocator.
+    
+    To help settle the question as to which to use, this commit switches
+    from kmalloc() and kfree() to __get_free_page() and free_page().
+    
+    Suggested-by: Michal Hocko <mhocko@suse.com>
+    Suggested-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2886e81..242f0f0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3225,7 +3225,8 @@ static void kfree_rcu_work(struct work_struct *work)
+ 				bkvhead[i] = NULL;
+ 			krc_this_cpu_unlock(krcp, flags);
+ 
+-			kfree(bkvhead[i]);
++			if (bkvhead[i])
++				free_page((unsigned long)bkvhead[i]);
+ 
+ 			cond_resched_tasks_rcu_qs();
+ 		}
+@@ -3378,7 +3379,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 		bnode = get_cached_bnode(*krcp);
+ 		if (!bnode && can_alloc_page) {
+ 			krc_this_cpu_unlock(*krcp, *flags);
+-			bnode = kmalloc(PAGE_SIZE, gfp);
++			bnode = (struct kvfree_rcu_bulk_data *)__get_free_page(gfp);
+ 			*krcp = krc_this_cpu_lock(flags);
+ 		}
+ 
