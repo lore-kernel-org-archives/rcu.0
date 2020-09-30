@@ -2,115 +2,168 @@ Return-Path: <SRS0=j702=DH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6418FC4727E
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 14:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AE82C4727C
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 15:25:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30E2C206D4
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 14:39:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F1A892085B
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 15:25:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="JzWqktQe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgI3Ojz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Sep 2020 10:39:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbgI3Ojz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:39:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC4CDABAD;
-        Wed, 30 Sep 2020 14:39:53 +0000 (UTC)
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        id S1728570AbgI3PZX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Sep 2020 11:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgI3PZT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:25:19 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6900C061755
+        for <rcu@vger.kernel.org>; Wed, 30 Sep 2020 08:25:19 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id h1so1074915qvo.9
+        for <rcu@vger.kernel.org>; Wed, 30 Sep 2020 08:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xCd+oCgv7oAd+34p0BYKsp9wxKF5wq3oIEDSZ6JHbPA=;
+        b=JzWqktQe2JPtx5T9AJC7N/S7gcKe7i+bQDBtIDqxoUCCr/aCiMKBFfnEXyTuBv7+kS
+         3kBpse8b1y9++0M+YX/b5PlR7Cjol7fPh3EARvLtGBxWXa4s0U2Sbcq7679fl03EEdoI
+         Wdi7CrxlTz/BXfg9dbu1WNTuLcKYipGbyifyw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xCd+oCgv7oAd+34p0BYKsp9wxKF5wq3oIEDSZ6JHbPA=;
+        b=ASXYR2qvxZQXNfeaEx8urpbhK+Jq3T0/+eNwYzVyhQjbwbzVEZmgxWxxhYLdNqsRON
+         4E7pbPRsAmVBsrACDHDWB2uYLbdL3M9lm+YRZCDfCXAtoMADwVCVlvaJNA3Af5EqJ2FE
+         DNfjunCccQQ5H66QCYKLp2kE3ttKfwAmv5b4yRJcnUxJDXfblvxCTC0xfHxeGWL64tdC
+         nsvp9yHytj0ja6vbkrkJLRtSw7q7S5BZNWUiSW/9tGLxlm/itrjLk7iexZXkhgGXCmAb
+         kxaTnrKeZcLip5UdUdVqOPZzE71EjUkT1e+qibxBVGV8gugilOUrXoPJ8nIyrGCE6v7i
+         QI5A==
+X-Gm-Message-State: AOAM532r4xcGyFM+KnUQucqzXE3EMY5VqgbiqJ8JYH9gduUbEauqhTTf
+        jbNLX3Nk+1zZI1Un6QgttBIUMA==
+X-Google-Smtp-Source: ABdhPJyX0Syo2BlisA2aHEHjNNGruchTWUJTVecItlMh4iy3on+ytmrEr8BQ9lAmnHntoXZpAQKF+w==
+X-Received: by 2002:a0c:e2c1:: with SMTP id t1mr3092219qvl.35.1601479518915;
+        Wed, 30 Sep 2020 08:25:18 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id v15sm2350950qkg.108.2020.09.30.08.25.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 08:25:17 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 11:25:17 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz> <20200929220742.GB8768@pc636>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
-Date:   Wed, 30 Sep 2020 16:39:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200930152517.GA1470428@google.com>
+References: <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200925080503.GC3389@dhcp22.suse.cz>
+ <20200925153129.GB25350@pc636>
+ <20200925154741.GI3389@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200929220742.GB8768@pc636>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925154741.GI3389@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 9/30/20 12:07 AM, Uladzislau Rezki wrote:
-> On Tue, Sep 29, 2020 at 12:15:34PM +0200, Vlastimil Babka wrote:
->> On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
->> 
->> After reading all the threads and mulling over this, I am going to deflect from
->> Mel and Michal and not oppose the idea of lockless allocation. I would even
->> prefer to do it via the gfp flag and not a completely separate path. Not using
->> the exact code from v1, I think it could be done in a way that we don't actually
->> look at the new flag until we find that pcplist is empty - which should not
->> introduce overhead to the fast-fast path when pcpclist is not empty. It's more
->> maintainable that adding new entry points, IMHO.
->> 
-> Thanks for reading all that from the beginning! It must be tough due to the
-> fact there were lot of messages in the threads, so at least i was lost.
+On Fri, Sep 25, 2020 at 05:47:41PM +0200, Michal Hocko wrote:
+> On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
+> > > > > > 
+> > > > > > All good points!
+> > > > > > 
+> > > > > > On the other hand, duplicating a portion of the allocator functionality
+> > > > > > within RCU increases the amount of reserved memory, and needlessly most
+> > > > > > of the time.
+> > > > > > 
+> > > > > 
+> > > > > But it's very similar to what mempools are for.
+> > > > > 
+> > > > As for dynamic caching or mempools. It requires extra logic on top of RCU
+> > > > to move things forward and it might be not efficient way. As a side
+> > > > effect, maintaining of the bulk arrays in the separate worker thread
+> > > > will introduce other drawbacks:
+> > > 
+> > > This is true but it is also true that it is RCU to require this special
+> > > logic and we can expect that we might need to fine tune this logic
+> > > depending on the RCU usage. We definitely do not want to tune the
+> > > generic page allocator for a very specific usecase, do we?
+> > > 
+> > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+> > to provide a memory service for contexts which are not allowed to
+> > sleep, RCU is part of them. Both flags used to provide such ability
+> > before but not anymore.
+> > 
+> > Do you agree with it?
 > 
-> I agree that adding a new entry or separate lock-less function can be considered
-> as something that is hard to maintain. I have a question here. I mean about your
-> different look at it:
+> Yes this sucks. But this is something that we likely really want to live
+> with. We have to explicitly _document_ that really atomic contexts in RT
+> cannot use the allocator. From the past discussions we've had this is
+> likely the most reasonable way forward because we do not really want to
+> encourage anybody to do something like that and there should be ways
+> around that. The same is btw. true also for !RT. The allocator is not
+> NMI safe and while we should be able to make it compatible I am not
+> convinced we really want to.
 > 
-> <snip>
-> bool is_pcp_cache_empty(gfp_t gfp)
-> {
->     struct per_cpu_pages *pcp;
->     struct zoneref *ref;
->     unsigned long flags;
->     bool empty;
+> Would something like this be helpful wrt documentation?
 > 
->     ref = first_zones_zonelist(node_zonelist(
->             numa_node_id(), gfp), gfp_zone(gfp), NULL);
->     if (!ref->zone)
->             return true;
-> 
->     local_irq_save(flags);
->     pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
->     empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
->     local_irq_restore(flags);
-> 
->     return empty;
-> }
-> 
-> disable_irq();
-> if (!is_pcp_cache_empty(GFP_NOWAIT))
->     __get_free_page(GFP_NOWAIT);
-> enable_irq();
-> <snip>
-> 
-> Do you mean to have something like above? I mean some extra API
-> function that returns true or false if fast-fast allocation can
-> either occur or not. Above code works just fine and never touches
-> main zone->lock.
-> 
-> i.e. Instead of introducing an extra GFP_LOCKLESS flag or any new
-> extra lock-less function. We could have something that checks a
-> pcp page cache list, thus it can guarantee that a request would
-> be accomplish using fast-fast path.
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index 67a0774e080b..9fcd47606493 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -238,7 +238,9 @@ struct vm_area_struct;
+>   * %__GFP_FOO flags as necessary.
+>   *
+>   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
+> - * watermark is applied to allow access to "atomic reserves"
+> + * watermark is applied to allow access to "atomic reserves".
+> + * The current implementation doesn't support NMI and other non-preemptive context
+> + * (e.g. raw_spin_lock).
 
-No, I meant going back to idea of new gfp flag, but adjust the implementation in
-the allocator (different from what you posted in previous version) so that it
-only looks at the flag after it tries to allocate from pcplist and finds out
-it's empty. So, no inventing of new page allocator entry points or checks such
-as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-affect existing fast paths.
+I think documenting is useful.
+
+Could it be more explicit in what the issue is? Something like:
+
+* Even with GFP_ATOMIC, calls to the allocator can sleep on PREEMPT_RT
+systems. Therefore, the current low-level allocator implementation does not
+support being called from special contexts that are atomic on RT - such as
+NMI and raw_spin_lock. Due to these constraints and considering calling code
+usually has no control over the PREEMPT_RT configuration, callers of the
+allocator should avoid calling the allocator from these cotnexts even in
+non-RT systems.
+
+thanks!
+
+ - Joel
+
+
+>   *
+>   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
+>   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
+> 
+> [...]
+> -- 
+> Michal Hocko
+> SUSE Labs
