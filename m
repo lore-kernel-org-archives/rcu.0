@@ -2,131 +2,141 @@ Return-Path: <SRS0=j702=DH=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 712ACC4727C
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 16:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7252C4727C
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 16:46:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 363D720759
-	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 16:41:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7487B2076B
+	for <rcu@archiver.kernel.org>; Wed, 30 Sep 2020 16:46:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mjIYeO8s"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kUh2mB6O"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgI3Qlz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Sep 2020 12:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3Qly (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:41:54 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994CEC061755;
-        Wed, 30 Sep 2020 09:41:54 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id t76so2377512oif.7;
-        Wed, 30 Sep 2020 09:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=5ZxDJXFnuUJY5eB85Tg10Agt73okBGLGzpTrO/59fjc=;
-        b=mjIYeO8srp7sOFT5wnROdgwdF6hbMdbi704OEtviElpEDvktdl4EQLkYlDFA+fa/gc
-         InBI+4CTUCx+gYl55s08RhglcpVuOpccR98Nb+IHsF5Ho3RJmYllwKgxDLYnSDkM1MeE
-         2SCoP4qVQ/q8+eOkk36NWsoVuC8ad5MY0oqVEToVaiwIXfCe7gtUMELUtQuB0cQuh69A
-         wCYphGitn3NGfynhRGEsW50RQfFK+lZgiitN6yz8G3EvOoNfjWoG80H54Z1a50RnaBw4
-         OsYbdfEraAeJI6GjslH7aHuRQBdCmcSCXVTY2hY1+yJtujCj1hSwR7mrBaKhJmrqMP1G
-         FOWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=5ZxDJXFnuUJY5eB85Tg10Agt73okBGLGzpTrO/59fjc=;
-        b=jlmTlEPA+5k8jvZLx84Wpqrd+GjGxDA27+XoADwei8E8v18UIUHk+9U3bMF4a9aN8y
-         K5oYHVpYRJBTqQFYBw1gRTredv8tKS7Cw/90uK0LAAPi+u0nJ/KzI8Yl1H/o5gzFwx2d
-         eqz8Waa3vusrHNHCgvcpYNLxFsAqbHvz1NBAl3PyvxBht7OFR9/v07GAIYZC0DZGfVM9
-         roMlW3pyI9YQ6z11N9FgVfA0KfEGFgB9BtOHrHx+XWTEkETjtUKN7zDxDJrvuVjZRhtA
-         tT6B0pl806uETUsDMSQz5Bqh+Mdpeat39zPJR/adf9cg6sgjrdKyC9MZa8LvwucGbCcO
-         3TWg==
-X-Gm-Message-State: AOAM530TcZt0sHFez1pBoJbbSxGUTq9A7nbdvUbv/ZT3owCWtMhNzjqp
-        +WptzQ211tgYYWtS41kQ1ONLTCvmXr7w5n3HMk4=
-X-Google-Smtp-Source: ABdhPJzFFgzz+5UFXrYvEzgeDhPbesF7QR6vaq9SWncZFfyKjuldy2iWJj8dFXzJhV2Q0kZ3nA/W5JVxNbsrp8LEJQ8=
-X-Received: by 2002:aca:ec50:: with SMTP id k77mr1862213oih.35.1601484113963;
- Wed, 30 Sep 2020 09:41:53 -0700 (PDT)
+        id S1725355AbgI3QqE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Sep 2020 12:46:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44410 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728729AbgI3QqD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:46:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601484361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=92hdBQ0+yqLjn7t4Piw/YoIQ6f47TF4BG37Q/DtfEDs=;
+        b=kUh2mB6Ow8VCZ29mrkt+i1nOawaa3g5RaWz0wGyZWRw+C1sBG/mhUaxse5Lay4CSYnOh/H
+        p00+DHKNHxKOfRQtQLOjY0UXTuD8KZAddjxcF10N9hA4uhCTRlpFhq9e8tzFWZNXTcZaQF
+        KHV/tFY9wdnjhfQJR5R9KDYv9cVgdWI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 77B19AC8C;
+        Wed, 30 Sep 2020 16:46:01 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 18:46:00 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200930164600.GW2277@dhcp22.suse.cz>
+References: <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200925080503.GC3389@dhcp22.suse.cz>
+ <20200925153129.GB25350@pc636>
+ <20200925154741.GI3389@dhcp22.suse.cz>
+ <20200929162514.GA8768@pc636>
+ <20200930092732.GP2277@dhcp22.suse.cz>
+ <20200930123535.GB18005@pc636>
+ <20200930124413.GU2277@dhcp22.suse.cz>
+ <20200930133954.GA19235@pc636>
 MIME-Version: 1.0
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com>
-In-Reply-To: <20200929192549.501516-1-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 30 Sep 2020 18:41:42 +0200
-Message-ID: <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930133954.GA19235@pc636>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 9:25 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
->
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
->
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Wed 30-09-20 15:39:54, Uladzislau Rezki wrote:
+> On Wed, Sep 30, 2020 at 02:44:13PM +0200, Michal Hocko wrote:
+> > On Wed 30-09-20 14:35:35, Uladzislau Rezki wrote:
+> > > On Wed, Sep 30, 2020 at 11:27:32AM +0200, Michal Hocko wrote:
+> > > > On Tue 29-09-20 18:25:14, Uladzislau Rezki wrote:
+> > > > > > > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+> > > > > > > to provide a memory service for contexts which are not allowed to
+> > > > > > > sleep, RCU is part of them. Both flags used to provide such ability
+> > > > > > > before but not anymore.
+> > > > > > > 
+> > > > > > > Do you agree with it?
+> > > > > > 
+> > > > > > Yes this sucks. But this is something that we likely really want to live
+> > > > > > with. We have to explicitly _document_ that really atomic contexts in RT
+> > > > > > cannot use the allocator. From the past discussions we've had this is
+> > > > > > likely the most reasonable way forward because we do not really want to
+> > > > > > encourage anybody to do something like that and there should be ways
+> > > > > > around that. The same is btw. true also for !RT. The allocator is not
+> > > > > > NMI safe and while we should be able to make it compatible I am not
+> > > > > > convinced we really want to.
+> > > > > > 
+> > > > > > Would something like this be helpful wrt documentation?
+> > > > > > 
+> > > > > > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> > > > > > index 67a0774e080b..9fcd47606493 100644
+> > > > > > --- a/include/linux/gfp.h
+> > > > > > +++ b/include/linux/gfp.h
+> > > > > > @@ -238,7 +238,9 @@ struct vm_area_struct;
+> > > > > >   * %__GFP_FOO flags as necessary.
+> > > > > >   *
+> > > > > >   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
+> > > > > > - * watermark is applied to allow access to "atomic reserves"
+> > > > > > + * watermark is applied to allow access to "atomic reserves".
+> > > > > > + * The current implementation doesn't support NMI and other non-preemptive context
+> > > > > > + * (e.g. raw_spin_lock).
+> > > > > >   *
+> > > > > >   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
+> > > > > >   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
+> > > > > > 
+> > > > > To me it is clear. But also above conflicting statement:
+> > > > > 
+> > > > > <snip>
+> > > > > %GFP_ATOMIC users can not sleep and need the allocation to succeed. A %lower
+> > > > > <snip>
+> > > > > 
+> > > > > should be rephrased, IMHO.
+> > > > 
+> > > > Any suggestions? Or more specifics about which part is conflicting? It
+> > > > tries to say that there is a higher demand to succeed even though the
+> > > > context cannot sleep to take active measures to achieve that. So the
+> > > > only way to achieve that is to break the watermakrs to a certain degree
+> > > > which is making them more "higher class" than other allocations.
+> > > > 
+> > > Michal, i had only one concern about it. It says that %GFP_ATOMIC users
+> > > can not sleep, i.e. callers know that they are in atomic, thus no any
+> > > sleeping, but the chose they make will force them to sleep.
+> > 
+> > I am not sure I follow you here. Do you mean they will be forced to
+> > sleep with PREEMPT_RT?
+> > 
+> Exactly :)
 
-Puh, remember one year ago an overnight bisecting to catch the root
-cause for "escaped section names".
+We can make that more specific once RT patchset is merged. As of now
+this is not the thing in the Linus tree. I believe there will be more to
+clarify about atomic contexts in the RT tree as it means something else
+than people are used to think.
 
-The two patches I see - this here and "export.h: fix section name for
-CONFIG_TRIM_UNUSED_KSYMS for Clang" were new cases?
-
-Do we have a check-script to catch/avoid such cases (Joe Perches?)?
-
-Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
-
-- Sedat -
-
-> ---
-> Changes V1->V2:
-> * drop unrelated Kconfig changes accidentally committed in v1.
->
->  include/linux/srcutree.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..9de652f4e1bd 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -124,7 +124,7 @@ struct srcu_struct {
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         is_static struct srcu_struct name;                              \
->         struct srcu_struct * const __srcu_struct_##name                 \
-> -               __section("___srcu_struct_ptrs") = &name
-> +               __section(___srcu_struct_ptrs) = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)                                        \
->         static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);      \
-> --
-> 2.28.0.709.gb0816b6eb0-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200929192549.501516-1-ndesaulniers%40google.com.
+-- 
+Michal Hocko
+SUSE Labs
