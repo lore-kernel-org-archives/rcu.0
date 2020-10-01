@@ -2,139 +2,94 @@ Return-Path: <SRS0=4XKx=DI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5227FC4727E
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 16:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9464C4741F
+	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 19:05:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E4AC120848
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 16:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601569719;
-	bh=06LQkY9IlXJfgXC7Wh55LnpusDxLGBsMuKUUmE57yVs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=WMJ2LM//NBsLM1c5awvcx2VZlGlWWL6bVCB+MU+f2SR9BSUyW0/jDhbqbwUznydvI
-	 DukK045pz2exmGRLklwVMPECSv0FdCxj07O+B8tOfx6um65DjpRTkITxp4sAMwBB5K
-	 J4kgP9u0STWV+0LYq8Ym3fOY7THqysxQ7F6/t/w4=
+	by mail.kernel.org (Postfix) with ESMTP id 5EB5F208A9
+	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 19:05:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732610AbgJAQ2i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Oct 2020 12:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730534AbgJAQ2g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:28:36 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC16620759;
-        Thu,  1 Oct 2020 16:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601569715;
-        bh=06LQkY9IlXJfgXC7Wh55LnpusDxLGBsMuKUUmE57yVs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bFiZqfthdzJPwxRJ/8lWpAEhyiI9OHzQre5d0GNAvkSaw3gnif2i6tyB6dRkUJCfu
-         mLk/+M6OpQHO/xqk/+N631yxHroEfDsrEDdwNeIKxIzkIKFAfiQyVdPmrlJdSZt0NC
-         SGc8lNPCxxAgGKriqJkw5z6DzqYnN3prL2Ta1XKU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6E92D3522B33; Thu,  1 Oct 2020 09:28:35 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:28:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20201001162835.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
- <20200930084139.GN2277@dhcp22.suse.cz>
- <20200930232154.GA29330@paulmck-ThinkPad-P72>
- <20201001090220.GA22560@dhcp22.suse.cz>
+        id S1732673AbgJATFp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Oct 2020 15:05:45 -0400
+Received: from smtprelay0004.hostedemail.com ([216.40.44.4]:46640 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729047AbgJATFp (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Thu, 1 Oct 2020 15:05:45 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 10C8D182CF66C;
+        Thu,  1 Oct 2020 19:05:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: brain26_23158362719d
+X-Filterd-Recvd-Size: 2860
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 19:05:40 +0000 (UTC)
+Message-ID: <657119d71970e33d599b3fe9e596e8f133449d85.camel@perches.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 01 Oct 2020 12:05:38 -0700
+In-Reply-To: <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+         <20200929192549.501516-1-ndesaulniers@google.com>
+         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
+         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
+         <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
+         <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001090220.GA22560@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:02:20AM +0200, Michal Hocko wrote:
-> On Wed 30-09-20 16:21:54, Paul E. McKenney wrote:
+On Thu, 2020-10-01 at 12:15 +0200, Miguel Ojeda wrote:
+> Hi Joe,
 
-[ . . . ]
+Buenas Miguel.
 
-Hit "send" too soon, apologies...
-
-> > ------------------------------------------------------------------------
-> > 
-> > commit 490b638d7c241ac06cee168ccf8688bb8b872478
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Wed Sep 30 16:16:39 2020 -0700
-> > 
-> >     kvfree_rcu(): Switch from kmalloc/kfree to __get_free_page/free_page.
-> >     
-> >     The advantages of using kmalloc() and kfree() are a possible small speedup
-> >     on CONFIG_SLAB=y systems, avoiding the allocation-side cast, and use of
-> >     more-familiar API members.  The advantages of using __get_free_page()
-> >     and free_page() are a possible reduction in fragmentation and direct
-> >     access to the buddy allocator.
-> >     
-> >     To help settle the question as to which to use, this commit switches
-> >     from kmalloc() and kfree() to __get_free_page() and free_page().
-> >     
-> >     Suggested-by: Michal Hocko <mhocko@suse.com>
-> >     Suggested-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> On Thu, Oct 1, 2020 at 12:56 AM Joe Perches <joe@perches.com> wrote:
+> > So I installed the powerpc cross compiler, and
+> > nope, that doesn't work, it makes a mess.
 > 
-> Yes, looks good to me. I am not entirely sure about the fragmentation
-> argument. It really depends on the SL.B allocator internals. The same
-> applies for the potential speed up. I would be even surprised if the
-> SLAB was faster in average considering it has to use the page allocator
-> as well. So to me the primary motivation would be "use the right tool
-> for the purpose".
+> Thanks a lot for reviving the script and sending the treewide cleanup!
 
-Very well, I will update the commit message, and thank you!
+No charge...
 
-							Thanx, Paul
+I think the end result is cleaner and more obvious.
 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 2886e81..242f0f0 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3225,7 +3225,8 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  				bkvhead[i] = NULL;
-> >  			krc_this_cpu_unlock(krcp, flags);
-> >  
-> > -			kfree(bkvhead[i]);
-> > +			if (bkvhead[i])
-> > +				free_page((unsigned long)bkvhead[i]);
-> >  
-> >  			cond_resched_tasks_rcu_qs();
-> >  		}
-> > @@ -3378,7 +3379,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> >  		bnode = get_cached_bnode(*krcp);
-> >  		if (!bnode && can_alloc_page) {
-> >  			krc_this_cpu_unlock(*krcp, *flags);
-> > -			bnode = kmalloc(PAGE_SIZE, gfp);
-> > +			bnode = (struct kvfree_rcu_bulk_data *)__get_free_page(gfp);
-> >  			*krcp = krc_this_cpu_lock(flags);
-> >  		}
-> >  
+> > So it looks like the best option is to exclude these
+> > 2 files from conversion.
 > 
-> -- 
-> Michal Hocko
-> SUSE Labs
+> Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
+> compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
+> reviewers and ML).
+
+That's not a can of worms I care to open.
+Perhaps the powerpc folk can do some fishing.
+
