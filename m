@@ -2,184 +2,107 @@ Return-Path: <SRS0=4XKx=DI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62244C4727F
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 09:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09891C4727C
+	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 10:15:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 150AB20B1F
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 09:02:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC4E82137B
+	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 10:15:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="n7x2dWCK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AK9x/1EH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731673AbgJAJCY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Oct 2020 05:02:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38692 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJAJCY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:02:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601542941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mkmENhVn20bp5HQouxB1eRhh03Q/scwiXHXj9HekMM8=;
-        b=n7x2dWCKNJrL3TAdhQqqEHByjrD661TuWjjGzr4rOjPFzMz8cam/FLXe/imoMkcUfZBZSY
-        5NCYusaI8IwNqC7nFpL+5JD1zMksBddacwBcC3zxyfMeKcBE4W1Ge7lf3bzAQLKTwsRsIn
-        7Vsw96u2eNL5CrYYcpFGInEqvr8TUbI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5C1DEAD49;
-        Thu,  1 Oct 2020 09:02:21 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 11:02:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20201001090220.GA22560@dhcp22.suse.cz>
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
- <20200930084139.GN2277@dhcp22.suse.cz>
- <20200930232154.GA29330@paulmck-ThinkPad-P72>
+        id S1731548AbgJAKPw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Oct 2020 06:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgJAKPw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Oct 2020 06:15:52 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05397C0613D0;
+        Thu,  1 Oct 2020 03:15:52 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m5so5874341lfp.7;
+        Thu, 01 Oct 2020 03:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yP779foQVZTd7hBfYzc8x5HVVPD9H4ll26i7mjT38To=;
+        b=AK9x/1EH5gmexWNak1NPEzY9C74BazOc3JDXGwjqNUYcPD0WRVvwvO7XyOuJe1igMR
+         PDhTED3odbMFCjTZgn+J4TmZoeMRwBWYMDn0RuEYqTkUivByeORR1sdQL7sm33qgxStO
+         FHxypX75VqTWUPh7OIpG7ePL+TPvgkQb4i6hnnTZK6eGOvYJIEoMLG4Cr9J6zuen0oYR
+         tcaya7K8VMxi1iUfDFtpa7JfMOwxH9VirfJJqaqVCus3De3e5Qe0AYweZ5jaAaC6jg1R
+         AG+hBeq3eyXohdJAK7/rft0pIHE1kDo6K9BjWDzK0K9lXs9bXQsm3saY9kQyF3Aq1V9t
+         0lEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yP779foQVZTd7hBfYzc8x5HVVPD9H4ll26i7mjT38To=;
+        b=baGV7E+LNZPascItAc6K/8QRsFaoPPzdzB3pl9UM/E/me1c3A/WJlPl9rKJklchgKZ
+         4DjMHf2seP5FwJ+0lkk4/3f5+v4a1xUB+03yRLwU48Fz3loO5oVeXS5wLUlTcyyf5Pqc
+         9SQrAsCHNXLNgGxqlh//wKwAFWQj6oFBmnuj8tda/SvD0jsarfVqMLAyenykpSHHLPEq
+         TDJKzEm/24x8k7k0qYlhnTl2xCd80qw6DAne2KFop/2GweYvs/rXh4fYCPoRZeSSn4h0
+         +ccexyAIb5oCeU4GuwzerZS4f9iCIrFB/PUtkE8oDetnAKbUzLcmv4B1R4MaHAlb3zjW
+         KavA==
+X-Gm-Message-State: AOAM530wQPyzZW4dycsF/obFVT74gjnm6bElEWsTRVZm/F9eapkx2QOS
+        Dgt9083rIa3UCGoKp6zB/q9+tDeDbn8BgwY5qeA=
+X-Google-Smtp-Source: ABdhPJzE0B3XYSFoxxWCoIujQIlIrX0GFgwGjx6ozGWiaiVey1qgI0/wjkOI3kDNFY6QX+0v9OhDOWTJ77VtvbMwoNk=
+X-Received: by 2002:a19:7e8d:: with SMTP id z135mr2532283lfc.158.1601547350476;
+ Thu, 01 Oct 2020 03:15:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930232154.GA29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+ <20200929192549.501516-1-ndesaulniers@google.com> <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+ <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+ <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+ <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+ <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+ <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
+ <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com> <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
+In-Reply-To: <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 1 Oct 2020 12:15:39 +0200
+Message-ID: <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+To:     Joe Perches <joe@perches.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed 30-09-20 16:21:54, Paul E. McKenney wrote:
-> On Wed, Sep 30, 2020 at 10:41:39AM +0200, Michal Hocko wrote:
-> > On Tue 29-09-20 18:53:27, Paul E. McKenney wrote:
-[...]
-> > > No argument on it being confusing, and I hope that the added header
-> > > comment helps.  But specifically, can_sleep==true is a promise by the
-> > > caller to be schedulable and not to be holding any lock/mutex/whatever
-> > > that might possibly be acquired by the memory allocator or by anything
-> > > else that the memory allocator might invoke, to your point, including
-> > > for but one example the reclaim logic.
-> > > 
-> > > The only way that can_sleep==true is if this function was invoked due
-> > > to a call to single-argument kvfree_rcu(), which must be schedulable
-> > > because its fallback is to invoke synchronize_rcu().
-> > 
-> > OK. I have to say that it is still not clear to me whether this call
-> > path can be called from the memory reclaim context. If yes then you need
-> > __GFP_NOMEMALLOC as well.
-> 
-> Right now the restriction is that single-argument (AKA can_sleep==true)
-> kvfree_rcu() cannot be invoked from memory reclaim context.
-> 
-> But would adding __GFP_NOMEMALLOC to the can_sleep==true GFP_ flags
-> allow us to remove this restriction?  If so, I will queue a separate
-> patch making this change.  The improved ease of use would be well
-> worth it, if I understand correctly (ha!!!).
+Hi Joe,
 
-It would be quite daring to claim it will be ok but it will certainly be
-less problematic. Adding the flag will not hurt in any case. As this is
-a shared called that might be called from many contexts I think it will
-be safer to have it there. The justification is that it will prevent
-consumption of memory reserves from MEMALLOC contexts.
+On Thu, Oct 1, 2020 at 12:56 AM Joe Perches <joe@perches.com> wrote:
+>
+> So I installed the powerpc cross compiler, and
+> nope, that doesn't work, it makes a mess.
 
-> 
-> > [...]
-> > 
-> > > > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
-> > > > using the page allocator directly be better?
-> > > 
-> > > Well, you guys gave me considerable heat about abusing internal allocator
-> > > interfaces, and kmalloc() and kfree() seem to be about as non-internal
-> > > as you can get and still be invoking the allocator.  ;-)
-> > 
-> > alloc_pages resp. __get_free_pages is a normal page allocator interface
-> > to use for page size granular allocations. kmalloc is for more fine
-> > grained allocations.
-> 
-> OK, in the short term, both work, but I have queued a separate patch
-> making this change and recording the tradeoffs.  This is not yet a
-> promise to push this patch, but it is a promise not to lose this part
-> of the picture.  Please see below.
+Thanks a lot for reviving the script and sending the treewide cleanup!
 
-It doesn't matter all that much. Both allocators will work. It is just a
-matter of using optimal tool for the specific purose.
+> So it looks like the best option is to exclude these
+> 2 files from conversion.
 
-> You mentioned alloc_pages().  I reverted to __get_free_pages(), but
-> alloc_pages() of course looks nicer.  What are the tradeoffs between
-> __get_free_pages() and alloc_pages()?
+Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
+compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
+reviewers and ML).
 
-alloc_pages will return struct page but you need a kernel pointer. That
-is what __get_free_pages will give you (or you can call page_address
-directly).
-
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 490b638d7c241ac06cee168ccf8688bb8b872478
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Sep 30 16:16:39 2020 -0700
-> 
->     kvfree_rcu(): Switch from kmalloc/kfree to __get_free_page/free_page.
->     
->     The advantages of using kmalloc() and kfree() are a possible small speedup
->     on CONFIG_SLAB=y systems, avoiding the allocation-side cast, and use of
->     more-familiar API members.  The advantages of using __get_free_page()
->     and free_page() are a possible reduction in fragmentation and direct
->     access to the buddy allocator.
->     
->     To help settle the question as to which to use, this commit switches
->     from kmalloc() and kfree() to __get_free_page() and free_page().
->     
->     Suggested-by: Michal Hocko <mhocko@suse.com>
->     Suggested-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-Yes, looks good to me. I am not entirely sure about the fragmentation
-argument. It really depends on the SL.B allocator internals. The same
-applies for the potential speed up. I would be even surprised if the
-SLAB was faster in average considering it has to use the page allocator
-as well. So to me the primary motivation would be "use the right tool
-for the purpose".
-
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 2886e81..242f0f0 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3225,7 +3225,8 @@ static void kfree_rcu_work(struct work_struct *work)
->  				bkvhead[i] = NULL;
->  			krc_this_cpu_unlock(krcp, flags);
->  
-> -			kfree(bkvhead[i]);
-> +			if (bkvhead[i])
-> +				free_page((unsigned long)bkvhead[i]);
->  
->  			cond_resched_tasks_rcu_qs();
->  		}
-> @@ -3378,7 +3379,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->  		bnode = get_cached_bnode(*krcp);
->  		if (!bnode && can_alloc_page) {
->  			krc_this_cpu_unlock(*krcp, *flags);
-> -			bnode = kmalloc(PAGE_SIZE, gfp);
-> +			bnode = (struct kvfree_rcu_bulk_data *)__get_free_page(gfp);
->  			*krcp = krc_this_cpu_lock(flags);
->  		}
->  
-
--- 
-Michal Hocko
-SUSE Labs
+Cheers,
+Miguel
