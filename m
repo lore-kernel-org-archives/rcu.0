@@ -1,97 +1,117 @@
-Return-Path: <SRS0=4XKx=DI=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=VPhX=DJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA9FAC47423
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 20:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62D1AC4727D
+	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 04:39:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAA6F2074B
-	for <rcu@archiver.kernel.org>; Thu,  1 Oct 2020 20:19:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 235D120796
+	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 04:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601613594;
+	bh=zbG2iEh9bQFGJLHd+0KwxDAW/5RszvjdWnLdbMOPS7o=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=pFokuoargq42y7F8UrSqRSy5jf2d05ZLpFXiKdVtddpj2QeFQn4hN3H0m3w7S70tF
+	 mh1MPvCJ+fp8g+W2jqG1Lp9SnrktotmGVhA4bwdawZTb2aCSUwSEAR6k29GtFeLJV0
+	 q/QdvTH4D+2lb+TSAbrkJtr3Rn3aY+QNku89Ql3E=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgJAUTX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Oct 2020 16:19:23 -0400
-Received: from smtprelay0169.hostedemail.com ([216.40.44.169]:60940 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726581AbgJAUTX (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 1 Oct 2020 16:19:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 283CD180A7FF8;
-        Thu,  1 Oct 2020 20:19:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: mice75_5c06f2d2719e
-X-Filterd-Recvd-Size: 2850
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  1 Oct 2020 20:19:19 +0000 (UTC)
-Message-ID: <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1725957AbgJBEjw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Oct 2020 00:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbgJBEjv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Oct 2020 00:39:51 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A4022072E;
+        Fri,  2 Oct 2020 04:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601613591;
+        bh=zbG2iEh9bQFGJLHd+0KwxDAW/5RszvjdWnLdbMOPS7o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YY/1Lv2sEiR77Cwbq80MBqwJ1oLz+9XHTJB0/Z7dwL9dRgnFHcV41OurKT/kmmV0q
+         9adRNOXPEqCj5i8U/lxS7UtQvma7cZH0fJ/2/6g7Xv/YxkA5etImdpCSiuKcOX3wKT
+         +mIhj1qqlt2JTWzSPB/r7HqERwFZ0cTdGLuO7r28=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D67563522B33; Thu,  1 Oct 2020 21:39:50 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 21:39:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 01 Oct 2020 13:19:18 -0700
-In-Reply-To: <20201001193937.GM28786@gate.crashing.org>
-References: <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
-         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-         <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
-         <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
-         <20201001193937.GM28786@gate.crashing.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/2] rcu/tree: Add a warning if CPU being onlined did not
+ report QS already
+Message-ID: <20201002043950.GG29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200929192928.3749502-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929192928.3749502-1-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 2020-10-01 at 14:39 -0500, Segher Boessenkool wrch/ote:
-> Hi!
+On Tue, Sep 29, 2020 at 03:29:27PM -0400, Joel Fernandes (Google) wrote:
+> Currently, rcu_cpu_starting() checks to see if the RCU core expects a
+> quiescent state from the incoming CPU.  However, the current interaction
+> between RCU quiescent-state reporting and CPU-hotplug operations should
+> mean that the incoming CPU never needs to report a quiescent state.
+> First, the outgoing CPU reports a quiescent state if needed.  Second,
+> the race where the CPU is leaving just as RCU is initializing a new
+> grace period is handled by an explicit check for this condition.  Third,
+> the CPU's leaf rcu_node structure's ->lock serializes these checks.
 > 
-> On Thu, Oct 01, 2020 at 12:15:39PM +0200, Miguel Ojeda wrote:
-> > > So it looks like the best option is to exclude these
-> > > 2 files from conversion.
-> > 
-> > Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
-> > compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
-> > reviewers and ML).
+> This means that if rcu_cpu_starting() ever feels the need to report
+> a quiescent state, then there is a bug somewhere in the CPU hotplug
+> code or the RCU grace-period handling code.  This commit therefore
+> adds a WARN_ON_ONCE() to bring that bug to everyone's attention.
 > 
-> You need to #include compiler_types.h to get this #define?
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Actually no, you need to add
+Queued for testing and further review, thank you!
 
-#include <linux/compiler_attributes.h>
+							Thanx, Paul
 
-to both files and then it builds properly.
-
-Ideally though nothing should include this file directly.
-
-> (The twice-defined thing is a warning, not an error.  It should be fixed
-> of course, but it is less important; although it may be pointing to a
-> deeper problem.)
+> ---
+>  kernel/rcu/tree.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 55d3700dd1e7..5efe0a98ea45 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4119,7 +4119,9 @@ void rcu_cpu_starting(unsigned int cpu)
+>  	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+>  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+>  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
+> -	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
+> +
+> +	/* An incoming CPU should never be blocking a grace period. */
+> +	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
+>  		rcu_disable_urgency_upon_qs(rdp);
+>  		/* Report QS -after- changing ->qsmaskinitnext! */
+>  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
 > 
-> Segher
-
