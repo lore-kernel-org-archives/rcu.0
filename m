@@ -2,116 +2,103 @@ Return-Path: <SRS0=VPhX=DJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62D1AC4727D
-	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 04:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D601C4363D
+	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 06:57:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 235D120796
-	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 04:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601613594;
-	bh=zbG2iEh9bQFGJLHd+0KwxDAW/5RszvjdWnLdbMOPS7o=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=pFokuoargq42y7F8UrSqRSy5jf2d05ZLpFXiKdVtddpj2QeFQn4hN3H0m3w7S70tF
-	 mh1MPvCJ+fp8g+W2jqG1Lp9SnrktotmGVhA4bwdawZTb2aCSUwSEAR6k29GtFeLJV0
-	 q/QdvTH4D+2lb+TSAbrkJtr3Rn3aY+QNku89Ql3E=
+	by mail.kernel.org (Postfix) with ESMTP id D799C206DD
+	for <rcu@archiver.kernel.org>; Fri,  2 Oct 2020 06:57:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YSKDYRVu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgJBEjw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Oct 2020 00:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54682 "EHLO mail.kernel.org"
+        id S1725991AbgJBG5t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Oct 2020 02:57:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36400 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBEjv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Oct 2020 00:39:51 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A4022072E;
-        Fri,  2 Oct 2020 04:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601613591;
-        bh=zbG2iEh9bQFGJLHd+0KwxDAW/5RszvjdWnLdbMOPS7o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=YY/1Lv2sEiR77Cwbq80MBqwJ1oLz+9XHTJB0/Z7dwL9dRgnFHcV41OurKT/kmmV0q
-         9adRNOXPEqCj5i8U/lxS7UtQvma7cZH0fJ/2/6g7Xv/YxkA5etImdpCSiuKcOX3wKT
-         +mIhj1qqlt2JTWzSPB/r7HqERwFZ0cTdGLuO7r28=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D67563522B33; Thu,  1 Oct 2020 21:39:50 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 21:39:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/2] rcu/tree: Add a warning if CPU being onlined did not
- report QS already
-Message-ID: <20201002043950.GG29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200929192928.3749502-1-joel@joelfernandes.org>
+        id S1725948AbgJBG5t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Oct 2020 02:57:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601621867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LlwEz4B/S7P9H5p6PBWotxH8LpYCx1zo/m0p5+ZNd+c=;
+        b=YSKDYRVuK21DNVTgp1G5vaYqO/K1DwlshqB5b2Yp0q4/tJEUWUhhASK84nZPtiaMBEZRVv
+        nqapw0mcKancESEDJ6qMAVpiNoCXxBVU7yHcH0lf00fcrH3PFlCrkunxpPDPadOjb/uD8d
+        ZSXrZlZVLOKZAwVVk1CquSGfmFuyR+c=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B026AF68;
+        Fri,  2 Oct 2020 06:57:47 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 08:57:46 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20201002065746.GA20872@dhcp22.suse.cz>
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
+ <20200930015327.GX29330@paulmck-ThinkPad-P72>
+ <20200930084139.GN2277@dhcp22.suse.cz>
+ <20200930232154.GA29330@paulmck-ThinkPad-P72>
+ <20201001090220.GA22560@dhcp22.suse.cz>
+ <20201001162709.GD29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929192928.3749502-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201001162709.GD29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 03:29:27PM -0400, Joel Fernandes (Google) wrote:
-> Currently, rcu_cpu_starting() checks to see if the RCU core expects a
-> quiescent state from the incoming CPU.  However, the current interaction
-> between RCU quiescent-state reporting and CPU-hotplug operations should
-> mean that the incoming CPU never needs to report a quiescent state.
-> First, the outgoing CPU reports a quiescent state if needed.  Second,
-> the race where the CPU is leaving just as RCU is initializing a new
-> grace period is handled by an explicit check for this condition.  Third,
-> the CPU's leaf rcu_node structure's ->lock serializes these checks.
+On Thu 01-10-20 09:27:09, Paul E. McKenney wrote:
+[...]
+> commit ea5c19d21233b5e8d3d06c0d4ecd6be9f2829dc3
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Thu Oct 1 09:24:40 2020 -0700
 > 
-> This means that if rcu_cpu_starting() ever feels the need to report
-> a quiescent state, then there is a bug somewhere in the CPU hotplug
-> code or the RCU grace-period handling code.  This commit therefore
-> adds a WARN_ON_ONCE() to bring that bug to everyone's attention.
-> 
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>     kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+>     
+>     This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
+>     carried out by the single-argument variant of kvfree_rcu(), thus avoiding
+>     this can-sleep code path from dipping into the emergency reserves.
+>     
+>     Suggested-by: Michal Hocko <mhocko@suse.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Queued for testing and further review, thank you!
+LGTM. At least for this one I feel competent to give you
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tree.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 55d3700dd1e7..5efe0a98ea45 100644
+> index 242f0f0..6132452 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -4119,7 +4119,9 @@ void rcu_cpu_starting(unsigned int cpu)
->  	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
->  	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
->  	rdp->rcu_onl_gp_flags = READ_ONCE(rcu_state.gp_flags);
-> -	if (rnp->qsmask & mask) { /* RCU waiting on incoming CPU? */
-> +
-> +	/* An incoming CPU should never be blocking a grace period. */
-> +	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
->  		rcu_disable_urgency_upon_qs(rdp);
->  		/* Report QS -after- changing ->qsmaskinitnext! */
->  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+> @@ -3364,7 +3364,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+>  {
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	bool can_alloc_page = preemptible();
+> -	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+> +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC
+> +			       : GFP_ATOMIC) | __GFP_NOWARN;
+>  	int idx;
+>  
+>  	*krcp = krc_this_cpu_lock(flags);
+
+-- 
+Michal Hocko
+SUSE Labs
