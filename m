@@ -2,120 +2,105 @@ Return-Path: <SRS0=q59W=DL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AECE2C4363D
-	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 02:11:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D1FFC4363C
+	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 15:54:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 651C6206B8
-	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 02:11:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1AA89206DD
+	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 15:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601826858;
+	bh=qqhdLUTXgAVoaAfyn+BmSZJnVu9Mi3KQBvz3uiaqipY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=jzG23am8J8SfKGQ+pT1iimpONgLY+uK0dCzGn09IwA4rkaBguYrB7+UnT3arQgN4F
+	 rjlLd0r+CtBYa0GFQi2xoUIX/ZROg2hsaNbutDj9mt67KOF7AC9lK448Sz8XLvnPdt
+	 Ktfjw9uYipYj2bx6fhXGI/CcKQJK5P+oV8HE8jK0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgJDCLg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 3 Oct 2020 22:11:36 -0400
-Received: from smtprelay0067.hostedemail.com ([216.40.44.67]:47894 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726177AbgJDCLg (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sat, 3 Oct 2020 22:11:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0132A100E7B43;
-        Sun,  4 Oct 2020 02:11:35 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: soap16_3903463271b1
-X-Filterd-Recvd-Size: 3708
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  4 Oct 2020 02:11:33 +0000 (UTC)
-Message-ID: <9541b95e9b36e606d62174aa46ec8265f36652d6.camel@perches.com>
-Subject: Re: Where is the declaration of buffer used in kernel_param_ops
- .get functions?
-From:   Joe Perches <joe@perches.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org, rcu@vger.kernel.org,
-        linux-mm@kvack.org
-Date:   Sat, 03 Oct 2020 19:11:30 -0700
-In-Reply-To: <20201004013626.GE20115@casper.infradead.org>
+        id S1725826AbgJDPyR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 4 Oct 2020 11:54:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725825AbgJDPyR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 4 Oct 2020 11:54:17 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6FB7206C1;
+        Sun,  4 Oct 2020 15:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601826856;
+        bh=qqhdLUTXgAVoaAfyn+BmSZJnVu9Mi3KQBvz3uiaqipY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KV+UplelkgCNKz5+wWcFrjF6/8OROEQM/cyQQbHew9+6D+MfUeD/aDb6LV2cjiTWA
+         BuNoNONEJdZTcFGYrnbUzIksmWM/IeFMuPjwhkj2a1QNWflMmVQtzBUIzlNVtDH+8j
+         3xtnAd8MlxT4F9IfvdNm2pa44qvyN7hLvwHmOR0c=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 964E43522841; Sun,  4 Oct 2020 08:54:16 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 08:54:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Byungchul Park <byungchul.park@lge.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] rcu/tree: Make struct kernel_param_ops definitions
+ const
+Message-ID: <20201004155416.GM29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <cover.1601770305.git.joe@perches.com>
-         <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
-         <20201004013626.GE20115@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+ <c5e4bf0622e261f474b213c9eb0b646f7cca2a72.1601770305.git.joe@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5e4bf0622e261f474b213c9eb0b646f7cca2a72.1601770305.git.joe@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 2020-10-04 at 02:36 +0100, Matthew Wilcox wrote:
-> On Sat, Oct 03, 2020 at 06:19:18PM -0700, Joe Perches wrote:
-> > These patches came up because I was looking for
-> > the location of the declaration of the buffer used
-> > in kernel/params.c struct kernel_param_ops .get
-> > functions.
-> > 
-> > I didn't find it.
-> > 
-> > I want to see if it's appropriate to convert the
-> > sprintf family of functions used in these .get
-> > functions to sysfs_emit.
-> > 
-> > Patches submitted here:
-> > https://lore.kernel.org/lkml/5d606519698ce4c8f1203a2b35797d8254c6050a.1600285923.git.joe@perches.com/T/
-> > 
-> > Anyone know if it's appropriate to change the
-> > sprintf-like uses in these functions to sysfs_emit
-> > and/or sysfs_emit_at?
+On Sat, Oct 03, 2020 at 05:18:08PM -0700, Joe Perches wrote:
+> These should be const, so make it so.
 > 
-> There's a lot of preprocessor magic to wade through.
+> Signed-off-by: Joe Perches <joe@perches.com>
+
+Queued for testing and review, thank you!
+
+						Thanx, Paul
+
+> ---
+>  kernel/rcu/tree.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> I'm pretty sure this comes through include/linux/moduleparam.h
-> and kernel/module.c.
-
-Dunno, looked there, still can't find it.
-
-btw:
-
-The __module_param_call macro looks very dodgy
-as it uses both __used and __attribute__((unused))
-and likely one of them should be removed (unused?)
-
-It looks like the comes from varying definitions of
-__attribute_used__ eventually converted to __used 
-for old gcc versions 2, 3, and 4.
-
-1da177e4c3f4:include/linux/compiler-gcc2.h:#define __attribute_used__   __attribute__((__unused__))
-1da177e4c3f4:include/linux/compiler-gcc3.h:# define __attribute_used__  __attribute__((__used__))
-1da177e4c3f4:include/linux/compiler-gcc3.h:# define __attribute_used__  __attribute__((__unused__))
-1da177e4c3f4:include/linux/compiler-gcc4.h:#define __attribute_used__   __attribute__((__used__))
-
-Maybe:
-
----
- include/linux/moduleparam.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 47879fc7f75e..fc820b27fb00 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -288,10 +288,10 @@ struct kparam_array
- 	/* Default value instead of permissions? */			\
- 	static const char __param_str_##name[] = prefix #name;		\
- 	static struct kernel_param __moduleparam_const __param_##name	\
--	__used								\
--    __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
--	= { __param_str_##name, THIS_MODULE, ops,			\
--	    VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg } }
-+	__used __section("__param") __aligned(sizeof(void *)) = {	\
-+		__param_str_##name, THIS_MODULE, ops,			\
-+		VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg }	\
-+	}
- 
- /* Obsolete - use module_param_cb() */
- #define module_param_call(name, _set, _get, arg, perm)			\
-
-
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index f78ee759af9c..c4732bb80818 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -552,12 +552,12 @@ static int param_set_next_fqs_jiffies(const char *val, const struct kernel_param
+>  	return ret;
+>  }
+>  
+> -static struct kernel_param_ops first_fqs_jiffies_ops = {
+> +static const struct kernel_param_ops first_fqs_jiffies_ops = {
+>  	.set = param_set_first_fqs_jiffies,
+>  	.get = param_get_ulong,
+>  };
+>  
+> -static struct kernel_param_ops next_fqs_jiffies_ops = {
+> +static const struct kernel_param_ops next_fqs_jiffies_ops = {
+>  	.set = param_set_next_fqs_jiffies,
+>  	.get = param_get_ulong,
+>  };
+> -- 
+> 2.26.0
+> 
