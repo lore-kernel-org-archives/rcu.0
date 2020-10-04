@@ -2,67 +2,79 @@ Return-Path: <SRS0=q59W=DL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79F8DC41604
-	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 01:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A2D6C4727D
+	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 01:36:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 443DA20679
-	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 01:19:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C87D62067C
+	for <rcu@archiver.kernel.org>; Sun,  4 Oct 2020 01:36:42 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iVM81vLV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgJDBTW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 3 Oct 2020 21:19:22 -0400
-Received: from smtprelay0170.hostedemail.com ([216.40.44.170]:52936 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726225AbgJDBTW (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Sat, 3 Oct 2020 21:19:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 6875512D9;
-        Sun,  4 Oct 2020 01:19:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: body07_5705ce2271b1
-X-Filterd-Recvd-Size: 1443
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  4 Oct 2020 01:19:19 +0000 (UTC)
-Message-ID: <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
-Subject: Where is the declaration of buffer used in kernel_param_ops .get
- functions?
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        id S1726230AbgJDBgj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 3 Oct 2020 21:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726108AbgJDBgj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 3 Oct 2020 21:36:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52978C0613D0;
+        Sat,  3 Oct 2020 18:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NDQcs2sypgUb2kaljw/PLF9eyPJJqCCMKlV+6nk3qyA=; b=iVM81vLVhXohJ7qOoV+tDGUf5Y
+        SKtcp4UP39tB0Axj/fhnx76xM9UduT8h8NuuwmPPI2fW3v/mtptxbfO2tzewdHuO6lPpYW+Aj+hH7
+        ZH3++M4csNhhE5vPVviIUIkZY0/6PBnBvRx4AWYA0sinPAsWQDg9JvEp4gOFMrYXc0cSi33bRdc1l
+        T7NPCMiJaVpAuXiuuZFV2CF/pFefDvXY9sqmtI4qrV+ieA/rZlivPwk3qDmNUNhvQIXvZk4GRmNbt
+        VWblMIFSOQYERk6gOsg/lvRl3UCfj9tFR7whYVt5c62bFdmNc8L+Mv1u92CHPYlIqyQFgVn9Bx+ST
+        SBST4P7w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOsws-00012u-Sq; Sun, 04 Oct 2020 01:36:27 +0000
+Date:   Sun, 4 Oct 2020 02:36:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         kvm-ppc@vger.kernel.org, kvm@vger.kernel.org, rcu@vger.kernel.org,
         linux-mm@kvack.org
-Date:   Sat, 03 Oct 2020 18:19:18 -0700
-In-Reply-To: <cover.1601770305.git.joe@perches.com>
+Subject: Re: Where is the declaration of buffer used in kernel_param_ops .get
+ functions?
+Message-ID: <20201004013626.GE20115@casper.infradead.org>
 References: <cover.1601770305.git.joe@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+ <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-These patches came up because I was looking for
-the location of the declaration of the buffer used
-in kernel/params.c struct kernel_param_ops .get
-functions.
+On Sat, Oct 03, 2020 at 06:19:18PM -0700, Joe Perches wrote:
+> These patches came up because I was looking for
+> the location of the declaration of the buffer used
+> in kernel/params.c struct kernel_param_ops .get
+> functions.
+> 
+> I didn't find it.
+> 
+> I want to see if it's appropriate to convert the
+> sprintf family of functions used in these .get
+> functions to sysfs_emit.
+> 
+> Patches submitted here:
+> https://lore.kernel.org/lkml/5d606519698ce4c8f1203a2b35797d8254c6050a.1600285923.git.joe@perches.com/T/
+> 
+> Anyone know if it's appropriate to change the
+> sprintf-like uses in these functions to sysfs_emit
+> and/or sysfs_emit_at?
 
-I didn't find it.
+There's a lot of preprocessor magic to wade through.
 
-I want to see if it's appropriate to convert the
-sprintf family of functions used in these .get
-functions to sysfs_emit.
-
-Patches submitted here:
-https://lore.kernel.org/lkml/5d606519698ce4c8f1203a2b35797d8254c6050a.1600285923.git.joe@perches.com/T/
-
-Anyone know if it's appropriate to change the
-sprintf-like uses in these functions to sysfs_emit
-and/or sysfs_emit_at?
-
-
+I'm pretty sure this comes through include/linux/moduleparam.h
+and kernel/module.c.
