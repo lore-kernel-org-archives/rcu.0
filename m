@@ -2,139 +2,165 @@ Return-Path: <SRS0=BSCp=DM=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90F3DC4363A
-	for <rcu@archiver.kernel.org>; Mon,  5 Oct 2020 14:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7449AC4363A
+	for <rcu@archiver.kernel.org>; Mon,  5 Oct 2020 15:08:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D835207F7
-	for <rcu@archiver.kernel.org>; Mon,  5 Oct 2020 14:38:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33D5F20774
+	for <rcu@archiver.kernel.org>; Mon,  5 Oct 2020 15:08:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Bmw2n+ZE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K6/WmPyY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgJEOiK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 5 Oct 2020 10:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
+        id S1726567AbgJEPIH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 5 Oct 2020 11:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgJEOiJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:38:09 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B71C0613CE
-        for <rcu@vger.kernel.org>; Mon,  5 Oct 2020 07:38:09 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o21so9725497qtp.2
-        for <rcu@vger.kernel.org>; Mon, 05 Oct 2020 07:38:09 -0700 (PDT)
+        with ESMTP id S1725970AbgJEPIG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:08:06 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C6FC0613CE;
+        Mon,  5 Oct 2020 08:08:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a5so2189759ljj.11;
+        Mon, 05 Oct 2020 08:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jGjcwRAoiqcduLL2bxQ4mHoOvaw+GK5le8AMRCfmziw=;
-        b=Bmw2n+ZEzJQaKE0lF5o7u1Lny3AaHHJ1s/MBbnlqcsehpjY15tpnjoS32mD482jU+8
-         GqOGgIv5kVYk/89W/E4oaUfgOT7R1AxCmW1IB36WtIvZxuHdbUwphs4F5otG5l4NMVKh
-         ctvXvL01VhWc29V2l6tVKaiiczQVgnQWDQ4Gk=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
+        b=K6/WmPyYCS3Rp8ku15cnJNHN00NAvg3pv5av7mmklhJfeeND9Gr57YIUr5oUbLr4i+
+         moeXbFdzQ5FDo2540XrC2ZpD3GlrHYo04HwFZ0GX/mz/V0FGv1iZrtRzRd+zBVdKWLev
+         OiIHRmxkBJ3Uu7/MrJGkQMyH0Gd3wMlKXVob4wzbZcgPPi2ttIeoMzhwIyuIkcMvzgrf
+         Lun1kRFhEIi0Tfoxa9SimQEu2pUqFWmF8xtcYXlBJikQY9GahZxMylUD4ZFKQixYGh9X
+         FNBzPAndi+Fp0F6Y9KVcYeOPfioAQ8E4dPMrRJMIoYfN+BijZ/vcRnEcoFpSCy4e4mDu
+         i5gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jGjcwRAoiqcduLL2bxQ4mHoOvaw+GK5le8AMRCfmziw=;
-        b=RLD2Zi5u04TYdq0RIMkTLojGR6DfKGOiKy9wWVDCtC7H2LV8/QcaSlfIj1i4RTSoDb
-         3gqgf3oPifh8Otxf99YALaT/wEkfAaAXT/kYFQu4OAJVZ4WnGWcLe77OsvwEaezsqilp
-         vG7CUWCs3V1iNetWw+VFjFqxLIrx0gK2Gc6Pq58N4Mg/Hcf+kpwgQQmXFd1yDW7uJbaN
-         oNwTCloA7JlqQK1A7tqpXRJp52awYm2P2OR1vWBKGrp1K0H5ixkBa2qCAYIMshrKcmrn
-         A+QX2ZGF5scfY1R+Q/4YxO8jaDyACoCxEQxwR/g37Cq0XtCb7IzPIaK6J6AzXgOqYHE4
-         P2Qg==
-X-Gm-Message-State: AOAM530T+hdB2FO0ivum0ibX3ay00UhA9rS3lLxCKxljcaFjOQxnDeTr
-        MSbQoBbXkCYINwYIrvK4jMHOMg==
-X-Google-Smtp-Source: ABdhPJwlsLhBT0dRBWHT+f4KE7q+zVHQeWZVqYsZai7MVOu1pu+fWrvddx8Y+xXI+Z25jCQFeGPMDw==
-X-Received: by 2002:ac8:5d0d:: with SMTP id f13mr117396qtx.87.1601908688715;
-        Mon, 05 Oct 2020 07:38:08 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id n7sm463339qtp.93.2020.10.05.07.38.07
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
+        b=Kkq9P/FxkCVc5EcTgObxtEHvN8agJ7gwuePZrkE4PPcZCemaABLX4soANduE95biit
+         hh6JqHLKmGJEM8RlfnRVZvmgqFpGp9VqB0pWvounCLib5tpfxA31YZUVVVIUt5BdfBst
+         CIQ0faQcXGN+1WlLv1c7wZcfoKDYAhl6W74+4PpYlnfxnyWJ63M2Q/OlSyfr6r4Fkfx/
+         3xnZT9EMlMM6Ppbe0RrkRo0hvAdpljiCyr4+YpB20yxiuPRx/6lfPlx0FJZ13sn0EPiT
+         6pnT6kBKeIgIvAYDiban9HET24IYYXqrfiEDh7My5iOy5vFRDX/pS5+SznyF+fq0Mcxw
+         L8Qw==
+X-Gm-Message-State: AOAM533RfsAJ7/xNxT6Nfja2bvm1gDJfcQ26rrpM1seUUPr1aX/TUtz7
+        /SbNefb/s5reQlwx1MGiPfA=
+X-Google-Smtp-Source: ABdhPJwJCWZY1Ta3clt2a8+QT8HNjjnHTD5+j6kZdK+JedNK3x/DxK2R5Lq8sgokrenP6Q/9uJLfsw==
+X-Received: by 2002:a2e:8702:: with SMTP id m2mr49631lji.49.1601910484580;
+        Mon, 05 Oct 2020 08:08:04 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id 18sm3305lfz.141.2020.10.05.08.08.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 07:38:08 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 10:38:07 -0400
-From:   joel@joelfernandes.org
-To:     linux-kernel@vger.kernel.org
-Cc:     neeraju@codeaurora.org, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] rcu/tree: nocb: Avoid raising softirq when there are
- ready to execute CBs
-Message-ID: <20201005143807.GA524504@google.com>
-References: <20201005021132.146534-1-joel@joelfernandes.org>
+        Mon, 05 Oct 2020 08:08:03 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 5 Oct 2020 17:08:01 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201005150801.GC17959@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
+ <20201002071123.GB20872@dhcp22.suse.cz>
+ <20201002085014.GC3227@techsingularity.net>
+ <20201002090507.GB4555@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005021132.146534-1-joel@joelfernandes.org>
+In-Reply-To: <20201002090507.GB4555@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 10:11:32PM -0400, Joel Fernandes (Google) wrote:
-> During testing, I see it is possible that rcu_pending() returns 1 when
-> offloaded callbacks are ready to execute thus raising the RCU softirq.
+On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
+> On Fri 02-10-20 09:50:14, Mel Gorman wrote:
+> > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
+> > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
+> > > > > 
+> > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
+> > > > > the allocator (different from what you posted in previous version) so that it
+> > > > > only looks at the flag after it tries to allocate from pcplist and finds out
+> > > > > it's empty. So, no inventing of new page allocator entry points or checks such
+> > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+> > > > > affect existing fast paths.
+> > > > >
+> > > > OK. Now i see. Please have a look below at the patch, so we fully understand
+> > > > each other. If that is something that is close to your view or not:
+> > > > 
+> > > > <snip>
+> > > > t a/include/linux/gfp.h b/include/linux/gfp.h
+> > > > index c603237e006c..7e613560a502 100644
+> > > > --- a/include/linux/gfp.h
+> > > > +++ b/include/linux/gfp.h
+> > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
+> > > >  #define ___GFP_HARDWALL                0x100000u
+> > > >  #define ___GFP_THISNODE                0x200000u
+> > > >  #define ___GFP_ACCOUNT         0x400000u
+> > > > +#define ___GFP_NO_LOCKS                0x800000u
+> > > 
+> > > Even if a new gfp flag gains a sufficient traction and support I am
+> > > _strongly_ opposed against consuming another flag for that. Bit space is
+> > > limited. 
+> > 
+> > That is definitely true. I'm not happy with the GFP flag at all, the
+> > comment is at best a damage limiting move. It still would be better for
+> > a memory pool to be reserved and sized for critical allocations.
 > 
-> However, softirq does not execute offloaded callbacks. They are executed in a
-> kthread which is awakened independent of the softirq.
+> Completely agreed. The only existing usecase is so special cased that a
+> dedicated pool is not only easier to maintain but it should be also much
+> better tuned for the specific workload. Something not really feasible
+> with the allocator.
 > 
-> This commit therefore avoids raising the softirq in the first place. That's
-> probably a good thing considering that the purpose of callback offloading is to
-> reduce softirq activity.
+> > > Besides that we certainly do not want to allow craziness like
+> > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
+> > 
+> > That would deserve to be taken to a dumpster and set on fire. The flag
+> > combination could be checked in the allocator but the allocator path fast
+> > paths are bad enough already.
 > 
-> Passed 30 minute tests of TREE01 through TREE09 each.
+> If a new allocation/gfp mode is absolutely necessary then I believe that
+> the most reasoanble way forward would be
+> #define GFP_NO_LOCK	((__force gfp_t)0)
 > 
-> On TREE08, I notice that there is atmost 150us from when the softirq was
-> NOT raised when ready cbs were present, to when the ready callbacks were
-> invoked by the rcuop thread. This also further confirms that there is no
-> need to raise the softirq for ready cbs in the first place.
+Agree. Even though i see that some code should be adjusted for it. There are
+a few users of the __get_free_page(0); So, need to double check it:
 
-Hi Paul,
-You had asked me about whether removing this softirq invocation indirectly
-slows down grace period progression.
+<snip>
+[    0.650351] BUG: kernel NULL pointer dereference, address: 0000000000000010
+[    0.651083] #PF: supervisor read access in kernel mode
+[    0.651639] #PF: error_code(0x0000) - not-present page
+[    0.652200] PGD 0 P4D 0
+[    0.652523] Oops: 0000 [#1] SMP NOPTI
+[    0.652668] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-next-20200930+ #140
+[    0.652668] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+[    0.652668] RIP: 0010:__find_event_file+0x21/0x80
+<snip>
 
-This morning, I ran rcutorture.fwd_progress on TREE08 and I don't see any
-difference in number of grace periods with/without this patch. Just want to
-let you know.
+Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
+If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
+__kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
+what can be easily converted to raw variant. 
 
-Thanks,
-
- - Joel
-
-> 
-> Cc: neeraju@codeaurora.org
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> ---
-> 
-> v1->v2: Also cleaned up another test of the nocb configuration macro.
-> 
->  kernel/rcu/tree.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index f78ee759af9c..2b1e1b21db92 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3652,13 +3652,13 @@ static int rcu_pending(int user)
->  		return 1;
->  
->  	/* Does this CPU have callbacks ready to invoke? */
-> -	if (rcu_segcblist_ready_cbs(&rdp->cblist))
-> +	if (!rcu_segcblist_is_offloaded(&rdp->cblist) &&
-> +	    rcu_segcblist_ready_cbs(&rdp->cblist))
->  		return 1;
->  
->  	/* Has RCU gone idle with this CPU needing another grace period? */
->  	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
-> -	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
-> -	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
-> +	    (!rcu_segcblist_is_offloaded(&rdp->cblist)) &&
->  	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
->  		return 1;
->  
-> -- 
-> 2.28.0.806.g8561365e88-goog
+--
+Vlad Rezki
