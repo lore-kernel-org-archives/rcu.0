@@ -2,102 +2,98 @@ Return-Path: <SRS0=Nt6M=DN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD50EC41604
-	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 10:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1BD6C4363D
+	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 13:22:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 73D1C206F7
-	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 10:03:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 76B232087E
+	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 13:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601990526;
+	bh=LHGrdkmby5BA4t4N23HL7SkHHxZy7yqooZ3dMT3aY2s=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=cIx/EJC9k4jwHY+tRIYbdLlEZq0XZ0itWFMbqZE0VR/RRTcq93UcBwGPRiCJGWSnD
+	 qNOJHJTLRb6BcoDhCFtD2TfAufejE6K+Ic1ZzI6hR4feZBSfmyOj/9J6B+05afyy0d
+	 DEZDgWF6Kw+xMaq9bW85DJ+2VZ/ez6pg8djuhQB4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJFKDj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Oct 2020 06:03:39 -0400
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:55823 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725939AbgJFKDj (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 6 Oct 2020 06:03:39 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 625BE1C3853
-        for <rcu@vger.kernel.org>; Tue,  6 Oct 2020 11:03:37 +0100 (IST)
-Received: (qmail 29118 invoked from network); 6 Oct 2020 10:03:37 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 10:03:36 -0000
-Date:   Tue, 6 Oct 2020 11:03:34 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        id S1726317AbgJFNWG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Oct 2020 09:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726078AbgJFNWF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:22:05 -0400
+Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B25142078E;
+        Tue,  6 Oct 2020 13:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601990525;
+        bh=LHGrdkmby5BA4t4N23HL7SkHHxZy7yqooZ3dMT3aY2s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UfPGt9w4ExaWlstmmTjNUtHH93y5mElanmrggfILcMKUt4abJ+zea61rxv3QlNqS8
+         i/x4J8NZcOijylogzbLZIa9aYcy1hSw0kZxVfDwfQjAktPxCxt7f0jZjH3ypf2jdQy
+         1vwZVDXuv8tOjyEFsAEFi204UxM1TCTTA6JRNdZQ=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kPmuM-0018Kh-4g; Tue, 06 Oct 2020 15:21:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bailu Lin <bailu.lin@vivo.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Harry Wei <harryxiyou@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201006100334.GK3227@techsingularity.net>
-References: <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090729.GU2628@hirez.programming.kicks-ass.net>
- <20201002094502.GD3227@techsingularity.net>
- <20201002095858.GN2611@hirez.programming.kicks-ass.net>
- <20201002101952.GE3227@techsingularity.net>
- <20201002144120.GI29330@paulmck-ThinkPad-P72>
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH 0/4] linu-next next-20201006 document build fixes
+Date:   Tue,  6 Oct 2020 15:21:29 +0200
+Message-Id: <cover.1601990386.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201002144120.GI29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:41:20AM -0700, Paul E. McKenney wrote:
-> On Fri, Oct 02, 2020 at 11:19:52AM +0100, Mel Gorman wrote:
-> > On Fri, Oct 02, 2020 at 11:58:58AM +0200, Peter Zijlstra wrote:
-> > > > It's enabled by default by enough distros that adding too many checks
-> > > > is potentially painful. Granted it would be missed by most benchmarking
-> > > > which tend to control allocations from userspace but a lot of performance
-> > > > problems I see are the "death by a thousand cuts" variety.
-> > > 
-> > > Oh quite agreed, aka death by accounting. But if people are enabling
-> > > DEBUG options in production kernels, there's something wrong, no?
-> > > 
-> > 
-> > You'd think but historically I believe DEBUG_VM was enabled for some
-> > distributions because it made certain classes of problems easier to debug
-> > early. There is also a recent trend for enabling various DEBUG options for
-> > "hardening" even when they protect very specific corner cases or are for
-> > intended for kernel development. I've pushed back where I have an opinion
-> > that matters but it's generally corrosive.
-> > 
-> > > Should we now go add CONFIG_REALLY_DEBUG_STAY_AWAY_ALREADY options?
-> > 
-> > It's heading in that direction :(
-> 
-> Given that you guys have just reiterated yet again that you are very
-> unhappy with either a GFP_ flag or a special function like the one that
-> Peter Zijlstra put together, it would be very helpful if you were to at
-> least voice some level of support for Thomas Gleixner's patchset, which,
-> if accepted, will allow me to solve at least 50% of the problem.
-> 
+This small series fix new warnings introduced on today's linux-next.
 
-I read through the series and didn't find anything problematic that
-had not been covered already. Minimally, avoiding surprises about what
-preemptible() means in different contexts is nice. While I have not
-run it through a test grid to check, I'd be very surprised if this was
-problematic from a performance perspective on a preempt-disabled kernels.
-Last I checked, the difference between PREEMPT_NONE and PREEMPT_VOLUNTARY
-was less than 2% *at worst* and I don't think that was due to the preempt
-accounting.
+Feel free to add the patches on this series at the same tree
+as the warning was introduced at the first place.
+
+Thanks!
+Mauro
+
+
+Mauro Carvalho Chehab (4):
+  docs: infrastructure.rst: exclude device_link_state from device.h
+  docs: zh_CN: amu.rst: fix document title markup
+  docs: RCU: Requirements.rst: fix a list block
+  firmware_loader: fix a kernel-doc markup
+
+ Documentation/RCU/Design/Requirements/Requirements.rst | 1 +
+ Documentation/driver-api/infrastructure.rst            | 1 +
+ Documentation/translations/zh_CN/arm64/amu.rst         | 4 ++--
+ drivers/base/firmware_loader/fallback.c                | 2 ++
+ 4 files changed, 6 insertions(+), 2 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.26.2
+
+
