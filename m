@@ -2,165 +2,102 @@ Return-Path: <SRS0=Nt6M=DN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EF19C41604
-	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 06:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD50EC41604
+	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 10:03:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3AC69205ED
-	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 06:56:28 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kgJHrKjS"
+	by mail.kernel.org (Postfix) with ESMTP id 73D1C206F7
+	for <rcu@archiver.kernel.org>; Tue,  6 Oct 2020 10:03:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgJFG42 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Oct 2020 02:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbgJFG41 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:56:27 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B3C061755;
-        Mon,  5 Oct 2020 23:56:27 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i3so1151667pjz.4;
-        Mon, 05 Oct 2020 23:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
-        b=kgJHrKjSonX86RVyPSZeK3n/eKSf3Z5iXCkubCL03B3xjIlw1I3UVJ5Oz6oldmemu+
-         6rJaL5DsTUyCupB4FYMEDWaEzoKMDYYXIQOzUgjn5hUWTJy59aH+ZNZ62Wd5BhngbW+1
-         0t/iPMHM6DE34xJiMl00x6wskZr1nXO7FFDAXeHWWClyXlHaK4doUjutMC2RfUGt6v1H
-         aNu6t9dcg6fA8UquACGkeYCbd8l8RxkDsn0fPe19wpct/YACSiqaDcOtAkkIYP1k3T/E
-         skQ03oqS+ySD5bD1roJ9TodIimXd3IeQU7kggLi5lG4G9zbMkMHvREwF+SRpEL16PkSd
-         QQZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
-        b=mq88bkJ/7vRmN2lkWxa5Lm1iog5+KphQF3TqBTKIQOB1bvmPg4P5fwYPYN4CGSNBpE
-         UxKF5Nq8jW2j/AOaDC+CxCjqDuyGydPd0J5raoFdu5jKyuFjosiAIPOS8uyjtg1Z90gl
-         l9i+Y/ejTLCylTUGc4XNPmr32qXoha4YKWG/xmZfNal9vvOJhQTo/q7HKCBF8O9FrFyR
-         kwFZHJ13SbUtTqndl42LdAe3Ouk4XRUzXkyS3aTL00AnafXVjAFcS0a9eA06Vn1AGjME
-         PH91gr53mbMbslGub6PE3Krg/8ugS5ynw2J5rrFhLdCse2YT7ozpsP5t/wq7lbzDNLex
-         WLwQ==
-X-Gm-Message-State: AOAM532sTB0ZLw0mt0U3XvsdbFa7uwECs5tuGedrSffQUq8+Kd+E8iKo
-        Ho8PIJQNq6cgbqxAx0sL1i8=
-X-Google-Smtp-Source: ABdhPJyMkxuEeZ7MXGRLAPbbNrvhXEYbnB5A9eIh229n8RdwQydJJiqZO5UUjbb6Ulu9S4QCxG/8bA==
-X-Received: by 2002:a17:902:8693:b029:d3:9c6b:ca5f with SMTP id g19-20020a1709028693b02900d39c6bca5fmr1958085plo.67.1601967386593;
-        Mon, 05 Oct 2020 23:56:26 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id h9sm2042609pfh.213.2020.10.05.23.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:56:25 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 23:56:23 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
+        id S1726000AbgJFKDj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Oct 2020 06:03:39 -0400
+Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:55823 "EHLO
+        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725939AbgJFKDj (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 6 Oct 2020 06:03:39 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 625BE1C3853
+        for <rcu@vger.kernel.org>; Tue,  6 Oct 2020 11:03:37 +0100 (IST)
+Received: (qmail 29118 invoked from network); 6 Oct 2020 10:03:37 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 10:03:36 -0000
+Date:   Tue, 6 Oct 2020 11:03:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-Message-ID: <20201006065623.GA2418984@ubuntu-m3-large-x86>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com>
- <20200930204044.GZ29330@paulmck-ThinkPad-P72>
- <CAKwvOd=nabONrWyYFK7Y06TrKBOyHHfNUiiy69VJQ2NtCpbp5Q@mail.gmail.com>
- <20201002205130.GK29330@paulmck-ThinkPad-P72>
- <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
- <CA+icZUW_z5nJ1c69JS7Nm1QknF+CH+sPkhF4g2+L=d=H-vxVgw@mail.gmail.com>
- <20201005184910.GC29330@paulmck-ThinkPad-P72>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201006100334.GK3227@techsingularity.net>
+References: <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
+ <20201002071123.GB20872@dhcp22.suse.cz>
+ <20201002085014.GC3227@techsingularity.net>
+ <20201002090729.GU2628@hirez.programming.kicks-ass.net>
+ <20201002094502.GD3227@techsingularity.net>
+ <20201002095858.GN2611@hirez.programming.kicks-ass.net>
+ <20201002101952.GE3227@techsingularity.net>
+ <20201002144120.GI29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201005184910.GC29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20201002144120.GI29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:49:10AM -0700, Paul E. McKenney wrote:
-> On Mon, Oct 05, 2020 at 08:38:42PM +0200, Sedat Dilek wrote:
-> > On Mon, Oct 5, 2020 at 8:29 PM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
-> > >
-> > > On Fri, Oct 2, 2020 at 1:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Wed, Sep 30, 2020 at 01:55:48PM -0700, Nick Desaulniers wrote:
-> > > > > On Wed, Sep 30, 2020 at 1:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
-> > > > > > > The stringification operator, `#`, in the preprocessor escapes strings.
-> > > > > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> > > > > > > they treat section names that contain \".
-> > > > > > >
-> > > > > > > The portable solution is to not use a string literal with the
-> > > > > > > preprocessor stringification operator.
-> > > > > > >
-> > > > > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> > > > > > > Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> > > > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > > > >
-> > > > > > I am guessing that this needs to go up with other patches.  If so:
-> > > > > >
-> > > > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > >
-> > > > > > If not, let me know and I will queue it.
-> > > > >
-> > > > > I could have bundled them up as a series.  I think you can pick it up,
-> > > > > and I'll owe you a beer?
-> > > >
-> > > > It is queued, thank you!
-> > > >
-> > > > When does it need to hit mainline?  (Your default is the v5.11 merge
-> > > > window, that is, the one following the upcoming merge window.)
-> > >
-> > > No rush, this patch wasn't blocking any known issue, just a cleanup
-> > > while I was in the neighborhood.  100 years ago, I was an Eagle scout.
-> > > Pretty sure there was a motto about "leaving things better than you
-> > > found them."  Thanks for help resolving the merge conflict reported in
-> > > -next related to it.
+On Fri, Oct 02, 2020 at 07:41:20AM -0700, Paul E. McKenney wrote:
+> On Fri, Oct 02, 2020 at 11:19:52AM +0100, Mel Gorman wrote:
+> > On Fri, Oct 02, 2020 at 11:58:58AM +0200, Peter Zijlstra wrote:
+> > > > It's enabled by default by enough distros that adding too many checks
+> > > > is potentially painful. Granted it would be missed by most benchmarking
+> > > > which tend to control allocations from userspace but a lot of performance
+> > > > problems I see are the "death by a thousand cuts" variety.
+> > > 
+> > > Oh quite agreed, aka death by accounting. But if people are enabling
+> > > DEBUG options in production kernels, there's something wrong, no?
+> > > 
 > > 
-> > Wasn't there a problem with your "Fixes:" tag (Fixes: *drop word
-> > "commit"* commit_hashid ("...")?
+> > You'd think but historically I believe DEBUG_VM was enabled for some
+> > distributions because it made certain classes of problems easier to debug
+> > early. There is also a recent trend for enabling various DEBUG options for
+> > "hardening" even when they protect very specific corner cases or are for
+> > intended for kernel development. I've pushed back where I have an opinion
+> > that matters but it's generally corrosive.
+> > 
+> > > Should we now go add CONFIG_REALLY_DEBUG_STAY_AWAY_ALREADY options?
+> > 
+> > It's heading in that direction :(
 > 
-> Indeed there was, and I have it noted to be fixed on my next rebase.
+> Given that you guys have just reiterated yet again that you are very
+> unhappy with either a GFP_ flag or a special function like the one that
+> Peter Zijlstra put together, it would be very helpful if you were to at
+> least voice some level of support for Thomas Gleixner's patchset, which,
+> if accepted, will allow me to solve at least 50% of the problem.
 > 
-> Perhaps another reason not to rush to mainline though.  ;-)
-> 
-> 							Thanx, Paul
 
-I am replying here as well so that the relevant parties are in the know
-but I believe this patch should be fast tracked with a cc stable tag as
-this appears to be the root cause of the issue that Nick reported a few
-weeks ago:
+I read through the series and didn't find anything problematic that
+had not been covered already. Minimally, avoiding surprises about what
+preemptible() means in different contexts is nice. While I have not
+run it through a test grid to check, I'd be very surprised if this was
+problematic from a performance perspective on a preempt-disabled kernels.
+Last I checked, the difference between PREEMPT_NONE and PREEMPT_VOLUNTARY
+was less than 2% *at worst* and I don't think that was due to the preempt
+accounting.
 
-https://lore.kernel.org/rcu/CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com/
-https://github.com/ClangBuiltLinux/linux/issues/1081
-
-I can reproduce the issue on next-20201002 on my Raspberry Pi 4 just by
-booting it up. As soon as I apply this patch, all warnings disappear. I
-asked the original reporters to test if the patch resolves the issue for
-them but I figured more visibility on this, the sooner. The commit
-message might need to be revised if this turns out to be the case to
-make it more apparent that it has a user visible issue, rather than just
-a QoL fix.
-
-Additionally, it seems like the patch is missing some reviewed by tags
-from Kees, Sedat, and myself. Feel free to add a
-
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-
-as well.
-
-Cheers,
-Nathan
+-- 
+Mel Gorman
+SUSE Labs
