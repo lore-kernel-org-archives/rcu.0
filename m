@@ -2,206 +2,161 @@ Return-Path: <SRS0=by5p=DO=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDC26C4363D
-	for <rcu@archiver.kernel.org>; Wed,  7 Oct 2020 11:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6067BC4363C
+	for <rcu@archiver.kernel.org>; Wed,  7 Oct 2020 21:05:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B8F820870
-	for <rcu@archiver.kernel.org>; Wed,  7 Oct 2020 11:02:59 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L7Xj6RZJ"
+	by mail.kernel.org (Postfix) with ESMTP id 0F1D720872
+	for <rcu@archiver.kernel.org>; Wed,  7 Oct 2020 21:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1602104705;
+	bh=XuzH5blWHlB+mMmnzqx+vTR+L4nIxHQHXzopJDP9T6c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=iuQmotDKNTwyyr6Gb9D6lBxvXWkYMwnEgyUfjwhFw4KJ8I6SbbhqZAZEiAsJ/690K
+	 Y6kbk/N8FZz8UK/cgwSecMpSlKh6jQIHWOeCHzD+Db+l28mahKDDb1aptAiYFMhtyc
+	 M102D4p0oiy7kb/h1fNLV+0xTCyEphpoB+TobmmQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgJGLCy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Oct 2020 07:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgJGLCv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:02:51 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07288C061755;
-        Wed,  7 Oct 2020 04:02:50 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a23so737089ljp.5;
-        Wed, 07 Oct 2020 04:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CbjONhvllNSyW702K8bZjURMem2CyW8UYU/jLhqWZTM=;
-        b=L7Xj6RZJ7dh8W0ZgTwJU6Go5ids6sTbDmO5IN+gOOeP6Uo6dtXAFmpVFdEmHpOHy2x
-         +gsylc2e4ZjS0grEqCwE2GOkMKlXg8MWbUHrAwjm2/IwJmqQX5Gfy9Ib9GyIo9/VRBiG
-         P4eKkh4ELpYGD5B0Xuy3kgvIW2SdgCYIwHmHEb1ba2hVqy1aA2YHRBmDlOQybAQcL2qX
-         NClVuojhQ9jtB3da3+98+TsL+xgJmFMF/zQSIwgi2OPCLwHYrPLCwug7Du53qguNwlxR
-         PznpTCphf4twLxgDtmOeB51DmVLtlRHyHCAKjjfHxQd/HvSeKEdw1HNWF020nbOdw/Z3
-         Tv6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CbjONhvllNSyW702K8bZjURMem2CyW8UYU/jLhqWZTM=;
-        b=Jd6YXd81Rq+F1XAqxju5cdlr38w/aza2N9sSUefTN6GOW4+4koHQCctSjSJcwZkPNY
-         dQFzMFeqsuii/3u+g0rSFw1hzBEgkieb7I/BbUKsgPNm2veUEqccezw55HeWX5ltwxOB
-         /E0nSmbcXXkDmKMivx8WMz53PipyuF6t8w2GErkCq6fED6eAN7OnK/yBhW2XzvH1N3yo
-         KC9MUpTe+VZry6wZxjP729L/lWxvp9hHYxTq7rlyXdC2NTFEo1CjudnOeh2vK4T86YAS
-         m+eS1f/UwfQ6ynbiuY1wWHc9492Dfvna5DIfb2NsaniNxGpNe3M59xTJEuBuOdmz/hw0
-         FmpA==
-X-Gm-Message-State: AOAM533mnYlOagTQ2MlbjuO6HddvFeyexbqNVJS8SNWfjNDPL4pHZ117
-        pq6Fn7AgEdiTcPNT6Ifmex8=
-X-Google-Smtp-Source: ABdhPJw4UGU50WDP3vXA+Lj1oesoBXm6iHEH1ydOe3ByylMClE6FKl9qDPMlB81iUxeAmqpXWblhFQ==
-X-Received: by 2002:a2e:88cb:: with SMTP id a11mr1059943ljk.304.1602068569184;
-        Wed, 07 Oct 2020 04:02:49 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id s17sm282520lfp.292.2020.10.07.04.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 04:02:48 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 7 Oct 2020 13:02:46 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201007110246.GA25550@pc636>
-References: <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090507.GB4555@dhcp22.suse.cz>
- <20201005150801.GC17959@pc636>
- <20201005154100.GF4555@dhcp22.suse.cz>
- <20201006222529.GA23612@pc636>
- <20201007100234.GI29020@dhcp22.suse.cz>
+        id S1726434AbgJGVFE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Oct 2020 17:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726013AbgJGVFE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:05:04 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D40A2083B;
+        Wed,  7 Oct 2020 21:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602104703;
+        bh=XuzH5blWHlB+mMmnzqx+vTR+L4nIxHQHXzopJDP9T6c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VhX4nlu/c0Wk6+Td2+6byKSsBxCZ8w0R96WYH70E77KiYjTgpMHgJQHU067CJp9o3
+         aaGbtFNqeXLmxazip/eD005dAwErHTM10n11kNTT+PB98OC/iNJ5AyNUx+yzPc0uEZ
+         zDJvadSUUqyVrYb9W/aLWDOMz7irNz0PSQLg8V/o=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4F0763522FA4; Wed,  7 Oct 2020 14:05:03 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 14:05:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v2] srcu: avoid escaped section names
+Message-ID: <20201007210503.GR29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+ <20200929192549.501516-1-ndesaulniers@google.com>
+ <20200930204044.GZ29330@paulmck-ThinkPad-P72>
+ <CAKwvOd=nabONrWyYFK7Y06TrKBOyHHfNUiiy69VJQ2NtCpbp5Q@mail.gmail.com>
+ <20201002205130.GK29330@paulmck-ThinkPad-P72>
+ <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
+ <CA+icZUW_z5nJ1c69JS7Nm1QknF+CH+sPkhF4g2+L=d=H-vxVgw@mail.gmail.com>
+ <20201005184910.GC29330@paulmck-ThinkPad-P72>
+ <20201006065623.GA2418984@ubuntu-m3-large-x86>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007100234.GI29020@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201006065623.GA2418984@ubuntu-m3-large-x86>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:02:34PM +0200, Michal Hocko wrote:
-> On Wed 07-10-20 00:25:29, Uladzislau Rezki wrote:
-> > On Mon, Oct 05, 2020 at 05:41:00PM +0200, Michal Hocko wrote:
-> > > On Mon 05-10-20 17:08:01, Uladzislau Rezki wrote:
-> > > > On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
-> > > > > On Fri 02-10-20 09:50:14, Mel Gorman wrote:
-> > > > > > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > > > > > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > > > > > > > 
-> > > > > > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > > > > > > > the allocator (different from what you posted in previous version) so that it
-> > > > > > > > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > > > > > > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > > > > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > > > > > > > affect existing fast paths.
-> > > > > > > > >
-> > > > > > > > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > > > > > > > each other. If that is something that is close to your view or not:
-> > > > > > > > 
-> > > > > > > > <snip>
-> > > > > > > > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > > > > > index c603237e006c..7e613560a502 100644
-> > > > > > > > --- a/include/linux/gfp.h
-> > > > > > > > +++ b/include/linux/gfp.h
-> > > > > > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> > > > > > > >  #define ___GFP_HARDWALL                0x100000u
-> > > > > > > >  #define ___GFP_THISNODE                0x200000u
-> > > > > > > >  #define ___GFP_ACCOUNT         0x400000u
-> > > > > > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > > > > > 
-> > > > > > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > > > > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > > > > > limited. 
-> > > > > > 
-> > > > > > That is definitely true. I'm not happy with the GFP flag at all, the
-> > > > > > comment is at best a damage limiting move. It still would be better for
-> > > > > > a memory pool to be reserved and sized for critical allocations.
-> > > > > 
-> > > > > Completely agreed. The only existing usecase is so special cased that a
-> > > > > dedicated pool is not only easier to maintain but it should be also much
-> > > > > better tuned for the specific workload. Something not really feasible
-> > > > > with the allocator.
-> > > > > 
-> > > > > > > Besides that we certainly do not want to allow craziness like
-> > > > > > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > > > > > 
-> > > > > > That would deserve to be taken to a dumpster and set on fire. The flag
-> > > > > > combination could be checked in the allocator but the allocator path fast
-> > > > > > paths are bad enough already.
-> > > > > 
-> > > > > If a new allocation/gfp mode is absolutely necessary then I believe that
-> > > > > the most reasoanble way forward would be
-> > > > > #define GFP_NO_LOCK	((__force gfp_t)0)
-> > > > > 
-> > > > Agree. Even though i see that some code should be adjusted for it. There are
-> > > > a few users of the __get_free_page(0); So, need to double check it:
+On Mon, Oct 05, 2020 at 11:56:23PM -0700, Nathan Chancellor wrote:
+> On Mon, Oct 05, 2020 at 11:49:10AM -0700, Paul E. McKenney wrote:
+> > On Mon, Oct 05, 2020 at 08:38:42PM +0200, Sedat Dilek wrote:
+> > > On Mon, Oct 5, 2020 at 8:29 PM 'Nick Desaulniers' via Clang Built
+> > > Linux <clang-built-linux@googlegroups.com> wrote:
+> > > >
+> > > > On Fri, Oct 2, 2020 at 1:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Wed, Sep 30, 2020 at 01:55:48PM -0700, Nick Desaulniers wrote:
+> > > > > > On Wed, Sep 30, 2020 at 1:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
+> > > > > > > > The stringification operator, `#`, in the preprocessor escapes strings.
+> > > > > > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+> > > > > > > > they treat section names that contain \".
+> > > > > > > >
+> > > > > > > > The portable solution is to not use a string literal with the
+> > > > > > > > preprocessor stringification operator.
+> > > > > > > >
+> > > > > > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
+> > > > > > > > Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
+> > > > > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > > > > >
+> > > > > > > I am guessing that this needs to go up with other patches.  If so:
+> > > > > > >
+> > > > > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > > >
+> > > > > > > If not, let me know and I will queue it.
+> > > > > >
+> > > > > > I could have bundled them up as a series.  I think you can pick it up,
+> > > > > > and I'll owe you a beer?
+> > > > >
+> > > > > It is queued, thank you!
+> > > > >
+> > > > > When does it need to hit mainline?  (Your default is the v5.11 merge
+> > > > > window, that is, the one following the upcoming merge window.)
+> > > >
+> > > > No rush, this patch wasn't blocking any known issue, just a cleanup
+> > > > while I was in the neighborhood.  100 years ago, I was an Eagle scout.
+> > > > Pretty sure there was a motto about "leaving things better than you
+> > > > found them."  Thanks for help resolving the merge conflict reported in
+> > > > -next related to it.
 > > > 
-> > > Yes, I believe I have pointed that out in the previous discussion.
-> > > 
-> > OK. I spent more time on it. A passed gfp_mask can be adjusted on the entry,
-> > that adjustment depends on the gfp_allowed_mask. It can be changed in run-time.
+> > > Wasn't there a problem with your "Fixes:" tag (Fixes: *drop word
+> > > "commit"* commit_hashid ("...")?
 > > 
-> > For example during early boot it excludes: __GFP_RECLAIM|__GFP_IO|__GFP_FS flags,
-> > what is GFP_KERNEL. So, GFP_KERNEL is adjusted on entry and becomes 0 during early
-> > boot phase.
-> 
-> Honestly I am not sure how much is GFP_BOOT_MASK still needed. The
-> remaining user of gfp_allowed_mask mask should be only hibernation and I
-> believe this should be removed in long term. Not as trivial because
-> scope API cannot be used for that as it needs a global flag but this is
-> a gross hack that should be implemented differently. It is waiting on my
-> todo list but never got around to that.
-> 
-> > How to distinguish it:
+> > Indeed there was, and I have it noted to be fixed on my next rebase.
 > > 
-> > <snip>
-> > +       /*
-> > +        * gfp_mask can become zero because gfp_allowed_mask changes in run-time.
-> > +        */
-> > +       if (!gfp_mask)
-> > +               alloc_flags |= ALLOC_NO_LOCKS;
-> > +
-> >         gfp_mask &= gfp_allowed_mask;
-> >         alloc_mask = gfp_mask;
-> >         if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> > <snip>
+> > Perhaps another reason not to rush to mainline though.  ;-)
 > > 
-> > > > 
-> > > > Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
-> > > > If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
-> > > > __kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
-> > > > what can be easily converted to raw variant. 
-> > > 
-> > > Yes, there are likely more surprises like that. I am not sure about
-> > > kasan, page owner (which depens on the stack unwinder) and others which
-> > > hook into this path.
-> > >
-> > I have checked kasan_alloc_pages(), kernel_poison_pages() both are OK,
-> > at least i did not find any locking there. As for set_page_owner(), it
-> > requires more attention, since it uses arch specific unwind logic. Though,
-> > i spent some time on it and so far have not noticed anything.
+> > 							Thanx, Paul
 > 
-> stack depod depends on a lock IIRC. Anyway, this is just showing how
-> this is going to grow in complexity and make future additions harder.
-> A niche usecase is inducing an additional complexity for future
-> maintenance.
+> I am replying here as well so that the relevant parties are in the know
+> but I believe this patch should be fast tracked with a cc stable tag as
+> this appears to be the root cause of the issue that Nick reported a few
+> weeks ago:
 > 
-I agree regarding maintenance costs. That is what is hard to avoid.
+> https://lore.kernel.org/rcu/CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com/
+> https://github.com/ClangBuiltLinux/linux/issues/1081
+> 
+> I can reproduce the issue on next-20201002 on my Raspberry Pi 4 just by
+> booting it up. As soon as I apply this patch, all warnings disappear. I
+> asked the original reporters to test if the patch resolves the issue for
+> them but I figured more visibility on this, the sooner. The commit
+> message might need to be revised if this turns out to be the case to
+> make it more apparent that it has a user visible issue, rather than just
+> a QoL fix.
+> 
+> Additionally, it seems like the patch is missing some reviewed by tags
+> from Kees, Sedat, and myself. Feel free to add a
+> 
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> as well.
 
---
-Vlad Rezki
+Good catch, and apologies to all concerned!  I have removed the stray
+"commit" and, based posts earlier in this thread, I have also added:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+Thank you all!
+
+							Thanx, Paul
