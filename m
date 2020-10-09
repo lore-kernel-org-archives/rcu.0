@@ -2,169 +2,107 @@ Return-Path: <SRS0=v0Re=DQ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83957C433DF
-	for <rcu@archiver.kernel.org>; Fri,  9 Oct 2020 17:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D50C433E7
+	for <rcu@archiver.kernel.org>; Fri,  9 Oct 2020 19:47:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 519B822251
-	for <rcu@archiver.kernel.org>; Fri,  9 Oct 2020 17:01:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AC71322282
+	for <rcu@archiver.kernel.org>; Fri,  9 Oct 2020 19:47:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RY0DZp/j";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D48HoQUB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bDt+FMw1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389966AbgJIRBa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Oct 2020 13:01:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59164 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389640AbgJIRB1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:01:27 -0400
-Date:   Fri, 09 Oct 2020 17:01:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602262884;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=qa5BYAQ/xKA+kV57+AUnTiO/P44u/O6wIIY1Yvzzttg=;
-        b=RY0DZp/jR4qFU2CsQ3SkU4CeCA7L9+U7TauNgFCu5/dc34SvxPKnF55BGnw0yU17c/mbca
-        HbwtdhU0yeCOXM8x1Rdhm5CrfgapCIs1tlxPnA72pCAR9PAIxoBvnghTmQfQRlzq6M1vCU
-        vAN1T4k+1JJrx6B4v4Q+QUvhOmm4FnC1PqbH2zppO4DkjDvHCOqgNDNtHHt2P4CTEb2mCg
-        GrZAz8qP+O6IBdlMzlBQMm2PnXP7/rCKC0C8MdiLruE91jYXxs1n+p1ZNJ527ZgkN617Zk
-        6PehEdCy9TAGpkZDOo48rvdZD/oaI4pab0YPq2og6/J36DaNtuPnQggoHG1cpw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602262884;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=qa5BYAQ/xKA+kV57+AUnTiO/P44u/O6wIIY1Yvzzttg=;
-        b=D48HoQUB7Ht5aqnr8tshiG4W7V5hgq04Ov0vSApG90sKUEk/Cwlg8RLyXH5iYWtMggGTNH
-        N9AtH8SSYts8G1AQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Cleanup PREEMPT_COUNT leftovers
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <160226288348.7002.14672482612676279557.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1731030AbgJITrr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Oct 2020 15:47:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27568 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729280AbgJITrr (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Fri, 9 Oct 2020 15:47:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602272866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lgXKGmJY8FuTXCXdpAoSLX4NBWkvEFcm38oteYITDlM=;
+        b=bDt+FMw1IFs0ALzIc7TEbakxKz3gXcvlEkrMsV+ImV2rvHiDstF5fOnTb7JwMvCphekxz9
+        21bsMyN8aRWCCWGjL8NX+Ba2+con1IjjgxY3lfimIpzc7pjj/QYoXLnZM1NYK+d9SZEQL2
+        hHrX7O6uRcRoiDMa2/fe0+OfcV3lMbE=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-aWI6HtLfONugSkWldZBqiQ-1; Fri, 09 Oct 2020 15:47:44 -0400
+X-MC-Unique: aWI6HtLfONugSkWldZBqiQ-1
+Received: by mail-oo1-f72.google.com with SMTP id q75so4448653ooq.16
+        for <rcu@vger.kernel.org>; Fri, 09 Oct 2020 12:47:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lgXKGmJY8FuTXCXdpAoSLX4NBWkvEFcm38oteYITDlM=;
+        b=CpDqGzbveKd9R/sT9LDlXBzX6j/qsEfp+8zzvJ7JzT/SflEVKC3z6T0bSj6RovP5iD
+         OOXHvFZeFYe0jHKYG0jyD3WFZ+IyS6m8+CueDIP7D5cvtn0LNAvk8MXvUvwNVl2UpE2k
+         9ukXG9K7bmRZNX+n4JZsfAL/fjMLTW54orchk/i9xv1wDB/blKv+IG+JwWrlm3R10cCu
+         uKjI/JkUG/z83IzZgLFs88LjsC6B05aI/q4B3Blid+rdnRKdYpr4/095BgcKEmtXhnz7
+         pxq1pQJON7Bv/71i6vlheFNQ5VKVAYFl6cv+cLMKiziXKzv70ujxgkwWQI/0MCv0lu24
+         bIhg==
+X-Gm-Message-State: AOAM533tYUEVBDVgtPwzrclcDSTaVvLu7kR3wj4dbzMnOGxjX1GtpNXE
+        z5SIaDMwC7IxJ6isud7fkRIg35yzvOcukDSe4eN4x5Xnp5iKfot4DAdMiY7jajS6OcmR2ZlvWuh
+        ihp3KcBrMUAPm
+X-Received: by 2002:a4a:e08a:: with SMTP id w10mr10404066oos.18.1602272863906;
+        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQflYEfbzuxtLITg+Up9jg2c8kNCLAPz8wTSQCn0w7U0e6jYxqCjicPoPfd05rsY6eO5cFCQ==
+X-Received: by 2002:a4a:e08a:: with SMTP id w10mr10404056oos.18.1602272863697;
+        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s20sm8164861oot.15.2020.10.09.12.47.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 12:47:43 -0700 (PDT)
+From:   trix@redhat.com
+To:     dave@stgolabs.net, paulmck@kernel.org, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        natechancellor@gmail.com, ndesaulniers@google.com
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
+Subject: [PATCH] rcutorture: remove unneeded check
+Date:   Fri,  9 Oct 2020 12:47:36 -0700
+Message-Id: <20201009194736.2364-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Tom Rix <trix@redhat.com>
 
-Commit-ID:     27405ee98aee7a25bbca59b0aba04f33b6acc561
-Gitweb:        https://git.kernel.org/tip/27405ee98aee7a25bbca59b0aba04f33b6acc561
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 14 Sep 2020 19:37:36 +02:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Thu, 01 Oct 2020 09:05:16 -07:00
+clang static analysis reports this problem:
 
-rcutorture: Cleanup PREEMPT_COUNT leftovers
+rcutorture.c:1999:2: warning: Called function pointer
+  is null (null dereference)
+        cur_ops->sync(); /* Later readers see above write. */
+        ^~~~~~~~~~~~~~~
 
-CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-removed. Cleanup the leftovers before doing so.
+This is a false positive triggered by an earlier, later ignored
+NULL check of sync() op.  By inspection of the rcu_torture_ops,
+the sync() op is never uninitialized.  So this earlier check is
+not needed.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: rcu@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-t            | 1 -
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-u            | 1 -
- tools/testing/selftests/rcutorture/configs/rcu/TINY01            | 1 -
- tools/testing/selftests/rcutorture/doc/TINY_RCU.txt              | 5 ++---
- tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt      | 1 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h | 1 -
- 6 files changed, 2 insertions(+), 8 deletions(-)
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-index 6c78022..553cf65 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-@@ -7,4 +7,3 @@ CONFIG_RCU_TRACE=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_DEBUG_ATOMIC_SLEEP=y
--#CHECK#CONFIG_PREEMPT_COUNT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-index c15ada8..99563da 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-@@ -7,4 +7,3 @@ CONFIG_RCU_TRACE=n
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_PROVE_LOCKING=y
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TINY01 b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-index 6db705e..9b22b8e 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TINY01
-@@ -10,4 +10,3 @@ CONFIG_RCU_TRACE=n
- #CHECK#CONFIG_RCU_STALL_COMMON=n
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
--CONFIG_PREEMPT_COUNT=n
-diff --git a/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt b/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-index a75b169..d30cedf 100644
---- a/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-+++ b/tools/testing/selftests/rcutorture/doc/TINY_RCU.txt
-@@ -3,11 +3,10 @@ This document gives a brief rationale for the TINY_RCU test cases.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index beba9e7963c8..6efc03a1d623 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1989,7 +1989,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+ 	unsigned long stopat;
+ 	static DEFINE_TORTURE_RANDOM(trs);
  
- Kconfig Parameters:
- 
--CONFIG_DEBUG_LOCK_ALLOC -- Do all three and none of the three.
--CONFIG_PREEMPT_COUNT
-+CONFIG_DEBUG_LOCK_ALLOC -- Do both and none of the two.
- CONFIG_RCU_TRACE
- 
--The theory here is that randconfig testing will hit the other six possible
-+The theory here is that randconfig testing will hit the other two possible
- combinations of these parameters.
- 
- 
-diff --git a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-index 1b96d68..cfdd48f 100644
---- a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-+++ b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-@@ -43,7 +43,6 @@ CONFIG_64BIT
- 
- 	Used only to check CONFIG_RCU_FANOUT value, inspection suffices.
- 
--CONFIG_PREEMPT_COUNT
- CONFIG_PREEMPT_RCU
- 
- 	Redundant with CONFIG_PREEMPT, ignore.
-diff --git a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-index 283d710..d0d485d 100644
---- a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-+++ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h
-@@ -8,7 +8,6 @@
- #undef CONFIG_HOTPLUG_CPU
- #undef CONFIG_MODULES
- #undef CONFIG_NO_HZ_FULL_SYSIDLE
--#undef CONFIG_PREEMPT_COUNT
- #undef CONFIG_PREEMPT_RCU
- #undef CONFIG_PROVE_RCU
- #undef CONFIG_RCU_NOCB_CPU
+-	if  (cur_ops->call && cur_ops->sync && cur_ops->cb_barrier) {
++	if  (cur_ops->call && cur_ops->cb_barrier) {
+ 		init_rcu_head_on_stack(&fcs.rh);
+ 		selfpropcb = true;
+ 	}
+-- 
+2.18.1
+
