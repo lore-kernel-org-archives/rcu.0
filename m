@@ -2,121 +2,152 @@ Return-Path: <SRS0=R7PL=DT=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCE80C433E7
-	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 13:51:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02699C433E7
+	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 23:20:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 83EE32076E
-	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 13:51:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BEFD920838
+	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 23:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602510694;
-	bh=7X8bVdnQgnIMzhQQANV8paL2JOnyHOjTZlmsrZklMVc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=SzcLSJ3ODEam/FhdvyR/Nmiq13PEjms+YG5Q4+gA1l6ADUHKq9RW/RJdnuqwTvzSa
-	 17A9qZ0JkPuthC8igszRdhBllFPjzAvA61+kv20/lDTTeK8pHOFEkxO5HGvhQ4g2Nh
-	 oE3ewk3DM6Mpfq1m0sHv447JHAgAu19Xli6KRDFE=
+	s=default; t=1602544812;
+	bh=FR/XhIiRDNVQjTauUtYXk48qWpsYZADdnNm8X2ctaWQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=2iVXR3+WS83iOoEjhAWgI8kor3UAqxs+2ylek+TY2oljK/xhYLvGXSxZpe3snFRVW
+	 pYG1VKJvTzNBa440JyRdDxzAonWCaKM5u14ivKJfUGa5kURqjckCpFYpvZ8/81+8+P
+	 jcBCcBqEoEvmQnS6eANXrha6gHgMBXfs0d0bYmpA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389863AbgJLNve (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Oct 2020 09:51:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
+        id S1730929AbgJLXUM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Oct 2020 19:20:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389796AbgJLNuD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:50:03 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S1726744AbgJLXUM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Oct 2020 19:20:12 -0400
+Received: from localhost (unknown [176.164.225.223])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBAF220679;
-        Mon, 12 Oct 2020 13:50:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F0002076D;
+        Mon, 12 Oct 2020 23:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602510603;
-        bh=7X8bVdnQgnIMzhQQANV8paL2JOnyHOjTZlmsrZklMVc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XAugCkaRzTdRLkMSYNvaddNMFMx4h/puIWOU9hkx5tYisS/v49Pkx7k7z6Ioa9fm9
-         rF9CqiVNKmPRRgFoh+YReZfZ6iueuKUT+pvVn3NJskyItQCI5V8IoDF7qIBgxdJCeq
-         4gI2YQU0Ba7UwXmUq7Z8G1RmuxprcMSOrMY8GcwU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9E2CC352272C; Mon, 12 Oct 2020 06:50:02 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 06:50:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        s=default; t=1602544811;
+        bh=FR/XhIiRDNVQjTauUtYXk48qWpsYZADdnNm8X2ctaWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qq5ShvRN7W/05X85qGJqqh5KHoOF31TRFGWcqUMU7hCKTS+z7FNw/lrg0QDfyPbgZ
+         kAGfva6WKdEFbW4jKxwqCP2zXQw8WC18mjuVnaBBNuoy9Zr+JugOpGLA4xsYKHwL6m
+         JS93CChPZh5NbdhSG6hIn/uOJT8EWNupH12A9O4Q=
+Date:   Tue, 13 Oct 2020 01:20:08 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH v6 1/4] rcu/tree: Make rcu_do_batch count how many
- callbacks were executed
-Message-ID: <20201012135002.GB3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Subject: Re: [PATCH v6 2/4] rcu/segcblist: Add counters to segcblist
+ datastructure
+Message-ID: <20201012232008.GA47577@lothringen>
 References: <20200923152211.2403352-1-joel@joelfernandes.org>
- <20200923152211.2403352-2-joel@joelfernandes.org>
- <20201009231409.GA120772@lothringen>
- <CAEXW_YQPFM81EXi+7c6ed9b2ULw4YmtfGzmT1GKUGVu5v6CyGg@mail.gmail.com>
+ <20200923152211.2403352-3-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQPFM81EXi+7c6ed9b2ULw4YmtfGzmT1GKUGVu5v6CyGg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200923152211.2403352-3-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 09:35:37AM -0700, Joel Fernandes wrote:
-> On Fri, Oct 9, 2020 at 4:14 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> >
-> > On Wed, Sep 23, 2020 at 11:22:08AM -0400, Joel Fernandes (Google) wrote:
-> > > Currently, rcu_do_batch() depends on the unsegmented callback list's len field
-> > > to know how many CBs are executed. This fields counts down from 0 as CBs are
-> > > dequeued.  It is possible that all CBs could not be run because of reaching
-> > > limits in which case the remaining unexecuted callbacks are requeued in the
-> > > CPU's segcblist.
-> > >
-> > > The number of callbacks that were not requeued are then the negative count (how
-> > > many CBs were run) stored in the rcl->len which has been counting down on every
-> > > dequeue. This negative count is then added to the per-cpu segmented callback
-> > > list's to correct its count.
-> > >
-> > > Such a design works against future efforts to track the length of each segment
-> > > of the segmented callback list. The reason is because
-> > > rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
-> > > list's length field (rcl->len) during extraction.
-> > > Also, the design of counting down from 0 is confusing and error-prone IMHO.
-> >
-> > Right :)
-> 
-> :)
-> 
-> > > This commit therefore explicitly counts have many callbacks were executed in
-> >
-> > s/have/how
-> >
-> > > rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
-> > > field, without relying on the negativity of rcl->len.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> 
-> Thanks! Paul would be Ok to make the minor fixup s/have/how/ that
-> Frederic pointed?
+On Wed, Sep 23, 2020 at 11:22:09AM -0400, Joel Fernandes (Google) wrote:
+> +/* Return number of callbacks in a segment of the segmented callback list. */
+> +static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> +{
+> +#ifdef CONFIG_RCU_NOCB_CPU
+> +	smp_mb__before_atomic(); /* Up to the caller! */
+> +	atomic_long_add(v, &rsclp->seglen[seg]);
+> +	smp_mb__after_atomic(); /* Up to the caller! */
+> +#else
+> +	smp_mb(); /* Up to the caller! */
+> +	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
+> +	smp_mb(); /* Up to the caller! */
+> +#endif
+> +}
 
-But of course!  I was waiting until Frederic gets them all reviewed,
-with an eye to applying and wordsmithing them as a set.
+I know that these "Up to the caller" comments come from the existing len
+functions but perhaps we should explain a bit more against what it is ordering
+and what it pairs to.
 
-> - Joel
-> (Due to COVID issues at home, I'm intermittently working so advance
-> apologies for slow replies.)
+Also why do we need one before _and_ after?
 
-And I hope that this is going as well as it possibly can!
+And finally do we have the same ordering requirements than the unsegmented len
+field?
 
-							Thanx, Paul
+> +
+> +/* Move from's segment length to to's segment. */
+> +static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
+> +{
+> +	long len;
+> +
+> +	if (from == to)
+> +		return;
+> +
+> +	len = rcu_segcblist_get_seglen(rsclp, from);
+> +	if (!len)
+> +		return;
+> +
+> +	rcu_segcblist_add_seglen(rsclp, to, len);
+> +	rcu_segcblist_set_seglen(rsclp, from, 0);
+> +}
+> +
+[...]
+> @@ -245,6 +283,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
+>  			   struct rcu_head *rhp)
+>  {
+>  	rcu_segcblist_inc_len(rsclp);
+> +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
+>  	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
+
+Since inc_len and even now inc_seglen have two full barriers embracing the add up,
+we can probably spare the above smp_mb()?
+
+>  	rhp->next = NULL;
+>  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
+> @@ -274,27 +313,13 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
+>  	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
+>  		if (rsclp->tails[i] != rsclp->tails[i - 1])
+>  			break;
+> +	rcu_segcblist_inc_seglen(rsclp, i);
+>  	WRITE_ONCE(*rsclp->tails[i], rhp);
+>  	for (; i <= RCU_NEXT_TAIL; i++)
+>  		WRITE_ONCE(rsclp->tails[i], &rhp->next);
+>  	return true;
+>  }
+>  
+> @@ -403,6 +437,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+>  		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
+>  			break;
+>  		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
+> +		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
+
+Do we still need the same amount of full barriers contained in add() called by move() here?
+It's called in the reverse order (write queue then len) than usual. If I trust the comment
+in rcu_segcblist_enqueue(), the point of the barrier is to make the length visible before
+the new callback for rcu_barrier() (although that concerns len and not seglen). But here
+above, the unsegmented length doesn't change. I could understand a write barrier between
+add_seglen(x, i) and set_seglen(0, RCU_DONE_TAIL) but I couldn't find a paired couple either.
+
+>  	}
+>  
+>  	/* If no callbacks moved, nothing more need be done. */
+> @@ -423,6 +458,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
+>  		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
+>  			break;  /* No more callbacks. */
+>  		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
+> +		rcu_segcblist_move_seglen(rsclp, i, j);
+
+Same question here (feel free to reply "same answer" :o)
+
+Thanks!
