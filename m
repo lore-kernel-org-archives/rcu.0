@@ -1,153 +1,119 @@
-Return-Path: <SRS0=R7PL=DT=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=rUw8=DU=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02699C433E7
-	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 23:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4592AC433E7
+	for <rcu@archiver.kernel.org>; Tue, 13 Oct 2020 12:01:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BEFD920838
-	for <rcu@archiver.kernel.org>; Mon, 12 Oct 2020 23:20:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06B342080A
+	for <rcu@archiver.kernel.org>; Tue, 13 Oct 2020 12:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602544812;
-	bh=FR/XhIiRDNVQjTauUtYXk48qWpsYZADdnNm8X2ctaWQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=2iVXR3+WS83iOoEjhAWgI8kor3UAqxs+2ylek+TY2oljK/xhYLvGXSxZpe3snFRVW
-	 pYG1VKJvTzNBa440JyRdDxzAonWCaKM5u14ivKJfUGa5kURqjckCpFYpvZ8/81+8+P
-	 jcBCcBqEoEvmQnS6eANXrha6gHgMBXfs0d0bYmpA=
+	s=default; t=1602590488;
+	bh=SAVn8enQ4C4UTfYln5jnWV4ibLgb6yze8aWC+I7yQmM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=wiq2cQisuM6jolWSvgeP8JE89QHAbrBtL5L/cHS+xI/oV1Cwh1PZsf5VFp7ib+Bnq
+	 iVvlLoRzw8k17tkF3KAj1p+0zW+Ae+luC8E4zJ7W98lLE3VW+AZrazBaLNN+mPaBS9
+	 F+B7XK+4ugRDWZYp7tj9Rk5KpQ9NcO+TptXFdHGQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730929AbgJLXUM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Oct 2020 19:20:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39748 "EHLO mail.kernel.org"
+        id S1728424AbgJMMBI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Oct 2020 08:01:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726744AbgJLXUM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Oct 2020 19:20:12 -0400
-Received: from localhost (unknown [176.164.225.223])
+        id S1727439AbgJMLym (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:42 -0400
+Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F0002076D;
-        Mon, 12 Oct 2020 23:20:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C7D92227E;
+        Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602544811;
-        bh=FR/XhIiRDNVQjTauUtYXk48qWpsYZADdnNm8X2ctaWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qq5ShvRN7W/05X85qGJqqh5KHoOF31TRFGWcqUMU7hCKTS+z7FNw/lrg0QDfyPbgZ
-         kAGfva6WKdEFbW4jKxwqCP2zXQw8WC18mjuVnaBBNuoy9Zr+JugOpGLA4xsYKHwL6m
-         JS93CChPZh5NbdhSG6hIn/uOJT8EWNupH12A9O4Q=
-Date:   Tue, 13 Oct 2020 01:20:08 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        s=default; t=1602590080;
+        bh=SAVn8enQ4C4UTfYln5jnWV4ibLgb6yze8aWC+I7yQmM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=zBP9gwsjjN4sbW/yfD6L2YmZt8h2Vo+v6uUVD2fnRhkilVtkIy7qNu4K4eKxAx/At
+         Uuc84ALKoCOxUBtakZNNxK/LwxJGyhsJOEFDKWAb08K6TzKVYUKyHQ8c9ZD0mnz+wS
+         OAw9VhbiRFTIJ9/xTsG1x4Gy3r+P4WQabS2C++cU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kSIt5-006CWW-Oj; Tue, 13 Oct 2020 13:54:39 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH v6 2/4] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201012232008.GA47577@lothringen>
-References: <20200923152211.2403352-1-joel@joelfernandes.org>
- <20200923152211.2403352-3-joel@joelfernandes.org>
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: [PATCH v6 70/80] rcu/tree: docs: document bkvcache new members at struct kfree_rcu_cpu
+Date:   Tue, 13 Oct 2020 13:54:25 +0200
+Message-Id: <6dd0804d6fd567f11e4c6efb767e91acca659d1f.1602589096.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923152211.2403352-3-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:22:09AM -0400, Joel Fernandes (Google) wrote:
-> +/* Return number of callbacks in a segment of the segmented callback list. */
-> +static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-> +{
-> +#ifdef CONFIG_RCU_NOCB_CPU
-> +	smp_mb__before_atomic(); /* Up to the caller! */
-> +	atomic_long_add(v, &rsclp->seglen[seg]);
-> +	smp_mb__after_atomic(); /* Up to the caller! */
-> +#else
-> +	smp_mb(); /* Up to the caller! */
-> +	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
-> +	smp_mb(); /* Up to the caller! */
-> +#endif
-> +}
+Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
+added new members for struct kfree_rcu_cpu, but didn't add the
+corresponding at the kernel-doc markup, as repoted when doing
+"make htmldocs":
+	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
+	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
 
-I know that these "Up to the caller" comments come from the existing len
-functions but perhaps we should explain a bit more against what it is ordering
-and what it pairs to.
+So, move the description for bkvcache to kernel-doc, and add a
+description for nr_bkv_objs.
 
-Also why do we need one before _and_ after?
+Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ kernel/rcu/tree.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-And finally do we have the same ordering requirements than the unsegmented len
-field?
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f78ee759af9c..03c54c3478b7 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3022,6 +3022,12 @@ struct kfree_rcu_cpu_work {
+  * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+  * @initialized: The @rcu_work fields have been initialized
+  * @count: Number of objects for which GP not started
++ * @bkvcache:
++ *	A simple cache list that contains objects for reuse purpose.
++ *	In order to save some per-cpu space the list is singular.
++ *	Even though it is lockless an access has to be protected by the
++ *	per-cpu lock.
++ * @nr_bkv_objs: number of allocated objects at @bkvcache.
+  *
+  * This is a per-CPU structure.  The reason that it is not included in
+  * the rcu_data structure is to permit this code to be extracted from
+@@ -3037,14 +3043,6 @@ struct kfree_rcu_cpu {
+ 	bool monitor_todo;
+ 	bool initialized;
+ 	int count;
+-
+-	/*
+-	 * A simple cache list that contains objects for
+-	 * reuse purpose. In order to save some per-cpu
+-	 * space the list is singular. Even though it is
+-	 * lockless an access has to be protected by the
+-	 * per-cpu lock.
+-	 */
+ 	struct llist_head bkvcache;
+ 	int nr_bkv_objs;
+ };
+-- 
+2.26.2
 
-> +
-> +/* Move from's segment length to to's segment. */
-> +static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
-> +{
-> +	long len;
-> +
-> +	if (from == to)
-> +		return;
-> +
-> +	len = rcu_segcblist_get_seglen(rsclp, from);
-> +	if (!len)
-> +		return;
-> +
-> +	rcu_segcblist_add_seglen(rsclp, to, len);
-> +	rcu_segcblist_set_seglen(rsclp, from, 0);
-> +}
-> +
-[...]
-> @@ -245,6 +283,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
->  			   struct rcu_head *rhp)
->  {
->  	rcu_segcblist_inc_len(rsclp);
-> +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
->  	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
-
-Since inc_len and even now inc_seglen have two full barriers embracing the add up,
-we can probably spare the above smp_mb()?
-
->  	rhp->next = NULL;
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-> @@ -274,27 +313,13 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
->  	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
->  		if (rsclp->tails[i] != rsclp->tails[i - 1])
->  			break;
-> +	rcu_segcblist_inc_seglen(rsclp, i);
->  	WRITE_ONCE(*rsclp->tails[i], rhp);
->  	for (; i <= RCU_NEXT_TAIL; i++)
->  		WRITE_ONCE(rsclp->tails[i], &rhp->next);
->  	return true;
->  }
->  
-> @@ -403,6 +437,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
->  			break;
->  		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
-
-Do we still need the same amount of full barriers contained in add() called by move() here?
-It's called in the reverse order (write queue then len) than usual. If I trust the comment
-in rcu_segcblist_enqueue(), the point of the barrier is to make the length visible before
-the new callback for rcu_barrier() (although that concerns len and not seglen). But here
-above, the unsegmented length doesn't change. I could understand a write barrier between
-add_seglen(x, i) and set_seglen(0, RCU_DONE_TAIL) but I couldn't find a paired couple either.
-
->  	}
->  
->  	/* If no callbacks moved, nothing more need be done. */
-> @@ -423,6 +458,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
->  			break;  /* No more callbacks. */
->  		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, j);
-
-Same question here (feel free to reply "same answer" :o)
-
-Thanks!
