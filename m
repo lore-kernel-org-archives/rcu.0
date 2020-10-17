@@ -2,61 +2,44 @@ Return-Path: <SRS0=M2zx=DY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00D59C433DF
-	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 06:03:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1C0EC433DF
+	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 13:29:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A6A9F20720
-	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 06:03:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ZkATWNHf"
+	by mail.kernel.org (Postfix) with ESMTP id A32332075E
+	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 13:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1602941398;
+	bh=/jOzOnevC0r9iXvoxtFpmNaY48IbREcoifzhqB2cABo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=Blfe+CGkgX0F+7NKlADpBxb+ANrau+mG6XwcYRXD6uiukzaZwlmZpYzYMWskfwFuD
+	 udbNKIKDvzMB23js9dVR8d3k/oAL84ax4RVneRJb4pf+K+kt8ObJiJdssrL/h/ZY0b
+	 x467jmEAw4Z1hGKkLPJzQ1vKwOG1lUj8z5E+ew84=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436978AbgJQGDC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Oct 2020 02:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411732AbgJQGBh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:01:37 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6432AC0613AC
-        for <rcu@vger.kernel.org>; Fri, 16 Oct 2020 18:31:25 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id b8so6137975ioh.11
-        for <rcu@vger.kernel.org>; Fri, 16 Oct 2020 18:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SLzJSGMR4mbYOI89e+4XPuKYVMYsrE6xEQzvzv1FK40=;
-        b=ZkATWNHfDMwAnZYAEPtQdFpGvzmblB9A8Jo2ek8XDBkVys0P/vtgeQwi0sPRlpsbz8
-         R72eT+JFhPIo+VnDxQPGZ0AaoTwoADs40Bp58zZch1bbsUSYCwPw+DbslwfE1grZC0R5
-         VnxoWRYC57Swywhlsw5vS8f//o2+slDnYTze4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SLzJSGMR4mbYOI89e+4XPuKYVMYsrE6xEQzvzv1FK40=;
-        b=cfJSMX4QDiv04Ne1bdcu6j2IQkeWg9fl8nTwEUCFFmVLVWv+33DisGMpxQI2pkr7rH
-         H4tusGyLtE96UHO9RJP3PhTPkJjLp5vBxtcfmU6tvz8dR8cODtXRbK+e3wDiZsoA38JR
-         Nx+AptbwzKzE7AGzV3QiITS8ME8fNZrLnDh0GfL2Mbp3p1pPqWpNbYi9pCxKxG4L/XtP
-         UVbtqEh6ScHqjOuMMT+anDZW0ty8G7v0kRmIG/F/wGXBUL5eqya2nuxMBO/CbMFnUEOw
-         4TED6D3RDlvkRgiS0ThDHySLNvX3CvgIhoZKdta8gpjmWpKI2y/dIp9mqYKrTCch4IU2
-         C/yg==
-X-Gm-Message-State: AOAM532JvxC1bGjW2AfRJH0R/YJXg+xEP+dLo1m048EMEf8aDwQQ3R8p
-        ccALuJiK/Z/UnvIC2Eu6csKTrg==
-X-Google-Smtp-Source: ABdhPJy3A9mxbUrKl5CR5I3MLz47bWf1N/lJ3npLhzSycul4E/UhT67t1SqNiyxnFxyASxGUoohSZg==
-X-Received: by 2002:a02:b80f:: with SMTP id o15mr4617962jam.103.1602898284676;
-        Fri, 16 Oct 2020 18:31:24 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id z18sm3704281ioi.30.2020.10.16.18.31.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 18:31:23 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 21:31:23 -0400
-From:   joel@joelfernandes.org
-To:     Frederic Weisbecker <frederic@kernel.org>
+        id S2438103AbgJQN36 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Oct 2020 09:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438102AbgJQN36 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 17 Oct 2020 09:29:58 -0400
+Received: from localhost (eyr76-h01-176-129-22-47.dsl.sta.abo.bbox.fr [176.129.22.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F40B22072D;
+        Sat, 17 Oct 2020 13:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602941397;
+        bh=/jOzOnevC0r9iXvoxtFpmNaY48IbREcoifzhqB2cABo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ClcNGfkrT5ktWbYa+HZsP9DbWXId27nFuBiOoAN9SKsgDZxwcTjLjmQ5t15HaUdE9
+         Dm9yk0nHwazU5YX+7jPC2H3DJDvvjDW9qW9Zg7TyiJabButVrFUKWGixUFD/7iDF4k
+         YmAY0bQzVFTxH3T+pUCqn1bY4oofM9RidY9h1OnY=
+Date:   Sat, 17 Oct 2020 15:29:54 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     joel@joelfernandes.org
 Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -65,104 +48,155 @@ Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v7 2/6] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201017013123.GC4015033@google.com>
+        neeraj.iitr10@gmail.com, stern@rowland.harvard.edu
+Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
+ smp_mb()
+Message-ID: <20201017132954.GA15657@lothringen>
 References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-3-joel@joelfernandes.org>
- <20201015122158.GA127222@lothringen>
+ <20201015002301.101830-7-joel@joelfernandes.org>
+ <20201015133511.GB127222@lothringen>
+ <20201017012753.GB4015033@google.com>
+ <20201017031941.GD4015033@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015122158.GA127222@lothringen>
+In-Reply-To: <20201017031941.GD4015033@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 02:21:58PM +0200, Frederic Weisbecker wrote:
-> On Wed, Oct 14, 2020 at 08:22:57PM -0400, Joel Fernandes (Google) wrote:
-> > Add counting of segment lengths of segmented callback list.
+On Fri, Oct 16, 2020 at 11:19:41PM -0400, joel@joelfernandes.org wrote:
+> On Fri, Oct 16, 2020 at 09:27:53PM -0400, joel@joelfernandes.org wrote:
+> [..]
+> > > > + *
+> > > > + * Memory barrier is needed after adding to length for the case
+> > > > + * where length transitions from 0 -> 1. This is because rcu_barrier()
+> > > > + * should never miss an update to the length. So the update to length
+> > > > + * has to be seen *before* any modifications to the segmented list. Otherwise a
+> > > > + * race can happen.
+> > > > + * P0 (what P1 sees)	P1
+> > > > + * queue to list
+> > > > + *                      rcu_barrier sees len as 0
+> > > > + * set len = 1.
+> > > > + *                      rcu_barrier does nothing.
+> > > 
+> > > So that would be:
+> > > 
+> > >       call_rcu()                    rcu_barrier()
+> > >       --                            --
+> > >       WRITE(len, len + 1)           l = READ(len)
+> > >       smp_mb()                      if (!l)
+> > >       queue                            check next CPU...
+> > > 
+> > > 
+> > > But I still don't see against what it pairs in rcu_barrier.
 > > 
-> > This will be useful for a number of things such as knowing how big the
-> > ready-to-execute segment have gotten. The immediate benefit is ability
-> > to trace how the callbacks in the segmented callback list change.
+> > Actually, for the second case maybe a similar reasoning can be applied
+> > (control dependency) but I'm unable to come up with a litmus test.
+> > In fact, now I'm wondering how is it possible that call_rcu() races with
+> > rcu_barrier(). The module should ensure that no more call_rcu() should happen
+> > before rcu_barrier() is called.
 > > 
-> > Also this patch remove hacks related to using donecbs's ->len field as a
-> > temporary variable to save the segmented callback list's length. This cannot be
-> > done anymore and is not needed.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  include/linux/rcu_segcblist.h |   2 +
-> >  kernel/rcu/rcu_segcblist.c    | 133 +++++++++++++++++++++++-----------
-> >  kernel/rcu/rcu_segcblist.h    |   2 -
-> >  3 files changed, 92 insertions(+), 45 deletions(-)
-> > 
-> > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> > index b36afe7b22c9..d462ae5e340a 100644
-> > --- a/include/linux/rcu_segcblist.h
-> > +++ b/include/linux/rcu_segcblist.h
-> > @@ -69,8 +69,10 @@ struct rcu_segcblist {
-> >  	unsigned long gp_seq[RCU_CBLIST_NSEGS];
-> >  #ifdef CONFIG_RCU_NOCB_CPU
-> >  	atomic_long_t len;
-> > +	atomic_long_t seglen[RCU_CBLIST_NSEGS];
+> > confused
 > 
-> Also does it really need to be atomic?
-
-Yeah I think not. In fact, I am not even sure if ->len in the existing code
-needs to be atomic. I am considering vetting all code paths. Paul told me it
-used to be the case that ->len could be lockless written (possibly without
-IRQs disabled) I think but that maybe nowadays it is not the case. Let us
-double check to be sure.
-
-> > @@ -245,7 +280,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
-> >  			   struct rcu_head *rhp)
-> >  {
-> >  	rcu_segcblist_inc_len(rsclp);
-> > -	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
+> So I made a litmus test to show that smp_mb() is needed also after the update
+> to length. Basically, otherwise it is possible the callback will see garbage
+> that the module cleanup/unload did.
 > 
-> That's a significant change that shouldn't be hidden and unexplained in an unrelated
-> patch or it may be easily missed. I'd suggest to move this line together in
-> "rcu/tree: Remove redundant smp_mb() in rcu_do_batch" (with the title updated perhaps)
-> and maybe put it in the beginning of the series?
-
-Ok I can do that.
-
-> > +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
-> >  	rhp->next = NULL;
-> >  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-> >  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-> [...]
-> > @@ -330,11 +353,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
-> >  
-> >  	if (!rcu_segcblist_pend_cbs(rsclp))
-> >  		return; /* Nothing to do. */
-> > +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
-> >  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
-> >  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
-> >  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-> > -	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
-> > +	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
-> >  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
-> > +		rcu_segcblist_set_seglen(rsclp, i, 0);
-> > +	}
+> C rcubarrier+ctrldep
 > 
-> So, that's probably just a matter of personal preference, so feel free to
-> ignore but I'd rather do:
+> (*
+>  * Result: Never
+>  *
+>  * This litmus test shows that rcu_barrier (P1) prematurely
+>  * returning by reading len 0 can cause issues if P0 does
+>  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
+>  * mod_data == 2 means module was unloaded (so data is garbage).
+>  *)
 > 
->     rclp->len += rcu_segcblist_get_seglen(rsclp, i);
->     rcu_segcblist_set_seglen(rsclp, i, 0);
+> { int len = 0; int enq = 0; }
 > 
-> instead of the big addition above. That way, if a new index ever gets added/renamed
-> to the segcblist, we'll take it into account. Also that spares a few lines.
+> P0(int *len, int *mod_data, int *enq)
+> {
+> 	int r0;
+> 
+> 	WRITE_ONCE(*len, 1);
+> 	smp_mb();		/* Needed! */
+> 	WRITE_ONCE(*enq, 1);
+> 
+> 	r0 = READ_ONCE(*mod_data);
+> }
+> 
+> P1(int *len, int *mod_data, int *enq)
+> {
+> 	int r0;
+> 	int r1;
+> 
+> 	r1 = READ_ONCE(*enq);
+> 
+> 	// barrier Just for test purpose ("exists" clause) to force the..
+> 	// ..rcu_barrier() to see enq before len
+> 	smp_mb();		
+> 	r0 = READ_ONCE(*len);
+> 
+> 	// implicit memory barrier due to conditional */
+> 	if (r0 == 0)
+> 		WRITE_ONCE(*mod_data, 2);
+> }
 
-Yeah your way is better, I will do it this way.
+I'm not sure what scenario P1 refers to in practice, and to what module?
 
-thanks,
+> 
+> // Did P0 read garbage?
+> exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
+> 
 
- - Joel
 
+What also scares me is that in rcu_barrier():
+
+	for_each_possible_cpu(cpu) {
+		rdp = per_cpu_ptr(&rcu_data, cpu);
+		if (cpu_is_offline(cpu) &&
+		    !rcu_segcblist_is_offloaded(&rdp->cblist))
+			continue;
+		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+					  rcu_state.barrier_sequence);
+			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
+		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
+			   cpu_is_offline(cpu)) {
+			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
+					  rcu_state.barrier_sequence);
+			local_irq_disable();
+			rcu_barrier_func((void *)cpu);
+			local_irq_enable();
+		} else if (cpu_is_offline(cpu)) {
+			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
+					  rcu_state.barrier_sequence);
+		} else {
+			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
+					  rcu_state.barrier_sequence);
+		}
+	}
+
+I can't find something that makes sure this isn't racy while reading
+rcu_segcblist_n_cbs(&rdp->cblist).
+
+I mean what I see sums up to this:
+
+      CPU 0                                CPU 1
+      rcu_barrier()                        call_rcu()/rcu_segcblist_enqueue()
+      ------------                         --------
+
+                                           smp_mb();
+                                           inc_len();
+					   smp_mb();
+					   queue callback;
+      for_each_possible_cpu(cpu)
+          if (!rcu_segcblist_n_cbs(&rdp->cblist))
+	      continue;
+
+It looks possible for rcu_barrier() to believe there is no callback enqueued
+and see rcu_segcblist_n_cbs(&rdp->cblist) == 0 here.
+
+I'm very likely missing something obvious somewhere.
