@@ -2,112 +2,122 @@ Return-Path: <SRS0=M2zx=DY=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DBBEC433E7
-	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 15:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF42BC433E7
+	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 20:24:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4BF7420758
-	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 15:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602949108;
-	bh=Ul+2WFNOLHdtkthH8bHfAg3CW6qX6LsLPlT9WQ+AMWw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=dMUs4BoSTAaff+SctNVWm74WvgSB8BscUI5NqA5yCy4Hob4RQPek8pbEGmDO1njrC
-	 JGgVtqpQCNyq6owV46135GVYwlbeXhctk2Um5mzT8EnsfGDL1YgLvWfWUKVz3hhLOk
-	 0aMze3GQx4Vt0S5Fl3XtH5/WtR/35Mx9MGapwO8g=
+	by mail.kernel.org (Postfix) with ESMTP id 849A62076A
+	for <rcu@archiver.kernel.org>; Sat, 17 Oct 2020 20:24:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437893AbgJQPi2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Oct 2020 11:38:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411790AbgJQPi1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Oct 2020 11:38:27 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ACB22074A;
-        Sat, 17 Oct 2020 15:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602949107;
-        bh=Ul+2WFNOLHdtkthH8bHfAg3CW6qX6LsLPlT9WQ+AMWw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HTaAOAHYcuYPqR2uYqLDNzQxN06tv21hyNwxlMrtYe5nU6lIzbIr6qT+IHM52BHV5
-         MUtI9n2DYyzQHx6feo7ZowZrjjfGDUwzQa9c2L4z9qjy+GtTuHSbCL8GPhXnvDE8VN
-         D31Kq5WGcCY+pf7nzrTd4qaQJoscFcbWR5lgEkSE=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F104135225E7; Sat, 17 Oct 2020 08:38:26 -0700 (PDT)
-Date:   Sat, 17 Oct 2020 08:38:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S2439786AbgJQUYM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Oct 2020 16:24:12 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:34453 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S2439784AbgJQUYM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 17 Oct 2020 16:24:12 -0400
+Received: (qmail 843765 invoked by uid 1000); 17 Oct 2020 16:24:11 -0400
+Date:   Sat, 17 Oct 2020 16:24:11 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     joel@joelfernandes.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Add missing inline to
- show_rcu_tasks_rude_gp_kthread() dummy
-Message-ID: <20201017153826.GA3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201016103144.23491-1-geert@linux-m68k.org>
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki \(Sony\)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
+ smp_mb()
+Message-ID: <20201017202411.GC842001@rowland.harvard.edu>
+References: <20201015002301.101830-1-joel@joelfernandes.org>
+ <20201015002301.101830-7-joel@joelfernandes.org>
+ <20201015133511.GB127222@lothringen>
+ <20201017012753.GB4015033@google.com>
+ <20201017031941.GD4015033@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201016103144.23491-1-geert@linux-m68k.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201017031941.GD4015033@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:31:44PM +0200, Geert Uytterhoeven wrote:
-> If CONFIG_TINY_RCU=y:
-> 
->     In file included from kernel/rcu/update.c:591:
->     kernel/rcu/tasks.h:710:13: warning: ‘show_rcu_tasks_rude_gp_kthread’ defined but not used [-Wunused-function]
->      static void show_rcu_tasks_rude_gp_kthread(void) {}
-> 		 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Fix this by marking show_rcu_tasks_rude_gp_kthread() inline.
-> 
-> Fixes: e21408ceec2de5be ("rcu-tasks: Add RCU tasks to rcutorture writer stall output")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+[I sent this reply earlier, but since it hasn't shown up in the mailing 
+list archives, I may have forgotten to include the proper CC's.  At the 
+risk of repeating myself, here it is again.]
 
-Good catch, but commit 2cf0c4b5 ("rcutorture: Make grace-period kthread
-report match RCU flavor being tested") beat you to it, though apparently
-by accident.
-
-Either way, thank you for your time and attention!
-
-							Thanx, Paul
-
-> ---
-> Exposed by commit 1e6c62a882155772 ("bpf: Introduce sleepable BPF
-> programs"), which selects TASKS_TRACE_RCU.
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Oct 16, 2020 at 11:19:41PM -0400, joel@joelfernandes.org wrote:
+> So I made a litmus test to show that smp_mb() is needed also after the update
+> to length. Basically, otherwise it is possible the callback will see garbage
+> that the module cleanup/unload did.
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index d5d9f2d03e8a0ac9..8c290cc45e6fc63a 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -707,7 +707,7 @@ static void show_rcu_tasks_rude_gp_kthread(void)
->  #endif /* #ifndef CONFIG_TINY_RCU */
->  
->  #else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
->  #endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
->  
->  ////////////////////////////////////////////////////////////////////////
-> -- 
-> 2.17.1
+> C rcubarrier+ctrldep
 > 
+> (*
+>  * Result: Never
+>  *
+>  * This litmus test shows that rcu_barrier (P1) prematurely
+>  * returning by reading len 0 can cause issues if P0 does
+>  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
+>  * mod_data == 2 means module was unloaded (so data is garbage).
+>  *)
+> 
+> { int len = 0; int enq = 0; }
+> 
+> P0(int *len, int *mod_data, int *enq)
+> {
+> 	int r0;
+> 
+> 	WRITE_ONCE(*len, 1);
+> 	smp_mb();		/* Needed! */
+> 	WRITE_ONCE(*enq, 1);
+> 
+> 	r0 = READ_ONCE(*mod_data);
+> }
+> 
+> P1(int *len, int *mod_data, int *enq)
+> {
+> 	int r0;
+> 	int r1;
+> 
+> 	r1 = READ_ONCE(*enq);
+> 
+> 	// barrier Just for test purpose ("exists" clause) to force the..
+> 	// ..rcu_barrier() to see enq before len
+> 	smp_mb();		
+> 	r0 = READ_ONCE(*len);
+> 
+> 	// implicit memory barrier due to conditional */
+> 	if (r0 == 0)
+> 		WRITE_ONCE(*mod_data, 2);
+> }
+> 
+> // Did P0 read garbage?
+> exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
+
+Is this exists clause really what you meant?  Not only can it not be 
+satisfied, it couldn't even be satisfied if you left out the 0:r0=2 
+part.  And smp_mb() is stronger than neessary to enforce this.
+
+However, some memory barrier is needed.  If the smp_mb() in P1 were 
+omitted then P1 would be free to reorder its reads, and the exists 
+clause could be satisfied as follows:
+
+	P0			P1
+	------------------------------------------
+				Read len = 0
+	Write len = 1
+	smp_mb();
+	Write enq = 1
+				Read enq = 1
+				Write mod_data = 2
+	Read mod_data = 2
+
+Alan
