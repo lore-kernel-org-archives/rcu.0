@@ -1,94 +1,131 @@
-Return-Path: <SRS0=HAhG=EB=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=xcim=EC=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C220C4363A
-	for <rcu@archiver.kernel.org>; Mon, 26 Oct 2020 15:15:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8FCEC63697
+	for <rcu@archiver.kernel.org>; Tue, 27 Oct 2020 17:31:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0A84D2222C
-	for <rcu@archiver.kernel.org>; Mon, 26 Oct 2020 15:15:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C4C720878
+	for <rcu@archiver.kernel.org>; Tue, 27 Oct 2020 17:31:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iq3pZ6/Q"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="HB0b295L"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783509AbgJZPPU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Oct 2020 11:15:20 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:46806 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783039AbgJZPPU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:15:20 -0400
-Received: by mail-lj1-f175.google.com with SMTP id c21so10556851ljn.13;
-        Mon, 26 Oct 2020 08:15:19 -0700 (PDT)
+        id S1762210AbgJ0Rbc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Oct 2020 13:31:32 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46560 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1819673AbgJ0Rat (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:30:49 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a23so1921309qkg.13
+        for <rcu@vger.kernel.org>; Tue, 27 Oct 2020 10:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
-        b=iq3pZ6/QL6OMAVcMvrFMnH1DLI4OH8H7cZIKqo1wIUCGQls8T2Ro6vl24nuNS66i39
-         1n4aOeHzimhTFvpeNNyqHSXxsdHiCTV7961Vh1j0/RIdXUUh7vfPw9EgQoojJjM1GIbP
-         SePccVKqHjpMn2iFa52sFKDoftFLI8Sc8B3F9xTfRQcHlK6C90dV3D6T9cOqQTOtzMB9
-         VEhkuuNnDKsSFho0KBPX39zlpQpW28t0W63Y4eGIO/cg8WOanlYSqdBLxWgUhc8/50YW
-         wLtSt97cenoqHIDALpfpuN6b/PhPTtuqzvaiFMfsxRYtTHrZ920TFNyq1kncFEMCgZp6
-         YYJw==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XYSeqyz/JIAv8fNqM55u3XsYcFX6LZVCFHKdWniBKbU=;
+        b=HB0b295Lv8MXIWJcp5LaqEKYZPE+K3XJZKxBq6R5kmC6Nv5NBAXfZHe0G9FRdCju8m
+         /J6Gg6vFr6M76B5EbWhrpsygLjgdD9MKNm6/AwPpZ5bXVqnmN6+sYeWIa/lrARJ0YU/x
+         W18x+EDL33QjPGGHu4OeKfE745kMtVhb0BSew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
-        b=s8qwNRNRq3sFfsJrtmqJlwIimj8GxqHZ2Aph+iYkMF40tjs9GbO7MBw6GryJmkukmr
-         UtbLDn4ZZB5Nu253C6tokV6cCEZwfoHqGQVw0BTuc72cz31olHbsMXEKs+Iwol73WuRc
-         tEInaUmc8ubXyRVUg1Ne5rAkYrdYd1QAd0irQuDR6HAly0uIQBVlMD7k1QZYZrgVgZ78
-         ARJj+CUqU0fRIGCYM/r4yqs773UsnSSwpJGq8nYIqCCp8wIBtIzYsoAEagKKTGSp7GBs
-         k6S4+Luv5q49uV/Pz37euJg6tkdIfX8c5fqCK8CG9XIQORJKxiVRvDxh5rGzSiDKiW3w
-         gVAg==
-X-Gm-Message-State: AOAM533MBcsp7NV9utBLJrL4ASbUowfhonVl5EamclCuqc0sLecM+wDY
-        0MPBCoDihgRkAr5HAHHv2/8=
-X-Google-Smtp-Source: ABdhPJx7L2+12gO/j37FRejcJ/XkwTqNVFm3xPzzs1Xo/tzk231g6fRUxZsozHLljba2yIitR2elGA==
-X-Received: by 2002:a05:651c:3d0:: with SMTP id f16mr5618129ljp.454.1603725317660;
-        Mon, 26 Oct 2020 08:15:17 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id x19sm1071749lff.189.2020.10.26.08.15.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XYSeqyz/JIAv8fNqM55u3XsYcFX6LZVCFHKdWniBKbU=;
+        b=mSyJREPI3+Ys4LOzN3ar0pjQeeJFUYVtS+Rd4ynBeEjmFSqmDI+7e5UTNf2Wza5LeS
+         qn6lNGbtMdGvNkdCJLtLs/9Oh8hYeF0M2MtXhyPzdydUfqIhJruud3S4QM8BIzetD1//
+         TzGCZ+4MB7GBFTtVNLAstfejIJL74l5Pwg0ZYZYapjivbD3DuzKm2Xpx9YUUS3fCv59P
+         XwQdLD/U62Ye5yRfrkPAuFQoqN/3XxPHJdGe/qEZ/8jUowgNa21B3/eb4Tp7abevc0Ja
+         XsXp6gzkVNlkm05p7mDpE/sNBqy0SmD9iGGX7G43bN2d+RpccbaNR1Ebuc/LMu0iHhmo
+         jA2g==
+X-Gm-Message-State: AOAM532QQ93kMbUXRe4dmWzlqyfuo+bxDsLYS2dC7dYiK5aiz45esD0h
+        4XSfX6ZrTDXti5DEnszeA+s2OQ==
+X-Google-Smtp-Source: ABdhPJxbwOpdpa+A8Rc7aok4VV3rF8fkP5IBJnsgQ/TQGOaEnmW+eEbGgNwptKqFJ+VQAiEmk/l/dQ==
+X-Received: by 2002:a37:a34a:: with SMTP id m71mr3257792qke.81.1603819847951;
+        Tue, 27 Oct 2020 10:30:47 -0700 (PDT)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id t8sm1281237qtb.97.2020.10.27.10.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:15:16 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 26 Oct 2020 16:15:14 +0100
-To:     Richard Palethorpe <rpalethorpe@suse.de>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Alexander Potapenko <glider@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [BUG] Lockdep splat during kvfree_call_rcu and stack_depot_save
-Message-ID: <20201026151514.GA3942@pc636>
-References: <87a6w9uiz3.fsf@suse.de>
+        Tue, 27 Oct 2020 10:30:47 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 13:30:46 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v8 2/6] rcu/segcblist: Add counters to segcblist
+ datastructure
+Message-ID: <20201027173046.GA1018765@google.com>
+References: <20201021190813.3005054-1-joel@joelfernandes.org>
+ <20201021190813.3005054-3-joel@joelfernandes.org>
+ <20201026003212.GA104441@lothringen>
+ <20201026054043.GA4192074@google.com>
+ <20201026112445.GC104441@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87a6w9uiz3.fsf@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201026112445.GC104441@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello.
-
-> Hello,
+On Mon, Oct 26, 2020 at 12:24:45PM +0100, Frederic Weisbecker wrote:
+[..] 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 0f23d20d485a..79b7081143a7 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -1160,6 +1160,7 @@ static void srcu_advance_state(struct srcu_struct *ssp)
+> >   */
+> >  static void srcu_invoke_callbacks(struct work_struct *work)
+> >  {
+> > +	long len;
+> >  	bool more;
+> >  	struct rcu_cblist ready_cbs;
+> >  	struct rcu_head *rhp;
+> > @@ -1182,6 +1183,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> >  	/* We are on the job!  Extract and invoke ready callbacks. */
+> >  	sdp->srcu_cblist_invoking = true;
+> >  	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
+> > +	len = ready_cbs.len;
+> >  	spin_unlock_irq_rcu_node(sdp);
+> >  	rhp = rcu_cblist_dequeue(&ready_cbs);
+> >  	for (; rhp != NULL; rhp = rcu_cblist_dequeue(&ready_cbs)) {
+> > @@ -1190,13 +1192,14 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> >  		rhp->func(rhp);
+> >  		local_bh_enable();
+> >  	}
+> > +	WARN_ON_ONCE(ready_cbs.len);
+> >  
+> >  	/*
+> >  	 * Update counts, accelerate new callbacks, and if needed,
+> >  	 * schedule another round of callback invocation.
+> >  	 */
+> >  	spin_lock_irq_rcu_node(sdp);
+> > -	rcu_segcblist_insert_count(&sdp->srcu_cblist, &ready_cbs);
+> > +	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+> >  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> >  				       rcu_seq_snap(&ssp->srcu_gp_seq));
+> >  	sdp->srcu_cblist_invoking = false;
 > 
-> The kmem memcg selftest causes the following lockdep splat on 5.9+
-> 
-> [   67.534319] =============================
-> [   67.534410] [ BUG: Invalid wait context ]
-> [   67.534522] 5.9.1-22-default #125 Not tainted
-> [   67.534647] -----------------------------
->
-Working on it. We are aware about it.
+> Looks good! Thanks.
 
-Thanks!
+Just to report, with this fix the (s)rcutorture tests pass:
 
---
-Vlad Rezki
+SRCU-N ------- 259086 GPs (143.937/s) [srcu: g3342384 f0x0 total-gps=3342384]
+SRCU-P ------- 69443 GPs (38.5794/s) [srcud: g637552 f0x0 total-gps=637552]
+
+thanks,
+
+ - Joel
+
