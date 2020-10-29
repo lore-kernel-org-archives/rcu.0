@@ -5,59 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09BB2C4363A
-	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5489FC4363A
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A2F38214DB
-	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B040920FC3
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tI/D15KA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YvJz5+TX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgJ2Qvi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1728274AbgJ2Qvi (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 29 Oct 2020 12:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727313AbgJ2Quk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:50:40 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C4DC0613D6;
-        Thu, 29 Oct 2020 09:50:39 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id d25so3812779ljc.11;
-        Thu, 29 Oct 2020 09:50:39 -0700 (PDT)
+        with ESMTP id S1727363AbgJ2Qul (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:50:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DBEC0613D7;
+        Thu, 29 Oct 2020 09:50:40 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id j30so4188474lfp.4;
+        Thu, 29 Oct 2020 09:50:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lmEwRfNnZdS9anl7yW2D/JU4OlvavdxGws91ruK0yPI=;
-        b=tI/D15KA4CVN/hRZpgwLxVhnD+kMtLUyIWS5sraP6dSgmMwoGW0uTxdemH61ZgXHna
-         4iNTNQ/XPrfIb0jT//FVv53oqYK+KcjAxpcrKZw/wv+ncDKuNJbIuSMV9VaGTlr4jyMn
-         5Ir308Kk5eKaU+6idpJLo7RsIPY/CO6amt502P+u2o1q4wsGBgN4VEKK6kfqdqF4ZkFa
-         Wi9E0hvxij/rvaauOv5dBKK2tUCQkzPVvr1Z+bC6+sZUeYM4B3IuIe4aOBFiI/eHL3Gq
-         /yhnyC9MBOSahBq2EB3jKBkP+Ephw+dlD7iWr5tC910pAWqL7+Zhe/JXpS180aP+5xy+
-         KKBw==
+        bh=uXgbWcwa6utwMfSYm+EGe8syji0uw+8lveLyjRVMmAY=;
+        b=YvJz5+TXH9up8sxBtGDamlPqMUs3kitJR2OVQGvWMftK3WAQSGBhpwr4ostZZ+Ep9w
+         Acl1F1blOq5fZzIkKr645SQix4ldwvSQKmKJhSaZenHezg0AVFFb4097Mu5K2nowlxJ1
+         WuBFWYbIuEXJc16+M5DpWQL6F4L3iXNs0Z0i9gBS+ouxfgqZktZ1imH+XcaVUksNzYf7
+         QrUsiX9cfJfaDjAh+eTOOALcz7zvbH0Dmvw0LweFpPwRinYiHYYY3oxfhOJiwmaLUcJa
+         J67VqHL+KxJu0w5JwjsE6dcwHuPRaVGMlGansmE/H2HzYBE5V/9snYqDPTcTeVY1oRdp
+         ZrEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lmEwRfNnZdS9anl7yW2D/JU4OlvavdxGws91ruK0yPI=;
-        b=kWIRSGlEewWWBNwR+UAkL3C9MsH/qIRla+S9cl5vsuQ5cIqpRwc4m7Wo4GMCfDlKpz
-         1hfG337aDvGPOAzILgfKYMqKgfI2xi9G3tyerOzcmUCNWvztNw5m5+NGx7LW0tKde34c
-         BxL8lcpoGYeRzL99doORT+jWSO4a+Wi5LxoFqyMlpRljpLuKs8+4eaSOWapG25X2tKKJ
-         E1unUB7XSoFkLwVVR+t5n5SB0GD07zXmUBlDsHR934qf65Bgs6Y2mi1alx9LuP2fUItC
-         KJi0nni5toC9H0OOASPh2qh9PPLt/iDZM6RRdOY67dM8nt+rGi3isGWkCgG6bXGDpsG0
-         dStg==
-X-Gm-Message-State: AOAM533mBfAx8W2+Y6PZR2InYJeSMQgLnt0MuWQ4H6Qt38+cqL0jvZT+
-        rmhQo7d95OYcuJDdc3k/mWBGGXcvzwWz9g==
-X-Google-Smtp-Source: ABdhPJyo+jxb1d2Ojke/8fw45gmNXsvmhgdx2P9lDKSODTsq7q1JONbfxDXTA6fRKBacLgvXusA6VQ==
-X-Received: by 2002:a2e:2202:: with SMTP id i2mr2112758lji.70.1603990237694;
-        Thu, 29 Oct 2020 09:50:37 -0700 (PDT)
+        bh=uXgbWcwa6utwMfSYm+EGe8syji0uw+8lveLyjRVMmAY=;
+        b=V5wEmjw7rmFUtkWnMFJGQ6NZIS/8fLjtG4QAXrO+ZOw5G9otrf6U64P1rNc8vJqVlZ
+         Nk132ZSFcd1W4uEDs4CMVjjkGSUH2FWpo25WML+KboYDd/QiKm9rWtOu1/EiLpcrCwTV
+         ghpurnx3DgCKBpxVwdMgM8cN2OlpwKYjuv9VA+qiKbB0AueW5zR2s/657e9vflMp2HbX
+         aosq0Un9fSGV2+C7L3CfUOxkKLBe9WuC8UlSy3pVRJAl5Nx9l/s1+2dwYHyRuSiLO6Y6
+         Nf3P/bGnSYLUkgzBYU7cna+X/QlFBlSSROHD6jXiC2I7u4H8hMn5YvcYmYi2PojxoVhL
+         lH0A==
+X-Gm-Message-State: AOAM532/+j0Uuw51tSnvooPZIpfTKupQdsi54Wv4fMvK9vhhQobE7igz
+        tc5J7mpIL+6/zb2J/fUwR6eUBwGATcmV8w==
+X-Google-Smtp-Source: ABdhPJwxcl7TqQvpSoAKmo9nKx9OzjAt1dh35PKWNaEY1BF9cS0NkgY8n3BtQhvRWBii6lupm58dOw==
+X-Received: by 2002:ac2:4903:: with SMTP id n3mr1844855lfi.490.1603990238983;
+        Thu, 29 Oct 2020 09:50:38 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id s1sm331832lfd.236.2020.10.29.09.50.35
+        by smtp.gmail.com with ESMTPSA id s1sm331832lfd.236.2020.10.29.09.50.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 09:50:37 -0700 (PDT)
+        Thu, 29 Oct 2020 09:50:38 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -70,16 +70,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH 04/16] preempt: Cleanup PREEMPT_COUNT leftovers
-Date:   Thu, 29 Oct 2020 17:50:07 +0100
-Message-Id: <20201029165019.14218-4-urezki@gmail.com>
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
+Subject: [PATCH 05/16] lockdep: Cleanup PREEMPT_COUNT leftovers
+Date:   Thu, 29 Oct 2020 17:50:08 +0100
+Message-Id: <20201029165019.14218-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201029165019.14218-1-urezki@gmail.com>
 References: <20201029165019.14218-1-urezki@gmail.com>
@@ -95,103 +89,52 @@ CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
 removed. Cleanup the leftovers before doing so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+[ Rezki: Adopted for 5.10.0-rc1 kernel. ]
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/preempt.h | 37 ++++---------------------------------
- 1 file changed, 4 insertions(+), 33 deletions(-)
+ include/linux/lockdep.h | 6 ++----
+ lib/Kconfig.debug       | 1 -
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 7d9c1c0e149c..513769b1edf8 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -56,8 +56,7 @@
- #define PREEMPT_DISABLED	(PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index f5594879175a..d05db575f60f 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -580,16 +580,14 @@ do {									\
  
- /*
-- * Disable preemption until the scheduler is running -- use an unconditional
-- * value so that it also works on !PREEMPT_COUNT kernels.
-+ * Disable preemption until the scheduler is running.
-  *
-  * Reset by start_kernel()->sched_init()->init_idle()->init_idle_preempt_count().
-  */
-@@ -69,7 +68,6 @@
-  *
-  *    preempt_count() == 2*PREEMPT_DISABLE_OFFSET
-  *
-- * Note: PREEMPT_DISABLE_OFFSET is 0 for !PREEMPT_COUNT kernels.
-  * Note: See finish_task_switch().
-  */
- #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
-@@ -106,11 +104,7 @@
- /*
-  * The preempt_count offset after preempt_disable();
-  */
--#if defined(CONFIG_PREEMPT_COUNT)
--# define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
--#else
--# define PREEMPT_DISABLE_OFFSET	0
--#endif
-+#define PREEMPT_DISABLE_OFFSET	PREEMPT_OFFSET
- 
- /*
-  * The preempt_count offset after spin_lock()
-@@ -122,8 +116,8 @@
-  *
-  *  spin_lock_bh()
-  *
-- * Which need to disable both preemption (CONFIG_PREEMPT_COUNT) and
-- * softirqs, such that unlock sequences of:
-+ * Which need to disable both preemption and softirqs, such that unlock
-+ * sequences of:
-  *
-  *  spin_unlock();
-  *  local_bh_enable();
-@@ -164,8 +158,6 @@ extern void preempt_count_sub(int val);
- #define preempt_count_inc() preempt_count_add(1)
- #define preempt_count_dec() preempt_count_sub(1)
- 
--#ifdef CONFIG_PREEMPT_COUNT
--
- #define preempt_disable() \
- do { \
- 	preempt_count_inc(); \
-@@ -231,27 +223,6 @@ do { \
- 	__preempt_count_dec(); \
+ #define lockdep_assert_preemption_enabled()				\
+ do {									\
+-	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+-		     __lockdep_enabled			&&		\
++	WARN_ON_ONCE(__lockdep_enabled			&&		\
+ 		     (preempt_count() != 0		||		\
+ 		      !this_cpu_read(hardirqs_enabled)));		\
  } while (0)
  
--#else /* !CONFIG_PREEMPT_COUNT */
--
--/*
-- * Even if we don't have any preemption, we need preempt disable/enable
-- * to be barriers, so that we don't have things like get_user/put_user
-- * that can cause faults and scheduling migrate into our preempt-protected
-- * region.
-- */
--#define preempt_disable()			barrier()
--#define sched_preempt_enable_no_resched()	barrier()
--#define preempt_enable_no_resched()		barrier()
--#define preempt_enable()			barrier()
--#define preempt_check_resched()			do { } while (0)
--
--#define preempt_disable_notrace()		barrier()
--#define preempt_enable_no_resched_notrace()	barrier()
--#define preempt_enable_notrace()		barrier()
--#define preemptible()				0
--
--#endif /* CONFIG_PREEMPT_COUNT */
--
- #ifdef MODULE
- /*
-  * Modules have no business playing preemption tricks.
+ #define lockdep_assert_preemption_disabled()				\
+ do {									\
+-	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+-		     __lockdep_enabled			&&		\
++	WARN_ON_ONCE(__lockdep_enabled			&&		\
+ 		     (preempt_count() == 0		&&		\
+ 		      this_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 89c9a177fb9b..03a85065805e 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1159,7 +1159,6 @@ config PROVE_LOCKING
+ 	select DEBUG_RWSEMS
+ 	select DEBUG_WW_MUTEX_SLOWPATH
+ 	select DEBUG_LOCK_ALLOC
+-	select PREEMPT_COUNT
+ 	select TRACE_IRQFLAGS
+ 	default n
+ 	help
 -- 
 2.20.1
 
