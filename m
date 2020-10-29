@@ -1,193 +1,249 @@
-Return-Path: <SRS0=DmMr=ED=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=ZNv1=EE=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD55C55179
-	for <rcu@archiver.kernel.org>; Wed, 28 Oct 2020 21:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00B0AC4363A
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 00:23:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38753246CD
-	for <rcu@archiver.kernel.org>; Wed, 28 Oct 2020 21:48:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603921724;
-	bh=tw/yDsperue0fH+I8NRehAx9kRSS3XhcNMotzFMGITM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=HvrWikddFT6zMcc5VvBCDKSwXQDSGXQ0uoJ7HUgU4o1TUyj66qw+k7DotOim+AzzJ
-	 TGptyDPBKaDWEi7ECyVX3pduRyrLbyVc3m/4HRZQBjgn391j8Lj/0KZ4vkEPM/CaoM
-	 W4V3YgdAZ8BwusJqp22y/XBF5GGYxyTQklb4YLsw=
+	by mail.kernel.org (Postfix) with ESMTP id 94B342080D
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 00:23:34 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="PakSw0bS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgJ1VrZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Oct 2020 17:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727684AbgJ1VrY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:47:24 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15A20247DA;
-        Wed, 28 Oct 2020 15:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603900493;
-        bh=tw/yDsperue0fH+I8NRehAx9kRSS3XhcNMotzFMGITM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XvJmT92epF7GePtzYYL3pTRcP/Ds7ILcY51W1EaQuH+qDYUPCRQseQp6OTNWslzDT
-         /ZsIkxNJOEr9n3rQMIARlmXUzzgMWRn/2uZc84kOCCxAJrFRvOa7k9JafMkHfHLv7w
-         aSJcjVM/8rM2KZdoCxa+5rBVi6etin1yiH9ZBlLc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B43A935212A6; Wed, 28 Oct 2020 08:54:52 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 08:54:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 1/1] rcu/tree: Drop the lock before entering to page
- allocator
-Message-ID: <20201028155452.GD3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200727211012.30948-1-urezki@gmail.com>
- <160388700630.31056.4624109658766915987@build.alporthouse.com>
+        id S2388506AbgJ2AXe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Oct 2020 20:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388505AbgJ2AXe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Oct 2020 20:23:34 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F45C0613D1
+        for <rcu@vger.kernel.org>; Wed, 28 Oct 2020 17:23:33 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id y20so1523549iod.5
+        for <rcu@vger.kernel.org>; Wed, 28 Oct 2020 17:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zfVg08Uc1hC8f5CCWXhD5WUVWQOtF+tlYpqLGgYJlJg=;
+        b=PakSw0bSI6/UzuR/TWGr7DSLJmVrNTd4PoFRcMGzWGZqkE4bNxtMsMAU1X3bpk8tyT
+         bhwhOrdT9bfaQ82++0/7h3bDAjaXFF14cOPr5WTvV9IvQc5MFnEVtobrIdxf9JYiR8pH
+         nGPNLwv9AhQj9mZ/2GWNEEuILt+lVmkw6xLiM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zfVg08Uc1hC8f5CCWXhD5WUVWQOtF+tlYpqLGgYJlJg=;
+        b=kpsAbBA1e24+mYd/XRPgtBoB3MB4WR31gddbphroPp1Ty+zRPKMOiwQqWkTPAEdW/S
+         OwpJugkVERw0UgMzv0c6TUTmQdtGPpWKvkTteqKJ6dFaQxp8LN0NSnfzPzkj4g56jdps
+         TrZCGHEcZO5xMZ5DR9UqcCtphTKYM5QaBbBkNvPq+af7VBoQ0zEa/L8DLMdNm4d27aUa
+         O6DVAw5bJidCUc5+JOzdMe+rqBFT0GRzJRslDhIjB8SgDaQboqBEowkTekckoYwyv0WQ
+         5Pf6vxy62+IJy8MgooOcvk2esTCVDfg66B4IUcwAEYzWM+LE69MFKWvLWCrCSj/ugUV5
+         hu4A==
+X-Gm-Message-State: AOAM533+OnkjZt8ANZGGchzChZfEmI7wR76mf9mXQIZHlHJswrZuwOWW
+        Po3L1ocki1NiT5uJC0WWHWixKuXVVbhjL1i+E3OZ
+X-Google-Smtp-Source: ABdhPJy+TYyPXXkUhZ7lWkqjZZrLysTNxJ2f/nv8P4+2Vjceq0I5ufnLiH+oPZjoeR90sc+P+n91lrNxgDordUiaVMk=
+X-Received: by 2002:a05:6638:f81:: with SMTP id h1mr1524839jal.115.1603931012567;
+ Wed, 28 Oct 2020 17:23:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160388700630.31056.4624109658766915987@build.alporthouse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201021073839.43935-1-zong.li@sifive.com> <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
+In-Reply-To: <CAJF2gTTnGSYAc3AZKCPvhNJsPm_TchPjPrtqc_WzaK7K5eNt+w@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 28 Oct 2020 17:23:21 -0700
+Message-ID: <CAOnJCULN8h0Jk3H-vskgbaXhgBTgTTAT5Dji0qHi6yHoXGePvg@mail.gmail.com>
+Subject: Re: [PATCH] stop_machine: Mark functions as notrace
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Zong Li <zong.li@sifive.com>, Paul McKenney <paulmck@kernel.org>,
+        josh@joshtriplett.org, Steven Rostedt <rostedt@goodmis.org>,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, vincent.whitchurch@axis.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:10:06PM +0000, Chris Wilson wrote:
-> Quoting Uladzislau Rezki (Sony) (2020-07-27 22:10:12)
-> > If the kernel is built with CONFIG_PROVE_RAW_LOCK_NESTING
-> > option, the lockedp will complain about violation of the
-> > nesting rules:
-> > 
-> > <snip>
-> > [   28.060389] =============================
-> > [   28.060389] [ BUG: Invalid wait context ]
-> > [   28.060389] 5.8.0-rc3-rcu #211 Tainted: G            E
-> > [   28.060389] -----------------------------
-> > [   28.060390] vmalloc_test/0/523 is trying to lock:
-> > [   28.060390] ffff96df7ffe0228 (&zone->lock){-.-.}-{3:3}, at: get_page_from_freelist+0xcf0/0x16d0
-> > [   28.060391] other info that might help us debug this:
-> > [   28.060391] context-{5:5}
-> > [   28.060392] 2 locks held by vmalloc_test/0/523:
-> > [   28.060392]  #0: ffffffffc06750d0 (prepare_for_test_rwsem){++++}-{4:4}, at: test_func+0x76/0x240 [test_vmalloc]
-> > [   28.060393]  #1: ffff96df5fa1d390 (krc.lock){..-.}-{2:2}, at: kvfree_call_rcu+0x5c/0x230
-> > [   28.060395] stack backtrace:
-> > [   28.060395] CPU: 0 PID: 523 Comm: vmalloc_test/0 Tainted: G            E     5.8.0-rc3-rcu #211
-> > [   28.060395] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> > [   28.060396] Call Trace:
-> > [   28.060397]  dump_stack+0x96/0xd0
-> > [   28.060397]  __lock_acquire.cold.65+0x166/0x2d7
-> > [   28.060398]  ? find_held_lock+0x2d/0x90
-> > [   28.060399]  lock_acquire+0xad/0x370
-> > [   28.060400]  ? get_page_from_freelist+0xcf0/0x16d0
-> > [   28.060401]  ? mark_held_locks+0x48/0x70
-> > [   28.060402]  _raw_spin_lock+0x25/0x30
-> > [   28.060403]  ? get_page_from_freelist+0xcf0/0x16d0
-> > [   28.060404]  get_page_from_freelist+0xcf0/0x16d0
-> > [   28.060405]  ? __lock_acquire+0x3ee/0x1b90
-> > [   28.060407]  __alloc_pages_nodemask+0x16a/0x3a0
-> > [   28.060408]  __get_free_pages+0xd/0x30
-> > [   28.060409]  kvfree_call_rcu+0x18a/0x230
-> > <snip>
-> 
-> We've encountered the same warning and applying this patches resolves
-> the issue.
-> 
-> > Internally the kfree_rcu() uses raw_spinlock_t whereas the
-> > page allocator internally deals with spinlock_t to access
-> > to its zones.
-> > 
-> > In order to prevent such vialation that is in question we
-> > can drop the internal raw_spinlock_t before entering to
-> > the page allocaor.
-> > 
-> > Short changelog (v1 -> v2):
-> >     - rework the commit message;
-> >     - rework the patch making it smaller;
-> >     - add more comments.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Oct 28, 2020 at 8:44 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> Hi Zong & Atish,
+>
+> In our 2 harts c910 chip, we found:
+>
+> echo function > /sys/kernel/debug/tracing/current_tracer
+> echo function_graph > /sys/kernel/debug/tracing/current_tracer
+> echo function > /sys/kernel/debug/tracing/current_tracer
+> echo function_graph > /sys/kernel/debug/tracing/current_tracer
+>
+> Then one core halted at stop_machine_yield:
+> arch_cpu_idle () at arch/riscv/kernel/process.c:39
+> 39              local_irq_enable();
+> (gdb) i th
+>   Id   Target Id         Frame
+> * 1    Thread 1 (CPU#0)  arch_cpu_idle () at arch/riscv/kernel/process.c:39
+>   2    Thread 2 (CPU#1)  stop_machine_yield
+> (cpumask=0xffffffe001371fa8 <__cpu_online_mask>) at
+> ./arch/riscv/include/asm/vdso/processor.h:12
+> (gdb) thread 2
+> [Switching to thread 2 (Thread 2)]
+> #0  stop_machine_yield (cpumask=0xffffffe001371fa8
+> <__cpu_online_mask>) at ./arch/riscv/include/asm/vdso/processor.h:12
+> 12              __asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
+>
+> With your patch, it's solved. For this patch, I'll give:
+> Tested by: Guo Ren <guoren@kernel.org>
+>
+> But that's not enough, we still need:
+>
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index 226ccce..12b8808 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -376,7 +376,7 @@ EXPORT_SYMBOL(sbi_send_ipi);
+>   *
+>   * Return: None
+>   */
+> -void sbi_remote_fence_i(const unsigned long *hart_mask)
+> +void notrace sbi_remote_fence_i(const unsigned long *hart_mask)
+>  {
+>         __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
+>                      hart_mask, 0, 0, 0, 0);
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index 400b945d..9467d987 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -9,12 +9,12 @@
+>
+>  #include <asm/sbi.h>
+>
+> -static void ipi_remote_fence_i(void *info)
+> +static void notrace ipi_remote_fence_i(void *info)
+>  {
+>         return local_flush_icache_all();
+>  }
+>
+> -void flush_icache_all(void)
+> +void notrace flush_icache_all(void)
+>  {
+>         if (IS_ENABLED(CONFIG_RISCV_SBI))
+>                 sbi_remote_fence_i(NULL);
+>
+
+Did you see any issue if these functions are not marked as notrace ?
+
+As per Zong's explanation, the issue was that the other harts already
+fetched the next 2 nops and
+executed 1 while kernel patching replaced other with one of the auipc
++ jalr pair.
+
+@Zong can correct me if I am wrong.
+
+These functions are too far ahead. Can it cause such issues ? If yes,
+then we need to mark each and every function
+that can be invoked from patch_text_nosync and are not inlined.
+
+That includes copy_to_kernel_nofault, __sbi_rfence_v02,
+__sbi_rfence_v02_call, sbi_ecall.
+
+Few of these functions may be inlined by compiler. Can we depend on that ?
+
+> Because:
+> (gdb) bt
+> #0  flush_icache_all () at arch/riscv/mm/cacheflush.c:20
+> #1  0xffffffe00020473a in patch_text_nosync (addr=<optimized out>, insns=
+>     <optimized out>, len=<optimized out>) at arch/riscv/kernel/patch.c:96
+> #2  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
+> addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
+> #3  0xffffffe0002c9be4 in __ftrace_replace_code (rec=0xffffffe01ae40020, e
+>     nable=true) at kernel/trace/ftrace.c:2503
+> #4  0xffffffe0002ca092 in ftrace_replace_code (mod_flags=<optimized
+>     out>) at kernel/trace/ftrace.c:2530
+> #5  0xffffffe0002ca24a in ftrace_modify_all_code (command=9) at kernel
+>    /trace/ftrace.c:2677
+> #6  0xffffffe0002ca2ee in __ftrace_modify_code (data=<optimized out>) at
+>    kernel/trace/ftrace.c:2703
+> #7  0xffffffe0002c1390 in multi_cpu_stop (data=0x0) at kernel/stop_machin
+>    e.c:224
+> #8  0xffffffe0002c0fbe in cpu_stopper_thread (cpu=<optimized out>) at kern
+>    el/stop_machine.c:491
+> #9  0xffffffe0002343be in smpboot_thread_fn (data=0x0) at kernel/smpboot.
+>    c:165
+> #10 0xffffffe00022f894 in kthread (_create=0xffffffe01af13040) at kern
+>    el/kthread.c:292
+> #11 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
+>
+> On Wed, Oct 21, 2020 at 3:38 PM Zong Li <zong.li@sifive.com> wrote:
+> >
+> > Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
+> > as notrace"), some architectures assume that the stopped CPUs don't make
+> > function calls to traceable functions when they are in the stopped
+> > state. For example, it causes unexpected kernel crashed when switching
+> > tracer on RISC-V.
+> >
+> > The following patches added calls to these two functions, fix it by
+> > adding the notrace annotations.
+> >
+> > Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
+> > Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
+> > multi_cpu_stop()")
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
 > > ---
-> >  kernel/rcu/tree.c | 27 +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> > 
+> >  kernel/rcu/tree.c     | 2 +-
+> >  kernel/stop_machine.c | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
 > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 21c2fa5bd8c3..2de112404121 100644
+> > index 06895ef85d69..2a52f42f64b6 100644
 > > --- a/kernel/rcu/tree.c
 > > +++ b/kernel/rcu/tree.c
-> > @@ -3287,6 +3287,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> >                 return false;
-> >  
-> >         lockdep_assert_held(&krcp->lock);
-> > +       lockdep_assert_irqs_disabled();
-> > +
-> >         idx = !!is_vmalloc_addr(ptr);
-> >  
-> >         /* Check if a new block is required. */
-> > @@ -3306,6 +3308,29 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> >                         if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> >                                 return false;
-> >  
-> > +                       /*
-> > +                        * If built with CONFIG_PROVE_RAW_LOCK_NESTING option,
-> > +                        * the lockedp will complain about violation of the
-> > +                        * nesting rules. It does the raw_spinlock vs. spinlock
-> > +                        * nesting checks.
-> > +                        *
-> > +                        * That is why we drop the raw lock. Please note IRQs are
-> > +                        * still disabled it guarantees that the "current" stays
-> > +                        * on the same CPU later on when the raw lock is taken
-> > +                        * back.
-> > +                        *
-> > +                        * It is important because if the page allocator is invoked
-> > +                        * in fully preemptible context, it can be that we get a page
-> > +                        * but end up on another CPU. That another CPU might not need
-> > +                        * a page because of having some extra spots in its internal
-> > +                        * array for pointer collecting. Staying on same CPU eliminates
-> > +                        * described issue.
-> > +                        *
-> > +                        * Dropping the lock also reduces the critical section by
-> > +                        * the time taken by the page allocator to obtain a page.
-> > +                        */
-> > +                       raw_spin_unlock(&krcp->lock);
-> 
-> Aiui, this makes the CONFIG_PREEMPT_RT check and subsequent comment redundant.
-> 
-> >                         /*
-> >                          * NOTE: For one argument of kvfree_rcu() we can
-> >                          * drop the lock and get the page in sleepable
-> > @@ -3315,6 +3340,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> >                          */
-> >                         bnode = (struct kvfree_rcu_bulk_data *)
-> >                                 __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > +
-> > +                       raw_spin_lock(&krcp->lock);
-> >                 }
-> 
-> The consequence of dropping the lock here is that we may create two
-> bnodes and add them both to krcp->bkvhead[idx]. The list remains intact,
-> but the second entry may be underutilised. That should be transient.
-> 
-> It doesn't seem like the patch will break things, and removes the
-> lockdep splat,
-> Tested-by: Chris Wilson <chris@chris-wilson.co.uk>
+> > @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
+> >   *
+> >   * The caller must have disabled interrupts and must not be idle.
+> >   */
+> > -void rcu_momentary_dyntick_idle(void)
+> > +notrace void rcu_momentary_dyntick_idle(void)
+> >  {
+> >         int special;
+> >
+> > diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> > index 865bb0228ab6..890b79cf0e7c 100644
+> > --- a/kernel/stop_machine.c
+> > +++ b/kernel/stop_machine.c
+> > @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
+> >                 set_state(msdata, msdata->state + 1);
+> >  }
+> >
+> > -void __weak stop_machine_yield(const struct cpumask *cpumask)
+> > +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
+> >  {
+> >         cpu_relax();
+> >  }
+> > --
+> > 2.28.0
+> >
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
 
-Thank you for testing this, Chris!  We had objections to all patches
-thus far, so we are going back to the drawing board, hopefully having
-something for the v5.11 merge window.
 
-							Thanx, Paul
+
+-- 
+Regards,
+Atish
