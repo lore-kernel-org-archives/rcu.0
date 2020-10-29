@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D03E9C4363A
-	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B3A6C55179
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 76ED7214DB
-	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3692420FC3
+	for <rcu@archiver.kernel.org>; Thu, 29 Oct 2020 16:51:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F4fnn4X8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STSTn1Qv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727460AbgJ2Quq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Oct 2020 12:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S1727075AbgJ2Quo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Oct 2020 12:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727436AbgJ2Qup (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:50:45 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CDDC0613D8;
-        Thu, 29 Oct 2020 09:50:43 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 184so4185678lfd.6;
-        Thu, 29 Oct 2020 09:50:43 -0700 (PDT)
+        with ESMTP id S1727416AbgJ2Qun (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:50:43 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6E3C0613D7;
+        Thu, 29 Oct 2020 09:50:42 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id p15so3836005ljj.8;
+        Thu, 29 Oct 2020 09:50:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J0lqGBTdhz6aUz3zIPQpgMiqURbZy/P6PGnHrNdM2K0=;
-        b=F4fnn4X8wMuPwyF7MCqfSD+BpTS399rwGAgA7YgYngp3TGGBQOY0/B8bzVk7xtovKW
-         F0TKbRJ4NYi4RAJi5svZ4FBqf5yLrExLwgbFUk0PAq/ypYDHT6fw2VqgTfz4ke7gCkxe
-         HG0X6jYc5fJ2w0GorikdwpbOCUPCfhua5h2JypKkaAZFlLjavcxr8jwFYCB2qlPzufZn
-         6376GkiRdHkTsxK3yQG6+4F2BESJcydOCfWyX71AOPfVEbWyk19woWt28R/ZjTlERc/b
-         Ruw0eZEeTUejn3bDrGwmR2197DXqqkZ+MuN3DLCliBM3Zd1EQyqpcvRLzHZgCgv0qSA5
-         QEUw==
+        bh=J1IQUYcSmq/5hfOvulXy2uBLT11xfum3KTVeoGsLjmE=;
+        b=STSTn1QvE85EhMLGj1aGyuYnX3EzNRjghoqtDH9YoiaJ39Sf5AsuFOeqATV+3rE+b8
+         XpHth49pG01+pNOim/GaQLg/g3/QLrrTdyKX9+UtE5lqExWesv6k+BCnOTpPnl0wCkZ4
+         RJ6iDjcQSSK5Iu9EfdsY1TcW8iwwrF741qqojogBxcS3zdVi4rJj2IFVT7IGIZFsKNAf
+         O1tFWFvqOuLt0fcRnPIwVzvGrNB2ax2idM7J4y+7gnCRDJh/Z2IG5g+hG5QtEkFiy/Tf
+         rNXeNuOKFbV7/c0iFd4GL/kXy+qAue+YzZ6829/EzVauIk1QM41SmLHInMaIN0nye6au
+         xvkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J0lqGBTdhz6aUz3zIPQpgMiqURbZy/P6PGnHrNdM2K0=;
-        b=DVMag9I44XH75WJ2rjIWJOphTuRrEjh99nCmIyBaWuwkbp8dacnD7nPqfgkWoSNY0I
-         1mQNIuSBXG0OB3Dnph1jKugD9FxAQxhB3joE3b+Rne+9BnDDY5WM+lGHGxEtRv3vQ3x6
-         r8xQgXHQRdwh+M152fZXGwzZOGXZihRfVUrVxkBdkNp0TOoFAptrxATtCl3PPu+Wettl
-         OqJR8aGW4fKsFOL79/o2BeNqomxTUXPoha8gE8XCYnk2AvDWW0k235MIY1F5nA7Uh9/a
-         0LD/RxvVv92nPZnK8IXvN9JtZMdFtPWoZY+rAM9P3lq2RLhnUjvTih0kUt0h5RRHIuO9
-         SPJg==
-X-Gm-Message-State: AOAM531dQbPIpwTYZmGdAbTEaJ3oCP8dfbc8oouliOXVkH91IShXx2PL
-        E40kIYsDz2+HbRN1eccdQtZGElwdfWGyBA==
-X-Google-Smtp-Source: ABdhPJzUyitmHY1dtCggcF4xw71SVr2w9yVQTDZNp5ZYC9mO6dRWM91X4/8iasowvHDnyTiVMw4FYA==
-X-Received: by 2002:a05:6512:1055:: with SMTP id c21mr1870170lfb.275.1603990241711;
-        Thu, 29 Oct 2020 09:50:41 -0700 (PDT)
+        bh=J1IQUYcSmq/5hfOvulXy2uBLT11xfum3KTVeoGsLjmE=;
+        b=ZaJGDCVwUPHMVlkG2v3SabWjIeWz3ENQ+FrbSWZ3mzA/M6aTlqtOnezSbGGqmZqQIS
+         zTvYHoy/OpUP2r6e+HYCZF05W1QTQ8GM+V73K2x7TaLn4tOWxV1NYXMjj7sVMjTkFSuX
+         LOwFc7UMjXk8m/pvOFnyBQhD96Lm+DDPcv2nnh9q+79liEtjgguHRJ17gEcRkm6TwGb4
+         PsnZu3Ktz1eCLyrwYCZ/9wUArM1xGFTWOUKGZ/qO7kvOv88F7VImJtJDYcuWgGHYFGET
+         FpPPJ42gocX69gsevpc0w9Zs0f5KZeL6VW15XHhRHS4Chzub3lXNQguYpjW2FUdoAlj/
+         d81g==
+X-Gm-Message-State: AOAM5311BzyKbz8UspWVPVSAfcjkpKFYHVpFcqTvlUP116h8U0Ra40yL
+        Jf7xI0fiOwlZvaET/k9BBf1/Fyrq+bRONQ==
+X-Google-Smtp-Source: ABdhPJxvlKKVfgwJjdbafEKnTyiGrYyRLleVdS7dD7F9drITXJcQjcx3J5iPRWstU2d3Rg5XIFH3ZQ==
+X-Received: by 2002:a2e:8816:: with SMTP id x22mr2078541ljh.377.1603990240391;
+        Thu, 29 Oct 2020 09:50:40 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id s1sm331832lfd.236.2020.10.29.09.50.40
+        by smtp.gmail.com with ESMTPSA id s1sm331832lfd.236.2020.10.29.09.50.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 09:50:41 -0700 (PDT)
+        Thu, 29 Oct 2020 09:50:39 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -70,10 +70,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 07/16] locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
-Date:   Thu, 29 Oct 2020 17:50:10 +0100
-Message-Id: <20201029165019.14218-7-urezki@gmail.com>
+        linux-mm@kvack.org
+Subject: [PATCH 06/16] mm/pagemap: Cleanup PREEMPT_COUNT leftovers
+Date:   Thu, 29 Oct 2020 17:50:09 +0100
+Message-Id: <20201029165019.14218-6-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201029165019.14218-1-urezki@gmail.com>
 References: <20201029165019.14218-1-urezki@gmail.com>
@@ -89,28 +89,28 @@ CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
 removed. Cleanup the leftovers before doing so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Will Deacon <will@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/bit_spinlock.h | 4 +---
+ include/linux/pagemap.h | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
-index bbc4730a6505..1e03d54b0b6f 100644
---- a/include/linux/bit_spinlock.h
-+++ b/include/linux/bit_spinlock.h
-@@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index c77b7c31b2e4..cbfbe2bcca75 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -204,9 +204,7 @@ void release_pages(struct page **pages, int nr);
+ static inline int __page_cache_add_speculative(struct page *page, int count)
  {
- #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
- 	return test_bit(bitnum, addr);
--#elif defined CONFIG_PREEMPT_COUNT
--	return preempt_count();
- #else
--	return 1;
-+	return preempt_count();
- #endif
- }
- 
+ #ifdef CONFIG_TINY_RCU
+-# ifdef CONFIG_PREEMPT_COUNT
+-	VM_BUG_ON(!in_atomic() && !irqs_disabled());
+-# endif
++	VM_BUG_ON(preemptible())
+ 	/*
+ 	 * Preempt must be disabled here - we rely on rcu_read_lock doing
+ 	 * this for us.
 -- 
 2.20.1
 
