@@ -2,82 +2,85 @@ Return-Path: <SRS0=CE9U=EI=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56D86C388F2
-	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 15:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE11C00A89
+	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 17:12:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF4A8223AB
-	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 15:42:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A897E20657
+	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 17:12:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HdJsWBmz";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="p4BqOPjt"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TXcEpg7m";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vEJcoEFx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgKBPmT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Nov 2020 10:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S1727334AbgKBRMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Nov 2020 12:12:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKBPmT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:42:19 -0500
+        with ESMTP id S1727144AbgKBRMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Nov 2020 12:12:31 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468BEC0617A6
-        for <rcu@vger.kernel.org>; Mon,  2 Nov 2020 07:42:19 -0800 (PST)
-Date:   Mon, 2 Nov 2020 16:42:15 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F96DC0617A6
+        for <rcu@vger.kernel.org>; Mon,  2 Nov 2020 09:12:31 -0800 (PST)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604331737;
+        s=2020; t=1604337149;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TdWNl/+7K9bqNDtlrQ32c0pCdOzYiGFpqwyuHl/4L6s=;
-        b=HdJsWBmzmY5oTtrGJaY21diXmg1yRy2xMtPXyuQPqTMva0guttVak0PrKgr+drdYKaNJfi
-        wK+72fd6u0W2J40VFcz1UQbO94om9ZdDbl9Xi6dzaeD14i4DjlgMLlzCdU7Ea4qNlLIQci
-        CuSAHOUNToTlzA5D56VMxTa7ZpZ+K9odk+444dHcY+wjUR+qIh9+xaeJzp1vKnzbbA5YHK
-        /Q1Bp2B07z2V9g94mdAMTLIeVAfEARzcvD5orufoIahLcw4nfjV5mkL8cAKf3+omwPcNVp
-        3HOOOVsUIyLqiIPdeSMlMls876fsLc+E1xVc7//7QZ7SM85IvaJtTYyNq0rtXA==
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3WdGZ2IUML+Q2W8HxhW5ugLYk82KrTqX/qoV8PUFRtM=;
+        b=TXcEpg7mswJdTxEbVisGVSdqGXNSzk1vIu+zIQk3O0Tz5m5dlWHHp4jKfE+xn5sbZgezyI
+        Nd1VN+SfO3qDI0Dr4Jtq8z3HGNzHBqVUOfvkQzfo6ahb1cCWkQTpDMwgHdw5ULBqn/gcqC
+        gYGk5E8BcVYkp7y7wUZSUvahNGpKRjxkD9YjCiJwIkxP3sumzWstLQLSHSCOT82F4jEfOf
+        fWCLQ1jimVR/kg9B9JhxOMH2vVGJi/QLbjQp9BOx/iffq3CHNU6wAbEqWMiI/kJ4SRnf74
+        xJtJoU3qxxi85FICRrR3KXoTP5CFV6EUx3KHuulZAptuSrF39muPR/4W3Oo5HA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604331737;
+        s=2020e; t=1604337149;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TdWNl/+7K9bqNDtlrQ32c0pCdOzYiGFpqwyuHl/4L6s=;
-        b=p4BqOPjt25khan6ajbQJEHH/z01rgCy0Y/E1H7I3RZHUWfyNFvdIVrBwoPVTmjFIEQh5JL
-        ck89AEyvI3uew7DA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: RCU stall uses try_invoke_on_locked_down_task() with disabled
- interrupts
-Message-ID: <20201102154215.ejbkk33fvme45kyt@linutronix.de>
-References: <20201030132835.plzgp5d6bv3rslr2@linutronix.de>
- <20201030140032.GS3249@paulmck-ThinkPad-P72>
- <20201030171537.ichx22kn3omioilx@linutronix.de>
- <20201102145326.GX3249@paulmck-ThinkPad-P72>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3WdGZ2IUML+Q2W8HxhW5ugLYk82KrTqX/qoV8PUFRtM=;
+        b=vEJcoEFxiPzhwL/MSgkWa5hdzu1IuzbhXADDoOyHbiSrviSVeBB/g1DdUCXOdyo8ylqRwM
+        zPgcok95PmakjgBQ==
+To:     RCU <rcu@vger.kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Benedikt Spranger <b.spranger@linutronix.de>
+Subject: [PATCH] tools/rcutorture: Fix BUG parsing of console.log
+Date:   Mon,  2 Nov 2020 18:12:20 +0100
+Message-Id: <20201102171220.8820-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102145326.GX3249@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2020-11-02 06:53:26 [-0800], Paul E. McKenney wrote:
-> If you supply your Tested-by, I will give it a shot.
+For the rcutorture test summary log file console.log of virtual machines is
+parsed. When a console.log contains "DEBUG", BUG counter is incremented
+because regular expression does not handle to ignore DEBUG.
 
-I pulled that commit into into v5.10-rc1-rt2 after I run into the
-reported splat because I forgot to end the RCU read section I started.
-So it was easy to reproduce and the patch fixed the lockdep related
-backtrace. So
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+---
+ tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+index e03338091a06..263b1be50008 100755
+--- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
++++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+@@ -133,7 +133,7 @@ then
+ 	then
+ 		summary="$summary  Warnings: $n_warn"
+ 	fi
+-	n_bugs=`egrep -c 'BUG|Oops:' $file`
++	n_bugs=`egrep -c '\bBUG|Oops:' $file`
+ 	if test "$n_bugs" -ne 0
+ 	then
+ 		summary="$summary  Bugs: $n_bugs"
+-- 
+2.20.1
 
-> 							Thanx, Paul
-
-Sebastian
