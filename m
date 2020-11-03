@@ -1,86 +1,93 @@
-Return-Path: <SRS0=CE9U=EI=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <SRS0=6i3J=EJ=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE11C00A89
-	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 17:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47BFDC388F7
+	for <rcu@archiver.kernel.org>; Tue,  3 Nov 2020 04:14:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A897E20657
-	for <rcu@archiver.kernel.org>; Mon,  2 Nov 2020 17:12:31 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TXcEpg7m";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vEJcoEFx"
+	by mail.kernel.org (Postfix) with ESMTP id E71FC22245
+	for <rcu@archiver.kernel.org>; Tue,  3 Nov 2020 04:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604376849;
+	bh=A0shc1fhXsV5XG5c2jf/T0jNqwy0w6oicaRw4E64ZsE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=Vg54ttBPYnUbeh1ixcF4PXTRgsyuA7UmJgMJeajOzj0sZA5ugGI9hG3lbc6ZP0czH
+	 /JzecsbgUPBTHP5FbRaNRIePMk9a8rhBT1L5Mypclcpr3azZFN92A0MVmVayvjPhGV
+	 hscffSiTOSKl5cZeSSnBe7Htp2Eu4OCnPl9thmQg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgKBRMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Nov 2020 12:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727144AbgKBRMb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:12:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F96DC0617A6
-        for <rcu@vger.kernel.org>; Mon,  2 Nov 2020 09:12:31 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604337149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3WdGZ2IUML+Q2W8HxhW5ugLYk82KrTqX/qoV8PUFRtM=;
-        b=TXcEpg7mswJdTxEbVisGVSdqGXNSzk1vIu+zIQk3O0Tz5m5dlWHHp4jKfE+xn5sbZgezyI
-        Nd1VN+SfO3qDI0Dr4Jtq8z3HGNzHBqVUOfvkQzfo6ahb1cCWkQTpDMwgHdw5ULBqn/gcqC
-        gYGk5E8BcVYkp7y7wUZSUvahNGpKRjxkD9YjCiJwIkxP3sumzWstLQLSHSCOT82F4jEfOf
-        fWCLQ1jimVR/kg9B9JhxOMH2vVGJi/QLbjQp9BOx/iffq3CHNU6wAbEqWMiI/kJ4SRnf74
-        xJtJoU3qxxi85FICRrR3KXoTP5CFV6EUx3KHuulZAptuSrF39muPR/4W3Oo5HA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604337149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3WdGZ2IUML+Q2W8HxhW5ugLYk82KrTqX/qoV8PUFRtM=;
-        b=vEJcoEFxiPzhwL/MSgkWa5hdzu1IuzbhXADDoOyHbiSrviSVeBB/g1DdUCXOdyo8ylqRwM
-        zPgcok95PmakjgBQ==
-To:     RCU <rcu@vger.kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        id S1725968AbgKCEOI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Nov 2020 23:14:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgKCEOI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Nov 2020 23:14:08 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E1902224E;
+        Tue,  3 Nov 2020 04:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604376848;
+        bh=A0shc1fhXsV5XG5c2jf/T0jNqwy0w6oicaRw4E64ZsE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BIMFPU8r6lRwAvFHggFVIyOtxsBjM3yo+Guy4ru/v+AiuNLhTzihBWvTgYG7TIs+1
+         NTd5wh05qwhL/2MgRRsrPmQOVzatE12dmlDNEuYghu56Ic2SA1ZX3dr4FYb+TZgid7
+         uOi3G2O1MJsvpKOm0Ejk3hFYbDDsvgRu4/1TBBtY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E33323522B94; Mon,  2 Nov 2020 20:14:07 -0800 (PST)
+Date:   Mon, 2 Nov 2020 20:14:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     RCU <rcu@vger.kernel.org>,
         Benedikt Spranger <b.spranger@linutronix.de>
-Subject: [PATCH] tools/rcutorture: Fix BUG parsing of console.log
-Date:   Mon,  2 Nov 2020 18:12:20 +0100
-Message-Id: <20201102171220.8820-1-anna-maria@linutronix.de>
+Subject: Re: [PATCH] tools/rcutorture: Fix BUG parsing of console.log
+Message-ID: <20201103041407.GZ3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201102171220.8820-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102171220.8820-1-anna-maria@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For the rcutorture test summary log file console.log of virtual machines is
-parsed. When a console.log contains "DEBUG", BUG counter is incremented
-because regular expression does not handle to ignore DEBUG.
+On Mon, Nov 02, 2020 at 06:12:20PM +0100, Anna-Maria Behnsen wrote:
+> For the rcutorture test summary log file console.log of virtual machines is
+> parsed. When a console.log contains "DEBUG", BUG counter is incremented
+> because regular expression does not handle to ignore DEBUG.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
----
- tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Good catch, queued for testing and review, thank you!
 
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index e03338091a06..263b1be50008 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -133,7 +133,7 @@ then
- 	then
- 		summary="$summary  Warnings: $n_warn"
- 	fi
--	n_bugs=`egrep -c 'BUG|Oops:' $file`
-+	n_bugs=`egrep -c '\bBUG|Oops:' $file`
- 	if test "$n_bugs" -ne 0
- 	then
- 		summary="$summary  Bugs: $n_bugs"
--- 
-2.20.1
+							Thanx, Paul
 
+> ---
+>  tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> index e03338091a06..263b1be50008 100755
+> --- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> @@ -133,7 +133,7 @@ then
+>  	then
+>  		summary="$summary  Warnings: $n_warn"
+>  	fi
+> -	n_bugs=`egrep -c 'BUG|Oops:' $file`
+> +	n_bugs=`egrep -c '\bBUG|Oops:' $file`
+>  	if test "$n_bugs" -ne 0
+>  	then
+>  		summary="$summary  Bugs: $n_bugs"
+> -- 
+> 2.20.1
+> 
