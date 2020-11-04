@@ -2,183 +2,262 @@ Return-Path: <SRS0=XTmi=EK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3126CC2D0A3
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 15:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B959C2D0A3
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 15:06:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CCC5220719
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 15:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE04F20739
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 15:06:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PVKUmkPy"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qOfgss0G"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbgKDPBq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Nov 2020 10:01:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S1728380AbgKDPGA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Nov 2020 10:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727651AbgKDPBq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:01:46 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E38C0613D3
-        for <rcu@vger.kernel.org>; Wed,  4 Nov 2020 07:01:45 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id i17so7953212qvp.11
-        for <rcu@vger.kernel.org>; Wed, 04 Nov 2020 07:01:45 -0800 (PST)
+        with ESMTP id S1727003AbgKDPGA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Nov 2020 10:06:00 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE723C061A4A
+        for <rcu@vger.kernel.org>; Wed,  4 Nov 2020 07:05:59 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id i21so18790166qka.12
+        for <rcu@vger.kernel.org>; Wed, 04 Nov 2020 07:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=JwF5wC0Y2b6uvUgvIM5m58EEGQa1/Iyo9vXHealTFN4=;
-        b=PVKUmkPy7SyrTJ7S29rxEfNpSL0OgI0EPGM+rBoNOLjYJup0lQDdi5kna5OOI1PYrM
-         X4rGKh+hg3XIq7qXSlSWvWwBnrmDxhKk1Lo+Y1rYfV26TE0d3nKs/5OwOxXGFiCr5+oX
-         ZY5N25J5hDX5QcbrNnzPfJXIzq8opGrPhTCXQ=
+        bh=fx8WINTs3s9jcRpT27JUsSTP0o0MYBOovbzWfiytbXI=;
+        b=qOfgss0GjHaALDQNx8nvu9Cz8QPms1xyvcE46wJgsPZEfjbLgCyKdEMuOdu5PxpV5B
+         EshE7qunlPpxyTYeYvw1DeLcoVwLtvrEbTvUeeTulaMMjHuqoR+m24F6q+1btETEtGgd
+         Oa8i4GzymXVa43QQrlaYs0caxL5HAn9wuFahU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JwF5wC0Y2b6uvUgvIM5m58EEGQa1/Iyo9vXHealTFN4=;
-        b=AxP52ApUgNXGte7kbE0zIA6/vm2mrj4OqlyRH/fzy7vXNVavdFBrclE2MDvJuH+Eyr
-         q3P4s4HUysGeL7WpBTDV+NAf+DVvWyY4nLChNDLDtwSNVBnK+FL7p8i60jhzyFmusbDp
-         TkenX218FPsbh7ucuPwzBxcayWeOPQU+tXv1IJ/q7ZVd9AsqHaoKxWFDUJC8Fl07fe9f
-         ijfVY9OC+a428rJNhdMcL8UCyGG0YxaiUqy+Gxb6jGw+tvmyZIoKmHVmfE2NtJDKAIXx
-         cCcB6ZCW1CIIxzt5MqTzoE5ZwmcjTiVNJ1CqDZcKj10zHFAICsIb9cfw83aQnep4Dcrq
-         Pv8Q==
-X-Gm-Message-State: AOAM531ADL3R8die1LAmCfUOC7v1NU7KpLVr+EXHFBbIe5ubmyfk6bIc
-        ySY6vru1dy/p7jeVk/Bd98lwFQ==
-X-Google-Smtp-Source: ABdhPJyCL64N7H6IRbb2vU3pQjTP5YK3vxVRbgyYHgxiKCSHp4IMGNdaacnGox18ia9fndgi+Z5n8w==
-X-Received: by 2002:ad4:4b32:: with SMTP id s18mr21449778qvw.16.1604502104958;
-        Wed, 04 Nov 2020 07:01:44 -0800 (PST)
+        bh=fx8WINTs3s9jcRpT27JUsSTP0o0MYBOovbzWfiytbXI=;
+        b=Ch7/UJQWwJPrmaQD/X1+/oD/s/lxIzPPxpMtiTkX+MU4fyDDygwUEaIKfgyYkmUrML
+         /hyPuiIHRPwwwzLF0HgJCQ4+hosPtTW5UJm8pdXnYoi0Hn2T1HpiMGydZsAPrp5KItid
+         FYmiQTt+uhKH1tT8WmR2qKilD5LJ++Zhen96xXViuHFEdXjyMWnBbpA0jXH4YYhHZ8mk
+         a5Qt+kNcoUn8R+lLFNC1iy4e1I+4t3628zFnXLAHakynmae1pW6/lEhgoOwmU9eTLzow
+         8BO+eamEGUrI0aB123181fnbzBAVuOMdOI4iy/E/xxS/UghZVEc4z+XJsfFkQgeVVNYG
+         SBpg==
+X-Gm-Message-State: AOAM530573u0xVvMX1iHbIatjNoJ4IIXD9drxmYz6bIpbUe4B9ZJtQY5
+        BFQFz/Wbzkf3W6iTIHgiw22rKw==
+X-Google-Smtp-Source: ABdhPJzmc6/NJff0Sm3rbmqK1nxAsS4Dop9m6dDQ/g6IQL92H1Yi9bEtreP48/OEf/wIlvwcFgTZEA==
+X-Received: by 2002:a37:8984:: with SMTP id l126mr24770919qkd.443.1604502358803;
+        Wed, 04 Nov 2020 07:05:58 -0800 (PST)
 Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t12sm2479953qkg.132.2020.11.04.07.01.44
+        by smtp.gmail.com with ESMTPSA id c12sm269499qtp.14.2020.11.04.07.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 07:01:44 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:01:43 -0500
+        Wed, 04 Nov 2020 07:05:57 -0800 (PST)
+Date:   Wed, 4 Nov 2020 10:05:57 -0500
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
- regular context
-Message-ID: <20201104150143.GB2313912@google.com>
-References: <20201029165019.14218-1-urezki@gmail.com>
- <20201103175422.GB1310511@google.com>
- <20201104121203.GB17782@pc636>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v9 4/7] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201104150557.GC2313912@google.com>
+References: <20201103142603.1302207-1-joel@joelfernandes.org>
+ <20201103142603.1302207-5-joel@joelfernandes.org>
+ <58c89893-1bf7-29bb-7f97-2e48755e8dd7@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104121203.GB17782@pc636>
+In-Reply-To: <58c89893-1bf7-29bb-7f97-2e48755e8dd7@codeaurora.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 01:12:03PM +0100, Uladzislau Rezki wrote:
-> On Tue, Nov 03, 2020 at 12:54:22PM -0500, Joel Fernandes wrote:
-> > On Thu, Oct 29, 2020 at 05:50:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > The current memmory-allocation interface presents to following
-> > > difficulties that this patch is designed to overcome
-> > [...]
-> > > ---
-> > >  kernel/rcu/tree.c | 109 ++++++++++++++++++++++++++++------------------
-> > >  1 file changed, 66 insertions(+), 43 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 06895ef85d69..f2da2a1cc716 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -177,7 +177,7 @@ module_param(rcu_unlock_delay, int, 0444);
-> > >   * per-CPU. Object size is equal to one page. This value
-> > >   * can be changed at boot time.
-> > >   */
-> > > -static int rcu_min_cached_objs = 2;
-> > > +static int rcu_min_cached_objs = 5;
-> > >  module_param(rcu_min_cached_objs, int, 0444);
-> > >  
-> > >  /* Retrieve RCU kthreads priority for rcutorture */
-> > > @@ -3084,6 +3084,9 @@ struct kfree_rcu_cpu_work {
-> > >   *	In order to save some per-cpu space the list is singular.
-> > >   *	Even though it is lockless an access has to be protected by the
-> > >   *	per-cpu lock.
-> > > + * @page_cache_work: A work to refill the cache when it is empty
-> > > + * @work_in_progress: Indicates that page_cache_work is running
-> > > + * @hrtimer: A hrtimer for scheduling a page_cache_work
-> > >   * @nr_bkv_objs: number of allocated objects at @bkvcache.
-> > >   *
-> > >   * This is a per-CPU structure.  The reason that it is not included in
-> > > @@ -3100,6 +3103,11 @@ struct kfree_rcu_cpu {
-> > >  	bool monitor_todo;
-> > >  	bool initialized;
-> > >  	int count;
-> > > +
-> > > +	struct work_struct page_cache_work;
-> > > +	atomic_t work_in_progress;
+On Wed, Nov 04, 2020 at 07:10:17PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 11/3/2020 7:56 PM, Joel Fernandes (Google) wrote:
+> > Track how the segcb list changes before/after acceleration, during
+> > queuing and during dequeuing.
 > > 
-> > Does it need to be atomic? run_page_cache_work() is only called under a lock.
-> > You can use xchg() there. And when you do the atomic_set, you can use
-> > WRITE_ONCE as it is a data-race.
+> > This has proved useful to discover an optimization to avoid unwanted GP
+> > requests when there are no callbacks accelerated. The overhead is minimal as
+> > each segment's length is now stored in the respective segment.
 > > 
-> We can use xchg together with *_ONCE() macro. Could you please clarify what
-> is your concern about using atomic_t? Both xchg() and atomic_xchg() guarantee
-> atamarity. Same as WRITE_ONCE() or atomic_set().
-
-Right, whether there's lock or not does not matter as xchg() is also
-atomic-swap.
-
-atomic_t is a more complex type though, I would directly use int since
-atomic_t is not needed here and there's no lost-update issue here. It could
-be matter of style as well.
-
-BTW I did think atomic_xchg() adds additional memory barriers
-but I could not find that to be the case in the implementation. Is that not
-the case? Docs says "atomic_xchg must provide explicit memory barriers around
-the operation.".
-
-> > > @@ -4449,24 +4482,14 @@ static void __init kfree_rcu_batch_init(void)
-> > >  
-> > >  	for_each_possible_cpu(cpu) {
-> > >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
-> > > -		struct kvfree_rcu_bulk_data *bnode;
-> > >  
-> > >  		for (i = 0; i < KFREE_N_BATCHES; i++) {
-> > >  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
-> > >  			krcp->krw_arr[i].krcp = krcp;
-> > >  		}
-> > >  
-> > > -		for (i = 0; i < rcu_min_cached_objs; i++) {
-> > > -			bnode = (struct kvfree_rcu_bulk_data *)
-> > > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > > -
-> > > -			if (bnode)
-> > > -				put_cached_bnode(krcp, bnode);
-> > > -			else
-> > > -				pr_err("Failed to preallocate for %d CPU!\n", cpu);
-> > > -		}
-> > > -
-> > >  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-> > > +		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-> > >  		krcp->initialized = true;
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+> >   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
+> >   kernel/rcu/rcu_segcblist.h |  5 +++++
+> >   kernel/rcu/tree.c          |  9 +++++++++
+> >   4 files changed, 73 insertions(+)
 > > 
-> > During initialization, is it not better to still pre-allocate? That way you
-> > don't have to wait to get into a situation where you need to initially
-> > allocate.
-> > 
-> Since we have a worker that does it when a cache is empty there is no
-> a high need in doing it during initialization phase. If we can reduce
-> an amount of code it is always good :)
+> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> > index 155b5cb43cfd..5f8f2ee1a936 100644
+> > --- a/include/trace/events/rcu.h
+> > +++ b/include/trace/events/rcu.h
+> > @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+> >   		  __entry->qlen)
+> >   );
+> > +TRACE_EVENT_RCU(rcu_segcb_stats,
+> > +
+> > +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> 
+> I think we need to use long[] instead of int[] for cb_count everywhere in
+> this patch?
 
-I am all for not having more code than needed. But you would hit
-synchronize_rcu() slow path immediately on first headless kfree_rcu() right?
-That seems like a step back from the current code :)
+More than 4 billion callbacks on a single cblist sounds like a bug though so
+int should work. Plus I prefer to keep the tracepoint size small (on 64-bit
+systems, long is 64 bits, int is 32 bits).
 
-thanks,
+Thanks for all the reviews on this and other patches!
 
  - Joel
 
+
+> 
+> 
+> Thanks
+> Neeraj
+> 
+> > +
+> > +		TP_ARGS(ctx, cb_count, gp_seq),
+> > +
+> > +		TP_STRUCT__entry(
+> > +			__field(const char *, ctx)
+> > +			__array(int, cb_count, RCU_CBLIST_NSEGS)
+> > +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
+> > +		),
+> > +
+> > +		TP_fast_assign(
+> > +			__entry->ctx = ctx;
+> > +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
+> > +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
+> > +		),
+> > +
+> > +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> > +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> > +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> > +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> > +
+> > +);
+> > +
+> >   /*
+> >    * Tracepoint for the registration of a single RCU callback of the special
+> >    * kvfree() form.  The first argument is the RCU type, the second argument
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 357c19bbcb00..2a03949d0b82 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -14,6 +14,7 @@
+> >   #include <linux/types.h>
+> >   #include "rcu_segcblist.h"
+> > +#include "rcu.h"
+> >   /* Initialize simple callback list. */
+> >   void rcu_cblist_init(struct rcu_cblist *rclp)
+> > @@ -328,6 +329,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+> >   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+> >   }
+> > +/*
+> > + * Return how many CBs each segment along with their gp_seq values.
+> > + *
+> > + * This function is O(N) where N is the number of segments. Only used from
+> > + * tracing code which is usually disabled in production.
+> > + */
+> > +#ifdef CONFIG_RCU_TRACE
+> > +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> > +			 int cbcount[RCU_CBLIST_NSEGS],
+> > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> > +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> > +		gpseq[i] = rsclp->gp_seq[i];
+> > +	}
+> > +}
+> > +
+> > +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context)
+> > +{
+> > +	int cbs[RCU_CBLIST_NSEGS];
+> > +	unsigned long gps[RCU_CBLIST_NSEGS];
+> > +
+> > +	if (!trace_rcu_segcb_stats_enabled())
+> > +		return;
+> > +
+> > +	rcu_segcblist_countseq(rsclp, cbs, gps);
+> > +
+> > +	trace_rcu_segcb_stats(context, cbs, gps);
+> > +}
+> > +#endif
+> > +
+> >   /*
+> >    * Extract only those callbacks still pending (not yet ready to be
+> >    * invoked) from the specified rcu_segcblist structure and place them in
+> > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > index cd35c9faaf51..7750734fa116 100644
+> > --- a/kernel/rcu/rcu_segcblist.h
+> > +++ b/kernel/rcu/rcu_segcblist.h
+> > @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
+> >   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
+> >   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+> >   			 struct rcu_segcblist *src_rsclp);
+> > +#ifdef CONFIG_RCU_TRACE
+> > +void __trace_rcu_segcb_stats(struct rcu_segcblist *rsclp, const char *context);
+> > +#else
+> > +#define __trace_rcu_segcb_stats(...)
+> > +#endif
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 24c00020ab83..f6c6653b3ec2 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+> >   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+> >   		return false;
+> > +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+> > +
+> >   	/*
+> >   	 * Callbacks are often registered with incomplete grace-period
+> >   	 * information.  Something about the fact that getting exact
+> > @@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+> >   	else
+> >   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+> > +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
+> > +
+> >   	return ret;
+> >   }
+> > @@ -2466,11 +2470,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >   	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+> >   	if (offloaded)
+> >   		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+> > +
+> > +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
+> >   	rcu_nocb_unlock_irqrestore(rdp, flags);
+> >   	/* Invoke callbacks. */
+> >   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+> >   	rhp = rcu_cblist_dequeue(&rcl);
+> > +
+> >   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+> >   		rcu_callback_t f;
+> > @@ -2983,6 +2990,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >   		trace_rcu_callback(rcu_state.name, head,
+> >   				   rcu_segcblist_n_cbs(&rdp->cblist));
+> > +	__trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+> > +
+> >   	/* Go handle any RCU core processing required. */
+> >   	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+> >   		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+> > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
