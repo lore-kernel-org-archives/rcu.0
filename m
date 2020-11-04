@@ -2,403 +2,193 @@ Return-Path: <SRS0=XTmi=EK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3386FC2D0A3
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 17:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81129C2D0A3
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 18:38:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C61242072C
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 17:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604509296;
-	bh=AMyThQWDesnwPt71CWOe0BRFXeFp8/ef6jKsKQWkt+E=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=bb2Zvp/m3JbsE62VfGbt4HwABsENBPEm9tg/s5PIKT/ySIJlDbA4I6L7xNK1Y7T41
-	 +7dn/LzqkPRcEgYlrmIl6AAj8bbhftNFrb+9NIbmvOIsfARPkJvYME5NMo2RZTQi0g
-	 vQospcpCbzqZRkUP9mCPczjzd1QJKHup6hVOVnTc=
+	by mail.kernel.org (Postfix) with ESMTP id 25BBB20719
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 18:38:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qKHti6FF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731411AbgKDRBg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Nov 2020 12:01:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727363AbgKDRBg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Nov 2020 12:01:36 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4686D2071A;
-        Wed,  4 Nov 2020 17:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604509294;
-        bh=AMyThQWDesnwPt71CWOe0BRFXeFp8/ef6jKsKQWkt+E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=yKXtYwFtFAgUGK8yBIQ1VH7Q0mYuQ2y14RKvOSbktwaLcT3EuOsJRTpQOSHBhJBHk
-         Mc+Y/eEKABY/Gz7CgjWhThjYi3GI3jmPh0hfMMBfA6beNO+nGDTkg9qKG21+C2ub8y
-         9cCWshmqZuHvcQhzc91YjAEEZ2/PdIY7WkGDGjr8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D8915352073A; Wed,  4 Nov 2020 09:01:33 -0800 (PST)
-Date:   Wed, 4 Nov 2020 09:01:33 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 2/7] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201104170133.GI3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-3-joel@joelfernandes.org>
+        id S1730967AbgKDSiw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Nov 2020 13:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729600AbgKDSiw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Nov 2020 13:38:52 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390CDC0613D3;
+        Wed,  4 Nov 2020 10:38:52 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id v144so696427lfa.13;
+        Wed, 04 Nov 2020 10:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xfi4qxxkzLVx6Fda8dTuV56C6Q45OB8JjOkkvYWDxcA=;
+        b=qKHti6FFatoAvB6uvUNrOsTcqB0oQwEvC/PyqDBjC3skECHacFwxRe/91ZSgMzORHR
+         N/Ot8nmikv7BKbEoND3ssvjEJV1tQTL3Llm/bBele5OAEsF3Eh3wHnMBuj725XA97sKd
+         CICulThfZxHH0r2UJjTjAWY61OGcnIKR2UpxTPVpj0AfD+AzkQG1QrHdQ2VRphe3dVrZ
+         3AxzYecDZvl+4qIKw5gZoUgw74y4HIjMeIuDC375OeTjyydBKpDo20pxRAgJhiyEUyE+
+         G3da9h5zvx7nLbDAWQdxjYfS8RqWLccw9k9lMPvowZccn00WGptt05mN5FRPT/JqEMTa
+         EOKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xfi4qxxkzLVx6Fda8dTuV56C6Q45OB8JjOkkvYWDxcA=;
+        b=meh8RR/raktqGaO24RWnAU9ljZ/HBH2lX97dkVqqia/NvM2R0jyRFUGBPZzM2mXsRv
+         fUEocgCi05vkmpZF4EzxRidpPF+fcjbIGujDZemEh4PaKoAtXU8hIDtUOyTo3HjKQOMU
+         2C2pBVwNtV7uk9jvM5jWP7I1VzP1bbnI7AuNck4B8iYSSHr9byVEEiDO+WuRhYyvtT0V
+         osmbPwotINhSr/4LO+wVe9kQ6nV4wjdCKXmI7bcW49iINZKvrqQhynvqFmHERl1F1qk+
+         FmjckDCtaUrCaBM/jMZ0gQM7I2bP+eVt0aTeydFssNauJk3ud51fQTmCYy3IUBPGUCa1
+         7dSw==
+X-Gm-Message-State: AOAM530N1/zLBqn8hpQUU/AnPsngwuRVxHnja6m2g2xAryr/TQ1D1jgZ
+        Q0A0iz0AhyowkcWyM90L4iY=
+X-Google-Smtp-Source: ABdhPJyz4uPm+H1FdYufmvJr76WXfsCBJaTGjPhdvjwasZpI8rf+f4VXHNR33JijOFFTjRFsn7WnUA==
+X-Received: by 2002:a19:4f5e:: with SMTP id a30mr1242847lfk.64.1604515130698;
+        Wed, 04 Nov 2020 10:38:50 -0800 (PST)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id u22sm591592ljk.45.2020.11.04.10.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 10:38:49 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 4 Nov 2020 19:38:47 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 01/16] rcu/tree: Add a work to allocate pages from
+ regular context
+Message-ID: <20201104183847.GA22933@pc636>
+References: <20201029165019.14218-1-urezki@gmail.com>
+ <20201103175422.GB1310511@google.com>
+ <20201104121203.GB17782@pc636>
+ <20201104150143.GB2313912@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103142603.1302207-3-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201104150143.GB2313912@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:25:58AM -0500, Joel Fernandes (Google) wrote:
-> Add counting of segment lengths of segmented callback list.
+> > > >   * This is a per-CPU structure.  The reason that it is not included in
+> > > > @@ -3100,6 +3103,11 @@ struct kfree_rcu_cpu {
+> > > >  	bool monitor_todo;
+> > > >  	bool initialized;
+> > > >  	int count;
+> > > > +
+> > > > +	struct work_struct page_cache_work;
+> > > > +	atomic_t work_in_progress;
+> > > 
+> > > Does it need to be atomic? run_page_cache_work() is only called under a lock.
+> > > You can use xchg() there. And when you do the atomic_set, you can use
+> > > WRITE_ONCE as it is a data-race.
+> > > 
+> > We can use xchg together with *_ONCE() macro. Could you please clarify what
+> > is your concern about using atomic_t? Both xchg() and atomic_xchg() guarantee
+> > atamarity. Same as WRITE_ONCE() or atomic_set().
 > 
-> This will be useful for a number of things such as knowing how big the
-> ready-to-execute segment have gotten. The immediate benefit is ability
-> to trace how the callbacks in the segmented callback list change.
+> Right, whether there's lock or not does not matter as xchg() is also
+> atomic-swap.
 > 
-> Also this patch remove hacks related to using donecbs's ->len field as a
-> temporary variable to save the segmented callback list's length. This cannot be
-> done anymore and is not needed.
+> atomic_t is a more complex type though, I would directly use int since
+> atomic_t is not needed here and there's no lost-update issue here. It could
+> be matter of style as well.
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Thank you both!
-
-A few questions and comments below.
-
-							Thanx, Paul
-
-> ---
->  include/linux/rcu_segcblist.h |   1 +
->  kernel/rcu/rcu_segcblist.c    | 120 ++++++++++++++++++++++------------
->  kernel/rcu/rcu_segcblist.h    |   2 -
->  3 files changed, 79 insertions(+), 44 deletions(-)
+> BTW I did think atomic_xchg() adds additional memory barriers
+> but I could not find that to be the case in the implementation. Is that not
+> the case? Docs says "atomic_xchg must provide explicit memory barriers around
+> the operation.".
 > 
-> diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> index b36afe7b22c9..6c01f09a6456 100644
-> --- a/include/linux/rcu_segcblist.h
-> +++ b/include/linux/rcu_segcblist.h
-> @@ -72,6 +72,7 @@ struct rcu_segcblist {
->  #else
->  	long len;
->  #endif
-> +	long seglen[RCU_CBLIST_NSEGS];
->  	u8 enabled;
->  	u8 offloaded;
->  };
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index bb246d8c6ef1..357c19bbcb00 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -7,10 +7,11 @@
->   * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
->   */
->  
-> -#include <linux/types.h>
-> -#include <linux/kernel.h>
-> +#include <linux/cpu.h>
->  #include <linux/interrupt.h>
-> +#include <linux/kernel.h>
->  #include <linux/rcupdate.h>
-> +#include <linux/types.h>
->  
->  #include "rcu_segcblist.h"
->  
-> @@ -88,6 +89,46 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
->  #endif
->  }
->  
-> +/* Get the length of a segment of the rcu_segcblist structure. */
-> +static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
-> +{
-> +	return READ_ONCE(rsclp->seglen[seg]);
-> +}
-> +
-> +/* Set the length of a segment of the rcu_segcblist structure. */
-> +static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-> +{
-> +	WRITE_ONCE(rsclp->seglen[seg], v);
-> +}
-> +
-> +/* Return number of callbacks in a segment of the segmented callback list. */
+In most of the systems atmoc_xchg() is same as xchg() and atomic_set()
+is same as WRITE_ONCE(). But there are exceptions, for example "parisc"
 
-A casual reader might be forgiven for being confused by the combination
-of "Return" in the above comment and the "void" function type below.
-So shouldn't this comment be something like "Add the specified number
-of callbacks to the specified segment..."?
+*** arch/parisc/include/asm/atomic.h:
+<snip>
+...
+#define _atomic_spin_lock_irqsave(l,f) do { \
+    arch_spinlock_t *s = ATOMIC_HASH(l); \
+    local_irq_save(f);   \
+    arch_spin_lock(s);   \
+} while(0)
+...
+static __inline__ void atomic_set(atomic_t *v, int i)
+{
+     unsigned long flags;
+     _atomic_spin_lock_irqsave(v, flags);
 
-> +static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
-> +{
-> +	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
-> +}
-> +
-> +/* Move from's segment length to to's segment. */
-> +static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
-> +{
-> +	long len;
-> +
-> +	if (from == to)
-> +		return;
-> +
-> +	len = rcu_segcblist_get_seglen(rsclp, from);
-> +	if (!len)
-> +		return;
-> +
-> +	rcu_segcblist_add_seglen(rsclp, to, len);
-> +	rcu_segcblist_set_seglen(rsclp, from, 0);
-> +}
-> +
-> +/* Increment segment's length. */
-> +static void rcu_segcblist_inc_seglen(struct rcu_segcblist *rsclp, int seg)
-> +{
-> +	rcu_segcblist_add_seglen(rsclp, seg, 1);
-> +}
-> +
->  /*
->   * Increase the numeric length of an rcu_segcblist structure by the
->   * specified amount, which can be negative.  This can cause the ->len
-> @@ -119,26 +160,6 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp)
->  	rcu_segcblist_add_len(rsclp, 1);
->  }
->  
-> -/*
-> - * Exchange the numeric length of the specified rcu_segcblist structure
-> - * with the specified value.  This can cause the ->len field to disagree
-> - * with the actual number of callbacks on the structure.  This exchange is
-> - * fully ordered with respect to the callers accesses both before and after.
-> - */
-> -static long rcu_segcblist_xchg_len(struct rcu_segcblist *rsclp, long v)
-> -{
-> -#ifdef CONFIG_RCU_NOCB_CPU
-> -	return atomic_long_xchg(&rsclp->len, v);
-> -#else
-> -	long ret = rsclp->len;
-> -
-> -	smp_mb(); /* Up to the caller! */
-> -	WRITE_ONCE(rsclp->len, v);
-> -	smp_mb(); /* Up to the caller! */
-> -	return ret;
-> -#endif
-> -}
-> -
->  /*
->   * Initialize an rcu_segcblist structure.
->   */
-> @@ -149,8 +170,10 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
->  	BUILD_BUG_ON(RCU_NEXT_TAIL + 1 != ARRAY_SIZE(rsclp->gp_seq));
->  	BUILD_BUG_ON(ARRAY_SIZE(rsclp->tails) != ARRAY_SIZE(rsclp->gp_seq));
->  	rsclp->head = NULL;
-> -	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
->  		rsclp->tails[i] = &rsclp->head;
-> +		rcu_segcblist_set_seglen(rsclp, i, 0);
-> +	}
->  	rcu_segcblist_set_len(rsclp, 0);
->  	rsclp->enabled = 1;
->  }
-> @@ -246,6 +269,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
->  {
->  	rcu_segcblist_inc_len(rsclp);
->  	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
-> +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
->  	rhp->next = NULL;
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
->  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-> @@ -274,27 +298,13 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
->  	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
->  		if (rsclp->tails[i] != rsclp->tails[i - 1])
->  			break;
-> +	rcu_segcblist_inc_seglen(rsclp, i);
->  	WRITE_ONCE(*rsclp->tails[i], rhp);
->  	for (; i <= RCU_NEXT_TAIL; i++)
->  		WRITE_ONCE(rsclp->tails[i], &rhp->next);
->  	return true;
->  }
->  
-> -/*
-> - * Extract only the counts from the specified rcu_segcblist structure,
-> - * and place them in the specified rcu_cblist structure.  This function
-> - * supports both callback orphaning and invocation, hence the separation
-> - * of counts and callbacks.  (Callbacks ready for invocation must be
-> - * orphaned and adopted separately from pending callbacks, but counts
-> - * apply to all callbacks.  Locking must be used to make sure that
-> - * both orphaned-callbacks lists are consistent.)
-> - */
-> -void rcu_segcblist_extract_count(struct rcu_segcblist *rsclp,
-> -					       struct rcu_cblist *rclp)
-> -{
-> -	rclp->len = rcu_segcblist_xchg_len(rsclp, 0);
-> -}
-> -
->  /*
->   * Extract only those callbacks ready to be invoked from the specified
->   * rcu_segcblist structure and place them in the specified rcu_cblist
-> @@ -307,6 +317,7 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  
->  	if (!rcu_segcblist_ready_cbs(rsclp))
->  		return; /* Nothing to do. */
-> +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_DONE_TAIL);
->  	*rclp->tail = rsclp->head;
->  	WRITE_ONCE(rsclp->head, *rsclp->tails[RCU_DONE_TAIL]);
->  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-> @@ -314,6 +325,7 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  	for (i = RCU_CBLIST_NSEGS - 1; i >= RCU_DONE_TAIL; i--)
->  		if (rsclp->tails[i] == rsclp->tails[RCU_DONE_TAIL])
->  			WRITE_ONCE(rsclp->tails[i], &rsclp->head);
-> +	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
->  }
->  
->  /*
-> @@ -330,11 +342,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
->  
->  	if (!rcu_segcblist_pend_cbs(rsclp))
->  		return; /* Nothing to do. */
-> +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
+     v->counter = i;
 
-This should be a "for" loop.  Yes, the number and names of the segments
-hasn't changed for a good long time, but nothing like code as above to
-inspire Murphy to more mischief.  :-/
+     _atomic_spin_unlock_irqrestore(v, flags);
+}
+<snip>
 
-Actually, why not put the summation in the existing "for" loop below?
-That would save a line of code in addition to providing less inspiration
-for Mr. Murphy.
+I will switch to xchg() and WRITE_ONCE(), because of such specific ARCHs.
 
->  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
->  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
->  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-> -	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
-> +	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
->  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
-> +		rcu_segcblist_set_seglen(rsclp, i, 0);
-> +	}
->  }
->  
->  /*
-> @@ -345,7 +362,6 @@ void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
->  				struct rcu_cblist *rclp)
->  {
->  	rcu_segcblist_add_len(rsclp, rclp->len);
-> -	rclp->len = 0;
-
-You audited the callers, correct?
-
->  }
->  
->  /*
-> @@ -359,6 +375,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
->  
->  	if (!rclp->head)
->  		return; /* No callbacks to move. */
-> +	rcu_segcblist_add_seglen(rsclp, RCU_DONE_TAIL, rclp->len);
->  	*rclp->tail = rsclp->head;
->  	WRITE_ONCE(rsclp->head, rclp->head);
->  	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
-> @@ -379,6 +396,8 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
->  {
->  	if (!rclp->head)
->  		return; /* Nothing to do. */
-> +
-> +	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
->  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
->  }
-> @@ -403,6 +422,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (ULONG_CMP_LT(seq, rsclp->gp_seq[i]))
->  			break;
->  		WRITE_ONCE(rsclp->tails[RCU_DONE_TAIL], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, RCU_DONE_TAIL);
->  	}
->  
->  	/* If no callbacks moved, nothing more need be done. */
-> @@ -423,6 +443,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->  		if (rsclp->tails[j] == rsclp->tails[RCU_NEXT_TAIL])
->  			break;  /* No more callbacks. */
->  		WRITE_ONCE(rsclp->tails[j], rsclp->tails[i]);
-> +		rcu_segcblist_move_seglen(rsclp, i, j);
->  		rsclp->gp_seq[j] = rsclp->gp_seq[i];
->  	}
->  }
-> @@ -444,7 +465,7 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq)
->   */
->  bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
->  {
-> -	int i;
-> +	int i, j;
->  
->  	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
->  	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
-> @@ -487,6 +508,10 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
->  	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
->  		return false;
->  
-> +	/* Accounting: everything below i is about to get merged into i. */
-> +	for (j = i + 1; j <= RCU_NEXT_TAIL; j++)
-> +		rcu_segcblist_move_seglen(rsclp, j, i);
-> +
->  	/*
->  	 * Merge all later callbacks, including newly arrived callbacks,
->  	 * into the segment located by the for-loop above.  Assign "seq"
-> @@ -514,13 +539,24 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  	struct rcu_cblist donecbs;
->  	struct rcu_cblist pendcbs;
->  
-> +	lockdep_assert_cpus_held();
-> +
->  	rcu_cblist_init(&donecbs);
->  	rcu_cblist_init(&pendcbs);
-> -	rcu_segcblist_extract_count(src_rsclp, &donecbs);
-> +
->  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
->  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-> +
-> +	/*
-> +	 * No need smp_mb() before setting length to 0, because CPU hotplug
-> +	 * lock excludes rcu_barrier.
-> +	 */
-> +	rcu_segcblist_set_len(src_rsclp, 0);
-> +
->  	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-> +	rcu_segcblist_insert_count(dst_rsclp, &pendcbs);
->  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
->  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-> +
->  	rcu_segcblist_init(src_rsclp);
->  }
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index 1d2d61406463..cd35c9faaf51 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -89,8 +89,6 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
->  			   struct rcu_head *rhp);
->  bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
->  			   struct rcu_head *rhp);
-> -void rcu_segcblist_extract_count(struct rcu_segcblist *rsclp,
-> -				 struct rcu_cblist *rclp);
->  void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  				    struct rcu_cblist *rclp);
->  void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
+> > > > @@ -4449,24 +4482,14 @@ static void __init kfree_rcu_batch_init(void)
+> > > >  
+> > > >  	for_each_possible_cpu(cpu) {
+> > > >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> > > > -		struct kvfree_rcu_bulk_data *bnode;
+> > > >  
+> > > >  		for (i = 0; i < KFREE_N_BATCHES; i++) {
+> > > >  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+> > > >  			krcp->krw_arr[i].krcp = krcp;
+> > > >  		}
+> > > >  
+> > > > -		for (i = 0; i < rcu_min_cached_objs; i++) {
+> > > > -			bnode = (struct kvfree_rcu_bulk_data *)
+> > > > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> > > > -
+> > > > -			if (bnode)
+> > > > -				put_cached_bnode(krcp, bnode);
+> > > > -			else
+> > > > -				pr_err("Failed to preallocate for %d CPU!\n", cpu);
+> > > > -		}
+> > > > -
+> > > >  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+> > > > +		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+> > > >  		krcp->initialized = true;
+> > > 
+> > > During initialization, is it not better to still pre-allocate? That way you
+> > > don't have to wait to get into a situation where you need to initially
+> > > allocate.
+> > > 
+> > Since we have a worker that does it when a cache is empty there is no
+> > a high need in doing it during initialization phase. If we can reduce
+> > an amount of code it is always good :)
 > 
+> I am all for not having more code than needed. But you would hit
+> synchronize_rcu() slow path immediately on first headless kfree_rcu() right?
+> That seems like a step back from the current code :)
+> 
+As for slow path and hitting the synchronize_rcu() immediately. Yes, a slow 
+hit "counter" will be increased by 1, the difference between two variants
+will be N and N + 1 times. I do not consider N + 1 as a big difference and
+impact on performance.
+
+Should we guarantee that a first user does not hit a fallback path that
+invokes synchronize_rcu()? If not, i would rather remove redundant code.
+
+Any thoughts here?
+
+Thanks!
+
+--
+Vlad Rezki
