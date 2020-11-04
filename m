@@ -2,231 +2,189 @@ Return-Path: <SRS0=XTmi=EK=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E1A7C388F9
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 00:05:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6332FC388F7
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 11:39:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 17671223C6
-	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 00:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604448357;
-	bh=KZ6By4TUfVUgQ/D4nmd6klO+Ho7DgbM92Y0TRb1lyGw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
-	 From;
-	b=acWYlOa3ff1brumW8YlRX+I9E9Xrk10YiGItvbyk9CZidLEzsxUEnwdAR00JRddyA
-	 KO2g1IyNatBA6nRdHqAWNI3TBNKGMT+k1bZQ7+2LZp7kwwBGOxzXpLP9IkN2JQpZhg
-	 1124Vko8igfLlC5f4jEvvESgKhkMzVIZW8ZYTGc4=
+	by mail.kernel.org (Postfix) with ESMTP id 0751A2236F
+	for <rcu@archiver.kernel.org>; Wed,  4 Nov 2020 11:39:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n8WEpwn/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729845AbgKDAF4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Nov 2020 19:05:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729836AbgKDAFz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:05:55 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D483D223BD;
-        Wed,  4 Nov 2020 00:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604448354;
-        bh=KZ6By4TUfVUgQ/D4nmd6klO+Ho7DgbM92Y0TRb1lyGw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pl1XoOMkN8m5IwRwgIRc9JBtjNijN8KaAgcOw6gblZkJg6ARjKvVVNOrtxO+gqpLE
-         3GMaabVmFV5qQhJIfS/iM9/+SYUw9Ev9c3b7uIh4dAQfl38vpLL2BqwQSkxWpCw/Yp
-         ynPkxWU5PmOVNgFADfOBUnsO3YXMF2aT7Kqw8F2k=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9B3CF3522ABD; Tue,  3 Nov 2020 16:05:54 -0800 (PST)
-Date:   Tue, 3 Nov 2020 16:05:54 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 1/7] rcu/tree: Make rcu_do_batch count how many
- callbacks were executed
-Message-ID: <20201104000554.GF3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-2-joel@joelfernandes.org>
+        id S1729616AbgKDLjh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Nov 2020 06:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729263AbgKDLjg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:39:36 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156F4C0613D3;
+        Wed,  4 Nov 2020 03:39:36 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id i6so26734186lfd.1;
+        Wed, 04 Nov 2020 03:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jLMKc6I+EbQJCBgjBJI2KY+v34084Ns2D+3OvtBodnI=;
+        b=n8WEpwn/ilb+6F5Ph+Y3gmqJL6KdIMCgNC7YqRl6aaBVV0c8ZvQ0eg8MwC/HE50qhd
+         u4D3g5juoM/5//EZ8in3EC8pmjxScUnWZYsw4LvN+mf01KsAZHqZiqZC6fNhISN61gLF
+         lUQhDwv+KUoszKHXO0KC/W/PXA2t7JlA76wfDESPj/CXFYcpNjDcT2eK5JU31ErvvCq+
+         PSuBtNhcqNNkCXEFe1iWN1u6O1Hdl1zZrH94Qjj40Dp8xwU6RqKrc71DzC089iqlIMqG
+         UM+gpnYDIkUBRLsC50jgC+Bubb5va884SJEC9Y+/X2Sf+vVDunNyOIFLrDbka0JMRAkt
+         QNtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jLMKc6I+EbQJCBgjBJI2KY+v34084Ns2D+3OvtBodnI=;
+        b=rlYua7zRVJDUOmH4XlV9gWyJKtplNJfFgPejPpVDHFJIh+Pg+I9aojGQ75YFY2rB1w
+         u3Kv6Way+vbaVNdxmxeRo3vP5zoO+6B7bm2HCyBh8oF37H5iTRE1l2yzMgw3S+Yd28vb
+         CgqX5K7KzIkUjWQ4Qvb0DS112esMmTWcOqyXUSE93bPFKKvjDEXkvEC6v8QbLjtSmna/
+         WMxHNFPmmv8gJn/oiaYu9hI8U05d2opuhE2B+j441XxiQ6s5qPLS2rYRSbalQHVcs/vl
+         1yEu8IcbWVMnV/FOiiPrJuUVRPRGpD4PsVYPIUS3LMJA+8IMjkObrfbBWdkoNLaSN3wx
+         AJWg==
+X-Gm-Message-State: AOAM5305e7HrTBlXd38F7ziVEgrfX3cjZxRyboYgN4c0vnz+0ht/uyHq
+        YvkHCzN21OtQwZF1Q6oy98k=
+X-Google-Smtp-Source: ABdhPJxRAlqT2V2Jkkz44Cesa9bhxikRbK2ADSVQf9WHA6CiqKQgavoNueTH3Mh+MG2Tg/m559fzuA==
+X-Received: by 2002:a19:ef09:: with SMTP id n9mr10530507lfh.334.1604489974520;
+        Wed, 04 Nov 2020 03:39:34 -0800 (PST)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id j207sm381875lfj.122.2020.11.04.03.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 03:39:33 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 4 Nov 2020 12:39:31 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 15/16] rcu/tree: Allocate a page when caller is
+ preemptible
+Message-ID: <20201104113931.GA17782@pc636>
+References: <20201029165019.14218-1-urezki@gmail.com>
+ <20201029165019.14218-15-urezki@gmail.com>
+ <20201103180316.GC1310511@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103142603.1302207-2-joel@joelfernandes.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201103180316.GC1310511@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:25:57AM -0500, Joel Fernandes (Google) wrote:
-> Currently, rcu_do_batch() depends on the unsegmented callback list's len field
-> to know how many CBs are executed. This fields counts down from 0 as CBs are
-> dequeued.  It is possible that all CBs could not be run because of reaching
-> limits in which case the remaining unexecuted callbacks are requeued in the
-> CPU's segcblist.
+Hello, Joel.
+
 > 
-> The number of callbacks that were not requeued are then the negative count (how
-> many CBs were run) stored in the rcl->len which has been counting down on every
-> dequeue. This negative count is then added to the per-cpu segmented callback
-> list's to correct its count.
+> On Thu, Oct 29, 2020 at 05:50:18PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Given that CONFIG_PREEMPT_COUNT is unconditionally enabled by the
+> > earlier commits in this series, the preemptible() macro now properly
+> > detects preempt-disable code regions even in kernels built with
+> > CONFIG_PREEMPT_NONE.
+> > 
+> > This commit therefore uses preemptible() to determine whether allocation
+> > is possible at all for double-argument kvfree_rcu().  If !preemptible(),
+> > then allocation is not possible, and kvfree_rcu() falls back to using
+> > the less cache-friendly rcu_head approach.  Even when preemptible(),
+> > the caller might be involved in reclaim, so the GFP_ flags used by
+> > double-argument kvfree_rcu() must avoid invoking reclaim processing.
+> > 
+> > Note that single-argument kvfree_rcu() must be invoked in sleepable
+> > contexts, and that its fallback is the relatively high latency
+> > synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
+> > GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
+> > memory allocator.
+> > 
+> > [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tree.c | 48 ++++++++++++++++++++++++++++++-----------------
+> >  1 file changed, 31 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index f2da2a1cc716..3f9b016a44dc 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3406,37 +3406,55 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> >  	}
+> >  }
+> >  
+> > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> > +// state specified by flags.  If can_sleep is true, the caller must
+> > +// be schedulable and not be holding any locks or mutexes that might be
+> > +// acquired by the memory allocator or anything that it might invoke.
+> > +// If !can_sleep, then if !preemptible() no allocation will be undertaken,
+> > +// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
+> > +// the aforementioned deadlock possibilities.  Returns true if ptr was
+> > +// successfully recorded, else the caller must use a fallback.
+> >  static inline bool
+> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > +	unsigned long *flags, void *ptr, bool can_sleep)
+> >  {
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> > +	bool can_alloc_page = preemptible();
+> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL :
+> > +		GFP_ATOMIC) | __GFP_NOWARN;
+> >  	int idx;
+> >  
+> > -	if (unlikely(!krcp->initialized))
+> > +	*krcp = krc_this_cpu_lock(flags);
+> > +	if (unlikely(!(*krcp)->initialized))
+> >  		return false;
+> >  
+> > -	lockdep_assert_held(&krcp->lock);
+> >  	idx = !!is_vmalloc_addr(ptr);
+> >  
+> >  	/* Check if a new block is required. */
 > 
-> Such a design works against future efforts to track the length of each segment
-> of the segmented callback list. The reason is because
-> rcu_segcblist_extract_done_cbs() will be populating the unsegmented callback
-> list's length field (rcl->len) during extraction.
+> Maybe convert this comment also to //... like the new ones you added (and the
+> ones below).
 > 
-> Also, the design of counting down from 0 is confusing and error-prone IMHO.
+No, problem. I can convert it.
+
+> > -	if (!krcp->bkvhead[idx] ||
+> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > -		bnode = get_cached_bnode(krcp);
+> > -		/* Switch to emergency path. */
+> > +	if (!(*krcp)->bkvhead[idx] ||
+> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > +		bnode = get_cached_bnode(*krcp);
+> > +		if (!bnode && can_alloc_page) {
 > 
-> This commit therefore explicitly counts how many callbacks were executed in
-> rcu_do_batch() itself, and uses that to update the per-CPU segcb list's ->len
-> field, without relying on the negativity of rcl->len.
+> I think you can directly put preemptible() here with a comment saying
+> allocate only if preemptible and get rid of can_alloc_page.
 > 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Not really. We check preemtable() before acquiring the internal lock,
+otherwise it will always return "false". Thus, it is checked on the
+entry in the beginning.
 
-Queued for testing and further review, thank you all!
+> > +			krc_this_cpu_unlock(*krcp, *flags);
+> > +			bnode = (struct kvfree_rcu_bulk_data *)
+> > +				__get_free_page(gfp);
+> > +			*krcp = krc_this_cpu_lock(flags);
+> > +		}
+> > +
+> 
+> I think the "Switch to emergency path" comment should stay here before the
+> if().
+> 
+Right. We need to keep it. Will take it back.
 
-I will be pulling these in as I look them over, and running tests
-in between times, so this will take some time.
-
-As usual, I could not resist editing the commit log, so please
-see below to check whether I messed something up.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit d77ef2684cbff728c14b3c84a356139c52ca3a5e
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Tue Nov 3 09:25:57 2020 -0500
-
-    rcu/tree: Make rcu_do_batch count how many callbacks were executed
-    
-    The rcu_do_batch() function extracts the ready-to-invoke callbacks
-    from the rcu_segcblist located in the ->cblist field of the current
-    CPU's rcu_data structure.  These callbacks are first moved to a local
-    (unsegmented) rcu_cblist.  The rcu_do_batch() function then uses this
-    rcu_cblist's ->len field to count how many CBs it has invoked, but it
-    does so by counting that field down from zero.  Finally, this function
-    negates the value in this ->len field (resulting in a positive number)
-    and subtracts the result from the ->len field of the current CPU's
-    ->cblist field.
-    
-    Except that it is sometimes necessary for rcu_do_batch() to stop invoking
-    callbacks mid-stream, despite there being more ready to invoke, for
-    example, if a high-priority task wakes up.  In this case the remaining
-    not-yet-invoked callbacks are requeued back onto the CPU's ->cblist,
-    but remain in the ready-to-invoke segment of that list.  As above, the
-    negative of the local rcu_cblist's ->len field is still subtracted from
-    the ->len field of the current CPU's ->cblist field.
-    
-    The design of counting down from 0 is confusing and error-prone, plus
-    use of a positive count will make it easier to provide a uniform and
-    consistent API to deal with the per-segment counts that are added
-    later in this series.  For example, rcu_segcblist_extract_done_cbs()
-    can unconditionally populate the resulting unsegmented list's ->len
-    field during extraction.
-    
-    This commit therefore explicitly counts how many callbacks were executed
-    in rcu_do_batch() itself, counting up from zero, and then uses that
-    to update the per-CPU segcb list's ->len field, without relying on the
-    downcounting of rcl->len from zero.
-    
-    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-    Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 2d2a6b6b9..bb246d8 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -95,7 +95,7 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
-  * This increase is fully ordered with respect to the callers accesses
-  * both before and after.
-  */
--static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
- {
- #ifdef CONFIG_RCU_NOCB_CPU
- 	smp_mb__before_atomic(); /* Up to the caller! */
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 492262b..1d2d614 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -76,6 +76,7 @@ static inline bool rcu_segcblist_restempty(struct rcu_segcblist *rsclp, int seg)
- }
- 
- void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v);
- void rcu_segcblist_init(struct rcu_segcblist *rsclp);
- void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
- void rcu_segcblist_offload(struct rcu_segcblist *rsclp);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b6ec565..c4035e7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2436,7 +2436,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
--	long bl, count;
-+	long bl, count = 0;
- 	long pending, tlimit = 0;
- 
- 	/* If no callbacks are ready, just return. */
-@@ -2481,6 +2481,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		rcu_callback_t f;
- 
-+		count++;
- 		debug_rcu_head_unqueue(rhp);
- 
- 		rcu_lock_acquire(&rcu_callback_map);
-@@ -2494,15 +2495,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 		/*
- 		 * Stop only if limit reached and CPU has something to do.
--		 * Note: The rcl structure counts down from zero.
- 		 */
--		if (-rcl.len >= bl && !offloaded &&
-+		if (count >= bl && !offloaded &&
- 		    (need_resched() ||
- 		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
- 			break;
- 		if (unlikely(tlimit)) {
- 			/* only call local_clock() every 32 callbacks */
--			if (likely((-rcl.len & 31) || local_clock() < tlimit))
-+			if (likely((count & 31) || local_clock() < tlimit))
- 				continue;
- 			/* Exceeded the time limit, so leave. */
- 			break;
-@@ -2519,7 +2519,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	local_irq_save(flags);
- 	rcu_nocb_lock(rdp);
--	count = -rcl.len;
- 	rdp->n_cbs_invoked += count;
- 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
- 			    is_idle_task(current), rcu_is_callbacks_kthread());
-@@ -2527,7 +2526,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Update counts and requeue any remaining callbacks. */
- 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
- 	smp_mb(); /* List handling before counting for rcu_barrier(). */
--	rcu_segcblist_insert_count(&rdp->cblist, &rcl);
-+	rcu_segcblist_add_len(&rdp->cblist, -count);
- 
- 	/* Reinstate batch limit if we have worked down the excess. */
- 	count = rcu_segcblist_n_cbs(&rdp->cblist);
+--
+Vlad Rezki
