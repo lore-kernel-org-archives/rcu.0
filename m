@@ -2,115 +2,82 @@ Return-Path: <SRS0=5ltB=EL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56287C4742C
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3484C388F7
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:39:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02E9420704
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3521B20715
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604618735;
-	bh=29l9hUljo6O7lK5hq63n532gdHL+nNGyTy22VDpKtDw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=jAjac2bbdAQ8kL1kv2rh7+IRfaAKv7HSQtBpXdwXd7Aac8t7qoneO/33ByfQdCRXA
-	 YmqwY52p12P218alCDf4p8dzy+qG8eJkDwrVkX1yWxIrgelqE59KggqBwdHqNq13kw
-	 jd1FhL9gcOiYhvq91OJaw3CPaWU4Vabx4uqvBv/M=
+	s=default; t=1604619542;
+	bh=yjwzr/YRUw2JY6AsTHtslAYWJbL5WqB/UMvBg5am32k=;
+	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
+	b=YlA2poPVHvcEx6Kun2BcMoJJE/H/ScFauxdxr3E4qlb3R8WU/PHWhWiFKkfJSKdC3
+	 Okgwdg64yifTeiM4lS0fzpqYr/iN4yutz+9H1wV/7UCByiRHuj3U+OMy1T095l1kCy
+	 FbtpJkdFNLRcSh+SikzQfw6142TXuFeyLWY8rBDE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732675AbgKEXZW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:25:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
+        id S1731060AbgKEXjB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:39:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732577AbgKEXY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:24:57 -0500
+        id S1726801AbgKEXjB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:39:01 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2BE9221FA;
-        Thu,  5 Nov 2020 23:24:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9EA620704;
+        Thu,  5 Nov 2020 23:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604618697;
-        bh=29l9hUljo6O7lK5hq63n532gdHL+nNGyTy22VDpKtDw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wipJrudIMAkSSxEeO6VkLTMDluiRpG5AitvnyhWMYz92pI5naEzTUauvIGurMKGd4
-         4RrFwP580+tJQk/9Gg1UtKZD+N13hKQnj1W4F+TEsE+3skrdIm2xGcVurlwEBhJtKg
-         jEgkG3p7beOuUw+98DrJSfan0O4P4kODM2TP3+/4=
-From:   paulmck@kernel.org
+        s=default; t=1604619541;
+        bh=yjwzr/YRUw2JY6AsTHtslAYWJbL5WqB/UMvBg5am32k=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=tk3ZAM6R/RaiEyOdH+x1+OtiWUXTtTcGrP8jPH+WLJQSrkJsy1qBYNMf3rGpuqhb3
+         rGp+NnLVRtvPpARcnc3s30b9+OKJ7sWGUa8cBiYSdXHB+bZVQvNCl7VyW+cGJf7lyp
+         wVLV9P0F8/1jfOo0RMh86rq8Eds7/STKcV+dAQsI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id ABCB63522A76; Thu,  5 Nov 2020 15:39:00 -0800 (PST)
+Date:   Thu, 5 Nov 2020 15:39:00 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Jakub Kicinski <kuba@kernel.org>, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 4/7] net: sched: Remove broken definitions and un-hide for !LOCKDEP
-Date:   Thu,  5 Nov 2020 15:24:51 -0800
-Message-Id: <20201105232454.19919-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20201105232345.GA19179@paulmck-ThinkPad-P72>
-References: <20201105232345.GA19179@paulmck-ThinkPad-P72>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/4] RCU-tasks updates for v5.11
+Message-ID: <20201105233900.GA20676@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+Hello!
 
-Currently, variables used only within lockdep expressions are flagged as
-unused, requiring that these variables' declarations be decorated with
-either #ifdef or __maybe_unused.  This results in ugly code.  This commit
-therefore causes the full definitions of the lockdep_tcf_chain_is_locked()
-and lockdep_tcf_proto_is_locked() functions to be visible even when
-lockdep is not enabled, thus removing the need for the previous empty
-functions that were provided in non-lockdep kernels.  This approach
-further relies on dead-code elimination to remove any references to
-functions or variables that are not available in non-lockdep kernels.
+This series contains updates to the various RCU-tasks flavors:
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
---
-CC: jhs@mojatatu.com
-CC: xiyou.wangcong@gmail.com
-CC: jiri@resnulli.us
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/net/sch_generic.h | 12 ------------
- 1 file changed, 12 deletions(-)
+1.	Make preemptible TRACE02 enable lockdep.
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index d8fd867..749db62 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -435,7 +435,6 @@ struct tcf_block {
- 	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
- };
- 
--#ifdef CONFIG_PROVE_LOCKING
- static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
- {
- 	return lockdep_is_held(&chain->filter_chain_lock);
-@@ -445,17 +444,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
- {
- 	return lockdep_is_held(&tp->lock);
- }
--#else
--static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
--{
--	return true;
--}
--
--static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
--{
--	return true;
--}
--#endif /* #ifdef CONFIG_PROVE_LOCKING */
- 
- #define tcf_chain_dereference(p, chain)					\
- 	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
--- 
-2.9.5
+2.	Convert rcu_tasks_wait_gp() for-loop to while-loop.
 
+3.	Make grace-period kthread report match RCU flavor being tested.
+
+4.	Make the units of ->init_fract be jiffies.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ kernel/rcu/rcu.h                                       |   16 +++++
+ kernel/rcu/rcutorture.c                                |   11 +++
+ kernel/rcu/tasks.h                                     |   49 +++++++----------
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE01 |    6 +-
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02 |    6 +-
+ 5 files changed, 52 insertions(+), 36 deletions(-)
