@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B9BEC388F7
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B24C4742C
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F0A332071A
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B35852071A
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604618703;
-	bh=i66/RTzrfyFgisQYwKZ10N2f6nbfwPZTHh0SE8IirIo=;
+	s=default; t=1604618711;
+	bh=LIiilgoGSYaATGF2lDwSnd1M+ECqzED51HPEBNoU9kk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=xn+s8Wwvna0+9p46UUjGfPSsFyOrlF1n9csGVwH+vq/xCHsXwqmG9kxcz1461sXJh
-	 iM4VsZJHkFNDlF3c6Hmvk7qMKAtaKf9IPU80EGXNv9LTpzjvCgrboi6JA6+0bImvDm
-	 OOOV7Z0oPtMiuU//PE8eaX8qzg2lPtiDrHJG/7WA=
+	b=wRDhE0lANjwSTr9jVCgSa9jTjC9+Zp3cFAEgl/AR3tA8KC+UPMqe8H7hk7xVV5UTy
+	 gYwW/IkVxS3aMPR6r93ZQeCG2xhjkOxP2Dgp4X5fg4QKEj7v6M4+bgLUmpdQYefQkx
+	 2WorfDwoAUa/pGTuCqmHR577g68qK/qwzakFB+oo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732648AbgKEXY6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:24:58 -0500
+        id S1732643AbgKEXZD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:25:03 -0500
 Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732585AbgKEXY6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726801AbgKEXY6 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:24:58 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B7EB22203;
+        by mail.kernel.org (Postfix) with ESMTPSA id E7BCB2222B;
         Thu,  5 Nov 2020 23:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604618697;
-        bh=i66/RTzrfyFgisQYwKZ10N2f6nbfwPZTHh0SE8IirIo=;
+        s=default; t=1604618698;
+        bh=LIiilgoGSYaATGF2lDwSnd1M+ECqzED51HPEBNoU9kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h3b39y9sZOg+WncN2OU7xs5aVMngCHle+wig0g4OvOhj2n8mCex7hgXc/jxjSsD6X
-         m9ciAnKUUIbkhWv/tpb+JW0XOpW0MAn2PR9YO7+NukqWZnd/MDsS+ziCMXjU6Kw6nT
-         CHhtl0x/tsBTY6UGZ10MADFKdfg2x89EsZEY2odM=
+        b=DonUjdDrX3u6slJyLkQrXAyXjn20F5PB9MWBz9zE0jywQ5pDetsKkTQ72zRKAwnXp
+         7swVxhlp16vdomVhtFNKGVXyvCiuYeHFgyExApa/4kXH6fWYzxhkjPzJRpWcTNf1pY
+         +VNGb5lHu1whFG2U2hdyTZoX2rwZz+FCr+P8zBfI=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -47,9 +47,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Jakub Kicinski <kuba@kernel.org>, paulmck@kernel.org
-Subject: [PATCH tip/core/rcu 5/7] srcu: Use a more appropriate lockdep helper
-Date:   Thu,  5 Nov 2020 15:24:52 -0800
-Message-Id: <20201105232454.19919-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 7/7] rcu: Prevent RCU_LOCKDEP_WARN() from swallowing the condition
+Date:   Thu,  5 Nov 2020 15:24:54 -0800
+Message-Id: <20201105232454.19919-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105232345.GA19179@paulmck-ThinkPad-P72>
 References: <20201105232345.GA19179@paulmck-ThinkPad-P72>
@@ -59,42 +59,44 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-The lockdep_is_held() macro is defined as:
+We run into a unused variable warning in bridge code when variable is
+only used inside the condition of rcu_dereference_protected().
 
- #define lockdep_is_held(lock)		lock_is_held(&(lock)->dep_map)
+ #define mlock_dereference(X, br) \
+	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
 
-This hides away the dereference, so that builds with !LOCKDEP don't break.
-This works in current kernels because the RCU_LOCKDEP_WARN() eliminates
-its condition at preprocessor time in !LOCKDEP kernels.  However, later
-patches in this series will cause the compiler to see this condition even
-in !LOCKDEP kernels.  This commit prepares for this upcoming change by
-switching from lock_is_held() to lockdep_is_held().
+Since on builds with CONFIG_PROVE_RCU=n rcu_dereference_protected()
+compiles to nothing the compiler doesn't see the variable use.
+
+This commit therefore prevents this warning by adding the condition as
+dead code.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 --
-CC: jiangshanlai@gmail.com
 CC: paulmck@kernel.org
 CC: josh@joshtriplett.org
 CC: rostedt@goodmis.org
 CC: mathieu.desnoyers@efficios.com
+CC: joel@joelfernandes.org
+CC: jiangshanlai@gmail.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 2 +-
+ include/linux/rcupdate.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c13348e..6cd6fa2 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -906,7 +906,7 @@ static void __synchronize_srcu(struct srcu_struct *ssp, bool do_norm)
- {
- 	struct rcu_synchronize rcu;
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index f9533bb..de08264 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -328,7 +328,7 @@ static inline void rcu_preempt_sleep_check(void) { }
  
--	RCU_LOCKDEP_WARN(lock_is_held(&ssp->dep_map) ||
-+	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
- 			 lock_is_held(&rcu_bh_lock_map) ||
- 			 lock_is_held(&rcu_lock_map) ||
- 			 lock_is_held(&rcu_sched_lock_map),
+ #else /* #ifdef CONFIG_PROVE_RCU */
+ 
+-#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
++#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+ #define rcu_sleep_check() do { } while (0)
+ 
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
 -- 
 2.9.5
 
