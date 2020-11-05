@@ -2,113 +2,157 @@ Return-Path: <SRS0=5ltB=EL=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B3D2C388F7
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:08:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B9FC388F7
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:09:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E77A020719
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:08:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF09520719
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604617738;
-	bh=ASQcl6/kvjNQnS00DAk1cDFUuC2e0kZnj1RAWJdVV4k=;
-	h=Date:From:To:Cc:Subject:Reply-To:List-ID:From;
-	b=b1MEYJbo0VLlMcwULI+RrW9A6vjXEZr/vkL+s5MsdzHL7MwJz2gq/07p9H6XjVb2Q
-	 m8D54iS1ywWL9JllDjIuabcSQRhV1EQVjyGhLcR+dNO8uKCTwmboHQd4wsMQKyoyxR
-	 fQqnxv7doNEH8elUqQXbmNYKON2+eo0mdjHvu4Rg=
+	s=default; t=1604617765;
+	bh=cLiAusonPv4tCQb0QUWkF5lsOrakxhbxXbRLovsOtas=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=EFJ7mAbTVGVPVneNCAc47vpGspheI/WwyWAqeAugL4LOp1uRSPQrlehE6a8mjkVAX
+	 pSZGgnPSE3RbJJnF9N/oNf7cWIK6duysX+BxNNnFVWtEC9L4sUdIxeP8fdF6xAOJ+4
+	 sLdVGYg3MzhIqmOLitWeoPrx0Zfimn9/w96jlJGc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732046AbgKEXI5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:08:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
+        id S1732361AbgKEXJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:09:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEXI5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:08:57 -0500
+        id S1726801AbgKEXJY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:09:24 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6F1420715;
-        Thu,  5 Nov 2020 23:08:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F74920715;
+        Thu,  5 Nov 2020 23:09:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604617736;
-        bh=ASQcl6/kvjNQnS00DAk1cDFUuC2e0kZnj1RAWJdVV4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=RVw66FG4NSmzSVajDJ3cvCmx4IjJed/I1aKVN5MW0Vvu+LMgIawsPI1p0hRYZa+oh
-         XesIxJgdaCZ16mJhZyTBpqFDCsz702mtTe1fSBdjcMVeR3bPpuo9JtmAcakjg7AzsZ
-         A4krdY6QJmRSU30nXlEoZQwwD1ZUPLHn8Nnn2u9I=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 860313522A76; Thu,  5 Nov 2020 15:08:56 -0800 (PST)
-Date:   Thu, 5 Nov 2020 15:08:56 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1604617763;
+        bh=cLiAusonPv4tCQb0QUWkF5lsOrakxhbxXbRLovsOtas=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jJQdcD1aw6BRs37FdhQuxUotiIFH8Mb7rRArI4oar9fC0luu1RL0yWRtpDAzdBcgm
+         s699IHQ2o9xZ0EHTtu2o4aahUKIMOEXAkGbV6nvM+THmGpila7vG7uv5sXlIM3BZoD
+         t/HmHap28uUmY7SfYXwMvy85iYje4FuJ48q4tWa0=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/16] Miscellaneous fixes for v5.11
-Message-ID: <20201105230856.GA18904@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/16] rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+Date:   Thu,  5 Nov 2020 15:09:06 -0800
+Message-Id: <20201105230921.19017-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20201105230856.GA18904@paulmck-ThinkPad-P72>
+References: <20201105230856.GA18904@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series contains miscellaneous fixes:
+The try_invoke_on_locked_down_task() function requires that
+interrupts be enabled, but it is called with interrupts disabled from
+rcu_print_task_stall(), resulting in an "IRQs not enabled as expected"
+diagnostic.  This commit therefore updates rcu_print_task_stall()
+to accumulate a list of the first few tasks while holding the current
+leaf rcu_node structure's ->lock, then releases that lock and only then
+uses try_invoke_on_locked_down_task() to attempt to obtain per-task
+detailed information.  Of course, as soon as ->lock is released, the
+task might exit, so the get_task_struct() function is used to prevent
+the task structure from going away in the meantime.
 
-1.	Don't invoke try_invoke_on_locked_down_task() with irqs disabled.
+Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
+Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
+Reported-by: syzbot+f04854e1c5c9e913cc27@syzkaller.appspotmail.com
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_stall.h | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-2.	Move x86's rcu_cpu_starting() earlier.
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 0fde39b..ca21d28 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -249,13 +249,16 @@ static bool check_slow_task(struct task_struct *t, void *arg)
+ 
+ /*
+  * Scan the current list of tasks blocked within RCU read-side critical
+- * sections, printing out the tid of each.
++ * sections, printing out the tid of each of the first few of them.
+  */
+-static int rcu_print_task_stall(struct rcu_node *rnp)
++static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
++	__releases(rnp->lock)
+ {
++	int i = 0;
+ 	int ndetected = 0;
+ 	struct rcu_stall_chk_rdr rscr;
+ 	struct task_struct *t;
++	struct task_struct *ts[8];
+ 
+ 	if (!rcu_preempt_blocked_readers_cgp(rnp))
+ 		return 0;
+@@ -264,6 +267,14 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+ 	t = list_entry(rnp->gp_tasks->prev,
+ 		       struct task_struct, rcu_node_entry);
+ 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
++		get_task_struct(t);
++		ts[i++] = t;
++		if (i >= ARRAY_SIZE(ts))
++			break;
++	}
++	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	for (i--; i; i--) {
++		t = ts[i];
+ 		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
+ 			pr_cont(" P%d", t->pid);
+ 		else
+@@ -273,6 +284,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp)
+ 				".q"[rscr.rs.b.need_qs],
+ 				".e"[rscr.rs.b.exp_hint],
+ 				".l"[rscr.on_blkd_list]);
++		put_task_struct(t);
+ 		ndetected++;
+ 	}
+ 	pr_cont("\n");
+@@ -293,8 +305,9 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
+  * Because preemptible RCU does not exist, we never have to check for
+  * tasks blocked within RCU read-side critical sections.
+  */
+-static int rcu_print_task_stall(struct rcu_node *rnp)
++static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+ {
++	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	return 0;
+ }
+ #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
+@@ -472,7 +485,6 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 	pr_err("INFO: %s detected stalls on CPUs/tasks:\n", rcu_state.name);
+ 	rcu_for_each_leaf_node(rnp) {
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+-		ndetected += rcu_print_task_stall(rnp);
+ 		if (rnp->qsmask != 0) {
+ 			for_each_leaf_node_possible_cpu(rnp, cpu)
+ 				if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
+@@ -480,7 +492,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 					ndetected++;
+ 				}
+ 		}
+-		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++		ndetected += rcu_print_task_stall(rnp, flags); // Releases rnp->lock.
+ 	}
+ 
+ 	for_each_possible_cpu(cpu)
+-- 
+2.9.5
 
-3.	Panic after fixed number of stalls.
-
-4.	Update list.h comment to explicitly note circular lists.
-
-5.	Implement rcu_segcblist_is_offloaded() config dependent.
-
-6.	Fix single-CPU check in rcu_blocking_is_gp().
-
-7.	Clarify nocb kthreads naming in RCU_NOCB_CPU config.
-
-8.	Add a warning if CPU being onlined did not report QS already.
-
-9.	Make struct kernel_param_ops definitions const.
-
-10.	Fix ftrace recursion.
-
-11.	nocb: Avoid raising softirq for offloaded ready-to-execute CBs.
-
-12.	Prevent lockdep-RCU splats on lock acquisition/release.
-
-13.	Fix a typo in rcu_blocking_is_gp() header comment.
-
-14.	Do not report strict GPs for outgoing CPUs.
-
-15.	Defer kvfree_rcu() allocation to a clean context.
-
-16.	Take early exit on memory-allocation failure.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- arch/x86/kernel/cpu/mtrr/mtrr.c |    2 
- arch/x86/kernel/smpboot.c       |    1 
- include/linux/kernel.h          |    1 
- include/linux/list.h            |    2 
- kernel/rcu/Kconfig              |   20 ++--
- kernel/rcu/rcu_segcblist.h      |    2 
- kernel/rcu/srcutree.c           |    4 
- kernel/rcu/tree.c               |  188 +++++++++++++++++++++++++---------------
- kernel/rcu/tree.h               |    2 
- kernel/rcu/tree_plugin.h        |    2 
- kernel/rcu/tree_stall.h         |   28 ++++-
- kernel/sysctl.c                 |   11 ++
- 12 files changed, 178 insertions(+), 85 deletions(-)
