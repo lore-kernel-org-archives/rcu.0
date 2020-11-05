@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B73F1C388F7
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56287C4742C
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5410F20704
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02E9420704
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604618733;
-	bh=AV28ppG8npANecF/aTt3ITUSYwCdAIjPjQ/rME20Tew=;
+	s=default; t=1604618735;
+	bh=29l9hUljo6O7lK5hq63n532gdHL+nNGyTy22VDpKtDw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=U/ul2CWvfjo2eDk7pJtytsR9fTc5cq6t+M7vHs7vquWk359I7ALhO3sXs4qImCdtQ
-	 JL0WGuTE7vW6ofrL2pV0KBXdIRxx/OGo2nEkcJn+otcYCynMi34SBpc/Eq8TFANwoc
-	 j3k4S/lzbBhAt58mxiIGmPbshoZyaYuQAjAghP+A=
+	b=jAjac2bbdAQ8kL1kv2rh7+IRfaAKv7HSQtBpXdwXd7Aac8t7qoneO/33ByfQdCRXA
+	 YmqwY52p12P218alCDf4p8dzy+qG8eJkDwrVkX1yWxIrgelqE59KggqBwdHqNq13kw
+	 jd1FhL9gcOiYhvq91OJaw3CPaWU4Vabx4uqvBv/M=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732697AbgKEXZW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1732675AbgKEXZW (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 5 Nov 2020 18:25:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40784 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731060AbgKEXY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1732577AbgKEXY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:24:57 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 503BE20786;
+        by mail.kernel.org (Postfix) with ESMTPSA id C2BE9221FA;
         Thu,  5 Nov 2020 23:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604618696;
-        bh=AV28ppG8npANecF/aTt3ITUSYwCdAIjPjQ/rME20Tew=;
+        s=default; t=1604618697;
+        bh=29l9hUljo6O7lK5hq63n532gdHL+nNGyTy22VDpKtDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULdu+vd/sYkDXHcj2T7o3az8qugfZ8caRnHKrB4CCePECYLuJcxkotBKST6FTuL4R
-         JZkSx043oFqIbfg+8DoKysZOdZwjK+ww6yjHWTQQuVoSXfNJZLp/nbBcPF0MS2pJ79
-         Q7W7FY+1pNySr9x5D+eclCraKU0/t06VQkQWFJjc=
+        b=wipJrudIMAkSSxEeO6VkLTMDluiRpG5AitvnyhWMYz92pI5naEzTUauvIGurMKGd4
+         4RrFwP580+tJQk/9Gg1UtKZD+N13hKQnj1W4F+TEsE+3skrdIm2xGcVurlwEBhJtKg
+         jEgkG3p7beOuUw+98DrJSfan0O4P4kODM2TP3+/4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Jakub Kicinski <kuba@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/7] rcu: Un-hide lockdep maps for !LOCKDEP
-Date:   Thu,  5 Nov 2020 15:24:49 -0800
-Message-Id: <20201105232454.19919-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 4/7] net: sched: Remove broken definitions and un-hide for !LOCKDEP
+Date:   Thu,  5 Nov 2020 15:24:51 -0800
+Message-Id: <20201105232454.19919-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105232345.GA19179@paulmck-ThinkPad-P72>
 References: <20201105232345.GA19179@paulmck-ThinkPad-P72>
@@ -63,62 +64,53 @@ From: Jakub Kicinski <kuba@kernel.org>
 Currently, variables used only within lockdep expressions are flagged as
 unused, requiring that these variables' declarations be decorated with
 either #ifdef or __maybe_unused.  This results in ugly code.  This commit
-therefore causes the RCU lock maps to be visible even when lockdep is not
-enabled, thus removing the need for these decorations.  This approach
+therefore causes the full definitions of the lockdep_tcf_chain_is_locked()
+and lockdep_tcf_proto_is_locked() functions to be visible even when
+lockdep is not enabled, thus removing the need for the previous empty
+functions that were provided in non-lockdep kernels.  This approach
 further relies on dead-code elimination to remove any references to
 functions or variables that are not available in non-lockdep kernels.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+--
+CC: jhs@mojatatu.com
+CC: xiyou.wangcong@gmail.com
+CC: jiri@resnulli.us
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h       | 9 +++++----
- include/linux/rcupdate_trace.h | 4 ++--
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ include/net/sch_generic.h | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 6cdd015..f9533bb 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -241,6 +241,11 @@ bool rcu_lockdep_current_cpu_online(void);
- static inline bool rcu_lockdep_current_cpu_online(void) { return true; }
- #endif /* #else #if defined(CONFIG_HOTPLUG_CPU) && defined(CONFIG_PROVE_RCU) */
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index d8fd867..749db62 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -435,7 +435,6 @@ struct tcf_block {
+ 	struct mutex proto_destroy_lock; /* Lock for proto_destroy hashtable. */
+ };
  
-+extern struct lockdep_map rcu_lock_map;
-+extern struct lockdep_map rcu_bh_lock_map;
-+extern struct lockdep_map rcu_sched_lock_map;
-+extern struct lockdep_map rcu_callback_map;
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 
- static inline void rcu_lock_acquire(struct lockdep_map *map)
-@@ -253,10 +258,6 @@ static inline void rcu_lock_release(struct lockdep_map *map)
- 	lock_release(map, _THIS_IP_);
- }
- 
--extern struct lockdep_map rcu_lock_map;
--extern struct lockdep_map rcu_bh_lock_map;
--extern struct lockdep_map rcu_sched_lock_map;
--extern struct lockdep_map rcu_callback_map;
- int debug_lockdep_rcu_enabled(void);
- int rcu_read_lock_held(void);
- int rcu_read_lock_bh_held(void);
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 3e7919f..86c8f6c 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -11,10 +11,10 @@
- #include <linux/sched.h>
- #include <linux/rcupdate.h>
- 
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--
- extern struct lockdep_map rcu_trace_lock_map;
- 
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+
- static inline int rcu_read_lock_trace_held(void)
+-#ifdef CONFIG_PROVE_LOCKING
+ static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain *chain)
  {
- 	return lock_is_held(&rcu_trace_lock_map);
+ 	return lockdep_is_held(&chain->filter_chain_lock);
+@@ -445,17 +444,6 @@ static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+ {
+ 	return lockdep_is_held(&tp->lock);
+ }
+-#else
+-static inline bool lockdep_tcf_chain_is_locked(struct tcf_block *chain)
+-{
+-	return true;
+-}
+-
+-static inline bool lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+-{
+-	return true;
+-}
+-#endif /* #ifdef CONFIG_PROVE_LOCKING */
+ 
+ #define tcf_chain_dereference(p, chain)					\
+ 	rcu_dereference_protected(p, lockdep_tcf_chain_is_locked(chain))
 -- 
 2.9.5
 
