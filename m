@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 143F8C55178
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D08A0C5517A
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BF5FE20715
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8870920715
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604617817;
-	bh=h9SU9vUbFz1ijbGCGqgEEi7VUhGXALuvKvMWjnAg/ic=;
+	s=default; t=1604617819;
+	bh=VwjH8Shn9EAOIdA9q7NYvzwFSupY43r8X8G6THvMPWs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ZsNGaz2vx9vNe3gEE4/9Ob6UuW1YOPBdF1QLWxF66mwSnfGDwsI3Pwf1od2gjs5fk
-	 2FA1updAEnmEerOK8bpCYJoZwlbHqiPBTHywFHUkOqKZR6PvWqXZMUt6suRxF7f6A6
-	 XF1zddEjdHfkconmuMObI/kegp58HFG3rd1ERgb0=
+	b=XxtpAFngxHmfhg+GtXGikNigfUuLdCcKDiD5oAZ3aNw5Xyx3QYwiKk5Sz/mcu8ud6
+	 /IEP3kEAAtNTWrt9z3od/IZYvmX10+Jn0A8sngyuuqufoIn03AFIZgxMhJ4VOGzPAb
+	 xNCNBLhax3lfTXwSeoJD5Fy1KwX8hnDuIcTHjTAI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732542AbgKEXJ0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:09:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
+        id S1732712AbgKEXKS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:10:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732441AbgKEXJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1732181AbgKEXJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:09:25 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B339217A0;
-        Thu,  5 Nov 2020 23:09:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BD9121556;
+        Thu,  5 Nov 2020 23:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604617765;
-        bh=h9SU9vUbFz1ijbGCGqgEEi7VUhGXALuvKvMWjnAg/ic=;
+        s=default; t=1604617764;
+        bh=VwjH8Shn9EAOIdA9q7NYvzwFSupY43r8X8G6THvMPWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zKec6P5P48azcbUiknmOX3WIZdYMMiqstS8TE1SQEzl9+F2vYv1zg0yVSFFTqQM1V
-         1BmyNveJ+TR3tv3//okfK0B8LqNRJDx5TH6UH4NkkoFsLmYDEWiG5KXQTgMw+G5iRP
-         mECAIH9IMzPL5cfOoCjVx9gh7+RlNz2gp+bWjnrA=
+        b=ViCNPhSxxV16lrSXLhKOFd2taJ3WSKFF2JulViaJiid+OP0P9a+Igl7Hwk6r5amxv
+         xss/j+5n3FnKObO4taxPtu5qi/1dWv+JLTbcDSoX0Dp2tEzX09LkAhxyEPO6Gyvcan
+         pY+cNAhKnBavyNE/1U7RspA0hxe7IkhDt7v1i/3Q=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -45,12 +45,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Asif Rasheed <b00073877@aus.edu>,
+        oleg@redhat.com, joel@joelfernandes.org, chao <chao@eero.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/16] list.h: Update comment to explicitly note circular lists
-Date:   Thu,  5 Nov 2020 15:09:09 -0800
-Message-Id: <20201105230921.19017-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/16] rcu: Panic after fixed number of stalls
+Date:   Thu,  5 Nov 2020 15:09:08 -0800
+Message-Id: <20201105230921.19017-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105230856.GA18904@paulmck-ThinkPad-P72>
 References: <20201105230856.GA18904@paulmck-ThinkPad-P72>
@@ -58,35 +57,78 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Asif Rasheed <b00073877@aus.edu>
+From: chao <chao@eero.com>
 
-The students in the Operating System Lecture Section at the
-American University of Sharjah were confused by the header comment
-in include/linux/list.h, which says "Simple doubly linked list
-implementation".  This comment means "simple" as in "not complex",
-but "simple" is often used in this context to mean "not circular".
-This commit therefore avoids this ambiguity by explicitly calling out
-"circular".
+Some stalls are transient, so that system fully recovers.  This commit
+therefore allows users to configure the number of stalls that must happen
+in order to trigger kernel panic.
 
-Signed-off-by: Asif Rasheed <b00073877@aus.edu>
+Signed-off-by: chao <chao@eero.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/list.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/kernel.h  |  1 +
+ kernel/rcu/tree_stall.h |  6 ++++++
+ kernel/sysctl.c         | 11 +++++++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index a18c87b..89bdc92 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -9,7 +9,7 @@
- #include <linux/kernel.h>
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 2f05e91..4b5fd3d 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -536,6 +536,7 @@ extern int panic_on_warn;
+ extern unsigned long panic_on_taint;
+ extern bool panic_on_taint_nousertaint;
+ extern int sysctl_panic_on_rcu_stall;
++extern int sysctl_max_rcu_stall_to_panic;
+ extern int sysctl_panic_on_stackoverflow;
  
- /*
-- * Simple doubly linked list implementation.
-+ * Circular doubly linked list implementation.
-  *
-  * Some of the internal functions ("__xxx") are useful when
-  * manipulating whole lists rather than single entries, as
+ extern bool crash_kexec_post_notifiers;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index ca21d28..70d48c5 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -13,6 +13,7 @@
+ 
+ /* panic() on RCU Stall sysctl. */
+ int sysctl_panic_on_rcu_stall __read_mostly;
++int sysctl_max_rcu_stall_to_panic __read_mostly;
+ 
+ #ifdef CONFIG_PROVE_RCU
+ #define RCU_STALL_DELAY_DELTA		(5 * HZ)
+@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
+ /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+ static void panic_on_rcu_stall(void)
+ {
++	static int cpu_stall;
++
++	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
++		return;
++
+ 	if (sysctl_panic_on_rcu_stall)
+ 		panic("RCU Stall\n");
+ }
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index afad085..c9fbdd8 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2650,6 +2650,17 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= SYSCTL_ONE,
+ 	},
+ #endif
++#if defined(CONFIG_TREE_RCU)
++	{
++		.procname	= "max_rcu_stall_to_panic",
++		.data		= &sysctl_max_rcu_stall_to_panic,
++		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_INT_MAX,
++	},
++#endif
+ #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
+ 	{
+ 		.procname	= "stack_erasing",
 -- 
 2.9.5
 
