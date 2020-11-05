@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7733C4742C
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA1CC55178
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8DDFB2073A
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:47:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3BCF72073A
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604620048;
-	bh=HzwUWY2YZpUynALsoJs6v6eJGIe4fiNOIxvviiTKnro=;
+	s=default; t=1604620096;
+	bh=lLGfA2SCpZe6xMhECsAnbj+bQlSrzmGYITVjdGbCa7A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=E+oBJpjM2gNWmJdgm80kP9zGNqeW3NbxzN/7Da3Eb+yI4A905WMhxO7ONXRQZWJav
-	 z+F46g1yYlwPsz3j21wMFrmsmQIz8mTR8H4gbjopIAUbtkpA7KGBLdmO/hJtsA+cpe
-	 TAyq9Z41DbzDMDJTic+VNncy3lZ85Ezn+s/Tj3v4=
+	b=C690GhGvO3ITFhsL0MQvjPyQI7olO4ATGWtTudMrfNCHG0RgVZwpw65IOkcCKLpTF
+	 xiBp2bnK1q8zHEfJWXVvUrOTwRzW/vw28eBxkOrVNcsatA47iOQA9xvpIBx1qXb6Kx
+	 qjomIb6YW7Q2pygxY1EYERIvMlEH+b8YmLc0pK1I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732740AbgKEXr2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:47:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46182 "EHLO mail.kernel.org"
+        id S1732830AbgKEXrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:47:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732696AbgKEXr1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:47:27 -0500
+        id S1732814AbgKEXrc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:47:32 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4703221F8;
-        Thu,  5 Nov 2020 23:47:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E70972224F;
+        Thu,  5 Nov 2020 23:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604620046;
-        bh=HzwUWY2YZpUynALsoJs6v6eJGIe4fiNOIxvviiTKnro=;
+        s=default; t=1604620052;
+        bh=lLGfA2SCpZe6xMhECsAnbj+bQlSrzmGYITVjdGbCa7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HFz0NGKXnKM+wvqk4o+HAhGUXUDFHAaX2fcdS+kUJZuD00SXvKfPezQwzKSqHXbvF
-         CmevWn7+sgIWlCvJml9D2fdA972Ldl7YJ7nnGufjtCeho/udJOKGZJjTL312pQhVqZ
-         MCVNQfpdQ4edxlSUCnuOEZlwWmfR0ATwGhbMePHk=
+        b=Qx5JFlxQjKr7Tn1BV/i+myy/BZ5YdFT5k5u3mZtv2BLm4NNQh7xNR30tMglHBW7Px
+         /W0tTnHBZnSJPeGOJiDLeK9ov5U+Lw1O6R8mxEhBOIv5VgaaxEIiY2gChwGDjgHK+D
+         4uyrWFgt58ulIodqqf0GEMp/Ekz9897EXr3W6LuA=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Hou Tao <houtao1@huawei.com>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/28] locktorture: Ignore nreaders_stress if no readlock support
-Date:   Thu,  5 Nov 2020 15:47:04 -0800
-Message-Id: <20201105234719.23307-13-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 28/28] tools/rcutorture: Fix BUG parsing of console.log
+Date:   Thu,  5 Nov 2020 15:47:19 -0800
+Message-Id: <20201105234719.23307-28-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -58,36 +58,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-Exclusive locks do not have readlock support, which means that a
-locktorture run with the following module parameters will do nothing:
+For the rcutorture test summary log file console.log of virtual machines is
+parsed. When a console.log contains "DEBUG", BUG counter is incremented
+because regular expression does not handle to ignore DEBUG.
 
- torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
-
-This commit therefore rejects this combination for exclusive locks by
-returning -EINVAL during module init.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 316531d..046ea2d 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -870,7 +870,8 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (nwriters_stress == 0 && nreaders_stress == 0) {
-+	if (nwriters_stress == 0 &&
-+	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
- 		firsterr = -EINVAL;
- 		goto unwind;
+diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+index e033380..263b1be 100755
+--- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
++++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+@@ -133,7 +133,7 @@ then
+ 	then
+ 		summary="$summary  Warnings: $n_warn"
+ 	fi
+-	n_bugs=`egrep -c 'BUG|Oops:' $file`
++	n_bugs=`egrep -c '\bBUG|Oops:' $file`
+ 	if test "$n_bugs" -ne 0
+ 	then
+ 		summary="$summary  Bugs: $n_bugs"
 -- 
 2.9.5
 
