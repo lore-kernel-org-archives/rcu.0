@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA1CC55178
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD5D1C55178
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3BCF72073A
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6ED1C2073A
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604620096;
-	bh=lLGfA2SCpZe6xMhECsAnbj+bQlSrzmGYITVjdGbCa7A=;
+	s=default; t=1604620100;
+	bh=p7BCROET9ehqPb8WwWhA7jHG87zNPujM1AIJ22NSe1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=C690GhGvO3ITFhsL0MQvjPyQI7olO4ATGWtTudMrfNCHG0RgVZwpw65IOkcCKLpTF
-	 xiBp2bnK1q8zHEfJWXVvUrOTwRzW/vw28eBxkOrVNcsatA47iOQA9xvpIBx1qXb6Kx
-	 qjomIb6YW7Q2pygxY1EYERIvMlEH+b8YmLc0pK1I=
+	b=b6N/3T0XM+5EBpxW/vC9FTsoUxBgP9LYL1jK81p0K8pNJVUnZ4caHngapiD7myfQF
+	 LCGSoy28fTtSIb58sf9B7B+mtX4C5oc1iByd43UvvKdvm+s6KYxAyw/zeKdiCvdjLE
+	 3agpXDiS6HuVao2r5G9pT12WRQ+YtsUCO2gdLz6E=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732830AbgKEXrd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:47:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
+        id S1732696AbgKEXsQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:48:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732814AbgKEXrc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1732396AbgKEXrc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:47:32 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E70972224F;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DC98221FE;
         Thu,  5 Nov 2020 23:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604620052;
-        bh=lLGfA2SCpZe6xMhECsAnbj+bQlSrzmGYITVjdGbCa7A=;
+        s=default; t=1604620051;
+        bh=p7BCROET9ehqPb8WwWhA7jHG87zNPujM1AIJ22NSe1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qx5JFlxQjKr7Tn1BV/i+myy/BZ5YdFT5k5u3mZtv2BLm4NNQh7xNR30tMglHBW7Px
-         /W0tTnHBZnSJPeGOJiDLeK9ov5U+Lw1O6R8mxEhBOIv5VgaaxEIiY2gChwGDjgHK+D
-         4uyrWFgt58ulIodqqf0GEMp/Ekz9897EXr3W6LuA=
+        b=NtOHkGLQNQjvcKaCAe+Kd9o7SblqTsMy0QSvDQMrMf6aEiM5wbv+jns+B1fb4MzBs
+         qiFNblj2SJDCTTAJwzemsB1zXoTz5pBZL6pfnz6QaJ49CIBAuatNM3NkTAVdFSelwK
+         vBN6OU+4NsNUzbmKrHdblpfz+co21xMYP2eSpldM=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,11 +46,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 28/28] tools/rcutorture: Fix BUG parsing of console.log
-Date:   Thu,  5 Nov 2020 15:47:19 -0800
-Message-Id: <20201105234719.23307-28-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 27/28] tools/nolibc:  Fix a spelling error in a comment
+Date:   Thu,  5 Nov 2020 15:47:18 -0800
+Message-Id: <20201105234719.23307-27-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -58,32 +59,34 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-For the rcutorture test summary log file console.log of virtual machines is
-parsed. When a console.log contains "DEBUG", BUG counter is incremented
-because regular expression does not handle to ignore DEBUG.
+Fix a spelling in the comment line.
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+s/memry/memory/p
+
+This is on linux-next.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
+ tools/include/nolibc/nolibc.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index e033380..263b1be 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -133,7 +133,7 @@ then
- 	then
- 		summary="$summary  Warnings: $n_warn"
- 	fi
--	n_bugs=`egrep -c 'BUG|Oops:' $file`
-+	n_bugs=`egrep -c '\bBUG|Oops:' $file`
- 	if test "$n_bugs" -ne 0
- 	then
- 		summary="$summary  Bugs: $n_bugs"
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index d6d2623..e61d36c 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -107,7 +107,7 @@ static int errno;
+ #endif
+ 
+ /* errno codes all ensure that they will not conflict with a valid pointer
+- * because they all correspond to the highest addressable memry page.
++ * because they all correspond to the highest addressable memory page.
+  */
+ #define MAX_ERRNO 4095
+ 
 -- 
 2.9.5
 
