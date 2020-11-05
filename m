@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE8E2C388F7
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2570FC55178
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 868222073A
+	by mail.kernel.org (Postfix) with ESMTP id D4D4720756
 	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1604620105;
-	bh=uT5n8qK9bxjpcW9G+W8gBoRmQpU8JHI58eqEgyEwSJQ=;
+	bh=JaeZmEkvWhTvLV4KAaSbVrOYTR4dRZ2rPQvxLOIPiI0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=bFZt2iSF1H0FDEywKfJNmRfZOSRuJ5B2xObT3lVT4EV0Waq92m17AeUf+OZJjyw1g
-	 HbROkFPnqkcc128rr0ucrGCT0uetjr1K02Qm58kqTuEfbxAas74vh6dysS+yAW3AL2
-	 M5VDPH+znf2RfqAEFIV7eUMcVTcsSENh8M9beqPs=
+	b=eeXwQYvdk5sdnAIU4Nwt3IYhr7xaOLdmNdL1Zc9586ABKhVaVfnfmhfOBUlg/VEZQ
+	 Lo6k3v2VoasdKqGlMzaUXU1/8s/SltZ+lTOGf/T09xKmRwsGPNv9rSnvHiJwqvyfsx
+	 b9H6ESPHMXB6ipOzjQY+GAD26cfmdMFbhK0CP4TQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732622AbgKEXsU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:48:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
+        id S1732744AbgKEXrb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:47:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732804AbgKEXrb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1732795AbgKEXrb (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:47:31 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F330A2222A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 978F42224D;
         Thu,  5 Nov 2020 23:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604620051;
-        bh=uT5n8qK9bxjpcW9G+W8gBoRmQpU8JHI58eqEgyEwSJQ=;
+        s=default; t=1604620050;
+        bh=JaeZmEkvWhTvLV4KAaSbVrOYTR4dRZ2rPQvxLOIPiI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JFeU/bIG0zeHjjxYtWEKumsdeVWmaDxI3Tv5eOAOMNufb1NUds3/IgXEO72h8koTT
-         gNXzF/Kcg07asPJRV8gflNfuOgXxBZdlk+u4zbTHtDpedN19vUx1wMFj76PJ9ToarB
-         /Nzk4MGqHmMRMxtyqkuG/nPWjAiQQQl2iNMO4JP8=
+        b=XKdZRCuYdKW8uOcbXCm7otStqaAwk6fsB9pzq8lD0JlVmJpV0KYqo8wm87S1lw56X
+         f/R4FM2HAZgBHhRISJrLQoVI+E+mqwKz1xH2/pdtWxh7ZVknyw5MKXU8/8pjgJO3ql
+         RRi6Obn7YwVnlTOe3/AzuMwgpuGXhIvRRTUdNPGw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -46,10 +46,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/28] torture: Make kvm-check-branches.sh use --allcpus
-Date:   Thu,  5 Nov 2020 15:47:17 -0800
-Message-Id: <20201105234719.23307-26-paulmck@kernel.org>
+        Samuel Hernandez <sam.hernandez.amador@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 25/28] rcutorture/nolibc: Fix a typo in header file
+Date:   Thu,  5 Nov 2020 15:47:16 -0800
+Message-Id: <20201105234719.23307-25-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105234658.GA23142@paulmck-ThinkPad-P72>
 References: <20201105234658.GA23142@paulmck-ThinkPad-P72>
@@ -57,40 +59,30 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Samuel Hernandez <sam.hernandez.amador@gmail.com>
 
-Currently the kvm-check-branches.sh script calculates the number of CPUs
-and passes this to the kvm.sh --cpus command-line argument.  This works,
-but this commit saves a line by instead using the new kvm.sh --allcpus
-command-line argument.
+This fixes a typo. Before this, the AT_FDCWD macro would be defined
+regardless of whether or not it's been defined before.
 
+Signed-off-by: Samuel Hernandez <sam.hernandez.amador@gmail.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ tools/include/nolibc/nolibc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-index 6e65c13..370406b 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
-@@ -52,8 +52,7 @@ echo Results directory: $resdir/$ds
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
- PATH=${KVM}/bin:$PATH; export PATH
- . functions.sh
--cpus="`identify_qemu_vcpus`"
--echo Using up to $cpus CPUs.
-+echo Using all `identify_qemu_vcpus` CPUs.
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index 2551e9b..d6d2623 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -231,7 +231,7 @@ struct rusage {
+ #define DT_SOCK   12
  
- # Each pass through this loop does one command-line argument.
- for gitbr in $@
-@@ -74,7 +73,7 @@ do
- 		# Test the specified commit.
- 		git checkout $i > $resdir/$ds/$idir/git-checkout.out 2>&1
- 		echo git checkout return code: $? "(Commit $ntry: $i)"
--		kvm.sh --cpus $cpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
-+		kvm.sh --allcpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
- 		ret=$?
- 		echo kvm.sh return code $ret for commit $i from branch $gitbr
+ /* all the *at functions */
+-#ifndef AT_FDWCD
++#ifndef AT_FDCWD
+ #define AT_FDCWD             -100
+ #endif
  
 -- 
 2.9.5
