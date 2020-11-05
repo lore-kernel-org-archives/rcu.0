@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A9EFC388F7
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E69C5517A
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:24:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CE012083B
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:24:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1922A221F8
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604618697;
-	bh=WSUvQbBbhVUpOAUFpD636ja6PJFHVfcean+yzKETEj4=;
+	s=default; t=1604618698;
+	bh=xZ9L/apW0pUh2TqsfHceNlDA6KM+emgVem8vXOqPGL8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=0g1dqDRQKv9LOF5qBQAEJPZ9sQvDJjkJeyKhVZIz0ncRBN+/Cd0uEL9x75vCtnp6s
-	 Dsncb+BvWYsUByGBXKUeJPBOebfIfGPZBUHnoQQKudsNw0FmB3OsFxkpdIHoUS+9Qy
-	 DwSQmcnAv6BLA772psBXpUeMBhuWZ3HaJ9bc38TI=
+	b=k2al9I1zGXVau8WQINH373gIYSIw8LE+AGrUYuM2ptW+Gpm+JwZFPVY2IFQb4kyP/
+	 IxurrSSHa59f4kULBu2XX5yLI6EjEGjJZ1dYApkjDGHe6sVf+CCfzHpAMpIuEGQL0Z
+	 DRCSdOwvchvruuCqfyNX3XsraV1qZpWWZ7vdb6w4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732035AbgKEXY4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:24:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40760 "EHLO mail.kernel.org"
+        id S1732591AbgKEXY5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:24:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEXY4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:24:56 -0500
+        id S1732444AbgKEXY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Nov 2020 18:24:57 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2316620704;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8499321556;
         Thu,  5 Nov 2020 23:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604618696;
-        bh=WSUvQbBbhVUpOAUFpD636ja6PJFHVfcean+yzKETEj4=;
+        bh=xZ9L/apW0pUh2TqsfHceNlDA6KM+emgVem8vXOqPGL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cCI+v2Un/Qs6XdnSOlOXCmn+XOLghHQ4rfwOqVsrkqW7CpTwt/93oH6TV87EAJgtx
-         BodDtFdLR0BezIDOqKypOGLM+EBLf5zc6U89WKfe6MEY3k4FRbxgL7aikcnTaEBLE/
-         C7sz5H8JQhrY3UWlwIFU0sfXq4b8Vai04xl5ZUdQ=
+        b=eTW66/eM2gzmcAQ+MjsaIgqeehJonNr0M8oL2ab/xrljKqIShsdPyIiqTi1GEwtz+
+         Rx7icO0NRSWnL+KAncKu0MA2F/CkprRI7dWjJ47akUi0yikmqtdDMvykb8zC6k1XzL
+         DFqFVuZ5uP8YmeKEzzbAF6+wdqY6HvFub2u6NGWg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -48,9 +48,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         Jakub Kicinski <kuba@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/7] sched: Un-hide lockdep_tasklist_lock_is_held() for !LOCKDEP
-Date:   Thu,  5 Nov 2020 15:24:48 -0800
-Message-Id: <20201105232454.19919-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 3/7] net: Un-hide lockdep_sock_is_held() for !LOCKDEP
+Date:   Thu,  5 Nov 2020 15:24:50 -0800
+Message-Id: <20201105232454.19919-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105232345.GA19179@paulmck-ThinkPad-P72>
 References: <20201105232345.GA19179@paulmck-ThinkPad-P72>
@@ -60,10 +60,10 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-Currently, variables used only within lockdep expressions are flagged as
-unused, requiring that these variables' declarations be decorated with
-either #ifdef or __maybe_unused.  This results in ugly code.  This commit
-therefore causes the lockdep_tasklist_lock_is_held() function to be
+Currently, variables used only within lockdep expressions are flagged
+as unused, requiring that these variables' declarations be decorated
+with either #ifdef or __maybe_unused.  This results in ugly code.
+This commit therefore causes the lockdep_sock_is_held() function to be
 visible even when lockdep is not enabled, thus removing the need for
 these decorations.  This approach further relies on dead-code elimination
 to remove any references to functions or variables that are not available
@@ -72,23 +72,27 @@ in non-lockdep kernels.
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/sched/task.h | 2 --
+ include/net/sock.h | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index 85fb2f3..c0f71f2 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
- extern union thread_union init_thread_union;
- extern struct task_struct init_task;
+diff --git a/include/net/sock.h b/include/net/sock.h
+index a5c6ae7..198d548 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1566,13 +1566,11 @@ do {									\
+ 	lockdep_init_map(&(sk)->sk_lock.dep_map, (name), (key), 0);	\
+ } while (0)
  
--#ifdef CONFIG_PROVE_RCU
- extern int lockdep_tasklist_lock_is_held(void);
--#endif /* #ifdef CONFIG_PROVE_RCU */
+-#ifdef CONFIG_LOCKDEP
+ static inline bool lockdep_sock_is_held(const struct sock *sk)
+ {
+ 	return lockdep_is_held(&sk->sk_lock) ||
+ 	       lockdep_is_held(&sk->sk_lock.slock);
+ }
+-#endif
  
- extern asmlinkage void schedule_tail(struct task_struct *prev);
- extern void init_idle(struct task_struct *idle, int cpu);
+ void lock_sock_nested(struct sock *sk, int subclass);
+ 
 -- 
 2.9.5
 
