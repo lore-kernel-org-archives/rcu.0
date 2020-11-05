@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D08A0C5517A
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94716C388F7
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8870920715
-	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 370C820786
+	for <rcu@archiver.kernel.org>; Thu,  5 Nov 2020 23:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604617819;
-	bh=VwjH8Shn9EAOIdA9q7NYvzwFSupY43r8X8G6THvMPWs=;
+	s=default; t=1604617827;
+	bh=EBKXRZA+WNZ0UpWX3ui1bG5r7mNNDBe5p8zeNiIflb8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=XxtpAFngxHmfhg+GtXGikNigfUuLdCcKDiD5oAZ3aNw5Xyx3QYwiKk5Sz/mcu8ud6
-	 /IEP3kEAAtNTWrt9z3od/IZYvmX10+Jn0A8sngyuuqufoIn03AFIZgxMhJ4VOGzPAb
-	 xNCNBLhax3lfTXwSeoJD5Fy1KwX8hnDuIcTHjTAI=
+	b=aP1+8ihC9iHFCnxpnAtEwnWoeUmVQScGrrch6gwyCK0FLM4eZifmvgtfWf7UBvwc1
+	 A7U/cNOb0Hpnb6kE071LrZ2pSqt+6kBtXqzsuQNEC6LsIq6NKlWVUJvfBiDkMrDf4x
+	 pTIBNRKLn7vyNq0GR/98ZRGiDNlzcTVJypBg15b4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732712AbgKEXKS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Nov 2020 18:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
+        id S1732415AbgKEXJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Nov 2020 18:09:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732181AbgKEXJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1732046AbgKEXJZ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 5 Nov 2020 18:09:25 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BD9121556;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A46E2083B;
         Thu,  5 Nov 2020 23:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1604617764;
-        bh=VwjH8Shn9EAOIdA9q7NYvzwFSupY43r8X8G6THvMPWs=;
+        bh=EBKXRZA+WNZ0UpWX3ui1bG5r7mNNDBe5p8zeNiIflb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ViCNPhSxxV16lrSXLhKOFd2taJ3WSKFF2JulViaJiid+OP0P9a+Igl7Hwk6r5amxv
-         xss/j+5n3FnKObO4taxPtu5qi/1dWv+JLTbcDSoX0Dp2tEzX09LkAhxyEPO6Gyvcan
-         pY+cNAhKnBavyNE/1U7RspA0hxe7IkhDt7v1i/3Q=
+        b=o8Ua1NiRJ8Rbdv1uV/ra8fr0Vd0Yrwn7KZlEshvKSauOBekyA5sUlNmT+fV+ZgqZg
+         IDpMn9qQhFzQufq8URe7JHfY1T1GlkyQIruMCN+qmIbGOhajNnCZYH+g0iitKAsggT
+         Q4tY1vVPi3q3AJo8yoW/BrQ9YNitd+kjrlRJlUgw=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -45,11 +45,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, chao <chao@eero.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/16] rcu: Panic after fixed number of stalls
-Date:   Thu,  5 Nov 2020 15:09:08 -0800
-Message-Id: <20201105230921.19017-3-paulmck@kernel.org>
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/16] x86/smpboot:  Move rcu_cpu_starting() earlier
+Date:   Thu,  5 Nov 2020 15:09:07 -0800
+Message-Id: <20201105230921.19017-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201105230856.GA18904@paulmck-ThinkPad-P72>
 References: <20201105230856.GA18904@paulmck-ThinkPad-P72>
@@ -57,78 +57,85 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: chao <chao@eero.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Some stalls are transient, so that system fully recovers.  This commit
-therefore allows users to configure the number of stalls that must happen
-in order to trigger kernel panic.
+The call to rcu_cpu_starting() in mtrr_ap_init() is not early enough
+in the CPU-hotplug onlining process, which results in lockdep splats
+as follows:
 
-Signed-off-by: chao <chao@eero.com>
+=============================
+WARNING: suspicious RCU usage
+5.9.0+ #268 Not tainted
+-----------------------------
+kernel/kprobes.c:300 RCU-list traversed in non-reader section!!
+
+other info that might help us debug this:
+
+RCU used illegally from offline CPU!
+rcu_scheduler_active = 1, debug_locks = 1
+no locks held by swapper/1/0.
+
+stack backtrace:
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0+ #268
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.10.2-1ubuntu1 04/01/2014
+Call Trace:
+ dump_stack+0x77/0x97
+ __is_insn_slot_addr+0x15d/0x170
+ kernel_text_address+0xba/0xe0
+ ? get_stack_info+0x22/0xa0
+ __kernel_text_address+0x9/0x30
+ show_trace_log_lvl+0x17d/0x380
+ ? dump_stack+0x77/0x97
+ dump_stack+0x77/0x97
+ __lock_acquire+0xdf7/0x1bf0
+ lock_acquire+0x258/0x3d0
+ ? vprintk_emit+0x6d/0x2c0
+ _raw_spin_lock+0x27/0x40
+ ? vprintk_emit+0x6d/0x2c0
+ vprintk_emit+0x6d/0x2c0
+ printk+0x4d/0x69
+ start_secondary+0x1c/0x100
+ secondary_startup_64_no_verify+0xb8/0xbb
+
+This is avoided by moving the call to rcu_cpu_starting up near
+the beginning of the start_secondary() function.  Note that the
+raw_smp_processor_id() is required in order to avoid calling into lockdep
+before RCU has declared the CPU to be watched for readers.
+
+Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+Reported-by: Qian Cai <cai@redhat.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/kernel.h  |  1 +
- kernel/rcu/tree_stall.h |  6 ++++++
- kernel/sysctl.c         | 11 +++++++++++
- 3 files changed, 18 insertions(+)
+ arch/x86/kernel/cpu/mtrr/mtrr.c | 2 --
+ arch/x86/kernel/smpboot.c       | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2f05e91..4b5fd3d 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -536,6 +536,7 @@ extern int panic_on_warn;
- extern unsigned long panic_on_taint;
- extern bool panic_on_taint_nousertaint;
- extern int sysctl_panic_on_rcu_stall;
-+extern int sysctl_max_rcu_stall_to_panic;
- extern int sysctl_panic_on_stackoverflow;
+diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
+index 6a80f36..5f436cb 100644
+--- a/arch/x86/kernel/cpu/mtrr/mtrr.c
++++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
+@@ -794,8 +794,6 @@ void mtrr_ap_init(void)
+ 	if (!use_intel() || mtrr_aps_delayed_init)
+ 		return;
  
- extern bool crash_kexec_post_notifiers;
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index ca21d28..70d48c5 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -13,6 +13,7 @@
- 
- /* panic() on RCU Stall sysctl. */
- int sysctl_panic_on_rcu_stall __read_mostly;
-+int sysctl_max_rcu_stall_to_panic __read_mostly;
- 
- #ifdef CONFIG_PROVE_RCU
- #define RCU_STALL_DELAY_DELTA		(5 * HZ)
-@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
- /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
- static void panic_on_rcu_stall(void)
- {
-+	static int cpu_stall;
-+
-+	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-+		return;
-+
- 	if (sysctl_panic_on_rcu_stall)
- 		panic("RCU Stall\n");
- }
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index afad085..c9fbdd8 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2650,6 +2650,17 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= SYSCTL_ONE,
- 	},
+-	rcu_cpu_starting(smp_processor_id());
+-
+ 	/*
+ 	 * Ideally we should hold mtrr_mutex here to avoid mtrr entries
+ 	 * changed, but this routine will be called in cpu boot time,
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index de776b2..99bdceb 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -229,6 +229,7 @@ static void notrace start_secondary(void *unused)
  #endif
-+#if defined(CONFIG_TREE_RCU)
-+	{
-+		.procname	= "max_rcu_stall_to_panic",
-+		.data		= &sysctl_max_rcu_stall_to_panic,
-+		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ONE,
-+		.extra2		= SYSCTL_INT_MAX,
-+	},
-+#endif
- #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
- 	{
- 		.procname	= "stack_erasing",
+ 	cpu_init_exception_handling();
+ 	cpu_init();
++	rcu_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
+ 	preempt_disable();
+ 	smp_callin();
 -- 
 2.9.5
 
