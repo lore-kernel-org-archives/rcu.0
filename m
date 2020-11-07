@@ -2,62 +2,50 @@ Return-Path: <SRS0=tft6=EN=vger.kernel.org=rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50EF2C2D0A3
-	for <rcu@archiver.kernel.org>; Sat,  7 Nov 2020 00:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DF0EC2D0A3
+	for <rcu@archiver.kernel.org>; Sat,  7 Nov 2020 00:48:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E34F120728
-	for <rcu@archiver.kernel.org>; Sat,  7 Nov 2020 00:27:02 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="D+OZ+DTl"
+	by mail.kernel.org (Postfix) with ESMTP id DCBDF206E3
+	for <rcu@archiver.kernel.org>; Sat,  7 Nov 2020 00:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604710096;
+	bh=d7xWJLSjJ7RLOIXvdq/UTR+dudKnOid7xsqEvkWOWLQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=mioi/y8fRpzriCI66UwP/gZme2H6V/4nuqu7E6sQb2TyqJsa877jUNz7WfpeKcvcR
+	 rZe3zSdiFD7YLkV6+olfplTTUMPTx8DdVyyX3PBGwtnxUF6oxJ8UCCWQbTVrHrhj6Z
+	 5/LPchd96ZUXy0mXh+7Xn30cyEA6PxR//nXZzzWY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgKGA1C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Nov 2020 19:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbgKGA1C (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:27:02 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE732C0613D2
-        for <rcu@vger.kernel.org>; Fri,  6 Nov 2020 16:27:01 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id s14so2807357qkg.11
-        for <rcu@vger.kernel.org>; Fri, 06 Nov 2020 16:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/cM0TFFZMZvrqgwNzLi/AHEjw0DLgiyqxlp3I+i6tBs=;
-        b=D+OZ+DTluHuXiaVE1BMYD9EUtjhOiM8Qgv90tZijxaNs0234reo+o5joNaWMREpUi8
-         vEz2CG6OY7s+9VxRo7OmDET6hiGTRqNFr97vadAXIU6InctkrVJDgIfkoSb3iKZB5jwj
-         U7HWvBqaa6jmTRGEFSQm6XBblX5ADdhF3v4N0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/cM0TFFZMZvrqgwNzLi/AHEjw0DLgiyqxlp3I+i6tBs=;
-        b=JhutOEkkAGGTRVrtlkYPfUHUkTlgFwQieyw/w9RycA9N9m9o4bh4GC+VloSY7CWLcF
-         vstVm9RbiItgpCodVpqDD5WGdX/OAhH6v03nvk09TmbxGqtN5uJSKzn1IYgoLvHSQ7pl
-         V3CJCtDGCr4b+6vsQ939WjK5ktK43WzFCFpk8TZ7wgAj0E4FcqEaxgKdnwtrkVJMcBjx
-         +wYtQzMzgqwQm9elA1iWkLpg31hT89zcmAWpalMfTg9kZlE8g9AEl0l57rpJa4XfWw7o
-         zbL+WBLdRLSiWtZgTXn7ga8fLV7utQtQwmg4VzN1cRsEJylbQvIUCUuKe7MwyIxxNYhD
-         /k6A==
-X-Gm-Message-State: AOAM533Jr0peog0z62YIgThihckuQGsbUvM3w6f7NEmgtbT/CWsvI0Y+
-        BrWRXJGgRkCLNDsKTzFLEd7YqA==
-X-Google-Smtp-Source: ABdhPJwFjgoRxwCPZiE2+6jzxcDWWbrPUP3UF7MANy5LvJc1/s0UZA5aW4E3nwNWQe9/qMxe2lC62A==
-X-Received: by 2002:a37:4e8e:: with SMTP id c136mr3972194qkb.421.1604708821114;
-        Fri, 06 Nov 2020 16:27:01 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id s23sm1655779qks.94.2020.11.06.16.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 16:27:00 -0800 (PST)
-Date:   Fri, 6 Nov 2020 19:27:00 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S1728153AbgKGAsQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Nov 2020 19:48:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbgKGAsQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Nov 2020 19:48:16 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C928206D5;
+        Sat,  7 Nov 2020 00:48:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604710095;
+        bh=d7xWJLSjJ7RLOIXvdq/UTR+dudKnOid7xsqEvkWOWLQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HDoG9YKUhLpeKHRqqOhjSWipW6DZHmu/BqF1lo89S+3ZCK0Lz9WotB9pMTRd1eTvo
+         gQyn6U1fYzHYOIy8R0MD5sljb+yskaaGzia2qCAWjn9UqASOQI4A6708ecTU5+r4fZ
+         OFReChrjIlHEjyD9UYe9jAlfMymz85GUNsXyXjek=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1905B35225DD; Fri,  6 Nov 2020 16:48:15 -0800 (PST)
+Date:   Fri, 6 Nov 2020 16:48:15 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Marco Elver <elver@google.com>,
@@ -65,61 +53,89 @@ Cc:     linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
         neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v9 5/7] rcu/segcblist: Remove useless rcupdate.h include
-Message-ID: <20201107002700.GB3144506@google.com>
+Subject: Re: [PATCH v9 2/7] rcu/segcblist: Add counters to segcblist
+ datastructure
+Message-ID: <20201107004815.GD3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20201103142603.1302207-1-joel@joelfernandes.org>
- <20201103142603.1302207-6-joel@joelfernandes.org>
- <20201105034823.GK3249@paulmck-ThinkPad-P72>
- <20201105142810.GA16800@paulmck-ThinkPad-P72>
+ <20201103142603.1302207-3-joel@joelfernandes.org>
+ <20201104170133.GI3249@paulmck-ThinkPad-P72>
+ <20201107000157.GB1397669@google.com>
+ <20201107001847.GD1397669@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105142810.GA16800@paulmck-ThinkPad-P72>
+In-Reply-To: <20201107001847.GD1397669@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:28:10AM -0800, Paul E. McKenney wrote:
-> On Wed, Nov 04, 2020 at 07:48:23PM -0800, Paul E. McKenney wrote:
-> > On Tue, Nov 03, 2020 at 09:26:01AM -0500, Joel Fernandes (Google) wrote:
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Fri, Nov 06, 2020 at 07:18:47PM -0500, Joel Fernandes wrote:
+> On Fri, Nov 06, 2020 at 07:01:57PM -0500, Joel Fernandes wrote:
+> > On Wed, Nov 04, 2020 at 09:01:33AM -0800, Paul E. McKenney wrote:
 > > 
-> > This one looks fine, but depends on the earlier "rcu/segcblist: Add
-> > counters to segcblist datastructure" patch, which also changes the list
-> > of #include directives for this file.  It manages to avoid conflicting
-> > with "rcu/trace: Add tracing for how segcb list changes", despite this
-> > one also changing the #include directives.
+> > > A casual reader might be forgiven for being confused by the combination
+> > > of "Return" in the above comment and the "void" function type below.
+> > > So shouldn't this comment be something like "Add the specified number
+> > > of callbacks to the specified segment..."?
 > > 
-> > I am testing it just out of curiosity, but it might make more sense
-> > to fold this one into "rcu/segcblist: Add counters to segcblist
-> > datastructure".
-> 
-> And it does pass light rcutorture.  ;-)
-
-Cool, I squashed it into 2/7 and updated my tree.
-
-thanks,
-
- - Joel
-
-> 							Thanx, Paul
-> 
-> > > ---
-> > >  kernel/rcu/rcu_segcblist.c | 1 -
-> > >  1 file changed, 1 deletion(-)
+> > You are right, sorry and will fix it.
+> > 
+> > > > @@ -330,11 +342,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
+> > > >  
+> > > >  	if (!rcu_segcblist_pend_cbs(rsclp))
+> > > >  		return; /* Nothing to do. */
+> > > > +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
+> > > > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
+> > > > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
 > > > 
-> > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > > index 2a03949d0b82..e9e72d72f7a6 100644
-> > > --- a/kernel/rcu/rcu_segcblist.c
-> > > +++ b/kernel/rcu/rcu_segcblist.c
-> > > @@ -10,7 +10,6 @@
-> > >  #include <linux/cpu.h>
-> > >  #include <linux/interrupt.h>
-> > >  #include <linux/kernel.h>
-> > > -#include <linux/rcupdate.h>
-> > >  #include <linux/types.h>
-> > >  
-> > >  #include "rcu_segcblist.h"
-> > > -- 
-> > > 2.29.1.341.ge80a0c044ae-goog
+> > > This should be a "for" loop.  Yes, the number and names of the segments
+> > > hasn't changed for a good long time, but nothing like code as above to
+> > > inspire Murphy to more mischief.  :-/
 > > > 
+> > > Actually, why not put the summation in the existing "for" loop below?
+> > > That would save a line of code in addition to providing less inspiration
+> > > for Mr. Murphy.
+> > 
+> > I can do that. Actually Frederic suggested the same thing but I was reluctant
+> > as I felt it did not give much LOC benefit. Will revisit it.
+> 
+> It reduces 1 line of code :) I changed it to the below, will update the patch:
+
+Thank you!  And yes, I am much more concerned about the constraints on
+Mr. Murphy than on the lines of code.  ;-)
+
+							Thanx, Paul
+
+> ---8<-----------------------
+> 
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 9b43d686b1f3..bff9b2253e50 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -101,7 +101,7 @@ static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long
+>  	WRITE_ONCE(rsclp->seglen[seg], v);
+>  }
+>  
+> -/* Return number of callbacks in a segment of the segmented callback list. */
+> +/* Increase the numeric length of a segment by a specified amount. */
+>  static void rcu_segcblist_add_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+>  {
+>  	WRITE_ONCE(rsclp->seglen[seg], rsclp->seglen[seg] + v);
+> @@ -406,13 +406,12 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
+>  
+>  	if (!rcu_segcblist_pend_cbs(rsclp))
+>  		return; /* Nothing to do. */
+> -	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
+> -		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
+> -		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
+> +	rclp->len = 0;
+>  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
+>  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
+>  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
+>  	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
+> +		rclp->len += rcu_segcblist_get_seglen(rsclp, i);
+>  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
+>  		rcu_segcblist_set_seglen(rsclp, i, 0);
+>  	}
