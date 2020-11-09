@@ -1,93 +1,84 @@
-Return-Path: <SRS0=VCsE=EP=vger.kernel.org=rcu-owner@kernel.org>
+Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4404CC2D0A3
-	for <rcu@archiver.kernel.org>; Mon,  9 Nov 2020 12:24:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D503FC2D0A3
+	for <rcu@archiver.kernel.org>; Mon,  9 Nov 2020 16:20:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CBAAE206CB
-	for <rcu@archiver.kernel.org>; Mon,  9 Nov 2020 12:24:46 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aG7OXY6d"
+	by mail.kernel.org (Postfix) with ESMTP id 7DAD82074F
+	for <rcu@archiver.kernel.org>; Mon,  9 Nov 2020 16:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604938808;
+	bh=oqLUZkDJovPnphDNZNNfXtQR+B26RG6pDlvnApy5MHQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:List-ID:
+	 From;
+	b=pSdCBZtIKaaMS2rNP5z2RIRalA32Z5rikpMjmg2vCV9IzRzy3MhHmm7Xy+Tl6T6m6
+	 ZeAsZfINEHDhRX/K5bY1Nelv+xIlP6jqDjukMQHvyiz9h596+XefgYs1y9NdVjUqwl
+	 s/oBMvhjf9QL2mz6f/BjjHm7yv2oduxt04+3hM6s=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgKIMYq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Nov 2020 07:24:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729045AbgKIMYq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:24:46 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16774C0613CF;
-        Mon,  9 Nov 2020 04:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QYxyicf4bRI86iURehj4XaxXYk1FhGdBaBCPgnoMbz0=; b=aG7OXY6dnRW0z5JBjN6Cut532/
-        4+UQM8br17m+Ex3aHax7H2fB7eNmP6SCboF/Et1yPoktDiqu9+I6TplvLGbXNTDlmRiY63U7cNMwa
-        RvseGZS+/Nm+rMfT3cbVtoNDy7HtyLgSDgYpAFGnjgxmFVaWUozY4cykwByXlTlnxRDfpIUlNoaCC
-        uNaO8mZ/b5Kv4ae7eSe+WYuLSB6iEC4ZqP8gBnkyzAw12MPBe9yLsOJtX/BI941NMi7KCrXXpyr6y
-        eS4lVn/h7mF4qg0diI2YuASbbBSGZ4VOjzpS3SMszhD1XWgUJvX8fnpRHH2QdkXYKRGAJVybtNk6x
-        sLSa/xBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc6Dh-00026q-S8; Mon, 09 Nov 2020 12:24:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727774AbgKIQUH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Nov 2020 11:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgKIQUH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:20:07 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5915A305C16;
-        Mon,  9 Nov 2020 13:24:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E258203C5334; Mon,  9 Nov 2020 13:24:24 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:24:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     paulmck@kernel.org
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53B1206CB;
+        Mon,  9 Nov 2020 16:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604938806;
+        bh=oqLUZkDJovPnphDNZNNfXtQR+B26RG6pDlvnApy5MHQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=l3IWgbhDy1rVVerCwZSglLg4bgbYQHx6Y+06kRROZy1RDdKRBJBc6kV7DGkEMogP9
+         Vc+YcT+TMAoNbHcpjY6+Cw56kQ2Wdxy9dvnBVBQZoxirIIcgntok2+dpUmNhpmbLux
+         VLwYF784LhGFQoHxGF5twyWQ0kUZpwnzyl+DadoE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5012F352264D; Mon,  9 Nov 2020 08:20:06 -0800 (PST)
+Date:   Mon, 9 Nov 2020 08:20:06 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, Hui Su <sh_def@163.com>
-Subject: Re: [PATCH tip/core/rcu 4/4] docs/rcu: Update the call_rcu() API
-Message-ID: <20201109122424.GN2594@hirez.programming.kicks-ass.net>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/4] doc: Present the role of READ_ONCE()
+Message-ID: <20201109162006.GJ3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
- <20201105230510.18660-4-paulmck@kernel.org>
+ <20201105230510.18660-1-paulmck@kernel.org>
+ <20201109122133.GL2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105230510.18660-4-paulmck@kernel.org>
+In-Reply-To: <20201109122133.GL2594@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:05:10PM -0800, paulmck@kernel.org wrote:
-> From: Hui Su <sh_def@163.com>
+On Mon, Nov 09, 2020 at 01:21:33PM +0100, Peter Zijlstra wrote:
+> On Thu, Nov 05, 2020 at 03:05:07PM -0800, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > This commit adds an explanation of the special cases where READ_ONCE()
+> > may be used in place of a member of the rcu_dereference() family.
 > 
-> This commit updates the documented API of call_rcu() to use the
-> rcu_callback_t typedef instead of the open-coded function definition.
+> I am confused, there is no actual difference between rcu_dereference()
+> and READ_ONCE() today. So we _may_ use READ_ONCE() at all times.
 > 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  Documentation/RCU/whatisRCU.rst | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index fb3ff76..1a4723f 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
->  In such cases, one uses call_rcu() rather than synchronize_rcu().
->  The call_rcu() API is as follows::
->  
-> -	void call_rcu(struct rcu_head * head,
-> -		      void (*func)(struct rcu_head *head));
-> +	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+> Now granted, we probably don't want that, but that does leave me
+> somewhat confused vs the wording here.
 
-Personally I much prefer the old form, because now I have to go look up
-rcu_callback_t to figure out wtf kind of signature is actually required.
+There is a difference from the viewpoint of both lockdep and sparse.
+
+Or am I missing your point?
+
+							Thanx, Paul
