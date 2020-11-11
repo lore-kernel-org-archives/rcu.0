@@ -2,234 +2,308 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A44DC388F9
-	for <rcu@archiver.kernel.org>; Wed, 11 Nov 2020 19:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EF8AC388F9
+	for <rcu@archiver.kernel.org>; Wed, 11 Nov 2020 19:31:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A5D0F20639
-	for <rcu@archiver.kernel.org>; Wed, 11 Nov 2020 19:22:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 058DE2087D
+	for <rcu@archiver.kernel.org>; Wed, 11 Nov 2020 19:31:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AqZT3O24"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SjCILlM5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgKKTWC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Nov 2020 14:22:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38400 "EHLO mail.kernel.org"
+        id S1727132AbgKKTbX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Nov 2020 14:31:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726953AbgKKTVY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:21:24 -0500
+        id S1726849AbgKKTbX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Nov 2020 14:31:23 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D5AC20658;
-        Wed, 11 Nov 2020 19:21:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82EC020825;
+        Wed, 11 Nov 2020 19:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605122483;
-        bh=LafJ6oCJWnOblQVCQ3oYdVp3bd8t6pBGaglg4BikY94=;
+        s=default; t=1605123081;
+        bh=bzqhxZU8csP6wlBgs2IA7QHV8F89EtTCrR4SKb7y2zs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AqZT3O24tsLYPMGrUI4hcE2UEIAT6KtbRCur8nrmm2D7yHt1NOobTWIxACIEgFYck
-         4fWTY8mUbTFc18XNv987ut2GQERuPeT/hZJNCvA03g398dbDegX+qfVsMAZ6MU3lvo
-         a7KfzzKAusyi+FL4Tzq9IJ8XC6Q347ml4YVA6cII=
+        b=SjCILlM5YfP9eSC9wRIviK1+mZorNHrd4qq4CJq0rlnjwe8YOqKfQ1uXzCELe9Krt
+         ZJza28vQw+LE9cWYBCYNgbvalwTizeaSS5JHoYmbrtUyFMrYbmECT4OI8logjQpM9B
+         OFh62AdOmO0Gn6rvkSbG5PxwFgxSOpvPwlPRKiwk=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3899535225D6; Wed, 11 Nov 2020 11:21:23 -0800 (PST)
-Date:   Wed, 11 Nov 2020 11:21:23 -0800
+        id 210FC35225D6; Wed, 11 Nov 2020 11:31:21 -0800 (PST)
+Date:   Wed, 11 Nov 2020 11:31:21 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        peterz@infradead.org
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201111192123.GB3249@paulmck-ThinkPad-P72>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Check and report missed fqs timer wakeup on RCU
+ stall
+Message-ID: <20201111193121.GC3249@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201110135320.3309507-1-elver@google.com>
- <CADYN=9+=-ApMi_eEdAeHU6TyuQ7ZJSTQ8F-FCSD33kZH8HR+xg@mail.gmail.com>
- <CANpmjNM8MZphvkTSo=KgCBXQ6fNY4qo6NZD5SBHjNse_L9i5FQ@mail.gmail.com>
- <20201111133813.GA81547@elver.google.com>
- <20201111130543.27d29462@gandalf.local.home>
- <20201111182333.GA3249@paulmck-ThinkPad-P72>
- <20201111183430.GN517454@elver.google.com>
+References: <1605103657-25815-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111183430.GN517454@elver.google.com>
+In-Reply-To: <1605103657-25815-1-git-send-email-neeraju@codeaurora.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 07:34:30PM +0100, Marco Elver wrote:
-> On Wed, Nov 11, 2020 at 10:23AM -0800, Paul E. McKenney wrote:
-> > On Wed, Nov 11, 2020 at 01:05:43PM -0500, Steven Rostedt wrote:
-> > > On Wed, 11 Nov 2020 14:38:13 +0100
-> > > Marco Elver <elver@google.com> wrote:
-> > > 
-> > > > [+Cc folks who can maybe help figure out what's going on, since I get
-> > > >   warnings even without KFENCE on next-20201110.]
-> > > > 
-> > > > On Wed, Nov 11, 2020 at 09:29AM +0100, Marco Elver wrote:
-> > > > > On Wed, 11 Nov 2020 at 00:23, Anders Roxell <anders.roxell@linaro.org> wrote:
-> > > > > [...]
-> > > > > > I gave them a spin on next-20201105 [1] and on next-20201110 [2].
-> > > > > >
-> > > > > > I eventually got to a prompt on next-20201105.
-> > > > > > However, I got to this kernel panic on the next-20201110:
-> > > > > >
-> > > > > > [...]
-> > > > > > [ 1514.089966][    T1] Testing event system initcall: OK
-> > > > > > [ 1514.806232][    T1] Running tests on all trace events:
-> > > > > > [ 1514.857835][    T1] Testing all events:
-> > > > > > [ 1525.503262][    C0] hrtimer: interrupt took 10902600 ns
-> > > > > > [ 1623.861452][    C0] BUG: workqueue lockup - pool cpus=0 node=0
-> > > > > > flags=0x0 nice=0 stuck for 65s!
-> > > > > > [...]
-> > > 
-> > > OK, so this blows up when you enable all events?
-> > > 
-> > > Note, it could just be adding overhead (which is exasperated with other
-> > > debug options enabled), which could open up a race window.
-> > >  
-> > > 
-> > > > > > [ 7823.104349][   T28]       Tainted: G        W
-> > > > > > 5.10.0-rc3-next-20201110-00008-g8dc06700529d #3
-> > > > > > [ 7833.206491][   T28] "echo 0 >
-> > > > > > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > > > > [ 7840.750700][   T28] task:kworker/0:1     state:D stack:26640 pid:
-> > > > > > 1872 ppid:     2 flags:0x00000428
-> > > > > > [ 7875.642531][   T28] Workqueue: events toggle_allocation_gate
-> > > > > > [ 7889.178334][   T28] Call trace:
-> > > > > > [ 7897.066649][   T28]  __switch_to+0x1cc/0x1e0
-> > > > > > [ 7905.326856][   T28]  0xffff00000f7077b0
-> > > > > > [ 7928.354644][   T28] INFO: lockdep is turned off.
-> > > > > > [ 7934.022572][   T28] Kernel panic - not syncing: hung_task: blocked tasks
-> > > > > > [ 7934.032039][   T28] CPU: 0 PID: 28 Comm: khungtaskd Tainted: G
-> > > > > >   W         5.10.0-rc3-next-20201110-00008-g8dc06700529d #3
-> > > > > > [ 7934.045586][   T28] Hardware name: linux,dummy-virt (DT)
-> > > > > > [ 7934.053677][   T28] Call trace:
-> > > > > > [ 7934.060276][   T28]  dump_backtrace+0x0/0x420
-> > > > > > [ 7934.067635][   T28]  show_stack+0x38/0xa0
-> > > > > > [ 7934.091277][   T28]  dump_stack+0x1d4/0x278
-> > > > > > [ 7934.098878][   T28]  panic+0x304/0x5d8
-> > > > > > [ 7934.114923][   T28]  check_hung_uninterruptible_tasks+0x5e4/0x640
-> > > > > > [ 7934.123823][   T28]  watchdog+0x138/0x160
-> > > > > > [ 7934.131561][   T28]  kthread+0x23c/0x260
-> > > > > > [ 7934.138590][   T28]  ret_from_fork+0x10/0x18
-> > > > > > [ 7934.146631][   T28] Kernel Offset: disabled
-> > > > > > [ 7934.153749][   T28] CPU features: 0x0240002,20002004
-> > > > > > [ 7934.161476][   T28] Memory Limit: none
-> > > > > > [ 7934.171272][   T28] ---[ end Kernel panic - not syncing: hung_task:
-> > > > > > blocked tasks ]---
-> > > > > >
-> > > > > > Cheers,
-> > > > > > Anders
-> > > > > > [1] https://people.linaro.org/~anders.roxell/output-next-20201105-test.log
-> > > > > > [2] https://people.linaro.org/~anders.roxell/output-next-20201110-test.log
-> > > > > 
-> > > > > Thanks for testing. The fact that it passes on next-20201105 but not
-> > > > > on 20201110 is strange. If you boot with KFENCE disabled (boot param
-> > > > > kfence.sample_interval=0), does it boot?
-> > > > [...]
-> > > > 
-> > > > Right, so I think this is no longer KFENCE's fault. This looks like
-> > > > something scheduler/RCU/ftrace related?! I notice that there have been
-> > > > scheduler changes between next-20201105 and next-20201110.
-> > > 
-> > > I'm not sure any of that would cause this.
-> > > 
-> > > > 
-> > > > I get this with KFENCE disabled:
-> > > > 
-> > > > | Running tests on all trace events:
-> > > > | Testing all events: 
-> > > > | BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 32s!
-> > > > | Showing busy workqueues and worker pools:
-> > > > | workqueue events: flags=0x0
-> > > > |   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> > > > |     pending: vmstat_shepherd
-> > > > | workqueue events_power_efficient: flags=0x82
-> > > > |   pwq 2: cpus=0 flags=0x5 nice=0 active=2/256 refcnt=4
-> > > > |     in-flight: 107:neigh_periodic_work
-> > > > |     pending: do_cache_clean
-> > > > | pool 2: cpus=0 flags=0x5 nice=0 hung=3s workers=2 manager: 7
-> > > > | rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > > > | 	(detected by 0, t=6502 jiffies, g=2885, q=4)
-> > > > | rcu: All QSes seen, last rcu_preempt kthread activity 5174 (4295523265-4295518091), jiffies_till_next_fqs=1, root ->qsmask 0x0
-> > > > | rcu: rcu_preempt kthread starved for 5174 jiffies! g2885 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-> > > > | rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> > > > | rcu: RCU grace-period kthread stack dump:
-> > > > | task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-> > > > | Call trace:
-> > > > |  __switch_to+0x100/0x1e0
-> > > > |  __schedule+0x2d0/0x890
-> > > > |  preempt_schedule_notrace+0x70/0x1c0
-> > > > |  ftrace_ops_no_ops+0x174/0x250
-> > > > |  ftrace_graph_call+0x0/0xc
-> > > 
-> > > Note, just because ftrace is called here, the blocked task was preempted
-> > > when the ftrace code called preempt_enable_notrace().
-> > > 
-> > > 
-> > > > |  preempt_count_add+0x1c/0x180
-> > > > |  schedule+0x44/0x108
-> > > > |  schedule_timeout+0x394/0x530
-> > > > |  rcu_gp_kthread+0x76c/0x19a8
-> > > > |  kthread+0x174/0x188
-> > > > |  ret_from_fork+0x10/0x18
-> > > > | 
-> > > > | ================================
-> > > > | WARNING: inconsistent lock state
-> > > > | 5.10.0-rc3-next-20201110-00001-gc07b306d7fa5-dirty #18 Not tainted
-> > > > | --------------------------------
-> > > > | inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-> > > > | kcompactd0/26 [HC0[0]:SC0[0]:HE0:SE1] takes:
-> > > > | ffffae32e6bd4358 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x4a0/0xd18
-> > > > | {IN-HARDIRQ-W} state was registered at:
-> > > 
-> > > I did some digging here and it looks like the rcu_node lock could be taken
-> > > without interrupts enabled when it does a stall print. That probably should
-> > > be fixed, but it's a symptom of the underlining bug and not the cause.
-> > 
-> > Does this patch (in -next) help?
-> > 
-> > 							Thanx, Paul
->  
-> >     rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+On Wed, Nov 11, 2020 at 07:37:37PM +0530, Neeraj Upadhyay wrote:
+> For a new grace period request, RCU GP kthread transitions
+> through following states:
 > 
-> Sadly, no, next-20201110 already included that one, and that's what I
-> tested and got me all those warnings above.
+> a. [RCU_GP_WAIT_GPS] -> [RCU_GP_DONE_GPS]
+> 
+> Initial state, where GP kthread waits for a new GP start
+> request is RCU_GP_WAIT_GPS. On new GP request (started by
+> callers, for any new callbacks, by setting RCU_GP_FLAG_INIT
+> gp_state flag and waking up the GP kthread) GP kthread
+> enters RCU_GP_DONE_GPS.
+> 
+> b. [RCU_GP_DONE_GPS] -> [RCU_GP_ONOFF]
+> 
+> Grace period initialization starts in rcu_gp_init(), which
+> records the start of new GP in rcu_state.gp_seq and enters
+> into RCU_GP_ONOFF state.
+> 
+> c. [RCU_GP_ONOFF] -> [RCU_GP_INIT]
+> 
+> In RCU_GP_ONOFF state, for each leaf rnp node, GP kthread
+> applies the buffered online/offline information of its cpus,
+> from ->qsmaskinitnext to ->qsmaskinit, which is basically
+> the mask of cpus, which need to report quiescent state, for
+> the new GP to complete.
+> 
+> Also, in this state, an outgoing rnp's (for which all cpus
+> are now offline and there are no tasks blocked inside
+> RCU read section) or an incoming rnp's (for which first cpu
+> comes online) participation in the new and subsequent GP is
+> advertised, by propagating its qsmaskinit information up the
+> tree.
+> 
+> d. [RCU_GP_INIT] -> [RCU_GP_WAIT_FQS]
+> 
+> In RCU_GP_INIT state, current GPs qs mask information and new
+> GP seq is propagated down the tree, into all rnp nodes,
+> in breadth first order.
+> 
+> On GP initialization completion, GP kthread enters a fqs loop,
+> which does following things, to get quiescent state reported
+> for cpus, which aren't quiesce in ->qsmask:
+> 
+>   i. For CPUs, which have entered idle since the first iteration,
+>      report quiescent state up the tree.
+> 
+>   ii. Based on how long the current grace period has been running
+>       for, either, set the appropriate flags, so that sched clock
+>       interrupt on that cpu, does qs reporting or do a resched
+>       on that cpu.
+> 
+> On each iteration, it transitions through following states. The fqs
+> loop is terminated on GP completion, when all CPUs report their
+> quiescent state and all RCU readers, blocking current grace period
+> have completed the RCU read section.
+> 
+> e. [RCU_GP_WAIT_FQS] -> [RCU_GP_DOING_FQS]
+> 
+> GP kthread uses a timed wait (jiffies_till_first_fqs for first
+> iteration and jiffies_till_next_fqs for subsequent iterations),
+> before doing all the work, to force quiescent state on
+> all cpus. It wakes up from this state, either on timeout, or
+> when (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD) flags are set, either
+> on callback overload conditions or when last cpu reports its
+> quiescent state and all RCU readers blocking current GP, have
+> left the RCU read section.
+> 
+> f. [RCU_GP_CLEANUP] -> [RCU_GP_CLEANED]
+> 
+> Mark end of grace period, in ->gp_seq, on all rnp nodes, in breadth
+> first order and finally in rcu_state.
+> 
+> For cases where timers are not served (due to issues in timer
+> configuration, in timer framework or due to softirqs not getting
+> handled, when there is a storm of interrupts) on the CPU,
+> where GP kthread queued a timer (for timed wait, which is done
+> in RCU_GP_WAIT_FQS) its possible that RCU kthread never wakes up.
+> Report the same from stall warnings, if GP thread is in RCU_GP_WAIT_FQS
+> state, and the timeout has elapsed and the kthread is not woken.
+> 
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> ---
+>  kernel/rcu/tree.c       | 25 +++++++++++++++----------
+>  kernel/rcu/tree_stall.h | 33 +++++++++++++++++++++++++++++++++
+>  2 files changed, 48 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 413831b..804e543 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1767,7 +1767,7 @@ static bool rcu_gp_init(void)
+>  	 * go offline later.  Please also refer to "Hotplug CPU" section
+>  	 * of RCU's Requirements documentation.
+>  	 */
+> -	rcu_state.gp_state = RCU_GP_ONOFF;
+> +	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
+>  	rcu_for_each_leaf_node(rnp) {
+>  		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
+>  		firstseq = READ_ONCE(rnp->ofl_seq);
+> @@ -1833,7 +1833,7 @@ static bool rcu_gp_init(void)
+>  	 * The grace period cannot complete until the initialization
+>  	 * process finishes, because this kthread handles both.
+>  	 */
+> -	rcu_state.gp_state = RCU_GP_INIT;
+> +	WRITE_ONCE(rcu_state.gp_state, RCU_GP_INIT);
+>  	rcu_for_each_node_breadth_first(rnp) {
+>  		rcu_gp_slow(gp_init_delay);
+>  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> @@ -1932,17 +1932,22 @@ static void rcu_gp_fqs_loop(void)
+>  	ret = 0;
+>  	for (;;) {
+>  		if (!ret) {
+> -			rcu_state.jiffies_force_qs = jiffies + j;
+> +			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j);
+> +			/*
+> +			 * jiffies_force_qs before RCU_GP_WAIT_FQS state
+> +			 * update; required for stall checks.
+> +			 */
+> +			smp_wmb();
+>  			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
+>  				   jiffies + (j ? 3 * j : 2));
+>  		}
+>  		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+>  				       TPS("fqswait"));
+> -		rcu_state.gp_state = RCU_GP_WAIT_FQS;
+> +		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+>  		ret = swait_event_idle_timeout_exclusive(
+>  				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
+>  		rcu_gp_torture_wait();
+> -		rcu_state.gp_state = RCU_GP_DOING_FQS;
+> +		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
+>  		/* Locking provides needed memory barriers. */
+>  		/* If grace period done, leave loop. */
+>  		if (!READ_ONCE(rnp->qsmask) &&
+> @@ -2056,7 +2061,7 @@ static void rcu_gp_cleanup(void)
+>  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
+>  	rcu_seq_end(&rcu_state.gp_seq);
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> -	rcu_state.gp_state = RCU_GP_IDLE;
+> +	WRITE_ONCE(rcu_state.gp_state, RCU_GP_IDLE);
+>  	/* Check for GP requests since above loop. */
+>  	rdp = this_cpu_ptr(&rcu_data);
+>  	if (!needgp && ULONG_CMP_LT(rnp->gp_seq, rnp->gp_seq_needed)) {
+> @@ -2095,12 +2100,12 @@ static int __noreturn rcu_gp_kthread(void *unused)
+>  		for (;;) {
+>  			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+>  					       TPS("reqwait"));
+> -			rcu_state.gp_state = RCU_GP_WAIT_GPS;
+> +			WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_GPS);
+>  			swait_event_idle_exclusive(rcu_state.gp_wq,
+>  					 READ_ONCE(rcu_state.gp_flags) &
+>  					 RCU_GP_FLAG_INIT);
+>  			rcu_gp_torture_wait();
+> -			rcu_state.gp_state = RCU_GP_DONE_GPS;
+> +			WRITE_ONCE(rcu_state.gp_state, RCU_GP_DONE_GPS);
+>  			/* Locking provides needed memory barrier. */
+>  			if (rcu_gp_init())
+>  				break;
+> @@ -2115,9 +2120,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
+>  		rcu_gp_fqs_loop();
+>  
+>  		/* Handle grace-period end. */
+> -		rcu_state.gp_state = RCU_GP_CLEANUP;
+> +		WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
+>  		rcu_gp_cleanup();
+> -		rcu_state.gp_state = RCU_GP_CLEANED;
+> +		WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
+>  	}
+>  }
+>  
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 70d48c5..4ff7990 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -468,6 +468,37 @@ static void rcu_check_gp_kthread_starvation(void)
+>  	}
+>  }
+>  
+> +/* Complain about missing wakeups from expired fqs wait timer */
+> +static void rcu_check_gp_kthread_expired_fqs_timer(void)
+> +{
+> +	struct task_struct *gpk = rcu_state.gp_kthread;
+> +	short gp_state;
+> +	unsigned long jiffies_fqs;
+> +	int cpu;
+> +
+> +	gp_state = READ_ONCE(rcu_state.gp_state);
+> +	/*
+> +	 * Order reads of .gp_state and .jiffies_force_qs.
+> +	 * Matching smp_wmb() is present in rcu_gp_fqs_loop().
+> +	 */
+> +	smp_rmb();
+> +	jiffies_fqs = READ_ONCE(rcu_state.jiffies_force_qs);
 
-Hey, I had to ask!  The only uncertainty I seee is the acquisition of
-the lock in rcu_iw_handler(), for which I add a lockdep check in the
-(untested) patch below.  The other thing I could do is sprinkle such
-checks through the stall-warning code on the assumption that something
-RCU is calling is enabling interrupts.
+Or you could use smp_load_acquire() instead of the smp_rmb()/READ_ONCE()
+combination.  (Other parts of the stall-warning code might also be able
+to do this, given that they predate smp_load_acquire().)
 
-Other thoughts?
+> +
+> +	if (gp_state == RCU_GP_WAIT_FQS &&
+> +	    time_before(jiffies + RCU_STALL_MIGHT_MIN, jiffies_fqs) &&
+> +	    gpk && !READ_ONCE(gpk->on_rq)) {
+> +		cpu = task_cpu(gpk);
+> +		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx\n",
+> +		       rcu_state.name, (jiffies - jiffies_fqs),
+> +		       (long)rcu_seq_current(&rcu_state.gp_seq),
+> +		       data_race(rcu_state.gp_flags),
+> +		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+> +		       gpk->state);
+> +		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
+> +		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
+> +	}
+
+Otherwise looks plausible.
+
+> +}
+> +
+>  static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  {
+>  	int cpu;
+> @@ -530,6 +561,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  			   jiffies + 3 * rcu_jiffies_till_stall_check() + 3);
+>  
+>  	rcu_check_gp_kthread_starvation();
+> +	rcu_check_gp_kthread_expired_fqs_timer();
+>  
+>  	panic_on_rcu_stall();
+>  
+> @@ -565,6 +597,7 @@ static void print_cpu_stall(unsigned long gps)
+>  		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
+>  
+>  	rcu_check_gp_kthread_starvation();
+> +	rcu_check_gp_kthread_expired_fqs_timer();
+
+I don't have an opinion about the ordering of this output within the
+RCU CPU stall warning message, but I do encourage you to try out a
+few different options.
+
+Here is one possible way to test this code:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs TREE09 --bootargs "rcutorture.stall_cpu=25 rcutorture.stall_cpu_irqsoff=1" --trust-make
+
+As an alternative to the above "--bootargs" parameter, the
+rcutorture.stall_gp_kthread module parameter should also be interesting.
+If I remember correctly, it should result in a stall without causing
+your timer code above to print anything.
+
+See recent paulmck.livejournal.com posts for additional information
+on rcutorture and running it.
 
 							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 70d48c5..3d67650 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -189,6 +189,7 @@ static void rcu_iw_handler(struct irq_work *iwp)
- 
- 	rdp = container_of(iwp, struct rcu_data, rcu_iw);
- 	rnp = rdp->mynode;
-+	lockdep_assert_irqs_disabled();
- 	raw_spin_lock_rcu_node(rnp);
- 	if (!WARN_ON_ONCE(!rdp->rcu_iw_pending)) {
- 		rdp->rcu_iw_gp_seq = rnp->gp_seq;
