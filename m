@@ -2,279 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1,
-	USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D20F1C388F7
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 11:09:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B94D3C388F7
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:13:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5957520797
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 11:09:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5618322240
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:13:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fBXair5q"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PstkH/Wk"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgKMLJQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Nov 2020 06:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgKMLHD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:07:03 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D401C0617A7
-        for <rcu@vger.kernel.org>; Fri, 13 Nov 2020 03:06:13 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c16so8000052wmd.2
-        for <rcu@vger.kernel.org>; Fri, 13 Nov 2020 03:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dA+kEQkhcLw+SoSuv0AIeD6qXLVmu5Sr7MknI9qkwoU=;
-        b=fBXair5qjaak/59JdSXgS3XyyB9Zl4ewbvvrIAjDgFpB7I/6pMqmaGrdNIv9VuXSP2
-         t6anVkIisIxH8x5y4EWmdKuIv2LFTHS9bIFhVX8pbvzcgmNj9x8PEneUV8Zfwyg79ri7
-         9asViKIM2lGNqYalvQW52tBo6dxMPNIP/D1IrlFp+YKiw5Z1HPdnMvQpMpdQX1+hVqLF
-         UkbZ29cb3K/Rj0Kb4oXydELXYoNeC5p0LWuR5FXdhbG6PvO4cAYUGQGo/58QfzBWPtek
-         tShRUwS/ZZSKNBEyWtxLVfi5lff18kIoBJvWYdgSFVhkjdMNYXEfn8mXiw3xAtptJRUv
-         chbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dA+kEQkhcLw+SoSuv0AIeD6qXLVmu5Sr7MknI9qkwoU=;
-        b=t/tsT1mUvwNDp3vhS4V3/mMrFfbVKjBmN81IA96Nz20ks6NgNT+HphBm/HPCL487Un
-         YnhLACHv7pV1sJAxlbKpkZ4lxPE+GaB6764Bn9hmtHkNxV+4G+eD4cGW1J3/ANY6Fmkh
-         HEGGLS+wu9EUT/NPRpuGGL+AhRJKBm5HCSTis9SE3eVFoJOFaWdrcreeJXL7DX4PERN5
-         Ac8C7/KrQnrrywAotswYZdM3+AVNUK1CauZD8Rc6hSWqSdUAVNMCza/PKWZTsXSp0UWk
-         GTCmsZuLD+wWnZVHwUnRcm2+Vm0+a6HOjV/umx4DCK8fQVw+hV3ods3TZlrrb7Od5vy3
-         QPHg==
-X-Gm-Message-State: AOAM530iwMX1KC46JbXuaycqY2+/Md/U6qIZ9WwFLo+Q2+yaGSc0klqM
-        cxhqXgsD1cCZos4nFcZ5DC2uRA==
-X-Google-Smtp-Source: ABdhPJztJ4Ckp3dVocLxWTwBzemEfZ1dSAquPhAEDSr5IcKTu4p/hOgv9SVr3y1hrv1ybxnPmYgPIQ==
-X-Received: by 2002:a1c:9916:: with SMTP id b22mr2042128wme.105.1605265571824;
-        Fri, 13 Nov 2020 03:06:11 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id q12sm10935062wmc.45.2020.11.13.03.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 03:06:10 -0800 (PST)
-Date:   Fri, 13 Nov 2020 12:06:04 +0100
-From:   Marco Elver <elver@google.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, joel@joelfernandes.org
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201113110604.GA1907210@elver.google.com>
-References: <20201111182333.GA3249@paulmck-ThinkPad-P72>
- <20201111183430.GN517454@elver.google.com>
- <20201111192123.GB3249@paulmck-ThinkPad-P72>
- <20201111202153.GT517454@elver.google.com>
- <20201112001129.GD3249@paulmck-ThinkPad-P72>
- <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
- <20201112161439.GA2989297@elver.google.com>
- <20201112175406.GF3249@paulmck-ThinkPad-P72>
- <20201112181254.GA3113918@elver.google.com>
- <20201112200025.GG3249@paulmck-ThinkPad-P72>
+        id S1726290AbgKMMNt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Nov 2020 07:13:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgKMMNp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:13:45 -0500
+Received: from localhost.localdomain (unknown [176.167.84.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E49C2085B;
+        Fri, 13 Nov 2020 12:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605269624;
+        bh=F9MUOquSB7T4ePXdM6eH0VAMkUBZhDoVNIIhHNUF+00=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PstkH/Wk4pOHTyQTTSN8eIDX4EId0UA+xuSvN/phSk0Un5k08cPlk9X1KYRdfgGlZ
+         vfv5KSxK/vkW6mSU5FQWBHROTSW8sWumVGWm4hwckLDC4YQ7UlxpCV2AGghznzjixo
+         ZyqcCIA3iZRo8HwdJHFn7fuZHrB5R03FPi6ILvCg=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: [PATCH 00/19] rcu/nocb: De-offload and re-offload support v4
+Date:   Fri, 13 Nov 2020 13:13:15 +0100
+Message-Id: <20201113121334.166723-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112200025.GG3249@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:00PM -0800, Paul E. McKenney wrote:
-> On Thu, Nov 12, 2020 at 07:12:54PM +0100, Marco Elver wrote:
-> > On Thu, Nov 12, 2020 at 09:54AM -0800, Paul E. McKenney wrote:
-> > > On Thu, Nov 12, 2020 at 05:14:39PM +0100, Marco Elver wrote:
-> > > > On Thu, Nov 12, 2020 at 01:49PM +0100, Marco Elver wrote:
-> > > > > On Thu, 12 Nov 2020 at 01:11, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > [...]
-> > > > > > > This assert didn't fire yet, I just get more of the below. I'll keep
-> > > > > > > rerunning, but am not too hopeful...
-> > > > > >
-> > > > > > Is bisection a possibility?
-> > > > > 
-> > > > > I've been running a bisection for past ~12h, and am making slow
-> > > > > progress. It might be another 12h, but I think it'll get there.
-> > > > 
-> > > > Bisection gave me this:
-> > > > 
-> > > > | git bisect start
-> > > > | # bad: [c07b306d7fa5680777e2132662d2e6c19fb53579] kfence: Avoid stalling work queue task without allocations
-> > > > | git bisect bad c07b306d7fa5680777e2132662d2e6c19fb53579
-> > > > | # good: [3cea11cd5e3b00d91caf0b4730194039b45c5891] Linux 5.10-rc2
-> > > > | git bisect good 27598e7e73260ed0b2917eb02d4a515ebb578313
-> > > > | # good: [3e5acbea719e66ef3be64fe74c99cc905ca697dc] Merge remote-tracking branch 'wireless-drivers-next/master' into master
-> > > > | git bisect good 3e5acbea719e66ef3be64fe74c99cc905ca697dc
-> > > > | # good: [491a5a9a2fea28353d99621b8abb83b6928b4e36] Merge remote-tracking branch 'sound-asoc/for-next' into master
-> > > > | git bisect good 491a5a9a2fea28353d99621b8abb83b6928b4e36
-> > > > | # bad: [502f8643d6e21c7e370a0b75131130cc51609055] Merge remote-tracking branch 'phy-next/next' into master
-> > > > | git bisect bad 502f8643d6e21c7e370a0b75131130cc51609055
-> > > > | # good: [6693cb1fa5ea7b91ec00f9404776a095713face5] Merge remote-tracking branch 'tip/auto-latest' into master
-> > > > | git bisect good 6693cb1fa5ea7b91ec00f9404776a095713face5
-> > > > | # bad: [b790e3afead9357195b6d1e1b6cd9b3521503ad2] Merge branch 'tglx-pc.2020.10.30a' into HEAD
-> > > > | git bisect bad b790e3afead9357195b6d1e1b6cd9b3521503ad2
-> > > > | # bad: [765b512bb3d639bfad7dd43c288ee085236c7267] Merge branches 'cpuinfo.2020.11.06a', 'doc.2020.11.06a', 'fixes.2020.11.02a', 'lockdep.2020.11.02a', 'tasks.2020.11.06a' and 'torture.2020.11.06a' into HEAD
-> > > > | git bisect bad 765b512bb3d639bfad7dd43c288ee085236c7267
-> > > > | # good: [01f9e708d9eae6335ae9ff25ab09893c20727a55] tools/rcutorture: Fix BUG parsing of console.log
-> > > 
-> > > So torture.2020.11.06a is OK.
-> > > 
-> > > > | git bisect good 01f9e708d9eae6335ae9ff25ab09893c20727a55
-> > > > | # good: [1be6ab91e2db157faedb7f16ab0636a80745a073] srcu: Take early exit on memory-allocation failure
-> > > 
-> > > As is fixes.2020.11.02a.
-> > > 
-> > > > | git bisect good 1be6ab91e2db157faedb7f16ab0636a80745a073
-> > > > | # good: [65e9eb1ccfe56b41a0d8bfec651ea014968413cb] rcu: Prevent RCU_LOCKDEP_WARN() from swallowing the condition
-> > > 
-> > > And lockdep.2020.11.02a.
-> > > 
-> > > > | git bisect good 65e9eb1ccfe56b41a0d8bfec651ea014968413cb
-> > > > | # good: [c386e29d43728778ddd642fa73cc582bee684171] docs/rcu: Update the call_rcu() API
-> > > 
-> > > And doc.2020.11.06a.
-> > > 
-> > > > | git bisect good c386e29d43728778ddd642fa73cc582bee684171
-> > > > | # good: [27c0f1448389baf7f309b69e62d4b531c9395e88] rcutorture: Make grace-period kthread report match RCU flavor being tested
-> > > 
-> > > And the first three commits of tasks.2020.11.06a.
-> > > 
-> > > > | git bisect good 27c0f1448389baf7f309b69e62d4b531c9395e88
-> > > > | # good: [3fcd6a230fa7d03bffcb831a81b40435c146c12b] x86/cpu: Avoid cpuinfo-induced IPIing of idle CPUs
-> > > 
-> > > And cpuinfo.2020.11.06a.
-> > > 
-> > > > | git bisect good 3fcd6a230fa7d03bffcb831a81b40435c146c12b
-> > > > | # good: [75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374] rcu-tasks: Make the units of ->init_fract be jiffies
-> > > 
-> > > And the remaining commit of tasks.2020.11.06a.
-> > > 
-> > > > | git bisect good 75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
-> > > > | # first bad commit: [765b512bb3d639bfad7dd43c288ee085236c7267] Merge branches 'cpuinfo.2020.11.06a', 'doc.2020.11.06a', 'fixes.2020.11.02a', 'lockdep.2020.11.02a', 'tasks.2020.11.06a' and 'torture.2020.11.06a' into HEAD
-> > > > 
-> > > > This doesn't look very satisfying, given it's the merge commit. :-/
-> > > 
-> > > So each individual branch is just fine, but the merge of them is not.  Fun.
-> > > 
-> > > These have been passing quite a bit of rcutorture over here, including
-> > > preemptible kernels running !SMP, but admittedly on x86 rather than ARMv8.
-> > 
-> > Note that this is ARMv8 on QEMU on an x86 host i.e. emulated. And it's
-> > really slow as a result. Together with a bunch of debug tools including
-> > lockdep.
-> 
-> Then I don't envy you the bisection process!  ;-)
-> 
-> > > One approach would be to binary-search the combinations of merges.
-> > > Except that there are six of them, so there are 64 combinations, of
-> > > which you have tested only 8 thus far (none, one each, and all).
-> > > 
-> > > But are you sure that the bisection points labeled "good" really are good?
-> > > For example, what is the distribution of first failure times in the
-> > > points labeled "bad" vs. the runtime used to make a "good" determination?
-> > > Alternatively, just try a longer run on each of the commits feeding into
-> > > the merge point.
-> > 
-> > Yeah, I'm having doubts, and this might be even more non-deterministic
-> > that I thought and some 'good' could maybe be 'bad' if I had re-run
-> > them? I don't know. One thing I can try is to make sure I run it more
-> > than once, but I'm definitely not doing that manually, so let me try and
-> > script something so I don't have to hand-hold the bisection overnight.
-> > :-)
-> 
-> I know that feeling.  A similar experience motivated me to upgrade my
-> tooling, with more upgrades in the queue.
+This keeps growing up. Rest assured, most of it is debug code and sanity
+checks.
 
-[.....]
+Boqun Feng found that holding rnp lock while updating the offloaded
+state of an rdp isn't needed, and he was right despite my initial
+reaction. The sites that read the offloaded state while holding the rnp
+lock are actually protected because they read it locally in a non
+preemptible context.
 
-> > > > | [  841.143527]  arch_local_irq_restore+0x4/0x8
-> > > 
-> > > So we are just now restoring interrupts, hence our getting the
-> > > interrupt at this point..
-> > > 
-> > > > | [  841.147612]  trace_preempt_on+0xf4/0x190
-> > > 
-> > > From within the trace code, which is apparently recording the fact
-> > > that preemption is being enabled.
-> > > 
-> > > > | [  841.151656]  preempt_schedule_common+0x12c/0x1b0
-> > > > | [  841.155869]  preempt_schedule.part.88+0x20/0x28
-> > > > | [  841.160036]  preempt_schedule+0x20/0x28
-> > > 
-> > > I was not aware that releasing a raw spinlock could result in a direct
-> > > call to preempt_schedule().
-> > > 
-> > > > | [  841.164051]  _raw_spin_unlock_irq+0x80/0x90
-> > > > | [  841.168139]  rcu_gp_kthread+0xe5c/0x19a8
-> > > 
-> > > So the RCU grace-period kthread has spent many seconds attempting to
-> > > release a lock?  Am I reading this correctly?  Mark Rutland, am I missing
-> > > something here?
-> 
-> And yes, this is the RCU grace-period kthread releasing a lock.
-> 
-> I have no idea why that would take so long.  It is acting like a
-> self-deadlock or similar hang, except that in that case, lockdep should
-> have complained before the RCU CPU stall warning rather than after.
-> 
-> The only thing I can suggest is sprinkling lockdep_assert_irqs_disabled()
-> calls hither and yon.  All of the code that lockdep is complaining about
-> runs in the context of the scheduling-clock interrupt, so interrupts
-> had jolly well be disabled!  ;-)
-> 
-> Rerunning some of the allegedly good bisects might be more productive.
+So I removed the rnp lock in "rcu/nocb: De-offloading CB". And just to
+make sure I'm not missing something, I added sanity checks that ensure
+we always read the offloaded state in a safe way (3 last patches).
 
-Oof, so I reran bisection, and this time confirming 3x each good run.
-This is what I get:
+Still passes TREE01 (but I had to fight!)
 
-| git bisect start
-| # bad: [c07b306d7fa5680777e2132662d2e6c19fb53579] kfence: Avoid stalling work queue task without allocations
-| git bisect bad c07b306d7fa5680777e2132662d2e6c19fb53579
-| # good: [3cea11cd5e3b00d91caf0b4730194039b45c5891] Linux 5.10-rc2
-| git bisect good 27598e7e73260ed0b2917eb02d4a515ebb578313
-| # good: [3e5acbea719e66ef3be64fe74c99cc905ca697dc] Merge remote-tracking branch 'wireless-drivers-next/master' into master
-| git bisect good 3e5acbea719e66ef3be64fe74c99cc905ca697dc
-| # good: [491a5a9a2fea28353d99621b8abb83b6928b4e36] Merge remote-tracking branch 'sound-asoc/for-next' into master
-| git bisect good 491a5a9a2fea28353d99621b8abb83b6928b4e36
-| # bad: [502f8643d6e21c7e370a0b75131130cc51609055] Merge remote-tracking branch 'phy-next/next' into master
-| git bisect bad 502f8643d6e21c7e370a0b75131130cc51609055
-| # good: [6693cb1fa5ea7b91ec00f9404776a095713face5] Merge remote-tracking branch 'tip/auto-latest' into master
-| git bisect good 6693cb1fa5ea7b91ec00f9404776a095713face5
-| # good: [b790e3afead9357195b6d1e1b6cd9b3521503ad2] Merge branch 'tglx-pc.2020.10.30a' into HEAD
-| git bisect good b790e3afead9357195b6d1e1b6cd9b3521503ad2
-| # bad: [7bd5bb161657717d576798f62b0e8d5b44653139] Merge remote-tracking branch 'drivers-x86/for-next' into master
-| git bisect bad 7bd5bb161657717d576798f62b0e8d5b44653139
-| # bad: [e71eb4c4d42bcf36a3a7ede30fd320d47b3c8cb8] Merge remote-tracking branch 'xen-tip/linux-next' into master
-| git bisect bad e71eb4c4d42bcf36a3a7ede30fd320d47b3c8cb8
-| # bad: [c0a41bf9dbc751692c8cb1a44bfd48e70e8bef7f] docs: Remove redundant "``" from Requirements.rst
-| git bisect bad c0a41bf9dbc751692c8cb1a44bfd48e70e8bef7f
-| # bad: [c293fb8f7de6c2fce11cb01a0218d668df326bcd] torture: Make --kcsan specify lockdep
-| git bisect bad c293fb8f7de6c2fce11cb01a0218d668df326bcd
-| # good: [5068ab7dcb6a526a401054ebe0d416f979efb3e1] rcutorture: Add testing for RCU's global memory ordering
-| git bisect good 5068ab7dcb6a526a401054ebe0d416f979efb3e1
-| # good: [bea68a13bbbdc575a2c868dabd7b454c2eddc618] rcu/segcblist: Add additional comments to explain smp_mb()
-| git bisect good bea68a13bbbdc575a2c868dabd7b454c2eddc618
-| # first bad commit: [c293fb8f7de6c2fce11cb01a0218d668df326bcd] torture: Make --kcsan specify lockdep
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/nocb-toggle-v4
 
-Which clearly is ridiculous! So my guess is this probably had existed
-before, but something in -next is making it more visible.
-
-Short of giving up, I can try your suggestion of sprinkling
-lockdep_assert_irqs_disabled() everywhere, or if you have a patch to
-apply that would give some other debug output you wanted I can run that
-too.
+HEAD: 579e15efa48fb6fc4ecf14961804051f385807fe
 
 Thanks,
--- Marco
+	Frederic
+---
+
+Frederic Weisbecker (19):
+      rcu/nocb: Turn enabled/offload states into a common flag
+      rcu/nocb: Provide basic callback offloading state machine bits
+      rcu/nocb: Always init segcblist on CPU up
+      rcu/nocb: De-offloading CB kthread
+      rcu/nocb: Don't deoffload an offline CPU with pending work
+      rcu/nocb: De-offloading GP kthread
+      rcu/nocb: Re-offload support
+      rcu/nocb: Shutdown nocb timer on de-offloading
+      rcu: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
+      rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
+      rcu/nocb: Only cond_resched() from actual offloaded batch processing
+      rcu/nocb: Process batch locally as long as offloading isn't complete
+      rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
+      tools/rcutorture: Support nocb toggle in TREE01
+      rcutorture: Remove weak nocb declarations
+      rcutorture: Export nocb (de)offloading functions
+      cpu/hotplug: Add lockdep_is_cpus_held()
+      timer: Add timer_curr_running()
+      rcu/nocb: Detect unsafe checks for offloaded rdp
+
+
+ include/linux/cpu.h                                |   1 +
+ include/linux/rcu_segcblist.h                      | 119 +++++-
+ include/linux/rcupdate.h                           |   4 +
+ include/linux/timer.h                              |   2 +
+ kernel/cpu.c                                       |   7 +
+ kernel/rcu/rcu_segcblist.c                         |  13 +-
+ kernel/rcu/rcu_segcblist.h                         |  45 ++-
+ kernel/rcu/rcutorture.c                            |   3 -
+ kernel/rcu/tree.c                                  |  49 ++-
+ kernel/rcu/tree.h                                  |   2 +
+ kernel/rcu/tree_plugin.h                           | 416 +++++++++++++++++++--
+ kernel/time/timer.c                                |  13 +
+ .../selftests/rcutorture/configs/rcu/TREE01.boot   |   4 +-
+ 13 files changed, 614 insertions(+), 64 deletions(-)
