@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A478C4742C
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F14C4742C
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:14:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C97172085B
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:14:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F04822240
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:14:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="H02HBad2"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrSn1Rx2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgKMMOY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Nov 2020 07:14:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S1726923AbgKMMOh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Nov 2020 07:14:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgKMMOY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:14:24 -0500
+        id S1726925AbgKMMOf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:14:35 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04A4622250;
-        Fri, 13 Nov 2020 12:14:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDEE82224B;
+        Fri, 13 Nov 2020 12:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269663;
-        bh=cwrRyVzdGrrcuNdx6Yw81kvmDTaQJhzLcZbdSDJINHQ=;
+        s=default; t=1605269675;
+        bh=pVkdoCcCylVBGej69uN3zi3eWDQy5R0//b4FU0YwlBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H02HBad2C6f3vjBnL1cWerFhqhOorUEXCx0z/1at6pqJ0kuoN9iI+y44yHR2fzrS9
-         XIe8SYNdMlRNtzanjPv0OxPMDjAxeNgYrqGIbwfsWxJ8cOMp7AeRga86L5M8nDoeXy
-         lxWoW5Gvy6Yr1yFbn9DZgvHWBgjYKNytTMEfNbF8=
+        b=hrSn1Rx2k+JVfYWkbXWcsLqqKRGrkaiMSw2IvJw83NeVf5s7KTieyFLJh7dSl3vq0
+         b18bEKqYbsGk4A/X7kHeu9gYG5MxDez4DQJ926b/B0rsrhkaxbdkQSmN13eIiCETcO
+         Ke0cXVEWKu2PbgAo+mtrgKSO5Ke61wLwwYW0GVn8=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -45,9 +45,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 13/19] rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
-Date:   Fri, 13 Nov 2020 13:13:28 +0100
-Message-Id: <20201113121334.166723-14-frederic@kernel.org>
+Subject: [PATCH 17/19] cpu/hotplug: Add lockdep_is_cpus_held()
+Date:   Fri, 13 Nov 2020 13:13:32 +0100
+Message-Id: <20201113121334.166723-18-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
 References: <20201113121334.166723-1-frederic@kernel.org>
@@ -57,11 +57,10 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The local callbacks processing checks if some callbacks need
-acceleration. Keep that behaviour under nocb lock protection when
-rcu_core() executes concurrently with GP/CB kthreads.
+RCU needs to check if the cpu hotplug lock is held, in the middle of
+other conditions to check the sanity of RCU-nocb. Provide a helper for
+that.
 
-Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
@@ -73,36 +72,40 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/tree.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/linux/cpu.h | 1 +
+ kernel/cpu.c        | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cc141337f3f9..b24d60a52f34 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2690,7 +2690,6 @@ static __latent_entropy void rcu_core(void)
- 	unsigned long flags;
- 	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
--	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index d6428aaf67e7..27eb3875e45a 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -118,6 +118,7 @@ extern void cpus_read_lock(void);
+ extern void cpus_read_unlock(void);
+ extern int  cpus_read_trylock(void);
+ extern void lockdep_assert_cpus_held(void);
++extern int lockdep_is_cpus_held(void);
+ extern void cpu_hotplug_disable(void);
+ extern void cpu_hotplug_enable(void);
+ void clear_tasks_mm_cpumask(int cpu);
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578ecf17..3cca5b27de25 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
+ 	percpu_rwsem_assert_held(&cpu_hotplug_lock);
+ }
  
- 	if (cpu_is_offline(smp_processor_id()))
-@@ -2711,11 +2710,11 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* No grace period and unregistered callbacks? */
- 	if (!rcu_gp_in_progress() &&
--	    rcu_segcblist_is_enabled(&rdp->cblist) && !offloaded) {
--		local_irq_save(flags);
-+	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
-+		rcu_nocb_lock_irqsave(rdp, flags);
- 		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
- 			rcu_accelerate_cbs_unlocked(rnp, rdp);
--		local_irq_restore(flags);
-+		rcu_nocb_unlock_irqrestore(rdp, flags);
- 	}
- 
- 	rcu_check_gp_start_stall(rnp, rdp, rcu_jiffies_till_stall_check());
++#ifdef CONFIG_LOCKDEP
++int lockdep_is_cpus_held(void)
++{
++	return percpu_rwsem_is_held(&cpu_hotplug_lock);
++}
++#endif
++
+ static void lockdep_acquire_cpus_lock(void)
+ {
+ 	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
 -- 
 2.25.1
 
