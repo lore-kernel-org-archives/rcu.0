@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06B67C4742C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44448C63697
 	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:16:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9A0A2085B
+	by mail.kernel.org (Postfix) with ESMTP id E882822240
 	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:16:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qtQS55vI"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="koMXFZnN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgKMMN6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Nov 2020 07:13:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S1726496AbgKMMNu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Nov 2020 07:13:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgKMMNy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:13:54 -0500
+        id S1726176AbgKMMNr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:13:47 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C55BF22250;
-        Fri, 13 Nov 2020 12:13:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 789D22224B;
+        Fri, 13 Nov 2020 12:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269633;
-        bh=T067CQjBvkzjrbVpLcedNlKm/8QexJ5Rr4+AG2W/nQI=;
+        s=default; t=1605269627;
+        bh=sujLKVw46d3MU1NqvO30Z15mMB9Z4AXw745RHEipyUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qtQS55vIa6pK7U3fFRNFs6mLKhASfpqyuHFphdhyhhozN88QJLa9zduHcqWIRXRL4
-         sBYplnARFOdfLUwfML5ONCJvFlXwKHRWDFp+TrUcIUGcTVnyIn+JeLJOftjw3FKYOv
-         aC4CqGZ06NjSCSmrWGCsxrSeOm94ddcVRghX3SA4=
+        b=koMXFZnNGjggK7MiYc1svqIhk5YCemnctWAMOARdvDWea/vStw9/9Qo0xARXF+c8t
+         2sN78rRSu6HA/xWgdLCQplXa+zCaGHgYVh4el1Y5hGTB6R8dH0jN4l7+RamUtN+lvI
+         +sH7QZa/oQfTP9X+zQ8QU/IqbT5ZpM05+aprGQeg=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -45,9 +45,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 03/19] rcu/nocb: Always init segcblist on CPU up
-Date:   Fri, 13 Nov 2020 13:13:18 +0100
-Message-Id: <20201113121334.166723-4-frederic@kernel.org>
+Subject: [PATCH 01/19] rcu/nocb: Turn enabled/offload states into a common flag
+Date:   Fri, 13 Nov 2020 13:13:16 +0100
+Message-Id: <20201113121334.166723-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
 References: <20201113121334.166723-1-frederic@kernel.org>
@@ -57,46 +57,9 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-An rdp's segcblist enabled state is treated differently on CPU hotplug
-operations, depending on whether it is offloaded or not.
-
-1) Not offloaded: An rdp is disabled on CPU down. All its callbacks are
-   migrated and no more aren't supposed to be enqueued until it gets
-   re-enabled on CPU up.
-
-2) Offloaded: An rdp is not disabled on CPU down in order to let the
-   CB/GP kthreads finish their jobs on remaining callbacks. Hence it is
-   not re-enabled on CPU up either.
-
-Since an rdp's offloaded state is set in stone at boot, we expect the
-offloaded state to remain the same between CPU down and CPU up. So 1)
-and 2) are symmetrical.
-
-Now the offloaded state will become toggable at runtime. Hence the new
-possible asymmetrical scenarios:
-
-3) An rdp goes into CPU down while in a not-offloaded state. It gets
-   later set to offloaded and finally goes into CPU up.
-
-4) An rdp goes into CPU down while in an offloaded state. It gets
-   later set to not-offloaded and finally goes into CPU up.
-
-The scenario 4) is currently well handled. The rdp isn't disabled on
-CPU down and it gets re-initialized on CPU up. We require the segcblist
-to be empty in order to toggle to non-offloaded state while a CPU is
-offlined.
-
-The scenario 3) would run into trouble though, as the rdp is disabled
-on CPU down and not re-initialized/re-enabled on CPU up.
-
-In order to fix this, always re-initialize/re-enable an rdp on CPU up
-unless it still has callbacks at that time, which anyway can only happen
-when the rdp went down and up in offloaded state (case 2), the only
-case that doesn't need re-initialization.
-
-NOTE: The proper longer term fix will be to wait for all the offloaded
-callbacks to be processed before completing CPU down operations. So we
-can unconditionally re-initialize on CPU up.
+Gather the segcblist properties in a common map to avoid spreading
+booleans in the structure. And this prepares for the offloaded state to
+be mutable on runtime.
 
 Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -110,35 +73,111 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/tree.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ include/linux/rcu_segcblist.h |  6 ++++--
+ kernel/rcu/rcu_segcblist.c    |  6 +++---
+ kernel/rcu/rcu_segcblist.h    | 23 +++++++++++++++++++++--
+ 3 files changed, 28 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 48e8e63cdeb2..049433d0fa05 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4004,12 +4004,18 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->qlen_last_fqs_check = 0;
- 	rdp->n_force_qs_snap = rcu_state.n_force_qs;
- 	rdp->blimit = blimit;
--	if (rcu_segcblist_empty(&rdp->cblist) && /* No early-boot CBs? */
--	    !rcu_segcblist_is_offloaded(&rdp->cblist))
--		rcu_segcblist_init(&rdp->cblist);  /* Re-enable callbacks. */
- 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
- 	rcu_dynticks_eqs_online();
- 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
-+	/*
-+	 * Lock in case the CB/GP kthreads are still around handling
-+	 * old callbacks (longer term we should flush all callbacks
-+	 * before completing CPU offline)
-+	 */
-+	rcu_nocb_lock(rdp);
-+	if (rcu_segcblist_empty(&rdp->cblist)) /* No early-boot CBs? */
-+		rcu_segcblist_init(&rdp->cblist);  /* Re-enable callbacks. */
-+	rcu_nocb_unlock(rdp);
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 6c01f09a6456..4714b0263c76 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -63,6 +63,9 @@ struct rcu_cblist {
+ #define RCU_NEXT_TAIL		3
+ #define RCU_CBLIST_NSEGS	4
  
- 	/*
- 	 * Add CPU to leaf rcu_node pending-online bitmask.  Any needed
++#define SEGCBLIST_ENABLED	BIT(0)
++#define SEGCBLIST_OFFLOADED	BIT(1)
++
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+ 	struct rcu_head **tails[RCU_CBLIST_NSEGS];
+@@ -73,8 +76,7 @@ struct rcu_segcblist {
+ 	long len;
+ #endif
+ 	long seglen[RCU_CBLIST_NSEGS];
+-	u8 enabled;
+-	u8 offloaded;
++	u8 flags;
+ };
+ 
+ #define RCU_SEGCBLIST_INITIALIZER(n) \
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 5059b6102afe..e374f9c3ec2c 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -234,7 +234,7 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
+ 		rcu_segcblist_set_seglen(rsclp, i, 0);
+ 	}
+ 	rcu_segcblist_set_len(rsclp, 0);
+-	rsclp->enabled = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -245,7 +245,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+ {
+ 	WARN_ON_ONCE(!rcu_segcblist_empty(rsclp));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(rsclp));
+-	rsclp->enabled = 0;
++	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -254,7 +254,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+  */
+ void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
+ {
+-	rsclp->offloaded = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index cd35c9faaf51..3d1195dbf030 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -50,19 +50,38 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
+ #endif
+ }
+ 
++static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsclp,
++					   int flags)
++{
++	rsclp->flags |= flags;
++}
++
++static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
++					     int flags)
++{
++	rsclp->flags &= ~flags;
++}
++
++static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rsclp,
++					    int flags)
++{
++	return READ_ONCE(rsclp->flags) & flags;
++}
++
+ /*
+  * Is the specified rcu_segcblist enabled, for example, not corresponding
+  * to an offline CPU?
+  */
+ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ {
+-	return rsclp->enabled;
++	return rcu_segcblist_test_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /* Is the specified rcu_segcblist offloaded?  */
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+-	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) && rsclp->offloaded;
++	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
++		rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
 -- 
 2.25.1
 
