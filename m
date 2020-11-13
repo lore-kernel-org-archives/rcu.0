@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 005CBC56202
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F38DC56202
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:15:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 970D32085B
-	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:15:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 141C52085B
+	for <rcu@archiver.kernel.org>; Fri, 13 Nov 2020 12:15:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WaR0BoWg"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hUqT2vN3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgKMMO2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Nov 2020 07:14:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48106 "EHLO mail.kernel.org"
+        id S1726547AbgKMMPN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Nov 2020 07:15:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726869AbgKMMO1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:14:27 -0500
+        id S1726893AbgKMMO3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:14:29 -0500
 Received: from localhost.localdomain (unknown [176.167.84.141])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 048AE2224F;
-        Fri, 13 Nov 2020 12:14:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDECD22253;
+        Fri, 13 Nov 2020 12:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605269666;
-        bh=2wX32pzaUsSeA2hWLhU4VMj2gnnaEO0hHOrH98cWcKQ=;
+        s=default; t=1605269669;
+        bh=EBZKzn6LedivSXXa85Fk1rGqa5mznqFaqXufTWQn4xo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WaR0BoWgYeBHWmVHq7P9YlGXvkwB1PvwRFLE7JK24lv9JHDCoHI1IbGTvKGaUz07t
-         gclAQSKRXG1BXU6SWPkFkbbCV/j0dhh4mlhCJwKIhFfNvZNYO/6nGyz97gIDROKq+T
-         WesVVa4N5bFs22bV09e1vVzId9skr8q8G8JfVKcU=
+        b=hUqT2vN3Z2N88B3kcxZq5lSakDcReCcCC0zXErlvBG9nUdTXRuqIitHHuXrVvZsSP
+         gzPQJ04EBNzv1cdwPkH+gPPgAflkGVWP9RZxkRaylwB6DJczRSnYI9V66TlcaBj/Qv
+         82vYhFshE4/X99ZTGZCRbhfd1ayUeiYNny/Z1jt8=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -45,9 +45,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: [PATCH 14/19] tools/rcutorture: Support nocb toggle in TREE01
-Date:   Fri, 13 Nov 2020 13:13:29 +0100
-Message-Id: <20201113121334.166723-15-frederic@kernel.org>
+Subject: [PATCH 15/19] rcutorture: Remove weak nocb declarations
+Date:   Fri, 13 Nov 2020 13:13:30 +0100
+Message-Id: <20201113121334.166723-16-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113121334.166723-1-frederic@kernel.org>
 References: <20201113121334.166723-1-frederic@kernel.org>
@@ -57,10 +57,9 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Add periodic toggling of 7 CPUs over 8 every second in order to test
-NOCB toggle code. Choose TREE01 for that as it's already testing nocb.
+("rcutorture: Test runtime toggling of CPUs' callback offloading") should
+be moved on top of this pile and include this fixup.
 
-Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
@@ -72,22 +71,23 @@ Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
-index d6da9a61d44a..40af3df0f397 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
-@@ -2,5 +2,7 @@ maxcpus=8 nr_cpus=43
- rcutree.gp_preinit_delay=3
- rcutree.gp_init_delay=3
- rcutree.gp_cleanup_delay=3
--rcu_nocbs=0
-+rcu_nocbs=0-1,3-7
-+rcutorture.nocbs_nthreads=8
-+rcutorture.nocbs_toggle=1000
- rcutorture.fwd_progress=0
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 022a86722518..8358c7b7d491 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1580,9 +1580,6 @@ rcu_torture_reader(void *arg)
+ 	return 0;
+ }
+ 
+-void __weak rcu_nocb_cpu_offload(int cpu) {}
+-void __weak rcu_nocb_cpu_deoffload(int cpu) {}
+-
+ /*
+  * Randomly Toggle CPUs' callback-offload state.  This uses hrtimers to
+  * increase race probabilities and fuzzes the interval between toggling.
 -- 
 2.25.1
 
