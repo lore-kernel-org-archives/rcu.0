@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBAB1C8300A
-	for <rcu@archiver.kernel.org>; Tue, 17 Nov 2020 12:57:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20658C64EBC
+	for <rcu@archiver.kernel.org>; Tue, 17 Nov 2020 12:58:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84BED24654
-	for <rcu@archiver.kernel.org>; Tue, 17 Nov 2020 12:57:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C58972225B
+	for <rcu@archiver.kernel.org>; Tue, 17 Nov 2020 12:58:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="olkTEps7"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KRMy2mMz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgKQM5N (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Nov 2020 07:57:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
+        id S1728698AbgKQM5j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Nov 2020 07:57:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728561AbgKQM5N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:57:13 -0500
+        id S1728690AbgKQM5i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:57:38 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90E592225B;
-        Tue, 17 Nov 2020 12:57:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 359F1223AB;
+        Tue, 17 Nov 2020 12:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605617832;
-        bh=np4gkClCu/IG0KMtmwyrWwgIOOEPiPKW8reOaJ/AqKE=;
+        s=default; t=1605617857;
+        bh=sYI2T2mP9B1Ot0n51Un7gJWDZFLGvU+/Whru9pS96WI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olkTEps7mWg2c4H48Zk0yDb3dub9ecVK3mzUtef8iiGtYsWJsw1pIHpIBxhHDHzNg
-         zh3itPYnBaQY/lWdjbVvZ68RvOLLQDgU/pTtRMyqGd27g4fXD2eqzCy0945GP6jc9h
-         LY9VIW1bL6TIXgDnlbOzll2aBqMeXJ+XzkuvA+C0=
+        b=KRMy2mMzMjJg0srEb6Yknkk8PIpzezfWaIvQTsfm3XNDYLY/4luPsZG75bJL7nTes
+         XYZ2RMbK7/w3Mz0aDzVNYOw6yWPBGYWO50DH93FqpSLrIOUNgFXlQAg/DPeu8eXgH3
+         +DbFZikjzScwRbMlIv8ShPFGrSkybUzHRCMhxfoA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Qian Cai <cai@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 12/21] arm64: smp: Tell RCU about CPUs that fail to come online
-Date:   Tue, 17 Nov 2020 07:56:43 -0500
-Message-Id: <20201117125652.599614-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 07/11] arm64: smp: Tell RCU about CPUs that fail to come online
+Date:   Tue, 17 Nov 2020 07:57:21 -0500
+Message-Id: <20201117125725.599833-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201117125652.599614-1-sashal@kernel.org>
-References: <20201117125652.599614-1-sashal@kernel.org>
+In-Reply-To: <20201117125725.599833-1-sashal@kernel.org>
+References: <20201117125725.599833-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -89,22 +89,22 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 98c059b6bacae..361cfc55cf5a7 100644
+index 426409e0d0713..987220ac4cfef 100644
 --- a/arch/arm64/kernel/smp.c
 +++ b/arch/arm64/kernel/smp.c
-@@ -401,6 +401,7 @@ void cpu_die_early(void)
+@@ -388,6 +388,7 @@ void cpu_die_early(void)
  
  	/* Mark this CPU absent */
  	set_cpu_present(cpu, 0);
 +	rcu_report_dead(cpu);
  
- 	if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
- 		update_cpu_boot_status(CPU_KILL_ME);
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	update_cpu_boot_status(CPU_KILL_ME);
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c8f62e2d02761..b4924fefe2745 100644
+index 62e59596a30a0..1b1d2b09efa9b 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4024,7 +4024,6 @@ void rcu_cpu_starting(unsigned int cpu)
+@@ -3157,7 +3157,6 @@ void rcu_cpu_starting(unsigned int cpu)
  	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
  }
  
@@ -112,7 +112,7 @@ index c8f62e2d02761..b4924fefe2745 100644
  /*
   * The outgoing function has no further need of RCU, so remove it from
   * the rcu_node tree's ->qsmaskinitnext bit masks.
-@@ -4064,6 +4063,7 @@ void rcu_report_dead(unsigned int cpu)
+@@ -3197,6 +3196,7 @@ void rcu_report_dead(unsigned int cpu)
  	per_cpu(rcu_cpu_started, cpu) = 0;
  }
  
