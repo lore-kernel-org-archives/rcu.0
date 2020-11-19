@@ -4,146 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D73F2C6369E
-	for <rcu@archiver.kernel.org>; Thu, 19 Nov 2020 18:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0BD5C56201
+	for <rcu@archiver.kernel.org>; Thu, 19 Nov 2020 18:12:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A588246E0
-	for <rcu@archiver.kernel.org>; Thu, 19 Nov 2020 18:00:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C565246A7
+	for <rcu@archiver.kernel.org>; Thu, 19 Nov 2020 18:12:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9nXR0Hc"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TmdG7jJC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgKSSAO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Nov 2020 13:00:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
+        id S1727292AbgKSSMh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Nov 2020 13:12:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbgKSSAN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:00:13 -0500
+        id S1727117AbgKSSMg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:12:36 -0500
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84F15246A7;
-        Thu, 19 Nov 2020 18:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D8D72225B;
+        Thu, 19 Nov 2020 18:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605808812;
-        bh=SgurXvzhl9QuPyBTLPJtG4Q6saSrCINScSXjZM3boiY=;
+        s=default; t=1605809556;
+        bh=BQglaJdKNtKWX2Zk4RYXa7mU1pwvbWzO/F2vKmVQHAI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=G9nXR0Hc81p1Wd9CZ7BRzEKbDyKZi+wK22E0R4lEabYjim1Vlj9WubIAWnrlyLNL9
-         KlPJD/PP1cy0I7JGaiMCjcWOh6toiVfGO7WtmJ4+Zq0EBBEPuqlfzoILasOMSWxtEf
-         oA1dto0U+ndVH69mpzAq+Maanvjexn6Pe0BdQSU4=
+        b=TmdG7jJCw4y5pRWzc6q4L+fJvWD1Th+9C1p416Qbbde86cU1ehvrTyntyeRV9kcGj
+         wAtN0nAJJK+BuM6QWfojq2DZgINmG78FggOYR0GtYoGm/ovdxYd4CD8DkkVfeX0Jiq
+         ViP6s54Ik1QQrPKcR0fslFFawiZPXjssr5sl5jGI=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 28B3235225CF; Thu, 19 Nov 2020 10:00:12 -0800 (PST)
-Date:   Thu, 19 Nov 2020 10:00:12 -0800
+        id C2B6035225CF; Thu, 19 Nov 2020 10:12:35 -0800 (PST)
+Date:   Thu, 19 Nov 2020 10:12:35 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC tip/core/rcu 1/5] srcu: Make Tiny SRCU use multi-bit
- grace-period counter
-Message-ID: <20201119180012.GW1437@paulmck-ThinkPad-P72>
+To:     qiang.zhang@windriver.com
+Cc:     jiangshanlai@gmail.com, rostedt@goodmis.org, josh@joshtriplett.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] srcu: Remove srcu_cblist_invoking member from sdp
+Message-ID: <20201119181235.GX1437@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-1-paulmck@kernel.org>
- <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
+References: <20201119053411.11698-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
+In-Reply-To: <20201119053411.11698-1-qiang.zhang@windriver.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:44:49PM +0530, Neeraj Upadhyay wrote:
-> Hi Paul,
+On Thu, Nov 19, 2020 at 01:34:11PM +0800, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > There is a need for a polling interface for SRCU grace periods.  This
-> > polling needs to distinguish between an SRCU instance being idle on the
-> > one hand or in the middle of a grace period on the other.  This commit
-> > therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
-> > a defacto boolean to a free-running counter, using the bottom bit to
-> > indicate that a grace period is in progress.  The second-from-bottom
-> > bit is thus used as the index returned by srcu_read_lock().
-> > 
-> > Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   include/linux/srcutiny.h | 4 ++--
-> >   kernel/rcu/srcutiny.c    | 5 +++--
-> >   2 files changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > index 5a5a194..fed4a2d 100644
-> > --- a/include/linux/srcutiny.h
-> > +++ b/include/linux/srcutiny.h
-> > @@ -15,7 +15,7 @@
-> >   struct srcu_struct {
-> >   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
-> > -	short srcu_idx;			/* Current reader array element. */
-> > +	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
-> >   	u8 srcu_gp_running;		/* GP workqueue running? */
-> >   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
-> >   	struct swait_queue_head srcu_wq;
-> > @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
-> >   {
-> >   	int idx;
-> > -	idx = READ_ONCE(ssp->srcu_idx);
-> > +	idx = (READ_ONCE(ssp->srcu_idx) & 0x2) / 2;
+> Workqueue can ensure the multiple same sdp->work sequential
+> execution in rcu_gp_wq, not need srcu_cblist_invoking to
+> prevent concurrent execution, so remove it.
 > 
-> Should we use bit 0x2 of (READ_ONCE(ssp->srcu_idx) + 1) , if GP
-> (srcu_drive_gp()) is in progress? Or am I missing something here?
-> 
-> idx = ((READ_ONCE(ssp->srcu_idx) +1) & 0x2) / 2;
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-You miss nothing!  I am running about 200 hours of concurrent rcutorture
-of the SRCU-t and SRCU-u scenarios, but I must admit that this race could
-be hard to hit.  But it could of course result in too-short grace periods.
-I will fold this into the original with attribution.
+Good job analyzing the code, which is very good to see!!!
 
-> Also, any reason for using divison instead of shift; something to
-> do with 16-bit srcu_idx which I am missing here?
+But these do have a potential purpose.  Right now, it is OK to invoke
+synchronize_srcu() during early boot, that is, before the scheduler
+has started.  But there is a gap from the time that the scheduler has
+initialized (so that preemption and blocking are possible) and the time
+that workqueues are initialized and fully functional.  Only after that
+is it once again OK to use synchronize_srcu().
 
-I just figure that the compiler is better at selecting instructions
-than I am.  Either would work.
+If synchronize_srcu() is ever required to work correctly during that
+time period, it will need to directly invoke the functions that are
+currently run in workqueue context.  Which means that there will then be
+the possibility of two instances of these functions running just after
+workqueues are available.
 
 							Thanx, Paul
 
-> Thanks
-> Neeraj
+> ---
+>  include/linux/srcutree.h | 1 -
+>  kernel/rcu/srcutree.c    | 8 ++------
+>  2 files changed, 2 insertions(+), 7 deletions(-)
 > 
-> >   	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> >   	return idx;
-> >   }
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 6208c1d..5598cf6 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
-> >   	ssp->srcu_cb_head = NULL;
-> >   	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
-> >   	local_irq_enable();
-> > -	idx = ssp->srcu_idx;
-> > -	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
-> > +	idx = (ssp->srcu_idx & 0x2) / 2;
-> > +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> >   	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
-> >   	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> >   	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
-> > +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> >   	/* Invoke the callbacks we removed above. */
-> >   	while (lh) {
-> > 
-> 
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 9cfcc8a756ae..62d8312b5451 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -31,7 +31,6 @@ struct srcu_data {
+>  	struct rcu_segcblist srcu_cblist;	/* List of callbacks.*/
+>  	unsigned long srcu_gp_seq_needed;	/* Furthest future GP needed. */
+>  	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
+> -	bool srcu_cblist_invoking;		/* Invoking these CBs? */
+>  	struct timer_list delay_work;		/* Delay for CB invoking */
+>  	struct work_struct work;		/* Context for CB invoking. */
+>  	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 3c5e2806e0b9..c4d5cd2567a6 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -134,7 +134,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+>  		sdp = per_cpu_ptr(ssp->sda, cpu);
+>  		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
+>  		rcu_segcblist_init(&sdp->srcu_cblist);
+> -		sdp->srcu_cblist_invoking = false;
+>  		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
+>  		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
+>  		sdp->mynode = &snp_first[cpu / levelspread[level]];
+> @@ -1254,14 +1253,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>  	spin_lock_irq_rcu_node(sdp);
+>  	rcu_segcblist_advance(&sdp->srcu_cblist,
+>  			      rcu_seq_current(&ssp->srcu_gp_seq));
+> -	if (sdp->srcu_cblist_invoking ||
+> -	    !rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
+> +	if (!rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
+>  		spin_unlock_irq_rcu_node(sdp);
+>  		return;  /* Someone else on the job or nothing to do. */
+>  	}
+>  
+> -	/* We are on the job!  Extract and invoke ready callbacks. */
+> -	sdp->srcu_cblist_invoking = true;
+>  	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
+>  	len = ready_cbs.len;
+>  	spin_unlock_irq_rcu_node(sdp);
+> @@ -1282,7 +1278,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>  	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+>  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+>  				       rcu_seq_snap(&ssp->srcu_gp_seq));
+> -	sdp->srcu_cblist_invoking = false;
+> +
+>  	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+>  	spin_unlock_irq_rcu_node(sdp);
+>  	if (more)
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
-> the Code Aurora Forum, hosted by The Linux Foundation
+> 2.17.1
+> 
