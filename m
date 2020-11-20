@@ -2,199 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 291A4C56202
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA3B6C5519F
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C38BA22253
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:37:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 655FB22254
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="QXJtgDal"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nabdbzL3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgKTLhB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Nov 2020 06:37:01 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:13334 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgKTLhB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:37:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605872220; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=zeUkBZJSG3m+Px0GQ95i9hVc445A7oX9PZfP5zdKnDo=; b=QXJtgDaleBr2Bka8ycMwoEvidoH+UK30Q53LtDROHW20qBv3J1SaTx3zBXWxcYST/0wZVTz/
- bZj32PEiNzQN8o7CL4U50/nlvImyAerm9d8aqtnQj9/divqTLY7V1xsU8f63oRKVXU4ZFaML
- 4GrdTsDLhDfuAYHlRc4rilIn71E=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fb7aa5b7f0cfa6a16d3fc71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 11:36:59
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD506C43468; Fri, 20 Nov 2020 11:36:58 +0000 (UTC)
-Received: from [192.168.0.101] (unknown [124.123.182.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E7DBC433C6;
-        Fri, 20 Nov 2020 11:36:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2E7DBC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH RFC tip/core/rcu 3/5] srcu: Provide internal interface to
- start a Tree SRCU grace period
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-3-paulmck@kernel.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <69c05cd0-8187-49a7-5b2d-1a10ba42fa44@codeaurora.org>
-Date:   Fri, 20 Nov 2020 17:06:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726548AbgKTLta (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Nov 2020 06:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgKTLt3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:49:29 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70720C0613CF;
+        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id 11so9748441ljf.2;
+        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
+        b=nabdbzL3qLoy6eyU1INiss6AzaU3MOG7PfET7Y8JPQdPzpvCja7qs0wNQjVbWzV67i
+         ugyreE5Pn4JcBpdetLsXMZlCv+h5x2ATavRmHkEVs0rFUM7S76fara/rSK41MdAfy1g4
+         lwWWJoLFGnPu9xg1IcdQyaimv/qTNkuHkXtulExJPC3/BLscFhSYcqbpHCmCcV45tHqu
+         gG1N1IM2uRfcWEdj5liqNIzTwSDG8p/I5OHnd3tLr6QNSrJckwH9DZY/44Sf03jY26GX
+         XWE0VfZ7EXoifXpXLyUlFytzIBhpFhZP+MT/2vkzqTOTrURvSuLQl8038Dw4NxyHkvcC
+         68nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
+        b=gX4q7NvE1m1quFdOjdxnjv3fC0er17xwhohK9VK13FRFypFuArFUve/o9Gf+9Cw6mp
+         g+QOxP2BPmKYH6oNndWBVbikl6js4Vi4gdujzrDILqEd4rMTA2hhmMUWIfIWwaxdncZc
+         69nlxfCi97c52aEiNEE8Olc0hKN1TugiFKXq0ICIToVgsyfD06xrTk8eC78opEN4nW3I
+         cUSie5SAhukP0/QKaXBx/GOE/ID7xLf+GDltrBgc09T4bVv0eoyGxG6leesrlKCsWCZx
+         QdVHSNvt7DAHccxPHEY5nqD++1LDi0/NR4kCZEGUiOn2ZOH1awpjbCskZwimidkqxhfC
+         6hmA==
+X-Gm-Message-State: AOAM533347PTwB09Bnzhp7wxYIOHkYFNa3opeGIPxwUhcmrbuUM8yXk7
+        4vUTMcfzQBXu9YAbNUgJGPIBKYXF6hyAvUDl
+X-Google-Smtp-Source: ABdhPJzFGWiC4bBLK+dTr2G0AiHCUim+NlzToVpyQaOg5ek+5X0QP/ptD2YnYaVdQOUDhPB3iQcFyw==
+X-Received: by 2002:a2e:9614:: with SMTP id v20mr8167013ljh.13.1605872967505;
+        Fri, 20 Nov 2020 03:49:27 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id i17sm262683ljb.1.2020.11.20.03.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 03:49:26 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 1/2] rcu: introduce kfree_rcu() single argument macro
+Date:   Fri, 20 Nov 2020 12:49:16 +0100
+Message-Id: <20201120114917.5263-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201117004052.14758-3-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+There is a kvfree_rcu() single argument macro that pairs
+with kvmalloc() allocated pointer. Even though it also
+deals with SLAB one, it might be confused for the users.
 
+That is why add an extra kfree_rcu() macro that explicitly
+pairs with kmalloc() pointer and its name, so it becomes
+more obvious for users.
 
-On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> There is a need for a polling interface for SRCU grace periods.
-> This polling needs to initiate an SRCU grace period without having
-> to queue (and manage) a callback.  This commit therefore splits the
-> Tree SRCU __call_srcu() function into callback-initialization and
-> queuing/start-grace-period portions, with the latter in a new function
-> named srcu_gp_start_if_needed().  This function may be passed a NULL
-> callback pointer, in which case it will refrain from queuing anything.
-> 
-> Why have the new function mess with queuing?  Locking considerations,
-> of course!
-> 
-> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ include/linux/rcupdate.h | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-
-
-Thanks
-Neeraj
-
->   kernel/rcu/srcutree.c | 66 +++++++++++++++++++++++++++++----------------------
->   1 file changed, 37 insertions(+), 29 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 79b7081..d930ece 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -808,6 +808,42 @@ static void srcu_leak_callback(struct rcu_head *rhp)
->   }
->   
->   /*
-> + * Start an SRCU grace period, and also queue the callback if non-NULL.
-> + */
-> +static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
-> +{
-> +	unsigned long flags;
-> +	int idx;
-> +	bool needexp = false;
-> +	bool needgp = false;
-> +	unsigned long s;
-> +	struct srcu_data *sdp;
-> +
-> +	idx = srcu_read_lock(ssp);
-> +	sdp = raw_cpu_ptr(ssp->sda);
-> +	spin_lock_irqsave_rcu_node(sdp, flags);
-> +	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> +	rcu_segcblist_advance(&sdp->srcu_cblist,
-> +			      rcu_seq_current(&ssp->srcu_gp_seq));
-> +	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-> +	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
-> +	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
-> +		sdp->srcu_gp_seq_needed = s;
-> +		needgp = true;
-> +	}
-> +	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
-> +		sdp->srcu_gp_seq_needed_exp = s;
-> +		needexp = true;
-> +	}
-> +	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +	if (needgp)
-> +		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
-> +	else if (needexp)
-> +		srcu_funnel_exp_start(ssp, sdp->mynode, s);
-> +	srcu_read_unlock(ssp, idx);
-> +}
-> +
-> +/*
->    * Enqueue an SRCU callback on the srcu_data structure associated with
->    * the current CPU and the specified srcu_struct structure, initiating
->    * grace-period processing if it is not already running.
-> @@ -838,13 +874,6 @@ static void srcu_leak_callback(struct rcu_head *rhp)
->   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   			rcu_callback_t func, bool do_norm)
->   {
-> -	unsigned long flags;
-> -	int idx;
-> -	bool needexp = false;
-> -	bool needgp = false;
-> -	unsigned long s;
-> -	struct srcu_data *sdp;
-> -
->   	check_init_srcu_struct(ssp);
->   	if (debug_rcu_head_queue(rhp)) {
->   		/* Probable double call_srcu(), so leak the callback. */
-> @@ -853,28 +882,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   		return;
->   	}
->   	rhp->func = func;
-> -	idx = srcu_read_lock(ssp);
-> -	sdp = raw_cpu_ptr(ssp->sda);
-> -	spin_lock_irqsave_rcu_node(sdp, flags);
-> -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> -	rcu_segcblist_advance(&sdp->srcu_cblist,
-> -			      rcu_seq_current(&ssp->srcu_gp_seq));
-> -	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
-> -	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
-> -		sdp->srcu_gp_seq_needed = s;
-> -		needgp = true;
-> -	}
-> -	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
-> -		sdp->srcu_gp_seq_needed_exp = s;
-> -		needexp = true;
-> -	}
-> -	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> -	if (needgp)
-> -		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
-> -	else if (needexp)
-> -		srcu_funnel_exp_start(ssp, sdp->mynode, s);
-> -	srcu_read_unlock(ssp, idx);
-> +	srcu_gp_start_if_needed(ssp, rhp, do_norm);
->   }
->   
->   /**
-> 
-
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index e09c0d87b3c3..b1e75648d402 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -853,8 +853,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+ 
+ /**
+  * kfree_rcu() - kfree an object after a grace period.
+- * @ptr:	pointer to kfree
+- * @rhf:	the name of the struct rcu_head within the type of @ptr.
++ * @ptr: pointer to kfree(both for single argument and double one)
++ * @rhf: the name of the struct rcu_head within the type of @ptr,
++ *       only for double argument.
+  *
+  * Many rcu callbacks functions just call kfree() on the base structure.
+  * These functions are trivial, but their size adds up, and furthermore
+@@ -877,13 +878,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
+  */
+-#define kfree_rcu(ptr, rhf)						\
+-do {									\
+-	typeof (ptr) ___p = (ptr);					\
+-									\
+-	if (___p)							\
+-		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+-} while (0)
++#define kfree_rcu kvfree_rcu
+ 
+ /**
+  * kvfree_rcu() - kvfree an object after a grace period.
+@@ -915,7 +910,14 @@ do {									\
+ 	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
+ 
+ #define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
+-#define kvfree_rcu_arg_2(ptr, rhf) kfree_rcu(ptr, rhf)
++#define kvfree_rcu_arg_2(ptr, rhf)					\
++do {									\
++	typeof (ptr) ___p = (ptr);					\
++									\
++	if (___p)							\
++		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
++} while (0)
++
+ #define kvfree_rcu_arg_1(ptr)					\
+ do {								\
+ 	typeof(ptr) ___p = (ptr);				\
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.20.1
+
