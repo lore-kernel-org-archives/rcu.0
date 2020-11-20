@@ -2,166 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-23.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 132E7C63777
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 14:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 266E0C56201
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 14:44:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAA5122272
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 14:39:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C0BD22224C
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 14:44:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FmgQYZ4o"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RTlyczda"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgKTOja (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Nov 2020 09:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727246AbgKTOja (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:39:30 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E7122224C;
-        Fri, 20 Nov 2020 14:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605883169;
-        bh=TAwBwzFSTpCTleLfZQ8+ZcWFhYmGk+5E1muhTgKlVwA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FmgQYZ4oMCALsaw6U1qaA54aFyaUqxhNoCwtOECuPWnMfsF7iTLeFxZkhPS916SF/
-         rMfTurzQ/uZuMTNNsd6/8Q76z8U2b9I1LeSG2BUcxAbFvD8UnUyqLLLnUkUoPh3mc2
-         mL/qo8R/Mg/Ov98CmrIsF1+Xuj4oSWG9ZL/tGcC8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AEB373522A6E; Fri, 20 Nov 2020 06:39:28 -0800 (PST)
-Date:   Fri, 20 Nov 2020 06:39:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201120143928.GH1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117182915.GM1437@paulmck-ThinkPad-P72>
- <20201118225621.GA1770130@elver.google.com>
- <20201118233841.GS1437@paulmck-ThinkPad-P72>
- <20201119125357.GA2084963@elver.google.com>
- <20201119151409.GU1437@paulmck-ThinkPad-P72>
- <20201119170259.GA2134472@elver.google.com>
- <20201119184854.GY1437@paulmck-ThinkPad-P72>
- <20201119193819.GA2601289@elver.google.com>
- <20201119213512.GB1437@paulmck-ThinkPad-P72>
- <20201120141928.GB3120165@elver.google.com>
+        id S1728262AbgKTOoT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Nov 2020 09:44:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgKTOoS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:44:18 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719A5C0617A7
+        for <rcu@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id a13so9067294qkl.4
+        for <rcu@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
+        b=RTlyczdaOkh7geh5ZkV5GWqqUHxPFzM+/EHAond4ShJYOtFveN+sTMYTYpHgQ3qw9r
+         4OCkjKwSJHsceu0+nXK8loM3AVTBFS75aQPAYKdJgOphR7CRICAABfzh2r1lr150wYko
+         R+D3NyVAow6YMlcGvxOKbs41nuzOmhP+RWkQl7DrCHEGm0KGA0pr2pCv4AUF32psYd2Q
+         MUv4Hz7kJrHs6Vr4QMJoQ57rfNDvVFd+jOm23dB4GkMajSHqjOrHjWK+/6LejpwZb2E8
+         moGMGJMG9qiVmJOXe8kK1nAw7nH/ygEbeVvJccO1/wiK3Q7q4IPkor735omM5ig5how2
+         iifQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
+        b=ntIJXBWkQwJOXMTctfNKmETJ3jvdKSCsFRrrvjm9CGh4NumyM+cz8v6MeUClNSeaOZ
+         MdRIyms/bXfiGfCnWVIWL2tpHYFomz0aO9gxw4BoDkQbyFuH0Ulk5qa/AaGfUkvrvSuk
+         mnUDfGmPKA5HEmR7n4S401MV3+jIRcVhKpAQuXASvhI5daj/iY+1/OY5htX1qA3Z5njF
+         roLRpnI51YUxD1uCob2mQZLTpQvvah5JhLrytI0hK5XfcxZUU/lChkJKhNRYd/s+RhC8
+         i8W4GgDIAVzxhn6MTFDApKVhy+lyMzXTjHolIFb5YVtjbEAnSJl7WgMr9BoL1SXW7EnZ
+         6i1w==
+X-Gm-Message-State: AOAM5306kbyyi7+1Hg99+pguGxjYCCMqO5ma1s1aqLxaTAcS/gSPt+3w
+        ld/UTD7wrc6Q+wBsg2HreCdTwRJH6ezRnLG8nBy5TA==
+X-Google-Smtp-Source: ABdhPJwZrlT2iMbWNY1ZMJAir2bIhu343U9ppzqmXLgR+ajdYkR5kBk2dzPNIsC8Na83xEoHeqe293oVTudB3x2YG5E=
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr17381328qkm.231.1605883457341;
+ Fri, 20 Nov 2020 06:44:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120141928.GB3120165@elver.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201118035309.19144-1-qiang.zhang@windriver.com>
+ <20201119214934.GC1437@paulmck-ThinkPad-P72> <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
+ <20201120143440.GF1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201120143440.GF1437@paulmck-ThinkPad-P72>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 20 Nov 2020 15:44:04 +0100
+Message-ID: <CACT4Y+ZNBRaVOK4zjv7WyyJKeS54OL8212EtjQHshYDeOVmCGQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 03:19:28PM +0100, Marco Elver wrote:
-> On Thu, Nov 19, 2020 at 01:35PM -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 19, 2020 at 08:38:19PM +0100, Marco Elver wrote:
-> > > On Thu, Nov 19, 2020 at 10:48AM -0800, Paul E. McKenney wrote:
-> > > > On Thu, Nov 19, 2020 at 06:02:59PM +0100, Marco Elver wrote:
-> > 
-> > [ . . . ]
-> > 
-> > > > > I can try bisection again, or reverting some commits that might be
-> > > > > suspicious? But we'd need some selection of suspicious commits.
-> > > > 
-> > > > The report claims that one of the rcu_node ->lock fields is held
-> > > > with interrupts enabled, which would indeed be bad.  Except that all
-> > > > of the stack traces that it shows have these locks held within the
-> > > > scheduling-clock interrupt handler.  Now with the "rcu: Don't invoke
-> > > > try_invoke_on_locked_down_task() with irqs disabled" but without the
-> > > > "sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled"
-> > > > commit, I understand why.  With both, I don't see how this happens.
-> > > 
-> > > I'm at a loss, but happy to keep bisecting and trying patches. I'm also
-> > > considering:
-> > > 
-> > > 	Is it the compiler? Probably not, I tried 2 versions of GCC.
-> > > 
-> > > 	Can we trust lockdep to precisely know IRQ state? I know there's
-> > > 	been some recent work around this, but hopefully we're not
-> > > 	affected here?
-> > > 
-> > > 	Is QEMU buggy?
-> > > 
-> > > > At this point, I am reduced to adding lockdep_assert_irqs_disabled()
-> > > > calls at various points in that code, as shown in the patch below.
-> > > > 
-> > > > At this point, I would guess that your first priority would be the
-> > > > initial bug rather than this following issue, but you never know, this
-> > > > might well help diagnose the initial bug.
-> > > 
-> > > I don't mind either way. I'm worried deadlocking the whole system might
-> > > be worse.
-> > 
-> > Here is another set of lockdep_assert_irqs_disabled() calls on the
-> > off-chance that they actually find something.
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit bcca5277df3f24db15e15ccc8b05ecf346d05169
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Nov 19 13:30:33 2020 -0800
-> > 
-> >     rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
-> 
-> None of those triggered either.
-> 
-> I found that disabling ftrace for some of kernel/rcu (see below) solved
-> the stalls (and any mention of deadlocks as a side-effect I assume),
-> resulting in successful boot.
-> 
-> Does that provide any additional clues? I tried to narrow it down to 1-2
-> files, but that doesn't seem to work.
+On Fri, Nov 20, 2020 at 3:34 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Nov 20, 2020 at 09:51:15AM +0100, Dmitry Vyukov wrote:
+> > On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
+> > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
+> > > > record call stacks.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
+> > > See file:///home/git/kernel.org/rcutodo.html for more info.
+> > >
+> > > Adding others on CC who might have feedback on the general approach.
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > > ---
+> > > >  kernel/rcu/tree.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index da3414522285..a252b2f0208d 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > >               success = true;
+> > > >               goto unlock_return;
+> > > >       }
+> > > > -
+> > > > +     kasan_record_aux_stack(ptr);
+> > > >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+> > > >       if (!success) {
+> > > >               run_page_cache_worker(krcp);
+> >
+> > kvfree_call_rcu is intended to free objects, right? If so this is:
+>
+> True, but mightn't there still be RCU readers referencing this object for
+> some time, as in up to the point that the RCU grace period ends?  If so,
+> won't adding this cause KASAN to incorrectly complain about those readers?
+>
+> Or am I missing something here?
 
-There were similar issues during the x86/entry work.  Are the ARM guys
-doing arm64/entry work now?
-
-							Thanx, Paul
-
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-> index 0cfb009a99b9..678b4b094f94 100644
-> --- a/kernel/rcu/Makefile
-> +++ b/kernel/rcu/Makefile
-> @@ -3,6 +3,13 @@
->  # and is generally not a function of system call inputs.
->  KCOV_INSTRUMENT := n
->  
-> +ifdef CONFIG_FUNCTION_TRACER
-> +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
-> +endif
-> +
->  ifeq ($(CONFIG_KCSAN),y)
->  KBUILD_CFLAGS += -g -fno-omit-frame-pointer
->  endif
+kvfree_call_rcu does not check anything, not poison the object for
+future accesses (it is also called in call_rcu which does not
+necessarily free the object).
+It just notes the current stack to provide in reports later.
+The problem is that the free stack is pointless for objects freed by
+rcu. In such cases we want call_rcu/kvfree_call_rcu stack in
+use-after-free reports.
