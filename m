@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA3B6C5519F
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 215AFC63777
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 655FB22254
-	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B49C022264
+	for <rcu@archiver.kernel.org>; Fri, 20 Nov 2020 11:49:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nabdbzL3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="igxa+TR1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgKTLta (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Nov 2020 06:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        id S1725805AbgKTLtd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Nov 2020 06:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgKTLt3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:49:29 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70720C0613CF;
-        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id 11so9748441ljf.2;
-        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
+        with ESMTP id S1727137AbgKTLtc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:49:32 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C068AC0613CF;
+        Fri, 20 Nov 2020 03:49:31 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id r17so9740209ljg.5;
+        Fri, 20 Nov 2020 03:49:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
-        b=nabdbzL3qLoy6eyU1INiss6AzaU3MOG7PfET7Y8JPQdPzpvCja7qs0wNQjVbWzV67i
-         ugyreE5Pn4JcBpdetLsXMZlCv+h5x2ATavRmHkEVs0rFUM7S76fara/rSK41MdAfy1g4
-         lwWWJoLFGnPu9xg1IcdQyaimv/qTNkuHkXtulExJPC3/BLscFhSYcqbpHCmCcV45tHqu
-         gG1N1IM2uRfcWEdj5liqNIzTwSDG8p/I5OHnd3tLr6QNSrJckwH9DZY/44Sf03jY26GX
-         XWE0VfZ7EXoifXpXLyUlFytzIBhpFhZP+MT/2vkzqTOTrURvSuLQl8038Dw4NxyHkvcC
-         68nA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mBsL2LpflnP7i6114nKCrRZGrVt300iUQlNYXhLEDyE=;
+        b=igxa+TR1ynNqt0gUDuHeQSY0o733oiTDmPDy8Ohp2uCxMGfbMX2Ny2D9refyZ8K+kk
+         4KdOvWvJNplgAiu3rgyvWTsLH9kG/PMIiFU7JzwGZnF0pyuXpRp47J0DyihLQI8a32YZ
+         rIelaByFPfJq0sZDd4NPS2dP5VCBcEb8BUmVRb/+1F0PRhcxHwqefmlfz82UPuCfGYTR
+         jMbBbcDZqWJd2q9E8ri+jgwuTSR/Hc96vcS/6YGObf1CqLH+Fd8UtBcyf+/KIGo4F8Pm
+         YOnzVKSh7zas3dRlaeK1VS5Sj442NOcIbO8Liw4sHEECmiPFVKH8v0UvE7uUa6169Gz3
+         fR6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
-        b=gX4q7NvE1m1quFdOjdxnjv3fC0er17xwhohK9VK13FRFypFuArFUve/o9Gf+9Cw6mp
-         g+QOxP2BPmKYH6oNndWBVbikl6js4Vi4gdujzrDILqEd4rMTA2hhmMUWIfIWwaxdncZc
-         69nlxfCi97c52aEiNEE8Olc0hKN1TugiFKXq0ICIToVgsyfD06xrTk8eC78opEN4nW3I
-         cUSie5SAhukP0/QKaXBx/GOE/ID7xLf+GDltrBgc09T4bVv0eoyGxG6leesrlKCsWCZx
-         QdVHSNvt7DAHccxPHEY5nqD++1LDi0/NR4kCZEGUiOn2ZOH1awpjbCskZwimidkqxhfC
-         6hmA==
-X-Gm-Message-State: AOAM533347PTwB09Bnzhp7wxYIOHkYFNa3opeGIPxwUhcmrbuUM8yXk7
-        4vUTMcfzQBXu9YAbNUgJGPIBKYXF6hyAvUDl
-X-Google-Smtp-Source: ABdhPJzFGWiC4bBLK+dTr2G0AiHCUim+NlzToVpyQaOg5ek+5X0QP/ptD2YnYaVdQOUDhPB3iQcFyw==
-X-Received: by 2002:a2e:9614:: with SMTP id v20mr8167013ljh.13.1605872967505;
-        Fri, 20 Nov 2020 03:49:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mBsL2LpflnP7i6114nKCrRZGrVt300iUQlNYXhLEDyE=;
+        b=ldfKi+tE3FABxvlxuJlZwwuK5zzLwxURYJt8d1IF+X2XKK7GZN5uutd0QjirxJ6SxV
+         VqlTz81/BuiHs69wq7p/6eXo5cHXHyHK9px5vT4OOcIV3080wemySaIPwGo083f5CNJY
+         7DFAL72G7XlG1fDo1lpuX6DjRWFjFc7jNnug8ITiZhvEhN9e5jdk5CcDKSS0H5Gpefre
+         Duyg4/m/0hHoHvP4xvZKlAQGfDTDlsAB5yFszB5LeiFbNbImWYPbN4LuR52Zjxuc9xlT
+         vjkAmyD2j10XoRM8Ms62kJ0Lw5wENP4g2hxz/wfsEQO88+qqTnD9EIlqHpcXCe0fxyWS
+         wmqA==
+X-Gm-Message-State: AOAM531XPUo2m4A17pEDWBGekxozMqs3GWzrUpG8VDiuoqnJ5JS8/C8X
+        netsRE8WnJc4I3pHx/iWT0dOQnEk9JjnZ0Yt
+X-Google-Smtp-Source: ABdhPJyaSZVijzWNiLpzfVzcT8IvRjpthkrDsKkl7F/+4EvEChseqh7lfTo2OewltNoF1EHVF0CdaA==
+X-Received: by 2002:a2e:8792:: with SMTP id n18mr8128199lji.57.1605872968693;
+        Fri, 20 Nov 2020 03:49:28 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i17sm262683ljb.1.2020.11.20.03.49.26
+        by smtp.gmail.com with ESMTPSA id i17sm262683ljb.1.2020.11.20.03.49.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 03:49:26 -0800 (PST)
+        Fri, 20 Nov 2020 03:49:28 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -72,76 +72,71 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/2] rcu: introduce kfree_rcu() single argument macro
-Date:   Fri, 20 Nov 2020 12:49:16 +0100
-Message-Id: <20201120114917.5263-1-urezki@gmail.com>
+Subject: [PATCH 2/2] rcu: eliminate the __kvfree_rcu() macro
+Date:   Fri, 20 Nov 2020 12:49:17 +0100
+Message-Id: <20201120114917.5263-2-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201120114917.5263-1-urezki@gmail.com>
+References: <20201120114917.5263-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There is a kvfree_rcu() single argument macro that pairs
-with kvmalloc() allocated pointer. Even though it also
-deals with SLAB one, it might be confused for the users.
-
-That is why add an extra kfree_rcu() macro that explicitly
-pairs with kmalloc() pointer and its name, so it becomes
-more obvious for users.
+Make the kvfree_rcu_arg_2() to be open-coded, so readability
+and review look better from the first glance. Moreover, that
+makes it clear that both kvfree_rcu_arg_1/2() use one single
+interface.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcupdate.h | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ include/linux/rcupdate.h | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index e09c0d87b3c3..b1e75648d402 100644
+index b1e75648d402..6d56dd7e6a30 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -853,8 +853,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+@@ -842,15 +842,6 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  */
+ #define __is_kvfree_rcu_offset(offset) ((offset) < 4096)
  
+-/*
+- * Helper macro for kfree_rcu() to prevent argument-expansion eyestrain.
+- */
+-#define __kvfree_rcu(head, offset) \
+-	do { \
+-		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offset)); \
+-		kvfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
+-	} while (0)
+-
  /**
   * kfree_rcu() - kfree an object after a grace period.
-- * @ptr:	pointer to kfree
-- * @rhf:	the name of the struct rcu_head within the type of @ptr.
-+ * @ptr: pointer to kfree(both for single argument and double one)
-+ * @rhf: the name of the struct rcu_head within the type of @ptr,
-+ *       only for double argument.
+  * @ptr: pointer to kfree(both for single argument and double one)
+@@ -868,7 +859,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * Because the functions are not allowed in the low-order 4096 bytes of
+  * kernel virtual memory, offsets up to 4095 bytes can be accommodated.
+  * If the offset is larger than 4095 bytes, a compile-time error will
+- * be generated in __kvfree_rcu(). If this error is triggered, you can
++ * be generated in kvfree_rcu_arg_2(). If this error is triggered, you can
+  * either fall back to use of call_rcu() or rearrange the structure to
+  * position the rcu_head structure into the first 4096 bytes.
   *
-  * Many rcu callbacks functions just call kfree() on the base structure.
-  * These functions are trivial, but their size adds up, and furthermore
-@@ -877,13 +878,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * The BUILD_BUG_ON check must not involve any function calls, hence the
-  * checks are done in macros here.
-  */
--#define kfree_rcu(ptr, rhf)						\
--do {									\
--	typeof (ptr) ___p = (ptr);					\
--									\
+@@ -914,8 +905,11 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+ do {									\
+ 	typeof (ptr) ___p = (ptr);					\
+ 									\
 -	if (___p)							\
 -		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
--} while (0)
-+#define kfree_rcu kvfree_rcu
++	if (___p) {									\
++		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));	\
++		kvfree_call_rcu(&((___p)->rhf), (rcu_callback_t)(unsigned long)		\
++			(offsetof(typeof(*(ptr)), rhf)));				\
++	}										\
+ } while (0)
  
- /**
-  * kvfree_rcu() - kvfree an object after a grace period.
-@@ -915,7 +910,14 @@ do {									\
- 	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
- 
- #define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
--#define kvfree_rcu_arg_2(ptr, rhf) kfree_rcu(ptr, rhf)
-+#define kvfree_rcu_arg_2(ptr, rhf)					\
-+do {									\
-+	typeof (ptr) ___p = (ptr);					\
-+									\
-+	if (___p)							\
-+		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
-+} while (0)
-+
  #define kvfree_rcu_arg_1(ptr)					\
- do {								\
- 	typeof(ptr) ___p = (ptr);				\
 -- 
 2.20.1
 
