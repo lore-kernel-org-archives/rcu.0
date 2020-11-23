@@ -2,139 +2,149 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,
-	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7310C5519F
-	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 02:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A616C63697
+	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 04:31:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E513208B8
-	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 02:00:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D7B2208B8
+	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 04:31:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="SApBtxze"
+	dkim=pass (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="Qm/Mcyq9"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgKWB7m (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 22 Nov 2020 20:59:42 -0500
-Received: from mail-bn8nam08on2083.outbound.protection.outlook.com ([40.107.100.83]:16544
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726854AbgKWB7m (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 22 Nov 2020 20:59:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQ+oDvsZm8p4BE9nNaRptZcs2ryEGr1uDSNN3eJibgyj2XrlZfCMqR8AM8g+qdzPus8wNNQfj9JieD7dPoc2QvDBWG9Z2Wq7CUU90ksn3nB+Vsddhkl5+urPtEuB8NTrwDj3+0FQXfCbQrgT7TUcxmxSIk1q336EwglncYyjT6HeZKUx2rF/1i0Vr8aiz2+zQoY4iO/XYvwTaC7diJnPdTsLLr1UGOVcWhWzGYcmIcCkj21KpxBjA1DxlEmg8xIBHeY9J68dR6QKxeWkS4TO8I8KY7rypS95HPS1afQOItGNeeXFKrAvUqFvZeHDdkk+x6s9pf4kH+4bu7sVwMmlFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k+1NC6K5ajugf+xc7/IpwHgbGgkX46hPWd7V3qEbWWE=;
- b=ZxtGUrp3UZqni6v1zPLeVgGxCxa9KtCk9bu1nI5eO2malNsfrwyBo74wnKj7Ipx6gezDyXeXcMF42jbe9NaxvdEz/indQcPEzm9kyxrnEr9EUrhohlQIKqTxrVN4MXCgY4AcaCHa+Dzu4G6YGZs0q87LyPvK3WleCStgifnXwBYpQRM/Fsa9Sp4GEZifm+RrMvCONjimWxo7B27+KGxul7OpjTFSEMo6Y2639UKeqk+R7lt8t3UK/4VDhJ4JQZLUmYvihTEEj17O4zXc4zJ5WySyPWhRXLUqwvGh9U7iDsaY+lNAG/Oe+CfcMbv7xSQhyns1ENObnMV+8y8CPo+yxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k+1NC6K5ajugf+xc7/IpwHgbGgkX46hPWd7V3qEbWWE=;
- b=SApBtxzeiu9Folmeiw40lzOBpTVvQ9ncTE4dXVR/Hj91TtRkeP1BZwA1/Fo1c3zktnuQ+uKnJF17nDubQgZqgUh59ZeFmC30wdL5bBcZMhTRt/qMUk5RMpH+s6iSa+FA75ac7GencVDqJ4/9i+dnS6B+dfxel3ganwkGV38uPyo=
-Received: from DM6PR11MB2635.namprd11.prod.outlook.com (2603:10b6:5:c5::29) by
- DM5PR1101MB2089.namprd11.prod.outlook.com (2603:10b6:4:54::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.20; Mon, 23 Nov 2020 01:59:38 +0000
-Received: from DM6PR11MB2635.namprd11.prod.outlook.com
- ([fe80::4412:b254:d3c4:57f4]) by DM6PR11MB2635.namprd11.prod.outlook.com
- ([fe80::4412:b254:d3c4:57f4%2]) with mapi id 15.20.3589.028; Mon, 23 Nov 2020
- 01:59:38 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: =?gb2312?B?u9i4tDogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0YXRl?=
-Thread-Topic: SRCU: Question on srcu_advance_state
-Thread-Index: AQHWvxdjXdvwsm4YoUaIwer37zsYs6nRyFAAgAMw8GU=
-Date:   Mon, 23 Nov 2020 01:59:37 +0000
-Message-ID: <DM6PR11MB2635EF8668163B77B073C096FFFC0@DM6PR11MB2635.namprd11.prod.outlook.com>
-References: <7fc7b6b9-bcf2-fa78-1931-415d04a5ac1a@windriver.com>,<20201121011132.GR1437@paulmck-ThinkPad-P72>
-In-Reply-To: <20201121011132.GR1437@paulmck-ThinkPad-P72>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: eead1c71-cc73-4485-9a64-08d88f536f11
-x-ms-traffictypediagnostic: DM5PR1101MB2089:
-x-microsoft-antispam-prvs: <DM5PR1101MB2089E394E7181F28E1FBFBBCFFFC0@DM5PR1101MB2089.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RRAMceCgiGM3KqVW854xpSGpMLjBsadZzeKKlLhvpfcHmCbnvW+I5q8QWSwClznuxByQcY2OlU7fBgZqEiSjhFSdfPHO3iAYuKLZNH9X5dvy+4lW8r522sCAW9FH27MZKW/h4sUxs+pIE6zyH+/JOGOgLk+WhvwpVz21YWOKKegaOEm/iUkVqzLaJnNy6KF63rxOx47jyGHxi2yaG5ENXrmXZlifVGSsTATtsARON/Xg3J4IpWESpk2rH6vkqH+5le4rcbgRGVraXTpJNNBCZ/1GmFKPLYXSx/E78LFmHWtmGExFP31M62tJhPWPJGqxWxgIlqhXF/7A5SOjoYovcZePsMl7t8U5zgmZDytw/zAQkJ7SmB3x+aN/wFQDzJ9+EkbdzST1JOhVuRVnO1E+QQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2635.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(39840400004)(376002)(83380400001)(4326008)(8936002)(71200400001)(316002)(33656002)(478600001)(86362001)(6916009)(66946007)(91956017)(76116006)(66446008)(66556008)(66476007)(224303003)(54906003)(64756008)(6506007)(26005)(52536014)(55016002)(9686003)(966005)(5660300002)(186003)(7696005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 6UmHj4nioXELKmfwz+9xE50EnhkES7V5AIDIwGvxWuxfsFAEi0pObi2DM7UXC9OaSDgs0O1+doejgj9Arktq2P9ofqpuIhePWP8/zeQRMjffQ5DfwkwUagByrjnCvPnAxIppXIXVMdAmbUmJVG6n1P+gQuD+7kuwNB8jTtz193pMsmxCkflefldHI8Lw0cuzNztCUveOCw366kZZLeQ/HUtDrR5Q1CzEB0JBMjpXj7ltSF4E/1U8L36TSwsGYfpju5M8hzYFDbxmyLz82ebq7R7CA1yAaVgf69RJTeLFXna7OGxYcmxOEyqkXN5BbOaRo4hdyuEaOlj9iBUOO98b+jlWgXWmAVX2oEUlw2S1lg5JBYn88qw2t4y/UenJoRnGcaykcBbgIysKTdhuCNOpRRTpePsINZXU0B+9qnXys1HHUApyZ8bjj0wxqBwcTibRaq70IOWG0FiTUw9lANeA6hubxj1fVn8nli/K3O05NgluvtrNHtGyY+225iV2uv5t3UWfFYwdfTtIg9MwMS9kj+u6Wuir559rlka3irr0pb3wfpvsWEiCTiHGz+VCVzOVAz1npua90MhPBh85+RqClkivu+NKbK/C/vllufVRgt4K5x5cR1c7uLKj13v/1ME+X520jJLjmNnZyhHLqTWOmA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1727056AbgKWEbZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 22 Nov 2020 23:31:25 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:36690 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726917AbgKWEbZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 22 Nov 2020 23:31:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606105883; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=wRtysrG/vg9CRZN6VmVb9Fe3QiwYLJ11RuUPsob/uaA=; b=Qm/Mcyq9/uR6S6GgE7VdaD4cKQwD7W3Aa/CSjRscntfVegGYZNZ45wdbcsxMKIw6GpA/0SX7
+ 5gbnMni5bBAn9JSfzuPreFWxqRrW4OCGTsQlDJPDWDQkc/FXcMdnjiGTM+ysg9EAkjJ6iaSm
+ hPlInBD/8WIEnNWzkxAwfE8y+bM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fbb3b1bb9b39088ed8fc77f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Nov 2020 04:31:23
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 55E1DC433ED; Mon, 23 Nov 2020 04:31:22 +0000 (UTC)
+Received: from [192.168.0.101] (unknown [124.123.182.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3A03C433C6;
+        Mon, 23 Nov 2020 04:31:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A3A03C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v2 tip/core/rcu 1/6] srcu: Make Tiny SRCU use multi-bit
+ grace-period counter
+To:     paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
+References: <@@@> <20201121005919.17152-1-paulmck@kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <f70d1032-8e0f-37bf-9ab0-33e85bc8643c@codeaurora.org>
+Date:   Mon, 23 Nov 2020 10:01:13 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2635.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eead1c71-cc73-4485-9a64-08d88f536f11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 01:59:37.9888
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: In4mlUbHiKUPU2AvLtWNQnszItO4ZdDvKu4cSXTkIIqvF7YjikP72rfngUpomBFpOK7wzYVeviVjpsoHawW0VcFjfHvvZMAMKrcRntTpWgo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2089
+In-Reply-To: <20201121005919.17152-1-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
-LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqMTHUwjIxyNUg
-OToxMQrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiByY3VAdmdlci5rZXJuZWwub3JnOyBKb2Vs
-IEZlcm5hbmRlcwrW98ziOiBSZTogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0YXRl
-CgpbUGxlYXNlIG5vdGUgdGhpcyBlLW1haWwgaXMgZnJvbSBhbiBFWFRFUk5BTCBlLW1haWwgYWRk
-cmVzc10KCk9uIEZyaSwgTm92IDIwLCAyMDIwIGF0IDA0OjMwOjE1UE0gKzA4MDAsIFpoYW5nLFFp
-YW5nIHdyb3RlOgo+IEhlbGxvIFB1YWwKPgo+IHNvcnJ5IHRvIGRpc3R1cmIgeW91LCBJIGFsc28g
-aGF2ZSBzb21lIHF1ZXNldGlvbiBmb3IgeW91Ogo+Cj4gaW4gc3JjdV9hZHZhbmNlX3N0YXRlIGZ1
-bmN0aW9uLCB3aGVuIHNlcSBzdGF0ZSA9PSBTUkNVX1NUQVRFX1NDQU4xLCB3ZSB3aWxsCj4gY2hl
-Y2ssIGlmIHRoZSBwcmV2aW91cyByZWFkZXJzIGNyaXRpY2FsIHJlZ2lvbiBleGl0cywgd2lsbCBi
-ZSByZXR1cm5lZAo+IGRpcmVjdGx5Lgo+Cj4gSSdkIGxpa2UgdG8ga25vdyB1bmRlciB3aGF0IHNj
-ZW5hcmlvIHRoaXMgd2lsbCBoYXBwZW4/Cgo+U3VwcG9zZSB0aGF0IGEgcmVhZGVyIGdldHMgcHJl
-ZW1wdGVkIGZvciBhIHZlcnkgbG9uZyB0aW1lIGluIHRoZQo+bWlkZGxlIG9mIF9fc3JjdV9yZWFk
-X2xvY2soKToKPgo+ICAgICAgIGludCBfX3NyY3VfcmVhZF9sb2NrKHN0cnVjdCBzcmN1X3N0cnVj
-dCAqc3NwKQo+ICAgICAgICB7Cj4gICAgICAgICAgICAgICBpbnQgaWR4Owo+Cj4gICAgICAgICAg
-ICAgIGlkeCA9IFJFQURfT05DRShzc3AtPnNyY3VfaWR4KSAmIDB4MTsKPiAgICAgICAgICAgICAg
-Ly8gUFJFRU1QVEVEIFJJR0hUIEhFUkUKPiAgICAgICAgICAgICAgdGhpc19jcHVfaW5jKHNzcC0+
-c2RhLT5zcmN1X2xvY2tfY291bnRbaWR4XSk7Cj4gICAgICAgICAgICAgIHNtcF9tYigpOyAvKiBC
-ICovICAvKiBBdm9pZCBsZWFraW5nIHRoZSBjcml0aWNhbCBzZWN0aW9uLiAqLwo+ICAgICAgICAg
-ICAgICAgIHJldHVybiBpZHg7Cj4gICAgICAgfQoKPlN1cHBvc2UgdGhhdCBzZXZlcmFsIFNSQ1Ug
-Z3JhY2UgcGVyaW9kcyBlbGFwc2UgZHVyaW5nIHRoYXQgcHJlZW1wdGlvbi4KPgo+RG8geW91IHNl
-ZSBob3cgdGhhdCBjYW4gbGVhZCB0byB5b3VyIFNSQ1VfU1RBVEVfU0NBTjEgZWFybHkgZXhpdD8K
-Ckkgc2VlLCAgdGhhbmsgeW91IGZvciB5b3VyIGV4cGxhbmF0aW9uLgoKVGhhbmtzClFpYW5nCj4K
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-VGhhbngsIFBhdWwKPgo+Cj5QUzogIFRoZSBwYXBlciBiZWxvdyBvdXRsaW5lcyBhIHNpbWlsYXIg
-c2l0dWF0aW9uIGluIHVzZXJzcGFjZSBSQ1UsCj4gICAgIHNvIGZlZWwgZnJlZSB0byB1c2UgdGhp
-cyBwYXBlciBhcyBhIGhpbnQuICBUaGUgcGFwZXIgaXMgaW4gdHdvCj4gICAgcGllY2VzLCB3aXRo
-IHRoZSBmaXJzdCBwaWVjZSBpbiB0aGUgZmlyc3QgVVJMIGFuZCB0aGUgc2Vjb25kIGluCj4gICAg
-IGVpdGhlciBvZiB0aGUgbGFzdCB0d28gVVJMcy4KPgo+QGFydGljbGV7TWF0aGlldURlc25veWVy
-czIwMTJVUkNVLAo+IEF1dGhvcj0iTWF0aGlldSBEZXNub3llcnMgYW5kIFBhdWwgRS4gTWNLZW5u
-ZXkgYW5kIEFsYW4gU3Rlcm4gYW5kIE1pY2hlbCA+Ui4gRGFnZW5haXMgYW5kIEpvbmF0aGFuIFdh
-bHBvbGUiLAo+IFRpdGxlPSJVc2VyLUxldmVsIEltcGxlbWVudGF0aW9ucyBvZiBSZWFkLUNvcHkg
-VXBkYXRlIiwKPmpvdXJuYWw9IklFRUUgVHJhbnNhY3Rpb25zIG9uIFBhcmFsbGVsIGFuZCBEaXN0
-cmlidXRlZCBTeXN0ZW1zIiwKPnZvbHVtZT17MjN9LAo+IHllYXI9IjIwMTIiLAo+aXNzbj0iMTA0
-NS05MjE5IiwKPiBwYWdlcz0iMzc1LTM4MiIsCj4gZG9pPSIxMC4xMTA5L1RQRFMuMjAxMS4xNTki
-LAo+cHVibGlzaGVyPSJJRUVFIENvbXB1dGVyIFNvY2lldHkiLAo+IGFkZHJlc3M9IkxvcyBBbGFt
-aXRvcywgQ0EsIFVTQSIsCj4gYW5ub3RhdGlvbj17Cj4gICAgICAgUkNVIG92ZXJ2aWV3LCBkZXNp
-ZGVyYXRhLCBzZW1pLWZvcm1hbCBzZW1hbnRpY3MsIHVzZXItbGV2ZWwgUkNVCj4gICAgICAgdXNh
-Z2Ugc2NlbmFyaW9zLCB0aHJlZSBjbGFzc2VzIG9mIFJDVSBpbXBsZW1lbnRhdGlvbiwgd2FpdC1m
-cmVlCj4gICAgICAgIFJDVSB1cGRhdGVzLCBSQ1UgZ3JhY2UtcGVyaW9kIGJhdGNoaW5nLCB1cGRh
-dGUgb3ZlcmhlYWQsCj4gICAgICAgIGh0dHA6Ly93d3cucmRyb3AuY29tL3VzZXJzL3BhdWxtY2sv
-UkNVL3VyY3UtbWFpbi1hY2NlcHRlZC4yMDExLjA4LjMwYS5wZGYKPiAgICAgICAgaHR0cDovL3d3
-dy5yZHJvcC5jb20vdXNlcnMvcGF1bG1jay9SQ1UvdXJjdS1zdXBwLWFjY2VwdGVkLjIwMTEuMDgu
-MzBhLnBkZgo+ICAgICAgICBodHRwOi8vd3d3LmNvbXB1dGVyLm9yZy9jbXMvQ29tcHV0ZXIub3Jn
-L2RsL3RyYW5zL3RkLzIwMTIvMDIvZXh0cmFzL3R0ZDIwMTIwMjAzNzVzLnBkZgo+fSwKPn0K
+
+
+On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a polling interface for SRCU grace periods.  This
+> polling needs to distinguish between an SRCU instance being idle on the
+> one hand or in the middle of a grace period on the other.  This commit
+> therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+> a defacto boolean to a free-running counter, using the bottom bit to
+> indicate that a grace period is in progress.  The second-from-bottom
+> bit is thus used as the index returned by srcu_read_lock().
+> 
+> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> [ paulmck: Fix __srcu_read_lock() idx computation Neeraj per Upadhyay. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   include/linux/srcutiny.h | 4 ++--
+>   kernel/rcu/srcutiny.c    | 5 +++--
+>   2 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> index 5a5a194..d9edb67 100644
+> --- a/include/linux/srcutiny.h
+> +++ b/include/linux/srcutiny.h
+> @@ -15,7 +15,7 @@
+>   
+>   struct srcu_struct {
+>   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
+> -	short srcu_idx;			/* Current reader array element. */
+> +	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
+>   	u8 srcu_gp_running;		/* GP workqueue running? */
+>   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
+>   	struct swait_queue_head srcu_wq;
+> @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+>   {
+>   	int idx;
+>   
+> -	idx = READ_ONCE(ssp->srcu_idx);
+> +	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+>   	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+>   	return idx;
+>   }
+
+Need change in idx calcultion in srcu_torture_stats_print() ?
+
+static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+   idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+
+Thanks
+Neeraj
+
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index 6208c1d..5598cf6 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+>   	ssp->srcu_cb_head = NULL;
+>   	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+>   	local_irq_enable();
+> -	idx = ssp->srcu_idx;
+> -	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
+> +	idx = (ssp->srcu_idx & 0x2) / 2;
+> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>   	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+>   	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+>   	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
+> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>   
+>   	/* Invoke the callbacks we removed above. */
+>   	while (lh) {
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
