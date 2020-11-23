@@ -2,287 +2,139 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-0.6 required=3.0 tests=BAYES_00,
+	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF723C5519F
-	for <rcu@archiver.kernel.org>; Sun, 22 Nov 2020 18:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7310C5519F
+	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 02:00:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6776C20B1F
-	for <rcu@archiver.kernel.org>; Sun, 22 Nov 2020 18:01:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E513208B8
+	for <rcu@archiver.kernel.org>; Mon, 23 Nov 2020 02:00:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iqu7xkrd"
+	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="SApBtxze"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgKVSBH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 22 Nov 2020 13:01:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727317AbgKVSBH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 22 Nov 2020 13:01:07 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8F7A20936;
-        Sun, 22 Nov 2020 18:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606068066;
-        bh=NKrrfT4iqOgDj8VckmndLMBApMD1dMD29mfO++x2kwE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Iqu7xkrdHcSqWeI1WsBW/tLCzK/rwGphWhU+mU/ImfZK/j8hJiyf9fTIFRWKZgL9f
-         HuzsXL07e0r2hichh8+GitZ+rSTE1HedZkkGsouplb2XZW8kX2rA21ywNMWbftsts2
-         PBIRuBs2WUt7wfE0LCBMxUUF9yxyi/XglyuBRh3Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B00443522638; Sun, 22 Nov 2020 10:01:05 -0800 (PST)
-Date:   Sun, 22 Nov 2020 10:01:05 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH RFC tip/core/rcu 4/5] srcu: Provide polling interfaces
- for Tiny SRCU grace periods
-Message-ID: <20201122180105.GA1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-4-paulmck@kernel.org>
- <f7a47e5f-095c-e4ba-ece0-83f2137fb381@codeaurora.org>
- <20201121001336.GN1437@paulmck-ThinkPad-P72>
- <a54bc494-30cf-4e4e-f895-4803c66040c2@codeaurora.org>
+        id S1726869AbgKWB7m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 22 Nov 2020 20:59:42 -0500
+Received: from mail-bn8nam08on2083.outbound.protection.outlook.com ([40.107.100.83]:16544
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726854AbgKWB7m (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 22 Nov 2020 20:59:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DQ+oDvsZm8p4BE9nNaRptZcs2ryEGr1uDSNN3eJibgyj2XrlZfCMqR8AM8g+qdzPus8wNNQfj9JieD7dPoc2QvDBWG9Z2Wq7CUU90ksn3nB+Vsddhkl5+urPtEuB8NTrwDj3+0FQXfCbQrgT7TUcxmxSIk1q336EwglncYyjT6HeZKUx2rF/1i0Vr8aiz2+zQoY4iO/XYvwTaC7diJnPdTsLLr1UGOVcWhWzGYcmIcCkj21KpxBjA1DxlEmg8xIBHeY9J68dR6QKxeWkS4TO8I8KY7rypS95HPS1afQOItGNeeXFKrAvUqFvZeHDdkk+x6s9pf4kH+4bu7sVwMmlFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k+1NC6K5ajugf+xc7/IpwHgbGgkX46hPWd7V3qEbWWE=;
+ b=ZxtGUrp3UZqni6v1zPLeVgGxCxa9KtCk9bu1nI5eO2malNsfrwyBo74wnKj7Ipx6gezDyXeXcMF42jbe9NaxvdEz/indQcPEzm9kyxrnEr9EUrhohlQIKqTxrVN4MXCgY4AcaCHa+Dzu4G6YGZs0q87LyPvK3WleCStgifnXwBYpQRM/Fsa9Sp4GEZifm+RrMvCONjimWxo7B27+KGxul7OpjTFSEMo6Y2639UKeqk+R7lt8t3UK/4VDhJ4JQZLUmYvihTEEj17O4zXc4zJ5WySyPWhRXLUqwvGh9U7iDsaY+lNAG/Oe+CfcMbv7xSQhyns1ENObnMV+8y8CPo+yxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k+1NC6K5ajugf+xc7/IpwHgbGgkX46hPWd7V3qEbWWE=;
+ b=SApBtxzeiu9Folmeiw40lzOBpTVvQ9ncTE4dXVR/Hj91TtRkeP1BZwA1/Fo1c3zktnuQ+uKnJF17nDubQgZqgUh59ZeFmC30wdL5bBcZMhTRt/qMUk5RMpH+s6iSa+FA75ac7GencVDqJ4/9i+dnS6B+dfxel3ganwkGV38uPyo=
+Received: from DM6PR11MB2635.namprd11.prod.outlook.com (2603:10b6:5:c5::29) by
+ DM5PR1101MB2089.namprd11.prod.outlook.com (2603:10b6:4:54::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.20; Mon, 23 Nov 2020 01:59:38 +0000
+Received: from DM6PR11MB2635.namprd11.prod.outlook.com
+ ([fe80::4412:b254:d3c4:57f4]) by DM6PR11MB2635.namprd11.prod.outlook.com
+ ([fe80::4412:b254:d3c4:57f4%2]) with mapi id 15.20.3589.028; Mon, 23 Nov 2020
+ 01:59:38 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: =?gb2312?B?u9i4tDogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0YXRl?=
+Thread-Topic: SRCU: Question on srcu_advance_state
+Thread-Index: AQHWvxdjXdvwsm4YoUaIwer37zsYs6nRyFAAgAMw8GU=
+Date:   Mon, 23 Nov 2020 01:59:37 +0000
+Message-ID: <DM6PR11MB2635EF8668163B77B073C096FFFC0@DM6PR11MB2635.namprd11.prod.outlook.com>
+References: <7fc7b6b9-bcf2-fa78-1931-415d04a5ac1a@windriver.com>,<20201121011132.GR1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201121011132.GR1437@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: eead1c71-cc73-4485-9a64-08d88f536f11
+x-ms-traffictypediagnostic: DM5PR1101MB2089:
+x-microsoft-antispam-prvs: <DM5PR1101MB2089E394E7181F28E1FBFBBCFFFC0@DM5PR1101MB2089.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RRAMceCgiGM3KqVW854xpSGpMLjBsadZzeKKlLhvpfcHmCbnvW+I5q8QWSwClznuxByQcY2OlU7fBgZqEiSjhFSdfPHO3iAYuKLZNH9X5dvy+4lW8r522sCAW9FH27MZKW/h4sUxs+pIE6zyH+/JOGOgLk+WhvwpVz21YWOKKegaOEm/iUkVqzLaJnNy6KF63rxOx47jyGHxi2yaG5ENXrmXZlifVGSsTATtsARON/Xg3J4IpWESpk2rH6vkqH+5le4rcbgRGVraXTpJNNBCZ/1GmFKPLYXSx/E78LFmHWtmGExFP31M62tJhPWPJGqxWxgIlqhXF/7A5SOjoYovcZePsMl7t8U5zgmZDytw/zAQkJ7SmB3x+aN/wFQDzJ9+EkbdzST1JOhVuRVnO1E+QQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2635.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(39840400004)(376002)(83380400001)(4326008)(8936002)(71200400001)(316002)(33656002)(478600001)(86362001)(6916009)(66946007)(91956017)(76116006)(66446008)(66556008)(66476007)(224303003)(54906003)(64756008)(6506007)(26005)(52536014)(55016002)(9686003)(966005)(5660300002)(186003)(7696005)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 6UmHj4nioXELKmfwz+9xE50EnhkES7V5AIDIwGvxWuxfsFAEi0pObi2DM7UXC9OaSDgs0O1+doejgj9Arktq2P9ofqpuIhePWP8/zeQRMjffQ5DfwkwUagByrjnCvPnAxIppXIXVMdAmbUmJVG6n1P+gQuD+7kuwNB8jTtz193pMsmxCkflefldHI8Lw0cuzNztCUveOCw366kZZLeQ/HUtDrR5Q1CzEB0JBMjpXj7ltSF4E/1U8L36TSwsGYfpju5M8hzYFDbxmyLz82ebq7R7CA1yAaVgf69RJTeLFXna7OGxYcmxOEyqkXN5BbOaRo4hdyuEaOlj9iBUOO98b+jlWgXWmAVX2oEUlw2S1lg5JBYn88qw2t4y/UenJoRnGcaykcBbgIysKTdhuCNOpRRTpePsINZXU0B+9qnXys1HHUApyZ8bjj0wxqBwcTibRaq70IOWG0FiTUw9lANeA6hubxj1fVn8nli/K3O05NgluvtrNHtGyY+225iV2uv5t3UWfFYwdfTtIg9MwMS9kj+u6Wuir559rlka3irr0pb3wfpvsWEiCTiHGz+VCVzOVAz1npua90MhPBh85+RqClkivu+NKbK/C/vllufVRgt4K5x5cR1c7uLKj13v/1ME+X520jJLjmNnZyhHLqTWOmA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a54bc494-30cf-4e4e-f895-4803c66040c2@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2635.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eead1c71-cc73-4485-9a64-08d88f536f11
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 01:59:37.9888
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: In4mlUbHiKUPU2AvLtWNQnszItO4ZdDvKu4cSXTkIIqvF7YjikP72rfngUpomBFpOK7wzYVeviVjpsoHawW0VcFjfHvvZMAMKrcRntTpWgo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2089
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 07:57:26PM +0530, Neeraj Upadhyay wrote:
-> On 11/21/2020 5:43 AM, Paul E. McKenney wrote:
-> > On Fri, Nov 20, 2020 at 05:28:32PM +0530, Neeraj Upadhyay wrote:
-> > > Hi Paul,
-> > > 
-> > > On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > There is a need for a polling interface for SRCU grace
-> > > > periods, so this commit supplies get_state_synchronize_srcu(),
-> > > > start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
-> > > > purpose.  The first can be used if future grace periods are inevitable
-> > > > (perhaps due to a later call_srcu() invocation), the second if future
-> > > > grace periods might not otherwise happen, and the third to check if a
-> > > > grace period has elapsed since the corresponding call to either of the
-> > > > first two.
-> > > > 
-> > > > As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
-> > > > the return value from either get_state_synchronize_srcu() or
-> > > > start_poll_synchronize_srcu() must be passed in to a later call to
-> > > > poll_state_synchronize_srcu().
-> > > > 
-> > > > Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> > > > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> > > > [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >    include/linux/rcupdate.h |  2 ++
-> > > >    include/linux/srcu.h     |  3 +++
-> > > >    include/linux/srcutiny.h |  1 +
-> > > >    kernel/rcu/srcutiny.c    | 52 ++++++++++++++++++++++++++++++++++++++++++++++--
-> > > >    4 files changed, 56 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > > index de08264..e09c0d8 100644
-> > > > --- a/include/linux/rcupdate.h
-> > > > +++ b/include/linux/rcupdate.h
-> > > > @@ -33,6 +33,8 @@
-> > > >    #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
-> > > >    #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
-> > > >    #define ulong2long(a)		(*(long *)(&(a)))
-> > > > +#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-> > > > +#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
-> > > >    /* Exported common interfaces */
-> > > >    void call_rcu(struct rcu_head *head, rcu_callback_t func);
-> > > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > > > index e432cc9..a0895bb 100644
-> > > > --- a/include/linux/srcu.h
-> > > > +++ b/include/linux/srcu.h
-> > > > @@ -60,6 +60,9 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
-> > > >    int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
-> > > >    void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
-> > > >    void synchronize_srcu(struct srcu_struct *ssp);
-> > > > +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
-> > > > +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
-> > > > +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
-> > > >    #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > > > index fed4a2d..e9bd6fb 100644
-> > > > --- a/include/linux/srcutiny.h
-> > > > +++ b/include/linux/srcutiny.h
-> > > > @@ -16,6 +16,7 @@
-> > > >    struct srcu_struct {
-> > > >    	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
-> > > >    	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
-> > > > +	unsigned short srcu_idx_max;	/* Furthest future srcu_idx request. */
-> > > >    	u8 srcu_gp_running;		/* GP workqueue running? */
-> > > >    	u8 srcu_gp_waiting;		/* GP waiting for readers? */
-> > > >    	struct swait_queue_head srcu_wq;
-> > > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > > > index 3bac1db..b405811 100644
-> > > > --- a/kernel/rcu/srcutiny.c
-> > > > +++ b/kernel/rcu/srcutiny.c
-> > > > @@ -34,6 +34,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
-> > > >    	ssp->srcu_gp_running = false;
-> > > >    	ssp->srcu_gp_waiting = false;
-> > > >    	ssp->srcu_idx = 0;
-> > > > +	ssp->srcu_idx_max = 0;
-> > > >    	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
-> > > >    	INIT_LIST_HEAD(&ssp->srcu_work.entry);
-> > > >    	return 0;
-> > > > @@ -114,7 +115,7 @@ void srcu_drive_gp(struct work_struct *wp)
-> > > >    	struct srcu_struct *ssp;
-> > > >    	ssp = container_of(wp, struct srcu_struct, srcu_work);
-> > > > -	if (ssp->srcu_gp_running || !READ_ONCE(ssp->srcu_cb_head))
-> > > > +	if (ssp->srcu_gp_running || USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> > > >    		return; /* Already running or nothing to do. */
-> > > >    	/* Remove recently arrived callbacks and wait for readers. */
-> > > > @@ -147,14 +148,19 @@ void srcu_drive_gp(struct work_struct *wp)
-> > > >    	 * straighten that out.
-> > > >    	 */
-> > > >    	WRITE_ONCE(ssp->srcu_gp_running, false);
-> > > > -	if (READ_ONCE(ssp->srcu_cb_head))
-> > > > +	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> > > 
-> > > Should this be USHORT_CMP_LT ?
-> > 
-> > I believe that you are correct.  As is, it works but does needless
-> > grace periods.
-> > 
-> > > >    		schedule_work(&ssp->srcu_work);
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(srcu_drive_gp);
-> > > >    static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-> > > >    {
-> > > > +	unsigned short cookie;
-> > > > +
-> > > >    	if (!READ_ONCE(ssp->srcu_gp_running)) {
-> > > > +		cookie = get_state_synchronize_srcu(ssp);
-> > > > +		if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
-> > > > +			WRITE_ONCE(ssp->srcu_idx_max, cookie);
-> > > 
-> > > I was thinking of a case which might break with this.
-> > > 
-> > > Consider a scenario, where GP is in progress and kworker is right
-> > > before below point, after executing callbacks:
-> > > 
-> > > void srcu_drive_gp(struct work_struct *wp) {
-> > >    <snip>
-> > 
-> > We updated ->srcu_idx up here, correct?  So it has bottom bit zero.
-> > 
-> > >    while (lh) {
-> > >    <cb execution loop>
-> > >    }
-> > >    >>> CURRENT EXECUTION POINT
-> > 
-> > Keeping in mind that Tiny SRCU always runs !PREEMPT, this must be
-> > due to an interrupt.
-> > 
-> Looking more, issue can happen, even when kworker is waiting for GP
-> completion @
-> 
-> swait_event_exclusive(ssp->srcu_wq,
-> !READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> 
-> Other process can call call_srcu() and skip srcu_idx_max update, as
-> ssp->srcu_gp_running is true.
-
-Good point!  Does this mean that additional changes are required,
-or does the fix below cover this situation as well?
-
-							Thanx, Paul
-
-> Thanks
-> Neeraj
-> 
-> > >    WRITE_ONCE(ssp->srcu_gp_running, false);
-> > > 
-> > >    if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> > >      schedule_work(&ssp->srcu_work);
-> > > }
-> > > 
-> > > Now, at this instance, srcu_gp_start_if_needed() runs and samples
-> > > srcu_gp_running and returns, without updating srcu_idx_max
-> > > 
-> > > static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-> > > {
-> > >    if (!READ_ONCE(ssp->srcu_gp_running)) returns true
-> > >    <snip>
-> > > }
-> > 
-> > This could happen in an interrupt handler, so with you thus far.
-> > 
-> > > kworker running srcu_drive_gp() resumes and returns without queueing a new
-> > > schedule_work(&ssp->srcu_work); for new GP?
-> > > 
-> > > Prior to this patch, call_srcu() enqueues a cb before entering
-> > > srcu_gp_start_if_needed(), and srcu_drive_gp() observes this
-> > > queuing, and schedule a work for the new GP, for this scenario.
-> > > 
-> > > 
-> > >   	WRITE_ONCE(ssp->srcu_gp_running, false);
-> > > -	if (READ_ONCE(ssp->srcu_cb_head))
-> > > +	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> > >   		schedule_work(&ssp->srcu_work);
-> > > 
-> > > So, should the "cookie" calculation and "srcu_idx_max" setting be moved
-> > > outside of ssp->srcu_gp_running check and maybe return the same cookie to
-> > > caller and use that as the returned cookie from
-> > > start_poll_synchronize_srcu() ?
-> > > 
-> > > srcu_gp_start_if_needed()
-> > >    cookie = get_state_synchronize_srcu(ssp);
-> > >    if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
-> > >       WRITE_ONCE(ssp->srcu_idx_max, cookie);
-> > >    if (!READ_ONCE(ssp->srcu_gp_running)) {
-> > >    <snip>
-> > > }
-> > 
-> > I believe that you are quite correct, thank you!
-> > 
-> > But rcutorture does have a call_srcu() (really a ->call, but same if SRCU)
-> > in a timer handler.  The race window is quite narrow, so testing it might
-> > be a challenge...
-> > 
-> > This is what I end up with:
-> > 
-> > 	static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-> > 	{
-> > 		unsigned short cookie;
-> > 
-> > 		cookie = get_state_synchronize_srcu(ssp);
-> > 		if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
-> > 			WRITE_ONCE(ssp->srcu_idx_max, cookie);
-> > 		if (!READ_ONCE(ssp->srcu_gp_running)) {
-> > 			if (likely(srcu_init_done))
-> > 				schedule_work(&ssp->srcu_work);
-> > 			else if (list_empty(&ssp->srcu_work.entry))
-> > 				list_add(&ssp->srcu_work.entry, &srcu_boot_list);
-> > 		}
-> > 	}
-> > 
-> > Does that look plausible?
-> 
-> Looks good.
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
-> the Code Aurora Forum, hosted by The Linux Foundation
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
+LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqMTHUwjIxyNUg
+OToxMQrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiByY3VAdmdlci5rZXJuZWwub3JnOyBKb2Vs
+IEZlcm5hbmRlcwrW98ziOiBSZTogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0YXRl
+CgpbUGxlYXNlIG5vdGUgdGhpcyBlLW1haWwgaXMgZnJvbSBhbiBFWFRFUk5BTCBlLW1haWwgYWRk
+cmVzc10KCk9uIEZyaSwgTm92IDIwLCAyMDIwIGF0IDA0OjMwOjE1UE0gKzA4MDAsIFpoYW5nLFFp
+YW5nIHdyb3RlOgo+IEhlbGxvIFB1YWwKPgo+IHNvcnJ5IHRvIGRpc3R1cmIgeW91LCBJIGFsc28g
+aGF2ZSBzb21lIHF1ZXNldGlvbiBmb3IgeW91Ogo+Cj4gaW4gc3JjdV9hZHZhbmNlX3N0YXRlIGZ1
+bmN0aW9uLCB3aGVuIHNlcSBzdGF0ZSA9PSBTUkNVX1NUQVRFX1NDQU4xLCB3ZSB3aWxsCj4gY2hl
+Y2ssIGlmIHRoZSBwcmV2aW91cyByZWFkZXJzIGNyaXRpY2FsIHJlZ2lvbiBleGl0cywgd2lsbCBi
+ZSByZXR1cm5lZAo+IGRpcmVjdGx5Lgo+Cj4gSSdkIGxpa2UgdG8ga25vdyB1bmRlciB3aGF0IHNj
+ZW5hcmlvIHRoaXMgd2lsbCBoYXBwZW4/Cgo+U3VwcG9zZSB0aGF0IGEgcmVhZGVyIGdldHMgcHJl
+ZW1wdGVkIGZvciBhIHZlcnkgbG9uZyB0aW1lIGluIHRoZQo+bWlkZGxlIG9mIF9fc3JjdV9yZWFk
+X2xvY2soKToKPgo+ICAgICAgIGludCBfX3NyY3VfcmVhZF9sb2NrKHN0cnVjdCBzcmN1X3N0cnVj
+dCAqc3NwKQo+ICAgICAgICB7Cj4gICAgICAgICAgICAgICBpbnQgaWR4Owo+Cj4gICAgICAgICAg
+ICAgIGlkeCA9IFJFQURfT05DRShzc3AtPnNyY3VfaWR4KSAmIDB4MTsKPiAgICAgICAgICAgICAg
+Ly8gUFJFRU1QVEVEIFJJR0hUIEhFUkUKPiAgICAgICAgICAgICAgdGhpc19jcHVfaW5jKHNzcC0+
+c2RhLT5zcmN1X2xvY2tfY291bnRbaWR4XSk7Cj4gICAgICAgICAgICAgIHNtcF9tYigpOyAvKiBC
+ICovICAvKiBBdm9pZCBsZWFraW5nIHRoZSBjcml0aWNhbCBzZWN0aW9uLiAqLwo+ICAgICAgICAg
+ICAgICAgIHJldHVybiBpZHg7Cj4gICAgICAgfQoKPlN1cHBvc2UgdGhhdCBzZXZlcmFsIFNSQ1Ug
+Z3JhY2UgcGVyaW9kcyBlbGFwc2UgZHVyaW5nIHRoYXQgcHJlZW1wdGlvbi4KPgo+RG8geW91IHNl
+ZSBob3cgdGhhdCBjYW4gbGVhZCB0byB5b3VyIFNSQ1VfU1RBVEVfU0NBTjEgZWFybHkgZXhpdD8K
+Ckkgc2VlLCAgdGhhbmsgeW91IGZvciB5b3VyIGV4cGxhbmF0aW9uLgoKVGhhbmtzClFpYW5nCj4K
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+VGhhbngsIFBhdWwKPgo+Cj5QUzogIFRoZSBwYXBlciBiZWxvdyBvdXRsaW5lcyBhIHNpbWlsYXIg
+c2l0dWF0aW9uIGluIHVzZXJzcGFjZSBSQ1UsCj4gICAgIHNvIGZlZWwgZnJlZSB0byB1c2UgdGhp
+cyBwYXBlciBhcyBhIGhpbnQuICBUaGUgcGFwZXIgaXMgaW4gdHdvCj4gICAgcGllY2VzLCB3aXRo
+IHRoZSBmaXJzdCBwaWVjZSBpbiB0aGUgZmlyc3QgVVJMIGFuZCB0aGUgc2Vjb25kIGluCj4gICAg
+IGVpdGhlciBvZiB0aGUgbGFzdCB0d28gVVJMcy4KPgo+QGFydGljbGV7TWF0aGlldURlc25veWVy
+czIwMTJVUkNVLAo+IEF1dGhvcj0iTWF0aGlldSBEZXNub3llcnMgYW5kIFBhdWwgRS4gTWNLZW5u
+ZXkgYW5kIEFsYW4gU3Rlcm4gYW5kIE1pY2hlbCA+Ui4gRGFnZW5haXMgYW5kIEpvbmF0aGFuIFdh
+bHBvbGUiLAo+IFRpdGxlPSJVc2VyLUxldmVsIEltcGxlbWVudGF0aW9ucyBvZiBSZWFkLUNvcHkg
+VXBkYXRlIiwKPmpvdXJuYWw9IklFRUUgVHJhbnNhY3Rpb25zIG9uIFBhcmFsbGVsIGFuZCBEaXN0
+cmlidXRlZCBTeXN0ZW1zIiwKPnZvbHVtZT17MjN9LAo+IHllYXI9IjIwMTIiLAo+aXNzbj0iMTA0
+NS05MjE5IiwKPiBwYWdlcz0iMzc1LTM4MiIsCj4gZG9pPSIxMC4xMTA5L1RQRFMuMjAxMS4xNTki
+LAo+cHVibGlzaGVyPSJJRUVFIENvbXB1dGVyIFNvY2lldHkiLAo+IGFkZHJlc3M9IkxvcyBBbGFt
+aXRvcywgQ0EsIFVTQSIsCj4gYW5ub3RhdGlvbj17Cj4gICAgICAgUkNVIG92ZXJ2aWV3LCBkZXNp
+ZGVyYXRhLCBzZW1pLWZvcm1hbCBzZW1hbnRpY3MsIHVzZXItbGV2ZWwgUkNVCj4gICAgICAgdXNh
+Z2Ugc2NlbmFyaW9zLCB0aHJlZSBjbGFzc2VzIG9mIFJDVSBpbXBsZW1lbnRhdGlvbiwgd2FpdC1m
+cmVlCj4gICAgICAgIFJDVSB1cGRhdGVzLCBSQ1UgZ3JhY2UtcGVyaW9kIGJhdGNoaW5nLCB1cGRh
+dGUgb3ZlcmhlYWQsCj4gICAgICAgIGh0dHA6Ly93d3cucmRyb3AuY29tL3VzZXJzL3BhdWxtY2sv
+UkNVL3VyY3UtbWFpbi1hY2NlcHRlZC4yMDExLjA4LjMwYS5wZGYKPiAgICAgICAgaHR0cDovL3d3
+dy5yZHJvcC5jb20vdXNlcnMvcGF1bG1jay9SQ1UvdXJjdS1zdXBwLWFjY2VwdGVkLjIwMTEuMDgu
+MzBhLnBkZgo+ICAgICAgICBodHRwOi8vd3d3LmNvbXB1dGVyLm9yZy9jbXMvQ29tcHV0ZXIub3Jn
+L2RsL3RyYW5zL3RkLzIwMTIvMDIvZXh0cmFzL3R0ZDIwMTIwMjAzNzVzLnBkZgo+fSwKPn0K
