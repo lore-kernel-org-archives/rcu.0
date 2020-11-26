@@ -2,104 +2,155 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EAE7C56202
-	for <rcu@archiver.kernel.org>; Wed, 25 Nov 2020 18:57:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E66C56202
+	for <rcu@archiver.kernel.org>; Thu, 26 Nov 2020 15:46:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A09182075A
-	for <rcu@archiver.kernel.org>; Wed, 25 Nov 2020 18:57:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 70C9921D40
+	for <rcu@archiver.kernel.org>; Thu, 26 Nov 2020 15:46:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1ltOa+h"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="I7kkzcw6"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731561AbgKYS50 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Nov 2020 13:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729690AbgKYS50 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Nov 2020 13:57:26 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95DFC0613D4;
-        Wed, 25 Nov 2020 10:57:25 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id s9so3367641ljo.11;
-        Wed, 25 Nov 2020 10:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zlxfAmKlZ2meTkcwOhJ+lZFhis5YkbRhTriiiivUvik=;
-        b=I1ltOa+hO6lHNKlRNaaWAsY5b1iehbD+I6ukvwUHAM5BdvHcTKEcsNbjHJI9h6icRT
-         y6ial1p5Iawr2ZGRsp/hh6xV6TnyhU1aY4efV0ruAW271VLy4BGMSqRGvlxuyTSqa1WX
-         DTBcVTw8e7UKxewFn5rthrJhZBDIqMjHL8YWBOf++vEjqHNvvqoYPZsYiL3FWsKgWEfT
-         56CrNlEdHjUaVjxlYNgzH6t+6sxLiNlkOLBiZJEQYD93lNVv/cFOx+WpCQrYC3H//aAi
-         ZEVInB5NRQT7HBxfja8tHA9JDj88Eee92xykp1sCGG2lF1zfNEWX3b4f2LfyioQZOf0U
-         ++pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zlxfAmKlZ2meTkcwOhJ+lZFhis5YkbRhTriiiivUvik=;
-        b=UsKcZxIDSxoNqEXFTv4y8CHBw3FAS2vhOOVNRf0p/oca/IACqi85RAJMGajNRaGMoi
-         vVViLDHTMx8wG//1BdCyOSv1HTehfH+HaTzOjQBy/mwGwOtkaczzSc25Z0bQamh0H0oC
-         L8cyMfP405X1yDfRqF05GY8f9Eog03xZSJPX5OzgT9AvFysIIA5/xmqi1Z/fVqAy/tY0
-         aHfGSUCCw7lLDYvzVkkaTiWeNT/uP98lc5KD+Ef7vyKe1ZeN3pcohgBi3UlEKIxmsGxk
-         6gRS+CClSyZfocYgvJeN5rlZkD0IzKeM6rBWCz6NTBHya3lSkvwy4ClcqtZ58zT0IvSw
-         gHrw==
-X-Gm-Message-State: AOAM532NvmRSFYhJZAHs2gHj3ndfireqMBfIZ80vCTpJeDbLT0lC/Lhm
-        aezYWWwclNOIlIV6R7Mmm4E=
-X-Google-Smtp-Source: ABdhPJxWwU/8e5YM2cNB+Vq6D0eeuTInlNw1FhWsdbANp6dP9ewnF4bwKM9eyqRrW0BYr8ibUPpHew==
-X-Received: by 2002:a05:651c:2c8:: with SMTP id f8mr1875888ljo.262.1606330644171;
-        Wed, 25 Nov 2020 10:57:24 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id d1sm17542lfs.216.2020.11.25.10.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 10:57:23 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 25 Nov 2020 19:57:21 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu: eliminate the __kvfree_rcu() macro
-Message-ID: <20201125185721.GA6638@pc636>
-References: <20201120114917.5263-1-urezki@gmail.com>
- <20201120114917.5263-2-urezki@gmail.com>
- <20201124195551.GL1437@paulmck-ThinkPad-P72>
+        id S2391130AbgKZPqc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Nov 2020 10:46:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727481AbgKZPqc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Nov 2020 10:46:32 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E297321D1A;
+        Thu, 26 Nov 2020 15:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606405591;
+        bh=tMFcEUcsugJhclfbAIgWqCPLPAsTFSEY51zdjOIJUlk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=I7kkzcw63pBQbWrwysnZwfmyX3Y5XbhKwnookQG5c97fHnU3XubUUw5S0vb6UGx2g
+         xWghVD9OX57oo/9J9IpBjeV0TUobnmYUEEXAwh8Lq7sCEUk+qkOWrHqZs+qKOLIdQ3
+         Hvz6k1nbgAfIqkH4U1j++phqGg/GyMYmx1Xs+ESA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 83AF03520A96; Thu, 26 Nov 2020 07:46:30 -0800 (PST)
+Date:   Thu, 26 Nov 2020 07:46:30 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: kdump always hangs in rcu_barrier() -> wait_for_completion()
+Message-ID: <20201126154630.GR1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124195551.GL1437@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <SN6PR2101MB1807BDF049D7155201A8178DBFFA1@SN6PR2101MB1807.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:55:51AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 20, 2020 at 12:49:17PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Make the kvfree_rcu_arg_2() to be open-coded, so readability
-> > and review look better from the first glance. Moreover, that
-> > makes it clear that both kvfree_rcu_arg_1/2() use one single
-> > interface.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Nov 25, 2020 at 04:56:33AM +0000, Dexuan Cui wrote:
+> Hi,
+> I happened to hit a kdump hang issue in a Linux VM running on some
+> Hyper-V host. Please see the attached log: the kdump kernel always hangs,
+> even if I configure only 1 virtual CPU to the VM.
 > 
-> I queued both with the usual editing, thank you!
+> I firstly hit the issue in RHEL 8.3's 4.18.x kernel, but later I found that 
+> the latest upstream v5.10-rc5 also has the same issue (at least the
+> symptom is exactly the same), so I dug into v5.10-rc5 and found that the
+> kdump kernel always hangs in kernel_init() -> mark_readonly() ->
+> rcu_barrier() -> wait_for_completion(&rcu_state.barrier_completion).
 > 
-Thank you, Paul!
+> Let's take the 1-vCPU case for example (refer to the attached log): in the
+> below code, somehow rcu_segcblist_n_cbs() returns true, so the call
+> smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1) increases
+> the counter by 1, and hence later the counter is still 1 after the
+> atomic_sub_and_test(), and the complete() is not called.
+> 
+> static void rcu_barrier_func(void *cpu_in)
+> {
+>         ...
+>         if (rcu_segcblist_entrain(&rdp->cblist, &rdp->barrier_head)) {
+>                 atomic_inc(&rcu_state.barrier_cpu_count);
+>         } else {
+>         ...
+> }
+> 
+> void rcu_barrier(void)
+> {
+>         ...
+>         atomic_set(&rcu_state.barrier_cpu_count, 2);
+>         ...
+>         for_each_possible_cpu(cpu) {
+>                 rdp = per_cpu_ptr(&rcu_data, cpu);
+>                 ...
+>                 if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+>                         ...
+>                         smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
+>                         ...
+>                 }
+>         }
+>         ...
+>         if (atomic_sub_and_test(2, &rcu_state.barrier_cpu_count))
+>                 complete(&rcu_state.barrier_completion);
+> 
+>         ...
+>         wait_for_completion(&rcu_state.barrier_completion);
+> 
+> Sorry for my ignorance of RCU -- I'm not sure why the rcu_segcblist_n_cbs()
+> returns 1 here. In the normal kernel, it returns 0, so the normal kernel does not
+> hang.
 
---
-Vlad Rezki
+The rcu_segcblist_n_cbs() function returns non-zero because something
+invoked call_rcu() some time previously.  The ftrace facility (or just
+a printk) should help you work out where that call_rcu() is located.
+
+> Note: in the case of kdump kernel, if I remove the kernel parameter
+> console=ttyS0 OR if I build the kernel with CONFIG_HZ=250, the issue can
+> no longer reproduce. Currently my kernel uses CONFIG_HZ=1000 and I use
+> console=ttyS0, so I'm able to reproduce the isue every time.
+> 
+> Note: the same kernel binary can not reproduce the issue when the VM
+> runs on another Hyper-V host.
+> 
+> It looks there is some kind of race condition?
+
+Quite possibly.  Perhaps there is some code somewhere in the kernel that
+invokes call_rcu() after some number of jiffies, in which case reducing
+CONFIG_HZ would delay that call_rcu() invocation until after this call
+to rcu_barrier().  Perhaps that call_rcu() is also associated with the
+console=ttyS0, so that it is delayed sufficiently with reduced CONFIG_HZ
+and missing entirely without console=ttyS0.
+
+> Looking forward to your insights!
+> 
+> I'm happy to test any patch or enable more tracing, if necessary. Thanks!
+
+My best guess is that the underlying bug is that you are invoking
+rcu_barrier() before the RCU grace-period kthread has been created.
+This means that RCU grace periods cannot complete, which in turn means
+that if there has been even one invocation of call_rcu() since boot,
+rcu_barrier() cannot complete, which is what you are in fact seeing.
+Please note that it is perfectly legal to invoke call_rcu() very early in
+the boot process, as in even before the call to rcu_init().  Therefore,
+if this is the case, the bug is the early call to rcu_barrier(), not
+the early calls to call_rcu().
+
+To check this, at the beginning of rcu_barrier(), check the value of
+rcu_state.gp_kthread.  If my guess is correct, it will be NULL.
+
+Another possibility is that rcu_state.gp_kthread is non-NULL, but that
+something else is preventing RCU grace periods from completing, but in
+that case you should see RCU CPU stall warnings.  Unless of course they
+have been disabled.
+
+Please let me know what you find!
+
+							Thanx, Paul
