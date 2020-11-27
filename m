@@ -2,245 +2,236 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=BAYES_00,
+	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F7C9C2D0E4
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 04:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B861C2D0E4
+	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 08:19:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6B042222A
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 04:53:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7B4A206DF
+	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 08:19:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="v/wxUnB+"
+	dkim=pass (1024-bit key) header.d=windriversystems.onmicrosoft.com header.i=@windriversystems.onmicrosoft.com header.b="gbeyQ/XN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392457AbgK0ExZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 26 Nov 2020 23:53:25 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:25530 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392444AbgK0ExZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 26 Nov 2020 23:53:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606452804; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=xM24JflFy1SAsCAGU2vOf/vt49oiaZncEUPC7LPr8h0=; b=v/wxUnB+WpGXqFamh7n04VBJWtBuh9KDmMoEpRyg5EaqUhthJwa37USPOJtxR0PYJ3uQF1kG
- HfMEZEB/SAbt6wRwOYimffXcr2RcGYb2R/WMMhicpB6TVDdcggQcwNlI+UVoqpcYaYh3NshZ
- oRokKwrHAaeHu0wfe7jFbGCxfdw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fc0863e4146c5eefdbfe31b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:53:18
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C2E33C43468; Fri, 27 Nov 2020 04:53:17 +0000 (UTC)
-Received: from [192.168.0.105] (unknown [49.206.49.183])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4BE12C433ED;
-        Fri, 27 Nov 2020 04:53:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4BE12C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH v2 tip/core/rcu 5/6] srcu: Provide polling interfaces for
- Tree SRCU grace periods
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
-References: <@@@> <20201121005919.17152-5-paulmck@kernel.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <05712100-9f65-d81c-1eb0-671bc54f3baa@codeaurora.org>
-Date:   Fri, 27 Nov 2020 10:22:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726171AbgK0ITh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Nov 2020 03:19:37 -0500
+Received: from mail-mw2nam10on2066.outbound.protection.outlook.com ([40.107.94.66]:19194
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726556AbgK0ITg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Nov 2020 03:19:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RwFeHm/w8IocqMFFUvJEkFTjqpSzZU/xXTW7i7P7lrhXUePU7D9QsCNHjoMDgNDSU4vhQ1qmPzvO3ZOtdr3ESRxC9TRy7cLQdhcAjwNMtEdSulaH4FV7mFV9uGXc3kEJqagcgnLwvHdNmJ/bbb+N2qHe6yVwIMZclxZpN0eFafqnOdAKOHggG/eUsF+QHQHLpB43ou5MBu9kQdlTbcmWUyn+CNYqaEmc4yK4JiQQISUkVRjEzZeTF3UreGTvGQa8NAj6kFuUBxyaRC4u1YMd7Ccn/tWg6RNKk69huZg/5DcSt2DmxywE8DcV3EtByUSxpfWjD43RYHl6W0N4D+Bh1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hcwbEMEN/+yEqXjUofkpfmo23JlMvHYyQAJFBaCGXSw=;
+ b=XdMaej7IOI/lSP8w1Z1izJrdIitOX3GAeVyi8EU3RY4Wf0wVA7OcqDUL7J6Aj+EvROT7YU2/xtatKNG8HY1WqfsoMCsk3ZqhQ9tb6uiGlcyQl9x18HhQKGYf7kONlKsE+wmefP8Xu+Oepy47OwyUCskYlFVQ29m7XQ4L/BmDq6NGlNiMDFEuU7AC39SgObOBXuQzOGVwfC6TN/2u/h6Wp8DNN/VMUtyd7IBlpGn0TetB4Z3c/naea0L7Fy7EiWnwqNQRne/wnyK+JHG7M5oBQLwLlv13aYhPnx2RKawvcMNz9n021My9who43TwS4lDETvQftAN0gjmdWaIOfOOpHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hcwbEMEN/+yEqXjUofkpfmo23JlMvHYyQAJFBaCGXSw=;
+ b=gbeyQ/XNKQOpeKGOocyORGFwecY+ZrQvrlOcKDXhnURL1XPpxHEQBj8Lr8l5h2U6tUVMdVRp10AERMH0NMTUBOMu2Fu8HZGQP6Cb11vTiKzeaqIYBMNhX8BSTg8KxtG9bGWXkFPloCZ9tHni2naKya84Oz3SbNsgwJiMYjTx8dg=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4007.namprd11.prod.outlook.com (2603:10b6:a03:189::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Fri, 27 Nov
+ 2020 08:19:32 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3589.030; Fri, 27 Nov 2020
+ 08:19:32 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: =?gb2312?B?u9i4tDogu9i4tDogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0?=
+ =?gb2312?Q?ate?=
+Thread-Topic: =?gb2312?B?u9i4tDogU1JDVTogUXVlc3Rpb24gb24gc3JjdV9hZHZhbmNlX3N0YXRl?=
+Thread-Index: AQHWvxdjXdvwsm4YoUaIwer37zsYs6nRyFAAgAMw8GWAAze1AIADagTE
+Date:   Fri, 27 Nov 2020 08:19:32 +0000
+Message-ID: <BYAPR11MB2632E04495F1717FE8824664FFF80@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <7fc7b6b9-bcf2-fa78-1931-415d04a5ac1a@windriver.com>
+ <20201121011132.GR1437@paulmck-ThinkPad-P72>
+ <DM6PR11MB2635EF8668163B77B073C096FFFC0@DM6PR11MB2635.namprd11.prod.outlook.com>,<20201125030338.GA5810@paulmck-ThinkPad-P72>
+In-Reply-To: <20201125030338.GA5810@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d893df6a-b0d2-4b11-7922-08d892ad2b2e
+x-ms-traffictypediagnostic: BY5PR11MB4007:
+x-microsoft-antispam-prvs: <BY5PR11MB4007C81A49C6FABBE2619C8AFFF80@BY5PR11MB4007.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: b0QzGuLJrhettPRm2iNzV4TeCZCgJ/myVglyLmMlsYDb58doQLR0/tuHQU4LVNk11ryqRxBzMul3vbFRurFFWv8uL7FrCKm2lXb+T5vZrUoAblyNq0wsaVRjzoL15RNmz6uBzWaRi2pEOPlHJkLuEpwR2asgpj4oFxE1I6OKFTDSH9z5X22Tfo4CeoUPPJGI0HVYIoMUBM9e6wfYw6Kec28jM0FAmws9CyB11zp4FnDX/4uF2Tncv2xz25+xPkid71Fyx2BlwJF6ofbdLgPRzsgk+1btxD5PpieH8tf9vOHQexHrH+1ETXz2EljcWnUZTBaGM6VbI9msANjC0Fs5ZzQDwTAuw2V4kbUmtmXUgSwWhxHtjbRBDeROFw3clt0ppufm7viAsnLfVruLYG2y1g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39850400004)(136003)(346002)(366004)(91956017)(55016002)(54906003)(478600001)(186003)(4326008)(966005)(8936002)(6916009)(316002)(6506007)(71200400001)(224303003)(7696005)(9686003)(2906002)(26005)(76116006)(64756008)(86362001)(83380400001)(5660300002)(66446008)(66946007)(66476007)(33656002)(52536014)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?aEV2bFBUc0pXdG1QM0hZQkp6S0p2eFF1cXZFY3NSMWl5eS9GV2lSb2lVQTRi?=
+ =?gb2312?B?MnRkZy9nYnlUZWZoVzJzVmFteVNyUlM2YjBuZ2txWUZOOVNEWHZVOVhqUUt3?=
+ =?gb2312?B?SXJkUi9qWWxUM0I2MnNVdjYvakc2a1pTdWp5ZXJzNUszUVc0V2ZxSHBFT0do?=
+ =?gb2312?B?am1ZT0VvWURYb3dMTEl0cW5xQU1xSm80K0FScTRwK3JVZzhpV2QzWFUwdGdC?=
+ =?gb2312?B?RjNNcDBWY0dkZjNQLzRZdGU3QmszUDZQYW1lOFVQNUIzTndHc2hsUGY5QzVk?=
+ =?gb2312?B?Q0JLK3JTV1BETUVQVXRpaXVLbkdSVEkxdm16TjBkNDV1MkE0bmhRS09JUjYz?=
+ =?gb2312?B?ODdwMllPalFxZFZzUEpCT2NHQ3Zpc1ltQ2s5Yjg1SytxWVlDTGdhaDdDVnIr?=
+ =?gb2312?B?TlB6cHZVcFh1Mzg3NzZialBhb0liKyt1OXpydGRPWGpqRVgvTndLRUR5UHE0?=
+ =?gb2312?B?WDZpMzBuRlIwbDA1dmlBUXRicStxdDNNNk9SNlhFS29SUVI2S2Z4Z3hiZzdt?=
+ =?gb2312?B?M3o1NUQ0Z2lnRXlZdE03UkNXSUNuSTlhWmJpQmlnb0JLaE9mZElYRGg4ZUJU?=
+ =?gb2312?B?OGlZY0t2YUp0Q2ZyV0I0WGt3NzFmMTBoK2p5WGlIZzVqRGdUcWtNcW5qR2Fv?=
+ =?gb2312?B?Y0JUZ2cvQ1NhRnRQQ3Z3dXFpNWpHcVA2WkZIRDBnTGUzLzNDSmN6ZkE5Uk1S?=
+ =?gb2312?B?R0U2RGxncjRqbWhldXoyVUdpQW9MY2VtTzJiTG1XVldpeVduNkNubE9ZQ2x3?=
+ =?gb2312?B?TjB3eHhTTTdFdC9IbWlTZWFVWUJDT2dVTUN5VTZ1OXUrMXhjZWtGbVVHcC9q?=
+ =?gb2312?B?S0QvczZGNnB6NEZSaWpYbHU2Y0hFMklNTHFBT2QyMStpUGxaZitaaG9PUmwx?=
+ =?gb2312?B?TDRTZVpRS0lEM0cvVkFaZ2xnTzhBdm8yZjdSMnoxMUhPK3Q2bXdzbVpjMDdR?=
+ =?gb2312?B?NUZadmNJTnF4YmtYdjBJTE9Ed0MzMkZCUml0bXN1OElHVHhpbzJUVTE2eHA0?=
+ =?gb2312?B?SEdtNTNqYUdsNzNEMCtnT0VObTd3bnVjWlVsMUdRUVNIbk5pL2NlcTd0MHRm?=
+ =?gb2312?B?R3lseHEzbGU4Z2dIT20yalZ2bTJjRS84WWFPVzhUYk4rL3RNbUNyRktiV3FB?=
+ =?gb2312?B?UHAyVTg3YStaaGtnVjQrQitaQ05vRmZySFRuSHZvRm1HSE9BMkxtTm9lT0Jn?=
+ =?gb2312?B?ckNaSHpoWnYvS3NhbTcyQkxmUzJvT25EWUtqeDVKc2tUbSsrdTVNcm4vaHlz?=
+ =?gb2312?B?V2hGOHFUZXd6SStoLzVlbTYzZHBkWmlyNThDRFNtRFVILzRiMU40WUJhVmxV?=
+ =?gb2312?Q?xGVj+ion16srw=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20201121005919.17152-5-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d893df6a-b0d2-4b11-7922-08d892ad2b2e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2020 08:19:32.2439
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7BoozPdTJjzjCno96VzUsllFDM8ytR0JGo5DEzUXyrvz/N6pFlgEQc6+BbybCFUcYi74osT4aHYG3OBgikQRIr4YGI4WACJ8Mp0mJUdR85g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4007
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> There is a need for a polling interface for SRCU grace
-> periods, so this commit supplies get_state_synchronize_srcu(),
-> start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
-> purpose.  The first can be used if future grace periods are inevitable
-> (perhaps due to a later call_srcu() invocation), the second if future
-> grace periods might not otherwise happen, and the third to check if a
-> grace period has elapsed since the corresponding call to either of the
-> first two.
-> 
-> As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
-> the return value from either get_state_synchronize_srcu() or
-> start_poll_synchronize_srcu() must be passed in to a later call to
-> poll_state_synchronize_srcu().
-> 
-> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
-> [ paulmck: Apply feedback from Neeraj Upadhyay. ]
-> Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
-
-For version in -rcu dev
-
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-
-
-Thanks
-Neeraj
-
->   kernel/rcu/srcutiny.c |  2 +-
->   kernel/rcu/srcutree.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++---
->   2 files changed, 64 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index b073175..c8f4202 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -148,7 +148,7 @@ void srcu_drive_gp(struct work_struct *wp)
->   	 * straighten that out.
->   	 */
->   	WRITE_ONCE(ssp->srcu_gp_running, false);
-> -	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> +	if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->   		schedule_work(&ssp->srcu_work);
->   }
->   EXPORT_SYMBOL_GPL(srcu_drive_gp);
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index d930ece..945c047 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
->   /*
->    * Start an SRCU grace period, and also queue the callback if non-NULL.
->    */
-> -static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
-> +static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> +					     struct rcu_head *rhp, bool do_norm)
->   {
->   	unsigned long flags;
->   	int idx;
-> @@ -819,10 +820,12 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   	unsigned long s;
->   	struct srcu_data *sdp;
->   
-> +	check_init_srcu_struct(ssp);
->   	idx = srcu_read_lock(ssp);
->   	sdp = raw_cpu_ptr(ssp->sda);
->   	spin_lock_irqsave_rcu_node(sdp, flags);
-> -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> +	if (rhp)
-> +		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_gp_seq));
->   	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-> @@ -841,6 +844,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   	else if (needexp)
->   		srcu_funnel_exp_start(ssp, sdp->mynode, s);
->   	srcu_read_unlock(ssp, idx);
-> +	return s;
->   }
->   
->   /*
-> @@ -874,7 +878,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
->   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   			rcu_callback_t func, bool do_norm)
->   {
-> -	check_init_srcu_struct(ssp);
->   	if (debug_rcu_head_queue(rhp)) {
->   		/* Probable double call_srcu(), so leak the callback. */
->   		WRITE_ONCE(rhp->func, srcu_leak_callback);
-> @@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
->   		return;
->   	}
->   	rhp->func = func;
-> -	srcu_gp_start_if_needed(ssp, rhp, do_norm);
-> +	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
->   }
->   
->   /**
-> @@ -1011,6 +1014,62 @@ void synchronize_srcu(struct srcu_struct *ssp)
->   }
->   EXPORT_SYMBOL_GPL(synchronize_srcu);
->   
-> +/**
-> + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
-> + * @ssp: srcu_struct to provide cookie for.
-> + *
-> + * This function returns a cookie that can be passed to
-> + * poll_state_synchronize_srcu(), which will return true if a full grace
-> + * period has elapsed in the meantime.  It is the caller's responsibility
-> + * to make sure that grace period happens, for example, by invoking
-> + * call_srcu() after return from get_state_synchronize_srcu().
-> + */
-> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
-> +{
-> +	// Any prior manipulation of SRCU-protected data must happen
-> +	// before the load from ->srcu_gp_seq.
-> +	smp_mb();
-> +	return rcu_seq_snap(&ssp->srcu_gp_seq);
-> +}
-> +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
-> +
-> +/**
-> + * start_poll_synchronize_srcu - Provide cookie and start grace period
-> + * @ssp: srcu_struct to provide cookie for.
-> + *
-> + * This function returns a cookie that can be passed to
-> + * poll_state_synchronize_srcu(), which will return true if a full grace
-> + * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
-> + * this function also ensures that any needed SRCU grace period will be
-> + * started.  This convenience does come at a cost in terms of CPU overhead.
-> + */
-> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
-> +{
-> +	return srcu_gp_start_if_needed(ssp, NULL, true);
-> +}
-> +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
-> +
-> +/**
-> + * poll_state_synchronize_srcu - Has cookie's grace period ended?
-> + * @ssp: srcu_struct to provide cookie for.
-> + * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
-> + *
-> + * This function takes the cookie that was returned from either
-> + * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
-> + * returns @true if an SRCU grace period elapsed since the time that the
-> + * cookie was created.
-> + */
-> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
-> +{
-> +	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
-> +		return false;
-> +	// Ensure that the end of the SRCU grace period happens before
-> +	// any subsequent code that the caller might execute.
-> +	smp_mb(); // ^^^
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
-> +
->   /*
->    * Callback function for srcu_barrier() use.
->    */
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Ck9uIE1vbiwgTm92IDIzLCAyMDIwIGF0IDAxOjU5OjM3QU0gKzAwMDAsIFpoYW5nLCBRaWFuZyB3
+cm90ZToKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ILei
+vP7IyzogUGF1bCBFLiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgo+ILeiy83KsbzkOiAy
+MDIwxOoxMdTCMjHI1SA5OjExCj4gytW8/sjLOiBaaGFuZywgUWlhbmcKPiCzrcvNOiByY3VAdmdl
+ci5rZXJuZWwub3JnOyBKb2VsIEZlcm5hbmRlcwo+INb3zOI6IFJlOiBTUkNVOiBRdWVzdGlvbiBv
+biBzcmN1X2FkdmFuY2Vfc3RhdGUKPgo+IFtQbGVhc2Ugbm90ZSB0aGlzIGUtbWFpbCBpcyBmcm9t
+IGFuIEVYVEVSTkFMIGUtbWFpbCBhZGRyZXNzXQo+Cj4gT24gRnJpLCBOb3YgMjAsIDIwMjAgYXQg
+MDQ6MzA6MTVQTSArMDgwMCwgWmhhbmcsUWlhbmcgd3JvdGU6Cj4gPiBIZWxsbyBQdWFsCj4gPgo+
+ID4gc29ycnkgdG8gZGlzdHVyYiB5b3UsIEkgYWxzbyBoYXZlIHNvbWUgcXVlc2V0aW9uIGZvciB5
+b3U6Cj4gPgo+ID4gaW4gc3JjdV9hZHZhbmNlX3N0YXRlIGZ1bmN0aW9uLCB3aGVuIHNlcSBzdGF0
+ZSA9PSBTUkNVX1NUQVRFX1NDQU4xLCB3ZSB3aWxsCj4gPiBjaGVjaywgaWYgdGhlIHByZXZpb3Vz
+IHJlYWRlcnMgY3JpdGljYWwgcmVnaW9uIGV4aXRzLCB3aWxsIGJlIHJldHVybmVkCj4gPiBkaXJl
+Y3RseS4KPiA+Cj4gPiBJJ2QgbGlrZSB0byBrbm93IHVuZGVyIHdoYXQgc2NlbmFyaW8gdGhpcyB3
+aWxsIGhhcHBlbj8KPgo+ID5TdXBwb3NlIHRoYXQgYSByZWFkZXIgZ2V0cyBwcmVlbXB0ZWQgZm9y
+IGEgdmVyeSBsb25nIHRpbWUgaW4gdGhlCj4gPm1pZGRsZSBvZiBfX3NyY3VfcmVhZF9sb2NrKCk6
+Cj4gPgo+ID4gICAgICAgaW50IF9fc3JjdV9yZWFkX2xvY2soc3RydWN0IHNyY3Vfc3RydWN0ICpz
+c3ApCj4gPiAgICAgICAgewo+ID4gICAgICAgICAgICAgICBpbnQgaWR4Owo+ID4KPiA+ICAgICAg
+ICAgICAgICBpZHggPSBSRUFEX09OQ0Uoc3NwLT5zcmN1X2lkeCkgJiAweDE7Cj4gPiAgICAgICAg
+ICAgICAgLy8gUFJFRU1QVEVEIFJJR0hUIEhFUkUKPiA+ICAgICAgICAgICAgICB0aGlzX2NwdV9p
+bmMoc3NwLT5zZGEtPnNyY3VfbG9ja19jb3VudFtpZHhdKTsKPiA+ICAgICAgICAgICAgICBzbXBf
+bWIoKTsgLyogQiAqLyAgLyogQXZvaWQgbGVha2luZyB0aGUgY3JpdGljYWwgc2VjdGlvbi4gKi8K
+PiA+ICAgICAgICAgICAgICAgIHJldHVybiBpZHg7Cj4gPiAgICAgICB9Cj4KPiA+U3VwcG9zZSB0
+aGF0IHNldmVyYWwgU1JDVSBncmFjZSBwZXJpb2RzIGVsYXBzZSBkdXJpbmcgdGhhdCBwcmVlbXB0
+aW9uLgo+ID4KPiA+RG8geW91IHNlZSBob3cgdGhhdCBjYW4gbGVhZCB0byB5b3VyIFNSQ1VfU1RB
+VEVfU0NBTjEgZWFybHkgZXhpdD8KPgo+IEkgc2VlLCAgdGhhbmsgeW91IGZvciB5b3VyIGV4cGxh
+bmF0aW9uLgoKPj4+VG8gY2VtZW50IHlvdXIgbmV3IGtub3dsZWRnZSwgY2FuIHlvdSB0ZWxsIG1l
+IGluIGRldGFpbCB0aGUgc2VxdWVuY2Ugb2YKPj4+ZXZlbnRzLCBsaW5lIGJ5IGxpbmUgaW4gdGhl
+IGNvZGUsIHRoYXQgd291bGQgbGVhZCB0byB0aGUgPj4+U1JDVV9TVEFURV9TQ0FOMQo+Pj5lYXJs
+eSBleGl0Pwo+Pj4KICAgCiBTdXBwb3NlIHlvdSBoYXZlIHRoZSBmb2xsb3dpbmcgc2NlbmFyaW8g
+Ogogc3NwLT5zcmN1X2lkeCA9IDAKCiAgICAgICAgICAgICAgY3B1MCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNwdTEgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAKCiBfX3NyY3VfcmVhZF9sb2NrICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHByb2Nlc3Nfc3JjdQogICAgICBpZHggPSBSRUFEX09OQ0Uoc3NwLT5zcmN1
+X2lkeCkgJiAweDE7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHNyY3VfYWR2YW5jZV9zdGF0ZQogICAgICAgICAgICAvKmlkeCA9PSAwLCovIGJ5IHByZWVt
+cHQgbG9uZyB0aW1lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgU1JDVV9TVEFURV9TQ0FOMQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGlkeCA9IDEgXiAoc3NwLT5zcmN1X2lkeCAmIDEpOwogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIC8qaWR4ID09IDEqLyAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+dHJ5X2NoZWNrX3plcm8gKGlkeCk9PSB0cnVlCiAgICBvdGhlciB0YXNrIHJ1biAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNyY3VfZmxpcChz
+c3ApOyAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBzc3AtPnNyY3VfaWR4ID09IDEq
+LwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIFNSQ1VfU1RBVEVfU0NBTjIKICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaWR4ID0gMSBeIChzc3AtPnNyY3VfaWR4ICYgMSk7CiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIC8qaWR4ID09IDAqLwogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB0cnlfY2hlY2tfemVybyAoaWR4KT09IHRydWUKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgc3JjdV9ncF9lbmQKICAgICBjdXJyZW50IHRhc2sgcnVuCiAgICAgdGhpc19jcHVfaW5j
+KHNzcC0+c2RhLT5zcmN1X2xvY2tfY291bnRbaWR4XSk7ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgcHJvY2Vzc19zcmN1CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzcmN1X2FkdmFu
+Y2Vfc3RhdGUKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU1JDVV9TVEFURV9TQ0FOMQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAvKnNzcC0+c3JjdV9pZHggPT0xKi8KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGlkeCA9IDEgXiAoc3NwLT5zcmN1X2lkeCAmIDEpOwog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyppZHg9PTAqLwogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB0cnlfY2hlY2tfemVybyA9PSBmYWxzZQogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4KICAgCiAgICAgZG8gc29tZXRoaW5n
+CiAgICAKICAgIF9fc3JjdV9yZWFkX3VubG9jawogICAgICAgICAgIC8qaWR4ID09IDAqLwogICAg
+ICAgICAgIHRoaXNfY3B1X2luYyhzc3AtPnNkYS0+c3JjdV91bmxvY2tfY291bnRbaWR4XSk7Cgog
+VGhhbmtzCiAgUWlhbmcKCj4gPgo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIFRoYW54LCBQYXVsCj4gPgo+ID4KPiA+UFM6ICBUaGUgcGFw
+ZXIgYmVsb3cgb3V0bGluZXMgYSBzaW1pbGFyIHNpdHVhdGlvbiBpbiB1c2Vyc3BhY2UgUkNVLAo+
+ID4gICAgIHNvIGZlZWwgZnJlZSB0byB1c2UgdGhpcyBwYXBlciBhcyBhIGhpbnQuICBUaGUgcGFw
+ZXIgaXMgaW4gdHdvCj4gPiAgICBwaWVjZXMsIHdpdGggdGhlIGZpcnN0IHBpZWNlIGluIHRoZSBm
+aXJzdCBVUkwgYW5kIHRoZSBzZWNvbmQgaW4KPiA+ICAgICBlaXRoZXIgb2YgdGhlIGxhc3QgdHdv
+IFVSTHMuCj4gPgo+ID5AYXJ0aWNsZXtNYXRoaWV1RGVzbm95ZXJzMjAxMlVSQ1UsCj4gPiBBdXRo
+b3I9Ik1hdGhpZXUgRGVzbm95ZXJzIGFuZCBQYXVsIEUuIE1jS2VubmV5IGFuZCBBbGFuIFN0ZXJu
+IGFuZCBNaWNoZWwgPlIuIERhZ2VuYWlzIGFuZCBKb25hdGhhbiBXYWxwb2xlIiwKPiA+IFRpdGxl
+PSJVc2VyLUxldmVsIEltcGxlbWVudGF0aW9ucyBvZiBSZWFkLUNvcHkgVXBkYXRlIiwKPiA+am91
+cm5hbD0iSUVFRSBUcmFuc2FjdGlvbnMgb24gUGFyYWxsZWwgYW5kIERpc3RyaWJ1dGVkIFN5c3Rl
+bXMiLAo+ID52b2x1bWU9ezIzfSwKPiA+IHllYXI9IjIwMTIiLAo+ID5pc3NuPSIxMDQ1LTkyMTki
+LAo+ID4gcGFnZXM9IjM3NS0zODIiLAo+ID4gZG9pPSIxMC4xMTA5L1RQRFMuMjAxMS4xNTkiLAo+
+ID5wdWJsaXNoZXI9IklFRUUgQ29tcHV0ZXIgU29jaWV0eSIsCj4gPiBhZGRyZXNzPSJMb3MgQWxh
+bWl0b3MsIENBLCBVU0EiLAo+ID4gYW5ub3RhdGlvbj17Cj4gPiAgICAgICBSQ1Ugb3ZlcnZpZXcs
+IGRlc2lkZXJhdGEsIHNlbWktZm9ybWFsIHNlbWFudGljcywgdXNlci1sZXZlbCBSQ1UKPiA+ICAg
+ICAgIHVzYWdlIHNjZW5hcmlvcywgdGhyZWUgY2xhc3NlcyBvZiBSQ1UgaW1wbGVtZW50YXRpb24s
+IHdhaXQtZnJlZQo+ID4gICAgICAgIFJDVSB1cGRhdGVzLCBSQ1UgZ3JhY2UtcGVyaW9kIGJhdGNo
+aW5nLCB1cGRhdGUgb3ZlcmhlYWQsCj4gPiAgICAgICAgaHR0cDovL3d3dy5yZHJvcC5jb20vdXNl
+cnMvcGF1bG1jay9SQ1UvdXJjdS1tYWluLWFjY2VwdGVkLjIwMTEuMDguMzBhLnBkZgo+ID4gICAg
+ICAgIGh0dHA6Ly93d3cucmRyb3AuY29tL3VzZXJzL3BhdWxtY2svUkNVL3VyY3Utc3VwcC1hY2Nl
+cHRlZC4yMDExLjA4LjMwYS5wZGYKPiA+ICAgICAgICBodHRwOi8vd3d3LmNvbXB1dGVyLm9yZy9j
+bXMvQ29tcHV0ZXIub3JnL2RsL3RyYW5zL3RkLzIwMTIvMDIvZXh0cmFzL3R0ZDIwMTIwMjAzNzVz
+LnBkZgo+ID59LAo+ID59Cg==
