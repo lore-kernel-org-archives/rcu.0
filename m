@@ -2,121 +2,245 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 644CCC63798
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 02:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F7C9C2D0E4
+	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 04:53:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1ABE82075A
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 02:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D6B042222A
+	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 04:53:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=axtens.net header.i=@axtens.net header.b="KVXsCq7A"
+	dkim=pass (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="v/wxUnB+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392117AbgK0CCe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 26 Nov 2020 21:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392109AbgK0CCe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 26 Nov 2020 21:02:34 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFF0C0613D4
-        for <rcu@vger.kernel.org>; Thu, 26 Nov 2020 18:02:34 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id k11so3071102pgq.2
-        for <rcu@vger.kernel.org>; Thu, 26 Nov 2020 18:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:subject:date:message-id:mime-version;
-        bh=kLRSiy0jW2k3T4Timgh74JclLsE8e709GGZ1X6Muygw=;
-        b=KVXsCq7AbKDIGOfkPdNpAOiVoDAVuaCyIE1c4g9h3IZnuOBTU244SyyVExs3sPsPDL
-         sedtdFGnLZuMgIt2LimDe2eDjQCvsnhhwvVyaG8I/a9Xua/D2wMLNNYgRl8STMgmA0s/
-         i1J89qGS1s6Rbtf46aN0m0iPIrFXBHV6iiWYE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version;
-        bh=kLRSiy0jW2k3T4Timgh74JclLsE8e709GGZ1X6Muygw=;
-        b=i+iwdT+9hWmKAou+45yq1FevKknSBVpyAbqtWGF415d0jW+/mqEfMTaWuvmnmCfcRj
-         4KjshBs1/7zeYpiNPb4bw41CGrprzsUWRTsBBljI3Id70Ee4poObIwsVEJ7tA2PSA0wT
-         ObR/MQZJEARmclnNLkRo95pS/W27vr314i47uelLT7EbgVYp3fP8FtttgI95iLpXAPLh
-         PHktLuxc4OjQxaUGtGp1iQVKdgoSz4HUmEUWJ5E2t7lrB+Fz4kPeobTygwRG3CAJXoKz
-         G3/v4Gvy/l2eH8E7+ISfkEbHqXGYQ5ILuS35b25Hiz+71GIGV+ruTKbv8UDVbaozqev6
-         +FiA==
-X-Gm-Message-State: AOAM532kKzqbk9MitzrFntNNDxoomDp4thykkCHIrqMs+hRtSSkBamts
-        Pqs1FyM+iZsPj1ovIG9FPBkme2SxJFJH4A==
-X-Google-Smtp-Source: ABdhPJzhXog8Ats0AhlIXNoSzCkWhbDuGymnfKdZ7SqnfIOKimnM/wqXIV6Ye9N1PBdd/pFtpOEW0g==
-X-Received: by 2002:a17:90a:4405:: with SMTP id s5mr6813487pjg.219.1606442553908;
-        Thu, 26 Nov 2020 18:02:33 -0800 (PST)
-Received: from localhost (2001-44b8-111e-5c00-f892-9c2d-d399-9d41.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:f892:9c2d:d399:9d41])
-        by smtp.gmail.com with ESMTPSA id ge21sm7733180pjb.5.2020.11.26.18.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 18:02:33 -0800 (PST)
-From:   Daniel Axtens <dja@axtens.net>
-To:     rcu@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: powerpc 5.10-rcN boot failures with RCU_SCALE_TEST=m
-Date:   Fri, 27 Nov 2020 13:02:29 +1100
-Message-ID: <87eekfh80a.fsf@dja-thinkpad.axtens.net>
+        id S2392457AbgK0ExZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Nov 2020 23:53:25 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:25530 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392444AbgK0ExZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:53:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606452804; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=xM24JflFy1SAsCAGU2vOf/vt49oiaZncEUPC7LPr8h0=; b=v/wxUnB+WpGXqFamh7n04VBJWtBuh9KDmMoEpRyg5EaqUhthJwa37USPOJtxR0PYJ3uQF1kG
+ HfMEZEB/SAbt6wRwOYimffXcr2RcGYb2R/WMMhicpB6TVDdcggQcwNlI+UVoqpcYaYh3NshZ
+ oRokKwrHAaeHu0wfe7jFbGCxfdw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fc0863e4146c5eefdbfe31b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:53:18
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C2E33C43468; Fri, 27 Nov 2020 04:53:17 +0000 (UTC)
+Received: from [192.168.0.105] (unknown [49.206.49.183])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4BE12C433ED;
+        Fri, 27 Nov 2020 04:53:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4BE12C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v2 tip/core/rcu 5/6] srcu: Provide polling interfaces for
+ Tree SRCU grace periods
+To:     paulmck@kernel.org, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
+References: <@@@> <20201121005919.17152-5-paulmck@kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <05712100-9f65-d81c-1eb0-671bc54f3baa@codeaurora.org>
+Date:   Fri, 27 Nov 2020 10:22:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201121005919.17152-5-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi all,
-
-I'm having some difficulty tracking down a bug.
-
-Some configurations of the powerpc kernel since somewhere in the 5.10
-merge window fail to boot on some ppc64 systems. They hang while trying
-to bring up SMP. It seems to depend on the RCU_SCALE/PERF_TEST option.
-(It was renamed in the 5.10 merge window.)
-
-I can reproduce it as follows with qemu tcg:
-
-make -j64 pseries_le_defconfig
-scripts/config -m RCU_SCALE_TEST
-scripts/config -m RCU_PERF_TEST
-make -j 64 vmlinux CC="ccache gcc"
-
-qemu-system-ppc64 -cpu power9 -M pseries -m 1G -nographic -vga none -smp 4 -kernel vmlinux
-
-...
-[    0.036284][    T0] Mount-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
-[    0.036481][    T0] Mountpoint-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
-[    0.148168][    T1] POWER9 performance monitor hardware support registered
-[    0.151118][    T1] rcu: Hierarchical SRCU implementation.
-[    0.186660][    T1] smp: Bringing up secondary CPUs ...
-<hangs>
-
-I have no idea why RCU_SCALE/PERF_TEST would be causing this, but that
-seems to be what does it: if I don't set that, the kernel boots fine.
-
-I've tried to git bisect it, but I keep getting different results:
-always a random merge of a seemingly-unrelated subsystem tree - things
-like armsoc or integrity or input.
-
-It appears to also depend on the way the kernel is booted. Testing with
-a Canonical kernel, so a slightly different config but including
-RCU_SCALE_TEST=m, I see:
-
-Power8 host + KVM + grub         -> boots
-Power9 host bare metal (kexec)   -> fails
-Power9 host + KVM + grub         -> fails
-Power9 host + KVM + qemu -kernel -> boots
-qemu TCG + power9 cpu            -> fails
-qemu TCG + power8 cpu            -> fails
-
-Any ideas?
-
-Kind regards,
-Daniel
-
-$ qemu-system-ppc64 -version
-QEMU emulator version 4.2.1 (Debian 1:4.2-3ubuntu6.9)
-
-$ gcc --version
-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-
-It also happens when compiling with GCC 7 and 10.
 
 
+On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a polling interface for SRCU grace
+> periods, so this commit supplies get_state_synchronize_srcu(),
+> start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
+> purpose.  The first can be used if future grace periods are inevitable
+> (perhaps due to a later call_srcu() invocation), the second if future
+> grace periods might not otherwise happen, and the third to check if a
+> grace period has elapsed since the corresponding call to either of the
+> first two.
+> 
+> As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
+> the return value from either get_state_synchronize_srcu() or
+> start_poll_synchronize_srcu() must be passed in to a later call to
+> poll_state_synchronize_srcu().
+> 
+> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
+> [ paulmck: Apply feedback from Neeraj Upadhyay. ]
+> Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+
+For version in -rcu dev
+
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+
+
+Thanks
+Neeraj
+
+>   kernel/rcu/srcutiny.c |  2 +-
+>   kernel/rcu/srcutree.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++---
+>   2 files changed, 64 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index b073175..c8f4202 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -148,7 +148,7 @@ void srcu_drive_gp(struct work_struct *wp)
+>   	 * straighten that out.
+>   	 */
+>   	WRITE_ONCE(ssp->srcu_gp_running, false);
+> -	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
+> +	if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
+>   		schedule_work(&ssp->srcu_work);
+>   }
+>   EXPORT_SYMBOL_GPL(srcu_drive_gp);
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index d930ece..945c047 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
+>   /*
+>    * Start an SRCU grace period, and also queue the callback if non-NULL.
+>    */
+> -static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
+> +static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> +					     struct rcu_head *rhp, bool do_norm)
+>   {
+>   	unsigned long flags;
+>   	int idx;
+> @@ -819,10 +820,12 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   	unsigned long s;
+>   	struct srcu_data *sdp;
+>   
+> +	check_init_srcu_struct(ssp);
+>   	idx = srcu_read_lock(ssp);
+>   	sdp = raw_cpu_ptr(ssp->sda);
+>   	spin_lock_irqsave_rcu_node(sdp, flags);
+> -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+> +	if (rhp)
+> +		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_gp_seq));
+>   	s = rcu_seq_snap(&ssp->srcu_gp_seq);
+> @@ -841,6 +844,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   	else if (needexp)
+>   		srcu_funnel_exp_start(ssp, sdp->mynode, s);
+>   	srcu_read_unlock(ssp, idx);
+> +	return s;
+>   }
+>   
+>   /*
+> @@ -874,7 +878,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+>   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>   			rcu_callback_t func, bool do_norm)
+>   {
+> -	check_init_srcu_struct(ssp);
+>   	if (debug_rcu_head_queue(rhp)) {
+>   		/* Probable double call_srcu(), so leak the callback. */
+>   		WRITE_ONCE(rhp->func, srcu_leak_callback);
+> @@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+>   		return;
+>   	}
+>   	rhp->func = func;
+> -	srcu_gp_start_if_needed(ssp, rhp, do_norm);
+> +	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+>   }
+>   
+>   /**
+> @@ -1011,6 +1014,62 @@ void synchronize_srcu(struct srcu_struct *ssp)
+>   }
+>   EXPORT_SYMBOL_GPL(synchronize_srcu);
+>   
+> +/**
+> + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
+> + * @ssp: srcu_struct to provide cookie for.
+> + *
+> + * This function returns a cookie that can be passed to
+> + * poll_state_synchronize_srcu(), which will return true if a full grace
+> + * period has elapsed in the meantime.  It is the caller's responsibility
+> + * to make sure that grace period happens, for example, by invoking
+> + * call_srcu() after return from get_state_synchronize_srcu().
+> + */
+> +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
+> +{
+> +	// Any prior manipulation of SRCU-protected data must happen
+> +	// before the load from ->srcu_gp_seq.
+> +	smp_mb();
+> +	return rcu_seq_snap(&ssp->srcu_gp_seq);
+> +}
+> +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
+> +
+> +/**
+> + * start_poll_synchronize_srcu - Provide cookie and start grace period
+> + * @ssp: srcu_struct to provide cookie for.
+> + *
+> + * This function returns a cookie that can be passed to
+> + * poll_state_synchronize_srcu(), which will return true if a full grace
+> + * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
+> + * this function also ensures that any needed SRCU grace period will be
+> + * started.  This convenience does come at a cost in terms of CPU overhead.
+> + */
+> +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
+> +{
+> +	return srcu_gp_start_if_needed(ssp, NULL, true);
+> +}
+> +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
+> +
+> +/**
+> + * poll_state_synchronize_srcu - Has cookie's grace period ended?
+> + * @ssp: srcu_struct to provide cookie for.
+> + * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
+> + *
+> + * This function takes the cookie that was returned from either
+> + * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
+> + * returns @true if an SRCU grace period elapsed since the time that the
+> + * cookie was created.
+> + */
+> +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
+> +{
+> +	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
+> +		return false;
+> +	// Ensure that the end of the SRCU grace period happens before
+> +	// any subsequent code that the caller might execute.
+> +	smp_mb(); // ^^^
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
+> +
+>   /*
+>    * Callback function for srcu_barrier() use.
+>    */
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
