@@ -2,137 +2,203 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7388C63798
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 16:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9BEBC3E8C5
+	for <rcu@archiver.kernel.org>; Sat, 28 Nov 2020 02:20:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9326F20657
-	for <rcu@archiver.kernel.org>; Fri, 27 Nov 2020 16:41:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61267207CD
+	for <rcu@archiver.kernel.org>; Sat, 28 Nov 2020 02:20:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="udwA9p34"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="f7VJC0J0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgK0Qlf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Nov 2020 11:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728406AbgK0Qle (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:41:34 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27F7C0613D1
-        for <rcu@vger.kernel.org>; Fri, 27 Nov 2020 08:41:32 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id r24so7837623lfm.8
-        for <rcu@vger.kernel.org>; Fri, 27 Nov 2020 08:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rgkrb035jm9NJnipoFNp6J644nVoW0SJU1WZzjzA+oA=;
-        b=udwA9p34XKAzVdUynfyA3sUQIHdQlG/KghvzCRzcKIP+V6Ez0oaYWmUIVE5rTY6I/e
-         CW4TCmiSwaTCiKDJXkn7LgN9+fjAGq6lrtbJ42gd4XLIk+N7/71H4pKuqh3TBy79TYvM
-         1kOi7hd6b/9KCo6JhpWznw7poOjXY8a3z00zANtR8Fr+yhOvY1eHPYt8clzfeCOb4inW
-         7HkL1Lx0rdIJN4uiRZH4AjcAap7qCC/+qWIn7hgSHtQ4+Vw8yB773T7eD9kntRacbjET
-         xTJA12M/jwG7M8J0tS6CXBOGuRaO7dRGqyaBJ9KUdV7oMYH39dT18YhqJomNnBOHMnUk
-         BAjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rgkrb035jm9NJnipoFNp6J644nVoW0SJU1WZzjzA+oA=;
-        b=q3y7k8Do7tKfHNk60v4TCszsYFiZB/hWOCQ+J285o9J4zuYxRNZ34ykaJJkz8tOlq2
-         G5BUxvA8K7i3c1nWmoaPbPZzu+l+dcot2Bpmn939HiRSosnYLjQyRWsqantBv31j9pnW
-         V+YxaRwk/9GRkhg9A7kaBfcvEfNiCEA1rw0gobA9nKnS506O1HgAAQUIClcJetp6l/Tw
-         79HrLynviB/7/Y/vJB6JxH6OlaHkCN5A6HbtrjloVNQnszZCag48wMbkAxGuFXBdvjTb
-         mfLxchzFojdrWlWr05IKuizClNoXsP/5fJJAxcto9wfzsuth88TmCen6rq23vvRKOMWw
-         NeCg==
-X-Gm-Message-State: AOAM533Ain2435TLGYFHcyjNuzv2PWt2pboPWenvF8pHBjtNUD5beu5i
-        pbwma602nMTdnuu8wOA/NUciU/kT7pQ=
-X-Google-Smtp-Source: ABdhPJzRxFJh5kMK+j5klpIKR50QifbYdGTWz6/104SUlMn5MLebth9HJ3j5Q4yoeCN71TH/Be22kw==
-X-Received: by 2002:a19:e46:: with SMTP id 67mr3959180lfo.108.1606495291010;
-        Fri, 27 Nov 2020 08:41:31 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 4sm1012291ljf.96.2020.11.27.08.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 08:41:30 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 27 Nov 2020 17:41:28 +0100
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     rcu@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: powerpc 5.10-rcN boot failures with RCU_SCALE_TEST=m
-Message-ID: <20201127164128.GA47008@pc638.lan>
-References: <87eekfh80a.fsf@dja-thinkpad.axtens.net>
+        id S1731171AbgK1CRd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Nov 2020 21:17:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731126AbgK1CQb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Nov 2020 21:16:31 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 019DE2075E;
+        Sat, 28 Nov 2020 02:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606529770;
+        bh=h2+SFNoZGvVhLeY8MFKtlEPg7MZ1iL3X0MusYLz4qn0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=f7VJC0J0pYZrKxpgXOx0HVrRno2QpDiPqyy2jXU+mnZ/Z6kCpBll2bvLrM58p9Wa4
+         +lkLQjdOO3RV6vAJse0K9eUz/ycFqwJfTbz/o/ICTySx/331kpbYZFA7NmDNPmRnW5
+         CY1LelRZiPleLq2Kqbltdur6dB23MH6OKcBBZagc=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C1BA435225F1; Fri, 27 Nov 2020 18:16:09 -0800 (PST)
+Date:   Fri, 27 Nov 2020 18:16:09 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        kent.overstreet@gmail.com
+Subject: Re: [PATCH v2 tip/core/rcu 1/6] srcu: Make Tiny SRCU use multi-bit
+ grace-period counter
+Message-ID: <20201128021609.GX1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <@@@>
+ <20201121005919.17152-1-paulmck@kernel.org>
+ <f70d1032-8e0f-37bf-9ab0-33e85bc8643c@codeaurora.org>
+ <20201123195543.GC1437@paulmck-ThinkPad-P72>
+ <46f5137b-2450-2478-6274-157367264ce4@codeaurora.org>
+ <28a22477-9fbd-603a-404c-1cf6e7cc18b5@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87eekfh80a.fsf@dja-thinkpad.axtens.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <28a22477-9fbd-603a-404c-1cf6e7cc18b5@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> Hi all,
+On Wed, Nov 25, 2020 at 10:03:26AM +0530, Neeraj Upadhyay wrote:
 > 
-> I'm having some difficulty tracking down a bug.
 > 
-> Some configurations of the powerpc kernel since somewhere in the 5.10
-> merge window fail to boot on some ppc64 systems. They hang while trying
-> to bring up SMP. It seems to depend on the RCU_SCALE/PERF_TEST option.
-> (It was renamed in the 5.10 merge window.)
+> On 11/24/2020 10:48 AM, Neeraj Upadhyay wrote:
+> > 
+> > 
+> > On 11/24/2020 1:25 AM, Paul E. McKenney wrote:
+> > > On Mon, Nov 23, 2020 at 10:01:13AM +0530, Neeraj Upadhyay wrote:
+> > > > On 11/21/2020 6:29 AM, paulmck@kernel.org wrote:
+> > > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > > 
+> > > > > There is a need for a polling interface for SRCU grace periods.  This
+> > > > > polling needs to distinguish between an SRCU instance being idle on the
+> > > > > one hand or in the middle of a grace period on the other.  This commit
+> > > > > therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+> > > > > a defacto boolean to a free-running counter, using the bottom bit to
+> > > > > indicate that a grace period is in progress.  The second-from-bottom
+> > > > > bit is thus used as the index returned by srcu_read_lock().
+> > > > > 
+> > > > > Link:
+> > > > > https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> > > > > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> > > > > [ paulmck: Fix __srcu_read_lock() idx computation Neeraj per
+> > > > > Upadhyay. ]
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > ---
+> > > > >    include/linux/srcutiny.h | 4 ++--
+> > > > >    kernel/rcu/srcutiny.c    | 5 +++--
+> > > > >    2 files changed, 5 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> > > > > index 5a5a194..d9edb67 100644
+> > > > > --- a/include/linux/srcutiny.h
+> > > > > +++ b/include/linux/srcutiny.h
+> > > > > @@ -15,7 +15,7 @@
+> > > > >    struct srcu_struct {
+> > > > >        short srcu_lock_nesting[2];    /* srcu_read_lock()
+> > > > > nesting depth. */
+> > > > > -    short srcu_idx;            /* Current reader array element. */
+> > > > > +    unsigned short srcu_idx;    /* Current reader array
+> > > > > element in bit 0x2. */
+> > > > >        u8 srcu_gp_running;        /* GP workqueue running? */
+> > > > >        u8 srcu_gp_waiting;        /* GP waiting for readers? */
+> > > > >        struct swait_queue_head srcu_wq;
+> > > > > @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct
+> > > > > srcu_struct *ssp)
+> > > > >    {
+> > > > >        int idx;
+> > > > > -    idx = READ_ONCE(ssp->srcu_idx);
+> > > > > +    idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> > > > >        WRITE_ONCE(ssp->srcu_lock_nesting[idx],
+> > > > > ssp->srcu_lock_nesting[idx] + 1);
+> > > > >        return idx;
+> > > > >    }
+> > > > 
+> > > > Need change in idx calcultion in srcu_torture_stats_print() ?
+> > > > 
+> > > > static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+> > > >    idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > > 
+> > > Excellent point!  It should match the calculation in __srcu_read_lock(),
+> > > shouldn't it?  I have updated this, thank you!
+> > > 
+> > >                             Thanx, Paul
+> > > 
+> > 
+> > Updated version looks good!
+> > 
+> > 
+> > Thanks
+> > Neeraj
+> > 
 > 
-> I can reproduce it as follows with qemu tcg:
+> For the version in rcu -dev:
 > 
-> make -j64 pseries_le_defconfig
-> scripts/config -m RCU_SCALE_TEST
-> scripts/config -m RCU_PERF_TEST
-> make -j 64 vmlinux CC="ccache gcc"
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+
+I applied all of these, thank you very much!
+
+> Only minor point which I have is, the idx calculation can be made an inline
+> func (though srcu_drive_gp() does not require a READ_ONCE for ->srcu_idx):
 > 
-> qemu-system-ppc64 -cpu power9 -M pseries -m 1G -nographic -vga none -smp 4 -kernel vmlinux
+> __srcu_read_lock() and srcu_torture_stats_print() are using
 > 
-> ...
-> [    0.036284][    T0] Mount-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
-> [    0.036481][    T0] Mountpoint-cache hash table entries: 8192 (order: 0, 65536 bytes, linear)
-> [    0.148168][    T1] POWER9 performance monitor hardware support registered
-> [    0.151118][    T1] rcu: Hierarchical SRCU implementation.
-> [    0.186660][    T1] smp: Bringing up secondary CPUs ...
-> <hangs>
->
-I am not sure if that is helpful but i checked it on my x86_64 system
-using the cross compiled for powerpc Linux kernel:
+> idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> 
+> whereas srcu_drive_gp() uses:
+> 
+> idx = (ssp->srcu_idx & 0x2) / 2;
 
-<snip>
-urezki@pc638:~/data/coding/linux-rcu.git$ powerpc64-linux-gnu-gcc
---version
-powerpc64-linux-gnu-gcc (Debian 8.3.0-2) 8.3.0
-Copyright (C) 2018 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is
-NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.
+They do work on different elements of the various arrays.  Or do you
+believe that the srcu_drive_gp() use needs adjusting?
 
-urezki@pc638:~/data/coding/linux-rcu.git$
-<snip>
+Either way, the overhead of READ_ONCE() is absolutely not at all
+a problem.  Would you like to put together a patch so that I can see
+exactly what you are suggesting?
 
-with ARCH=powerpc make -j64 pseries_defconfig configuration. I used the 5.10.0-rc1 kernel.
+							Thanx, Paul
 
-<snip>
-urezki@pc638:~/data/coding/linux-rcu.git$ qemu-system-ppc64 --version
-QEMU emulator version 3.1.0 (Debian 1:3.1+dfsg-8+deb10u8)
-Copyright (c) 2003-2018 Fabrice Bellard and the QEMU Project developers
-urezki@pc638:~/data/coding/linux-rcu.git$
-<snip>
-
-On my setup i can run the kernel with and without the modules which are
-in question. So
-
-qemu-system-ppc64 -cpu power9 -M pseries -m 1G -nographic -vga none -smp 4 -kernel ./vmlinux
-
-works for both cases, with RCU_SCALE and without.
-
-Just in case, maybe this information can be useful also.
-
---
-Vlad Rezki
+> Thanks
+> Neeraj
+> 
+> > > > Thanks
+> > > > Neeraj
+> > > > 
+> > > > > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> > > > > index 6208c1d..5598cf6 100644
+> > > > > --- a/kernel/rcu/srcutiny.c
+> > > > > +++ b/kernel/rcu/srcutiny.c
+> > > > > @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+> > > > >        ssp->srcu_cb_head = NULL;
+> > > > >        ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+> > > > >        local_irq_enable();
+> > > > > -    idx = ssp->srcu_idx;
+> > > > > -    WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
+> > > > > +    idx = (ssp->srcu_idx & 0x2) / 2;
+> > > > > +    WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+> > > > >        WRITE_ONCE(ssp->srcu_gp_waiting, true);  /*
+> > > > > srcu_read_unlock() wakes! */
+> > > > >        swait_event_exclusive(ssp->srcu_wq,
+> > > > > !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+> > > > >        WRITE_ONCE(ssp->srcu_gp_waiting, false); /*
+> > > > > srcu_read_unlock() cheap. */
+> > > > > +    WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+> > > > >        /* Invoke the callbacks we removed above. */
+> > > > >        while (lh) {
+> > > > > 
+> > > > 
+> > > > -- 
+> > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is
+> > > > a member of
+> > > > the Code Aurora Forum, hosted by The Linux Foundation
+> > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
