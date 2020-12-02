@@ -2,120 +2,167 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3C42C64E90
-	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 04:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A65EC64E8A
+	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 04:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 51663221FC
-	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 04:22:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA8B5221FE
+	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 04:46:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387407AbgLBEWZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Dec 2020 23:22:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbgLBEWY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:22:24 -0500
-Date:   Tue, 1 Dec 2020 20:21:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606882904;
-        bh=MRdp6eSGgc4sgDbPueamXIGUlB/+7ZfSfYD9zl4SMu8=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NitZX/3ULSa91MxPnLCBE0pRJpBJmmZNFpz7F3mGnWHZatDPb6Umcx/IFgAMsTMH7
-         zHQkHnbAcURx3EaMfPcuWw4Rlz5eEKTXMT74QkrWmo8TNKJnZsHLv7VJ7W5FsWxdW/
-         yeN5EtEPzrGhaU6cV6dGXcChXbk0ayWeJDKy6Jac=
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
-Message-ID: <20201202042143.GK1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201118161541.3844924-1-joel@joelfernandes.org>
- <20201118201335.GR1437@paulmck-ThinkPad-P72>
- <20201119035222.GA18458@paulmck-ThinkPad-P72>
- <20201119035613.GA18816@paulmck-ThinkPad-P72>
- <20201119183252.GA812262@google.com>
- <20201119192241.GZ1437@paulmck-ThinkPad-P72>
- <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
- <20201119201615.GA1437@paulmck-ThinkPad-P72>
- <20201119204221.GB812262@google.com>
- <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
+        id S1728311AbgLBEqh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Dec 2020 23:46:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726284AbgLBEqg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Dec 2020 23:46:36 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E06C0613D6
+        for <rcu@vger.kernel.org>; Tue,  1 Dec 2020 20:45:56 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id z13so74791ooa.5
+        for <rcu@vger.kernel.org>; Tue, 01 Dec 2020 20:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=8KxEb62cuyYX7rvTRZibtFXDnRArB2vZulPU2/YsgyU=;
+        b=mjK5r9lgi0VXMpyEjYjVTmljkOoabcD9SQLiTNEF4Gu9XcsQheS2yarSgso9DMqufn
+         YM6UU6Nf/HN37zBcz+WCyVy2pyOpYu93+SNBV8KwLFcj0nZ9vHkfQIQRaNyak1cUUPaF
+         2y1onfVSzKfucVV5lFPxUPV3qaIFJG2uC9DxnTA7w4rMptfuNBjeXA5LRk+MXvHnAsHR
+         pZK0HXBuNZvL/SCH7fgmO7ca4zEknMd5Mcc0k3fW2J5EW8C5rpdth7skEidHw5HWP6Wg
+         uY/6yx8FTWYflhuxqDfbpXDXpSBzrr4YEJ9zo1qQLYWOO/CaIheBBJVR1IjvNb53TKpi
+         vK6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=8KxEb62cuyYX7rvTRZibtFXDnRArB2vZulPU2/YsgyU=;
+        b=VDOmv7vfvB2SwaMRhy4Bkmp3C42FqCFyygHcZfo/M/LlAeC2lnS/9SPirp1jwc/MiM
+         rHJTR+zvNM2cruwNt7NmRly9USrqtwhx/l8u5/EjMgABqmd0eGOZIAh6TMKE0JMOjhvz
+         owFE/JVXXujm2APJrmjQMZEm9AflvWUWehNIacUpg+yhy9rWqBsYWtNsutVLXGlalVe9
+         bFug+8klwBGlvNz9O+RqNhmwwGQL8Cbq0r7zXW0DFob+kSL1greFJWw0WYzlrkZNZmsw
+         FdM0Om2RpiFdB84oLEx30LMn8kS1E02TLz4qruTEoanEXnKSJT316QJI9rb9VyvWnzgq
+         +NTw==
+X-Gm-Message-State: AOAM533vgCCRrdTCUEHcA9hNQGJD1i0yeL1REcyhZFmyiqbRHh+uhFmT
+        e5CIeqngGHckWr4QLKjMC5LAvQF/LwZt1fCiTTkV9Q==
+X-Google-Smtp-Source: ABdhPJzZVvvOHzXb8bSwzhSrV4k6EGJHttBxXh62TaUQwvHkDaaWkKmfbu8XOQDyZia1N9DGzRG0x2Fpl6VhhgwjhV4=
+X-Received: by 2002:a4a:abc9:: with SMTP id o9mr416695oon.1.1606884355665;
+ Tue, 01 Dec 2020 20:45:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 2 Dec 2020 10:15:44 +0530
+Message-ID: <CA+G9fYupbQK02Yor=U-80JEdkwacZ7bi3RKt3+D=e+qZ-o0uCA@mail.gmail.com>
+Subject: [arm64] db410c: BUG: Invalid wait context
+To:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:26:32PM -0500, Joel Fernandes wrote:
-> On Thu, Nov 19, 2020 at 3:42 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Thu, Nov 19, 2020 at 12:16:15PM -0800, Paul E. McKenney wrote:
-> > > On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
-> > > > On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
-> > > > > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
-> > > > > > > > > > zero if the list was indeed empty.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > > > > >
-> > > > > > > > > Queued for testing and further review, thank you!
-> > > > > > > >
-> > > > > > > > FYI, the second of the two checks triggered in all four one-hour runs of
-> > > > > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
-> > > > > > > > runs of TREE07.  This one:
-> > > > > > > >
-> > > > > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> > > > > > > >
-> > > > > > > > That is, there are callbacks in the list, but the sum of the segment
-> > > > > > > > counts is nevertheless zero.  The ->nocb_lock is held.
-> > > > > > > >
-> > > > > > > > Thoughts?
-> > > > > > >
-> > > > > > > FWIW, TREE01 reproduces it very quickly compared to the other two
-> > > > > > > scenarios, on all four run, within five minutes.
-> > > > > >
-> > > > > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
-> > > > > > be related to some interaction with rcu_barrier() (Just a guess).
-> > > > >
-> > > > > Well, rcu_barrier() and srcu_barrier() are the only users of
-> > > > > rcu_segcblist_entrain(), if that helps.  Your modification to that
-> > > > > function looks plausible to me, but the system's opinion always overrules
-> > > > > mine.  ;-)
-> > > >
-> > > > Right. Does anything the bypass code standout? That happens during
-> > > > rcu_barrier() as well, and it messes with the lengths.
-> > >
-> > > In theory, rcu_barrier_func() flushes the bypass before doing the
-> > > entrain, and does the rcu_segcblist_entrain() afterwards.
-> > >
-> > > Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
-> > > is not, then ->cblist length will be nonzero, and none of the
-> > > segments will be nonzero.
-> > >
-> > > So you need something like this for that second WARN, correct?
-> > >
-> > >       WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
-> > >                    rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> 
-> Just started to look into it again. If the &rdp->cblist is empty, that
-> means the bypass list could not have been used (Since per comments on
-> rcu_nocb_try_bypass() , the bypass list is in use only when the cblist
-> is non-empty). So the cblist was non empty, then the segment counts
-> should not sum to 0.  So I don't think that explains it. Anyway, I
-> will try the new version of your warning in case there is something
-> about bypass lists that I'm missing.
+While running kselftests on arm64 db410c platform "BUG: Invalid wait context"
+noticed at different runs this specific platform running stable-rc 5.9.12-rc1.
 
-Good point.  I really did see failures, though.  Do they show up for
-you?
+While running these two test cases we have noticed this BUG and not easily
+reproducible.
 
-							Thanx, Paul
+# selftests: bpf: test_xdp_redirect.sh
+# selftests: net: ip6_gre_headroom.sh
+
+[  245.694901] kauditd_printk_skb: 100 callbacks suppressed
+[  245.694913] audit: type=1334 audit(251.699:25757): prog-id=12883 op=LOAD
+[  245.735658] audit: type=1334 audit(251.743:25758): prog-id=12884 op=LOAD
+[  245.801299] audit: type=1334 audit(251.807:25759): prog-id=12885 op=LOAD
+[  245.832034] audit: type=1334 audit(251.839:25760): prog-id=12886 op=LOAD
+[  245.888601]
+[  245.888631] =============================
+[  245.889156] [ BUG: Invalid wait context ]
+[  245.893071] 5.9.12-rc1 #1 Tainted: G        W
+[  245.897056] -----------------------------
+[  245.902091] pool/1279 is trying to lock:
+[  245.906083] ffff000032fc1218
+(&child->perf_event_mutex){+.+.}-{3:3}, at:
+perf_event_exit_task+0x34/0x3a8
+[  245.910085] other info that might help us debug this:
+[  245.919539] context-{4:4}
+[  245.924484] 1 lock held by pool/1279:
+[  245.927087]  #0: ffff8000127819b8 (rcu_read_lock){....}-{1:2}, at:
+dput+0x54/0x460
+[  245.930739] stack backtrace:
+[  245.938203] CPU: 1 PID: 1279 Comm: pool Tainted: G        W
+5.9.12-rc1 #1
+[  245.941243] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[  245.948621] Call trace:
+[  245.955390]  dump_backtrace+0x0/0x1f8
+[  245.957560]  show_stack+0x2c/0x38
+[  245.961382]  dump_stack+0xec/0x158
+[  245.964679]  __lock_acquire+0x59c/0x15c8
+[  245.967978]  lock_acquire+0x124/0x4d0
+[  245.972058]  __mutex_lock+0xa4/0x970
+[  245.975615]  mutex_lock_nested+0x54/0x70
+[  245.979261]  perf_event_exit_task+0x34/0x3a8
+[  245.983168]  do_exit+0x394/0xad8
+[  245.987420]  do_group_exit+0x4c/0xa8
+[  245.990633]  get_signal+0x16c/0xb40
+[  245.994193]  do_notify_resume+0x2ec/0x678
+[  245.997404]  work_pending+0x8/0x200
+
+and BUG in an other run,
+
+[ 1012.068407] audit: type=1700 audit(1018.803:25886): dev=eth0 prom=0
+old_prom=256 auid=4294967295 uid=0 gid=0 ses=4294967295
+[ 1012.250561] IPv6: ADDRCONF(NETDEV_CHANGE): swp1: link becomes ready
+[ 1012.251298] IPv6: ADDRCONF(NETDEV_CHANGE): h1: link becomes ready
+[ 1012.252559]
+[ 1012.261892] =============================
+[ 1012.263453] [ BUG: Invalid wait context ]
+[ 1012.267363] 5.9.12-rc1 #1 Tainted: G        W
+[ 1012.271354] -----------------------------
+[ 1012.276389] systemd/454 is trying to lock:
+[ 1012.280381] ffff00003985a918 (&mm->mmap_lock){++++}-{3:3}, at:
+__might_fault+0x60/0xa8
+[ 1012.284378] other info that might help us debug this:
+[ 1012.292275] context-{4:4}
+[ 1012.297396] 1 lock held by systemd/454:
+[ 1012.299997]  #0: ffff8000127d1f38 (rcu_read_lock){....}-{1:2}, at:
+path_init+0x40/0x718
+[ 1012.303649] stack backtrace:
+[ 1012.311638] CPU: 2 PID: 454 Comm: systemd Tainted: G        W
+  5.9.12-rc1 #1
+[ 1012.314760] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[ 1012.322139] Call trace:
+[ 1012.329084]  dump_backtrace+0x0/0x1f8
+[ 1012.331254]  show_stack+0x2c/0x38
+[ 1012.335075]  dump_stack+0xec/0x158
+[ 1012.338371]  __lock_acquire+0x59c/0x15c8
+[ 1012.341672]  lock_acquire+0x124/0x4d0
+[ 1012.345751]  __might_fault+0x84/0xa8
+[ 1012.349311]  cp_new_stat+0x114/0x1b8
+[ 1012.352956]  __do_sys_newfstat+0x44/0x70
+[ 1012.356513]  __arm64_sys_newfstat+0x24/0x30
+[ 1012.358652] IPv6: ADDRCONF(NETDEV_CHANGE): swp3: link becomes ready
+[ 1012.360424]  el0_svc_common.constprop.3+0x7c/0x198
+[ 1012.370575]  do_el0_svc+0x34/0xa0
+[ 1012.375437]  el0_sync_handler+0x16c/0x210
+[ 1012.378824]  el0_sync+0x140/0x180
+
+
+Full test log links,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3516257/suite/linux-log-parser/test/check-kernel-bug-1997042/log
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3515038/suite/linux-log-parser/test/check-kernel-bug-1996797/log
+
+metadata:
+  git branch: linux-5.9.y
+  git commit: fb49ad2107f4b740257c84ec2991fc6afb447f53
+  git describe: v5.9.11-153-gfb49ad2107f4
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-stable-rc-5.9/44/config
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
