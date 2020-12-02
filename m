@@ -2,155 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2011C64E7B
-	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 15:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B2FAC8301C
+	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 18:11:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F67D20C56
-	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 15:26:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 54330206D5
+	for <rcu@archiver.kernel.org>; Wed,  2 Dec 2020 18:11:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgLBPZp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Dec 2020 10:25:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
+        id S1729020AbgLBSLk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Dec 2020 13:11:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbgLBPZp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:25:45 -0500
-Date:   Wed, 2 Dec 2020 07:25:03 -0800
+        id S1729012AbgLBSLj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:11:39 -0500
+Date:   Wed, 2 Dec 2020 10:10:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606922704;
-        bh=M+CFICUDJwLUUez721Zick06gs3zdFQf3OD7+kJZf+I=;
+        s=k20201202; t=1606932658;
+        bh=KL2OKD35QtHLbFQ0Piazz6J0wicIwPVycp/sxbwiJEo=;
         h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Sl8lzJG5NotbcMfdLHmiCkMHe0sfEJHguCpPbAQJWRtAiDc/qgLNr3Twb5vSFzs7z
-         bPNTi04qu7yZWabvGCDqLnFPomPQr1S0SXX1x1tNabmB7fNuDOHIlYT8v9eSTadpY/
-         CTpGYIJkub6P6WWsp8AqvOR3KXXo3/PJPlzzRi+I=
+        b=jqrQPuCgdbulaOyZBEcpmNueGcJwPGDDAUmzFsjfLWxik5qMv1MBKLy2KuLa5zra+
+         MPNRa9Gj4oP3fX1qGcjuVmnGMF5JFRyM+7DIToYeksim37T3X2KjI46TWL8JHFLAB/
+         Ki2/2vEMOEdhShGzMMD6aJnJXUYDg7WI0TiFOQw8z8RKvioq01MQp+UGILEvCO2voi
+         XDG7xuZ+ilgCmVxDak7RXiDHY3QaSzVOo5f0OZwO31vBjwOGv6/mIM8TkN2lXoL0e9
+         up7d6P6nu9aW/dJNu47EtM3bscOdHnDACyx4mh9oD/wm8vlUAAY2iRYKALK8AUpQ4j
+         z4MJ+Z9mKh3pQ==
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
-Message-ID: <20201202152503.GL1437@paulmck-ThinkPad-P72>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI0=?= =?utf-8?Q?=3A?= SRCU: Question
+ on srcu_advance_state
+Message-ID: <20201202181058.GP1437@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201119035222.GA18458@paulmck-ThinkPad-P72>
- <20201119035613.GA18816@paulmck-ThinkPad-P72>
- <20201119183252.GA812262@google.com>
- <20201119192241.GZ1437@paulmck-ThinkPad-P72>
- <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
- <20201119201615.GA1437@paulmck-ThinkPad-P72>
- <20201119204221.GB812262@google.com>
- <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
- <20201202042143.GK1437@paulmck-ThinkPad-P72>
- <20201202145838.GA949146@google.com>
+References: <7fc7b6b9-bcf2-fa78-1931-415d04a5ac1a@windriver.com>
+ <20201121011132.GR1437@paulmck-ThinkPad-P72>
+ <DM6PR11MB2635EF8668163B77B073C096FFFC0@DM6PR11MB2635.namprd11.prod.outlook.com>
+ <20201125030338.GA5810@paulmck-ThinkPad-P72>
+ <BYAPR11MB2632E04495F1717FE8824664FFF80@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201202145838.GA949146@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632E04495F1717FE8824664FFF80@BYAPR11MB2632.namprd11.prod.outlook.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:58:38AM -0500, Joel Fernandes wrote:
-> On Tue, Dec 01, 2020 at 08:21:43PM -0800, Paul E. McKenney wrote:
-> > On Tue, Dec 01, 2020 at 05:26:32PM -0500, Joel Fernandes wrote:
-> > > On Thu, Nov 19, 2020 at 3:42 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > On Thu, Nov 19, 2020 at 12:16:15PM -0800, Paul E. McKenney wrote:
-> > > > > On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
-> > > > > > On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
-> > > > > > > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
-> > > > > > > > > > > > zero if the list was indeed empty.
-> > > > > > > > > > > >
-> > > > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > > > > > > >
-> > > > > > > > > > > Queued for testing and further review, thank you!
-> > > > > > > > > >
-> > > > > > > > > > FYI, the second of the two checks triggered in all four one-hour runs of
-> > > > > > > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
-> > > > > > > > > > runs of TREE07.  This one:
-> > > > > > > > > >
-> > > > > > > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> > > > > > > > > >
-> > > > > > > > > > That is, there are callbacks in the list, but the sum of the segment
-> > > > > > > > > > counts is nevertheless zero.  The ->nocb_lock is held.
-> > > > > > > > > >
-> > > > > > > > > > Thoughts?
-> > > > > > > > >
-> > > > > > > > > FWIW, TREE01 reproduces it very quickly compared to the other two
-> > > > > > > > > scenarios, on all four run, within five minutes.
-> > > > > > > >
-> > > > > > > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
-> > > > > > > > be related to some interaction with rcu_barrier() (Just a guess).
-> > > > > > >
-> > > > > > > Well, rcu_barrier() and srcu_barrier() are the only users of
-> > > > > > > rcu_segcblist_entrain(), if that helps.  Your modification to that
-> > > > > > > function looks plausible to me, but the system's opinion always overrules
-> > > > > > > mine.  ;-)
-> > > > > >
-> > > > > > Right. Does anything the bypass code standout? That happens during
-> > > > > > rcu_barrier() as well, and it messes with the lengths.
-> > > > >
-> > > > > In theory, rcu_barrier_func() flushes the bypass before doing the
-> > > > > entrain, and does the rcu_segcblist_entrain() afterwards.
-> > > > >
-> > > > > Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
-> > > > > is not, then ->cblist length will be nonzero, and none of the
-> > > > > segments will be nonzero.
-> > > > >
-> > > > > So you need something like this for that second WARN, correct?
-> > > > >
-> > > > >       WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
-> > > > >                    rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> > > 
-> > > Just started to look into it again. If the &rdp->cblist is empty, that
-> > > means the bypass list could not have been used (Since per comments on
-> > > rcu_nocb_try_bypass() , the bypass list is in use only when the cblist
-> > > is non-empty). So the cblist was non empty, then the segment counts
-> > > should not sum to 0.  So I don't think that explains it. Anyway, I
-> > > will try the new version of your warning in case there is something
-> > > about bypass lists that I'm missing.
-> > 
-> > Good point.  I really did see failures, though.  Do they show up for
-> > you?
+On Fri, Nov 27, 2020 at 08:19:32AM +0000, Zhang, Qiang wrote:
 > 
-> Yeah I do see failures. Once I change the warning as below, the failures go
-> away though. So looks like indeed a segcblist can be empty when the bypass
-> list has something in it?  If you agree, could you change the warning to as
-> below? The tests failing before all pass 1 hour rcutorture testing now
-> (TREE01, TREE04 and TREE07).
+> On Mon, Nov 23, 2020 at 01:59:37AM +0000, Zhang, Qiang wrote:
+> >
+> >
+> > ________________________________________
+> > 发件人: Paul E. McKenney <paulmck@kernel.org>
+> > 发送时间: 2020年11月21日 9:11
+> > 收件人: Zhang, Qiang
+> > 抄送: rcu@vger.kernel.org; Joel Fernandes
+> > 主题: Re: SRCU: Question on srcu_advance_state
+> >
+> > [Please note this e-mail is from an EXTERNAL e-mail address]
+> >
+> > On Fri, Nov 20, 2020 at 04:30:15PM +0800, Zhang,Qiang wrote:
+> > > Hello Pual
+> > >
+> > > sorry to disturb you, I also have some quesetion for you:
+> > >
+> > > in srcu_advance_state function, when seq state == SRCU_STATE_SCAN1, we will
+> > > check, if the previous readers critical region exits, will be returned
+> > > directly.
+> > >
+> > > I'd like to know under what scenario this will happen?
+> >
+> > >Suppose that a reader gets preempted for a very long time in the
+> > >middle of __srcu_read_lock():
+> > >
+> > >       int __srcu_read_lock(struct srcu_struct *ssp)
+> > >        {
+> > >               int idx;
+> > >
+> > >              idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > >              // PREEMPTED RIGHT HERE
+> > >              this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
+> > >              smp_mb(); /* B */  /* Avoid leaking the critical section. */
+> > >                return idx;
+> > >       }
+> >
+> > >Suppose that several SRCU grace periods elapse during that preemption.
+> > >
+> > >Do you see how that can lead to your SRCU_STATE_SCAN1 early exit?
+> >
+> > I see,  thank you for your explanation.
+> 
+> >>>To cement your new knowledge, can you tell me in detail the sequence of
+> >>>events, line by line in the code, that would lead to the >>>SRCU_STATE_SCAN1
+> >>>early exit?
+> >>>
+>    
+>  Suppose you have the following scenario :
+>  ssp->srcu_idx = 0
+> 
+>               cpu0                                                                                                            cpu1                                 
+> 
+>  __srcu_read_lock                                                                                              process_srcu
+>       idx = READ_ONCE(ssp->srcu_idx) & 0x1;                                                 srcu_advance_state
+>             /*idx == 0,*/ by preempt long time                                                               SRCU_STATE_SCAN1
+>                                                                                                                                                idx = 1 ^ (ssp->srcu_idx & 1);
+>                                                                                                                                                /*idx == 1*/    
+>                                                                                                                                                 try_check_zero (idx)== true
+>     other task run                                                                                                                  srcu_flip(ssp);   
+>                                                                                                                                              /* ssp->srcu_idx == 1*/
+>                                                                                                                                          SRCU_STATE_SCAN2
+>                                                                                                                                                 idx = 1 ^ (ssp->srcu_idx & 1);
+>                                                                                                                                                 /*idx == 0*/
+>                                                                                                                                                 try_check_zero (idx)== true
+>                                                                                                                                                 srcu_gp_end
+>      current task run
+>      this_cpu_inc(ssp->sda->srcu_lock_count[idx]);                                       process_srcu
+>                                                                                                                                      srcu_advance_state
+>                                                                                                                                           SRCU_STATE_SCAN1
+>                                                                                                                                                    /*ssp->srcu_idx ==1*/
+>                                                                                                                                                     idx = 1 ^ (ssp->srcu_idx & 1);
+>                                                                                                                                                     /*idx==0*/
+>                                                                                                                                                    try_check_zero == false
+>                                                                                                                                                             return
+>    
+>      do something
+>     
+>     __srcu_read_unlock
+>            /*idx == 0*/
+>            this_cpu_inc(ssp->sda->srcu_unlock_count[idx]);
 
-I agree with the fix, which should not be too surprising.  ;-)
+Very good!
 
-But can you tell me how you can have a non-zero count while all the
-segment counts sum to zero?  Yes, you told me why nothing should be
-placed in the bypass list while cblist is empty.  Is that really the
-only way this state can be entered?
+If you are interested, you might consider blogging this, whether in
+English or your native language.
 
 							Thanx, Paul
 
-> ---8<-----------------------
+>  Thanks
+>   Qiang
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 91e35b521e51..3cd92b7df8ac 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2554,7 +2554,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
->  		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
->  	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
-> -	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> +	WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
-> +		     rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
->  
->  	rcu_nocb_unlock_irqrestore(rdp, flags);
->  
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
+> > >
+> > >                                                        Thanx, Paul
+> > >
+> > >
+> > >PS:  The paper below outlines a similar situation in userspace RCU,
+> > >     so feel free to use this paper as a hint.  The paper is in two
+> > >    pieces, with the first piece in the first URL and the second in
+> > >     either of the last two URLs.
+> > >
+> > >@article{MathieuDesnoyers2012URCU,
+> > > Author="Mathieu Desnoyers and Paul E. McKenney and Alan Stern and Michel >R. Dagenais and Jonathan Walpole",
+> > > Title="User-Level Implementations of Read-Copy Update",
+> > >journal="IEEE Transactions on Parallel and Distributed Systems",
+> > >volume={23},
+> > > year="2012",
+> > >issn="1045-9219",
+> > > pages="375-382",
+> > > doi="10.1109/TPDS.2011.159",
+> > >publisher="IEEE Computer Society",
+> > > address="Los Alamitos, CA, USA",
+> > > annotation={
+> > >       RCU overview, desiderata, semi-formal semantics, user-level RCU
+> > >       usage scenarios, three classes of RCU implementation, wait-free
+> > >        RCU updates, RCU grace-period batching, update overhead,
+> > >        http://www.rdrop.com/users/paulmck/RCU/urcu-main-accepted.2011.08.30a.pdf
+> > >        http://www.rdrop.com/users/paulmck/RCU/urcu-supp-accepted.2011.08.30a.pdf
+> > >        http://www.computer.org/cms/Computer.org/dl/trans/td/2012/02/extras/ttd2012020375s.pdf
+> > >},
+> > >}
