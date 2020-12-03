@@ -2,241 +2,160 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E030C64E7C
-	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 01:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74EA1C63777
+	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 06:23:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3121F221EB
-	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 01:51:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D1B4206E0
+	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 06:23:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgLCBvN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Dec 2020 20:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        id S1727678AbgLCGXG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Dec 2020 01:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbgLCBvN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:51:13 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13A7C061A4D;
-        Wed,  2 Dec 2020 17:50:26 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id o1so329795qtp.5;
-        Wed, 02 Dec 2020 17:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kyVim3g1ZgvCklZC8yhQqBOa4C12iOCyA31F5yUOrys=;
-        b=jEdgYTBEjvWRNu7WJU73JtcD71zfKPuyCc8Etm/KnZTTd7SkZiI+xTlD9n8zScGPaP
-         CoeiYvjqXDCAHwsXUDBsb3jEvnrI3J/0tZePofy8ooE+SfxkX3wbpqfzkWfniVWJVQ17
-         F3a/ebV0+UvoyJDUDKhLZFVFmF3JyChSkMI9Dae62DBr3xn9JW6XMgCQ9kePrnnU2zqv
-         loLmEMxsTeazv7vyOL/06syD3WlvBg2D3rt3BLR5aggaoyqbqXjZDzqRaD66qLEYCufD
-         dpXnx2qmirnPu7fAl92ifmZr7mufiY6SA3J8ePVKUlP2SnLm4TC/owQMZ0MSL64hL+p/
-         RIEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kyVim3g1ZgvCklZC8yhQqBOa4C12iOCyA31F5yUOrys=;
-        b=otjpg+yGD853tVxSZfYlQ0nuHq7bZ+b2QXTGnFctq3rVtf0l3PckgXYZzB5XNMYFpp
-         BsQSzMbf5da/Pb9A9372zcKv5l8DULchSfnPXFpU+Xn/Adz3fqIdvF9izBwoVH+p13WY
-         RyuR3fyzJ0tZYWXmn4nNJOgSWCpJCBnGJI+4Mx6H4Dzx/oiBsbu1TICZt6tZj6em4joX
-         rQVKeezKXd/O4MOLk7PvNb/KHJh5gkbRYs6DJZTFmku8X1judRSmMiWOz6A1pbJWdDDT
-         xpOJ1UWuKBO9/EuzcFicVAKJbxYZML+uSKEXDR0RHw51mrnMPe3QcAsJ2lO/3ww13vVU
-         KnDw==
-X-Gm-Message-State: AOAM532VHeEb2BDB9gUGLqeKoF4nQOXORrKosj2TAkpusjAwLfVBK68D
-        Ly4juwzvSb3zTHBWmajWRMA=
-X-Google-Smtp-Source: ABdhPJzyhjiLB/riNKk41l4mTm9zv6wmMCtqzIxV93yXnHPAIrM+H9FNH8gFLfJOjYre2VsMVPmtqg==
-X-Received: by 2002:aed:2664:: with SMTP id z91mr1128689qtc.290.1606960226216;
-        Wed, 02 Dec 2020 17:50:26 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id g143sm580100qke.102.2020.12.02.17.50.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 17:50:25 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9CB7927C0054;
-        Wed,  2 Dec 2020 20:50:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 02 Dec 2020 20:50:22 -0500
-X-ME-Sender: <xms:XkTIX0G7jmr8f1-vj4Xdo-bW9dyrFEO6w_z-ofb5SHE5XVxylJCm7A>
-    <xme:XkTIX9U85OCP3HyU_OlELGpNgjgempOOQyInro2p9knQd4UQ4ZSl4k9DxKQ2XfrR8
-    gASUd6IrjwjkkLNyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeihedgfeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepgeektddvtdekleetvdekffevleelkefffeegiedvffeufffhiefggfehffdv
-    vdegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdplhhinhgrrhhordhorhhgnecukf
-    hppeduieejrddvvddtrddvrdduvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrg
-    hlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeep
-    ghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:XkTIX-KckZHR-_CTMh8gcf7mwyojqPs0lYyaAAWXZbyT3jYy1RhGDw>
-    <xmx:XkTIX2FELq8U_wOJI1581Bw8vaVg2U95H9vtVl8fmqdDxzBt_lrBTA>
-    <xmx:XkTIX6UH0os_M18AQpb3-zShx8Nf3tYWIlTdq7piKdbOK3DDTv3MVA>
-    <xmx:XkTIX2Q_UVC9giMe6nVnaPol8vEb05YhW2YnX0w0ERZBM4bN7j1FQWSClX0>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CCAF4240059;
-        Wed,  2 Dec 2020 20:50:21 -0500 (EST)
-Date:   Thu, 3 Dec 2020 09:49:22 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [arm64] db410c: BUG: Invalid wait context
-Message-ID: <20201203014922.GA1785576@boqun-archlinux>
-References: <CA+G9fYupbQK02Yor=U-80JEdkwacZ7bi3RKt3+D=e+qZ-o0uCA@mail.gmail.com>
+        with ESMTP id S1726140AbgLCGXG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Dec 2020 01:23:06 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0041C061A4D
+        for <rcu@vger.kernel.org>; Wed,  2 Dec 2020 22:22:25 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cmm331RlXz9sSs;
+        Thu,  3 Dec 2020 17:22:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1606976543;
+        bh=jxImw9kN6O+lDIQAE8CjCY20O/bjLD7ylRQ0MOuhAjY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=CbaeEZDanEjGekTnlG2bqCgV2Ogjb6S4KQjjblOX9bYGfwfG6MYeZZPSzdHqvG2R1
+         sFgWmPXDBNdz7EhN72NSX0/iqqfAeAkIKTot97kLoSxrsxsGtYuEsUKfojsmyUysJS
+         xfKUQicK1jK8juhsBffzi96uAHBOUHCUt+8eF62FpULKbYp81MlPEr8HVTSMxFykDH
+         xsuGQEPtifAIslmtBaf7XhbhyTMh/BzwrjRH1sVbKAMUfRchVNH9tkXIA5A2VGWy6v
+         wnoMCFk+EWUlWNH4U6Q8+KCkVTc2ocE0RSARSWV2W+78TdPnp4vCGaqobld5TKGF+e
+         xGocGWOc+QXiA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Daniel Axtens <dja@axtens.net>, rcu@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: powerpc 5.10-rcN boot failures with RCU_SCALE_TEST=m
+In-Reply-To: <20201202143955.GA12300@pc636>
+References: <87eekfh80a.fsf@dja-thinkpad.axtens.net> <87v9dkuwy3.fsf@mpe.ellerman.id.au> <20201202143955.GA12300@pc636>
+Date:   Thu, 03 Dec 2020 17:22:20 +1100
+Message-ID: <87sg8nv277.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYupbQK02Yor=U-80JEdkwacZ7bi3RKt3+D=e+qZ-o0uCA@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Naresh,
+Uladzislau Rezki <urezki@gmail.com> writes:
+> On Thu, Dec 03, 2020 at 01:03:32AM +1100, Michael Ellerman wrote:
+...
+>> 
+>> The SMP bringup stalls because _cpu_up() is blocked trying to take
+>> cpu_hotplug_lock for writing:
+>> 
+>> [  401.403132][    T0] task:swapper/0       state:D stack:12512 pid:    1 ppid:     0 flags:0x00000800
+>> [  401.403502][    T0] Call Trace:
+>> [  401.403907][    T0] [c0000000062c37d0] [c0000000062c3830] 0xc0000000062c3830 (unreliable)
+>> [  401.404068][    T0] [c0000000062c39b0] [c000000000019d70] __switch_to+0x2e0/0x4a0
+>> [  401.404189][    T0] [c0000000062c3a10] [c000000000b87228] __schedule+0x288/0x9b0
+>> [  401.404257][    T0] [c0000000062c3ad0] [c000000000b879b8] schedule+0x68/0x120
+>> [  401.404324][    T0] [c0000000062c3b00] [c000000000184ad4] percpu_down_write+0x164/0x170
+>> [  401.404390][    T0] [c0000000062c3b50] [c000000000116b68] _cpu_up+0x68/0x280
+>> [  401.404475][    T0] [c0000000062c3bb0] [c000000000116e70] cpu_up+0xf0/0x140
+>> [  401.404546][    T0] [c0000000062c3c30] [c00000000011776c] bringup_nonboot_cpus+0xac/0xf0
+>> [  401.404643][    T0] [c0000000062c3c80] [c000000000eea1b8] smp_init+0x40/0xcc
+>> [  401.404727][    T0] [c0000000062c3ce0] [c000000000ec43dc] kernel_init_freeable+0x1e0/0x3a0
+>> [  401.404799][    T0] [c0000000062c3db0] [c000000000011ec4] kernel_init+0x24/0x150
+>> [  401.404958][    T0] [c0000000062c3e20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
+>> 
+>> It can't get it because kprobe_optimizer() has taken it for read and is now
+>> blocked waiting for synchronize_rcu_tasks():
+>> 
+>> [  401.418808][    T0] task:kworker/0:1     state:D stack:13392 pid:   12 ppid:     2 flags:0x00000800
+>> [  401.418951][    T0] Workqueue: events kprobe_optimizer
+>> [  401.419078][    T0] Call Trace:
+>> [  401.419121][    T0] [c0000000062ef650] [c0000000062ef710] 0xc0000000062ef710 (unreliable)
+>> [  401.419213][    T0] [c0000000062ef830] [c000000000019d70] __switch_to+0x2e0/0x4a0
+>> [  401.419281][    T0] [c0000000062ef890] [c000000000b87228] __schedule+0x288/0x9b0
+>> [  401.419347][    T0] [c0000000062ef950] [c000000000b879b8] schedule+0x68/0x120
+>> [  401.419415][    T0] [c0000000062ef980] [c000000000b8e664] schedule_timeout+0x2a4/0x340
+>> [  401.419484][    T0] [c0000000062efa80] [c000000000b894ec] wait_for_completion+0x9c/0x170
+>> [  401.419552][    T0] [c0000000062efae0] [c0000000001ac85c] __wait_rcu_gp+0x19c/0x210
+>> [  401.419619][    T0] [c0000000062efb40] [c0000000001ac90c] synchronize_rcu_tasks_generic+0x3c/0x70
+>> [  401.419690][    T0] [c0000000062efbe0] [c00000000022a3dc] kprobe_optimizer+0x1dc/0x470
+>> [  401.419757][    T0] [c0000000062efc60] [c000000000136684] process_one_work+0x2f4/0x530
+>> [  401.419823][    T0] [c0000000062efd20] [c000000000138d28] worker_thread+0x78/0x570
+>> [  401.419891][    T0] [c0000000062efdb0] [c000000000142424] kthread+0x194/0x1a0
+>> [  401.419976][    T0] [c0000000062efe20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
+>> 
+>> But why is the synchronize_rcu_tasks() not completing?
+>> 
+> I think that it is because RCU is not fully initialized by that time.
 
-On Wed, Dec 02, 2020 at 10:15:44AM +0530, Naresh Kamboju wrote:
-> While running kselftests on arm64 db410c platform "BUG: Invalid wait context"
-> noticed at different runs this specific platform running stable-rc 5.9.12-rc1.
-> 
-> While running these two test cases we have noticed this BUG and not easily
-> reproducible.
-> 
-> # selftests: bpf: test_xdp_redirect.sh
-> # selftests: net: ip6_gre_headroom.sh
-> 
-> [  245.694901] kauditd_printk_skb: 100 callbacks suppressed
-> [  245.694913] audit: type=1334 audit(251.699:25757): prog-id=12883 op=LOAD
-> [  245.735658] audit: type=1334 audit(251.743:25758): prog-id=12884 op=LOAD
-> [  245.801299] audit: type=1334 audit(251.807:25759): prog-id=12885 op=LOAD
-> [  245.832034] audit: type=1334 audit(251.839:25760): prog-id=12886 op=LOAD
-> [  245.888601]
-> [  245.888631] =============================
-> [  245.889156] [ BUG: Invalid wait context ]
-> [  245.893071] 5.9.12-rc1 #1 Tainted: G        W
-> [  245.897056] -----------------------------
-> [  245.902091] pool/1279 is trying to lock:
-> [  245.906083] ffff000032fc1218
-> (&child->perf_event_mutex){+.+.}-{3:3}, at:
-> perf_event_exit_task+0x34/0x3a8
-> [  245.910085] other info that might help us debug this:
-> [  245.919539] context-{4:4}
-> [  245.924484] 1 lock held by pool/1279:
-> [  245.927087]  #0: ffff8000127819b8 (rcu_read_lock){....}-{1:2}, at:
-> dput+0x54/0x460
-> [  245.930739] stack backtrace:
-> [  245.938203] CPU: 1 PID: 1279 Comm: pool Tainted: G        W
-> 5.9.12-rc1 #1
-> [  245.941243] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> [  245.948621] Call trace:
-> [  245.955390]  dump_backtrace+0x0/0x1f8
-> [  245.957560]  show_stack+0x2c/0x38
-> [  245.961382]  dump_stack+0xec/0x158
-> [  245.964679]  __lock_acquire+0x59c/0x15c8
-> [  245.967978]  lock_acquire+0x124/0x4d0
-> [  245.972058]  __mutex_lock+0xa4/0x970
-> [  245.975615]  mutex_lock_nested+0x54/0x70
-> [  245.979261]  perf_event_exit_task+0x34/0x3a8
-> [  245.983168]  do_exit+0x394/0xad8
-> [  245.987420]  do_group_exit+0x4c/0xa8
-> [  245.990633]  get_signal+0x16c/0xb40
-> [  245.994193]  do_notify_resume+0x2ec/0x678
-> [  245.997404]  work_pending+0x8/0x200
-> 
+Yeah that would explain it :)
 
-For the PoV of lockdep, this means some one tries to acquire a mutex
-inside an RCU read-side critical section, which is bad, because one can
-not sleep (voluntarily) inside RCU.
+> The 36dadef23fcc ("kprobes: Init kprobes in early_initcall") patch
+> switches to early_initcall() that has a higher priority sequence than
+> core_initcall() that is used to complete an RCU setup in the rcu_set_runtime_mode().
 
-However I don't think it's the true case here, because 1) normally
-people are very careful not putting mutex or other sleepable locks
-inside RCU and 2) in the above splats, lockdep find the rcu read lock is
-held at dput() while the acquiring of the mutex is at ret_to_user(),
-clearly there is no call site (in the same context) from the RCU
-read-side critial section of dput() to ret_to_user().
+I was looking at debug_lockdep_rcu_enabled(), which is:
 
-One chance of hitting this is that there is a bug in context/irq tracing
-that makes the contexts of dput() and ret_to_user() as one contexts so
-that lockdep gets confused and reports a false postive.
+noinstr int notrace debug_lockdep_rcu_enabled(void)
+{
+	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+	       current->lockdep_recursion == 0;
+}
 
-FWIW, I think this might be related to some know issues for ARM64 with
-lockdep and irq tracing:
+That is not firing any warnings for me because rcu_scheduler_active is:
 
-	https://lore.kernel.org/lkml/20201119225352.GA5251@willie-the-truck/
+(gdb) p/x rcu_scheduler_active
+$1 = 0x1
 
-And Mark already has series to fix them:
+Which is:
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/irq-fixes
+#define RCU_SCHEDULER_INIT	1
 
-But I must defer to Mark for the latest fix ;-)
+But that's different to RCU_SCHEDULER_RUNNING, which is set in
+rcu_set_runtime_mode() as you mentioned:
 
-Regards,
-Boqun
+static int __init rcu_set_runtime_mode(void)
+{
+	rcu_test_sync_prims();
+	rcu_scheduler_active = RCU_SCHEDULER_RUNNING;
+	kfree_rcu_scheduler_running();
+	rcu_test_sync_prims();
+	return 0;
+}
 
-> and BUG in an other run,
-> 
-> [ 1012.068407] audit: type=1700 audit(1018.803:25886): dev=eth0 prom=0
-> old_prom=256 auid=4294967295 uid=0 gid=0 ses=4294967295
-> [ 1012.250561] IPv6: ADDRCONF(NETDEV_CHANGE): swp1: link becomes ready
-> [ 1012.251298] IPv6: ADDRCONF(NETDEV_CHANGE): h1: link becomes ready
-> [ 1012.252559]
-> [ 1012.261892] =============================
-> [ 1012.263453] [ BUG: Invalid wait context ]
-> [ 1012.267363] 5.9.12-rc1 #1 Tainted: G        W
-> [ 1012.271354] -----------------------------
-> [ 1012.276389] systemd/454 is trying to lock:
-> [ 1012.280381] ffff00003985a918 (&mm->mmap_lock){++++}-{3:3}, at:
-> __might_fault+0x60/0xa8
-> [ 1012.284378] other info that might help us debug this:
-> [ 1012.292275] context-{4:4}
-> [ 1012.297396] 1 lock held by systemd/454:
-> [ 1012.299997]  #0: ffff8000127d1f38 (rcu_read_lock){....}-{1:2}, at:
-> path_init+0x40/0x718
-> [ 1012.303649] stack backtrace:
-> [ 1012.311638] CPU: 2 PID: 454 Comm: systemd Tainted: G        W
->   5.9.12-rc1 #1
-> [ 1012.314760] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> [ 1012.322139] Call trace:
-> [ 1012.329084]  dump_backtrace+0x0/0x1f8
-> [ 1012.331254]  show_stack+0x2c/0x38
-> [ 1012.335075]  dump_stack+0xec/0x158
-> [ 1012.338371]  __lock_acquire+0x59c/0x15c8
-> [ 1012.341672]  lock_acquire+0x124/0x4d0
-> [ 1012.345751]  __might_fault+0x84/0xa8
-> [ 1012.349311]  cp_new_stat+0x114/0x1b8
-> [ 1012.352956]  __do_sys_newfstat+0x44/0x70
-> [ 1012.356513]  __arm64_sys_newfstat+0x24/0x30
-> [ 1012.358652] IPv6: ADDRCONF(NETDEV_CHANGE): swp3: link becomes ready
-> [ 1012.360424]  el0_svc_common.constprop.3+0x7c/0x198
-> [ 1012.370575]  do_el0_svc+0x34/0xa0
-> [ 1012.375437]  el0_sync_handler+0x16c/0x210
-> [ 1012.378824]  el0_sync+0x140/0x180
-> 
-> 
-> Full test log links,
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3516257/suite/linux-log-parser/test/check-kernel-bug-1997042/log
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3515038/suite/linux-log-parser/test/check-kernel-bug-1996797/log
-> 
-> metadata:
->   git branch: linux-5.9.y
->   git commit: fb49ad2107f4b740257c84ec2991fc6afb447f53
->   git describe: v5.9.11-153-gfb49ad2107f4
->   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->   kernel-config:
-> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-stable-rc-5.9/44/config
-> 
-> -- 
-> Linaro LKFT
-> https://lkft.linaro.org
+The comment on rcu_scheduler_active implies that once we're at
+RCU_SCHEDULER_INIT things should work:
+
+/*
+ * The rcu_scheduler_active variable is initialized to the value
+ * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before the
+ * first task is spawned.  So when this variable is RCU_SCHEDULER_INACTIVE,
+ * RCU can assume that there is but one task, allowing RCU to (for example)
+ * optimize synchronize_rcu() to a simple barrier().  When this variable
+ * is RCU_SCHEDULER_INIT, RCU must actually do all the hard work required
+ * to detect real grace periods.  This variable is also used to suppress
+ * boot-time false positives from lockdep-RCU error checking.  Finally, it
+ * transitions from RCU_SCHEDULER_INIT to RCU_SCHEDULER_RUNNING after RCU
+ * is fully initialized, including all of its kthreads having been spawned.
+ */
+
+
+So I'm not sure, the comments and the debug checks imply that it is OK
+for kprobes to be using RCU this early.
+
+I guess I'll keep digging.
+
+cheers
+
