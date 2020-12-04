@@ -2,217 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5BFC4743B
-	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 14:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A68D2C4361A
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C8CE222AC
-	for <rcu@archiver.kernel.org>; Thu,  3 Dec 2020 14:35:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 76D6A22C9C
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:22:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436662AbgLCOfb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Dec 2020 09:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S1730159AbgLDSWf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Dec 2020 13:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436632AbgLCOfa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:35:30 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3930C061A4E
-        for <rcu@vger.kernel.org>; Thu,  3 Dec 2020 06:34:49 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id s9so2722124ljo.11
-        for <rcu@vger.kernel.org>; Thu, 03 Dec 2020 06:34:49 -0800 (PST)
+        with ESMTP id S1729459AbgLDSWc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:22:32 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1ABC061A4F
+        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 10:21:52 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id c7so6802559edv.6
+        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 10:21:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OAGSbbnxeP5a3A1okDwrCv5FWNN6LaKgL8wXrABXm7Y=;
-        b=YECvWSHcc306CUnahLtYRBS/6dz+Rx5eMAvoL7WH3g3YAep5JTY3iRwkg2dborVs6s
-         XRkr0782hDXSfbL0bMrUcrWrDKpUDFjEaApXnQB3HIbutlTyjWV7yYk3CGXa1UKJM5kc
-         cHqkrRMI8kcoi1J+Yk0QoIC/3MKSDLHHoML8YDz4oxfNydrewhXo1CMIzhG4GAh0sRkC
-         +MHAhP3fRj5avp4VxgtjICbSM5sYXVPObTjR8piZjWuyhqN50zmsFOZfMWRfm1Y4jQjI
-         MBcJ83yutaNS2X1Zq4z+xesXhOH33wnh1Z/qlNar9usblAm6Q0Z+clUT30eMzFVepZos
-         LksA==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ZRVh9nEjQvUMIF508xcL3n/raN8xu3HvHHn5B7tzkG0=;
+        b=EL5y9hBpj6GRCi8l2vMDH/FJOG7I547GwjN3OeZBqD9nmmw0IxEmOsLiaNfedZBxuH
+         uo9dBI345APAYZYJLOY4NQd1d0GfZzxIMQv0ZKIbg8aj4tm5Ea8h2h93Pgs1qSxhgK43
+         pnL56vHL4OqCk4budJq7WliGWde5V/7JnsLAfd9CH5hxrMUpfTYppRgzIWEcKA1fArrp
+         x9CwcP9mn+vU+lJGNWLh3JAQikVmuQ+WDocQOfOwmAcHpQ6aG3oZ/9MUjroSge+kQmQd
+         xD6rw8KRt3YvK4AEQ/i0Q1JedpG8SBPITyje4+hhxHAaIKXdCCMTn7RHEbFI51JviXbf
+         g9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OAGSbbnxeP5a3A1okDwrCv5FWNN6LaKgL8wXrABXm7Y=;
-        b=TUt3v/5izfCA0jaEdpP1Z5ZilVtWUP6n5uDV9w4FfIayCr9QU/IXS20QVaRzcAyvd/
-         286fNUjPvRzvjSn+SJTWmiJP/zbCncW7tzTV+ligML+gM13JKNs7TIEFdj4mWeTc0GBo
-         sQu9zuUROkSy+2NO6wPbnlUVOTcpSRIGH8XeNtf8oXzs6J4/CF49xcZpfHjzZwe3iAc7
-         kIvjS/LdmUepSHKNQm/HhH4SJJX3731QrgR4m1bAqAoOnAwnYisOZFpF3Y0vyZ+mtS6F
-         yPjjnhct4rMlBAQlgQLDOTwwyI867d/m3Yba8d2aOQS9pawBYocsqra0AButo4G6p+vY
-         dJ+w==
-X-Gm-Message-State: AOAM533u3W3oWkccsii3jA16X1fKKDoALG50PEN5RfN2qTO72Kc70310
-        6fh/F56DXzVIYxM1LQ2/b2Zpj/ijmoU=
-X-Google-Smtp-Source: ABdhPJyLdlhLM99TE1g36vvj7IjGLrf5sJBwQct07DvCoiB6j36xJBBycfmWcEwpP90NNMOFwSJCWQ==
-X-Received: by 2002:a05:651c:1051:: with SMTP id x17mr1434696ljm.56.1607006088126;
-        Thu, 03 Dec 2020 06:34:48 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m13sm587971lfb.14.2020.12.03.06.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 06:34:47 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 3 Dec 2020 15:34:45 +0100
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Daniel Axtens <dja@axtens.net>, rcu@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: powerpc 5.10-rcN boot failures with RCU_SCALE_TEST=m
-Message-ID: <20201203143445.GA22204@pc636>
-References: <87eekfh80a.fsf@dja-thinkpad.axtens.net>
- <87v9dkuwy3.fsf@mpe.ellerman.id.au>
- <20201202143955.GA12300@pc636>
- <87sg8nv277.fsf@mpe.ellerman.id.au>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ZRVh9nEjQvUMIF508xcL3n/raN8xu3HvHHn5B7tzkG0=;
+        b=aRKbI2un9DG2+mQSYRX2FExlzHBttQSTch5VigUfMySkiOHg/p+4Ia5AVL85CJ3di0
+         Pv+BNuljw409eTSVFQAUGTXuW+6m3bxzjY4KV7i9Dwd6UMvD0Vb/5PVeGseeSWRFQ3zx
+         IGsL3Rx8Qz9+t0ErxWCEM8AO9199CzaI6vpWTbwzItC82lmciZoTvs0rE6GqZSBieZsZ
+         SYbZ2mnci/lftfZh69kO8vTrgrKbbYODElgqHxtrgDfkTD5eMFZC6CnsFmUJ8KG2l/Tj
+         GRxNw9LCsGcp7k7MdN1pFzJUUNCgb/aLxyKXUGq7qJdlv3Hr9ep97PWeCCqCv3bbzAkp
+         AfQw==
+X-Gm-Message-State: AOAM530jtFZpJrJHzpVwmNQPFT/9TaSnLFiR6JrK6QostAu5jzEmUrqa
+        +QfBzC/m5DS+KDBgeTDLQrhu2R3nJtABrx5P3Uxn30UDTSQHWksM
+X-Google-Smtp-Source: ABdhPJxhhWwBPD60dOctXmgKnIbCBK7ZM990qyfx3XJkIdxJ4AWmvXsllEsnGRPblHC7nDFEIFiU8tWNG27BjMCSIdo=
+X-Received: by 2002:aa7:da8f:: with SMTP id q15mr8747868eds.239.1607106110881;
+ Fri, 04 Dec 2020 10:21:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg8nv277.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 4 Dec 2020 23:51:39 +0530
+Message-ID: <CA+G9fYuJF-L+qHJ3ufqD+M2w20LgeqMC0rhqv7oZagOA7iJMDg@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in mutex_spin_on_owner+0xef/0x1b0
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, lkft-triage@lists.linaro.org,
+        rcu@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <treding@nvidia.com>,
+        mathias.nyman@linux.intel.com, Qian Cai <cai@lca.pw>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 05:22:20PM +1100, Michael Ellerman wrote:
-> Uladzislau Rezki <urezki@gmail.com> writes:
-> > On Thu, Dec 03, 2020 at 01:03:32AM +1100, Michael Ellerman wrote:
-> ...
-> >> 
-> >> The SMP bringup stalls because _cpu_up() is blocked trying to take
-> >> cpu_hotplug_lock for writing:
-> >> 
-> >> [  401.403132][    T0] task:swapper/0       state:D stack:12512 pid:    1 ppid:     0 flags:0x00000800
-> >> [  401.403502][    T0] Call Trace:
-> >> [  401.403907][    T0] [c0000000062c37d0] [c0000000062c3830] 0xc0000000062c3830 (unreliable)
-> >> [  401.404068][    T0] [c0000000062c39b0] [c000000000019d70] __switch_to+0x2e0/0x4a0
-> >> [  401.404189][    T0] [c0000000062c3a10] [c000000000b87228] __schedule+0x288/0x9b0
-> >> [  401.404257][    T0] [c0000000062c3ad0] [c000000000b879b8] schedule+0x68/0x120
-> >> [  401.404324][    T0] [c0000000062c3b00] [c000000000184ad4] percpu_down_write+0x164/0x170
-> >> [  401.404390][    T0] [c0000000062c3b50] [c000000000116b68] _cpu_up+0x68/0x280
-> >> [  401.404475][    T0] [c0000000062c3bb0] [c000000000116e70] cpu_up+0xf0/0x140
-> >> [  401.404546][    T0] [c0000000062c3c30] [c00000000011776c] bringup_nonboot_cpus+0xac/0xf0
-> >> [  401.404643][    T0] [c0000000062c3c80] [c000000000eea1b8] smp_init+0x40/0xcc
-> >> [  401.404727][    T0] [c0000000062c3ce0] [c000000000ec43dc] kernel_init_freeable+0x1e0/0x3a0
-> >> [  401.404799][    T0] [c0000000062c3db0] [c000000000011ec4] kernel_init+0x24/0x150
-> >> [  401.404958][    T0] [c0000000062c3e20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
-> >> 
-> >> It can't get it because kprobe_optimizer() has taken it for read and is now
-> >> blocked waiting for synchronize_rcu_tasks():
-> >> 
-> >> [  401.418808][    T0] task:kworker/0:1     state:D stack:13392 pid:   12 ppid:     2 flags:0x00000800
-> >> [  401.418951][    T0] Workqueue: events kprobe_optimizer
-> >> [  401.419078][    T0] Call Trace:
-> >> [  401.419121][    T0] [c0000000062ef650] [c0000000062ef710] 0xc0000000062ef710 (unreliable)
-> >> [  401.419213][    T0] [c0000000062ef830] [c000000000019d70] __switch_to+0x2e0/0x4a0
-> >> [  401.419281][    T0] [c0000000062ef890] [c000000000b87228] __schedule+0x288/0x9b0
-> >> [  401.419347][    T0] [c0000000062ef950] [c000000000b879b8] schedule+0x68/0x120
-> >> [  401.419415][    T0] [c0000000062ef980] [c000000000b8e664] schedule_timeout+0x2a4/0x340
-> >> [  401.419484][    T0] [c0000000062efa80] [c000000000b894ec] wait_for_completion+0x9c/0x170
-> >> [  401.419552][    T0] [c0000000062efae0] [c0000000001ac85c] __wait_rcu_gp+0x19c/0x210
-> >> [  401.419619][    T0] [c0000000062efb40] [c0000000001ac90c] synchronize_rcu_tasks_generic+0x3c/0x70
-> >> [  401.419690][    T0] [c0000000062efbe0] [c00000000022a3dc] kprobe_optimizer+0x1dc/0x470
-> >> [  401.419757][    T0] [c0000000062efc60] [c000000000136684] process_one_work+0x2f4/0x530
-> >> [  401.419823][    T0] [c0000000062efd20] [c000000000138d28] worker_thread+0x78/0x570
-> >> [  401.419891][    T0] [c0000000062efdb0] [c000000000142424] kthread+0x194/0x1a0
-> >> [  401.419976][    T0] [c0000000062efe20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
-> >> 
-> >> But why is the synchronize_rcu_tasks() not completing?
-> >> 
-> > I think that it is because RCU is not fully initialized by that time.
-> 
-> Yeah that would explain it :)
-> 
-> > The 36dadef23fcc ("kprobes: Init kprobes in early_initcall") patch
-> > switches to early_initcall() that has a higher priority sequence than
-> > core_initcall() that is used to complete an RCU setup in the rcu_set_runtime_mode().
-> 
-> I was looking at debug_lockdep_rcu_enabled(), which is:
-> 
-> noinstr int notrace debug_lockdep_rcu_enabled(void)
-> {
-> 	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
-> 	       current->lockdep_recursion == 0;
-> }
-> 
-> That is not firing any warnings for me because rcu_scheduler_active is:
-> 
-> (gdb) p/x rcu_scheduler_active
-> $1 = 0x1
-> 
-> Which is:
-> 
-> #define RCU_SCHEDULER_INIT	1
-> 
+LKFT started testing KCSAN enabled kernel from the linux next tree.
+Here we have found BUG: KCSAN: data-race in mutex_spin_on_owner
+and several more KCSAN BUGs.
 
-Agree with that.
+This report is from an x86_64 machine clang-11 linux next 20201201.
+Since we are running for the first time we do not call this regression.
 
-> But that's different to RCU_SCHEDULER_RUNNING, which is set in
-> rcu_set_runtime_mode() as you mentioned:
-> 
-> static int __init rcu_set_runtime_mode(void)
-> {
-> 	rcu_test_sync_prims();
-> 	rcu_scheduler_active = RCU_SCHEDULER_RUNNING;
-> 	kfree_rcu_scheduler_running();
-> 	rcu_test_sync_prims();
-> 	return 0;
-> }
-> 
-BTW, since you can reproduce it and have a test setup, could you please
-check that:
+[    4.745161] usbcore: registered new interface driver cdc_ether
+[    4.751281] ==================================================================
+[    4.756653] usbcore: registered new interface driver net1080
+[    4.752139] BUG: KCSAN: data-race in mutex_spin_on_owner+0xef/0x1b0
+[    4.752139]
+[    4.752139] race at unknown origin, with read to 0xffff90a80098b034
+of 4 bytes by task 252 on cpu 1:
+[    4.769781] usbcore: registered new interface driver cdc_subset
+[    4.752139]  mutex_spin_on_owner+0xef/0x1b0
+[    4.752139]  __mutex_lock+0x69d/0x820
+[    4.752139]  __mutex_lock_slowpath+0x13/0x20
+[    4.781657] usbcore: registered new interface driver zaurus
+[    4.752139]  mutex_lock+0x9d/0xb0
+[    4.752139]  ata_eh_acquire+0x2e/0x80
+[    4.752139]  ata_msleep+0x91/0xa0
+[    4.792317] usbcore: registered new interface driver cdc_ncm
+[    4.752139]  sata_link_debounce+0x1ad/0x2f0
+[    4.752139]  sata_link_resume+0x32f/0x4a0
+[    4.752139]  sata_link_hardreset+0x456/0x640
+[    4.802369] usbcore: registered new interface driver r8153_ecm
+[    4.752139]  ahci_do_hardreset+0x177/0x230
+[    4.752139]  ahci_hardreset+0x23/0x40
+[    4.752139]  ata_eh_reset+0x91e/0x1bb0
+[    4.810641] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[    4.810482]  ata_eh_recover+0x79b/0x2bd0
+[    4.810482]  sata_pmp_error_handler+0x7d1/0x1340
+[    4.810482]  ahci_error_handler+0x7c/0xc0
+[    4.819247] ehci-pci: EHCI PCI platform driver
+[    4.810482]  ata_scsi_port_error_handler+0x708/0xd30
+[    4.810482]  ata_scsi_error+0x128/0x160
+[    4.826321] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+[    4.810482]  scsi_error_handler+0x26d/0x700
+[    4.810482]  kthread+0x20b/0x220
+[    4.836069] ohci-pci: OHCI PCI platform driver
+[    4.810482]  ret_from_fork+0x22/0x30
+[    4.810482]
+[    4.844397] uhci_hcd: USB Universal Host Controller Interface driver
+[    4.810482] Reported by Kernel Concurrency Sanitizer on:
+[    4.810482] CPU: 1 PID: 252 Comm: scsi_eh_1 Not tainted
+5.10.0-rc6-next-20201201 #2
+[    4.810482] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[    4.855343] xhci_hcd 0000:00:14.0: xHCI Host Controller
+[    4.810482] ==================================================================
 
-<snip>
--core_initcall(rcu_set_runtime_mode);
-+early_initcall(rcu_set_runtime_mode);
-<snip>
+metadata:
+    git_repo: https://gitlab.com/aroxell/lkft-linux-next
+    target_arch: x86
+    toolchain: clang-11
+    git_describe: next-20201201
+    kernel_version: 5.10.0-rc6
+    download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
 
-Just in case. The the synchronize_rcu_tasks() gets blocked:
+full test log link,
+https://lkft.validation.linaro.org/scheduler/job/2002643#L831
 
-<snip>
-void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
-    if (crcu_array[j] == crcu_array[i])
-                                break;
-        if (j == i) {
-            wait_for_completion(&rs_array[i].completion); <--- here
-            destroy_rcu_head_on_stack(&rs_array[i].head);
-        }
-...
-<snip>
-
-but that is obvious when looking at your full traces.
-
-> The comment on rcu_scheduler_active implies that once we're at
-> RCU_SCHEDULER_INIT things should work:
-> 
-> /*
->  * The rcu_scheduler_active variable is initialized to the value
->  * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before the
->  * first task is spawned.  So when this variable is RCU_SCHEDULER_INACTIVE,
->  * RCU can assume that there is but one task, allowing RCU to (for example)
->  * optimize synchronize_rcu() to a simple barrier().  When this variable
->  * is RCU_SCHEDULER_INIT, RCU must actually do all the hard work required
->  * to detect real grace periods.  This variable is also used to suppress
->  * boot-time false positives from lockdep-RCU error checking.  Finally, it
->  * transitions from RCU_SCHEDULER_INIT to RCU_SCHEDULER_RUNNING after RCU
->  * is fully initialized, including all of its kthreads having been spawned.
->  */
-> 
-> 
-> So I'm not sure, the comments and the debug checks imply that it is OK
-> for kprobes to be using RCU this early.
->
-Sounds like it should be possible.
-
-> 
-> I guess I'll keep digging.
-> 
-Thank you! I also will dig further with that even though i do not have a setup
-for reproducing it.
-
---
-Vlad Rezki
+-- 
+Linaro LKFT
+https://lkft.linaro.org
