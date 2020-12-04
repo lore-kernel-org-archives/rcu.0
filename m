@@ -7,112 +7,99 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B77E4C4361A
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED7F5C4361A
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 19:04:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8AD4F22CA0
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:52:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 92CDE22CA0
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 19:04:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730391AbgLDSwK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Dec 2020 13:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S1727997AbgLDTEo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Dec 2020 14:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729780AbgLDSwJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:52:09 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27602C061A51
-        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 10:51:29 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id 7so10194260ejm.0
-        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 10:51:29 -0800 (PST)
+        with ESMTP id S1726021AbgLDTEo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:04:44 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93248C0613D1
+        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 11:04:03 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id d18so6922083edt.7
+        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 11:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:from:date:message-id:subject:to:cc;
-        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
-        b=ci93SS+CG6n0v7E4m7ULxrSPf6CyS56AlDA1CA3gLog8XB8KPLFjtY02DPCC+YmAP4
-         NTSvdsS5QxuDfGgi/5R8/BPFPR4lAhDEO8xVX1Bls2UNztuEGA8hKBEvArcbZdlCdJ2A
-         1cKBeXmpgNxN0zSk6K6LfBaBlwFOKHTjylz9QYfMs6H8yzKiS7yeBQHbV1Ag3fb5XReo
-         s8+XEqToy4hKB79jSxoqC6b2K1M0P+1wHgJQhJ0VfscYwQO1UyRrGjYV5rkjGpGs+3l3
-         SZoQGRluKFL7En+aVsfL2tne9XZnX12h/In1vr7/vOHoZLoST6je8O+GsYsV7c5FzIwB
-         5FZQ==
+        bh=MqRGZy01kstwz9ClfAxBNg8au7mjb5Di2jtSuxAThnw=;
+        b=cKh7YAPyiW5dF2YKcQ6YErWfHBKONF7uMnPY9TYmHN7gPmV7kfqvsO4K0lg++uClO4
+         /NKlA32KStz5R5xgk/EmX5yO3AeBxOVahoO7Cr/jlnA8KqQqzxvURXxN06PLGzr6WMff
+         onAd2r/QLhG3fZ+UTnXB7iwVosDOUPxQfGz4C8bJhE2yN1OhePi+9XpIiqRjOES4G6Us
+         PH6bCU13CsY7mDMvTvYQ/b13hFDg5UwUmsOMVIFCogK/Kz+7mHZ64tLeW9PR81vJ+une
+         J/od/fTCV8y1bBhUuty/kWa4a3dAtkQmR1L+3v7h8E1Ampsvk9MEVlznXOkGJ/x6L0eQ
+         FnYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
-        b=LGf/qhLfAcAKzQss8rT+3yVb4U5zI7OOZViO/zDpNksQsyljDHJvXEKdRqAhHhrgwd
-         xLiX7CCQUPkdnFfOIQbpop2QiA3t0LAMNONmdi+bXsLewSUSpqwqQ6C/fgbZarCsMSGK
-         d8MKMrzpg4YmIiuqrsFR03JLf9fTNLAUY5esJ24AzHx5AtnGxFz6LX4IflwWTGNnqBKe
-         yKmFQjCgzFMcyHWjLCUlvoif4hpQI449sBIpDI+BvEFd9c8QVjCzmGB2Qx51D3fLlJdv
-         uESFmvRc5XnZNEpVMwuB7cVERk0lsBgm0pHlmj8tdmXkvSzzEJsT0hOoR0k74iU7k4RT
-         x+Iw==
-X-Gm-Message-State: AOAM5332pPJ8X/O53dxEgoEi1IU/PmDVtd+wdyOpSp1iSFddb6fj1TQt
-        il6WU+TSYQIkUJsFSTzShl7WVmvz8i1iw1wQ2KMVcw==
-X-Google-Smtp-Source: ABdhPJwYRfoc/E4oLYnRcv+D4dfKVOGaL668JMsf1AKzUeQ8rQO0PcEq3B1noPj2MzArOpC8sYGsrjVD7IMkxypyHA4=
-X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr8195458eji.133.1607107887772;
- Fri, 04 Dec 2020 10:51:27 -0800 (PST)
+        bh=MqRGZy01kstwz9ClfAxBNg8au7mjb5Di2jtSuxAThnw=;
+        b=H/QLJAsQZ461xfCjop9j/BcdtBGzFHDiHrlQW/9coSVKbaiMR3TrFldka45go64ajd
+         EUNA4hpGs2Qegyds0UtIewqpsbQXBo/bZKeJsjome3RJKX38dCT5EwdFvP86cHYExuq4
+         h5xiArDD/xFRx4r034XyebCaF3QWrgUfgrKOMnAHfIxVhGq8m7M8gYhRWr0UVpmPj9lk
+         zRVNNT0RwQS7CKO47hy/kM4KagfStO+FAG0Z5B+zwQrtZ9IqVe3q8tFG8uF3/bDpldau
+         MsJDRXO2hrxgXCsGHy3Sa3byJ8m6azyKkNqNu/IcSug78E8NRJgO+7m4Vnl5ppdiNaHl
+         czqg==
+X-Gm-Message-State: AOAM533/u65N3LObDNpl+5pr8J7dBe7jR8lRaAUDr0LQZ9tPfwhoeaHQ
+        6HI/g0muNe2r0Z28dIgm4dD7FLsLCoCo76+iNeU6YQ==
+X-Google-Smtp-Source: ABdhPJwhhMhsQr+VWTK66ALmYBtYgDGk3593gFW7FRQCJRH8kC4J57TPK3zbqIHhm1yF098qCGo9CPVlPYN9XjZIZrQ=
+X-Received: by 2002:aa7:da8f:: with SMTP id q15mr8904092eds.239.1607108642178;
+ Fri, 04 Dec 2020 11:04:02 -0800 (PST)
 MIME-Version: 1.0
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 5 Dec 2020 00:21:16 +0530
-Message-ID: <CA+G9fYvGeHv-iPy2J3tdYGfr1A7ZuUrZystuQ9tDxV7vbP8iPg@mail.gmail.com>
-Subject: BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
-To:     linux-mm <linux-mm@kvack.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
+Date:   Sat, 5 Dec 2020 00:33:51 +0530
+Message-ID: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
+To:     open list <linux-kernel@vger.kernel.org>,
         kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Marco Elver <elver@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, fweisbec@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 LKFT started testing KCSAN enabled kernel from the linux next tree.
-Here we have found BUG: KCSAN: data-race in dec_zone_page_state /
-write_cache_pages
+Here we have found BUG: KCSAN: data-race in tick_nohz_next_event /
+tick_nohz_stop_tick
 
 This report is from an x86_64 machine clang-11 linux next 20201201.
 Since we are running for the first time we do not call this regression.
 
-[   45.484972] BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
-[   45.492030]
-[   45.493532] read-write (marked) to 0xffffd4e284455380 of 8 bytes by
-task 269 on cpu 0:
-[   45.501453]  write_cache_pages+0x270/0x6a0
-[   45.505560]  generic_writepages+0x63/0xa0
-[   45.509582]  blkdev_writepages+0xe/0x10
-[   45.513429]  do_writepages+0x79/0x140
-[   45.517096]  __writeback_single_inode+0x6d/0x390
-[   45.521714]  writeback_sb_inodes+0x4fd/0xbe0
-[   45.525986]  wb_writeback+0x42e/0x690
-[   45.529652]  wb_do_writeback+0x4d2/0x530
-[   45.533578]  wb_workfn+0xc8/0x4a0
-[   45.536897]  process_one_work+0x4a6/0x830
-[   45.540908]  worker_thread+0x5f7/0xaa0
-[   45.544661]  kthread+0x20b/0x220
-[   45.547893]  ret_from_fork+0x22/0x30
-[   45.551471]
-[   45.552963] read to 0xffffd4e284455380 of 8 bytes by task 499 on cpu 2:
-[   45.559576]  dec_zone_page_state+0x1d/0x140
-[   45.563764]  clear_page_dirty_for_io+0x2ab/0x3a0
-[   45.568382]  write_cache_pages+0x388/0x6a0
-[   45.572480]  generic_writepages+0x63/0xa0
-[   45.576495]  blkdev_writepages+0xe/0x10
-[   45.580334]  do_writepages+0x79/0x140
-[   45.584000]  __filemap_fdatawrite_range+0x155/0x190
-[   45.588880]  file_write_and_wait_range+0x51/0xa0
-[   45.593498]  blkdev_fsync+0x45/0x70
-[   45.596991]  __x64_sys_fsync+0xda/0x120
-[   45.600830]  do_syscall_64+0x3b/0x50
-[   45.604409]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   45.609460]
-[   45.610950] Reported by Kernel Concurrency Sanitizer on:
-[   45.616259] CPU: 2 PID: 499 Comm: mkfs.ext4 Not tainted
+[   47.811425] BUG: KCSAN: data-race in tick_nohz_next_event /
+tick_nohz_stop_tick
+[   47.818738]
+[   47.820239] write to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 2:
+[   47.826766]  tick_nohz_stop_tick+0x8b/0x310
+[   47.830951]  tick_nohz_idle_stop_tick+0xcb/0x170
+[   47.835571]  do_idle+0x193/0x250
+[   47.838804]  cpu_startup_entry+0x25/0x30
+[   47.842728]  start_secondary+0xa0/0xb0
+[   47.846482]  secondary_startup_64_no_verify+0xc2/0xcb
+[   47.851531]
+[   47.853034] read to 0xffffffffa4cbe920 of 4 bytes by task 0 on cpu 3:
+[   47.859473]  tick_nohz_next_event+0x165/0x1e0
+[   47.863831]  tick_nohz_get_sleep_length+0x94/0xd0
+[   47.868539]  menu_select+0x250/0xac0
+[   47.872116]  cpuidle_select+0x47/0x50
+[   47.875781]  do_idle+0x17c/0x250
+[   47.879015]  cpu_startup_entry+0x25/0x30
+[   47.882942]  start_secondary+0xa0/0xb0
+[   47.886694]  secondary_startup_64_no_verify+0xc2/0xcb
+[   47.891743]
+[   47.893234] Reported by Kernel Concurrency Sanitizer on:
+[   47.898541] CPU: 3 PID: 0 Comm: swapper/3 Not tainted
 5.10.0-rc6-next-20201201 #2
-[   45.623908] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+[   47.906017] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
 2.2 05/23/2018
 
 metadata:
@@ -123,7 +110,7 @@ metadata:
     download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
 
 Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/2002643#L1866
+https://lkft.validation.linaro.org/scheduler/job/2002643#L2019
 
 -- 
 Linaro LKFT
