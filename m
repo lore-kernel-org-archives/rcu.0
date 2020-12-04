@@ -4,112 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11997C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B77E4C4361A
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:52:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF21B22582
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8AD4F22CA0
+	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 18:52:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387477AbgLDSfz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Dec 2020 13:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        id S1730391AbgLDSwK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Dec 2020 13:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgLDSfz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:35:55 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B77C061A52
-        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 10:35:15 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id b2so6848527edm.3
-        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 10:35:15 -0800 (PST)
+        with ESMTP id S1729780AbgLDSwJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:52:09 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27602C061A51
+        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 10:51:29 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so10194260ejm.0
+        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 10:51:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:from:date:message-id:subject:to:cc;
-        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
-        b=UoAtycuWbYXPQuHZa93zSkhDkJSIw0b5/ox+c+olIK8DcmAbppcTQ0S5nqiX68rqak
-         O0OcRXvbaYs59/0lhZyyDXuBE89LpLU/4sCiBqYoY+7kZml0b8FecNEzYnsNUW08Ihz5
-         QF7SSKQPyyDDQa2ClfTAFtqizjUB+y8xrZebWbkw7H4Qp0JbSS6Bojpr/Kkqn2+Oksnw
-         wT3LhcfoTMGVZj4tJFFM5mxJMYg2KBifKrCXcs7TzgB+i0DrF+DvPoqZuF/7IlEChaWv
-         6gSm3TUC/frYOd6VZB2UEePpomfz08LS4mRk9rLZ8P3hSyX0ElAYgJiZ6EcXcffOOCH/
-         GBxQ==
+        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
+        b=ci93SS+CG6n0v7E4m7ULxrSPf6CyS56AlDA1CA3gLog8XB8KPLFjtY02DPCC+YmAP4
+         NTSvdsS5QxuDfGgi/5R8/BPFPR4lAhDEO8xVX1Bls2UNztuEGA8hKBEvArcbZdlCdJ2A
+         1cKBeXmpgNxN0zSk6K6LfBaBlwFOKHTjylz9QYfMs6H8yzKiS7yeBQHbV1Ag3fb5XReo
+         s8+XEqToy4hKB79jSxoqC6b2K1M0P+1wHgJQhJ0VfscYwQO1UyRrGjYV5rkjGpGs+3l3
+         SZoQGRluKFL7En+aVsfL2tne9XZnX12h/In1vr7/vOHoZLoST6je8O+GsYsV7c5FzIwB
+         5FZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=VazwCTbw4qFEcnDS99kE7+UPTpKgFLvwXrTcJ/OGLV8=;
-        b=b3YcDEPHyrVUSj6T8tJBtqR9vAmDDzJ5+yNR2mPgr4iSu5r3XYAjeSMNRVsYHPhKxM
-         oayxrsaJWAhIJeGMScsftstE77WB613c0lITQgGYXmCFCI/91qbRjAVv9uthvS70qMXe
-         0TkvQ7NkL9r5bx4ImzEA0FuZwwQREbQyT4jsRr8xF60trokpitPdy7oNy4qUJxg0rRay
-         i5gOoTBTptvovuXd1IYwxDDZUmK3uKX3ThMZAHx5kb94u3W7BxTgo4eriN6pmd2ozZ6T
-         CzZ9LBX/vyJ/MFaipnrp26GsPuISLusuyC6W7Vitn7wXYpyjpzyUOWcVX/lihL3uA9Mj
-         R6cg==
-X-Gm-Message-State: AOAM530wzwIL5z2qPOxjYwzLMRm3wCDAjQIoUOHqXt86wc8+/KdlybsP
-        d+VsFL+LKnL2WkJeyXUxbQnwOGzBkqOnOVfax122ng==
-X-Google-Smtp-Source: ABdhPJySBMs5wep5prKn4dGE0xz5+ByoMr95Z/1QhLJVmuU6vp5fZu61EN8FWgCSAJCp3cpH5tedG2S4/91FYDuyvnU=
-X-Received: by 2002:aa7:d74d:: with SMTP id a13mr5352244eds.78.1607106913506;
- Fri, 04 Dec 2020 10:35:13 -0800 (PST)
+        bh=i6PGv4ZUKAWV06uB1yhL9icgz9mN5bj5ndLK9GnWxk4=;
+        b=LGf/qhLfAcAKzQss8rT+3yVb4U5zI7OOZViO/zDpNksQsyljDHJvXEKdRqAhHhrgwd
+         xLiX7CCQUPkdnFfOIQbpop2QiA3t0LAMNONmdi+bXsLewSUSpqwqQ6C/fgbZarCsMSGK
+         d8MKMrzpg4YmIiuqrsFR03JLf9fTNLAUY5esJ24AzHx5AtnGxFz6LX4IflwWTGNnqBKe
+         yKmFQjCgzFMcyHWjLCUlvoif4hpQI449sBIpDI+BvEFd9c8QVjCzmGB2Qx51D3fLlJdv
+         uESFmvRc5XnZNEpVMwuB7cVERk0lsBgm0pHlmj8tdmXkvSzzEJsT0hOoR0k74iU7k4RT
+         x+Iw==
+X-Gm-Message-State: AOAM5332pPJ8X/O53dxEgoEi1IU/PmDVtd+wdyOpSp1iSFddb6fj1TQt
+        il6WU+TSYQIkUJsFSTzShl7WVmvz8i1iw1wQ2KMVcw==
+X-Google-Smtp-Source: ABdhPJwYRfoc/E4oLYnRcv+D4dfKVOGaL668JMsf1AKzUeQ8rQO0PcEq3B1noPj2MzArOpC8sYGsrjVD7IMkxypyHA4=
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr8195458eji.133.1607107887772;
+ Fri, 04 Dec 2020 10:51:27 -0800 (PST)
 MIME-Version: 1.0
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 5 Dec 2020 00:05:02 +0530
-Message-ID: <CA+G9fYvhvZtDYVBo4kj9OkKY_vVFSa6EbWz99iCmRPojExRieA@mail.gmail.com>
-Subject: BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq / xprt_request_transmit
-To:     kasan-dev <kasan-dev@googlegroups.com>,
+Date:   Sat, 5 Dec 2020 00:21:16 +0530
+Message-ID: <CA+G9fYvGeHv-iPy2J3tdYGfr1A7ZuUrZystuQ9tDxV7vbP8iPg@mail.gmail.com>
+Subject: BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
+To:     linux-mm <linux-mm@kvack.org>,
+        linux-block <linux-block@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-nfs@vger.kernel.org,
-        lkft-triage@lists.linaro.org, rcu@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, chuck.lever@oracle.com,
-        bfields@fieldses.org, anna.schumaker@netapp.com,
-        trond.myklebust@hammerspace.com,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Marco Elver <elver@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
+        Marco Elver <elver@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 LKFT started testing KCSAN enabled kernel from the linux next tree.
-Here we have found BUG: KCSAN: data-race in
-__rpc_do_wake_up_task_on_wq / xprt_request_transmit
+Here we have found BUG: KCSAN: data-race in dec_zone_page_state /
+write_cache_pages
 
 This report is from an x86_64 machine clang-11 linux next 20201201.
 Since we are running for the first time we do not call this regression.
 
-[   17.316725] BUG: KCSAN: data-race in __rpc_do_wake_up_task_on_wq /
-xprt_request_transmit
-[   17.324821]
-[   17.326322] write to 0xffff90a801de6a9c of 2 bytes by task 142 on cpu 1:
-[   17.333022]  __rpc_do_wake_up_task_on_wq+0x295/0x350
-[   17.337987]  rpc_wake_up_queued_task+0x99/0xc0
-[   17.342432]  xprt_complete_rqst+0xef/0x100
-[   17.346533]  xs_read_stream+0x9c6/0xc40
-[   17.350370]  xs_stream_data_receive+0x60/0x130
-[   17.354819]  xs_stream_data_receive_workfn+0x5c/0x90
-[   17.359784]  process_one_work+0x4a6/0x830
-[   17.363795]  worker_thread+0x5f7/0xaa0
-[   17.367548]  kthread+0x20b/0x220
-[   17.370780]  ret_from_fork+0x22/0x30
-[   17.374359]
-[   17.375858] read to 0xffff90a801de6a9c of 2 bytes by task 249 on cpu 3:
-[   17.382473]  xprt_request_transmit+0x389/0x7a0
-[   17.386919]  xprt_transmit+0xfe/0x250
-[   17.390583]  call_transmit+0x10d/0x120
-[   17.394337]  __rpc_execute+0x12d/0x700
-[   17.398089]  rpc_async_schedule+0x59/0x90
-[   17.402100]  process_one_work+0x4a6/0x830
-[   17.406114]  worker_thread+0x5f7/0xaa0
-[   17.409868]  kthread+0x20b/0x220
-[   17.413099]  ret_from_fork+0x22/0x30
-[   17.416675]
-[   17.418167] Reported by Kernel Concurrency Sanitizer on:
-[   17.423475] CPU: 3 PID: 249 Comm: kworker/u8:1 Not tainted
+[   45.484972] BUG: KCSAN: data-race in dec_zone_page_state / write_cache_pages
+[   45.492030]
+[   45.493532] read-write (marked) to 0xffffd4e284455380 of 8 bytes by
+task 269 on cpu 0:
+[   45.501453]  write_cache_pages+0x270/0x6a0
+[   45.505560]  generic_writepages+0x63/0xa0
+[   45.509582]  blkdev_writepages+0xe/0x10
+[   45.513429]  do_writepages+0x79/0x140
+[   45.517096]  __writeback_single_inode+0x6d/0x390
+[   45.521714]  writeback_sb_inodes+0x4fd/0xbe0
+[   45.525986]  wb_writeback+0x42e/0x690
+[   45.529652]  wb_do_writeback+0x4d2/0x530
+[   45.533578]  wb_workfn+0xc8/0x4a0
+[   45.536897]  process_one_work+0x4a6/0x830
+[   45.540908]  worker_thread+0x5f7/0xaa0
+[   45.544661]  kthread+0x20b/0x220
+[   45.547893]  ret_from_fork+0x22/0x30
+[   45.551471]
+[   45.552963] read to 0xffffd4e284455380 of 8 bytes by task 499 on cpu 2:
+[   45.559576]  dec_zone_page_state+0x1d/0x140
+[   45.563764]  clear_page_dirty_for_io+0x2ab/0x3a0
+[   45.568382]  write_cache_pages+0x388/0x6a0
+[   45.572480]  generic_writepages+0x63/0xa0
+[   45.576495]  blkdev_writepages+0xe/0x10
+[   45.580334]  do_writepages+0x79/0x140
+[   45.584000]  __filemap_fdatawrite_range+0x155/0x190
+[   45.588880]  file_write_and_wait_range+0x51/0xa0
+[   45.593498]  blkdev_fsync+0x45/0x70
+[   45.596991]  __x64_sys_fsync+0xda/0x120
+[   45.600830]  do_syscall_64+0x3b/0x50
+[   45.604409]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   45.609460]
+[   45.610950] Reported by Kernel Concurrency Sanitizer on:
+[   45.616259] CPU: 2 PID: 499 Comm: mkfs.ext4 Not tainted
 5.10.0-rc6-next-20201201 #2
-[   17.431385] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+[   45.623908] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
 2.2 05/23/2018
-[   17.438778] Workqueue: rpciod rpc_async_schedule
 
 metadata:
     git_repo: https://gitlab.com/aroxell/lkft-linux-next
@@ -119,7 +123,7 @@ metadata:
     download_url: https://builds.tuxbuild.com/1l8eiWgGMi6W4aDobjAAlOleFVl/
 
 Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/2002643#L1005
+https://lkft.validation.linaro.org/scheduler/job/2002643#L1866
 
 -- 
 Linaro LKFT
