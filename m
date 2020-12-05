@@ -2,201 +2,111 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FB1C433FE
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 20:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A744C4361A
+	for <rcu@archiver.kernel.org>; Sat,  5 Dec 2020 00:41:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 60A6C22B40
-	for <rcu@archiver.kernel.org>; Fri,  4 Dec 2020 20:24:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DCB322DD3
+	for <rcu@archiver.kernel.org>; Sat,  5 Dec 2020 00:41:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgLDUYO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Dec 2020 15:24:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgLDUYO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:24:14 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730C6C061A4F
-        for <rcu@vger.kernel.org>; Fri,  4 Dec 2020 12:23:33 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v14so9409975lfo.3
-        for <rcu@vger.kernel.org>; Fri, 04 Dec 2020 12:23:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=peEkU3zubQPkU0UrFQOESqhsjqik4+avfR4D7o/wPyM=;
-        b=K0iA2Szdq/cQgbHZgBZerMWVNobosBLFi9hxxasYw2dn1BWpncN0Ms2K23kTPM11L7
-         /OVjhlK05lutUMoXjPouzwCbni3YMf0nA+hzvNW2dAK2z/9NpEI0/6aCTqMGbNVV6qSj
-         ZpgiXdUrUkw+OQLcbXmpQx83x3a0jAtUbAaRU8X4Pmyomo5zUOm6B/VvuaZ8vjp7xULc
-         hxyg/zBJZRGAlMT+Q2t9HbQziS4vzvXlUR44lqxsnkvxHsdVS47U18pSJrNDfMbUkvKb
-         ba144qivHylgVmmNJvyP9R2frdNmkv+efRFDCRN+VZZJTRW3m2ztNLf2im1eGN+ZPN3R
-         matQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=peEkU3zubQPkU0UrFQOESqhsjqik4+avfR4D7o/wPyM=;
-        b=YiSrYiLugANYgeaUdy3iP6CWpxwxx36RXOUYwZoW4flihhhI1vHmc6HwajERvk183q
-         BNWb5TSzQ9rjr/Jh4TuD8LjQ9LxQEy1e7HOmZNtHbLbZkdRiRVUIpLpOfAfow/3rPFuM
-         KzGCFo4SlCi1/Ll2M8RNZaZZhCyBNLz4KqD/3JCCZ7QgOClF9+L3xezLYGdR7xTJ/FHx
-         4o5SA6yo8SHYup1zuxqL7x/LZWphpQBnDax7w7QzORV44DINps3oKRa+qzr4i2ukVOl0
-         Gob3SO2HfFVHWLDItW1DPYoCwM1WFwxJG6N95K8CBnFc6b6P1nuVpEY5YdCC9yPDq1oI
-         1wsA==
-X-Gm-Message-State: AOAM530gtARTb7CZe72dDGDgV57b0t6KzNeov+oVhRLktjkmwpN80Rm4
-        1xTWU1t/AXF5OZ9k3Hq08SuCCGPOckk=
-X-Google-Smtp-Source: ABdhPJwSOvedHRtA3F6vv6v5LueSOramqlOjWy7M/BfLfjuVUcIQC2XTKkLkaGqoDF/2/WFJSCD+xA==
-X-Received: by 2002:a19:e8d:: with SMTP id 135mr4021840lfo.383.1607113411914;
-        Fri, 04 Dec 2020 12:23:31 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id d9sm562011lfj.228.2020.12.04.12.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 12:23:31 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 4 Dec 2020 21:23:29 +0100
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Daniel Axtens <dja@axtens.net>, rcu@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: powerpc 5.10-rcN boot failures with RCU_SCALE_TEST=m
-Message-ID: <20201204202329.GA29467@pc638.lan>
-References: <87eekfh80a.fsf@dja-thinkpad.axtens.net>
- <87v9dkuwy3.fsf@mpe.ellerman.id.au>
- <20201202143955.GA12300@pc636>
- <87sg8nv277.fsf@mpe.ellerman.id.au>
- <20201203143445.GA22204@pc636>
+        id S1726217AbgLEAlD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Dec 2020 19:41:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgLEAlC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:41:02 -0500
+Date:   Fri, 4 Dec 2020 16:40:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607128822;
+        bh=sTrddOHUARRjPrBPOmL3jLG/F+XsHep/EkJCIjlSO0M=;
+        h=From:To:Cc:Subject:Reply-To:From;
+        b=YskyC6KTk5Poxto+IqKhV4eBvLGw58/MhuVoRaD8iXdON0i56dDZkhBdzGN0qbVn8
+         QuznYc5THyRkb4pm3qTjdGwdujTP11Stc0B+pZnIpN7Y76vBviKUz+LlO2oZ6f0rXf
+         zYbqFF/JjrPNdyO3P93LonABYae3uy6J3MiH2PI5oEa0IUPJ9bLiQ/2MpIud5ja3Tm
+         9+2ptiVmbi/wc3eQcyxkePcJd1IT8TMjlR6R9/QRtLB1+Y8tUYSTF1/bSTdn5ZdQ15
+         VaM6LR9B6SzupaVKpJHM2VRqPOLIfCc79PCpeQK70nj7z2GotKLyIx3tGSroICfbtg
+         Bf0RiQb+/ztNA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH RFC sl-b] Export return addresses for better diagnostics
+Message-ID: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203143445.GA22204@pc636>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 03:34:45PM +0100, Uladzislau Rezki wrote:
-> On Thu, Dec 03, 2020 at 05:22:20PM +1100, Michael Ellerman wrote:
-> > Uladzislau Rezki <urezki@gmail.com> writes:
-> > > On Thu, Dec 03, 2020 at 01:03:32AM +1100, Michael Ellerman wrote:
-> > ...
-> > >> 
-> > >> The SMP bringup stalls because _cpu_up() is blocked trying to take
-> > >> cpu_hotplug_lock for writing:
-> > >> 
-> > >> [  401.403132][    T0] task:swapper/0       state:D stack:12512 pid:    1 ppid:     0 flags:0x00000800
-> > >> [  401.403502][    T0] Call Trace:
-> > >> [  401.403907][    T0] [c0000000062c37d0] [c0000000062c3830] 0xc0000000062c3830 (unreliable)
-> > >> [  401.404068][    T0] [c0000000062c39b0] [c000000000019d70] __switch_to+0x2e0/0x4a0
-> > >> [  401.404189][    T0] [c0000000062c3a10] [c000000000b87228] __schedule+0x288/0x9b0
-> > >> [  401.404257][    T0] [c0000000062c3ad0] [c000000000b879b8] schedule+0x68/0x120
-> > >> [  401.404324][    T0] [c0000000062c3b00] [c000000000184ad4] percpu_down_write+0x164/0x170
-> > >> [  401.404390][    T0] [c0000000062c3b50] [c000000000116b68] _cpu_up+0x68/0x280
-> > >> [  401.404475][    T0] [c0000000062c3bb0] [c000000000116e70] cpu_up+0xf0/0x140
-> > >> [  401.404546][    T0] [c0000000062c3c30] [c00000000011776c] bringup_nonboot_cpus+0xac/0xf0
-> > >> [  401.404643][    T0] [c0000000062c3c80] [c000000000eea1b8] smp_init+0x40/0xcc
-> > >> [  401.404727][    T0] [c0000000062c3ce0] [c000000000ec43dc] kernel_init_freeable+0x1e0/0x3a0
-> > >> [  401.404799][    T0] [c0000000062c3db0] [c000000000011ec4] kernel_init+0x24/0x150
-> > >> [  401.404958][    T0] [c0000000062c3e20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
-> > >> 
-> > >> It can't get it because kprobe_optimizer() has taken it for read and is now
-> > >> blocked waiting for synchronize_rcu_tasks():
-> > >> 
-> > >> [  401.418808][    T0] task:kworker/0:1     state:D stack:13392 pid:   12 ppid:     2 flags:0x00000800
-> > >> [  401.418951][    T0] Workqueue: events kprobe_optimizer
-> > >> [  401.419078][    T0] Call Trace:
-> > >> [  401.419121][    T0] [c0000000062ef650] [c0000000062ef710] 0xc0000000062ef710 (unreliable)
-> > >> [  401.419213][    T0] [c0000000062ef830] [c000000000019d70] __switch_to+0x2e0/0x4a0
-> > >> [  401.419281][    T0] [c0000000062ef890] [c000000000b87228] __schedule+0x288/0x9b0
-> > >> [  401.419347][    T0] [c0000000062ef950] [c000000000b879b8] schedule+0x68/0x120
-> > >> [  401.419415][    T0] [c0000000062ef980] [c000000000b8e664] schedule_timeout+0x2a4/0x340
-> > >> [  401.419484][    T0] [c0000000062efa80] [c000000000b894ec] wait_for_completion+0x9c/0x170
-> > >> [  401.419552][    T0] [c0000000062efae0] [c0000000001ac85c] __wait_rcu_gp+0x19c/0x210
-> > >> [  401.419619][    T0] [c0000000062efb40] [c0000000001ac90c] synchronize_rcu_tasks_generic+0x3c/0x70
-> > >> [  401.419690][    T0] [c0000000062efbe0] [c00000000022a3dc] kprobe_optimizer+0x1dc/0x470
-> > >> [  401.419757][    T0] [c0000000062efc60] [c000000000136684] process_one_work+0x2f4/0x530
-> > >> [  401.419823][    T0] [c0000000062efd20] [c000000000138d28] worker_thread+0x78/0x570
-> > >> [  401.419891][    T0] [c0000000062efdb0] [c000000000142424] kthread+0x194/0x1a0
-> > >> [  401.419976][    T0] [c0000000062efe20] [c00000000000daf0] ret_from_kernel_thread+0x5c/0x6c
-> > >> 
-> > >> But why is the synchronize_rcu_tasks() not completing?
-OK. Seems i have understood why the synchronize_rcu_tasks() is not doing progress
-waiting on complition. Actually the GP kthreads are not spawned by the time when
-early_initcall callbacks gets invoked.
+Hello!
 
-It means that callbacks will not be processed because GP kthreads do not exist,
-so wakeme_after_rcu() is not invoked, thus does not signal about that a grace
-period has elapsed.
+This series improves diagnostics by providing access to return addresses
+and stack traces collected by the sl*b allocators.  If the allocator is
+not configured to collect this information, the diagnostics fall back
+to a reasonable approximation of their earlier state.
 
-<snip>
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 35bdcfd84d42..c5422bba7fe7 100644  
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -241,7 +241,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
-        }
- }
+One use case is the queue_rcu_work() function, which might be used
+by any number of kernel subsystems.  If the caller does back-to-back
+invocations of queue_rcu_work(), this constitutes a double-free bug,
+and (if so configured) the debug-objects system will flag this, printing
+the callback function.  In most cases, printing this function suffices.
+However, for double-free bugs involving queue_rcu_work(), the RCU callback
+function will always be rcu_work_rcufn(), which provides almost no help to
+the poor person trying to find this double-free bug.  The return address
+from the allocator of the memory containing the rcu_work structure can
+provide an additional valuable clue.
 
--/* Spawn RCU-tasks grace-period kthread, e.g., at core_initcall() time. */
-+/* Spawn RCU-tasks grace-period kthread at early_initcall() time. */
- static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
- {
-        struct task_struct *t;
-@@ -564,7 +564,7 @@ static int __init rcu_spawn_tasks_kthread(void)
-        rcu_spawn_tasks_kthread_generic(&rcu_tasks);
-        return 0;
- }
--core_initcall(rcu_spawn_tasks_kthread);
-+early_initcall(rcu_spawn_tasks_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_classic_gp_kthread(void)
-@@ -692,7 +692,7 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
-        rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
-        return 0;
- }
--core_initcall(rcu_spawn_tasks_rude_kthread);
-+early_initcall(rcu_spawn_tasks_rude_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_rude_gp_kthread(void)
-@@ -1193,7 +1193,7 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
-        rcu_spawn_tasks_kthread_generic(&rcu_tasks_trace);
-        return 0;
- }
--core_initcall(rcu_spawn_tasks_trace_kthread);
-+early_initcall(rcu_spawn_tasks_trace_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_trace_gp_kthread(void)
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 39334d2d2b37..a251fc705abd 100644  
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -133,7 +133,7 @@ EXPORT_SYMBOL(rcu_read_lock_sched_held);
-  * that if the user specifies both rcu_expedited and rcu_normal, then
-  * rcu_normal wins.  (Except during the time period during boot from
-  * when the first task is spawned until the rcu_set_runtime_mode()
-- * core_initcall() is invoked, at which point everything is expedited.)
-+ * early_initcall() is invoked, at which point everything is expedited.)
-  */
+Another use case is the percpu_ref_switch_to_atomic_rcu() function,
+which detects percpu_ref reference-count underflow.  Unfortunately,
+the only data that this function has access to doesn't have much in the
+way of identifying characteristics.  Yes, it might be possible to gain
+more information from a crash dump, but it is more convenient for the
+needed hints to be in the console log.
 
-ol rcu_gp_is_normal(void)
- {
-@@ -235,7 +235,7 @@ static int __init rcu_set_runtime_mode(void)
-        rcu_test_sync_prims();
-        return 0;
- }
--core_initcall(rcu_set_runtime_mode);
-+early_initcall(rcu_set_runtime_mode);   
+Unfortunately, printing the return address in this case is of little help
+because this object is allocated from percpu_ref_init(), regardless of
+what part of the kernel is responsible for the reference-count underflow.
+However, CONFIG_STACKTRACE=y kernels (such as those enabling ftrace)
+using slub with debugging enabled also collect stack traces.  This series
+therefore also provides a way of extracting these stack traces to provide
+additional information to those debugging percpu_ref reference-count
+underflows.
 
- #endif /* #if !defined(CONFIG_TINY_RCU) || defined(CONFIG_SRCU) */
-<snip>
+The patches are as follows:
 
-Appreciate if you can test on your setup above patch!
+1.	Add kmem_last_alloc() to return last allocation for memory block.
 
---
-Vlad Rezki
+2.	Add kmem_last_alloc_errstring() to provide more kmem_last_alloc()
+	info.
+
+3.	Make call_rcu() print allocation address of double-freed callback.
+
+4.	Create kmem_last_alloc_stack() to provide stack trace in slub.
+
+5.	percpu_ref: Print allocator upon reference-count underflow.
+
+6.	percpu_ref: Print stack trace upon reference-count underflow.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/slab.h  |   15 ++++++++
+ kernel/rcu/tree.c     |   12 +++++-
+ lib/percpu-refcount.c |   39 ++++++++++++++++------
+ mm/slab.c             |   61 +++++++++++++++++++++++------------
+ mm/slab_common.c      |   87 ++++++++++++++++++++++++++++++++++++++++++++------
+ mm/slob.c             |   11 +++++-
+ mm/slub.c             |   44 +++++++++++++++++++++++--
+ 7 files changed, 222 insertions(+), 47 deletions(-)
