@@ -2,133 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA45C433FE
-	for <rcu@archiver.kernel.org>; Mon,  7 Dec 2020 12:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F2D6C4361B
+	for <rcu@archiver.kernel.org>; Mon,  7 Dec 2020 17:26:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DCA9B233CF
-	for <rcu@archiver.kernel.org>; Mon,  7 Dec 2020 12:24:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1F91B2388D
+	for <rcu@archiver.kernel.org>; Mon,  7 Dec 2020 17:26:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgLGMYY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Dec 2020 07:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727498AbgLGMYY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:24:24 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE49EC0613D2
-        for <rcu@vger.kernel.org>; Mon,  7 Dec 2020 04:23:37 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id x13so4722224oto.8
-        for <rcu@vger.kernel.org>; Mon, 07 Dec 2020 04:23:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E6pk4jhfaBDxagsrjqdb98OOZTNvh3pSgPws7wibwpo=;
-        b=b/Javx/Yso5ETEG1DyHBm95cEnc1pUIgVv1H2AJva36lbgk43gZb16ZvdcRcUTnLud
-         b5iEOhXaTFCR3ZSOlhZLS0yhJdJy3zyssHm9MiqV67y1moqxd8392AB3tUo3GSropJ0g
-         XepIRQyg03EgSZlWraWQgMFWab4oIeEpD8LyMhT9tazpjWTeqn6NJPUs7am/MPWZYL7A
-         QPV0Nd8CfztiThSkiKTUbVtfcN2ZY1WWOxTIuiSFdeaenOUFuujh7/ujtDmbi6PH1WBL
-         jtnwjjRnEwl0LIKdI6TfbKxQAQET9iKeEgH1+HkQilE7H0XkdFMnXCPTSoyJ6+eGx9c/
-         wO0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E6pk4jhfaBDxagsrjqdb98OOZTNvh3pSgPws7wibwpo=;
-        b=ig5HSkAhqYjp9NrA5XP+DD3DH3you5haF9T6N25JbSY98VGwgF5zKd4vqTg8XL8LTh
-         O3jmUwxMGXDWvcVGzmHjEjAr7nbZcWRdnDL7CoMtQqv/oJMRMXT//qCSYhFTI1GtB0u2
-         rH9qpISSo64ycOMvWokgdRMY8TSKGhP1zTliGY6a3FGQaPxwqoB7gjxI1RCKbBESHzUU
-         JYVPDtGCUzNy8GzIQeEq+iqmokrhzygQstnHNMt4SAr04zfIh7t5a8sVlTO4fSNvST+y
-         TjIofeTK8A4eBRBgBSsktrV6EUCAb/zVbH5sfTQp4DExZfQOtijyWRJzazxPhVt19Q66
-         F5IA==
-X-Gm-Message-State: AOAM532IISizNbTL28SL9Y7deTv+b0vNWvzJU/PdfbO7ySiwItIKBLZr
-        SnGGx/uqI/kroZaspA8Ab/p0Hu3eVsm6n4aeijOEnA==
-X-Google-Smtp-Source: ABdhPJxPu5BAYHCw8QYIy3IuypqC5dWWHnHvVd/9Dp2o3b6w+EXFELpPjZhRtxrNOEDF+wITXXmjPKiLvzouwbef5bQ=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr13034529otk.251.1607343816907;
- Mon, 07 Dec 2020 04:23:36 -0800 (PST)
+        id S1726311AbgLGR0g (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Dec 2020 12:26:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725918AbgLGR0f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:26:35 -0500
+Date:   Mon, 7 Dec 2020 09:25:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607361954;
+        bh=MvigeOv8X2+zbBiSp5HvaHTZ1AYV0CKZmlIA0TtvYP0=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TFwxeKeIxbtEYbTmvzZMJ1u+228sbnax/DCW3h+tKxoxPHY1aGfv5+P+2nZjmgNqi
+         UxMjjgvOUnaDdprbgp9FHoHgcEwtDGH5XA1ErCk06fxNfDJIxJ8nbBLrqu5SLr9wd+
+         tVnXIrTuwSKFcQrBVm/qzeh1RfFE9fanl7qd66aKU4bv5rPY1RdhF7/pgd/SEY6Yoh
+         PMbtrePRqfxzzzLD5cPqYs9SJV01m8lvtSWROFaYv025h+FeuYkxKDPr1Ez9owtcLC
+         kSdY4HS8MSgpXF02mFkBN3uGIvJbgk6FByNq9RKQc1oHWgx+KF41vu1rgvDd+Twjmc
+         Pycfm7HroXmuA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH sl-b 1/6] mm: Add kmem_last_alloc() to return last
+ allocation for memory block
+Message-ID: <20201207172554.GI2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+ <20201205004057.32199-1-paulmck@kernel.org>
+ <20201207090243.GA20765@js1304-desktop>
 MIME-Version: 1.0
-References: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
- <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com>
- <87wnxw86bv.fsf@nanos.tec.linutronix.de> <87eek395oe.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87eek395oe.fsf@nanos.tec.linutronix.de>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 7 Dec 2020 13:23:25 +0100
-Message-ID: <CANpmjNNdothEQfz6LFN_HHYFQPa6679+WoodMBvsZiPSLndEdw@mail.gmail.com>
-Subject: Re: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, fweisbec@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207090243.GA20765@js1304-desktop>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 6 Dec 2020 at 00:47, Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Sat, Dec 05 2020 at 19:18, Thomas Gleixner wrote:
-> > On Fri, Dec 04 2020 at 20:53, Marco Elver wrote:
-> > It might be useful to find the actual variable, data member or whatever
-> > which is involved in the various reports and if there is a match then
-> > the reports could be aggregated. The 3 patterns here are not even the
-> > complete possible picture.
-> >
-> > So if you sum them up: 58 + 148 + 205 instances then their weight
-> > becomes more significant as well.
->
-> I just looked into the moderation queue and picked stuff which I'm
-> familiar with from the subject line.
+On Mon, Dec 07, 2020 at 06:02:53PM +0900, Joonsoo Kim wrote:
+> Hello, Paul.
+> 
+> On Fri, Dec 04, 2020 at 04:40:52PM -0800, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > There are kernel facilities such as per-CPU reference counts that give
+> > error messages in generic handlers or callbacks, whose messages are
+> > unenlightening.  In the case of per-CPU reference-count underflow, this
+> > is not a problem when creating a new use of this facility because in that
+> > case the bug is almost certainly in the code implementing that new use.
+> > However, trouble arises when deploying across many systems, which might
+> > exercise corner cases that were not seen during development and testing.
+> > Here, it would be really nice to get some kind of hint as to which of
+> > several uses the underflow was caused by.
+> > 
+> > This commit therefore exposes a new kmem_last_alloc() function that
+> > takes a pointer to dynamically allocated memory and returns the return
+> > address of the call that allocated it.  This pointer can reference the
+> > middle of the block as well as the beginning of the block, as needed
+> > by things like RCU callback functions and timer handlers that might not
+> > know where the beginning of the memory block is.  These functions and
+> > handlers can use the return value from kmem_last_alloc() to give the
+> > kernel hacker a better hint as to where the problem might lie.
+> 
+> I agree with exposing allocation caller information to the other
+> subsystem to help the debugging. Some suggestions...
 
-We managed to push (almost) everything that was still in private
-moderation to public moderation, so now there's even more to look at:
-https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
-:-)
+Good to hear!  ;-)
 
-> There are quite some reports which have a different trigger scenario,
-> but are all related to the same issue.
->
->   https://syzkaller.appspot.com/bug?id=f5a5ed5b2b6c3e92bc1a9dadc934c44ee3ba4ec5
->   https://syzkaller.appspot.com/bug?id=36fc4ad4cac8b8fc8a40713f38818488faa9e9f4
->
-> are just variations of the same problem timer_base->running_timer being
-> set to NULL without holding the base lock. Safe, but insanely hard to
-> explain why :)
->
-> Next:
->
->   https://syzkaller.appspot.com/bug?id=e613fc2458de1c8a544738baf46286a99e8e7460
->   https://syzkaller.appspot.com/bug?id=55bc81ed3b2f620f64fa6209000f40ace4469bc0
->   https://syzkaller.appspot.com/bug?id=972894de81731fc8f62b8220e7cd5153d3e0d383
->   .....
->
-> That's just the ones which caught my eye and all are related to
-> task->flags usage. There are tons more judging from the subject
-> lines.
->
-> So you really want to look at them as classes of problems and not as
-> individual scenarios.
+> 1. It's better to separate a slab object check (validity check) and
+> retrieving the allocation caller. Someone else would want to check
+> only a validity. And, it doesn't depend on the debug configuration so
+> it's not good to bind it to the debug function.
+> 
+> kmem_cache_valid_(obj|ptr)
+> kmalloc_valid_(obj|ptr)
 
-Regarding auto-dedup: as you suggest, it'd make this straightforward
-if we had the variable name -- it turns out that's not so trivial. I
-think we need compiler support for that, or is there some existing
-infrastructure that can just tell us the canonical variable name if it
-points into a struct or global? For globals it's fine, but for
-arbitrary pointers that point into structs, I don't see how we could
-do it without compiler support e.g. mapping PC->variable name (we need
-to map instructions back to the variable names they access).
+Here both functions would say "true" for a pointer from kmalloc()?
+Or do I need to add a third function that is happy with a pointer from
+either source?
 
-Any precedence for this? [+Cc linux-toolchains@vger.kernel.org]
+I do understand that people who don't want to distinguish could just do
+"kmem_cache_valid_ptr(p) || kmalloc_valid_ptr(p)".  However, the two
+use cases in the series have no idea whether the pointer they have came
+from kmalloc(), kmem_cache_alloc(), or somewhere else entirely, even an
+on-stack variable.
 
-Thanks,
--- Marco
+Are you asking me to choose between the _obj() and _ptr() suffixes?
+If not, please help me understand the distinction.
+
+Do we want "debug" in these names as well?
+
+> 2. rename kmem_last_alloc to ...
+> 
+> int kmem_cache_debug_alloc_caller(cache, obj, &ret_addr)
+> int kmalloc_debug_alloc_caller(obj, &ret_addr)
+> 
+> or debug_kmem_cache_alloc_caller()
+> 
+> I think that function name need to include the keyword 'debug' to show
+> itself as a debugging facility (enabled at the debugging). And, return
+> errno and get caller address by pointer argument.
+
+I am quite happy to add the "debug", but my use cases have no idea
+how the pointer was allocated.  In fact, the next version of the
+patch will also handle allocator return addresses from vmalloc().
+
+And for kernels without sufficient debug enabled, I need to provide
+the name of the slab cache, and this also is to be in the next version.
+
+> 3. If concrete error message is needed, please introduce more functions.
+> 
+> void *kmalloc_debug_error(errno)
+
+Agreed, in fact, I was planning to have a function that printed out
+a suitable error-message continuation to the console for ease-of-use
+reasons.  For example, why is the caller deciding how deep the stack
+frame is?  ;-)
+
+So something like this?
+
+	void kmalloc_debug_print_provenance(void *ptr);
+
+With the understanding that it will print something helpful regardless
+of where ptr came from, within the constraints of the kernel build and
+boot options?
+
+							Thanx, Paul
