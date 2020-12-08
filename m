@@ -2,152 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02EEDC433FE
-	for <rcu@archiver.kernel.org>; Tue,  8 Dec 2020 09:47:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D815C4361B
+	for <rcu@archiver.kernel.org>; Tue,  8 Dec 2020 10:33:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BD20223A82
-	for <rcu@archiver.kernel.org>; Tue,  8 Dec 2020 09:47:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9A3E23A9D
+	for <rcu@archiver.kernel.org>; Tue,  8 Dec 2020 10:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgLHJrJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Dec 2020 04:47:09 -0500
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:6735 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgLHJrB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:47:01 -0500
+        id S1726993AbgLHKdU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Dec 2020 05:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgLHKdU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:33:20 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A7C061749;
+        Tue,  8 Dec 2020 02:32:39 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id i9so16472207ioo.2;
+        Tue, 08 Dec 2020 02:32:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607420820; x=1638956820;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=zw/JE9mdFxipC5U73AeWdp8NJm8/28HSgSp98CWi9oo=;
-  b=lpsTTzSY4XltETly8YpavmljkqvLz2NHJkt0+GkmgI6y9/T48aHoAdYu
-   1LahFftzPwX9WoUisrUaGlyYmlRWociOATGZ/jS71taZXh3a3QgOBpXDO
-   Bs8pFiwALpKb3zffTOoNp5fw+ayh0Gr4Mj/naOB4a17Xj5tYRzIxNzrYM
-   k=;
-X-IronPort-AV: E=Sophos;i="5.78,402,1599523200"; 
-   d="scan'208";a="901360427"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 08 Dec 2020 09:46:14 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id A5759A1C02;
-        Tue,  8 Dec 2020 09:46:13 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.67) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 8 Dec 2020 09:45:53 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <davem@davemloft.net>
-CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
-        <kuznet@ms2.inr.ac.ru>, <paulmck@kernel.org>,
-        <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Tue, 8 Dec 2020 10:45:29 +0100
-Message-ID: <20201208094529.23266-2-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208094529.23266-1-sjpark@amazon.com>
-References: <20201208094529.23266-1-sjpark@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zasq3hOf488E8r9Qeq/ZBegpZO9Gd3Da9Wxnom9qujU=;
+        b=MkzVELqW4gvyq69eepeuLTWDKPGtIDbI3eYq1IbMJNOu3JG6FCM1ONPULknnSkm0R2
+         D66g1YXGnzNG5TPbb0Y6H5SZu0KtwKAo/Db8vXUuauGCoBsCZXVVbFgxs3RZyUrrC5/E
+         CJ6da9SGcQLG0pCY9c3Fhx2fXEpi6m7fdKyGB0zluRZtQjCkFnkjjPhqzvFHjIVKE27t
+         sfsHDbmoFf4UxJD/iT3CWlJ5NvDQ/MIP7jCb2HYOzYGiobKJCbsvVQAChl5oulE83b22
+         FdEITo599wP0e3aunuwQFB+1SXze9W9CY+boIwIHAgmFsm1C0+MrPnzn/cOlgwAAuJAJ
+         2BZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zasq3hOf488E8r9Qeq/ZBegpZO9Gd3Da9Wxnom9qujU=;
+        b=neDJCIYtvjfO1CNMR7dYe43UfmhhmGeqqcylwGj1YFQLjCdmKyqLtYF9WEhKw6byjV
+         QIkvcCzoFJrJjvW04i2EoHPGovApPgjF8u2+/l0NQ8qdxlD/jyTxMoz4oL9myA8DicDh
+         ZOVGcVqgr+fVdA5bnNcG6+rYsJuavStbZ5cLIBwwqHY1YSF5Q5SPi35EexOjSnNVqoAc
+         OJY/dxtCJrSrl8iumy6C8mggmf3Qg1mXT14FabVadHRdP/Z3jqosD/IT6nsZ+Cdn1my/
+         91ppM42I+ysiLncSO8xd1Kg6iiK4t4dpdhHVtgr+tiobNUjiRd038YyUu3skL3yMGMLF
+         RoqQ==
+X-Gm-Message-State: AOAM530xkIWYv0PhEV+SOr8VkACGEBrx7/OQs0tW3KB0X8T+xYMV8TGu
+        wLkJZwcQZVYK0ddUTZQo5dY=
+X-Google-Smtp-Source: ABdhPJy96YyUubZjhxhmB0SZGsED3HyHvkllSTg+UYZftnTs2dvpH0T+GNaNVrv8hWn2WGKbyAcMsA==
+X-Received: by 2002:a6b:6f17:: with SMTP id k23mr24077438ioc.147.1607423559355;
+        Tue, 08 Dec 2020 02:32:39 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id c15sm7584349ils.87.2020.12.08.02.32.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 02:32:38 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3B81B27C005A;
+        Tue,  8 Dec 2020 05:32:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 08 Dec 2020 05:32:37 -0500
+X-ME-Sender: <xms:RVbPX3WCrkGvzNFgFYapxaEKYp3kfxvIyVPdaDLCIlilqWAOaopG7w>
+    <xme:RVbPX4gDW34apDQUkrCNKmK5PfsSQSW4zxGef6S-JRvsuFDP1WZDsjjuRxHUZtsGI
+    ZhOk6nVyqWmR7MXbg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedvveetfefgiedutedtfeevvddvleekjeeuffffleeguefhhfejteekieeu
+    ueelnecukfhppeduieejrddvvddtrddvrdduvdeinecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:RVbPX-_4hRk1ZKu9D9V82Oo9x3vPn7GD-P04aH6dSkgIS3kzyoLnBQ>
+    <xmx:RVbPXyb5dvF3O6eP7PM__UVIMQayorb5pGO27-ICFXxjfhgLU9hjrA>
+    <xmx:RVbPX92TS59YcZoTWsT1WKitQdWVNEq_B6-jGZsxlV0AGJnRp0nltA>
+    <xmx:RVbPX04Uzn3NtM2Md0pFa3arqQbTjFBeBNYeTz9E01H5sByL-u-N3st2_OU>
+Received: from localhost (unknown [167.220.2.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 04EC824005D;
+        Tue,  8 Dec 2020 05:32:36 -0500 (EST)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [RFC lockdep 1/4] lockdep/selftest: Make HARDIRQ context threaded
+Date:   Tue,  8 Dec 2020 18:31:09 +0800
+Message-Id: <20201208103112.2838119-2-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201208103112.2838119-1-boqun.feng@gmail.com>
+References: <20201208103112.2838119-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.67]
-X-ClientProxiedBy: EX13D47UWA002.ant.amazon.com (10.43.163.30) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Since we now use spinlock_t instead of raw_spinlock_t in lockdep self
+tests, we should make the emulated HARDIRQ context threaded, otherwise,
+spinlock_t cannot be used in the HARDIRQ context and some test cases
+will fail because of wait context checking when
+PROVE_RAW_LOCK_NESTING=y.
 
-In 'fqdir_exit()', a work for destruction of the 'fqdir' is enqueued.
-The work function, 'fqdir_work_fn()', calls 'rcu_barrier()'.  In case of
-intensive 'fqdir_exit()' (e.g., frequent 'unshare(CLONE_NEWNET)'
-systemcalls), this increased contention could result in unacceptably
-high latency of 'rcu_barrier()'.  This commit avoids such contention by
-doing the destruction in batched manner, as similar to that of
-'cleanup_net()'.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- include/net/inet_frag.h  |  2 +-
- net/ipv4/inet_fragment.c | 28 ++++++++++++++++++++--------
- 2 files changed, 21 insertions(+), 9 deletions(-)
+ lib/locking-selftest.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
-index bac79e817776..558893d8810c 100644
---- a/include/net/inet_frag.h
-+++ b/include/net/inet_frag.h
-@@ -20,7 +20,7 @@ struct fqdir {
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index afa7d4bb291f..0af91a07fd18 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -186,6 +186,7 @@ static void init_shared_classes(void)
+ #define HARDIRQ_ENTER()				\
+ 	local_irq_disable();			\
+ 	__irq_enter();				\
++	lockdep_hardirq_threaded();		\
+ 	WARN_ON(!in_irq());
  
- 	/* Keep atomic mem on separate cachelines in structs that include it */
- 	atomic_long_t		mem ____cacheline_aligned_in_smp;
--	struct work_struct	destroy_work;
-+	struct llist_node	destroy_list;
- };
- 
- /**
-diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-index 10d31733297d..796b559137c5 100644
---- a/net/ipv4/inet_fragment.c
-+++ b/net/ipv4/inet_fragment.c
-@@ -145,12 +145,19 @@ static void inet_frags_free_cb(void *ptr, void *arg)
- 		inet_frag_destroy(fq);
- }
- 
-+static LLIST_HEAD(destroy_list);
-+
- static void fqdir_work_fn(struct work_struct *work)
- {
--	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
--	struct inet_frags *f = fqdir->f;
-+	struct llist_node *kill_list;
-+	struct fqdir *fqdir;
-+	struct inet_frags *f;
-+
-+	/* Atomically snapshot the list of fqdirs to destroy */
-+	kill_list = llist_del_all(&destroy_list);
- 
--	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
-+	llist_for_each_entry(fqdir, kill_list, destroy_list)
-+		rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
- 
- 	/* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
- 	 * have completed, since they need to dereference fqdir.
-@@ -158,10 +165,13 @@ static void fqdir_work_fn(struct work_struct *work)
- 	 */
- 	rcu_barrier();
- 
--	if (refcount_dec_and_test(&f->refcnt))
--		complete(&f->completion);
-+	llist_for_each_entry(fqdir, kill_list, destroy_list) {
-+		f = fqdir->f;
-+		if (refcount_dec_and_test(&f->refcnt))
-+			complete(&f->completion);
- 
--	kfree(fqdir);
-+		kfree(fqdir);
-+	}
- }
- 
- int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
-@@ -184,10 +194,12 @@ int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
- }
- EXPORT_SYMBOL(fqdir_init);
- 
-+static DECLARE_WORK(fqdir_destroy_work, fqdir_work_fn);
-+
- void fqdir_exit(struct fqdir *fqdir)
- {
--	INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
--	queue_work(system_wq, &fqdir->destroy_work);
-+	if (llist_add(&fqdir->destroy_list, &destroy_list))
-+		queue_work(system_wq, &fqdir_destroy_work);
- }
- EXPORT_SYMBOL(fqdir_exit);
- 
+ #define HARDIRQ_EXIT()				\
 -- 
-2.17.1
+2.29.2
 
