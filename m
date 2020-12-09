@@ -5,57 +5,57 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7440C4361B
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 20:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42093C2BB48
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 20:31:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADC8C23CD1
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 20:29:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1223123B99
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 20:31:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388487AbgLIU3E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S2388493AbgLIU3E (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 9 Dec 2020 15:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgLIU2y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:28:54 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00511C0613CF;
-        Wed,  9 Dec 2020 12:28:12 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id h19so4879374lfc.12;
-        Wed, 09 Dec 2020 12:28:12 -0800 (PST)
+        with ESMTP id S2387764AbgLIU3D (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:29:03 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFDBC0613D6;
+        Wed,  9 Dec 2020 12:28:22 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id y22so3970095ljn.9;
+        Wed, 09 Dec 2020 12:28:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PXHApmwQ+fq8Jp06pnCwt/jV0z0jBnK6zmB/zPM4HUU=;
-        b=OwrMYAxzb0KK9VLPA8HYeEp9vJaMwn7644V3jGCqIYfhgbUPVVW0PZspMW42lQ4wfI
-         Dk8RlaU4lqoP4D9qye6hMrcMFUHKUSsUepsp828sWVZV3Q/UP86kJjKiarbjuxX3yUtb
-         hf5HLw4jTDsNzgZv9CG41xw7TkSCk/ki6MjXK+R5yMCAF5MdXRmHQBy1SKcO4U1NDN8I
-         c1KH6oIVK3VC5FBbykpdGg/1A+503qzrh5TJvMaGeRlQlJ0UgDqacbF3vuPyLnl3MXJn
-         T1L0zbetpZCAqewsCq4ESDPlMDvBPdp2nW6WzPQwu3JZacu5pcAJ+9DlvAlahTW5ZnSh
-         Wy6w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=r7X+qMHHXynKlFUBS+aa2jV1Xf5viHTgNOxEqaUj2j8=;
+        b=kVnDuHAfprRwHXchEqvRdwvxrgao7FtoeNK6k/31jKdochzbvXDtp7MT9w2V2/QhPd
+         GuZ45oUen5O61A1bBnDeOPCXDHmcfOK++onN5+2geNc1MhkzTB6HqzbTLJLRX2Bbc4Rp
+         4pHOOlQQTrto5S26tWS15hqmSt6sc1U8957xn9Hh8G9Dy5JN38wnSi0r5dJZWPpg1hd9
+         Ob3eQy93S0eP5aOT9lTS281/fIve8hE36utNWDUW0NABGuAn0dJBA4P3SSmyggqPz9nU
+         2NOJeKOBeaFVseLjJ54P0LAF5G1yEf/FQOwTdxAmQQ8aClSvl7sfCgHOs7oX2c+IOvor
+         z/eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PXHApmwQ+fq8Jp06pnCwt/jV0z0jBnK6zmB/zPM4HUU=;
-        b=eq3bJHhhF7dlptU929G7xp0BzeKandcwyYt5E30dgL2Cf1LzY+FKXK8rXeFHfce/ea
-         CCqm0Rek8rwAtuxj3TcdkLtyeZPjdlvkvuHQCtm2XXty6odaQOXGlU6z2AKC84fJuQQI
-         QYyEM5uijZ6k9NO6uMjlmpe+t7X9xNAd/IO3iv7S9yD1tLgUpnYfDa9yRZUWQavhdwhF
-         RJp1HduH0Ne75wUNJ7YdG8K/pCeoWRGZgHV5fhpUBLJBlbIXv4U+oiXdV49XnzDLpKCt
-         +8DykYa8eR73jIQJOqFKnm2sCrCI6bpgf8KipsYhDeZs6OdMylQ9PT99PZOVCKQpE9rg
-         iEAA==
-X-Gm-Message-State: AOAM531HC9bglVleeN8vCaHvI5AHAxyNHCztxzV1FR/zxNPjz8CIVCvI
-        4pTFwKGMIVRIxX8M+dth+BUfdbYJpjlGog==
-X-Google-Smtp-Source: ABdhPJxCmvMOim88E44iydtUCV9FXMnqagJIZhJke1s4leRsjN6BnZAT7dw1VWoMwTg74r3E+SdDVg==
-X-Received: by 2002:a19:5510:: with SMTP id n16mr1526250lfe.135.1607545691434;
-        Wed, 09 Dec 2020 12:28:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=r7X+qMHHXynKlFUBS+aa2jV1Xf5viHTgNOxEqaUj2j8=;
+        b=Nr6ZXPwuIjOfSNj+200z3GjaYfQtC5FbaEksDv78S1ICx+j+1a1+lIVBj8ammL/ofl
+         8k61Fssq1ILm5z0Ku0vUlZPAt4yHHSqS9z62qEteAuttArsr3cE9/fiYqLpoV4C2HjUK
+         1+723+YU4PUnzPYc7ZFPr52LvkQumaotY/004HslDsNhNV+sjgQP80g505kDvYgWUm04
+         4nkZ+KdIf4eeDIdOBM+l9rLYD+KapfAlot9rBCbB7OWsyLs+4fAc4nIPSJqrxwbouHs5
+         NyFRk8rxEV2h8N6LQSw4BSSeD6GcUP3C63FTZdoviEDa4Yo2oX7+ucTMc5fexhgtyBUq
+         Z0Vw==
+X-Gm-Message-State: AOAM531lt8UUVgFO+A3j+/MEOBXbrcp4S8ywVKjeptqBaIew5mJxJkb0
+        vQdiLiUV9bnwq3/vGSXhCDtDXE5K1SfZCA==
+X-Google-Smtp-Source: ABdhPJxs08XJoLLDVxDQzbnE8VP9aIoOT5nhH7DK/eggOyTgF8w6b4RcHx+NZxvoFAund4BHIwEnrg==
+X-Received: by 2002:a2e:b6d0:: with SMTP id m16mr142942ljo.133.1607545700983;
+        Wed, 09 Dec 2020 12:28:20 -0800 (PST)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id z26sm17323lja.125.2020.12.09.12.28.10
+        by smtp.gmail.com with ESMTPSA id z26sm17323lja.125.2020.12.09.12.28.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:28:10 -0800 (PST)
+        Wed, 09 Dec 2020 12:28:20 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -72,130 +72,93 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/2] rcu-tasks: move RCU-tasks initialization out of core_initcall()
-Date:   Wed,  9 Dec 2020 21:27:31 +0100
-Message-Id: <20201209202732.5896-1-urezki@gmail.com>
+Subject: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Date:   Wed,  9 Dec 2020 21:27:32 +0100
+Message-Id: <20201209202732.5896-2-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201209202732.5896-1-urezki@gmail.com>
+References: <20201209202732.5896-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Initialize the RCU-tasks earlier, before *_initcall() callbacks are
-invoked. Do it after the workqueue subsytem is up and running. That
-gives us a possibility to make use of synchronize_rcu_tasks*() wait
-API in early_initcall() callbacks.
+Add self tests for checking of RCU-tasks API functionality.
+It covers:
+    - wait API functions;
+    - invoking/completion call_rcu_tasks*().
 
-Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
+
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcupdate.h |  6 ++++++
- init/main.c              |  1 +
- kernel/rcu/tasks.h       | 26 ++++++++++++++++++++++----
- 3 files changed, 29 insertions(+), 4 deletions(-)
+ kernel/rcu/tasks.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 3c3efa4d6ab5..340c7d5344a4 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -88,6 +88,12 @@ void rcu_sched_clock_irq(int user);
- void rcu_report_dead(unsigned int cpu);
- void rcutree_migrate_callbacks(int cpu);
- 
-+#ifdef CONFIG_TASKS_RCU_GENERIC
-+void rcu_init_tasks_generic(void);
-+#else
-+static inline void rcu_init_tasks_generic(void) { }
-+#endif
-+
- #ifdef CONFIG_RCU_STALL_COMMON
- void rcu_sysrq_start(void);
- void rcu_sysrq_end(void);
-diff --git a/init/main.c b/init/main.c
-index 130376ec10ba..e253e87bdf58 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1502,6 +1502,7 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	init_mm_internals();
- 
-+	rcu_init_tasks_generic();
- 	do_pre_smp_initcalls();
- 	lockup_detector_init();
- 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 35bdcfd84d42..67a162949763 100644
+index 67a162949763..9407772780c1 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -241,7 +241,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 	}
- }
- 
--/* Spawn RCU-tasks grace-period kthread, e.g., at core_initcall() time. */
-+/* Spawn RCU-tasks grace-period kthread. */
- static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
- {
- 	struct task_struct *t;
-@@ -564,7 +564,6 @@ static int __init rcu_spawn_tasks_kthread(void)
- 	rcu_spawn_tasks_kthread_generic(&rcu_tasks);
- 	return 0;
- }
--core_initcall(rcu_spawn_tasks_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_classic_gp_kthread(void)
-@@ -692,7 +691,6 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
- 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
- 	return 0;
- }
--core_initcall(rcu_spawn_tasks_rude_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_rude_gp_kthread(void)
-@@ -968,6 +966,12 @@ static void rcu_tasks_trace_pregp_step(void)
- static void rcu_tasks_trace_pertask(struct task_struct *t,
- 				    struct list_head *hop)
- {
-+	// During early boot when there is only one boot-CPU,
-+	// an idle_task is not set for other CPUs. In this case
-+	// just revert.
-+	if (unlikely(t == NULL))
-+		return;
-+
- 	WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
- 	WRITE_ONCE(t->trc_reader_checked, false);
- 	t->trc_ipi_to_cpu = -1;
-@@ -1193,7 +1197,6 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
- 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_trace);
- 	return 0;
- }
--core_initcall(rcu_spawn_tasks_trace_kthread);
- 
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_trace_gp_kthread(void)
-@@ -1222,6 +1225,21 @@ void show_rcu_tasks_gp_kthreads(void)
+@@ -1225,6 +1225,16 @@ void show_rcu_tasks_gp_kthreads(void)
  }
  #endif /* #ifndef CONFIG_TINY_RCU */
  
-+void __init rcu_init_tasks_generic(void)
++static struct rcu_head rhp;
++static int rcu_execurted_test_counter;
++static int rcu_run_test_counter;
++
++static void test_rcu_tasks_callback(struct rcu_head *r)
 +{
++	pr_info("RCU-tasks test callback executed %d\n",
++		++rcu_execurted_test_counter);
++}
++
+ void __init rcu_init_tasks_generic(void)
+ {
+ #ifdef CONFIG_TASKS_RCU
+@@ -1238,7 +1248,41 @@ void __init rcu_init_tasks_generic(void)
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	rcu_spawn_tasks_trace_kthread();
+ #endif
++
++	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
++		pr_info("Running RCU-tasks wait API self tests\n");
 +#ifdef CONFIG_TASKS_RCU
-+	rcu_spawn_tasks_kthread();
++		rcu_run_test_counter++;
++		call_rcu_tasks(&rhp, test_rcu_tasks_callback);
++		synchronize_rcu_tasks();
 +#endif
 +
 +#ifdef CONFIG_TASKS_RUDE_RCU
-+	rcu_spawn_tasks_rude_kthread();
++		rcu_run_test_counter++;
++		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
++		synchronize_rcu_tasks_rude();
 +#endif
 +
 +#ifdef CONFIG_TASKS_TRACE_RCU
-+	rcu_spawn_tasks_trace_kthread();
++		rcu_run_test_counter++;
++		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
++		synchronize_rcu_tasks_trace();
 +#endif
++	}
 +}
 +
++static int rcu_tasks_verify_self_tests(void)
++{
++	int ret = 0;
++
++	if (rcu_run_test_counter != rcu_execurted_test_counter) {
++		WARN_ON(1);
++		ret = -1;
++	}
++
++	return ret;
+ }
++late_initcall(rcu_tasks_verify_self_tests);
+ 
  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
  static inline void rcu_tasks_bootup_oddness(void) {}
- void show_rcu_tasks_gp_kthreads(void) {}
 -- 
 2.20.1
 
