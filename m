@@ -2,40 +2,35 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73BF6C433FE
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 08:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 251D8C433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 14:57:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2495323B98
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 08:18:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F2E6323406
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 14:57:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgLIIR7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Dec 2020 03:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgLIIR7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:17:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E10AC0613D6;
-        Wed,  9 Dec 2020 00:17:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9ZZ3HYGP9gEtqlYwfc7yhe+eaTjdZ3Qitzpf6acm63I=; b=TGWv0NdWksgoupC6WqJKXpu06T
-        RwI0qSiUuqiegD0jOr418V6EZYUc2rbn9EUzh2tZ/3DfaCVDxsGUJRTXXVYz/XAWpqH45mDWxTmL1
-        mz55IUCVUihCwlpj26HHv0hwJwfOokVpdPvX74f47nQECV+flSI3QCIrNnkkTeD/EvXEkCLXk9EOJ
-        h629WJaxXnNhEvxrklkgYFmSkC/u2R+AV3Z50ttj63ZeAmadEhQa2OvcdFF/ewhdxwT+Qj3bU16f/
-        QC5+ini7XPVgdK/XH05EhDqyfdHBJlnfSIBLlrLyMU2Hlc9qqlpIV4HfxUhKtCs0v3+DMq4yFvQn1
-        5W63QpWQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmues-0004hl-TC; Wed, 09 Dec 2020 08:17:11 +0000
-Date:   Wed, 9 Dec 2020 08:17:10 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     paulmck@kernel.org
+        id S2387413AbgLIO5n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Dec 2020 09:57:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732445AbgLIO5n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:57:43 -0500
+Date:   Wed, 9 Dec 2020 06:57:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607525822;
+        bh=E/J48ojA1PPkZ9RHRPFpZfdRtd7AUnBjD4AEtMLyiwY=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ily9kgYerc3ISWU6gUuUiVDsh+jBLnWoZZLDajCs6/qkeqZPA1iTpLfH2p76QfzKD
+         0XscvMeRgHPl0jlbp4jEDmEqdq+v6PbmpNVSrIsbLWn3Ww44kivcJzIBurOIf5w4MY
+         ekJvFJrTNMFtBI5w8D7xvLoP5XQ6oc3lgvyo09RUkEB7Og0wdN4pL3TQsOPGfgrhdg
+         X7CrSAA+jB7ZAbg8nSacDNXZyt6dQjTG1ZsINp9XYiO0e37qN2Xmj56stc3nH6VN/u
+         XZ2Ywv6qcLhRqk3eZwlv2mGOtOU2N1Dr7unPsfYZ8YP66+goWIFdyr+wmhTRy2Jl1L
+         ImZRmV5wRhMLw==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
@@ -48,17 +43,26 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         David Rientjes <rientjes@google.com>, linux-mm@kvack.org
 Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
  memory block
-Message-ID: <20201209081710.GA17642@infradead.org>
+Message-ID: <20201209145702.GA2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
  <20201209011303.32737-1-paulmck@kernel.org>
+ <20201209081710.GA17642@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209011303.32737-1-paulmck@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201209081710.GA17642@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Your two new exports don't actually seem to get used in modular code
-at all in this series.
+On Wed, Dec 09, 2020 at 08:17:10AM +0000, Christoph Hellwig wrote:
+> Your two new exports don't actually seem to get used in modular code
+> at all in this series.
+
+Indeed, and I either need to remove the exports or make my test code in
+kernel/rcu/rcuscale.o suitable for upstreaming.  Or find the appropriate
+mm/slab selftest location.
+
+							Thanx, Paul
