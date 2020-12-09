@@ -2,99 +2,77 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 045A5C4361B
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 17:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 592EBC433FE
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 17:53:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CDFBD225AA
-	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 17:53:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 271EC2076B
+	for <rcu@archiver.kernel.org>; Wed,  9 Dec 2020 17:53:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgLIRwD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 9 Dec 2020 12:52:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59520 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbgLIRwD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:52:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD245AD3F;
-        Wed,  9 Dec 2020 17:51:20 +0000 (UTC)
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        id S1726471AbgLIRx5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 9 Dec 2020 12:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgLIRx5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:53:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8737FC0613CF;
+        Wed,  9 Dec 2020 09:53:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fL27NHJJV4o8PPIFazAlhTrb/LmmYuac+t8OjbZn+1I=; b=NFu5MdxXrbYUn+dYqC7lYaYIxy
+        tS8OKT7nzU72PAjOqUpTcLwWH7TJVo9HlBW+hHrZvOlVh4tXQpImBZ3coyvNKuj72XJzyq2FIDFas
+        L6F5o3eE3+Fi2evfrHjJRSCK4cROrZsAvuO+1Cp4J8HiedF+GXWIeKNEY199cBW86e/qi9183/Gmu
+        aqrB+pfEMZl7uREbVep5Pyg7jCxRDyc9pJBtGc8ihD60Gjcc5wPYILfejLpbO15bnwYQpFDxiH4DO
+        7l9JI1ojkhcD1tdcxxQj31lObxUC9DYZWz+LT1ZPDjNgkQuCOcrqoAtG4nmXvDCl/Mjjz0M+R/+zE
+        NVbVEQVw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn3eE-0006pM-UG; Wed, 09 Dec 2020 17:53:07 +0000
+Date:   Wed, 9 Dec 2020 17:53:06 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org, iamjoonsoo.kim@lge.com,
-        andrii@kernel.org, linux-mm@kvack.org
+        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <20201209175306.GC25719@infradead.org>
 References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
-Date:   Wed, 9 Dec 2020 18:51:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <20201209081710.GA17642@infradead.org>
+ <20201209145702.GA2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20201209011303.32737-3-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209145702.GA2657@paulmck-ThinkPad-P72>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/9/20 2:13 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Dec 09, 2020 at 06:57:02AM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 09, 2020 at 08:17:10AM +0000, Christoph Hellwig wrote:
+> > Your two new exports don't actually seem to get used in modular code
+> > at all in this series.
 > 
-> This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> vmalloc_dump_obj() function combines the checking and dumping, in
-> contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> The reason for the difference is that the checking in the vmalloc()
-> case involves acquiring a global lock, and redundant acquisitions of
-> global locks should be avoided, even on not-so-fast paths.
-> 
-> Note that this change causes on-stack variables to be reported as
-> vmalloc() storage from kernel_clone() or similar, depending on the degree
-> of inlining that your compiler does.  This is likely more helpful than
-> the earlier "non-paged (local) memory".
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: <linux-mm@kvack.org>
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Indeed, and I either need to remove the exports or make my test code in
+> kernel/rcu/rcuscale.o suitable for upstreaming.  Or find the appropriate
+> mm/slab selftest location.
 
-...
-
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->  }
->  #endif	/* CONFIG_SMP */
->  
-> +bool vmalloc_dump_obj(void *object)
-> +{
-> +	struct vm_struct *vm;
-> +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> +
-> +	vm = find_vm_area(objp);
-> +	if (!vm)
-> +		return false;
-> +	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-
-Would it be useful to print the vm area boundaries too?
-
-> +	return true;
-> +}
-> +
->  #ifdef CONFIG_PROC_FS
->  static void *s_start(struct seq_file *m, loff_t *pos)
->  	__acquires(&vmap_purge_lock)
-> 
-
+I'd rather not export something like this which pokes deep into
+internals.  That being said I've been working on off on a
+EXPORT_SYMBOL_FOR() that just exports a symbol to one specific module.
+Hopefully I'll finish it for the next merge window, and with that
+I'd feel much more comfortable with an export.
