@@ -2,29 +2,27 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A40D1C4361B
-	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 11:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32A60C433FE
+	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 11:43:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 64BFF23D56
-	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 11:40:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D951D23D57
+	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 11:43:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729976AbgLJLka (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Dec 2020 06:40:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59554 "EHLO mx2.suse.de"
+        id S1730130AbgLJLnD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Dec 2020 06:43:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34284 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgLJLk3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:40:29 -0500
+        id S1727968AbgLJLnD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:43:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E9E4AD75;
-        Thu, 10 Dec 2020 11:39:45 +0000 (UTC)
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
+        by mx2.suse.de (Postfix) with ESMTP id 177E4AE4A;
+        Thu, 10 Dec 2020 11:42:19 +0000 (UTC)
 To:     paulmck@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
@@ -32,114 +30,194 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org, linux-mm@kvack.org
+        iamjoonsoo.kim@lge.com, andrii@kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
 References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
- <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
- <20201209232310.GI2657@paulmck-ThinkPad-P72>
+ <20201209011303.32737-1-paulmck@kernel.org>
+ <8ea31887-8cc3-24cc-82e8-779290c61c2c@suse.cz>
+ <20201209230442.GH2657@paulmck-ThinkPad-P72>
 From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <576aa539-5f07-97b3-dd3a-8fe6aac5da99@suse.cz>
-Date:   Thu, 10 Dec 2020 11:49:24 +0100
+Subject: Re: [PATCH v2 sl-b 1/5] mm: Add mem_dump_obj() to print source of
+ memory block
+Message-ID: <211cc2a9-5d94-cb0f-91bf-3415510b7dae@suse.cz>
+Date:   Thu, 10 Dec 2020 11:48:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201209232310.GI2657@paulmck-ThinkPad-P72>
+In-Reply-To: <20201209230442.GH2657@paulmck-ThinkPad-P72>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/10/20 12:23 AM, Paul E. McKenney wrote:
-> On Wed, Dec 09, 2020 at 06:51:20PM +0100, Vlastimil Babka wrote:
->> On 12/9/20 2:13 AM, paulmck@kernel.org wrote:
->> > From: "Paul E. McKenney" <paulmck@kernel.org>
->> > 
->> > This commit adds vmalloc() support to mem_dump_obj().  Note that the
->> > vmalloc_dump_obj() function combines the checking and dumping, in
->> > contrast with the split between kmem_valid_obj() and kmem_dump_obj().
->> > The reason for the difference is that the checking in the vmalloc()
->> > case involves acquiring a global lock, and redundant acquisitions of
->> > global locks should be avoided, even on not-so-fast paths.
->> > 
->> > Note that this change causes on-stack variables to be reported as
->> > vmalloc() storage from kernel_clone() or similar, depending on the degree
->> > of inlining that your compiler does.  This is likely more helpful than
->> > the earlier "non-paged (local) memory".
->> > 
->> > Cc: Andrew Morton <akpm@linux-foundation.org>
->> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->> > Cc: <linux-mm@kvack.org>
->> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
->> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On 12/10/20 12:04 AM, Paul E. McKenney wrote:
+>> > +/**
+>> > + * kmem_valid_obj - does the pointer reference a valid slab object?
+>> > + * @object: pointer to query.
+>> > + *
+>> > + * Return: %true if the pointer is to a not-yet-freed object from
+>> > + * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+>> > + * is to an already-freed object, and %false otherwise.
+>> > + */
 >> 
->> ...
->> 
->> > --- a/mm/vmalloc.c
->> > +++ b/mm/vmalloc.c
->> > @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->> >  }
->> >  #endif	/* CONFIG_SMP */
->> >  
->> > +bool vmalloc_dump_obj(void *object)
+>> It should be possible to find out more about object being free or not, than you
+>> currently do. At least to find out if it's definitely free. When it appears
+>> allocated, it can be actually still free in some kind of e.g. per-cpu or
+>> per-node cache that would be infeasible to check. But that improvement to the
+>> output can be also added later. Also SLUB stores the freeing stacktrace, which
+>> might be useful...
+> 
+> I can see how this could help debugging a use-after-free situation,
+> at least as long as the poor sap that subsequently allocated it doesn't
+> free it.
+> 
+> I can easily add more fields to the kmem_provenance structure.  Maybe
+> it would make sense to have another exported API that you provide a
+> kmem_provenance structure to, and it fills it in.
+> 
+> One caution though...  I rely on the object being allocated.
+> If it officially might already be freed, complex and high-overhead
+> synchronization seems to be required to safely access the various data
+> structures.
+
+Good point! It's easy to forget that when being used to similar digging in a
+crash dump, where nothing changes.
+
+> So any use on an already-freed object is on a "you break it you get to
+> keep the pieces" basis.  On the other hand, if you are dealing with a
+> use-after-free situation, life is hard anyway.
+
+Yeah, even now I think it's potentially dangerous, as you can get
+kmem_valid_obj() as true because PageSlab(page) is true. But the object might be
+already free, so as soon as another CPU frees another object from the same slab
+page, the page gets also freed... or it was already freed and then allocated by
+another slab so it's PageSlab() again.
+I guess at least some safety could be achieved by pinning the page with
+get_page_unless_zero. But maybe your current implementation is already safe,
+need to check in detail.
+
+> Or am I missing your point?
+> 
+>> > +bool kmem_valid_obj(void *object)
 >> > +{
->> > +	struct vm_struct *vm;
->> > +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+>> > +	struct page *page;
 >> > +
->> > +	vm = find_vm_area(objp);
->> > +	if (!vm)
+>> > +	if (!virt_addr_valid(object))
 >> > +		return false;
->> > +	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
+>> > +	page = virt_to_head_page(object);
+>> > +	return PageSlab(page);
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(kmem_valid_obj);
+>> > +
+>> > +/**
+>> > + * kmem_dump_obj - Print available slab provenance information
+>> > + * @object: slab object for which to find provenance information.
+>> > + *
+>> > + * This function uses pr_cont(), so that the caller is expected to have
+>> > + * printed out whatever preamble is appropriate.  The provenance information
+>> > + * depends on the type of object and on how much debugging is enabled.
+>> > + * For a slab-cache object, the fact that it is a slab object is printed,
+>> > + * and, if available, the slab name, return address, and stack trace from
+>> > + * the allocation of that object.
+>> > + *
+>> > + * This function will splat if passed a pointer to a non-slab object.
+>> > + * If you are not sure what type of object you have, you should instead
+>> > + * use mem_dump_obj().
+>> > + */
+>> > +void kmem_dump_obj(void *object)
+>> > +{
+>> > +	int i;
+>> > +	struct page *page;
+>> > +	struct kmem_provenance kp;
+>> > +
+>> > +	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+>> > +		return;
+>> > +	page = virt_to_head_page(object);
+>> > +	if (WARN_ON_ONCE(!PageSlab(page))) {
+>> > +		pr_cont(" non-slab memory.\n");
+>> > +		return;
+>> > +	}
+>> > +	kp.kp_ptr = object;
+>> > +	kp.kp_page = page;
+>> > +	kp.kp_nstack = KS_ADDRS_COUNT;
+>> > +	kmem_provenance(&kp);
 >> 
->> Would it be useful to print the vm area boundaries too?
+>> You don't seem to be printing kp.kp_objp anywhere? (unless in later patch, but
+>> would make sense in this patch already).
 > 
-> Like this?
-
-Yeah, thanks!
-
-> I also considered instead using vm->size, but that always seems to include
-> an extra page, so a 4-page span is listed as having 20480 bytes and a
-> one-page span is 8192 bytes.  This might be more accurate in some sense,
-> but would be quite confusing to someone trying to compare this size with
-> that requested in the vmalloc() call.
-
-Right.
-
+> Good point!
 > 
+> However, please note that the various debugging options that reserve
+> space at the beginning.  This can make the meaning of kp.kp_objp a bit
+> different than one might expect.
+
+Yeah, I think the best would be to match the address that
+kmalloc/kmem_cache_alloc() would return, thus the beginning of the object
+itself, so you can calculate the offset within it, etc.
+
+>> > --- a/mm/util.c
+>> > +++ b/mm/util.c
+>> 
+>> I think mm/debug.c is a better fit as it already has dump_page() of a similar
+>> nature. Also you can call that from from mem_dump_obj() at least in case when
+>> the more specific handlers fail. It will even include page_owner info if enabled! :)
+> 
+> I will count this as one vote for mm/debug.c.
+> 
+> Two things to consider, though...  First, Joonsoo suggests that the fact
+> that this produces useful information without any debugging information
+> enabled makes it not be debugging as such.
+
+Well there's already dump_page() which also produces information without special
+configs.
+We're not the best subsystem in this kind of consistency...
+
+> Second, mm/debug.c does
+> not include either slab.h or vmalloc.h.  The second might not be a
+> showstopper, but I was interpreting this to mean that its role was
+> less central.
+
+I think it can include whatever becomes needed there :)
+
 > 							Thanx, Paul
 > 
-> ------------------------------------------------------------------------
-> 
-> commit 33e0469c289c2f78e5f0d0c463c8ee3357d273c0
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Dec 9 15:15:27 2020 -0800
-> 
->     mm: Make mem_obj_dump() vmalloc() dumps include start and length
->     
->     This commit adds the starting address and number of pages to the vmalloc()
->     information dumped by way of vmalloc_dump_obj().
->     
->     Cc: Andrew Morton <akpm@linux-foundation.org>
->     Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->     Cc: <linux-mm@kvack.org>
->     Reported-by: Andrii Nakryiko <andrii@kernel.org>
->     Suggested-by: Vlastimil Babka <vbabka@suse.cz>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 7421719..77b1100 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3439,7 +3439,8 @@ bool vmalloc_dump_obj(void *object)
->  	vm = find_vm_area(objp);
->  	if (!vm)
->  		return false;
-> -	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-> +	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-> +		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
->  	return true;
->  }
->  
+>> Thanks,
+>> Vlastimil
+>> 
+>> > @@ -970,3 +970,28 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+>> >  	kunmap_atomic(addr1);
+>> >  	return ret;
+>> >  }
+>> > +
+>> > +/**
+>> > + * mem_dump_obj - Print available provenance information
+>> > + * @object: object for which to find provenance information.
+>> > + *
+>> > + * This function uses pr_cont(), so that the caller is expected to have
+>> > + * printed out whatever preamble is appropriate.  The provenance information
+>> > + * depends on the type of object and on how much debugging is enabled.
+>> > + * For example, for a slab-cache object, the slab name is printed, and,
+>> > + * if available, the return address and stack trace from the allocation
+>> > + * of that object.
+>> > + */
+>> > +void mem_dump_obj(void *object)
+>> > +{
+>> > +	if (!virt_addr_valid(object)) {
+>> > +		pr_cont(" non-paged (local) memory.\n");
+>> > +		return;
+>> > +	}
+>> > +	if (kmem_valid_obj(object)) {
+>> > +		kmem_dump_obj(object);
+>> > +		return;
+>> > +	}
+>> > +	pr_cont(" non-slab memory.\n");
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(mem_dump_obj);
+>> > 
+>> 
 > 
 
