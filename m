@@ -2,176 +2,113 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35672C4361B
-	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 18:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFCE6C4361B
+	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 19:26:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3C64221E8
-	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 18:39:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 881612067C
+	for <rcu@archiver.kernel.org>; Thu, 10 Dec 2020 19:26:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393123AbgLJSi0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Dec 2020 13:38:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390753AbgLJSiU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Dec 2020 13:38:20 -0500
-Date:   Thu, 10 Dec 2020 10:37:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607625458;
-        bh=BD0MD4SLOvRiQSS9/INdETpZ5uzloO97b/Xr8w29zIc=;
-        h=From:To:Cc:Subject:Reply-To:From;
-        b=Xd1O+QHu0WEkKRur0V4C6WptGoXrL2Yu/9Kn/LXmYv4E/2warRfSoI4E3SMQGO6kf
-         GY4TNITqezywQp3d0wy0Yl7vUWusKs1ltx8oz6V53yaVcqrUqpQLFSf1CGrrohaAa4
-         7zNf6zGtKmSnHFfiiSP3/NaGuyApnlCZb7b7QRRMUvEDuXSJLdamFVLhqrpwlDK6ud
-         pnvMRXoNjK/NLE/bchuXH7gD/gZ5vxKWWn+GQO/8ZrIy3TznCLtUWcT/NhWJjxTGQ7
-         ELzCHabxfLl75Zx/WbtD+egYQNVQKUZe/Ypy72QtJUHEQGTzsPFfDh8XVNxHVG6XkG
-         X2cjl0N9xvLcg==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Energy-efficiency options within RCU
-Message-ID: <20201210183737.GA12900@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S2393371AbgLJTYz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Dec 2020 14:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393240AbgLJTYn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:24:43 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A1C0613D6;
+        Thu, 10 Dec 2020 11:24:03 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id f11so8039921ljn.2;
+        Thu, 10 Dec 2020 11:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DCrNR3n9GJNoXa6hYaaSjB4xbjhQGCznNDRIPsdaBgI=;
+        b=QCR5wTC0ofAq8RJNsX2W1rg6lNBCuGM/kJN3qyqlq2cGRvdmNRX7i9ydiVK9k2lu3J
+         a7HsND38YxMH1QQHajQo8DViLOuSjSXdaR3lJdaYafD5ABB3fCRkV4lwDUClCZOzLvY6
+         BlGMedO5FU22D2HLqkNpwTvaWtXoOraH5KDEra911zjFAaCPNlkph3BSN7DLjIKXwEkr
+         AYgAwoERJMj8reQUL860FAJtcHYBqobuy1oV7t7wiffTrwJFBHhuntNn1F4qA1cdRMuG
+         EsJIwTEJ1QP/KV00mStp6iFeyi3lUEXYltIOOdruRO2QChRJ9TAcKgG2/yqI8ArxjNq5
+         d++w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DCrNR3n9GJNoXa6hYaaSjB4xbjhQGCznNDRIPsdaBgI=;
+        b=lrElSWrQ8404u81E81+N7SaPUZKX3K3EgZRJbpraapaO3kscua/5FUbkJnG78zio3r
+         VhZvTV0xicDA6xPJHfVi5XWmbxQSTn1O7Mf+QS4IbiK3cIEGiVTs+bzXZxblHDj0LgsT
+         Qa6JHo/GAhIP4Yggm2jmqoKwnmbyLpZpV+LYzWXyAz0pLhvsdayGJHx9I4f1Deze+IFc
+         NjWrG8eYbvMC2hupMRLp/ZhhTQgwZ5e+jxB3d6qzQbqvi9K85sSVhwPUxuOp0d3Ty+TM
+         Kb53RBlVidT0dYukNEFI/VhAmW0wo0a83yBdvQ67qoQF+FTOHQq/N6jlKRbL78hHHwb+
+         ZY7A==
+X-Gm-Message-State: AOAM5327WfSb2LMZbG4ZwlUDall/kEO+oCXscjY5Zgh/VzSHpJwPqFV0
+        qMH2ZUaMccxKI12Rz+7lz5o=
+X-Google-Smtp-Source: ABdhPJyt3Mpg1xnO5a8M5FUwtqQQBf79CikKdM4ytgc0dMYe5Bby2JPefgTVSyEjLR0kMpaqC+uwaQ==
+X-Received: by 2002:a2e:914c:: with SMTP id q12mr3670350ljg.102.1607628241935;
+        Thu, 10 Dec 2020 11:24:01 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id v9sm615235lfd.287.2020.12.10.11.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 11:24:01 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 10 Dec 2020 20:23:58 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Energy-efficiency options within RCU
+Message-ID: <20201210192358.GA2365@pc638.lan>
+References: <20201210183737.GA12900@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201210183737.GA12900@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Joel,
+Hello, Paul.
 
-In case you are -seriously- interested...  ;-)
+[Dropping CC]
 
-						Thanx, Paul
+> Hello, Joel,
+> 
+> In case you are -seriously- interested...  ;-)
+> 
+> 						Thanx, Paul
+> 
+> rcu_nocbs=
+> 
+> 	Adding a CPU to this list offloads RCU callback invocation from
+> 	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
+> 	this kthread can be placed on a LITTLE CPU, which has been
+> 	demonstrated to save significant energy in benchmarks.
+> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
+> 
+I have checked our config. We do use rcu_nocbs=0-7 as kthreads but what
+i see those threads are not bound to 0-3 CPUs. In our case it is little
+cluster. I think i should check and run some test cases regarding power 
+savings if i pin all threads to little cluster.
 
-rcu_nocbs=
+> rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
+> 
+> 	This defaults to four jiffies on the theory that grace periods
+> 	tend to last about that long.  If grace periods tend to take
+> 	longer, then it makes a lot of sense to increase this.	And maybe
+> 	battery-powered devices would rather have it be about 2x or 3x
+> 	the expected grace-period duration, who knows?
+> 
+> 	I would keep it to a power of two, but the code should work with
+> 	other numbers.  Except that I don't know that this has ever been
+> 	tested.  ;-)
+> 
+Same here. We do use it.
 
-	Adding a CPU to this list offloads RCU callback invocation from
-	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
-	this kthread can be placed on a LITTLE CPU, which has been
-	demonstrated to save significant energy in benchmarks.
-	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-
-nohz_full=
-
-	Any CPU specified by this boot parameter is handled as if it was
-	specified by rcu_nocbs=.
-
-rcutree.jiffies_till_first_fqs=
-
-	Increasing this will decrease wakeup frequency to the grace-period
-	kthread for the first FQS scan.  And increase grace-period
-	latency.
-
-rcutree.jiffies_till_next_fqs=
-
-	Ditto, but for the second and subsequent FQS scans.
-
-	My guess is that neither of these makes much difference.  But if
-	they do, maybe some sort of backoff scheme for FQS scans?
-
-rcutree.jiffies_till_sched_qs=
-
-	Increasing this will delay RCU's getting excited about CPUs and
-	tasks not responding with quiescent states.  This excitement
-	can cause extra overhead.
-
-	No idea whether adjusting this would help.  But if you increase
-	rcutree.jiffies_till_first_fqs or rcutree.jiffies_till_next_fqs,
-	you might need to increase this one accordingly.
-
-rcutree.qovld=
-
-	Increasing this will increase the grace-period duration at which
-	RCU starts sending IPIs, thus perhaps reducing the total number
-	of IPIs that RCU sends.  The destination CPUs are unlikely to be
-	idle, so it is not clear to me that this would help much.  But
-	perhaps I am wrong about them being mostly non-idle, who knows?
-
-rcupdate.rcu_cpu_stall_timeout=
-
-	If you get overly zealous about the earlier kernel boot parameters,
-	you might need to increase this one as well.  Or instead use the
-	rcupdate.rcu_cpu_stall_suppress= kernel boot parameter to suppress
-	RCU CPU stall warnings entirely.
-
-rcutree.rcu_nocb_gp_stride=
-
-	Increasing this might reduce grace-period work somewhat.  I don't
-	see why a (say) 16-CPU system really needs to have more than one
-	rcuog kthread, so if this does help it might be worthwhile setting
-	a lower limit to this kernel parameter.
-
-rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
-
-	This defaults to four jiffies on the theory that grace periods
-	tend to last about that long.  If grace periods tend to take
-	longer, then it makes a lot of sense to increase this.	And maybe
-	battery-powered devices would rather have it be about 2x or 3x
-	the expected grace-period duration, who knows?
-
-	I would keep it to a power of two, but the code should work with
-	other numbers.  Except that I don't know that this has ever been
-	tested.  ;-)
-
-srcutree.exp_holdoff=
-
-	Increasing this decreases the number of SRCU grace periods that
-	are treated as expedited.  But you have to have closely-spaced
-	SRCU grace periods for this to matter.	(These do happen at least
-	sometimes because I added this only because someone complained
-	about the performance regression from the earlier non-tree SRCU.)
-
-rcupdate.rcu_task_ipi_delay=
-
-	This kernel parameter delays sending IPIs for RCU Tasks Trace,
-	which is used by sleepable BPF programs.  Increasing it can
-	reduce overhead, but can also increase the latency of removing
-	sleepable BPF programs.
-
-rcupdate.rcu_task_stall_timeout=
-
-	If you slow down RCU Tasks Trace too much, you may need this.
-	But then again, the default 10-minute value should suffice.
-
-CONFIG_RCU_FAST_NO_HZ=y
-
-	This only has effect on CPUs not specified by rcu_nocbs, and thus
-	might be useful on systems that offload RCU callbacks only on
-	some of the CPUs.  For example, a big.LITTLE system might offload
-	only the big CPUs.  This Kconfig option reduces the frequency of
-	timer interrupts (and thus of RCU-related softirq processing)
-	on idle CPUs.  This has been shown to save significant energy
-	in benchmarks:
-	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-
-CONFIG_RCU_STRICT_GRACE_PERIOD=y
-
-	This works hard (as in burns CPU) to sharply reduce grace-period
-	latency.  The effect is probably to greatly increase power
-	consumption, but there might well be workloads where the shorter
-	grace periods more than make up for the extra CPU time.  Or not.
-
-CONFIG_HZ=
-
-	Reducing the scheduler-clock interrupt frequency has the opposite
-	effect, namely of increasing RCU grace-period latency, but while
-	also reducing RCU's CPU utilization.
-
-CONFIG_TASKS_TRACE_RCU_READ_MB=y
-
-	Reduce the need to IPI RCU Tasks Trace holdout tasks, but at the
-	expense of an increase in to/from idle overhead.  This Kconfig
-	option also slows down the rate at which RCU Tasks Trace polls
-	for holdout tasks.  This polling rate cannot be separately
-	specified, but if changing the initial source-code values of
-	either rcu_tasks_trace.gp_sleep or rcu_tasks_trace.init_fract
-	proves useful, kernel boot parameters could be created.
-
-	That said, automatic initialization heuristics are more
-	convenient.  When they work, anyway.
+--
+Vlad Rezki
