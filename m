@@ -2,135 +2,210 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-23.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BD62C433FE
-	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0100FC1B0E3
+	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:46:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5602523EB2
-	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:24:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACE2023F33
+	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:46:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436853AbgLKIX5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Dec 2020 03:23:57 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:53687 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436842AbgLKIXi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:23:38 -0500
+        id S2437020AbgLKIop (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Dec 2020 03:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437028AbgLKIoe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:44:34 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8074AC0613D6
+        for <rcu@vger.kernel.org>; Fri, 11 Dec 2020 00:43:54 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id i18so8694326ioa.1
+        for <rcu@vger.kernel.org>; Fri, 11 Dec 2020 00:43:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607675017; x=1639211017;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=+1ORPUHdspsm9h53fFYu3DqNR/hyW+duN+x5ggEWKRU=;
-  b=bG2+nlW+j/FkmD713dV/aRI893d/7rEl27//i+g0MdnK+eNo/gsCWPvW
-   b43o641cQDgs5G+0d5rAN+GDuxKc+XH1+q3TkoHbAp+6A1qWYNFVJ9Vmy
-   ylSOudmGyj5V7/QcZa/r55Dp1L69lcBbnKNB69RgH+2JX691cJgAggP/a
-   o=;
-X-IronPort-AV: E=Sophos;i="5.78,410,1599523200"; 
-   d="scan'208";a="71918939"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 11 Dec 2020 08:22:46 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 0AA0EA1BBA;
-        Fri, 11 Dec 2020 08:20:54 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.144) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 11 Dec 2020 08:20:48 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <davem@davemloft.net>
-CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
-        <kuznet@ms2.inr.ac.ru>, <edumazet@google.com>, <fw@strlen.de>,
-        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
-        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 0/1] net: Reduce rcu_barrier() contentions from 'unshare(CLONE_NEWNET)'
-Date:   Fri, 11 Dec 2020 09:20:31 +0100
-Message-ID: <20201211082032.26965-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3nZGElLoKmf1C18zA8XwumBvcYHFPZLc61ouMw28/Mg=;
+        b=pe3DOJmozb4lcpQU9AzFs07tM5T8Emsj3n06q+r12W4Zf0W9F6xNSmVGGAR4EhuraT
+         zQvuxLDrU3qRpUYzOoNy3L1gDInj6kf7b053gNDKC/Z8TM5g0ivJHuS/RyaRhurbRlZ+
+         geflGF3jOye93tpNF/bVIl2ebeLTT3ovrsH4L8YtGftCCf+ARNpEDo78DmqEgAeCvQtC
+         Scqc+OZ3DVtX99kFYx9ERk7PDwTfZPYRrny8xA5VBvnSy4wqGUCwsjZQYUYiBQjIgirp
+         aSq7EGUx0PR2UXUDlG2Y0kzk3FFW9iQ8WxG0AENlzkcXaWYudNuxHhUNIWrROS7Ncqeo
+         Jrfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3nZGElLoKmf1C18zA8XwumBvcYHFPZLc61ouMw28/Mg=;
+        b=EM/dsW8JXZVecGQEhw/gyVm1ETVdqocaPTr6GxU/J5E0+L5VsQTxxyB8bnEqrIc/or
+         Mrq4Eil1Oj04SR0K7i/qSF5vh2LYvqsKlvOI6oBTzIBZMsxxAkHOkmIoo5Fuen5FWgFm
+         EWtDeL5qfN98G7OmS7eg1aRq+IAC4z6n9wYNLWljGtYOU+PZBrEflQXH79VCkfqp+Il2
+         LFxm78tqbpcLm6hPhSknxF3/181vm6byhivpPfCHBvmhAvpmgmYj8JXJVkVTV7Uy5Hgj
+         XmYULW9bliSVji7FAR9ROCM5TICMTAz4HDT1dsJtckxdngzGhUMfCUe6Huf6dQJtIeJT
+         O51g==
+X-Gm-Message-State: AOAM531sKbWcPlkzeSpofUa1AbJHw67coqVgSeeBR+g5spk/kNzlXeED
+        epTSzXewFiHs81BO7jv7sH2zLOvTGCsGNYB+0BrWCA==
+X-Google-Smtp-Source: ABdhPJzCJsp4aekQmuTRerh7qbU1QXw1ZhFvw7w3DRXDW1N/0+vlGlwaI0m1pFfs1/8o7XmRCEan8ei0Bgb2Xd65unU=
+X-Received: by 2002:a02:c981:: with SMTP id b1mr14530626jap.6.1607676233403;
+ Fri, 11 Dec 2020 00:43:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.144]
-X-ClientProxiedBy: EX13D47UWC004.ant.amazon.com (10.43.162.74) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20201211082032.26965-1-sjpark@amazon.com> <20201211082032.26965-2-sjpark@amazon.com>
+In-Reply-To: <20201211082032.26965-2-sjpark@amazon.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 11 Dec 2020 09:43:41 +0100
+Message-ID: <CANn89iJdPa-2FQS18p3d_YjZx_5OD=eZr_3+a6LPiAxpj=fowA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     David Miller <davem@davemloft.net>,
+        SeongJae Park <sjpark@amazon.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Florian Westphal <fw@strlen.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
-make the number of active slab objects including 'sock_inode_cache' type
-rapidly and continuously increase.  As a result, memory pressure occurs.
-
-In more detail, I made an artificial reproducer that resembles the
-workload that we found the problem and reproduce the problem faster.  It
-merely repeats 'unshare(CLONE_NEWNET)' 50,000 times in a loop.  It takes
-about 2 minutes.  On 40 CPU cores, 70GB DRAM machine, the available
-memory continuously reduced in a fast speed (about 120MB per second,
-15GB in total within the 2 minutes).  Note that the issue don't
-reproduce on every machine.  On my 6 CPU cores machine, the problem
-didn't reproduce.
-
-'cleanup_net()' and 'fqdir_work_fn()' are functions that deallocate the
-relevant memory objects.  They are asynchronously invoked by the work
-queues and internally use 'rcu_barrier()' to ensure safe destructions.
-'cleanup_net()' works in a batched maneer in a single thread worker,
-while 'fqdir_work_fn()' works for each 'fqdir_exit()' call in the
-'system_wq'.
-
-Therefore, 'fqdir_work_fn()' called frequently under the workload and
-made the contention for 'rcu_barrier()' high.  In more detail, the
-global mutex, 'rcu_state.barrier_mutex' became the bottleneck.
-
-I tried making 'rcu_barrier()' and subsequent lightweight works in
-'fqdir_work_fn()' to be processed by a dedicated singlethread worker in
-batch and confirmed it works.  After the change, No continuous memory
-reduction but some fluctuation observed.  Nevertheless, the available
-memory reduction was only up to about 400MB.  The following patch is for
-the change.  I think this is the right solution for point fix of this
-issue, but someone might blame different parts.
-
-1. User: Frequent 'unshare()' calls
-From some point of view, such frequent 'unshare()' calls might seem only
-insane.
-
-2. Global mutex in 'rcu_barrier()'
-Because of the global mutex, 'rcu_barrier()' callers could wait long
-even after the callbacks started before the call finished.  Therefore,
-similar issues could happen in another 'rcu_barrier()' usages.  Maybe we
-can use some wait queue like mechanism to notify the waiters when the
-desired time came.
-
-I personally believe applying the point fix for now and making
-'rcu_barrier()' improvement in longterm make sense.  If I'm missing
-something or you have different opinion, please feel free to let me
-know.
+On Fri, Dec 11, 2020 at 9:21 AM SeongJae Park <sjpark@amazon.com> wrote:
+>
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> For each 'fqdir_exit()' call, a work for destroy of the 'fqdir' is
+> enqueued.  The work function, 'fqdir_work_fn()', internally calls
+> 'rcu_barrier()'.  In case of intensive 'fqdir_exit()' (e.g., frequent
+> 'unshare()' systemcalls), this increased contention could result in
+> unacceptably high latency of 'rcu_barrier()'.  This commit avoids such
+> contention by doing the 'rcu_barrier()' and subsequent lightweight works
+> in a batched manner using a dedicated singlethread worker, as similar to
+> that of 'cleanup_net()'.
 
 
-Patch History
--------------
+Not sure why you submit a patch series with a single patch.
 
-Changes from v2
-(https://lore.kernel.org/lkml/20201210080844.23741-1-sjpark@amazon.com/)
-- Add numbers after the patch (Eric Dumazet)
-- Make only 'rcu_barrier()' and subsequent lightweight works serialized
-  (Eric Dumazet)
+Your cover letter contains interesting info that would better be
+captured in this changelog IMO
 
-Changes from v1
-(https://lore.kernel.org/netdev/20201208094529.23266-1-sjpark@amazon.com/)
-- Keep xmas tree variable ordering (Jakub Kicinski)
-- Add more numbers (Eric Dumazet)
-- Use 'llist_for_each_entry_safe()' (Eric Dumazet)
+>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  include/net/inet_frag.h  |  1 +
+>  net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
+>  2 files changed, 39 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+> index bac79e817776..48cc5795ceda 100644
+> --- a/include/net/inet_frag.h
+> +++ b/include/net/inet_frag.h
+> @@ -21,6 +21,7 @@ struct fqdir {
+>         /* Keep atomic mem on separate cachelines in structs that include it */
+>         atomic_long_t           mem ____cacheline_aligned_in_smp;
+>         struct work_struct      destroy_work;
+> +       struct llist_node       free_list;
+>  };
+>
+>  /**
+> diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+> index 10d31733297d..a6fc4afcc323 100644
+> --- a/net/ipv4/inet_fragment.c
+> +++ b/net/ipv4/inet_fragment.c
+> @@ -145,12 +145,17 @@ static void inet_frags_free_cb(void *ptr, void *arg)
+>                 inet_frag_destroy(fq);
+>  }
+>
+> -static void fqdir_work_fn(struct work_struct *work)
+> +static struct workqueue_struct *fqdir_wq;
+> +static LLIST_HEAD(free_list);
+> +
+> +static void fqdir_free_fn(struct work_struct *work)
+>  {
+> -       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+> -       struct inet_frags *f = fqdir->f;
+> +       struct llist_node *kill_list;
+> +       struct fqdir *fqdir, *tmp;
+> +       struct inet_frags *f;
+>
+> -       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
+> +       /* Atomically snapshot the list of fqdirs to free */
+> +       kill_list = llist_del_all(&free_list);
+>
+>         /* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
+>          * have completed, since they need to dereference fqdir.
+> @@ -158,12 +163,38 @@ static void fqdir_work_fn(struct work_struct *work)
+>          */
+>         rcu_barrier();
+>
+> -       if (refcount_dec_and_test(&f->refcnt))
+> -               complete(&f->completion);
+> +       llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
+> +               f = fqdir->f;
+> +               if (refcount_dec_and_test(&f->refcnt))
+> +                       complete(&f->completion);
+>
+> -       kfree(fqdir);
+> +               kfree(fqdir);
+> +       }
+>  }
+>
+> +static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
+> +
+> +static void fqdir_work_fn(struct work_struct *work)
+> +{
+> +       struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+> +
+> +       rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
+> +
+> +       if (llist_add(&fqdir->free_list, &free_list))
+> +               queue_work(fqdir_wq, &fqdir_free_work);
+
+I think you misunderstood me.
+
+Since this fqdir_free_work will have at most one instance, you can use
+system_wq here, there is no risk of abuse.
+
+My suggestion was to not use system_wq for fqdir_exit(), to better
+control the number
+ of threads in rhashtable cleanups.
+
+void fqdir_exit(struct fqdir *fqdir)
+{
+        INIT_WORK(&fqdir->destroy_work, fqdir_work_fn);
+-       queue_work(system_wq, &fqdir->destroy_work);
++      queue_work(fqdir_wq, &fqdir->destroy_work);
+}
 
 
-SeongJae Park (1):
-  net/ipv4/inet_fragment: Batch fqdir destroy works
 
- include/net/inet_frag.h  |  1 +
- net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
- 2 files changed, 39 insertions(+), 7 deletions(-)
+> +}
+> +
+> +static int __init fqdir_wq_init(void)
+> +{
+> +       fqdir_wq = create_singlethread_workqueue("fqdir");
 
--- 
-2.17.1
 
+And here, I suggest to use a non ordered work queue, allowing one
+thread per cpu, to allow concurrent rhashtable cleanups
+
+Also "fqdir" name is rather vague, this is an implementation detail ?
+
+fqdir_wq =create_workqueue("inet_frag_wq");
+
+> +       if (!fqdir_wq)
+> +               panic("Could not create fqdir workq");
+> +       return 0;
+> +}
+> +
+> +pure_initcall(fqdir_wq_init);
+> +
+> +
+>  int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
+>  {
+>         struct fqdir *fqdir = kzalloc(sizeof(*fqdir), GFP_KERNEL);
+> --
+> 2.17.1
+>
