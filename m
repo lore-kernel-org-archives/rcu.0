@@ -2,107 +2,161 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC5BC1B0D9
-	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 07:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6001C433FE
+	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:22:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D84A23F2A
-	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 07:00:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 557E523EB2
+	for <rcu@archiver.kernel.org>; Fri, 11 Dec 2020 08:22:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436667AbgLKHAC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 11 Dec 2020 02:00:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729300AbgLKG7k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:59:40 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E599CC0613D6;
-        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id j13so1859516pjz.3;
-        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
+        id S2387906AbgLKIVt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 11 Dec 2020 03:21:49 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:5456 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392265AbgLKIVt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:21:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=X2z1OwRPORTsgcZvnqGISSv4h6wK7dEp/2HbkPrGQG0=;
-        b=ub+CvGZTile3AyOOyE/qzEUxhUZWtjRs+LLeA2VZhA4w/Rn/PAcjz9IDOYT55syfl3
-         usVrbmBEfW6u94edAXP20+RZP5PWOfiOgEqK6M49GPeweKXDTQkrrpCjsUkbunIVcbeG
-         ZrCoAoRtj5acqA1UV6ejwjkRjuebWtNC0b3OMB28KErKFrKzWByq4UhG/okN3Cf5oGHX
-         b3lheVupOBQbRiZfYbYxd02hc4jlcCMsDGAYF1q6tdEJzR8h3rx9H/8FyttB4gSRrBaI
-         J2sa6ekpqSG12IQ8hsCidfoSsVHW9JTcI9fXxoCMgqzbj511TsvjEyKd2IIxTJrcilaI
-         Z95A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X2z1OwRPORTsgcZvnqGISSv4h6wK7dEp/2HbkPrGQG0=;
-        b=s8nR4Ttk8pSviWB24i3NcKEsq+mLhe6MdxQzGObdEjupEd34rR14K857Z1kK1l5S4x
-         ZCtfURACRdGgCocebBVcLkDNYj/8a3ZqCee7v6YY6sS+Hz6ZOhP7f8Pt5KpPfJw7RnKZ
-         7CK2oQgxCAU0hCSCV8G5J19OpHnvKRiRf/gk5waZJd8H/1duwPPGHTl2pOgQmngbCZwX
-         AUfzfIX6t71yF4pnVVKX+XI+hnQ71mOxvwNEjDkJBjpz/u8+OrVa6ZwlIa9gfQ8QwJTS
-         U5N/DiUahPWgCGeyTiiCnCWrhc0L3GsAjIMZ0yssP0Z9Ng4/86dvqOxPxvnivMbdndI8
-         Eknw==
-X-Gm-Message-State: AOAM530yXO/C0KvbFgGyv1e0X5YQsZKQ8QFYPUDPeQX/BubSXODkc27f
-        uW8PsKqtNdNcY3Z/Kh2Lfbnl8eVktIlugw==
-X-Google-Smtp-Source: ABdhPJyOg822jqzFkAiCwQ5VVT1rRAxBZ7c5+euPYPmSSpNcaP3LSZhtJuHR43OcbBWbxrqaUG6QaQ==
-X-Received: by 2002:a17:90a:1bc7:: with SMTP id r7mr12152120pjr.33.1607669939492;
-        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id mz1sm8922830pjb.33.2020.12.10.22.58.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Dec 2020 22:58:59 -0800 (PST)
-Date:   Fri, 11 Dec 2020 15:58:51 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        andrii@kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v3 sl-b 1/6] mm: Add mem_dump_obj() to print source of
- memory block
-Message-ID: <20201211065850.GB587@js1304-desktop>
-References: <20201211011907.GA16110@paulmck-ThinkPad-P72>
- <20201211012003.16473-1-paulmck@kernel.org>
- <20201211022205.GA11631@js1304-desktop>
- <20201211033359.GD2657@paulmck-ThinkPad-P72>
- <20201211034226.GA2116@paulmck-ThinkPad-P72>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607674908; x=1639210908;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=MQ0QITdgdNQMHZpDm4bLT+Ctn1747V5BItdI9+PnQvs=;
+  b=MjkrIq5MsZfNCowEQ4Yv/aFa77jgOJ49tAYSDJKcChTcqUwN1ukLsjJn
+   F7Fa1PwLasq5or0zN4zS5qHySBT/eSUFfUjK/ZSJs9vdLpNrheeTMWXol
+   cgk5+VhNNFCynup5pY47p/ooEc+l1AOPlXpiovoWv2vfi8BbO/zckWEd1
+   0=;
+X-IronPort-AV: E=Sophos;i="5.78,410,1599523200"; 
+   d="scan'208";a="95126821"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-41350382.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 11 Dec 2020 08:21:02 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-41350382.us-west-2.amazon.com (Postfix) with ESMTPS id D4DD0C2832;
+        Fri, 11 Dec 2020 08:21:00 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.144) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Dec 2020 08:20:55 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <davem@davemloft.net>
+CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
+        <kuznet@ms2.inr.ac.ru>, <edumazet@google.com>, <fw@strlen.de>,
+        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
+        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 1/1] net/ipv4/inet_fragment: Batch fqdir destroy works
+Date:   Fri, 11 Dec 2020 09:20:32 +0100
+Message-ID: <20201211082032.26965-2-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201211082032.26965-1-sjpark@amazon.com>
+References: <20201211082032.26965-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211034226.GA2116@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.144]
+X-ClientProxiedBy: EX13D47UWC004.ant.amazon.com (10.43.162.74) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 07:42:27PM -0800, Paul E. McKenney wrote:
-> On Thu, Dec 10, 2020 at 07:33:59PM -0800, Paul E. McKenney wrote:
-> > On Fri, Dec 11, 2020 at 11:22:10AM +0900, Joonsoo Kim wrote:
-> > > On Thu, Dec 10, 2020 at 05:19:58PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> [ . . . ]
-> 
-> > > We can get some infos even if CONFIG_SLUB_DEBUG isn't defined.
-> > > Please move them out.
-> > 
-> > I guess since I worry about CONFIG_MMU=n it only makes sense to also
-> > worry about CONFIG_SLUB_DEBUG=n.  Fix update.
-> 
-> Like this?  (Patch on top of the series, to be folded into the first one.)
+From: SeongJae Park <sjpark@amazon.de>
 
-Yes!
+For each 'fqdir_exit()' call, a work for destroy of the 'fqdir' is
+enqueued.  The work function, 'fqdir_work_fn()', internally calls
+'rcu_barrier()'.  In case of intensive 'fqdir_exit()' (e.g., frequent
+'unshare()' systemcalls), this increased contention could result in
+unacceptably high latency of 'rcu_barrier()'.  This commit avoids such
+contention by doing the 'rcu_barrier()' and subsequent lightweight works
+in a batched manner using a dedicated singlethread worker, as similar to
+that of 'cleanup_net()'.
 
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ include/net/inet_frag.h  |  1 +
+ net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
+ 2 files changed, 39 insertions(+), 7 deletions(-)
 
-Thanks.
+diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+index bac79e817776..48cc5795ceda 100644
+--- a/include/net/inet_frag.h
++++ b/include/net/inet_frag.h
+@@ -21,6 +21,7 @@ struct fqdir {
+ 	/* Keep atomic mem on separate cachelines in structs that include it */
+ 	atomic_long_t		mem ____cacheline_aligned_in_smp;
+ 	struct work_struct	destroy_work;
++	struct llist_node	free_list;
+ };
+ 
+ /**
+diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+index 10d31733297d..a6fc4afcc323 100644
+--- a/net/ipv4/inet_fragment.c
++++ b/net/ipv4/inet_fragment.c
+@@ -145,12 +145,17 @@ static void inet_frags_free_cb(void *ptr, void *arg)
+ 		inet_frag_destroy(fq);
+ }
+ 
+-static void fqdir_work_fn(struct work_struct *work)
++static struct workqueue_struct *fqdir_wq;
++static LLIST_HEAD(free_list);
++
++static void fqdir_free_fn(struct work_struct *work)
+ {
+-	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
+-	struct inet_frags *f = fqdir->f;
++	struct llist_node *kill_list;
++	struct fqdir *fqdir, *tmp;
++	struct inet_frags *f;
+ 
+-	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
++	/* Atomically snapshot the list of fqdirs to free */
++	kill_list = llist_del_all(&free_list);
+ 
+ 	/* We need to make sure all ongoing call_rcu(..., inet_frag_destroy_rcu)
+ 	 * have completed, since they need to dereference fqdir.
+@@ -158,12 +163,38 @@ static void fqdir_work_fn(struct work_struct *work)
+ 	 */
+ 	rcu_barrier();
+ 
+-	if (refcount_dec_and_test(&f->refcnt))
+-		complete(&f->completion);
++	llist_for_each_entry_safe(fqdir, tmp, kill_list, free_list) {
++		f = fqdir->f;
++		if (refcount_dec_and_test(&f->refcnt))
++			complete(&f->completion);
+ 
+-	kfree(fqdir);
++		kfree(fqdir);
++	}
+ }
+ 
++static DECLARE_WORK(fqdir_free_work, fqdir_free_fn);
++
++static void fqdir_work_fn(struct work_struct *work)
++{
++	struct fqdir *fqdir = container_of(work, struct fqdir, destroy_work);
++
++	rhashtable_free_and_destroy(&fqdir->rhashtable, inet_frags_free_cb, NULL);
++
++	if (llist_add(&fqdir->free_list, &free_list))
++		queue_work(fqdir_wq, &fqdir_free_work);
++}
++
++static int __init fqdir_wq_init(void)
++{
++	fqdir_wq = create_singlethread_workqueue("fqdir");
++	if (!fqdir_wq)
++		panic("Could not create fqdir workq");
++	return 0;
++}
++
++pure_initcall(fqdir_wq_init);
++
++
+ int fqdir_init(struct fqdir **fqdirp, struct inet_frags *f, struct net *net)
+ {
+ 	struct fqdir *fqdir = kzalloc(sizeof(*fqdir), GFP_KERNEL);
+-- 
+2.17.1
+
