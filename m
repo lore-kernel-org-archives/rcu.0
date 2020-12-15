@@ -7,20 +7,20 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DB24C2BBCD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08DFEC2BB48
 	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EAA792250F
+	by mail.kernel.org (Postfix) with ESMTP id C358D224D2
 	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1728591AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 15 Dec 2020 09:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727661AbgLOORj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S1727876AbgLOORj (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 15 Dec 2020 09:17:39 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA47C0617A6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D081C0617A7
         for <rcu@vger.kernel.org>; Tue, 15 Dec 2020 06:16:59 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -29,21 +29,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZySECGp9qaVnJvFkefRmhXKlIaLzZxsilA72uIY/LiI=;
-        b=aVk/ytwJA452UZi18PeuqT5B2Guaq3IsHGLo11AfAYjq09yBK+MIK2Imj32APBji6QAN/o
-        26o0X5iYKI11jNA4J6dBkSFtY2EbzdewbB413tMdzYzWe1whScsBm/LxlfWUy6PhNyd6oG
-        1P2YR+p/IiG03Ou0i2D8U8UuqjS0UTBLMxWtJRRPtmz9AE5bVksQj5gxBbLfWAu+FS79nq
-        jTnauzUl3Wk7WjI2ij+brBvGRJon/z9KQW1iwA+G/FmcBfQRj8vM9ZmV9X0WCbZ9YMYzqj
-        tGSfKAbvfrX5HDjVOY9PEpLhd51yAXbinI1HHO9Zk1dnj0a/cHzMqAVsg41YkQ==
+        bh=ULkU1PcbpU2l78G0960G5T5ULxU0eHA7I68Bh4WAkAs=;
+        b=2N8vwfNesIbjMsnaZv1Pa641cJW2CutAPno9ssCZehFw+hU283saN7357z/MisfuQ7l5pE
+        WQzvh5NdNg9GJWJYhHWJf5BvO79E3HaXbEEHxq8geZZdLLI98UYc40r27CQevc/g1skPCw
+        Aupd//h+OcNCKdE6u+Ok+/XQg93Bf4jukka7B4Vlniu5oPvDWAoWJwNUZGvzdCx7jqUOw2
+        JzyRALXGL07ohgS0vl92SNtrsmV4AqM2lgcbeWzd55SiF3N1zUo/ZJ7AzSQHUrcgOg4YaA
+        kizra7Cg2RmDoKYHeLk4fEim0Wz4jxPv59Ta+5qpdlNFiC9UZCcXacwESQBBUw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1608041817;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZySECGp9qaVnJvFkefRmhXKlIaLzZxsilA72uIY/LiI=;
-        b=5tYLo0AD9Vxa7dYHXiq6EM6Z5IC4YkAEQ7UOzGd1i86HG8gtIhJpAJYrN9Jm3sjCo3YqQm
-        ekFFv5jtI1VmMQCw==
+        bh=ULkU1PcbpU2l78G0960G5T5ULxU0eHA7I68Bh4WAkAs=;
+        b=Vx+awOVGxDrnLs+DfoOVhaaSmR3a3nOBWx5XeOeHG6FT5LyMn1T2SIN2XWzKMNG654USX0
+        kGZFF6uveYUiIhCQ==
 To:     rcu@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -54,9 +54,9 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Scott Wood <swood@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 2/5] rcu: Use rcuc threads on PREEMPT_RT.
-Date:   Tue, 15 Dec 2020 15:16:46 +0100
-Message-Id: <20201215141649.796472-3-bigeasy@linutronix.de>
+Subject: [PATCH 1/5] rcu: make RCU_BOOST default on CONFIG_PREEMPT_RT
+Date:   Tue, 15 Dec 2020 15:16:45 +0100
+Message-Id: <20201215141649.796472-2-bigeasy@linutronix.de>
 In-Reply-To: <20201215141649.796472-1-bigeasy@linutronix.de>
 References: <20201215141649.796472-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -65,44 +65,35 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Scott Wood <swood@redhat.com>
+With RCU callbacks deferred to the `rcuc' thread it is more likely that
+people run into OOM if the RCU reader or the thread is stalled for too
+long and RCU can't continue its work.
+On PREEMPT_RT this is more likely because the amount of RT tasks is
+higher and the general workload involves more RT tasks.
 
-Using rcuc threads for processing callbacks over softirq has the
-advantage that the callbacks can be processed independently. On
-PREEMPT_RT the softirq can be preempted. Relying on softirq for callback
-processing would mean to complete the current stage of softirq for the
-sake of running callbacks. The softirq is processed on PREEMPT_RT in the
-context of the task that is raising a softirq. If it is raised in-IRQ
-context then the softirq processing is deferred to the `ksoftirqd'
-thread.
-Processing RCU callbacks in thread context was always the only option
-for PREEMPT_RT and there have been no complains.
+Make RCU_BOOST default on PREEMPT_RT to ease the configuration. It can
+be still disabled if someone knows better.
 
-Disable softirq usage for RCU and disable its commandline parameter.
-
-Signed-off-by: Scott Wood <swood@redhat.com>
-[bigeasy: Reword commit message]
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/rcu/tree.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/rcu/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 80ceee55f379a..57eff3b82104c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -100,8 +100,10 @@ static struct rcu_state rcu_state =3D {
- static bool dump_tree;
- module_param(dump_tree, bool, 0444);
- /* By default, use RCU_SOFTIRQ instead of rcuc kthreads. */
--static bool use_softirq =3D true;
-+static bool use_softirq =3D !IS_ENABLED(CONFIG_PREEMPT_RT);
-+#ifndef CONFIG_PREEMPT_RT
- module_param(use_softirq, bool, 0444);
-+#endif
- /* Control rcu_node-tree auto-balancing at boot time. */
- static bool rcu_fanout_exact;
- module_param(rcu_fanout_exact, bool, 0444);
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index cdc57b4f6d48a..aa8cc8c977e78 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -188,8 +188,8 @@ config RCU_FAST_NO_HZ
+=20
+ config RCU_BOOST
+ 	bool "Enable RCU priority boosting"
+-	depends on RT_MUTEXES && PREEMPT_RCU && RCU_EXPERT
+-	default n
++	depends on (RT_MUTEXES && PREEMPT_RCU && RCU_EXPERT) || PREEMPT_RT
++	default y if PREEMPT_RT
+ 	help
+ 	  This option boosts the priority of preempted RCU readers that
+ 	  block the current preemptible RCU grace period for too long.
 --=20
 2.29.2
 
