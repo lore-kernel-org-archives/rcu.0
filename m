@@ -4,21 +4,24 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B75B4C4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D55B0C2BB9A
 	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80F22224D2
+	by mail.kernel.org (Postfix) with ESMTP id 9FEF22250F
 	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1728109AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 15 Dec 2020 09:17:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60100 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728109AbgLOORk (ORCPT <rfc822;rcu@vger.kernel.org>);
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728591AbgLOORk (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 15 Dec 2020 09:17:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA51CC0617B0
+        for <rcu@vger.kernel.org>; Tue, 15 Dec 2020 06:16:59 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1608041818;
@@ -26,21 +29,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6RAV3hT3c/OjUGYMCYa2Z2W/+/rYfZiZcYK0ociYgg0=;
-        b=IFsfe4EFmd2I7ViY0c1iqt5EyDnL72Jam3bIYc9jB12vyKpwp3HwePeBEMqTEZTX5rvD8C
-        VYU/U27IGgCdamBaTb0EJ+llJrshQ2SDQpQDPiYfzFyL0z+AP6cbUWc3701SqYcuzcW+Ce
-        0bqbe1FOzELnuybKNNPHgFruy6jraWw0UyT+WzzsuFKXAl4PKP2LvnPNnwB84YwX35C76K
-        wbBAdJs1qqebrq7ih3O19PkCaSuRGvB9p8UihWnKEAq9QjbO0ZPu1bu9eaQRhvQ5HIQplY
-        POLJkuhMEyE3FSEMLi6luV9gWxx80Nibw3DCVVxG+WCP4oehSJqNkeuafBRr0g==
+        bh=2Q6KSzr7NAxfowGjdx2GiERE3dvkdCAmXnmQzbVs6EM=;
+        b=xLbmkpa5TkGywVJLfUXWZ/E+2NsfNrbWQ6iGsP2mVdJSPybCr/xPxzttAc9E5z3HGBJyNq
+        B22SYftoaOI6+1OfVIUv7oUM+8jUEmxvIWIjYnJYtIvHmDeGa/Gdze351AzvI84swvBkdD
+        3g32As6Jcv5e0NFJNbbP3twcJ/nFE0nfwBCLrP93sdF4oHYyAq7q4ux0o9NA1kNsgqxkL1
+        e9d8lGymQqva8DLjcyGvSMJCiVqXdpeK8l97nOoQ/eHEXgqOcdQtOQg0vwuoI4QxDnwfrV
+        IRVckb9H6hdBqT5KK8JiWc8g2LNgZm3BXx2XjjbmUWn+NbI8C56V4s2CTMkzpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1608041818;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6RAV3hT3c/OjUGYMCYa2Z2W/+/rYfZiZcYK0ociYgg0=;
-        b=YKkvDNaghf67fFlm53WOzC+WnzLOxsTA4q3+EIc7kleO/Khkgt8sIJWVai5YHHDF01SiAv
-        iO5A6vghBtNNAfBw==
+        bh=2Q6KSzr7NAxfowGjdx2GiERE3dvkdCAmXnmQzbVs6EM=;
+        b=WdxiLrOAblZLPvVVsTBjIw4KeGWsXh8knl+ZuhgsPpf2VuVSPGbXOjuasFXeOqOrOrLWcP
+        WCfx9ybN1ui/RKDw==
 To:     rcu@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -50,10 +53,13 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Scott Wood <swood@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Julia Cartwright <julia@ni.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/5] doc: Update RCU's requirements page about the PREEMPT_RT wiki.
-Date:   Tue, 15 Dec 2020 15:16:48 +0100
-Message-Id: <20201215141649.796472-5-bigeasy@linutronix.de>
+Subject: [PATCH 3/5] rcu: enable rcu_normal_after_boot by default for RT
+Date:   Tue, 15 Dec 2020 15:16:47 +0100
+Message-Id: <20201215141649.796472-4-bigeasy@linutronix.de>
 In-Reply-To: <20201215141649.796472-1-bigeasy@linutronix.de>
 References: <20201215141649.796472-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -62,30 +68,39 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The PREEMPT_RT wiki moved from kernel.org to the Linux Foundation wiki.
-The kernel.org wiki is read only.
+From: Julia Cartwright <julia@ni.com>
 
-Update the URL of the active PREEMPT_RT wiki.
+The forcing of an expedited grace period is an expensive and very
+RT-application unfriendly operation, as it forcibly preempts all running
+tasks on CPUs which are preventing the gp from expiring.
 
+By default, as a policy decision, disable the expediting of grace
+periods (after boot) on configurations which enable PREEMPT_RT.
+
+Suggested-by: Luiz Capitulino <lcapitulino@redhat.com>
+Acked-by: Paul E. McKenney <paulmck@linux.ibm.com>
+Signed-off-by: Julia Cartwright <julia@ni.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- Documentation/RCU/Design/Requirements/Requirements.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/update.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Docum=
-entation/RCU/Design/Requirements/Requirements.rst
-index 95b68c107a8fa..e93cdc476e008 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2317,7 +2317,7 @@ decides to throw at it.
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 39334d2d2b379..b95ae86c40a7d 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -56,8 +56,10 @@
+ #ifndef CONFIG_TINY_RCU
+ module_param(rcu_expedited, int, 0);
+ module_param(rcu_normal, int, 0);
+-static int rcu_normal_after_boot;
++static int rcu_normal_after_boot =3D IS_ENABLED(CONFIG_PREEMPT_RT);
++#ifndef CONFIG_PREEMPT_RT
+ module_param(rcu_normal_after_boot, int, 0);
++#endif
+ #endif /* #ifndef CONFIG_TINY_RCU */
 =20
- The Linux kernel is used for real-time workloads, especially in
- conjunction with the `-rt
--patchset <https://rt.wiki.kernel.org/index.php/Main_Page>`__. The
-+patchset <https://wiki.linuxfoundation.org/realtime/>`__. The
- real-time-latency response requirements are such that the traditional
- approach of disabling preemption across RCU read-side critical sections
- is inappropriate. Kernels built with ``CONFIG_PREEMPT=3Dy`` therefore use
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
 --=20
 2.29.2
 
