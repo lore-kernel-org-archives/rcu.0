@@ -2,188 +2,170 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 120BEC4361B
-	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 02:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AF2C4361B
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 08:42:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D8E4C20782
-	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 02:21:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8FB0820855
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 08:42:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgLOCV0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Dec 2020 21:21:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgLOCVY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:21:24 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00D5C0617A6
-        for <rcu@vger.kernel.org>; Mon, 14 Dec 2020 18:20:43 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id ce23so25426924ejb.8
-        for <rcu@vger.kernel.org>; Mon, 14 Dec 2020 18:20:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
-        b=gsEdjSs8ZdW0UOmW7MRRgqq5TZ7+FCQ+umrKB5cfQEr9l2RLAV8jozVgPHmqi0cbHE
-         MZ3gRaxd5Iqycq1rdyIhUXT5/xiK2M7zpC3R+yH8Z2VI4xQ0cOfKNnEnfaC9O4KfM8yV
-         9+QHff8lRJVZNm51Avdwol9WNcYE0yZGIwcyaPxMJbOym2GKTTAGI3hYMslQ8SthoFnK
-         azXT1P8cH1uOJ6zOXD3M/LEbFAX8VFbFYNpgj23Gn0aFnp3NrtcZRNckED1Yta9+8/eo
-         QI05nPGdsxppf38OYg1d3icqfN4QLnA4XPC0Op0jAq8OeEn/VVg/epq3xEEfy68bwEja
-         2WjQ==
+        id S1727340AbgLOIlW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Dec 2020 03:41:22 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44691 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727280AbgLOIlS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:41:18 -0500
+Received: by mail-ot1-f65.google.com with SMTP id f16so18574318otl.11;
+        Tue, 15 Dec 2020 00:41:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
-        b=kK/vZVsYF5SgzWUsCYhcnfY/A4sHGAL36wYVYtg3kCSfTVZZHaZOjCjw/bR8EJIztw
-         Y6HL/o0ODV413MUO6Z1nKxnRKMGLtr36cf2ErF9DpufM5w3LxWEFcOZ5hu0N7j/7a7AJ
-         12sx2FKsdlC3UNDtMyP7Lq7+GuE7a2ue2733ZEEU3BqR8mndJWMoHrHMPBXhw/NwXsFt
-         ySD6BdMBjy/IxZDJeNoQ7efS0MnMtE2OOdIXVbDilS3oJwW3WuXjwawT6qf/Tznw0lmk
-         SRO+E4Ew4N9pUEMKVV+c2JkMNh6ImdTasOEiNVbCu1HL2F1V9RJExwpuRi3e7yakT8KK
-         qjDg==
-X-Gm-Message-State: AOAM530fQQWklmKkFLLP5n79s5FS8EgBgE8cNOU00vGlcFH3yC31U4BK
-        t2/+zEf1UAPepNpbtxQzNJ+xvoaoi8qXc1mOmI+i0g==
-X-Google-Smtp-Source: ABdhPJz9NO/Whj0QD2Y/oUA31StdDEGmpCwP6JNJ5pbO7Ty43A3K8NF3WHn28WsS20EZKQFQBeO2yZEgCXoRx7mftcI=
-X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr24180480eji.133.1607998842290;
- Mon, 14 Dec 2020 18:20:42 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ba7mc/BCMYdw7FaeaEdwydqlVnKjTzjlShw/SDUcZp0=;
+        b=iomaYM7D8ZoEhPrre+p+cApdvqpyI0TWJBcAIK33R5b9bl2BfcwUdy5atCI5GsxKjs
+         1wA7fXpUnMNBJki7qeNDgbNkBLiPyEa/2/KD5RhFY30kB9YQFkREKnF4OELBrEIahMue
+         XwD85CZXD1bLv+xRRuaa3ZvBFhzyvXH+jqsj4Uvy7O1ixqMQe6BWhV+NuucDyNNomZHB
+         s1U7EOKTVYI8t9LXcTaUQVufMECdFBXhzyccYBzc35hrq+W4eyzCoIokMVPjPER63l6k
+         MqYj5SjGuuI0qrBOB5+nnHy7NLQQjJq7L0cEHDuRpxqmrxOoZYJZCpKsJ6UMD66zAr9K
+         izhg==
+X-Gm-Message-State: AOAM5328Rg/fZlWoCS621t4Kuip0KjIAAFN9R9ry7q+Cep/sxbZBQi07
+        7pLOaCYBz5s720qZLZH1uf0MjTPTyT8nk5J3CKs=
+X-Google-Smtp-Source: ABdhPJyziYSsvqwOWh908ds9wuseIW4WlDDaCvlJB9DaOfZyJAkb5XL0UpuFaCTo13cbBHs4YTr4QhfF+hJ/B4H/oDY=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr22477520otc.145.1608021637754;
+ Tue, 15 Dec 2020 00:40:37 -0800 (PST)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Dec 2020 07:50:31 +0530
-Message-ID: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
-Subject: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in RCU-bh
- read-side critical section!
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+References: <20201105233900.GA20676@paulmck-ThinkPad-P72> <20201105233933.20748-3-paulmck@kernel.org>
+In-Reply-To: <20201105233933.20748-3-paulmck@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Dec 2020 09:40:26 +0100
+Message-ID: <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
+ report match RCU flavor being tested
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are two warnings "WARNING: suspicious RCU usage" noticed on arm64 juno-r2
-device while running selftest bpf test_tc_edt.sh and net: udpgro_bench.sh.
-These warnings are occurring intermittently.
+Hi Paul,
 
-metadata:
-  git branch: linux-5.9.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git describe: v5.9.14-106-g609d95a95925
-  make_kernelversion: 5.9.15-rc1
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.9/58/config
+On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
+>
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+>
+> At the end of the test and after rcu_torture_writer() stalls, rcutorture
+> invokes show_rcu_gp_kthreads() in order to dump out information on the
+> RCU grace-period kthread.  This makes a lot of sense when testing vanilla
+> RCU, but not so much for the other flavors.  This commit therefore allows
+> per-flavor kthread-dump functions to be specified.
+>
+> [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
+Thanks for your patch, which is now commit 27c0f1448389baf7
+("rcutorture: Make grace-period kthread report match RCU flavor being
+tested").
 
-Steps to reproduce:
-------------------
-Not easy to reproduce.
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
+>  static inline void rcu_bind_current_to_nocb(void) { }
+>  #endif
+>
+> +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
+> +void show_rcu_tasks_classic_gp_kthread(void);
+> +#else
+> +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
+> +#endif
+> +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
+> +void show_rcu_tasks_rude_gp_kthread(void);
+> +#else
+> +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
+> +#endif
 
-Crash log:
---------------
-# selftests: bpf: test_tc_edt.sh
-[  503.796362]
-[  503.797960] =============================
-[  503.802131] WARNING: suspicious RCU usage
-[  503.806232] 5.9.15-rc1 #1 Tainted: G        W
-[  503.811358] -----------------------------
-[  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
-context switch in RCU-bh read-side critical section!
-[  503.825858]
-[  503.825858] other info that might help us debug this:
-[  503.825858]
-[  503.833998]
-[  503.833998] rcu_scheduler_active = 2, debug_locks = 1
-[  503.840981] 3 locks held by kworker/u12:1/157:
-[  503.845514]  #0: ffff0009754ed538
-((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
-[  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
-at: process_one_work+0x208/0x768
-[  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
-at: cleanup_net+0x64/0x3b8
-[  503.872786]
-[  503.872786] stack backtrace:
-[  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
-        5.9.15-rc1 #1
-[  503.885433] Hardware name: ARM Juno development board (r2) (DT)
-[  503.891382] Workqueue: netns cleanup_net
-[  503.895324] Call trace:
-[  503.897786]  dump_backtrace+0x0/0x1f8
-[  503.901464]  show_stack+0x2c/0x38
-[  503.904796]  dump_stack+0xec/0x158
-[  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
-[  503.912591]  ___might_sleep+0x1e4/0x208
-[  503.916444]  inet_twsk_purge+0x144/0x378
-[  503.920384]  tcpv6_net_exit_batch+0x20/0x28
-[  503.924585]  ops_exit_list.isra.10+0x78/0x88
-[  503.928872]  cleanup_net+0x248/0x3b8
-[  503.932462]  process_one_work+0x2b0/0x768
-[  503.936487]  worker_thread+0x48/0x498
-[  503.940166]  kthread+0x158/0x168
-[  503.943409]  ret_from_fork+0x10/0x1c
-[  504.165891] IPv6: ADDRCONF(NETDEV_CHANGE): veth_src: link becomes ready
-[  504.459624] audit: type=1334 audit(1607978673.070:40866):
-prog-id=20436 op=LOAD
-<>
-[  879.304684]
-[  879.306200] =============================
-[  879.310314] WARNING: suspicious RCU usage
-[  879.314420] 5.9.15-rc1 #1 Tainted: G        W
-[  879.319554] -----------------------------
-[  879.323644] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
-context switch in RCU-sched read-side critical section!
-[  879.334259]
-[  879.334259] other info that might help us debug this:
-[  879.334259]
-[  879.342345]
-[  879.342345] rcu_scheduler_active = 2, debug_locks = 1
-[  879.348958] 3 locks held by kworker/u12:8/248:
-[  879.353483]  #0: ffff0009754ed538
-((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
-[  879.362910]  #1: ffff800013bc3df0 (net_cleanup_work){+.+.}-{0:0},
-at: process_one_work+0x208/0x768
-[  879.371984]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
-at: cleanup_net+0x64/0x3b8
-[  879.380540]
-[  879.380540] stack backtrace:
-[  879.384998] CPU: 1 PID: 248 Comm: kworker/u12:8 Tainted: G        W
-        5.9.15-rc1 #1
-[  879.393201] Hardware name: ARM Juno development board (r2) (DT)
-[  879.399147] Workqueue: netns cleanup_net
-[  879.403089] Call trace:
-[  879.405550]  dump_backtrace+0x0/0x1f8
-[  879.409228]  show_stack+0x2c/0x38
-[  879.412561]  dump_stack+0xec/0x158
-# ud[  879.415980]  lockdep_rcu_suspicious+0xd4/0xf8
-[  879.420691]  ___might_sleep+0x1ac/0x208
-p tx:     32 MB/s      546 calls/[  879.424570]
-nf_ct_iterate_cleanup+0x1b8/0x2d8 [nf_conntrack]
-s    546 msg/s[  879.433190]  nf_conntrack_cleanup_net_list+0x58/0x100
-[nf_conntrack]
+The #ifdef expression does not match the one for the implementation
+below.
 
-[  879.440765]  nf_conntrack_pernet_exit+0xa8/0xb8 [nf_conntrack]
-[  879.446755]  ops_exit_list.isra.10+0x78/0x88
-[  879.451043]  cleanup_net+0x248/0x3b8
-[  879.454635]  process_one_work+0x2b0/0x768
-[  879.458661]  worker_thread+0x48/0x498
-[  879.462340]  kthread+0x158/0x168
-[  879.465584]  ret_from_fork+0x10/0x1c
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+
+> @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
+>         .exp_sync       = synchronize_rcu_tasks_rude,
+>         .call           = call_rcu_tasks_rude,
+>         .cb_barrier     = rcu_barrier_tasks_rude,
+> +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
+
+Perhaps you just want to have a NULL pointer for the dummy case, instead
+of instantiating a dummy static inline function and taking its address?
+
+>         .fqs            = NULL,
+>         .stats          = NULL,
+>         .irq_capable    = 1,
 
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
 
-Full test log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.14-106-g609d95a95925/testrun/3586574/suite/linux-log-parser/test/check-kernel-warning-2049484/log
+> @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
+>  }
+>  core_initcall(rcu_spawn_tasks_rude_kthread);
+>
+> -#ifndef CONFIG_TINY_RCU
+> -static void show_rcu_tasks_rude_gp_kthread(void)
+> +#if !defined(CONFIG_TINY_RCU)
 
+Different #ifdef expression.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> +void show_rcu_tasks_rude_gp_kthread(void)
+
+Do you really want to define a non-static function...
+
+>  {
+>         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
+>  }
+> -#endif /* #ifndef CONFIG_TINY_RCU */
+> -
+> -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
+> -static void show_rcu_tasks_rude_gp_kthread(void) {}
+> -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
+> +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
+
+... and export its symbol, from a header file?
+I know the file is included only once.
+
+> +#endif // !defined(CONFIG_TINY_RCU)
+> +#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
+>
+>  ////////////////////////////////////////////////////////////////////////
+>  //
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
