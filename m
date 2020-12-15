@@ -2,48 +2,42 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D55B0C2BB9A
-	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FE8C2BBCA
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9FEF22250F
-	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C728224D2
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 14:17:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727661AbgLOORm (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 15 Dec 2020 09:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728591AbgLOORk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:17:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA51CC0617B0
-        for <rcu@vger.kernel.org>; Tue, 15 Dec 2020 06:16:59 -0800 (PST)
+Received: from Galois.linutronix.de ([193.142.43.55]:60014 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727093AbgLOORj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:17:39 -0500
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608041818;
+        s=2020; t=1608041816;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Q6KSzr7NAxfowGjdx2GiERE3dvkdCAmXnmQzbVs6EM=;
-        b=xLbmkpa5TkGywVJLfUXWZ/E+2NsfNrbWQ6iGsP2mVdJSPybCr/xPxzttAc9E5z3HGBJyNq
-        B22SYftoaOI6+1OfVIUv7oUM+8jUEmxvIWIjYnJYtIvHmDeGa/Gdze351AzvI84swvBkdD
-        3g32As6Jcv5e0NFJNbbP3twcJ/nFE0nfwBCLrP93sdF4oHYyAq7q4ux0o9NA1kNsgqxkL1
-        e9d8lGymQqva8DLjcyGvSMJCiVqXdpeK8l97nOoQ/eHEXgqOcdQtOQg0vwuoI4QxDnwfrV
-        IRVckb9H6hdBqT5KK8JiWc8g2LNgZm3BXx2XjjbmUWn+NbI8C56V4s2CTMkzpA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7aQCRMYg359XANmIm4umzDdgT0KHm4PaT2cIWvw+iys=;
+        b=d3bLod4vrx9ToLJZVvNsSCrg7E038h952jSVJl21dcCkMTn67avYSR+AiPtv+1TqEIbg7T
+        9M8I/i7ewIG8xRLGQgo9vqXr3/JPlNsZLNyKoleE/kkLuvNy40S7uyIheXLDxhrmaelrhw
+        zI+ij6npSnQiZ+PA0gGxpcFKALkbyTbthnYyvbarqEfss6ds+7VKqIekgaP/rGZfWjZnNU
+        FV9JfaXiyVnj9Xw4RZl9Qz+5/PVBIoFjWlqJrCKFAHvtPQAtQsC/yDq9+/e5ViWAw1TQLO
+        iDQujtKKT2ljqIWUOu5nrsZvnzBEzlP/xQYV6zKK+iS9EQZb1BvXTYMvqyvQNg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608041818;
+        s=2020e; t=1608041816;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Q6KSzr7NAxfowGjdx2GiERE3dvkdCAmXnmQzbVs6EM=;
-        b=WdxiLrOAblZLPvVVsTBjIw4KeGWsXh8knl+ZuhgsPpf2VuVSPGbXOjuasFXeOqOrOrLWcP
-        WCfx9ybN1ui/RKDw==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7aQCRMYg359XANmIm4umzDdgT0KHm4PaT2cIWvw+iys=;
+        b=ecwl9JrvRg15pTWFoYs8NLzScDi3I5hpuRAOj4OTXPwgh3i0Mhy/zyo6uEXv/l+eNCKG0C
+        AR7IMVMyYRBTKJDg==
 To:     rcu@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -52,55 +46,31 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Scott Wood <swood@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Julia Cartwright <julia@ni.com>,
-        Luiz Capitulino <lcapitulino@redhat.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 3/5] rcu: enable rcu_normal_after_boot by default for RT
-Date:   Tue, 15 Dec 2020 15:16:47 +0100
-Message-Id: <20201215141649.796472-4-bigeasy@linutronix.de>
-In-Reply-To: <20201215141649.796472-1-bigeasy@linutronix.de>
-References: <20201215141649.796472-1-bigeasy@linutronix.de>
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/5] A few smaller RCU related patches from the RT tree
+Date:   Tue, 15 Dec 2020 15:16:44 +0100
+Message-Id: <20201215141649.796472-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Julia Cartwright <julia@ni.com>
+Hi,
 
-The forcing of an expedited grace period is an expensive and very
-RT-application unfriendly operation, as it forcibly preempts all running
-tasks on CPUs which are preventing the gp from expiring.
+I know the timming of this regarding the merge window is bad. I meant to
+send them for days=E2=80=A6
 
-By default, as a policy decision, disable the expediting of grace
-periods (after boot) on configurations which enable PREEMPT_RT.
+Initially I planned to send only 5/5 of the series but then I stumbled
+upon the other RCU related patches and I don't see a reason I shouldn't
+post them.
+I still have one patch regarding rcutorture which I hold on to until the
+current issues are resolved (in case you are curious: Scott made sure BH
+can disabled properly in atomic context on RT (while keeping this
+limitation to RT only builds). The current softirq implementation does
+not allow to disable BH in atomic context).
 
-Suggested-by: Luiz Capitulino <lcapitulino@redhat.com>
-Acked-by: Paul E. McKenney <paulmck@linux.ibm.com>
-Signed-off-by: Julia Cartwright <julia@ni.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/rcu/update.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Sebastian
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 39334d2d2b379..b95ae86c40a7d 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -56,8 +56,10 @@
- #ifndef CONFIG_TINY_RCU
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
--static int rcu_normal_after_boot;
-+static int rcu_normal_after_boot =3D IS_ENABLED(CONFIG_PREEMPT_RT);
-+#ifndef CONFIG_PREEMPT_RT
- module_param(rcu_normal_after_boot, int, 0);
-+#endif
- #endif /* #ifndef CONFIG_TINY_RCU */
-=20
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
---=20
-2.29.2
 
