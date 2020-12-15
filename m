@@ -2,200 +2,188 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB88AC4361B
-	for <rcu@archiver.kernel.org>; Mon, 14 Dec 2020 19:03:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 120BEC4361B
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 02:21:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 62CEC22525
-	for <rcu@archiver.kernel.org>; Mon, 14 Dec 2020 19:03:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8E4C20782
+	for <rcu@archiver.kernel.org>; Tue, 15 Dec 2020 02:21:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441042AbgLNTDG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Dec 2020 14:03:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441019AbgLNTDA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Dec 2020 14:03:00 -0500
-Date:   Mon, 14 Dec 2020 11:02:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607972539;
-        bh=3vxRK7BkGCr6xGdIg+aAYOoJ/Nd1GT8tpIgUbOyLYck=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VPJ0itmvJKEGf2gGmUZmf03Nl8eGYwFqcK9lGzuBe7WS5SRijsM5GKZVn2KXw5bxb
-         qzjMbKfUam8QfLp/pQDd0+WEcGVKxskadhnKGyCnXEY47zsYHCYaVRPmkqBUa8fVJX
-         VLlyV/XkPqjF7O0tgTpb9s8l+EMCW/STxW7eFmIbrxb4RLc1VMd05sVAdb7myGb4R+
-         iN+HsqXcwoWXk4TRP5uCrBwYNZGu3HWnK+EgzxHWRLP3dgfXHM6PJZ+n9I10MwxRQl
-         brV0+vE9lfwEb/4F2gF/fXkZ/F7lkrV7JF/I2ziWX1dXrch09m8fs8iGwSUdfkhAvn
-         qYpFjpYaT+jxQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Energy-efficiency options within RCU
-Message-ID: <20201214190219.GV2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201210183737.GA12900@paulmck-ThinkPad-P72>
- <X9erIC8Sbf3ybvHC@google.com>
+        id S1726919AbgLOCV0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Dec 2020 21:21:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726772AbgLOCVY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:21:24 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00D5C0617A6
+        for <rcu@vger.kernel.org>; Mon, 14 Dec 2020 18:20:43 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ce23so25426924ejb.8
+        for <rcu@vger.kernel.org>; Mon, 14 Dec 2020 18:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
+        b=gsEdjSs8ZdW0UOmW7MRRgqq5TZ7+FCQ+umrKB5cfQEr9l2RLAV8jozVgPHmqi0cbHE
+         MZ3gRaxd5Iqycq1rdyIhUXT5/xiK2M7zpC3R+yH8Z2VI4xQ0cOfKNnEnfaC9O4KfM8yV
+         9+QHff8lRJVZNm51Avdwol9WNcYE0yZGIwcyaPxMJbOym2GKTTAGI3hYMslQ8SthoFnK
+         azXT1P8cH1uOJ6zOXD3M/LEbFAX8VFbFYNpgj23Gn0aFnp3NrtcZRNckED1Yta9+8/eo
+         QI05nPGdsxppf38OYg1d3icqfN4QLnA4XPC0Op0jAq8OeEn/VVg/epq3xEEfy68bwEja
+         2WjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
+        b=kK/vZVsYF5SgzWUsCYhcnfY/A4sHGAL36wYVYtg3kCSfTVZZHaZOjCjw/bR8EJIztw
+         Y6HL/o0ODV413MUO6Z1nKxnRKMGLtr36cf2ErF9DpufM5w3LxWEFcOZ5hu0N7j/7a7AJ
+         12sx2FKsdlC3UNDtMyP7Lq7+GuE7a2ue2733ZEEU3BqR8mndJWMoHrHMPBXhw/NwXsFt
+         ySD6BdMBjy/IxZDJeNoQ7efS0MnMtE2OOdIXVbDilS3oJwW3WuXjwawT6qf/Tznw0lmk
+         SRO+E4Ew4N9pUEMKVV+c2JkMNh6ImdTasOEiNVbCu1HL2F1V9RJExwpuRi3e7yakT8KK
+         qjDg==
+X-Gm-Message-State: AOAM530fQQWklmKkFLLP5n79s5FS8EgBgE8cNOU00vGlcFH3yC31U4BK
+        t2/+zEf1UAPepNpbtxQzNJ+xvoaoi8qXc1mOmI+i0g==
+X-Google-Smtp-Source: ABdhPJz9NO/Whj0QD2Y/oUA31StdDEGmpCwP6JNJ5pbO7Ty43A3K8NF3WHn28WsS20EZKQFQBeO2yZEgCXoRx7mftcI=
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr24180480eji.133.1607998842290;
+ Mon, 14 Dec 2020 18:20:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9erIC8Sbf3ybvHC@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Dec 2020 07:50:31 +0530
+Message-ID: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
+Subject: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in RCU-bh
+ read-side critical section!
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 01:12:48PM -0500, Joel Fernandes wrote:
-> On Thu, Dec 10, 2020 at 10:37:37AM -0800, Paul E. McKenney wrote:
-> > Hello, Joel,
-> > 
-> > In case you are -seriously- interested...  ;-)
-> 
-> I am always seriously interested :-). The issue becomes when life throws me a
-> curveball. This was the year of curveballs :-)
-> 
-> Thank you for your reply and I have added it to my list to investigate how we
-> are configuring nocb on our systems. I don't think anyone over here has given
-> these RCU issues a serious look over here.
+There are two warnings "WARNING: suspicious RCU usage" noticed on arm64 juno-r2
+device while running selftest bpf test_tc_edt.sh and net: udpgro_bench.sh.
+These warnings are occurring intermittently.
 
-In your defense, I would guess that many of them don't have that much
-effect.  But true, you never know until you try.
+metadata:
+  git branch: linux-5.9.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  git describe: v5.9.14-106-g609d95a95925
+  make_kernelversion: 5.9.15-rc1
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.9/58/config
 
-							Thanx, Paul
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> 
-> > 						Thanx, Paul
-> > 
-> > rcu_nocbs=
-> > 
-> > 	Adding a CPU to this list offloads RCU callback invocation from
-> > 	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
-> > 	this kthread can be placed on a LITTLE CPU, which has been
-> > 	demonstrated to save significant energy in benchmarks.
-> > 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-> > 
-> > nohz_full=
-> > 
-> > 	Any CPU specified by this boot parameter is handled as if it was
-> > 	specified by rcu_nocbs=.
-> > 
-> > rcutree.jiffies_till_first_fqs=
-> > 
-> > 	Increasing this will decrease wakeup frequency to the grace-period
-> > 	kthread for the first FQS scan.  And increase grace-period
-> > 	latency.
-> > 
-> > rcutree.jiffies_till_next_fqs=
-> > 
-> > 	Ditto, but for the second and subsequent FQS scans.
-> > 
-> > 	My guess is that neither of these makes much difference.  But if
-> > 	they do, maybe some sort of backoff scheme for FQS scans?
-> > 
-> > rcutree.jiffies_till_sched_qs=
-> > 
-> > 	Increasing this will delay RCU's getting excited about CPUs and
-> > 	tasks not responding with quiescent states.  This excitement
-> > 	can cause extra overhead.
-> > 
-> > 	No idea whether adjusting this would help.  But if you increase
-> > 	rcutree.jiffies_till_first_fqs or rcutree.jiffies_till_next_fqs,
-> > 	you might need to increase this one accordingly.
-> > 
-> > rcutree.qovld=
-> > 
-> > 	Increasing this will increase the grace-period duration at which
-> > 	RCU starts sending IPIs, thus perhaps reducing the total number
-> > 	of IPIs that RCU sends.  The destination CPUs are unlikely to be
-> > 	idle, so it is not clear to me that this would help much.  But
-> > 	perhaps I am wrong about them being mostly non-idle, who knows?
-> > 
-> > rcupdate.rcu_cpu_stall_timeout=
-> > 
-> > 	If you get overly zealous about the earlier kernel boot parameters,
-> > 	you might need to increase this one as well.  Or instead use the
-> > 	rcupdate.rcu_cpu_stall_suppress= kernel boot parameter to suppress
-> > 	RCU CPU stall warnings entirely.
-> > 
-> > rcutree.rcu_nocb_gp_stride=
-> > 
-> > 	Increasing this might reduce grace-period work somewhat.  I don't
-> > 	see why a (say) 16-CPU system really needs to have more than one
-> > 	rcuog kthread, so if this does help it might be worthwhile setting
-> > 	a lower limit to this kernel parameter.
-> > 
-> > rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
-> > 
-> > 	This defaults to four jiffies on the theory that grace periods
-> > 	tend to last about that long.  If grace periods tend to take
-> > 	longer, then it makes a lot of sense to increase this.	And maybe
-> > 	battery-powered devices would rather have it be about 2x or 3x
-> > 	the expected grace-period duration, who knows?
-> > 
-> > 	I would keep it to a power of two, but the code should work with
-> > 	other numbers.  Except that I don't know that this has ever been
-> > 	tested.  ;-)
-> > 
-> > srcutree.exp_holdoff=
-> > 
-> > 	Increasing this decreases the number of SRCU grace periods that
-> > 	are treated as expedited.  But you have to have closely-spaced
-> > 	SRCU grace periods for this to matter.	(These do happen at least
-> > 	sometimes because I added this only because someone complained
-> > 	about the performance regression from the earlier non-tree SRCU.)
-> > 
-> > rcupdate.rcu_task_ipi_delay=
-> > 
-> > 	This kernel parameter delays sending IPIs for RCU Tasks Trace,
-> > 	which is used by sleepable BPF programs.  Increasing it can
-> > 	reduce overhead, but can also increase the latency of removing
-> > 	sleepable BPF programs.
-> > 
-> > rcupdate.rcu_task_stall_timeout=
-> > 
-> > 	If you slow down RCU Tasks Trace too much, you may need this.
-> > 	But then again, the default 10-minute value should suffice.
-> > 
-> > CONFIG_RCU_FAST_NO_HZ=y
-> > 
-> > 	This only has effect on CPUs not specified by rcu_nocbs, and thus
-> > 	might be useful on systems that offload RCU callbacks only on
-> > 	some of the CPUs.  For example, a big.LITTLE system might offload
-> > 	only the big CPUs.  This Kconfig option reduces the frequency of
-> > 	timer interrupts (and thus of RCU-related softirq processing)
-> > 	on idle CPUs.  This has been shown to save significant energy
-> > 	in benchmarks:
-> > 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-> > 
-> > CONFIG_RCU_STRICT_GRACE_PERIOD=y
-> > 
-> > 	This works hard (as in burns CPU) to sharply reduce grace-period
-> > 	latency.  The effect is probably to greatly increase power
-> > 	consumption, but there might well be workloads where the shorter
-> > 	grace periods more than make up for the extra CPU time.  Or not.
-> > 
-> > CONFIG_HZ=
-> > 
-> > 	Reducing the scheduler-clock interrupt frequency has the opposite
-> > 	effect, namely of increasing RCU grace-period latency, but while
-> > 	also reducing RCU's CPU utilization.
-> > 
-> > CONFIG_TASKS_TRACE_RCU_READ_MB=y
-> > 
-> > 	Reduce the need to IPI RCU Tasks Trace holdout tasks, but at the
-> > 	expense of an increase in to/from idle overhead.  This Kconfig
-> > 	option also slows down the rate at which RCU Tasks Trace polls
-> > 	for holdout tasks.  This polling rate cannot be separately
-> > 	specified, but if changing the initial source-code values of
-> > 	either rcu_tasks_trace.gp_sleep or rcu_tasks_trace.init_fract
-> > 	proves useful, kernel boot parameters could be created.
-> > 
-> > 	That said, automatic initialization heuristics are more
-> > 	convenient.  When they work, anyway.
+Steps to reproduce:
+------------------
+Not easy to reproduce.
+
+Crash log:
+--------------
+# selftests: bpf: test_tc_edt.sh
+[  503.796362]
+[  503.797960] =============================
+[  503.802131] WARNING: suspicious RCU usage
+[  503.806232] 5.9.15-rc1 #1 Tainted: G        W
+[  503.811358] -----------------------------
+[  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+context switch in RCU-bh read-side critical section!
+[  503.825858]
+[  503.825858] other info that might help us debug this:
+[  503.825858]
+[  503.833998]
+[  503.833998] rcu_scheduler_active = 2, debug_locks = 1
+[  503.840981] 3 locks held by kworker/u12:1/157:
+[  503.845514]  #0: ffff0009754ed538
+((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
+at: process_one_work+0x208/0x768
+[  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+at: cleanup_net+0x64/0x3b8
+[  503.872786]
+[  503.872786] stack backtrace:
+[  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
+        5.9.15-rc1 #1
+[  503.885433] Hardware name: ARM Juno development board (r2) (DT)
+[  503.891382] Workqueue: netns cleanup_net
+[  503.895324] Call trace:
+[  503.897786]  dump_backtrace+0x0/0x1f8
+[  503.901464]  show_stack+0x2c/0x38
+[  503.904796]  dump_stack+0xec/0x158
+[  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
+[  503.912591]  ___might_sleep+0x1e4/0x208
+[  503.916444]  inet_twsk_purge+0x144/0x378
+[  503.920384]  tcpv6_net_exit_batch+0x20/0x28
+[  503.924585]  ops_exit_list.isra.10+0x78/0x88
+[  503.928872]  cleanup_net+0x248/0x3b8
+[  503.932462]  process_one_work+0x2b0/0x768
+[  503.936487]  worker_thread+0x48/0x498
+[  503.940166]  kthread+0x158/0x168
+[  503.943409]  ret_from_fork+0x10/0x1c
+[  504.165891] IPv6: ADDRCONF(NETDEV_CHANGE): veth_src: link becomes ready
+[  504.459624] audit: type=1334 audit(1607978673.070:40866):
+prog-id=20436 op=LOAD
+<>
+[  879.304684]
+[  879.306200] =============================
+[  879.310314] WARNING: suspicious RCU usage
+[  879.314420] 5.9.15-rc1 #1 Tainted: G        W
+[  879.319554] -----------------------------
+[  879.323644] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+context switch in RCU-sched read-side critical section!
+[  879.334259]
+[  879.334259] other info that might help us debug this:
+[  879.334259]
+[  879.342345]
+[  879.342345] rcu_scheduler_active = 2, debug_locks = 1
+[  879.348958] 3 locks held by kworker/u12:8/248:
+[  879.353483]  #0: ffff0009754ed538
+((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[  879.362910]  #1: ffff800013bc3df0 (net_cleanup_work){+.+.}-{0:0},
+at: process_one_work+0x208/0x768
+[  879.371984]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+at: cleanup_net+0x64/0x3b8
+[  879.380540]
+[  879.380540] stack backtrace:
+[  879.384998] CPU: 1 PID: 248 Comm: kworker/u12:8 Tainted: G        W
+        5.9.15-rc1 #1
+[  879.393201] Hardware name: ARM Juno development board (r2) (DT)
+[  879.399147] Workqueue: netns cleanup_net
+[  879.403089] Call trace:
+[  879.405550]  dump_backtrace+0x0/0x1f8
+[  879.409228]  show_stack+0x2c/0x38
+[  879.412561]  dump_stack+0xec/0x158
+# ud[  879.415980]  lockdep_rcu_suspicious+0xd4/0xf8
+[  879.420691]  ___might_sleep+0x1ac/0x208
+p tx:     32 MB/s      546 calls/[  879.424570]
+nf_ct_iterate_cleanup+0x1b8/0x2d8 [nf_conntrack]
+s    546 msg/s[  879.433190]  nf_conntrack_cleanup_net_list+0x58/0x100
+[nf_conntrack]
+
+[  879.440765]  nf_conntrack_pernet_exit+0xa8/0xb8 [nf_conntrack]
+[  879.446755]  ops_exit_list.isra.10+0x78/0x88
+[  879.451043]  cleanup_net+0x248/0x3b8
+[  879.454635]  process_one_work+0x2b0/0x768
+[  879.458661]  worker_thread+0x48/0x498
+[  879.462340]  kthread+0x158/0x168
+[  879.465584]  ret_from_fork+0x10/0x1c
+
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+Full test log link,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.14-106-g609d95a95925/testrun/3586574/suite/linux-log-parser/test/check-kernel-warning-2049484/log
+
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
