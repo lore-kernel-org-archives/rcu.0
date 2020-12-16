@@ -2,215 +2,182 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA817C3527E
-	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:32:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A79E0C2BBCA
+	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:53:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BC79423102
-	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:32:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BFD32313C
+	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:53:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgLPJcK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Dec 2020 04:32:10 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:45465 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgLPJcJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:32:09 -0500
-Received: by mail-ot1-f48.google.com with SMTP id h18so22287581otq.12;
-        Wed, 16 Dec 2020 01:31:54 -0800 (PST)
+        id S1726047AbgLPJw7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Dec 2020 04:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgLPJw6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:52:58 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F16C061793
+        for <rcu@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id q205so14079061oig.13
+        for <rcu@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
+        b=LbxiJVg9iuMrC04J5FR6G0SeDS1ekceFKjpSysGzpEGfeLx7OhNXUbsX0Chl2bRgav
+         vRXI9vDQAgyo3OLjYP52p21xAlavAS2De2+I8hztjG4zXhCmhLscT3nEKm8DCgk5vWMM
+         zC74C3pQnryZlVvlZjrJ9fn3zPC+ZW2lrMJc0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RQy8ctGj4ce9NnxVUdwM/jbxdX8jSgsHYmqefHH91fo=;
-        b=YmJ9B5NpUpbxIYS36ww1SITy+yppkUruEF0vjqEb3F6+i1/p8jpeY+vwpgJOgUZwc2
-         eWI2J2SE5eX9zsGwnGKsNlb47etXtELnMDwSqnuB4yl0RSrR+WMWHYatx+S8WQoFCRMI
-         FQgSPP408MSDbOG7JwBJtL1ERBbIwVKUlquuJ8Dq1JIm0q0zbxhn+ob0xbXWR8o07xp0
-         k9xzHaGlLNX3DkHf1TXGMzYl+QpoqijanlL9qdukq13XE2mDDnXaLn4ObnoIdyHCrNSL
-         isBn2Hlae7tV54GOOGT6kI7lJtOdPjMZpy5ooG44IELQbkZa0JmiktXVgcx6bCYC9z/I
-         GkIQ==
-X-Gm-Message-State: AOAM533/4lt8byqlQiaOwSl8Bc5gSHmq61nl+ibxyudzInVG8m/Wj0n+
-        lLWGjHLg4VD7IcCvFG9TSWTWfY1kjY4qDjVohNc=
-X-Google-Smtp-Source: ABdhPJyvVd3BlQNeDkHsZcYpWuhKiZNAu0XA/tCcbYTRXlkXeopI4j6Lx66G1PBvFZKCBy3xkzNhtIURPqXCGO65i7I=
-X-Received: by 2002:a9d:2203:: with SMTP id o3mr25664768ota.107.1608111088557;
- Wed, 16 Dec 2020 01:31:28 -0800 (PST)
+        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
+        b=ObylL5LSPfAEtJyWD5PFJ9bAfFN7pb42hJWdVI56YktqeIA8F+J6wA4y8zn1Uht3Cm
+         BpSNg+ebar9yYbfZ8NkrWzpcayVm5QUHeMFZc1M1faPBGjiVoyXcnAWaZYpZ+Ui2Xrim
+         4wczg0LGcGHfKei1xcwZf/HM2Q4oMivKtUOecqQPFE6xCOnr5CqOPyEny/GjHHg0y7nH
+         GFyMeND7z0swPSDqhSq0sq19D03Sy7SosppjC/fnE+CJlbAyRj3ywwA+wlVlFX+kJwjW
+         sXTloWk7/oDjjd4Jv9eB/Th6VOQoslW/+3n86nxqHSRRFASvTFowXA3Bcyak0wgTEOe1
+         z+8w==
+X-Gm-Message-State: AOAM533EHRBTSWsJk9qIPyTbezd/qo0e3v9tb4bX3OHwwJJ03kvDq439
+        QFKa/SAqqLDyrY/EENcX9dxMrIZgKm6Oh9+GFVPeSf/iSew=
+X-Google-Smtp-Source: ABdhPJxHxIMxN8kPWGkF6jhHKzTSWlN3X3jTWHffC5+00rr3o9QVMO/WAiT3F7UFc4CLj+SLlSPm9UpA89hcvmmx2wk=
+X-Received: by 2002:aca:54d8:: with SMTP id i207mr1560989oib.101.1608112337753;
+ Wed, 16 Dec 2020 01:52:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72> <20201105233933.20748-3-paulmck@kernel.org>
- <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com> <20201215182419.GD2657@paulmck-ThinkPad-P72>
-In-Reply-To: <20201215182419.GD2657@paulmck-ThinkPad-P72>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Dec 2020 10:31:16 +0100
-Message-ID: <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+References: <000000000000cb6db205b68a971c@google.com>
+In-Reply-To: <000000000000cb6db205b68a971c@google.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 16 Dec 2020 10:52:06 +0100
+Message-ID: <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+To:     syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
-
-On Tue, Dec 15, 2020 at 7:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
-> > On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
-> > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > >
-> > > At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> > > invokes show_rcu_gp_kthreads() in order to dump out information on the
-> > > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> > > RCU, but not so much for the other flavors.  This commit therefore allows
-> > > per-flavor kthread-dump functions to be specified.
-> > >
-> > > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> > Thanks for your patch, which is now commit 27c0f1448389baf7
-> > ("rcutorture: Make grace-period kthread report match RCU flavor being
-> > tested").
-> >
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
-> > >  static inline void rcu_bind_current_to_nocb(void) { }
-> > >  #endif
-> > >
-> > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> > > +void show_rcu_tasks_classic_gp_kthread(void);
-> > > +#else
-> > > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> > > +#endif
-> > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > +void show_rcu_tasks_rude_gp_kthread(void);
-> > > +#else
-> > > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > +#endif
-> >
-> > The #ifdef expression does not match the one for the implementation
-> > below.
+On Wed, Dec 16, 2020 at 2:14 AM syzbot
+<syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
 >
-> That does sound like something I would do...
+> Hello,
 >
-> The definition of show_rcu_tasks_rude_gp_kthread() must be provided
-> elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
+> syzbot found the following issue on:
 >
-> > > --- a/kernel/rcu/rcutorture.c
-> > > +++ b/kernel/rcu/rcutorture.c
-> >
-> > > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> > >         .exp_sync       = synchronize_rcu_tasks_rude,
-> > >         .call           = call_rcu_tasks_rude,
-> > >         .cb_barrier     = rcu_barrier_tasks_rude,
-> > > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-> >
-> > Perhaps you just want to have a NULL pointer for the dummy case, instead
-> > of instantiating a dummy static inline function and taking its address?
+> HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+> dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> userspace arch: i386
 >
-> You mean something like this in kernel/rcu/rcu.h?
+> Unfortunately, I don't have any reproducer for this issue yet.
 >
-> #if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> void show_rcu_tasks_rude_gp_kthread(void);
-> #else
-> #define show_rcu_tasks_rude_gp_kthread NULL
-> #endif
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
 >
-> This does looks better to me, and at first glance would work.
-
-Exactly. This is similar to how unimplemented PM callbacks are handled
-(git grep "#define\s*pm_.*NULL").
-
-> > >         .fqs            = NULL,
-> > >         .stats          = NULL,
-> > >         .irq_capable    = 1,
-> >
-> >
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> >
-> > > @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
-> > >  }
-> > >  core_initcall(rcu_spawn_tasks_rude_kthread);
-> > >
-> > > -#ifndef CONFIG_TINY_RCU
-> > > -static void show_rcu_tasks_rude_gp_kthread(void)
-> > > +#if !defined(CONFIG_TINY_RCU)
-> >
-> > Different #ifdef expression.
+> =============================
+> WARNING: suspicious RCU usage
+> 5.10.0-rc7-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
 >
-> I don't believe that it is.  The above supplies the !TINY_RCU, and a
-> prior #ifdef supplies the TASKS_RUDE_RCU.  So what am I missing here?
-
-Sorry, you're right. I missed the outer #ifdef.
-
-> > > +void show_rcu_tasks_rude_gp_kthread(void)
-> >
-> > Do you really want to define a non-static function...
+> other info that might help us debug this:
 >
-> Yes, because its user is in kernel/rcu/rcutorture.c, which is in
-> a separate translation unit, so it must be non-static.  The earlier
-> version instead only called it from this file, but that turned out to
-> produce confusing output containing information for flavors of RCU that
-> were not under test.  So this commit exported it to allow rcutorture to
-> complain about only that RCU flavor being tested.
 >
-> > >  {
-> > >         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
-> > >  }
-> > > -#endif /* #ifndef CONFIG_TINY_RCU */
-> > > -
-> > > -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> > > -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
-> > > +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-> >
-> > ... and export its symbol, from a header file?
-> > I know the file is included only once.
+> rcu_scheduler_active = 2, debug_locks = 0
+> 7 locks held by syz-executor.1/9232:
+>  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
+>  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
+>  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
+>  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
+>  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
+>  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
+>  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
+>  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
+>  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
+
+Given that we managed to take all these locks without upsetting anyone
+the rcu section is very deep down. And looking at the backtrace below
+I just couldn't find anything.
+
+Best I can think of is that an interrupt of some sort leaked an rcu
+section, and we got shot here. But I'd assume the rcu debugging would
+catch this? Backtrace of the start of that rcu read side section would
+be really useful here, but I'm not seeing that in the logs. There's
+more stuff there, but it's just the usual "everything falls apart"
+stuff of little value to understanding how we got there.
+
+Adding some rcu people for more insights on what could have gone wrong here.
+-Daniel
+
+> stack backtrace:
+> CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+>  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+>  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
+>  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
+>  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
+>  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
+>  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
+>  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
+>  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
+>  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
+>  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
+>  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
+>  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
+>  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
+>  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
+>  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
+>  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+>  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+>  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> RIP: 0023:0xf7fd8549
+> Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+> RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> detected fb_set_par error, error code: -16
 >
-> Because kernel/rcu/rcutorture.c can be built as a module, it must be
-> exported.  I agree that it is unusual to export from a .h file, but the
-> single inclusion is intentional.  There are several other .h files in
-> kernel/rcu that are also split out to group similar functionality while
-> still allowing the compiler to inline to its heart's content.
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-My main gripe is having non-static functions in a header file, which
-causes havoc if someone ever start including it from a second source
-file.
 
-Why not move the contents of the header to the (single) source file that
-includes the header _unconditionally_, to make it nicely self-contained?
-For conditional includes, things are obviously different.
-
-> Yes, this is a bit unconventional, but it has been this way for more
-> than a decade, at least for tree_plugin.h.
-
-Oh right, there are even more of these ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
