@@ -2,168 +2,215 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE6EAC2BB48
-	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 00:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA817C3527E
+	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:32:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90AD522D02
-	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 00:03:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC79423102
+	for <rcu@archiver.kernel.org>; Wed, 16 Dec 2020 09:32:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgLPABg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Dec 2020 19:01:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgLOXuM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:50:12 -0500
-Date:   Wed, 16 Dec 2020 00:49:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608076171;
-        bh=wvzAVXUEKU1RaXHyuE2ZtZzPjw0j5EezKmXnsJl3dA4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tr4NM4qdwgO+KZNHGpkavVp2Z3yvNO8IS0aivpIB9yjjizavOJ7DUTCOOsq6+d1Ia
-         gxIKs0sgyg4U1NdVLMsRw8upVlXJMjHukndrgFkK3NdSNUEtjrX5PJr0B0hN5jVPWd
-         +fSFGnb+7Nkj6NE9G+E6/V5zEOTtnm1uEC33fY+rs84uFHBiEbbPoEvckqo51+TcwS
-         EYVfhx3VRp/K/AGmIw0HCZ/7WpOLf0JWnavc05oCPA110lhWNtLlo+Z9N+n+QkHru/
-         Ol3a6cYgZJXTvSSodls200f4qYHyjC7MhpxgNK4DZZI7SXarXHdcfJfmDieGB472z6
-         8j2rJ2t08fYgA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 17/19] cpu/hotplug: Add lockdep_is_cpus_held()
-Message-ID: <20201215234927.GA98790@lothringen>
-References: <20201113121334.166723-1-frederic@kernel.org>
- <20201113121334.166723-18-frederic@kernel.org>
+        id S1726239AbgLPJcK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Dec 2020 04:32:10 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:45465 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgLPJcJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:32:09 -0500
+Received: by mail-ot1-f48.google.com with SMTP id h18so22287581otq.12;
+        Wed, 16 Dec 2020 01:31:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RQy8ctGj4ce9NnxVUdwM/jbxdX8jSgsHYmqefHH91fo=;
+        b=YmJ9B5NpUpbxIYS36ww1SITy+yppkUruEF0vjqEb3F6+i1/p8jpeY+vwpgJOgUZwc2
+         eWI2J2SE5eX9zsGwnGKsNlb47etXtELnMDwSqnuB4yl0RSrR+WMWHYatx+S8WQoFCRMI
+         FQgSPP408MSDbOG7JwBJtL1ERBbIwVKUlquuJ8Dq1JIm0q0zbxhn+ob0xbXWR8o07xp0
+         k9xzHaGlLNX3DkHf1TXGMzYl+QpoqijanlL9qdukq13XE2mDDnXaLn4ObnoIdyHCrNSL
+         isBn2Hlae7tV54GOOGT6kI7lJtOdPjMZpy5ooG44IELQbkZa0JmiktXVgcx6bCYC9z/I
+         GkIQ==
+X-Gm-Message-State: AOAM533/4lt8byqlQiaOwSl8Bc5gSHmq61nl+ibxyudzInVG8m/Wj0n+
+        lLWGjHLg4VD7IcCvFG9TSWTWfY1kjY4qDjVohNc=
+X-Google-Smtp-Source: ABdhPJyvVd3BlQNeDkHsZcYpWuhKiZNAu0XA/tCcbYTRXlkXeopI4j6Lx66G1PBvFZKCBy3xkzNhtIURPqXCGO65i7I=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr25664768ota.107.1608111088557;
+ Wed, 16 Dec 2020 01:31:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113121334.166723-18-frederic@kernel.org>
+References: <20201105233900.GA20676@paulmck-ThinkPad-P72> <20201105233933.20748-3-paulmck@kernel.org>
+ <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com> <20201215182419.GD2657@paulmck-ThinkPad-P72>
+In-Reply-To: <20201215182419.GD2657@paulmck-ThinkPad-P72>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Dec 2020 10:31:16 +0100
+Message-ID: <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
+ report match RCU flavor being tested
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 01:13:32PM +0100, Frederic Weisbecker wrote:
-> RCU needs to check if the cpu hotplug lock is held, in the middle of
-> other conditions to check the sanity of RCU-nocb. Provide a helper for
-> that.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  include/linux/cpu.h | 1 +
->  kernel/cpu.c        | 7 +++++++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index d6428aaf67e7..27eb3875e45a 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -118,6 +118,7 @@ extern void cpus_read_lock(void);
->  extern void cpus_read_unlock(void);
->  extern int  cpus_read_trylock(void);
->  extern void lockdep_assert_cpus_held(void);
-> +extern int lockdep_is_cpus_held(void);
->  extern void cpu_hotplug_disable(void);
->  extern void cpu_hotplug_enable(void);
->  void clear_tasks_mm_cpumask(int cpu);
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 6ff2578ecf17..3cca5b27de25 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
->  	percpu_rwsem_assert_held(&cpu_hotplug_lock);
->  }
->  
-> +#ifdef CONFIG_LOCKDEP
-> +int lockdep_is_cpus_held(void)
-> +{
-> +	return percpu_rwsem_is_held(&cpu_hotplug_lock);
-> +}
-> +#endif
-> +
->  static void lockdep_acquire_cpus_lock(void)
->  {
->  	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
+Hi Paul,
 
-This patch may trigger a build error with !CONFIG_HOTPLUG.
+On Tue, Dec 15, 2020 at 7:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
+> > On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > >
+> > > At the end of the test and after rcu_torture_writer() stalls, rcutorture
+> > > invokes show_rcu_gp_kthreads() in order to dump out information on the
+> > > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
+> > > RCU, but not so much for the other flavors.  This commit therefore allows
+> > > per-flavor kthread-dump functions to be specified.
+> > >
+> > > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > Thanks for your patch, which is now commit 27c0f1448389baf7
+> > ("rcutorture: Make grace-period kthread report match RCU flavor being
+> > tested").
+> >
+> > > --- a/kernel/rcu/rcu.h
+> > > +++ b/kernel/rcu/rcu.h
+> > > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
+> > >  static inline void rcu_bind_current_to_nocb(void) { }
+> > >  #endif
+> > >
+> > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
+> > > +void show_rcu_tasks_classic_gp_kthread(void);
+> > > +#else
+> > > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
+> > > +#endif
+> > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
+> > > +void show_rcu_tasks_rude_gp_kthread(void);
+> > > +#else
+> > > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
+> > > +#endif
+> >
+> > The #ifdef expression does not match the one for the implementation
+> > below.
+>
+> That does sound like something I would do...
+>
+> The definition of show_rcu_tasks_rude_gp_kthread() must be provided
+> elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
+>
+> > > --- a/kernel/rcu/rcutorture.c
+> > > +++ b/kernel/rcu/rcutorture.c
+> >
+> > > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
+> > >         .exp_sync       = synchronize_rcu_tasks_rude,
+> > >         .call           = call_rcu_tasks_rude,
+> > >         .cb_barrier     = rcu_barrier_tasks_rude,
+> > > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
+> >
+> > Perhaps you just want to have a NULL pointer for the dummy case, instead
+> > of instantiating a dummy static inline function and taking its address?
+>
+> You mean something like this in kernel/rcu/rcu.h?
+>
+> #if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
+> void show_rcu_tasks_rude_gp_kthread(void);
+> #else
+> #define show_rcu_tasks_rude_gp_kthread NULL
+> #endif
+>
+> This does looks better to me, and at first glance would work.
 
-Here is a fixed version:
+Exactly. This is similar to how unimplemented PM callbacks are handled
+(git grep "#define\s*pm_.*NULL").
 
----
-From 80609608b29758e43e8d8d6beaca486b8c42bb43 Mon Sep 17 00:00:00 2001
-From: Frederic Weisbecker <frederic@kernel.org>
-Date: Wed, 11 Nov 2020 23:53:13 +0100
-Subject: [PATCH] cpu/hotplug: Add lockdep_is_cpus_held()
+> > >         .fqs            = NULL,
+> > >         .stats          = NULL,
+> > >         .irq_capable    = 1,
+> >
+> >
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> >
+> > > @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
+> > >  }
+> > >  core_initcall(rcu_spawn_tasks_rude_kthread);
+> > >
+> > > -#ifndef CONFIG_TINY_RCU
+> > > -static void show_rcu_tasks_rude_gp_kthread(void)
+> > > +#if !defined(CONFIG_TINY_RCU)
+> >
+> > Different #ifdef expression.
+>
+> I don't believe that it is.  The above supplies the !TINY_RCU, and a
+> prior #ifdef supplies the TASKS_RUDE_RCU.  So what am I missing here?
 
-RCU needs to check if the cpu hotplug lock is held, in the middle of
-other conditions to check the sanity of RCU-nocb. Provide a helper for
-that.
+Sorry, you're right. I missed the outer #ifdef.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Boqun Feng <boqun.feng@gmail.com>
----
- include/linux/cpu.h | 2 ++
- kernel/cpu.c        | 7 +++++++
- 2 files changed, 9 insertions(+)
+> > > +void show_rcu_tasks_rude_gp_kthread(void)
+> >
+> > Do you really want to define a non-static function...
+>
+> Yes, because its user is in kernel/rcu/rcutorture.c, which is in
+> a separate translation unit, so it must be non-static.  The earlier
+> version instead only called it from this file, but that turned out to
+> produce confusing output containing information for flavors of RCU that
+> were not under test.  So this commit exported it to allow rcutorture to
+> complain about only that RCU flavor being tested.
+>
+> > >  {
+> > >         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
+> > >  }
+> > > -#endif /* #ifndef CONFIG_TINY_RCU */
+> > > -
+> > > -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
+> > > -static void show_rcu_tasks_rude_gp_kthread(void) {}
+> > > -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
+> > > +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
+> >
+> > ... and export its symbol, from a header file?
+> > I know the file is included only once.
+>
+> Because kernel/rcu/rcutorture.c can be built as a module, it must be
+> exported.  I agree that it is unusual to export from a .h file, but the
+> single inclusion is intentional.  There are several other .h files in
+> kernel/rcu that are also split out to group similar functionality while
+> still allowing the compiler to inline to its heart's content.
 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index d6428aaf67e7..3aaa0687e8df 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -111,6 +111,8 @@ static inline void cpu_maps_update_done(void)
- #endif /* CONFIG_SMP */
- extern struct bus_type cpu_subsys;
- 
-+extern int lockdep_is_cpus_held(void);
-+
- #ifdef CONFIG_HOTPLUG_CPU
- extern void cpus_write_lock(void);
- extern void cpus_write_unlock(void);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578ecf17..3cca5b27de25 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
- 	percpu_rwsem_assert_held(&cpu_hotplug_lock);
- }
- 
-+#ifdef CONFIG_LOCKDEP
-+int lockdep_is_cpus_held(void)
-+{
-+	return percpu_rwsem_is_held(&cpu_hotplug_lock);
-+}
-+#endif
-+
- static void lockdep_acquire_cpus_lock(void)
- {
- 	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
+My main gripe is having non-static functions in a header file, which
+causes havoc if someone ever start including it from a second source
+file.
+
+Why not move the contents of the header to the (single) source file that
+includes the header _unconditionally_, to make it nicely self-contained?
+For conditional includes, things are obviously different.
+
+> Yes, this is a bit unconventional, but it has been this way for more
+> than a decade, at least for tree_plugin.h.
+
+Oh right, there are even more of these ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
