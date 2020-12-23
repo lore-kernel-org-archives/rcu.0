@@ -2,94 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A205CC4332D
-	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 03:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78C89C433E0
+	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 08:40:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 76073207AA
-	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 03:11:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 31DFD222BB
+	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 08:40:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbgLWDKd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Dec 2020 22:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728033AbgLWCS0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C599E23357;
-        Wed, 23 Dec 2020 02:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689844;
-        bh=80HYvolf4JDx7Fbfz2cVwqF4zwQ1oTDwvedPSWV1BV8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9P3RuXPpbIZT6QeJYu9zFrVOX5i2u3sRRnHQvT3krFL5Vya8du1ofmrSu0GC6+b7
-         +AtOfc1EEwd/iJuYqJpxao1afYixstc69TJFPhQcnSIehFTI+nq7OrGrMdfqixVXTz
-         QvbZdiI60Eq/m8imw4AeBxT41w1MIQWtFmWZ6e2Lj+s23l9iMoyAOrpwFosL0AoQq2
-         wW4ezv95X8Sfhle/mt42u8wqHRVUHAozfIxcKCqC10Zjc9qLxjbjGTnKY8WnMamXa6
-         dM1gffRMMdkhzGu3Y46Oa2RegoyDPrKYIrVqj/W9a0sydbGS4LFBGXE5Dx+uTJv3YW
-         64+roO7NNEUyw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 044/217] refscale: Prevent hangs for invalid arguments
-Date:   Tue, 22 Dec 2020 21:13:33 -0500
-Message-Id: <20201223021626.2790791-44-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
-References: <20201223021626.2790791-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1728146AbgLWIkw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Dec 2020 03:40:52 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:56656 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727670AbgLWIks (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Dec 2020 03:40:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608712828; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=gGi09wd5qI0o39eCUseEFsMgWFRbdS+39Uf8hOZ5cBI=; b=lS5Y7erIlDZcsXPJQlQfDtkW+8NyIVk5M0jI8sHwaadc56OHy8QPLpM5JeUtiuucYqSXIdYI
+ W2jM8wbcPhTYOy8P6Vn533TDlCYNKTd0bf5Wy1oOiEBtiC48vBxuZ1X8ay9hb7U7kalHpW8J
+ eTdjeAgMjLbV6deGD2ognlgcKy4=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fe30258120d248bb5a32e4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 08:39:52
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1B077C43463; Wed, 23 Dec 2020 08:39:52 +0000 (UTC)
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B7D0C433CA;
+        Wed, 23 Dec 2020 08:39:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4B7D0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, peterz@infradead.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in rcu_is_cpu_rrupt_from_idle
+Date:   Wed, 23 Dec 2020 14:09:37 +0530
+Message-Id: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+For the smp_call_function() optimization, where callbacks can run from
+idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
+running callbacks from idle"), an additional check is added in
+rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
+for these smp_call_function() callbacks running from idle loop.
+However, this commit missed updating a preexisting underflow check
+of dynticks_nmi_nesting, which checks for a non zero positive value.
+Fix this warning and while at it, read the counter only once.
 
-[ Upstream commit bc80d353b3f565138cda7e95ed4020e6e69360b2 ]
-
-If an refscale torture-test run is given a bad kvm.sh argument, the
-test will complain to the console, which is good.  What is bad is that
-from the user's perspective, it will just hang for the time specified
-by the --duration argument.  This commit therefore forces an immediate
-kernel shutdown if a ref_scale_init()-time error occurs, thus avoiding
-the appearance of a hang.  It also forces a console splat in this case
-to clearly indicate the presence of an error.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 ---
- kernel/rcu/refscale.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 952595c678b37..8aa886684b067 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -658,7 +658,6 @@ ref_scale_init(void)
- 		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
- 			pr_cont(" %s", scale_ops[i]->name);
- 		pr_cont("\n");
--		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_SCALE_TEST));
- 		firsterr = -EINVAL;
- 		cur_ops = NULL;
- 		goto unwind;
-@@ -712,6 +711,10 @@ ref_scale_init(void)
- unwind:
- 	torture_init_end();
- 	ref_scale_cleanup();
-+	if (shutdown) {
-+		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_SCALE_TEST));
-+		kernel_power_off();
-+	}
- 	return firsterr;
- }
+Hi,
+
+I was not able to get this warning, with scftorture.
+
+  RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+    "RCU dynticks_nmi_nesting counter underflow/zero!");
+
+Not sure if idle loop smp_call_function() optimization is already present
+in mainline?
+
+Another thing, which I am not sure of is, maybe lockdep gets disabled
+in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
+Was this the original intention, to keep the lockdep based
+RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
+check separate from idle task context nesting value
+WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
+
+
+Thanks
+Neeraj
+
+ kernel/rcu/tree.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bc8b489..c3037cf 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -457,11 +457,10 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+ 	/* Check for counter underflows */
+ 	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
+ 			 "RCU dynticks_nesting counter underflow!");
+-	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+-			 "RCU dynticks_nmi_nesting counter underflow/zero!");
++	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
++	RCU_LOCKDEP_WARN(nesting < 0, "RCU dynticks_nmi_nesting counter underflow!");
+ 
+ 	/* Are we at first interrupt nesting level? */
+-	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
+ 	if (nesting > 1)
+ 		return false;
  
 -- 
-2.27.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
