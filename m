@@ -5,42 +5,42 @@ X-Spam-Level:
 X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26BDCC43219
-	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 02:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 708A0C43381
+	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 02:30:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 08F7F22D57
-	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 02:19:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A859225AA
+	for <rcu@archiver.kernel.org>; Wed, 23 Dec 2020 02:30:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgLWCTY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Dec 2020 21:19:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46404 "EHLO mail.kernel.org"
+        id S1730588AbgLWCZp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Dec 2020 21:25:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728608AbgLWCTY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BCA32336D;
-        Wed, 23 Dec 2020 02:18:41 +0000 (UTC)
+        id S1730585AbgLWCZo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 316722333F;
+        Wed, 23 Dec 2020 02:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689921;
-        bh=tXdszFZAlA7cdXbScifO0QxpNqfwt3jG/ZcEB0Eoo8E=;
+        s=k20201202; t=1608690328;
+        bh=0kn8mXbauLR+UF9rzbNPjRzYTRxHh/jSmbKpqQlLlIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rZTQsBxMFn3PeFHo9Q7IFhmCKBnlTVQgTOFULaa2INdtRf0NEpKZOG2dNT2IaABlz
-         s6j+9FbZow8zzLwK9+aVNlqRj7riTzqlliiTxG4yhFu7sZuCLmEQMGpED3GFCiC/ix
-         CR6W3jZUJ+Y+uIwS4Kh0Sv6v49uhU2QhqS9ZmB15/bk5eJj2UZAblUKOMwZ1AU9vr1
-         da4Ihy84HtUqwXVKnkzd7dUe79wMRkLLYELDuR2FK7EoAVXw0MRU0wpdNbFju7HnhP
-         0WkSXok+aI+3Ib9XyijzZlIiu8nfFTUmBqul2SZtG9mDUS59B+sAzbPKQjSGfz7tm+
-         zzn2wXzZa3Dng==
+        b=tFBLF8luowHC7bdb9oZglbx9W0I3V1shyeDaRTq6XCusmL4LLZLRmEizRd7l/BCFV
+         xja8mSp4H5oD76vCS5ZxGdVzpTjqArSQh1t/qJ4J8Up14f/WDb+Jrbo7pTS+6venOK
+         d7gzcSxitj3hjKNI/KB+eVTJ7WNbaIAqlylh5CUelrQjx1Hp56tDMoCxlPnUDn8EJi
+         euXGTAEIcREhXrxN+FrERWjY5Y2qjL/Pyh5zi7Sw7opperbT781GGP1+/UF+z6wRdg
+         CsJjnQzyCkbqTxVKjNKQhZH9ah4PTPgXrUS1vMK09IIHxnzQ4XQARbA+5f5kJYidi4
+         lCZ6pZ14kTqxQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 022/130] rcutorture: Prevent hangs for invalid arguments
-Date:   Tue, 22 Dec 2020 21:16:25 -0500
-Message-Id: <20201223021813.2791612-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 09/38] rcutorture: Prevent hangs for invalid arguments
+Date:   Tue, 22 Dec 2020 21:24:47 -0500
+Message-Id: <20201223022516.2794471-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
-References: <20201223021813.2791612-1-sashal@kernel.org>
+In-Reply-To: <20201223022516.2794471-1-sashal@kernel.org>
+References: <20201223022516.2794471-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -64,22 +64,14 @@ to clearly indicate the presence of an error.
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 3c9feca1eab17..27f0c48f46f4e 100644
+index 041a02b334d73..d808212822d71 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2347,7 +2347,6 @@ rcu_torture_init(void)
- 		for (i = 0; i < ARRAY_SIZE(torture_ops); i++)
- 			pr_cont(" %s", torture_ops[i]->name);
- 		pr_cont("\n");
--		WARN_ON(!IS_MODULE(CONFIG_RCU_TORTURE_TEST));
- 		firsterr = -EINVAL;
- 		cur_ops = NULL;
- 		goto unwind;
-@@ -2507,6 +2506,10 @@ rcu_torture_init(void)
+@@ -1914,6 +1914,10 @@ rcu_torture_init(void)
  unwind:
  	torture_init_end();
  	rcu_torture_cleanup();
