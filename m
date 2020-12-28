@@ -2,178 +2,335 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 427B6C433DB
-	for <rcu@archiver.kernel.org>; Sun, 27 Dec 2020 16:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3E83C433E0
+	for <rcu@archiver.kernel.org>; Mon, 28 Dec 2020 14:48:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0DF0922512
-	for <rcu@archiver.kernel.org>; Sun, 27 Dec 2020 16:50:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DDE820867
+	for <rcu@archiver.kernel.org>; Mon, 28 Dec 2020 14:48:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgL0Qt6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 27 Dec 2020 11:49:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgL0Qt6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 27 Dec 2020 11:49:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 809D220857;
-        Sun, 27 Dec 2020 16:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609087757;
-        bh=9C7dX+mOhfBbsVXvL9LdEzhr5gJN34Hz9kXNIhM2jWM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jtZpuAJV8n4gfq4bJ1agEn5jiEx44XSpm+IqaxJ54QKLxruvLnUwNYZ/J4+hY3g2z
-         P5HYOwWzYRVXALEisjORfizLzVSG6QwCQDp/QX5Wu7drdAPOGzzB0cNRkmqtmKpUsH
-         WglJNbVlOfMjizOnaZPmyM9wsSoQW65Y+EpJE3aMjJWJ3VRFn3qUwBUtj14ry8XXfl
-         sx7XwzcWytbLGPswLSkNDX1H0A2X3uMIUM8OicE1ilxLIPkVWsEOY++I7Es6lC+kGU
-         vGZ+f1SJsUfK7knv0mBqIhm6YB8RivZ6N1Z6zIRnh/A+GUNvyW+Hth66xpUHrqO9eB
-         +kWzamkLvYHOQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 44A8E35226B3; Sun, 27 Dec 2020 08:49:17 -0800 (PST)
-Date:   Sun, 27 Dec 2020 08:49:17 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S2502827AbgL1Orq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Dec 2020 09:47:46 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:60142 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392414AbgL1Orp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:47:45 -0500
+Date:   Mon, 28 Dec 2020 14:46:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1609166774;
+        bh=RHGVTBBSe3J8pgiH7UN2WJKVqia+Zw9bkLblI03PsLo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=bWCdv4hllX2Ge7kCnBy9mPoD/DZ9HnMwn3+Xzp+g80hyp77dsxG+R6QuTOkghBidp
+         lEPedcHG5cjlxUTRluchu4kVkwvZ11HlBbmia4DeDC6WUfevdJVtGYzLTJm6XtpzXw
+         Evbm37E+/FR0VuS2apKkbzrPoEVTU5AHweg7LMyE=
+To:     Jonathan Corbet <corbet@lwn.net>,
         Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-Message-ID: <20201227164917.GA2139@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72>
- <20201105233933.20748-3-paulmck@kernel.org>
- <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
- <20201215182419.GD2657@paulmck-ThinkPad-P72>
- <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
- <20201216164829.GI2657@paulmck-ThinkPad-P72>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, rcu@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: [PATCH v2] docs: Fix reST markup when linking to sections
+Message-ID: <20201228144537.135353-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216164829.GI2657@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 08:48:29AM -0800, Paul E. McKenney wrote:
-> On Wed, Dec 16, 2020 at 10:31:16AM +0100, Geert Uytterhoeven wrote:
-> > Hi Paul,
-> > 
-> > On Tue, Dec 15, 2020 at 7:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
-> > > > On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
-> > > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > >
-> > > > > At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> > > > > invokes show_rcu_gp_kthreads() in order to dump out information on the
-> > > > > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> > > > > RCU, but not so much for the other flavors.  This commit therefore allows
-> > > > > per-flavor kthread-dump functions to be specified.
-> > > > >
-> > > > > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >
-> > > > Thanks for your patch, which is now commit 27c0f1448389baf7
-> > > > ("rcutorture: Make grace-period kthread report match RCU flavor being
-> > > > tested").
-> > > >
-> > > > > --- a/kernel/rcu/rcu.h
-> > > > > +++ b/kernel/rcu/rcu.h
-> > > > > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
-> > > > >  static inline void rcu_bind_current_to_nocb(void) { }
-> > > > >  #endif
-> > > > >
-> > > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> > > > > +void show_rcu_tasks_classic_gp_kthread(void);
-> > > > > +#else
-> > > > > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> > > > > +#endif
-> > > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > > > +void show_rcu_tasks_rude_gp_kthread(void);
-> > > > > +#else
-> > > > > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > > > +#endif
-> > > >
-> > > > The #ifdef expression does not match the one for the implementation
-> > > > below.
-> > >
-> > > That does sound like something I would do...
-> > >
-> > > The definition of show_rcu_tasks_rude_gp_kthread() must be provided
-> > > elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
-> > >
-> > > > > --- a/kernel/rcu/rcutorture.c
-> > > > > +++ b/kernel/rcu/rcutorture.c
-> > > >
-> > > > > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> > > > >         .exp_sync       = synchronize_rcu_tasks_rude,
-> > > > >         .call           = call_rcu_tasks_rude,
-> > > > >         .cb_barrier     = rcu_barrier_tasks_rude,
-> > > > > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-> > > >
-> > > > Perhaps you just want to have a NULL pointer for the dummy case, instead
-> > > > of instantiating a dummy static inline function and taking its address?
-> > >
-> > > You mean something like this in kernel/rcu/rcu.h?
-> > >
-> > > #if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > void show_rcu_tasks_rude_gp_kthread(void);
-> > > #else
-> > > #define show_rcu_tasks_rude_gp_kthread NULL
-> > > #endif
-> > >
-> > > This does looks better to me, and at first glance would work.
-> > 
-> > Exactly. This is similar to how unimplemented PM callbacks are handled
-> > (git grep "#define\s*pm_.*NULL").
-> 
-> OK, as shown in the (untested) patch below?
+During the process of converting the documentation to reST, some links
+were converted using the following wrong syntax (and sometimes using %20
+instead of spaces):
 
-I finally got around to running the full suite after completing a couple
-of long-running bisections, and yes, you got me on this one!  ;-)
+   `Display text <#section-name-in-html>`__
 
-Both locktorture and scftorture build with CONFIG_TINY_RCU,
-CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU
-all disabled.  So when the compiler attempts to build this:
+This syntax isn't valid according to the docutils' spec [1], but more
+importantly, it is specific to HTML, since it uses '#' to link to an
+HTML anchor.
 
-	void show_rcu_tasks_gp_kthreads(void)
-	{
-		show_rcu_tasks_classic_gp_kthread();
-		show_rcu_tasks_rude_gp_kthread();
-		show_rcu_tasks_trace_gp_kthread();
-	}
+The right syntax would instead use a docutils hyperlink reference as the
+embedded URI to point to the section [2], that is:
 
-It sees this:
+   `Display text <Section Name_>`__
 
-	void show_rcu_tasks_gp_kthreads(void)
-	{
-		NULL();
-		NULL();
-		NULL();
-	}
+This syntax works in both HTML and PDF.
 
-Needless to say, it doesn't like this much, and refuses to suffer
-in silence.
+The LaTeX toolchain doesn't mind the HTML anchor syntax when generating
+the pdf documentation (make pdfdocs), that is, the build succeeds but
+the links don't work, but that syntax causes errors when trying to build
+using the not-yet-merged rst2pdf:
 
-I am reverting the commit that defined these three functions to NULL.
-This means that rcutorture runs still instantiate static inline
-definitions of these three functions, but that does work and only takes
-effect for those who are actually running rcutorture.
+   ValueError: format not resolved, probably missing URL scheme or undefine=
+d destination target for 'Forcing%20Quiescent%20States'
 
-							Thanx, Paul
+So, use the correct syntax in order to have it work in all different
+output formats.
+
+[1]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#ref=
+erence-names
+[2]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#emb=
+edded-uris-and-aliases
+
+Fixes: ccc9971e2147 ("docs: rcu: convert some articles from html to ReST")
+Fixes: c8cce10a62aa ("docs: Fix the reference labels in Locking.rst")
+Fixes: e548cdeffcd8 ("docs-rst: convert kernel-locking to ReST")
+Fixes: 7ddedebb03b7 ("ALSA: doc: ReSTize writing-an-alsa-driver document")
+Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+---
+
+Changes in v2:
+- Thanks to Mauro:
+  - Simplify the syntax of some links by taking advantage of docutils'
+    case-insensitivity when dealing with references.
+
+ .../Tree-RCU-Memory-Ordering.rst              |  8 ++++----
+ .../RCU/Design/Requirements/Requirements.rst  | 20 +++++++++----------
+ Documentation/kernel-hacking/locking.rst      |  8 ++++----
+ .../kernel-api/writing-an-alsa-driver.rst     | 16 +++++++--------
+ 4 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Order=
+ing.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering=
+.rst
+index e44cfcb7adcc..e57927427786 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -473,7 +473,7 @@ read-side critical sections that follow the idle period=
+ (the oval near
+ the bottom of the diagram above).
+=20
+ Plumbing this into the full grace-period execution is described
+-`below <#Forcing%20Quiescent%20States>`__.
++`below <Forcing Quiescent States_>`__.
+=20
+ CPU-Hotplug Interface
+ ^^^^^^^^^^^^^^^^^^^^^
+@@ -494,7 +494,7 @@ mask to detect CPUs having gone offline since the begin=
+ning of this
+ grace period.
+=20
+ Plumbing this into the full grace-period execution is described
+-`below <#Forcing%20Quiescent%20States>`__.
++`below <Forcing Quiescent States_>`__.
+=20
+ Forcing Quiescent States
+ ^^^^^^^^^^^^^^^^^^^^^^^^
+@@ -532,7 +532,7 @@ from other CPUs.
+ | RCU. But this diagram is complex enough as it is, so simplicity       |
+ | overrode accuracy. You can think of it as poetic license, or you can  |
+ | think of it as misdirection that is resolved in the                   |
+-| `stitched-together diagram <#Putting%20It%20All%20Together>`__.       |
++| `stitched-together diagram <Putting It All Together_>`__.             |
+ +-----------------------------------------------------------------------+
+=20
+ Grace-Period Cleanup
+@@ -596,7 +596,7 @@ maintain ordering. For example, if the callback functio=
+n wakes up a task
+ that runs on some other CPU, proper ordering must in place in both the
+ callback function and the task being awakened. To see why this is
+ important, consider the top half of the `grace-period
+-cleanup <#Grace-Period%20Cleanup>`__ diagram. The callback might be
++cleanup`_ diagram. The callback might be
+ running on a CPU corresponding to the leftmost leaf ``rcu_node``
+ structure, and awaken a task that is to run on a CPU corresponding to
+ the rightmost leaf ``rcu_node`` structure, and the grace-period kernel
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Docum=
+entation/RCU/Design/Requirements/Requirements.rst
+index 1ae79a10a8de..ce1075f040be 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -45,7 +45,7 @@ requirements:
+ #. `Other RCU Flavors`_
+ #. `Possible Future Changes`_
+=20
+-This is followed by a `summary <#Summary>`__, however, the answers to
++This is followed by a summary_, however, the answers to
+ each quick quiz immediately follows the quiz. Select the big white space
+ with your mouse to see the answer.
+=20
+@@ -1096,7 +1096,7 @@ memory barriers.
+ | case, voluntary context switch) within an RCU read-side critical      |
+ | section. However, sleeping locks may be used within userspace RCU     |
+ | read-side critical sections, and also within Linux-kernel sleepable   |
+-| RCU `(SRCU) <#Sleepable%20RCU>`__ read-side critical sections. In     |
++| RCU `(SRCU) <Sleepable RCU_>`__ read-side critical sections. In       |
+ | addition, the -rt patchset turns spinlocks into a sleeping locks so   |
+ | that the corresponding critical sections can be preempted, which also |
+ | means that these sleeplockified spinlocks (but not other sleeping     |
+@@ -1186,7 +1186,7 @@ non-preemptible (``CONFIG_PREEMPT=3Dn``) kernels, and=
+ thus `tiny
+ RCU <https://lkml.kernel.org/g/20090113221724.GA15307@linux.vnet.ibm.com>`=
+__
+ was born. Josh Triplett has since taken over the small-memory banner
+ with his `Linux kernel tinification <https://tiny.wiki.kernel.org/>`__
+-project, which resulted in `SRCU <#Sleepable%20RCU>`__ becoming optional
++project, which resulted in `SRCU <Sleepable RCU_>`__ becoming optional
+ for those kernels not needing it.
+=20
+ The remaining performance requirements are, for the most part,
+@@ -1457,8 +1457,8 @@ will vary as the value of ``HZ`` varies, and can also=
+ be changed using
+ the relevant Kconfig options and kernel boot parameters. RCU currently
+ does not do much sanity checking of these parameters, so please use
+ caution when changing them. Note that these forward-progress measures
+-are provided only for RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
+-RCU <#Tasks%20RCU>`__.
++are provided only for RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
++RCU`_.
+=20
+ RCU takes the following steps in ``call_rcu()`` to encourage timely
+ invocation of callbacks when any given non-\ ``rcu_nocbs`` CPU has
+@@ -1477,8 +1477,8 @@ encouragement was provided:
+=20
+ Again, these are default values when running at ``HZ=3D1000``, and can be
+ overridden. Again, these forward-progress measures are provided only for
+-RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
+-RCU <#Tasks%20RCU>`__. Even for RCU, callback-invocation forward
++RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
++RCU`_. Even for RCU, callback-invocation forward
+ progress for ``rcu_nocbs`` CPUs is much less well-developed, in part
+ because workloads benefiting from ``rcu_nocbs`` CPUs tend to invoke
+ ``call_rcu()`` relatively infrequently. If workloads emerge that need
+@@ -1920,7 +1920,7 @@ Hotplug CPU
+=20
+ The Linux kernel supports CPU hotplug, which means that CPUs can come
+ and go. It is of course illegal to use any RCU API member from an
+-offline CPU, with the exception of `SRCU <#Sleepable%20RCU>`__ read-side
++offline CPU, with the exception of `SRCU <Sleepable RCU_>`__ read-side
+ critical sections. This requirement was present from day one in
+ DYNIX/ptx, but on the other hand, the Linux kernel's CPU-hotplug
+ implementation is =E2=80=9Cinteresting.=E2=80=9D
+@@ -2147,7 +2147,7 @@ handles these states differently:
+ However, RCU must be reliably informed as to whether any given CPU is
+ currently in the idle loop, and, for ``NO_HZ_FULL``, also whether that
+ CPU is executing in usermode, as discussed
+-`earlier <#Energy%20Efficiency>`__. It also requires that the
++`earlier <Energy Efficiency_>`__. It also requires that the
+ scheduling-clock interrupt be enabled when RCU needs it to be:
+=20
+ #. If a CPU is either idle or executing in usermode, and RCU believes it
+@@ -2264,7 +2264,7 @@ Performance, Scalability, Response Time, and Reliabil=
+ity
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=20
+ Expanding on the `earlier
+-discussion <#Performance%20and%20Scalability>`__, RCU is used heavily by
++discussion <Performance and Scalability_>`__, RCU is used heavily by
+ hot code paths in performance-critical portions of the Linux kernel's
+ networking, security, virtualization, and scheduling code paths. RCU
+ must therefore use efficient implementations, especially in its
+diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kerne=
+l-hacking/locking.rst
+index 6ed806e6061b..c3448929a824 100644
+--- a/Documentation/kernel-hacking/locking.rst
++++ b/Documentation/kernel-hacking/locking.rst
+@@ -118,11 +118,11 @@ spinlock, but you may block holding a mutex. If you c=
+an't lock a mutex,
+ your task will suspend itself, and be woken up when the mutex is
+ released. This means the CPU can do something else while you are
+ waiting. There are many cases when you simply can't sleep (see
+-`What Functions Are Safe To Call From Interrupts? <#sleeping-things>`__),
++`What Functions Are Safe To Call From Interrupts?`_),
+ and so have to use a spinlock instead.
+=20
+ Neither type of lock is recursive: see
+-`Deadlock: Simple and Advanced <#deadlock>`__.
++`Deadlock: Simple and Advanced`_.
+=20
+ Locks and Uniprocessor Kernels
+ ------------------------------
+@@ -179,7 +179,7 @@ perfect world).
+=20
+ Note that you can also use spin_lock_irq() or
+ spin_lock_irqsave() here, which stop hardware interrupts
+-as well: see `Hard IRQ Context <#hard-irq-context>`__.
++as well: see `Hard IRQ Context`_.
+=20
+ This works perfectly for UP as well: the spin lock vanishes, and this
+ macro simply becomes local_bh_disable()
+@@ -230,7 +230,7 @@ The Same Softirq
+ ~~~~~~~~~~~~~~~~
+=20
+ The same softirq can run on the other CPUs: you can use a per-CPU array
+-(see `Per-CPU Data <#per-cpu-data>`__) for better performance. If you're
++(see `Per-CPU Data`_) for better performance. If you're
+ going so far as to use a softirq, you probably care about scalable
+ performance enough to justify the extra complexity.
+=20
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Do=
+cumentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 73bbd59afc33..e6365836fa8b 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -71,7 +71,7 @@ core/oss
+ The codes for PCM and mixer OSS emulation modules are stored in this
+ directory. The rawmidi OSS emulation is included in the ALSA rawmidi
+ code since it's quite small. The sequencer code is stored in
+-``core/seq/oss`` directory (see `below <#core-seq-oss>`__).
++``core/seq/oss`` directory (see `below <core/seq/oss_>`__).
+=20
+ core/seq
+ ~~~~~~~~
+@@ -382,7 +382,7 @@ where ``enable[dev]`` is the module option.
+ Each time the ``probe`` callback is called, check the availability of
+ the device. If not available, simply increment the device index and
+ returns. dev will be incremented also later (`step 7
+-<#set-the-pci-driver-data-and-return-zero>`__).
++<7) Set the PCI driver data and return zero._>`__).
+=20
+ 2) Create a card instance
+ ~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -450,10 +450,10 @@ field contains the information shown in ``/proc/asoun=
+d/cards``.
+ 5) Create other components, such as mixer, MIDI, etc.
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=20
+-Here you define the basic components such as `PCM <#PCM-Interface>`__,
+-mixer (e.g. `AC97 <#API-for-AC97-Codec>`__), MIDI (e.g.
+-`MPU-401 <#MIDI-MPU401-UART-Interface>`__), and other interfaces.
+-Also, if you want a `proc file <#Proc-Interface>`__, define it here,
++Here you define the basic components such as `PCM <PCM Interface_>`__,
++mixer (e.g. `AC97 <API for AC97 Codec_>`__), MIDI (e.g.
++`MPU-401 <MIDI (MPU401-UART) Interface_>`__), and other interfaces.
++Also, if you want a `proc file <Proc Interface_>`__, define it here,
+ too.
+=20
+ 6) Register the card instance.
+@@ -941,7 +941,7 @@ The allocation of an interrupt source is done like this=
+:
+   chip->irq =3D pci->irq;
+=20
+ where :c:func:`snd_mychip_interrupt()` is the interrupt handler
+-defined `later <#pcm-interface-interrupt-handler>`__. Note that
++defined `later <PCM Interrupt Handler_>`__. Note that
+ ``chip->irq`` should be defined only when :c:func:`request_irq()`
+ succeeded.
+=20
+@@ -3104,7 +3104,7 @@ processing the output stream in the irq handler.
+=20
+ If the MPU-401 interface shares its interrupt with the other logical
+ devices on the card, set ``MPU401_INFO_IRQ_HOOK`` (see
+-`below <#MIDI-Interrupt-Handler>`__).
++`below <MIDI Interrupt Handler_>`__).
+=20
+ Usually, the port address corresponds to the command port and port + 1
+ corresponds to the data port. If not, you may change the ``cport``
+--=20
+2.29.2
+
+
