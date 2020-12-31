@@ -2,193 +2,97 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63044C433DB
-	for <rcu@archiver.kernel.org>; Tue, 29 Dec 2020 14:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B5DC433DB
+	for <rcu@archiver.kernel.org>; Thu, 31 Dec 2020 22:46:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2B4EE207D1
-	for <rcu@archiver.kernel.org>; Tue, 29 Dec 2020 14:22:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A282620658
+	for <rcu@archiver.kernel.org>; Thu, 31 Dec 2020 22:46:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgL2OWR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Dec 2020 09:22:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgL2OWR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Dec 2020 09:22:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0603B207C9;
-        Tue, 29 Dec 2020 14:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609251696;
-        bh=ERpgRc9yRwdO3teFyki0WiW9JQkWRBJg8KXYQFDCYCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bu+akvWKeZ9DcRQonagCQjWgBkdIBXC5iNh63uiGUARPfzaobsbRBO8tJD55Xsxh1
-         2jqcpJOYZkP284XQIdAW0sccgVhMrnP+lYWU5VFsYmLCZRLKTD7TJwO5BN+TaVelKn
-         8bmHvG8DuSVRIMJYRxf+t3nn0XkHkhBBF/uXmdXVILDrRVgOvvSFZH6t7EngfoE8GT
-         wTFFSjSLzqU08k2UaSMiO0IZjMSI4Dt9HNLKOBov2t/0SStWkTSYFNdLIRHbZjJMvN
-         PJrFogofWk8kOVjvhKoK2bFa8MTYFMRu3zg3iNl9DncLbaNupOYdtIEEtP7ZmbQf7R
-         Z7Q0JBgwEJp9g==
-Date:   Tue, 29 Dec 2020 15:21:34 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S1727063AbgLaWqD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Dec 2020 17:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbgLaWqD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 31 Dec 2020 17:46:03 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C9CC061573;
+        Thu, 31 Dec 2020 14:45:22 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 63D3260B;
+        Thu, 31 Dec 2020 22:45:20 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 63D3260B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1609454721; bh=tMnJuIUNfFdc8FRuTCustjnoFzYrW86BK7QzKx5Y8uY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fvvOqr2D52pcHO5U+rmC245H1ANjhQVhPQ8anZ3sJBAePTEwjDa+W/9hNIhZfzKuo
+         U0wmvhx02lT7Ujt1wzEOoOrgdXa8ooqrtpPF6OPicXT8h/FtmaASaUnD7TXHGTZEEi
+         7wyClBrH+KduCpG0eOzDy1xKoYn0PPVIlOoYroJA4RoqVZPX/mXlj+nJFhfokljBQI
+         4vYUBoPX4TMEmA1JFA7ldTGGmg6l4oN4a/0OKDTkYDgWBEEqoh/hk9hzIedT2uFTiA
+         0vb/iWkG1OPBhRRPNnSeUmIe7NjRu2w37HUpnSPW2miy2dFq27pl+/V7E6cx8vaZQ+
+         1UM8LIztNX5Xw==
+Date:   Thu, 31 Dec 2020 15:45:19 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 00/19] rcu/nocb: De-offload and re-offload support v4
-Message-ID: <20201229142134.GB21613@lothringen>
-References: <20201113121334.166723-1-frederic@kernel.org>
- <20201216165930.GJ2657@paulmck-ThinkPad-P72>
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, rcu@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Subject: Re: [PATCH v2] docs: Fix reST markup when linking to sections
+Message-ID: <20201231154519.25425c3b@lwn.net>
+In-Reply-To: <20201228144537.135353-1-nfraprado@protonmail.com>
+References: <20201228144537.135353-1-nfraprado@protonmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216165930.GJ2657@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 08:59:30AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 13, 2020 at 01:13:15PM +0100, Frederic Weisbecker wrote:
-> > 
-> > Frederic Weisbecker (19):
-> >       rcu/nocb: Turn enabled/offload states into a common flag
-> >       rcu/nocb: Provide basic callback offloading state machine bits
-> >       rcu/nocb: Always init segcblist on CPU up
-> >       rcu/nocb: De-offloading CB kthread
-> >       rcu/nocb: Don't deoffload an offline CPU with pending work
-> >       rcu/nocb: De-offloading GP kthread
-> >       rcu/nocb: Re-offload support
-> >       rcu/nocb: Shutdown nocb timer on de-offloading
-> >       rcu: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
-> >       rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
-> >       rcu/nocb: Only cond_resched() from actual offloaded batch processing
-> >       rcu/nocb: Process batch locally as long as offloading isn't complete
-> >       rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
-> >       tools/rcutorture: Support nocb toggle in TREE01
-> 
-> I applied the above, with the usual commit-log wordsmithing.
-> 
-> >       rcutorture: Remove weak nocb declarations
-> >       rcutorture: Export nocb (de)offloading functions
-> 
-> These I folded into the rcutorture commit, as you suggested.
+On Mon, 28 Dec 2020 14:46:07 +0000
+Nícolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
 
-Good!
-
+> During the process of converting the documentation to reST, some links
+> were converted using the following wrong syntax (and sometimes using %20
+> instead of spaces):
 > 
-> >       cpu/hotplug: Add lockdep_is_cpus_held()
-> >       timer: Add timer_curr_running()
+>    `Display text <#section-name-in-html>`__
 > 
-> I applied these two.
+> This syntax isn't valid according to the docutils' spec [1], but more
+> importantly, it is specific to HTML, since it uses '#' to link to an
+> HTML anchor.
 > 
-> >       rcu/nocb: Detect unsafe checks for offloaded rdp
+> The right syntax would instead use a docutils hyperlink reference as the
+> embedded URI to point to the section [2], that is:
 > 
-> This one didn't apply, probably due to recent changes in -rcu.  Could
-> you please take a look?
-
-Ok I'm going to rebase it.
-
-> I believe that the following enhancements will be needed:
+>    `Display text <Section Name_>`__
 > 
-> o	Forbid toggling of offlined CPUs.  This is a simple rule that
-> 	results in deterministic success or failure.  The current setup
-> 	(which I freely admit that I suggested) will fail very rarely,
-> 	only if a newly offlined offloaded CPU is toggled before its
-> 	remaining callbacks are invoked.  The current state is therefore
-> 	an accident waiting to happen.
+> This syntax works in both HTML and PDF.
 > 
-> 	This will entail fixing a few comments as well.
-
-Sure, I'm always glad to remove lines!
-
+> The LaTeX toolchain doesn't mind the HTML anchor syntax when generating
+> the pdf documentation (make pdfdocs), that is, the build succeeds but
+> the links don't work, but that syntax causes errors when trying to build
+> using the not-yet-merged rst2pdf:
 > 
-> o	Drain the bypass early in the de-offloading process and prohibit
-> 	queuing onto the bypass anywhere in the toggling process.
-> 	Then the only CPUs permitted to use the bypass are those that
-> 	are fully offloaded.  This approach allows rcu_core() and the
-> 	rcuog kthreads to safely manipulate callbacks and grace periods
-> 	concurrently.  (Famous last words!)  This might address the
-> 	rcutorture writer stall warnings I am seeing.
+>    ValueError: format not resolved, probably missing URL scheme or undefined destination target for 'Forcing%20Quiescent%20States'
 > 
-> 	This will entail fixing a few comments as well.
+> So, use the correct syntax in order to have it work in all different
+> output formats.
 
-Ok, I'm checking that.
+Applied, thanks.
 
-> 
-> o	Avoid double write to rdp->nocb_cb_sleep in nocb_cb_wait().
-> 	Unless there is some reason why this is absolutely required.
-> 	It will cause confusion as it is.
-
-Ok.
-
-> 
-> o	What bad thing happens if we de-offload the CPU corresponding to
-> 	the nocb GP kthread?  It does work fine when that CPU is offlined.
-> 
-> 	Coincidence or not, all but one of the rcutorture writer stalls
-> 	is followed by a message refusing to de-offload this CPU.
-
-It probably started with a brainfart that I elaborated a bit too far. Let me check
-that again.
-
-> 
-> o	The nocb_gp_update_state() function's return value seems backwards.
-> 	What am I missing here?
-
-Indeed I should rename it to nocb_gp_check_rdp() or something.
-
-> 
-> o	__rcu_nocb_rdp_deoffload(): Why move rcu_nocb_lock_irqsave()
-> 	across a comment?
-
-Because the comment only concerns the locking?
-
-> 
-> o	We need better debug.  For example, "Can't deoffload an rdp GP
-> 	leader (yet)".	Well, which CPU?  For another example, we need
-> 	deoffload state in rcutorture writer-stall dumps.
-
-Ok.
-
-> 
-> I intend to do the following, and, if feasible, fold them into the
-> original commits:
-> 
-> o	Make rcu_segcblist_is_offloaded() use "&&" instead of a
-> 	nested "if" statement.
-> 
-> o	nocb_cb_wait() needs the "^^^ Ensure CB invocation follows
-> 	_sleep test" to be adjusted so that it is properly attached to
-> 	its smp_load_acquire().
-> 
-> o	nocb_cb_wait() -- alphabetical order for local variables, please!
-> 	Yeah, I know, others like inverted tree for reasons that escape me
-> 	completely.
-
-Ah, ok noted.
-
-Thanks!
-
-> 							Thanx, Paul
-> 
-> >  include/linux/cpu.h                                |   1 +
-> >  include/linux/rcu_segcblist.h                      | 119 +++++-
-> >  include/linux/rcupdate.h                           |   4 +
-> >  include/linux/timer.h                              |   2 +
-> >  kernel/cpu.c                                       |   7 +
-> >  kernel/rcu/rcu_segcblist.c                         |  13 +-
-> >  kernel/rcu/rcu_segcblist.h                         |  45 ++-
-> >  kernel/rcu/rcutorture.c                            |   3 -
-> >  kernel/rcu/tree.c                                  |  49 ++-
-> >  kernel/rcu/tree.h                                  |   2 +
-> >  kernel/rcu/tree_plugin.h                           | 416 +++++++++++++++++++--
-> >  kernel/time/timer.c                                |  13 +
-> >  .../selftests/rcutorture/configs/rcu/TREE01.boot   |   4 +-
-> >  13 files changed, 614 insertions(+), 64 deletions(-)
+jon
