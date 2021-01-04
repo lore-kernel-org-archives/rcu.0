@@ -2,97 +2,85 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-22.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B5DC433DB
-	for <rcu@archiver.kernel.org>; Thu, 31 Dec 2020 22:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 357ABC433E0
+	for <rcu@archiver.kernel.org>; Mon,  4 Jan 2021 18:20:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A282620658
-	for <rcu@archiver.kernel.org>; Thu, 31 Dec 2020 22:46:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E83BB2075E
+	for <rcu@archiver.kernel.org>; Mon,  4 Jan 2021 18:20:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgLaWqD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Dec 2020 17:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbgLaWqD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Dec 2020 17:46:03 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C9CC061573;
-        Thu, 31 Dec 2020 14:45:22 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 63D3260B;
-        Thu, 31 Dec 2020 22:45:20 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 63D3260B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1609454721; bh=tMnJuIUNfFdc8FRuTCustjnoFzYrW86BK7QzKx5Y8uY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fvvOqr2D52pcHO5U+rmC245H1ANjhQVhPQ8anZ3sJBAePTEwjDa+W/9hNIhZfzKuo
-         U0wmvhx02lT7Ujt1wzEOoOrgdXa8ooqrtpPF6OPicXT8h/FtmaASaUnD7TXHGTZEEi
-         7wyClBrH+KduCpG0eOzDy1xKoYn0PPVIlOoYroJA4RoqVZPX/mXlj+nJFhfokljBQI
-         4vYUBoPX4TMEmA1JFA7ldTGGmg6l4oN4a/0OKDTkYDgWBEEqoh/hk9hzIedT2uFTiA
-         0vb/iWkG1OPBhRRPNnSeUmIe7NjRu2w37HUpnSPW2miy2dFq27pl+/V7E6cx8vaZQ+
-         1UM8LIztNX5Xw==
-Date:   Thu, 31 Dec 2020 15:45:19 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, rcu@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
-        andrealmeid@collabora.com
-Subject: Re: [PATCH v2] docs: Fix reST markup when linking to sections
-Message-ID: <20201231154519.25425c3b@lwn.net>
-In-Reply-To: <20201228144537.135353-1-nfraprado@protonmail.com>
-References: <20201228144537.135353-1-nfraprado@protonmail.com>
-Organization: LWN.net
+        id S1726072AbhADSUP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Jan 2021 13:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbhADSUP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Jan 2021 13:20:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E30E62075E;
+        Mon,  4 Jan 2021 18:19:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609784374;
+        bh=ukt7xqDhEg4NPsqEIeqnYcJ4ZsYfKDlQcDv8APTbPPs=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=TJ/P9NLkiyCMcNQ8Fbb24X3VwvH0lcuNOd/RqtQowt4CzPPOSF0SLw2P54RuwXuuw
+         FI2GesZHuSLY2ySNk5vfYi74AaAm2TH8297OtRgSf5uh1xE5AcQKcaVedGvL5KuCGr
+         fAndVP6EkS+hh2S/kpebHt8QTkmLNhaN+A/L0mrNQX9rpG5azTGX30Q+1N+jp3co1b
+         eY9Nk/iazgr5Zw01/MJK0O9X3slK1R03JfHSzcM39LZQ5S9ikh4CVnC4vKeG7KGMam
+         ZVynrSvn6JT9A4dlaSMN5+AOtSBa+PGO6wuh0qgkaLe7slSFTPqLVGlYhWdhGITRku
+         eRi5JE4YDTlKg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 80F3A3522F46; Mon,  4 Jan 2021 10:19:34 -0800 (PST)
+Date:   Mon, 4 Jan 2021 10:19:34 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, dja@axtens.net, urezki@gmail.com,
+        mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [GIT PULL] Fix kprobes issue by moving RCU-tasks initialization
+ earlier
+Message-ID: <20210104181934.GA16612@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 28 Dec 2020 14:46:07 +0000
-Nícolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
+Hello, Linus,
 
-> During the process of converting the documentation to reST, some links
-> were converted using the following wrong syntax (and sometimes using %20
-> instead of spaces):
-> 
->    `Display text <#section-name-in-html>`__
-> 
-> This syntax isn't valid according to the docutils' spec [1], but more
-> importantly, it is specific to HTML, since it uses '#' to link to an
-> HTML anchor.
-> 
-> The right syntax would instead use a docutils hyperlink reference as the
-> embedded URI to point to the section [2], that is:
-> 
->    `Display text <Section Name_>`__
-> 
-> This syntax works in both HTML and PDF.
-> 
-> The LaTeX toolchain doesn't mind the HTML anchor syntax when generating
-> the pdf documentation (make pdfdocs), that is, the build succeeds but
-> the links don't work, but that syntax causes errors when trying to build
-> using the not-yet-merged rst2pdf:
-> 
->    ValueError: format not resolved, probably missing URL scheme or undefined destination target for 'Forcing%20Quiescent%20States'
-> 
-> So, use the correct syntax in order to have it work in all different
-> output formats.
+This fix is for a regression in the v5.10 merge window, but it was
+reported quite late in the v5.10 process, plus generating and testing
+the fix took some time.
 
-Applied, thanks.
+The regression is due to 36dadef23fcc ("kprobes: Init kprobes in
+early_initcall") which on powerpc can use RCU Tasks before initialization,
+resulting in boot failures.  The fix is straightforward, simply moving
+initialization of RCU Tasks before the early_initcall()s.  The fix has
+been exposed to -next and kbuild test robot testing, and has been
+tested by the PowerPC guys.
 
-jon
+The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
+
+  Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/urgent
+
+for you to fetch changes up to 1b04fa9900263b4e217ca2509fd778b32c2b4eb2:
+
+  rcu-tasks: Move RCU-tasks initialization to before early_initcall() (2020-12-14 15:31:13 -0800)
+
+----------------------------------------------------------------
+Uladzislau Rezki (Sony) (1):
+      rcu-tasks: Move RCU-tasks initialization to before early_initcall()
+
+ include/linux/rcupdate.h |  6 ++++++
+ init/main.c              |  1 +
+ kernel/rcu/tasks.h       | 25 +++++++++++++++++++++----
+ 3 files changed, 28 insertions(+), 4 deletions(-)
