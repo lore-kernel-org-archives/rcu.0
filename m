@@ -2,161 +2,124 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91BBCC433E6
-	for <rcu@archiver.kernel.org>; Tue,  5 Jan 2021 13:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2750C433DB
+	for <rcu@archiver.kernel.org>; Tue,  5 Jan 2021 13:43:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 616FF229EF
-	for <rcu@archiver.kernel.org>; Tue,  5 Jan 2021 13:15:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A440F22BF3
+	for <rcu@archiver.kernel.org>; Tue,  5 Jan 2021 13:43:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbhAENP0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 08:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S1730275AbhAENnb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jan 2021 08:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbhAENP0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:15:26 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EB2C061793;
-        Tue,  5 Jan 2021 05:14:45 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id h22so72523151lfu.2;
-        Tue, 05 Jan 2021 05:14:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
-        b=Qgcs4Xx6lLq0YZhAP+b3iXdVigcYK/deCQAJeY+C1VNb9zFq0ywyeJXslL8S6zNt26
-         oMdstuxuBGDOvQ0f4VNaTt5aEQthq7vPE66VQkNdfu1+ugV5to9YzhrNTqZqRSfWY2xq
-         EoJQs2veM7c22hFQAPIVdYjXXKVTn/FG6Oo1qzfTPoHiu53wGXkauVd8ALaIynNN8BGc
-         yN74qQ2qBj8KGbxQOnpYfVO9y3fBiyZyUdU00YRMf45t1EAODcfDqMjvV38EzIIi6tK7
-         F7J/aBxnojloVN0+XEpes+OlJ4xXNXDr0jyglTcvTyOVXDiDbVtOXMn+C7gUfUkjHkFO
-         090Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tQKbFrNJhZtnkQVAJYkn3GuvMlIvsBf16oBsGWuoFBg=;
-        b=RzTwZ3CUrb1GpqJf5+FVKxHaasAWep8qxh1kzPBblCzRCqxYoE1mWnenZleG3IbPyR
-         NwYBRRn0ReDrCZbcnjuWJSHob3DSXB85WwdWP5ErkFIULyJQ+MkMW20XW/l2kQEO6P/W
-         sur1DMoocQGn5zRTc2lGX6dZFCh9ykMeprK9YGVtD9s4IvYxCuicHaEkw/n7wGjgvWCu
-         VUcc8jknefI42kNHAYLuhczYRi5XCuXqCVciJ27cxtQlyCIC2YXB3ktFG0OedbzhEY44
-         xyPJBPnISfxunSnZoKdh0Yuo8FqV68tN3yh+QaGcxjKcaTvNM+96fzwHLwJrqGwexP7M
-         NaYg==
-X-Gm-Message-State: AOAM532yY+b5Qqvnz/7y43pg9TxT4O+pR/F9BAFud7Dj8z78jor5k8G2
-        cznGV46kCXP1yK0jaUHsGkQ=
-X-Google-Smtp-Source: ABdhPJyeY24/g5kvCBsLLaTN+RDyjtpbSWCKqEnHATmX3nVrdhUp3hZJPi9Y5sxP84E4B53L/qOF6Q==
-X-Received: by 2002:a05:6512:3051:: with SMTP id b17mr30077247lfb.16.1609852484397;
-        Tue, 05 Jan 2021 05:14:44 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t30sm7608665lft.266.2021.01.05.05.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 05:14:43 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 5 Jan 2021 14:14:41 +0100
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
- kfree_rcu() single-argument macro")
-Message-ID: <20210105131441.GA2457@pc638.lan>
-References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
+        with ESMTP id S1730268AbhAENnb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:43:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3625C061795;
+        Tue,  5 Jan 2021 05:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+euDtxcGipU8q+U8BbJ2JReGBO3U7/zwdT6b3FGSnPY=; b=sn2God1DiTyvt/Xakejls2197D
+        AtaU+rRl4bMkTxGXmvu96Yu8SsTSfftIky0jfQ9vysJLFWj1MkuAyI0aHyAw1EuNrilBUAD6vCvzw
+        vAaSLruZhxBIIy+ActXuZ++ciZom9mr/W1GQ+So4KfPtUPZQmTxZ7eI2zAyF9+z8ugny5M8yhX+t0
+        4BVeLWCohvdkGgc31SiIpNK6Gn12JToW2sI9I4fAe8oAJYwcGo9DjBYLv8xnx1ZTIPmqn7+uRAMqK
+        OQAHh4YLRVl8ghOp0uCwjP3VyIMoR7UbBA305fQChny26NzVqohc6x+L6/9nSYVFgFfgGTH71M3c4
+        Ud8HQdPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwmba-0007aK-0c; Tue, 05 Jan 2021 13:42:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E7A430015A;
+        Tue,  5 Jan 2021 14:42:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16893200C641B; Tue,  5 Jan 2021 14:42:32 +0100 (CET)
+Date:   Tue, 5 Jan 2021 14:42:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
+ rcu_is_cpu_rrupt_from_idle
+Message-ID: <20210105134232.GI3040@hirez.programming.kicks-ass.net>
+References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
+ <20201223151231.GC2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201223151231.GC2657@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear, Lukas.
-
-> Dear Uladzislau,
+On Wed, Dec 23, 2020 at 07:12:31AM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
+> > For the smp_call_function() optimization, where callbacks can run from
+> > idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
+> > running callbacks from idle"), an additional check is added in
+> > rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
+> > for these smp_call_function() callbacks running from idle loop.
+> > However, this commit missed updating a preexisting underflow check
+> > of dynticks_nmi_nesting, which checks for a non zero positive value.
+> > Fix this warning and while at it, read the counter only once.
+> > 
+> > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > ---
+> > 
+> > Hi,
+> > 
+> > I was not able to get this warning, with scftorture.
+> > 
+> >   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
+> >     "RCU dynticks_nmi_nesting counter underflow/zero!");
+> > 
+> > Not sure if idle loop smp_call_function() optimization is already present
+> > in mainline?
 > 
-> in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
-> macro"), you have refactored the kfree_rcu macro.
+> Now that you mention it, I don't see it.
+
+kernel/sched/idle.c:do_idle() calls flush_smp_call_function_from_idle().
+
+(nothing x86 specific about it)
+
+> > Another thing, which I am not sure of is, maybe lockdep gets disabled
+> > in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
+> > Was this the original intention, to keep the lockdep based
+> > RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
+> > check separate from idle task context nesting value
+> > WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
 > 
-> Since then, make htmldocs warns:
-> 
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'ptr' description in 'kfree_rcu'
-> ./include/linux/rcupdate.h:882: warning: Excess function parameter
-> 'rhf' description in 'kfree_rcu'
-> 
-> As you deleted the two arguments in the macro definition, kerneldoc
-> cannot resolve the argument names in the macro's kerneldoc
-> documentation anymore and warns about that.
-> 
-> Probably, it is best to just turn the formal kerneldoc references to
-> the two arguments, which are not used in the macro definition anymore,
-> simply into two informal references in the documentation.
-> 
-Thanks for your suggestion. I am not sure if htmldocs supports something
-like "__maybe_unused", but tend to say that it does not. See below the
-patch:
+> An easy way to test lockdep is to create a pair of locks, acquire them
+> in one order then release them both, and finally acquire them in the
+> other order and then release them both.  If lockdep is configured and
+> enabled, it will complain.
 
-<snip>
-From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Tue, 5 Jan 2021 13:23:30 +0100
-Subject: [PATCH] rcu: fix kerneldoc warnings
+IIRC (and this is after not staring at the computer for 2 weeks) lockdep
+should work just fine in idle, except of course that RCU will be stopped
+so actually taking locks will scream bloody murder due to tracing etc..
 
-After refactoring of the kfree_rcu(), it becomes possible to use
-the macro with one or two arguments. From the other hand, in the
-description there are two arguments in the macro definition expected.
-That is why the "htmldocs" emits a warning about it:
+> The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
+> to me about idle-entry overhead back at that time.  So without lockdep,
+> there is zero overhead.  Maybe people have become more tolerant of idle
+> delays, or perhaps they are not so worried about an extra check of a
+> cache-hot quantity.
 
-<snip>
-./include/linux/rcupdate.h:882: warning: Excess function parameter
-'ptr' description in 'kfree_rcu'
-./include/linux/rcupdate.h:882: warning: Excess function parameter
-'rhf' description in 'kfree_rcu'
-<snip>
+Not having checks also saves on $I and branches, in general I think
+having checks depend on DEBUG features, esp. those we don't really
+expect to trigger is still sane.
 
-Fix it by converting two parameters into informal references in the
-macro description.
+> I am tempted to pull this in as is, given the current logical
+> inconsistency in the checks.  Thoughts?
 
-Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcupdate.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index ebd8dcca4997..e678ce7f5ca2 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
- 
- /**
-  * kfree_rcu() - kfree an object after a grace period.
-- * @ptr: pointer to kfree for both single- and double-argument invocations.
-- * @rhf: the name of the struct rcu_head within the type of @ptr,
-+ * ptr: pointer to kfree for both single- and double-argument invocations.
-+ * rhf: the name of the struct rcu_head within the type of ptr,
-  *       but only for double-argument invocations.
-  *
-  * Many rcu callbacks functions just call kfree() on the base structure.
--- 
-2.20.1
-<snip>
-
-Paul, does it work for you?
-
-Thanks!
-
---
-Vlad Rezki
+Patch looks ok, although I've seen compilers do CSE on
+__this_cpu_read() (on x86).
