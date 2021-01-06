@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AD8BC433E9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70B15C4332D
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:27:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D3BF423123
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A16C23123
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:27:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbhAFR0u (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727359AbhAFR0u (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:26:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:36054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727078AbhAFR0u (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726852AbhAFR0u (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:26:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB26D23133;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 635BA23123;
         Wed,  6 Jan 2021 17:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953969;
-        bh=5iIO47PhcBcNvzRC7tTRuDZwefPyekFksblsx7V83oc=;
+        bh=g6xFz6KNBLko29IRD/YbFS6JckGAmVoqE3iqOjOrGdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uxcB+AinGyPnAEW+e3OkwJRYW8qL7yTMGDc2QGhPQXIF1L8aj/gi6FG8HewwT4Iyz
-         KvYy4VPNDSBtrAbTjxe3t9XGnXdXAUdaKT4Am+NF/CGJZobPmwIVwDgurXyK32cxY6
-         LlbAiGqXcVorRrEse+4GiPgdE+Kt5GWYgKNyNTFtg+HeN+wxM02fMIExOQOonLI1Hs
-         GvhYqAi/54SC3GGwJwvTZMazYeD+fxypk/iYv9IY8JiO7MR7DghOCqV1ZJfCXR1M39
-         vQzTcReFVSiBstREYQehGF/ly/Pv3bvQrlMw3DI5f+j6p7q+mHNuVvsmhIrD/XZ1v7
-         r+tpUMSqSWs8Q==
+        b=rJwXh+Iobb1pIPHSfE5nV50n1pAVIvFIsjusGovwPOv5SlMgMubI89lEGEPM34kXI
+         7lPMWG88oYVF6pEMeqW7G45sofzLl3+kbPzDtkeaW7nB8xeVgOXjdKZyjo/cBznw6l
+         9Rho5DJrMAJu2m9nz8zqq7gRBrqRyY3VxVoCaTRy7LQOeag8LfftUL4K5oEpR+FKeQ
+         hGEg+ft7A/bEVgvXFDs9xnrjRVSyH8dFGlimPecxOwznlbHuhQj5E9P8EbxXgXeZ4S
+         8S2hMTvpEW+nUJhNohZtSHaQHMydHJz2UuCGZ/qSNXY7PNdXVKj/GSRtfRYFOBIdvT
+         W5UMA2CpY6csA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/20] torture: Make kvm.sh "--dryrun sched" summarize number of builds
-Date:   Wed,  6 Jan 2021 09:25:50 -0800
-Message-Id: <20210106172607.22816-3-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/20] torture: Make --kcsan specify lockdep
+Date:   Wed,  6 Jan 2021 09:25:48 -0800
+Message-Id: <20210106172607.22816-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
@@ -52,32 +52,29 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Knowing the number of builds that kvm.sh will split a run into allows
-estimation of the duration of a test, give or take build duration.
-This commit therefore adds a line of output to "--dryrun sched" that
-gives the number of builds that will be run.  This excludes "builds"
-for repeated scenarios that reuse an earlier build.
+The --kcsan argument to kvm.sh adds CONFIG_KCSAN_VERBOSE=y in order to
+get more detail from the KCSAN reports.  However, this Kconfig option
+requires lockdep to be enabled.  This commit therefore causes --kcsan
+to also enable lockdep.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 1078be1..55a18a9 100755
+index 45d07b7..bd07df7 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -536,6 +536,10 @@ then
- 	egrep 'Start batch|Starting build\.' $T/script |
- 		grep -v ">>" |
- 		sed -e 's/:.*$//' -e 's/^echo //'
-+	nbuilds="`grep 'Starting build\.' $T/script |
-+		  grep -v ">>" | sed -e 's/:.*$//' -e 's/^echo //' |
-+		  awk '{ print $1 }' | grep -v '\.' | wc -l`"
-+	echo Total number of builds: $nbuilds
- 	nbatches="`grep 'Start batch' $T/script | grep -v ">>" | wc -l`"
- 	echo Total number of batches: $nbatches
- 	exit 0
+@@ -169,7 +169,7 @@ do
+ 		TORTURE_KCONFIG_KASAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KASAN=y"; export TORTURE_KCONFIG_KASAN_ARG
+ 		;;
+ 	--kcsan)
+-		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_VERBOSE=y CONFIG_KCSAN_INTERRUPT_WATCHER=y"; export TORTURE_KCONFIG_KCSAN_ARG
++		TORTURE_KCONFIG_KCSAN_ARG="CONFIG_DEBUG_INFO=y CONFIG_KCSAN=y CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000 CONFIG_KCSAN_INTERRUPT_WATCHER=y CONFIG_KCSAN_VERBOSE=y CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y"; export TORTURE_KCONFIG_KCSAN_ARG
+ 		;;
+ 	--kmake-arg|--kmake-args)
+ 		checkarg --kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
 -- 
 2.9.5
 
