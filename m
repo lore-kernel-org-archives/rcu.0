@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E12E2C4332E
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B73BDC433E0
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:19:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C44A722D6F
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:18:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8F4E122D01
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:19:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbhAFBSr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 20:18:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
+        id S1725789AbhAFBTN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jan 2021 20:19:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726603AbhAFBSc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:18:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0581722E03;
+        id S1725768AbhAFBTN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:19:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DED8230FD;
         Wed,  6 Jan 2021 01:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609895872;
-        bh=89la9VIbgxJoAiOtZh6vDNKFvb9uJilRSBqp+fBr5wE=;
+        bh=JZ/A0Ej4DAs1pgQNQqM4FCqjxD7UEtQkZzWwKn4VsH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRutX3aiqUpvAG+88HkSzREaDWr0CvykHbJfeThw+zQEdcM6Ss+dif4kKlLCo5WxK
-         F47Jx4OTqjDc3pBiOxKtiwGPQx4/x+anciT0ZhIbIkC7UpyWyC1+56wD6rt/FUEbt4
-         AeRQTXwgZWea4Dk905NoqbyDbDR5DWWhBuzhVO2pYhRQHr1xhVcnyB3mdYH8gqblrG
-         SZA6Wq7Q781/xiqCinhEIGFP5vIlds4jgSaAdtVPmKuFw2aNDT869L6YtfqX44RMa2
-         IcdtRhxeAUnvtkJ0rc/YFoBg0ZB7m5njlcPli1OSsGAxNPsJSfnjNSwtxo3gTvwLMd
-         o3J1vRr2mazag==
+        b=hpZfLkbTX/cwRuUA535Txxwqp3jKj2UGCk47A6JOieqgFc0C03FDtut6txIvNx0Ts
+         wHYqAN3rEEz2sdRjaz2deuyZn2og00LJ0xe8haAgs2jr04EXTRNhS1AFkTOek5PBMC
+         U8s/EyykT+Zn5RuXGNIcppzXnqYv2l3IjXXINpM3t7zPEbXIJLzezw/vEhs4v394zG
+         llIiCBQt63QL0nGZxPxssMw7KUebJEjOJFdqrYeAdbzF6GvfMEHnGyDkjT0GTee9Sm
+         nVxtv0HJT8wNAjkMHq7Jipzrec/vXRSI+sJdHott0mJaA31KUcP0KGhAisNjcDLRGp
+         M///Q36MEEj3w==
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         linux-mm@kvack.org
@@ -38,9 +38,9 @@ Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
         ming.lei@redhat.com, axboe@kernel.dk, kernel-team@fb.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH mm,percpu_ref,rcu 3/6] mm: Make mem_dump_obj() handle vmalloc() memory
-Date:   Tue,  5 Jan 2021 17:17:47 -0800
-Message-Id: <20210106011750.13709-3-paulmck@kernel.org>
+Subject: [PATCH mm,percpu_ref,rcu 6/6] percpu_ref: Dump mem_dump_obj() info upon reference-count underflow
+Date:   Tue,  5 Jan 2021 17:17:50 -0800
+Message-Id: <20210106011750.13709-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106011603.GA13180@paulmck-ThinkPad-P72>
 References: <20210106011603.GA13180@paulmck-ThinkPad-P72>
@@ -50,98 +50,64 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds vmalloc() support to mem_dump_obj().  Note that the
-vmalloc_dump_obj() function combines the checking and dumping, in
-contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-The reason for the difference is that the checking in the vmalloc()
-case involves acquiring a global lock, and redundant acquisitions of
-global locks should be avoided, even on not-so-fast paths.
+Reference-count underflow for percpu_ref is detected in the RCU callback
+percpu_ref_switch_to_atomic_rcu(), and the resulting warning does not
+print anything allowing easy identification of which percpu_ref use
+case is underflowing.  This is of course not normally a problem when
+developing a new percpu_ref use case because it is most likely that
+the problem resides in this new use case.  However, when deploying a
+new kernel to a large set of servers, the underflow might well be a new
+corner case in any of the old percpu_ref use cases.
 
-Note that this change causes on-stack variables to be reported as
-vmalloc() storage from kernel_clone() or similar, depending on the degree
-of inlining that your compiler does.  This is likely more helpful than
-the earlier "non-paged (local) memory".
+This commit therefore calls mem_dump_obj() to dump out any additional
+available information on the underflowing percpu_ref instance.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Jens Axboe <axboe@kernel.dk>
 Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: <linux-mm@kvack.org>
 Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/vmalloc.h |  6 ++++++
- mm/util.c               | 14 ++++++++------
- mm/vmalloc.c            | 12 ++++++++++++
- 3 files changed, 26 insertions(+), 6 deletions(-)
+ lib/percpu-refcount.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 80c0181..c18f475 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -246,4 +246,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
- int register_vmap_purge_notifier(struct notifier_block *nb);
- int unregister_vmap_purge_notifier(struct notifier_block *nb);
+diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
+index e59eda0..a1071cd 100644
+--- a/lib/percpu-refcount.c
++++ b/lib/percpu-refcount.c
+@@ -5,6 +5,7 @@
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ #include <linux/slab.h>
++#include <linux/mm.h>
+ #include <linux/percpu-refcount.h>
  
-+#ifdef CONFIG_MMU
-+bool vmalloc_dump_obj(void *object);
-+#else
-+static inline bool vmalloc_dump_obj(void *object) { return false; }
-+#endif
-+
- #endif /* _LINUX_VMALLOC_H */
-diff --git a/mm/util.c b/mm/util.c
-index 92f23d2..5487022 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -996,18 +996,20 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
-  */
- void mem_dump_obj(void *object)
- {
-+	if (kmem_valid_obj(object)) {
-+		kmem_dump_obj(object);
-+		return;
+ /*
+@@ -168,6 +169,7 @@ static void percpu_ref_switch_to_atomic_rcu(struct rcu_head *rcu)
+ 			struct percpu_ref_data, rcu);
+ 	struct percpu_ref *ref = data->ref;
+ 	unsigned long __percpu *percpu_count = percpu_count_ptr(ref);
++	static atomic_t underflows;
+ 	unsigned long count = 0;
+ 	int cpu;
+ 
+@@ -191,9 +193,13 @@ static void percpu_ref_switch_to_atomic_rcu(struct rcu_head *rcu)
+ 	 */
+ 	atomic_long_add((long)count - PERCPU_COUNT_BIAS, &data->count);
+ 
+-	WARN_ONCE(atomic_long_read(&data->count) <= 0,
+-		  "percpu ref (%ps) <= 0 (%ld) after switching to atomic",
+-		  data->release, atomic_long_read(&data->count));
++	if (WARN_ONCE(atomic_long_read(&data->count) <= 0,
++		      "percpu ref (%ps) <= 0 (%ld) after switching to atomic",
++		      data->release, atomic_long_read(&data->count)) &&
++	    atomic_inc_return(&underflows) < 4) {
++		pr_err("%s(): percpu_ref underflow", __func__);
++		mem_dump_obj(data);
 +	}
-+	if (vmalloc_dump_obj(object))
-+		return;
- 	if (!virt_addr_valid(object)) {
- 		if (object == NULL)
- 			pr_cont(" NULL pointer.\n");
- 		else if (object == ZERO_SIZE_PTR)
- 			pr_cont(" zero-size pointer.\n");
- 		else
--			pr_cont(" non-paged (local) memory.\n");
--		return;
--	}
--	if (kmem_valid_obj(object)) {
--		kmem_dump_obj(object);
-+			pr_cont(" non-paged memory.\n");
- 		return;
- 	}
--	pr_cont(" non-slab memory.\n");
-+	pr_cont(" non-slab/vmalloc memory.\n");
- }
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 4d88fe5..c274ea4 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3448,6 +3448,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
- }
- #endif	/* CONFIG_SMP */
  
-+bool vmalloc_dump_obj(void *object)
-+{
-+	struct vm_struct *vm;
-+	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-+
-+	vm = find_vm_area(objp);
-+	if (!vm)
-+		return false;
-+	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-+	return true;
-+}
-+
- #ifdef CONFIG_PROC_FS
- static void *s_start(struct seq_file *m, loff_t *pos)
- 	__acquires(&vmap_purge_lock)
+ 	/* @ref is viewed as dead on all CPUs, send out switch confirmation */
+ 	percpu_ref_call_confirm_rcu(rcu);
 -- 
 2.9.5
 
