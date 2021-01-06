@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86690C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6D03C4332B
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 00:59:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4331222E03
+	by mail.kernel.org (Postfix) with ESMTP id 685A5230FD
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 00:59:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbhAFA6U (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 19:58:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55864 "EHLO mail.kernel.org"
+        id S1725803AbhAFA6c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jan 2021 19:58:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbhAFA6S (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:58:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9DBE22242;
-        Wed,  6 Jan 2021 00:57:37 +0000 (UTC)
+        id S1725966AbhAFA6T (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:58:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EC36230FB;
+        Wed,  6 Jan 2021 00:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609894657;
-        bh=F1aJ2etmruJ4EftXrNZVMY6RTkzkxwYaVyLLjQxisb4=;
+        s=k20201202; t=1609894658;
+        bh=c8pNqvTvHY/gLSnjtC+oe158U/JTDPDcYcVU+r3qDeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJASGUiPciBKh69qTblSD8WasAgRehroNc5Qwe2pJev4oKR0Dnq0XkrmSE+3iWqez
-         JJRPwvk3WvFbrcdllyol8hN3FY2xn47f17hPSYJUek1g8CB5ntkPc9wUgtQbz6LXwB
-         ggU0a6VMHfi78CoSWT1qLHTmARQEQrC6lyJujqRKTMT9xwvh9rNrAngXGcA7/z3tyc
-         UboBYfrdEl0uHJKJZO6t7JLbtvtXEnPRI8aMORPI5LCvn7oP8pYTQibbpMyonNQtJM
-         l1dGEliETsZZsfjfYXTfAiKvyLQi53USAHTLsWkv93HzgkZHNPSrs8VfxWFf+xeEp4
-         /OK9OpwSNHpIA==
+        b=hgq/eAYXS2IvaJxQ98dgxfjUxnG59RPFCM1udzuBHdMUrEj1b/NT7BSeapxHs2xSM
+         M3OVJizQTWmvd5W75YGF7q1KkTrw1WJtHrMoxVlCZ20mxdA1cPc1ZBx4zs9XwXVC9C
+         Tee1bM+5CBhqCxUx40QKckJdV0OpB+P/zZ6MH+rWjGdvtVEP44Oak8fbstgNf99Q3N
+         l9uqtvsb1O3E6ormJqlnm8I8Pf8gzPhPy86wHGlIAoNcWhS7IzxhZoFwRC2RpGQYGQ
+         TY/TFxfqw8gnmE7B96Vvg5SnWwujfbIIaZb4zymyd/pnbq7k9TI+6LoBLLLxXK0+si
+         UqYKPtlVuzycQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,10 +39,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/6] sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
-Date:   Tue,  5 Jan 2021 16:57:31 -0800
-Message-Id: <20210106005736.12613-1-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 4/6] rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+Date:   Tue,  5 Jan 2021 16:57:34 -0800
+Message-Id: <20210106005736.12613-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106005713.GA12492@paulmck-ThinkPad-P72>
 References: <20210106005713.GA12492@paulmck-ThinkPad-P72>
@@ -50,61 +50,62 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The try_invoke_on_locked_down_task() function currently requires
-that interrupts be enabled, but it is called with interrupts
-disabled from rcu_print_task_stall(), resulting in an "IRQs not
-enabled as expected" diagnostic.  This commit therefore updates
-try_invoke_on_locked_down_task() to use raw_spin_lock_irqsave() instead
-of raw_spin_lock_irq(), thus allowing use from either context.
+This commit adds a lockdep_assert_irqs_disabled() call to the
+helper macros that release the rcu_node structure's ->lock, namely
+to raw_spin_unlock_rcu_node(), raw_spin_unlock_irq_rcu_node() and
+raw_spin_unlock_irqrestore_rcu_node().  The point of this is to help track
+down a situation where lockdep appears to be insisting that interrupts
+are enabled while holding an rcu_node structure's ->lock.
 
-Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
-Link: https://lore.kernel.org/lkml/20200928075729.GC2611@hirez.programming.kicks-ass.net/
-Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/lkml/20201111133813.GA81547@elver.google.com/
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/sched/core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/rcu/rcu.h | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e7e4534..f768bb0 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2989,7 +2989,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index e01cba5..839f5be 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -378,7 +378,11 @@ do {									\
+ 	smp_mb__after_unlock_lock();					\
+ } while (0)
  
- /**
-  * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
-- * @p: Process for which the function is to be invoked.
-+ * @p: Process for which the function is to be invoked, can be @current.
-  * @func: Function to invoke.
-  * @arg: Argument to function.
-  *
-@@ -3007,12 +3007,11 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
-  */
- bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
- {
--	bool ret = false;
- 	struct rq_flags rf;
-+	bool ret = false;
- 	struct rq *rq;
+-#define raw_spin_unlock_rcu_node(p) raw_spin_unlock(&ACCESS_PRIVATE(p, lock))
++#define raw_spin_unlock_rcu_node(p)					\
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock(&ACCESS_PRIVATE(p, lock));			\
++} while (0)
  
--	lockdep_assert_irqs_enabled();
--	raw_spin_lock_irq(&p->pi_lock);
-+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
- 	if (p->on_rq) {
- 		rq = __task_rq_lock(p, &rf);
- 		if (task_rq(p) == rq)
-@@ -3029,7 +3028,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
- 				ret = func(p, arg);
- 		}
- 	}
--	raw_spin_unlock_irq(&p->pi_lock);
-+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
- 	return ret;
- }
+ #define raw_spin_lock_irq_rcu_node(p)					\
+ do {									\
+@@ -387,7 +391,10 @@ do {									\
+ } while (0)
  
+ #define raw_spin_unlock_irq_rcu_node(p)					\
+-	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock))
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock));			\
++} while (0)
+ 
+ #define raw_spin_lock_irqsave_rcu_node(p, flags)			\
+ do {									\
+@@ -396,7 +403,10 @@ do {									\
+ } while (0)
+ 
+ #define raw_spin_unlock_irqrestore_rcu_node(p, flags)			\
+-	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags)
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags);	\
++} while (0)
+ 
+ #define raw_spin_trylock_rcu_node(p)					\
+ ({									\
 -- 
 2.9.5
 
