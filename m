@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A147CC433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DFA1C433DB
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:27:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6960022D01
+	by mail.kernel.org (Postfix) with ESMTP id 5322022CB9
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:27:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbhAFB1A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 20:27:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbhAFB07 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1725925AbhAFB07 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 5 Jan 2021 20:26:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD30A22D01;
+Received: from mail.kernel.org ([198.145.29.99]:33614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbhAFB07 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:26:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB7B22D6F;
         Wed,  6 Jan 2021 01:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609896378;
-        bh=jN9NdEnuR9c2ErjPZ57T2P7JYMhtHrOC4839Om1h31g=;
+        s=k20201202; t=1609896379;
+        bh=efvVs7NjR82yjo8j+QlQmTT06UvJ/+lZfaz3AgaMiAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTbkiyOtJdppMZntpKFR0Ob0wiPpRt3IIGW7kvYt5MLfpOJEnEJG9pMaqwuVZ83e+
-         PGA1bPh2t9XFot+tDrlMCfTLvKV2S3X7TlkRJ2HKnY1tpsBYYYxuHS6XUa5IVnxocY
-         EKMFYbf1vhszsvd1YZFerbOQsI+lUHpzIbIuug46mGVxiQW9ofwN2CtPiUHRAfnrJZ
-         dCwZ7LpEpnD2PdBqahl7xlu1BtGr2V7nE3GHIUpWTpjJrEGT2SDC5MSMZ8D5K2g2x1
-         rYjGKdWMeRg+OcZlcLqqHeVsj6YwnTx+hwiBwVnbxkuq4AjqmYdwhR/rBZBTIV8uA2
-         aOAz84UJiJ1lg==
+        b=kOd3PN9MEtvcyCJnyftw5TRWPBn8UBLE3XansWG2OtxGrM041SzY0TplWtNerffdY
+         VWmQHl/9VL/hpbYKl1fUPxLuv2uTShSLJrxYGPd987PobjNE4MNA0k3PcuD5ndLL+A
+         1R6zoQFUyHzKCbGVMOxJt/G1CvcYaDInc2uZWot0/vVvsC9RtDuBOc3fMO9ssqK9dC
+         tqQY8k6y2UkcM+OPRKoIemnbXfPY+iJQvK8GusySZqftPqn3nCV5iEN4QagxpSJDQB
+         eMa8ZeDby0p5I+2ZyV3OcA2LXhng/hPg9kZp8vawjWLYwfJWyjrQPT/ZRid/Lu8qmG
+         Jc5+Dr9JnLKTA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/6] rcu/tree: Make rcu_do_batch count how many callbacks were executed
-Date:   Tue,  5 Jan 2021 17:26:12 -0800
-Message-Id: <20210106012617.14122-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/6] rcu/segcblist: Add additional comments to explain smp_mb()
+Date:   Tue,  5 Jan 2021 17:26:13 -0800
+Message-Id: <20210106012617.14122-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106012541.GA13972@paulmck-ThinkPad-P72>
 References: <20210106012541.GA13972@paulmck-ThinkPad-P72>
@@ -52,127 +52,104 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-The rcu_do_batch() function extracts the ready-to-invoke callbacks
-from the rcu_segcblist located in the ->cblist field of the current
-CPU's rcu_data structure.  These callbacks are first moved to a local
-(unsegmented) rcu_cblist.  The rcu_do_batch() function then uses this
-rcu_cblist's ->len field to count how many CBs it has invoked, but it
-does so by counting that field down from zero.  Finally, this function
-negates the value in this ->len field (resulting in a positive number)
-and subtracts the result from the ->len field of the current CPU's
-->cblist field.
+One counter-intuitive property of RCU is the fact that full memory
+barriers are needed both before and after updates to the full
+(non-segmented) length.  This patch therefore helps to assist the
+reader's intuition by adding appropriate comments.
 
-Except that it is sometimes necessary for rcu_do_batch() to stop invoking
-callbacks mid-stream, despite there being more ready to invoke, for
-example, if a high-priority task wakes up.  In this case the remaining
-not-yet-invoked callbacks are requeued back onto the CPU's ->cblist,
-but remain in the ready-to-invoke segment of that list.  As above, the
-negative of the local rcu_cblist's ->len field is still subtracted from
-the ->len field of the current CPU's ->cblist field.
-
-The design of counting down from 0 is confusing and error-prone, plus
-use of a positive count will make it easier to provide a uniform and
-consistent API to deal with the per-segment counts that are added
-later in this series.  For example, rcu_segcblist_extract_done_cbs()
-can unconditionally populate the resulting unsegmented list's ->len
-field during extraction.
-
-This commit therefore explicitly counts how many callbacks were executed
-in rcu_do_batch() itself, counting up from zero, and then uses that
-to update the per-CPU segcb list's ->len field, without relying on the
-downcounting of rcl->len from zero.
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+[ paulmck:  Wordsmithing. ]
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu_segcblist.c |  2 +-
- kernel/rcu/rcu_segcblist.h |  1 +
- kernel/rcu/tree.c          | 11 +++++------
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/rcu_segcblist.c | 68 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 64 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 2d2a6b6b9..bb246d8 100644
+index bb246d8..0f55864 100644
 --- a/kernel/rcu/rcu_segcblist.c
 +++ b/kernel/rcu/rcu_segcblist.c
-@@ -95,7 +95,7 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+@@ -94,17 +94,77 @@ static void rcu_segcblist_set_len(struct rcu_segcblist *rsclp, long v)
+  * field to disagree with the actual number of callbacks on the structure.
   * This increase is fully ordered with respect to the callers accesses
   * both before and after.
++ *
++ * So why on earth is a memory barrier required both before and after
++ * the update to the ->len field???
++ *
++ * The reason is that rcu_barrier() locklessly samples each CPU's ->len
++ * field, and if a given CPU's field is zero, avoids IPIing that CPU.
++ * This can of course race with both queuing and invoking of callbacks.
++ * Failng to correctly handle either of these races could result in
++ * rcu_barrier() failing to IPI a CPU that actually had callbacks queued
++ * which rcu_barrier() was obligated to wait on.  And if rcu_barrier()
++ * failed to wait on such a callback, unloading certain kernel modules
++ * would result in calls to functions whose code was no longer present in
++ * the kernel, for but one example.
++ *
++ * Therefore, ->len transitions from 1->0 and 0->1 have to be carefully
++ * ordered with respect with both list modifications and the rcu_barrier().
++ *
++ * The queuing case is CASE 1 and the invoking case is CASE 2.
++ *
++ * CASE 1: Suppose that CPU 0 has no callbacks queued, but invokes
++ * call_rcu() just as CPU 1 invokes rcu_barrier().  CPU 0's ->len field
++ * will transition from 0->1, which is one of the transitions that must
++ * be handled carefully.  Without the full memory barriers after the ->len
++ * update and at the beginning of rcu_barrier(), the following could happen:
++ *
++ * CPU 0				CPU 1
++ *
++ * call_rcu().
++ *                      		rcu_barrier() sees ->len as 0.
++ * set ->len = 1.
++ *                      		rcu_barrier() does nothing.
++ *					module is unloaded.
++ * callback invokes unloaded function!
++ *
++ * With the full barriers, any case where rcu_barrier() sees ->len as 0 will
++ * have unambiguously preceded the return from the racing call_rcu(), which
++ * means that this call_rcu() invocation is OK to not wait on.  After all,
++ * you are supposed to make sure that any problematic call_rcu() invocations
++ * happen before the rcu_barrier().
++ *
++ *
++ * CASE 2: Suppose that CPU 0 is invoking its last callback just as
++ * CPU 1 invokes rcu_barrier().  CPU 0's ->len field will transition from
++ * 1->0, which is one of the transitions that must be handled carefully.
++ * Without the full memory barriers before the ->len update and at the
++ * end of rcu_barrier(), the following could happen:
++ * 
++ * CPU 0				CPU 1
++ *
++ * start invoking last callback
++ * set ->len = 0 (reordered)
++ *                      		rcu_barrier() sees ->len as 0
++ *                      		rcu_barrier() does nothing.
++ *					module is unloaded
++ * callback executing after unloaded!
++ *
++ * With the full barriers, any case where rcu_barrier() sees ->len as 0
++ * will be fully ordered after the completion of the callback function,
++ * so that the module unloading operation is completely safe.
++ * 
   */
--static void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
+ void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v)
  {
  #ifdef CONFIG_RCU_NOCB_CPU
- 	smp_mb__before_atomic(); /* Up to the caller! */
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 492262b..1d2d614 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -76,6 +76,7 @@ static inline bool rcu_segcblist_restempty(struct rcu_segcblist *rsclp, int seg)
+-	smp_mb__before_atomic(); /* Up to the caller! */
++	smp_mb__before_atomic(); // Read header comment above.
+ 	atomic_long_add(v, &rsclp->len);
+-	smp_mb__after_atomic(); /* Up to the caller! */
++	smp_mb__after_atomic();  // Read header comment above.
+ #else
+-	smp_mb(); /* Up to the caller! */
++	smp_mb(); // Read header comment above.
+ 	WRITE_ONCE(rsclp->len, rsclp->len + v);
+-	smp_mb(); /* Up to the caller! */
++	smp_mb(); // Read header comment above.
+ #endif
  }
  
- void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
-+void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v);
- void rcu_segcblist_init(struct rcu_segcblist *rsclp);
- void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
- void rcu_segcblist_offload(struct rcu_segcblist *rsclp);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40e5e3d..cc6f379 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2434,7 +2434,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
--	long bl, count;
-+	long bl, count = 0;
- 	long pending, tlimit = 0;
- 
- 	/* If no callbacks are ready, just return. */
-@@ -2479,6 +2479,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
- 		rcu_callback_t f;
- 
-+		count++;
- 		debug_rcu_head_unqueue(rhp);
- 
- 		rcu_lock_acquire(&rcu_callback_map);
-@@ -2492,15 +2493,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 		/*
- 		 * Stop only if limit reached and CPU has something to do.
--		 * Note: The rcl structure counts down from zero.
- 		 */
--		if (-rcl.len >= bl && !offloaded &&
-+		if (count >= bl && !offloaded &&
- 		    (need_resched() ||
- 		     (!is_idle_task(current) && !rcu_is_callbacks_kthread())))
- 			break;
- 		if (unlikely(tlimit)) {
- 			/* only call local_clock() every 32 callbacks */
--			if (likely((-rcl.len & 31) || local_clock() < tlimit))
-+			if (likely((count & 31) || local_clock() < tlimit))
- 				continue;
- 			/* Exceeded the time limit, so leave. */
- 			break;
-@@ -2517,7 +2517,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	local_irq_save(flags);
- 	rcu_nocb_lock(rdp);
--	count = -rcl.len;
- 	rdp->n_cbs_invoked += count;
- 	trace_rcu_batch_end(rcu_state.name, count, !!rcl.head, need_resched(),
- 			    is_idle_task(current), rcu_is_callbacks_kthread());
-@@ -2525,7 +2524,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	/* Update counts and requeue any remaining callbacks. */
- 	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
- 	smp_mb(); /* List handling before counting for rcu_barrier(). */
--	rcu_segcblist_insert_count(&rdp->cblist, &rcl);
-+	rcu_segcblist_add_len(&rdp->cblist, -count);
- 
- 	/* Reinstate batch limit if we have worked down the excess. */
- 	count = rcu_segcblist_n_cbs(&rdp->cblist);
 -- 
 2.9.5
 
