@@ -5,32 +5,32 @@ X-Spam-Level:
 X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 916F4C43332
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98DFFC43331
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:32:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B1A423125
+	by mail.kernel.org (Postfix) with ESMTP id 647A923133
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:32:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAFRcS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1726618AbhAFRcS (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:32:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbhAFRcS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726545AbhAFRcS (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:32:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C82D82313B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E832313E;
         Wed,  6 Jan 2021 17:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609954281;
-        bh=l1rcZ3KArVbgksJGpiEqnOIXkO4v8BLPE4GdJgjbA50=;
+        s=k20201202; t=1609954282;
+        bh=RNHIeD36YcwQOiNIPCVuhLjjsSW1KAgzrc1zej6chu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kajb5KvK1L4U7h/M0uprpR7kBIx/b1/kh8nFkaO+Cx8CxsLo8nQ7DDdv/fFbc2GC9
-         xSWIMWTpMXXeemWr2RVmQNlPfeqXKcqUEuCeMyGlqtidKFl9l20GMEOPhNHHMmbwcq
-         HmBZS/eYwuJZUELPGGAVq8RAL+OL2Cr6MjSQYIV+msX7Je69NekLcwaMYYzhLWAuoz
-         K0URc8x3RDi+uGI6C7jTzYRQRioDa8la0m2CmMtBS4acXh7sS5RHhpj2huW88TDD/C
-         vB2BoTAUmTgET/2kB/MGL1Mx+WhMJBqO5+LZth+E4YOlMk7alCT8AptIxING+tiN6R
-         YhhCjGB6JbA+g==
+        b=LVKiB+vPk2sJbi2QtZEruR3REkQdeLXPyIP46+E9UHAnlVq4+iVzJ55OITUoW2tbt
+         vco8xiJyB7IyvHkXwmV1m9442Acnsoh8aaCPnzEXR+4UXUTkdBZzx6SjfBsezEUQHN
+         aW6WqB7oHn9VW4ZAAQpECDTjDy/ZYPWkn0k11nRnqHRrYdXsIWmnoa/j3sr2ICMtcC
+         o7lSmivAfFCWOVFK9hmHrm5oA4Xq7g9oGe9lBOam+9BIBg29attEDnZozZMdQn+JBA
+         7BdEBbflr6drsop/rFq2plHiYzus1HnioqAf/ahP6j8ispVlu6mZXEaIaW1m6x1TTI
+         eEjixq4kLASqA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/18] torture: Add "make allmodconfig" to torture.sh
-Date:   Wed,  6 Jan 2021 09:31:06 -0800
-Message-Id: <20210106173119.23159-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/18] torture: Auto-size SCF and scaling runs based on number of CPUs
+Date:   Wed,  6 Jan 2021 09:31:07 -0800
+Message-Id: <20210106173119.23159-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106173056.GA23035@paulmck-ThinkPad-P72>
 References: <20210106173056.GA23035@paulmck-ThinkPad-P72>
@@ -52,111 +52,71 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds the ability to do "make allmodconfig" to torture.sh,
-given that normal rcutorture runs do not normally catch missing exports.
+This commit improves torture.sh flexibility by autoscaling the number
+of CPUs to be used in variable-CPUs torture tests, including scftorture,
+refscale, rcuscale, and kvfree.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 37 ++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 0bd8e84..57f2f31 100755
+index 57f2f31..e13dacf 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -17,6 +17,9 @@ KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
- PATH=${KVM}/bin:$PATH; export PATH
- . functions.sh
+@@ -19,6 +19,11 @@ PATH=${KVM}/bin:$PATH; export PATH
  
-+TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
-+MAKE_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS*2))
-+
+ TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
+ MAKE_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS*2))
++HALF_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS/2))
++if test "$HALF_ALLOTED_CPUS" -lt 1
++then
++	HALF_ALLOTED_CPUS=1
++fi
+ 
  # Default duration and apportionment.
  duration_base=10
- duration_rcutorture_frac=7
-@@ -24,6 +27,7 @@ duration_locktorture_frac=1
- duration_scftorture_frac=2
+@@ -291,8 +296,8 @@ fi
  
- # "yes" or "no" parameters
-+do_allmodconfig=yes
- do_rcutorture=yes
- do_locktorture=yes
- do_scftorture=yes
-@@ -36,6 +40,7 @@ do_kcsan=no
- usage () {
- 	echo "Usage: $scriptname optional arguments:"
- 	echo "       --doall"
-+	echo "       --doallmodconfig / --do-no-allmodconfig"
- 	echo "       --do-kasan / --do-no-kasan"
- 	echo "       --do-kcsan / --do-no-kcsan"
- 	echo "       --do-kvfree / --do-no-kvfree"
-@@ -53,6 +58,7 @@ while test $# -gt 0
- do
- 	case "$1" in
- 	--doall)
-+		do_allmodconfig=yes
- 		do_rcutorture=yes
- 		do_locktorture=yes
- 		do_scftorture=yes
-@@ -62,6 +68,14 @@ do
- 		do_kasan=yes
- 		do_kcsan=yes
- 		;;
-+	--do-allmodconfig|--do-no-allmodconfig)
-+		if test "$1" = --do-allmodconfig
-+		then
-+			do_allmodconfig=yes
-+		else
-+			do_allmodconfig=no
-+		fi
-+		;;
- 	--do-kasan|--do-no-kasan)
- 		if test "$1" = --do-kasan
- 		then
-@@ -95,6 +109,7 @@ do
- 		fi
- 		;;
- 	--do-none)
-+		do_allmodconfig=no
- 		do_rcutorture=no
- 		do_locktorture=no
- 		do_scftorture=no
-@@ -242,6 +257,26 @@ function torture_set {
- 	fi
- }
- 
-+# make allmodconfig
-+if test "$do_allmodconfig" = "yes"
-+then
-+	echo " --- allmodconfig:" Start `date` | tee -a $T/log
-+	amcdir="tools/testing/selftests/rcutorture/res/$ds/allmodconfig"
-+	mkdir -p "$amcdir"
-+	make -j$MAKE_ALLOTED_CPUS clean > "$amcdir/Make.out" 2>&1
-+	make -j$MAKE_ALLOTED_CPUS allmodconfig > "$amcdir/Make.out" 2>&1
-+	make -j$MAKE_ALLOTED_CPUS > "$amcdir/Make.out" 2>&1
-+	retcode="$?"
-+	echo $retcode > "$amcdir/Make.exitcode"
-+	if test "$retcode" == 0
-+	then
-+		echo "allmodconfig($retcode)" $amcdir >> $T/successes
-+	else
-+		echo "allmodconfig($retcode)" $amcdir >> $T/failures
-+	fi
-+fi
-+
-+# --torture rcu
- if test "$do_rcutorture" = "yes"
+ if test "$do_scftorture" = "yes"
  then
- 	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000"
-@@ -320,7 +355,7 @@ exit $ret
- # @@@
- # RCU CPU stall warnings?
- # scftorture warnings?
--# Need a way for the invoker to specify clang.
-+# Need a way for the invoker to specify clang.  Maybe --kcsan-kmake or some such.
- # Work out --configs based on number of available CPUs?
- # Need to sense CPUs to size scftorture run.  Ditto rcuscale and refscale.
- # --kconfig as with --bootargs (Both have overrides.)
+-	torture_bootargs="scftorture.nthreads=224 torture.disable_onoff_at_boot"
+-	torture_set "scftorture" tools/testing/selftests/rcutorture/bin/kvm.sh --torture scf --allcpus --duration "$duration_scftorture" --kconfig "CONFIG_NR_CPUS=224" --trust-make
++	torture_bootargs="scftorture.nthreads=$HALF_ALLOTED_CPUS torture.disable_onoff_at_boot"
++	torture_set "scftorture" tools/testing/selftests/rcutorture/bin/kvm.sh --torture scf --allcpus --duration "$duration_scftorture" --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
+ fi
+ 
+ if test "$do_refscale" = yes
+@@ -303,8 +308,8 @@ else
+ fi
+ for prim in $primlist
+ do
+-	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=224 refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
+-	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=224" --trust-make
++	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
++	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
+ done
+ 
+ if test "$do_rcuscale" = yes
+@@ -315,14 +320,14 @@ else
+ fi
+ for prim in $primlist
+ do
+-	torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=224 rcuscale.holdoff=20 torture.disable_onoff_at_boot"
+-	torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=224" --trust-make
++	torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$HALF_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
++	torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
+ done
+ 
+ if test "$do_kvfree" = "yes"
+ then
+ 	torture_bootargs="rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot"
+-	torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig "CONFIG_NR_CPUS=224" --trust-make
++	torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
+ fi
+ 
+ echo " --- " $scriptname $args
 -- 
 2.9.5
 
