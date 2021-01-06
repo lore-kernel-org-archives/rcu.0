@@ -2,128 +2,115 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B22C4332D
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF807C433E0
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:26:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7BD4F23106
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:19:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9573F23120
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:26:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbhAFRSd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Jan 2021 12:18:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
+        id S1727205AbhAFR02 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Jan 2021 12:26:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbhAFRSd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:18:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C812313A;
-        Wed,  6 Jan 2021 17:17:13 +0000 (UTC)
+        id S1727078AbhAFR02 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:26:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 904E923120;
+        Wed,  6 Jan 2021 17:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953433;
-        bh=5BoiNrYJZyMPFNIGzBh9BJRNr8Z28Flj2zdht1Qu29I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPd+Xm9Nned4zAIog71ukzdXpTf64C5ZevfJegTFjHN1W+fbo/hc25Hc/czakc7H4
-         2pYmXeTzsJb0thSO9wJgMrTcbI/wJY072sP+IMwPALGK0T5lcdREELqq77dm7MbdOF
-         zyY2C3yHg/vpFf+nBHpOXrzrQtos8mW8xR72gCFgJpJzFNxwAgCxXx3z5VDfjGQK7Q
-         Y/Z0qjE5RfJg5Q9o3d+1iq6HNBdKpIo/m9KsNFY9qbgiUpeWMsnCg92Xgi3clkG9oJ
-         ugo8cpG/wFuvSer6GWPPTpqI2UX9F4VIThFVboBnqRKonSamL2CocshWRyVNEABBXy
-         M1GmGhZBqduXg==
-From:   paulmck@kernel.org
+        s=k20201202; t=1609953947;
+        bh=4HmOLBsUYP9E055pH2bhMEoPGh4H1q6GjxZeSZYqljg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=fr5cVav8GLKjZtGmvPz/mPiXBpfV4IEs76iFcVrTZGnh+WR0OBgK9CKhCkW9hwYqC
+         qkWHLtFea4fnu5kOoUTLqlbL7Duqo+IF+ySQtg/mlx3eaL7NifQpR10BUVuRkVx1Q2
+         uSUtPWTCe8uyG3/lXCBlUD+23Y2lYlyN+xeb1sunlJ6i9URqiUUJsxNFncsfTGmSR/
+         OOEV2hpsLUV5FHA4inrjGIwGTBM25tTmEFTzTmeCC1IxHLHGfV4viGYNeFLAVQSqgE
+         kzJ2WEJLyfIQwSeer2V+Wm+EE/zjYI69FhHO8p1Ltho5tcUMyyb78fTF42dj+hD71t
+         ECXZyCqsSvtcA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5DAB735225EC; Wed,  6 Jan 2021 09:25:47 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:25:47 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/17] rcutorture: Make rcu_torture_fakewriter() use blocking wait primitives
-Date:   Wed,  6 Jan 2021 09:16:59 -0800
-Message-Id: <20210106171710.22239-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210106171532.GA20769@paulmck-ThinkPad-P72>
-References: <20210106171532.GA20769@paulmck-ThinkPad-P72>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/20] Torture scripting updates for v5.12
+Message-ID: <20210106172547.GA22404@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello!
 
-Full testing of the new SRCU polling API requires that the fake
-writers also use it in order to test concurrent calls to all of the API
-members, especially start_poll_synchronize_srcu().  This commit makes
-rcu_torture_fakewriter() use all available blocking grace-period-wait
-primitives available from the RCU flavor under test.
+This series contains torture-test updates for the rcutorture scripting in
+tools/testing/selftests/rcutorture.
 
-Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 40 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 8 deletions(-)
+1.	Make --kcsan specify lockdep.
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index ea44a2b..1b70aa4 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1289,6 +1289,8 @@ rcu_torture_writer(void *arg)
- static int
- rcu_torture_fakewriter(void *arg)
- {
-+	unsigned long gp_snap;
-+	int i;
- 	DEFINE_TORTURE_RANDOM(rand);
- 
- 	VERBOSE_TOROUT_STRING("rcu_torture_fakewriter task started");
-@@ -1300,15 +1302,37 @@ rcu_torture_fakewriter(void *arg)
- 		if (cur_ops->cb_barrier != NULL &&
- 		    torture_random(&rand) % (nfakewriters * 8) == 0) {
- 			cur_ops->cb_barrier();
--		} else if (gp_normal == gp_exp) {
--			if (cur_ops->sync && torture_random(&rand) & 0x80)
--				cur_ops->sync();
--			else if (cur_ops->exp_sync)
-+		} else {
-+			switch (synctype[torture_random(&rand) % nsynctypes]) {
-+			case RTWS_DEF_FREE:
-+				break;
-+			case RTWS_EXP_SYNC:
- 				cur_ops->exp_sync();
--		} else if (gp_normal && cur_ops->sync) {
--			cur_ops->sync();
--		} else if (cur_ops->exp_sync) {
--			cur_ops->exp_sync();
-+				break;
-+			case RTWS_COND_GET:
-+				gp_snap = cur_ops->get_gp_state();
-+				i = torture_random(&rand) % 16;
-+				if (i != 0)
-+					schedule_timeout_interruptible(i);
-+				udelay(torture_random(&rand) % 1000);
-+				cur_ops->cond_sync(gp_snap);
-+				break;
-+			case RTWS_POLL_GET:
-+				gp_snap = cur_ops->start_gp_poll();
-+				while (!cur_ops->poll_gp_state(gp_snap)) {
-+					i = torture_random(&rand) % 16;
-+					if (i != 0)
-+						schedule_timeout_interruptible(i);
-+					udelay(torture_random(&rand) % 1000);
-+				}
-+				break;
-+			case RTWS_SYNC:
-+				cur_ops->sync();
-+				break;
-+			default:
-+				WARN_ON_ONCE(1);
-+				break;
-+			}
- 		}
- 		stutter_wait("rcu_torture_fakewriter");
- 	} while (!torture_must_stop());
--- 
-2.9.5
+2.	Make kvm.sh "--dryrun sched" summarize number of batches.
 
+3.	Make kvm.sh "--dryrun sched" summarize number of builds.
+
+4.	Allow kvm.sh --datestamp to specify subdirectories.
+
+5.	Prepare for splitting qemu execution from kvm-test-1-run.sh.
+
+6.	Add config2csv.sh script to compare torture scenarios.
+
+7.	Make identify_qemu_vcpus() independent of local language,
+	courtesy of Frederic Weisbecker.
+
+8.	Make kvm.sh "Test Summary" date be end of test.
+
+9.	Make kvm.sh arguments accumulate.
+
+10.	Print run duration at end of kvm.sh execution.
+
+11.	Make kvm.sh return failure upon build failure.
+
+12.	Make kvm.sh include --kconfig arguments in CPU calculation.
+
+13.	Add kvm.sh test summary to end of log file.
+
+14.	Stop hanging on panic.
+
+15.	Add --dryrun batches to help schedule a distributed run.
+
+16.	s/STOP/STOP.1/ to avoid scenario collision.
+
+17.	Simplify exit-code plumbing for kvm-recheck.sh and
+	kvm-find-errors.sh.
+
+18.	Remove "Failed to add ttynull console" false positive.
+
+19.	Allow standalone kvm-recheck.sh run detect --trust-make.
+
+20.	Do Kconfig analysis only once per scenario.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ config2csv.sh      |   67 +++++++++++++++++++++++++++++++++
+ console-badness.sh |    1 
+ functions.sh       |   36 +++++++++++++++++
+ kvm-find-errors.sh |    9 +++-
+ kvm-recheck.sh     |    3 -
+ kvm-test-1-run.sh  |   12 +++--
+ kvm.sh             |  107 +++++++++++++++++++++++++++++++++++++----------------
+ parse-build.sh     |    2 
+ parse-console.sh   |    2 
+ 9 files changed, 197 insertions(+), 42 deletions(-)
