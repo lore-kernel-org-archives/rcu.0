@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BB9EC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F751C433DB
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:33:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35BD923125
+	by mail.kernel.org (Postfix) with ESMTP id 4C7E72312A
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:33:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbhAFRco (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727889AbhAFRco (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:32:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727869AbhAFRcn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727874AbhAFRcn (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9B02332A;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF9A23332;
         Wed,  6 Jan 2021 17:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609954283;
-        bh=QVfF3D1YZcAxjQWQdTPvzaC6hZRrOG885qV2lsTdNm0=;
+        bh=UmLOWYVw+8doK7ogi+9FNrFVAv/UQBBHdWwo/gGyUDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1uuy0qslxXctH8MdWa3YuqqpGd6R2Bno4FVmztKjdHXnei2y5AcSUVDVGzMoMPqq
-         9dqVQjwLp6TZhynHk0rtI0S2TqdGmRgPKNaQicBZNKxIf7DVOLjcs/Hsb7eFN0Ou89
-         GCDfTM10Gn2IR5UFJG2zRD9nT4ebIJLcFyEvd+SqyA3TSjzx03zKhDCbMTzXaeY/ur
-         hw9KjVl4zdDuboSbxZMyaBSE8HeAdwBCFm+tTQdAQzmhK9F1kf6EnfKaNq7mFWuV61
-         CqItcny2uZ82GjAjU5iy9pMw8pfk3cBymrR9xsFfJxldpB/bWZR7gpiL3ngESBs/pt
-         I7cvVyco8Er7A==
+        b=qCGKKTLE8f5x5cKZp/poM7J3De6dLRlI+6LijOlRKpaUcPXlg1cgzkYcMH03o6XI0
+         su/PuuFnCAYUuzCUusMMT8FXieyApzYt+Ck3Wy5MhZZvFXpotYpiaefXrI9pz1+1tH
+         hQ58pbgu2hWFoKewSq1GiHtX/HkxVbrbfDBbCzTf3++KBQ1Oulf5JFdv+c6+C1SDPN
+         j7u6RuUGVhf4Nezr9JsQdC40K1W/VLOa0svULIzyFbBe81LHpWpiwCuYFvk9k9BtaA
+         9vFJrIv1PIuFwyk1v+Kk6n+y8P/mVtnZHevSOoVvdmtd5x1cqw3vggA/ULPgmWpc2h
+         HLSO7WqaIZsbg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/18] torture: Make torture.sh throttle VERBOSE_TOROUT_*() for refscale
-Date:   Wed,  6 Jan 2021 09:31:13 -0800
-Message-Id: <20210106173119.23159-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 14/18] torture: Drop log.long generation from torture.sh
+Date:   Wed,  6 Jan 2021 09:31:15 -0800
+Message-Id: <20210106173119.23159-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106173056.GA23035@paulmck-ThinkPad-P72>
 References: <20210106173056.GA23035@paulmck-ThinkPad-P72>
@@ -52,27 +52,32 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit causes torture.sh to use the torture.verbose_sleep_frequency
-kernel boot parameter to throttle verbose refscale output on large systems.
+Now that kvm.sh puts all the relevant details in the "log" file,
+there is no need for torture.sh to generate a separate "log.long"
+file.  This commit therefore drops this from torture.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index e2c97f9..f2f9140 100755
+index 43ef2c0..cf74123 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -282,7 +282,7 @@ fi
- for prim in $primlist
- do
- 	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
--	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS" --trust-make
-+	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
- done
- 
- if test "$do_rcuscale" = yes
+@@ -203,11 +203,8 @@ function torture_one {
+ 	"$@" $boottag "$cur_bootargs" --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
+ 	retcode=$?
+ 	resdir="`grep '^Results directory: ' $T/$curflavor.out | tail -1 | sed -e 's/^Results directory: //'`"
+-	if test -n "$resdir"
++	if test -z "$resdir"
+ 	then
+-		cp $T/$curflavor.out $resdir/log.long
+-		echo retcode=$retcode >> $resdir/log.long
+-	else
+ 		cat $T/$curflavor.out | tee -a $T/log
+ 		echo retcode=$retcode | tee -a $T/log
+ 	fi
 -- 
 2.9.5
 
