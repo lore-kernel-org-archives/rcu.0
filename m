@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90C8BC4332E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8099CC4332D
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7219823120
+	by mail.kernel.org (Postfix) with ESMTP id 5822123123
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbhAFRSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727917AbhAFRSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:18:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60828 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:60822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbhAFRSg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727863AbhAFRSg (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:18:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B833B23159;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 335A923142;
         Wed,  6 Jan 2021 17:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953434;
-        bh=7I/YkDWVc6pIzLNw5c8DbbJsczboUueIol9h6z0JFJs=;
+        bh=6OKbWmmGfB/GwekkNtyGwBSEzg6oe5RvbKvCvlyqhTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Am1zOcNBea//VEFHZF189rj2nHZ9j2ZRI6McUA+khq6d94DqqNk5sw//Rwb9QUg2u
-         7OUpPCullA8a0W0gb6FQPDW8nIYnyKh3qrReS+1EKVCbG0m8osbjmjEzK+htGT6Mpv
-         pipo9XfLdjVXYQAMs2fXbuJhyANqxM+g96VSlQo+GePtzdZMYKg9bOMqGyPCM95faY
-         fykkGVYIIjdkeHKwgi+nc+kHHJ4uFNv1RzOB2QQA8j/X3dVeqvTGMo4GTcGgpgp13m
-         P/wFF15DKIO/gOdz69H2FZMkcS0vU1bx3c7GwyM8rgXGhuKmsWlmjhKCiyDyhG/81i
-         NxRFx2atcULqg==
+        b=cHhe9lHb4hlMeBu3gpmZ07NcGsFPW/m4IepnRnNeNgB2TzfolH3fGkPK+KGgK/K+t
+         vUrO3G1fK89METBskV6yCMSxXf8GVhlCoATrsEwrc/lm38B1JpiU3cfioFT/8kgkQI
+         QpcO1NJRq6PyKxzmja9FkchlAOcEyzdVAB6VNNKvTA3g+IDN4txC1NDBDQlSjuLsAj
+         9cSbnQCJmMeJSvzxny2MgksjNtn65B0Zhtn1+nnk5u4pVwW5eiSMAn4XITjFYfmCQn
+         oQ5hsrZe6IYK+Rlp7xUf5RvRvJ2IsNuh46y7NP4LA2o0kb9p71xhiDq1o9QshRdHEG
+         +w7k4qYja3Fzg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/17] torture: Maintain torture-specific set of CPUs-online books
-Date:   Wed,  6 Jan 2021 09:17:08 -0800
-Message-Id: <20210106171710.22239-15-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/17] torture: Throttle VERBOSE_TOROUT_*() output
+Date:   Wed,  6 Jan 2021 09:17:05 -0800
+Message-Id: <20210106171710.22239-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106171532.GA20769@paulmck-ThinkPad-P72>
 References: <20210106171532.GA20769@paulmck-ThinkPad-P72>
@@ -52,109 +52,101 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The TREE01 rcutorture scenario intentionally creates confusion as to the
-number of available CPUs by specifying the "maxcpus=8 nr_cpus=43" kernel
-boot parameters.  This can disable rcutorture's load shedding, which
-currently uses num_online_cpus(), which would count the extra 35 CPUs.
-However, the rcutorture guest OS will be provisioned with only 8 CPUs,
-which means that rcutorture will present full load even when all but one
-of the original 8 CPUs are offline.  This can result in spurious errors
-due to extreme overloading of that single remaining CPU.
+This commit adds kernel boot parameters torture.verbose_sleep_frequency
+and torture.verbose_sleep_duration, which allow VERBOSE_TOROUT_*() output
+to be throttled with periodic sleeps on large systems.
 
-This commit therefore keeps a separate set of books on the number of
-usable online CPUs, so that torture_num_online_cpus() is used for load
-shedding instead of num_online_cpus().  Note that initial sizing must
-use num_online_cpus() because torture_num_online_cpus() will return
-NR_CPUS until shortly after torture_onoff_init() is invoked.
-
-Reported-by: Frederic Weisbecker <frederic@kernel.org>
-[ paulmck: Apply feedback from kernel test robot. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/torture.h |  5 +++++
- kernel/rcu/rcutorture.c |  4 ++--
- kernel/torture.c        | 16 ++++++++++++++++
- 3 files changed, 23 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  8 ++++++++
+ include/linux/torture.h                         | 15 +++++++++++++--
+ kernel/torture.c                                | 20 ++++++++++++++++++++
+ 3 files changed, 41 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 29ea816..5ce95dd 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5337,6 +5337,14 @@
+ 			are running concurrently, especially on systems
+ 			with rotating-rust storage.
+ 
++	torture.verbose_sleep_frequency= [KNL]
++			Specifies how many verbose printk()s should be
++			emitted between each sleep.  The default of zero
++			disables verbose-printk() sleeping.
++
++	torture.verbose_sleep_duration= [KNL]
++			Duration of each verbose-printk() sleep in jiffies.
++
+ 	tp720=		[HW,PS2]
+ 
+ 	tpm_suspend_pcr=[HW,TPM]
 diff --git a/include/linux/torture.h b/include/linux/torture.h
-index d62d13c..0910c58 100644
+index 32941f8..d62d13c 100644
 --- a/include/linux/torture.h
 +++ b/include/linux/torture.h
-@@ -48,6 +48,11 @@ do {										\
- void verbose_torout_sleep(void);
+@@ -32,9 +32,20 @@
+ #define TOROUT_STRING(s) \
+ 	pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s)
+ #define VERBOSE_TOROUT_STRING(s) \
+-	do { if (verbose) pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s); } while (0)
++do {										\
++	if (verbose) {								\
++		verbose_torout_sleep();						\
++		pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s);		\
++	}									\
++} while (0)
+ #define VERBOSE_TOROUT_ERRSTRING(s) \
+-	do { if (verbose) pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s); } while (0)
++do {										\
++	if (verbose) {								\
++		verbose_torout_sleep();						\
++		pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s);	\
++	}									\
++} while (0)
++void verbose_torout_sleep(void);
  
  /* Definitions for online/offline exerciser. */
-+#ifdef CONFIG_HOTPLUG_CPU
-+int torture_num_online_cpus(void);
-+#else /* #ifdef CONFIG_HOTPLUG_CPU */
-+static inline int torture_num_online_cpus(void) { return 1; }
-+#endif /* #else #ifdef CONFIG_HOTPLUG_CPU */
  typedef void torture_ofl_func(void);
- bool torture_offline(int cpu, long *n_onl_attempts, long *n_onl_successes,
- 		     unsigned long *sum_offl, int *min_onl, int *max_onl);
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 72fd6bb..a9c2ee7 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1338,7 +1338,7 @@ static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
- 					struct torture_random_state *trsp)
- {
- 	unsigned long loops;
--	int noc = num_online_cpus();
-+	int noc = torture_num_online_cpus();
- 	int rdrchked;
- 	int rdrchker;
- 	struct rcu_torture_reader_check *rtrcp; // Me.
-@@ -1658,7 +1658,7 @@ rcu_torture_reader(void *arg)
- 			torture_hrtimeout_us(500, 1000, &rand);
- 			lastsleep = jiffies + 10;
- 		}
--		while (num_online_cpus() < mynumonline && !torture_must_stop())
-+		while (torture_num_online_cpus() < mynumonline && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ / 5);
- 		stutter_wait("rcu_torture_reader");
- 	} while (!torture_must_stop());
 diff --git a/kernel/torture.c b/kernel/torture.c
-index 507a20b..01e336f 100644
+index 7ad5c96..93eeeb2 100644
 --- a/kernel/torture.c
 +++ b/kernel/torture.c
-@@ -175,6 +175,19 @@ static unsigned long sum_online;
- static int min_online = -1;
- static int max_online;
+@@ -48,6 +48,12 @@ module_param(disable_onoff_at_boot, bool, 0444);
+ static bool ftrace_dump_at_shutdown;
+ module_param(ftrace_dump_at_shutdown, bool, 0444);
  
-+static int torture_online_cpus = NR_CPUS;
++static int verbose_sleep_frequency;
++module_param(verbose_sleep_frequency, int, 0444);
++
++static int verbose_sleep_duration = 1;
++module_param(verbose_sleep_duration, int, 0444);
++
+ static char *torture_type;
+ static int verbose;
+ 
+@@ -58,6 +64,20 @@ static int verbose;
+ static int fullstop = FULLSTOP_RMMOD;
+ static DEFINE_MUTEX(fullstop_mutex);
+ 
++static atomic_t verbose_sleep_counter;
 +
 +/*
-+ * Some torture testing leverages confusion as to the number of online
-+ * CPUs.  This function returns the torture-testing view of this number,
-+ * which allows torture tests to load-balance appropriately.
++ * Sleep if needed from VERBOSE_TOROUT*().
 + */
-+int torture_num_online_cpus(void)
++void verbose_torout_sleep(void)
 +{
-+	return READ_ONCE(torture_online_cpus);
++	if (verbose_sleep_frequency > 0 &&
++	    verbose_sleep_duration > 0 &&
++	    !(atomic_inc_return(&verbose_sleep_counter) % verbose_sleep_frequency))
++		schedule_timeout_uninterruptible(verbose_sleep_duration);
 +}
-+EXPORT_SYMBOL_GPL(torture_num_online_cpus);
++EXPORT_SYMBOL_GPL(verbose_torout_sleep);
 +
  /*
-  * Attempt to take a CPU offline.  Return false if the CPU is already
-  * offline or if it is not subject to CPU-hotplug operations.  The
-@@ -229,6 +242,8 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
- 			*min_offl = delta;
- 		if (*max_offl < delta)
- 			*max_offl = delta;
-+		WRITE_ONCE(torture_online_cpus, torture_online_cpus - 1);
-+		WARN_ON_ONCE(torture_online_cpus <= 0);
- 	}
- 
- 	return true;
-@@ -285,6 +300,7 @@ bool torture_online(int cpu, long *n_onl_attempts, long *n_onl_successes,
- 			*min_onl = delta;
- 		if (*max_onl < delta)
- 			*max_onl = delta;
-+		WRITE_ONCE(torture_online_cpus, torture_online_cpus + 1);
- 	}
- 
- 	return true;
+  * Schedule a high-resolution-timer sleep in nanoseconds, with a 32-bit
+  * nanosecond random fuzz.  This function and its friends desynchronize
 -- 
 2.9.5
 
