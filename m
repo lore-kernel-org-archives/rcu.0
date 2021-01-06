@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1679FC43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E7E2C433E9
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 04:50:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D91BA22CE3
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 04:50:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0FF9A22BF3
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 04:50:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbhAFEud (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727121AbhAFEud (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 5 Jan 2021 23:50:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbhAFEuc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726345AbhAFEuc (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 5 Jan 2021 23:50:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5082230FC;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6424D23105;
         Wed,  6 Jan 2021 04:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609908539;
-        bh=DIO0eY77jlMD4O2dMKMXcweDuDIG/CCwsKDWfgWKbkQ=;
+        s=k20201202; t=1609908538;
+        bh=5DTWQUXbt6C8g0XsrJcolJeJ9TNHBuGpD7Aav+OtuG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRftl8KVPmN72nvp8w4f2Wqc9fNnVybCxuLCBxApslUGrgFEkRLiLCS9ONBlLn+3a
-         Rn/bPg/UUcijbKjNo3yUEGlqFoHP9Da6Iyoq6Q+fehsno8bgWPIZ+eScTuO0bk32Vy
-         l8HkmxwNJ4c+o6kJl1dOkwp5z/bPvC465t7771oFPVuB1D5RO++udge+Xy5pww9NMN
-         7DM6K+LZ8+AtVtBrMenQRD2TAuUPaqYN8tOWQDekYqpToHc5VCM0ZrCVpWRSnfEUxU
-         jLEAwJ81aigPHEhvo/xEYz5GqUPgEXVu6467FvIv7QooJBGd+wi2RRXrnLpAaEAD/W
-         yUU5WbKT8SLSA==
+        b=gb9xTumFBbCd+eWJ8ut72/nskVbzD5AFI39PUF9200gWiGwn34E1D8vJjhGvVMiRY
+         2PKJM1BQh9YwiUIGRgzIF6OQ5yz0M7D/aMpn0186WBB8pq4Tyid72DjZ3A/wJcCKD0
+         6EZqsNM1RRGFk+jPjAEgjkE8Z/vVhOTnjWACE6EBdwOZvvt/GftotYNrhNlTzm8JEv
+         TNd8JtDwPTlbwsSRJEN5lbt3rm8XN41AYTNGNGVJsbnmwPJAJ9OyCV0uLHDUMZTz0B
+         3WKgtNH8ZGKs6K8IG4Ek8KBnNT+Nm+weTZM810rM7WMy2GH4WVw6j70gTJosX1A/6o
+         rJ06kMyp3DTCw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,10 +39,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/21] rcu/nocb: Add nocb CB kthread list to show_rcu_nocb_state() output
-Date:   Tue,  5 Jan 2021 20:48:51 -0800
-Message-Id: <20210106044853.20812-19-paulmck@kernel.org>
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 17/21] tools/rcutorture: Support nocb toggle in TREE01
+Date:   Tue,  5 Jan 2021 20:48:49 -0800
+Message-Id: <20210106044853.20812-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -50,28 +52,39 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit improves debuggability by indicating laying out the order
-in which rcuoc kthreads appear in the ->nocb_next_cb_rdp list.
+This commit adds periodic toggling of 7 of 8 CPUs every second to TREE01
+in order to test NOCB toggle code.
 
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Inspired-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5ee1113..bc63a6b 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2730,6 +2730,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 	sprintf(bufr, "%ld", rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
- 	pr_info("   CB %d^%d->%d %c%c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
-+		rdp->nocb_next_cb_rdp ? rdp->nocb_next_cb_rdp->cpu : -1,
- 		"kK"[!!rdp->nocb_cb_kthread],
- 		"bB"[raw_spin_is_locked(&rdp->nocb_bypass_lock)],
- 		"cC"[!!atomic_read(&rdp->nocb_lock_contended)],
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
+index d6da9a6..40af3df 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot
+@@ -2,5 +2,7 @@ maxcpus=8 nr_cpus=43
+ rcutree.gp_preinit_delay=3
+ rcutree.gp_init_delay=3
+ rcutree.gp_cleanup_delay=3
+-rcu_nocbs=0
++rcu_nocbs=0-1,3-7
++rcutorture.nocbs_nthreads=8
++rcutorture.nocbs_toggle=1000
+ rcutorture.fwd_progress=0
 -- 
 2.9.5
 
