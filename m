@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 999E0C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD193C4332B
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:28:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 475182312F
+	by mail.kernel.org (Postfix) with ESMTP id 957E823136
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:28:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbhAFR2M (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Jan 2021 12:28:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37874 "EHLO mail.kernel.org"
+        id S1727761AbhAFR1Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Jan 2021 12:27:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727815AbhAFR1a (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:27:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A0A23131;
-        Wed,  6 Jan 2021 17:26:11 +0000 (UTC)
+        id S1725803AbhAFR1Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:27:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CA123331;
+        Wed,  6 Jan 2021 17:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953971;
-        bh=YRS3SgzeFsngPUCkphU23WZJuB5S0udz/s60I4DrnmU=;
+        s=k20201202; t=1609953972;
+        bh=yMMd62yyNc8bJ1C62oo2KduVedAyxxuUOxTIHhRgCek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XyQ9GxT1StkK60X3K6EllKQunHQJqgEKT/5Y0poif4zcxxYKzx0mJUu9NiUVD1QWO
-         ee10wtUo2BGVGXLaiJ70mr3A/RWQmjbGse7eiWALu0OZhGdd5tbnVyUPgGKEFFGH4t
-         hrHCPYT2oJm27P4Tw3CngIJWh/ESNSl9vp7Sqm9FUerdMBOTP9mIgjg7QjXFIhxr/k
-         VRiysoucb3V1wLnvMp4wcA08WcW9giBYlFg1XMn8DB79HQhZIP9nYFqlzWngzGsw2E
-         N0rfgXy2Hiq9ggamK8jP7SAtZnNy1BsMLQhpM0Rqc2g02G+/9DQ3yAO133IgcpkCNS
-         YcSRKVMWlfzhA==
+        b=l1ErYxu4c1WAy5hlz2eJrPB4jC/K/OKy4wAx74GmyE6Y5K96BgR8QJ12ADYSyfHjm
+         ZLuGb+PRWbr7JUINe0YGyS3/wMMkt5HvhLVniakfK53AUiwP6Gbcdw9GXcNx5bZko/
+         R7Fx0CWZBy6vC89Iicw2rEsQwg2fsqXH1xR3hYlD0kmkYJg7MP0O3YoRqfmOsCdPCy
+         qKHXpVIjudpLPRcmRRVXzYPWKOS6xRokbOUOiQ6WLr8Za/xmtw4Uy/y1YRotOBs7NG
+         uX88bZGs2WNVqoPC79/LgcUdKe8xK63CGufz/Aofu6qCzTzYDK6fdCXXD4dH1P32Wf
+         i8EBQfbeV1R/w==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/20] torture: Make kvm.sh include --kconfig arguments in CPU calculation
-Date:   Wed,  6 Jan 2021 09:25:59 -0800
-Message-Id: <20210106172607.22816-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/20] torture: s/STOP/STOP.1/ to avoid scenario collision
+Date:   Wed,  6 Jan 2021 09:26:03 -0800
+Message-Id: <20210106172607.22816-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
@@ -52,38 +52,69 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, passing something like "--kconfig CONFIG_NR_CPUS=2" to kvm.sh
-has no effect on scenario scheduling.  For scenarios that do not specify
-the number of CPUs, this can result in kvm.sh wastefully scheduling only
-one scenario at a time even when the --kconfig argument would allow
-a number to be run concurrently.  This commit therefore makes kvm.sh
-consider the --kconfig arguments when scheduling scenarios across the
-available CPUs.
+This commit changes the "STOP" file that is used to cleanly halt a running
+rcutorture run to "STOP.1" because no scenario directory will ever end
+with ".1".  If there really was a scenario named "STOP", its directories
+would instead be named "STOP", "STOP.2", "STOP.3", and so on.  While in
+the area, the commit also changes the kernel-run-time checks for this
+file to look directly in the directory above $resdir, thus avoiding the
+need to pass the TORTURE_STOPFILE environment variable to remote systems.
+
+While in the area, move the STOP.1 file to the top-level directory
+covering all of the scenarios.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 8 ++++----
+ tools/testing/selftests/rcutorture/bin/kvm.sh            | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 4bc0e62..536d103 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -211,7 +211,7 @@ do
+ 		if test -n "$TORTURE_KCONFIG_GDB_ARG"
+ 		then
+ 			:
+-		elif test $kruntime -ge $seconds || test -f "$TORTURE_STOPFILE"
++		elif test $kruntime -ge $seconds || test -f "$resdir/../STOP.1"
+ 		then
+ 			break;
+ 		fi
+@@ -254,16 +254,16 @@ then
+ fi
+ if test $commandcompleted -eq 0 -a -n "$qemu_pid"
+ then
+-	if ! test -f "$TORTURE_STOPFILE"
++	if ! test -f "$resdir/../STOP.1"
+ 	then
+ 		echo Grace period for qemu job at pid $qemu_pid
+ 	fi
+ 	oldline="`tail $resdir/console.log`"
+ 	while :
+ 	do
+-		if test -f "$TORTURE_STOPFILE"
++		if test -f "$resdir/../STOP.1"
+ 		then
+-			echo "PID $qemu_pid killed due to run STOP request" >> $resdir/Warnings 2>&1
++			echo "PID $qemu_pid killed due to run STOP.1 request" >> $resdir/Warnings 2>&1
+ 			kill -KILL $qemu_pid
+ 			break
+ 		fi
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 6f21268..472929c 100755
+index 6b900360..6051868 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -290,7 +290,13 @@ for CF1 in $configs_derep
- do
- 	if test -f "$CONFIGFRAG/$CF1"
- 	then
--		cpu_count=`configNR_CPUS.sh $CONFIGFRAG/$CF1`
-+		if echo "$TORTURE_KCONFIG_ARG" | grep -q '\<CONFIG_NR_CPUS='
-+		then
-+			echo "$TORTURE_KCONFIG_ARG" | tr -s ' ' | tr ' ' '\012' > $T/KCONFIG_ARG
-+			cpu_count=`configNR_CPUS.sh $T/KCONFIG_ARG`
-+		else
-+			cpu_count=`configNR_CPUS.sh $CONFIGFRAG/$CF1`
-+		fi
- 		cpu_count=`configfrag_boot_cpus "$TORTURE_BOOTARGS" "$CONFIGFRAG/$CF1" "$cpu_count"`
- 		cpu_count=`configfrag_boot_maxcpus "$TORTURE_BOOTARGS" "$CONFIGFRAG/$CF1" "$cpu_count"`
- 		echo $CF1 $cpu_count >> $T/cfgcpu
+@@ -386,7 +386,7 @@ then
+ fi
+ mkdir -p $resdir/$ds
+ TORTURE_RESDIR="$resdir/$ds"; export TORTURE_RESDIR
+-TORTURE_STOPFILE="$resdir/$ds/STOP"; export TORTURE_STOPFILE
++TORTURE_STOPFILE="$resdir/$ds/STOP.1"; export TORTURE_STOPFILE
+ echo Results directory: $resdir/$ds
+ echo $scriptname $args
+ touch $resdir/$ds/log
 -- 
 2.9.5
 
