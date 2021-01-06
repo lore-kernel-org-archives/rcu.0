@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8099CC4332D
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66512C433DB
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:19:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5822123123
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 21C5623106
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:19:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbhAFRSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Jan 2021 12:18:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60822 "EHLO mail.kernel.org"
+        id S1727137AbhAFRSu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Jan 2021 12:18:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727863AbhAFRSg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:18:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 335A923142;
+        id S1727561AbhAFRSt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:18:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E353523329;
         Wed,  6 Jan 2021 17:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953434;
-        bh=6OKbWmmGfB/GwekkNtyGwBSEzg6oe5RvbKvCvlyqhTs=;
+        s=k20201202; t=1609953435;
+        bh=SQ0emNJ+31FO7tK0fn+VA6loEnezx7MG3kujiqNvJTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cHhe9lHb4hlMeBu3gpmZ07NcGsFPW/m4IepnRnNeNgB2TzfolH3fGkPK+KGgK/K+t
-         vUrO3G1fK89METBskV6yCMSxXf8GVhlCoATrsEwrc/lm38B1JpiU3cfioFT/8kgkQI
-         QpcO1NJRq6PyKxzmja9FkchlAOcEyzdVAB6VNNKvTA3g+IDN4txC1NDBDQlSjuLsAj
-         9cSbnQCJmMeJSvzxny2MgksjNtn65B0Zhtn1+nnk5u4pVwW5eiSMAn4XITjFYfmCQn
-         oQ5hsrZe6IYK+Rlp7xUf5RvRvJ2IsNuh46y7NP4LA2o0kb9p71xhiDq1o9QshRdHEG
-         +w7k4qYja3Fzg==
+        b=FExKHsEz2+5bWWpffItT2L0bz9wPHGux+9ANG8GvPJY7mN3+a3EZhuo+h8tkB7gFK
+         kTxGJtwOpLn/uS+w2wHQBAXQTqlhLgJ8HcG8/3f9WV6yCtORkCmfCC5ovfaPUPB70C
+         OD8sRUxS079z4tAbU+XIpIN1uji/IRXWRpfkjw5PLzl15XonPS9ORpPie4H6LPg+c5
+         kw3WLPA5eDlV6ByxbldtKsMDtalBeLvj4/PS+qh5bvnSExxolI044018cjfILe9sI3
+         d8zESrb2KWVdY1i0xyJXB8KiZFVy8hRgFSdF3IdMBY0DQUVIa3rlAZzZitj9ig74el
+         l4V9e6Myu+U2A==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/17] torture: Throttle VERBOSE_TOROUT_*() output
-Date:   Wed,  6 Jan 2021 09:17:05 -0800
-Message-Id: <20210106171710.22239-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/17] torture: Break affinity of kthreads last running on outgoing CPU
+Date:   Wed,  6 Jan 2021 09:17:09 -0800
+Message-Id: <20210106171710.22239-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106171532.GA20769@paulmck-ThinkPad-P72>
 References: <20210106171532.GA20769@paulmck-ThinkPad-P72>
@@ -52,101 +52,90 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds kernel boot parameters torture.verbose_sleep_frequency
-and torture.verbose_sleep_duration, which allow VERBOSE_TOROUT_*() output
-to be throttled with periodic sleeps on large systems.
+The advent of commit 06249738a41a ("workqueue: Manually break affinity
+on hotplug") means that the scheduler no longer silently breaks affinity
+for kthreads pinned to the outgoing CPU.  This can happen for many of
+rcutorture's kthreads due to shuffling, which periodically affinities
+these ktheads away from a randomly chosen CPU.  This usually works fine
+because these kthreads are allowed to run on any other CPU and because
+shuffling is a no-op any time there is but one online CPU.
+
+However, consider the following sequence of events:
+
+1.	CPUs 0 and 1 are initially online.
+
+2.	The torture_shuffle_tasks() function affinities all the tasks
+	away from CPU 0.
+
+3.	CPU 1 goes offline.
+
+4.	All the tasks are now affinitied to an offline CPU, triggering
+	the warning added by the commit noted above.
+
+This can trigger the following in sched_cpu_dying() in kernel/sched/core.c:
+
+	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq))
+
+This commit therefore adds a new torture_shuffle_tasks_offline() function
+that is invoked from torture_offline() prior to offlining a CPU.  This new
+function scans the list of shuffled kthreads and for any thread that
+last ran (or is set to run) on the outgoing CPU, sets its affinity to
+all online CPUs.  Thus there will never be a kthread that is affinitied
+only to the outgoing CPU.
+
+Of course, if the sysadm manually applies affinity to any of these
+kthreads, all bets are off.  However, such a sysadm must be fast because
+the torture_shuffle_tasks_offline() function is invoked immediately before
+offlining the outgoing CPU.  Therefore, let it be known that with great
+speed and great power comes great responsibility.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  8 ++++++++
- include/linux/torture.h                         | 15 +++++++++++++--
- kernel/torture.c                                | 20 ++++++++++++++++++++
- 3 files changed, 41 insertions(+), 2 deletions(-)
+ kernel/torture.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 29ea816..5ce95dd 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5337,6 +5337,14 @@
- 			are running concurrently, especially on systems
- 			with rotating-rust storage.
- 
-+	torture.verbose_sleep_frequency= [KNL]
-+			Specifies how many verbose printk()s should be
-+			emitted between each sleep.  The default of zero
-+			disables verbose-printk() sleeping.
-+
-+	torture.verbose_sleep_duration= [KNL]
-+			Duration of each verbose-printk() sleep in jiffies.
-+
- 	tp720=		[HW,PS2]
- 
- 	tpm_suspend_pcr=[HW,TPM]
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 32941f8..d62d13c 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -32,9 +32,20 @@
- #define TOROUT_STRING(s) \
- 	pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s)
- #define VERBOSE_TOROUT_STRING(s) \
--	do { if (verbose) pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s); } while (0)
-+do {										\
-+	if (verbose) {								\
-+		verbose_torout_sleep();						\
-+		pr_alert("%s" TORTURE_FLAG " %s\n", torture_type, s);		\
-+	}									\
-+} while (0)
- #define VERBOSE_TOROUT_ERRSTRING(s) \
--	do { if (verbose) pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s); } while (0)
-+do {										\
-+	if (verbose) {								\
-+		verbose_torout_sleep();						\
-+		pr_alert("%s" TORTURE_FLAG "!!! %s\n", torture_type, s);	\
-+	}									\
-+} while (0)
-+void verbose_torout_sleep(void);
- 
- /* Definitions for online/offline exerciser. */
- typedef void torture_ofl_func(void);
 diff --git a/kernel/torture.c b/kernel/torture.c
-index 7ad5c96..93eeeb2 100644
+index 01e336f..40c5c68 100644
 --- a/kernel/torture.c
 +++ b/kernel/torture.c
-@@ -48,6 +48,12 @@ module_param(disable_onoff_at_boot, bool, 0444);
- static bool ftrace_dump_at_shutdown;
- module_param(ftrace_dump_at_shutdown, bool, 0444);
+@@ -155,6 +155,8 @@ EXPORT_SYMBOL_GPL(torture_hrtimeout_s);
  
-+static int verbose_sleep_frequency;
-+module_param(verbose_sleep_frequency, int, 0444);
-+
-+static int verbose_sleep_duration = 1;
-+module_param(verbose_sleep_duration, int, 0444);
-+
- static char *torture_type;
- static int verbose;
+ #ifdef CONFIG_HOTPLUG_CPU
  
-@@ -58,6 +64,20 @@ static int verbose;
- static int fullstop = FULLSTOP_RMMOD;
- static DEFINE_MUTEX(fullstop_mutex);
- 
-+static atomic_t verbose_sleep_counter;
-+
-+/*
-+ * Sleep if needed from VERBOSE_TOROUT*().
-+ */
-+void verbose_torout_sleep(void)
-+{
-+	if (verbose_sleep_frequency > 0 &&
-+	    verbose_sleep_duration > 0 &&
-+	    !(atomic_inc_return(&verbose_sleep_counter) % verbose_sleep_frequency))
-+		schedule_timeout_uninterruptible(verbose_sleep_duration);
-+}
-+EXPORT_SYMBOL_GPL(verbose_torout_sleep);
++static void torture_shuffle_tasks_offline(int cpu);
 +
  /*
-  * Schedule a high-resolution-timer sleep in nanoseconds, with a 32-bit
-  * nanosecond random fuzz.  This function and its friends desynchronize
+  * Variables for online-offline handling.  Only present if CPU hotplug
+  * is enabled, otherwise does nothing.
+@@ -212,6 +214,7 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
+ 			 torture_type, cpu);
+ 	starttime = jiffies;
+ 	(*n_offl_attempts)++;
++	torture_shuffle_tasks_offline(cpu);
+ 	ret = remove_cpu(cpu);
+ 	if (ret) {
+ 		s = "";
+@@ -512,6 +515,20 @@ static void torture_shuffle_task_unregister_all(void)
+ 	mutex_unlock(&shuffle_task_mutex);
+ }
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++// Unbind all tasks from a CPU that is to be taken offline.
++static void torture_shuffle_tasks_offline(int cpu)
++{
++	struct shuffle_task *stp;
++
++	mutex_lock(&shuffle_task_mutex);
++	list_for_each_entry(stp, &shuffle_task_list, st_l)
++		if (task_cpu(stp->st_t) == cpu)
++			set_cpus_allowed_ptr(stp->st_t, cpu_online_mask);
++	mutex_unlock(&shuffle_task_mutex);
++}
++#endif // #ifdef CONFIG_HOTPLUG_CPU
++
+ /* Shuffle tasks such that we allow shuffle_idle_cpu to become idle.
+  * A special case is when shuffle_idle_cpu = -1, in which case we allow
+  * the tasks to run on all CPUs.
 -- 
 2.9.5
 
