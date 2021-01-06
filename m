@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8197C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E12E2C4332E
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:18:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8FC4222D04
+	by mail.kernel.org (Postfix) with ESMTP id C44A722D6F
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:18:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbhAFBSm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 20:18:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60216 "EHLO mail.kernel.org"
+        id S1725836AbhAFBSr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jan 2021 20:18:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726626AbhAFBSd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:18:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C81230FB;
+        id S1726603AbhAFBSc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:18:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0581722E03;
         Wed,  6 Jan 2021 01:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609895872;
-        bh=ww/Zdig22m8u2xnm1Qhu/umiYDeAt6Ww+0ijypYNKug=;
+        bh=89la9VIbgxJoAiOtZh6vDNKFvb9uJilRSBqp+fBr5wE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBVWsNytN0FF6rHC/lUNdjAHZlOC77y+9lHvsMrarARu1wpL2smnFV8zunLQqncrW
-         9kff/Y+JvYrQXj6cAtgmb2t0ZHOeq7vw9RK5aE4gCT0I6qSbB4jdZsm1hc84e7VbHb
-         Fie7FblgG4V24RxRv7RI43LPYv/P5RpaErLT7iqfYjnVX7RXgig/UZiijx59R9GjhW
-         oJNzTGOUJxvh2z8Ker9L2fJXvzaS6aymQCUExEwXXysZ0eG1jv7tIVlVRZfvkI8pIE
-         RNkbp4NB8mIp0xIY3I0cQfHY8WEWPvM1IOraNbRxhw+Otix/qUKq1XIr+bCpO1x7N2
-         EJbK+bbX6fnww==
+        b=MRutX3aiqUpvAG+88HkSzREaDWr0CvykHbJfeThw+zQEdcM6Ss+dif4kKlLCo5WxK
+         F47Jx4OTqjDc3pBiOxKtiwGPQx4/x+anciT0ZhIbIkC7UpyWyC1+56wD6rt/FUEbt4
+         AeRQTXwgZWea4Dk905NoqbyDbDR5DWWhBuzhVO2pYhRQHr1xhVcnyB3mdYH8gqblrG
+         SZA6Wq7Q781/xiqCinhEIGFP5vIlds4jgSaAdtVPmKuFw2aNDT869L6YtfqX44RMa2
+         IcdtRhxeAUnvtkJ0rc/YFoBg0ZB7m5njlcPli1OSsGAxNPsJSfnjNSwtxo3gTvwLMd
+         o3J1vRr2mazag==
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         linux-mm@kvack.org
@@ -38,9 +38,9 @@ Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
         ming.lei@redhat.com, axboe@kernel.dk, kernel-team@fb.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH mm,percpu_ref,rcu 5/6] rcu: Make call_rcu() print mem_dump_obj() info for double-freed callback
-Date:   Tue,  5 Jan 2021 17:17:49 -0800
-Message-Id: <20210106011750.13709-5-paulmck@kernel.org>
+Subject: [PATCH mm,percpu_ref,rcu 3/6] mm: Make mem_dump_obj() handle vmalloc() memory
+Date:   Tue,  5 Jan 2021 17:17:47 -0800
+Message-Id: <20210106011750.13709-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106011603.GA13180@paulmck-ThinkPad-P72>
 References: <20210106011603.GA13180@paulmck-ThinkPad-P72>
@@ -50,53 +50,98 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The debug-object double-free checks in __call_rcu() print out the
-RCU callback function, which is usually sufficient to track down the
-double free.  However, all uses of things like queue_rcu_work() will
-have the same RCU callback function (rcu_work_rcufn() in this case),
-so a diagnostic message for a double queue_rcu_work() needs more than
-just the callback function.
+This commit adds vmalloc() support to mem_dump_obj().  Note that the
+vmalloc_dump_obj() function combines the checking and dumping, in
+contrast with the split between kmem_valid_obj() and kmem_dump_obj().
+The reason for the difference is that the checking in the vmalloc()
+case involves acquiring a global lock, and redundant acquisitions of
+global locks should be avoided, even on not-so-fast paths.
 
-This commit therefore calls mem_dump_obj() to dump out any additional
-available information on the double-freed callback.
+Note that this change causes on-stack variables to be reported as
+vmalloc() storage from kernel_clone() or similar, depending on the degree
+of inlining that your compiler does.  This is likely more helpful than
+the earlier "non-paged (local) memory".
 
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Cc: <linux-mm@kvack.org>
 Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/linux/vmalloc.h |  6 ++++++
+ mm/util.c               | 14 ++++++++------
+ mm/vmalloc.c            | 12 ++++++++++++
+ 3 files changed, 26 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40e5e3d..84513c5 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2941,6 +2941,7 @@ static void check_cb_ovld(struct rcu_data *rdp)
- static void
- __call_rcu(struct rcu_head *head, rcu_callback_t func)
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 80c0181..c18f475 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -246,4 +246,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ int register_vmap_purge_notifier(struct notifier_block *nb);
+ int unregister_vmap_purge_notifier(struct notifier_block *nb);
+ 
++#ifdef CONFIG_MMU
++bool vmalloc_dump_obj(void *object);
++#else
++static inline bool vmalloc_dump_obj(void *object) { return false; }
++#endif
++
+ #endif /* _LINUX_VMALLOC_H */
+diff --git a/mm/util.c b/mm/util.c
+index 92f23d2..5487022 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -996,18 +996,20 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+  */
+ void mem_dump_obj(void *object)
  {
-+	static atomic_t doublefrees;
- 	unsigned long flags;
- 	struct rcu_data *rdp;
- 	bool was_alldone;
-@@ -2954,8 +2955,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		 * Use rcu:rcu_callback trace event to find the previous
- 		 * time callback was passed to __call_rcu().
- 		 */
--		WARN_ONCE(1, "__call_rcu(): Double-freed CB %p->%pS()!!!\n",
--			  head, head->func);
-+		if (atomic_inc_return(&doublefrees) < 4) {
-+			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
-+			mem_dump_obj(head);
-+		}
- 		WRITE_ONCE(head->func, rcu_leak_callback);
++	if (kmem_valid_obj(object)) {
++		kmem_dump_obj(object);
++		return;
++	}
++	if (vmalloc_dump_obj(object))
++		return;
+ 	if (!virt_addr_valid(object)) {
+ 		if (object == NULL)
+ 			pr_cont(" NULL pointer.\n");
+ 		else if (object == ZERO_SIZE_PTR)
+ 			pr_cont(" zero-size pointer.\n");
+ 		else
+-			pr_cont(" non-paged (local) memory.\n");
+-		return;
+-	}
+-	if (kmem_valid_obj(object)) {
+-		kmem_dump_obj(object);
++			pr_cont(" non-paged memory.\n");
  		return;
  	}
+-	pr_cont(" non-slab memory.\n");
++	pr_cont(" non-slab/vmalloc memory.\n");
+ }
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 4d88fe5..c274ea4 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3448,6 +3448,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ }
+ #endif	/* CONFIG_SMP */
+ 
++bool vmalloc_dump_obj(void *object)
++{
++	struct vm_struct *vm;
++	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
++
++	vm = find_vm_area(objp);
++	if (!vm)
++		return false;
++	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
++	return true;
++}
++
+ #ifdef CONFIG_PROC_FS
+ static void *s_start(struct seq_file *m, loff_t *pos)
+ 	__acquires(&vmap_purge_lock)
 -- 
 2.9.5
 
