@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 749D0C4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE2B4C4332E
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5513922B2B
+	by mail.kernel.org (Postfix) with ESMTP id 6C232221EA
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:18:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbhAFRRz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727801AbhAFRRz (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:17:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60306 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727623AbhAFRRy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1727693AbhAFRRy (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:17:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37FFC22B2B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE4A723137;
         Wed,  6 Jan 2021 17:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953432;
-        bh=YIvhkYeIvuNCngyVVokHfsTVnExKy1uVvMgJ/LtUyac=;
+        s=k20201202; t=1609953433;
+        bh=dJKB1Seld/aPWAIbVyEarvxi8yJh2NGngiS29t6dWN8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FJ9+00eja8BLysbcxvgizj6PEq8fAnmi2tEyqrHwanSLz5apNnzmw0odAnddaJTx1
-         93rjQfyTBiLMtq7r3slyFzs/aFXrPEmyM9o9U5GpG1m6rOj/U8DHCVi76LhgGRIO9S
-         /yObHImmjq1ZDXJi8P3nsQO2+DvWdLLq0EgTCnW2CiWg6CPBGtO03LkHAqj58qGwpK
-         C5dYCUJTHYlv/zhE4ZE/+cpu9K5LFirX+tbGp3deWUC9ZziywOiJXOUCzxum2UZ5K6
-         PAI7AB9i382Gy7Sq6IYgtvycVdyG/fvVz/zNg+bpCC5rG71BAqDMDxc64mnXFtZpFZ
-         ahBZaghEWr9lw==
+        b=bwmRuq57zaBJOcQUf+dPZJ3e+bvw153GpMQoZFFkm2P2jddVHhTDJqGYImdyuVf9y
+         CBJ/Zt/yztzYQdyqinYN7R223bvMqZvUaKbmDYKiYxzsY5ynEbK3UeU7HUGJ/peAr1
+         7YxM+z0k3LZumZELQ5id5T7jSrAh6BbYdmBNoWiXvQ8y6t56Bn5PiUcHvQ7rUFz7O0
+         zAR3rBY+xVia4JIRuyiL22k/VMj1zjaavIzqyH9z9lpCywVdfuEmYWSvcllF5T4y/4
+         L+7P6EyyMh+33V66gfP4wIDNvdBxMlYbtFKh+/4c8NwbSI/7Ok6xm1D2+TQ90H6FiT
+         2BqIc0Iuuu3uQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/17] rcutorture: Add testing for RCU's global memory ordering
-Date:   Wed,  6 Jan 2021 09:16:54 -0800
-Message-Id: <20210106171710.22239-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/17] rcutorture: Make synctype[] and nsynctype be static global
+Date:   Wed,  6 Jan 2021 09:16:58 -0800
+Message-Id: <20210106171710.22239-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106171532.GA20769@paulmck-ThinkPad-P72>
 References: <20210106171532.GA20769@paulmck-ThinkPad-P72>
@@ -52,241 +52,114 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-RCU guarantees that anything seen by a given reader will also be seen
-after any grace period that must wait on that reader.  This is very likely
-to hold based on inspection, but the advantage of having rcutorture do
-the inspecting is that rcutorture doesn't mind inspecting frequently
-and often.
+Full testing of the new SRCU polling API requires that the fake writers
+also use it in order to test concurrent calls to all of the API members,
+especially start_poll_synchronize_srcu().  This commit prepares the ground
+for this by making the synctype[] and nsynctype variables be static
+globals so that the rcu_torture_fakewriter() function can access them.
+Initialization of these variables is moved from rcu_torture_writer()
+to a new rcu_torture_write_types() function that is invoked from
+rcu_torture_init() just before the first writer kthread is spawned.
 
-This commit therefore adds code to test RCU's global memory ordering.
-
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 92 insertions(+), 6 deletions(-)
+ kernel/rcu/rcutorture.c | 62 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 36 insertions(+), 26 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 96d55f0..338e118 100644
+index 1930d92..ea44a2b 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -143,11 +143,22 @@ static struct task_struct *read_exit_task;
- 
- #define RCU_TORTURE_PIPE_LEN 10
- 
-+// Mailbox-like structure to check RCU global memory ordering.
-+struct rcu_torture_reader_check {
-+	unsigned long rtc_myloops;
-+	int rtc_chkrdr;
-+	unsigned long rtc_chkloops;
-+	int rtc_ready;
-+	struct rcu_torture_reader_check *rtc_assigner;
-+} ____cacheline_internodealigned_in_smp;
-+
-+// Update-side data structure used to check RCU readers.
- struct rcu_torture {
- 	struct rcu_head rtort_rcu;
- 	int rtort_pipe_count;
- 	struct list_head rtort_free;
- 	int rtort_mbtest;
-+	struct rcu_torture_reader_check *rtort_chkp;
- };
- 
- static LIST_HEAD(rcu_torture_freelist);
-@@ -158,10 +169,13 @@ static DEFINE_SPINLOCK(rcu_torture_lock);
- static DEFINE_PER_CPU(long [RCU_TORTURE_PIPE_LEN + 1], rcu_torture_count);
- static DEFINE_PER_CPU(long [RCU_TORTURE_PIPE_LEN + 1], rcu_torture_batch);
- static atomic_t rcu_torture_wcount[RCU_TORTURE_PIPE_LEN + 1];
-+static struct rcu_torture_reader_check *rcu_torture_reader_mbchk;
- static atomic_t n_rcu_torture_alloc;
- static atomic_t n_rcu_torture_alloc_fail;
- static atomic_t n_rcu_torture_free;
- static atomic_t n_rcu_torture_mberror;
-+static atomic_t n_rcu_torture_mbchk_fail;
-+static atomic_t n_rcu_torture_mbchk_tries;
- static atomic_t n_rcu_torture_error;
- static long n_rcu_torture_barrier_error;
- static long n_rcu_torture_boost_ktrerror;
-@@ -393,7 +407,12 @@ static bool
- rcu_torture_pipe_update_one(struct rcu_torture *rp)
- {
- 	int i;
-+	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
- 
-+	if (rtrcp) {
-+		WRITE_ONCE(rp->rtort_chkp, NULL);
-+		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-+	}
- 	i = READ_ONCE(rp->rtort_pipe_count);
- 	if (i > RCU_TORTURE_PIPE_LEN)
- 		i = RCU_TORTURE_PIPE_LEN;
-@@ -1292,6 +1311,62 @@ static void rcu_torture_timer_cb(struct rcu_head *rhp)
- 	kfree(rhp);
- }
- 
-+// Set up and carry out testing of RCU's global memory ordering
-+static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
-+					struct torture_random_state *trsp)
-+{
-+	unsigned long loops;
-+	int noc = num_online_cpus();
-+	int rdrchked;
-+	int rdrchker;
-+	struct rcu_torture_reader_check *rtrcp; // Me.
-+	struct rcu_torture_reader_check *rtrcp_assigner; // Assigned us to do checking.
-+	struct rcu_torture_reader_check *rtrcp_chked; // Reader being checked.
-+	struct rcu_torture_reader_check *rtrcp_chker; // Reader doing checking when not me.
-+
-+	if (myid < 0)
-+		return; // Don't try this from timer handlers.
-+
-+	// Increment my counter.
-+	rtrcp = &rcu_torture_reader_mbchk[myid];
-+	WRITE_ONCE(rtrcp->rtc_myloops, rtrcp->rtc_myloops + 1);
-+
-+	// Attempt to assign someone else some checking work.
-+	rdrchked = torture_random(trsp) % nrealreaders;
-+	rtrcp_chked = &rcu_torture_reader_mbchk[rdrchked];
-+	rdrchker = torture_random(trsp) % nrealreaders;
-+	rtrcp_chker = &rcu_torture_reader_mbchk[rdrchker];
-+	if (rdrchked != myid && rdrchked != rdrchker && noc >= rdrchked && noc >= rdrchker &&
-+	    smp_load_acquire(&rtrcp->rtc_chkrdr) < 0 && // Pairs with smp_store_release below.
-+	    !READ_ONCE(rtp->rtort_chkp) &&
-+	    !smp_load_acquire(&rtrcp_chker->rtc_assigner)) { // Pairs with smp_store_release below.
-+		rtrcp->rtc_chkloops = READ_ONCE(rtrcp_chked->rtc_myloops);
-+		WARN_ON_ONCE(rtrcp->rtc_chkrdr >= 0);
-+		rtrcp->rtc_chkrdr = rdrchked;
-+		WARN_ON_ONCE(rtrcp->rtc_ready); // This gets set after the grace period ends.
-+		if (cmpxchg_relaxed(&rtrcp_chker->rtc_assigner, NULL, rtrcp) ||
-+		    cmpxchg_relaxed(&rtp->rtort_chkp, NULL, rtrcp))
-+			(void)cmpxchg_relaxed(&rtrcp_chker->rtc_assigner, rtrcp, NULL); // Back out.
-+	}
-+
-+	// If assigned some completed work, do it!
-+	rtrcp_assigner = READ_ONCE(rtrcp->rtc_assigner);
-+	if (!rtrcp_assigner || !smp_load_acquire(&rtrcp_assigner->rtc_ready))
-+		return; // No work or work not yet ready.
-+	rdrchked = rtrcp_assigner->rtc_chkrdr;
-+	if (WARN_ON_ONCE(rdrchked < 0))
-+		return;
-+	rtrcp_chked = &rcu_torture_reader_mbchk[rdrchked];
-+	loops = READ_ONCE(rtrcp_chked->rtc_myloops);
-+	atomic_inc(&n_rcu_torture_mbchk_tries);
-+	if (ULONG_CMP_LT(loops, rtrcp_assigner->rtc_chkloops))
-+		atomic_inc(&n_rcu_torture_mbchk_fail);
-+	rtrcp_assigner->rtc_chkloops = loops + ULONG_MAX / 2;
-+	rtrcp_assigner->rtc_ready = 0;
-+	smp_store_release(&rtrcp->rtc_assigner, NULL); // Someone else can assign us work.
-+	smp_store_release(&rtrcp_assigner->rtc_chkrdr, -1); // Assigner can again assign.
-+}
-+
- /*
-  * Do one extension of an RCU read-side critical section using the
-  * current reader state in readstate (set to zero for initial entry
-@@ -1427,7 +1502,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp,
-  * no data to read.  Can be invoked both from process context and
-  * from a timer handler.
-  */
--static bool rcu_torture_one_read(struct torture_random_state *trsp)
-+static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- {
- 	unsigned long cookie;
- 	int i;
-@@ -1462,6 +1537,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
- 	}
- 	if (p->rtort_mbtest == 0)
- 		atomic_inc(&n_rcu_torture_mberror);
-+	rcu_torture_reader_do_mbchk(myid, p, trsp);
- 	rtrsp = rcutorture_loop_extend(&readstate, trsp, rtrsp);
- 	preempt_disable();
- 	pipe_count = READ_ONCE(p->rtort_pipe_count);
-@@ -1518,7 +1594,7 @@ static DEFINE_TORTURE_RANDOM_PERCPU(rcu_torture_timer_rand);
- static void rcu_torture_timer(struct timer_list *unused)
- {
- 	atomic_long_inc(&n_rcu_torture_timers);
--	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_timer_rand));
-+	(void)rcu_torture_one_read(this_cpu_ptr(&rcu_torture_timer_rand), -1);
- 
- 	/* Test call_rcu() invocation from interrupt handler. */
- 	if (cur_ops->call) {
-@@ -1554,7 +1630,7 @@ rcu_torture_reader(void *arg)
- 			if (!timer_pending(&t))
- 				mod_timer(&t, jiffies + 1);
- 		}
--		if (!rcu_torture_one_read(&rand) && !torture_must_stop())
-+		if (!rcu_torture_one_read(&rand, myid) && !torture_must_stop())
- 			schedule_timeout_interruptible(HZ);
- 		if (time_after(jiffies, lastsleep) && !torture_must_stop()) {
- 			schedule_timeout_interruptible(1);
-@@ -1614,8 +1690,9 @@ rcu_torture_stats_print(void)
- 		atomic_read(&n_rcu_torture_alloc),
- 		atomic_read(&n_rcu_torture_alloc_fail),
- 		atomic_read(&n_rcu_torture_free));
--	pr_cont("rtmbe: %d rtbe: %ld rtbke: %ld rtbre: %ld ",
-+	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld rtbre: %ld ",
- 		atomic_read(&n_rcu_torture_mberror),
-+		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
- 		n_rcu_torture_barrier_error,
- 		n_rcu_torture_boost_ktrerror,
- 		n_rcu_torture_boost_rterror);
-@@ -1632,12 +1709,14 @@ rcu_torture_stats_print(void)
- 
- 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
- 	if (atomic_read(&n_rcu_torture_mberror) ||
-+	    atomic_read(&n_rcu_torture_mbchk_fail) ||
- 	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
- 	    n_rcu_torture_boost_rterror || n_rcu_torture_boost_failure ||
- 	    i > 1) {
- 		pr_cont("%s", "!!! ");
- 		atomic_inc(&n_rcu_torture_error);
- 		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
-+		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mbchk_fail));
- 		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
- 		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
- 		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
-@@ -2467,7 +2546,7 @@ static int rcu_torture_read_exit_child(void *trsp_in)
- 	// Minimize time between reading and exiting.
- 	while (!kthread_should_stop())
- 		schedule_timeout_uninterruptible(1);
--	(void)rcu_torture_one_read(trsp);
-+	(void)rcu_torture_one_read(trsp, -1);
+@@ -1062,37 +1062,18 @@ rcu_torture_fqs(void *arg)
  	return 0;
  }
  
-@@ -2582,6 +2661,8 @@ rcu_torture_cleanup(void)
- 		kfree(reader_tasks);
- 		reader_tasks = NULL;
- 	}
-+	kfree(rcu_torture_reader_mbchk);
-+	rcu_torture_reader_mbchk = NULL;
++// Used by writers to randomly choose from the available grace-period
++// primitives.  The only purpose of the initialization is to size the array.
++static int synctype[] = { RTWS_DEF_FREE, RTWS_EXP_SYNC, RTWS_COND_GET, RTWS_POLL_GET, RTWS_SYNC };
++static int nsynctypes = 0;
++
+ /*
+- * RCU torture writer kthread.  Repeatedly substitutes a new structure
+- * for that pointed to by rcu_torture_current, freeing the old structure
+- * after a series of grace periods (the "pipeline").
++ * Determine which grace-period primitives are available.
+  */
+-static int
+-rcu_torture_writer(void *arg)
++static void rcu_torture_write_types(void)
+ {
+-	bool boot_ended;
+-	bool can_expedite = !rcu_gp_is_expedited() && !rcu_gp_is_normal();
+-	unsigned long cookie;
+-	int expediting = 0;
+-	unsigned long gp_snap;
+ 	bool gp_cond1 = gp_cond, gp_exp1 = gp_exp, gp_normal1 = gp_normal;
+ 	bool gp_poll1 = gp_poll, gp_sync1 = gp_sync;
+-	int i;
+-	int idx;
+-	int oldnice = task_nice(current);
+-	struct rcu_torture *rp;
+-	struct rcu_torture *old_rp;
+-	static DEFINE_TORTURE_RANDOM(rand);
+-	bool stutter_waited;
+-	int synctype[] = { RTWS_DEF_FREE, RTWS_EXP_SYNC,
+-			   RTWS_COND_GET, RTWS_POLL_GET, RTWS_SYNC };
+-	int nsynctypes = 0;
+-
+-	VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
+-	if (!can_expedite)
+-		pr_alert("%s" TORTURE_FLAG
+-			 " GP expediting controlled from boot/sysfs for %s.\n",
+-			 torture_type, cur_ops->name);
  
- 	if (fakewriter_tasks) {
- 		for (i = 0; i < nfakewriters; i++)
-@@ -2785,6 +2866,8 @@ rcu_torture_init(void)
- 	atomic_set(&n_rcu_torture_alloc_fail, 0);
- 	atomic_set(&n_rcu_torture_free, 0);
- 	atomic_set(&n_rcu_torture_mberror, 0);
-+	atomic_set(&n_rcu_torture_mbchk_fail, 0);
-+	atomic_set(&n_rcu_torture_mbchk_tries, 0);
- 	atomic_set(&n_rcu_torture_error, 0);
- 	n_rcu_torture_barrier_error = 0;
- 	n_rcu_torture_boost_ktrerror = 0;
-@@ -2826,12 +2909,15 @@ rcu_torture_init(void)
+ 	/* Initialize synctype[] array.  If none set, take default. */
+ 	if (!gp_cond1 && !gp_exp1 && !gp_normal1 && !gp_poll1 && !gp_sync1)
+@@ -1127,6 +1108,34 @@ rcu_torture_writer(void *arg)
+ 	} else if (gp_sync && !cur_ops->sync) {
+ 		pr_alert("%s: gp_sync without primitives.\n", __func__);
  	}
- 	reader_tasks = kcalloc(nrealreaders, sizeof(reader_tasks[0]),
- 			       GFP_KERNEL);
--	if (reader_tasks == NULL) {
-+	rcu_torture_reader_mbchk = kcalloc(nrealreaders, sizeof(*rcu_torture_reader_mbchk),
-+					   GFP_KERNEL);
-+	if (!reader_tasks || !rcu_torture_reader_mbchk) {
- 		VERBOSE_TOROUT_ERRSTRING("out of memory");
- 		firsterr = -ENOMEM;
- 		goto unwind;
- 	}
- 	for (i = 0; i < nrealreaders; i++) {
-+		rcu_torture_reader_mbchk[i].rtc_chkrdr = -1;
- 		firsterr = torture_create_kthread(rcu_torture_reader, (void *)i,
- 						  reader_tasks[i]);
- 		if (firsterr)
++}
++
++/*
++ * RCU torture writer kthread.  Repeatedly substitutes a new structure
++ * for that pointed to by rcu_torture_current, freeing the old structure
++ * after a series of grace periods (the "pipeline").
++ */
++static int
++rcu_torture_writer(void *arg)
++{
++	bool boot_ended;
++	bool can_expedite = !rcu_gp_is_expedited() && !rcu_gp_is_normal();
++	unsigned long cookie;
++	int expediting = 0;
++	unsigned long gp_snap;
++	int i;
++	int idx;
++	int oldnice = task_nice(current);
++	struct rcu_torture *rp;
++	struct rcu_torture *old_rp;
++	static DEFINE_TORTURE_RANDOM(rand);
++	bool stutter_waited;
++
++	VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
++	if (!can_expedite)
++		pr_alert("%s" TORTURE_FLAG
++			 " GP expediting controlled from boot/sysfs for %s.\n",
++			 torture_type, cur_ops->name);
+ 	if (WARN_ONCE(nsynctypes == 0,
+ 		      "rcu_torture_writer: No update-side primitives.\n")) {
+ 		/*
+@@ -2889,6 +2898,7 @@ rcu_torture_init(void)
+ 
+ 	/* Start up the kthreads. */
+ 
++	rcu_torture_write_types();
+ 	firsterr = torture_create_kthread(rcu_torture_writer, NULL,
+ 					  writer_task);
+ 	if (firsterr)
 -- 
 2.9.5
 
