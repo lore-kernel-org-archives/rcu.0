@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3E2C433E6
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66012C43331
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:02:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4585222838
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:02:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B81322D6F
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 01:02:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbhAFBCH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Jan 2021 20:02:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57048 "EHLO mail.kernel.org"
+        id S1726020AbhAFBCI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Jan 2021 20:02:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbhAFBCH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1725939AbhAFBCH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 5 Jan 2021 20:02:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0515F229EF;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4147022E00;
         Wed,  6 Jan 2021 01:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609894887;
-        bh=8sZUhRn5VAPTai1bqjNuP3yhkMzMUu3vrGnDlahpHQI=;
+        bh=ppqx1xvTKmXeI03LlY9ixmkXWbk7Emaooe7735KUcu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLs0SvBN8Li/Z0JxNHB08CuhSfludlrsqeExaOuxDweXxe1XkcjY3mB/8OiHg16BR
-         tfmj1TdF/JDKJh4Tct+6DzJyCe65FNE1AHLuFlzJEKACNTPj2//0m92qja6/oQmTze
-         /wNhfYU8oTG0z//hJyGMLFKWbfKP9Ir4nReqlKJDC4wVXWTI6pt/mSKCL4x9rn5OLd
-         ekFcNHaK9M1ZcYPDK8h3i8GiM9y9frHvUxwr0Mpzv4lTKYYtvbn7NkstGd9CxkWwhi
-         6m86wFv8ZzwyNGnCKP6xlqtPbrH/fRjzuJoFSWJfqazFrZszgwI35XTUh0OP5PjY9D
-         VBjjOO56tOA3Q==
+        b=PBqW5hEGQLWqcIgnzdW/OqDD0/BLpEDJaKxyrcQQR+cPmq7pQKdqcby3kKcxKGyQf
+         QnDWqumg6HpMsMKapPSHloWRfUJxtkA7GPCgVXQgSjxL+0uxUgtCjrfzRZx/4Tuahd
+         SLv3HjjMITJ5DxxnX9St8ttosf3pkwnC21HQ6C621GpWs0GxyY76eeqRUE5nMBHq6o
+         0SPSJM5OBEpvVn+kqFSAyMZtR4286nEJBC+aIlDKIXFeBTa3lEQ/sfRJAqkH/YqDUB
+         sD/0Ic0tyamoeLF7aI4ZyQqOhO7rJ9ypV6f9Zij2xnspUox3r0rrESNEN3XBbvcgTL
+         ZxUVaUfqZabzg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,11 +39,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Zqiang <qiang.zhang@windriver.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/3] rcu: Record kvfree_call_rcu() call stack for KASAN
-Date:   Tue,  5 Jan 2021 17:01:23 -0800
-Message-Id: <20210106010125.12802-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/3] rcu: Introduce kfree_rcu() single-argument macro
+Date:   Tue,  5 Jan 2021 17:01:24 -0800
+Message-Id: <20210106010125.12802-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106010102.GA12737@paulmck-ThinkPad-P72>
 References: <20210106010102.GA12737@paulmck-ThinkPad-P72>
@@ -51,34 +51,68 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-This commit adds a call to kasan_record_aux_stack() in kvfree_call_rcu()
-in order to record the call stack of the code that caused the object
-to be freed.  Please note that this function does not update the
-allocated/freed state, which is important because RCU readers might
-still be referencing this object.
+There is a kvfree_rcu() single argument macro that handles pointers
+returned by kvmalloc(). Even though it also handles pointer returned by
+kmalloc(), readability suffers.
 
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+This commit therefore updates the kfree_rcu() macro to explicitly pair
+with kmalloc(), thus improving readability.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/rcupdate.h | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40e5e3d..2db736c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3498,6 +3498,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		goto unlock_return;
- 	}
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index de08264..b95373e 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -851,8 +851,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
  
-+	kasan_record_aux_stack(ptr);
- 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
- 	if (!success) {
- 		run_page_cache_worker(krcp);
+ /**
+  * kfree_rcu() - kfree an object after a grace period.
+- * @ptr:	pointer to kfree
+- * @rhf:	the name of the struct rcu_head within the type of @ptr.
++ * @ptr: pointer to kfree for both single- and double-argument invocations.
++ * @rhf: the name of the struct rcu_head within the type of @ptr,
++ *       but only for double-argument invocations.
+  *
+  * Many rcu callbacks functions just call kfree() on the base structure.
+  * These functions are trivial, but their size adds up, and furthermore
+@@ -875,13 +876,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
+  */
+-#define kfree_rcu(ptr, rhf)						\
+-do {									\
+-	typeof (ptr) ___p = (ptr);					\
+-									\
+-	if (___p)							\
+-		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+-} while (0)
++#define kfree_rcu kvfree_rcu
+ 
+ /**
+  * kvfree_rcu() - kvfree an object after a grace period.
+@@ -913,7 +908,14 @@ do {									\
+ 	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
+ 
+ #define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
+-#define kvfree_rcu_arg_2(ptr, rhf) kfree_rcu(ptr, rhf)
++#define kvfree_rcu_arg_2(ptr, rhf)					\
++do {									\
++	typeof (ptr) ___p = (ptr);					\
++									\
++	if (___p)							\
++		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
++} while (0)
++
+ #define kvfree_rcu_arg_1(ptr)					\
+ do {								\
+ 	typeof(ptr) ___p = (ptr);				\
 -- 
 2.9.5
 
