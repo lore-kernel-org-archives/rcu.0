@@ -2,103 +2,106 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E2CDC4332B
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 16:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C62D1C433DB
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:16:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55E1B23142
-	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 16:57:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88F9223123
+	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:16:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbhAFQ4z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Jan 2021 11:56:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56750 "EHLO mail.kernel.org"
+        id S1726458AbhAFRQN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Jan 2021 12:16:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbhAFQ4x (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:56:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF8D2313C;
-        Wed,  6 Jan 2021 16:55:34 +0000 (UTC)
+        id S1726375AbhAFRQN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:16:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3A122B2B;
+        Wed,  6 Jan 2021 17:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609952134;
-        bh=5N4yy6vCgBYA88AYbYBNwRYZKoVb53QM2QFfeDuwqq0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Acm4zyoAS4r5/CWIZ+l6KnysOZ3clsALA5U9AaDUXh9lx1LQ2OfxGwepVOnuzs/dc
-         WZ9P+VnJV45HjMvlG12NhraiUi+b89qUNOX4xdQLhj2gwW6KqJ/tWrOO0mwiZQbvtV
-         vvWb604REDgjwcELwiqk5sTOHEOfIWjPQbLh1LRyBXUT2AQwG2pFV3Q4jZCFZokIb+
-         ZhrB6QkACXvDW+AFvs1R6wp4SfLbvq2iolWnCObhcPaMSQqL+2u7Z/+dPRg3a6jrQK
-         1bSvO1Q/vazfu5tKU+YL03G/wSE3LEsZbIVUGUy3EAsSqRjVgLn+jWdstRlsoB2czC
-         D1YzbdyV5ELGw==
-From:   paulmck@kernel.org
+        s=k20201202; t=1609953332;
+        bh=hMXWI6Rtv/QIDxQnmDd4rULkZi19U/9afBZSYZQyizw=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=d/wR+E/kjlOuv97xyrSHpJTYNu0X1bpNPBdpNtiZTN2ud1n2nxcWcRX561Vp/eDLi
+         kyTbTiQINwWeNc+N6sBBgL0Vui7Ob1KCDlaf/ziAgAA9AUJztV6doNNIrmOr0ta41P
+         j9unq1QvudmrSkRRPSLWYb8Aqqxr6kY25sIp3mKvSwt6UWDw1olFt7nBCCzl98ehxX
+         9s7ZqhdXU213QkLVMtNdy4hX+VJMxjhm1VCak0Xf+RX5EE4Xhyhkmqx6wyhyP7LBP2
+         4g+hJUdTcpn8rStvYqqH4XBOl+0IQASE/8tn/ApYB/oygFzrpAfG+RPOF+f5BdHxJl
+         A82gO6uXFdskQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6713E35225EC; Wed,  6 Jan 2021 09:15:32 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:15:32 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/10] rcutorture: Add reader-side tests of polling grace-period API
-Date:   Wed,  6 Jan 2021 08:55:31 -0800
-Message-Id: <20210106165531.20697-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210106165511.GA20555@paulmck-ThinkPad-P72>
-References: <20210106165511.GA20555@paulmck-ThinkPad-P72>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/17] Torture-test updates for v5.12
+Message-ID: <20210106171532.GA20769@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello!
 
-This commit adds reader-side testing of the polling grace-period API.
-This testing verifies that a cookie obtained in an SRCU read-side critical
-section does not get a true return from poll_state_synchronize_srcu()
-within that same critical section.
+This series provides torture-test updates, and must be applied on top
+of the SRCU series.
 
-Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+1.	Add testing for RCU's global memory ordering.
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 78ba95d..96d55f0 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1429,6 +1429,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp,
-  */
- static bool rcu_torture_one_read(struct torture_random_state *trsp)
- {
-+	unsigned long cookie;
- 	int i;
- 	unsigned long started;
- 	unsigned long completed;
-@@ -1444,6 +1445,8 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
- 	WARN_ON_ONCE(!rcu_is_watching());
- 	newstate = rcutorture_extend_mask(readstate, trsp);
- 	rcutorture_one_extend(&readstate, newstate, trsp, rtrsp++);
-+	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+		cookie = cur_ops->get_gp_state();
- 	started = cur_ops->get_gp_seq();
- 	ts = rcu_trace_clock_local();
- 	p = rcu_dereference_check(rcu_torture_current,
-@@ -1480,6 +1483,13 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
- 	}
- 	__this_cpu_inc(rcu_torture_batch[completed]);
- 	preempt_enable();
-+	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
-+		WARN_ONCE(cur_ops->poll_gp_state(cookie),
-+			  "%s: Cookie check 3 failed %s(%d) %lu->%lu\n",
-+			  __func__,
-+			  rcu_torture_writer_state_getname(),
-+			  rcu_torture_writer_state,
-+			  cookie, cur_ops->get_gp_state());
- 	rcutorture_one_extend(&readstate, 0, trsp, rtrsp);
- 	WARN_ON_ONCE(readstate & RCUTORTURE_RDR_MASK);
- 	// This next splat is expected behavior if leakpointer, especially
--- 
-2.9.5
+2.	Add debug output for wrong-CPU warning.
 
+3.	Allow summarization of verbose output.
+
+4.	Require entire stutter period be post-boot.
+
+5.	Make synctype[] and nsynctype be static global.
+
+6.	Make rcu_torture_fakewriter() use blocking wait primitives.
+
+7.	Add fuzzed hrtimer-based sleep functions.
+
+8.	Use torture_hrtimeout_jiffies() to avoid busy-waits.
+
+9.	Make stutter use torture_hrtimeout_*() functions.
+
+10.	Use hrtimers for reader and writer delays.
+
+11.	Make refscale throttle high-rate printk()s.
+
+12.	Throttle VERBOSE_TOROUT_*() output.
+
+13.	Make object_debug also double call_rcu() heap object.
+
+14.	Clean up after torture-test CPU hotplugging.
+
+15.	Maintain torture-specific set of CPUs-online books.
+
+16.	Break affinity of kthreads last running on outgoing CPU.
+
+17.	Add rcutree.use_softirq=0 to RUDE01 and TASKS01.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt             |   14 
+ include/linux/torture.h                                     |   27 +
+ kernel/rcu/rcutorture.c                                     |  246 ++++++++----
+ kernel/rcu/refscale.c                                       |   25 -
+ kernel/scftorture.c                                         |    6 
+ kernel/torture.c                                            |  184 +++++++-
+ tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot  |    1 
+ tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot |    1 
+ 8 files changed, 400 insertions(+), 104 deletions(-)
