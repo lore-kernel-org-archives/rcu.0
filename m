@@ -5,32 +5,32 @@ X-Spam-Level:
 X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 762E8C4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A708BC43332
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:28:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B8AF23123
+	by mail.kernel.org (Postfix) with ESMTP id 8FEE523123
 	for <rcu@archiver.kernel.org>; Wed,  6 Jan 2021 17:28:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbhAFR14 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1727177AbhAFR14 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 6 Jan 2021 12:27:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38450 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:38448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbhAFR1t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726698AbhAFR1t (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 6 Jan 2021 12:27:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99CF52313F;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1759923329;
         Wed,  6 Jan 2021 17:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953972;
-        bh=92dtARZzSSK/dKR44zfTbCIH4tdjBsew/EjGVD1hYhY=;
+        bh=GpMOteaVheoDswm1wDRmC+0UKSMNBIdcSYcaOHfd708=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ax8ZMV24MAvgAHrcfY8f6NzrsGj12P7Qz5WnnttXCFNQP6CNvBgoNUyykZGR8PpfB
-         dGnQEFh+JpYptvZeiPXehlq9lwVhzddOPTCpSwcLIqcJ8yPdy8eMfdGua59Q8E19Kt
-         Ro7pnfIJNEnlIkj67bO9HUgPPimMcb66zBuehNvYaUo68oMcHIIDx7SBzgjJt+j0xy
-         YucBfgK026NryH0o5Vu57ijSUBlE+xOe9agspWcr6hutI4IDUE8B3Bk2YqN59UqdbH
-         BsxdsApVAvgCnNkNdCWrCD7PFPqfBvy+5ErL/ya4m9SqAxr/JetsnhUxF5WZlhajM8
-         nwv5QxhBmPpZA==
+        b=HVaYt9LcVTjyqS1lvNdn8sh2oNhV8FjwHlEY/zLeBUmoafUToIhI/QXELh9Xqdich
+         5s6SQtV4Fd6ohXgU+EnRzP1Kuzc881l8xH99dEcaWZEWLwUMgdXD2z7J6wgL2rM2Fo
+         wbidOlQHCIaUdsZ6BW93GUJx+iohzKmGI/6A5UVF62V6E9QwqgRqVuCWXKxYNdd0xo
+         dE7mHUN+SE7SMqYa4BQDkfvq8p3NrzvwYbmTyDNv6vkTDlU8z3aq1GLt2fuih4jc4g
+         npZBTFiNptt4+z8gApjoVtane1ok1pjWeXqZEXVMAWUO0oC8kyDa03zGLZ0d9Zt8UM
+         WxdujrTxLhbnA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 18/20] torture: Remove "Failed to add ttynull console" false positive
-Date:   Wed,  6 Jan 2021 09:26:05 -0800
-Message-Id: <20210106172607.22816-18-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 15/20] torture: Add --dryrun batches to help schedule a distributed run
+Date:   Wed,  6 Jan 2021 09:26:02 -0800
+Message-Id: <20210106172607.22816-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
@@ -52,46 +52,79 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Commit 757055ae8ded ("init/console: Use ttynull as a fallback when
-there is no console") results in the string "Warning: Failed to add
-ttynull console. No stdin, stdout, and stderr for the init process!"
-appearing on the console, which the rcutorture scripting interprets as
-a warning, which causes every rcutorture run to be flagged.  However,
-the rcutorture init process never attempts to do any I/O, and thus does
-not care that it has no stdin, stdout, or stderr.
-
-This commit therefore causes the rcutorture scripting to ignore this
-message.
+When all of the remote systems have the same number of CPUs, one
+approach is to use one "--buildonly" run and one "--dryrun sched" run,
+and then distributing the batches out one per remote system.  However,
+the output of "--dryrun sched" is not made for parsing, so this commit
+adds a "--dryrun batches" that provides the same information in easily
+parsed form.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/console-badness.sh | 1 +
- tools/testing/selftests/rcutorture/bin/parse-console.sh   | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-index 80ae7f0..e6a132d 100755
---- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
-+++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-@@ -14,4 +14,5 @@ egrep 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls o
- grep -v 'ODEBUG: ' |
- grep -v 'This means that this is a DEBUG kernel and it is' |
- grep -v 'Warning: unable to open an initial console' |
-+grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
- grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 263b1be..9f624bd 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -128,7 +128,7 @@ then
- 	then
- 		summary="$summary  Badness: $n_badness"
- 	fi
--	n_warn=`grep -v 'Warning: unable to open an initial console' $file | egrep -c 'WARNING:|Warn'`
-+	n_warn=`grep -v 'Warning: unable to open an initial console' $file | grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr for the init process' | egrep -c 'WARNING:|Warn'`
- 	if test "$n_warn" -ne 0
- 	then
- 		summary="$summary  Warnings: $n_warn"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 667896f..6b900360 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -60,7 +60,7 @@ usage () {
+ 	echo "       --cpus N"
+ 	echo "       --datestamp string"
+ 	echo "       --defconfig string"
+-	echo "       --dryrun sched|script"
++	echo "       --dryrun batches|sched|script"
+ 	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
+ 	echo "       --gdb"
+ 	echo "       --help"
+@@ -126,7 +126,7 @@ do
+ 		shift
+ 		;;
+ 	--dryrun)
+-		checkarg --dryrun "sched|script" $# "$2" 'sched\|script' '^--'
++		checkarg --dryrun "batches|sched|script" $# "$2" 'batches\|sched\|script' '^--'
+ 		dryrun=$2
+ 		shift
+ 		;;
+@@ -235,7 +235,7 @@ do
+ 	shift
+ done
+ 
+-if test -z "$TORTURE_INITRD" || tools/testing/selftests/rcutorture/bin/mkinitrd.sh
++if test -n "$dryrun" || test -z "$TORTURE_INITRD" || tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+ then
+ 	:
+ else
+@@ -547,8 +547,7 @@ then
+ elif test "$dryrun" = sched
+ then
+ 	# Extract the test run schedule from the script.
+-	egrep 'Start batch|Starting build\.' $T/script |
+-		grep -v ">>" |
++	egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
+ 		sed -e 's/:.*$//' -e 's/^echo //'
+ 	nbuilds="`grep 'Starting build\.' $T/script |
+ 		  grep -v ">>" | sed -e 's/:.*$//' -e 's/^echo //' |
+@@ -557,6 +556,19 @@ then
+ 	nbatches="`grep 'Start batch' $T/script | grep -v ">>" | wc -l`"
+ 	echo Total number of batches: $nbatches
+ 	exit 0
++elif test "$dryrun" = batches
++then
++	# Extract the tests and their batches from the script.
++	egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
++		sed -e 's/:.*$//' -e 's/^echo //' -e 's/-ovf//' |
++		awk '
++		/^----Start/ {
++			batchno = $3;
++			next;
++		}
++		{
++			print batchno, $1, $2
++		}'
+ else
+ 	# Not a dryrun, so run the script.
+ 	bash $T/script
 -- 
 2.9.5
 
