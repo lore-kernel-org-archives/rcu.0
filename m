@@ -2,101 +2,87 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E32AEC433E0
-	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 01:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED3ADC433E0
+	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 11:46:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 93D8221973
-	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 01:10:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3DC922527
+	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 11:46:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAKBKE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 Jan 2021 20:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAKBKD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 Jan 2021 20:10:03 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B55C061786;
-        Sun, 10 Jan 2021 17:09:23 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id iq13so6789977pjb.3;
-        Sun, 10 Jan 2021 17:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9W27aDEcM2zclqETCrZa+HXBBxEceLbS1pDaUDxlwnY=;
-        b=O74ymKZCnKUo7LJYtV6u42gGexQ/NcGqi6IhXI+q0cF7X08qR6JkA3KIpZVWTGsHYr
-         5oqNAAJASR6FUFa+xDAiMiqOuX/9Fsdg9IPjpGRNQ0/UpI1pyKqZC0zjcO/hPWVYFRKM
-         00lXr6DBAxegl0n4NOhqRdLZYwUk/udyOzpFsWQDPmusBI9O1HToCKVCBKx4QsQk6iNS
-         0bi2vVERzOXRqafFTh55BXBuPjybB5q0DPSqcp7ZeogH5AbzFIizyDPwEGQ3UXF+2foJ
-         EQ7/l/HIz9zzMUcIeN2em62JZTQNBAZr2uB9VSi0V6sD1fK+W2ai9zWoFY9rkrDiho2E
-         ahIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9W27aDEcM2zclqETCrZa+HXBBxEceLbS1pDaUDxlwnY=;
-        b=SH91FTK/OANgh231FLQkhAy/2BiiRMByS5gXxUFVLqUtWZ+EzKQHhylro7v8HKKSI7
-         /C+LpquHsNUOUeekOGgGrw9ljFCUAIsOGrciCcBmnK2htqG3pdD+GPaCv/jGxpHuE4Ik
-         ps6/zawOyk9v8KEsgjK82lUWCWntQMmmJvSSe2bnj937XAufzPTlb7t911X9X1cMaA2v
-         IAkp9JzajEXMAV7kU2v4NqIuFAfgV1FMsYEpPPbMwgkXEOxvM+L7LXdiXPiaHJJl2q+5
-         1yqWu91XA/Hp4SciKttCGoW3wVNV37BAoix4O/RMBY1A4TeFkGx0y9ALqp5GS1riqy03
-         I3zA==
-X-Gm-Message-State: AOAM532ubicpUtBx+ivmkRBLSA2l5fPZDovJI+j8YfPBhYbN8/Bkjj5e
-        vIWhrSt1SKwBnMUP89BzxGc=
-X-Google-Smtp-Source: ABdhPJwdM43NMBeAb8Gwnqd9m1yuUkJKRLjYG47J2cgNCRcY3pKLIUX6BLePfqo18RDLB+hkHjbpjA==
-X-Received: by 2002:a17:902:b282:b029:da:fd05:7766 with SMTP id u2-20020a170902b282b02900dafd057766mr14230591plr.52.1610327362467;
-        Sun, 10 Jan 2021 17:09:22 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.18])
-        by smtp.gmail.com with ESMTPSA id x5sm15659171pjr.38.2021.01.10.17.09.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 17:09:21 -0800 (PST)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     340442286@qq.com, paulmck@kernel.org, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH] rcu: remove surplus instrumentation_end in rcu_nmi_enter
-Date:   Mon, 11 Jan 2021 09:08:59 +0800
-Message-Id: <20210111010859.7778-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729909AbhAKLqI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Jan 2021 06:46:08 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:36851 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAKLqI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:46:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610365544; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=phlq0VMVBR4TsRWMuHemTdrgrkpRg2OyM5+rf5MITYc=; b=DBLwg1S94z3flnVg+nqqFqD3OtQ3ZBpzpFxhuvoImrqAU4BuXvgzJBQjNyNVagKpc58X4ynj
+ 0UsARje9XMh2yLRE6/R3XpFEpgdL70gLJBHGNOLysHQ5eWkETkPUBjPSzBtzy/b3kBJy51M2
+ 4arV5bgAd/nQfVb82iQNyuxRtYM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5ffc3a462a47972bcc2e88d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:45:10
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31B28C43462; Mon, 11 Jan 2021 11:45:10 +0000 (UTC)
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB819C433ED;
+        Mon, 11 Jan 2021 11:45:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB819C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Only trace when cbs are accelerated
+Date:   Mon, 11 Jan 2021 17:15:01 +0530
+Message-Id: <1610365501-6196-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In function rcu_nmi_enter, there is a surplus instrumentation_end
-in second branch of if statement, although objtool check -f vmlinux.o will
-not complain because of its inability to correctly cover all cases
-(objtool will visit the third branch first, which markes
- following trace_rcu_dyntick as visited), I think remove the surplus
-instrumentation_end will make the code better.
+Fix rcu_accelerate_cbs() traces to only trace when cbs are
+accelerated in current call.
 
-
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 ---
- kernel/rcu/tree.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/rcu/tree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40e5e3dd253e..eaec6f6032c2 100644
+index 804e543..338b817 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1021,7 +1021,6 @@ noinstr void rcu_nmi_enter(void)
- 	} else if (!in_nmi()) {
- 		instrumentation_begin();
- 		rcu_irq_enter_check_tick();
--		instrumentation_end();
- 	} else  {
- 		instrumentation_begin();
- 	}
+@@ -1508,8 +1508,9 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	 * number.
+ 	 */
+ 	gp_seq_req = rcu_seq_snap(&rcu_state.gp_seq);
+-	if (rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
+-		ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
++	if (!rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
++		return ret;
++	ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
+ 
+ 	/* Trace depending on how much we were able to accelerate. */
+ 	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
