@@ -2,58 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
+	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13D3FC433DB
-	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 17:36:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 821A2C433E6
+	for <rcu@archiver.kernel.org>; Tue, 12 Jan 2021 14:44:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DAB1022A83
-	for <rcu@archiver.kernel.org>; Mon, 11 Jan 2021 17:36:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4CF0A23121
+	for <rcu@archiver.kernel.org>; Tue, 12 Jan 2021 14:44:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389503AbhAKRgJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Jan 2021 12:36:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389495AbhAKRgI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:36:08 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68140225AB;
-        Mon, 11 Jan 2021 17:35:27 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 12:35:25 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Trace cbs accelerated without leaf rnp node lock
- held
-Message-ID: <20210111123525.0e4de7e0@gandalf.local.home>
-In-Reply-To: <1610365543-7669-1-git-send-email-neeraju@codeaurora.org>
-References: <1610365543-7669-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1729809AbhALOoh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Jan 2021 09:44:37 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:38620 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbhALOog (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:44:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CEhlsG175618;
+        Tue, 12 Jan 2021 14:43:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=79cSaJzJ2MNjI8Id9X8ccmR+yaUkWnFPgSYCyVOWIZA=;
+ b=t0VtmXPuJww7qJlfJH2wZrvPIHEdO3Vyg+NkXTaBvOFsStMi7nAM6GWywZqbiAiQC8F0
+ vNvl4p4L00F9Trj5Wbq7n0D8sTkDM5QptWDiqzOun2UWaGnXBw7IwDQ5gBJPPYZyj6kh
+ ErCt3OMoho3kLdl32Ev7RtsGSHgSPhMrBbSct19LdG75pttPo5FF//giUVRzXBMMoqrv
+ Khb1GyXkKWtnzkMh4kbPW2/vmZW2zaNKqAl/8LCcwigBU6hp8z01ostbP8ey2wzAOkIw
+ kZgrToiccEUmYz8nQvKRzhXkE6/VVjQMa/vbpH8/OhyXp46CRq/k3kuNx+GgAmU+athL Ww== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kcypmru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 14:43:54 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CEZXYO180620;
+        Tue, 12 Jan 2021 14:41:53 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 360ke6kr2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 14:41:53 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CEfrmW005691;
+        Tue, 12 Jan 2021 14:41:53 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 Jan 2021 06:41:52 -0800
+Date:   Tue, 12 Jan 2021 17:41:46 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org
+Subject: [bug report] EXP rcuscale: Add crude tests for mem_dump_obj()
+Message-ID: <X/21KmJ1+jW+PJjC@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=881 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120084
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=886 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120085
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 11 Jan 2021 17:15:43 +0530
-Neeraj Upadhyay <neeraju@codeaurora.org> wrote:
+Hello Paul E. McKenney,
 
-> Trace cbs which are accelerated without rnp lock help in
-> rcu_accelerate_cbs_unlocked().
+The patch b3a539cc4d37: "EXP rcuscale: Add crude tests for
+mem_dump_obj()" from Dec 7, 2020, leads to the following static
+checker warning:
 
-The above sentence does not make sense.
+	kernel/rcu/rcutorture.c:1888 rcu_torture_stats()
+	warn: did you mean to pass the address of 'rhp'
 
--- Steve
+kernel/rcu/rcutorture.c
+  1865          {
+  1866                  struct rcu_head *rhp;
+  1867                  struct kmem_cache *kcp;
+  1868                  static int z;
+  1869  
+  1870                  kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
+  1871                  rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
+  1872                  pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
+                                                                                                                                     ^^^^
+Hopefully the address of rhp doesn't change at all in this function 0_0!
 
-> 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> ---
+  1873                  pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
+  1874                  mem_dump_obj(ZERO_SIZE_PTR);
+  1875                  pr_alert("mem_dump_obj(NULL):");
+  1876                  mem_dump_obj(NULL);
+  1877                  pr_alert("mem_dump_obj(%px):", &rhp);
+  1878                  mem_dump_obj(&rhp);
+  1879                  pr_alert("mem_dump_obj(%px):", rhp);
+  1880                  mem_dump_obj(rhp);
+  1881                  pr_alert("mem_dump_obj(%px):", &rhp->func);
+  1882                  mem_dump_obj(&rhp->func);
+  1883                  pr_alert("mem_dump_obj(%px):", &z);
+  1884                  mem_dump_obj(&z);
+  1885                  kmem_cache_free(kcp, rhp);
+  1886                  kmem_cache_destroy(kcp);
+  1887                  rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+  1888                  pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+  1889                  pr_alert("mem_dump_obj(kmalloc %px):", rhp);
+  1890                  mem_dump_obj(rhp);
+  1891                  pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
+  1892                  mem_dump_obj(&rhp->func);
+  1893                  kfree(rhp);
+  1894                  rhp = vmalloc(4096);
+  1895                  pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+  1896                  pr_alert("mem_dump_obj(vmalloc %px):", rhp);
+  1897                  mem_dump_obj(rhp);
+  1898                  pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
+  1899                  mem_dump_obj(&rhp->func);
+  1900                  vfree(rhp);
+  1901          }
+
+regards,
+dan carpenter
