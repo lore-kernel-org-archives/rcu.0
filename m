@@ -2,123 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF2A2C433DB
-	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 03:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A743EC433E0
+	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 05:12:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5D77923117
-	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 03:47:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A75D221ED
+	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 05:12:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725816AbhAMDrc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Jan 2021 22:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAMDrb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:47:31 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2D9C061575
-        for <rcu@vger.kernel.org>; Tue, 12 Jan 2021 19:46:45 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id ga15so1077365ejb.4
-        for <rcu@vger.kernel.org>; Tue, 12 Jan 2021 19:46:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ZcLpmOPkSFE/gueokH+hjJ/3Wa9K8Ju/waJdBuHgWM=;
-        b=iEDcOGPYSUwWJeCtU5722M9gia30ufJhm9f4E7VlPKRXL6Q/Rqkn7HKYAX2+ELfwtq
-         N4R5cyVKCIxM/C8Kuce0VxWeEWo6T1gG9/lY5GZFMs/FzJLYSy0t0yKElQul5pvH0Qh7
-         KWLfja8S0+B7HqnKSQbYcI6SD88uDDeqy8YneaAZXC7QYlQjuBxEkBET0pLFzYyJmgm4
-         xz9VXnF7AJbOWIP7SUjNBVHGvXzDkhNvgTGKEW6RoetRxiSnjK/edCv2lgL/06Is29re
-         lOPS3r7uwdI8iJGySBsSXfUSDfpSlm2E6nOGsalXWLwkAoNevHQS/xJOmPFs9yH+UzUk
-         VTew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ZcLpmOPkSFE/gueokH+hjJ/3Wa9K8Ju/waJdBuHgWM=;
-        b=YXpqkjinJFXR1u10yHzooR4ofcsOIUfFwdsPsFye3gPP3n3M+roZ8lAjYcKJfJ7XJ6
-         srK3u1Bu0KAMp08de4jL1yEIiD561/rQ0W2lz5QcaRRDMGczH7uU52EMVOSn5VGcPb9P
-         tsrsn00T3ixJySDTiuvR1OqMG1ez9OEo+AjMtHVciLYlGTtGJz83fXABCsljT/iEN+So
-         viK25OfVVPl6gt+vRMIWG5iIO82XPv8+v8VHzH+3GAjJxT0+wyTZ1x6qlvqbrPizDdvb
-         Xa+s5dp0HAWOKQMVorYs6I90cU2IiORKQKuc5MgDLGfKzb7d1FTj8PHAgRAevqLRknPY
-         U6yA==
-X-Gm-Message-State: AOAM53057va+sOy5A9Tydy8jh8gekJMmjpxo4XO63G5GlSZRmEyk27WN
-        89b0FFu9AhX9klTZyP8RJW7ztnWeZipcQ1UK1Bs=
-X-Google-Smtp-Source: ABdhPJx33+Rm2+Ih5dVUqiTVet0kacdH5Djg7d1l4Fp5ZhG+Td/oLlo6vFi7emO80h9ONLmDPpJt0B6MqDGbMiuse4k=
-X-Received: by 2002:a17:906:af5a:: with SMTP id ly26mr111534ejb.416.1610509604156;
- Tue, 12 Jan 2021 19:46:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111010859.7778-1-zhouzhouyi@gmail.com> <20210112175055.GI2743@paulmck-ThinkPad-P72>
-In-Reply-To: <20210112175055.GI2743@paulmck-ThinkPad-P72>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 13 Jan 2021 11:46:32 +0800
-Message-ID: <CAABZP2yMz9VGaYTnoQ2x1W8OrEQvtrUOO5nYj5pJfQPL-1e-MA@mail.gmail.com>
-Subject: Re: [PATCH] rcu: remove surplus instrumentation_end in rcu_nmi_enter
+        id S1725775AbhAMFMe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Jan 2021 00:12:34 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:18197 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbhAMFMb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Jan 2021 00:12:31 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610514727; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lz1rbHEN8q40hJaefWgl9UylDcfTHqHw9eJZzyNgRG0=; b=iPWkC+sx2uN6C1YATa2Icf6dOad2S86F68Ocd0A7JNCQBk4AFfc9RW7Z8rhjzDnGwC3sEijv
+ wyaGc5dKGZLFJK13LUTVbdaoBN0NZvTqFRQ7t66FVniJgYUgaYA15Up6cLN2ehnlQtKI0DVW
+ /bweg1gW1tGgXUcpndYzGf0DNxg=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5ffe80ffd84bad3547d26848 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 05:11:27
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95DB5C43465; Wed, 13 Jan 2021 05:11:27 +0000 (UTC)
+Received: from [192.168.0.103] (unknown [49.206.37.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 881FEC433CA;
+        Wed, 13 Jan 2021 05:11:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 881FEC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] rcu: Correct cpu offline trace in rcutree_dying_cpu
 To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, neeraju@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1610365558-8330-1-git-send-email-neeraju@codeaurora.org>
+ <20210112173116.GG2743@paulmck-ThinkPad-P72>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <c1dd3362-7087-7141-4a4a-28d67db1924e@codeaurora.org>
+Date:   Wed, 13 Jan 2021 10:41:20 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20210112173116.GG2743@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thank Paul for your encouragement and valuable advice
 
-I achieve great self improvement in studying and participating Linux RCU
 
-Also thank Neeraj for mutual interest in Linux RCU, your contribution
-makes me believe
-that even a small enhancement of code can still attract interest and
-draw favorable attention
-from peers.
+On 1/12/2021 11:01 PM, Paul E. McKenney wrote:
+> On Mon, Jan 11, 2021 at 05:15:58PM +0530, Neeraj Upadhyay wrote:
+>> Correctly trace whether the outgoing cpu blocks current gp in
+>> rcutree_dying_cpu().
+>>
+>> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> 
+> Good catch, queued, thank you!  Please see below for my usual
+> wordsmithing, and please lat me know if I messed something up.
+> 
+> 							Thanx, Paul
+> 
 
-Cheers
-Zhouyi
-On Wed, Jan 13, 2021 at 1:50 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> Good catch, applied, thank you!  As usual, I edited a bit, so please
-> check below to see if I messed anything up.
->
-> I did add Neeraj Upadhyay's Reported-by because he noted this, though you
-> beat him with a public posting, though mostly because I asked him whether
-> he could make this happen.  I also added the Fixes, but could you please
-> do that in the future?  You can use "git blame" or either "git log" and
-> "gitk" with appropriate options to find the offending commit.
->
->                                                         Thanx, Paul
->
+Thanks Paul, looks good!
+
+
+Thanks
+Neeraj
+
 > ------------------------------------------------------------------------
->
-> commit 3f91ff7fd4f76e7eb48bad79666c466bc3530324
-> Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> Date:   Mon Jan 11 09:08:59 2021 +0800
->
->     rcu: Remove spurious instrumentation_end() in rcu_nmi_enter()
->
->     In rcu_nmi_enter(), there is an erroneous instrumentation_end() in the
->     second branch of the "if" statement.  Oddly enough, "objtool check -f
->     vmlinux.o" fails to complain because it is unable to correctly cover
->     all cases.  Instead, objtool visits the third branch first, which marks
->     following trace_rcu_dyntick() as visited.  This commit therefore removes
->     the spurious instrumentation_end().
->
->     Fixes: 04b25a495bd6 ("rcu: Mark rcu_nmi_enter() call to rcu_cleanup_after_idle() noinstr")
->     Reported-by Neeraj Upadhyay <neeraju@codeaurora.org>
->     Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
+> 
+> commit ab6e7609e7590e1bb220ef6b0822a823dde46f6c
+> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Date:   Mon Jan 11 17:15:58 2021 +0530
+> 
+>      rcu: Fix CPU-offline trace in rcutree_dying_cpu
+>      
+>      The condition in the trace_rcu_grace_period() in rcutree_dying_cpu() is
+>      backwards, so that it uses the string "cpuofl" when the offline CPU is
+>      blocking the current grace period and "cpuofl-bgp" otherwise.  Given that
+>      the "-bgp" stands for "blocking grace period", this is at best misleading.
+>      This commit therefore switches these strings in order to correctly trace
+>      whether the outgoing cpu blocks the current grace period.
+>      
+>      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 63c6dba..e04e336 100644
+> index cc6b6fc..63c6dba 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -1050,7 +1050,6 @@ noinstr void rcu_nmi_enter(void)
->         } else if (!in_nmi()) {
->                 instrumentation_begin();
->                 rcu_irq_enter_check_tick();
-> -               instrumentation_end();
->         } else  {
->                 instrumentation_begin();
->         }
+> @@ -2387,7 +2387,7 @@ int rcutree_dying_cpu(unsigned int cpu)
+>   
+>   	blkd = !!(rnp->qsmask & rdp->grpmask);
+>   	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+> -			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
+> +			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+>   	return 0;
+>   }
+>   
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
