@@ -2,125 +2,105 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A743EC433E0
-	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 05:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 666E2C433E0
+	for <rcu@archiver.kernel.org>; Thu, 14 Jan 2021 07:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6A75D221ED
-	for <rcu@archiver.kernel.org>; Wed, 13 Jan 2021 05:12:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0EDEA239CF
+	for <rcu@archiver.kernel.org>; Thu, 14 Jan 2021 07:22:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbhAMFMe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 13 Jan 2021 00:12:34 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:18197 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbhAMFMb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:12:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610514727; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=lz1rbHEN8q40hJaefWgl9UylDcfTHqHw9eJZzyNgRG0=; b=iPWkC+sx2uN6C1YATa2Icf6dOad2S86F68Ocd0A7JNCQBk4AFfc9RW7Z8rhjzDnGwC3sEijv
- wyaGc5dKGZLFJK13LUTVbdaoBN0NZvTqFRQ7t66FVniJgYUgaYA15Up6cLN2ehnlQtKI0DVW
- /bweg1gW1tGgXUcpndYzGf0DNxg=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ffe80ffd84bad3547d26848 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 05:11:27
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95DB5C43465; Wed, 13 Jan 2021 05:11:27 +0000 (UTC)
-Received: from [192.168.0.103] (unknown [49.206.37.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 881FEC433CA;
-        Wed, 13 Jan 2021 05:11:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 881FEC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu: Correct cpu offline trace in rcutree_dying_cpu
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1610365558-8330-1-git-send-email-neeraju@codeaurora.org>
- <20210112173116.GG2743@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <c1dd3362-7087-7141-4a4a-28d67db1924e@codeaurora.org>
-Date:   Wed, 13 Jan 2021 10:41:20 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726952AbhANHWu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 14 Jan 2021 02:22:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726266AbhANHWu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:22:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AAF239CF;
+        Thu, 14 Jan 2021 07:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610608929;
+        bh=x4ASfSl6fNvoaHZTcA9U5vpjYi6k+c+UnmfBcNVRlbg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mJzvUksr9f794ozs47blsW0nhEkZ2Dc1SY0CbduyKJ3hh+keDXRwJ+or3Io7dIyhl
+         KWoIIrpavLASrvKbgVBM4ZUyZF+2nnwRYFVoTGBqLmnERfyHQYPagCpwgLS1E5FIZ/
+         a7iiKmuCWa87WIPYwL7ExCC0W6bDHcan7fhLPJORrL0Qgkm73NGpXQy6gktnnkdlVn
+         GOQpP07CA2Gw0PBUlCcXIRZFHntd66bQFUJRrWWrLFMoB9PkSHKKQyiJgU6zGSyew4
+         wJmR+c8gey9LqNpgQCkX6m8tClIxXZ0nnh1SGU/TS50nz71RHhLDs8doPEZZsoGVXV
+         nikQHRqBazKng==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kzwxK-00EOaD-8U; Thu, 14 Jan 2021 08:22:06 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: [PATCH] rcu: better document kfree_rcu()
+Date:   Thu, 14 Jan 2021 08:22:02 +0100
+Message-Id: <2ec9a8bc8b411b04e2f541b285cc0a133a6d94de.1610608910.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210112173116.GG2743@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+After changeset 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro"),
+kernel-doc now emits two warnings:
 
+	./include/linux/rcupdate.h:884: warning: Excess function parameter 'ptr' description in 'kfree_rcu'
+	./include/linux/rcupdate.h:884: warning: Excess function parameter 'rhf' description in 'kfree_rcu'
 
-On 1/12/2021 11:01 PM, Paul E. McKenney wrote:
-> On Mon, Jan 11, 2021 at 05:15:58PM +0530, Neeraj Upadhyay wrote:
->> Correctly trace whether the outgoing cpu blocks current gp in
->> rcutree_dying_cpu().
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> 
-> Good catch, queued, thank you!  Please see below for my usual
-> wordsmithing, and please lat me know if I messed something up.
-> 
-> 							Thanx, Paul
-> 
+What's happening here is that some macro magic was added in order
+to call two different versions of kfree_rcu(), being the first one
+with just one argument and a second one with two arguments.
 
-Thanks Paul, looks good!
+That makes harder to document the kfree_rcu() arguments, which
+also reflects on the documentation text.
 
+In order to make clearer that this macro accepts optional
+arguments, by using macro concatenation, changing its
+definition from:
+	#define kfree_rcu kvfree_rcu
 
-Thanks
-Neeraj
+to:
+	#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
 
-> ------------------------------------------------------------------------
-> 
-> commit ab6e7609e7590e1bb220ef6b0822a823dde46f6c
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Mon Jan 11 17:15:58 2021 +0530
-> 
->      rcu: Fix CPU-offline trace in rcutree_dying_cpu
->      
->      The condition in the trace_rcu_grace_period() in rcutree_dying_cpu() is
->      backwards, so that it uses the string "cpuofl" when the offline CPU is
->      blocking the current grace period and "cpuofl-bgp" otherwise.  Given that
->      the "-bgp" stands for "blocking grace period", this is at best misleading.
->      This commit therefore switches these strings in order to correctly trace
->      whether the outgoing cpu blocks the current grace period.
->      
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cc6b6fc..63c6dba 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2387,7 +2387,7 @@ int rcutree_dying_cpu(unsigned int cpu)
->   
->   	blkd = !!(rnp->qsmask & rdp->grpmask);
->   	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-> -			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
-> +			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
->   	return 0;
->   }
->   
-> 
+That not only helps kernel-doc to understand the macro arguemnts,
+but also provides a better C definition that makes clearer that
+the first argument is mandatory and the second one is optional.
 
+Fixes: 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ include/linux/rcupdate.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index bd04f722714f..5cc6deaa5df2 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -881,7 +881,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
+  */
+-#define kfree_rcu kvfree_rcu
++#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
+ 
+ /**
+  * kvfree_rcu() - kvfree an object after a grace period.
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.29.2
+
