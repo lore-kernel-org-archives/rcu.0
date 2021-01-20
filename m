@@ -2,79 +2,75 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB036C433DB
-	for <rcu@archiver.kernel.org>; Wed, 20 Jan 2021 04:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43614C433DB
+	for <rcu@archiver.kernel.org>; Wed, 20 Jan 2021 04:33:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1C792313B
-	for <rcu@archiver.kernel.org>; Wed, 20 Jan 2021 04:32:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E3CAD2313B
+	for <rcu@archiver.kernel.org>; Wed, 20 Jan 2021 04:33:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbhATEc0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Jan 2021 23:32:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52934 "EHLO mail.kernel.org"
+        id S1728564AbhATEdU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Jan 2021 23:33:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbhATEcZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Jan 2021 23:32:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD50523138;
-        Wed, 20 Jan 2021 04:31:44 +0000 (UTC)
+        id S1727787AbhATEdT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Jan 2021 23:33:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56D3223158;
+        Wed, 20 Jan 2021 04:32:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611117104;
-        bh=Yo6Rl/X65irlG0tJBG8sFBy+6ANz0e/RhHYaD+X8Hxk=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=tuxlr6q9Ik8XFxclFMMtvvnLv+MwgYuOZ3zb5z+aFJMDNeZmMqIqSN3a3XiwyhpY0
-         65DSyHESf0l9vqELswf9/+K8dVhLsX3ISJgxZi966uAeJ0gKXZjt23zuJ/+Z4YtPAA
-         SFMTNnaJS1T7Nh4NCoOGyCwherW+uAKs/9J3wreRwVkV+l6FrdL5nGGwuYiydfcfPv
-         AOSLDTP5OawvsePKNTiAoRQSxLr+O2tIa76o0hG7jhRrQ/P7qpPYX8RORi1pnVLoJe
-         A2nxcLUsWYC9nQd5OU9vws6eGGAZK3PVEFgXSqyuqsR/3gZRQ6IAdxY8c2h6o91r/m
-         SHOobmWpq3ENg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7926F35215BE; Tue, 19 Jan 2021 20:31:44 -0800 (PST)
-Date:   Tue, 19 Jan 2021 20:31:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1611117158;
+        bh=qjT7jsABtEkFjwh3R7KdQ5ewWLKm1ZZKq9tH2fwcEL4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mhYwQJZUlisZ8GZRFmGaljm/I7LLoVlDuJ53datkQIX+N9Jy5+Y/a8XcUehcjGqDD
+         Y2gXfl21l+h83l32LMESw1KsQZML1/OUWixJiUaij5MnWuPLMGOS4wrlrC3htU6ytn
+         ze4w15gkv76jjcmkL+rPf8pCeKYQgwqyEdB6xwoJp+yq0AM4oIhAmdLjxQE8sokz7f
+         iMLATE34G1E9KUGH6O5Y1lPDandz/tsxx33P0ysIXqQawTCEXHrv+fn7GltqDTz7bz
+         axwUKoP0dAASOE/+MK8GdX9R7AJzwMpiPPQS1bU7yrGw6bNI4e8I/i9OTnIze99QS5
+         WbAX0AgyGckJQ==
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, bigeasy@linutronix.de,
-        swood@redhat.com
-Subject: [PATCH tip/core/rcu 0/4] Fix RCU priority boosting
-Message-ID: <20210120043144.GA7045@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/4] rcutorture: Make TREE03 use real-time tree.use_softirq setting
+Date:   Tue, 19 Jan 2021 20:32:34 -0800
+Message-Id: <20210120043236.7254-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210120043144.GA7045@paulmck-ThinkPad-P72>
+References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series fixes a bug in which an RCU-priority-boosted task can stay
-boosted for some time after it has exited its RCU read-side critical
-section.  This bug arose during the RCU flavor consolidation effort.
-The patches are as follows:
+TREE03 tests RCU priority boosting, which is a real-time feature.
+It would also be good if it tested something closer to what is
+actually used by the real-time folks.  This commit therefore adds
+tree.use_softirq=0 to the TREE03 kernel boot parameters in TREE03.boot.
 
-1.	Expedite deboost in case of deferred quiescent state.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot | 1 +
+ 1 file changed, 1 insertion(+)
 
-2.	Make TREE03 use real-time tree.use_softirq setting.
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
+index 1c21894..64f864f1 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
+@@ -4,3 +4,4 @@ rcutree.gp_init_delay=3
+ rcutree.gp_cleanup_delay=3
+ rcutree.kthread_prio=2
+ threadirqs
++tree.use_softirq=0
+-- 
+2.9.5
 
-3.	Run rcuo kthreads at elevated priority in CONFIG_RCU_BOOST
-	kernels.
-
-4.	Fix testing of RCU priority boosting.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- kernel/rcu/rcutorture.c                                    |   36 +++++++------
- kernel/rcu/tree_plugin.h                                   |   28 +++++-----
- tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot |    1 
- 3 files changed, 39 insertions(+), 26 deletions(-)
