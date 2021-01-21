@@ -2,226 +2,189 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 188BCC4332E
-	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 06:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35DA6C433E0
+	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 12:40:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C8BF0238EE
-	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 06:34:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC9CD239EF
+	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 12:40:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbhAUGdq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Jan 2021 01:33:46 -0500
-Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:9664
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727102AbhAUGcw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:32:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LsUVHFLnnMn1ydQLlV/4LrVfsKTqe5tuQPDbco2MX8/6l5SStbESkZZE2pnkRss0B60r02uBOV06UJDuARFOhvcn2MNYK6cBCbemqSTh19NHzCPNDGHAQzU3oqncF4EcAc/lm1l7gdwp+IYBPSoOYObCuVBLp2weziEa5d4RhSo7dVNX3SGVyY99TIobhhoajP81hZKnSuRzhtWS/lQh6Z1+Hs1OHD6hHkN87LbsdJtBrS1p/Qo9gT48bPu6jNB4lcs86Xd2NksDJErR3YL21QyuWnkiaOM4XpCTiN6qAk4kbclSDlFkpgB661nEi0VaUmsYlUPVAeZG2KD+x3/7Dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r9TGsCPBLgSvGknUGTaA1ZQbCBgPuOSKLCcLa6W7mEE=;
- b=Domj2HM3zW6jDsmJKWarnNg02CbjwZ+T/pTN7yK8CzdG5qZW03/n4jjTyIYaPLlscaFqUEFwFVRxFT9ZFiWZwjjVueZJLFLPU2YMIFj0wecTH0Fu0hAn9JIU/xzmit//GuSZ1m1vcaTc/T/jo8B8rNdTC2lj2zsywmTIaNpnWRSV97+NMUTpeV8fmFRv0/BEYs45pY7yfUjNTNbHRKEVBZlKPjImNdnVtFihmgusV5z0WfeIfYYYhCvpZklRgznMK7FHQR6jw/y6OulgcpKFSboR3JHvihYFgAPTF5WuGJDkm6Ztcxz78qpijMREAdujYG0DrGDp9wYhagQh7DLxNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1730887AbhAUMkX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Jan 2021 07:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731344AbhAUMjT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:39:19 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD490C061575;
+        Thu, 21 Jan 2021 04:38:38 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id b26so2272082lff.9;
+        Thu, 21 Jan 2021 04:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r9TGsCPBLgSvGknUGTaA1ZQbCBgPuOSKLCcLa6W7mEE=;
- b=b+3uZXYMVQKbASwjjgjrwmQnrEI6yTu77/Oa757voRJsmwm7jgvD1rPBAJg21ExIzpPwHKoHeh6wTikLOnj1UemkAxnQ68c2zG73JLGZndzusHUobYDFN4r2h5FMP94JLdGely8epAuSpdqisN+2DT1ZgCtYn+LOWHm8oX1XMxU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB5008.namprd11.prod.outlook.com (2603:10b6:a03:2d5::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Thu, 21 Jan
- 2021 06:32:02 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3763.014; Thu, 21 Jan 2021
- 06:32:02 +0000
-From:   qiang.zhang@windriver.com
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
-Date:   Thu, 21 Jan 2021 14:49:49 +0800
-Message-Id: <20210121064949.16164-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK0PR03CA0101.apcprd03.prod.outlook.com
- (2603:1096:203:b0::17) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ateh8R/pigQiU3FBeBMITH3roUoBO98+fhC1CWQEaTY=;
+        b=aKMVUjW8EDjPIK+/DGSt0Du4TAIPcuG/FMBZYBzgN0iQW2chArKQJKBOxJzXoT1vPh
+         pqlBK+ypI+rAR98MrQs23bgNw3qNEJFMdGvcwYknlfvUikPFfYThH0yfLa70OUuoZ2ZV
+         0gfwSKvHv5iKkocYPYnavsHsEWnthtQomtuI0/H9u6hO18etYKC+84gu7afBXczgGfCe
+         G6imBQPImIzB+NpUOqa/03EmV/hWZygWGfXS3d1oh5gUjzda0vlhQ7KQBSj5Vzj7GWDo
+         18d29CJTrDGrxfHmwJnUHtE1lAT1ZLjXzN/EKRzUA0SG7JgPkt8SiJFNquz8HLF8PKEc
+         V6/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ateh8R/pigQiU3FBeBMITH3roUoBO98+fhC1CWQEaTY=;
+        b=RS9cpS1WyiNDTeWNRKiYjrKapovklhxnCJNkvGyuZWk32lh3P3xhle/o0NeYIiNPNd
+         mBiCg715ckzu6xbCJW+8cTj7Dl6AEqIGWOi/LuJc3kGDhSl6hwKeePXynvQl86rV9u2O
+         BeBlNSoHAMMhvPeFsD8wDgUZxBwg2wKZ4qig5u5ayR0rMpDZviFTpQHc/cMNDqVI/CUg
+         SJ+mDDOtXRHJVKe7ITVEwUNMthpMsgYk5otWKuu/PmDPR3Oidb36q7N9BDhoTkxdYAfL
+         scz2KQt7aM9Cn3aSsM1h3OHNfTX90EZUvhpwvapUtkdRbPmhdmLHw8OuCsbLulixBhJl
+         WfEw==
+X-Gm-Message-State: AOAM530nCFC0bVusCCoFC27TX1/9V4W7UmlDjjcrWvaq3Z5Ht4MGJ3uK
+        OyRnMRZiSFH9miW3+FnlY8M=
+X-Google-Smtp-Source: ABdhPJwerWKViVNyaNQJWLOpiSADFu+2lZmKLx8dUaClNs/3OUFe2YydFHXRtCelvu0r/1ZIbYA8Qg==
+X-Received: by 2002:a05:6512:b12:: with SMTP id w18mr6963453lfu.323.1611232717373;
+        Thu, 21 Jan 2021 04:38:37 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id b14sm516102lfi.164.2021.01.21.04.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 04:38:36 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 21 Jan 2021 13:38:34 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210121123834.GA1872@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK0PR03CA0101.apcprd03.prod.outlook.com (2603:1096:203:b0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 06:32:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 54f68f6f-6119-40dc-68c2-08d8bdd642f4
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB5008:
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB50088552310C2DE0442BBEE2FFA10@SJ0PR11MB5008.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:126;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TjdvbGQ8UTu902FhdGDMZn+VmP7tYJQGMyTYxd6GnprXoXZM+IwR/sQoZoDrd04wf1TOFPjzk/fr78lxJeI+Hy2kmeYvWu3p6NmCOZV69MhstiDrIJovODRUj6NDLJGbNtoICdBbaC+xCShiC5PGz9SNi8NJxnmHB0zfzvu3/4J7VSGJwroa+7HJR0C33JOK+1ESjZRMGbwZ8hQhm/teYKrj9WscsFT6VfgTgIqlPMfURJ9cNQ583lR5EAlr7Cl7imUzjUlFNNRxx1/mxYKuCTU9/JiEYBkjiB8PdzwQY70L54xfWGG4kZ9vkvy9MUuk1hGDBWigLP0AficBHgSxaE/qqsgpWbpZRoXf+Uoc/dtFLvpQEKHPqAWQCRYBfo4e
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(366004)(376002)(5660300002)(26005)(8676002)(83380400001)(956004)(16526019)(478600001)(186003)(6916009)(2906002)(36756003)(4326008)(66476007)(66556008)(2616005)(9686003)(8936002)(6486002)(6512007)(52116002)(1076003)(6506007)(6666004)(66946007)(66574015)(86362001)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UjotW8rCF1CN2dyT6VYI5ioa7ZNDBV1LPwI2p4qi7jgHneTHzIThQlqKnTkf?=
- =?us-ascii?Q?qyfnSmLP/c7VYUW13pWEuhy3P44YUddWBF/Ae+E+/ylXEbOYlW1SHVL31S5y?=
- =?us-ascii?Q?nuZijloEcImtsE7Rfem4KpIpWm0dn9ZYGHDNn2wiv4HSwXtQ6p5osLmUM8fH?=
- =?us-ascii?Q?jRJ9ydoH1n/q+VY66CDPY0bEB4UYYLz+dP6wh78mlz/SVO08epi9sXyFPCV4?=
- =?us-ascii?Q?77lZktRSrdAO9AXei1mb84GucVCnbBdRD4xarkAEkxX8KTgRdA9/EX4Aynhe?=
- =?us-ascii?Q?FfyNT05vrevDOsRRFW5T0YuUuy5K4gLR1HfCW2hf3Tvg13rT9mMbScA/dRAx?=
- =?us-ascii?Q?MFsyjhxqRCD/+sDCCRunZVwMXcqIAT05uECe+htulZKohS5ormlVAdB6Aajb?=
- =?us-ascii?Q?krFXOsXc2Q65TrMgtBiXU7ug3ARUtSB7cQJVbNaXTHDyOhA1rV1SfvR60Cm4?=
- =?us-ascii?Q?kIOd9rQNdDSMsTxx9JL1X7romJXuWq41lV4vRFsZ3vX5qDKCmE1+msWIVzPa?=
- =?us-ascii?Q?6jBqGuR5ltrTTAV5ViyB9G/PnOCRmju7u7OsFi3Of9WNQ89GvEKJlN3yUsKu?=
- =?us-ascii?Q?srD2Ccy1SEooXiD/9ohPXohAJ2XK7ItjK1UvCNhtqe9UtHac5NW3miMtTWo9?=
- =?us-ascii?Q?H36hOsp2hSmaNovBSSWbFQnh/J5ZKNKaAzPxsGq9NDVWQUXKSDKnD3wkulXP?=
- =?us-ascii?Q?ccIB5xwPkcPvZmrfrv3G3kDCvQqT2SeFlQTD/Z5YV/TSLwPivD2BqAJaa18W?=
- =?us-ascii?Q?Gwc66NhjCRAihPV1GwUdFEoJHeXi9JhMxr2NItgYxV9buVNwN+hb7ARXZ8/Q?=
- =?us-ascii?Q?uv/b0Rolt7sIYKKe7zLMfou9vhaund1JSGCJmXd+blHA5xum8ZCXp2gYTHoN?=
- =?us-ascii?Q?UeCKYRVl/H0hCmHDhoh/gxZVwU7F4c267pCkeNU/ShHL3UDKQDUNcI3v50i0?=
- =?us-ascii?Q?SQ5et5N7wXlGBoWLkAqpzocLPOxLMeggSpwIj+5NrOI=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54f68f6f-6119-40dc-68c2-08d8bdd642f4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 06:32:02.2986
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Li0rpPw+wj3FXw92blLnea4zWZdmmFy2bsK/3xxv0n92Vcpc1VKWnoNNZ6f0o2+Kn7QVPkX2z0USCTjCFm4n/TAdh857ljILGxcCvny4C/4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5008
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On Wed, Jan 20, 2021 at 08:57:57PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-01-20 17:21:46 [+0100], Uladzislau Rezki (Sony) wrote:
+> > For a single argument we can directly request a page from a caller
+> > context when a "carry page block" is run out of free spots. Instead
+> > of hitting a slow path we can request an extra page by demand and
+> > proceed with a fast path.
+> > 
+> > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > and that its fallback is the relatively high latency synchronize_rcu().
+> > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > to allow limited sleeping within the memory allocator.
+> > 
+> > [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+> >  1 file changed, 26 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index e04e336bee42..2014fb22644d 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3465,37 +3465,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> >  	}
+> >  }
+> >  
+> > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> > +// state specified by flags.  If can_alloc is true, the caller must
+> > +// be schedulable and not be holding any locks or mutexes that might be
+> > +// acquired by the memory allocator or anything that it might invoke.
+> > +// Returns true if ptr was successfully recorded, else the caller must
+> > +// use a fallback.
+> 
+> The whole RCU department is getting swamped by the // comments. Can't we
+> have proper kernel doc and /* */ style comments like the remaining part
+> of the kernel?
+> 
+> >  static inline bool
+> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > +	unsigned long *flags, void *ptr, bool can_alloc)
+> >  {
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> >  	int idx;
+> >  
+> > -	if (unlikely(!krcp->initialized))
+> > +	*krcp = krc_this_cpu_lock(flags);
+> > +	if (unlikely(!(*krcp)->initialized))
+> >  		return false;
+> >  
+> > -	lockdep_assert_held(&krcp->lock);
+> >  	idx = !!is_vmalloc_addr(ptr);
+> >  
+> >  	/* Check if a new block is required. */
+> > -	if (!krcp->bkvhead[idx] ||
+> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > -		bnode = get_cached_bnode(krcp);
+> > -		/* Switch to emergency path. */
+> > +	if (!(*krcp)->bkvhead[idx] ||
+> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+> > +		bnode = get_cached_bnode(*krcp);
+> > +		if (!bnode && can_alloc) {
+> > +			krc_this_cpu_unlock(*krcp, *flags);
+> > +			bnode = (struct kvfree_rcu_bulk_data *)
+> 
+> There is no need for this cast.
+> 
+__get_free_page() returns "unsigned long" whereas a bnode is a pointer
+to kvfree_rcu_bulk_data struct, without a casting the compiler will
+emit a warning.
 
-If CPUs go offline, the corresponding krcp's page cache can
-not be use util the CPU come back online, or maybe the CPU
-will never go online again, this commit therefore free krcp's
-page cache when CPUs go offline.
+> > +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+> > +			*krcp = krc_this_cpu_lock(flags);
+> 
+> so if bnode is NULL you could retry get_cached_bnode() since it might
+> have been filled (given preemption or CPU migration changed something).
+> Judging from patch #3 you think that a CPU migration is a bad thing. But
+> why?
+> 
+I see your point. Indeed we can retry but honestly i do not see that it
+makes a lot of sense. I prefer to keep the logic as simple as it can be.
+If we are run out of free pages(low memory condition), there is a fallback
+mechanism for such purpose, i.e it implies that a slow path can be hit.
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- kernel/rcu/tree.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+>>
+>> You think that a CPU migration is a bad thing. But why?
+>>
+It is not a bad thing. But if it happens we might queue a new bnode
+to a drain list of another CPU where a previous element of a new
+bnode may be just underutilized. So that is why i use migrate_disable()/enable()
+to prevent it.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e04e336bee42..2eaf6f287483 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -158,6 +158,9 @@ static void sync_sched_exp_online_cleanup(int cpu);
- static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
- static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
- 
-+static void krc_offline(unsigned int cpu, bool off);
-+static void free_krc_page_cache(int cpu);
-+
- /* rcuc/rcub kthread realtime priority */
- static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
- module_param(kthread_prio, int, 0444);
-@@ -2457,6 +2460,9 @@ int rcutree_dead_cpu(unsigned int cpu)
- 
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
-+
-+	krc_offline(cpu, true);
-+	free_krc_page_cache(cpu);
- 	return 0;
- }
- 
-@@ -3169,6 +3175,7 @@ struct kfree_rcu_cpu {
- 
- 	struct llist_head bkvcache;
- 	int nr_bkv_objs;
-+	bool offline;
- };
- 
- static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
-@@ -3220,6 +3227,8 @@ static inline bool
- put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 	struct kvfree_rcu_bulk_data *bnode)
- {
-+	if (krcp->offline)
-+		return false;
- 	// Check the limit.
- 	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
- 		return false;
-@@ -3230,6 +3239,39 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 
- }
- 
-+static void krc_offline(unsigned int cpu, bool off)
-+{
-+	unsigned long flags;
-+	struct kfree_rcu_cpu *krcp;
-+
-+	krcp = per_cpu_ptr(&krc, cpu);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
-+	if (off)
-+		krcp->offline = true;
-+	else
-+		krcp->offline = false;
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+}
-+
-+static void free_krc_page_cache(int cpu)
-+{
-+	unsigned long flags;
-+	struct kfree_rcu_cpu *krcp;
-+	int i;
-+	struct kvfree_rcu_bulk_data *bnode;
-+
-+	krcp = per_cpu_ptr(&krc, cpu);
-+
-+	for (i = 0; i < rcu_min_cached_objs; i++) {
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		bnode = get_cached_bnode(krcp);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+		if (!bnode)
-+			break;
-+		free_page((unsigned long)bnode);
-+	}
-+}
-+
- /*
-  * This function is invoked in workqueue context after a grace period.
-  * It frees all the objects queued on ->bhead_free or ->head_free.
-@@ -3549,7 +3591,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	kasan_record_aux_stack(ptr);
- 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
- 	if (!success) {
--		run_page_cache_worker(krcp);
-+		if (!krcp->offline)
-+			run_page_cache_worker(krcp);
- 
- 		if (head == NULL)
- 			// Inline if kvfree_rcu(one_arg) call.
-@@ -4086,6 +4129,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rcu_spawn_cpu_nocb_kthread(cpu);
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
- 
-+	krc_offline(cpu, false);
- 	return 0;
- }
- 
-@@ -4591,6 +4635,7 @@ static void __init kfree_rcu_batch_init(void)
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
- 		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
-+		krcp->offline = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
- 		pr_err("Failed to register kfree_rcu() shrinker!\n");
--- 
-2.29.2
+If there are some hidden issues with migrate_disable()/enable() or you
+think it is a bad idea to use it, it would be appreciated if you could
+describe your view in more detail.
 
+Thanks for the comments!
+
+--
+Vlad Rezki
