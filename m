@@ -2,139 +2,180 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 822DDC43381
-	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 19:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F753C433DB
+	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 19:31:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3ECF223A22
-	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 19:30:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D9C223A1C
+	for <rcu@archiver.kernel.org>; Thu, 21 Jan 2021 19:31:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbhAUTHm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 21 Jan 2021 14:07:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38138 "EHLO mail.kernel.org"
+        id S1727309AbhAUTbA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 21 Jan 2021 14:31:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbhAUTHU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1726666AbhAUTHU (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 21 Jan 2021 14:07:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4620A23A58;
-        Thu, 21 Jan 2021 18:55:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DE023A5A;
+        Thu, 21 Jan 2021 18:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611255322;
-        bh=FBagPdjKuwtL8Rl9UI0E8tbyAtcpDMOgoSPG7m66OgA=;
+        s=k20201202; t=1611255376;
+        bh=2Xojm14IB9nPhE0F1jD09AO119Qz7ER3XWRWdlK1oac=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Oyp33BzG1ukm2BS4NiGuIIH1CJ8erzSBwHwysmbenJjsFYHF8i/oN87ulxf160Zsp
-         h3Wwk6GbOI9ipsMJ2q6O9CaSCsQfn35tobXFdzsGSBd0qo0KiqrT4ROlVHwo1VQH24
-         Xs3NweurwcDVQYGMlOop8mX8gCOZPid7de/t5NiYkKzVPlHIptQbNTY+qBMiflJiSS
-         oL4HV3P+srJGN5qo02zN6q3NJubd1luw8XaLbNunhPThTVB5Z9LR9WIzW9OxRGDhF6
-         2xqr0WDz5dLHfvAu5Z+jgGlkCObsZ+XwA1wOsIkEjzZzp/tKAbT5wW4K2J+q2CagxA
-         M9FdQXZTSl/7w==
+        b=h1jx/Bkol+Eqmn1yGDHDI3ryPseCSwR/jDuGEOJTqSimQRwD7QNED2RcnGRh1h6aK
+         ZwwG7B/JJSWo8XEnhaLO+zRnQ1ag6jeA+s7a8oJu2vJar4zpnvDatQ8oi13rr9Vdnn
+         3HUxjl1soOxfwyerFpRrWKY9pkFM5EVusQgtu8jQGHcnGNd4GL/lY60UMZnLwJTzr+
+         814mM5jzrjzem9ku9yqhKQQD6ClbFyAdzkwJJiPE3beD406twslKvTCL/vdo7p0rvs
+         wN6hpaXI9sZEXisjFk0Ls5vz1h4K2Jek8txVhsL+1DhPRSrVQ504AITKFJHoDxMVKW
+         hlrXCE1N8WIkg==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DCA9035214EB; Thu, 21 Jan 2021 10:55:21 -0800 (PST)
-Date:   Thu, 21 Jan 2021 10:55:21 -0800
+        id 992AA35214EB; Thu, 21 Jan 2021 10:56:15 -0800 (PST)
+Date:   Thu, 21 Jan 2021 10:56:15 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, catalin.marinas@arm.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-Message-ID: <20210121185521.GQ2743@paulmck-ThinkPad-P72>
+To:     qiang.zhang@windriver.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going
+ offline
+Message-ID: <20210121185615.GR2743@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+In-Reply-To: <20210121064949.16164-1-qiang.zhang@windriver.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> the following kernel crash noticed. This started happening from Linux next
-> next-20210111 tag to next-20210121.
+On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git describe: next-20210111
->   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+> If CPUs go offline, the corresponding krcp's page cache can
+> not be use util the CPU come back online, or maybe the CPU
+> will never go online again, this commit therefore free krcp's
+> page cache when CPUs go offline.
 > 
-> output log:
-> 
-> [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> = ffff8000091ab8e0
-> [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> [  621.546696] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000008
-> [  621.555431] Mem abort info:
-> [  621.557243]   ESR = 0x96000006
-> [  621.559074]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [  621.562240]   SET = 0, FnV = 0
-> [  621.563626]   EA = 0, S1PTW = 0
-> [  621.565134] Data abort info:
-> [  621.566425]   ISV = 0, ISS = 0x00000006
-> [  621.568064]   CM = 0, WnR = 0
-> [  621.569571] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101ef0000
-> [  621.572446] [0000000000000008] pgd=0000000102ee1003,
-> p4d=0000000102ee1003, pud=0000000100b25003, pmd=0000000000000000
-> [  621.577007] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> [  621.579359] Modules linked in: rcutorture(-) torture rfkill crct10dif_ce fuse
-> [  621.582549] CPU: 2 PID: 422 Comm: rcu_torture_sta Not tainted
-> 5.11.0-rc2-next-20210111 #2
-> [  621.585294] Hardware name: linux,dummy-virt (DT)
-> [  621.586671] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> [  621.588497] pc : kmem_valid_obj+0x58/0xa8
-> [  621.589748] lr : kmem_valid_obj+0x40/0xa8
-> [  621.591022] sp : ffff800012debdc0
-> [  621.592026] x29: ffff800012debdc0 x28: 0000000000000000
-> [  621.593652] x27: ffff800012e8b988 x26: ffff0000c634dbc0
-> [  621.595287] x25: 0000000000000000 x24: ffff8000091a1e60
-> [  621.596882] x23: ffff8000091ab8e0 x22: ffff0000c0a3ac40
-> [  621.598464] x21: ffff0000c1f44100 x20: ffff8000091a5e90
-> [  621.600070] x19: 0000000000000000 x18: 0000000000000010
-> [  621.601692] x17: 0000000000007fff x16: 00000000ffffffff
-> [  621.603303] x15: ffff0000c0a3b0b8 x14: 66203d2070687226
-> [  621.604866] x13: 202c303463613361 x12: 2c30346562656432
-> [  621.606455] x11: ffff80001246cbc0 x10: ffff800012454b80
-> [  621.608064] x9 : ffff8000100370c8 x8 : 0000000100000000
-> [  621.609649] x7 : 0000000000000018 x6 : ffff800012816348
-> [  621.611253] x5 : ffff800012816348 x4 : 0000000000000001
-> [  621.612849] x3 : 0000000000000001 x2 : 0000000140000000
-> [  621.614455] x1 : 0000000000000000 x0 : fffffc0000000000
-> [  621.616062] Call trace:
-> [  621.616816]  kmem_valid_obj+0x58/0xa8
-> [  621.617933]  mem_dump_obj+0x20/0xc8
-> [  621.619015]  rcu_torture_stats+0xf0/0x298 [rcutorture]
-> [  621.620578]  kthread+0x120/0x158
-> [  621.621583]  ret_from_fork+0x10/0x34
-> [  621.622685] Code: 8b000273 b25657e0 d34cfe73 8b131813 (f9400660)
-> [  621.624570] ---[ end trace 2a00688830f37ea1 ]---
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> 
-> Full test log:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210111/testrun/3716647/suite/linux-log-parser/test/check-kernel-oops-2124993/log
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210121/testrun/3791289/suite/linux-log-parser/test/check-kernel-oops-2172413/log
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-like your configuration rejects NULL as an invalid virtual address,
-but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-are not allowed to dereference a ZERO_SIZE_PTR?
-
-Adding the ARM64 guys on CC for their thoughts.
-
-It is easy enough for me to make kmem_valid_obj() return false for any
-address less than (say) PAGE_SIZE for the upcoming merge window, but I
-figured I should check for the longer term.
+Adding Uladzislau on CC for his thoughts.
 
 							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 46 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e04e336bee42..2eaf6f287483 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -158,6 +158,9 @@ static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  
+> +static void krc_offline(unsigned int cpu, bool off);
+> +static void free_krc_page_cache(int cpu);
+> +
+>  /* rcuc/rcub kthread realtime priority */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+> @@ -2457,6 +2460,9 @@ int rcutree_dead_cpu(unsigned int cpu)
+>  
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+> +
+> +	krc_offline(cpu, true);
+> +	free_krc_page_cache(cpu);
+>  	return 0;
+>  }
+>  
+> @@ -3169,6 +3175,7 @@ struct kfree_rcu_cpu {
+>  
+>  	struct llist_head bkvcache;
+>  	int nr_bkv_objs;
+> +	bool offline;
+>  };
+>  
+>  static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> @@ -3220,6 +3227,8 @@ static inline bool
+>  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  	struct kvfree_rcu_bulk_data *bnode)
+>  {
+> +	if (krcp->offline)
+> +		return false;
+>  	// Check the limit.
+>  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+>  		return false;
+> @@ -3230,6 +3239,39 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  
+>  }
+>  
+> +static void krc_offline(unsigned int cpu, bool off)
+> +{
+> +	unsigned long flags;
+> +	struct kfree_rcu_cpu *krcp;
+> +
+> +	krcp = per_cpu_ptr(&krc, cpu);
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> +	if (off)
+> +		krcp->offline = true;
+> +	else
+> +		krcp->offline = false;
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +}
+> +
+> +static void free_krc_page_cache(int cpu)
+> +{
+> +	unsigned long flags;
+> +	struct kfree_rcu_cpu *krcp;
+> +	int i;
+> +	struct kvfree_rcu_bulk_data *bnode;
+> +
+> +	krcp = per_cpu_ptr(&krc, cpu);
+> +
+> +	for (i = 0; i < rcu_min_cached_objs; i++) {
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		bnode = get_cached_bnode(krcp);
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +		if (!bnode)
+> +			break;
+> +		free_page((unsigned long)bnode);
+> +	}
+> +}
+> +
+>  /*
+>   * This function is invoked in workqueue context after a grace period.
+>   * It frees all the objects queued on ->bhead_free or ->head_free.
+> @@ -3549,7 +3591,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	kasan_record_aux_stack(ptr);
+>  	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+>  	if (!success) {
+> -		run_page_cache_worker(krcp);
+> +		if (!krcp->offline)
+> +			run_page_cache_worker(krcp);
+>  
+>  		if (head == NULL)
+>  			// Inline if kvfree_rcu(one_arg) call.
+> @@ -4086,6 +4129,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+>  	rcu_spawn_cpu_nocb_kthread(cpu);
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
+>  
+> +	krc_offline(cpu, false);
+>  	return 0;
+>  }
+>  
+> @@ -4591,6 +4635,7 @@ static void __init kfree_rcu_batch_init(void)
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+>  		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+> +		krcp->offline = true;
+>  	}
+>  	if (register_shrinker(&kfree_rcu_shrinker))
+>  		pr_err("Failed to register kfree_rcu() shrinker!\n");
+> -- 
+> 2.29.2
+> 
