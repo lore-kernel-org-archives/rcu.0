@@ -2,141 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50CD6C433E0
-	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 17:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64017C433E0
+	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 18:45:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25567239D4
-	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 17:32:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25B1723AAC
+	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 18:45:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbhAVRbZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Jan 2021 12:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        id S1728963AbhAVSoW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Jan 2021 13:44:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728780AbhAVPrc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:47:32 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A385C061794
-        for <rcu@vger.kernel.org>; Fri, 22 Jan 2021 07:46:51 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id g3so8288156ejb.6
-        for <rcu@vger.kernel.org>; Fri, 22 Jan 2021 07:46:51 -0800 (PST)
+        with ESMTP id S1728511AbhAVOV5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:21:57 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F059C061786;
+        Fri, 22 Jan 2021 06:21:17 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a8so7741447lfi.8;
+        Fri, 22 Jan 2021 06:21:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PpPrYrILqskXnutNdHkDCAFwbGpo3OQRJkbVZqI6O1A=;
-        b=C2+CmALYEOr/GCPo7GmqxPD3YW/Veyf0yeltDyUF5vls7X44uYfnMP06+jjzns5z7c
-         DvgkUnkjk8RuByc3fpKR+cgGPeMHLjGBtE0eDbF23X+E1l25GYXYuh4QgoOfQOphDfDD
-         /D0MEsy9Ia1rsMY1S5uL2OUyJ0Z7H6QxcZObbNZUpGRQ/zLDiI82/9/A1w/h23RDydK4
-         dMBXLbSRYXp0/PIYTRYOauI+w08hbHv5XQJoKQuO+01TBRCSkG94p5O10oQaKHVsxkdm
-         VjjyxT8Dcgg/iC5rzWcE3zBvrcYQmpaZNMeIF3F25DW5vfWAVrp41N/ACRXcKKgka21y
-         VwsQ==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DRuoE5BoHJqfSn/CuRyT9sBVsoEYMteCMLatsDG8GRg=;
+        b=hmcwK4U+8IJhIFHxPEN0f1oPn56dF/9BlpFzezML4fX3kcphxhYf2wrGGMoMcitVE/
+         n/ZIb51ScH6oi8qRZG8VES9j/utF4LkBbkD9ArYhbBWGfmm6m6mNNqwyVW1WBtTXb5eT
+         +QlXA7DVDPOqr1sguiUhMsSrM4q0hbtY5Ot8VCuQCCyWU5ORMC3vz4fjigAOIVbXOYha
+         Y/tXKohUZ2TAM/LNG8YH6Jg95iIAqHRCS3JRcLE2NbbbUYfleFl2Wyzq+vwoKgDTXHxg
+         4fYFykfNMEV4+17jm7ICDtgGz0NYlfbt7/+a/t6Uota5JktZKC68B5FUV3yD5FG0qReB
+         O1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PpPrYrILqskXnutNdHkDCAFwbGpo3OQRJkbVZqI6O1A=;
-        b=dctfNVclRaM9YH1wg7rjSGDLxyTjdJK3LtG54R1Q71kp4NaSFpMA6Fyqqy8TqEeCwR
-         /rrx2wgYSqiYdokP4FRwlCdw4Ha6PEg3G6lzDwcEv2JbcJXbbjT6viJTqnvTgy7ayUi9
-         4bCN2W+YfmzX4y7EZmaBFEs1QeLd/50UBm0/zac0HJwDH13V57Xv3np/awkgUeF//pJZ
-         dNoqsq/4NzglLbD6TUt/fRK18fImtYOHy5d9UZ5mdhHKwTCex0JOLyzkHStUR/97Xx3c
-         RTQf4Gr14/cOXtRkraxyDttbMuJnjEBN4eCefLh3O3Y3TGbxK+nEayj/iA667bHtBvar
-         Fh+Q==
-X-Gm-Message-State: AOAM532JAgt+sTl5ZylFbTg+ivJe/Uet4xei7v+auaEH3yBgoblRBtnU
-        P37vqZVbj3B3bzNpubCHINuWiVSXlQA5/x4PJwwlCw==
-X-Google-Smtp-Source: ABdhPJx/GbRd9OeNWPRmnKF1EbepFPfQ1dwi0VHs7xKXfIGv0LuebkmThA4PkQwcF0VM43CwC/CrZvPKG1OfdMsK37E=
-X-Received: by 2002:a17:906:2695:: with SMTP id t21mr3534463ejc.287.1611330409763;
- Fri, 22 Jan 2021 07:46:49 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
- <20210121185521.GQ2743@paulmck-ThinkPad-P72> <20210121213110.GB23234@willie-the-truck>
- <20210121214314.GW2743@paulmck-ThinkPad-P72> <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
- <20210122153704.GG2743@paulmck-ThinkPad-P72>
-In-Reply-To: <20210122153704.GG2743@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 Jan 2021 21:16:38 +0530
-Message-ID: <CA+G9fYt=waJnq7N=109eapXZkz-xNWg91Yno6fKXmovvFUVpsQ@mail.gmail.com>
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DRuoE5BoHJqfSn/CuRyT9sBVsoEYMteCMLatsDG8GRg=;
+        b=qLZ23jIzcJTsWiS6qAgsJeaxNZIS37A8dBsJJVu5ZX9LnSto5pKTwYlKdCOBLHKR2G
+         X/u/oyLZBdEcuaQw6XBv6WdWzDaAVBW1NyTIOz+4xNkyZUCLUO1WOWK3nl3kNxKkLDxT
+         /HO5t3Dz42d8DJyYuYtmTG0c8s9gnp8ZBYRAZZCkWaeCV05j8c+Rg/RiIjzN8/uU28nc
+         9ik8TNiJH+yL2QtY+oPKPO/utpNxC+bhwiJYHsblShgWyu57QyHIxpbOxHua6WmWO/Ag
+         YzpMk4rRKce44nvBZwlkJohs46saeicy9G3BtJ34iBjVg06FCpj+eklAgoI2XyotB5+U
+         UTFg==
+X-Gm-Message-State: AOAM533HMrtLtH0f2t73hu7xfJHLnjf+2HAAUogDlo/+aTCNAGBjvZqC
+        +iSN58EXa1b8Gs+Rbg2K3dw=
+X-Google-Smtp-Source: ABdhPJziVUotrZv1JHvUCsUK21iR9fnvFePlUaXqgbh0VrMpneXNfWBFix3ajFZB+t9OFnwdaixkNw==
+X-Received: by 2002:ac2:5f58:: with SMTP id 24mr887475lfz.302.1611325275649;
+        Fri, 22 Jan 2021 06:21:15 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id y3sm778446ljy.98.2021.01.22.06.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 06:21:15 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 22 Jan 2021 15:21:13 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210122142113.GA1873@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
+ <20210121123834.GA1872@pc638.lan>
+ <20210122113409.w55kul5bpjxhkgm4@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122113409.w55kul5bpjxhkgm4@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 21:07, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Jan 22, 2021 at 03:21:07PM +0530, Naresh Kamboju wrote:
-> > On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
-> > > > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
-> > > > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> > > > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> > > > > > the following kernel crash noticed. This started happening from Linux next
-> > > > > > next-20210111 tag to next-20210121.
-> > > > > >
-> > > > > > metadata:
-> > > > > >   git branch: master
-> > > > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> > > > > >   git describe: next-20210111
-> > > > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
-> > > > > >
-> > > > > > output log:
-> > > > > >
-> > > > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> > > > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> > > > > > = ffff8000091ab8e0
-> > > > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> > > > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
-> > > > > > virtual address 0000000000000008
-> > > >
-> > > > [...]
-> > > >
-> > > > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-> > > > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-> > > > > like your configuration rejects NULL as an invalid virtual address,
-> > > > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-> > > > > are not allowed to dereference a ZERO_SIZE_PTR?
-> > > > >
-> > > > > Adding the ARM64 guys on CC for their thoughts.
-> > > >
-> > > > Spooky timing, there was a thread _today_ about that:
-> > > >
-> > > > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
-> > >
-> > > Very good, then my workaround (shown below for Naresh's ease of testing)
-> > > is only a short-term workaround.  Yay!  ;-)
-> >
-> > Paul, thanks for your (short-term workaround) patch.
-> >
-> > I have applied your patch and tested rcu-torture test on qemu_arm64 and
-> > the reported issues has been fixed.
->
-> May I add your Tested-by?
+> On 2021-01-21 13:38:34 [+0100], Uladzislau Rezki wrote:
+> > __get_free_page() returns "unsigned long" whereas a bnode is a pointer
+> > to kvfree_rcu_bulk_data struct, without a casting the compiler will
+> > emit a warning.
+> 
+> Yes, learned about it, sorry.
+> 
+> > >> You think that a CPU migration is a bad thing. But why?
+> > >>
+> > It is not a bad thing. But if it happens we might queue a new bnode
+> > to a drain list of another CPU where a previous element of a new
+> > bnode may be just underutilized. So that is why i use migrate_disable()/enable()
+> > to prevent it.
+> 
+> If you allocate a node for queueing and then you realize that you
+> already have one then you either free it or queue it for later.
+> Given that all this is a slower-path and that this is used on every-CPU,
+> sooner or later that page will be used avoids a later allocation, right?
+> 
+To free it right away is a bit problematic, because we need at least one more
+time to drop the lock what would introduce more complexity. Adding to the cache 
+for later reuse is possible but would require an extra decay cache logic.
 
-Yes.  Please add Reported-by and Tested-by.
+I think, since it is a corner case and i do not consider it as a big issue,
+we can just queue it to the drain list so the previous node can be half filled
+due to migration.
 
->
-> And before I forget again, good to see the rcutorture testing on a
-> non-x86 platform!
+> > If there are some hidden issues with migrate_disable()/enable() or you
+> > think it is a bad idea to use it, it would be appreciated if you could
+> > describe your view in more detail.
+> 
+> Just what I mentioned in my previous email:
+> - the whole operation isn't cheap but it is more efficient in tree
+>   compared to what we used to have in RT.
+> - the task can no be freely placed while it could run. So if the task
+>   gets preempted, it will have to wait until it can run on the CPU
+>   again.
+> 
+Yep, that is obvious. From scheduling point of view the task can wait more
+time because the migration is prohibited. From the other hand, the page is
+obtained in the path that is not considered as a hot one. One page can serve 
+~500 pointers.
 
-We are running rcutorture tests on arm, arm64, i386 and x86_64.
+I do not say that we should keep: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
 
-Happy to test !
+without it, a migration can occur, what is really rare according to my tests
+therefore i do not have a strong opinion about keeping it. If you or someone
+else has some concern we can drop it.
 
-- Naresh
+--
+Vlad Rezki
