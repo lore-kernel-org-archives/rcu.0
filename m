@@ -2,175 +2,125 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15152C433DB
-	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 11:42:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ABB9C433E6
+	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 11:43:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C6F8523122
-	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 11:42:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF97723122
+	for <rcu@archiver.kernel.org>; Fri, 22 Jan 2021 11:42:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbhAVLmP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Jan 2021 06:42:15 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53504 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728045AbhAVLSc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:18:32 -0500
-Date:   Fri, 22 Jan 2021 12:17:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611314253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwTRQGMy0i03jZO3dB3PKOrJQEnXm5M6Cbl9HlVv5ow=;
-        b=yED0gM023rMSdxj6jRSDaYAczCErP0qbcKBAHB7OnuzqdueVSkP3OEVtJpMfz8GV6Bitiv
-        DiN6oOvRfx2mAqIYseZWlsOt2tPVVEIbOKITyG9moGoFqBoZfn9/zG+7nuJMJBDPL7W1Q9
-        DfntvM+jqzrx/+gw9/I7rvaDjjR/86DqQ30b4Jv2keGNezI8gue3jq0rSvcbdHs0XznNUt
-        dVzPg0ZBKX9Vv6qjIpjQuVvqLwOuJpcJ29q3/0ibCkvrpyHdoMHOfiAd+QvyW8X96xkLjJ
-        fB/+GSpiz14duYdpsfzHncuAjdL6cYgMa+7fH6fUTzzhbNUTsbinm7dGgSHcIw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611314253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwTRQGMy0i03jZO3dB3PKOrJQEnXm5M6Cbl9HlVv5ow=;
-        b=a7/ZJEji7l60cuGN/7n76DIsiqc37nyZDZTFCap6sq18Kw+tVHZtqkMWY/nzwUge7wQk2i
-        y4kA3bl+yP1a/7BQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        id S1727231AbhAVLms (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 22 Jan 2021 06:42:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:43122 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727534AbhAVLmn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:42:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78A3711D4;
+        Fri, 22 Jan 2021 03:41:57 -0800 (PST)
+Received: from [10.37.8.28] (unknown [10.37.8.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D9553F719;
+        Fri, 22 Jan 2021 03:41:55 -0800 (PST)
+Subject: Re: rcu-torture: Internal error: Oops: 96000006
+To:     Mark Rutland <mark.rutland@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210122111733.tcwfl43akypz3x42@linutronix.de>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120195757.3lgjrpvmzjvb2nce@linutronix.de>
- <20210120215403.GH2743@paulmck-ThinkPad-P72>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org
+References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+ <20210121185521.GQ2743@paulmck-ThinkPad-P72>
+ <20210121213110.GB23234@willie-the-truck>
+ <20210121214314.GW2743@paulmck-ThinkPad-P72>
+ <20210122095925.GA29124@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <07a8f455-8414-979e-3e1a-cbc63357acb6@arm.com>
+Date:   Fri, 22 Jan 2021 11:45:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210122095925.GA29124@C02TD0UTHF1T.local>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210120215403.GH2743@paulmck-ThinkPad-P72>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2021-01-20 13:54:03 [-0800], Paul E. McKenney wrote:
-> > > +// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-> > > +// state specified by flags.  If can_alloc is true, the caller must
-> > > +// be schedulable and not be holding any locks or mutexes that might be
-> > > +// acquired by the memory allocator or anything that it might invoke.
-> > > +// Returns true if ptr was successfully recorded, else the caller must
-> > > +// use a fallback.
-> > 
-> > The whole RCU department is getting swamped by the // comments. Can't we
-> > have proper kernel doc and /* */ style comments like the remaining part
-> > of the kernel?
+
+
+On 1/22/21 10:02 AM, Mark Rutland wrote:
+> On Thu, Jan 21, 2021 at 01:43:14PM -0800, Paul E. McKenney wrote:
+>> On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
+>>> On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
+>>>> On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
+>>>>> While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
+>>>>> the following kernel crash noticed. This started happening from Linux next
+>>>>> next-20210111 tag to next-20210121.
+>>>>>
+>>>>> metadata:
+>>>>>   git branch: master
+>>>>>   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>>>>>   git describe: next-20210111
+>>>>>   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+>>>>>
+>>>>> output log:
+>>>>>
+>>>>> [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
+>>>>> ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
+>>>>> = ffff8000091ab8e0
+>>>>> [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
+>>>>> [  621.546696] Unable to handle kernel NULL pointer dereference at
+>>>>> virtual address 0000000000000008
+>>>
+>>> [...]
+>>>
+>>>> Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
+>>>> things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
+>>>> like your configuration rejects NULL as an invalid virtual address,
+>>>> but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
+>>>> are not allowed to dereference a ZERO_SIZE_PTR?
+>>>>
+>>>> Adding the ARM64 guys on CC for their thoughts.
+>>>
+>>> Spooky timing, there was a thread _today_ about that:
+>>>
+>>> https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
+>>
+>> Very good, then my workaround (shown below for Naresh's ease of testing)
+>> is only a short-term workaround.  Yay!  ;-)
 > 
-> Because // comments are easier to type and take up less horizontal space.
-
-As for the typing I could try to sell you 
-  ab // /*
-
-for your .vimrc and then //<enter> would become /* ;) As for the
-horizontal space, I don't have currently anything in my shop. I'm sorry.
-
-> Also, this kvfree_call_rcu_add_ptr_to_bulk() function is local to
-> kvfree_rcu(), and we don't normally docbook-ify such functions.
-
-I didn't mean to promote using docbook to use every. For instance if you
-look at kernel/trace/trace.c, there are no // comments around, just /*
-style, even for things like tracing_selftest_running.
-
-Basically I was curious if I could learn where this // is coming and if
-I could stop it.
-
-> > >  static inline bool
-> > > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> > > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> > > +	unsigned long *flags, void *ptr, bool can_alloc)
-> > >  {
-> > >  	struct kvfree_rcu_bulk_data *bnode;
-> > >  	int idx;
-> > >  
-> > > -	if (unlikely(!krcp->initialized))
-> > > +	*krcp = krc_this_cpu_lock(flags);
-> > > +	if (unlikely(!(*krcp)->initialized))
-> > >  		return false;
-> > >  
-> > > -	lockdep_assert_held(&krcp->lock);
-> > >  	idx = !!is_vmalloc_addr(ptr);
-> > >  
-> > >  	/* Check if a new block is required. */
-> > > -	if (!krcp->bkvhead[idx] ||
-> > > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > > -		bnode = get_cached_bnode(krcp);
-> > > -		/* Switch to emergency path. */
-> > > +	if (!(*krcp)->bkvhead[idx] ||
-> > > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > > +		bnode = get_cached_bnode(*krcp);
-> > > +		if (!bnode && can_alloc) {
-> > > +			krc_this_cpu_unlock(*krcp, *flags);
-> > > +			bnode = (struct kvfree_rcu_bulk_data *)
-> > 
-> > There is no need for this cast.
-> 
-> Without it, gcc version 7.5.0 says:
-> 
-> 	warning: assignment makes pointer from integer without a cast
+> Hopefully, though we might need to check other architectures beyond
+> arm64, ppc, and x86, to be certain!
 > 
 
-I'm sorry. I forgot the part where __get_free_page() does not return
-(void *).
-But maybe it should given that free_pages() casts that long back to
-(void *) and __get_free_pages() -> page_address() returns (void *)
-which is then casted long.
+Which other architectures do you propose to verify?
 
-> > > +				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> > > +			*krcp = krc_this_cpu_lock(flags);
-> > 
-> > so if bnode is NULL you could retry get_cached_bnode() since it might
-> > have been filled (given preemption or CPU migration changed something).
-> > Judging from patch #3 you think that a CPU migration is a bad thing. But
-> > why?
+> Is there any other latent use of virt_addr_valid() that needs this
+> semantic? If so we'll probably want to backport the changes to arm64's
+> implementation, at least for v5.10.
 > 
-> So that the later "(*krcp)->bkvhead[idx] = bnode" assignment associates
-> it with the correct CPU.
+> Vincenzo, would you mind taking a look?
 > 
-> Though now that you mention it, couldn't the following happen?
-> 
-> o	Task A on CPU 0 notices that allocation is needed, so it
-> 	drops the lock disables migration, and sleeps while
-> 	allocating.
-> 
-> o	Task B on CPU 0 does the same.
-> 
-> o	The two tasks wake up in some order, and the second one
-> 	causes trouble at the "(*krcp)->bkvhead[idx] = bnode"
-> 	assignment.
 
-Yes it could, good point.
-I would really recommend using migrate_disable() at a minimum and only
-if it is really needed. It is more expensive than preempt_disable() and
-it isn't exactly good in terms of scheduling since the task is run able
-but restricted to a specific CPU.
-If it is unavoidable it is unavoidable but in this case I wouldn't use
-migrate_disable() but re-evaluate the situation after the allocation.
+I am happy to have a look at it, but due to previous commitments I will be able
+to get at it after -rc1. A quick grep shows that there are ~32 cases that might
+be affected by the same semantic in the common code (left out arch/ and
+drivers/). I will post the improvement for arm64 in the meantime though.
 
-> Uladzislau, do we need to recheck "!(*krcp)->bkvhead[idx]" just after
-> the migrate_enable()?  Along with the KVFREE_BULK_MAX_ENTR check?
+> Thanks,
+> Mark.
 > 
-> 							Thanx, Paul
 
-Sebastian
+-- 
+Regards,
+Vincenzo
