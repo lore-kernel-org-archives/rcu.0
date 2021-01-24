@@ -2,162 +2,149 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,
-	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 500B2C433E0
-	for <rcu@archiver.kernel.org>; Sun, 24 Jan 2021 02:22:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94C76C433E0
+	for <rcu@archiver.kernel.org>; Sun, 24 Jan 2021 17:43:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 03F4D22581
-	for <rcu@archiver.kernel.org>; Sun, 24 Jan 2021 02:22:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5FA592223E
+	for <rcu@archiver.kernel.org>; Sun, 24 Jan 2021 17:43:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbhAXCWX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 23 Jan 2021 21:22:23 -0500
-Received: from mail-dm6nam12on2048.outbound.protection.outlook.com ([40.107.243.48]:29345
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726223AbhAXCWW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 23 Jan 2021 21:22:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C3G5JQPa4b9ww0J4muU8Fm+2cflJJcZcxeol7CvHcyoSSipT3/QvRL44mI65s0ZPNQlWmsUdk5uzuorpOHhE+fKX30t7GHKeUHkOCjaATwB/8+zLUrlg6FeuCiZkoodQ4wd7C3X2btlN5zO/vBD0a0C0z9yTk2hy2bl0TGvTSLbCcXfrylo3ZjrJOdsl/MaDjKJsCQ5pXwhgl98gI+hOuCIV5VRm/ARmqYLZjqWoVRzXpSQSUCvSWmRWtLRVMrIm78AbG2rtYxB+rMLYzNbec9smflpJ+0cXKCVAic1prlSCkzUcmAx6TZHXf0ehl5fm7qy9jDsRgWnfTNDmqAa0xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vpY2otwPaFrD7nrtBDV6kWjKkloVebRk/eatHB1py1A=;
- b=iI460NosafHFHkulxpsbDRovhNnsE0SFizOzTPECOpYBoRmco8uAGVyDxC7xpm/2gxGqBbUF3n0alDCtBzUMf1JIV7NguObFPtfudhLXoNUiaHoZbhRgme2WVEw1Y4AC34fMgGPfmR5/qOAGZfNaJaBjZJ3WyFdRU9t+DeZcurCcwOnQLu4q3x60F5viJBAq5IgKzup9Ff6u5ZCPrWf8L52Vj2ZBUj7aBqUQLUZLQI6vVbcgCZKGSiLzL2GFgS1hOBNT8/5LJWpZ/Pv7CZmWQc92h3WgVhXTYPUZ4Gg04ZRYH5bkJgZl/2nqqRbKiZmpkf3cX8b4w4e6fuxvWnGikQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726129AbhAXRne (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 24 Jan 2021 12:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbhAXRnd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 24 Jan 2021 12:43:33 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A1EC061573;
+        Sun, 24 Jan 2021 09:42:53 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u11so12440862ljo.13;
+        Sun, 24 Jan 2021 09:42:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vpY2otwPaFrD7nrtBDV6kWjKkloVebRk/eatHB1py1A=;
- b=kgnvlYykE7cLKiJ/z2XeCl34mvf3BJyC5yJZHFj4QNhTWlhDVkHxI1os1/SP2pemzhrRtFZRq9PK3G/IDI/aHWAVecaQ3HhevQK+X+ae1RRk6Ql8SB43IJub3QbxBz7bYhVEt2cjooRtkv0kOYlK/EZhPYHnNZx23vVDHGPdNGg=
-Received: from DM6PR11MB2635.namprd11.prod.outlook.com (2603:10b6:5:c5::29) by
- DM6PR11MB2633.namprd11.prod.outlook.com (2603:10b6:5:c0::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.11; Sun, 24 Jan 2021 02:21:07 +0000
-Received: from DM6PR11MB2635.namprd11.prod.outlook.com
- ([fe80::e1af:2b6f:fe87:158f]) by DM6PR11MB2635.namprd11.prod.outlook.com
- ([fe80::e1af:2b6f:fe87:158f%4]) with mapi id 15.20.3763.014; Sun, 24 Jan 2021
- 02:21:07 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-CC:     "Paul E. McKenney" <paulmck@kernel.org>,
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=huKUEf/T+Pt85OuxeEgIzQUXu/vH0w4ojEpai0/V1ZM=;
+        b=NSmRghhj2w8K5ygxT20aPO1jxmsmrPDF+dho9pDVeLAsd3QYWg7+vuQuqJ432fzWJz
+         cTWFne1qy0xqXx1tdXjFxtvvfqyKubItaT9RPtsBM7PCNUu9ZpQ70hzdW+WizpD4lguH
+         s/GfpFsRo+6I249cqPkxFyjuETMSWFcTNa09QqBk0X3WrD8GfH7sEkZo45ypYRP3OmXx
+         DzArd4kOgouLfgF2QFrciTPSnrOuSi00Ne/nDXLmqilGkXQMoCRitbA3JdSGVKz0ndYV
+         EoEbtWWUo/9lrV0dRPdFH+udT+pQb6saX79TaQehWajwc+P4uirUdl7BMay0swbzv3F8
+         PGPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=huKUEf/T+Pt85OuxeEgIzQUXu/vH0w4ojEpai0/V1ZM=;
+        b=SjCxBApwfjgVSnkUC1wpeB1YXJpWc3B54E2wp7SQMCg3z/7f8ZUnN3CA4wBrfzG+2u
+         +48Fkcouk0jf8OYTODhYRskAR+dGrXvLNrOBGvzrv3ZXDnUFMmMG1oPdhEQAOuAau3r7
+         laS2AKPmpS5dneyBvXb7rMCuMkHEz+W2NCovLo5hCTUgQp91l1VkgkPkOV7s0qA9Rzci
+         3BPy0M+/vgzcOFtU0fY3p9Qz8Jqucif+Up66UVrPobEzRZz1OXYaXHC7gHeJzi5OBO/M
+         mtAOSy4SYq+Oegc8/R6wCDlTN4CTzT1nAxyssWH+KC6W79V20pLSMaN5mFJBX6Pojaip
+         q5nQ==
+X-Gm-Message-State: AOAM530Euj6Mdm22+6ybRd5az5YHZIt/DBe9tHrmqLlvjEhFHdAqgyo7
+        MNN9qT3No+4yOUZ5PjKKLJ8=
+X-Google-Smtp-Source: ABdhPJyjcg4QFB+CVn74y0uDhiPHc2wFCm/yHSFtJYpe12NxS1vZtBsh422yCtcR7mBbR6xSQ08cHQ==
+X-Received: by 2002:a2e:760a:: with SMTP id r10mr538157ljc.11.1611510171462;
+        Sun, 24 Jan 2021 09:42:51 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c10sm1455058lfs.75.2021.01.24.09.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 09:42:50 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 24 Jan 2021 18:42:48 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogu9i4tDogW1BBVENIXSByY3U6IFJlbGVhc2UgcGVyLWNwdSBrcmNw?=
- =?gb2312?Q?_page_cache_when_CPU_going_offline?=
-Thread-Topic: =?gb2312?B?u9i4tDogW1BBVENIXSByY3U6IFJlbGVhc2UgcGVyLWNwdSBrcmNwIHBhZ2Ug?=
- =?gb2312?Q?cache_when_CPU_going_offline?=
-Thread-Index: AQHW778g0FRyyea31kCpEHkbjqfL9aoybrGAgAAZPYCAAFXUEYAA2UqAgAJSNbI=
-Date:   Sun, 24 Jan 2021 02:21:07 +0000
-Message-ID: <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFtQQVRD?= =?utf-8?Q?H?=
+ =?utf-8?Q?=5D?= rcu: Release per-cpu krcp page cache when CPU going offline
+Message-ID: <20210124174248.GA1076@pc636>
 References: <20210121064949.16164-1-qiang.zhang@windriver.com>
  <20210121185615.GR2743@paulmck-ThinkPad-P72>
  <20210121202635.GB2454@pc638.lan>
- <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>,<20210122143129.GB1873@pc638.lan>
-In-Reply-To: <20210122143129.GB1873@pc638.lan>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [106.39.148.97]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bb9b27ae-96dd-47ea-19ad-08d8c00eb527
-x-ms-traffictypediagnostic: DM6PR11MB2633:
-x-microsoft-antispam-prvs: <DM6PR11MB26330ABE8BE995D776337216FFBE0@DM6PR11MB2633.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YD4ocB1W7GAwE9YsCRp8sYTypmXd8dNVDnaDEMqg4b7nMxA9pPoNiXCEXG1SOvsTjNnZWPB00kXkEQM6oFV5o0CAw2+CwYumHpu5JX13ISRCrP3Q1t7I6ysAMWSZ9Z+mXjo36MsOwhLd1QgKTZCvfihLke8kbjnidL2QSIw3jhZ1NiCGmCGiGQWvlbv8V2IK7iJbXciRTd66egYRrnCpJYxDr61fnMUwaSUgeC/RRb+oWTRQ/mC8FhYff4hVDkrHLcApGbxjrxAVuW/NdNIkRGqmf+mXT+VTN6CaI3kmFX08x4cMROBa9d3nk/hcUTYkW0xgwtCVN+30aILGL7mCndolLTxHN2ncs5uwNNeZd7zAlSkIXmwxw/0Fd8ifICqqLZdYFfY8QxreMuMQp1v+fk5rPatNrVovYQJxHeOswQeSDpBbjWdLUMmNfrWa1TXIqWv1LOW7tBHCs2r90h8SPiNBSsu1VnMbBW14lI911ukPJSy9rcKGImVaCw2KR+EfRw3cU2z4gYVFp7AT/9P/xw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2635.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(366004)(39830400003)(224303003)(186003)(64756008)(6512007)(76116006)(2906002)(4326008)(478600001)(6506007)(6486002)(86362001)(316002)(8936002)(33656002)(71200400001)(66556008)(5660300002)(6916009)(66946007)(66446008)(83380400001)(66476007)(9686003)(91956017)(52536014)(26005)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?aWZVb3BpcW5iTnpUQjFFSThEVlNnWUF1VHNWeVh1a1A3RGxKOU5POFpMVDN4?=
- =?gb2312?B?OFZRbEFiSTRUYU9ZbG5LQTlPd25uZUhCNytHSTEyYitNeS95bUtndVhaaGV6?=
- =?gb2312?B?NUFBSkR4SWdvYWdJSEUyM21DdndPNXJQUGdYM2ovcmk5T3l5dDF2VlpDQnlm?=
- =?gb2312?B?akg4RmE3RDFBaXIzY0xvUVdXY2E1VkFMQkVDelI5a2Jqd2hxdXdaSGVIajRz?=
- =?gb2312?B?L0Nob0Q3VldWM1I0SWJBSFpJZXdaRDFnVERlZm9waHhrL0ZIZmZ4N0UyWktw?=
- =?gb2312?B?MTdKZ3I1WXlnWWtUNHlzVE9ock5PVXZDaXhxNVFsUlpuOXJVMkxKRTB2djFn?=
- =?gb2312?B?SGdwdStWanh0d2lSTlFpUkpLc2JOZFBFUU1IcUJGTXZnQzgzSnVYNkJJTzBz?=
- =?gb2312?B?Z1o1alVVNzJ6NTFOejZwZ0x4aFpsSkwyUXBPVTc5c1VrODJ3Y1hhSUVmR0d0?=
- =?gb2312?B?bitnNjNIVmd6M2Y4QXRZWUYzQXYwdVI3bTVhUGF6Y2VwMXJnL2lUK3RMZ3ow?=
- =?gb2312?B?ZEVaVmJVdmlMOVRSbWpwcXRWcGR3V0FoTlNNajFSR3FBeDQ1Uituc1kzdXpq?=
- =?gb2312?B?Vm85N0s4dVBJTnJYcnpGc0F5bUdXMm9nSHk4NXJ4MlJxdnVRU3ArQXdpSjR3?=
- =?gb2312?B?NWVhaklXNkMvTHArT2ZCYTZpdkNsYUlPbURrYzNxUTlDOXA1TGw2S2tIYUxm?=
- =?gb2312?B?NWhqUGRMdnZEUzkwaExscTQ5Rng2UEV3anNLSWIvSzNMUkpLSkFjeGxBc0pN?=
- =?gb2312?B?SmxWajc0TFprbHdHazltSjNuS3hWanJKaFl3MUxqUzZMckc1OG1nUjYyUkNH?=
- =?gb2312?B?Vk90dFJtajFWK2tYVC9tWlNjR3pJY0h1ZHcvc01qM3RIc1AvemZCanY4WTEy?=
- =?gb2312?B?WnB5dmxQckUwcmZoWGwwTG40Z0o4WEhRalBYNFQ3a1dkQlo2QkZIWTB6U0s4?=
- =?gb2312?B?OU1RTHlZMWdCQ1pDdzBpQXdSUzJRdEdlclZZR0J4OC95R1pNcHh3amdSRW5G?=
- =?gb2312?B?cCtYUXBDdjhKRWRUQnBsUGVGZE9FV1N4VmhFMHZpRGhONGlxa25xeVBDb1Vz?=
- =?gb2312?B?NFB6K1Z4alc3S0dpZ1ZZUFczTm5MRDB5OElDdXZJNFE5bEYrR2VHTFlnZjEz?=
- =?gb2312?B?NmM2dDhQczZxMHpiMjhPZE8wOTZ4dE5CVVViQnp6Rms3TWg0cjArS05LUmZw?=
- =?gb2312?B?SDZORlJlbW9yWmZFVU1KVkl1OW9Kb3BKQ2FOd1V6OFk2K3pjSVlmZ0Y0eGxt?=
- =?gb2312?B?c0x1UGYyWFRKOTNyRlR1TVhMeVZBNnl1VUtMb2pESURSR2NIbU5SelJEMjFo?=
- =?gb2312?Q?S1D5PTMhP0GsA=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20210122143129.GB1873@pc638.lan>
+ <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2635.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb9b27ae-96dd-47ea-19ad-08d8c00eb527
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2021 02:21:07.2379
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zI8VJ60Zo2MLuiVs2ACQlgFhpROCUeE0GJ80Ni0h72B96BULf37wXx6Ax2g3agS3TiXV5mHu1VEfT4QT9OeEmw2Hx8e5Arcm3d3HKNw/cVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2633
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogVWxhZHpp
-c2xhdSBSZXpraSA8dXJlemtpQGdtYWlsLmNvbT4Kt6LLzcqxvOQ6IDIwMjHE6jHUwjIyyNUgMjI6
-MzEKytW8/sjLOiBaaGFuZywgUWlhbmcKs63LzTogVWxhZHppc2xhdSBSZXpraTsgUGF1bCBFLiBN
-Y0tlbm5leTsgcmN1QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-ZwrW98ziOiBSZTogu9i4tDogW1BBVENIXSByY3U6IFJlbGVhc2UgcGVyLWNwdSBrcmNwIHBhZ2Ug
-Y2FjaGUgd2hlbiBDUFUgZ29pbmcgb2ZmbGluZQoKT24gRnJpLCBKYW4gMjIsIDIwMjEgYXQgMDE6
-NDQ6MzZBTSArMDAwMCwgWmhhbmcsIFFpYW5nIHdyb3RlOgo+Cj4KPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gt6K8/sjLOiBVbGFkemlzbGF1IFJlemtpIDx1cmV6
-a2lAZ21haWwuY29tPgo+ILeiy83KsbzkOiAyMDIxxOox1MIyMsjVIDQ6MjYKPiDK1bz+yMs6IFpo
-YW5nLCBRaWFuZwo+ILOty806IFBhdWwgRS4gTWNLZW5uZXk7IHJjdUB2Z2VyLmtlcm5lbC5vcmc7
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHVyZXpraUBnbWFpbC5jb20KPiDW98ziOiBS
-ZTogW1BBVENIXSByY3U6IFJlbGVhc2UgcGVyLWNwdSBrcmNwIHBhZ2UgY2FjaGUgd2hlbiBDUFUg
-Z29pbmcgb2ZmbGluZQo+ID5IZWxsbywgUWlhbmcsCj4KPiA+IE9uIFRodSwgSmFuIDIxLCAyMDIx
-IGF0IDAyOjQ5OjQ5UE0gKzA4MDAsIHFpYW5nLnpoYW5nQHdpbmRyaXZlci5jb20gd3JvdGU6Cj4g
-PiA+IEZyb206IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KPiA+ID4KPiA+ID4g
-SWYgQ1BVcyBnbyBvZmZsaW5lLCB0aGUgY29ycmVzcG9uZGluZyBrcmNwJ3MgcGFnZSBjYWNoZSBj
-YW4KPiA+ID4gbm90IGJlIHVzZSB1dGlsIHRoZSBDUFUgY29tZSBiYWNrIG9ubGluZSwgb3IgbWF5
-YmUgdGhlIENQVQo+ID4gPiB3aWxsIG5ldmVyIGdvIG9ubGluZSBhZ2FpbiwgdGhpcyBjb21taXQg
-dGhlcmVmb3JlIGZyZWUga3JjcCdzCj4gPiA+IHBhZ2UgY2FjaGUgd2hlbiBDUFVzIGdvIG9mZmxp
-bmUuCj4gPiA+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJp
-dmVyLmNvbT4KPiA+Cj4gPkRvIHlvdSBjb25zaWRlciBpdCBhcyBhbiBpc3N1ZT8gV2UgaGF2ZSA1
-IHBhZ2VzIHBlciBDUFUsIHRoYXQgaXMgMjA0ODAgYnl0ZXMuCj4gPgo+Cj4gSGVsbG8gUmV6a2kK
-Pgo+IEluIGEgbXVsdGkgQ1BVcyBzeXN0ZW0sIG1vcmUgdGhhbiBvbmUgQ1BVcyBtYXkgYmUgb2Zm
-bGluZSwgdGhlcmUgYXJlIG1vcmUgdGhhbiA1IHBhZ2VzLCAgYW5kIHRoZXNlIG9mZmxpbmUgQ1BV
-cyBtYXkgbmV2ZXIgZ28gb25saW5lIGFnYWluICBvciAgaW4gdGhlIHByb2Nlc3Mgb2YgQ1BVcyBv
-bmxpbmUsIHRoZXJlIGFyZSBlcnJvcnMsIHdoaWNoIGxlYWQgdG8gdGhlIGZhaWx1cmUgb2Ygb25s
-aW5lLCB0aGVzZSBzY2VuYXJpb3Mgd2lsbCBsZWFkIHRvIHRoZSBwZXItY3B1IGtyYyBwYWdlIGNh
-Y2hlIHdpbGwgbmV2ZXIgYmUgcmVsZWFzZWQuCj4KPlRoYW5rcyBmb3IgeW91ciBhbnN3ZXIuIEkg
-d2FzIHRoaW5raW5nIG1vcmUgYWJvdXQgaWYgeW91IGtuZXcgc29tZSA+cGxhdGZvcm1zCj53aGlj
-aCBzdWZmZXIgZnJvbSBzdWNoIGV4dHJhIHBhZ2UgdXNhZ2Ugd2hlbiBDUFUgZ29lcyBvZmZsaW5l
-LiBBbnkgPmlzc3Vlcwo+eW91ciBwbGF0Zm9ybXMgb3IgZGV2aWNlcyBydW4gaW50byBiZWNhdXNl
-IG9mIHRoYXQuCj4KPlNvIGkgdW5kZXJzdGFuZCB0aGF0IGlmIENQVSBnb2VzIG9mZmxpbmUgdGhl
-IDUgcGFnZXMgYXNzb2NpYXRlZCB3aXRoIGl0ID5hcmUKPnVudXNlZCB1bnRpbCBpdCBnb2VzIG9u
-bGluZSBiYWNrLgoKIEkgYWdyZWUgd2l0aCB5b3UsIEJ1dCBJIHN0aWxsIHdhbnQgdG8gdGFsayBh
-Ym91dCB3aGF0IEkgdGhpbmsKCiBNeSB1bmRlcnN0YW5kaW5nIGlzIHRoYXQgd2hlbiB0aGUgQ1BV
-IGlzIG9mZmxpbmUsICB0aGUgcGFnZXMgaXMgbm90IAogYWNjZXNzaWJsZSwgIGJlYWN1c2Ugd2Ug
-ZG9uJ3Qga25vdyB3aGVuIHRoaXMgQ1BVIHdpbGwgCiBnbyBvbmxpbmUgYWdhaW4sIHNvIHdlIGJl
-c3QgdG8gcmV0dXJuIHRoZXNlIHBhZ2UgdG8gdGhlIGJ1ZGR5IHN5c3RlbSwKIHdoZW4gdGhlIENQ
-VSBnb2VzIG9ubGluZSBhZ2Fpbiwgd2UgY2FuIGFsbG9jYXRlIHBhZ2UgZnJvbSB0aGUgYnVkZHkg
-CiBzeXN0ZW0gdG8gZmlsbCBrcmNwJ3MgcGFnZSBjYWNoZS4gIG1heWJlIHlvdSBtYXkgdGhpbmsg
-dGhhdCB0aGlzIG1lbW9yeSAKIGlzIHNtYWxsIGFuZCBkb24ndCBuZWVkIHRvLiAKIAogVGhhbmtz
-IAogUWlhbmcKCj4KPi0tCj5WbGFkIFJlemtpCg==
+On Sun, Jan 24, 2021 at 02:21:07AM +0000, Zhang, Qiang wrote:
+> 
+> 
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月22日 22:31
+> 收件人: Zhang, Qiang
+> 抄送: Uladzislau Rezki; Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: 回复: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> 
+> On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
+> >
+> >
+> > ________________________________________
+> > 发件人: Uladzislau Rezki <urezki@gmail.com>
+> > 发送时间: 2021年1月22日 4:26
+> > 收件人: Zhang, Qiang
+> > 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
+> > 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> > >Hello, Qiang,
+> >
+> > > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > > If CPUs go offline, the corresponding krcp's page cache can
+> > > > not be use util the CPU come back online, or maybe the CPU
+> > > > will never go online again, this commit therefore free krcp's
+> > > > page cache when CPUs go offline.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
+> > >
+> >
+> > Hello Rezki
+> >
+> > In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
+> >
+> >Thanks for your answer. I was thinking more about if you knew some >platforms
+> >which suffer from such extra page usage when CPU goes offline. Any >issues
+> >your platforms or devices run into because of that.
+> >
+> >So i understand that if CPU goes offline the 5 pages associated with it >are
+> >unused until it goes online back.
+> 
+>  I agree with you, But I still want to talk about what I think
+> 
+>  My understanding is that when the CPU is offline,  the pages is not 
+>  accessible,  beacuse we don't know when this CPU will 
+>  go online again, so we best to return these page to the buddy system,
+>  when the CPU goes online again, we can allocate page from the buddy 
+>  system to fill krcp's page cache.  maybe you may think that this memory 
+>  is small and don't need to. 
+>  
+Exactly. I think that 5 pages are not that important(small amount of memory),
+so it is not worth to build the logic around it in order to return them back
+to the page allocator when CPU goes offline, even forever. This is how i see it.
+
+If you are aware about some specific systems where it is critical, please
+let's as know.
+
+--
+Vlad Rezki
