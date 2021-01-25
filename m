@@ -2,114 +2,76 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A57DC433E0
-	for <rcu@archiver.kernel.org>; Mon, 25 Jan 2021 07:54:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55A0DC433E0
+	for <rcu@archiver.kernel.org>; Mon, 25 Jan 2021 13:24:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C969C22C9C
-	for <rcu@archiver.kernel.org>; Mon, 25 Jan 2021 07:54:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 10C0B22E03
+	for <rcu@archiver.kernel.org>; Mon, 25 Jan 2021 13:24:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbhAYHm5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 25 Jan 2021 02:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbhAYHmj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:42:39 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F83C061573;
-        Sun, 24 Jan 2021 23:41:16 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id e15so9803748wme.0;
-        Sun, 24 Jan 2021 23:41:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Vln43mgwMFNDI3htKB1T6Ag4DsdFzHSSzpUsFqeuEV8=;
-        b=YlaF8EV+p5Ys4CIcJ/awJ+DIh+YHGs0ojO7kNgf5NVTd1GUFrTzrKgcfJnF3YZdxbK
-         12HO+dRwrrUjsnrLVZe5XOeV8nMb/HHgZUaVi5JFUPsqA+znS+yEOpFcn0MBdIMb/fqd
-         cmnATcaeSsU33Rhvx0jKRxRI+gUxMzuYZwzZ+vwCmpYUu1zQ5XedTnPiQnGMLACIb+hH
-         0/YF2qcdsHiVdA/jc2gERu0N80amkCwowGYbXuAm79GdnjJ50oBCjmXG2M4JMju5KLDI
-         SlfkYlw/GMpcsZSS2ypShNs2pM3JSlsjTnk4QuGeag28F2bgzkKDNAKnX2PRKkbj6Isp
-         pHtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Vln43mgwMFNDI3htKB1T6Ag4DsdFzHSSzpUsFqeuEV8=;
-        b=tUHQVCaanErQLdsFg7toccq41KqCWrkQQ2dQ8vsNyskQZxbx0EIReXSbzzd0c7c02U
-         3Fw4mElDaR09TcElaC6vDRnBHY51Xx6zDB1AwSjCrTb2/Lfwzj2PMXGqy+MgaoJ6GvXc
-         VTXEP6XPaW7Tr64ZPAMbymx1aiNnObm21XdqPR+MnOGT6/aV9Sq3LO2rN3InfOVpZGEB
-         +2/AACDbDIQbijV8wubNTW+3aWV0CnxaoXsGdYzApHSO7bqgQBs98Dm4gWVcGezCBgb+
-         OMAiqx29gCFoHgDGBE4mAn/rq5yk7YSFFPyMScBziLZHU7Wg8NlZkw8F5Kw1rsncaI9T
-         O4jA==
-X-Gm-Message-State: AOAM532vbpeAWwywsyrXu6zlD9GFV9NT0+oZrx9FRjBomUV1RMh2b9fj
-        tc0hQWk9Vil5P9EGCZBNZW8=
-X-Google-Smtp-Source: ABdhPJwXDtvsM++m/Iu0HjPfin1IyRtsUt7YkR5bDCzhG+W+2LKjpn8dGLlWVJOVwl6RYJr/z94avA==
-X-Received: by 2002:a1c:1b44:: with SMTP id b65mr1202189wmb.188.1611560475444;
-        Sun, 24 Jan 2021 23:41:15 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d4b:4500:649e:f82b:bf2d:2571])
-        by smtp.gmail.com with ESMTPSA id s25sm23313994wrs.49.2021.01.24.23.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 23:41:14 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        id S1728751AbhAYNYV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 25 Jan 2021 08:24:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52268 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728773AbhAYNXe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:23:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611580960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HBPiTlyjs/rd83M2ASR6VRAaO1aAU7kqtIEB/emLiF8=;
+        b=SM0/VTZMBNHqgVSuRgzW1bNKEyfnhksCGuH4r2StqhGzYxnWNABch2SuUX6p+L2X1mDXnL
+        aNXKT/QdbIrBpwYw9o+SWb7pZ9R6JZ86HkWsozspmX79BC3T7osgRXNEyN0Fw6ynjFK8jy
+        U9LfjEsj/V/we54F6DHsz/7/ykpPgMU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EE9CAC45;
+        Mon, 25 Jan 2021 13:22:40 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 14:22:36 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] rcu-tasks: rectify kernel-doc for struct rcu_tasks
-Date:   Mon, 25 Jan 2021 08:41:05 +0100
-Message-Id: <20210125074105.29038-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210125132236.GJ827@dhcp22.suse.cz>
+References: <20210120162148.1973-1-urezki@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120162148.1973-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The command 'find ./kernel/rcu/ | xargs ./scripts/kernel-doc -none'
-reported an issue with the kernel-doc of struct rcu_tasks.
+On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> For a single argument we can directly request a page from a caller
+> context when a "carry page block" is run out of free spots. Instead
+> of hitting a slow path we can request an extra page by demand and
+> proceed with a fast path.
+> 
+> A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> and that its fallback is the relatively high latency synchronize_rcu().
+> Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> to allow limited sleeping within the memory allocator.
 
-Rectify the kernel-doc, such that no issues remain for ./kernel/rcu/.
+__GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+way to allocate without triggering the OOM killer. Is this really what
+you need/want? Is __GFP_NORETRY too weak?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on v5.11-rc5 and next-20210122
-
-Paul, please pick this minor kerneldoc cleanup.
-
- kernel/rcu/tasks.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index af7c19439f4e..17c8ebe131af 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -20,7 +20,7 @@ typedef void (*holdouts_func_t)(struct list_head *hop, bool ndrpt, bool *frptp);
- typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
- 
- /**
-- * Definition for a Tasks-RCU-like mechanism.
-+ * struct rcu_tasks - Definition for a Tasks-RCU-like mechanism.
-  * @cbs_head: Head of callback list.
-  * @cbs_tail: Tail pointer for callback list.
-  * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
-@@ -38,7 +38,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-  * @pertask_func: This flavor's per-task scan function (optional).
-  * @postscan_func: This flavor's post-task scan function (optional).
-- * @holdout_func: This flavor's holdout-list scan function (optional).
-+ * @holdouts_func: This flavor's holdout-list scan function (optional).
-  * @postgp_func: This flavor's post-grace-period function (optional).
-  * @call_func: This flavor's call_rcu()-equivalent function.
-  * @name: This flavor's textual name.
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
