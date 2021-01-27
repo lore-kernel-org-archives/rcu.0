@@ -2,236 +2,235 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB4CCC43333
-	for <rcu@archiver.kernel.org>; Tue, 26 Jan 2021 17:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5E39C433DB
+	for <rcu@archiver.kernel.org>; Wed, 27 Jan 2021 05:04:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0F1D230FC
-	for <rcu@archiver.kernel.org>; Tue, 26 Jan 2021 17:00:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 77D692068D
+	for <rcu@archiver.kernel.org>; Wed, 27 Jan 2021 05:04:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbhAZGBf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 26 Jan 2021 01:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        id S229618AbhA0FES (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Jan 2021 00:04:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729098AbhAYNuQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:50:16 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21471C061574;
-        Mon, 25 Jan 2021 05:49:35 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id u11so15296919ljo.13;
-        Mon, 25 Jan 2021 05:49:35 -0800 (PST)
+        with ESMTP id S231459AbhA0DA5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:00:57 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33263C06121E;
+        Tue, 26 Jan 2021 18:43:14 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id z6so480914qtn.0;
+        Tue, 26 Jan 2021 18:43:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=2MM+4DHLq4mp2pSrUD4kY/YnjjgN4sqE1Uy0H5xVv0o=;
-        b=KXVDm+WW4ACBvvvDHjXxCbU1MHDSH3NqA7x4rWe9rFWATO/o7DRkmAb7X7o6a3IAU2
-         dCA4V78CS8ZNg2w1tC6G71EvAztwKy6LF2fJJzyKY4H+P1e6bN1p4+9YekqBap9RA/JC
-         b9M1juSlVmI3MN0qtulhPlZExjmRmXp3w6zmFM8VkQgARnTOD+gNt2nk6rCDVrx1l4sI
-         5ag3+4fBjiC3WjM2GW+n3vIxRXHYtou0R5Wic7rdOgRGe9UYwy4KC4BopiuVgGa7ibDN
-         DpGKxQxjCjQ+qCnCiw8RmIoJhwzr2i7EOdpGw6IftwsujaQHZIjKCd3zAlAgWlJIT17o
-         OWPA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FoO5NyiBqMJQ60zgYVG26Tny5Gy1fOck0T7QXSobk/I=;
+        b=quz7kDHwxrH6oKCBl694OBv2lYQDrylvgRS/VxF4jZ1WPnskNxxYvsF0zQDDLRkRWC
+         pIzy6ep0y++4SerkGCI3FNzTvqxWzz/9vcgBlzs0LsnjEjYAvV5f4xa8qvrBRJwsojCK
+         koN2iuBVXB47sQUhl2vgccE0KlydzCn0lgPR+b09/gi2VTpsiSNI5KVlTWK4vs+gVrna
+         0AapMKxWi6895uOndbDo94jAKmnUiesoHbXtXxzPB2wdWq+cRvWz0BLggmnjpAuAe1dl
+         HEWrOaBbK36DX4gYkIfM+KRQAW1P6bku/JmXJwdXAUV61pNvJHti8usKIgjGZ+SpQEMA
+         hpHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=2MM+4DHLq4mp2pSrUD4kY/YnjjgN4sqE1Uy0H5xVv0o=;
-        b=FENmYbpvphd0CybDq88B8a9AZBYP7JX+/PIs0rfC78gVoBiRAX4SXb1G83D12usGUy
-         VQeNYUW3Ze1I4ysbNYu99XAdEM4YQYIO9fIsWu6MvMtd24QDxRVqy5honfH9C2+l6Nb1
-         Dy3v4NDymsyzC7Y4y4JDuMEVgzB2IS4+dUB1gh3LJY0rVpyFtc+5LGSVWvJE6ln5s4yM
-         Ydsh5NUPgdBBD1gz3+oWwrSebj2C4a7MsSyHdZqPxUqX+fev1QgLc53ml+LNVebHrPUC
-         PdPCRaEMda7W5eK+safK5f/d8KAojv2z1pj26rtH8NqeInVljWJR4hINHB0eWh7VY9BU
-         X4Kw==
-X-Gm-Message-State: AOAM532sX5S3EeuOZ6UymYFiS/MfZuxHmQ5NGCvv+sj16xWW3Y7hVnHc
-        Enzd2vD+0/2b5ujQ9JbtVBo=
-X-Google-Smtp-Source: ABdhPJzLgsYIWgKYL5z68o7tmI7vgCytx2MuYbT83+rMx51nWQUIv4MLd/bZx++48yOlLzOzh0vlUw==
-X-Received: by 2002:a2e:3516:: with SMTP id z22mr241879ljz.508.1611582573590;
-        Mon, 25 Jan 2021 05:49:33 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id a73sm319650lfd.45.2021.01.25.05.49.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FoO5NyiBqMJQ60zgYVG26Tny5Gy1fOck0T7QXSobk/I=;
+        b=U4bDYh7sMA9yhRJMpL12eeHC6s/0kgoE/vOtAs3EgW/23a5bm57q5jhKOzQ714+BfX
+         7B51UluEDaw6Fy00jv8qIyCFf+lqnCBoYkzEAuXadLs6IaWEl3+V3SlqObsIhHwKDw16
+         2qTgV7MtuP7YeWpHT3439HGs6ao1AesDib5hvxi+SzBrLN1jT+FctUKjb3HGp8BIA8E/
+         NGyl5Z5rPM/jyPOkdpGByX4X9VMqmPFbEgWpXsxwaOubCN1d2ASwZ6ps6t2npE5LpODT
+         wjrjIYLQsED0F6MT2l4Zrx1QGPzbn3Vr5iFBJ+APUPrdVxhYlPHGsftJSojTt9QBZlb+
+         g9vw==
+X-Gm-Message-State: AOAM530mxwkUz5A0mEcZ7J8q0U0pecUxjaA79voivKBR8DmMUeqyBWtu
+        d5LE740Bp0dFVJC80n/pRaY=
+X-Google-Smtp-Source: ABdhPJwb/RjJQymO5V8o2lw64jiz7y7FcDDy7Te113NlvwBf2vE7d6JDz0hJnTvdVrMH5ZABmu3V5Q==
+X-Received: by 2002:aed:34c7:: with SMTP id x65mr7910414qtd.210.1611715393459;
+        Tue, 26 Jan 2021 18:43:13 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id c12sm338749qkg.118.2021.01.26.18.43.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 05:49:32 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 25 Jan 2021 14:49:30 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Tue, 26 Jan 2021 18:43:12 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id BA4A627C0054;
+        Tue, 26 Jan 2021 21:43:11 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 26 Jan 2021 21:43:11 -0500
+X-ME-Sender: <xms:PtMQYLjarwezrzQW0Zo0KrQqG5bfthVix_edTpFm9zVg7c25p3yNOQ>
+    <xme:PtMQYICM972Kf3QniAshd6pgIv4EzLvlAUJM0_3BJpt7LB3dPIzcif7LLPYl34jp-
+    V0v-Ky9SrNmAOcYxQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtggdttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeeuueekfffhhffhveehvdfhfedvfeffgeeguefhfedvvdffuddvgfeiveetudef
+    jeenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:PtMQYLEqAsjjLLL4hEbEprIxDlcIqjLZzdOE5Rk8ntjmI8pe6K5Hjg>
+    <xmx:PtMQYISfVjn6kG4toQFhrVn4bfFjmCIRe4hK5ozh2xo8HSiejOGt6g>
+    <xmx:PtMQYIxHJv_pnpdD2YcqS8sr29tO2hgFdLPs05d6ZVyF0XiqPOtRqA>
+    <xmx:P9MQYMlG8HgSC0N1Dj7nEe2Nh4qfGYF_F0znHm2jSSKq0ChX8FGjyXhWnNk>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 34355108005C;
+        Tue, 26 Jan 2021 21:43:10 -0500 (EST)
+Date:   Wed, 27 Jan 2021 10:42:35 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI0=?= =?utf-8?Q?=3A?= [PATCH 3/3]
- kvfree_rcu: use migrate_disable/enable()
-Message-ID: <20210125134930.GA1869@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120162148.1973-3-urezki@gmail.com>
- <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20210124215700.GB1076@pc636>
- <BYAPR11MB2632939DA9FB6AC1B25FA847FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
- <BYAPR11MB2632ACF42A88E65F1C164021FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
+        Scott Wood <swood@redhat.com>
+Subject: Re: [PATCH tip/core/rcu 1/4] rcu: Expedite deboost in case of
+ deferred quiescent state
+Message-ID: <YBDTG5HEC6OLV8OQ@boqun-archlinux>
+References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
+ <20210120043236.7254-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB2632ACF42A88E65F1C164021FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210120043236.7254-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> 
-> ________________________________________
-> 发件人: Uladzislau Rezki <urezki@gmail.com>
-> 发送时间: 2021年1月25日 5:57
-> 收件人: Zhang, Qiang
-> 抄送: Uladzislau Rezki (Sony); LKML; RCU; Paul E . McKenney; Michael Ellerman; Andrew Morton; Daniel Axtens; Frederic Weisbecker; Neeraj Upadhyay; Joel Fernandes; Peter Zijlstra; Michal Hocko; Thomas Gleixner; Theodore Y . Ts'o; Sebastian Andrzej Siewior; Oleksiy Avramchenko
-> 主题: Re: 回复: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-> 
-> >Hello, Zhang.
-> 
-> > >________________________________________
-> > >发件人: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > >发送时间: 2021年1月21日 0:21
-> > >收件人: LKML; RCU; Paul E . McKenney; Michael Ellerman
-> > >抄送: Andrew Morton; Daniel Axtens; Frederic Weisbecker; Neeraj >Upadhyay; Joel Fernandes; Peter Zijlstra; Michal Hocko; Thomas >Gleixner; Theodore Y . Ts'o; Sebastian Andrzej Siewior; Uladzislau >Rezki; Oleksiy Avramchenko
-> > >主题: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-> > >
-> > >Since the page is obtained in a fully preemptible context, dropping
-> > >the lock can lead to migration onto another CPU. As a result a prev.
-> > >bnode of that CPU may be underutilised, because a decision has been
-> > >made for a CPU that was run out of free slots to store a pointer.
-> > >
-> > >migrate_disable/enable() are now independent of RT, use it in order
-> > >to prevent any migration during a page request for a specific CPU it
-> > >is requested for.
-> >
-> >
-> > Hello Rezki
-> >
-> > The critical migrate_disable/enable() area is not allowed to block, under RT and non RT.
-> > There is such a description in preempt.h
-> >
-> >
-> > * Notes on the implementation.
-> >  *
-> >  * The implementation is particularly tricky since existing code patterns
-> >  * dictate neither migrate_disable() nor migrate_enable() is allowed to block.
-> >  * This means that it cannot use cpus_read_lock() to serialize against hotplug,
-> >  * nor can it easily migrate itself into a pending affinity mask change on
-> >  * migrate_enable().
-> >
-> >How i interpret it is migrate_enable()/migrate_disable() are not allowed to
-> >use any blocking primitives, such as rwsem/mutexes/etc. in order to mark a
-> >current context as non-migratable.
-> >
-> >void migrate_disable(void)
-> >{
-> > struct task_struct *p = current;
-> >
-> > if (p->migration_disabled) {
-> >  p->migration_disabled++;
-> >  return;
-> > }
-> 
-> > preempt_disable();
-> > this_rq()->nr_pinned++;
-> > p->migration_disabled = 1;
-> > preempt_enable();
-> >}
-> >
-> >It does nothing that prevents you from doing schedule() or even wait for any
-> >event(mutex slow path behaviour), when the process is removed from the run-queue.
-> >I mean after the migrate_disable() is invoked. Or i miss something?
-> 
-> Hello Rezki
-> 
-> Sorry, there's something wrong with the previous description.
-> There are the following scenarios
-> 
-> Due to migrate_disable will increase  this_rq()->nr_pinned , after that
-> if get_free_page be blocked, and this time, CPU going offline,
-> the sched_cpu_wait_empty() be called in per-cpu "cpuhp/%d" task,
-> and be blocked.
-> 
-But after the migrate_disable() is invoked a CPU can not be brought down.
-If there are pinned tasks a "hotplug path" will be blocked on balance_hotplug_wait()
-call.
+Hi Paul,
 
-> blocked:
-> sched_cpu_wait_empty()
-> {
->       struct rq *rq = this_rq();
->        rcuwait_wait_event(&rq->hotplug_wait,
->                            rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
->                            TASK_UNINTERRUPTIBLE);
-> }
->
-Exactly.
-
-> wakeup:
-> balance_push()
-> {
->         if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
->               
->                 if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
->                     rcuwait_active(&rq->hotplug_wait)) {
->                         raw_spin_unlock(&rq->lock);
->                         rcuwait_wake_up(&rq->hotplug_wait);
->                         raw_spin_lock(&rq->lock);
->                 }
->                 return;
->         }
-> }
+On Tue, Jan 19, 2021 at 08:32:33PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> One of the conditions for this function to wake up is "rq->nr_pinned  == 0"
-> that is to say between migrate_disable/enable, if blocked will defect CPU going
-> offline longer blocking time.
+> Historically, a task that has been subjected to RCU priority boosting is
+> deboosted at rcu_read_unlock() time.  However, with the advent of deferred
+> quiescent states, if the outermost rcu_read_unlock() was invoked with
+> either bottom halves, interrupts, or preemption disabled, the deboosting
+> will be delayed for some time.  During this time, a low-priority process
+> might be incorrectly running at a high real-time priority level.
 > 
-Indeed, the hotplug time is affected. For example in case of waiting for
-a mutex to be released, an owner will wakeup waiters. But this is expectable.
-
->
-> I'm not sure that's a problem，and I didn't find it in the kernel code  between 
->  migrate_disable/enable possible sleep calls.
+> Fortunately, rcu_read_unlock_special() already provides mechanisms for
+> forcing a minimal deferral of quiescent states, at least for kernels
+> built with CONFIG_IRQ_WORK=y.  These mechanisms are currently used
+> when expedited grace periods are pending that might be blocked by the
+> current task.  This commit therefore causes those mechanisms to also be
+> used in cases where the current task has been or might soon be subjected
+> to RCU priority boosting.  Note that this applies to all kernels built
+> with CONFIG_RCU_BOOST=y, regardless of whether or not they are also
+> built with CONFIG_PREEMPT_RT=y.
 > 
-For example z3fold.c:
+> This approach assumes that kernels build for use with aggressive real-time
+> applications are built with CONFIG_IRQ_WORK=y.  It is likely to be far
+> simpler to enable CONFIG_IRQ_WORK=y than to implement a fast-deboosting
+> scheme that works correctly in its absence.
+> 
+> While in the area, alphabetize the rcu_preempt_deferred_qs_handler()
+> function's local variables.
+> 
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: Scott Wood <swood@redhat.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree_plugin.h | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 8b0feb2..fca31c6 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -660,9 +660,9 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+>  static void rcu_read_unlock_special(struct task_struct *t)
+>  {
+>  	unsigned long flags;
+> +	bool irqs_were_disabled;
+>  	bool preempt_bh_were_disabled =
+>  			!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+> -	bool irqs_were_disabled;
+>  
+>  	/* NMI handlers cannot block and cannot safely manipulate state. */
+>  	if (in_nmi())
+> @@ -671,30 +671,32 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  	local_irq_save(flags);
+>  	irqs_were_disabled = irqs_disabled_flags(flags);
+>  	if (preempt_bh_were_disabled || irqs_were_disabled) {
+> -		bool exp;
+> +		bool expboost; // Expedited GP in flight or possible boosting.
+>  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  		struct rcu_node *rnp = rdp->mynode;
+>  
+> -		exp = (t->rcu_blocked_node &&
+> -		       READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+> -		      (rdp->grpmask & READ_ONCE(rnp->expmask));
+> +		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+> +			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+> +			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+> +			    t->rcu_blocked_node);
 
-/* Add to the appropriate unbuddied list */
-static inline void add_to_unbuddied(struct z3fold_pool *pool,
-				struct z3fold_header *zhdr)
-{
-	if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
-			zhdr->middle_chunks == 0) {
-		struct list_head *unbuddied;
-		int freechunks = num_free_chunks(zhdr);
+I take it that you check whether possible boosting is in progress via
+the last expression of "||", ie:
 
-		migrate_disable();
-		unbuddied = this_cpu_ptr(pool->unbuddied);
-		spin_lock(&pool->lock);
-		list_add(&zhdr->buddy, &unbuddied[freechunks]);
-		spin_unlock(&pool->lock);
-		zhdr->cpu = smp_processor_id();
-		migrate_enable();
-	}
-}
+	(IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+	t->rcu_blocked_node)
 
-for PREEMPT_RT kernel a spinlock is converted to rt-mutex, thus it can sleep.
+if so, I don't see the point of using the new "expboost" in the
+raise_softirq_irqoff() branch, because if in_irq() is false, we only
+raise softirq if irqs_were_disabled is false (otherwise, we may take the
+risk of doing a wakeup with a pi or rq lock held, IIRC), and the
+boosting part of the "expboost" above is only true if irqs_were_disabled
+is true, so using expboost makes no different here.
 
---
-Vlad Rezki
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if (use_softirq && (in_irq() || (exp && !irqs_were_disabled))) {
+> +		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
+>  			// Using softirq, safe to awaken, and either the
+> -			// wakeup is free or there is an expedited GP.
+> +			// wakeup is free or there is either an expedited
+> +			// GP in flight or a potential need to deboost.
+
+and this comment will be incorrect, we won't enter here solely because
+there is a potential need to deboost.
+
+That said, why the boosting condition has a "irqs_were_disabled" in it?
+What if a task gets boosted because of RCU boosting, and exit the RCU
+read-side c.s. with irq enabled and there is no expedited GP in flight,
+will the task get deboosted quickly enough?
+
+Maybe I'm missing some subtle?
+
+Regards,
+Boqun
+
+>  			raise_softirq_irqoff(RCU_SOFTIRQ);
+>  		} else {
+>  			// Enabling BH or preempt does reschedule, so...
+> -			// Also if no expediting, slow is OK.
+> -			// Plus nohz_full CPUs eventually get tick enabled.
+> +			// Also if no expediting and no possible deboosting,
+> +			// slow is OK.  Plus nohz_full CPUs eventually get
+> +			// tick enabled.
+>  			set_tsk_need_resched(current);
+>  			set_preempt_need_resched();
+>  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> -			    !rdp->defer_qs_iw_pending && exp && cpu_online(rdp->cpu)) {
+> +			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+>  				// Get scheduler to re-evaluate and call hooks.
+>  				// If !IRQ_WORK, FQS scan will eventually IPI.
+> -				init_irq_work(&rdp->defer_qs_iw,
+> -					      rcu_preempt_deferred_qs_handler);
+> +				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
+>  				rdp->defer_qs_iw_pending = true;
+>  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+>  			}
+> -- 
+> 2.9.5
+> 
