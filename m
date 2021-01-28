@@ -2,344 +2,405 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0031C433E0
-	for <rcu@archiver.kernel.org>; Thu, 28 Jan 2021 01:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2082DC433E6
+	for <rcu@archiver.kernel.org>; Thu, 28 Jan 2021 01:16:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AEB4A64DDA
-	for <rcu@archiver.kernel.org>; Thu, 28 Jan 2021 01:15:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D3D7264D99
+	for <rcu@archiver.kernel.org>; Thu, 28 Jan 2021 01:16:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhA1BPQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhA1BMu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:12:50 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E34C061574;
-        Wed, 27 Jan 2021 17:12:02 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id j13so2069699qvu.10;
-        Wed, 27 Jan 2021 17:12:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JwVS1jIkqmTmlzjLEdE5nvb994PexEEiKgfRgbEq3/A=;
-        b=XBYlS/VK667yrjQS8K6B8nNWzAEMRLvgUQx0YoVBy5gjTUUsxRX1g+n2hHrdx2wkP3
-         95vk6TIfRU9EhKTUouSTPtoixgkci7yRIpsFw+Fi6kkY3LP1UZU9QTQExe+duPCy3XzH
-         ssKvXEi6l55ysG6Or+BBhHNW7/Sv2pfJsTIsYJPZOMIY4ZSj2BwcEL8Ji4Z/xUtG9ciB
-         fpkW87nfFuU1+daMmyEgr1HQ7gnT48B56KSerxXFacWnjWFsKzqZsCxKDSXRAob8UGKC
-         ag4R/julJlgWpNvGfHFjfTFO4L3k7hDmxxrRqrnoYmsJPoS/zSiNdqVy2dgRlZm11eZP
-         Plkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JwVS1jIkqmTmlzjLEdE5nvb994PexEEiKgfRgbEq3/A=;
-        b=SOcB8lxbekkcfWt0azN09BzNx5NFTAf5KlhTSdjCyq/o5RDU9FmvLdUn6u/aNAByyS
-         LUaVKDo4xpiLjMo0vgQV30czjjwNqGAkgscDUusaIuEsdkGt+8p7AmBrjCvtfbvGEhAr
-         3ZT9lWHMFoPG6Ydy7aBneAc33LOGo93uNKFEvH+VAibWTMMfME8I33rlOVpp+BVBA4Lv
-         nQb1K+oSKrT047fK2zGLEfU2A2JpkVS8GVoEdNEsWHiX6miIuXq24IX4SeLpaLqOQTYe
-         exgNO33lQ6+yMrdF+/FWhTcm6DScTy+qN7Q1ggU7HAoZTo7Tt/ajOCZ8RhLaTl41FaLp
-         V+gA==
-X-Gm-Message-State: AOAM532IueqMnQGakEE3Znzw3wLxWwqIDRjxSjGMXwiPhygbPqQOI9px
-        widiV8/lFWQf5FX3YF/50sQ=
-X-Google-Smtp-Source: ABdhPJzatu8bQ7IQDs+SbS/1psRWuR7u6vyfcvwqZKEhKmEXnpVJbG1oOWaHFwQojWsdlaGSKLd5hg==
-X-Received: by 2002:a0c:f64c:: with SMTP id s12mr13287967qvm.2.1611796321544;
-        Wed, 27 Jan 2021 17:12:01 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id d192sm2407532qkc.65.2021.01.27.17.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 17:12:00 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7F3D527C0054;
-        Wed, 27 Jan 2021 20:11:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 27 Jan 2021 20:11:59 -0500
-X-ME-Sender: <xms:XQ8SYOcVI99cOQnqST_x-muPxMviO_RnXgbgR_r5zYQQhcMK6kTsww>
-    <xme:XQ8SYIP5h1IhdgMNdTbltbfpHIlZ_lPVLFv2DWVvLNxXpW8lHCbjr3v_4DEDOUlot
-    658GoiHqjvKGHQ6Ig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelgddvlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphepudeijedrvddvtddrvddruddvieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:XQ8SYPhGNeT3MCbF1Ppyg5c6qVOikwU17M9928aFuekdU9qhn9_TiQ>
-    <xmx:XQ8SYL9z9cn6dZpDcLDgmrvg1FskuxSKcLodBTacYg_XfOTm8xi7BA>
-    <xmx:XQ8SYKum1xVJDRET5PVjQ2gkIZGlag1GAEo7jU8cHgg28XzLJ0mYHw>
-    <xmx:Xw8SYL93WGyKV6pOiYJF3SX9DI3TOzcJIGHg80aUOLAljqe1OuYS9dxXayg>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9E14724005B;
-        Wed, 27 Jan 2021 20:11:57 -0500 (EST)
-Date:   Thu, 28 Jan 2021 09:11:20 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Scott Wood <swood@redhat.com>
-Subject: Re: [PATCH tip/core/rcu 1/4] rcu: Expedite deboost in case of
- deferred quiescent state
-Message-ID: <YBIPOMdfOSw3TLa9@boqun-archlinux>
-References: <20210120043144.GA7045@paulmck-ThinkPad-P72>
- <20210120043236.7254-1-paulmck@kernel.org>
- <YBDTG5HEC6OLV8OQ@boqun-archlinux>
- <20210127044024.GI2743@paulmck-ThinkPad-P72>
- <YBEQtAeqMg5AX291@boqun-archlinux>
- <20210127191831.GM2743@paulmck-ThinkPad-P72>
+        id S229531AbhA1BQi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:16:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231469AbhA1BGU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:06:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7063161492;
+        Thu, 28 Jan 2021 01:04:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611795877;
+        bh=BjkrDH+dXmUmh6iw8omprF8cTWR/vYfwapmMn+1Lzas=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=bHRtFzICT/n8Dpp6qZksx8bqmBoKTvloo0J94ISaczttSdstNJvXqQ/rSm9xHjCEk
+         oDSKOR4NCcKNRrwFSn1Uxzj1+dEXZyGWb3Ou+r09AkTVw6YuZaEGjHInVPfIfwadPh
+         tpbW0bB5SYtsYRlKMmgzdnXF8jHgfgz9knlc6WCGMIZPmH3cHcDK70+NaE3Mbm8gFr
+         /8+HlNOq69X2dib8lMsKOTsnn0hUyfZ6H7OlIVs/7gflyDSZtzQDlJmDTURLvMILvr
+         E7km7I37ZqFlgtcedHoZk+QI4OCgtb9CW1EAAjAfLniUKYc100cYLIZ2zypxsx+KIm
+         qa1JUsYNNgEyw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0F25B352260C; Wed, 27 Jan 2021 17:04:37 -0800 (PST)
+Date:   Wed, 27 Jan 2021 17:04:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org
+Cc:     akiyks@gmail.com, bigeasy@linutronix.de, elver@google.com,
+        frederic@kernel.org, joel@joelfernandes.org, julia@ni.com,
+        mchehab+huawei@kernel.org, neeraju@codeaurora.org,
+        paul.gortmaker@windriver.com, peterz@infradead.org,
+        qiang.zhang@windriver.com, swood@redhat.com, urezki@gmail.com,
+        w@1wt.eu, wangqing@vivo.com, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, kernel-team@fb.com, tglx@linutronix.de
+Subject: [GIT PULL tip/core/rcu] RCU, LKMM, and KCSAN commits for v5.12
+Message-ID: <20210128010437.GA32221@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127191831.GM2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 11:18:31AM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 27, 2021 at 03:05:24PM +0800, Boqun Feng wrote:
-> > On Tue, Jan 26, 2021 at 08:40:24PM -0800, Paul E. McKenney wrote:
-> > > On Wed, Jan 27, 2021 at 10:42:35AM +0800, Boqun Feng wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > On Tue, Jan 19, 2021 at 08:32:33PM -0800, paulmck@kernel.org wrote:
-> > > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > > 
-> > > > > Historically, a task that has been subjected to RCU priority boosting is
-> > > > > deboosted at rcu_read_unlock() time.  However, with the advent of deferred
-> > > > > quiescent states, if the outermost rcu_read_unlock() was invoked with
-> > > > > either bottom halves, interrupts, or preemption disabled, the deboosting
-> > > > > will be delayed for some time.  During this time, a low-priority process
-> > > > > might be incorrectly running at a high real-time priority level.
-> > > > > 
-> > > > > Fortunately, rcu_read_unlock_special() already provides mechanisms for
-> > > > > forcing a minimal deferral of quiescent states, at least for kernels
-> > > > > built with CONFIG_IRQ_WORK=y.  These mechanisms are currently used
-> > > > > when expedited grace periods are pending that might be blocked by the
-> > > > > current task.  This commit therefore causes those mechanisms to also be
-> > > > > used in cases where the current task has been or might soon be subjected
-> > > > > to RCU priority boosting.  Note that this applies to all kernels built
-> > > > > with CONFIG_RCU_BOOST=y, regardless of whether or not they are also
-> > > > > built with CONFIG_PREEMPT_RT=y.
-> > > > > 
-> > > > > This approach assumes that kernels build for use with aggressive real-time
-> > > > > applications are built with CONFIG_IRQ_WORK=y.  It is likely to be far
-> > > > > simpler to enable CONFIG_IRQ_WORK=y than to implement a fast-deboosting
-> > > > > scheme that works correctly in its absence.
-> > > > > 
-> > > > > While in the area, alphabetize the rcu_preempt_deferred_qs_handler()
-> > > > > function's local variables.
-> > > > > 
-> > > > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > > > > Cc: Scott Wood <swood@redhat.com>
-> > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > ---
-> > > > >  kernel/rcu/tree_plugin.h | 26 ++++++++++++++------------
-> > > > >  1 file changed, 14 insertions(+), 12 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > > index 8b0feb2..fca31c6 100644
-> > > > > --- a/kernel/rcu/tree_plugin.h
-> > > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > > @@ -660,9 +660,9 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
-> > > > >  static void rcu_read_unlock_special(struct task_struct *t)
-> > > > >  {
-> > > > >  	unsigned long flags;
-> > > > > +	bool irqs_were_disabled;
-> > > > >  	bool preempt_bh_were_disabled =
-> > > > >  			!!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
-> > > > > -	bool irqs_were_disabled;
-> > > > >  
-> > > > >  	/* NMI handlers cannot block and cannot safely manipulate state. */
-> > > > >  	if (in_nmi())
-> > > > > @@ -671,30 +671,32 @@ static void rcu_read_unlock_special(struct task_struct *t)
-> > > > >  	local_irq_save(flags);
-> > > > >  	irqs_were_disabled = irqs_disabled_flags(flags);
-> > > > >  	if (preempt_bh_were_disabled || irqs_were_disabled) {
-> > > > > -		bool exp;
-> > > > > +		bool expboost; // Expedited GP in flight or possible boosting.
-> > > > >  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-> > > > >  		struct rcu_node *rnp = rdp->mynode;
-> > > > >  
-> > > > > -		exp = (t->rcu_blocked_node &&
-> > > > > -		       READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
-> > > > > -		      (rdp->grpmask & READ_ONCE(rnp->expmask));
-> > > > > +		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
-> > > > > +			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
-> > > > > +			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
-> > > > > +			    t->rcu_blocked_node);
-> > > > 
-> > > > I take it that you check whether possible boosting is in progress via
-> > > > the last expression of "||", ie:
-> > > > 
-> > > > 	(IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
-> > > > 	t->rcu_blocked_node)
-> > > > 
-> > > > if so, I don't see the point of using the new "expboost" in the
-> > > > raise_softirq_irqoff() branch, because if in_irq() is false, we only
-> > > > raise softirq if irqs_were_disabled is false (otherwise, we may take the
-> > > > risk of doing a wakeup with a pi or rq lock held, IIRC), and the
-> > > > boosting part of the "expboost" above is only true if irqs_were_disabled
-> > > > is true, so using expboost makes no different here.
-> > > 
-> > > I started out with two local variables, one for each side of the ||,
-> > > but this looked nicer.
-> > > 
-> > > > >  		// Need to defer quiescent state until everything is enabled.
-> > > > > -		if (use_softirq && (in_irq() || (exp && !irqs_were_disabled))) {
-> > > > > +		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
-> > > > >  			// Using softirq, safe to awaken, and either the
-> > > > > -			// wakeup is free or there is an expedited GP.
-> > > > > +			// wakeup is free or there is either an expedited
-> > > > > +			// GP in flight or a potential need to deboost.
-> > > > 
-> > > > and this comment will be incorrect, we won't enter here solely because
-> > > > there is a potential need to deboost.
-> > > 
-> > > You are quite right, given the !irqs_were_disabled.
-> > > 
-> > > > That said, why the boosting condition has a "irqs_were_disabled" in it?
-> > > > What if a task gets boosted because of RCU boosting, and exit the RCU
-> > > > read-side c.s. with irq enabled and there is no expedited GP in flight,
-> > > > will the task get deboosted quickly enough?
-> > > 
-> > > Because if !irqs_were_disabled, there will be a local_bh_enable() or
-> > > a preempt_enable(), give or take preempt_enable_no_resched(), and those
-> > > will both get the scheduler involved because of the set_tsk_need_resched()
-> > > and set_preempt_need_resched().  There is thus no need for the irq_work
-> > > unless irqs_were_disabled.
-> > 
-> > But if so, shouldn't we check !preemp_bh_were_disabled instead of
-> > irqs_were_disabled? I.e. there is no need for the irq_work unless
-> > preemption and bottom halves are all enabled (IOW, we cannot expect the
-> > task to get into scheduler soon via *_enable()).
-> > 
-> > Current what we are doing is if irqs_were_disabled is true (along with
-> > other checks pass), we queue a irq work, but in this situation,
-> > preept_bh_were_disabled might be true as well, which means there may be
-> > a preempt_enable() not far away.
-> 
-> Except that the preempt_enable() might be executed before the
-> local_irq_enable(), in which case the scheduler would not be invoked.
-> 
-> > Consider the following simple example, if we have a in-flight gp or
-> > this task has been boosted:
-> > 
-> > 	preempt_disable();
-> > 	local_irq_disable();
-> > 	rcu_read_lock();
-> > 	...
-> > 	rcu_read_unlock();
-> > 	// current we will queue a irq work here.
-> > 	local_irq_enable();
-> > 	preempt_enable();
-> > 	// but we will enter scheduelr here./
-> 
-> And consider this variation:
-> 
-> 	preempt_disable();
-> 	local_irq_disable();
-> 	rcu_read_lock();
-> 	...
-> 	rcu_read_unlock();
-> 	// Currently, we will queue a irq work here...
-> 	preempt_enable();
-> 	// ...because we cannot yet enter the scheduler.
-> 	local_irq_enable();
-> 	// Now we can but we won't because no irq_work has been scheduled.
-> 
+Hello, Ingo!
 
-Fair enough!
+This pull request contains changes for RCU, KCSAN, LKMM, and nolibc.
+You can pull the entire group using branch for-mingo.  Or, if you prefer,
+you can pull them separately, using for-mingo-rcu to pull the RCU changes,
+for-mingo-kcsan to pull the KCSAN changes, for-mingo-lkmm to pull the
+LKMM changes, and for-mingo-nolibc to pull the noclib changes.
 
-But what stops the following from happening?
+The changes are as follows:
 
- 	preempt_disable();
- 	rcu_read_lock();
- 	...
- 	rcu_read_unlock();
- 	// irq is not disabled, so no irq_work.
+1.	RCU updates (for-mingo-rcu):
 
- 	local_irq_disable();
- 	preempt_enable();
- 	// we cannot enter the scheduler
- 	local_irq_enable();
- 	// Now we can but we won't because no irq_work has been scheduled
+	a.	Documentation updates.
+		https://lore.kernel.org/lkml/20210106005334.GA12159@paulmck-ThinkPad-P72/
 
-Am I too paranoid and nobody writes code like the above? ;-)
+	b.	Miscellaneous fixes.
+		https://lore.kernel.org/lkml/20210106005713.GA12492@paulmck-ThinkPad-P72/
 
-Regards,
-Boqun
+	c.	kfree_rcu() updates from Uladzislau Rezki.
+		https://lore.kernel.org/lkml/20210106010102.GA12737@paulmck-ThinkPad-P72/
 
-> However, the expboost condition is missing one thing, namely strict
-> grace periods.  It should read as follows:
-> 
-> 		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
-> 			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
-> 			   IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-> 			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
-> 			    t->rcu_blocked_node);
-> 
-> Not that this has anything to do with RCU priority boosting, but while
-> in the area...
-> 
-> 							Thanx, Paul
-> 
-> > > I am not all that worried about preempt_enable_no_resched() because
-> > > it is a problem for RT even in the absence of RCU priority boosting.
-> > > And the current uses appear to be in things that one would not use while
-> > > running an RT workload.
-> > > 
-> > > > Maybe I'm missing some subtle?
-> > > 
-> > > Or maybe I am.  Thoughts?
-> > > 
-> > > 							Thanx, Paul
-> > > 
-> > > > Regards,
-> > > > Boqun
-> > > > 
-> > > > >  			raise_softirq_irqoff(RCU_SOFTIRQ);
-> > > > >  		} else {
-> > > > >  			// Enabling BH or preempt does reschedule, so...
-> > > > > -			// Also if no expediting, slow is OK.
-> > > > > -			// Plus nohz_full CPUs eventually get tick enabled.
-> > > > > +			// Also if no expediting and no possible deboosting,
-> > > > > +			// slow is OK.  Plus nohz_full CPUs eventually get
-> > > > > +			// tick enabled.
-> > > > >  			set_tsk_need_resched(current);
-> > > > >  			set_preempt_need_resched();
-> > > > >  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
-> > 
-> > so the irqs_were_disabled here should be !preempt_bh_were_disabled?
-> > 
-> > Regards,
-> > Boqun
-> > 
-> > > > > -			    !rdp->defer_qs_iw_pending && exp && cpu_online(rdp->cpu)) {
-> > > > > +			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
-> > > > >  				// Get scheduler to re-evaluate and call hooks.
-> > > > >  				// If !IRQ_WORK, FQS scan will eventually IPI.
-> > > > > -				init_irq_work(&rdp->defer_qs_iw,
-> > > > > -					      rcu_preempt_deferred_qs_handler);
-> > > > > +				init_irq_work(&rdp->defer_qs_iw, rcu_preempt_deferred_qs_handler);
-> > > > >  				rdp->defer_qs_iw_pending = true;
-> > > > >  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-> > > > >  			}
-> > > > > -- 
-> > > > > 2.9.5
-> > > > > 
+	d.	Addition of mem_dump_obj() to provide allocator return
+		addresses to more easily locate bugs.  This has a
+		couple of RCU-related commits, but is mostly MM.  I am
+		including it here because Andrew Morton pulled them in,
+		but then removed them stating that they were already in
+		a maintainer tree, namely -rcu.
+		https://lore.kernel.org/lkml/20210106011603.GA13180@paulmck-ThinkPad-P72/
+
+	e.	Per-callback-batch tracking of numbers of callbacks,
+		which enables better debugging information and smarter
+		reactions to large numbers of callbacks.
+		https://lore.kernel.org/lkml/20210106012541.GA13972@paulmck-ThinkPad-P72/
+
+	f.	The first round of Frederic Weisbecker's changes to allow
+		CPUs to be runtime switched from and to callback-offloaded
+		state.
+		https://lore.kernel.org/lkml/20210106013950.GA14663@paulmck-ThinkPad-P72/
+
+	g.	CONFIG_PREEMPT_RT-related changes.
+		https://lore.kernel.org/lkml/20210106164746.GA19969@paulmck-ThinkPad-P72/
+
+	h.	RCU CPU stall warning updates.
+		https://lore.kernel.org/lkml/20210106165210.GA20296@paulmck-ThinkPad-P72/
+
+	i.	Addition of polling grace-period APIs for SRCU, requested
+		by Kent Overstreet.
+		https://lore.kernel.org/lkml/20210106165511.GA20555@paulmck-ThinkPad-P72/
+
+	j.	Torture-test and torture-test scripting updates, including
+		a "torture everything" script that runs rcutorture,
+		locktorture, scftorture, rcuscale, and refscale.
+		Plus does a allmodconfig built.
+		https://lore.kernel.org/lkml/20210106171532.GA20769@paulmck-ThinkPad-P72/
+		https://lore.kernel.org/lkml/20210106172547.GA22404@paulmck-ThinkPad-P72/
+		https://lore.kernel.org/lkml/20210106173056.GA23035@paulmck-ThinkPad-P72/
+
+2.	Kernel concurrency sanitizer (KCSAN) updates from Marco Elver.
+	https://lore.kernel.org/lkml/20210106173323.GA23292@paulmck-ThinkPad-P72/
+
+3.	Linux-kernel memory model (LKMM) updates.
+	https://lore.kernel.org/lkml/20210106173548.GA23664@paulmck-ThinkPad-P72/
+
+4.	Fixes to nolibc that allows it to run once again on ARMv8.
+	https://lore.kernel.org/lkml/20210121072031.23777-1-w@1wt.eu/
+
+All of the commits in this pull request have been subjected to subjected
+to the kbuild test robot and -next testing, and are available in the
+git repository based on v5.11-rc1 and v5.11-rc3 at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+
+for you to fetch changes up to c8c430f4a2fb91b9804ed2f749364fc0dcd663fe:
+
+  Merge branch 'nolibc.2021.01.21a' into HEAD (2021-01-22 15:28:38 -0800)
+
+----------------------------------------------------------------
+Akira Yokosawa (2):
+      tools/memory-model: Remove redundant initialization in litmus tests
+      tools/memory-model: Fix typo in klitmus7 compatibility table
+
+Frederic Weisbecker (17):
+      tools/rcutorture: Make identify_qemu_vcpus() independent of local language
+      rcu/nocb: Turn enabled/offload states into a common flag
+      rcu/nocb: Provide basic callback offloading state machine bits
+      rcu/nocb: Always init segcblist on CPU up
+      rcu/nocb: De-offloading CB kthread
+      rcu/nocb: Don't deoffload an offline CPU with pending work
+      rcu/nocb: De-offloading GP kthread
+      rcu/nocb: Re-offload support
+      rcu/nocb: Shutdown nocb timer on de-offloading
+      rcu/nocb: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
+      rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
+      rcu/nocb: Only cond_resched() from actual offloaded batch processing
+      rcu/nocb: Process batch locally as long as offloading isn't complete
+      rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
+      cpu/hotplug: Add lockdep_is_cpus_held()
+      timer: Add timer_curr_running()
+      tools/rcutorture: Support nocb toggle in TREE01
+
+Joel Fernandes (Google) (6):
+      rcu/tree: Make rcu_do_batch count how many callbacks were executed
+      rcu/segcblist: Add additional comments to explain smp_mb()
+      rcu/segcblist: Add counters to segcblist datastructure
+      rcu/tree: segcblist: Remove redundant smp_mb()s
+      rcu/trace: Add tracing for how segcb list changes
+      rcu/segcblist: Add debug checks for segment lengths
+
+Julia Cartwright (1):
+      rcu: Enable rcu_normal_after_boot unconditionally for RT
+
+Marco Elver (2):
+      kcsan: Rewrite kcsan_prandom_u32_max() without prandom_u32_state()
+      random32: Re-enable KCSAN instrumentation
+
+Mauro Carvalho Chehab (1):
+      list: Fix a typo at the kernel-doc markup
+
+Neeraj Upadhyay (1):
+      rcu: Check and report missed fqs timer wakeup on RCU stall
+
+Paul E. McKenney (88):
+      docs: Remove redundant "``" from Requirements.rst
+      doc: Remove obsolete RCU-bh and RCU-sched update-side API members
+      doc: Update RCU requirements RCU_INIT_POINTER() description
+      doc: Remove obsolete rcutree.rcu_idle_lazy_gp_delay boot parameter
+      srcu: Make Tiny SRCU use multi-bit grace-period counter
+      srcu: Provide internal interface to start a Tiny SRCU grace period
+      srcu: Provide internal interface to start a Tree SRCU grace period
+      srcu: Provide polling interfaces for Tiny SRCU grace periods
+      srcu: Provide polling interfaces for Tree SRCU grace periods
+      srcu: Document polling interfaces for Tree SRCU grace periods
+      srcu: Add comment explaining cookie overflow/wrap
+      rcutorture: Prepare for ->start_gp_poll and ->poll_gp_state
+      rcutorture: Add writer-side tests of polling grace-period API
+      rcutorture: Add reader-side tests of polling grace-period API
+      rcutorture: Add testing for RCU's global memory ordering
+      scftorture: Add debug output for wrong-CPU warning
+      rcu: Mark obtuse portion of stall warning as internal debug
+      rcu: For RCU grace-period kthread starvation, dump last CPU it ran on
+      rcu: Do not NMI offline CPUs
+      torture: Make --kcsan specify lockdep
+      torture: Make kvm.sh "--dryrun sched" summarize number of batches
+      torture: Make kvm.sh "--dryrun sched" summarize number of builds
+      torture: Allow kvm.sh --datestamp to specify subdirectories
+      torture: Prepare for splitting qemu execution from kvm-test-1-run.sh
+      torture: Add config2csv.sh script to compare torture scenarios
+      torture: Make kvm.sh "Test Summary" date be end of test
+      torture: Make kvm.sh arguments accumulate
+      torture: Print run duration at end of kvm.sh execution
+      torture: Make kvm.sh return failure upon build failure
+      torture: Make kvm.sh include --kconfig arguments in CPU calculation
+      torture: Add kvm.sh test summary to end of log file
+      torture: Stop hanging on panic
+      torture: Add --dryrun batches to help schedule a distributed run
+      torture: s/STOP/STOP.1/ to avoid scenario collision
+      torture: Simplify exit-code plumbing for kvm-recheck.sh and kvm-find-errors.sh
+      torture: Remove "Failed to add ttynull console" false positive
+      torture: Allow standalone kvm-recheck.sh run detect --trust-make
+      tools/memory-model: Tie acquire loads to reads-from
+      rcu: Add lockdep_assert_irqs_disabled() to rcu_sched_clock_irq() and callees
+      rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+      rcu: Make TASKS_TRACE_RCU select IRQ_WORK
+      torture: Do Kconfig analysis only once per scenario
+      rcutorture: Test runtime toggling of CPUs' callback offloading
+      rcu/nocb: Add grace period and task state to show_rcu_nocb_state() output
+      rcu/nocb: Add nocb CB kthread list to show_rcu_nocb_state() output
+      rcu/nocb: Code-style nits in callback-offloading toggling
+      rcu: Do any deferred nocb wakeups at CPU offline time
+      torture: Add torture.sh torture-everything script
+      torture: Make torture.sh use common time-duration bash functions
+      torture: Remove use of "eval" in torture.sh
+      torture: Add "make allmodconfig" to torture.sh
+      torture: Auto-size SCF and scaling runs based on number of CPUs
+      torture: Enable torture.sh argument checking
+      torture: Make torture.sh rcuscale and refscale deal with allmodconfig
+      torture: Make torture.sh refscale runs use verbose_batched module parameter
+      torture: Create doyesno helper function for torture.sh
+      torture: Make torture.sh allmodconfig retain and label output
+      torture: Make torture.sh throttle VERBOSE_TOROUT_*() for refscale
+      torture: Make torture.sh refuse to do zero-length runs
+      torture: Drop log.long generation from torture.sh
+      torture: Allow scenarios to be specified to torture.sh
+      torture: Add command and results directory to torture.sh log
+      torture: Add --kcsan-kmake-arg to torture.sh for KCSAN
+      torture: Compress KASAN vmlinux files
+      refscale: Allow summarization of verbose output
+      rcutorture: Require entire stutter period be post-boot
+      rcutorture: Make synctype[] and nsynctype be static global
+      rcutorture: Make rcu_torture_fakewriter() use blocking wait primitives
+      torture: Add fuzzed hrtimer-based sleep functions
+      rcutorture: Use torture_hrtimeout_jiffies() to avoid busy-waits
+      torture: Make stutter use torture_hrtimeout_*() functions
+      rcutorture: Use hrtimers for reader and writer delays
+      torture: Make refscale throttle high-rate printk()s
+      torture: Throttle VERBOSE_TOROUT_*() output
+      rcutorture: Make object_debug also double call_rcu() heap object
+      torture: Clean up after torture-test CPU hotplugging
+      torture: Maintain torture-specific set of CPUs-online books
+      rcutorture: Add rcutree.use_softirq=0 to RUDE01 and TASKS01
+      mm: Add mem_dump_obj() to print source of memory block
+      mm: Make mem_dump_obj() handle NULL and zero-sized pointers
+      mm: Make mem_dump_obj() handle vmalloc() memory
+      mm: Make mem_obj_dump() vmalloc() dumps include start and length
+      rcu: Make call_rcu() print mem_dump_obj() info for double-freed callback
+      percpu_ref: Dump mem_dump_obj() info upon reference-count underflow
+      Merge branches 'doc.2021.01.06a', 'fixes.2021.01.04b', 'kfree_rcu.2021.01.04a', 'mmdumpobj.2021.01.22a', 'nocb.2021.01.06a', 'rt.2021.01.04a', 'stall.2021.01.06a', 'torture.2021.01.12a' and 'tortureall.2021.01.06a' into HEAD
+      Merge branch 'kcsan.2021.01.04a' into HEAD
+      Merge branch 'lkmm.2021.01.04a' into HEAD
+      Merge branch 'nolibc.2021.01.21a' into HEAD
+
+Paul Gortmaker (1):
+      docs: Fix typos and drop/fix dead links in RCU documentation
+
+Peter Zijlstra (1):
+      sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
+
+Scott Wood (1):
+      rcu: Unconditionally use rcuc threads on PREEMPT_RT
+
+Sebastian Andrzej Siewior (3):
+      rcu: Make RCU_BOOST default on CONFIG_PREEMPT_RT
+      doc: Update RCU's requirements page about the PREEMPT_RT wiki
+      doc: Use CONFIG_PREEMPTION
+
+Uladzislau Rezki (Sony) (3):
+      rcu: Introduce kfree_rcu() single-argument macro
+      rcu: Eliminate the __kvfree_rcu() macro
+      rcu-tasks: Add RCU-tasks self tests
+
+Wang Qing (1):
+      locking: Remove duplicate include of percpu-rwsem.h
+
+Willy Tarreau (10):
+      tools/nolibc: Add the definition for dup()
+      tools/nolibc: Make dup2() rely on dup3() when available
+      tools/nolibc: Make getpgrp() fall back to getpgid(0)
+      tools/nolibc: Implement fork() based on clone()
+      tools/nolibc: Implement poll() based on ppoll()
+      tools/nolibc: Get timeval, timespec and timezone from linux/time.h
+      tools/nolibc: Remove incorrect definitions of __ARCH_WANT_*
+      tools/nolibc: Emit detailed error for missing alternate syscall number definitions
+      tools/nolibc: Fix position of -lgcc in the documented example
+      tools/rcutorture: Fix position of -lgcc in mkinitrd.sh
+
+Zqiang (1):
+      rcu: Record kvfree_call_rcu() call stack for KASAN
+
+ .../Expedited-Grace-Periods.rst                    |   4 +-
+ .../RCU/Design/Requirements/Requirements.rst       | 732 +++++++++++----------
+ Documentation/RCU/checklist.rst                    |  10 +-
+ Documentation/RCU/rcubarrier.rst                   |   6 +-
+ Documentation/RCU/stallwarn.rst                    |  27 +-
+ Documentation/RCU/whatisRCU.rst                    |  10 +-
+ Documentation/admin-guide/kernel-parameters.txt    |  39 +-
+ include/linux/cpu.h                                |   2 +
+ include/linux/list.h                               |   2 +-
+ include/linux/mm.h                                 |   2 +
+ include/linux/rcu_segcblist.h                      | 120 +++-
+ include/linux/rcupdate.h                           |  42 +-
+ include/linux/slab.h                               |   2 +
+ include/linux/srcu.h                               |   3 +
+ include/linux/srcutiny.h                           |   7 +-
+ include/linux/timer.h                              |   2 +
+ include/linux/torture.h                            |  27 +-
+ include/linux/vmalloc.h                            |   6 +
+ include/trace/events/rcu.h                         |  26 +
+ kernel/cpu.c                                       |   7 +
+ kernel/kcsan/core.c                                |  26 +-
+ kernel/locking/locktorture.c                       |   1 -
+ kernel/rcu/Kconfig                                 |   5 +-
+ kernel/rcu/rcu.h                                   |  16 +-
+ kernel/rcu/rcu_segcblist.c                         | 216 ++++--
+ kernel/rcu/rcu_segcblist.h                         |  57 +-
+ kernel/rcu/rcutorture.c                            | 395 +++++++++--
+ kernel/rcu/refscale.c                              |  23 +-
+ kernel/rcu/srcutiny.c                              |  77 ++-
+ kernel/rcu/srcutree.c                              | 147 ++++-
+ kernel/rcu/tasks.h                                 |  79 +++
+ kernel/rcu/tree.c                                  | 101 ++-
+ kernel/rcu/tree.h                                  |   2 +
+ kernel/rcu/tree_exp.h                              |   2 +-
+ kernel/rcu/tree_plugin.h                           | 367 ++++++++++-
+ kernel/rcu/tree_stall.h                            |  60 +-
+ kernel/rcu/update.c                                |   4 +-
+ kernel/scftorture.c                                |   6 +-
+ kernel/sched/core.c                                |   9 +-
+ kernel/time/timer.c                                |  14 +
+ kernel/torture.c                                   | 167 ++++-
+ lib/Makefile                                       |   3 -
+ lib/percpu-refcount.c                              |  12 +-
+ mm/slab.c                                          |  20 +
+ mm/slab.h                                          |  12 +
+ mm/slab_common.c                                   |  75 +++
+ mm/slob.c                                          |   6 +
+ mm/slub.c                                          |  40 ++
+ mm/util.c                                          |  31 +
+ mm/vmalloc.c                                       |  13 +
+ tools/include/nolibc/nolibc.h                      | 153 +++--
+ tools/memory-model/Documentation/glossary.txt      |  12 +-
+ tools/memory-model/README                          |   2 +-
+ .../litmus-tests/CoRR+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoRW+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoWR+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoWW+poonceonce.litmus            |   4 +-
+ .../IRIW+fencembonceonces+OnceOnce.litmus          |   5 +-
+ .../litmus-tests/IRIW+poonceonces+OnceOnce.litmus  |   5 +-
+ .../ISA2+pooncelock+pooncelock+pombonce.litmus     |   7 +-
+ .../litmus-tests/ISA2+poonceonces.litmus           |   6 +-
+ ...cerelease+poacquirerelease+poacquireonce.litmus |   6 +-
+ .../LB+fencembonceonce+ctrlonceonce.litmus         |   5 +-
+ .../LB+poacquireonce+pooncerelease.litmus          |   5 +-
+ .../litmus-tests/LB+poonceonces.litmus             |   5 +-
+ .../MP+fencewmbonceonce+fencermbonceonce.litmus    |   5 +-
+ .../litmus-tests/MP+onceassign+derefonce.litmus    |   4 +-
+ .../MP+polockmbonce+poacquiresilsil.litmus         |   5 +-
+ .../MP+polockonce+poacquiresilsil.litmus           |   5 +-
+ tools/memory-model/litmus-tests/MP+polocks.litmus  |   6 +-
+ .../litmus-tests/MP+poonceonces.litmus             |   5 +-
+ .../MP+pooncerelease+poacquireonce.litmus          |   5 +-
+ .../memory-model/litmus-tests/MP+porevlocks.litmus |   6 +-
+ .../litmus-tests/R+fencembonceonces.litmus         |   5 +-
+ .../memory-model/litmus-tests/R+poonceonces.litmus |   5 +-
+ .../S+fencewmbonceonce+poacquireonce.litmus        |   5 +-
+ .../memory-model/litmus-tests/S+poonceonces.litmus |   5 +-
+ .../litmus-tests/SB+fencembonceonces.litmus        |   5 +-
+ .../litmus-tests/SB+poonceonces.litmus             |   5 +-
+ .../litmus-tests/SB+rfionceonce-poonceonces.litmus |   5 +-
+ .../litmus-tests/WRC+poonceonces+Once.litmus       |   5 +-
+ .../WRC+pooncerelease+fencermbonceonce+Once.litmus |   5 +-
+ .../Z6.0+pooncelock+poonceLock+pombonce.litmus     |   7 +-
+ .../Z6.0+pooncelock+pooncelock+pombonce.litmus     |   7 +-
+ ...release+poacquirerelease+fencembonceonce.litmus |   6 +-
+ .../testing/selftests/rcutorture/bin/config2csv.sh |  67 ++
+ .../selftests/rcutorture/bin/console-badness.sh    |   1 +
+ .../testing/selftests/rcutorture/bin/functions.sh  |  36 +-
+ .../selftests/rcutorture/bin/kvm-find-errors.sh    |   9 +-
+ .../selftests/rcutorture/bin/kvm-recheck.sh        |   3 +-
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  12 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh      | 103 ++-
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh |   2 +-
+ .../selftests/rcutorture/bin/parse-build.sh        |   2 +-
+ .../selftests/rcutorture/bin/parse-console.sh      |   2 +-
+ tools/testing/selftests/rcutorture/bin/torture.sh  | 442 +++++++++++++
+ .../selftests/rcutorture/configs/rcu/RUDE01.boot   |   1 +
+ .../selftests/rcutorture/configs/rcu/TASKS01.boot  |   1 +
+ .../selftests/rcutorture/configs/rcu/TREE01.boot   |   4 +-
+ 99 files changed, 3163 insertions(+), 917 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/config2csv.sh
+ create mode 100755 tools/testing/selftests/rcutorture/bin/torture.sh
