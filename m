@@ -2,174 +2,181 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C01A5C433E6
-	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 07:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FF8C433E0
+	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 16:37:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63EB464DDB
-	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 07:51:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 803EB64DD6
+	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 16:37:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhA2Hue (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 Jan 2021 02:50:34 -0500
-Received: from mail-bn7nam10on2040.outbound.protection.outlook.com ([40.107.92.40]:55680
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232469AbhA2Hua (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:50:30 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RbtJqfZ/YB+eb2hEBvUXErfdvV4fyDfkxzwQ/d0SlXb2VZ1Chf0ehx0U6BUN+0vaNAbp3riK+9gFDOtgSZiWaAh72YUQpVmbhIltWeMr23J2iIjQfQSgu1kWvvyUbqInrl7gjIHhGIF/IlSvHA/ZSQUZKIIBwrzzyS9c1UxNnAL9Oxz467E7BJFkneU06DADWR6Ul627aE9Oo4IbTtMEg16C8JwDnTq35KV+pY3JNF+mzVIk8dxnaC0c8qK9myYYjDcQ69cnZqYbRgfbb25K2km78HyPDB+YnwuluT+r2ZSLf5YfJrlyRkLlhjQ0R1EIWxIV2IVYlxnB68uCJvksSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xMjDm+8WSaZlFkQ7JzyJEXv3Jc5yYdHaeEHiZLgNJ9Y=;
- b=jYgqUrHc2apHPCZT8+JZraxb9UOKe9l2IIAoGlUMqznRG3yQW0EJwgqDAwxjQkOrSZ+T/TrQKwDyJ3aRI0zTuhtzSGGWqhEmgTUg5rLUiJoqgGDCC6OSwL6mUcWBc/1HvxOlO1j55FJUyzt2CYQepkqC7TdM8qKnOnxZbasnoTuQNDO9nqMRBLTveaVwRkUZ5x+IUbPCXqKjh0ltqriqf8shTUn+6liuGPeNuXm3SXziirbxHr97kiklPJkj9DBzFmjuyCmtbNthf8aFdB6hZE3kyjPFPlKwVo/C2h6gg8hF6QJYewJGbMTi9jLsyC42rysMnJv6KQo9tXZAVyXwYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S229810AbhA2Qh2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Jan 2021 11:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231631AbhA2QgQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:36:16 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916A0C061573;
+        Fri, 29 Jan 2021 08:35:35 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id a8so13317573lfi.8;
+        Fri, 29 Jan 2021 08:35:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xMjDm+8WSaZlFkQ7JzyJEXv3Jc5yYdHaeEHiZLgNJ9Y=;
- b=qV6P7ozvhEdafZaas/97VoBFUwWei3XH9DyvdizM/HGdEQse4n0oiYbk8iZ+1DAsbTQSdEi3Icc+DfEcDTDDmnk8eWAzs0qjHuGhE+cH3V7ISjDxs8QU0juzfoQJPCi6VaWh8tBzAdayE357ZgLVXKbaiOgpEaB4brhgVTEimCQ=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB4784.namprd11.prod.outlook.com (2603:10b6:a03:2da::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Fri, 29 Jan
- 2021 07:46:47 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Fri, 29 Jan 2021
- 07:46:47 +0000
-From:   qiang.zhang@windriver.com
-To:     urezki@gmail.com
-Cc:     paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] kvfree_rcu: Release page cache under memory pressure
-Date:   Fri, 29 Jan 2021 16:04:42 +0800
-Message-Id: <20210129080442.16055-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR02CA0222.apcprd02.prod.outlook.com
- (2603:1096:201:20::34) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6fq8e4z28JlnpiCL40UdTorSI0TpSUjQk9y+4nElOw4=;
+        b=YnNJodsq3OkuHPwUnfveUSab/+p6Dc2IGLiHHd6EhjSNy54bzYgheAlcyezq/Qw7IY
+         YTxjd6i9AtiJW189vjS9zXjigcZDZ/a6iH2daYMOSxCmANSInncvlPEf8x2lxs9wO57l
+         /z8Ys64b5KAopVTJDPr3CapUhiybk71C0dwS3Ly9oAb1hJpz1nrBzAupia7MX9slk7OE
+         B8QDj8ARDYeTNE9eIebrQDPyl8vWeEkblY0Lu+dIWGtVDQPda8biwbbmafYjHTEQsVce
+         8xfJPB+cNPUZOa70OXzHHtVuNmo/4Z1nWpi4WuPXyz4KizXS/jKVV5k4pz9q+BbTN3yG
+         PC4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6fq8e4z28JlnpiCL40UdTorSI0TpSUjQk9y+4nElOw4=;
+        b=In+kCeLQKV1qHm2S39V4/zUcyjk1tnprJcEYYC3IXux56J5fyhL3ECHYR7TCod6XKN
+         FR0bxx0yDvTMMseckLDRDCihaiz8p+UKGj2494Gj6sKHoN4G3MWz3VU487o60T8pRYzk
+         GVEIFxqxNkH6qtfmx5k7BnonwtHkcQdO1SFrvhro8H6CRS2+kmcXj/EsnokLl1CXxA/+
+         tgrzeWjb55+e2OZ5YHXJi8CTXQArP26LRbVoXwBd86/bfupjIG31Bs+BDxjXgDxK/CO9
+         yAFvU1e7g6zGvbzQIEdKYSE5pIlzfvGm+6CQwDfYDn1vO0pRhmlkNelxmbS2CIyiqbIV
+         6yzw==
+X-Gm-Message-State: AOAM532dZMunTpM8Er+dj218c0MkBsG7vKoZ88IbAS2x9afSZIvDvxLQ
+        iuSc/DqD3GFs8L09Z3E1pfhlsJbKC5tvEw==
+X-Google-Smtp-Source: ABdhPJz6SmGqombELjjB+CHU7M8LtdnaXezweuOYRtkBycQH2JrZNPHgG1RM8+qv1UyTqCcVhex8zg==
+X-Received: by 2002:a05:6512:3182:: with SMTP id i2mr2559396lfe.553.1611938134087;
+        Fri, 29 Jan 2021 08:35:34 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id s2sm2071998lfr.107.2021.01.29.08.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 08:35:33 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 29 Jan 2021 17:35:31 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210129163531.GA30500@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
+ <20210125153943.GN827@dhcp22.suse.cz>
+ <20210125162559.GA52712@pc638.lan>
+ <20210128151152.GA1867@pc638.lan>
+ <YBLVbZzy0KSONizm@dhcp22.suse.cz>
+ <20210128153017.GA2006@pc638.lan>
+ <20210128180237.GA5144@pc638.lan>
+ <YBPNvbJLg56XU8co@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK2PR02CA0222.apcprd02.prod.outlook.com (2603:1096:201:20::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Fri, 29 Jan 2021 07:46:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: be3bbee5-03cb-4366-16c0-08d8c42a0779
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB4784:
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB47846E231C21DEAFB2656582FFB99@SJ0PR11MB4784.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:644;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5gWfVb+ktbxxju9iuis1dDlMUrkzEouaUVVMfF7X5GoAdYikGki5SADMS2SSFfCy5RmMfRDlJZ7jQSFRirKdl+poXD3jMKhzXJjGqH7r+FReU6PnOp05qLP5RuA/vOFatOm4EFIKZIJr37rNzH542YxO8iEarIUzXNz3NH0TIliAv7aQ3xFRAD/FPzxiDV7uyJ0D4GMIGyTsLHMbgR9qO65ANVcIT9QdVuaSloJ8K1C2kHF0no6paniuQJZch67Qs0ig137ypRKCqMlDL3zYUTPiGDsJwzh5zH6bdD88+vTR8g5Wy5Fvq6iI3GgrjAHrWBWbLiy7eEXzRgJc13WSUqxAStuEtwCvxkroL60Br8csEPhtATNBTjlYf0q7g68iMxJ97f+vGI8Fy0r7XSTxQmur82p6eauegQXg5wBF2M8NP6KNJmaSyPLLzi4X29dUhrFPmtJApQxK+xFXi0RuLtQ18rl2ART6GsydB+I7+lAkCPVyeh3oFTCXt6DUdCgS+Na56lRpHpyhkXFUR82uJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(376002)(136003)(366004)(346002)(956004)(8676002)(2616005)(6506007)(4326008)(6916009)(186003)(16526019)(1076003)(83380400001)(6486002)(316002)(6666004)(26005)(86362001)(52116002)(66946007)(6512007)(5660300002)(36756003)(66476007)(8936002)(9686003)(2906002)(66556008)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zr86zqCEKVW/HgdK9plJvjbmbUqMsIyVIbFFMwi/2oLF59clbtpQAwsYQ0Pm?=
- =?us-ascii?Q?AmTGLR/GgSAJaxpoXx7LCVV5O9a+P2bz4shg2iScpA293kWKgISDrlmIFtXA?=
- =?us-ascii?Q?NKIptq3EIEq1cIHYRbaIvz1IHkeluwh+/v4qcvI/vR0DloIqsL/RUbeOd77t?=
- =?us-ascii?Q?NkRGo1Sm86cHE9ZTtpgpV+h5GaZ0bhF6eq2QI86rMjXCUaoCyAbkK1SOgHhB?=
- =?us-ascii?Q?jNwf/UK8IyIJBG91exKHmYc61KlV2FSJpidvgrqioLckSY4Ye/n5uSN606+2?=
- =?us-ascii?Q?I92IJc6I0A1FIFcpWaa0Ws1oLWxjQN+y9ErjuANBi1ipkbjtVFrffGjDaUqV?=
- =?us-ascii?Q?160FhkYqWsgFRGzgOW4Z78ZrU4b9PupvbTAmrt2VbQUPGJRfMtwRM1jtaQ1c?=
- =?us-ascii?Q?+xdrAA74qkiH1OPtJExCDhHEuFIzeB7U+rFd5x6DuOa4y7sQ1rb3IiPeiRN/?=
- =?us-ascii?Q?m+Qih823Rvt0je2THgGErZPZgNbVxvRBj7lDJ1H7WQwpzah/iWW8Z7JGLQkx?=
- =?us-ascii?Q?vWkMPu0rjWjKsaTiqY44ZULs/XW+xntUHzouHlY2CyDQRrmqP0Nw2XWwRH+N?=
- =?us-ascii?Q?32WG+A21R8u8hnQH1By4rR03XC9iA4zFDvbpN21cC+XTN/Q68/sVBhz/mo4N?=
- =?us-ascii?Q?/HwqUzr4PA2U+lVYZ3PakAPg0PZNooK5qmn/PuLr95OJ+OwCpxCm5rS5l8nu?=
- =?us-ascii?Q?ndqntxqkWsnSxxot4yJAzKO7I+RumrynJK6lFaEkpQIuyMq649pdWKQaGE7O?=
- =?us-ascii?Q?V1O7KADTXEeOLca84Sm8fCQRqh+p9qkqR7taJwRCt9x/5hyDOLsAyBIeMIKR?=
- =?us-ascii?Q?LWiyOeVVUod/uCtUPL+HH9MC8ocpVaKkJi6pR6z1rJvBOleKBSfakJrPyyyE?=
- =?us-ascii?Q?MKzymfAqczCVkj6szW5U6r/8OTw8p6yFQxkL/7n3AGYGg5aWsenTl8BxSPqd?=
- =?us-ascii?Q?hUG1kb9nki4CI3ZbwQSXZ2FF7faf0ZbNs8E69VIavqpjpWVOBmaDpeiG39kq?=
- =?us-ascii?Q?yHlw8KkFXH3A3ZxIjBPW7hSy341t73dQEK/CmGsZRUFyVifO+iLPQHA90VCJ?=
- =?us-ascii?Q?1Bxg71UI?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be3bbee5-03cb-4366-16c0-08d8c42a0779
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 07:46:46.9589
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tRcXlQLQc4HU0Fuitodqlk3EAqhyG+sJH+TeCagn1nDYtJo0A1eZzkeDn8+fXCDPDTMVDY/DB4YoO27seaBysI5Ov5d4GhDzYegwqHb64yc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4784
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBPNvbJLg56XU8co@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On Fri, Jan 29, 2021 at 09:56:29AM +0100, Michal Hocko wrote:
+> On Thu 28-01-21 19:02:37, Uladzislau Rezki wrote:
+> [...]
+> > >From 0bdb8ca1ae62088790e0a452c4acec3821e06989 Mon Sep 17 00:00:00 2001
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > Date: Wed, 20 Jan 2021 17:21:46 +0100
+> > Subject: [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
+> >  case
+> > 
+> > Single-argument kvfree_rcu() must be invoked from sleepable contexts,
+> > so we can directly allocate pages.  Furthermmore, the fallback in case
+> > of page-allocation failure is the high-latency synchronize_rcu(), so it
+> > makes sense to do these page allocations from the fastpath, and even to
+> > permit limited sleeping within the allocator.
+> > 
+> > This commit therefore allocates if needed on the fastpath using
+> > GFP_KERNEL|__GFP_NORETRY.
+> 
+> Yes, __GFP_NORETRY as a lightweight allocation mode should be fine. It
+> is more robust than __GFP_NOWAIT on memory usage spikes.  The caller is
+> prepared to handle the failure which is likely much less disruptive than
+> OOM or potentially heavy reclaim __GFP_RETRY_MAYFAIL.
+> 
+> I cannot give you ack as I am not familiar with the code but this makes
+> sense to me.
+> 
+No problem, i can separate it. We can have a patch on top of what we have so
+far. The patch only modifies the gfp_mask passed to __get_free_pages():
 
-Add free per-cpu existing krcp's page cache operation, when
-the system is under memory pressure.
+From ec2feaa9b7f55f73b3b17e9ac372151c1aab5ae0 Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Fri, 29 Jan 2021 17:16:03 +0100
+Subject: [PATCH 1/1] kvfree_rcu: replace __GFP_RETRY_MAYFAIL by __GFP_NORETRY
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+__GFP_RETRY_MAYFAIL is a bit heavy from reclaim process of view,
+therefore a time consuming. That is not optional and there is
+no need in doing it so hard, because we have a fallback path.
+
+__GFP_NORETRY in its turn can perform some light-weight reclaim
+and it rather fails under high memory pressure or low memory
+condition.
+
+In general there are four simple criterias we we would like to
+achieve:
+    a) minimize a fallback hitting;
+    b) avoid of OOM invoking;
+    c) do a light-wait page request;
+    d) avoid of dipping into the emergency reserves.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ kernel/rcu/tree.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c1ae1e52f638..ec098910d80b 100644
+index 70ddc339e0b7..1e862120db9e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3571,17 +3571,40 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- }
- EXPORT_SYMBOL_GPL(kvfree_call_rcu);
- 
-+static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
-+{
-+	unsigned long flags;
-+	struct kvfree_rcu_bulk_data *bnode;
-+	int i;
+@@ -3489,8 +3489,20 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 		bnode = get_cached_bnode(*krcp);
+ 		if (!bnode && can_alloc) {
+ 			krc_this_cpu_unlock(*krcp, *flags);
 +
-+	for (i = 0; i < rcu_min_cached_objs; i++) {
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		bnode = get_cached_bnode(krcp);
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+		if (!bnode)
-+			break;
-+		free_page((unsigned long)bnode);
-+	}
-+
-+	return i;
-+}
-+
- static unsigned long
- kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- {
- 	int cpu;
- 	unsigned long count = 0;
-+	unsigned long flags;
++			// __GFP_NORETRY - allows a light-weight direct reclaim
++			// what is OK from minimizing of fallback hitting point of
++			// view. Apart of that it forbids any OOM invoking what is
++			// also beneficial since we are about to release memory soon.
++			//
++			// __GFP_NOMEMALLOC - prevents from consuming of all the
++			// memory reserves. Please note we have a fallback path.
++			//
++			// __GFP_NOWARN - it is supposed that an allocation can
++			// be failed under low memory or high memory pressure
++			// scenarios.
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+-				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
++				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 			*krcp = krc_this_cpu_lock(flags);
+ 		}
  
- 	/* Snapshot count of all CPUs */
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count += READ_ONCE(krcp->count);
-+
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		count += krcp->nr_bkv_objs;
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- 
- 	return count;
-@@ -3598,6 +3621,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
-+		count += free_krc_page_cache(krcp);
-+
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
 -- 
-2.17.1
+2.20.1
 
+--
+Vlad Rezki
