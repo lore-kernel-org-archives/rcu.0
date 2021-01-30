@@ -2,165 +2,189 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,
+	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97D5FC433E0
-	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 20:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D910C433E9
+	for <rcu@archiver.kernel.org>; Sat, 30 Jan 2021 09:24:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B67964E04
-	for <rcu@archiver.kernel.org>; Fri, 29 Jan 2021 20:09:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 061B164DE2
+	for <rcu@archiver.kernel.org>; Sat, 30 Jan 2021 09:24:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhA2UJC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 29 Jan 2021 15:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233241AbhA2UGZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:06:25 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3BDC061574;
-        Fri, 29 Jan 2021 12:05:19 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id a25so11923887ljn.0;
-        Fri, 29 Jan 2021 12:05:19 -0800 (PST)
+        id S230249AbhA3JYC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 30 Jan 2021 04:24:02 -0500
+Received: from mail-dm6nam12on2087.outbound.protection.outlook.com ([40.107.243.87]:6304
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229459AbhA3JR4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:17:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DMvpXnAlz/NRnhKuwJnVP5eu4Uv2JksIx/ULBHZWZFGXlv699hjVpSOAFrqJBzEZ7RxrnmUF6R6nDAOwy89dsM7qppcwCULziGEcSv2ryrbloNT7qV7qE4Y/nygsn1+hgsHO/3/Qw1zEqVV/cvcfHwFk5fgOXM6BGsxPb8LvpuF5ItmAY+NpB82EbLXVQmcaJPkLK2/FB2UqYIfhUR5Ojyw3jEHMf1LYsPPVYhbm33LAHZurjpGR93DMAGSmviVOy+Ca+u6P0a+2au0P/BblFscXVIQqtTb6S8BW/J8u73FzcStZf+l9GpFLDa2Lkkdz38b89tRRQO1wwEB7y0fkkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYhC+hG2SBLECmfEzsxf41gbTTqrnRJqwAc243VBIdw=;
+ b=izRYL7d3Qm2346FEj1eFE54ZTu7xcouELR0NYDlxTVeOxuzNs8IzC57lUa/t3S/LZl73RyJG39wf48eqQxzKIAs2EJMEc851v39EbR1umeaZxH+robB12nMrEabWC4YzFwYXUcNxg/tgevaotoDbhfg4yrPCtL6xwd+ixyqL/mAoArJRs2/LvACx0CwItFYdL01i4qFcGtChZRZ7J9JoklDcfYsxLamW6sF+kIA9g/FycBLPF0HSf6T37IJndFIixOt1ePpMg9hVwYCm/NmltxAzb59H3bF+J+4wIuPZXUXxJtx7grdoF3dIr97cyl5oh+EEELVQtJGhYsGAcLfT/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sdjJrKQhzE2TWExsHlW+QvetXvCrNxjN7feqxHHUUNI=;
-        b=RvuJySpW/K+FXVXjdLSmvi2C7LXK4YwEX3WNbnvRrM7FLqWUenkl7/hX6Nhk0pYHVz
-         xjZl+hZmHaIERPXwCjfgpr/Au6d6tQqx33E9g0OwhRK37jfus+LSDuRMNsgJQnX9i5Ld
-         H/n9VzKqfJnZ0e9ryvZYszZrFf56D948HsRVI/Fa9CwPJPGBwGsRQU1K5c219CJcNgJp
-         taPwGqwIjWBrumMPsFctfr2ioAD7k4+QQIMReq6mt0amyscTLbJnt9j+Ql+u7luDezpV
-         g+ryOTFkldYwWT5ngwDUZxyh8g3i6Z8WtgJz7tmPVr4IzOS+en5OtXAO6UuwiXwYWIu/
-         RHug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sdjJrKQhzE2TWExsHlW+QvetXvCrNxjN7feqxHHUUNI=;
-        b=cQ+y75hQ3l30WhawtNsgo9Dj82UCqzAVi6wc5fKrC2d293tgGeWQsCibWK6nx5aF90
-         XH5u7hIGlvqiS3mVDplxF5QB2cxf/uJGwxi2V+WpbRimjqu1i63C2ETfKANnkKm2ol5l
-         NYM151itNYoFYh2gFIZRExFk19D7CKUtvQFvcM+CRYMuxFfzUVmdnMvteA3F5mvDzoy+
-         wASq0QJp52wdZ7mBRF70DohBayqWQ8ChDsfSlZtFFrNTclXkvn08vSqeuzVAX6NHkRMB
-         lnWFdYC4xkIXXVtCJyh9dcjrnrtAyRM6BPHonc07f+uChTTFha9Klusjo6PA/JQDBopV
-         6v+Q==
-X-Gm-Message-State: AOAM532WC89Pcac3ginY/cCkSOMtuKJPayLlr8DawgHW9El4X4ifpvjq
-        eFfbLW8AUTKi7z2DhP6bDo6Uqy5DWLOWEw==
-X-Google-Smtp-Source: ABdhPJygSeYpH/KPM6Z4mlmnScRsY3o++8bc7OUi4xPJ23pebwyfwrNe0yOuFvOwBQ9hBgudhsyjew==
-X-Received: by 2002:a2e:9910:: with SMTP id v16mr3407130lji.153.1611950717570;
-        Fri, 29 Jan 2021 12:05:17 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id n2sm2127387lfu.274.2021.01.29.12.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 12:05:16 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 2/2] kvfree_rcu: Use same set of flags as for single-argument
-Date:   Fri, 29 Jan 2021 21:05:05 +0100
-Message-Id: <20210129200505.5273-2-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210129200505.5273-1-urezki@gmail.com>
-References: <20210129200505.5273-1-urezki@gmail.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYhC+hG2SBLECmfEzsxf41gbTTqrnRJqwAc243VBIdw=;
+ b=MDP/1woeU6peZBzieuL4R+1LniN8xeDtLnkBGSEXZDRGP96GF46Of/3f5YZUgbFCARYsyda88D1lJSkUzrP7CAwqVUkbzmqZpk/hYokC9+h3KqGs9syHAFYrN3Yfj1owkXGoraow7VXED4q4GJOI3G24jcHryjHgEymMlZca/k8=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3400.namprd11.prod.outlook.com (2603:10b6:a03:1a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Sat, 30 Jan
+ 2021 06:47:32 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Sat, 30 Jan 2021
+ 06:47:31 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYyXSBrdmZyZWVfcmN1OiBSZWxlYXNlIHBhZ2UgY2Fj?=
+ =?gb2312?Q?he_under_memory_pressure?=
+Thread-Topic: [PATCH v2] kvfree_rcu: Release page cache under memory pressure
+Thread-Index: AQHW9hLlXYBj+iJ6XEG7XRGYj2BG4ao+p3mAgAEF68E=
+Date:   Sat, 30 Jan 2021 06:47:31 +0000
+Message-ID: <BYAPR11MB2632B16DBD0A3EBEA5EA2FAFFFB89@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210129080442.16055-1-qiang.zhang@windriver.com>,<20210129141953.GA29827@pc638.lan>
+In-Reply-To: <20210129141953.GA29827@pc638.lan>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [106.39.148.97]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9a938f58-571b-4891-1c7c-08d8c4eaeb1e
+x-ms-traffictypediagnostic: BYAPR11MB3400:
+x-microsoft-antispam-prvs: <BYAPR11MB34001AC5D2EA49C5A0F29E2EFFB89@BYAPR11MB3400.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dOjzNi/yA3KWAVGBfY5SxY311fjiMAxZP6A8wXJQKZ9RtQTyEG1n98XPwBymQIf0MqxWdjNVS9A+mYlQZHmZVga8x/XbPlfgHKUcZ3zF90rE0uRWxHY3KHZ0dvQsWfMd3r2XXe4Zc6RvRp5sO23giRH00lS7YHRGrYfTz99QeO26O9sqI30fUkzvfMrIm63aRDE64SzjTS/5wkzAPE2jNmtPJJDmg8xG6oGouYak1r8kX8m1gQAI9DtH1tlEsN2HzE1dHY7AX9tSudd/p8exQ4/gnb9sW4ce0LrYa0BbFz8JwFmRrVpCOo2R1IU6f3fDKsGQk914/zNo1TtCnnN/ZDBOoWR1VYXPP5ZG1oLEghmEwItFZT8eRYipLbWTMCrEB+otz5GAgXM5c6A/TguzXorfd7YAbUjQdbgNQxaQ1CcOtxgSiypdrcL0PYuvUAUbePRxivYm5NXxagQfPNjWHDmyGJpjKjWZUpjLdQLpzCfzfYO1nxYK4xVmGC3hRGA9vGin4VZTeJhUFiu/H0eM+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39850400004)(396003)(366004)(6916009)(224303003)(8936002)(7696005)(33656002)(64756008)(55016002)(52536014)(9686003)(54906003)(26005)(83380400001)(478600001)(76116006)(66476007)(86362001)(66446008)(4326008)(6506007)(186003)(2906002)(5660300002)(71200400001)(66946007)(91956017)(66556008)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?V01hZ3NVYWNIbVhZMTJuWGtodTV4STd3SVlQUHlyTzdrSDJ6SzlNbEVrNm5N?=
+ =?gb2312?B?UVVrMVBKT01VY1JRZGVmWkZ6clNvWlhhUWpkLzRVZWZQTzJvMEo1SzQ5VU9V?=
+ =?gb2312?B?SDBRNHh0K1VCRjhvRmdZdDBoRDB0cGs5WEtOcC92NStWLzBUOG95eGRtbDJK?=
+ =?gb2312?B?MFYvRGNLS2lXMXkxZ1p2cEJuL1lZOEt3Y0FWOEk1NEI0WkJTUCt5bUlJL1Nv?=
+ =?gb2312?B?ZmlFb1Z1bmdhNGlieDJ1ZHV4MlVNa3BYQjNEckZYSTdmTmFoVHBRdXZlUjVS?=
+ =?gb2312?B?bjVaOS91TWJBY2xSeG9KaTdWRlFIMWUzSWRrUW95cnF2dEhhakdqY1Nsa3k1?=
+ =?gb2312?B?ZHJBWDRTWUEyOUZtcnRRNUtzUkFtYWNSZ0Z4eHkxZVJtZm83VXRlK0dvdTlG?=
+ =?gb2312?B?SE50Y1pSZElRTUw3WlNlSy9zcEVuMitUUTN1dzJoeHBUMi90ZGRacXVhZVVQ?=
+ =?gb2312?B?ZGs2U2xuMjRFd2hseU5mTjVVb1RjYXoxdWh0OFFOYUdmZWYrVkVZbXgwVjlJ?=
+ =?gb2312?B?a280M2w4UFZTM3VNdTFIV3ZQNzhQZUZ5bnVkS1VoZXhFMW9ET3Y1eXhmUGtq?=
+ =?gb2312?B?bXNZRjFaeDVVdTJGT0VQTURSSGs2OTVHbUVvVVVvS25xMlRvV2NNM2JUdlJ1?=
+ =?gb2312?B?ZEpSY09tRW5QSVVuOXhOLzkwODhvb2NDSmZINGEyWGp1T0x3bnJVc0Y2VVdU?=
+ =?gb2312?B?eHdCdG9id0toekp5ZjV0ZGE1TUFKanR4WGZZYldpZlF3TkY5cnVKS0Z4VGF3?=
+ =?gb2312?B?UTVoYktwdFpFZG1zVERaOVVyS0NjSysyVEtBdWk4VkRkWGp4YVBFMytQU0lh?=
+ =?gb2312?B?UEVRWTFWQlozOTNmRXRIUkY4WHdjcVZlamh3cnVtNjhMMVF0bTh5U3hyTHFB?=
+ =?gb2312?B?alFvMFJNRit0MG5sRkY1c1ErclRwcVQydGxFVktjYWRvTVFUUlM2K2ZoaVJP?=
+ =?gb2312?B?S0pVckRwektYU3p3dkI2T2djdHNOOGZidHZzUHJ2WmR1WWs2QWlQVllEOWF2?=
+ =?gb2312?B?dkNRYWVhWFIxUVFvU2dHOHJabjk4RkdCcDFVTGNlSHovMG5xb2w3K1FDZVBl?=
+ =?gb2312?B?RmNpMzk5QXhVcGZ5eWxWc01HaG4rMGduVzZiVzZzQVdIV3BwdXhQeGk2bzBy?=
+ =?gb2312?B?YlJla3ljYVIyOHkxNldsRG5OZUVJSXdrbkVvVVBMbXVmcXdWT2RsSFVtR0hx?=
+ =?gb2312?B?T0srT2JxSEZ6eTgvQndWaStLUVpHNFFyTTZ4M0hUZGpLL20vTnpnMy8vSis0?=
+ =?gb2312?B?NWUwM0N3UnZGSVAvd3JNY2xsMEdqVElpcGZ3L00xMXE0VWU5UzUrK2xDZ1dL?=
+ =?gb2312?B?aWpRclJsKyt6SjVIV2Q5QkJXRTlGekkxVittam9iVkd6U01STGVwa0s2KzlZ?=
+ =?gb2312?Q?aeHOEqAxRluftnZjen2lI/eEkG9upC2w=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a938f58-571b-4891-1c7c-08d8c4eaeb1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2021 06:47:31.6876
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DSu80aVQxKn67w1vr88SQYwH5voip/NboVKNpAM7w0c7sv/DsCquWkVU22Zgtw2NFpmY3t1aVHTXZy9P/FHOeL3yQ7C0pPlWBriySzZmKyc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3400
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Running an rcuscale stress-suite can lead to "Out of memory"
-of a system. This can happen under high memory pressure with
-a small amount of physical memory.
-
-For example a KVM test configuration with 64 CPUs and 512 megabytes
-can lead to of memory after running rcuscale with below parameters:
-
-../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
---bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
-  rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
-
-<snip>
-[   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
-[   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[   12.056485] Workqueue: events_highpri fill_page_cache_func
-[   12.056485] Call Trace:
-[   12.056485]  dump_stack+0x57/0x6a
-[   12.056485]  dump_header+0x4c/0x30a
-[   12.056485]  ? del_timer_sync+0x20/0x30
-[   12.056485]  out_of_memory.cold.47+0xa/0x7e
-[   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
-[   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
-[   12.056485]  __get_free_pages+0x8/0x30
-[   12.056485]  fill_page_cache_func+0x39/0xb0
-[   12.056485]  process_one_work+0x1ed/0x3b0
-[   12.056485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  worker_thread+0x28/0x3c0
-[   12.060485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  kthread+0x138/0x160
-[   12.060485]  ? kthread_park+0x80/0x80
-[   12.060485]  ret_from_fork+0x22/0x30
-[   12.062156] Mem-Info:
-[   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
-[   12.062350]  active_file:0 inactive_file:0 isolated_file:0
-[   12.062350]  unevictable:0 dirty:0 writeback:0
-[   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
-[   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
-[   12.062350]  free:10488 free_pcp:1227 free_cma:0
-...
-[   12.101610] Out of memory and no killable processes...
-[   12.102042] Kernel panic - not syncing: System is deadlocked on memory
-[   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-<snip>
-
-Having a fallback mechanism we should not go with "GFP_KERNEL | __GFP_NOWARN"
-that implies a "hard" page request involving OOM killer. Replace such set with
-the same as the one used for a single argument.
-
-Thus it will follow same rules:
-    a) minimize a fallback hitting;
-    b) avoid of OOM invoking;
-    c) do a light-wait page request;
-    d) avoid of dipping into the emergency reserves.
-
-With this change an rcuscale and the parameters which are in question
-never runs into "Kernel panic".
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1e862120db9e..2c9cf4df942c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3435,7 +3435,7 @@ static void fill_page_cache_func(struct work_struct *work)
- 
- 	for (i = 0; i < rcu_min_cached_objs; i++) {
- 		bnode = (struct kvfree_rcu_bulk_data *)
--			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
-+			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 
- 		if (bnode) {
- 			raw_spin_lock_irqsave(&krcp->lock, flags);
--- 
-2.20.1
-
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogVWxhZHpp
+c2xhdSBSZXpraSA8dXJlemtpQGdtYWlsLmNvbT4Kt6LLzcqxvOQ6IDIwMjHE6jHUwjI5yNUgMjI6
+MTkKytW8/sjLOiBaaGFuZywgUWlhbmcKs63LzTogdXJlemtpQGdtYWlsLmNvbTsgcGF1bG1ja0Br
+ZXJuZWwub3JnOyBqb2VsQGpvZWxmZXJuYW5kZXMub3JnOyByY3VAdmdlci5rZXJuZWwub3JnOyBs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCtb3zOI6IFJlOiBbUEFUQ0ggdjJdIGt2ZnJlZV9y
+Y3U6IFJlbGVhc2UgcGFnZSBjYWNoZSB1bmRlciBtZW1vcnkgcHJlc3N1cmUKCltQbGVhc2Ugbm90
+ZTogVGhpcyBlLW1haWwgaXMgZnJvbSBhbiBFWFRFUk5BTCBlLW1haWwgYWRkcmVzc10KCk9uIEZy
+aSwgSmFuIDI5LCAyMDIxIGF0IDA0OjA0OjQyUE0gKzA4MDAsIHFpYW5nLnpoYW5nQHdpbmRyaXZl
+ci5jb20gd3JvdGU6Cj4gRnJvbTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+
+Cj4gQWRkIGZyZWUgcGVyLWNwdSBleGlzdGluZyBrcmNwJ3MgcGFnZSBjYWNoZSBvcGVyYXRpb24s
+IHdoZW4KPiB0aGUgc3lzdGVtIGlzIHVuZGVyIG1lbW9yeSBwcmVzc3VyZS4KPgo+IFNpZ25lZC1v
+ZmYtYnk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KPiAtLS0KPiAga2VybmVs
+L3JjdS90cmVlLmMgfCAyNSArKysrKysrKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFu
+Z2VkLCAyNSBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMg
+Yi9rZXJuZWwvcmN1L3RyZWUuYwo+IGluZGV4IGMxYWUxZTUyZjYzOC4uZWMwOTg5MTBkODBiIDEw
+MDY0NAo+IC0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jCj4gKysrIGIva2VybmVsL3JjdS90cmVlLmMK
+PiBAQCAtMzU3MSwxNyArMzU3MSw0MCBAQCB2b2lkIGt2ZnJlZV9jYWxsX3JjdShzdHJ1Y3QgcmN1
+X2hlYWQgKmhlYWQsIHJjdV9jYWxsYmFja190IGZ1bmMpCj4gIH0KPiAgRVhQT1JUX1NZTUJPTF9H
+UEwoa3ZmcmVlX2NhbGxfcmN1KTsKPgo+ICtzdGF0aWMgaW50IGZyZWVfa3JjX3BhZ2VfY2FjaGUo
+c3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3ApCj4gK3sKPiArICAgICB1bnNpZ25lZCBsb25nIGZs
+YWdzOwo+ICsgICAgIHN0cnVjdCBrdmZyZWVfcmN1X2J1bGtfZGF0YSAqYm5vZGU7Cj4gKyAgICAg
+aW50IGk7Cj4gKwo+ICsgICAgIGZvciAoaSA9IDA7IGkgPCByY3VfbWluX2NhY2hlZF9vYmpzOyBp
+KyspIHsKPiArICAgICAgICAgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZSgma3JjcC0+bG9jaywg
+ZmxhZ3MpOwo+SSBhbSBub3Qgc3VyZSB3aHkgd2Ugc2hvdWxkIGRpc2FibGUgSVJRcy4gSSB0aGlu
+ayBpdCBjYW4gYmUgPmF2b2lkZWQuCgpTdXBwb3NlIGluIG11bHRpIENQVSBzeXN0ZW0sIHRoZSBr
+ZnJlZV9yY3Vfc2hyaW5rX3NjYW4gZnVuY3Rpb24gaXMgcnVuaW5nIG9uIENQVTIsCmFuZCB3ZSBq
+dXN0IHRyYXZlcnNlIHRvIENQVTIsIGFuZCB0aGVuIGNhbGwgZnJlZV9rcmNfcGFnZV9jYWNoZSBm
+dW5jdGlvbiwKaWYgbm90IGRpc2FibGUgaXJxLCBhIGludGVycnVwdCBtYXkgYmUgb2NjdXJzIG9u
+IENQVTIgYWZ0ZXIgdGhlIENQVTIgY29ycmVzcG9uZHMgdG8ga3JjcCB2YXJpYWJsZSAncyBsb2Nr
+IGJlIGFjcXVpcmVkLCAgaWYgdGhlIGludGVycnVwdCBvciBzb2Z0aXJxIGhhbmRsZXIgZnVuY3Rp
+b24gdG8gY2FsbCBrdmZyZWVfcmN1IGZ1bmN0aW9uLCBpbiB0aGlzIGZ1bmN0aW9uICwgYWNxdWly
+ZSBDUFUyIGNvcnJlc3BvbmRzIHRvIGtyY3AgdmFyaWFibGUgJ3MgbG9jayAsIHdpbGwgaGFwcGVu
+IGRlYWRsb2NrLgpPciBpbiBzaW5nbGUgQ1BVIHNjZW5hcmlvLgoKPiArICAgICAgICAgICAgIGJu
+b2RlID0gZ2V0X2NhY2hlZF9ibm9kZShrcmNwKTsKPiArICAgICAgICAgICAgIHJhd19zcGluX3Vu
+bG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gKyAgICAgICAgICAgICBpZiAo
+IWJub2RlKQo+ICsgICAgICAgICAgICAgICAgICAgICBicmVhazsKPiArICAgICAgICAgICAgIGZy
+ZWVfcGFnZSgodW5zaWduZWQgbG9uZylibm9kZSk7Cj4gKyAgICAgfQo+ICsKPiArICAgICByZXR1
+cm4gaTsKPiArfQo+QWxzbyBpIGZvcmdvdCB0byBhZGQgaW4gbXkgcHJldmlvdXMgY29tbWVudCB0
+byB0aGlzIHBhdGguIENhbiB3ZSA+YWNjZXNzCj50byBwYWdlIGNhY2hlIG9uY2UgYW5kIHRoZW4g
+ZG8gdGhlIGRyYWluIHdvcms/IEkgbWVhbiBpZiB3ZSBoYWQgPjEwMCBvYmplY3RzCj5pbiB0aGUg
+Y2FjaGUgd2Ugd291bGQgbmVlZCB0byBhY2Nlc3MgdG8gYSBrcmNwLT5sb2NrIDEwMCB0aW1lcy4K
+Pgo+V2hhdCBhYm91dCBzb21ldGhpbmcgbGlrZSBiZWxvdzoKPgo+PHNuaXA+Cj5zdGF0aWMgaW50
+IGZyZWVfa3JjX3BhZ2VfY2FjaGUoc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3ApCj57Cj4gICAg
+ICAgIHN0cnVjdCBsbGlzdF9ub2RlICpwYWdlX2xpc3QsICpwb3MsICpuOwo+ICAgICAgICBpbnQg
+ZnJlZWQgPSAwOwo+Cj4gICAgICAgIHJhd19zcGluX2xvY2soJmtyY3AtPmxvY2spOwo+ICAgICAg
+ICBwYWdlX2xpc3QgPSBsbGlzdF9kZWxfYWxsKCZrcmNwLT5ia3ZjYWNoZSk7Cj4gICAgICAgIGty
+Y3AtPm5yX2Jrdl9vYmpzID0gMDsKPiAgICAgICAgcmF3X3NwaW5fdW5sb2NrKCZrcmNwLT5sb2Nr
+KTsKPgo+ICAgICAgICBsbGlzdF9mb3JfZWFjaF9zYWZlKHBvcywgbiwgcGFnZV9saXN0KSB7Cj4g
+ICAgICAgICAgICAgICAgZnJlZV9wYWdlKCh1bnNpZ25lZCBsb25nKSBwb3MpOwo+ICAgICAgICAg
+ICAgICAgIGZyZWVkKys7Cj4gICAgICAgIH0KPgo+ICAgICAgICByZXR1cm4gZnJlZWQ7Cj59Cj48
+c25pcD4KCiAgdGhpcyBjaGFuZ2UgbG9va3MgYmV0dGVyLgogIFRoYW5rcyAKICBRaWFuZwo+ICsK
+PiAgc3RhdGljIHVuc2lnbmVkIGxvbmcKPiAga2ZyZWVfcmN1X3Nocmlua19jb3VudChzdHJ1Y3Qg
+c2hyaW5rZXIgKnNocmluaywgc3RydWN0IHNocmlua19jb250cm9sICpzYykKPiAgewo+ICAgICAg
+IGludCBjcHU7Cj4gICAgICAgdW5zaWduZWQgbG9uZyBjb3VudCA9IDA7Cj4gKyAgICAgdW5zaWdu
+ZWQgbG9uZyBmbGFnczsKPgo+ICAgICAgIC8qIFNuYXBzaG90IGNvdW50IG9mIGFsbCBDUFVzICov
+Cj4gICAgICAgZm9yX2VhY2hfcG9zc2libGVfY3B1KGNwdSkgewo+ICAgICAgICAgICAgICAgc3Ry
+dWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+Cj4gICAg
+ICAgICAgICAgICBjb3VudCArPSBSRUFEX09OQ0Uoa3JjcC0+Y291bnQpOwo+ICsKPiArICAgICAg
+ICAgICAgIHJhd19zcGluX2xvY2tfaXJxc2F2ZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICsgICAg
+ICAgICAgICAgY291bnQgKz0ga3JjcC0+bnJfYmt2X29ianM7Cj4gKyAgICAgICAgICAgICByYXdf
+c3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+U2hvdWxkIHdlIGRp
+c2FibGUgaXJxcz8KCj4KPiAgICAgICByZXR1cm4gY291bnQ7Cj4gQEAgLTM1OTgsNiArMzYyMSw4
+IEBAIGtmcmVlX3JjdV9zaHJpbmtfc2NhbihzdHJ1Y3Qgc2hyaW5rZXIgKnNocmluaywgc3RydWN0
+IHNocmlua19jb250cm9sICpzYykKPiAgICAgICAgICAgICAgIHN0cnVjdCBrZnJlZV9yY3VfY3B1
+ICprcmNwID0gcGVyX2NwdV9wdHIoJmtyYywgY3B1KTsKPgo+ICAgICAgICAgICAgICAgY291bnQg
+PSBrcmNwLT5jb3VudDsKPiArICAgICAgICAgICAgIGNvdW50ICs9IGZyZWVfa3JjX3BhZ2VfY2Fj
+aGUoa3JjcCk7Cj4gKwo+ICAgICAgICAgICAgICAgcmF3X3NwaW5fbG9ja19pcnFzYXZlKCZrcmNw
+LT5sb2NrLCBmbGFncyk7Cj4gICAgICAgICAgICAgICBpZiAoa3JjcC0+bW9uaXRvcl90b2RvKQo+
+ICAgICAgICAgICAgICAgICAgICAgICBrZnJlZV9yY3VfZHJhaW5fdW5sb2NrKGtyY3AsIGZsYWdz
+KTsKPiAtLQo+IDIuMTcuMQoKVGhhbmtzIQoKLS0KVmxhZCBSZXpraQo=
