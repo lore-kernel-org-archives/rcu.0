@@ -2,253 +2,290 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
-	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D19C433E0
-	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 09:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CFBBC433DB
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 14:12:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CEB5764F58
-	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 09:20:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 366C464F3F
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 14:12:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbhBDJUr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Feb 2021 04:20:47 -0500
-Received: from mail-mw2nam12on2075.outbound.protection.outlook.com ([40.107.244.75]:11745
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234315AbhBDJUp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:20:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g45+n1pQQ40iVYeT5fVyHdZriawmpU7sAmFQcuthDw8cZ7CGcC5l/NwcfjubRiC0UiirzygsyHsSY3A075weZ+bUuJ7WUMSXqUDY22oEVWwkr3/3Ve6ICQF4DXPu6Wu9srrJ0ri1TX2oasw0EiPXANKE34TDMlVr/W2Xyzf0+1+pmiydclWJaq3z7oKFm795qLhVMEvhDAwgFXI+GqMHUM1/aWqHSryDt7dQ2hYO8XSGaDc0+nMkdMnpvCVv7WEwuheD8HMUgGVdlPn5pm9DF+t1/AQ++yrk92D/n7kpKi8OvKOLRGIXMGuyra3pAQPl0sdgjz0YqnyqUG12UeZRYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+zJY7zi/N6M1bAa48Rxa53/6yEkSjqSWPGP5Ohglheg=;
- b=f81L/E0oSbj3DKMnhqmoTXRW6HU0m4ZfryGjwrm79SNDVBKv2Z6YwhJgME8b90v8VP9s6DFM7SqqlJ71emhlZ/PGwyKm7fOTfeiw00Iq0f4It8Cnlb8ttDTdBj+SNZROeovroF85dI1OJJDXw81M7Kg7qbW4exOL94LDnyhCEUpWstugqUjWxMV40ULMU0OLbRzf6GtICiJqRbi0zvC3w4/0qTw/pv0C9gIl8qQ3+YqlTc3i5Y06I2mFTteUnky6W2jWirJLFI0dwqL7ZbGb9wpLGn8Xlr/56XUl0sAohsaxdmo54LKmriHOL/kR+/+9rOY88FJdU3Y7uUA2sNocdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S236607AbhBDOLj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Feb 2021 09:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236557AbhBDOKl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:10:41 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B5C0613D6;
+        Thu,  4 Feb 2021 06:10:00 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id h7so4710422lfc.6;
+        Thu, 04 Feb 2021 06:10:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+zJY7zi/N6M1bAa48Rxa53/6yEkSjqSWPGP5Ohglheg=;
- b=d0OhLG9/vdhmMIDMgU6JwgMuBbvEjlv7RwXLZF97W5gSUAJuI0fM/+Ci5k3d2Br7EL7ziDxSGAVEmAq2rS2Uz1iYamNS0QbDc2BkeMYQzWq8BKv4Uo4qMRkli2flLqzlqv1eb0ehIIoAsr2alHMyaP2uRDO+a0vyZ+T5ZenNIrY=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB3558.namprd11.prod.outlook.com (2603:10b6:a03:b3::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.23; Thu, 4 Feb
- 2021 09:19:30 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.023; Thu, 4 Feb 2021
- 09:19:30 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ROsNBFOVgXpvoSLbKZaV0d4yUjvdIm2b4y/a7AC2dcs=;
+        b=FdaocmDOvg2yZ/gNysSosoZ/g7rTBsHP7lG44qUxOVaBcjU/c/3zvwYMfaMf32iFYK
+         PPJcqoKCpBzuKctqG3a398gC6Ddo5rgyxyOf/LS5kAW6eHz26Afj7Ke4YiWq70RosAbw
+         mKStmfolf+81PFFAewyX0Cy557byUklhKmUZANGGBKL3+Iv0lHRLMiCFO8rJQv93qj83
+         kGVENFI+YRyfhkiMM3eygrBPaWDiD+VefIVZTzYVC+jefI990vfoTt3KXb+HAsbhN/TY
+         SrSBrXoqqdKg1Az8LlIPke3Vj1CB6HpAdFYspTDlF1z4Jqha6z9eZfswyacMFwha0oKA
+         EOkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=ROsNBFOVgXpvoSLbKZaV0d4yUjvdIm2b4y/a7AC2dcs=;
+        b=iiQu+zl2TAYNnhWpn0HUBc3ob4iDChxwF48yJ27GgGKCwYH3QvNFIM68a1ZkDQg/8t
+         bS60dzg/r4ahyzm5PTApC7faN/IdnktGbw84qlqZxydWoBKZsaiMUMXt/53esvxKq5gw
+         hYKRHkJq9CY95otYUFFKFD+4V7+6W0c1Y5aa8rLbHcKFYdcm31oCX7RLkDkiEmww5ywb
+         No3ECdPJpx7YuiGR4yi8vzv95L4Yz3Slvwr/RoHbnODnUS4T6wKdgOU9y89/vNmbQzt7
+         PYWgNlGnRy50GJVN5Gq6EQMXTAwk5eiN/t2QvL+DmGic6Vox1j0F9qZ3e7x6dOznHCjj
+         jPeg==
+X-Gm-Message-State: AOAM533ir/NCdIs+W4t3IjIvciouiLMR0jmR98ECD1ArcBRIP8QWUqud
+        LJG3vPUwAUa3WJTOkHxBb0M=
+X-Google-Smtp-Source: ABdhPJwSfcPJb73ZMM4cJklCmbm3gRHEwGOseYeWXFT0p3j20WtHXZxlKjMlrnZ4sEZFJINF2wyU3Q==
+X-Received: by 2002:a19:3fcc:: with SMTP id m195mr4685315lfa.459.1612447799268;
+        Thu, 04 Feb 2021 06:09:59 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u4sm670966ljl.40.2021.02.04.06.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 06:09:58 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 4 Feb 2021 15:09:56 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
         "joel@joelfernandes.org" <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYzXSBrdmZyZWVfcmN1OiBSZWxlYXNlIHBhZ2UgY2Fj?=
- =?gb2312?Q?he_under_memory_pressure?=
-Thread-Topic: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
-Thread-Index: AQHW9wfxGJ2IWJwsv0i2q1lIZ3Sxz6pDuv2AgACRBPmAA3GuVoAAAJfF
-Date:   Thu, 4 Feb 2021 09:19:29 +0000
-Message-ID: <BYAPR11MB2632ECCBD7196CF92C5FA49BFFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <20210130131851.23285-1-qiang.zhang@windriver.com>,<20210201195753.GA2026@pc638.lan>,<BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>,<BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cfec1faf-3f05-463a-db77-08d8c8edfa03
-x-ms-traffictypediagnostic: BYAPR11MB3558:
-x-microsoft-antispam-prvs: <BYAPR11MB35586020977E25DC07DFA360FFB39@BYAPR11MB3558.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LM76pVskVQciVCH4Jr+qS/+sWaq7lxXEcgib/nXYkCU3JcnCoOPFvNbQbt+SptxwpXryRNqY7sEtJM6xhC8hlUEDlYHiSlugKpHXXaIWw4cb+zgnDY3SN0cvNYXMvv0RTValLFI3xHu9DdN8ObBfkYW31bn1URVDepmAlkFutHHru9uUBSJI2i04WbyHLLqsSTLVaMAryX2vkUDIYTO8GycHHpU83dWrM8fPXN+nDJZ1OWpKVzN1t32p8u1tmzxKjZf3WCHPBPRt45yIhCTQcsqtSHom8QyZkNnEJln2r6Lwi8/RtMifRjwYJ4HrLMDnZQVpXXGgjWnONLij71cPAbbgFz2kr9KmAY8+0nCH9+nBlXcEHDod/tqg7AUb0j85R7p7pzLQ12q84B4p/TtBZ++Air945Dh47+MXa9/xcN5UZcUMkdtx+4itvz5xtQIBnQGfhmIsn5FSEJnqb40y4mRoyoUxlPifErMY+oHFRWaeA/ae0rS8MQhnMPK7g894RP+O9MSVgC+m9JW4Q1YLUDRi/ZKCdXxBRHXliXiVetPp1MjgL69xmvNwZFv2j/VL4yASC8WyST3cPEMD7QSO1Ozr2AfA5FobqVluPvuTMU3rIF10YXntN9NVeFMexqQZrre56PfEHcsC5sgGvXQR8w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39850400004)(136003)(346002)(366004)(66476007)(6506007)(5660300002)(52536014)(64756008)(7696005)(55016002)(54906003)(66556008)(33656002)(91956017)(316002)(478600001)(66946007)(2906002)(186003)(26005)(83380400001)(76116006)(4326008)(224303003)(6916009)(66446008)(2940100002)(8936002)(9686003)(86362001)(71200400001)(3557205002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?RmFSWFl2eVc0UTRiR29CK2VVcTlETm44Y3RYR3BvWHJNdlhodWdWYzRZcHd5?=
- =?gb2312?B?TE5xbU44MllPWVdXa09RKzJROTUyTGo3bURBZ3lVdmJIT1lYS201T1JBYzBi?=
- =?gb2312?B?VGg3b01hM2pQZkdNY0FOQkhXZVdWUXdzamRxTlR1MnpmMkVJWi9QZmFWeEhJ?=
- =?gb2312?B?Mk43MXJJYWdYNmFQaU16aEZOVS9qK2JzK21IeTl2R29jUlVtMHM2NXBqNngz?=
- =?gb2312?B?Q1p6S1BwMkJhQmRtVC9ubnlhMWNwbCtYbFRZaUd2TkozZXZjRWtBc0hEb3BX?=
- =?gb2312?B?dkowSXV5VGVaeVB2czQ4NGx5TkdzeDRUb2Zodm1OU2cxZW1hZUtGQjk5MFVO?=
- =?gb2312?B?TEtFdnNvWjNTN2wvR0lJc3NBakdkQmlUL2tPZGc1NXFJZjkwc1hGbmhzamNJ?=
- =?gb2312?B?Ylo5QmFiaDJHZDRleTI0Q2pySlVad3RHbk9VVTRiNEZGY3RDYkZRU3Y4S3lV?=
- =?gb2312?B?NnNqL2NselEveStaVkJrZ284RTZYTDJCd290bEFiY1lDakdlZHIwZ0owNndj?=
- =?gb2312?B?SFBDaVNSQ3Q3TXg5eThIakNVa2pMaGtKK2RYODZjUWFidjIzU1ZBMzVFbzJS?=
- =?gb2312?B?ZjRwR1JSZFI1bG4xSC9lemFnL3RHcWZGZkZocUpJcm1iemxoRXYwLzlQeUJB?=
- =?gb2312?B?TS8wTUV2K216NWxSVngvMWZ5YWppZ0VkTGxtQzdRb3BBMnRXRDJaZDJEaFpy?=
- =?gb2312?B?R3hXL1hIV1hwNVFPNWwwQzZOdkp5Ny9FTHpMWTJFMEFwNkZ5akRGai9PNjRZ?=
- =?gb2312?B?ZTI5c3VzK1hhNEZaTGJySXVpNnVxbEErU0lvUCs5MXU4MVdmM2w2RnM2QWpv?=
- =?gb2312?B?OUcwTTFmZnpySkEwWmltRHEzY1JPOXMrdHZoV1hLbWNrK2t0Y2tGVkwxRGVh?=
- =?gb2312?B?QUpvc2ZPNGlON1NBREtLSkVER1ErWVFJcEQxSW5KNzY3eVdtTFJiRE03Y09w?=
- =?gb2312?B?eFNsYUVneHBBKzk4b3JyR0h1WW1VV0JkYzByajM1dk5rME8yK2NkcVlEMFh1?=
- =?gb2312?B?azNlVmUxdWdIMkZYVmQya1VydDZrNW42QXFtWnAwbVlRYmQrclY1TmZiSlhj?=
- =?gb2312?B?Nm1oY2ozaEs2cXlWaHBFSE15TElMcll4UlRiYmNNeXlRcmZPYUdvV1lkTy8w?=
- =?gb2312?B?OHJZUCsvRTQwTVQwSTdpRGY4OFdjTVRXL0VTQnA4eVQyZ1kxdEtQdEp3ZzBm?=
- =?gb2312?B?TEdYb0RNUGUycVdqNUF1WWJ4NlpVRTFDNzJwZWtTUFg5YzFGd2tPcWF2ejdM?=
- =?gb2312?B?QXUzcGo4UVBOTEdZYnJuSWYwdk5lUTlSUGlOWkI0NWNPM3FJS1hhSDBxQlRB?=
- =?gb2312?B?amlwWG1NMDAwR0RjcVZVVGVucUg0OFdjSURCUWI1MGFyNUswSEdtVmxZTEh6?=
- =?gb2312?Q?nI4r/dxXx0G1wwAtQ4ExWSBcTjfpLPJI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v3] kvfree_rcu:
+ Release page cache under memory pressure
+Message-ID: <20210204140956.GA1904@pc638.lan>
+References: <20210130131851.23285-1-qiang.zhang@windriver.com>
+ <20210201195753.GA2026@pc638.lan>
+ <BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <BYAPR11MB2632ECCBD7196CF92C5FA49BFFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfec1faf-3f05-463a-db77-08d8c8edfa03
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 09:19:29.9436
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UBXrH467Ib4PaSE8kgMVg2UebGuBaLP2YXFxm4SuLiqEKQxrpLT1bOkDSo1EOoJf86hnFMoAjgomBzA/pgU5zSqFBhxRE5kZcefIMlDhU9o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3558
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632ECCBD7196CF92C5FA49BFFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-CgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwq3orz+yMs6IFVs
-YWR6aXNsYXUgUmV6a2kgPHVyZXpraUBnbWFpbC5jb20+Creiy83KsbzkOiAyMDIxxOoy1MIyyNUg
-Mzo1NwrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiB1cmV6a2lAZ21haWwuY29tOyBwYXVsbWNr
-QGtlcm5lbC5vcmc7IGpvZWxAam9lbGZlcm5hbmRlcy5vcmc7IHJjdUB2Z2VyLmtlcm5lbC5vcmc7
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcK1vfM4jogUmU6IFtQQVRDSCB2M10ga3ZmcmVl
-X3JjdTogUmVsZWFzZSBwYWdlIGNhY2hlIHVuZGVyIG1lbW9yeSBwcmVzc3VyZQoKW1BsZWFzZSBu
-b3RlOiBUaGlzIGUtbWFpbCBpcyBmcm9tIGFuIEVYVEVSTkFMIGUtbWFpbCBhZGRyZXNzXQoKSGVs
-bG8sIFpxaWFuZy4KCj4gRnJvbTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+
-Cj4gQWRkIGZyZWUgcGVyLWNwdSBleGlzdGluZyBrcmNwJ3MgcGFnZSBjYWNoZSBvcGVyYXRpb24s
-IHdoZW4KPiB0aGUgc3lzdGVtIGlzIHVuZGVyIG1lbW9yeSBwcmVzc3VyZS4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KPiAtLS0KPiAga2VybmVs
-L3JjdS90cmVlLmMgfCAyNiArKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hh
-bmdlZCwgMjYgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5j
-IGIva2VybmVsL3JjdS90cmVlLmMKPiBpbmRleCBjMWFlMWU1MmY2MzguLjY0NGIwZjNjN2I5ZiAx
-MDA2NDQKPiAtLS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZS5j
-Cj4gQEAgLTM1NzEsMTcgKzM1NzEsNDEgQEAgdm9pZCBrdmZyZWVfY2FsbF9yY3Uoc3RydWN0IHJj
-dV9oZWFkICpoZWFkLCByY3VfY2FsbGJhY2tfdCBmdW5jKQo+ICB9Cj4gIEVYUE9SVF9TWU1CT0xf
-R1BMKGt2ZnJlZV9jYWxsX3JjdSk7Cj4KPiArc3RhdGljIGludCBmcmVlX2tyY19wYWdlX2NhY2hl
-KHN0cnVjdCBrZnJlZV9yY3VfY3B1ICprcmNwKQo+ICt7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBm
-bGFnczsKPiArICAgICBzdHJ1Y3QgbGxpc3Rfbm9kZSAqcGFnZV9saXN0LCAqcG9zLCAqbjsKPiAr
-ICAgICBpbnQgZnJlZWQgPSAwOwo+ICsKPiArICAgICByYXdfc3Bpbl9sb2NrX2lycXNhdmUoJmty
-Y3AtPmxvY2ssIGZsYWdzKTsKPiArICAgICBwYWdlX2xpc3QgPSBsbGlzdF9kZWxfYWxsKCZrcmNw
-LT5ia3ZjYWNoZSk7Cj4gKyAgICAga3JjcC0+bnJfYmt2X29ianMgPSAwOwo+ICsgICAgIHJhd19z
-cGluX3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gKwo+ICsgICAgIGxs
-aXN0X2Zvcl9lYWNoX3NhZmUocG9zLCBuLCBwYWdlX2xpc3QpIHsKPiArICAgICAgICAgICAgIGZy
-ZWVfcGFnZSgodW5zaWduZWQgbG9uZylwb3MpOwo+ICsgICAgICAgICAgICAgZnJlZWQrKzsKPiAr
-ICAgICB9Cj4gKwo+ICsgICAgIHJldHVybiBmcmVlZDsKPiArfQo+ICsKPiAgc3RhdGljIHVuc2ln
-bmVkIGxvbmcKPiAga2ZyZWVfcmN1X3Nocmlua19jb3VudChzdHJ1Y3Qgc2hyaW5rZXIgKnNocmlu
-aywgc3RydWN0IHNocmlua19jb250cm9sICpzYykKPiAgewo+ICAgICAgIGludCBjcHU7Cj4gICAg
-ICAgdW5zaWduZWQgbG9uZyBjb3VudCA9IDA7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsK
-Pgo+ICAgICAgIC8qIFNuYXBzaG90IGNvdW50IG9mIGFsbCBDUFVzICovCj4gICAgICAgZm9yX2Vh
-Y2hfcG9zc2libGVfY3B1KGNwdSkgewo+ICAgICAgICAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9j
-cHUgKmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+Cj4gICAgICAgICAgICAgICBjb3Vu
-dCArPSBSRUFEX09OQ0Uoa3JjcC0+Y291bnQpOwo+ICsKPiArICAgICAgICAgICAgIHJhd19zcGlu
-X2xvY2tfaXJxc2F2ZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICsgICAgICAgICAgICAgY291bnQg
-Kz0ga3JjcC0+bnJfYmt2X29ianM7Cj4gKyAgICAgICAgICAgICByYXdfc3Bpbl91bmxvY2tfaXJx
-cmVzdG9yZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICAgICAgIH0KPgo+ICAgICAgIHJldHVybiBj
-b3VudDsKPiBAQCAtMzU5OCw2ICszNjIyLDggQEAga2ZyZWVfcmN1X3Nocmlua19zY2FuKHN0cnVj
-dCBzaHJpbmtlciAqc2hyaW5rLCBzdHJ1Y3Qgc2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAg
-ICAgICAgc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUp
-Owo+Cj4gICAgICAgICAgICAgICBjb3VudCA9IGtyY3AtPmNvdW50Owo+ICsgICAgICAgICAgICAg
-Y291bnQgKz0gZnJlZV9rcmNfcGFnZV9jYWNoZShrcmNwKTsKPiArCj4gICAgICAgICAgICAgICBy
-YXdfc3Bpbl9sb2NrX2lycXNhdmUoJmtyY3AtPmxvY2ssIGZsYWdzKTsKPiAgICAgICAgICAgICAg
-IGlmIChrcmNwLT5tb25pdG9yX3RvZG8pCj4gICAgICAgICAgICAgICAgICAgICAgIGtmcmVlX3Jj
-dV9kcmFpbl91bmxvY2soa3JjcCwgZmxhZ3MpOwo+IC0tCj4gMi4xNy4xCj4+Cj5UaGFuayB5b3Ug
-Zm9yIHlvdXIgcGF0Y2ghCj4KPkkgc3BlbnQgc29tZSB0aW1lIHRvIHNlZSBob3cgdGhlIHBhdGNo
-IGJlaGF2ZXMgdW5kZXIgbG93IG1lbW9yeSBjb25kaXRpb24uCj5UbyBzaW11bGF0ZSBpdCwgaSB1
-c2VkICJyY3VzY2FsZSIgdG9vbCB3aXRoIGJlbG93IHBhcmFtZXRlcnM6Cj4KPi4uL3JjdXRvcnR1
-cmUvYmluL2t2bS5zaCAtLXRvcnR1cmUgcmN1c2NhbGUgLS1hbGxjcHVzIC0tZHVyYXRpb24gMTAg
-LS1rY29uZmlnID5DT05GSUdfTlJfQ1BVUz02NCBcCj4tLWJvb3RhcmdzICJyY3VzY2FsZS5rZnJl
-ZV9yY3VfdGVzdD0xIHJjdXNjYWxlLmtmcmVlX250aHJlYWRzPTE2ID5yY3VzY2FsZS5ob2xkb2Zm
-PTIwIHJjdXNjYWxlLmtmcmVlX2xvb3BzPTEwMDAwIFwKPnRvcnR1cmUuZGlzYWJsZV9vbm9mZl9h
-dF9ib290IiAtLXRydXN0LW1ha2UKPgo+NjQgQ1BVcyArIDUxMiBNQiBvZiBtZW1vcnkuIEluIGdl
-bmVyYWwsIG15IHRlc3Qgc3lzdGVtIHdhcyBydW5uaW5nIG9uIGVkZ2UKPmhpdHRpbmcgYW4gb3V0
-IG9mIG1lbW9yeSBzb21ldGltZXMsIGJ1dCBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIHN0YWJsZSBp
-bgo+cmVnYXJkcyB0byBhIHRlc3QgY29tcGxldGlvbiBhbmQgdGFrZW4gdGltZSwgc28gYm90aCB3
-ZXJlIHByZXR0eSBzb2xpZC4KPgo+WW91IGNhbiBmaW5kIGEgY29tcGFyaXNvbiBvbiBhIHBsb3Qs
-IHRoYXQgY2FuIGJlIGRvd25sb2FkZWQgZm9sbG93aW5nCj5hIGxpbms6IHdnZXQgPmZ0cDovL3Zw
-czQxODMwMS5vdmgubmV0L2luY29taW5nL3JlbGVhc2VfcGFnZV9jYWNoZV91bmRlcl9sb3dfbWVt
-b3J5LnBuZwo+Cj5JbiBzaG9ydCwgaSBzZWUgdGhhdCBhIHBhdGNoZWQgdmVyc2lvbiBjYW4gbGVh
-ZCB0byBsb25nZXIgdGVzdCBjb21wbGV0aW9uLAo+d2hlcmVhcyB0aGUgZGVmYXVsdCB2YXJpYW50
-IGlzIHN0YWJsZSBvbiBhbG1vc3QgYWxsIHJ1bnMuIEFmdGVyIHNvbWUgYW5hbHlzaXMKPmFuZCBm
-dXJ0aGVyIGRpZ2dpbmcgaSBjYW1lIHRvIGNvbmNsdXNpb24gdGhhdCBhIHNocmlua2VyIGZyZWVf
-a3JjX3BhZ2VfY2FjaGUoKQo+Y29uY3VycyB3aXRoIHJ1bl9wYWdlX2NhY2hlX3dvcmtlcihrcmNw
-KSBydW5uaW5nIGZyb20ga3ZmcmVlX3JjdSgpIGNvbnRleHQuCj4KPmkuZS4gRHVyaW5nIHRoZSB0
-ZXN0IGEgcGFnZSBzaHJpbmtlciBpcyBwcmV0dHkgYWN0aXZlLCBiZWNhdXNlIG9mIGxvdyBtZW1v
-cnkKPmNvbmRpdGlvbi4gT3VyIGNhbGxiYWNrIGRyYWlucyBpdCB3aGVyZWFzIGt2ZnJlZV9yY3Uo
-KSBwYXJ0IHJlZmlsbCBpdCByaWdodAo+YXdheSBtYWtpbmcga2luZCBvZiB2aWNpb3VzIGNpcmNs
-ZS4KPgo+U28sIGEgcnVuX3BhZ2VfY2FjaGVfd29ya2VyKCkgc2hvdWxkIGJlIGJhY2tvZmYgZm9y
-IHNvbWUgdGltZSB3aGVuIGEgc3lzdGVtCj5ydW5zIGludG8gYSBsb3cgbWVtb3J5IGNvbmRpdGlv
-biBvciBoaWdoIHByZXNzdXJlOgo+Cj5kaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9r
-ZXJuZWwvcmN1L3RyZWUuYwo+aW5kZXggNzA3N2Q3M2ZjYjUzLi40NDY3MjNiOTY0NmIgMTAwNjQ0
-Cj4tLS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+KysrIGIva2VybmVsL3JjdS90cmVlLmMKPkBAIC0z
-MTYzLDcgKzMxNjMsNyBAQCBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSB7Cj4gICAgICAgIGJvb2wgaW5p
-dGlhbGl6ZWQ7Cj4gICAgICAgIGludCBjb3VudDsKPgo+LSAgICAgICBzdHJ1Y3Qgd29ya19zdHJ1
-Y3QgcGFnZV9jYWNoZV93b3JrOwo+KyAgICAgICBzdHJ1Y3QgZGVsYXllZF93b3JrIHBhZ2VfY2Fj
-aGVfd29yazsKPiAgICAgICAgYXRvbWljX3Qgd29ya19pbl9wcm9ncmVzczsKPiAgICAgICAgc3Ry
-dWN0IGhydGltZXIgaHJ0aW1lcjsKPgo+QEAgLTM0MTksNyArMzQxOSw3IEBAIHNjaGVkdWxlX3Bh
-Z2Vfd29ya19mbihzdHJ1Y3QgaHJ0aW1lciAqdCkKPiAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9j
-cHUgKmtyY3AgPQo+ICAgICAgICAgICAgICAgIGNvbnRhaW5lcl9vZih0LCBzdHJ1Y3Qga2ZyZWVf
-cmN1X2NwdSwgaHJ0aW1lcik7Cj4KPi0gICAgICAgcXVldWVfd29yayhzeXN0ZW1faGlnaHByaV93
-cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yayk7Cj4rICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhz
-eXN0ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgMCk7Cj4gICAgICAgIHJl
-dHVybiBIUlRJTUVSX05PUkVTVEFSVDsKPiB9Cj4KPkBAIC0zNDI4LDcgKzM0MjgsNyBAQCBzdGF0
-aWMgdm9pZCBmaWxsX3BhZ2VfY2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4g
-ICAgICAgIHN0cnVjdCBrdmZyZWVfcmN1X2J1bGtfZGF0YSAqYm5vZGU7Cj4gICAgICAgIHN0cnVj
-dCBrZnJlZV9yY3VfY3B1ICprcmNwID0KPiAgICAgICAgICAgICAgICBjb250YWluZXJfb2Yod29y
-aywgc3RydWN0IGtmcmVlX3JjdV9jcHUsCj4tICAgICAgICAgICAgICAgICAgICAgICBwYWdlX2Nh
-Y2hlX3dvcmspOwo+KyAgICAgICAgICAgICAgICAgICAgICAgcGFnZV9jYWNoZV93b3JrLndvcmsp
-Owo+ICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+ICAgICAgICBib29sIHB1c2hlZDsKPiAg
-ICAgICAgaW50IGk7Cj5AQCAtMzQ1MiwxNSArMzQ1MiwyMiBAQCBzdGF0aWMgdm9pZCBmaWxsX3Bh
-Z2VfY2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgPip3b3JrKQo+ICAgICAgICBhdG9taWNf
-c2V0KCZrcmNwLT53b3JrX2luX3Byb2dyZXNzLCAwKTsKPiB9Cj4KPitzdGF0aWMgYm9vbCBiYWNr
-b2ZmX3BhZ2VfY2FjaGVfZmlsbDsKPisKPiBzdGF0aWMgdm9pZAo+IHJ1bl9wYWdlX2NhY2hlX3dv
-cmtlcihzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAqa3JjcCkKPiB7Cj4gICAgICAgIGlmIChyY3Vfc2No
-ZWR1bGVyX2FjdGl2ZSA9PSBSQ1VfU0NIRURVTEVSX1JVTk5JTkcgJiYKPiAgICAgICAgICAgICAg
-ICAgICAgICAgICFhdG9taWNfeGNoZygma3JjcC0+d29ya19pbl9wcm9ncmVzcywgMSkpIHsKPi0g
-ICAgICAgICAgICAgICBocnRpbWVyX2luaXQoJmtyY3AtPmhydGltZXIsIENMT0NLX01PTk9UT05J
-QywKPi0gICAgICAgICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+LSAgICAgICAg
-ICAgICAgIGtyY3AtPmhydGltZXIuZnVuY3Rpb24gPSBzY2hlZHVsZV9wYWdlX3dvcmtfZm47Cj4t
-ICAgICAgICAgICAgICAgaHJ0aW1lcl9zdGFydCgma3JjcC0+aHJ0aW1lciwgMCwgSFJUSU1FUl9N
-T0RFX1JFTCk7Cj4rICAgICAgICAgICAgICAgaWYgKFJFQURfT05DRShiYWNrb2ZmX3BhZ2VfY2Fj
-aGVfZmlsbCkpIHsKPisgICAgICAgICAgICAgICAgICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhz
-eXN0ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgPkhaKTsKPisgICAgICAg
-ICAgICAgICAgICAgICAgIFdSSVRFX09OQ0UoYmFja29mZl9wYWdlX2NhY2hlX2ZpbGwsIGZhbHNl
-KTsKPisgICAgICAgICAgICAgICB9IGVsc2Ugewo+KyAgICAgICAgICAgICAgICAgICAgICAgaHJ0
-aW1lcl9pbml0KCZrcmNwLT5ocnRpbWVyLCBDTE9DS19NT05PVE9OSUMsCj4rICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgICAg
-ICAgICAga3JjcC0+aHJ0aW1lci5mdW5jdGlvbiA9IHNjaGVkdWxlX3BhZ2Vfd29ya19mbjsKPisg
-ICAgICAgICAgICAgICAgICAgICAgIGhydGltZXJfc3RhcnQoJmtyY3AtPmhydGltZXIsIDAsIEhS
-VElNRVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgIH0KPiAgICAgICAgfQo+IH0KPgo+QEAg
-LTM2NDQsNiArMzY1MSw4IEBAIGtmcmVlX3JjdV9zaHJpbmtfY291bnQoc3RydWN0IHNocmlua2Vy
-ICpzaHJpbmssIHN0cnVjdCA+c2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAgICAgICAgIHJh
-d19zcGluX3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gICAgICAgIH0K
-Pgo+KyAgICAgICAvLyBMb3cgbWVtb3J5IGNvbmRpdGlvbiwgbGltaXQgYSBwYWdlIGNhY2hlIHdv
-cmtlciBhY3Rpdml0eS4KPisgICAgICAgV1JJVEVfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVfZmls
-bCwgdHJ1ZSk7Cj4gICAgICAgIHJldHVybiBjb3VudDsKPiB9Cgo+QEAgLTQ2MzQsNyArNDY0Myw3
-IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBrZnJlZV9yY3VfYmF0Y2hfaW5pdCh2b2lkKQo+ICAgICAg
-ICAgICAgICAgIH0KPgo+ICAgICAgICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5t
-b25pdG9yX3dvcmssIGtmcmVlX3JjdV9tb25pdG9yKTsKPi0gICAgICAgICAgICAgICBJTklUX1dP
-UksoJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgZmlsbF9wYWdlX2NhY2hlX2Z1bmMpOwo+KyAgICAg
-ICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5wYWdlX2NhY2hlX3dvcmssIGZpbGxf
-cGFnZV9jYWNoZV9mdW5jKTsKPiAgICAgICAgICAgICAgICBrcmNwLT5pbml0aWFsaXplZCA9IHRy
-dWU7Cj4gICAgICAgIH0KPiAgICAgICAgaWYgKHJlZ2lzdGVyX3Nocmlua2VyKCZrZnJlZV9yY3Vf
-c2hyaW5rZXIpKQo+Cj5iZWxvdyBwYXRjaCBmaXhlcyBpdC4gV2Ugc2hvdWxkIGJhY2tvZmYgdGhl
-IHBhZ2UgZmlsbCB3b3JrZXIga2VlcGluZyBpdCBlbXB0eQo+dW50aWwgdGhlIHNpdHVhdGlvbiB3
-aXRoIG1lbW9yeSBjb25zdW1wdGlvbiBpcyBub3JtYWxpemVkLgoKICBNYXliZSBjYW4gY2FuY2Vs
-IHRoZSB0aW1lciBhbmQgY2FuY2VsIHdvcmsgaW4gdGhlIHJjdV9zaHJpbmtfY291bnQgZnVuY3Rp
-b24sIGFmdGVyCiAgdGhlIHJjdV9zaHJpbmtfc2NhbiBmdW5jdGlvbiBpcyBleGVjdXRlZCBhbmQg
-cmVjb3ZlciB0aW1lci4KICB3aGF0IGRvIHlvdSB0aGluaz8KICAgCiAgIFRoZSBvdGhlciBxdWVz
-dGlvbiBpcywgd2h5IG5vdCBjYWxsIHF1ZXVlX3dvcmsgZnVuY3Rpb24gZGlyZWN0bHkgdG8gZmls
-bCBwYWdlIGNhY2hlLCAKICAgYnV0IHRocm91Z2ggYSBocnRpbWVyLCB3aGF0IGlzIHRoZSBwdXJw
-b3NlIG9mIHRoaXMgZGVzaWduPwoKVGhhbmtzClFpYW5nCgoKCgoKPgo+QW55IHRob3VnaHRzIGlk
-ZWFzPwo+Cj4tLQo+VmxhZCBSZXpraQo=
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年2月2日 3:57
+> 收件人: Zhang, Qiang
+> 抄送: urezki@gmail.com; paulmck@kernel.org; joel@joelfernandes.org; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
+> 
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> 
+> Hello, Zqiang.
+> 
+> > From: Zqiang <qiang.zhang@windriver.com>
+> >
+> > Add free per-cpu existing krcp's page cache operation, when
+> > the system is under memory pressure.
+> >
+> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > ---
+> >  kernel/rcu/tree.c | 26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index c1ae1e52f638..644b0f3c7b9f 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3571,17 +3571,41 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+> >
+> > +static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
+> > +{
+> > +     unsigned long flags;
+> > +     struct llist_node *page_list, *pos, *n;
+> > +     int freed = 0;
+> > +
+> > +     raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +     page_list = llist_del_all(&krcp->bkvcache);
+> > +     krcp->nr_bkv_objs = 0;
+> > +     raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +
+> > +     llist_for_each_safe(pos, n, page_list) {
+> > +             free_page((unsigned long)pos);
+> > +             freed++;
+> > +     }
+> > +
+> > +     return freed;
+> > +}
+> > +
+> >  static unsigned long
+> >  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> >  {
+> >       int cpu;
+> >       unsigned long count = 0;
+> > +     unsigned long flags;
+> >
+> >       /* Snapshot count of all CPUs */
+> >       for_each_possible_cpu(cpu) {
+> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> >
+> >               count += READ_ONCE(krcp->count);
+> > +
+> > +             raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +             count += krcp->nr_bkv_objs;
+> > +             raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> >       }
+> >
+> >       return count;
+> > @@ -3598,6 +3622,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> >               struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> >
+> >               count = krcp->count;
+> > +             count += free_krc_page_cache(krcp);
+> > +
+> >               raw_spin_lock_irqsave(&krcp->lock, flags);
+> >               if (krcp->monitor_todo)
+> >                       kfree_rcu_drain_unlock(krcp, flags);
+> > --
+> > 2.17.1
+> >>
+> >Thank you for your patch!
+> >
+> >I spent some time to see how the patch behaves under low memory condition.
+> >To simulate it, i used "rcuscale" tool with below parameters:
+> >
+> >../rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig >CONFIG_NR_CPUS=64 \
+> >--bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 >rcuscale.holdoff=20 rcuscale.kfree_loops=10000 \
+> >torture.disable_onoff_at_boot" --trust-make
+> >
+> >64 CPUs + 512 MB of memory. In general, my test system was running on edge
+> >hitting an out of memory sometimes, but could be considered as stable in
+> >regards to a test completion and taken time, so both were pretty solid.
+> >
+> >You can find a comparison on a plot, that can be downloaded following
+> >a link: wget >ftp://vps418301.ovh.net/incoming/release_page_cache_under_low_memory.png
+> >
+> >In short, i see that a patched version can lead to longer test completion,
+> >whereas the default variant is stable on almost all runs. After some analysis
+> >and further digging i came to conclusion that a shrinker free_krc_page_cache()
+> >concurs with run_page_cache_worker(krcp) running from kvfree_rcu() context.
+> >
+> >i.e. During the test a page shrinker is pretty active, because of low memory
+> >condition. Our callback drains it whereas kvfree_rcu() part refill it right
+> >away making kind of vicious circle.
+> >
+> >So, a run_page_cache_worker() should be backoff for some time when a system
+> >runs into a low memory condition or high pressure:
+> >
+> >diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> >index 7077d73fcb53..446723b9646b 100644
+> >--- a/kernel/rcu/tree.c
+> >+++ b/kernel/rcu/tree.c
+> >@@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
+> >        bool initialized;
+> >        int count;
+> >
+> >-       struct work_struct page_cache_work;
+> >+       struct delayed_work page_cache_work;
+> >        atomic_t work_in_progress;
+> >        struct hrtimer hrtimer;
+> >
+> >@@ -3419,7 +3419,7 @@ schedule_page_work_fn(struct hrtimer *t)
+> >        struct kfree_rcu_cpu *krcp =
+> >                container_of(t, struct kfree_rcu_cpu, hrtimer);
+> >
+> >-       queue_work(system_highpri_wq, &krcp->page_cache_work);
+> >+       queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+> >        return HRTIMER_NORESTART;
+> > }
+> >
+> >@@ -3428,7 +3428,7 @@ static void fill_page_cache_func(struct work_struct *work)
+> >        struct kvfree_rcu_bulk_data *bnode;
+> >        struct kfree_rcu_cpu *krcp =
+> >                container_of(work, struct kfree_rcu_cpu,
+> >-                       page_cache_work);
+> >+                       page_cache_work.work);
+> >        unsigned long flags;
+> >        bool pushed;
+> >        int i;
+> >@@ -3452,15 +3452,22 @@ static void fill_page_cache_func(struct work_struct >*work)
+> >        atomic_set(&krcp->work_in_progress, 0);
+> > }
+> >
+> >+static bool backoff_page_cache_fill;
+> >+
+> > static void
+> > run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> > {
+> >        if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> >                        !atomic_xchg(&krcp->work_in_progress, 1)) {
+> >-               hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> >-                       HRTIMER_MODE_REL);
+> >-               krcp->hrtimer.function = schedule_page_work_fn;
+> >-               hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> >+               if (READ_ONCE(backoff_page_cache_fill)) {
+> >+                       queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, >HZ);
+> >+                       WRITE_ONCE(backoff_page_cache_fill, false);
+> >+               } else {
+> >+                       hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> >+                               HRTIMER_MODE_REL);
+> >+                       krcp->hrtimer.function = schedule_page_work_fn;
+> >+                       hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> >+               }
+> >        }
+> > }
+> >
+> >@@ -3644,6 +3651,8 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct >shrink_control *sc)
+> >                raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> >        }
+> >
+> >+       // Low memory condition, limit a page cache worker activity.
+> >+       WRITE_ONCE(backoff_page_cache_fill, true);
+> >        return count;
+> > }
+> 
+> >@@ -4634,7 +4643,7 @@ static void __init kfree_rcu_batch_init(void)
+> >                }
+> >
+> >                INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+> >-               INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+> >+               INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+> >                krcp->initialized = true;
+> >        }
+> >        if (register_shrinker(&kfree_rcu_shrinker))
+> >
+> >below patch fixes it. We should backoff the page fill worker keeping it empty
+> >until the situation with memory consumption is normalized.
+> 
+>   Maybe can cancel the timer and cancel work in the rcu_shrink_count function, after
+>   the rcu_shrink_scan function is executed and recover timer.
+>   what do you think?
+I think it is just easier to schedule a periodic delayed work with HZ
+interval. If a system is in a tight memory situation, that periodic
+work will not be harmful from CPU cycles point of view. Once it is
+settled, the hrtimer takes over to speedup the process of cache filling.
+
+>    
+>    The other question is, why not call queue_work function directly to fill page cache, 
+>    but through a hrtimer, what is the purpose of this design?
+> 
+It is done that way because the kvfree_rcu() is supposed that it could
+be invoked from the scheduler part. It means that if a CPU holds rq->lock 
+queuing the work or placing it into rq will lead to deadlock.
+
+--
+Vlad Rezki
