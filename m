@@ -2,186 +2,250 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
+	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF5C6C433DB
-	for <rcu@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46F49C43381
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 09:15:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE58764F61
-	for <rcu@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0238764F4E
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 09:15:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhBCXvf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Feb 2021 18:51:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233258AbhBCXvd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:51:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 256AC64F53;
-        Wed,  3 Feb 2021 23:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612396252;
-        bh=zFHFv+P1s0q4JfWyuoNofhrFvUPvSPhG+YxTpGNRHrs=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=UQcJ1lnzBu7sB9H8DQ50AMNJpESAW45D8xNSxow5XzBqw/i/XFXXUcd7EE69TrEY0
-         U+PkbidENcDikZdN56h4F7k2FGbS+q0PLk1Rh5IErcmu9jgBDWD+S1QzNoAy2xESPt
-         dm0YTizO1jeL/eIHOMuj3/bEmQMsoGU/9Jk8drBc8AT4LMOgPsDe4nEYkmXe4Uizw+
-         APSDZ9rV7N5nAnY6Dve1ncEMq67H9xNZh/8pozQ4fTHflFqJnq1APvWbeY6t0i4Uqz
-         6895W5A/gDTCLrLW4C/7E5e7rxuso5uTUr8/BqNBTFt5ZgXqt80AfKQyN1a8nkGNQT
-         rUTt8HxdhyXpQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BF43335226F1; Wed,  3 Feb 2021 15:50:51 -0800 (PST)
-Date:   Wed, 3 Feb 2021 15:50:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     frederic@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Bare-metal rcutorture testing
-Message-ID: <20210203235051.GA7481@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S235204AbhBDJO7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Feb 2021 04:14:59 -0500
+Received: from mail-bn8nam12on2084.outbound.protection.outlook.com ([40.107.237.84]:22960
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234721AbhBDJO0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 4 Feb 2021 04:14:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhjFaEQzctPKwaIk/YWlK6v7TQ1BDGw0VE0n2j2LlKWOsyqx6hZvxGmvOtVqCCTDmJCmSNdz/zmwgItojkudX8AWFV8C0L7Ox82Lpu6RS7n7KeKk/xyNbV9HnrhcOKpy4qDcRa3y25DVzSIliK9CY5OIvB6a27nk0bFzVCNHZO8TJE+4BQd5RxDVmwOU7DvV7avUckKUFBvkDAnMYZsUDIPkApf6RD2xewKcGrZfALFNiAL+ejKRXzvJpw2ov6WL28IceYscw7ga9f4TTwaNSp9ilhUpSN/KrJiWKDcywLkLqKVufXIGkOJuZR7gyI1RJO4PqYl4pnMf5YC585kBIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5SDZO0+Sy6O+RGfQ2ID0i3n3StTsptoHsePOGzPrgdc=;
+ b=GRtoFjY61HxFUiEEjcxqPO5WwQ8QekJlweKTfvs8r75x9Q16YdSnZVlaqiSWj7NC0i99SfZks/UCHaP0O6ivi+u8UCcmypSOyFFbwfnLaZbTWBYMH0qRxNFgQKe5N8044nyiZW4x1LrQ8IregIwPSx3zHhLiJ2AVTJv7iokYlbj9xIjXUyPBx4pXQ9FlOM+AL0wq58tJysgQeGwgEWfzYKp6wp0IziWJpPpJXMYHsUCcRylTFaNYy1fU+55qDX4FNnAGOZ6rC8UYwVuV/xb//4VpDP9Q++oxT8btadrrWy6xOxhV1XHTGz2dnu6FNIgAbjhQ+oZtoAPKBExFqRBI7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5SDZO0+Sy6O+RGfQ2ID0i3n3StTsptoHsePOGzPrgdc=;
+ b=a1ANAmQK2FFfSBMjv7KaZLFJh4pRhaJYuDd18GU6yHh7SIfx4OWNpMbkY7OtzS5LWXy2beNKegbyTgGny6qsdNBOEM2eLY5srC7UutGMYPKeRZTJioVDPUdoyDDpHE9rBLG4xI/18+8bFfWkklf3f5HhEgB8PAesVX2vLLXijJw=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB5136.namprd11.prod.outlook.com (2603:10b6:a03:2d1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Thu, 4 Feb
+ 2021 09:13:37 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.023; Thu, 4 Feb 2021
+ 09:13:37 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYzXSBrdmZyZWVfcmN1OiBSZWxlYXNlIHBhZ2UgY2Fj?=
+ =?gb2312?Q?he_under_memory_pressure?=
+Thread-Topic: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
+Thread-Index: AQHW9wfxGJ2IWJwsv0i2q1lIZ3Sxz6pDuv2AgACRBPmAA3GuVg==
+Date:   Thu, 4 Feb 2021 09:13:36 +0000
+Message-ID: <BYAPR11MB2632D4B3C28AFBD67AC10263FFB39@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210130131851.23285-1-qiang.zhang@windriver.com>,<20210201195753.GA2026@pc638.lan>,<BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB2632485C92F0CE711BE80EB4FFB59@BYAPR11MB2632.namprd11.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 030ab6cb-8d2f-4386-1b8d-08d8c8ed279c
+x-ms-traffictypediagnostic: SJ0PR11MB5136:
+x-microsoft-antispam-prvs: <SJ0PR11MB513649ABE2C4E984D5A41A99FFB39@SJ0PR11MB5136.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SzNMJCwcHnHqH/+ZXEpgaaWb/rBy8Y/WGRJf9UjX4eC1quyMmg4MUOekPWLwRjgY/jNdNJbNonvdJ8JppqNwYZL+AspzrZ++WZH1W4DAid+7Qks4IYB6Q2oKsdYMW4jjs5167Ow14BFu3lAwn67uvzjI/oo2bF7+oCed89tdsBaY+S1eDiLi9tMhb7tOnlSJpx7+wFbpe7dhKMoEwJfAGEIZuK8mnX4mXk4+AH+t+vOwKW8wGxWNVneB7N24JC5k6idi+mb55Q/e2TRY0aWiAbv3msdgZkfSwgWtdUxp5aT0Sw44Zs6mNPwp7J7/MSYZjJAsHtO+ivtliTIfdWLZRokBtXcqXCIn6Nkp7mhrvVDqXO3HUcoyQUm1sXD0RvMLYICtf4GBNPa5E4hYpiJtkm4y2qm01KNydB78FQx99yuxRlOpdfF/ayf/oIMgeVvZBiOk7LJSfGBsdD/JIApUKCgj75Shqwl6FujA48ss8LZIqKaaMxBUq5gvf5WrFW14ozBwUPjhSj876G2NXmZTbLRyCHX0uCBla//Hij8cix8ML9C84tfTkAD4o38sOZ2c2hAtXBdujKjUBArrzo8ycpMp90n18gZHSCUo3xP/2/dQwuoJPELzI9ZVr91LTFFcMOk8RGoM81aGFDXEztyn1w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(376002)(396003)(346002)(136003)(54906003)(2906002)(33656002)(478600001)(6506007)(316002)(86362001)(71200400001)(83380400001)(5660300002)(52536014)(26005)(64756008)(76116006)(6916009)(55016002)(66476007)(7696005)(66556008)(66446008)(9686003)(4326008)(186003)(66946007)(91956017)(224303003)(8936002)(3557205002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?dnMvVW1oNEFCbC9LRENaRFRaU3NTTWo1azcxc1RFWnZUb3orN3R1MzlxU3Rv?=
+ =?gb2312?B?dExMNXNIaldzTGpIL2NSbVpWTXVEMUNya09FY2tSZzY3L0VsMlcrcmF2QWpK?=
+ =?gb2312?B?SFpIZnIwV2dsRHdtT2IzQXRDVERuZ3pWaTNOdWVhV3puWXdHSUMrdG1mdWRK?=
+ =?gb2312?B?RUFxbDcraDQ1K1ZYM0h6cU5BQ1JRMUk3VmVNNldhZ3A1V1JCRC85YkI4akFT?=
+ =?gb2312?B?RGNJNG53NXhQczkwU3FsaktJQ2hTZTgwZEhkRHE3a0RFeW5nYlVPdHRpUDd1?=
+ =?gb2312?B?Ymo0MjQ0eDRXdEZiQ0NubVV1cFNWMFNwUm1KcTlyV3daMlBreXdJWExtZFJT?=
+ =?gb2312?B?WHZQMWxkME44RUFYekhCYU5HNG11dHRaUzlJQkFDU0tzb2JpRWhlb2RtV1BJ?=
+ =?gb2312?B?UHkzV0tSUlVJUUE1V0tCK25iQ285S2RQZlNTWVNtTTEvMlM5MFU3clpyTTQx?=
+ =?gb2312?B?d0IrYjlwaktCUlhGTCtYSUUralhlRzd2eFcxQXUrYnlWZmdzVzhDR0lTc2d4?=
+ =?gb2312?B?M3kwUnZleHV4aGI5d0VGemlyMDdlTUVHejVSajNObUN1Rm80UmpHeEI5YWl4?=
+ =?gb2312?B?Z1VNV1BGZ1RSNWtHMWsrVHM4TmVVRWI3SnpOL0JZTFpJYnNGMTVOOEVkUytu?=
+ =?gb2312?B?c1lsTjJURmZUOVBoQ1BHQVA5b1ZRamZZdFdjWExXSUwyMDVQRElQL3VnZ283?=
+ =?gb2312?B?dk1LZGE2ZjBaY3dzcVk1aTJiUVhFZTlJWXBLblppSnlFd0RRcmNjV0N3a2hN?=
+ =?gb2312?B?OTJ1bFhxR1JzcTJCaWhOU0poclFiY0ZWcWNuRmNpcGZNemxSK2t5ZWpLRlBX?=
+ =?gb2312?B?WHBYNFJhMnlTNDlmcm12WDJpdXIyZm9CK0RsdXZKODJCVmtJVWNpUEJSbmc4?=
+ =?gb2312?B?eXZDa2JReXpzbTZsbHhLSHJFVDA4UGdOZ3laZ0Z2QldCQ1VTQ0VYYWpyMHRr?=
+ =?gb2312?B?bWNsUktoczQ0U3hkQWgyd3RBVE9Ka2xlbzNMdTV1ZkJKRDdEMDZzbEJuNjd0?=
+ =?gb2312?B?Q3VVUjRpbTg3a2I2eXF1VlV2MWd5NWlQenY1bUdoTG16dzl6aVdPdTVZWnJh?=
+ =?gb2312?B?K0ZzQ3hBVi9ickNBa3lmZmNkVC9Xc2pJdkczb0d6MHEraHdxWndjb3I5akNU?=
+ =?gb2312?B?aVNLcHpTWHRLSWNFN0JoV3ErYVpoT1l3MzUrZlo0bElJRG9xckJYZ3NxdU1i?=
+ =?gb2312?B?clFuMlBURTF2M1dNbmhJaTlXWDJ6ZldibldkUWNmS3R6QkJ6dUs1NkplYmIv?=
+ =?gb2312?B?RDh3enNqSkd2eWZCMUlibEVSWUJtYmdsWjhFUmJ6Vm96bGNCL1JUMHl6RXAx?=
+ =?gb2312?B?K1ZDYml6bEhMUFFsSmdXNlh3QmUrRmdYN2NaUWIvQWhGQ1d5Wjk0Qnd3eitw?=
+ =?gb2312?Q?1cfgIO/JJ3jKPD9F8mPjJvW4Ua/nJr4Q=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 030ab6cb-8d2f-4386-1b8d-08d8c8ed279c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2021 09:13:36.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QHaVaxmxtExQEpJ5t/FKS7lkJIcr6XgzloVo6B6jXCHwWc/I4QdMh1p3yHKVe/l74Ja6X4rcLGT6uUgJGcj20pV5wdAqen3ZGgByn8yaRVY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5136
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Frederic,
-
-Based on our offlist discussion a few hours ago.  Thoughts?
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 0b76565136d4313218cdbdb20bb344e64348fc79
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Feb 3 15:44:29 2021 -0800
-
-    torture: Provide bare-metal modprobe-based advice
-    
-    In some environments, the torture-testing use of virtualization is
-    inconvenient.  In such cases, the modprobe and rmmod commands may be
-    used to do torture testing, but significant setup is required to build,
-    boot, and modprobe a kernel so as to match a given torture-test scenario.
-    This commit therefore creates a "modprobe" file in each results directory
-    containing steps to run the corresponding scenario using the modprobe
-    command on bare metal.  For example, the contents of this file after
-    using kvm.sh to build an rcutorture TREE01 kernel, perhaps with the
-    --buildonly argument,  is as follows:
-    
-    To run this scenario on bare metal:
-    1. Update your .config based on /home/git/linux-rcu/tools/testing/selftests/rcutorture/res/2021.02.03-15.10.09/TREE01/ConfigFragment.
-    2. yes "" | make oldconfig
-    3. Build your kernel.
-    4. Boot with kernel parameters: maxcpus=8 nr_cpus=43 rcutree.gp_preinit_delay=3 rcutree.gp_init_delay=3 rcutree.gp_cleanup_delay=3 rcu_nocbs=0-1,3-7
-    5. modprobe rcutorture nocbs_nthreads=8 nocbs_toggle=1000 fwd_progress=0 onoff_interval=1000 onoff_holdoff=30 n_barrier_cbs=4 stat_interval=15 shutdown_secs=120 test_no_idle_hz=1 verbose=1
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 9d8a82c..08bcf66 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -7,15 +7,15 @@
- # Execute this in the source tree.  Do not run it as a background task
- # because qemu does not seem to like that much.
- #
--# Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args
-+# Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args_in
- #
- # qemu-args defaults to "-enable-kvm -nographic", along with arguments
- #			specifying the number of CPUs and other options
- #			generated from the underlying CPU architecture.
--# boot_args defaults to value returned by the per_version_boot_params
-+# boot_args_in defaults to value returned by the per_version_boot_params
- #			shell function.
- #
--# Anything you specify for either qemu-args or boot_args is appended to
-+# Anything you specify for either qemu-args or boot_args_in is appended to
- # the default values.  The "-smp" value is deduced from the contents of
- # the config fragment.
- #
-@@ -134,7 +134,7 @@ do
- done
- seconds=$4
- qemu_args=$5
--boot_args=$6
-+boot_args_in=$6
- 
- if test -z "$TORTURE_BUILDONLY"
- then
-@@ -144,7 +144,7 @@ fi
- # Generate -smp qemu argument.
- qemu_args="-enable-kvm -nographic $qemu_args"
- cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
--cpu_count=`configfrag_boot_cpus "$boot_args" "$config_template" "$cpu_count"`
-+cpu_count=`configfrag_boot_cpus "$boot_args_in" "$config_template" "$cpu_count"`
- if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
- then
- 	echo CPU count limited from $cpu_count to $TORTURE_ALLOTED_CPUS | tee -a $resdir/Warnings
-@@ -160,13 +160,25 @@ qemu_args="$qemu_args `identify_qemu_args "$QEMU" "$resdir/console.log"`"
- qemu_append="`identify_qemu_append "$QEMU"`"
- 
- # Pull in Kconfig-fragment boot parameters
--boot_args="`configfrag_boot_params "$boot_args" "$config_template"`"
-+boot_args="`configfrag_boot_params "$boot_args_in" "$config_template"`"
- # Generate kernel-version-specific boot parameters
- boot_args="`per_version_boot_params "$boot_args" $resdir/.config $seconds`"
- if test -n "$TORTURE_BOOT_GDB_ARG"
- then
- 	boot_args="$boot_args $TORTURE_BOOT_GDB_ARG"
- fi
-+
-+# Give bare-metal advice
-+modprobe_args="`echo $boot_args | tr -s ' ' '\012' | grep "^$TORTURE_MOD\." | sed -e "s/$TORTURE_MOD\.//g"`"
-+kboot_args="`echo $boot_args | tr -s ' ' '\012' | grep -v "^$TORTURE_MOD\."`"
-+touch $resdir/modprobe
-+echo To run this scenario on bare metal: >> $resdir/modprobe
-+echo "1." Update your .config based on $resdir/ConfigFragment. >> $resdir/modprobe
-+echo "2." 'yes "" | make oldconfig' >> $resdir/modprobe
-+echo "3." Build your kernel. >> $resdir/modprobe
-+echo "4." Boot with kernel parameters: $kboot_args >> $resdir/modprobe
-+echo "5." modprobe $TORTURE_MOD $modprobe_args >> $resdir/modprobe
-+
- echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
- echo "# seconds=$seconds" >> $resdir/qemu-cmd
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 8d3c99b..35a2132 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -29,6 +29,7 @@ PATH=${KVM}/bin:$PATH; export PATH
- TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
- TORTURE_DEFCONFIG=defconfig
- TORTURE_BOOT_IMAGE=""
-+TORTURE_BUILDONLY=
- TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG=""
- TORTURE_KCONFIG_GDB_ARG=""
-@@ -40,6 +41,7 @@ TORTURE_KMAKE_ARG=""
- TORTURE_QEMU_MEM=512
- TORTURE_SHUTDOWN_GRACE=180
- TORTURE_SUITE=rcu
-+TORTURE_MOD=rcutorture
- TORTURE_TRUST_MAKE=""
- resdir=""
- configs=""
-@@ -215,6 +217,7 @@ do
- 	--torture)
- 		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuscale\|refscale\|scf\)$' '^--'
- 		TORTURE_SUITE=$2
-+		TORTURE_MOD="`echo $TORTURE_SUITE | sed -e 's/^\(lock\|rcu\|scf\)$/\1torture/'`"
- 		shift
- 		if test "$TORTURE_SUITE" = rcuscale || test "$TORTURE_SUITE" = refscale
- 		then
-@@ -381,6 +384,7 @@ TORTURE_QEMU_GDB_ARG="$TORTURE_QEMU_GDB_ARG"; export TORTURE_QEMU_GDB_ARG
- TORTURE_KCONFIG_KASAN_ARG="$TORTURE_KCONFIG_KASAN_ARG"; export TORTURE_KCONFIG_KASAN_ARG
- TORTURE_KCONFIG_KCSAN_ARG="$TORTURE_KCONFIG_KCSAN_ARG"; export TORTURE_KCONFIG_KCSAN_ARG
- TORTURE_KMAKE_ARG="$TORTURE_KMAKE_ARG"; export TORTURE_KMAKE_ARG
-+TORTURE_MOD="$TORTURE_MOD"; export TORTURE_MOD
- TORTURE_QEMU_CMD="$TORTURE_QEMU_CMD"; export TORTURE_QEMU_CMD
- TORTURE_QEMU_INTERACTIVE="$TORTURE_QEMU_INTERACTIVE"; export TORTURE_QEMU_INTERACTIVE
- TORTURE_QEMU_MAC="$TORTURE_QEMU_MAC"; export TORTURE_QEMU_MAC
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwq3orz+yMs6IFVsYWR6
+aXNsYXUgUmV6a2kgPHVyZXpraUBnbWFpbC5jb20+Creiy83KsbzkOiAyMDIxxOoy1MIyyNUgMzo1
+NwrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiB1cmV6a2lAZ21haWwuY29tOyBwYXVsbWNrQGtl
+cm5lbC5vcmc7IGpvZWxAam9lbGZlcm5hbmRlcy5vcmc7IHJjdUB2Z2VyLmtlcm5lbC5vcmc7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcK1vfM4jogUmU6IFtQQVRDSCB2M10ga3ZmcmVlX3Jj
+dTogUmVsZWFzZSBwYWdlIGNhY2hlIHVuZGVyIG1lbW9yeSBwcmVzc3VyZQoKW1BsZWFzZSBub3Rl
+OiBUaGlzIGUtbWFpbCBpcyBmcm9tIGFuIEVYVEVSTkFMIGUtbWFpbCBhZGRyZXNzXQoKSGVsbG8s
+IFpxaWFuZy4KCj4gRnJvbTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+Cj4g
+QWRkIGZyZWUgcGVyLWNwdSBleGlzdGluZyBrcmNwJ3MgcGFnZSBjYWNoZSBvcGVyYXRpb24sIHdo
+ZW4KPiB0aGUgc3lzdGVtIGlzIHVuZGVyIG1lbW9yeSBwcmVzc3VyZS4KPgo+IFNpZ25lZC1vZmYt
+Ynk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KPiAtLS0KPiAga2VybmVsL3Jj
+dS90cmVlLmMgfCAyNiArKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMjYgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5jIGIv
+a2VybmVsL3JjdS90cmVlLmMKPiBpbmRleCBjMWFlMWU1MmY2MzguLjY0NGIwZjNjN2I5ZiAxMDA2
+NDQKPiAtLS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZS5jCj4g
+QEAgLTM1NzEsMTcgKzM1NzEsNDEgQEAgdm9pZCBrdmZyZWVfY2FsbF9yY3Uoc3RydWN0IHJjdV9o
+ZWFkICpoZWFkLCByY3VfY2FsbGJhY2tfdCBmdW5jKQo+ICB9Cj4gIEVYUE9SVF9TWU1CT0xfR1BM
+KGt2ZnJlZV9jYWxsX3JjdSk7Cj4KPiArc3RhdGljIGludCBmcmVlX2tyY19wYWdlX2NhY2hlKHN0
+cnVjdCBrZnJlZV9yY3VfY3B1ICprcmNwKQo+ICt7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFn
+czsKPiArICAgICBzdHJ1Y3QgbGxpc3Rfbm9kZSAqcGFnZV9saXN0LCAqcG9zLCAqbjsKPiArICAg
+ICBpbnQgZnJlZWQgPSAwOwo+ICsKPiArICAgICByYXdfc3Bpbl9sb2NrX2lycXNhdmUoJmtyY3At
+PmxvY2ssIGZsYWdzKTsKPiArICAgICBwYWdlX2xpc3QgPSBsbGlzdF9kZWxfYWxsKCZrcmNwLT5i
+a3ZjYWNoZSk7Cj4gKyAgICAga3JjcC0+bnJfYmt2X29ianMgPSAwOwo+ICsgICAgIHJhd19zcGlu
+X3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gKwo+ICsgICAgIGxsaXN0
+X2Zvcl9lYWNoX3NhZmUocG9zLCBuLCBwYWdlX2xpc3QpIHsKPiArICAgICAgICAgICAgIGZyZWVf
+cGFnZSgodW5zaWduZWQgbG9uZylwb3MpOwo+ICsgICAgICAgICAgICAgZnJlZWQrKzsKPiArICAg
+ICB9Cj4gKwo+ICsgICAgIHJldHVybiBmcmVlZDsKPiArfQo+ICsKPiAgc3RhdGljIHVuc2lnbmVk
+IGxvbmcKPiAga2ZyZWVfcmN1X3Nocmlua19jb3VudChzdHJ1Y3Qgc2hyaW5rZXIgKnNocmluaywg
+c3RydWN0IHNocmlua19jb250cm9sICpzYykKPiAgewo+ICAgICAgIGludCBjcHU7Cj4gICAgICAg
+dW5zaWduZWQgbG9uZyBjb3VudCA9IDA7Cj4gKyAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsKPgo+
+ICAgICAgIC8qIFNuYXBzaG90IGNvdW50IG9mIGFsbCBDUFVzICovCj4gICAgICAgZm9yX2VhY2hf
+cG9zc2libGVfY3B1KGNwdSkgewo+ICAgICAgICAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9jcHUg
+KmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+Cj4gICAgICAgICAgICAgICBjb3VudCAr
+PSBSRUFEX09OQ0Uoa3JjcC0+Y291bnQpOwo+ICsKPiArICAgICAgICAgICAgIHJhd19zcGluX2xv
+Y2tfaXJxc2F2ZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICsgICAgICAgICAgICAgY291bnQgKz0g
+a3JjcC0+bnJfYmt2X29ianM7Cj4gKyAgICAgICAgICAgICByYXdfc3Bpbl91bmxvY2tfaXJxcmVz
+dG9yZSgma3JjcC0+bG9jaywgZmxhZ3MpOwo+ICAgICAgIH0KPgo+ICAgICAgIHJldHVybiBjb3Vu
+dDsKPiBAQCAtMzU5OCw2ICszNjIyLDggQEAga2ZyZWVfcmN1X3Nocmlua19zY2FuKHN0cnVjdCBz
+aHJpbmtlciAqc2hyaW5rLCBzdHJ1Y3Qgc2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAgICAg
+ICAgc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AgPSBwZXJfY3B1X3B0cigma3JjLCBjcHUpOwo+
+Cj4gICAgICAgICAgICAgICBjb3VudCA9IGtyY3AtPmNvdW50Owo+ICsgICAgICAgICAgICAgY291
+bnQgKz0gZnJlZV9rcmNfcGFnZV9jYWNoZShrcmNwKTsKPiArCj4gICAgICAgICAgICAgICByYXdf
+c3Bpbl9sb2NrX2lycXNhdmUoJmtyY3AtPmxvY2ssIGZsYWdzKTsKPiAgICAgICAgICAgICAgIGlm
+IChrcmNwLT5tb25pdG9yX3RvZG8pCj4gICAgICAgICAgICAgICAgICAgICAgIGtmcmVlX3JjdV9k
+cmFpbl91bmxvY2soa3JjcCwgZmxhZ3MpOwo+IC0tCj4gMi4xNy4xCj4+Cj5UaGFuayB5b3UgZm9y
+IHlvdXIgcGF0Y2ghCj4KPkkgc3BlbnQgc29tZSB0aW1lIHRvIHNlZSBob3cgdGhlIHBhdGNoIGJl
+aGF2ZXMgdW5kZXIgbG93IG1lbW9yeSBjb25kaXRpb24uCj5UbyBzaW11bGF0ZSBpdCwgaSB1c2Vk
+ICJyY3VzY2FsZSIgdG9vbCB3aXRoIGJlbG93IHBhcmFtZXRlcnM6Cj4KPi4uL3JjdXRvcnR1cmUv
+YmluL2t2bS5zaCAtLXRvcnR1cmUgcmN1c2NhbGUgLS1hbGxjcHVzIC0tZHVyYXRpb24gMTAgLS1r
+Y29uZmlnID5DT05GSUdfTlJfQ1BVUz02NCBcCj4tLWJvb3RhcmdzICJyY3VzY2FsZS5rZnJlZV9y
+Y3VfdGVzdD0xIHJjdXNjYWxlLmtmcmVlX250aHJlYWRzPTE2ID5yY3VzY2FsZS5ob2xkb2ZmPTIw
+IHJjdXNjYWxlLmtmcmVlX2xvb3BzPTEwMDAwIFwKPnRvcnR1cmUuZGlzYWJsZV9vbm9mZl9hdF9i
+b290IiAtLXRydXN0LW1ha2UKPgo+NjQgQ1BVcyArIDUxMiBNQiBvZiBtZW1vcnkuIEluIGdlbmVy
+YWwsIG15IHRlc3Qgc3lzdGVtIHdhcyBydW5uaW5nIG9uIGVkZ2UKPmhpdHRpbmcgYW4gb3V0IG9m
+IG1lbW9yeSBzb21ldGltZXMsIGJ1dCBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIHN0YWJsZSBpbgo+
+cmVnYXJkcyB0byBhIHRlc3QgY29tcGxldGlvbiBhbmQgdGFrZW4gdGltZSwgc28gYm90aCB3ZXJl
+IHByZXR0eSBzb2xpZC4KPgo+WW91IGNhbiBmaW5kIGEgY29tcGFyaXNvbiBvbiBhIHBsb3QsIHRo
+YXQgY2FuIGJlIGRvd25sb2FkZWQgZm9sbG93aW5nCj5hIGxpbms6IHdnZXQgPmZ0cDovL3ZwczQx
+ODMwMS5vdmgubmV0L2luY29taW5nL3JlbGVhc2VfcGFnZV9jYWNoZV91bmRlcl9sb3dfbWVtb3J5
+LnBuZwo+Cj5JbiBzaG9ydCwgaSBzZWUgdGhhdCBhIHBhdGNoZWQgdmVyc2lvbiBjYW4gbGVhZCB0
+byBsb25nZXIgdGVzdCBjb21wbGV0aW9uLAo+d2hlcmVhcyB0aGUgZGVmYXVsdCB2YXJpYW50IGlz
+IHN0YWJsZSBvbiBhbG1vc3QgYWxsIHJ1bnMuIEFmdGVyIHNvbWUgYW5hbHlzaXMKPmFuZCBmdXJ0
+aGVyIGRpZ2dpbmcgaSBjYW1lIHRvIGNvbmNsdXNpb24gdGhhdCBhIHNocmlua2VyIGZyZWVfa3Jj
+X3BhZ2VfY2FjaGUoKQo+Y29uY3VycyB3aXRoIHJ1bl9wYWdlX2NhY2hlX3dvcmtlcihrcmNwKSBy
+dW5uaW5nIGZyb20ga3ZmcmVlX3JjdSgpIGNvbnRleHQuCj4KPmkuZS4gRHVyaW5nIHRoZSB0ZXN0
+IGEgcGFnZSBzaHJpbmtlciBpcyBwcmV0dHkgYWN0aXZlLCBiZWNhdXNlIG9mIGxvdyBtZW1vcnkK
+PmNvbmRpdGlvbi4gT3VyIGNhbGxiYWNrIGRyYWlucyBpdCB3aGVyZWFzIGt2ZnJlZV9yY3UoKSBw
+YXJ0IHJlZmlsbCBpdCByaWdodAo+YXdheSBtYWtpbmcga2luZCBvZiB2aWNpb3VzIGNpcmNsZS4K
+Pgo+U28sIGEgcnVuX3BhZ2VfY2FjaGVfd29ya2VyKCkgc2hvdWxkIGJlIGJhY2tvZmYgZm9yIHNv
+bWUgdGltZSB3aGVuIGEgc3lzdGVtCj5ydW5zIGludG8gYSBsb3cgbWVtb3J5IGNvbmRpdGlvbiBv
+ciBoaWdoIHByZXNzdXJlOgo+Cj5kaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJu
+ZWwvcmN1L3RyZWUuYwo+aW5kZXggNzA3N2Q3M2ZjYjUzLi40NDY3MjNiOTY0NmIgMTAwNjQ0Cj4t
+LS0gYS9rZXJuZWwvcmN1L3RyZWUuYwo+KysrIGIva2VybmVsL3JjdS90cmVlLmMKPkBAIC0zMTYz
+LDcgKzMxNjMsNyBAQCBzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSB7Cj4gICAgICAgIGJvb2wgaW5pdGlh
+bGl6ZWQ7Cj4gICAgICAgIGludCBjb3VudDsKPgo+LSAgICAgICBzdHJ1Y3Qgd29ya19zdHJ1Y3Qg
+cGFnZV9jYWNoZV93b3JrOwo+KyAgICAgICBzdHJ1Y3QgZGVsYXllZF93b3JrIHBhZ2VfY2FjaGVf
+d29yazsKPiAgICAgICAgYXRvbWljX3Qgd29ya19pbl9wcm9ncmVzczsKPiAgICAgICAgc3RydWN0
+IGhydGltZXIgaHJ0aW1lcjsKPgo+QEAgLTM0MTksNyArMzQxOSw3IEBAIHNjaGVkdWxlX3BhZ2Vf
+d29ya19mbihzdHJ1Y3QgaHJ0aW1lciAqdCkKPiAgICAgICAgc3RydWN0IGtmcmVlX3JjdV9jcHUg
+KmtyY3AgPQo+ICAgICAgICAgICAgICAgIGNvbnRhaW5lcl9vZih0LCBzdHJ1Y3Qga2ZyZWVfcmN1
+X2NwdSwgaHJ0aW1lcik7Cj4KPi0gICAgICAgcXVldWVfd29yayhzeXN0ZW1faGlnaHByaV93cSwg
+JmtyY3AtPnBhZ2VfY2FjaGVfd29yayk7Cj4rICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhzeXN0
+ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgMCk7Cj4gICAgICAgIHJldHVy
+biBIUlRJTUVSX05PUkVTVEFSVDsKPiB9Cj4KPkBAIC0zNDI4LDcgKzM0MjgsNyBAQCBzdGF0aWMg
+dm9pZCBmaWxsX3BhZ2VfY2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4gICAg
+ICAgIHN0cnVjdCBrdmZyZWVfcmN1X2J1bGtfZGF0YSAqYm5vZGU7Cj4gICAgICAgIHN0cnVjdCBr
+ZnJlZV9yY3VfY3B1ICprcmNwID0KPiAgICAgICAgICAgICAgICBjb250YWluZXJfb2Yod29yaywg
+c3RydWN0IGtmcmVlX3JjdV9jcHUsCj4tICAgICAgICAgICAgICAgICAgICAgICBwYWdlX2NhY2hl
+X3dvcmspOwo+KyAgICAgICAgICAgICAgICAgICAgICAgcGFnZV9jYWNoZV93b3JrLndvcmspOwo+
+ICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+ICAgICAgICBib29sIHB1c2hlZDsKPiAgICAg
+ICAgaW50IGk7Cj5AQCAtMzQ1MiwxNSArMzQ1MiwyMiBAQCBzdGF0aWMgdm9pZCBmaWxsX3BhZ2Vf
+Y2FjaGVfZnVuYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgPip3b3JrKQo+ICAgICAgICBhdG9taWNfc2V0
+KCZrcmNwLT53b3JrX2luX3Byb2dyZXNzLCAwKTsKPiB9Cj4KPitzdGF0aWMgYm9vbCBiYWNrb2Zm
+X3BhZ2VfY2FjaGVfZmlsbDsKPisKPiBzdGF0aWMgdm9pZAo+IHJ1bl9wYWdlX2NhY2hlX3dvcmtl
+cihzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAqa3JjcCkKPiB7Cj4gICAgICAgIGlmIChyY3Vfc2NoZWR1
+bGVyX2FjdGl2ZSA9PSBSQ1VfU0NIRURVTEVSX1JVTk5JTkcgJiYKPiAgICAgICAgICAgICAgICAg
+ICAgICAgICFhdG9taWNfeGNoZygma3JjcC0+d29ya19pbl9wcm9ncmVzcywgMSkpIHsKPi0gICAg
+ICAgICAgICAgICBocnRpbWVyX2luaXQoJmtyY3AtPmhydGltZXIsIENMT0NLX01PTk9UT05JQywK
+Pi0gICAgICAgICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+LSAgICAgICAgICAg
+ICAgIGtyY3AtPmhydGltZXIuZnVuY3Rpb24gPSBzY2hlZHVsZV9wYWdlX3dvcmtfZm47Cj4tICAg
+ICAgICAgICAgICAgaHJ0aW1lcl9zdGFydCgma3JjcC0+aHJ0aW1lciwgMCwgSFJUSU1FUl9NT0RF
+X1JFTCk7Cj4rICAgICAgICAgICAgICAgaWYgKFJFQURfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVf
+ZmlsbCkpIHsKPisgICAgICAgICAgICAgICAgICAgICAgIHF1ZXVlX2RlbGF5ZWRfd29yayhzeXN0
+ZW1faGlnaHByaV93cSwgJmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgPkhaKTsKPisgICAgICAgICAg
+ICAgICAgICAgICAgIFdSSVRFX09OQ0UoYmFja29mZl9wYWdlX2NhY2hlX2ZpbGwsIGZhbHNlKTsK
+PisgICAgICAgICAgICAgICB9IGVsc2Ugewo+KyAgICAgICAgICAgICAgICAgICAgICAgaHJ0aW1l
+cl9pbml0KCZrcmNwLT5ocnRpbWVyLCBDTE9DS19NT05PVE9OSUMsCj4rICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIEhSVElNRVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgICAgICAg
+ICAga3JjcC0+aHJ0aW1lci5mdW5jdGlvbiA9IHNjaGVkdWxlX3BhZ2Vfd29ya19mbjsKPisgICAg
+ICAgICAgICAgICAgICAgICAgIGhydGltZXJfc3RhcnQoJmtyY3AtPmhydGltZXIsIDAsIEhSVElN
+RVJfTU9ERV9SRUwpOwo+KyAgICAgICAgICAgICAgIH0KPiAgICAgICAgfQo+IH0KPgo+QEAgLTM2
+NDQsNiArMzY1MSw4IEBAIGtmcmVlX3JjdV9zaHJpbmtfY291bnQoc3RydWN0IHNocmlua2VyICpz
+aHJpbmssIHN0cnVjdCA+c2hyaW5rX2NvbnRyb2wgKnNjKQo+ICAgICAgICAgICAgICAgIHJhd19z
+cGluX3VubG9ja19pcnFyZXN0b3JlKCZrcmNwLT5sb2NrLCBmbGFncyk7Cj4gICAgICAgIH0KPgo+
+KyAgICAgICAvLyBMb3cgbWVtb3J5IGNvbmRpdGlvbiwgbGltaXQgYSBwYWdlIGNhY2hlIHdvcmtl
+ciBhY3Rpdml0eS4KPisgICAgICAgV1JJVEVfT05DRShiYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCwg
+dHJ1ZSk7Cj4gICAgICAgIHJldHVybiBjb3VudDsKPiB9Cgo+QEAgLTQ2MzQsNyArNDY0Myw3IEBA
+IHN0YXRpYyB2b2lkIF9faW5pdCBrZnJlZV9yY3VfYmF0Y2hfaW5pdCh2b2lkKQo+ICAgICAgICAg
+ICAgICAgIH0KPgo+ICAgICAgICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5tb25p
+dG9yX3dvcmssIGtmcmVlX3JjdV9tb25pdG9yKTsKPi0gICAgICAgICAgICAgICBJTklUX1dPUkso
+JmtyY3AtPnBhZ2VfY2FjaGVfd29yaywgZmlsbF9wYWdlX2NhY2hlX2Z1bmMpOwo+KyAgICAgICAg
+ICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZrcmNwLT5wYWdlX2NhY2hlX3dvcmssIGZpbGxfcGFn
+ZV9jYWNoZV9mdW5jKTsKPiAgICAgICAgICAgICAgICBrcmNwLT5pbml0aWFsaXplZCA9IHRydWU7
+Cj4gICAgICAgIH0KPiAgICAgICAgaWYgKHJlZ2lzdGVyX3Nocmlua2VyKCZrZnJlZV9yY3Vfc2hy
+aW5rZXIpKQo+Cj5iZWxvdyBwYXRjaCBmaXhlcyBpdC4gV2Ugc2hvdWxkIGJhY2tvZmYgdGhlIHBh
+Z2UgZmlsbCB3b3JrZXIga2VlcGluZyBpdCBlbXB0eQo+dW50aWwgdGhlIHNpdHVhdGlvbiB3aXRo
+IG1lbW9yeSBjb25zdW1wdGlvbiBpcyBub3JtYWxpemVkLgoKICBNYXliZSBjYW4gY2FuY2VsIHRo
+ZSB0aW1lciBhbmQgY2FuY2VsIHdvcmsgaW4gdGhlIHJjdV9zaHJpbmtfY291bnQgZnVuY3Rpb24s
+IGFmdGVyCiAgdGhlIHJjdV9zaHJpbmtfc2NhbiBmdW5jdGlvbiBpcyBleGVjdXRlZCBhbmQgcmVj
+b3ZlciB0aW1lci4KICBXaGF0IGRvIHlvdSB0aGluaz8KCiAgCgo+Cj5BbnkgdGhvdWdodHMgaWRl
+YXM/Cj4KPi0tCj5WbGFkIFJlemtpCg==
