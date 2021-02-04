@@ -2,66 +2,41 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD119C433DB
-	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 14:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E6B1C433E0
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 21:49:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAC8464F3F
-	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 14:16:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0DAFD64E7B
+	for <rcu@archiver.kernel.org>; Thu,  4 Feb 2021 21:49:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236540AbhBDOPq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 4 Feb 2021 09:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236545AbhBDOPB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 4 Feb 2021 09:15:01 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A761AC061573;
-        Thu,  4 Feb 2021 06:14:17 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id f1so4752769lfu.3;
-        Thu, 04 Feb 2021 06:14:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Wg+ElN1SsjQb5Njla5L8ZnJEjESAl6ih4UeEPF1Z9tU=;
-        b=BdCTgD3C+0xb7yyEZCCjMucu0N4eRXHE+cuta0noSBf+R6i8hu+G3Kvbj3ighz9nkb
-         PnoNNsKaMOns0JP13/giJuC7L8IiFNbhA0L50kdfF0zyXANd1Qb4seMmdpgh2zmUYai/
-         /mYVNjae1wlZa69KXxwfrIeeSRuDZKMdtIXl3lSPg/pE/NF9/Tq7/9+Kvl0YHnlJvNTh
-         iM+jdmDJnvtBpo5agYdbwpSPF+ItnvoPzOOuArdeL6H/xzYHpNpUzTAvGA0DjBXR65Mj
-         ff+jc4IK3v3j+WQ93T7A1G1TfeBA99rLCnMdW2hbT2lWAq1g7pUB7c/MXAk1/32xqdS8
-         NWOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Wg+ElN1SsjQb5Njla5L8ZnJEjESAl6ih4UeEPF1Z9tU=;
-        b=GNfCYUMsfoSeGc4s1I+saWAIklTs+qWFQWrGKis+/abATCiGHSBhEbAMGgEzXNMPX9
-         pSlQZieCuYQ910CJyPX3LiHyfarEGDcMbm9D+n+t5FPmHz21tG/4DYLXlIm3pWu+uZw0
-         eLQiQ2vJ9rWV/lAvHe7FQ9Q64K3A2D0zPNgthUWm3wlBiOQ0mGciu3WFtfpBbT/k4Gtq
-         cP8/mFRIX75y8I5j5O+MdDFwLfm/uKrOtsPO9Q9PNl6HmwtnLkWk9iw8CATYuJhCPJIn
-         bSzyc3dbX5qipwDv6gvFwGkazQ5SoWptXrBCFQ6Yh3EQGfTaHtaZMPvN+crrHtr1y8IK
-         rNHQ==
-X-Gm-Message-State: AOAM530aE1W2PpqlY2P3XJUn86uvCQxudOS9Bn0UcOhTrOR7oaxyXqN0
-        p0PIT4ctX4215n5499AoqPbeSXLHRc0VgV5E
-X-Google-Smtp-Source: ABdhPJwvEk8HFascYHzViUNb2/VDydniueW+T3yvopQ+QmZDHX++QDZ1sV4CMyzO9uaQt+2ZYNsjEg==
-X-Received: by 2002:ac2:4544:: with SMTP id j4mr4667597lfm.311.1612448055997;
-        Thu, 04 Feb 2021 06:14:15 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id w23sm618986lfe.84.2021.02.04.06.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 06:14:15 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 4 Feb 2021 15:14:13 +0100
-To:     "Paul E . McKenney" <paulmck@kernel.org>
+        id S229623AbhBDVtN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 Feb 2021 16:49:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhBDVr3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:47:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D4D64F8C;
+        Thu,  4 Feb 2021 21:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612475209;
+        bh=SBBN0EsctZYkzPy2hiXWJir3lTd8QZohp23sNGUKEjQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Jb1blzZCHPuhqarWcRTAAmXfNb3gD2CqG3jmDVVgXmXyj4S/QGq4mJJTtBfC3RN45
+         CuBP4b07mVWLT5FUvuYTFrWZe//nsxbeVia7dNlt7ABVBhsdXiWDH2lRT4/UGzxyo/
+         MSvGpKuNZwZPCkSg0Ckmixv5MFtKvKMk7LmhZm1LgTfky/lLzAqu6/LDIU7SOp/Lyd
+         fcNRRZsuV0VCCU9ONMvjR/2SjvgxKBKwIHE84k8j7kwe3d2P/ZVg47FYdpsp28Ax+s
+         tJ7+HIhgDhQGK/oLSXcOag//iHXjVTMoJvSta34sM12lhpL94hcLQNSkV8AAlJC7WN
+         4eQRLRgFg2F6Q==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 982AA3522F5F; Thu,  4 Feb 2021 13:46:48 -0800 (PST)
+Date:   Thu, 4 Feb 2021 13:46:48 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -75,25 +50,46 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [PATCH 1/2] rcuscale: add kfree_rcu() single-argument scale test
-Message-ID: <20210204141413.GB1904@pc638.lan>
+Message-ID: <20210204214648.GL2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 References: <20210129200505.5273-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210129200505.5273-1-urezki@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Paul.
-
+On Fri, Jan 29, 2021 at 09:05:04PM +0100, Uladzislau Rezki (Sony) wrote:
 > To stress and test a single argument of kfree_rcu() call, we
 > should to have a special coverage for it. We used to have it
 > in the test-suite related to vmalloc stressing. The reason is
 > the rcuscale is a correct place for RCU related things.
 > 
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+
+This is a great addition, but it would be even better if there was
+a way to say "test both in one run".  One way to do this is to have
+torture_param() variables for both kfree_rcu_test_single and (say)
+kfree_rcu_test_double, both bool and both initialized to false.  If both
+have the same value (false or true) both are tested, otherwise only
+the one with value true is tested.  The value of this is that it allows
+testing of both options with one test.
+
+See the gp_cond, gp_exp, gp_normal, gp_poll, and gp_sync torture_param()
+variables in kernel/rcu/rcutorture.c and how they are handled in
+rcu_torture_write_types() for one way to do this.
+
+If you wanted to vary the intensity of the testing (but I don't see why
+this would be useful), the various weight_* torture_param() variables
+are dealt with by kernel/scftorture.c in scf_torture_init().
+
+Thoughts?
+
+							Thanx, Paul
+
 > ---
 >  kernel/rcu/rcuscale.c | 7 ++++++-
 >  1 file changed, 6 insertions(+), 1 deletion(-)
@@ -128,8 +124,4 @@ Hello, Paul.
 >  		cond_resched();
 > -- 
 > 2.20.1
->
-What is about this change? Do you have any concern or comments?
-
---
-Vlad Rezki
+> 
