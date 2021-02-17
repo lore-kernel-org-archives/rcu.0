@@ -2,231 +2,201 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A1CAC433E6
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:18:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA6A4C433E0
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:19:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3CE8764DFF
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:18:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72D5F64DFF
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:19:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbhBQSSW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 17 Feb 2021 13:18:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
+        id S234335AbhBQSSo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 17 Feb 2021 13:18:44 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:42189 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233242AbhBQSST (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:18:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A015564DF0;
-        Wed, 17 Feb 2021 18:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613585858;
-        bh=Sicwol4jzvim9fUtubKnzNeNUGfyQyP2qrAg+YTtXVs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aW8QUi892EbYpMtXDVE1nQgFiWGcw6/TvWBoXW8t4I1zvRpmdPDRtFSVgR/gk0J3Z
-         jYY3cOkC8Q7rdCKwEICoZ1LkIW83hMZNYeC+NUoHEs2YQRLAFCUV3esbJZsb3zZbyF
-         NLVbKbP3F/8lgLT/B7JDPtKM8MfQcOq7AGq57clHB70uqe/qg4wfT2hA+UigU0zI++
-         +tpaKxMa3LFFaaQdbSKy06Q+bN6YAWmcTCagH9t5C0TtSyzvcwukOLLDflhTxYn3uD
-         UMhccblrc/vTtJ2H7fTy7Ev3yl4bLuL/qwC2DCTmxZJMww7tTRwD28yGbaZlcvGQKQ
-         976AjxjvAf1wg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 47CCE3522611; Wed, 17 Feb 2021 10:17:38 -0800 (PST)
-Date:   Wed, 17 Feb 2021 10:17:38 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        rostedt@goodmis.org
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20210217181738.GE2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
- <20210212211207.GA2046@pc638.lan>
- <20210212234851.GP2743@paulmck-ThinkPad-P72>
- <20210213003709.GA27846@paulmck-ThinkPad-P72>
- <20210213004328.GB27846@paulmck-ThinkPad-P72>
- <20210213113030.GA1878@pc638.lan>
- <20210213164554.GS2743@paulmck-ThinkPad-P72>
- <20210215112826.xc6b4se6ujwvrwco@linutronix.de>
- <20210216173003.GX2743@paulmck-ThinkPad-P72>
- <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
+        id S233242AbhBQSSk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:18:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613585899; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=aDgfF1QCcG8lBfwmf6xXAw4WENFG+VP+X0RAKWqaZgg=; b=JYX4XPglsqfuRXz8YFT0Fk51SX6wPv5S6Su2dNqZ87X2ctyGXauGoO/ULDgIiZwDF+bWgm0C
+ tmZ5kqIJ2hUEZN7gFigxHty0042JFWuE+715HcfSd70c2Rf0U0rdQbQG+B2ul3m7hr9D/Wq6
+ QgETyhRZmfzlKMIlP0avsVPznBc=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 602d5dd03af8a93304a21c47 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 18:17:52
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 86319C433C6; Wed, 17 Feb 2021 18:17:51 +0000 (UTC)
+Received: from [192.168.0.100] (unknown [124.123.173.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 745B0C433CA;
+        Wed, 17 Feb 2021 18:17:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 745B0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] rcu/tree: Add a trace event for RCU stall warnings
+To:     Sangmoon Kim <sangmoon.kim@samsung.com>, paulmck@kernel.org
+Cc:     jiangshanlai@gmail.com, joel@joelfernandes.org,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        rcu@vger.kernel.org, rostedt@goodmis.org
+References: <20210216175015.GZ2743@paulmck-ThinkPad-P72>
+ <CGME20210217135813epcas1p2b3bd79ca06ac847472b048b889100978@epcas1p2.samsung.com>
+ <20210217134947.19055-1-sangmoon.kim@samsung.com>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <bf80e296-14bf-6f36-8952-416829d30e5a@codeaurora.org>
+Date:   Wed, 17 Feb 2021 23:47:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210217134947.19055-1-sangmoon.kim@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 11:47:59PM +0900, Masami Hiramatsu wrote:
-> On Tue, 16 Feb 2021 09:30:03 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > On Mon, Feb 15, 2021 at 12:28:26PM +0100, Sebastian Andrzej Siewior wrote:
-> > > On 2021-02-13 08:45:54 [-0800], Paul E. McKenney wrote:
-> > > > Glad you like it!  But let's see which (if any) of these patches solves
-> > > > the problem for Sebastian.
-> > > 
-> > > Looking at that, is there any reason for doing this that can not be
-> > > solved by moving the self-test a little later? Maybe once we reached at
-> > > least SYSTEM_SCHEDULING?
-> > 
-> > One problem is that ksoftirqd and the kprobes use are early_initcall(),
-> > so we cannot count on ksoftirqd being spawned when kprobes first uses
-> > synchronize_rcu_tasks().  Moving the selftest later won't fix this
-> > problem, but rather just paper it over.
-> > 
-> > > This happens now even before lockdep is up or the console is registered.
-> > > So if something bad happens, you end up with a blank terminal.
-> > 
-> > I was getting a splat, but I could easily believe that there are
-> > configurations where the hang is totally silent.  In other words, I do
-> > agree that this needs a proper fix.  All we need do is work out an
-> > agreeable value of "proper".  ;-)
-> > 
-> > > There is nothing else that early in the boot process that requires
-> > > working softirq. The only exception to this is wait_task_inactive()
-> > > which is used while starting a new thread (including the ksoftirqd)
-> > > which is why it was moved to schedule_hrtimeout().
-> > 
-> > Moving kprobes initialization to early_initcall() [1] means that there
-> > can be a call to synchronize_rcu_tasks() before the current spawning of
-> > ksoftirqd.  Because synchronize_rcu_tasks() needs timers to work, it needs
-> > softirq to work.  I know two straightforward ways to make that happen:
-> > 
-> > 1.	Spawn ksoftirqd earlier.
-> > 
-> > 2.	Suppress attempts to awaken ksoftirqd before it exists,
-> > 	forcing all ksoftirq execution on the back of interrupts.
-> > 
-> > Uladzislau and I each produced patches for #1, and I produced a patch
-> > for #2.
-> > 
-> > The only other option I know of is to push the call to init_kprobes()
-> > later in the boot sequence, perhaps to its original subsys_initcall(),
-> > or maybe only as late as core_initcall().  I added Masami and Steve on
-> > CC for their thoughts on this.
-> > 
-> > Is there some other proper fix that I am missing?
-> 
-> Oh, I missed that the synchronize_rcu_tasks() will be involved the kprobes
-> in early stage. Does the problem only exist in the synchronize_rcu_tasks()
-> instead of synchronize_rcu()? If so I can just stop optimizer in early stage
-> because I just want to enable kprobes in early stage, but not optprobes.
-> 
-> Does the following patch help?
+Hi Sangmoon,
 
-It does look to me like it would!  I clearly should have asked you about
-this a couple of months ago.  ;-)
+On 2/17/2021 7:19 PM, Sangmoon Kim wrote:
+>> -----Original Message-----
+>> From: Paul E. McKenney <paulmck@kernel.org>
+>> Sent: Wednesday, February 17, 2021 2:50 AM
+>>
+>> On Mon, Feb 15, 2021 at 05:53:25PM +0900, Sangmoon Kim wrote:
+>>> The event allows us to trace the RCU stall when
+>>> sysctl_panic_on_rcu_stall is disabled.
+>>>
+>>> The first parameter is the name of RCU flavour like other trace
+>>> events. The second one shows us which function detected stalls.
+>>>
+>>> The RCU stall is mainly caused by external factors such as interrupt
+>>> handling or task scheduling or something else. Therefore, this event
+>>> uses TRACE_EVENT macro, not dedicated one, so that someone interested
+>>> in the RCU stall can use it without CONFIG_RCU_TRACE.
+>>>
+>>> Signed-off-by: Sangmoon Kim <sangmoon.kim@samsung.com>
+>>
+>> The patch looks plausible, but I have to ask...  Why not instead just
+>> get the existing information out of the console log?
+>>
+>> 							Thanx, Paul
+> 
+> This can provide a trigger point for the RCU stall warning.
+> If a module in the kernel wants to trace the stall for debugging purposes,
+> there is a cost of continuing to parse the console log.
+> This tracepoint is useful because it is hard to pay these costs
+> especially on mobile devices.
+> 
+> Thanks,
+> Sangmoon
+> 
 
-The proof of the pudding would be whether the powerpc guys can apply
-this to v5.10-rc7 and have their kernel come up without hanging at boot.
+So, the idea here is to register to these trace events from kernel 
+module and use that for debugging? Just curious what debugging action
+module does on these traces, as they have limited information
+about the stall, compared to console stall warnings, which gives a
+much more detailed information about stall.
 
-							Thanx, Paul
 
-> >From e5fafcda3ff918cd52619f795a3f22fb95c72b11 Mon Sep 17 00:00:00 2001
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> Date: Wed, 17 Feb 2021 23:35:20 +0900
-> Subject: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Thanks
+Neeraj
+
+>>
+>>> ---
+>>>   include/trace/events/rcu.h | 28 ++++++++++++++++++++++++++++
+>>>   kernel/rcu/tree_exp.h      |  2 ++
+>>>   kernel/rcu/tree_stall.h    |  2 ++
+>>>   3 files changed, 32 insertions(+)
+>>>
+>>> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+>>> index 155b5cb43cfd..8476f3161bd0 100644
+>>> --- a/include/trace/events/rcu.h
+>>> +++ b/include/trace/events/rcu.h
+>>> @@ -432,6 +432,34 @@ TRACE_EVENT_RCU(rcu_fqs,
+>>>   		  __entry->cpu, __entry->qsevent)
+>>>   );
+>>>
+>>> +/*
+>>> + * Tracepoint for RCU stall events. Takes a string identifying the RCU flavor
+>>> + * and a string identifying which function detected the RCU stall as follows:
+>>> + *
+>>> + *	"StallDetected": Scheduler-tick detects other CPU's stalls.
+>>> + *	"SelfDetected": Scheduler-tick detects a current CPU's stall.
+>>> + *	"ExpeditedStall": Expedited grace period detects stalls.
+>>> + */
+>>> +TRACE_EVENT(rcu_stall_warning,
+>>> +
+>>> +	TP_PROTO(const char *rcuname, const char *msg),
+>>> +
+>>> +	TP_ARGS(rcuname, msg),
+>>> +
+>>> +	TP_STRUCT__entry(
+>>> +		__field(const char *, rcuname)
+>>> +		__field(const char *, msg)
+>>> +	),
+>>> +
+>>> +	TP_fast_assign(
+>>> +		__entry->rcuname = rcuname;
+>>> +		__entry->msg = msg;
+>>> +	),
+>>> +
+>>> +	TP_printk("%s %s",
+>>> +		  __entry->rcuname, __entry->msg)
+>>> +);
+>>> +
+>>>   #endif /* #if defined(CONFIG_TREE_RCU) */
+>>>
+>>>   /*
+>>> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+>>> index 8760b6ead770..c16618284cb2 100644
+>>> --- a/kernel/rcu/tree_exp.h
+>>> +++ b/kernel/rcu/tree_exp.h
+>>> @@ -566,6 +566,8 @@ static void synchronize_rcu_expedited_wait(void)
+>>>   				dump_cpu_task(cpu);
+>>>   			}
+>>>   		}
+>>> +		trace_rcu_stall_warning(rcu_state.name, TPS("ExpeditedStall"));
+>>> +
+>>>   		jiffies_stall = 3 * rcu_jiffies_till_stall_check() + 3;
+>>>   	}
+>>>   }
+>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>>> index 70d48c52fabc..e93df4fac5b1 100644
+>>> --- a/kernel/rcu/tree_stall.h
+>>> +++ b/kernel/rcu/tree_stall.h
+>>> @@ -531,6 +531,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>>>
+>>>   	rcu_check_gp_kthread_starvation();
+>>>
+>>> +	trace_rcu_stall_warning(rcu_state.name, TPS("StallDetected"));
+>>>   	panic_on_rcu_stall();
+>>>
+>>>   	rcu_force_quiescent_state();  /* Kick them all. */
+>>> @@ -575,6 +576,7 @@ static void print_cpu_stall(unsigned long gps)
+>>>   			   jiffies + 3 * rcu_jiffies_till_stall_check() + 3);
+>>>   	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>>
+>>> +	trace_rcu_stall_warning(rcu_state.name, TPS("SelfDetected"));
+>>>   	panic_on_rcu_stall();
+>>>
+>>>   	/*
+>>> --
+>>> 2.17.1
+>>>
 > 
-> Since the kprobes jump optimization involves synchronize_rcu_tasks()
-> which depends on the ksoftirqd, that can not be enabled at the
-> early_initcall() boot stage. So this makes the kprobe optimization
-> disabled in the early_initcall() and enables it in subsys_initcall().
-> 
-> Note that non-optimized kprobes is still available after
-> early_initcall(). Only jump optimization is delayed.
-> 
-> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  kernel/kprobes.c | 31 +++++++++++++++++++++----------
->  1 file changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index d5a3eb74a657..779d8322e307 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -861,7 +861,6 @@ static void try_to_optimize_kprobe(struct kprobe *p)
->  	cpus_read_unlock();
->  }
->  
-> -#ifdef CONFIG_SYSCTL
->  static void optimize_all_kprobes(void)
->  {
->  	struct hlist_head *head;
-> @@ -887,6 +886,7 @@ static void optimize_all_kprobes(void)
->  	mutex_unlock(&kprobe_mutex);
->  }
->  
-> +#ifdef CONFIG_SYSCTL
->  static void unoptimize_all_kprobes(void)
->  {
->  	struct hlist_head *head;
-> @@ -2497,18 +2497,14 @@ static int __init init_kprobes(void)
->  		}
->  	}
->  
-> -#if defined(CONFIG_OPTPROBES)
-> -#if defined(__ARCH_WANT_KPROBES_INSN_SLOT)
-> -	/* Init kprobe_optinsn_slots */
-> -	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
-> -#endif
-> -	/* By default, kprobes can be optimized */
-> -	kprobes_allow_optimization = true;
-> -#endif
-> -
->  	/* By default, kprobes are armed */
->  	kprobes_all_disarmed = false;
->  
-> +#if defined(CONFIG_OPTPROBES) && defined(__ARCH_WANT_KPROBES_INSN_SLOT)
-> +	/* Init kprobe_optinsn_slots for allocation */
-> +	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
-> +#endif
-> +
->  	err = arch_init_kprobes();
->  	if (!err)
->  		err = register_die_notifier(&kprobe_exceptions_nb);
-> @@ -2523,6 +2519,21 @@ static int __init init_kprobes(void)
->  }
->  early_initcall(init_kprobes);
->  
-> +#if defined(CONFIG_OPTPROBES)
-> +static int __init init_optprobes(void)
-> +{
-> +	/*
-> +	 * Enable kprobe optimization - this kicks the optimizer which
-> +	 * depends on synchronize_rcu_tasks() and ksoftirqd, that is
-> +	 * not spawned in early initcall. So delay the optimization.
-> +	 */
-> +	optimize_all_kprobes();
-> +
-> +	return 0;
-> +}
-> +subsys_initcall(init_optprobes);
-> +#endif
-> +
->  #ifdef CONFIG_DEBUG_FS
->  static void report_probe(struct seq_file *pi, struct kprobe *p,
->  		const char *sym, int offset, char *modname, struct kprobe *pp)
-> -- 
-> 2.25.1
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
