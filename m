@@ -2,151 +2,132 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F20C433DB
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E01C433DB
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 19:20:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5083D64E45
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 18:52:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0938A64E63
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 19:20:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhBQSwI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 17 Feb 2021 13:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhBQSwB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:52:01 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DA5C061574;
-        Wed, 17 Feb 2021 10:51:21 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id q14so17630221ljp.4;
-        Wed, 17 Feb 2021 10:51:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qNl/QvFb1aBjzZT4Mef7KFY1jCmIF5ZxQfLBJXaeMTo=;
-        b=JCjIPzESlzSBE9Ct9RsDb6b/07AjO1BZO9mRPFVS4JiX5Z6J9Mlof/wUAGlQMPnYlQ
-         0+BmtY9vICXf07lSAIesbhwT92A//gTK9V/ZJ/1w1q/tNiAIPZWqvLMpWP00RO5T+Xq0
-         Cw15+12SAJyBP87jVf9ksfIdCP42sPRwONecvMKjkWHfA/KqUS4TWDOF5BgNKgdBcxvH
-         Ir6vNrZ/jpaa2gMj95zofLItVEEv12oapqlglvfxg7peGPfXAfiuGxSFweBZg5icDdxX
-         Cke6FCIhEULTHxwtB4V3ZJHNctk49M8lF/7T52GTZFRaZQ63UFQelQ5oj/Po9PZINU/m
-         5wxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qNl/QvFb1aBjzZT4Mef7KFY1jCmIF5ZxQfLBJXaeMTo=;
-        b=LqZ02jW+kLH/HGwimLXVJ0h1z4DN2XPQ4JsMh+odCEBv4Y524EgA6lcksbJ625i/yT
-         pmUyNs8KMIqrcCaJBklfRikiJ1Y5mgo7zHe2tuZeQHYL8XD3sQDExm9CBpFuDcZUOjhq
-         RkfVl87CZQT9nDl6fE+XHIH+x1mKTKLO5UNod/mn/GF7OFtvVIwiHRP5H2sMC6i2ya8I
-         /7W6J+ziyDLoDO7YY2GPEjOKBwsVdOWBu93Q04a7kXWumf91DCp9be+zaB2ahy9/FCHp
-         HOK4IJi0qs4n1xp+qE2h9RxbGkMbfxdUkpvleBCcOL/MvmvM/sJzTz6meOx8Gm0Hv1yz
-         eC8A==
-X-Gm-Message-State: AOAM531uCI+Ea2ZtI6TpaAzF/G5wDL4YPc2auZcLJWf6g9+h9sXDT1g+
-        bTApg3mE4S88JGsgf9/zs2n9uuXbv/5ddYMO
-X-Google-Smtp-Source: ABdhPJz8WOXYQS5slevTx00POA0LOrSNNVvd6V9RYYEK04P2mYhT5uMDvjnaQ2E7dyaonoT7kY+bAQ==
-X-Received: by 2002:a05:651c:2108:: with SMTP id a8mr343520ljq.329.1613587879804;
-        Wed, 17 Feb 2021 10:51:19 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m14sm329707lfo.277.2021.02.17.10.51.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 10:51:19 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale test
-Date:   Wed, 17 Feb 2021 19:51:10 +0100
-Message-Id: <20210217185110.2099-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S232740AbhBQTTu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 17 Feb 2021 14:19:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232691AbhBQTTs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:19:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C874A64E62;
+        Wed, 17 Feb 2021 19:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613589547;
+        bh=pSG0iuIL31xGXVd9szFmnqpW+CJUWaIRfjO6bTtnfsI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uHYxUrvOUASzSxS2gDGR33EEKxQi8tL6F057S9vZjqehl3d5NgFwW+nfva+80dWfQ
+         z90GzJM6i1iWU9GpjDuW89CJ9mHfflZylFucLOGpl2eLqi76S6ea1x7xCdAIDY2X7r
+         KEZw2qqilb83+clyqJ2Z/toOCBsCaecvARNYzVYjfQ1XYkJ/OjAPiXdEwhqc+1rv3k
+         h3MBg/atXxiojVvPgivQIPGuiCP5eRwqurplyOBWDqy/L+SiLMmxdgUdDyMptCM1GV
+         8h1yBD4LqL59GFcpqrovl1QtFk0ATWGX0CTCTsOBPdmeD++J5zKrva+YOHlwfSt9oY
+         eOM297eDQ33sg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8C87F3522611; Wed, 17 Feb 2021 11:19:07 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:19:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
+Message-ID: <20210217191907.GH2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
+ <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
+ <20210217155447.GC2743@paulmck-ThinkPad-P72>
+ <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-To stress and test a single argument of kfree_rcu() call, we
-should to have a special coverage for it. We used to have it
-in the test-suite related to vmalloc stressing. The reason is
-the rcuscale is a correct place for RCU related things.
+On Wed, Feb 17, 2021 at 07:01:59PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-17 07:54:47 [-0800], Paul E. McKenney wrote:
+> > > I though boosting is accomplished by acquiring a rt_mutex in a
+> > > rcu_read() section. Do you have some code to point me to, to see how a
+> > > timer is involved here? Or is it the timer saying that *now* boosting is
+> > > needed.
+> > 
+> > Yes, this last, which is in the grace-period kthread code, for example,
+> > in rcu_gp_fqs_loop().
+> >
+> > > If your hrtimer is a "normal" hrtimer then it will be served by
+> > > ksoftirqd, too. You would additionally need one of the
+> > > HRTIMER_MODE_*_HARD to make it work.
+> > 
+> > Good to know.  Anything I should worry about for this mode?
+> 
+> Well. It is always hardirq. No spinlock_t, etc. within that callback.
+> If you intend to wake a thread, that thread needs an elevated priority
+> otherwise it won't be scheduled (assuming there is a RT tasking running
+> which would block otherwise ksoftirqd).
 
-Therefore introduce two torture_param() variables, one is for
-single-argument scale test and another one for double-argument
-scale test.
+Good to know, thank you!  I believe that all the needed locks are already
+raw spinlocks, but the actual kernel code always takes precedence over
+one's beliefs.
 
-By default kfree_rcu_test_single and kfree_rcu_test_double are
-initialized to false. If both have the same value (false or true)
-both are randomly tested, otherwise only the one with value true
-is tested. The value of this is that it allows testing of both
-options with one test.
+> Ah. One nice thing is that you can move the RCU threads to a house
+> keeping CPU - away from the CPU(s) running the RT tasks. Would this
+> scenario be still affected (if ksoftirqd would be blocked)?
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/rcuscale.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+At this point, I am going to say that it is the sysadm's job to place
+the rcuo kthreads, and if they are placed poorly, life is hard.
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 06491d5530db..0fb540e2b22b 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
- torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
- torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
- torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-+torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
-+torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
- 
- static struct task_struct **kfree_reader_tasks;
- static int kfree_nrealthreads;
-@@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
- 	struct kfree_obj *alloc_ptr;
- 	u64 start_time, end_time;
- 	long long mem_begin, mem_during = 0;
-+	bool kfree_rcu_test_both;
-+	DEFINE_TORTURE_RANDOM(tr);
- 
- 	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
- 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
- 	set_user_nice(current, MAX_NICE);
-+	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
- 
- 	start_time = ktime_get_mono_fast_ns();
- 
-@@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
- 			if (!alloc_ptr)
- 				return -ENOMEM;
- 
--			kfree_rcu(alloc_ptr, rh);
-+			// By default kfree_rcu_test_single and kfree_rcu_test_double are
-+			// initialized to false. If both have the same value (false or true)
-+			// both are randomly tested, otherwise only the one with value true
-+			// is tested.
-+			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
-+					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
-+				kfree_rcu(alloc_ptr);
-+			else
-+				kfree_rcu(alloc_ptr, rh);
- 		}
- 
- 		cond_resched();
--- 
-2.20.1
+This means that I need to create a couple of additional polling RCU
+grace-period functions for rcutorture's priority-boosting use, but I
+probably should have done that a long time ago.  Simpler to just call a
+polling API occasionally than to handle all the corner cases of keeping
+an RCU callback queued.
 
+> Oh. One thing I forgot to mention: the timer_list timer is nice in terms
+> of moving forward (the timer did not fire, the condition is true and you
+> move the timeout forward).
+> A hrtimer timer on the other hand needs to be removed, forwarded and
+> added back to the "timer tree". This is considered more expensive
+> especially if the timer does not fire.
+
+There are some timers that are used to cause a wakeup to happen from
+a clean environment, but maybe these can instead use irq-work.
+
+> > Also, the current test expects callbacks to be invoked, which involves a
+> > number of additional kthreads and timers, for example, in nocb_gp_wait().
+> > I suppose I could instead look at grace-period sequence numbers, but I
+> > believe that real-life use cases needing RCU priority boosting also need
+> > the callbacks to be invoked reasonably quickly (as in within hundreds
+> > of milliseconds up through very small numbers of seconds).
+> 
+> A busy/overloaded kvm-host could lead to delays by not scheduling the
+> guest for a while.
+
+That it can!  Aravinda Prasad prototyped a mechanism hinting to the
+hypervisor in such cases, but I don't know that this ever saw the light
+of day.
+
+> My understanding of the need for RCU boosting is to get a task,
+> preempted (by a RT task) within a RCU section, back on the CPU to
+> at least close the RCU section. So it is possible to run RCU callbacks
+> and free memory.
+> The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
+> killer got nervous (and if we had memory allocation failures).
+> Also, running thousands of accumulated callbacks isn't good either.
+
+Sounds good, thank you!
+
+							Thanx, Paul
+
+> > Thoughts?
+> > 
+> > 							Thanx, Paul
+> Sebastian
