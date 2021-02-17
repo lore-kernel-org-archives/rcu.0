@@ -2,103 +2,138 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5B0AC43381
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 19:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1F03C433E0
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 21:25:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 812F664E4B
-	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 19:45:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B47264E6C
+	for <rcu@archiver.kernel.org>; Wed, 17 Feb 2021 21:25:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhBQTow (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 17 Feb 2021 14:44:52 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47320 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbhBQToo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:44:44 -0500
-Date:   Wed, 17 Feb 2021 20:43:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613591041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMqp8oEZfhAb6qDKCdq5YeW4+55exCSRTAdK0yr3Q1s=;
-        b=U7rgM9nSlM+RmwfpYhIiWwsXqTqxejKrydEZIjBjHHmy4R+cRjc8ibUf1C8cDmVOQ3DiMn
-        ZibqMusrV/7GQs1KuYbGbreG/mICqROo30v+HubeSI1KwNf/1doCWXqJ7uouOCYG5K6H9I
-        Yxb9qio0+LyZNyADZf7fXoFhX3fe/QGZcJltc+DGSWbG5ql9dEd+2Yq6SFBEKIeWeCiCr/
-        T3hHBFT/Cfs7oBUBvLMwuizUJidQpciOwI2PLJhnOoYqMJXjC5ff7oCNs4F8RC8mTK2YvV
-        aW2shLVO9TIGzrXdcuC8W8TKNSJX54rPMSzD0tLxRYqBJmdbLO1DJHXe24K9gA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613591041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMqp8oEZfhAb6qDKCdq5YeW4+55exCSRTAdK0yr3Q1s=;
-        b=C2rdsvix9Cv3CClUnc0KLNo4CsVvV/mU4CJ7DJnZ8tKn2yOtzKAGs1FmwyifmJL9PUJ3AT
-        SBzsNr+oqwKb4mAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210217194359.m647inivfp4frzc7@linutronix.de>
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
- <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
- <20210217191907.GH2743@paulmck-ThinkPad-P72>
+        id S233228AbhBQVYz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 17 Feb 2021 16:24:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231630AbhBQVYr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:24:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE33864E6C;
+        Wed, 17 Feb 2021 21:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613597045;
+        bh=m2z/x1Zrj0A4fqoRWSZo7Xax9iL04VQAEJ0SYZrLHys=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=COcGE94+mVQ/Mr+h+fiY7w9xxW3RaIR0HS5jqWAyH9hUBE4jRKau7KlRPscLNhfkl
+         lO/deqlC8pVqOMRRdSeE5APP9KGoatdQSnpbh3jwSQlZhQxUgQG2Izi8ZlM5fN0NkL
+         ommgd3wHYUVTfIVwDYT2mw5yug7IgPC8XuqPlh84vVXWnHzYa2yEttw5bOKJatPZ5J
+         o8yeBBYnB67NepUGdEy/blK3j6IgPEInSYTFPL95oPep8oQjkKBs0L9M5jHmpnsFVO
+         uBWbhfUZHbEoPAFiOQ0PHn7vtyy8r6wAYt+s7TknlqHn+kmC1Ck3OqAEWxFv1+TNN3
+         M0MDnwqAxAtZg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B7A3E3522611; Wed, 17 Feb 2021 13:24:04 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:24:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale
+ test
+Message-ID: <20210217212404.GK2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210217185110.2099-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217191907.GH2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210217185110.2099-1-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2021-02-17 11:19:07 [-0800], Paul E. McKenney wrote:
-> > Ah. One nice thing is that you can move the RCU threads to a house
-> > keeping CPU - away from the CPU(s) running the RT tasks. Would this
-> > scenario be still affected (if ksoftirqd would be blocked)?
+On Wed, Feb 17, 2021 at 07:51:10PM +0100, Uladzislau Rezki (Sony) wrote:
+> To stress and test a single argument of kfree_rcu() call, we
+> should to have a special coverage for it. We used to have it
+> in the test-suite related to vmalloc stressing. The reason is
+> the rcuscale is a correct place for RCU related things.
 > 
-> At this point, I am going to say that it is the sysadm's job to place
-> the rcuo kthreads, and if they are placed poorly, life is hard.
-
-Good. Because that is what I suggest :)
-
-> > Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-> > of moving forward (the timer did not fire, the condition is true and you
-> > move the timeout forward).
-> > A hrtimer timer on the other hand needs to be removed, forwarded and
-> > added back to the "timer tree". This is considered more expensive
-> > especially if the timer does not fire.
+> Therefore introduce two torture_param() variables, one is for
+> single-argument scale test and another one for double-argument
+> scale test.
 > 
-> There are some timers that are used to cause a wakeup to happen from
-> a clean environment, but maybe these can instead use irq-work.
-
-irq-work has also a "hard" mode because people ended up to throwing
-everything in there.
-
-> That it can!  Aravinda Prasad prototyped a mechanism hinting to the
-> hypervisor in such cases, but I don't know that this ever saw the light
-> of day.
-
-Ah, good to know.
-
-> > My understanding of the need for RCU boosting is to get a task,
-> > preempted (by a RT task) within a RCU section, back on the CPU to
-> > at least close the RCU section. So it is possible to run RCU callbacks
-> > and free memory.
-> > The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-> > killer got nervous (and if we had memory allocation failures).
-> > Also, running thousands of accumulated callbacks isn't good either.
+> By default kfree_rcu_test_single and kfree_rcu_test_double are
+> initialized to false. If both have the same value (false or true)
+> both are randomly tested, otherwise only the one with value true
+> is tested. The value of this is that it allows testing of both
+> options with one test.
 > 
-> Sounds good, thank you!
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-I hope my understanding was correct. Glad to be if service :)
+Queued with the usual wordsmithing, thank you!
 
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcuscale.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
 > 
-> 							Thanx, Paul
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 06491d5530db..0fb540e2b22b 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
+>  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+>  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+>  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
+> +torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
+> +torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
+>  
+>  static struct task_struct **kfree_reader_tasks;
+>  static int kfree_nrealthreads;
+> @@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
+>  	struct kfree_obj *alloc_ptr;
+>  	u64 start_time, end_time;
+>  	long long mem_begin, mem_during = 0;
+> +	bool kfree_rcu_test_both;
+> +	DEFINE_TORTURE_RANDOM(tr);
+>  
+>  	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
+>  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
+>  	set_user_nice(current, MAX_NICE);
+> +	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
+>  
+>  	start_time = ktime_get_mono_fast_ns();
+>  
+> @@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
+>  			if (!alloc_ptr)
+>  				return -ENOMEM;
+>  
+> -			kfree_rcu(alloc_ptr, rh);
+> +			// By default kfree_rcu_test_single and kfree_rcu_test_double are
+> +			// initialized to false. If both have the same value (false or true)
+> +			// both are randomly tested, otherwise only the one with value true
+> +			// is tested.
+> +			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
+> +					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
+> +				kfree_rcu(alloc_ptr);
+> +			else
+> +				kfree_rcu(alloc_ptr, rh);
+>  		}
+>  
+>  		cond_resched();
+> -- 
+> 2.20.1
 > 
-Sebastian
