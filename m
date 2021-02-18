@@ -7,58 +7,57 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70849C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8732EC433E9
 	for <rcu@archiver.kernel.org>; Thu, 18 Feb 2021 18:51:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2D9F264EB7
+	by mail.kernel.org (Postfix) with ESMTP id 5ABE164EB8
 	for <rcu@archiver.kernel.org>; Thu, 18 Feb 2021 18:51:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhBRSve (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 Feb 2021 13:51:34 -0500
-Received: from mail.efficios.com ([167.114.26.124]:60776 "EHLO
+        id S233352AbhBRSvi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 Feb 2021 13:51:38 -0500
+Received: from mail.efficios.com ([167.114.26.124]:42142 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhBRRZO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:25:14 -0500
+        with ESMTP id S234791AbhBRR5Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:57:24 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1538429CA09;
-        Thu, 18 Feb 2021 12:24:15 -0500 (EST)
+        by mail.efficios.com (Postfix) with ESMTP id F360129CBB5;
+        Thu, 18 Feb 2021 12:56:39 -0500 (EST)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id qXTbPS7lp75y; Thu, 18 Feb 2021 12:24:14 -0500 (EST)
+        with ESMTP id oUT7F8VVIHeq; Thu, 18 Feb 2021 12:56:39 -0500 (EST)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 972DD29CA08;
-        Thu, 18 Feb 2021 12:24:14 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 972DD29CA08
+        by mail.efficios.com (Postfix) with ESMTP id 7328229CE29;
+        Thu, 18 Feb 2021 12:56:39 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7328229CE29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1613669054;
-        bh=70tqMz1VANgt2xJg+kkTtlcNrvZXaVeZ+x4jiuuCpbM=;
+        s=default; t=1613670999;
+        bh=EmgeRRKdAfsZDuYNKsi4+NSJbSwMwrWmNnBmpeohHVM=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=pnw4Ba+YcxDh+cOhMG+mAzVLF9AnaxmN3i3iMEPrBJ4WXlowpdkLfkiXWPcCvQH2b
-         OFkTucZ/0SkWiHR+5/RJKawoj1yK95QGg1sFCENL0ez7SFnVPO2wtc3G/RA1RYPcd/
-         Dy1oQ4maGTr2cNZLyoQaL1wESx22p4bsUzLq9c2Hw/01RVz630HYJCy+7u41wl9tnh
-         r0EDLkQyMHqa5u7fiAoy+JzEh5LrdVfgcR3N2oViRBekmxnGcw1omHbq76O+Uc7G8T
-         dYPAoEM5e/zFkOYko5EoykLSYQ1yNFKTebvI91ROqIviNJ4eFwuDTRL6Mw0aOWRpyw
-         eqXIclKr9ZRHQ==
+        b=gMtwiTEYUe4rxpUpDSHrpu3WR9P4bgoUXsVkCrrCQIw331QP4XlpTG9u5xh65UsUI
+         lLGJ/Zr7nnJjejrCTttD2oZo7FEzCbAUFGNdL1uw7Dfe3hy1O4q79r1C3BGv8BhNxm
+         +7UAzi0nNe1Yz27U/60JECWSQoOUmiMcKzI5XaRkwo1sxkCGs8oj3jYTDC1A1Wbuki
+         EhXKLvQDZfzUQ7u1SU2OTwYc928wggQgHEg/Mv3t9scJLe4XTKT3kQGRBECnirEU84
+         xO57Sca6Zcie1akT0/0L7dqUkhKxBvjyMbVJl0VvxvoOXQoR+GCORHIiaQrCFV9SxW
+         8l+Zc8l1XJhdg==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HWVRn1C5nN77; Thu, 18 Feb 2021 12:24:14 -0500 (EST)
+        with ESMTP id o6ix_IGElFg0; Thu, 18 Feb 2021 12:56:39 -0500 (EST)
 Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 8688229C47A;
-        Thu, 18 Feb 2021 12:24:14 -0500 (EST)
-Date:   Thu, 18 Feb 2021 12:24:14 -0500 (EST)
+        by mail.efficios.com (Postfix) with ESMTP id 567F229CCD5;
+        Thu, 18 Feb 2021 12:56:39 -0500 (EST)
+Date:   Thu, 18 Feb 2021 12:56:39 -0500 (EST)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     paulmck <paulmck@kernel.org>,
-        Sangmoon Kim <sangmoon.kim@samsung.com>,
+To:     paulmck <paulmck@kernel.org>
+Cc:     Sangmoon Kim <sangmoon.kim@samsung.com>,
         neeraju <neeraju@codeaurora.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Joel Fernandes, Google" <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         rcu <rcu@vger.kernel.org>, rostedt <rostedt@goodmis.org>
-Message-ID: <291172556.27144.1613669054413.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210218165839.GA35220@pc638.lan>
-References: <bf80e296-14bf-6f36-8952-416829d30e5a@codeaurora.org> <CGME20210218130056epcas1p21e5b2e873f8c3cb0aa6953473d4c416c@epcas1p2.samsung.com> <20210218125224.23739-1-sangmoon.kim@samsung.com> <1181485573.26616.1613657821155.JavaMail.zimbra@efficios.com> <20210218150628.GN2743@paulmck-ThinkPad-P72> <1315011925.26877.1613663453242.JavaMail.zimbra@efficios.com> <20210218165839.GA35220@pc638.lan>
+Message-ID: <797905837.27189.1613670999218.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210218170012.GS2743@paulmck-ThinkPad-P72>
+References: <bf80e296-14bf-6f36-8952-416829d30e5a@codeaurora.org> <CGME20210218130056epcas1p21e5b2e873f8c3cb0aa6953473d4c416c@epcas1p2.samsung.com> <20210218125224.23739-1-sangmoon.kim@samsung.com> <1181485573.26616.1613657821155.JavaMail.zimbra@efficios.com> <20210218150628.GN2743@paulmck-ThinkPad-P72> <1315011925.26877.1613663453242.JavaMail.zimbra@efficios.com> <20210218170012.GS2743@paulmck-ThinkPad-P72>
 Subject: Re: [PATCH] rcu/tree: Add a trace event for RCU stall warnings
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -66,12 +65,12 @@ Content-Transfer-Encoding: 7bit
 X-Originating-IP: [167.114.26.124]
 X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
 Thread-Topic: rcu/tree: Add a trace event for RCU stall warnings
-Thread-Index: ajuS+ApIUNVC/iOUSm5gY33pOX/MJg==
+Thread-Index: fQyGXpOuoYkA8kZowaGMZd4rb0vCkw==
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Feb 18, 2021, at 11:58 AM, Uladzislau Rezki urezki@gmail.com wrote:
+----- On Feb 18, 2021, at 12:00 PM, paulmck paulmck@kernel.org wrote:
 
 > On Thu, Feb 18, 2021 at 10:50:53AM -0500, Mathieu Desnoyers wrote:
 >> ----- On Feb 18, 2021, at 10:06 AM, paulmck paulmck@kernel.org wrote:
@@ -202,19 +201,29 @@ X-Mailing-List: rcu@vger.kernel.org
 >> as tracepoint event fields to make it more convenient, but it does not appear to
 >> be
 >> necessary considered that the console can be saved into trace buffers as well.
->> 
-> Could you please clarify how the kernel ring-buffer can also be routed over
-> trace buffer?
-> Probably i am not aware of if it is possible on latest kernel.
+> 
+> OK, I will bite.  ;-)
+> 
+> Can the saving of console into trace buffers be easily enabled and
+> disabled within the code? If so, does enabling and disabling nest?
 
-This can be done by enabling the "printk console" tracepoint. See the call to
-trace_console_rcuidle() in kernel/printk/printk.c. The tracepoint is defined in
-include/trace/events/printk.h.
+OK I think I get your point: when this tracing facility is not in use, you
+don't want to spam the console with those printouts. And when tracing is in
+use, you would want that information collected.
+
+Well one way do achieve this would be to use the TRACE_EVENT_FN() family of
+tracepoint events for this new rcu stall warning event. It takes register/unregister
+callback functions as parameter. See the sys_enter/sys_exit events as examples.
+syscall_regfunc and syscall_unregfunc implement the reference counting you are
+referring to.
+
+The downside of this approach though in the context of extracting RCU CPU stalls
+warnings through the console is that when tracing of those stalls is enabled, the
+console gets spammed with those messages as a side-effect, which may be unwanted.
 
 Thanks,
 
 Mathieu
-
 
 -- 
 Mathieu Desnoyers
