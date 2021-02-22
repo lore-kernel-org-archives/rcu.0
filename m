@@ -2,173 +2,134 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B2B1C433E0
-	for <rcu@archiver.kernel.org>; Mon, 22 Feb 2021 08:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AA06C433E0
+	for <rcu@archiver.kernel.org>; Mon, 22 Feb 2021 10:07:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E11D664DD3
-	for <rcu@archiver.kernel.org>; Mon, 22 Feb 2021 08:35:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 021B664DEC
+	for <rcu@archiver.kernel.org>; Mon, 22 Feb 2021 10:07:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBVIfE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 22 Feb 2021 03:35:04 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:47858 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhBVIfC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:35:02 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210222083419epoutp032fbec553433ffcc420b53a332d59a7a2~mBNvtAD5J1798117981epoutp03W
-        for <rcu@vger.kernel.org>; Mon, 22 Feb 2021 08:34:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210222083419epoutp032fbec553433ffcc420b53a332d59a7a2~mBNvtAD5J1798117981epoutp03W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613982859;
-        bh=UnWQByOkwotdD2M4krwLDT1HAWSlYFB+o4ap+vTzGm4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s41XE5TAhXTsLbIM2AtlBX9qZ1+MnnRkqpC+4c0Nj7kAYcrzWs6DO9cU3uEmpHOql
-         TdUazMaZ40LRBXAh8BLQuBhGr1KDejAV4VmdP/TrZsAX+eXgnwYkzzhJPsRV5FIm93
-         cDHEZUUEzTg2xHrXEba44EDexd4qogG1sh9hle5Y=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210222083418epcas1p35acd2cf120dca570c75ebb01324f987e~mBNvC-G4J0037200372epcas1p3q;
-        Mon, 22 Feb 2021 08:34:18 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Dkb7s337rz4x9Pw; Mon, 22 Feb
-        2021 08:34:17 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DF.04.63458.98C63306; Mon, 22 Feb 2021 17:34:17 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210222083416epcas1p2c4d51fc7a793729c08e424f13077954a~mBNtoOwKc2963329633epcas1p29;
-        Mon, 22 Feb 2021 08:34:16 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210222083416epsmtrp241adecaabd4ae0a794a39b6c94d2865e~mBNtnTXG41246012460epsmtrp2k;
-        Mon, 22 Feb 2021 08:34:16 +0000 (GMT)
-X-AuditID: b6c32a36-6dfff7000000f7e2-23-60336c89b1f3
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5C.16.08745.88C63306; Mon, 22 Feb 2021 17:34:16 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.105.183]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210222083416epsmtip2163042ef771716005f6b4e192351e7f7~mBNtYjYnE2060420604epsmtip2a;
-        Mon, 22 Feb 2021 08:34:16 +0000 (GMT)
-From:   Sangmoon Kim <sangmoon.kim@samsung.com>
-To:     paulmck@kernel.org
-Cc:     jiangshanlai@gmail.com, joel@joelfernandes.org,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        neeraju@codeaurora.org, rcu@vger.kernel.org, rostedt@goodmis.org,
-        sangmoon.kim@samsung.com
-Subject: Re: [PATCH] rcu/tree: Add a trace event for RCU stall warnings
-Date:   Mon, 22 Feb 2021 17:25:39 +0900
-Message-Id: <20210222082539.15573-1-sangmoon.kim@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210218185926.GV2743@paulmck-ThinkPad-P72>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJKsWRmVeSWpSXmKPExsWy7bCmgW5njnGCQf96UYupa3czWSxrULX4
-        vyDfYvPZM8wW/UuXs1t8WvKNxeLs7HOsFvs6HjBZ3HrQyOLA6XG5r5fJY+npN2weO2fdZfdo
-        2XeL3WPhp6+sHrde23psWtXJ5tG3ZRWjx+dNcgGcUTk2GamJKalFCql5yfkpmXnptkrewfHO
-        8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUAXKimUJeaUAoUCEouLlfTtbIryS0tSFTLyi0ts
-        lVILUnIKDA0K9IoTc4tL89L1kvNzrQwNDIxMgSoTcjK+3uxiLpgiWHHt/WT2BsZdvF2MHBwS
-        AiYSpz4ldDFycQgJ7GCUeDXnEiuE84lR4t/V3WwQzmdGidmNP4EcTrCOsw8XQlXtYpR4smse
-        M0hCSOALo8SjH6kgNpuArsSXeZcZQWwRATGJPad2M4M0MAucZJSYMLkJbJKwgLtE07Z97CA2
-        i4CqxKSeWWCDeAVsJXqefGeH2CYvsXrDAbA4p4ClxOMjX8A2Swj8ZJc4OvMc1EkuEs9XdbBC
-        2MISr45vgWqWkvj8bi9UzT5GiT0rZSCapzBKLJ+yA6rIWKK35wIzKDSYBTQl1u/ShwgrSuz8
-        PRfsA2YBPol3X3tYIQHGK9HRJgRRoibx+NVdRghbRqL/znwWCNtD4vuSt8yQEOphlFjYvIN5
-        AqPcLIQNCxgZVzGKpRYU56anFhsWGCFH2SZGcBrUMtvBOOntB71DjEwcjIcYJTiYlUR42e4a
-        JQjxpiRWVqUW5ccXleakFh9iNAWG3kRmKdHkfGAiziuJNzQ1MjY2tjAxMzczNVYS5000eBAv
-        JJCeWJKanZpakFoE08fEwSnVwBTyiIvLcknKmTk3XHW8pXS45DK1QkSfcbVM2Zr3/GoVz+nQ
-        65MPXLmxc1uR/cyderPTU7Vvaoj/SbN/r1RqP8PwzJ2QY6GfGrMvN319+LR0YZyTa/acQ9sk
-        d91euUCEQduYQ/ZeCutj9tdVTC1XfC2mpMtGBP9o6mxh5PjLPsF+R8uV9wFfi3tmMgRNXiG7
-        TeuXVWT5pmSf7MKZv/1+ZXkemBb4Tfxd5f0pd51sHN4+DE+/H8zVGrVyT1Hz/PsXXm+fuGjf
-        rmubFXYfazZY8Nkly3/R60Xlb8PdQ0NbNZ8YM5071nKiQ/3e8X4OrYk+0SbB7Z+tM8ra8t56
-        9dZV3e7m2fts5ftlj2Kv7OgLFFBiKc5INNRiLipOBAA7iWuNDAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSvG5HjnGCwZQNWhZT1+5msljWoGrx
-        f0G+xeazZ5gt+pcuZ7f4tOQbi8XZ2edYLfZ1PGCyuPWgkcWB0+NyXy+Tx9LTb9g8ds66y+7R
-        su8Wu8fCT19ZPW69tvXYtKqTzaNvyypGj8+b5AI4o7hsUlJzMstSi/TtErgyvt7sYi6YIlhx
-        7f1k9gbGXbxdjJwcEgImEmcfLmTtYuTiEBLYwSixYu4cFoiEjMTOi5uZuhg5gGxhicOHi0HC
-        QgKfGCU6r4WB2GwCuhJf5l1mBLFFBMQk9pzazQwyh1ngMqPEsmUPmEASwgLuEk3b9rGD2CwC
-        qhKTemYxg9i8ArYSPU++s0PskpdYveEAWJxTwFLi8ZEvrBDLLCSW/r3JNIGRbwEjwypGydSC
-        4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOBQ1dLawbhn1Qe9Q4xMHIyHGCU4mJVEeNnuGiUI
-        8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJeSCA9sSQ1OzW1ILUIJsvEwSnVwLRvSktox+l3
-        a/5/0ell0X9kc3dJ/RurKZfip+8VurzhcPW1/bq93Cou+Y1vjB5W6Yh158oJVhya+bdrPe8G
-        zsmxM7c0lEprHJsYOuODwqlru2Q9g9KqD3dMPPDe5P2sayKTV7VJytzvntGeaOmhc2uy+HP7
-        iANNCiwp6buXTArxctnbuPW2p7d+g+UDATbDXSpekbrpGxRflYQ3/7DRc17po72cL/9gX8OK
-        7f5vLD5zTb/73PHeOT1+3iKdSeuP6XtXrtjp8uhWzMESb2m5Y3u/qq92fm/TaHns24eL/Ite
-        5/4S0l27O/DhStunrPcPz/oVsP1ReQLb/+0yAULrr39adeHULPkP4UunzT757YyeEktxRqKh
-        FnNRcSIA9KhV8MQCAAA=
-X-CMS-MailID: 20210222083416epcas1p2c4d51fc7a793729c08e424f13077954a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222083416epcas1p2c4d51fc7a793729c08e424f13077954a
-References: <20210218185926.GV2743@paulmck-ThinkPad-P72>
-        <CGME20210222083416epcas1p2c4d51fc7a793729c08e424f13077954a@epcas1p2.samsung.com>
+        id S230172AbhBVKGe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 22 Feb 2021 05:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhBVKEo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:04:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24877C061786;
+        Mon, 22 Feb 2021 02:04:04 -0800 (PST)
+Date:   Mon, 22 Feb 2021 11:04:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613988242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9DqdmMcC65JlDNxGXXaK9p0hPgxRE+lfHdTeie7Ho38=;
+        b=waEtf0JWXpDUj2FuRUPGflgm6U4yDZLlHUqu5vOXgIlfe0FFDuvPgq7/WsTb+nPCbxyMNJ
+        UURcpSCUA4d+QEXP6FAqttoh0lBG+uG1Q+EYu4RhphOZ4MsbjBdyDmD9QT21T45K/81YJa
+        DPklD83qKnc0yT76zrFXM7pSLgjStKFkiFpOL5LUuMJKmnzy2cwnrhOYZ9mgP8i5UVJ+0z
+        WJwUZiDrJZU9FZ3ympmgc8flJcDVxDDnxI9mBbUll8jg2hqDU1Ceoph+VDhWyGhEMQq/h6
+        NOZg8soUO+tALZDOhW6quZ/q1FxxqmB1GLuq2u4qX+tN5waxpv/pxsImWpBSqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613988242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9DqdmMcC65JlDNxGXXaK9p0hPgxRE+lfHdTeie7Ho38=;
+        b=/HsCFiui1OcDMIsfQNQXTi+Bid3xTVk4Adltdh5wQV/IDNKY7SiQKu701hRFB48T61HzSz
+        kGhqULt7L66bXFBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210222100400.xzdq7iciw5f4zzlv@linutronix.de>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210219181811.GY2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 2021-02-19 10:18:11 [-0800], Paul E. McKenney wrote:
+> If Masami's patch works for the PowerPC guys on v5.10-rc7, then it can
+> be backported.  The patch making RCU Tasks initialize itself early won't
+> have any effect and can be left or reverted, as we choose.  The self-test
+> patch will need to be either adjusted or reverted.
+> 
+> However...
+> 
+> The root cause of this problem is that softirq only kind-of works
+> during a window of time during boot.  It works only if the number and
+> duration of softirq handlers during this time is small enough, for some
+> ill-defined notion of "small enough".  If there are too many, whatever
+> that means exactly, then we get failed attempt to awaken ksoftirqd, which
 
+The number of registered softirq handlers does not matter nor the amount
+times the individual softirqs that were scheduled. The only problem is
+that one schedules softirq and then waits for its completion.
+So scheduling a timer_list timer works. Waiting for its completion does
+not. Once ksoftirqd is up, will be processed.
 
-> -----Original Message-----
-> From: Paul E. McKenney <paulmck@kernel.org>
-> Sent: Friday, February 19, 2021 3:59 AM
+> (sometimes!) results in a silent hang.  Which, as you pointed out earlier,
+> is a really obnoxious error message.  And any minor change could kick
+> us into silent-hang state because of the heuristics used to hand off
+> to ksoftirqd.  The straw that broke the camel's back and all that.
+
+The problem is that a softirq is raised and being waited for its
+completion.
+Something like synchronize_rcu() would be such a thing I guess.
+
+> One approach would be to add WARN_ON_ONCE() so that if softirq tries
+> to awaken ksoftirqd before it is spawned, we get a nice obvious splat.
+> Unfortunately, this gives false positives because there is code that
+> needs a softirq handler to run eventually, but is OK with that handler
+> being delayed until some random point in the early_initcall() sequence.
 > 
-> On Thu, Feb 18, 2021 at 01:24:16PM -0500, Steven Rostedt wrote:
-> > On Thu, 18 Feb 2021 09:00:12 -0800
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >
-> > > OK, I will bite.  ;-)
-> >
-> > Do I turn into a wearwolf?
+> Besides which, if we are going to add a check, why not use that check
+> just make things work by forcing handler execution to remain within the
+> softirq back-of-interrupt context instead of awakening a not-yet-spawned
+> ksoftirqd?  We can further prevent entry into dyntick-idle state until
+> the ksoftirqd kthreads have been spawned, which means that if softirq
+> handlers must be deferred, they will be resumed within one jiffy by the
+> next scheduler-clock interrupt.
+
+This should work.
+
+> Yes, this can allow softirq handlers to impose large latencies, but only
+> during early boot, long before any latency-sensitive applications can
+> possibly have been created.  So this does not seem like a real problem.
 > 
-> Maybe even a wash-n-wear wolf.  ;-)
-> 
-> > > Can the saving of console into trace buffers be easily enabled and
-> > > disabled within the code?
-> >
-> > Well, we do have this for ftrace:
-> >
-> >  echo 'enable_event:printk:console' > events/rcu/rcu_stall_warning/trigger
-> >
-> > Would enable the printk console to be traced to the ring buffer once the
-> > stall is triggered, and not before hand.
-> >
-> > >  If so, does enabling and disabling nest?
-> >
-> > It has a disable as well, but unfortunately its global and does not nest.
-> > We could always implement a percpu trigger that can nest though.
-> 
-> So Sangmoon could have a module react to an RCU CPU stall warning
-> tracepoint by turning on tracing of console messages.  If there was a
-> start-stop pair of RCU CPU stall warning tracepoints, he could turn it
-> off as well.
-> 
-> Not sure if that is what Sangmoon is looking for, but it is a possibility.
+> Am I missing something here?
 > 
 > 							Thanx, Paul
 
-Thank you. I'm learning the new things through this review.
-
-Copying console messages is not really necessary to me. I wanted to say
-this tracepoint can also be used in such way for debugging purpose.
-
-What I need is that a module records the stall happening and report the
-stall event when kernel panic occurred. Of course, there is no detailed
-information there, but it helps developers to recognize that the stall
-has occurred in the system.
-
-The usage scenario is as follows.
-There is a kernel module for debugging.
-The module registers a probe function using register_trace_rcu_stall_warning().
-When a stall warning event occurs, the module records the event into its own buffer.
-When a kernel panic occurs, the developers can see the report generated
-by the module and can also see the buffer of the module directly through Ramdump.
-
-Thanks,
-Sangmoon
+Sebastian
