@@ -7,27 +7,27 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 964F2C433E0
-	for <rcu@archiver.kernel.org>; Mon,  1 Mar 2021 19:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AEC1C4332D
+	for <rcu@archiver.kernel.org>; Mon,  1 Mar 2021 20:24:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 664C060231
-	for <rcu@archiver.kernel.org>; Mon,  1 Mar 2021 19:01:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 76F3E64ED7
+	for <rcu@archiver.kernel.org>; Mon,  1 Mar 2021 20:24:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhCATBj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 Mar 2021 14:01:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
+        id S238634AbhCAUYg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 Mar 2021 15:24:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240053AbhCAS7P (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:59:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD6C65264;
-        Mon,  1 Mar 2021 17:29:36 +0000 (UTC)
+        id S242985AbhCAUVN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:21:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9EA165109;
+        Mon,  1 Mar 2021 18:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619777;
-        bh=OVW+nWUjdwmhnLrWLdIKyQX9rgaJtV79DiRG7+yIcf4=;
+        s=korg; t=1614621890;
+        bh=wZWvK9Kd59qMP7IdiR2xIPNU5yH38zeLELypfFUofHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f0fCFGjwsRjU0pqHlAjhlZhNKOoerzJjWzshcupLfh7lA5LcKKqCciWl4vBfl9iq+
-         3YMDRsuvxeYLc8YSAj6UwI+dVBQP8bSp/EBVMYkcT0qFGOKS8cOmtyTLHSqYOModEE
-         zW5IqDOiBaXTNdVrUrBWKFQC8SI7DXh2zLD0l1oA=
+        b=VmZ723nkt9XV8oaJbYOzv5OSsvApPJCPfm60Wz9IlPE+Jd+6M4dr3Fme6Rj9vn9ql
+         Bi7zrS+AxqARdZWx0bpMSscGkss/YTL4q3krMZEJVNjqwYKY+N1TVESd/p6lOQk2UF
+         C15crL0V1bCbrHhfNg+lIZF+qnpBpdhA/KEELj9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -48,12 +48,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.10 577/663] kprobes: Fix to delay the kprobes jump optimization
-Date:   Mon,  1 Mar 2021 17:13:45 +0100
-Message-Id: <20210301161210.404772506@linuxfoundation.org>
+Subject: [PATCH 5.11 681/775] kprobes: Fix to delay the kprobes jump optimization
+Date:   Mon,  1 Mar 2021 17:14:09 +0100
+Message-Id: <20210301161235.036173950@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -110,7 +110,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -871,7 +871,6 @@ out:
+@@ -861,7 +861,6 @@ out:
  	cpus_read_unlock();
  }
  
@@ -118,7 +118,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  static void optimize_all_kprobes(void)
  {
  	struct hlist_head *head;
-@@ -897,6 +896,7 @@ out:
+@@ -887,6 +886,7 @@ out:
  	mutex_unlock(&kprobe_mutex);
  }
  
@@ -126,7 +126,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  static void unoptimize_all_kprobes(void)
  {
  	struct hlist_head *head;
-@@ -2627,18 +2627,14 @@ static int __init init_kprobes(void)
+@@ -2497,18 +2497,14 @@ static int __init init_kprobes(void)
  		}
  	}
  
@@ -150,7 +150,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	err = arch_init_kprobes();
  	if (!err)
  		err = register_die_notifier(&kprobe_exceptions_nb);
-@@ -2653,6 +2649,21 @@ static int __init init_kprobes(void)
+@@ -2523,6 +2519,21 @@ static int __init init_kprobes(void)
  }
  early_initcall(init_kprobes);
  
