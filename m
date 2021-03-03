@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53A7DC433E0
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8420C433E9
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25A5264EFE
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BD2F64F1B
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348957AbhCDBAp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Mar 2021 20:00:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39420 "EHLO mail.kernel.org"
+        id S1348959AbhCDBAq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:00:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353125AbhCDAHJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1353011AbhCDAHJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 3 Mar 2021 19:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5470F64F56;
-        Wed,  3 Mar 2021 23:56:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E198D64F4C;
+        Wed,  3 Mar 2021 23:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614815780;
-        bh=KqbXaZIE78Z0YPuE9W5+U7xsgoAgLUndh2Wmk7Hbmkg=;
+        bh=xJg00R6d3ySVTLUJzM6dVE6oFWvCNYo+XHZd5o5Muck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzblqZLXbtjsnEVrhluRfLvR7rQ4N0gWWytF/nnfuDeIOWwjn/5EKiv3OkFGOvja+
-         k6VUK6vYUZLIHJc6asFys9B45QKpqk82ieiLjjWHp9qaiW4lr4BgHVG/CFcsfnprJt
-         xgs5HTQcDnJ6stZ0pwHaTJO6xWYIc8Mt88Y+sO10/V7D4ZYCOxhY331F5RMrganxda
-         Dc0Wp3uMNavo7RgyG+UFhU2R83BhgI/hX0BKqG1WiT9m8xxnPqz5opI6EhekDaXRQt
-         bbDmPhjlxHYTwAOpJWlUiLE5VPiFeH6gpFyDPZX6uq2epKXFEwC4d7lkYnCbUYx5yV
-         BgLvcLBzP/8eQ==
+        b=KgGdd7kNo1++6RuGcDRRWP+9caQEekrHKf13rstLrEe47g1zLo5TVqmEhPRAFVc20
+         s4BKDGmL+1XoVyXEJWs5lVtc57l6TRg6c08VunN/RvhT3CUG/QHTet20lwQlj+mb0i
+         /WvSXl8XXHNqiu6RyislRUW73DoLIjereQHhZfPOR2qEGMFWX3rWcdSyZfcBkIW/NT
+         UbLbUvo7zMBHRiEOwQ1nfb+rH21z6Y18zd+txLPGD3LwrONB46+jHEaWVA1vxM1A6M
+         PhIG5eTFEcs7NdE/jamnuqdT6ryH8WurX0t5GnRCKPHmVHiooNn5644R+7JTfPDrLt
+         cnrilMFlkU8dQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,12 +40,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         paul.gortmaker@windriver.com, Yury Norov <yury.norov@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH lib/bitmap 6/9] lib: bitmap: support "N" as an alias for size of bitmap
-Date:   Wed,  3 Mar 2021 15:56:13 -0800
-Message-Id: <20210303235616.22093-6-paulmck@kernel.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 4/9] lib: bitmap: fold nbits into region struct
+Date:   Wed,  3 Mar 2021 15:56:11 -0800
+Message-Id: <20210303235616.22093-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -55,128 +55,76 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-While this is done for all bitmaps, the original use case in mind was
-for CPU masks and cpulist_parse() as described below.
-
-It seems that a common configuration is to use the 1st couple cores for
-housekeeping tasks.  This tends to leave the remaining ones to form a
-pool of similarly configured cores to take on the real workload of
-interest to the user.
-
-So on machine A - with 32 cores, it could be 0-3 for "system" and then
-4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
-setting up the worker pool of CPUs.
-
-But then newer machine B is added, and it has 48 cores, and so while
-the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
-
-Multiple deployment becomes easier when we can just simply replace 31
-and 47 with "N" and let the system substitute in the actual number at
-boot; a number that it knows better than we do.
+This will reduce parameter passing and enable using nbits as part
+of future dynamic region parameter parsing.
 
 Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Suggested-by: Yury Norov <yury.norov@gmail.com> # move it from CPU code
+Suggested-by: Yury Norov <yury.norov@gmail.com>
 Acked-by: Yury Norov <yury.norov@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.rst |  7 +++++++
- lib/bitmap.c                                    | 22 +++++++++++++++++-----
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ lib/bitmap.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 1132796..d6e3f67 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -68,6 +68,13 @@ For example one can add to the command line following parameter:
- 
- where the final item represents CPUs 100,101,125,126,150,151,...
- 
-+The value "N" can be used to represent the numerically last CPU on the system,
-+i.e "foo_cpus=16-N" would be equivalent to "16-31" on a 32 core system.
-+
-+Keep in mind that "N" is dynamic, so if system changes cause the bitmap width
-+to change, such as less cores in the CPU list, then N and any ranges using N
-+will also change.  Use the same on a small 4 core system, and "16-N" becomes
-+"16-3" and now the same boot input will be flagged as invalid (start > end).
- 
- 
- This document may not be entirely up to date and comprehensive. The command
 diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 833f152a..9f4626a 100644
+index 75006c4..162e285 100644
 --- a/lib/bitmap.c
 +++ b/lib/bitmap.c
-@@ -519,11 +519,17 @@ static int bitmap_check_region(const struct region *r)
- 	return 0;
- }
+@@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
  
--static const char *bitmap_getnum(const char *str, unsigned int *num)
-+static const char *bitmap_getnum(const char *str, unsigned int *num,
-+				 unsigned int lastbit)
+ /*
+  * Region 9-38:4/10 describes the following bitmap structure:
+- * 0	   9  12    18			38
+- * .........****......****......****......
+- *	    ^  ^     ^			 ^
+- *      start  off   group_len	       end
++ * 0	   9  12    18			38	     N
++ * .........****......****......****..................
++ *	    ^  ^     ^			 ^	     ^
++ *      start  off   group_len	       end	 nbits
+  */
+ struct region {
+ 	unsigned int start;
+ 	unsigned int off;
+ 	unsigned int group_len;
+ 	unsigned int end;
++	unsigned int nbits;
+ };
+ 
+-static int bitmap_set_region(const struct region *r,
+-				unsigned long *bitmap, int nbits)
++static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
  {
- 	unsigned long long n;
- 	unsigned int len;
+ 	unsigned int start;
  
-+	if (str[0] == 'N') {
-+		*num = lastbit;
-+		return str + 1;
-+	}
-+
- 	len = _parse_integer(str, 10, &n);
- 	if (!len)
- 		return ERR_PTR(-EINVAL);
-@@ -571,7 +577,9 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
+-	if (r->end >= nbits)
++	if (r->end >= r->nbits)
+ 		return -ERANGE;
  
- static const char *bitmap_parse_region(const char *str, struct region *r)
- {
--	str = bitmap_getnum(str, &r->start);
-+	unsigned int lastbit = r->nbits - 1;
-+
-+	str = bitmap_getnum(str, &r->start, lastbit);
- 	if (IS_ERR(str))
- 		return str;
+ 	for (start = r->start; start <= r->end; start += r->group_len)
+@@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 	struct region r;
+ 	long ret;
  
-@@ -581,7 +589,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (*str != '-')
- 		return ERR_PTR(-EINVAL);
+-	bitmap_zero(maskp, nmaskbits);
++	r.nbits = nmaskbits;
++	bitmap_zero(maskp, r.nbits);
  
--	str = bitmap_getnum(str + 1, &r->end);
-+	str = bitmap_getnum(str + 1, &r->end, lastbit);
- 	if (IS_ERR(str))
- 		return str;
+ 	while (buf) {
+ 		buf = bitmap_find_region(buf);
+@@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 		if (ret)
+ 			return ret;
  
-@@ -591,14 +599,14 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (*str != ':')
- 		return ERR_PTR(-EINVAL);
- 
--	str = bitmap_getnum(str + 1, &r->off);
-+	str = bitmap_getnum(str + 1, &r->off, lastbit);
- 	if (IS_ERR(str))
- 		return str;
- 
- 	if (*str != '/')
- 		return ERR_PTR(-EINVAL);
- 
--	return bitmap_getnum(str + 1, &r->group_len);
-+	return bitmap_getnum(str + 1, &r->group_len, lastbit);
- 
- no_end:
- 	r->end = r->start;
-@@ -625,6 +633,10 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-  * From each group will be used only defined amount of bits.
-  * Syntax: range:used_size/group_size
-  * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-+ * The value 'N' can be used as a dynamically substituted token for the
-+ * maximum allowed value; i.e (nmaskbits - 1).  Keep in mind that it is
-+ * dynamic, so if system changes cause the bitmap width to change, such
-+ * as more cores in a CPU list, then any ranges using N will also change.
-  *
-  * Returns: 0 on success, -errno on invalid input strings. Error values:
-  *
+-		ret = bitmap_set_region(&r, maskp, nmaskbits);
++		ret = bitmap_set_region(&r, maskp);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.9.5
 
