@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F37C433E9
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1266C4332D
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B758A64E7C
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B652864EEC
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347772AbhCDBAn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S239237AbhCDBAn (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 3 Mar 2021 20:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39436 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352628AbhCDAHI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1352589AbhCDAHI (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 3 Mar 2021 19:07:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7778C64F51;
-        Wed,  3 Mar 2021 23:56:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96A6A64F59;
+        Wed,  3 Mar 2021 23:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614815781;
-        bh=105HF8Ek1s04oyI8/eyyq7JPO81DBPjepxDvZTkTflk=;
+        s=k20201202; t=1614815780;
+        bh=Rk8lbsRx2Lj/ReqjdC1N2YYxcEhLMBywPigAOlTTJ4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUuQhYGENQGF149t23vrqjhl0u2NqTSY0j8j4Gu7VnAKcptjC3Je9Agpe7w5yCLM2
-         qlosY8BWNNMbKkeq3rI8+G0qt0QNpZkuZC+9A3wE6b5D8wlYUw0zLoTlwE2F3larOQ
-         WlrZuLO0kJXP3wntbJl4y6WXIaj2ZJFQdioRw26KdlclDyeFm3MzNAkvgS8KAglBUg
-         FSDtpOv5t6psaLAuQmz6qt15Olbpiok8lPGwTlSWtK7aQzNrhP3VWlWvl2IzIAwlcH
-         9vRZazcfJMUH0HayhZi3lh4mcmYnIx66RtZDy4tCp/MCyeArZ+9y/eOWqmXXAAFon7
-         RIrh6qJWx5IQw==
+        b=lAsJwWynYb46n36E6DbloYuemn47EOTRb+qUDhQ+HccmyI3r4P8cDoFw2GnSeGpB8
+         DiHugMBojWlLh7u/l06Wc00/DNz+HJpGXhhQjHkhtl9b3bRKM8f2TUULE53o+Fzisb
+         kAeh4katsYa2i02JXb4IzmUbbS7BbcvdgdunWtdLQHVokkxfe90P6HtKO2HT3e/aNT
+         +vzdGUrNXX8vYZQ+YnnCu/0iWJjWQQQC/m14Fdj/8nIWMSQMQXLS3mgqEbob8yecJe
+         n+PoCENB5w3LbaYSp2ToKPRSpNMOdlwaNFZt9K1U1O7XDO15bm7/vhl7QTLhzDjlc2
+         JD69QH5BgOoLw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,11 +39,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        paul.gortmaker@windriver.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH lib/bitmap 9/9] rcutorture: Use "all" and "N" in "nohz_full" and "rcu_nocbs"
-Date:   Wed,  3 Mar 2021 15:56:16 -0800
-Message-Id: <20210303235616.22093-9-paulmck@kernel.org>
+        paul.gortmaker@windriver.com, Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 7/9] lib: test_bitmap: add tests for "N" alias
+Date:   Wed,  3 Mar 2021 15:56:14 -0800
+Message-Id: <20210303235616.22093-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -51,36 +53,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-This commit uses the shiny new "all" and "N" cpumask options to decouple
-the "nohz_full" and "rcu_nocbs" kernel boot parameters in the TREE04.boot
-and TREE08.boot files from the CONFIG_NR_CPUS options in the TREE04 and
-TREE08 files.
+These are copies of existing tests, with just 31 --> N.  This ensures
+the recently added "N" alias transparently works in any normally
+numeric fields of a region specification.
 
-Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot | 2 +-
- tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ lib/test_bitmap.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-index 5adc675..a8d94ca 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-@@ -1 +1 @@
--rcutree.rcu_fanout_leaf=4 nohz_full=1-7
-+rcutree.rcu_fanout_leaf=4 nohz_full=1-N
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-index 22478fd..94d3844 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-@@ -1,3 +1,3 @@
- rcupdate.rcu_self_test=1
- rcutree.rcu_fanout_exact=1
--rcu_nocbs=0-7
-+rcu_nocbs=all
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 3c1c46d..9cd5755 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -353,6 +353,16 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+ 	{0, "16-31:16/31",		&exp1[3 * step], 32, 0},
+ 	{0, "31-31:31/31",		&exp1[14 * step], 32, 0},
+ 
++	{0, "N-N",			&exp1[14 * step], 32, 0},
++	{0, "0-0:1/N",			&exp1[0], 32, 0},
++	{0, "0-0:N/N",			&exp1[0], 32, 0},
++	{0, "0-15:16/N",		&exp1[2 * step], 32, 0},
++	{0, "15-15:N/N",		&exp1[13 * step], 32, 0},
++	{0, "15-N:1/N",			&exp1[13 * step], 32, 0},
++	{0, "16-N:16/N",		&exp1[3 * step], 32, 0},
++	{0, "N-N:N/N",			&exp1[14 * step], 32, 0},
++
++	{0, "0-N:1/3,1-N:1/3,2-N:1/3",		&exp1[8 * step], 32, 0},
+ 	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
+ 	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
+ 
 -- 
 2.9.5
 
