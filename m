@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B40C433E9
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A6EC433E6
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BEF7664F8B
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F54164EE1
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhCDBA7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S236128AbhCDBA7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 3 Mar 2021 20:00:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388610AbhCDAZF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1388624AbhCDAZF (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 3 Mar 2021 19:25:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0297A64E6C;
-        Thu,  4 Mar 2021 00:23:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BEC964EDF;
+        Thu,  4 Mar 2021 00:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614817394;
-        bh=OT84WHTEVokTFBZt6hb+mqM/4v/N/t9Kb7CDDaI0o4M=;
+        bh=nqO6TCOJhj9m7vFGpNCgO5kA+pzLX+aLpvXtcO7bMFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WdcMJL3XAbcGsRiBOYLxSvj3cbJeHgYXBXdexGTaIWBaGj3Zeui1td/uLJvdNK3ls
-         P0uQlPM7Gi42nJWTwGvQfnjFK9TTzO9M4/NAtkxKyFiUsYIFzvP19Ob2TZGSu5on2z
-         Q26gqp4x+nxrqOqajOYVKt9f6enh1RmO3ZpAH/YAAbZG4IqAElpK9OZmP8Py1RCcz9
-         HzMYwSZ68z4zk8MzQUh+kzPr+qCMF38tGVztPdmBsfUTAa2MRJ5E6s1buEpp8F+cax
-         6pNz5pXCsE9R8Ya+G+sWR/d0YokVQ8FS12mp+nbCAMeFa+4/t2Sh21qqX91U0sRcLO
-         UiWQq0pdjxGdw==
+        b=Li29YnL4knzKbhz4QlThEAV2niOb35zxKqlnwEW6YDoZVEssz5m1M0qeIis+BAqLN
+         tWIlQWjFr2+vCO1Z1sl06GyHWgpmpiTQbZ4CFd6oBpcRRgCFRLJusAb0xhCZLZ+JVF
+         jwlCwb9EJGiBGHL9Wcbe/gOv/tjVzWrheGyP7SYxeGPPdVWX8ld07CpiwM3ymXMgCm
+         0eDG4zWon5ABrsOpmMV+DJc3+heWIo1hmUkD3IlKwvXikaQGuA85EMkkb/krcpVF2K
+         9+WZBkX905vEZ6WVZiQAeORAs4Ry8hmRHJdiQxzzVw1ogbM0oc7H7o2PmS1/YcQy40
+         efpFV4rbTltEQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/12] rcu/nocb: Avoid confusing double write of rdp->nocb_cb_sleep
-Date:   Wed,  3 Mar 2021 16:23:04 -0800
-Message-Id: <20210304002311.23655-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/12] rcu/nocb: Only (re-)initialize segcblist when needed on CPU up
+Date:   Wed,  3 Mar 2021 16:23:05 -0800
+Message-Id: <20210304002311.23655-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304002225.GA23492@paulmck-ThinkPad-P72>
 References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
@@ -55,65 +55,72 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-The nocb_cb_wait() function first sets the rdp->nocb_cb_sleep flag to
-true by after invoking the callbacks, and then sets it back to false if
-it finds more callbacks that are ready to invoke.
+At the start of a CPU-hotplug operation, the incoming CPU's callback
+list can be in a number of states:
 
-This is confusing and will become unsafe if this flag is ever read
-locklessly.  This commit therefore writes it only once, based on the
-state after both callback invocation and checking.
+1.	Disabled and empty.  This is the case when the boot CPU has
+	not invoked call_rcu(), when a non-boot CPU first comes online,
+	and when a non-offloaded CPU comes back online.  In this case,
+	it is both necessary and permissible to initialize ->cblist.
+	Because either the CPU is currently running with interrupts
+	disabled (boot CPU) or is not yet running at all (other CPUs),
+	it is not necessary to acquire ->nocb_lock.
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
+	In this case, initialization is required.
+
+2.	Disabled and non-empty.  This cannot occur, because early boot
+	call_rcu() invocations enable the callback list before enqueuing
+	their callback.
+
+3.	Enabled, whether empty or not.	In this case, the callback
+	list has already been initialized.  This case occurs when the
+	boot CPU has executed an early boot call_rcu() and also when
+	an offloaded CPU comes back online.  In both cases, there is
+	no need to initialize the callback list: In the boot-CPU case,
+	the CPU has not (yet) gone offline, and in the offloaded case,
+	the rcuo kthreads are taking care of business.
+
+	Because it is not necessary to initialize the callback list,
+	it is also not necessary to acquire ->nocb_lock.
+
+Therefore, checking if the segcblist is enabled suffices.  This commit
+therefore initializes the callback list at rcutree_prepare_cpu() time
+only if that list is disabled.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 9fd8588..6a7f77d 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2230,6 +2230,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 	unsigned long flags;
- 	bool needwake_state = false;
- 	bool needwake_gp = false;
-+	bool can_sleep = true;
- 	struct rcu_node *rnp = rdp->mynode;
- 
- 	local_irq_save(flags);
-@@ -2253,8 +2254,6 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
- 	}
- 
--	WRITE_ONCE(rdp->nocb_cb_sleep, true);
--
- 	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
- 		if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB)) {
- 			rcu_segcblist_set_flags(cblist, SEGCBLIST_KTHREAD_CB);
-@@ -2262,7 +2261,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 				needwake_state = true;
- 		}
- 		if (rcu_segcblist_ready_cbs(cblist))
--			WRITE_ONCE(rdp->nocb_cb_sleep, false);
-+			can_sleep = false;
- 	} else {
- 		/*
- 		 * De-offloading. Clear our flag and notify the de-offload worker.
-@@ -2275,6 +2274,8 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 			needwake_state = true;
- 	}
- 
-+	WRITE_ONCE(rdp->nocb_cb_sleep, can_sleep);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index ee77858..402ea36 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4084,14 +4084,13 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
+ 	rcu_dynticks_eqs_online();
+ 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
 +
- 	if (rdp->nocb_cb_sleep)
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("CBSleep"));
+ 	/*
+-	 * Lock in case the CB/GP kthreads are still around handling
+-	 * old callbacks.
++	 * Only non-NOCB CPUs that didn't have early-boot callbacks need to be
++	 * (re-)initialized.
+ 	 */
+-	rcu_nocb_lock(rdp);
+-	if (rcu_segcblist_empty(&rdp->cblist)) /* No early-boot CBs? */
++	if (!rcu_segcblist_is_enabled(&rdp->cblist))
+ 		rcu_segcblist_init(&rdp->cblist);  /* Re-enable callbacks. */
+-	rcu_nocb_unlock(rdp);
  
+ 	/*
+ 	 * Add CPU to leaf rcu_node pending-online bitmask.  Any needed
 -- 
 2.9.5
 
