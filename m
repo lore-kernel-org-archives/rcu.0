@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC515C4332B
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50CE3C433DB
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A489F64EFD
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2901D64EEC
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhCDBAf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Mar 2021 20:00:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
+        id S240516AbhCDBAg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:00:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352939AbhCDACo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:02:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B1B064FA5;
-        Thu,  4 Mar 2021 00:00:22 +0000 (UTC)
+        id S1353197AbhCDADm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:03:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E4764FD3;
+        Thu,  4 Mar 2021 00:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614816022;
-        bh=Kp0pUDwbc2/Wi2wONM2Pspfg5qtgiwIcASHFHauAdjg=;
+        s=k20201202; t=1614816023;
+        bh=5jv1rclaj24AUph/4rIICx4KBCgni658+UJ/ISnjw0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P1q8tESvo8YtTXrAEAJNUwqOkPSD3NhBeEdkShGvvdfH9DgbUHaMrdYENHrL8ZI3B
-         xuBFXrSEFviwHN0ji7Nt2sM0QRiJWPqU/UKSfauq8dYxzx0if5N4pH/MLK4wr9Gyl3
-         P+YE5V/aiSHerqgcIO9IQlBWEXn/gedboHoqh8Wqd9bRqU9AHRinnmFUvLG6oUunNo
-         L14s0yhubBtb357g1uqlucmJVaT2pAkoc2A4Rf4epcDl4AVrzTObABzFviIXY6pP2z
-         zjhjs8PCS7sIBO4NoGBeoa5Bv1Y3wMVpCu1biGo/dIK9yGx3HGs93hXyng8bl4zzLw
-         5iEnZTbbVvFPw==
+        b=PztYxZ9UrYPpZGPQWHSAtL4/R9KNgYNw6M5x8a/JYRBaO+jx8C5mIzcffiKMtpZ5b
+         7n/LAZM662hlNT4gj96FC6FoRR6b+j8F7W8cbyCn4qeymiI4JSfhNzzTggZOmUDaIY
+         6oJlc6tTu3FvZw9cSfsBvs0SnUrA2JJ2nL5j7d7oeAoF77wx5izOtogz0BgOg4/Ea6
+         nQAcv0Y0zY9nFjD//fArHh6Gm2cGLZUxPg4F7/pRnk6KwndpxXxBiL4mYP1oVwc0VG
+         +QRndmqgzVTgD/8ZA3rUE7s943jbmkq38hlr61tsuYw7w+3nk+ciAtts7TNd3BqqB9
+         7jCakm6cMFVdQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -39,11 +39,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/10] rcu: Fix kfree_rcu() docbook errors
-Date:   Wed,  3 Mar 2021 16:00:14 -0800
-Message-Id: <20210304000019.22459-5-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/10] rcu: Prevent dyntick-idle until ksoftirqd has been spawned
+Date:   Wed,  3 Mar 2021 16:00:16 -0800
+Message-Id: <20210304000019.22459-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235958.GA22373@paulmck-ThinkPad-P72>
 References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
@@ -51,51 +50,56 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-After commit 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro"),
-kernel-doc now emits two warnings:
+After interrupts have enabled at boot but before some random point
+in early_initcall() processing, softirq processing is unreliable.
+If softirq sees a need to push softirq-handler invocation to ksoftirqd
+during this time, then those handlers can be delayed until the ksoftirqd
+kthreads have been spawned, which happens at some random point in the
+early_initcall() processing.  In many cases, this delay is just fine.
+However, if the boot sequence blocks waiting for a wakeup from a softirq
+handler, this delay will result in a silent-hang deadlock.
 
-	./include/linux/rcupdate.h:884: warning: Excess function parameter 'ptr' description in 'kfree_rcu'
-	./include/linux/rcupdate.h:884: warning: Excess function parameter 'rhf' description in 'kfree_rcu'
+This commit therefore prevents these hangs by ensuring that the tick
+stays active until after the ksoftirqd kthreads have been spawned.
+This change causes the tick to eventually drain the backlog of delayed
+softirq handlers, breaking this deadlock.
 
-This commit added some macro magic in order to call two different versions
-of kfree_rcu(), the first having just one argument and the second having
-two arguments.  That makes it difficult to document the kfree_rcu() arguments
-in the docboook header.
-
-In order to make clearer that this macro accepts optional arguments,
-this commit uses macro concatenation so that this macro changes from:
-	#define kfree_rcu kvfree_rcu
-
-to:
-	#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
-
-That not only helps kernel-doc understand the macro arguments, but also
-provides a better C definition that makes clearer that the first argument
-is mandatory and the second one is optional.
-
-Fixes: 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro")
-Tested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index bd04f72..5cc6dea 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -881,7 +881,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * The BUILD_BUG_ON check must not involve any function calls, hence the
-  * checks are done in macros here.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2d60377..36212de 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1255,6 +1255,11 @@ static void rcu_prepare_kthreads(int cpu)
   */
--#define kfree_rcu kvfree_rcu
-+#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
+ int rcu_needs_cpu(u64 basemono, u64 *nextevt)
+ {
++	/* Through early_initcall(), need tick for softirq handlers. */
++	if (!IS_ENABLED(CONFIG_HZ_PERIODIC) && !this_cpu_ksoftirqd()) {
++		*nextevt = 1;
++		return 1;
++	}
+ 	*nextevt = KTIME_MAX;
+ 	return !rcu_segcblist_empty(&this_cpu_ptr(&rcu_data)->cblist) &&
+ 	       !rcu_segcblist_is_offloaded(&this_cpu_ptr(&rcu_data)->cblist);
+@@ -1350,6 +1355,12 @@ int rcu_needs_cpu(u64 basemono, u64 *nextevt)
  
- /**
-  * kvfree_rcu() - kvfree an object after a grace period.
+ 	lockdep_assert_irqs_disabled();
+ 
++	/* Through early_initcall(), need tick for softirq handlers. */
++	if (!IS_ENABLED(CONFIG_HZ_PERIODIC) && !this_cpu_ksoftirqd()) {
++		*nextevt = 1;
++		return 1;
++	}
++
+ 	/* If no non-offloaded callbacks, RCU doesn't need the CPU. */
+ 	if (rcu_segcblist_empty(&rdp->cblist) ||
+ 	    rcu_segcblist_is_offloaded(&this_cpu_ptr(&rcu_data)->cblist)) {
 -- 
 2.9.5
 
