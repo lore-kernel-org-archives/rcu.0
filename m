@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F3B2C433E6
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CC27C433E0
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 56DDD64F62
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 10F7664F4E
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351486AbhCDBBo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Mar 2021 20:01:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
+        id S1351932AbhCDBBq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:01:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452953AbhCDAj6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:39:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A2F64F2B;
-        Thu,  4 Mar 2021 00:38:16 +0000 (UTC)
+        id S1452966AbhCDAkO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:40:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4149E64F45;
+        Thu,  4 Mar 2021 00:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614818296;
-        bh=w9pB+wrg4FHKROMwMhZxKW3mYIoH604FwI7t7RmTR1s=;
+        s=k20201202; t=1614818297;
+        bh=E07oIrMZ0Bl3Bh9m+EbhgZfSJL/MS32GkbuJL6K4khg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZdFXd/F/PHLayVTJUSAk0XIzIgtthMTutkicnYHhqJmxqzycfBXZvL+O49BJ5oo0F
-         VPLA9EXBSw6tlgNYAFIuGSLlBXNIglZ+5EcMw8j1FWVaZh6QbH/5DKUkguzsLL37dq
-         A4fKrtHL9QK7S3Qw12tcc5hsZIcgSqUqeRdBmrlP5ajVJIInTiby501Ikcco2zURKR
-         uUF9xrBVMn1W7tY1s0JIhFAridtclPKm0x+c7IjYo2ZT08BwJNa8lWYMIsdkiQ/1lW
-         G3ogRG6bZHuaKshYxKPbJ7/x5JMSb8P3SvyOdLUPYgQoq+krASWkQnb11Ku3mEB/+O
-         BEjZV6WrQnGNw==
+        b=ftGA7T66c97buvPL6NwaS06DXxZWSagq3LC0Sty1eRiEGqYPkj1JvpmmHYwbWztG5
+         r0WxHFU6oytrzY9unARTbSR1DWkuhrNfgblVqKReHiS0D5iV9N4QrQwMr8ToyjJlp1
+         RpDBMcb6ZGHVEAuStn+S0LtnXAaJ56hxRo3KGGvQgyotdOPfB2DPFAIY0ubslaweeI
+         rqC5BM0x6ywtcEJ9xPS5nGx9s+/o6lp0V8Mml9FPXoO+1ZKooyXxgmQbLPvNKn8mUw
+         o0TPdyeMeCMshIJSxaIajvQ3YmmmOPx+0R0FVsXCzUjCeZE9+woNtaQNAz6nAR1uP2
+         440KqEItOdslg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/28] torture: Record jitter start/stop commands
-Date:   Wed,  3 Mar 2021 16:37:59 -0800
-Message-Id: <20210304003812.24833-15-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 21/28] torture: Create a "batches" file for build reuse
+Date:   Wed,  3 Mar 2021 16:38:05 -0800
+Message-Id: <20210304003812.24833-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -52,94 +52,92 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Distributed runs of rcutorture will need to start and stop jittering on
-the remote hosts, which means that the commands must be communicated to
-those hosts.  The commit therefore causes kvm.sh to place these commands
-in new TORTURE_JITTER_START and TORTURE_JITTER_STOP environment variables
-to communicate them to the scripts that will set this up.  In addition,
-this commit causes kvm-test-1-run.sh to append these commands to each
-generated qemu-cmd file, which allows any remotely executing script to
-extract the needed commands from this file.
+This commit creates a "batches" file in the res/$ds directory, where $ds
+is the datestamp.  This file contains the batches and the number of CPUs,
+for example:
+
+1 TREE03 16
+1 SRCU-P 8
+2 TREE07 16
+2 TREE01 8
+3 TREE02 8
+3 TREE04 8
+3 TREE05 8
+4 SRCU-N 4
+4 TRACE01 4
+4 TRACE02 4
+4 RUDE01 2
+4 RUDE01.2 2
+4 TASKS01 2
+4 TASKS03 2
+4 SRCU-t 1
+4 SRCU-u 1
+4 TASKS02 1
+4 TINY01 1
+5 TINY02 1
+5 TREE09 1
+
+The first column is the batch number, the second the scenario number
+(possibly suffixed by a repetition number, as in "RUDE01.2"), and the
+third is the number of CPUs required by that scenario.  The last line
+shows the number of CPUs expected by this batch file, which allows
+the run to be re-batched if a different number of CPUs is available.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  2 ++
- tools/testing/selftests/rcutorture/bin/kvm.sh      | 24 +++++++++++++---------
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 29 ++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index f3d2ded..a69f8ae 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -202,6 +202,8 @@ echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_appen
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
- echo "# seconds=$seconds" >> $resdir/qemu-cmd
- echo "# TORTURE_KCONFIG_GDB_ARG=\"$TORTURE_KCONFIG_GDB_ARG\"" >> $resdir/qemu-cmd
-+echo "# TORTURE_JITTER_START=\"$TORTURE_JITTER_START\"" >> $resdir/qemu-cmd
-+echo "# TORTURE_JITTER_STOP=\"$TORTURE_JITTER_STOP\"" >> $resdir/qemu-cmd
- 
- if test -n "$TORTURE_BUILDONLY"
- then
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index d6973e4..efcbd12 100755
+index a1cd05c..0add163 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -35,6 +35,8 @@ TORTURE_KCONFIG_ARG=""
- TORTURE_KCONFIG_GDB_ARG=""
- TORTURE_BOOT_GDB_ARG=""
- TORTURE_QEMU_GDB_ARG=""
-+TORTURE_JITTER_START=""
-+TORTURE_JITTER_STOP=""
- TORTURE_KCONFIG_KASAN_ARG=""
- TORTURE_KCONFIG_KCSAN_ARG=""
- TORTURE_KMAKE_ARG=""
-@@ -443,6 +445,16 @@ function dump(first, pastlast, batchnum)
- 	print "echo ----Start batch " batchnum ": `date` | tee -a " rd "log";
- 	print "needqemurun="
- 	jn=1
-+	njitter = 0;
-+	split(jitter, ja);
-+	if (ja[1] == -1 && ncpus == 0)
-+		njitter = 1;
-+	else if (ja[1] == -1)
-+		njitter = ncpus;
-+	else
-+		njitter = ja[1];
-+	print "TORTURE_JITTER_START=\". jitterstart.sh " njitter " " rd " " dur " " ja[2] " " ja[3] "\"; export TORTURE_JITTER_START";
-+	print "TORTURE_JITTER_STOP=\". jitterstop.sh " rd " \"; export TORTURE_JITTER_STOP"
- 	for (j = first; j < pastlast; j++) {
- 		cpusr[jn] = cpus[j];
- 		if (cfrep[cf[j]] == "") {
-@@ -484,14 +496,6 @@ function dump(first, pastlast, batchnum)
- 		print "\tneedqemurun=1"
- 		print "fi"
- 	}
--	njitter = 0;
--	split(jitter, ja);
--	if (ja[1] == -1 && ncpus == 0)
--		njitter = 1;
--	else if (ja[1] == -1)
--		njitter = ncpus;
--	else
--		njitter = ja[1];
- 	if (TORTURE_BUILDONLY && njitter != 0) {
- 		njitter = 0;
- 		print "echo Build-only run, so suppressing jitter | tee -a " rd "log"
-@@ -502,12 +506,12 @@ function dump(first, pastlast, batchnum)
- 	print "if test -n \"$needqemurun\""
- 	print "then"
- 	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
--	print "\t. jitterstart.sh " njitter " " rd " " dur " " ja[2] " " ja[3]
-+	print "\t$TORTURE_JITTER_START";
- 	print "\twhile ls $runfiles > /dev/null 2>&1"
- 	print "\tdo"
- 	print "\t\t:"
- 	print "\tdone"
--	print "\t. jitterstop.sh " rd
-+	print "\t$TORTURE_JITTER_STOP";
- 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
- 	print "else"
- 	print "\twait"
+@@ -565,6 +565,18 @@ echo 'ret=$?' >> $T/script
+ echo "cat $T/kvm-recheck.sh.out | tee -a $resdir/$ds/log" >> $T/script
+ echo 'exit $ret' >> $T/script
+ 
++# Extract the tests and their batches from the script.
++egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
++	sed -e 's/:.*$//' -e 's/^echo //' -e 's/-ovf//' |
++	awk '
++	/^----Start/ {
++		batchno = $3;
++		next;
++	}
++	{
++		print batchno, $1, $2
++	}' > $T/batches
++
+ if test "$dryrun" = script
+ then
+ 	cat $T/script
+@@ -583,21 +595,14 @@ then
+ 	exit 0
+ elif test "$dryrun" = batches
+ then
+-	# Extract the tests and their batches from the script.
+-	egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
+-		sed -e 's/:.*$//' -e 's/^echo //' -e 's/-ovf//' |
+-		awk '
+-		/^----Start/ {
+-			batchno = $3;
+-			next;
+-		}
+-		{
+-			print batchno, $1, $2
+-		}'
++	cat $T/batches
++	exit 0
+ else
+-	# Not a dryrun, so run the script.
++	# Not a dryrun.  Record the batches and the number of CPUs, then run the script.
+ 	bash $T/script
+ 	ret=$?
++	cp $T/batches $resdir/$ds/batches
++	echo '#' cpus=$cpus >> $resdir/$ds/batches
+ 	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a $resdir/$ds/log
+ 	exit $ret
+ fi
 -- 
 2.9.5
 
