@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C1F8C433E9
-	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CA89C43331
+	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D1C2864F2D
+	by mail.kernel.org (Postfix) with ESMTP id 5CBA064F48
 	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:01:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351450AbhCDBBm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S1351449AbhCDBBm (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 3 Mar 2021 20:01:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452950AbhCDAjx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:39:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5503E64F49;
-        Thu,  4 Mar 2021 00:38:18 +0000 (UTC)
+        id S1452944AbhCDAjw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BAF264F47;
+        Thu,  4 Mar 2021 00:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614818298;
-        bh=JliU1HJkmj44PJh3uvIhiLKhmFHGenS52iQjT5s/a9I=;
+        s=k20201202; t=1614818297;
+        bh=XM7p4QSV/GFErVqA0Lu0fJQjVwCIBEYZrNLSRyI+w1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pmR2tZN3TxbH1Hcy4AD2LHhPKWMoCdXvghMTzrCoxGxJ/nunpr49PEnbgm4Fx7fL4
-         Ytcp2K7hXMfAqQWWCfd2MvtQbt1ceh9GxULXZ90LstUvR8LXB9U7AxLVSUN4+ZhoyA
-         hAwZlew4cxdtABKq9qAVteWrYLSjeaAQV2RxCtmRkyeIWVhcV4kCUmUJtnOW+J+yQq
-         919ZoZST6BxtHYlRgcVEPrTeZmoLWoDDn+O/iiikyq5SFb7gWzInlrOuj/JdiWQFiX
-         TX7sllRc3KdznT3sQb2doxlclDqAZIsQfLxW6SCSx7uQzpEQNTYWDBUw2JQZ/fkJg1
-         hZlNPIQ3uHQ5A==
+        b=SDe9nJFBwxmBI4n0WfPa/fnazn1Vsza4IPAj+G/vtKf55ZMq3gY0ebl/jVnLx2gyd
+         JWel8ynrSWtSYBMcmVlNikQsamiSmtk+F9imnFpY6ro3llRFCJ8d2It8n3o74jwR+X
+         5Jj4mO/oTIzmVaKOHjPeRjwf25k81Y2Av4mANrYryXMxzBQCMHsNbj5KQyCsjD8wVo
+         ESHKCSFIvJYROlOv2PkyNko/X20C9URGj4ayjyfjfCgX0E/Cjz9ZrTwHbZYcwlt8Cy
+         2Ca5JDVNG8fxr4aaOa4PKXl2/Jhh+CqfjmWQdfNOoAxC/avhbqds0jHjl4YNI33s5e
+         pXil1b60Dh4ng==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 27/28] torture: Consolidate qemu-cmd duration editing into kvm-transform.sh
-Date:   Wed,  3 Mar 2021 16:38:11 -0800
-Message-Id: <20210304003812.24833-27-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 22/28] torture: Add kvm-again.sh to rerun a previous torture-test
+Date:   Wed,  3 Mar 2021 16:38:06 -0800
+Message-Id: <20210304003812.24833-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -52,52 +52,274 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, kvm-again.sh updates the duration in the "seconds=" comment
-in the qemu-cmd file, but kvm-transform.sh updates the duration in the
-actual qemu command arguments.  This is an accident waiting to happen.
+This commit adds a kvm-again.sh script that, given the results directory
+of a torture-test run, re-runs that test.  This means that the kernels
+need not be rebuilt, but it also is a step towards running torture tests
+on remote systems.
 
-This commit therefore consolidates these updates into kvm-transform.sh.
+This commit also adds a kvm-test-1-run-batch.sh script that runs one
+batch out of the torture test.  The idea is to copy a results directory
+tree to remote systems, then use kvm-test-1-run-batch.sh to run batches
+on these systems.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-again.sh     | 4 ----
- tools/testing/selftests/rcutorture/bin/kvm-transform.sh | 8 ++++++++
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ .../testing/selftests/rcutorture/bin/kvm-again.sh  | 171 +++++++++++++++++++++
+ .../rcutorture/bin/kvm-test-1-run-batch.sh         |  67 ++++++++
+ 2 files changed, 238 insertions(+)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-again.sh
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index 75e6afe..33ba6b0 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+new file mode 100755
+index 0000000..92cf396
+--- /dev/null
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -155,10 +155,6 @@ do
- 	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
- 	jitter_dir="`dirname "$kernel_dir"`"
- 	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" $dur < $T/qemu-cmd > $i
--	if test -n "$dur"
--	then
--		echo "# seconds=$dur" >> $i
--	fi
- 	if test -n "$arg_remote"
- 	then
- 		echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-index e9dcbce..d40b4e6 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-@@ -44,6 +44,14 @@ fi
- 
- awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
-     -v seconds="$seconds" '
-+/^# seconds=/ {
-+	if (seconds == "")
-+		print $0;
-+	else
-+		print "# seconds=" seconds;
-+	next;
+@@ -0,0 +1,171 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Rerun a series of tests under KVM.
++#
++# Usage: kvm.sh /path/to/old/run [ options ]
++#
++# Copyright (C) 2021 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++scriptname=$0
++args="$*"
++
++T=${TMPDIR-/tmp}/kvm-again.sh.$$
++trap 'rm -rf $T' 0
++mkdir $T
++
++if ! test -d tools/testing/selftests/rcutorture/bin
++then
++	echo $scriptname must be run from top-level directory of kernel source tree.
++	exit 1
++fi
++
++oldrun=$1
++shift
++if ! test -d "$oldrun"
++then
++	echo "Usage: $scriptname /path/to/old/run [ options ]"
++	exit 1
++fi
++if ! cp "$oldrun/batches" $T/batches.oldrun
++then
++	# Later on, can reconstitute this from console.log files.
++	echo Prior run batches file does not exist: $oldrun/batches
++	exit 1
++fi
++
++if test -f "$oldrun/torture_suite"
++then
++	torture_suite="`cat $oldrun/torture_suite`"
++elif test -f "$oldrun/TORTURE_SUITE"
++then
++	torture_suite="`cat $oldrun/TORTURE_SUITE`"
++else
++	echo "Prior run torture_suite file does not exist: $oldrun/{torture_suite,TORTURE_SUITE}"
++	exit 1
++fi
++
++KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
++PATH=${KVM}/bin:$PATH; export PATH
++. functions.sh
++
++dryrun=
++default_link="cp -R"
++rundir="`pwd`/tools/testing/selftests/rcutorture/res/`date +%Y.%m.%d-%H.%M.%S-again`"
++
++startdate="`date`"
++starttime="`get_starttime`"
++
++usage () {
++	echo "Usage: $scriptname $oldrun [ arguments ]:"
++	echo "       --dryrun"
++	echo "       --link hard|soft|copy"
++	echo "       --remote"
++	echo "       --rundir /new/res/path"
++	exit 1
 +}
 +
- /^# TORTURE_JITTER_START=/ {
- 	print "# TORTURE_JITTER_START=\". jitterstart.sh " $4 " " jitter_dir " " $6 " " $7;
- 	next;
++while test $# -gt 0
++do
++	case "$1" in
++	--dryrun)
++		dryrun=1
++		;;
++	--link)
++		checkarg --link "hard|soft|copy" "$#" "$2" 'hard\|soft\|copy' '^--'
++		case "$2" in
++		copy)
++			arg_link="cp -R"
++			;;
++		hard)
++			arg_link="cp -Rl"
++			;;
++		soft)
++			arg_link="cp -Rs"
++			;;
++		esac
++		shift
++		;;
++	--remote)
++		arg_remote=1
++		default_link="cp -as"
++		;;
++	--rundir)
++		checkarg --rundir "(absolute pathname)" "$#" "$2" '^/' '^error'
++		rundir=$2
++		if test -e "$rundir"
++		then
++			echo "--rundir $2: Already exists."
++			usage
++		fi
++		shift
++		;;
++	*)
++		echo Unknown argument $1
++		usage
++		;;
++	esac
++	shift
++done
++if test -z "$arg_link"
++then
++	arg_link="$default_link"
++fi
++
++echo ---- Re-run results directory: $rundir
++
++# Copy old run directory tree over and adjust.
++mkdir -p "`dirname "$rundir"`"
++if ! $arg_link "$oldrun" "$rundir"
++then
++	echo "Cannot copy from $oldrun to $rundir."
++	usage
++fi
++rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
++echo $oldrun > "$rundir/re-run"
++if ! test -d "$rundir/../../bin"
++then
++	$arg_link "$oldrun/../../bin" "$rundir/../.."
++fi
++for i in $rundir/*/qemu-cmd
++do
++	cp "$i" $T
++	qemu_cmd_dir="`dirname "$i"`"
++	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
++	kvm-transform.sh $kernel_dir/bzImage $qemu_cmd_dir/console.log < $T/qemu-cmd > $i
++	echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
++done
++grep -v '^#' $T/batches.oldrun | awk '
++BEGIN {
++	oldbatch = 1;
++}
++
++{
++	if (oldbatch != $1) {
++		print "kvm-test-1-run-batch.sh" curbatch;
++		curbatch = "";
++		oldbatch = $1;
++	}
++	curbatch = curbatch " " $2;
++}
++
++END {
++	print "kvm-test-1-run-batch.sh" curbatch
++}' > $T/runbatches.sh
++
++if test -n "$dryrun"
++then
++	echo ---- Dryrun complete, directory: $rundir | tee -a "$rundir/log"
++else
++	( cd "$rundir"; sh $T/runbatches.sh )
++	kcsan-collapse.sh "$rundir" | tee -a "$rundir/log"
++	echo | tee -a "$rundir/log"
++	echo ---- Results directory: $rundir | tee -a "$rundir/log"
++	kvm-recheck.sh "$rundir" > $T/kvm-recheck.sh.out 2>&1
++	ret=$?
++	cat $T/kvm-recheck.sh.out | tee -a "$rundir/log"
++	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a "$rundir/log"
++	exit $ret
++fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
+new file mode 100755
+index 0000000..7ea0809e
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh
+@@ -0,0 +1,67 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Carry out a kvm-based run for the specified batch of scenarios, which
++# might have been built by --build-only kvm.sh run.
++#
++# Usage: kvm-test-1-run-batch.sh SCENARIO [ SCENARIO ... ]
++#
++# Each SCENARIO is the name of a directory in the current directory
++#	containing a ready-to-run qemu-cmd file.
++#
++# Copyright (C) 2021 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++T=${TMPDIR-/tmp}/kvm-test-1-run-batch.sh.$$
++trap 'rm -rf $T' 0
++mkdir $T
++
++echo ---- Running batch $*
++# Check arguments
++runfiles=
++for i in "$@"
++do
++	if ! echo $i | grep -q '^[^/.a-z]\+\(\.[0-9]\+\)\?$'
++	then
++		echo Bad scenario name: \"$i\" 1>&2
++		exit 1
++	fi
++	if ! test -d "$i"
++	then
++		echo Scenario name not a directory: \"$i\" 1>&2
++		exit 2
++	fi
++	if ! test -f "$i/qemu-cmd"
++	then
++		echo Scenario lacks a command file: \"$i/qemu-cmd\" 1>&2
++		exit 3
++	fi
++	rm -f $i/build.*
++	touch $i/build.run
++	runfiles="$runfiles $i/build.run"
++done
++
++# Extract settings from the qemu-cmd file.
++grep '^#' $1/qemu-cmd | sed -e 's/^# //' > $T/qemu-cmd-settings
++. $T/qemu-cmd-settings
++
++# Start up jitter, start each scenario, wait, end jitter.
++echo ---- System running test: `uname -a`
++echo ---- Starting kernels. `date` | tee -a log
++$TORTURE_JITTER_START
++for i in "$@"
++do
++	echo ---- System running test: `uname -a` > $i/kvm-test-1-run-qemu.sh.out
++	echo > $i/kvm-test-1-run-qemu.sh.out
++	kvm-test-1-run-qemu.sh $i >> $i/kvm-test-1-run-qemu.sh.out 2>&1 &
++done
++for i in $runfiles
++do
++	while ls $i > /dev/null 2>&1
++	do
++		:
++	done
++done
++echo ---- All kernel runs complete. `date` | tee -a log
++$TORTURE_JITTER_STOP
 -- 
 2.9.5
 
