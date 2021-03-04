@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F061C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EA7C433E9
 	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F70364F09
+	by mail.kernel.org (Postfix) with ESMTP id 6FB5364EC4
 	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349799AbhCDBAx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Mar 2021 20:00:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51536 "EHLO mail.kernel.org"
+        id S1350097AbhCDBAy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:00:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388757AbhCDAMR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S1388876AbhCDAMR (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 3 Mar 2021 19:12:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 548D164EBD;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80E7E64F8F;
         Thu,  4 Mar 2021 00:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614816696;
-        bh=OMCAxkhR1Vd19P5YP0klYvGEyOmKgsP2O47it1wjT90=;
+        bh=HjxRefAVEDtyC572wZIVjBocbJ6bL5n78qbG5hVM5Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X7MeaZBn+m1IFPjrHrEAaeNXL1d49EtgHVVrUvQE2o1EUtmwKGCKdPvLWc3fIFDRV
-         ZDk+YvLnHuz5fxYH816YUESzKfiRjhcXAAaF5h9sWpxffqtTvveSpTA5JVC55Oxvs+
-         4TkkLbkliUIJFjzown5nmyJlueHhfdcVF1DWqml0OQl0+yltV2BAXkFgVjlSXb7+/E
-         BQLZUyIXBgoKTdAuJ8sJvSSB640OUn7T6yEVYsgn8pXn8dxxKX4f9bGRy7ertJ+DGw
-         0HTP+9ZFrA03SNdeete990g8P/mrpP53lQ1KpiNJ5wfNIiWptjncyKjU7XpKt2y8RY
-         2tBDdZBtMuvOw==
+        b=QdnLj6LiEk2Yp76/L9kWWYD4WCC80LCMpXYEKR800AbB2x+GH4BAyoh5TmibJQAgd
+         pQB1t+5PBQ0NVUphPbmoV9spaOPxhD5IAw477YYrBzFmVzFIMnQKdBQoKRnXAWBq54
+         da2Uptrwzz0xjWU+HSRAzn5OIweqzoheUkcifPy77Jz9LifGXhPbtoSkUbN5E65iKd
+         mGC7sV7ctK45u9E11J9oKKfsNK09sRtBM5bUq2VNmOob5IJb0y2sAxiqxRFKHv7POj
+         wOA8vUo4poNTsgPE/P0nnGDGJTnM3gwTpbxv4nMp1qruDirNi4Y8eqH6pZ65rUqv5C
+         Dzu9vasRmAb0Q==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/6] kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-Date:   Wed,  3 Mar 2021 16:11:30 -0800
-Message-Id: <20210304001134.22977-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 3/6] kvfree_rcu: Make krc_this_cpu_unlock() use raw_spin_unlock_irqrestore()
+Date:   Wed,  3 Mar 2021 16:11:31 -0800
+Message-Id: <20210304001134.22977-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304001044.GA22871@paulmck-ThinkPad-P72>
 References: <20210304001044.GA22871@paulmck-ThinkPad-P72>
@@ -52,30 +52,33 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-this can-sleep code path from dipping into the emergency reserves.
+The krc_this_cpu_unlock() function does a raw_spin_unlock() immediately
+followed by a local_irq_restore().  This commit saves a line of code by
+merging them into a raw_spin_unlock_irqrestore().  This transformation
+also reduces scheduling latency because raw_spin_unlock_irqrestore()
+responds immediately to a reschedule request.  In contrast,
+local_irq_restore() does a scheduling-oblivious enabling of interrupts.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Suggested-by: Michal Hocko <mhocko@suse.com>
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1f8c980..08b5044 100644
+index 08b5044..7ee83f3 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3519,7 +3519,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 		if (!bnode && can_alloc) {
- 			krc_this_cpu_unlock(*krcp, *flags);
- 			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-+				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 			*krcp = krc_this_cpu_lock(flags);
- 		}
+@@ -3229,8 +3229,7 @@ krc_this_cpu_lock(unsigned long *flags)
+ static inline void
+ krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
+ {
+-	raw_spin_unlock(&krcp->lock);
+-	local_irq_restore(flags);
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ }
  
+ static inline struct kvfree_rcu_bulk_data *
 -- 
 2.9.5
 
