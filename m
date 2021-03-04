@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34299C43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5CA0C4332D
 	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 114DC64EFD
+	by mail.kernel.org (Postfix) with ESMTP id 9EF9464F53
 	for <rcu@archiver.kernel.org>; Thu,  4 Mar 2021 01:00:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbhCDBAy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 Mar 2021 20:00:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51630 "EHLO mail.kernel.org"
+        id S235382AbhCDBAz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:00:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388877AbhCDAMS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:12:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E83DB64FD3;
-        Thu,  4 Mar 2021 00:11:36 +0000 (UTC)
+        id S1391222AbhCDAMk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:12:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2808E64EFD;
+        Thu,  4 Mar 2021 00:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614816697;
-        bh=tkAUtqlgtbGaZ3Ea1HKIpTF3HvvWrVZ0SZjS9Naz76Y=;
+        bh=TKqsDjx/j8OKoVI1MdZNosI+1XeHU5vViJP4279S/KM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B3jnc4CwoB4ypjKjKEjvb/FRqUV+TQ/JW06qk1vg+n9fIXUJvfeQpm17Gh67j9RB0
-         KG4kCr1tJ2b7Z/nX/xREYuYKUUjcPnInWlhklw8QDURHBJXrongkjzIniob3iHTz3h
-         dzmp8C1Nv7D3dV5wfAGT4h3zjuMyUONQJKNk9inrJiOdl3Cq92+buWVoVRUyvj7oq8
-         bJ5A0wZ1Z2ZMQzVemUhuIL7/FWEtNr5ailTiJYkGOuktNTiEeKcPP9S0b90vYi5tQW
-         itthNJDyzAgnWUyik2RT+3yGWwjm0LrafPL6jXyL91yuc3PPZFazKPx9U1HhDX3/w7
-         dpFVTzteB1rvA==
+        b=Wfmv3/n9Bl7Q69I9zn45aIZ8SGqjZAbhav9F+NttvQmOGdCE7ZF/SL77VUzwYiwA7
+         FsRL6UZLJXVeT8tAmdCETSAQeWeFIw2O9nsMB0Q752b5+iysbLKWVj/PeN0ccyVIeS
+         CKVUjuwi047Cnl0H7IJRresRpMlNTnXaQ4/1qdlgHPSCXUmTAmJM6a2MI4JGTxmZI4
+         tYyX5iPUzLQPWNEg4ylaFhBW3/W40dfQg2E7AOZyIFdjIRQ5x/Ua31rpozUt/j2cwt
+         xlda0ats/a9IZnumcZZbRVYoXmoLtI4o4ZmNpYt07qY+XSwgkp7Zuw6cgYv6C7URLo
+         vJ9e4Cl8I18ng==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,9 +41,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 5/6] kvfree_rcu: Use same set of GFP flags as does single-argument
-Date:   Wed,  3 Mar 2021 16:11:33 -0800
-Message-Id: <20210304001134.22977-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 6/6] rcuscale: Add kfree_rcu() single-argument scale test
+Date:   Wed,  3 Mar 2021 16:11:34 -0800
+Message-Id: <20210304001134.22977-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304001044.GA22871@paulmck-ThinkPad-P72>
 References: <20210304001044.GA22871@paulmck-ThinkPad-P72>
@@ -53,90 +53,93 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Running an rcuscale stress-suite can lead to "Out of memory" of a
-system. This can happen under high memory pressure with a small amount
-of physical memory.
+The single-argument variant of kfree_rcu() is currently not
+tested by any member of the rcutoture test suite.  This
+commit therefore adds rcuscale code to test it.  This
+testing is controlled by two new boolean module parameters,
+kfree_rcu_test_single and kfree_rcu_test_double.  If one
+is set and the other not, only the corresponding variant
+is tested, otherwise both are tested, with the variant to
+be tested determined randomly on each invocation.
 
-For example, a KVM test configuration with 64 CPUs and 512 megabytes
-can result in OOM when running rcuscale with below parameters:
+Both of these module parameters are initialized to false,
+so setting either to true will test only that variant.
 
-../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
---bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
-  rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
-
-<snip>
-[   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
-[   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[   12.056485] Workqueue: events_highpri fill_page_cache_func
-[   12.056485] Call Trace:
-[   12.056485]  dump_stack+0x57/0x6a
-[   12.056485]  dump_header+0x4c/0x30a
-[   12.056485]  ? del_timer_sync+0x20/0x30
-[   12.056485]  out_of_memory.cold.47+0xa/0x7e
-[   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
-[   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
-[   12.056485]  __get_free_pages+0x8/0x30
-[   12.056485]  fill_page_cache_func+0x39/0xb0
-[   12.056485]  process_one_work+0x1ed/0x3b0
-[   12.056485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  worker_thread+0x28/0x3c0
-[   12.060485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  kthread+0x138/0x160
-[   12.060485]  ? kthread_park+0x80/0x80
-[   12.060485]  ret_from_fork+0x22/0x30
-[   12.062156] Mem-Info:
-[   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
-[   12.062350]  active_file:0 inactive_file:0 isolated_file:0
-[   12.062350]  unevictable:0 dirty:0 writeback:0
-[   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
-[   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
-[   12.062350]  free:10488 free_pcp:1227 free_cma:0
-...
-[   12.101610] Out of memory and no killable processes...
-[   12.102042] Kernel panic - not syncing: System is deadlocked on memory
-[   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-<snip>
-
-Because kvfree_rcu() has a fallback path, memory allocation failure is
-not the end of the world.  Furthermore, the added overhead of aggressive
-GFP settings must be balanced against the overhead of the fallback path,
-which is a cache miss for double-argument kvfree_rcu() and a call to
-synchronize_rcu() for single-argument kvfree_rcu().  The current choice
-of GFP_KERNEL|__GFP_NOWARN can result in longer latencies than a call
-to synchronize_rcu(), so less-tenacious GFP flags would be helpful.
-
-Here is the tradeoff that must be balanced:
-    a) Minimize use of the fallback path,
-    b) Avoid pushing the system into OOM,
-    c) Bound allocation latency to that of synchronize_rcu(), and
-    d) Leave the emergency reserves to use cases lacking fallbacks.
-
-This commit therefore changes GFP flags from GFP_KERNEL|__GFP_NOWARN to
-GFP_KERNEL|__GFP_NORETRY|__GFP_NOMEMALLOC|__GFP_NOWARN.  This combination
-leaves the emergency reserves alone and can initiate reclaim, but will
-not invoke the OOM killer.
-
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++++
+ kernel/rcu/rcuscale.c                           | 15 ++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0ecc1fb..4120d4b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3463,7 +3463,7 @@ static void fill_page_cache_func(struct work_struct *work)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0454572..84fce41 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4259,6 +4259,18 @@
+ 	rcuscale.kfree_rcu_test= [KNL]
+ 			Set to measure performance of kfree_rcu() flooding.
  
- 	for (i = 0; i < rcu_min_cached_objs; i++) {
- 		bnode = (struct kvfree_rcu_bulk_data *)
--			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
-+			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
++	rcuscale.kfree_rcu_test_double= [KNL]
++			Test the double-argument variant of kfree_rcu().
++			If this parameter has the same value as
++			rcuscale.kfree_rcu_test_single, both the single-
++			and double-argument variants are tested.
++
++	rcuscale.kfree_rcu_test_single= [KNL]
++			Test the single-argument variant of kfree_rcu().
++			If this parameter has the same value as
++			rcuscale.kfree_rcu_test_double, both the single-
++			and double-argument variants are tested.
++
+ 	rcuscale.kfree_nthreads= [KNL]
+ 			The number of threads running loops of kfree_rcu().
  
- 		if (bnode) {
- 			raw_spin_lock_irqsave(&krcp->lock, flags);
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 06491d5..dca51fe 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
+ torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+ torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+ torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
++torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
++torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
+ 
+ static struct task_struct **kfree_reader_tasks;
+ static int kfree_nrealthreads;
+@@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
+ 	struct kfree_obj *alloc_ptr;
+ 	u64 start_time, end_time;
+ 	long long mem_begin, mem_during = 0;
++	bool kfree_rcu_test_both;
++	DEFINE_TORTURE_RANDOM(tr);
+ 
+ 	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
+ 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
+ 	set_user_nice(current, MAX_NICE);
++	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
+ 
+ 	start_time = ktime_get_mono_fast_ns();
+ 
+@@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
+ 			if (!alloc_ptr)
+ 				return -ENOMEM;
+ 
+-			kfree_rcu(alloc_ptr, rh);
++			// By default kfree_rcu_test_single and kfree_rcu_test_double are
++			// initialized to false. If both have the same value (false or true)
++			// both are randomly tested, otherwise only the one with value true
++			// is tested.
++			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
++					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
++				kfree_rcu(alloc_ptr);
++			else
++				kfree_rcu(alloc_ptr, rh);
+ 		}
+ 
+ 		cond_resched();
 -- 
 2.9.5
 
