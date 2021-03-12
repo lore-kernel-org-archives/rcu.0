@@ -4,34 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C75ADC433E9
-	for <rcu@archiver.kernel.org>; Fri, 12 Mar 2021 11:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19607C433DB
+	for <rcu@archiver.kernel.org>; Fri, 12 Mar 2021 12:22:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 97BB764F6F
-	for <rcu@archiver.kernel.org>; Fri, 12 Mar 2021 11:37:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC48164F33
+	for <rcu@archiver.kernel.org>; Fri, 12 Mar 2021 12:22:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCLLhH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 Mar 2021 06:37:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        id S231181AbhCLMVt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 Mar 2021 07:21:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhCLLgo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 12 Mar 2021 06:36:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB2C64FB9;
-        Fri, 12 Mar 2021 11:36:43 +0000 (UTC)
+        id S230127AbhCLMVo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 043B864FE0;
+        Fri, 12 Mar 2021 12:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615549004;
-        bh=Tnmzg1VNWRp37vPZH7WBHF69zo4cruqMAptSEKsDpE4=;
+        s=k20201202; t=1615551704;
+        bh=EtZwk9sCzvWQTPoveCLQpt9Cf8m8GAQV77KFCohEb4g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W/fav6v6j9c1sr6Et0T7YtmGJSMg4RyEoLnMA/co9nN/OBXrOQLJrtp+gk/6s6XAE
-         hUK4HFynm6jq9pgRe/XG+RoYmhe0DCEyaEYPKpOWiUHyjuaaHTMt9tpES9moyFWDpj
-         fUiQIJuEnIHdAnbTKBywNw+n1kwnJN0L3j/RuCaCstCmY2lIXWy194pwK7tD9ApdoW
-         nYgP5ltxrab4g8LZ0bxbUwYMh0/1uPbKC9CL91Qx2ZmIaPhdWNripUKQkQ+j/DJsTZ
-         r99jsE+iw9oPJ8NdThPjsutWFWHutaEc8x/rlYS09F6qrDSrYj3icAKZJfQU4nmjjZ
-         Noe+S0gYjYxKw==
-Date:   Fri, 12 Mar 2021 12:36:41 +0100
+        b=J2e3ILe91/LWHXMepsrh2p1QL+TATAabouzwsWJBrRwJ5ekHpA+APqjscI6ng1pZo
+         bGwrzfRCSVuparip8ONlTEHuUnNTvWWtA6OKjyhMAMk+Zo71EjmmkNfvVDNfKWy5h+
+         4995apP9sccb8cjJSsqgF8BCKO+SHabPyDQeioI5/Y3khh9/pw1w+qUUhZgPB+Sna3
+         lBUX+26UeHxmIZFQSVMhWU3ERQkmqOQs5x347s9KIDLl86C2C4pjm94O3CDirIf5Wf
+         zV1Dop5mu0BoVu/GOgS82CcC7ukGJjTr/q5PxQ4JETRmh5QpbNsR6Bry2GPHnn6K91
+         n69aVxeGXcdAA==
+Date:   Fri, 12 Mar 2021 13:21:42 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     paulmck@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -40,41 +39,93 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 06/10] softirq: Don't try waking ksoftirqd
- before it has been spawned
-Message-ID: <20210312113641.GA3646@lothringen>
-References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
- <20210304000019.22459-6-paulmck@kernel.org>
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210312122142.GB3646@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304000019.22459-6-paulmck@kernel.org>
+In-Reply-To: <20210304002632.23870-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 04:00:15PM -0800, paulmck@kernel.org wrote:
+On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
 > From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> If there is heavy softirq activity, the softirq system will attempt
-> to awaken ksoftirqd and will stop the traditional back-of-interrupt
-> softirq processing.  This is all well and good, but only if the
-> ksoftirqd kthreads already exist, which is not the case during early
-> boot, in which case the system hangs.
-> 
-> One reproducer is as follows:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
-> 
-> This commit therefore adds a couple of existence checks for ksoftirqd
-> and forces back-of-interrupt softirq processing when ksoftirqd does not
-> yet exist.  With this change, the above test passes.
-> 
-> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Reported-by: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> [ paulmck: Remove unneeded check per Sebastian Siewior feedback. ]
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> There is a need for a non-blocking polling interface for RCU grace
+> periods, so this commit supplies start_poll_synchronize_rcu() and
+> poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> get_state_synchronize_rcu() may be used if future grace periods are
+> inevitable (perhaps due to a later call_rcu() invocation).  The new
+> start_poll_synchronize_rcu() is to be used if future grace periods
+> might not otherwise happen.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+By future grace period, you mean if a grace period has been started right
+_before_ we start polling, right?
+
+
+> Finally, poll_state_synchronize_rcu()
+> provides a lockless check for a grace period having elapsed since
+> the corresponding call to either of the get_state_synchronize_rcu()
+> or start_poll_synchronize_rcu().
+> 
+> As with get_state_synchronize_rcu(), the return value from either
+> get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> to a later call to either poll_state_synchronize_rcu() or the existing
+> (might_sleep) cond_synchronize_rcu().
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+[...]
+>  /**
+> + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> + *
+> + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
+> + * or poll_state_synchronize_rcu() to determine whether or not a full
+> + * grace period has elapsed in the meantime.  If the needed grace period
+> + * is not already slated to start, notifies RCU core of the need for that
+> + * grace period.
+> + *
+> + * Interrupts must be enabled for the case where it is necessary to awaken
+> + * the grace-period kthread.
+> + */
+> +unsigned long start_poll_synchronize_rcu(void)
+> +{
+> +	unsigned long flags;
+> +	unsigned long gp_seq = get_state_synchronize_rcu();
+> +	bool needwake;
+> +	struct rcu_data *rdp;
+> +	struct rcu_node *rnp;
+> +
+> +	lockdep_assert_irqs_enabled();
+> +	local_irq_save(flags);
+> +	rdp = this_cpu_ptr(&rcu_data);
+> +	rnp = rdp->mynode;
+> +	raw_spin_lock_rcu_node(rnp); // irqs already disabled.
+> +	needwake = rcu_start_this_gp(rnp, rdp, gp_seq);
+
+I'm a bit surprised we don't start a new grace period instead of snapshotting
+the current one.
+
+So if we do this:
+
+   //start grace period gp_num=5
+
+   old = p;
+   rcu_assign_pointer(p, new);
+
+   num = start_poll_synchronize_rcu(); // num = 5
+
+   //grace period ends, start new gp_num=6
+
+   poll_state_synchronize_rcu(num); // rcu seq is done
+
+   kfree(old);
+
+Isn't there a risk that other CPUs still see the old pointer?
+
+Of course I know I'm missing something obvious :-)
+
+Thanks.
