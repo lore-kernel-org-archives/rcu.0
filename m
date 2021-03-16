@@ -2,106 +2,356 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94CA1C433E0
-	for <rcu@archiver.kernel.org>; Tue, 16 Mar 2021 16:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27C0FC433E0
+	for <rcu@archiver.kernel.org>; Tue, 16 Mar 2021 20:42:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 68D976510E
-	for <rcu@archiver.kernel.org>; Tue, 16 Mar 2021 16:52:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E49D764F80
+	for <rcu@archiver.kernel.org>; Tue, 16 Mar 2021 20:42:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhCPQvf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 16 Mar 2021 12:51:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231161AbhCPQvB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0016510B;
-        Tue, 16 Mar 2021 16:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615913461;
-        bh=IKFMV8fviKwPLGWckodOfPixXKUDsMbn5f1reP5b6r8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=D7cGiauMFZGwXfMvEKjiSV33U3YDdcfwGa3KwyA7olp+MYFdMFZrdmM8sK7bp7286
-         vT304XWBztqZpRYeIUFfhuXsoHcTa3DVI7J6zhUaiQFOZA9EX6LSUhbjQIpE8oDgSn
-         w/4rE2QHm0gTB2hsfAg/6Qx1OFD+T1KxasEDqjvlf0kqY4tM9Kp8aXMQrYsVpL0zxk
-         k7gDaoPi9yq8bzZvw2AifLe3UnfocgU2p0NPeJGs8Xect2kZFFt9mvvlQGtiw/h/WW
-         tJzQLAr3BSL+eBoi9D/wrvFIcqo5QdLY3oATJynLcZI8LjasS63CnQq2eUd17RBaeY
-         Qcn34rcI0G3bQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4868A352262D; Tue, 16 Mar 2021 09:51:01 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 09:51:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
- Tree RCU grace periods
-Message-ID: <20210316165101.GW2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-1-paulmck@kernel.org>
- <20210316151750.GF639918@lothringen>
+        id S231245AbhCPUmP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 16 Mar 2021 16:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231617AbhCPUmL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:42:11 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56336C06174A;
+        Tue, 16 Mar 2021 13:42:11 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id f26so443264ljp.8;
+        Tue, 16 Mar 2021 13:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=BTZ4zBoNtNBRCCij68mreRI4j/LFQQaJo9CQraaUNc0=;
+        b=f6zwwG1LBI/uJNa5Zs4qzV6GU34sB06m8qbgKL3PTVAMc05I2aQ1DuUk8XzIRDqqo4
+         q1q+9cOd2nwkf9ImA7fZj8Hc0VIv9KMxe2QDCaz55vOiB5gsN5w7UQOEnSAQydYwPAeY
+         KSt/FKRC9NZurm55f12knXPM3SUVNGDzKO2pfvzxdFInWwwVmU7OeEouRPSTR6GsVrJJ
+         Q6bduLBV3OE64mqghOV+mcIP29TENcaPFS+9ooIrICk2Vby6FZboiHRHJ0LtafHXhM2f
+         slq6zVDl0lTmYJpjrng44YyUFCMnIp1bSOsSsXzj+11k3IMZYT0khASPUNWJhClXbNSB
+         kCNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=BTZ4zBoNtNBRCCij68mreRI4j/LFQQaJo9CQraaUNc0=;
+        b=AeY7C1XbKI85MiJW+HxhJt3i6F7dHQA7UNESz+wNZeMqhVtNo3F0mRq6vEtGQ+8+5X
+         9DwT1MfW217jKPpqEh+A/4KaOOmS20D5OnjlVDXzau58AUvBj9LMDq/veiH8VTBJxtHI
+         9n1JVF7zOKU2ERwz91At3rYQpgfkM7YSNEOQ7BKDjM2MryVuN3h6diPurTYhct2P93bF
+         +x914EhwUunLg7mtENCvZ4apPOmUTDq6hAwjWKnB755nzHKRsNE+iLAUTP0Punv7SsEc
+         xER9aAhKTT7rm9gk7Z6Fehp8O6F1h7D93jNE1xi4ubi8e9lWsHdh2oZxRgu62nx6nPUH
+         BmeQ==
+X-Gm-Message-State: AOAM530ONeDUm+jrl9aWUw6WFDWmpDR7OUW2I5nUjpW6FIl8YOhKe2II
+        fnArKRTlV6rRBFLXTjRta/oGJ3OZRWwVnLpA
+X-Google-Smtp-Source: ABdhPJxI5KPPTYL2J8Rqvos8fPj1/X4u4X1qq//VTUZs3JwFcSLc2cgdXMnpL563XpM77YaRcLZ1Cg==
+X-Received: by 2002:a2e:9a03:: with SMTP id o3mr286691lji.501.1615927329771;
+        Tue, 16 Mar 2021 13:42:09 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j28sm3133650lfh.156.2021.03.16.13.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 13:42:09 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 16 Mar 2021 21:42:07 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>
+Subject: Re: [PATCH v2 1/1] kvfree_rcu: Release a page cache under memory
+ pressure
+Message-ID: <20210316204207.GA2018@pc638.lan>
+References: <20210310200757.32331-1-urezki@gmail.com>
+ <20210316163117.GU2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210316151750.GF639918@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316163117.GU2696@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:17:50PM +0100, Frederic Weisbecker wrote:
-> On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
-> > +/**
-> > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
-> > + *
-> > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-> > + *
-> > + * If a full RCU grace period has elapsed since the earlier call from
-> > + * which oldstate was obtained, return @true, otherwise return @false.
-> > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
-> > + *
-> > + * Yes, this function does not take counter wrap into account.
-> > + * But counter wrap is harmless.  If the counter wraps, we have waited for
-> > + * more than 2 billion grace periods (and way more on a 64-bit system!).
-> > + * Those needing to keep oldstate values for very long time periods
-> > + * (many hours even on 32-bit systems) should check them occasionally
-> > + * and either refresh them or set a flag indicating that the grace period
-> > + * has completed.
-> > + */
-> > +bool poll_state_synchronize_rcu(unsigned long oldstate)
-> > +{
-> > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
-> > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+> On Wed, Mar 10, 2021 at 09:07:57PM +0100, Uladzislau Rezki (Sony) wrote:
+> > From: Zhang Qiang <qiang.zhang@windriver.com>
+> > 
+> > Add a drain_page_cache() function to drain a per-cpu page cache.
+> > The reason behind of it is a system can run into a low memory
+> > condition, in that case a page shrinker can ask for its users
+> > to free their caches in order to get extra memory available for
+> > other needs in a system.
+> > 
+> > When a system hits such condition, a page cache is drained for
+> > all CPUs in a system. Apart of that a page cache work is delayed
+> > with 5 seconds interval until a memory pressure disappears.
 > 
-> Also as usual I'm a bit lost with the reason behind those memory barriers.
-> So this is ordering the read on rcu_state.gp_seq against something (why not an
-> smp_rmb() btw?). And what does it pair with?
+> Does this capture it?
+> 
+It would be good to have kind of clear interface saying that:
 
-Because it needs to order subsequent writes as well as reads.
+- low memory condition starts;
+- it is over, watermarks were fixed.
 
-It is ordering whatever the RCU user wishes to put after the call to
-poll_state_synchronize_rcu() with whatever the RCU user put before
-whatever started the grace period that just now completed.  Please
-see the synchronize_rcu() comment header for the statement of the
-guarantee.  Or that of call_rcu().
+but i do not see it. Therefore 5 seconds back-off has been chosen
+to make a cache refilling to be less aggressive. Suppose 5 seconds
+is not enough, in that case the work will attempt to allocate some
+pages using less permissive parameters. What means that if we are
+still in a low memory condition a refilling will probably fail and
+next job will be invoked in 5 seconds one more time.
 
-For more detail on how these guarantees are implemented, please see
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-and its many diagrams.
+> ------------------------------------------------------------------------
+> 
+> Add a drain_page_cache() function that drains the specified per-cpu
+> page cache.  This function is invoked on each CPU when the system
+> enters a low-memory state, that is, when the shrinker invokes
+> kfree_rcu_shrink_scan().  Thus, when the system is low on memory,
+> kvfree_rcu() starts taking its slow paths.
+> 
+> In addition, the first subsequent attempt to refill the caches is
+> delayed for five seconds.
+> 
+> ------------------------------------------------------------------------
+> 
+> A few questions below.
+> 
+> 							Thanx, Paul
+> 
+> > Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > ---
+> >  kernel/rcu/tree.c | 59 ++++++++++++++++++++++++++++++++++++++++-------
+> >  1 file changed, 51 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 2c9cf4df942c..46b8a98ca077 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
+> >  	bool initialized;
+> >  	int count;
+> >  
+> > -	struct work_struct page_cache_work;
+> > +	struct delayed_work page_cache_work;
+> >  	atomic_t work_in_progress;
+> >  	struct hrtimer hrtimer;
+> >  
+> > @@ -3175,6 +3175,17 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> >  	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+> >  };
+> >  
+> > +// A page shrinker can ask for freeing extra pages
+> > +// to get them available for other needs in a system.
+> > +// Usually it happens under low memory condition, in
+> > +// that case hold on a bit with page cache filling.
+> > +static unsigned long backoff_page_cache_fill;
+> > +
+> > +// 5 seconds delay. That is long enough to reduce
+> > +// an interfering and racing with a shrinker where
+> > +// the cache is drained.
+> > +#define PAGE_CACHE_FILL_DELAY (5 * HZ)
+> > +
+> >  static __always_inline void
+> >  debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
+> >  {
+> > @@ -3229,6 +3240,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+> >  
+> >  }
+> >  
+> > +static int
+> > +drain_page_cache(struct kfree_rcu_cpu *krcp)
+> > +{
+> > +	unsigned long flags;
+> > +	struct llist_node *page_list, *pos, *n;
+> > +	int freed = 0;
+> > +
+> > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +	page_list = llist_del_all(&krcp->bkvcache);
+> > +	krcp->nr_bkv_objs = 0;
+> > +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +
+> > +	llist_for_each_safe(pos, n, page_list) {
+> > +		free_page((unsigned long)pos);
+> > +		freed++;
+> > +	}
+> > +
+> > +	return freed;
+> > +}
+> > +
+> >  /*
+> >   * This function is invoked in workqueue context after a grace period.
+> >   * It frees all the objects queued on ->bhead_free or ->head_free.
+> > @@ -3419,7 +3450,7 @@ schedule_page_work_fn(struct hrtimer *t)
+> >  	struct kfree_rcu_cpu *krcp =
+> >  		container_of(t, struct kfree_rcu_cpu, hrtimer);
+> >  
+> > -	queue_work(system_highpri_wq, &krcp->page_cache_work);
+> > +	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+> >  	return HRTIMER_NORESTART;
+> >  }
+> >  
+> > @@ -3428,7 +3459,7 @@ static void fill_page_cache_func(struct work_struct *work)
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> >  	struct kfree_rcu_cpu *krcp =
+> >  		container_of(work, struct kfree_rcu_cpu,
+> > -			page_cache_work);
+> > +			page_cache_work.work);
+> >  	unsigned long flags;
+> >  	bool pushed;
+> >  	int i;
+> > @@ -3457,10 +3488,14 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> >  {
+> >  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> >  			!atomic_xchg(&krcp->work_in_progress, 1)) {
+> > -		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> > -			HRTIMER_MODE_REL);
+> > -		krcp->hrtimer.function = schedule_page_work_fn;
+> > -		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> > +		if (xchg(&backoff_page_cache_fill, 0UL)) {
+> 
+> How often can run_page_cache_worker() be invoked?  I am a bit
+> concerned about the possibility of heavy memory contention on the
+> backoff_page_cache_fill variable on large systems.  Unless there
+> is something that sharply bounds the frequency of calls to
+> run_page_cache_worker(), something like this would be more scalable:
+> 
+> 		if (backoff_page_cache_fill &&
+> 		    xchg(&backoff_page_cache_fill, 0UL)) {
+> 
+It is called per-cpu. Once the cache is empty it will be called. Next time
+will be after the worker completes filling the cache and krcp is run out of
+cache again. I do not consider it as high contention on the backoff_page_cache_fill
+variable. On my 64 CPUs system the run_page_cache_worker() itself does not
+consume much CPU cycles during the test:
 
-There are a lot of memory barriers that pair and form larger cycles to
-implement this guarantee.  Pretty much all of the calls to the infamous
-smp_mb__after_unlock_lock() macro form cycles involving this barrier,
-for example.
+Samples: 2K of event 'cycles:k', Event count (approx.): 1372274198                                                                                                                       
+Overhead  Command          Shared Object     Symbol                                                                                                                                      
+  27.45%  kworker/0:2-eve  [kernel.vmlinux]  [k] kmem_cache_free_bulk                                                                                                                    
+  14.56%  vmalloc_test/0   [kernel.vmlinux]  [k] kmem_cache_alloc_trace                                                                                                                  
+  11.34%  vmalloc_test/0   [kernel.vmlinux]  [k] kvfree_call_rcu                                                                                                                         
+   7.61%  vmalloc_test/0   [kernel.vmlinux]  [k] _raw_spin_unlock_irqrestore                                                                                                             
+   7.60%  vmalloc_test/0   [kernel.vmlinux]  [k] allocate_slab                                                                                                                           
+   5.38%  vmalloc_test/0   [kernel.vmlinux]  [k] check_preemption_disabled                                                                                                               
+   3.12%  vmalloc_test/0   [kernel.vmlinux]  [k] _raw_spin_lock                                                                                                                          
+   2.85%  vmalloc_test/0   [kernel.vmlinux]  [k] preempt_count_add                                                                                                                       
+   2.64%  vmalloc_test/0   [kernel.vmlinux]  [k] __list_del_entry_valid                                                                                                                  
+   2.53%  vmalloc_test/0   [kernel.vmlinux]  [k] preempt_count_sub                                                                                                                       
+   1.81%  vmalloc_test/0   [kernel.vmlinux]  [k] native_write_msr                                                                                                                        
+   1.05%  kworker/0:2-eve  [kernel.vmlinux]  [k] __slab_free                                                                                                                             
+   0.96%  vmalloc_test/0   [kernel.vmlinux]  [k] asm_sysvec_apic_timer_interrupt                                                                                                         
+   0.96%  vmalloc_test/0   [kernel.vmlinux]  [k] setup_object_debug.isra.69                                                                                                              
+   0.76%  kworker/0:2-eve  [kernel.vmlinux]  [k] free_pcppages_bulk                                                                                                                      
+   0.72%  kworker/0:2-eve  [kernel.vmlinux]  [k] put_cpu_partial                                                                                                                         
+   0.72%  vmalloc_test/0   [test_vmalloc]    [k] kvfree_rcu_2_arg_slab_test                                                                                                              
+   0.52%  kworker/0:2-eve  [kernel.vmlinux]  [k] kfree_rcu_work                                                                                                                          
+   0.52%  vmalloc_test/0   [kernel.vmlinux]  [k] get_page_from_freelist                                                                                                                  
+   0.52%  vmalloc_test/0   [kernel.vmlinux]  [k] run_page_cache_worker
 
-Please do not hesitate to ask more questions.  This underpins RCU.
+<run_page_cache_worker>
+       │    arch_atomic_xchg():
+       │      mov   $0x1,%eax
+       │    run_page_cache_worker():
+       │      push  %rbx
+       │    arch_atomic_xchg():
+       │      xchg  %eax,0x188(%rdi)
+       │    run_page_cache_worker():
+100.00 │      test  %eax,%eax
+<run_page_cache_worker>
 
-							Thanx, Paul
+<snip>
+    if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+        !atomic_xchg(&krcp->work_in_progress, 1)) { <-- here all cycles of run_page_cache_worker()
+<snip>
+
+>
+> It looks to me like all the CPUs could invoke run_page_cache_worker()
+> at the same time.  Or am I missing something that throttles calls to
+> run_page_cache_worker(), even on systems with hundreds of CPUs?
+>
+It is per-cpu, thus is serialized.
+
+> 
+> Also, if I am reading the code correctly, the unlucky first CPU to
+> attempt to refill cache after a shrinker invocation would be delayed
+> five seconds (thus invoking the slow path during that time), but other
+> CPUs would continue unimpeded.  Is this the intent?
+> 
+A backoff_page_cache_fill is global and shared among all CPUs. So, if one
+changes it following a slow path whereas all the rest will refill their
+caches anyway following a fast path.
+
+That should be fixed making it per-cpu also. A shrinker should mark each
+CPU to back-off refilling.
+
+>
+> If I understand correctly, the point is to avoid the situation where
+> memory needed elsewhere is drained and then immediately refilled.
+> But the code will do the immediate refill when the rest of the CPUs show
+> up, correct?
+>
+Correct. We do not want to request pages for some period of time, because
+they might be needed for other needs and other users in a system. We have
+fall-backs, so there is no a high demand in it for our case.
+
+> 
+> Might it be better to put a low cap on the per-CPU caches for some
+> period of time after the shrinker runs?  Maybe allow at most one page
+> to be cached for the five seconds following?
+> 
+That we can do!
+
+> > +			queue_delayed_work(system_wq,
+> > +				&krcp->page_cache_work, PAGE_CACHE_FILL_DELAY);
+> > +		} else {
+> > +			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> > +			krcp->hrtimer.function = schedule_page_work_fn;
+> > +			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> > +		}
+> >  	}
+> >  }
+> >  
+> > @@ -3612,14 +3647,20 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+> >  {
+> >  	int cpu;
+> >  	unsigned long count = 0;
+> > +	unsigned long flags;
+> >  
+> >  	/* Snapshot count of all CPUs */
+> >  	for_each_possible_cpu(cpu) {
+> >  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+> >  
+> >  		count += READ_ONCE(krcp->count);
+> > +
+> > +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +		count += krcp->nr_bkv_objs;
+> > +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> 
+> Not a big deal given that this should not be invoked often, but couldn't
+> the read from ->nr_bkv_objs be READ_ONCE() without the lock?  (This would
+> require that updates use WRITE_ONCE() as well.)
+> 
+I was thinking about it. Will re-spin and rework :)
+
+Thanks!
+
+--
+Vlad Rezki
