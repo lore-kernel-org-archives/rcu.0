@@ -2,88 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF138C433DB
-	for <rcu@archiver.kernel.org>; Fri, 19 Mar 2021 04:31:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6187AC433E0
+	for <rcu@archiver.kernel.org>; Fri, 19 Mar 2021 13:59:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95B8B64F24
-	for <rcu@archiver.kernel.org>; Fri, 19 Mar 2021 04:31:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C9B664F11
+	for <rcu@archiver.kernel.org>; Fri, 19 Mar 2021 13:59:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhCSEao (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 19 Mar 2021 00:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40998 "EHLO mail.kernel.org"
+        id S229806AbhCSN7P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 19 Mar 2021 09:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhCSEaf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:30:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 635CF64F10;
-        Fri, 19 Mar 2021 04:30:35 +0000 (UTC)
+        id S229785AbhCSN66 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E6264EF6;
+        Fri, 19 Mar 2021 13:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616128235;
-        bh=HXy3pYjZuf3EMGhjnfopCxdy+TwfPo/p46dhDsiK7R0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FGRXgTcfjF7EWQdqCUqTjKIabrhF5F+MnrzqUSDJJmyIY7jU+O3+GG2dzIDi6fi9w
-         FqbqNgs8b74LNGVWQUWyzCEj4OYB6Fn5DWPKnpVJoRQIbLfFcISiCyyRxqZ57TsQ+j
-         IwOqdo7VsEME7KPthvZ7d/32p4aSJ/Riadf8v0SZKLSkuxrKCWWvUSKxwulvOL44nU
-         f3N+HwYDdB2XQuac6aF60zuERZhEuexGbkYYJiu/DOarM60GIwGc42xEOelPVnyzsN
-         D1G7RPGxt8Mx4JcuVQSUuLlg+TBDeySS/4kEdRvn1cKDkMi4zMz7nhOIFFAJO+fR30
-         ZuxKwlKPQeUyw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1E7513522AC5; Thu, 18 Mar 2021 21:30:34 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 21:30:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs: Use my proper surname
-Message-ID: <20210319043034.GI2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210319001916.136666-1-sthemmin@microsoft.com>
+        s=k20201202; t=1616162337;
+        bh=5AQG+kiA2GlRp3+0pXhhhe2SglUgXDnrTeLb68Cztss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RR0P2Fkws4o9YUsksXzoLAjCP/jPaP3W6mR3oAN/MgJrWET8H/YsjUnIAEbypnExG
+         5qXN3gG8zZwFHetPpO/8aAx8LF69Il51kELBNijYPVpYEOcG/dSQKEHQR7XQdK+rdk
+         el9fdK2ds2T0A/g4vb1Xbl9IrJLapLXksf5M9BWgudFCqaPy7o4sgvqZFeVp95vywd
+         WTqtA2T1JZzLKRtqnkdweXxP4FGUT+lum6HiF48XNJzjHwIxTlxGIq4rLYqqsRUsjp
+         D1tRdRhBrwpwJtv8yTZZQ/G7Rkpaw311aBiCM1oWr4UozGaTa9ji0ae0qg89zuOoTb
+         qu5rlNk7CxM8w==
+Date:   Fri, 19 Mar 2021 14:58:54 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210319135854.GA814853@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319001916.136666-1-sthemmin@microsoft.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210304002632.23870-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 05:19:16PM -0700, Stephen Hemminger wrote:
-> From: Stephen Hemminger <stephen@networkplumber.org>
+On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Fix my name in the RCU background file. I don't use Steve.
+> There is a need for a non-blocking polling interface for RCU grace
+> periods, so this commit supplies start_poll_synchronize_rcu() and
+> poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> get_state_synchronize_rcu() may be used if future grace periods are
+> inevitable (perhaps due to a later call_rcu() invocation).  The new
+> start_poll_synchronize_rcu() is to be used if future grace periods
+> might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+> provides a lockless check for a grace period having elapsed since
+> the corresponding call to either of the get_state_synchronize_rcu()
+> or start_poll_synchronize_rcu().
 > 
-> Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+> As with get_state_synchronize_rcu(), the return value from either
+> get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> to a later call to either poll_state_synchronize_rcu() or the existing
+> (might_sleep) cond_synchronize_rcu().
 
-You would like me to replace this commit in -rcu with the patch
-in this email, correct?
+It's all a matter of personal taste but if I may suggest some namespace
+modifications:
 
-e589c7c72315 ("docs: Correctly spell Stephen Hemminger's name")
+get_state_synchronize_rcu() -> synchronize_rcu_poll_start_raw()
+start_poll_synchronize_rcu() -> synchronize_rcu_poll_start()
+poll_state_synchronize_rcu() -> synchronize_rcu_poll()
+cond_synchronize_rcu() -> synchronize_rcu_cond()
 
-This is slated for the upcoming merge window, for whatever it
-is worth.
+But it's up to you really.
 
-						Thanx, Paul
+>  /**
+> + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> + *
+> + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
 
-> ---
->  Documentation/RCU/RTFP.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/RCU/RTFP.txt b/Documentation/RCU/RTFP.txt
-> index 3b0876c77355..588d97366a46 100644
-> --- a/Documentation/RCU/RTFP.txt
-> +++ b/Documentation/RCU/RTFP.txt
-> @@ -847,7 +847,7 @@ Symposium on Distributed Computing}
->  	'It's entirely possible that the current user could be replaced
->  	by RCU and/or seqlocks, and we could get rid of brlocks entirely.'
->  	.
-> -	Steve Hemminger responds by replacing them with RCU.
-> +	Stephen Hemminger responds by replacing them with RCU.
->  }
->  }
->  
-> -- 
-> 2.30.2
-> 
+It may be worth noting that calling start_poll_synchronize_rcu() and then
+pass the cookie to cond_synchronize_rcu() soon after may end up waiting for
+one more grace period.
+
+> + * or poll_state_synchronize_rcu() to determine whether or not a full
+> + * grace period has elapsed in the meantime.  If the needed grace period
+> + * is not already slated to start, notifies RCU core of the need for that
+> + * grace period.
+> + *
+> + * Interrupts must be enabled for the case where it is necessary to awaken
+> + * the grace-period kthread.
+> + */
+> +unsigned long start_poll_synchronize_rcu(void)
+> +{
+> +	unsigned long flags;
+> +	unsigned long gp_seq = get_state_synchronize_rcu();
+> +	bool needwake;
+> +	struct rcu_data *rdp;
+> +	struct rcu_node *rnp;
+[...]
+> +
+> +/**
+> + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+> + *
+> + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+> + *
+> + * If a full RCU grace period has elapsed since the earlier call from
+> + * which oldstate was obtained, return @true, otherwise return @false.
+> + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+
+Rephrase suggestion for the last sentence:
+
+"In case of failure, it's up to the caller to try polling again later or
+invoke synchronize_rcu() to wait for a new full grace period to complete."
+
+
+In any case: Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+Thanks!
