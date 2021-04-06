@@ -2,66 +2,33 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29BB5C43611
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 14:39:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 108E4C43462
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 14:43:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F14B0613C6
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 14:39:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E7842613C4
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 14:43:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345230AbhDFOjn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Apr 2021 10:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243275AbhDFOjl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Apr 2021 10:39:41 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A37C061760
-        for <rcu@vger.kernel.org>; Tue,  6 Apr 2021 07:39:33 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so14801175oty.12
-        for <rcu@vger.kernel.org>; Tue, 06 Apr 2021 07:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mvista-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A9/oUrZcom6uNGfq8uQSMfL5RjzorysUyhxrrEpOhZQ=;
-        b=jVp4LQa5fpfONGeRhMPma1uxlOJ6CXJvy93wnlaGkszijzRZX4GP31qLbOdrFUx9d8
-         SN7/z6WwtNVmZgiGOxPPOtCgT1NQH7g3NP6K1uj/d+Cj5DiyhAg9llwoIeBQaQAM7mfK
-         7gxshk0yzmOS3ig6OVdDC/A0+bDYmd1+7IYazjMD55ELbrWFzOc5U+f9Ua47SqJiE2ic
-         qy3L2qasrr7N5nB6l3tEqmiBFqvfSJc5WoMKGegkuJ45Nl1JSVvxDDJMGiq0a+L0JLgE
-         OWxYGV+4WSfrvV+iZ2O7gIN/tkpU4+EMOq2QHye+MWXNdq8mFdSi+zrXV9NFYQtQkQo1
-         1iDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=A9/oUrZcom6uNGfq8uQSMfL5RjzorysUyhxrrEpOhZQ=;
-        b=cuU4QRS31l6baL0MSbk41k8syiZ7kJ+06sMmHzyuFAwI0yCWnB000rLZcPM97x5LLU
-         OvtHxNFq8+3SdAIwoc3tZxU2DHdCjI/Co51Ydmofb3e91SEk9EhqmnKkIJ11awRoQxy3
-         Z5t95FTO1UEh2hUwooo+qqQHB7/+BcLSe0lQZAFGXRU1ETjR11Pf8NeRAnPT22xM3HIs
-         HuQkssCsTSkU6dK9q2iwX7VNN6TxB1ynUxJqr92vw4K4WVThGwW519KBXTjhMfj46OKi
-         aw2Wn/UgzVAIHOa/Fel30HyH3xeex+1As9UzK673mgT3dzXnOgjUOofTWSzEL+zVoINa
-         u3jw==
-X-Gm-Message-State: AOAM532w23E+sW22nL4wPLU3emxdwSOfKb6Z/7fV8D2O8GURjY6aMxT5
-        aMmAYz55bBxTdST1O1hI6iPAPQ==
-X-Google-Smtp-Source: ABdhPJy8JWc4jZaZX01KbZFfD0qHlJIfjC5GLBU9ob9QnsmfPtoyA8gGMABB2kkmRAhm7/K2AJZ2Dg==
-X-Received: by 2002:a05:6830:15d2:: with SMTP id j18mr27564004otr.75.1617719972291;
-        Tue, 06 Apr 2021 07:39:32 -0700 (PDT)
-Received: from minyard.net ([2001:470:b8f6:1b:f584:ff80:e7e9:e850])
-        by smtp.gmail.com with ESMTPSA id a6sm3567669oiw.44.2021.04.06.07.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 07:39:32 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 09:39:29 -0500
-From:   Corey Minyard <cminyard@mvista.com>
+        id S1345284AbhDFOnq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Apr 2021 10:43:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345263AbhDFOnp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Apr 2021 10:43:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D38761158;
+        Tue,  6 Apr 2021 14:43:27 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 16:43:24 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
         Michael Kelley <mikelley@microsoft.com>,
         Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -95,11 +62,10 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Kees Cook <keescook@chromium.org>,
         Iurii Zaikin <yzaikin@google.com>
 Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210406143929.GN7167@minyard.net>
-Reply-To: cminyard@mvista.com
+Message-ID: <20210406144324.bmc22gborwj3zjvv@wittgenstein>
 References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
@@ -114,14 +80,15 @@ On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
 > At the same time convert users in header and lib folder to use new header.
 > Though for time being include new header back to kernel.h to avoid twisted
 > indirected includes for existing users.
-
-For the IPMI portion:
-
-Acked-by: Corey Minyard <cminyard@mvista.com>
-
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
+
+(I think David has tried something like this a few years ago too?)
+Good idea in any case. (Be good to see kbuild do an allmodconfig build
+of this though.)
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+
 >  arch/powerpc/kernel/setup-common.c   |  1 +
 >  arch/x86/include/asm/desc.h          |  1 +
 >  arch/x86/kernel/cpu/mshyperv.c       |  1 +
