@@ -2,48 +2,58 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81AC2C43462
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 16:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC56BC433B4
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 18:44:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5EB01613E1
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 16:51:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DA62613B3
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 18:44:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346623AbhDFQvU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Apr 2021 12:51:20 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:37474 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbhDFQvT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Apr 2021 12:51:19 -0400
-Received: by mail-pg1-f173.google.com with SMTP id k8so10803139pgf.4;
-        Tue, 06 Apr 2021 09:51:10 -0700 (PDT)
+        id S237983AbhDFSoQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Apr 2021 14:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238655AbhDFSoM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:44:12 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00331C06175F
+        for <rcu@vger.kernel.org>; Tue,  6 Apr 2021 11:44:02 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id v8so7995498plz.10
+        for <rcu@vger.kernel.org>; Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
+        b=YAhhm9BkpY5y7HrE34KfvVWOVgEO0sYzWSUTiqziDNEK4+3Lral7Ghh0posJjIrz61
+         tfc63YozQ8TRMvb+TNGvA+LWvP4faXgXV6k8KT0Nv6y/u9B7f1LE4XzO3OjKob023F9j
+         xZGLdr3UYpKw1f93SAnQ8fSdVZaYmuMHTRPdw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dUOVVdYoSYbWJM3R8BfH3yp511tJPXM9SJGSE2TL6GY=;
-        b=XzvTLzBSh6AVFmF1bhUcCakBkjYqyiM5hRmbNdk4aaKMQUrWHtM4iNWpHacQCJ3jut
-         nniz2y6tUM3GXo7Qbs/GTppYnltT2AZJz/ZLKKRWGLPLGhRNGiWffXKX0yIWWG622Ak9
-         7n5CYuHt1TCDBLXL7TIbyVffkbej+qoDPfGL6cLHOVI2gzcNvz2NMjTUg8etMVtWOWkU
-         GKipYQ8nygMkQ62qdAhi/RWoRdXaOY1yjYYZ/9QmAtHNrKZf13ki9oHznkg84thGWA5u
-         0njk2u6+kHetQeEP7PnC/3yxVvZuoKzpKib6vHXSoeEw5FZWSEwHhYjcj1HB2l3vSl/G
-         L9TA==
-X-Gm-Message-State: AOAM533o32v/QbiiS3xuqYLlWGbZG3Z29O9XITGjGHubLRO3i799FWS9
-        zea8kKFYzfSC3UrQBCgWE88=
-X-Google-Smtp-Source: ABdhPJxJPRbZ8hHR0ZfqHaRIyDYJATSlH01Zbyq90wb+DV+jR9f7adBrfQ3tFv0Oj/c/stWG4JfCFg==
-X-Received: by 2002:a63:1303:: with SMTP id i3mr27619155pgl.32.1617727870490;
-        Tue, 06 Apr 2021 09:51:10 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id p11sm3129812pjo.48.2021.04.06.09.51.09
+        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
+        b=QjdAzlYQVSq0UZ9zgUilYxtC/u7zkQIPeRn4aEZVsu5qM7M2xLaseVPdWc6xlz32OF
+         CntO/D6DIkubqgcHkjXxxWD3wSE4s789JOI05Y4W1DfpX0q8gJRSF0NKr8yrUSLPhrAT
+         VQ5hSy65YveQa1q/KTAGis+f8H5Oad4iVrAvwz4DrX9FjkLbL47OVeZrKAe55RLnbRml
+         BUfRr16thwTvWtjRUgtYaOySdQMlYhM5AfQsKy/SEj9CACmbrD1B6QcNXmlV6cSMg7Ku
+         Ax7u7HMe4JleRQF8/8q3HN0DfMY1ML6cliDBLLyY2S3egqoHSGiMapIiuswlhCUtWB3Z
+         U+sQ==
+X-Gm-Message-State: AOAM53077b+sC91fy/uH9qsdYN6exsSDhkT9pZoUFJ0Up0l5vEWMffsV
+        uwq1i2/6QEHrFucYgZJiRcJRGw==
+X-Google-Smtp-Source: ABdhPJyp4uPolhdsa5/w7momD80MPZDhhBi9SUuWfIFW/E/FawC4pgs3YQmUW7xHztXcPiXJ8/E+QQ==
+X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr30088911plf.44.1617734642419;
+        Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i9sm3610423pjh.9.2021.04.06.11.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 09:51:09 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id AB32F40402; Tue,  6 Apr 2021 16:51:08 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 16:51:08 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
+        Tue, 06 Apr 2021 11:44:01 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 11:44:00 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
@@ -79,10 +89,10 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
         Iurii Zaikin <yzaikin@google.com>
 Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210406165108.GA4332@42.do-not-panic.com>
+Message-ID: <202104061143.E11D2D0@keescook>
 References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -93,26 +103,22 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
-> new file mode 100644
-> index 000000000000..41e32483d7a7
-> --- /dev/null
-> +++ b/include/linux/panic_notifier.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_PANIC_NOTIFIERS_H
-> +#define _LINUX_PANIC_NOTIFIERS_H
-> +
-> +#include <linux/notifier.h>
-> +#include <linux/types.h>
-> +
-> +extern struct atomic_notifier_head panic_notifier_list;
-> +
-> +extern bool crash_kexec_post_notifiers;
-> +
-> +#endif	/* _LINUX_PANIC_NOTIFIERS_H */
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt to start cleaning it up by splitting out panic and
+> oops helpers.
+> 
+> At the same time convert users in header and lib folder to use new header.
+> Though for time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Why is it worth it to add another file just for this? Seems like a very
-small file.
+I like it! Do you have a multi-arch CI to do allmodconfig builds to
+double-check this?
 
-  Luis
+Acked-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+-- 
+Kees Cook
