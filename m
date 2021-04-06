@@ -2,58 +2,46 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC56BC433B4
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 18:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95ADBC43470
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 23:41:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9DA62613B3
-	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 18:44:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 705B3613A9
+	for <rcu@archiver.kernel.org>; Tue,  6 Apr 2021 23:41:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237983AbhDFSoQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Apr 2021 14:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238655AbhDFSoM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:44:12 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00331C06175F
-        for <rcu@vger.kernel.org>; Tue,  6 Apr 2021 11:44:02 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id v8so7995498plz.10
-        for <rcu@vger.kernel.org>; Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
-        b=YAhhm9BkpY5y7HrE34KfvVWOVgEO0sYzWSUTiqziDNEK4+3Lral7Ghh0posJjIrz61
-         tfc63YozQ8TRMvb+TNGvA+LWvP4faXgXV6k8KT0Nv6y/u9B7f1LE4XzO3OjKob023F9j
-         xZGLdr3UYpKw1f93SAnQ8fSdVZaYmuMHTRPdw=
+        id S236324AbhDFXle (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Apr 2021 19:41:34 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:43666 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233969AbhDFXld (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Apr 2021 19:41:33 -0400
+Received: by mail-wr1-f50.google.com with SMTP id x7so15927982wrw.10;
+        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eQnC4YbqcPkvvMzS/WXtytqd+L3POj6wkG54irRdxac=;
-        b=QjdAzlYQVSq0UZ9zgUilYxtC/u7zkQIPeRn4aEZVsu5qM7M2xLaseVPdWc6xlz32OF
-         CntO/D6DIkubqgcHkjXxxWD3wSE4s789JOI05Y4W1DfpX0q8gJRSF0NKr8yrUSLPhrAT
-         VQ5hSy65YveQa1q/KTAGis+f8H5Oad4iVrAvwz4DrX9FjkLbL47OVeZrKAe55RLnbRml
-         BUfRr16thwTvWtjRUgtYaOySdQMlYhM5AfQsKy/SEj9CACmbrD1B6QcNXmlV6cSMg7Ku
-         Ax7u7HMe4JleRQF8/8q3HN0DfMY1ML6cliDBLLyY2S3egqoHSGiMapIiuswlhCUtWB3Z
-         U+sQ==
-X-Gm-Message-State: AOAM53077b+sC91fy/uH9qsdYN6exsSDhkT9pZoUFJ0Up0l5vEWMffsV
-        uwq1i2/6QEHrFucYgZJiRcJRGw==
-X-Google-Smtp-Source: ABdhPJyp4uPolhdsa5/w7momD80MPZDhhBi9SUuWfIFW/E/FawC4pgs3YQmUW7xHztXcPiXJ8/E+QQ==
-X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr30088911plf.44.1617734642419;
-        Tue, 06 Apr 2021 11:44:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i9sm3610423pjh.9.2021.04.06.11.44.01
+        bh=WGIJa+EXD8Vc5DJNrcReg/z+0EimDhG6rdWhVbzOtFo=;
+        b=CQ0qDAptkIC6tW/QjkTYrwKTt0DT9a42qy4lPFnM4r8k/4F8gSOYBBIuxE740H2p17
+         RzmddTwaAv6ON0mKDDGrTQ6ejGZHjVorX9afl/5ZGJngAeB9LXBEdWJPOtKSHcClEYja
+         0GjWEUNfq94P3RHscsbNIMkuH9FGu2li59VWTnaAVpPcb4LCyp5zxjiF70kZ7aHou89A
+         A5ehGdBDBRM3f535in/qXuwptNZI9m7TKz+9vUC1WCUQPsnYxV5jcoDDQ8nW/hpGEKKf
+         eZS9buyKs29dE3EZCwG9rgsK/8mRQdPH3naKt8fipJEepHd10wqBgeYZGmdh3vQNY2v3
+         fL+w==
+X-Gm-Message-State: AOAM530oOUJ5jVaY3a5Wy5DIziWoTD0+ujeXIKTmzuteUQPdNU4wCtP5
+        65me661JHs864WiPuxyJDYg=
+X-Google-Smtp-Source: ABdhPJwgTgzHjDtAphSOcIvZkNyZiSytk4BvPsB6Agc23uPs67Vxh0ob67DGX16DGyXt0HXr4p5bpg==
+X-Received: by 2002:a5d:5612:: with SMTP id l18mr791487wrv.28.1617752483246;
+        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f9sm4864133wmj.38.2021.04.06.16.41.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:44:01 -0700 (PDT)
-Date:   Tue, 6 Apr 2021 11:44:00 -0700
-From:   Kees Cook <keescook@chromium.org>
+        Tue, 06 Apr 2021 16:41:23 -0700 (PDT)
+Date:   Tue, 6 Apr 2021 23:41:21 +0000
+From:   Wei Liu <wei.liu@kernel.org>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
@@ -90,9 +78,10 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Iurii Zaikin <yzaikin@google.com>
 Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <202104061143.E11D2D0@keescook>
+Message-ID: <20210406234121.4ebbaoxyrzdywdj4@liuwe-devbox-debian-v2>
 References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -113,12 +102,4 @@ On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I like it! Do you have a multi-arch CI to do allmodconfig builds to
-double-check this?
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
--- 
-Kees Cook
+Acked-by: Wei Liu <wei.liu@kernel.org>
