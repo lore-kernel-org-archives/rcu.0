@@ -2,49 +2,59 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6FDDC433ED
-	for <rcu@archiver.kernel.org>; Wed,  7 Apr 2021 15:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB67C43461
+	for <rcu@archiver.kernel.org>; Thu,  8 Apr 2021 12:45:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C644F6139E
-	for <rcu@archiver.kernel.org>; Wed,  7 Apr 2021 15:30:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D514A610E5
+	for <rcu@archiver.kernel.org>; Thu,  8 Apr 2021 12:45:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353584AbhDGPaL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Apr 2021 11:30:11 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:41609 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353563AbhDGPaK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Apr 2021 11:30:10 -0400
-Received: by mail-pj1-f43.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso1531594pje.0;
-        Wed, 07 Apr 2021 08:30:00 -0700 (PDT)
+        id S231294AbhDHMp1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Apr 2021 08:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhDHMp1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:45:27 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E590FC061760
+        for <rcu@vger.kernel.org>; Thu,  8 Apr 2021 05:45:15 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u17so2826791ejk.2
+        for <rcu@vger.kernel.org>; Thu, 08 Apr 2021 05:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
+        b=JXlbvdv6BKxL2QLt+A6EZMYCjKur7zKVGHA+SPjjhttU3LjU5J8CTsvMPL70CwGYsq
+         CUXz1jkKLkBNcttlxCmAirFDD+kjBSkQXhxTFfLF/zDE+suTqi1E02kHIf/SGivtkXXC
+         r7MEDlKMlo41vpb3rOrLkq/HnnmBY745AuXsE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+M5ErOA6vMHXgHMo812hqipKBEarvAzxNuznNu4dPh4=;
-        b=jsvrsCk2USuWmPdJ3aMJwVWzy7393uAv08mKvsKYFaJ3jCz3VVW+3ptyPpHt+GKx4l
-         gu8PPEPO4ABq8AYUHGQRdtU2WGDKbxNh+d5+9X6fZqZ0bFodVnAgSlVZkClleG2AZ7/r
-         h3FWStbOqUeG0Z+tP0bxzNT5xF5sJ9dTINsUIQh9Xl4sC7+4A7Ekvo04F2GemAkmhlrg
-         H0euxVew93XQify4f3rbwJ4GvC3KOWGRPprBA2i2BqONFdVEMF65KAfxK6p20CvOCcot
-         yITsnojVRMOplQSR1DucFSuPOKLIdUhJXRLk+0tZRNqQLMG/GN5QHESxap34pjxgdthM
-         zdmQ==
-X-Gm-Message-State: AOAM533kWqDVeQEz732forA2TcK+LLVu5mlJfxMUpn4sSA/RFy4gbEcA
-        ZwqJzgEcQKtv84CmXQJ0khs=
-X-Google-Smtp-Source: ABdhPJxpL5KaAnDuQDJzuUb5KCGFxZ3YcW99M+WHBna9dnMuIO92XOsuZyqjUKOy0DftFppakeCj7Q==
-X-Received: by 2002:a17:902:b210:b029:e6:33b4:cd9e with SMTP id t16-20020a170902b210b02900e633b4cd9emr3418197plr.67.1617809399828;
-        Wed, 07 Apr 2021 08:29:59 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id f65sm22129550pgc.19.2021.04.07.08.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 08:29:58 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 00948402D7; Wed,  7 Apr 2021 15:29:56 +0000 (UTC)
-Date:   Wed, 7 Apr 2021 15:29:56 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UMuAklHy/tPt7YPBozpvIQsmWDAIa3a/la6+zoUVcdI=;
+        b=DcIHmE7KvOpnOcCkK0HqYpBW0dPrarKPGxmhAi5dxvztjieXOWMQcPzuCZNvszp9hW
+         36oy1mTIzgQ23LLyzrWt7+OpFLvKENhw14wte6qxPBlJNGXQxJQWcfBQe5wXZFrUpNNc
+         aDR39Q6faGKPTq7apwCoC1g1Afo7D3bxKaGtpfy5j6raxfbmTd6+9pL7D4iK6KS4ogDL
+         wAnhh7nCcnl/oQHoKUL/1r3xXj4aM4Ppf4KsRa7E8D0so1M4uMXpS05L9chaMmaOaHvz
+         m0azRFvaDltnNfUhvn5/71vU3/staaoo43dtz6dY6yqKAN4LTLduMjhp8zcoihO7wRCF
+         7lUg==
+X-Gm-Message-State: AOAM533jnpfNr1PnWuxNg0NzAJii2mBm/vQJ+rU5Tb9T18tuIlaVoWDw
+        eFmz8p5eL30ofvQqFm2G3aFmWg==
+X-Google-Smtp-Source: ABdhPJwq7QZNDA3D6CGhNZXcz6mj8YzK/fNHfbq7NkBvOdUqzkgcZZF3Ehka2wUefbZcZbtsp6oq8w==
+X-Received: by 2002:a17:906:1fd7:: with SMTP id e23mr400958ejt.528.1617885914623;
+        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id r4sm14262813ejd.125.2021.04.08.05.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 05:45:14 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
         Michael Kelley <mikelley@microsoft.com>,
@@ -57,21 +67,17 @@ Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
         openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-arch@vger.kernel.org,
         kexec@lists.infradead.org, rcu@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         "K. Y. Srinivasan" <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Stephen Hemminger <sthemmin@microsoft.com>,
@@ -83,60 +89,70 @@ Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Iurii Zaikin <yzaikin@google.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210407152956.GE4332@42.do-not-panic.com>
 References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
- <20210406165108.GA4332@42.do-not-panic.com>
- <CAHp75Ve9vBQqSegM2-ch9NUN-MdevxxOs5ZdHkk1W7AacN+Wrw@mail.gmail.com>
- <20210407143040.GB4332@42.do-not-panic.com>
- <CAHp75VeXiLa0b49eoZKVR1DSqTc9hKxpSgy294hMiaUzt0ugOA@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <03be4ed9-8e8d-e2c2-611d-ac09c61d84f9@rasmusvillemoes.dk>
+Date:   Thu, 8 Apr 2021 14:45:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeXiLa0b49eoZKVR1DSqTc9hKxpSgy294hMiaUzt0ugOA@mail.gmail.com>
+In-Reply-To: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 05:59:19PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 7, 2021 at 5:30 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > On Wed, Apr 07, 2021 at 10:33:44AM +0300, Andy Shevchenko wrote:
-> > > On Wed, Apr 7, 2021 at 10:25 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > > On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > > Why is it worth it to add another file just for this?
-> > >
-> > > The main point is to break tons of loops that prevent having clean
-> > > headers anymore.
-> > >
-> > > In this case, see bug.h, which is very important in this sense.
-> >
-> > OK based on the commit log this was not clear, it seemed more of moving
-> > panic stuff to its own file, so just cleanup.
-> 
-> Sorry for that. it should have mentioned the kernel folder instead of
-> lib. But I think it won't clarify the above.
-> 
-> In any case there are several purposes in this case
->  - dropping dependency in bug.h
->  - dropping a loop by moving out panic_notifier.h
->  - unload kernel.h from something which has its own domain
-> 
-> I think that you are referring to the commit message describing 3rd
-> one, but not 1st and 2nd.
+On 06/04/2021 15.31, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt to start cleaning it up by splitting out panic and
+> oops helpers.
 
-Right!
+Yay.
 
-> I will amend this for the future splits, thanks!
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-Don't get me wrong, I love the motivation behind just the 3rd purpose,
-however I figured there might be something more when I saw panic_notifier.h.
-It was just not clear.
+> At the same time convert users in header and lib folder to use new header.
+> Though for time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
 
-But awesome stuff!
+I think it would be good to have some place to note that "This #include
+is just for backwards compatibility, it will go away RealSoonNow, so if
+you rely on something from linux/panic.h, include that explicitly
+yourself TYVM. And if you're looking for a janitorial task, write a
+script to check that every file that uses some identifier defined in
+panic.h actually includes that file. When all offenders are found and
+dealt with, remove the #include and this note.".
 
-  Luis
+> +
+> +struct taint_flag {
+> +	char c_true;	/* character printed when tainted */
+> +	char c_false;	/* character printed when not tainted */
+> +	bool module;	/* also show as a per-module taint flag */
+> +};
+> +
+> +extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
+
+While you're doing this, nothing outside of kernel/panic.c cares about
+the definition of struct taint_flag or use the taint_flags array, so
+could you make the definition private to that file and make the array
+static? (Another patch, of course.)
+
+> +enum lockdep_ok {
+> +	LOCKDEP_STILL_OK,
+> +	LOCKDEP_NOW_UNRELIABLE,
+> +};
+> +
+> +extern const char *print_tainted(void);
+> +extern void add_taint(unsigned flag, enum lockdep_ok);
+> +extern int test_taint(unsigned flag);
+> +extern unsigned long get_taint(void);
+
+I know you're just moving code, but it would be a nice opportunity to
+drop the redundant externs.
+
+Rasmus
