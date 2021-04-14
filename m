@@ -2,185 +2,268 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C6F6C4360C
-	for <rcu@archiver.kernel.org>; Fri,  9 Apr 2021 22:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF65EC433B4
+	for <rcu@archiver.kernel.org>; Wed, 14 Apr 2021 12:12:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1395A610F9
-	for <rcu@archiver.kernel.org>; Fri,  9 Apr 2021 22:40:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C6FB60FF3
+	for <rcu@archiver.kernel.org>; Wed, 14 Apr 2021 12:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhDIWkr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Apr 2021 18:40:47 -0400
-Received: from elvis.franken.de ([193.175.24.41]:37276 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234960AbhDIWko (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:40:44 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lUznc-00038n-02; Sat, 10 Apr 2021 00:40:24 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EDAA4C24FC; Sat, 10 Apr 2021 00:39:11 +0200 (CEST)
-Date:   Sat, 10 Apr 2021 00:39:11 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Alexander Lobakin <alobakin@pm.me>, Wei Liu <wei.liu@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        id S230293AbhDNMM6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Apr 2021 08:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232995AbhDNMM6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Apr 2021 08:12:58 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0354FC061574;
+        Wed, 14 Apr 2021 05:12:37 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id n138so32890029lfa.3;
+        Wed, 14 Apr 2021 05:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKbRLJoDqZv6FU9vP3C4Wznok1ZQCQUcpdPyVp9b0EM=;
+        b=ePxABEF554Kh12IFcitwJFHw8OgQfatpPxz2qTHdZA0qlvyvVC3a1GjOaxlRduj2oa
+         1n9Yfv7+n+91s6fF/kfNADgeF9tgHKoU7c42PD3E+nXJ0/QXnbli7LVclp4zQdFU57Fb
+         Fw4cMauexffEtlUz0kWuVyogJQMdOJ7Rz6Ukyhd9CIrzR5ufW3wXmVSR3LthfHzTy8dP
+         KShqTBjhPUQqriBc41KRVl4l7CIaWw6IDI+mPUsoGZcWu4hJhYU6MElUYoVkLJ0xSkaz
+         kXEZijTHu7TVvJG2wSYoWGG+/xv6+tSiCM541FgWkdKp3j2D2AOt+fkFiiLDC36b2fD8
+         VcJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xKbRLJoDqZv6FU9vP3C4Wznok1ZQCQUcpdPyVp9b0EM=;
+        b=Yrx6/vvaGnhdAASu059dtLT4X5tdUj9lIHNIhVGhLFp0GWRN6dbB+xsXJlmuGj0Mjh
+         nrUi+0j1UBoIL/wyQLVJ/XDbiaoFYw5V0o07mzmGoUCgwskyrJriLe9owHRrBJU2ZR4N
+         XZor3q6jU3nfotN8+vD/z5PhOkVip9AMQ0FFLjz02ZHo4cGbY0JHr7HsSgFlygVKDHMU
+         otessuvRKrBUbQUW7GKjd1BYDTIgeZvOJBSaf0d1VzwlM+YjY6M8BuXmCmEY2AkwE5io
+         HtV05uqsdHgIkHZSVvjvMcRF9x9yjGt67Va0Wlf9tAGmArbk3F1jHWNIVfC7ydI/zxXT
+         X6Tg==
+X-Gm-Message-State: AOAM530o7rD+PUTu+abSh8CmIyJfMx+OORGnLNyYMW7hS94WVuwots/X
+        8huFSLIvsfsxdLaAxCxRhI1lkdYugMo0tw==
+X-Google-Smtp-Source: ABdhPJzW8j2k8Eu3l0gqSAkhrBB15VjWKh5lhHg9xIwNX7R38qW04wBW8bSlbE+R8ap/YWseKuKDWg==
+X-Received: by 2002:ac2:5fa2:: with SMTP id s2mr26097207lfe.486.1618402355444;
+        Wed, 14 Apr 2021 05:12:35 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id i4sm4338061lfu.33.2021.04.14.05.12.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 05:12:35 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        "Jason J. Herne" <jjherne@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Joe Perches <joe@perches.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Wang Wenhu <wenhu.wang@vivo.com>,
-        Marek Czerski <ma.czerski@gmail.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org, linux-edac@vger.kernel.org,
-        coresight@lists.linaro.org, linux-leds@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Corey Minyard <minyard@acm.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Alex Elder <elder@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v2 1/1] kernel.h: Split out panic and oops helpers
-Message-ID: <20210409223911.GA21445@alpha.franken.de>
-References: <20210409100250.25922-1-andriy.shevchenko@linux.intel.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>
+Subject: [PATCH 1/6] kvfree_rcu: Release a page cache under memory pressure
+Date:   Wed, 14 Apr 2021 14:12:21 +0200
+Message-Id: <20210414121226.2650-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409100250.25922-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 01:02:50PM +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
-> 
-> There are several purposes of doing this:
-> - dropping dependency in bug.h
-> - dropping a loop by moving out panic_notifier.h
-> - unload kernel.h from something which has its own domain
-> 
-> At the same time convert users tree-wide to use new headers, although
-> for the time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Corey Minyard <cminyard@mvista.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Wei Liu <wei.liu@kernel.org>
-> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> v2:
->  - fixed all errors with allmodconfig on x86_64 (Andrew)
->  - checked with allyesconfig on x86_64
->  - additionally grepped source code for panic notifier list usage
->    and converted all users
->  - elaborated commit message (Luis)
->  - collected given tags (incl. Andrew's SoB, see below)
-> 
-> I added Andrew's SoB since part of the fixes I took from him. Andrew,
-> feel free to amend or tell me how you want me to do.
-> 
->  arch/mips/kernel/relocate.c                   |  1 +
->  arch/mips/sgi-ip22/ip22-reset.c               |  1 +
->  arch/mips/sgi-ip32/ip32-reset.c               |  1 +
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Add a drain_page_cache() function to drain a per-cpu page cache.
+The reason behind of it is a system can run into a low memory
+condition, in that case a page shrinker can ask for its users
+to free their caches in order to get extra memory available for
+other needs in a system.
 
+When a system hits such condition, a page cache is drained for
+all CPUs in a system. By default a page cache work is delayed
+with 5 seconds interval until a memory pressure disappears, if
+needed it can be changed. See a rcu_delay_page_cache_fill_msec
+module parameter.
+
+Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ kernel/rcu/tree.c | 70 +++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 61 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2c9cf4df942c..8b74edcd11d4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -186,6 +186,17 @@ module_param(rcu_unlock_delay, int, 0444);
+ static int rcu_min_cached_objs = 5;
+ module_param(rcu_min_cached_objs, int, 0444);
+ 
++// A page shrinker can ask for freeing extra pages to get them
++// available for other needs in a system. Usually it happens
++// under low memory condition, in that case we should hold on
++// a bit with page cache filling.
++//
++// Default value is 5 seconds. That is long enough to reduce
++// an interfering and racing with a shrinker where the cache
++// is drained.
++static int rcu_delay_page_cache_fill_msec = 5000;
++module_param(rcu_delay_page_cache_fill_msec, int, 0444);
++
+ /* Retrieve RCU kthreads priority for rcutorture */
+ int rcu_get_gp_kthreads_prio(void)
+ {
+@@ -3144,6 +3155,7 @@ struct kfree_rcu_cpu_work {
+  *	Even though it is lockless an access has to be protected by the
+  *	per-cpu lock.
+  * @page_cache_work: A work to refill the cache when it is empty
++ * @backoff_page_cache_fill: Delay a cache filling
+  * @work_in_progress: Indicates that page_cache_work is running
+  * @hrtimer: A hrtimer for scheduling a page_cache_work
+  * @nr_bkv_objs: number of allocated objects at @bkvcache.
+@@ -3163,7 +3175,8 @@ struct kfree_rcu_cpu {
+ 	bool initialized;
+ 	int count;
+ 
+-	struct work_struct page_cache_work;
++	struct delayed_work page_cache_work;
++	atomic_t backoff_page_cache_fill;
+ 	atomic_t work_in_progress;
+ 	struct hrtimer hrtimer;
+ 
+@@ -3229,6 +3242,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+ 
+ }
+ 
++static int
++drain_page_cache(struct kfree_rcu_cpu *krcp)
++{
++	unsigned long flags;
++	struct llist_node *page_list, *pos, *n;
++	int freed = 0;
++
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	page_list = llist_del_all(&krcp->bkvcache);
++	krcp->nr_bkv_objs = 0;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++	llist_for_each_safe(pos, n, page_list) {
++		free_page((unsigned long)pos);
++		freed++;
++	}
++
++	return freed;
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3419,7 +3452,7 @@ schedule_page_work_fn(struct hrtimer *t)
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(t, struct kfree_rcu_cpu, hrtimer);
+ 
+-	queue_work(system_highpri_wq, &krcp->page_cache_work);
++	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+ 	return HRTIMER_NORESTART;
+ }
+ 
+@@ -3428,12 +3461,16 @@ static void fill_page_cache_func(struct work_struct *work)
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(work, struct kfree_rcu_cpu,
+-			page_cache_work);
++			page_cache_work.work);
+ 	unsigned long flags;
++	int nr_pages;
+ 	bool pushed;
+ 	int i;
+ 
+-	for (i = 0; i < rcu_min_cached_objs; i++) {
++	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
++		1 : rcu_min_cached_objs;
++
++	for (i = 0; i < nr_pages; i++) {
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+ 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 
+@@ -3450,6 +3487,7 @@ static void fill_page_cache_func(struct work_struct *work)
+ 	}
+ 
+ 	atomic_set(&krcp->work_in_progress, 0);
++	atomic_set(&krcp->backoff_page_cache_fill, 0);
+ }
+ 
+ static void
+@@ -3457,10 +3495,15 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ {
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+ 			!atomic_xchg(&krcp->work_in_progress, 1)) {
+-		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+-			HRTIMER_MODE_REL);
+-		krcp->hrtimer.function = schedule_page_work_fn;
+-		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		if (atomic_read(&krcp->backoff_page_cache_fill)) {
++			queue_delayed_work(system_wq,
++				&krcp->page_cache_work,
++					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
++		} else {
++			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++			krcp->hrtimer.function = schedule_page_work_fn;
++			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		}
+ 	}
+ }
+ 
+@@ -3612,12 +3655,19 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+ 	int cpu;
+ 	unsigned long count = 0;
++	unsigned long flags;
+ 
+ 	/* Snapshot count of all CPUs */
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
++
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		count += krcp->nr_bkv_objs;
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++		atomic_set(&krcp->backoff_page_cache_fill, 1);
+ 	}
+ 
+ 	return count;
+@@ -3634,6 +3684,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count = krcp->count;
++		count += drain_page_cache(krcp);
++
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (krcp->monitor_todo)
+ 			kfree_rcu_drain_unlock(krcp, flags);
+@@ -4608,7 +4660,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		}
+ 
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
++		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
+ 	}
+ 	if (register_shrinker(&kfree_rcu_shrinker))
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.20.1
+
