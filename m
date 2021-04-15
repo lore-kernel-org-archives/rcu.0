@@ -2,326 +2,155 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F0EDC433B4
-	for <rcu@archiver.kernel.org>; Wed, 14 Apr 2021 23:48:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF0DEC43462
+	for <rcu@archiver.kernel.org>; Thu, 15 Apr 2021 15:05:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 08EB6611B0
-	for <rcu@archiver.kernel.org>; Wed, 14 Apr 2021 23:48:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A709B61131
+	for <rcu@archiver.kernel.org>; Thu, 15 Apr 2021 15:05:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhDNXsr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Apr 2021 19:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhDNXsq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:48:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DABE7611AD;
-        Wed, 14 Apr 2021 23:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618444104;
-        bh=IR12TWORQZbaSrvAqiFIvHh7U8GjQYljtfBf4zfVH+M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IsMPa4ExKt7vkrY0Py/D0+WlIis497+qUgK9GaOfe9pXnEvPI9arJrsgjNPl4zbhn
-         6Apul6j+FBrb/ct9RdmGaBCximiX9+5HULVMbi9KoTv5hNnuam22HD93QN+SNk8T8O
-         EyRNmc/E0S+8Na/1Wo0XMfRoDFTfPEfyGWAG0reiTRtPZ6ITJLt+KIXIaNyrz0d+di
-         YIi9v0LEUSZHksGYHG1udxzOlKIaQqilgXcSX7k58CwKcrpbQ9t8XYvhaK7PiK1LRx
-         Cb/HuUYJ0Pze6WrRRL7PPtNInw0C8RKGXvxCo3wSt5NAHya+b8l6sJfghbEodcu8Lz
-         WSGjZ8aq2tPxQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A99375C2738; Wed, 14 Apr 2021 16:48:24 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 16:48:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210414234824.GZ4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
- <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
- <20210217191907.GH2743@paulmck-ThinkPad-P72>
- <20210217194359.m647inivfp4frzc7@linutronix.de>
+        id S234137AbhDOPFk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Apr 2021 11:05:40 -0400
+Received: from mail-mw2nam10on2071.outbound.protection.outlook.com ([40.107.94.71]:52625
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234638AbhDOPEh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:04:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EIu0HEKXrckRjar46Sx5dd7LpaklfKiHAVb3TavqhUrQF/EaSDeiWs2MppzvfpITXMtJ1BTxUsts1KYtSQtsxpjE4sn4jQdHRdffav1B/j08OtoldmN1ftjVzyDiFqQhPbrN5FqxyDWRwaBhKtSnHUjRdPa1NZoTz1llmJPKlOmwuiQV5sshI97N45zj9DjmrCZhBaG5+pE/nmfswXmPNAcWHDsAbFUUb4CTZcIeBCiPU7G97n+/bgoNKRki529NxO41CkEINyTNXgJnfbu9+utKzx83KYhqmmXFe5GDtQN0Pj0YOwjicrLiloA13w0LfXSh7GamxPlU1uXsr73BJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vnruNx+bRqjz5vSKyTyZASmKmVflkk2FEjx1Iqhwmqg=;
+ b=X+2Y80esXdJwkLhbfVxbybhvMflNsx8xg7HiJm6XkQY/DHXr4GT61OS9xx4tQ627MqOXqFUw5QAMxVCTRr7+7uJcEaf2WJHwrcuEek6pIovpxr+xkJ7zjOuMTihLLV3EcnbamFbnSr9Lpk/zpjLsTiBSFcDXcP989clVwOHzS5z22Nhqx3sRzpA3I49PNVS0rDomWXc2XVPkhOwGvrRcbwopzB4bYkllkjZOPlEW40mn3f2jwB4eeknIhtHMZbxIjSEFsFIDiH+Vsm0vzTzmHKHbtI2Utu6h9dpZ7tqOwOXIgtmex6oqZfoXEX5vN3SMvcyOL6ufvdnK1T9+uHNUCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vnruNx+bRqjz5vSKyTyZASmKmVflkk2FEjx1Iqhwmqg=;
+ b=e2WXTfellpG4BHnh/w70UDMCzJZ/WuPX7Gg+oi2yn91gWwg4OTWtZkzXFrkoFlgCFvDh8WV5NoF5gVyy8YKLulgpCtvlFMvjm+tiptxxiBCk98Q11mKkYb8sk8QjnE1IQ1hZ4VT9Ympss/f7h+0lzggRrf/sFttmcypvOn/uWX8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BYAPR11MB2597.namprd11.prod.outlook.com (2603:10b6:a02:c0::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Thu, 15 Apr
+ 2021 15:04:13 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4042.018; Thu, 15 Apr 2021
+ 15:04:13 +0000
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+Subject: [Qestion] Is preempt_disable/enable needed in non-preemption code
+ path
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <b068d707-0ac7-4840-a297-112731972d8a@windriver.com>
+Date:   Thu, 15 Apr 2021 23:04:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: SJ0PR05CA0072.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::17) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217194359.m647inivfp4frzc7@linutronix.de>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by SJ0PR05CA0072.namprd05.prod.outlook.com (2603:10b6:a03:332::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Thu, 15 Apr 2021 15:04:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: efb53d31-598f-4e90-4cae-08d9001fbab1
+X-MS-TrafficTypeDiagnostic: BYAPR11MB2597:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB2597FCF477CBC60390296BB0E44D9@BYAPR11MB2597.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ksuwXmNhjEEgh6SqqltQv1jo92ZOE+GJ7vwj9l+ysfxyRqRC9/qLlSb1Sc4KCG+o4XmFRbak7MTGaHxeAmV5ErmpgcpAKiXtoCKKk9zjQSGkDdbKhwvSWAnqxQyWmrumdz128qcbiTz0Uqq7nr5NRGdEfPsEduYzrThG0YxT2qkyT/6xnSE8s5PiGyetw7lmHW0Rt3U8tbcM80/esYshhVLPY5RHuiLq4Ug4sqBqHiGN3bpaJ5PBLeA283Vbhqvj7Bu75oUBKJK8ymjrAS0R81HnK4BNwqz1XhAi59PFZJwz5QTC3HktwUZw05MTcA+fdtB6ZYdSEgCZ5oqb+r0opqDiLqdejvUHufekXfPkaQ6G7Rd8zQVgWbVVJMa2OomW6tZ7KnXKTKgzHJgqtoLy7v5S0TFzkoveOPRp8IclpSoAt6bKMFzV9VfnKkoqjzihCQo5VnoVF1KbMTiC2UOQE2ovbsRjrzigiLLl7HBLfGcRDlzwI+P+ds6PU64RBZ+odQ4ZthLnQVFynp7GDMtbWw2kDmH+tEDFuN8q586HD7pdRsbMEsCxRu3llOQ+HhnIMLaR5RzKaxsf4hvCYOHHhhuLphOVEmkKKh6f7JrzoyuikF5v+BGCNIP8DY8CBJRGJtSP0gEgb7vpFBc9DghJW2mDIMyWr9yJv10omUf/i5kE2J8E2RDgXhady10i7icuyDCCRhrFr4H9M5GClSX5b+uAffFJIEo8tz6ejfFcZeE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(346002)(396003)(366004)(376002)(66556008)(66476007)(16526019)(5660300002)(66946007)(2616005)(6706004)(83380400001)(956004)(4326008)(38100700002)(6666004)(86362001)(36756003)(16576012)(6486002)(2906002)(31686004)(26005)(8676002)(6916009)(38350700002)(31696002)(8936002)(186003)(316002)(52116002)(478600001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V1lYT2lMaWdYZjhqenBjK25TQ0xBN0EraFFOMFlMTjBRdFNaWXBuOEk1VW4y?=
+ =?utf-8?B?U2ROc3Z3S2VUWkd0RTFxczAwYXZpc3FWMEJhWVcwL0NSb095ZjNLSG5ZTEx5?=
+ =?utf-8?B?N0lDUUwxT0grYjliNVEzM1JSNTdsM2FOb1RwKzIralRYMDZuREZubXlPUFFS?=
+ =?utf-8?B?U3RRYmFpN1lwdWp0WkdRMGxKVFpCd2k4RG9LOVlnRS8ranpUOFRYaldFeVlX?=
+ =?utf-8?B?NWIybmpYeG1zUDhxTWhIL29JWU16VSs3Q2ovdjV3eWkrS1l6bzJGRUUxWUEv?=
+ =?utf-8?B?ZGd6VERmUTJxelVTM1IvSWRtY1BCMWRKclQ2WmVTMW9tckE1akc0ZDlmelNz?=
+ =?utf-8?B?QnRsbzZUZUg4RXRlRnl0SnNXd3dUSWtQTitUMytUUjhtV3dRckFnTVl2bGVP?=
+ =?utf-8?B?bHZPa2lHYWxQMWZOcUN5UjJDS2NSblV2OXpET2RwZ0xzVFF0MnV5dCt2QnNq?=
+ =?utf-8?B?aWsvdm5IZE5OWHV5VXppNGxxMmFEVW9pYk13VjdiWGppaXlidk13enJ4bllH?=
+ =?utf-8?B?Ky9QdnhBaDZMV1dTU3ordmNxeWp4TlkxKy9QTmw5MWt5RnVuRGxaMFZoOVhu?=
+ =?utf-8?B?cGRtc01IcFZhbXdqeHA3c1dCcTBvcldYbWRsYnRaa1ZHN21jWmJuZ2p4Y3I4?=
+ =?utf-8?B?NjZ4ZVkzSmREdENPQ2pKQjRIQUw3bmx0L21MUklQTDFaZW1nYVBSei9ZZjND?=
+ =?utf-8?B?S3BUVy83aXF0b3NaNHJBZnl1UE9kSEJ6WGd0b2FJR0NZOG1CdUhrTXdJMU54?=
+ =?utf-8?B?d2tYWXE2QmFjeHNFWUlGb1lJb1NWWXJJSGZVcmdtMGhOZ0l2bG1ZM3RnbzlM?=
+ =?utf-8?B?czZBa1M5UHpXVnFKK1phYml0bWVEa2JsVngwcFB4UklCOW9XcU5vUXd1SmZH?=
+ =?utf-8?B?UEFqN0xTeVliUHZoRDl0UDd3bXNlMXFDSUF1R1JpM0hOc3F5OGliTmpNbDRw?=
+ =?utf-8?B?bTFmb24wUUN1Z1AwdVpVcXJvU0RmVmpmZVJabHJpV1psT0lRUXlUZ0lnMXRK?=
+ =?utf-8?B?dDFrWm5ua1RqM2ZYd2FpQjFUTm16ZVIyTW45RlVNRzRpQTRRU1loRm9naVJa?=
+ =?utf-8?B?eFJ1bmFsUkthODdmb1hIR2YxYkgrVHdPRi8zWkFDUkgwbktZdFU1R3pMVW8r?=
+ =?utf-8?B?WmoxY29CMDY0RklDazZHd1g5aHFKSndtZmhZeUdKUFp1QlBscWlmKzlRUWZU?=
+ =?utf-8?B?c3NmSHI0eWVDTllwbHJXcElwY01zV2RTeDIvbHZIUkdkellMT3RycXlLcE4v?=
+ =?utf-8?B?dExhVWdCSHk2dGI2VytDS2o0OVpIODVuVXUzaTUzdWtFcEl6UXltYVZ6djg2?=
+ =?utf-8?B?N1NPY2dvZFRqb3RxRm1TdzMyYm9hZkZHcllZTDVCV1Nwd0xuNlVrcXpEREtM?=
+ =?utf-8?B?a2pMMWgxMTBUalVXVm51Yi9QL0tTQUYxeVoxc2tSRUZSTERQZkltQmw4Ykty?=
+ =?utf-8?B?UTdZM1Rtbk1lQlpQdk9nZ3RzRDhTb2RzQVlrZG5TNkY3cnR2c2QvQ3JSaHFC?=
+ =?utf-8?B?VDFkYkt5TVBnUVAwbkJGblF0d0d2c1hCYmQrWVBhdXlwNWhobzNINnhnZHlj?=
+ =?utf-8?B?OW5nNkRyTUhid1Bub0thSUt3NXZxQXB1RmxYUk9peGhtSDVseWs4WDdQYllN?=
+ =?utf-8?B?a2lCM2Q2WUFGVXprUW1OdUhUZlFXMFY3ZFJsU2xWMFlJMUlveXBVOTlJOFYy?=
+ =?utf-8?B?QVlzeXYxbUlKVGRaVXFEZE9aTHk5WC85dGxGaTh3RnNDclNPRzBYZTdqRXdX?=
+ =?utf-8?Q?Ug4dlhtfbIRLviS/wX6/W+sCimjhjHmQ/8Hv9wj?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efb53d31-598f-4e90-4cae-08d9001fbab1
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 15:04:12.9021
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F6FQ3X+XIfiNVx7V5YWrs+pU3SgDeJDehrYgXcfy+cSs4b6gRkr7EQdbC0wKxz//ZgtX0e24rjzK6jxVRjE/7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2597
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 08:43:59PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-17 11:19:07 [-0800], Paul E. McKenney wrote:
-> > > Ah. One nice thing is that you can move the RCU threads to a house
-> > > keeping CPU - away from the CPU(s) running the RT tasks. Would this
-> > > scenario be still affected (if ksoftirqd would be blocked)?
-> > 
-> > At this point, I am going to say that it is the sysadm's job to place
-> > the rcuo kthreads, and if they are placed poorly, life is hard.
-> 
-> Good. Because that is what I suggest :)
-> 
-> > > Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-> > > of moving forward (the timer did not fire, the condition is true and you
-> > > move the timeout forward).
-> > > A hrtimer timer on the other hand needs to be removed, forwarded and
-> > > added back to the "timer tree". This is considered more expensive
-> > > especially if the timer does not fire.
-> > 
-> > There are some timers that are used to cause a wakeup to happen from
-> > a clean environment, but maybe these can instead use irq-work.
-> 
-> irq-work has also a "hard" mode because people ended up to throwing
-> everything in there.
+Hi experts,
 
-So after beating on this a bit, I decided that the timer problems are
-specific to rcutorture.  The problem is making a test that reliably
-and quickly finds RCU priority boosting failures, while not destroying
-the rest of the kernel's ability to function.  The current approach is
-CPU-bound FIFO priority-1 real-time processes, and with the RT throttling
-disabled.  And one such process on each online CPU, all running
-concurrently for a four-second time period.
+I am learning rcu mechanism and its codes. When looking at the 
+rcu_blocking_is_gp(), I found there is a pair preemption disable/enable 
+operation in non-preemption code path. And it has been a long time. I 
+can't understand why we need it? Is there some thing I missed? If not, 
+can we remove the unnecessary operation like blow?
 
-This is of course a great way to destroy the rest of the kernel.  And
-in any other context, this would be abuse that was expected to destroy
-the kernel.
-
-So rather than make large changes to RCU, I instead check to see whether
-rcutorture is built into the kernel, and in that case crank all of the
-ksoftirqd kthreads up to FIFO priority 2, the same as the various RCU
-kthreads.  This is a simple change, and if you are running rcutorture
-built-in in production you are in a world of hurt anyway, so realtime
-ksoftirqd kthreads are the least of your problems.
-
-> > That it can!  Aravinda Prasad prototyped a mechanism hinting to the
-> > hypervisor in such cases, but I don't know that this ever saw the light
-> > of day.
-> 
-> Ah, good to know.
-> 
-> > > My understanding of the need for RCU boosting is to get a task,
-> > > preempted (by a RT task) within a RCU section, back on the CPU to
-> > > at least close the RCU section. So it is possible to run RCU callbacks
-> > > and free memory.
-> > > The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-> > > killer got nervous (and if we had memory allocation failures).
-> > > Also, running thousands of accumulated callbacks isn't good either.
-> > 
-> > Sounds good, thank you!
-> 
-> I hope my understanding was correct. Glad to be if service :)
-
-So far, so good!  ;-)
-
-After reworking rcu_torture_boost() to use the polling interfaces, thus
-getting callback invocation out of the way, there did turn out to be a
-bug in RCU priority boosting.  If you had a system with more than one
-CPU, but also having an rcu_node structure with only one CPU, and task
-that blocked while running on that one CPU would never be RCU priority
-boosted.
-
-How did this happen?  One step at a time...
-
-o	A bug I was chasing a few years back reproduced much more
-	quickly if I enabled CPU hotplug on TREE03.
-
-o	And in addition, x86 no longer supports configurations where CPUs
-	cannot be hotplugged (mumble mumble security mumble mumble),
-	which means that the rcutorture scripting is always going to
-	test CPU hotplug.
-
-o	TREE03 was the one scenario that tested RCU priority boosting.
-
-o	But RCU priority-boost testing assumes that CPU hotplug
-	was disabled.  So much so that if it saw that there was any
-	CPU-hotplug work going on, it would disable itself.
-
-o	So RCU priority boosting has gone completely untested for
-	quite a few years.
-
-o	Quite a few more years back, I learned that firmware sometimes
-	lies about the number of CPUs.  I learned this from bug reports
-	noting that RCU was creating way more kthreads than made any
-	sense on small CPUs.
-
-o	So the spawning of kthreads that are per-CPU or per-group-of-CPUs
-	is done at CPU-online time.  Which ensures that systems get
-	the right number of RCU kthreads even in the presence of lying
-	firmware.  In the case of the RCU boost kthreads, the code
-	verifies that the rcu_node structure in question has at least
-	one online CPU before spawning the corresponding kthread.
-
-o	Except that changes in CPU hotplug mean that it is quite possible
-	for the incoming CPU to not be fully online at the time that
-	rcutree_online_cpu() executes.  This means that the RCU boost
-	kthread will be spawned when the second for a given rcu_node
-	structure comes online.
-
-o	Which means that rcu_node structures that have only one CPU
-	never get an RCU boost kthread.  This is unusual, requiring 17,
-	33, 49, 65, ... CPUs on the system given default values for RCU
-	kconfig options.  But it can be made to happen, especially when
-	using the rcutorture scripting.
-	('--kconfig "CONFIG_NR_CPUS=17" ...')
-
-The fix is to push the check for at least one online CPU up into the
-loop that is executed during early boot, which means that the calls
-from rcutree_online_cpu() can be moved to rcutree_prepare_cpu(), and
-can simply assume that the CPU will eventually come online.  The patch
-is shown below.
-
-The rcu_torture_boost() function required additional rework because CPUs
-can fail to pass through a quiescent state for some seconds from time to
-time, and there is nothing that RCU priority boosting can do about this.
-I therefore added checks for this condition, and refrain from reporting
-an error in such cases.
-
-I also created a new BUSTED-BOOST scenario that tests RCU priority
-boosting on a kernel built with CONFIG_RCU_BOOST=y.  This fails within a
-few tens of seconds, so the test might actually be working.  If testing
-continues to go well, I expect to submit these into the v5.14 merge window
-(not the upcoming one, but the one after that).
-
-More than you probably wanted to know, but at least both the boosting
-and its tests now seem to be doing something useful.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 8193d3465bc8fb8bd3ee765c42df2f551c01329a
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Mon Apr 5 20:42:09 2021 -0700
-
-    rcu: Make RCU priority boosting work on single-CPU rcu_node structures
-    
-    When any CPU comes online, it checks to see if an RCU-boost kthread has
-    already been created for that CPU's leaf rcu_node structure, and if
-    not, it creates one.  Unfortunately, it also verifies that this leaf
-    rcu_node structure actually has at least one online CPU, and if not,
-    it declines to create the kthread.  Although this behavior makes sense
-    during early boot, especially on systems that claim far more CPUs than
-    they actually have, it makes no sense for the first CPU to come online
-    for a given rcu_node structure.  There is no point in checking because
-    we know there is a CPU on its way in.
-    
-    The problem is that timing differences can cause this incoming CPU to not
-    yet be reflected in the various bit masks even at rcutree_online_cpu()
-    time, and there is no chance at rcutree_prepare_cpu() time.  Plus it
-    would be better to create the RCU-boost kthread at rcutree_prepare_cpu()
-    to handle the case where the CPU is involved in an RCU priority inversion
-    very shortly after it comes online.
-    
-    This commit therefore moves the checking to rcu_prepare_kthreads(), which
-    is called only at early boot, when the check is appropriate.  In addition,
-    it makes rcutree_prepare_cpu() invoke rcu_spawn_one_boost_kthread(), which
-    no longer does any checking for online CPUs.
-    
-    With this change, RCU priority boosting tests now pass for short rcutorture
-    runs, even with single-CPU leaf rcu_node structures.
-    
-    Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    Cc: Scott Wood <swood@redhat.com>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 03282196953a..5c214705c33f 100644
+index da6f5213fb74..c6d95a00715e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4167,7 +4167,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
- 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--	rcu_prepare_kthreads(cpu);
-+	rcu_spawn_one_boost_kthread(rnp);
- 	rcu_spawn_cpu_nocb_kthread(cpu);
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
- 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 007be551803e..305cf6aeb408 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -417,8 +417,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
- static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
- static bool rcu_is_callbacks_kthread(void);
- static void rcu_cpu_kthread_setup(unsigned int cpu);
-+static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp);
- static void __init rcu_spawn_boost_kthreads(void);
--static void rcu_prepare_kthreads(int cpu);
- static void rcu_cleanup_after_idle(void);
- static void rcu_prepare_for_idle(void);
- static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 6bf72c4132a6..464b16132866 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1188,22 +1188,16 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-  */
- static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- {
--	int rnp_index = rnp - rcu_get_root();
- 	unsigned long flags;
-+	int rnp_index = rnp - rcu_get_root();
- 	struct sched_param sp;
- 	struct task_struct *t;
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
--		return;
--
--	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-+	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
- 		return;
- 
- 	rcu_state.boost = 1;
- 
--	if (rnp->boost_kthread_task != NULL)
--		return;
--
- 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
- 			   "rcub/%d", rnp_index);
- 	if (WARN_ON_ONCE(IS_ERR(t)))
-@@ -1255,17 +1249,8 @@ static void __init rcu_spawn_boost_kthreads(void)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp)
--		rcu_spawn_one_boost_kthread(rnp);
--}
--
--static void rcu_prepare_kthreads(int cpu)
--{
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;
--
--	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
--	if (rcu_scheduler_fully_active)
--		rcu_spawn_one_boost_kthread(rnp);
-+		if (rcu_rnp_online_cpus(rnp))
-+			rcu_spawn_one_boost_kthread(rnp);
- }
- 
- #else /* #ifdef CONFIG_RCU_BOOST */
-@@ -1285,15 +1270,15 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
- {
- }
- 
--static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-+static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- {
- }
- 
--static void __init rcu_spawn_boost_kthreads(void)
-+static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- {
- }
- 
--static void rcu_prepare_kthreads(int cpu)
-+static void __init rcu_spawn_boost_kthreads(void)
- {
- }
- 
+@@ -3703,7 +3703,6 @@ static int rcu_blocking_is_gp(void)
+         if (IS_ENABLED(CONFIG_PREEMPTION))
+                 return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
+         might_sleep();  /* Check for RCU read-side critical section. */
+-       preempt_disable();
+         /*
+          * If the rcu_state.n_online_cpus counter is equal to one,
+          * there is only one CPU, and that CPU sees all prior accesses
+@@ -3718,7 +3717,6 @@ static int rcu_blocking_is_gp(void)
+          * Those memory barriers are provided by CPU-hotplug code.
+          */
+         ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
+-       preempt_enable();
+         return ret;
+  }
+
+
+
+Best regards,
+Yanfei
