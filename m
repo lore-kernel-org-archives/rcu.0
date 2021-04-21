@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5068C433ED
-	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 03:13:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13425C43462
+	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 03:13:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B89B61415
-	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 03:13:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB9BD61415
+	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 03:13:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhDUDOE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Apr 2021 23:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        id S234876AbhDUDOJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Apr 2021 23:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233974AbhDUDOE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Apr 2021 23:14:04 -0400
+        with ESMTP id S234743AbhDUDOF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Apr 2021 23:14:05 -0400
 Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA85CC06138A;
-        Tue, 20 Apr 2021 20:13:31 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d6so12044735qtx.13;
-        Tue, 20 Apr 2021 20:13:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA60C06138A;
+        Tue, 20 Apr 2021 20:13:32 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id z25so7593693qtn.8;
+        Tue, 20 Apr 2021 20:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fUnGKH/ZPQskGhid4V66jzQYmJVwxxXo93yIoVD9gfY=;
-        b=Q3ljRnULwU+Y8mXeICsiUAwjkmhXss9PUwaVa6W+/xilYoh2YqF/thDOsUSijQ1QSO
-         Mq3BnKuqtKqHdiafaMf+SimSFhOiYK4er1OhQTcAXw4lDOSUyQUB9OqzRGj8Lu6BbW3d
-         uxbNjxDgi78Ub1GVU90N2UC+1ySiek2xwH2weTvRp+ptx1RstMK+W0tMc7m4ypicCngb
-         nFfw9uqz1jm3j8n3UZJry47D2Y0uucfJfzsctingHKM8Lba/SucyxlOF9BPSk0APur8G
-         dCFRQnIeN5sfKcwX4HJgfoZprPwYGAHpDqonct9Tr7nU57WauYPIlncalfCzRnc2oeV0
-         8DgA==
+        bh=ZK3TPIqCDZ+2tlXzBCK7P9aXaldyR3nTbxjQuIWXyEU=;
+        b=e6dW1MbVWD3LbIq6mWdhkkZ8aKhfroy+PbLAZvFXkirD8+6TATsQdLRQooJZfrez66
+         2U3fpn5/WCbumUqz4KMr55D07daay5pcop6t/rg1aFOOakV+tVt2eR/kUiSW0PKguoM1
+         WjvXUXvoG92xSvLrnRfQ/OLLOxoKuZYMXKAMhhiIIUNcivnyD0D+yKf2ZYkTTi0XIs2Z
+         yJMlU6jE2wQYXkrctvVLelcH8W5x+8UuwMvJQLHOwmSuIVlKGjAYLbJpXpL0KziuxQLo
+         HaXbKPuG5pHsmWomgkwWEp4XAd1lVdY852DyYW02m5CphunJZ9I8o0w/D5v8aPd3lzsK
+         oRPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fUnGKH/ZPQskGhid4V66jzQYmJVwxxXo93yIoVD9gfY=;
-        b=VtZwq8VymTN+m6/qOuXpc75FScoyJ1zDaF+nzr5u3FRM1na7dOZtcWl+5ipKit1dz0
-         iHIlkuWcq63lx8UMcn5ycIHzf6CyWXTaxkh3uT3vOy/ZSRZE33I6/F1guo7//ppxZ4NX
-         qGxP72a+Fg4ly9iGEKUkNC0Ngx7KHlbOkqjxR+HhBnO7WzWM7s4ZJIWHy3nLH0fMUexQ
-         FxGwqHSpaUHhVcgDeXwL3lF1mD71V2sPd8B52TpTuDedSdf0L72o2Zdw/Tl2wJ1wQsLK
-         oiHA8A9bNL4pMVJvfoTzABcV9hblc4KAMSYfeDzPvooAlU7uYrt1wMx4fRf8P+6pJHNl
-         drEQ==
-X-Gm-Message-State: AOAM532nRCqd6uXyIXR0aNKXTSMrv0ErDxUPEAdkvpAka9X16Rg42ZRd
-        lVYMEVhWzErZeG7PoH7hGCi6fTga5dg=
-X-Google-Smtp-Source: ABdhPJz7WPid5YpYs/ozPGgXqbbOWTGgnhueWCtjhWxHOPz3vzTngFpkzuOGwJaxSsNBQrKv0ge3NA==
-X-Received: by 2002:a05:622a:6:: with SMTP id x6mr19737161qtw.1.1618974810624;
-        Tue, 20 Apr 2021 20:13:30 -0700 (PDT)
+        bh=ZK3TPIqCDZ+2tlXzBCK7P9aXaldyR3nTbxjQuIWXyEU=;
+        b=dX/8ePl8DMzx3aT6TEt44GMqNIuDvd8sIrEKnU8DqohIqtr3QsESeqoffYnhOHkWtZ
+         P1M8Hrua4fpzfWVyhpZoZeM8AiYPUHBNpTkUfH58BxP1YRwdLnTCiXuA9cZ+G9bZKsPK
+         YQAFjxIlyv15t9Z1LeWTOsHInIII1AxHEaeN5ZxuPf2ad+YRJ/TJaXRzduqCRGvCXQaH
+         DaTLtUJK7i+VlnUfsQw4X9StrC/4C/DbpqyE60icpVKtC/aix2QT2kO+UTHcYg9REsjC
+         ciXEh3K2GLJdo3cU88het+ENxIGkZ8opjmX5o266A0Mxgh9l8vSk3rtL2dfh4+ECbKzL
+         qxTw==
+X-Gm-Message-State: AOAM530P14FyPQdNr3+z6Lu5SThfBlMMfwTkIEqE/Umn4tm+HiyQr4KH
+        18kYn/2C+MKcPaDj8o0qFLqWMwut2yA=
+X-Google-Smtp-Source: ABdhPJyaTl+yU0Jx/CWE6XDyErrWYZ00ZTn7dAyuzm95taAQYb28uBOxuScf0yOOEA/9BexVpe8xTg==
+X-Received: by 2002:ac8:7647:: with SMTP id i7mr8583419qtr.195.1618974811755;
+        Tue, 20 Apr 2021 20:13:31 -0700 (PDT)
 Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id c5sm982652qkl.7.2021.04.20.20.13.30
+        by smtp.gmail.com with ESMTPSA id n6sm673356qtx.22.2021.04.20.20.13.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 20:13:30 -0700 (PDT)
+        Tue, 20 Apr 2021 20:13:31 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         linux-doc@vger.kernel.org,
@@ -72,9 +72,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 1/2] bitmap_parse: support 'all' semantics
-Date:   Tue, 20 Apr 2021 20:13:25 -0700
-Message-Id: <20210421031326.72816-2-yury.norov@gmail.com>
+Subject: [PATCH 2/2] rcu/tree_plugin: don't handle the case of 'all' CPU range
+Date:   Tue, 20 Apr 2021 20:13:26 -0700
+Message-Id: <20210421031326.72816-3-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210421031326.72816-1-yury.norov@gmail.com>
 References: <20210421031326.72816-1-yury.norov@gmail.com>
@@ -84,82 +84,39 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU code supports an 'all' group as a special case when parsing
-rcu_nocbs parameter. This patch moves the 'all' support to the core
-bitmap_parse code, so that all bitmap users can enjoy this extension.
+The 'all' semantics is now supported by the bitmap_parselist() so we can
+drop supporting it as a special case in RCU code. Since 'all' is properly
+supported in core bitmap code, drop legacy comment in RCU for it.
 
-Moving 'all' parsing to a bitmap_parse level, also allows users to
-pass patterns together with 'all' in regular group:pattern format
+This patch does not add any functional changes for existing users.
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- Documentation/admin-guide/kernel-parameters.rst | 5 +++++
- lib/bitmap.c                                    | 9 +++++++++
- lib/test_bitmap.c                               | 7 +++++++
- 3 files changed, 21 insertions(+)
+ kernel/rcu/tree_plugin.h | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 3996b54158bf..7178d9c4de7f 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
- will also change.  Use the same on a small 4 core system, and "16-N" becomes
- "16-3" and now the same boot input will be flagged as invalid (start > end).
- 
-+The special case-tolerant group name "all" has a meaning of selecting all CPUs,
-+such that "isolcpus=all" is the equivalent of "isolcpus=0-N".
-+
-+The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-+all users of bitmap_parse().
- 
- This document may not be entirely up to date and comprehensive. The command
- "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 74ceb02f45e3..6e29b2aae6ba 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -581,6 +581,14 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 464b16132866..334eaf4d561f 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1511,13 +1511,10 @@ static void rcu_cleanup_after_idle(void)
+ static int __init rcu_nocb_setup(char *str)
  {
- 	unsigned int lastbit = r->nbits - 1;
- 
-+	if (!strncasecmp(str, "all", 3)) {
-+		r->start = 0;
-+		r->end = lastbit;
-+		str += 3;
-+
-+		goto check_pattern;
+ 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+-	if (!strcasecmp(str, "all"))		/* legacy: use "0-N" instead */
++	if (cpulist_parse(str, rcu_nocb_mask)) {
++		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+ 		cpumask_setall(rcu_nocb_mask);
+-	else
+-		if (cpulist_parse(str, rcu_nocb_mask)) {
+-			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+-			cpumask_setall(rcu_nocb_mask);
+-		}
 +	}
-+
- 	str = bitmap_getnum(str, &r->start, lastbit);
- 	if (IS_ERR(str))
- 		return str;
-@@ -595,6 +603,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (IS_ERR(str))
- 		return str;
- 
-+check_pattern:
- 	if (end_of_region(*str))
- 		goto no_pattern;
- 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 9cd575583180..4ea73f5aed41 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -366,6 +366,13 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
- 	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
- 
-+	{0,	  "all",		&exp1[8 * step], 32, 0},
-+	{0,	  "0, 1, all,  ",	&exp1[8 * step], 32, 0},
-+	{0,	  "all:1/2",		&exp1[4 * step], 32, 0},
-+	{0,	  "ALL:1/2",		&exp1[4 * step], 32, 0},
-+	{-EINVAL, "al", NULL, 8, 0},
-+	{-EINVAL, "alll", NULL, 8, 0},
-+
- 	{-EINVAL, "-1",	NULL, 8, 0},
- 	{-EINVAL, "-0",	NULL, 8, 0},
- 	{-EINVAL, "10-1", NULL, 8, 0},
+ 	return 1;
+ }
+ __setup("rcu_nocbs=", rcu_nocb_setup);
 -- 
 2.25.1
 
