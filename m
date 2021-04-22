@@ -2,103 +2,112 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87B7FC433B4
-	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 15:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9B23C433B4
+	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 16:02:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4618C61026
-	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 15:47:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A1EE16140F
+	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 16:02:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhDVPsY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Apr 2021 11:48:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2907 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236485AbhDVPsX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:48:23 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FR1p52bSyz68BcP;
-        Thu, 22 Apr 2021 23:40:13 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Apr 2021 17:47:46 +0200
-Received: from [10.47.95.78] (10.47.95.78) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 22 Apr
- 2021 16:47:45 +0100
-Subject: Re: RCU stall query
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        id S236487AbhDVQDL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Apr 2021 12:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232670AbhDVQDI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:03:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD50B61407;
+        Thu, 22 Apr 2021 16:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619107353;
+        bh=iwNnBSPocGDcZJFVdLewrFrMqd6F1nTcCY6z8lMaTYY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kfaZvyn+NaG9ZeCXI/KL5fYZZ+kCKKRSP/XCwZRJI0zkYOVZLqtTYeWbwvQedZPeF
+         hTmoSR+Yb8bj34NC0dsbf3/6NPV+bvYrrt658CNB0c/nn8rriGixkLnhRt2/3eW/LM
+         bGEP/beif57NMExaTKvngW+965RAMGXpH2CYvdT1GAR7j8kscKqU7OMkTvnFm+0qJ6
+         PQ4/0+jd30IQc4KPpqzKN9Q/2QY9qCgkzCr2JtngYdIac1zqUkG2RdbVmuOgJKwZOK
+         /C2Z0Mfd/EZl2gWZgbyTZ5lKC94ImF3fAoIGZH/qnAdAOMtoF1v4/W2EtQ/W8DUGBt
+         5vftP5k//T7Tg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 537655C03C3; Thu, 22 Apr 2021 09:02:33 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 09:02:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     "josh@joshtriplett.org" <josh@joshtriplett.org>,
         "rostedt@goodmis.org" <rostedt@goodmis.org>,
         "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
         "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: RCU stall query
+Message-ID: <20210422160233.GF975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <52dabee9-9c00-d9f9-7df2-4ae1dc643349@huawei.com>
  <20210422143552.GE975577@paulmck-ThinkPad-P17-Gen-1>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <412926e8-d3e1-3071-8cb9-098a7f49b64c@huawei.com>
-Date:   Thu, 22 Apr 2021 16:45:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+ <412926e8-d3e1-3071-8cb9-098a7f49b64c@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210422143552.GE975577@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.78]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <412926e8-d3e1-3071-8cb9-098a7f49b64c@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 22/04/2021 15:35, Paul E. McKenney wrote:
-> On Thu, Apr 22, 2021 at 10:20:51AM +0100, John Garry wrote:
->> Hi RCU experts,
->>
-
-Thanks Paul
-
->> Recently I have noticed that I can trigger an RCU stall quite easily on my
->> system under specific conditions.
->>
->> I have a fair idea why it happens, but need to analyze a proper solution
->> further. It looks like a hard IRQ handler and threaded part are tied to
->> specific CPU and getting swamped and not relinquishing.
->>
->> However, mixed in the RCU splats, I have noticed many BUG logs, like:
->>
->> [  207.788748] BUG: spinlock recursion on CPU#46, fio/1470
-> This is a self-deadlock.  Given that deadlock, and given that spinlocks
-> disable preemption, the RCU CPU stall warnings are expected behavior.
-> After all, your code really is grabbing a CPU by the throat and shaking
-> it indefinitely.
+On Thu, Apr 22, 2021 at 04:45:00PM +0100, John Garry wrote:
+> On 22/04/2021 15:35, Paul E. McKenney wrote:
+> > On Thu, Apr 22, 2021 at 10:20:51AM +0100, John Garry wrote:
+> > > Hi RCU experts,
+> > > 
 > 
-> Please build your kernel with CONFIG_PROVE_LOCKING=y and then fix the
-> issues it calls out.  Then please also fix the bugs resulting in the
-> "sleeping function called from invalid context" and in the "scheduling
-> while atomic".
-
-Here's the rub, the issue goes away with CONFIG_PROVE_LOCKING and all 
-the extra debugging it adds. Hmmm.
-
-But I get the point that these are separate and need to be fixed also.
-
+> Thanks Paul
 > 
-> In addition, there are quite a few idle tasks called out in your list of
-> stalled CPUs.  This is often due to RCU's grace-period kthread (named
-> "rcu_preempt" in this case) not getting any CPU time.  This is not
-> unexpected given the "RT throttling activated".  If you are going to run
-> code at real-time priorities, you must ensure that any number of kernel
-> kthreads get the CPU time that they need.  As Spiderman's uncle said
-> "With great power comes great responsibility".
+> > > Recently I have noticed that I can trigger an RCU stall quite easily on my
+> > > system under specific conditions.
+> > > 
+> > > I have a fair idea why it happens, but need to analyze a proper solution
+> > > further. It looks like a hard IRQ handler and threaded part are tied to
+> > > specific CPU and getting swamped and not relinquishing.
 
-OK, I need to check on that separately also.
+I should hasten to confirm that saturating a CPU with interrupts can
+also result in RCU CPU stall warnings, so please do continue your
+efforts fixing this as well.
 
-Cheers,
-John
+> > > However, mixed in the RCU splats, I have noticed many BUG logs, like:
+> > > 
+> > > [  207.788748] BUG: spinlock recursion on CPU#46, fio/1470
+> > This is a self-deadlock.  Given that deadlock, and given that spinlocks
+> > disable preemption, the RCU CPU stall warnings are expected behavior.
+> > After all, your code really is grabbing a CPU by the throat and shaking
+> > it indefinitely.
+> > 
+> > Please build your kernel with CONFIG_PROVE_LOCKING=y and then fix the
+> > issues it calls out.  Then please also fix the bugs resulting in the
+> > "sleeping function called from invalid context" and in the "scheduling
+> > while atomic".
+> 
+> Here's the rub, the issue goes away with CONFIG_PROVE_LOCKING and all the
+> extra debugging it adds. Hmmm.
+
+That can happpen.  You have enough going on that fixing what you already
+know about might eventually get things to where CONFIG_PROVE_LOCKING
+does something useful to you.
+
+							Thanx, Paul
+
+> But I get the point that these are separate and need to be fixed also.
+> 
+> > 
+> > In addition, there are quite a few idle tasks called out in your list of
+> > stalled CPUs.  This is often due to RCU's grace-period kthread (named
+> > "rcu_preempt" in this case) not getting any CPU time.  This is not
+> > unexpected given the "RT throttling activated".  If you are going to run
+> > code at real-time priorities, you must ensure that any number of kernel
+> > kthreads get the CPU time that they need.  As Spiderman's uncle said
+> > "With great power comes great responsibility".
+> 
+> OK, I need to check on that separately also.
+> 
+> Cheers,
+> John
