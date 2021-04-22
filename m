@@ -2,158 +2,281 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E88EAC433B4
-	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 23:45:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EAB1C433ED
+	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 09:23:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C7E16613DC
-	for <rcu@archiver.kernel.org>; Wed, 21 Apr 2021 23:45:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 52671613A9
+	for <rcu@archiver.kernel.org>; Thu, 22 Apr 2021 09:23:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244177AbhDUXqS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Apr 2021 19:46:18 -0400
-Received: from mail-eopbgr700064.outbound.protection.outlook.com ([40.107.70.64]:40232
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237429AbhDUXqR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:46:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=By+TPShso+V9xvOzsdj9ppqfFACt8lCNhEjiu8S/kfDAAiXktM5qeG9rbji/B75xEi0AlN0kN0jDsNLMO6SIbosvutSQBBDo/04vyZpHMR54qqz1yx//AXcMics2WK68z4r1RRZtdizomEvXkOCbD8BzqZjOGmHr9DJ2qAjuE/icZ8GA7ZFwFsHquRrrVo/c/Z/gqCSxsyK8y9GRq+MOs0TpBN4KZdB7T8gvnkgNZHdbauL0okhEVAYhyMkz+84oeut4QuaAVTK4sKGUteiUmC66H7GjJPqQcik7m0iW9X+I6g4sOi6TlGuiQ03Jj0V4A8otq6i1chAYDS4h3CZX6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4dDdnSL3EiNVtGwVBF2cblrL3zMuuhDvgYxckU+NWm8=;
- b=aSFCKs4m/W1NWWjYdblVqcs3A0I4/pDyoGsS2ollDk84uBzm4Q0UPMsmrM6sCx0FlEP2ROTEsBnTJc2+6DzDsuIcvcwrwVcReAlDwhxp7d5KVTGfaMMCTuyOYJR8OqKpaj2lE9TZAsz/o6xS+46iwj7W8npTuGp6r2fCZSnf9BNUK/1IK0BzpfliuxKFFBQePFsy+d2mWnbvTwqg1mdF8QelN8tNMikXnPVXEy9daPrBgVeMmELEmtN5joscZ/FHRZsGoPGCfzf3P0uwSZnEE9LtjWP8+8AoAbDAxsxUuv5I5XYuwPoTzBFbab3ujZRPpxyTMyPvVhwMS+8MPZZwAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4dDdnSL3EiNVtGwVBF2cblrL3zMuuhDvgYxckU+NWm8=;
- b=VuHU17seRTao4cB81eRV78a9RnURYMLM/XH0iwly+bSABwYrlo/GNFmaFmHYF3LPbXChD9F6nY0nsTnlydDxrOvruBHgiBWuTjf38ho1e8giy2x6UPU/dDOZXhOEtAK66cl4EHRS8C6ESCqim7jWPFxxAvbWkpGKkqtXFcAy1YQ=
-Authentication-Results: goodmis.org; dkim=none (message not signed)
- header.d=none;goodmis.org; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM4PR11MB5440.namprd11.prod.outlook.com (2603:10b6:5:39c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Wed, 21 Apr
- 2021 23:45:42 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::1caa:f0c2:b584:4aea]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::1caa:f0c2:b584:4aea%3]) with mapi id 15.20.4065.021; Wed, 21 Apr 2021
- 23:45:42 +0000
-Date:   Wed, 21 Apr 2021 19:45:27 -0400
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
-Message-ID: <20210421234527.GD194948@windriver.com>
-References: <20210421031326.72816-1-yury.norov@gmail.com>
- <20210421031326.72816-2-yury.norov@gmail.com>
- <20210421111932.36665920@gandalf.local.home>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421111932.36665920@gandalf.local.home>
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: BL1PR13CA0124.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::9) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+        id S230285AbhDVJYO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Apr 2021 05:24:14 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2905 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhDVJYN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Apr 2021 05:24:13 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FQsGs02pvz68BWW;
+        Thu, 22 Apr 2021 17:16:05 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Apr 2021 11:23:37 +0200
+Received: from [10.47.95.78] (10.47.95.78) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 22 Apr
+ 2021 10:23:36 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: RCU stall query
+To:     "paulmck@kernel.org" <paulmck@kernel.org>, <josh@joshtriplett.org>,
+        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+        <jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>
+CC:     <rcu@vger.kernel.org>
+Message-ID: <52dabee9-9c00-d9f9-7df2-4ae1dc643349@huawei.com>
+Date:   Thu, 22 Apr 2021 10:20:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by BL1PR13CA0124.namprd13.prod.outlook.com (2603:10b6:208:2bb::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Wed, 21 Apr 2021 23:45:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a34bca0-c9e2-4cc9-8277-08d9051f92dd
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5440:
-X-Microsoft-Antispam-PRVS: <DM4PR11MB544030BCC7810BC80A92990083479@DM4PR11MB5440.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YZ18ygSuWxsxzucoqKkgkn5el2IPdkzGo0BaA4/HKwnE0hxmFNIdzPiIiNdtW5EmyUvCmHXhjD/RKw4aLPbjCPn6JvrpGkZUXu6qK6sHEghOa3nttrg76fQNiCNKjhHJ8kcXfjJQ59e+34qhO+l4R0//QhZaMfDtCDnOyG1l1faQkpPi6Eh9LBYc8rPjOEA0tSMu3P7rFKxNd7lav7mTBY5M5YVy+2vu/1PNXRolSjMNZ4b24TPRWA/fxhwO6WEpXw/9qePEb46CP5LaqCN3dzB5k/4Ej4mWWrH+yK9kY2XjWULTueZy01pfWhfC2LTNekVh+2qjBtsyMJZuOLurjQ1wRY25ffKNcNebyoMrF6xh+MMmiUonZO/0/JW6s/uVVrl5t7G8s8cLHZAwKBR70EYPRujQbKJfSiYoeDEFKCOZ2b1S8979GKbsF4M73sxaKoThWznnaILDjVXijJEe3dXa90T8l/KGzsl9RUbRLBUQz0VwscMylAg/kr+xFMqMgV+7CmwTlLRz3A1CFHFdHx64udmQZ29lv30cxof0CD7ufK4H5rYNoVJMAckI8rS1bH8lbZgZHSiP9nig4ydoTqQZO8vb1NmmKw75nCX1mTHi7rZo992yxSIy/DOQeC+ekSEDCwnb89MDdYjhjzfpoep/rhbBDeAcNFp0LO6QTJc5YXrLjOPsfx5BiP8RjmXe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(396003)(39850400004)(7696005)(86362001)(4326008)(186003)(8676002)(956004)(1076003)(38350700002)(36756003)(478600001)(54906003)(55016002)(33656002)(38100700002)(8936002)(7416002)(2906002)(52116002)(5660300002)(8886007)(316002)(44832011)(66476007)(66946007)(6916009)(26005)(16526019)(66556008)(2616005)(6666004)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?P0KIkLs7ZhwivWXFk8OnOt61Dt9hnzxsafvYiaW6UNSvsfnILaPWG1sqTNPB?=
- =?us-ascii?Q?YcDVM4AKRn20I/AHRV2PIYhSlGL/oiEuMw1FpT+LBtHScvpafYsgajeg3QN+?=
- =?us-ascii?Q?CD81rM0Lf4QlCXkeMoN8gVrqvXUmbNZgDARC17VUo0HGn/hnJQzmAV+9DgLU?=
- =?us-ascii?Q?jh/SBn5FlCqRZ6t2/IcXG3Bqm4kCwtKD06/v3X+xZ4JMKbeyJZkUy6iE3B7z?=
- =?us-ascii?Q?oLf7WIAMDt/yev+HWB2amqdeNkqgF/TZxTPt3VuooAbpnkVUd5ugWitaBG4H?=
- =?us-ascii?Q?mj4jeAcSJtx4WlGo0RdIeIrlqX9RbGTWmVwt7vA5Kj1B4VPo2zAGs/mlN01P?=
- =?us-ascii?Q?snf93JUvRAQvzgPpYBBqsc2eb3dnsBvYlOuOrX/mf6ZFfOPxkXPdrB+8k6YZ?=
- =?us-ascii?Q?Y8dBEmwfREMdnCGAkiYb9C8YqV0Emjl3KODB0BTliwSRCYuPlJ0seiMBwSYq?=
- =?us-ascii?Q?aiQKKsCDsRvVaMZgooIEwck90Lgi6RiLVXsFhmAD/oT7u3kpzamghwLNpfvV?=
- =?us-ascii?Q?h42KEc9erB26aZ8ZqWRfPujN4jXGI5q5X25iCsiN7Yx4KjWHCmxamVNadfu0?=
- =?us-ascii?Q?GssuplK+fyp9SvYhUwGNg6ddJ8mMu816ktwHcmpR7GPwfaCrhB41pey9qZv6?=
- =?us-ascii?Q?joWRyadamhCWWwVUDiXiGRjETAHN4GVzQc8Jr5orWgQwDwOYfxaRXbc/l+XD?=
- =?us-ascii?Q?BnPKOoiB9i1fUQj7TQN1eXvXQ0rWfuQdeVwJbzfE6dxgVeLPngkQCXu+9Gjs?=
- =?us-ascii?Q?P0h8QeMzzLv49VTW8bU10SbO7Ec1GohbvhYcSkdmZ8dsitqB9dk9VoqPDhx8?=
- =?us-ascii?Q?6RowBdAa3yekwIfsefm5sr51H0/fnQrggZ53WvmDuDRHWA1WIoKLZHkYaGdJ?=
- =?us-ascii?Q?m1V2XpzKV4HR90zqI18oAlCqbzPuQKrOuirBjUiZe3P9tsELECCT0VwWf2xZ?=
- =?us-ascii?Q?4ViOefI50vxizYNnUTGCyIRbuQGEPVcgUlEjixlq63HExaQbVmPW+asLVfl1?=
- =?us-ascii?Q?LfZEGnzDu3DS0D1JCHo74/TmNf4kvml4sjZVDDj9W+HCxbOnYnOL331TzoBw?=
- =?us-ascii?Q?za6y2Kq+SHxCSHpSs90y3pw9UtOlqkdfwKAQvLO6BYcVW48hRxld3LbJkqxA?=
- =?us-ascii?Q?mOmzv4q8hWoDtp9EizehXzThcjhBEkZ5h5BqT5Ywf8+zrTpSd89Mh+mShltf?=
- =?us-ascii?Q?LCM2DsC8pndhKK0hZ0xnu1iiJEYg3lckKCjcV+u4o84lgQTlblwxLTvirRnf?=
- =?us-ascii?Q?M0KJUz/JvyyjzlMiz9aP51b236ff8zaFfqBgxJQNUD8+5hysxiNWLpfVJ0D9?=
- =?us-ascii?Q?m+57oUm6Qn3Op3Q0cVz6qQ9U?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a34bca0-c9e2-4cc9-8277-08d9051f92dd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:45:42.0998
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k3nN09nMSjlI+zkTf80Rbb9uMTx0svqw7/3Lv2xgk4cs9KN45WSKclgFP8tRC1RfwIBsnwD0EpV/bXCqksCjbZCvMzUITbkEUbfNB9ouyUc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5440
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.78]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-[Re: [PATCH 1/2] bitmap_parse: support 'all' semantics] On 21/04/2021 (Wed 11:19) Steven Rostedt wrote:
+Hi RCU experts,
 
-> On Tue, 20 Apr 2021 20:13:25 -0700
-> Yury Norov <yury.norov@gmail.com> wrote:
-> 
-> > @@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
-> >  will also change.  Use the same on a small 4 core system, and "16-N" becomes
-> >  "16-3" and now the same boot input will be flagged as invalid (start > end).
-> >  
-> > +The special case-tolerant group name "all" has a meaning of selecting all CPUs,
-> > +such that "isolcpus=all" is the equivalent of "isolcpus=0-N".
-> 
-> I'm OK with the concept of this patch set, but really? That is a horrible
-> example. One should NEVER set isolcpus to all!
+Recently I have noticed that I can trigger an RCU stall quite easily on 
+my system under specific conditions.
 
-It wouldn't have parsed anyways.  The "isolcpus=" would just think "all" was
-an unsupported flag and discard it before it ever got to cpu/bitmap
-processing.   See 3662daf02350 "sched/isolation: Allow "isolcpus=" to
-skip unknown sub-parameters".
+I have a fair idea why it happens, but need to analyze a proper solution 
+further. It looks like a hard IRQ handler and threaded part are tied to 
+specific CPU and getting swamped and not relinquishing.
 
-The use case example Paul chose (not me; the smart Paul) is better.
+However, mixed in the RCU splats, I have noticed many BUG logs, like:
 
-Paul.
---
+[  207.788748] BUG: spinlock recursion on CPU#46, fio/1470
 
-> 
-> -- Steve
-> 
-> 
-> > +
-> > +The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-> > +all users of bitmap_parse().
-> >  
+in ..
+
+fio-3.1
+Starting 6 processes
+[70.656622] sched: RT throttling activatedB/s][r=356k,w=0 IOPS][eta 
+01h:14m:43s]
+[  207.632161] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:ta 
+01h:12m:26s]
+[  207.638261] rcu:  0-...!: (1 GPs behind) 
+idle=312/1/0x4000000000000000 softirq=508/512 fqs=0
+[  207.646777] rcu:  1-...!: (1 GPs behind) idle=694/0/0x0 
+softirq=868/869 fqs=1
+[  207.653988] rcu:  2-...!: (1 GPs behind) idle=e80/0/0x0 
+softirq=567/568 fqs=1
+[  207.661199] rcu:  3-...!: (1 GPs behind) 
+idle=e92/1/0x4000000000000000 softirq=529/540 fqs=1
+[  207.669713] rcu:  4-...!: (1 ticks this GP) 
+idle=fee/1/0x4000000000000002 softirq=403/404 fqs=1
+[  207.678486] rcu:  5-...!: (1 GPs behind) idle=fb8/0/0x0 
+softirq=1165/1167 fqs=1
+[  207.685871] rcu:  6-...!: (1 GPs behind) idle=05c/0/0x0 
+softirq=408/408 fqs=1
+[  207.693081] rcu:  7-...!: (1 GPs behind) idle=b78/0/0x0 
+softirq=405/406 fqs=1
+[  207.700292] rcu:  8-...!: (1 ticks this GP) 
+idle=b12/1/0x4000000000000002 softirq=490/491 fqs=1
+[  207.709065] rcu:  9-...!: (1 GPs behind) idle=628/0/0x0 
+softirq=330/331 fqs=1
+[  207.716275] rcu:  10-...!: (1 GPs behind) idle=7c0/0/0x0 
+softirq=431/431 fqs=1
+[  207.723573] rcu:  11-...!: (1 GPs behind) idle=28c/0/0x0 
+softirq=560/563 fqs=1
+[  207.730870] rcu:  12-...!: (1 GPs behind) idle=68c/0/0x0 
+softirq=427/431 fqs=1
+[  207.738167] rcu:  13-...!: (25 ticks this GP) idle=814/0/0x0 
+softirq=356/356 fqs=1
+[  207.745812] rcu:  14-...!: (1 GPs behind) idle=8a0/0/0x0 
+softirq=631/631 fqs=1
+[  207.753109] rcu:  15-...!: (1 GPs behind) idle=2c0/0/0x0 
+softirq=300/300 fqs=1
+[  207.760405] rcu:  Tasks blocked on level-1 rcu_node (CPUs 0-15): P442 
+P520
+[  207.767280] rcu:  25-...!: (1 GPs behind) idle=e58/0/0x0 
+softirq=581/581 fqs=1
+[  207.774577] rcu:  46-...!: (1 GPs behind) 
+idle=9c2/1/0x4000000000000002 softirq=268/268 fqs=2
+[  207.783185]  (detected by 46, t=5289 jiffies, g=953, q=778)
+[  207.788748] BUG: spinlock recursion on CPU#46, fio/1470
+[  207.793961]  lock: rcu_state+0x500/0x2d00, .magic: dead4ead, .owner: 
+fio/1470, .owner_cpu: 46
+[  207.802492] CPU: 46 PID: 1470 Comm: fio Not tainted 
+5.12.0-rc7-00011-g69d2c55f9bb8 #228
+[  207.810485] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon 
+D05 IT21 Nemo 2.0 RC0 04/18/2018
+[  207.819606] Call trace:
+[  207.822040]  dump_backtrace+0x0/0x1b0
+[  207.825698]  show_stack+0x18/0x68
+[  207.829002]  dump_stack+0xd8/0x134
+[  207.832396]  spin_dump+0x84/0x94
+[  207.835615]  do_raw_spin_lock+0x108/0x120
+[  207.839617]  _raw_spin_lock_irqsave+0x30/0x60
+[  207.843965]  rcu_dump_cpu_stacks+0x70/0x140
+[  207.848138]  rcu_sched_clock_irq+0xaac/0xc80
+[  207.852400]  update_process_times+0x9c/0xe8
+[  207.856573]  tick_sched_handle.isra.20+0x40/0x58
+[  207.861181]  tick_sched_timer+0x4c/0xa8
+[  207.865006]  __hrtimer_run_queues+0x11c/0x1b0
+[  207.869352]  hrtimer_interrupt+0xe8/0x240
+[  207.873351]  arch_timer_handler_phys+0x30/0x40
+[  207.877786]  handle_percpu_devid_irq+0x84/0x148
+[  207.882307]  generic_handle_irq+0x30/0x48
+[  207.886304]  __handle_domain_irq+0x64/0xc0
+[  207.890389]  gic_handle_irq+0xc0/0x138
+[  207.894131]  el1_irq+0xb0/0x180
+[  207.897261]  do_io_getevents+0x78/0x168
+[  207.901088]  __arm64_sys_io_getevents+0x60/0xd0
+[  207.905606]  el0_svc_common.constprop.2+0x8c/0x128
+[  207.910387]  do_el0_svc+0x24/0x90
+[  207.913690]  el0_svc+0x24/0x38
+[  207.916733]  el0_sync_handler+0x90/0xb8
+[  207.920557]  el0_sync+0x154/0x180
+[  228.640117] rcu: INFO: rcu_preempt detected stalls on 
+CPUs/tasks::12m:05s]
+
+
+And on other runs:
+
+[375.140802] BUG: sleeping function called from invalid context at 
+include/linux/uaccess.h:174
+
+[375.224247] BUG: scheduling while atomic: fio/1473/0x00000004
+
+[ 740.723625] BUG: scheduling while atomic: swapper/64/0/0x00000008
+
+This seems to be something to be concerned about. Could this be related 
+to RCU code, or some BUG(s) which may be exposed as a side-effect of the 
+RCU stall?
+
+Some relevant config items are below. And another splat.
+
+Thanks,
+John
+
+
+# RCU Subsystem
+CONFIG_TREE_RCU=y
+CONFIG_PREEMPT_RCU=y
+CONFIG_RCU_EXPERT=y
+CONFIG_SRCU=y
+CONFIG_TREE_SRCU=y
+CONFIG_TASKS_RCU_GENERIC=y
+CONFIG_TASKS_RCU=y
+CONFIG_RCU_STALL_COMMON=y
+CONFIG_RCU_NEED_SEGCBLIST=y
+CONFIG_RCU_FANOUT=64
+CONFIG_RCU_FANOUT_LEAF=16
+# CONFIG_RCU_FAST_NO_HZ is not set
+# CONFIG_RCU_BOOST is not set
+# CONFIG_RCU_NOCB_CPU is not set
+# CONFIG_TASKS_TRACE_RCU_READ_MB is not set
+# end of RCU Subsystem
+CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
+# RCU Debugging
+# CONFIG_RCU_SCALE_TEST is not set
+# CONFIG_RCU_TORTURE_TEST is not set
+# CONFIG_RCU_REF_SCALE_TEST is not set
+CONFIG_RCU_CPU_STALL_TIMEOUT=21
+CONFIG_RCU_TRACE=y
+# CONFIG_RCU_EQS_DEBUG is not set
+# CONFIG_RCU_STRICT_GRACE_PERIOD is not set
+# end of RCU Debugging
+
+CONFIG_DEBUG_ATOMIC_SLEEP=y
+CONFIG_DEBUG_SPINLOCK=y
+
+# CONFIG_PREEMPT_NONE is not set
+# CONFIG_PREEMPT_VOLUNTARY is not set
+CONFIG_PREEMPT=y
+CONFIG_PREEMPT_COUNT=y
+CONFIG_PREEMPTION=y
+CONFIG_PREEMPT_RCU=y
+CONFIG_PREEMPT_NOTIFIERS=y
+# CONFIG_DEBUG_PREEMPT is not set
+
+
+
+john@ubuntu:~$ [243.624228] sched: RT throttling activated
+[316.247401] loop0: detected capacity change from 0 to 8
+[331.631543] Filesystem uses "xz" compression. This is not supported
+[375.110768] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[375.116873] rcu: Tasks blocked on level-1 rcu_node (CPUs 0-15):
+[375.122882](detected by 54, t=5255 jiffies, g=2069, q=1865)
+[375.128617] rcu: All QSes seen, last rcu_preempt kthread activity 1 
+(4294985656-4294985655), jiffies_till_next_fqs=1, root ->qsmask 0x1
+[375.140802] BUG: sleeping function called from invalid context at 
+include/linux/uaccess.h:174
+[375.149325] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 
+1473, name: fio
+[375.156904] CPU: 54 PID: 1473 Comm: fio Not tainted 
+5.12.0-rc7-00011-g69d2c55f9bb8 #228
+[375.164901] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 
+IT21 Nemo 2.0 RC0 04/18/2018
+[375.174023] Call trace:
+[375.176457]dump_backtrace+0x0/0x1b0
+[375.180126]show_stack+0x18/0x68
+[375.183431]dump_stack+0xd8/0x134
+[375.186825]___might_sleep+0xf8/0x130
+[375.190567]__might_sleep+0x54/0x90
+[375.194130]__might_fault+0x1c/0x28
+[375.197697]put_timespec64+0x44/0xd8
+[375.201351]__arm64_sys_clock_gettime+0xa0/0xe0
+[375.205960]el0_svc_common.constprop.2+0x8c/0x128
+[375.210741]do_el0_svc+0x24/0x90
+[375.214045]el0_svc+0x24/0x38
+[375.217091]el0_sync_handler+0x90/0xb8
+[375.220915]el0_sync+0x154/0x180
+[375.224247] BUG: scheduling while atomic: fio/1473/0x00000004
+[375.229988] Modules linked in:
+[375.233033] CPU: 54 PID: 1473 Comm: fio Tainted: GW 
+5.12.0-rc7-00011-g69d2c55f9bb8 #228
+[375.242413] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 
+IT21 Nemo 2.0 RC0 04/18/2018
+[375.251532] Call trace:
+[375.253966]dump_backtrace+0x0/0x1b0
+[375.257618]show_stack+0x18/0x68
+[375.260922]dump_stack+0xd8/0x134
+[375.264312]__schedule_bug+0x60/0x78
+[375.267963]__schedule+0x63c/0x6e8
+[375.271440]schedule+0x70/0x108
+[375.274657]do_notify_resume+0x1a8/0x428
+[375.278655]work_pending+0xc/0x324
+[375.282182] BUG: spinlock recursion on CPU#54, fio/1473
+[375.287400]lock: rcu_state+0xa00/0x2d00, .magic: dead4ead, .owner: 
+fio/1473, .owner_cpu: 54
+[375.295928] CPU: 54 PID: 1473 Comm: fio Tainted: GW 
+5.12.0-rc7-00011-g69d2c55f9bb8 #228
+[375.305309] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 
+IT21 Nemo 2.0 RC0 04/18/2018
+[375.314428] Call trace:
+[375.316862]dump_backtrace+0x0/0x1b0
+[375.320513]show_stack+0x18/0x68
+[375.323817]dump_stack+0xd8/0x134
+[375.327207]spin_dump+0x84/0x94
+[375.330426]do_raw_spin_lock+0x108/0x120
+[375.334427]_raw_spin_lock+0x20/0x30
+[375.338081]rcu_note_context_switch+0xbc/0x348
+[375.342603]__schedule+0xc8/0x6e8
+[375.345993]preempt_schedule_notrace+0x50/0x70
+[375.350512]__arm64_sys_io_submit+0x188/0x240
+[375.354946]el0_svc_common.constprop.2+0x8c/0x128
+[375.359727]do_el0_svc+0x24/0x90
+[375.363032]el0_svc+0x24/0x38
+[375.366074]el0_sync_handler+0x90/0xb8
+[375.369898]el0_sync+0x154/0x180
+[438.130403] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[501.149998] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
