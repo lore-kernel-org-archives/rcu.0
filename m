@@ -8,54 +8,54 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D912DC43460
-	for <rcu@archiver.kernel.org>; Wed, 28 Apr 2021 13:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FADC433B4
+	for <rcu@archiver.kernel.org>; Wed, 28 Apr 2021 13:45:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A037761443
-	for <rcu@archiver.kernel.org>; Wed, 28 Apr 2021 13:45:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6CE1E61435
+	for <rcu@archiver.kernel.org>; Wed, 28 Apr 2021 13:45:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239829AbhD1Npy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Apr 2021 09:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        id S239833AbhD1Npz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Apr 2021 09:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239823AbhD1Npx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Apr 2021 09:45:53 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BF3C06138A;
-        Wed, 28 Apr 2021 06:45:08 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b23so16761489lfv.8;
-        Wed, 28 Apr 2021 06:45:08 -0700 (PDT)
+        with ESMTP id S239830AbhD1Npy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Apr 2021 09:45:54 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D35C061574;
+        Wed, 28 Apr 2021 06:45:09 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id m7so61449662ljp.10;
+        Wed, 28 Apr 2021 06:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PetZkrnst5DMR2wou63SgbhmwqaPVRJGY+ZrQK1pWUo=;
-        b=Ps/zpYSMEUFnuBDI2NNY2lBlr6Zl9DeFpStsqo5UDWuS4H0AcUpDDRWKIgrQgSTVs8
-         s0spQcZEv9+9Pi9gq1uUquHrm+FoipFhYic0Ym/cbZADkC5cPmlffEDsRIZFyNIcpLwX
-         BwpSa+T2sYeXBVzmn3UGthZzmctExx917Rp4FbYm375WqcqXRihDZ9YvmRaIwDPpVzAE
-         Zhf/3ubtKdthcwFZVMEIV9BcfPAFTL8O3ow3Va0VR0996syL3x6E77HSbKr+2GnvZ079
-         9Mc9Uc+e+QaOYiYk4iBbtMYRSp0iaZ1xsT4hOb95ma+qzGHz6iqckvrUZbThbz3L9RmA
-         74Kw==
+        bh=KOcHw79BufjsyfuqtBTwSYNoekd4YMB2iJoEpjD8UK4=;
+        b=vIRdjNJoooUM7Bvt94bvAkmYnsJ986bsP3xSBfYv3JdCAd1OfG8dLY167xD62Efjf2
+         V/z1rOr4Nwu6ZorN3iNmJmw2Hp9mvpNSGld67MSBPhNEaUdfyS2JmnNSXRfxxWhG2HfJ
+         McqHHislTj3lVjiEBCTXr/XqZOTS1VzrukGoK782v+E7IdMdAmlGguCutFWgLgtl5BOz
+         BYULCPQlOtiFoZ1yGNOdBi6RgWMSDrrto4WiWeZzlNshpGsQvVHs7gawOENkNviuUWUs
+         0iONngtw9jWuA/cybZcvCNRrXNLLNzuXiDo3dGnCZ7Qo8XBlSB5bjRckhc1VdL7htnYi
+         a/Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PetZkrnst5DMR2wou63SgbhmwqaPVRJGY+ZrQK1pWUo=;
-        b=DrUUv0hS+k+W0f7Df3aF8uMOXO6UOTTUPAtvG5CLWneIYoJz4FODiB/IRKoOnwAOW1
-         IPuo13wCJTu3P+FxyX05L2OZMtWfLumbZxuvrvnBugKe7rMpQGbsuY/ZRzN8yly5JNfO
-         MelbdP5jgvTMbF7UZUriCioR4JPT5LY1eqteJ4nHPRF4e3difEdpXnh8mEwdXE3KudNq
-         LiLEDtx+SfsQ4Wh9WJkKei7auu5M82F6L7FOAh/rmyCjSLUDCmCMi83fGVqqLusMFvmi
-         //i0my1sB7F9gGo3H0eS98tUo3Qlf5kOikrq/TbNYjrb/rCSJUKnLKC/TZdkdk5JTm7t
-         cdqA==
-X-Gm-Message-State: AOAM532KhB0VTbA95/nFrp0gQJAR1T+2IDzkTEwP5rHUt1RX2oNLrYYf
-        zq2PIu68Wz9QpDLCTnXE3d9SHYOH/y+QfHwcRQ0=
-X-Google-Smtp-Source: ABdhPJyXfA9Z64n3+sKR5K+VmvpzmCAlkOiDlEuB4hwZUQzimcO6gnLRsiJREL+RBQgtpZcoJxXH3g==
-X-Received: by 2002:a19:c210:: with SMTP id l16mr15614087lfc.56.1619617507198;
-        Wed, 28 Apr 2021 06:45:07 -0700 (PDT)
+        bh=KOcHw79BufjsyfuqtBTwSYNoekd4YMB2iJoEpjD8UK4=;
+        b=e05X+8IwoX70DV7ZaBHKIcgdDNl0wiZ6pLr6AaRTfJSfISyh0BbZDtxVpFnQOFYwEr
+         Z4iTOZoTZy5ShdrB1jSgzTXzFfMbLS7AYLwBzaXjvhmOpVVkqSMf0FC9FS/qSMk1oTsr
+         WIWYNCGTUobKockWKHIwzLNfcvukkFaARoNCIksYeuURzq8hhL67kQeUY+vofE793wUr
+         oVHeUIvFz/2Idyvok5xRm21v7m3dGkE1OBhUaw94+UqtdS8WD9nO+K8RMnbGTHp5vpHC
+         fuglFtYWB50t22XREsBnlOGTaqEH5zXOSJx/OFh+jjaAFmhES+IhVeRsKoRyz53ualkb
+         hPnA==
+X-Gm-Message-State: AOAM532lQljLA9wPP8I43PyjC/wBDxKy7BPHVqBSQMFWdRHRYUb9Wet4
+        Wv5tX5O8Lbzz+tcui4uMFnUHM+GlmKMmWuCJM+8=
+X-Google-Smtp-Source: ABdhPJwrlgVcykRnyX5kq4lZwcM1aIWBxb4wxMaMeUqAp7deBph9moxP2APQXN1WBf/Ne/9DxQQvng==
+X-Received: by 2002:a2e:4611:: with SMTP id t17mr20387048lja.334.1619617508096;
+        Wed, 28 Apr 2021 06:45:08 -0700 (PDT)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id o16sm730253lfu.228.2021.04.28.06.45.06
+        by smtp.gmail.com with ESMTPSA id o16sm730253lfu.228.2021.04.28.06.45.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 06:45:06 -0700 (PDT)
+        Wed, 28 Apr 2021 06:45:07 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -71,9 +71,9 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH v1 2/5] kvfree_rcu: Switch to vfree_bulk() in kfree_rcu_work()
-Date:   Wed, 28 Apr 2021 15:44:19 +0200
-Message-Id: <20210428134422.1894-2-urezki@gmail.com>
+Subject: [PATCH v1 3/5] kvfree_rcu: Rename rcu_invoke_kfree_bulk_callback
+Date:   Wed, 28 Apr 2021 15:44:20 +0200
+Message-Id: <20210428134422.1894-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210428134422.1894-1-urezki@gmail.com>
 References: <20210428134422.1894-1-urezki@gmail.com>
@@ -83,44 +83,70 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Replace calling a vfree() in a loop per object by the
-vfree_bulk() variant. In that case we just need to pass
-an array of vmalloc'ed pointers and number of elements
-in it.
+The purpose of renaming is to have one common trace event
+for APIs which use a special "bulk" form to release memory.
+
+In our case we have kfree_bulk() and vfree_bulk(). It does
+not make sense to implement two separate trace events which
+would be identical expect for their names.
+
+Rename it to "rcu_invoke_free_bulk_callback" and use it as
+one trace event for both bulk API's.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ include/trace/events/rcu.h |  4 ++--
+ kernel/rcu/tree.c          | 16 +++++++++-------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 918585d85af9..0855cb35ae4e 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -681,11 +681,11 @@ TRACE_EVENT_RCU(rcu_invoke_kvfree_callback,
+ 
+ /*
+  * Tracepoint for the invocation of a single RCU callback of the special
+- * kfree_bulk() form. The first argument is the RCU flavor, the second
++ * "free bulk" form. The first argument is the RCU flavor, the second
+  * argument is a number of elements in array to free, the third is an
+  * address of the array holding nr_records entries.
+  */
+-TRACE_EVENT_RCU(rcu_invoke_kfree_bulk_callback,
++TRACE_EVENT_RCU(rcu_invoke_free_bulk_callback,
+ 
+ 	TP_PROTO(const char *rcuname, unsigned long nr_records, void **p),
+ 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9ea1d4eef1ad..6bf170d01cd5 100644
+index 6bf170d01cd5..e44d6f8c56f0 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3280,7 +3280,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	struct rcu_head *head, *next;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
--	int i, j;
-+	int i;
+@@ -3305,16 +3305,18 @@ static void kfree_rcu_work(struct work_struct *work)
+ 			debug_rcu_bhead_unqueue(bkvhead[i]);
  
- 	krwp = container_of(to_rcu_work(work),
- 			    struct kfree_rcu_cpu_work, rcu_work);
-@@ -3313,13 +3313,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 			rcu_lock_acquire(&rcu_callback_map);
+-			if (i == 0) { // kmalloc() / kfree().
+-				trace_rcu_invoke_kfree_bulk_callback(
+-					rcu_state.name, bkvhead[i]->nr_records,
+-					bkvhead[i]->records);
+ 
++			trace_rcu_invoke_free_bulk_callback(
++				rcu_state.name, bkvhead[i]->nr_records,
++				bkvhead[i]->records);
++
++			if (i == 0) // kmalloc() / kfree().
  				kfree_bulk(bkvhead[i]->nr_records,
  					bkvhead[i]->records);
- 			} else { // vmalloc() / vfree().
--				for (j = 0; j < bkvhead[i]->nr_records; j++) {
--					trace_rcu_invoke_kvfree_callback(
--						rcu_state.name,
--						bkvhead[i]->records[j], 0);
--
--					vfree(bkvhead[i]->records[j]);
--				}
-+				vfree_bulk(bkvhead[i]->nr_records, bkvhead[i]->records);
- 			}
+-			} else { // vmalloc() / vfree().
+-				vfree_bulk(bkvhead[i]->nr_records, bkvhead[i]->records);
+-			}
++			else // vmalloc() / vfree().
++				vfree_bulk(bkvhead[i]->nr_records,
++					bkvhead[i]->records);
++
  			rcu_lock_release(&rcu_callback_map);
  
+ 			raw_spin_lock_irqsave(&krcp->lock, flags);
 -- 
 2.20.1
 
