@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9CD1C43461
-	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718CFC4360C
+	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:45:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 696A76194F
-	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:42:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 523866054E
+	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:45:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhECQnK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 May 2021 12:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
+        id S231545AbhECQqF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 May 2021 12:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231777AbhECQkY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 May 2021 12:40:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F6BA613D1;
-        Mon,  3 May 2021 16:37:32 +0000 (UTC)
+        id S233060AbhECQod (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 May 2021 12:44:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3B106157F;
+        Mon,  3 May 2021 16:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620059853;
-        bh=7i+HRRY9j5t2M/4p9mdKK4BYL/VSeSIoB2Vo5p7Fw0o=;
+        s=k20201202; t=1620059932;
+        bh=qj7QpG0l8dZ2cJUVtdtS6tHeWOQB1DcVfWdjLsXiLY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kpf/0+C2PhhqsCeUz6RTUdL2NHaODXdBadxmlzriYx+1v/vEPer2FsLOO//HWGzu/
-         93QI0j00ontgeXpJgY10C+R90IdYXnadZfm5HwwG8n4rPPS2PNpahLTRmMcKl5k/yE
-         5X1mMMIuoTlIaVT1/B7cLQ/GYzM71+1SJ+xiCX/6TvF4w2wUGEUW1INO+MSx1+qTL8
-         S7oy72BpLsFY2gZHbWwrq7i5VefiIVJ9Ty43ghBcgoazdRxaAGsVBe+5HwWBRwkgui
-         PXvq4ZkwBaIU7mmAi1sX3laEX65ztmpP3t5pKRR2r1TbItS1LABw9IBGlCLy5dmCWO
-         FUnRzFC/S1N8g==
+        b=idMX6vifOjICQP5LYZBMxY6vGnvz2XtJRHWn1ERtXxekKwKizTwpRIp2hOTJOFZov
+         FwSPC4POBn+LfUMpLuffZMcj6W05sG8inqdyfrGKAGuXWKTcF0AtRMGrduiOPDHTob
+         yaNRIi9x38XP++UNSl0LUEJv2GH9374kKudNxDxvUtuwE5hmpqjCVQCPUMfKQNfKaQ
+         ZmyRgWdRkS/Ys8tleDpzh8YkaFDiD2l0mBwIEzj04PhVAfkh5GWIOP6SBGE0NLT9Mw
+         8tgCJUm4bQ8L/Bnq5aCbUHagmHQYE+TTmqYcVtwqRdRv7HgzOPXhWSriLRBX4oBYZE
+         6LzT3J8hkBYyg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 021/115] kvfree_rcu: Use same set of GFP flags as does single-argument
-Date:   Mon,  3 May 2021 12:35:25 -0400
-Message-Id: <20210503163700.2852194-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 015/100] kvfree_rcu: Use same set of GFP flags as does single-argument
+Date:   Mon,  3 May 2021 12:37:04 -0400
+Message-Id: <20210503163829.2852775-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503163700.2852194-1-sashal@kernel.org>
-References: <20210503163700.2852194-1-sashal@kernel.org>
+In-Reply-To: <20210503163829.2852775-1-sashal@kernel.org>
+References: <20210503163829.2852775-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -127,10 +127,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ce17b8477442..84a3fe09630b 100644
+index 5dc36c6e80fd..8a5cc76ecac9 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3439,7 +3439,7 @@ static void fill_page_cache_func(struct work_struct *work)
+@@ -3386,7 +3386,7 @@ static void fill_page_cache_func(struct work_struct *work)
  
  	for (i = 0; i < rcu_min_cached_objs; i++) {
  		bnode = (struct kvfree_rcu_bulk_data *)
