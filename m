@@ -2,143 +2,140 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 718CFC4360C
-	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B73EC43460
+	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 17:00:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 523866054E
-	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 16:45:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD7F661176
+	for <rcu@archiver.kernel.org>; Mon,  3 May 2021 17:00:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhECQqF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 May 2021 12:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50706 "EHLO mail.kernel.org"
+        id S233906AbhECRBn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 May 2021 13:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233060AbhECQod (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 May 2021 12:44:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3B106157F;
-        Mon,  3 May 2021 16:38:51 +0000 (UTC)
+        id S233386AbhECQ5R (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 May 2021 12:57:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD886117A;
+        Mon,  3 May 2021 16:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620059932;
-        bh=qj7QpG0l8dZ2cJUVtdtS6tHeWOQB1DcVfWdjLsXiLY4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=idMX6vifOjICQP5LYZBMxY6vGnvz2XtJRHWn1ERtXxekKwKizTwpRIp2hOTJOFZov
-         FwSPC4POBn+LfUMpLuffZMcj6W05sG8inqdyfrGKAGuXWKTcF0AtRMGrduiOPDHTob
-         yaNRIi9x38XP++UNSl0LUEJv2GH9374kKudNxDxvUtuwE5hmpqjCVQCPUMfKQNfKaQ
-         ZmyRgWdRkS/Ys8tleDpzh8YkaFDiD2l0mBwIEzj04PhVAfkh5GWIOP6SBGE0NLT9Mw
-         8tgCJUm4bQ8L/Bnq5aCbUHagmHQYE+TTmqYcVtwqRdRv7HgzOPXhWSriLRBX4oBYZE
-         6LzT3J8hkBYyg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 015/100] kvfree_rcu: Use same set of GFP flags as does single-argument
-Date:   Mon,  3 May 2021 12:37:04 -0400
-Message-Id: <20210503163829.2852775-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210503163829.2852775-1-sashal@kernel.org>
-References: <20210503163829.2852775-1-sashal@kernel.org>
+        s=k20201202; t=1620060444;
+        bh=rqiShYz2NDHqM5EtsoLoM7q+/D2LQEFZDElDZCdsSlQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qeAZKVivkiGyI0gCis7qBTBQlLQdTnTEA+ilBPTnExDRAe4JK9QbLs59Br8bYd+o+
+         ikZ+qfuI6P99gMW2KD33VpvYux1jXQvC+9ubCS4R5xEFGKcCXSJsJjKzDDvUiIeIcC
+         oqxKaJVgOnzDW6Dow+Yw3plPOadXyZth8QI+pg26BGrg0b1knnZRuKoUQ7Lsd179Qe
+         AZPykKbG2eww+0WJ44osFqZlArL+e08GPDaPIG0PJnvNP6U41mAVORltlGeBu6AQKr
+         07mnXNxPMohkR/lvtCkWxMDBOhcI/hZT/y1xHSgOS5Ea3z7dIcelchKGE39JRUVHo5
+         f0nQrgulggpmA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E04905C0546; Mon,  3 May 2021 09:47:23 -0700 (PDT)
+Date:   Mon, 3 May 2021 09:47:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 5/5] kvfree_rcu: Fix comments according to current code
+Message-ID: <20210503164723.GX975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-5-urezki@gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428134422.1894-5-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+On Wed, Apr 28, 2021 at 03:44:22PM +0200, Uladzislau Rezki (Sony) wrote:
+> We used to have an "emergency path" and comments related
+> to it. According to current kvfree_rcu() design that path
+> is not considered as emergency anymore.
+> 
+> This patch rephrases and updates comments regarding this.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-[ Upstream commit ee6ddf58475cce8a3d3697614679cd8cb4a6f583 ]
+Queued as follows, thank you!  Please check my usual wordsmithing to
+make sure that I did not mess anything up.
 
-Running an rcuscale stress-suite can lead to "Out of memory" of a
-system. This can happen under high memory pressure with a small amount
-of physical memory.
+							Thanx, Paul
 
-For example, a KVM test configuration with 64 CPUs and 512 megabytes
-can result in OOM when running rcuscale with below parameters:
+------------------------------------------------------------------------
 
-../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
---bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
-  rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+commit 06c2113c4b1ce9ded69cd0ac4da9a00ed6be8834
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Wed Apr 28 15:44:22 2021 +0200
 
-<snip>
-[   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
-[   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[   12.056485] Workqueue: events_highpri fill_page_cache_func
-[   12.056485] Call Trace:
-[   12.056485]  dump_stack+0x57/0x6a
-[   12.056485]  dump_header+0x4c/0x30a
-[   12.056485]  ? del_timer_sync+0x20/0x30
-[   12.056485]  out_of_memory.cold.47+0xa/0x7e
-[   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
-[   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
-[   12.056485]  __get_free_pages+0x8/0x30
-[   12.056485]  fill_page_cache_func+0x39/0xb0
-[   12.056485]  process_one_work+0x1ed/0x3b0
-[   12.056485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  worker_thread+0x28/0x3c0
-[   12.060485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  kthread+0x138/0x160
-[   12.060485]  ? kthread_park+0x80/0x80
-[   12.060485]  ret_from_fork+0x22/0x30
-[   12.062156] Mem-Info:
-[   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
-[   12.062350]  active_file:0 inactive_file:0 isolated_file:0
-[   12.062350]  unevictable:0 dirty:0 writeback:0
-[   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
-[   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
-[   12.062350]  free:10488 free_pcp:1227 free_cma:0
-...
-[   12.101610] Out of memory and no killable processes...
-[   12.102042] Kernel panic - not syncing: System is deadlocked on memory
-[   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-<snip>
-
-Because kvfree_rcu() has a fallback path, memory allocation failure is
-not the end of the world.  Furthermore, the added overhead of aggressive
-GFP settings must be balanced against the overhead of the fallback path,
-which is a cache miss for double-argument kvfree_rcu() and a call to
-synchronize_rcu() for single-argument kvfree_rcu().  The current choice
-of GFP_KERNEL|__GFP_NOWARN can result in longer latencies than a call
-to synchronize_rcu(), so less-tenacious GFP flags would be helpful.
-
-Here is the tradeoff that must be balanced:
-    a) Minimize use of the fallback path,
-    b) Avoid pushing the system into OOM,
-    c) Bound allocation latency to that of synchronize_rcu(), and
-    d) Leave the emergency reserves to use cases lacking fallbacks.
-
-This commit therefore changes GFP flags from GFP_KERNEL|__GFP_NOWARN to
-GFP_KERNEL|__GFP_NORETRY|__GFP_NOMEMALLOC|__GFP_NOWARN.  This combination
-leaves the emergency reserves alone and can initiate reclaim, but will
-not invoke the OOM killer.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    kvfree_rcu: Fix comments according to current code
+    
+    The kvfree_rcu() function now defers allocations in the common
+    case due to the fact that there is no lockless access to the
+    memory-allocator caches/pools.  In addition, in CONFIG_PREEMPT_NONE=y
+    and in CONFIG_PREEMPT_VOLUNTARY=y kernels, there is no reliable way to
+    determine if spinlocks are held.  As a result, allocation is deferred in
+    the common case, and the two-argument form of kvfree_rcu() thus uses the
+    "channel 3" queue through all the rcu_head structures.  This channel
+    is called referred to as the emergency case in comments, and these
+    comments are now obsolete.
+    
+    This commit therefore updates these comments to reflect the new
+    common-case nature of such emergencies.
+    
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5dc36c6e80fd..8a5cc76ecac9 100644
+index 9089c23e80dc..4d93c6985d3f 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3386,7 +3386,7 @@ static void fill_page_cache_func(struct work_struct *work)
+@@ -3338,9 +3338,11 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	}
  
- 	for (i = 0; i < rcu_min_cached_objs; i++) {
- 		bnode = (struct kvfree_rcu_bulk_data *)
--			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
-+			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+ 	/*
+-	 * Emergency case only. It can happen under low memory
+-	 * condition when an allocation gets failed, so the "bulk"
+-	 * path can not be temporary maintained.
++	 * This is used when the "bulk" path can not be used for the
++	 * double-argument of kvfree_rcu().  This happens when the
++	 * page-cache is empty, which means that objects are instead
++	 * queued on a linked list through their rcu_head structures.
++	 * This list is named "Channel 3".
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
+@@ -3386,8 +3388,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
+ 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
+ 				(krcp->head && !krwp->head_free)) {
+-			// Channel 1 corresponds to SLAB ptrs.
+-			// Channel 2 corresponds to vmalloc ptrs.
++			// Channel 1 corresponds to the SLAB-pointer bulk path.
++			// Channel 2 corresponds to vmalloc-pointer bulk path.
+ 			for (j = 0; j < FREE_N_CHANNELS; j++) {
+ 				if (!krwp->bkvhead_free[j]) {
+ 					krwp->bkvhead_free[j] = krcp->bkvhead[j];
+@@ -3395,7 +3397,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 				}
+ 			}
  
- 		if (bnode) {
- 			raw_spin_lock_irqsave(&krcp->lock, flags);
--- 
-2.30.2
-
+-			// Channel 3 corresponds to emergency path.
++			// Channel 3 corresponds to both SLAB and vmalloc
++			// objects queued on the linked list.
+ 			if (!krwp->head_free) {
+ 				krwp->head_free = krcp->head;
+ 				krcp->head = NULL;
