@@ -2,100 +2,169 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C901C43460
-	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:39:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C7AC43462
+	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:59:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DCEE61260
-	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:39:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CCA566157E
+	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:59:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239686AbhEJOkj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 May 2021 10:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
+        id S237532AbhEJPAt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 May 2021 11:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbhEJOhY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 May 2021 10:37:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84CC08E8A9;
-        Mon, 10 May 2021 07:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=i6vAxLOytNOYwyM1NYfARO0i+7jkuFK7y9pYt7pXuwE=; b=djb3CWn/LU378IzapvABLkn8Gd
-        Mp82QkScestEUeQW2L+zqtEN7XvYp31eFRebvjBEITr//+6YOo6+SYheq9BxF7YMTeqbS+RN1ORYU
-        WcTwnub1JAhAEwo1EbdH4ZtDbzKRVhVt7KKBx8eH43WzT6ZsZkO7OQPiITlB671P2UStmst5kwHpO
-        oLDGkct+Pf7s4vCchonkHPjgJ2dHAgGdY9eEvhnNfgt0nMzg4EJ/N8O7mpCEUjiq1yDlLopkoOUQy
-        tCb7mahOMAZ84vugzBeIjfIYkNlViOtJdTlUAmJVQy5eePLrQct4R8yXLPW7Hy+DjovMg5jAZGdoa
-        yuW/o03A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lg6RA-006DIB-7H; Mon, 10 May 2021 13:59:19 +0000
-Date:   Mon, 10 May 2021 14:59:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-Message-ID: <YJk8LMFViV7Z3Uu7@casper.infradead.org>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
- <20210510135518.305cc03d@coco.lan>
- <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+        with ESMTP id S241909AbhEJPAX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 May 2021 11:00:23 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40478C028005;
+        Mon, 10 May 2021 07:20:23 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id f12so8441193ljp.2;
+        Mon, 10 May 2021 07:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rmt53jkm2pEOW1Zp9XLb2RYP71D2t/e3KMRpzhTT0jc=;
+        b=qFNkwBJYblgYpnwYhJClX/wLvPWe1H0S1qO70IqSb1C00+gtxnO83tB5cP+hUQdoCU
+         I5T6PUK15qrRahvOJSR2PaPHxjOPpJy6MU3ZpnhWDcjzEQQPAaNQ7L07DURiusyLHGNY
+         OwdEfh08Nndat5drstf/I10YUNW38hh6Oqh95b8XbRTbDdh8reffu6lVH4j6NMVOS/k6
+         OcLPtHdd9Dg0lSSiMSdGsXnny2o6yxcdOKvxtqHoluDfr1qHIBi5U+RmmLtmQkWcXuxa
+         dryLt3aLkpGmvzPp9Cw5zGEypZn2Dd0lX928cY7FN95dB2Ltplz8nxak0UXmqXcauz+Q
+         ytBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rmt53jkm2pEOW1Zp9XLb2RYP71D2t/e3KMRpzhTT0jc=;
+        b=XbGW4bZAJaZXD3o1DXzu4/tVx/izHSTW4JST4F9npNU/g0m6kCbarEqAJCHE3huQLd
+         qL8VlGjWLUH4E2cIq+SY2EeVEZpAXc6enI0IlCwQULh2DUQ/dzDYFgAkbDuVWc9gZo7S
+         njQPapDBtUcHqIuhNWA8iAoXLWlMTPkDeM68kBQHICmeZYfghZqZJYi94mo2YUIMQgkR
+         4Tp/95TkJI4iBeOkeKW2dQ4LH5kSncGcOtsE/HcqitzfiZk/zHZSlrUWRJ6nVs6Rrp2P
+         0xl4oj0Ye9ODFy8n60v08AT2YtbavInvPPDXIjrM144kZrjxWTh46O8K1wDX81xFTa7q
+         A4kA==
+X-Gm-Message-State: AOAM5303Ly6XiIWpYhI5R0tTBt5qtQmmQGYEiWA/QkAmdOkculZ/LvKc
+        gMmCWSkV7s2Iy0u4dwHJHI8=
+X-Google-Smtp-Source: ABdhPJzMm2+QaAnLzUv/AAD+5ojjXaBxq3FhUs69RVgQJdwLgGUwCd2mVKihCydGLFU5dGugIdPhtg==
+X-Received: by 2002:a2e:b161:: with SMTP id a1mr20684999ljm.426.1620656421793;
+        Mon, 10 May 2021 07:20:21 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t17sm2248305lff.25.2021.05.10.07.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 07:20:21 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 10 May 2021 16:20:18 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210510142018.GA2350@pc638.lan>
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
+ <20210510100901.GA2019@pc638.lan>
+ <20210510140143.GD975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+In-Reply-To: <20210510140143.GD975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:16:16PM +0100, Edward Cree wrote:
-> On 10/05/2021 12:55, Mauro Carvalho Chehab wrote:
-> > The main point on this series is to replace just the occurrences
-> > where ASCII represents the symbol equally well
+On Mon, May 10, 2021 at 07:01:43AM -0700, Paul E. McKenney wrote:
+> On Mon, May 10, 2021 at 12:09:01PM +0200, Uladzislau Rezki wrote:
+> > On Sun, May 09, 2021 at 04:59:54PM -0700, Andrew Morton wrote:
+> > > On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
+> > > 
+> > > > Rearm the monitor work directly from its own function that
+> > > > is kfree_rcu_monitor(). So this patch puts the invocation
+> > > > timing control in one place.
+> > > >
+> > > > ...
+> > > >
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> > > >  	return !repeat;
+> > > >  }
+> > > >  
+> > > > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > > > -					  unsigned long flags)
+> > > > +/*
+> > > > + * This function queues a new batch. If success or nothing to
+> > > > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > > > + * a reclaim kthread has not processed a previous batch.
+> > > > + */
+> > > > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> > > >  {
+> > > > +	unsigned long flags;
+> > > > +	int ret;
+> > > > +
+> > > > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > > +
+> > > >  	// Attempt to start a new batch.
+> > > > -	if (queue_kfree_rcu_work(krcp)) {
+> > > > +	ret = queue_kfree_rcu_work(krcp);
+> > > 
+> > > This code has changed slightly in mainline.  Can you please redo,
+> > > retest and resend?
+> > > 
+> > > > +	if (ret)
+> > > >  		// Success! Our job is done here.
+> > > >  		krcp->monitor_todo = false;
+> > > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > > -		return;
+> > > > -	}
+> > > 
+> > > It's conventional to retain the braces here, otherwise the code looks
+> > > weird.  Unless you're a python programmer ;)
+> > > 
+> > > 
+> > Hello, Anrew.
+> > 
+> > This refactoring is not up to date and is obsolete, instead we have done 
+> > bigger rework of kfree_rcu_monitor(). It is located here:
+> > 
+> > https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu/+/2349a35d39e7af5eef9064cbd0e42309040551da%5E%21/#F0
 > 
-> > 	- U+2014 ('—'): EM DASH
-> Em dash is not the same thing as hyphen-minus, and the latter does not
->  serve 'equally well'.  People use em dashes because — even in
->  monospace fonts — they make text easier to read and comprehend, when
->  used correctly.
-> I accept that some of the other distinctions — like en dashes — are
->  needlessly pedantic (though I don't doubt there is someone out there
->  who will gladly defend them with the same fervour with which I argue
->  for the em dash) and I wouldn't take the trouble to use them myself;
->  but I think there is a reasonable assumption that when someone goes
->  to the effort of using a Unicode punctuation mark that is semantic
->  (rather than merely typographical), they probably had a reason for
->  doing so.
+> If Andrew would like to start taking these kvfree_rcu() patches,
+> that would be all to the good.  For example, there is likely much
+> more opportunity for optimization by bringing them closer to the
+> sl*b allocators.  Yes, they will need some privileged access to RCU
+> internals, but not that much.  And at some point, they should move from
+> their current home in kernel/rcu/tree.c to somewhere in mm.
+> 
+That is the plan to change the home :)
 
-I think you're overestimating the amount of care and typographical
-knowledge that your average kernel developer has.  Most of these
-UTF-8 characters come from latex conversions and really aren't
-necessary (and are being used incorrectly).
 
-You seem quite knowedgeable about the various differences.  Perhaps
-you'd be willing to write a document for Documentation/doc-guide/
-that provides guidance for when to use which kinds of horizontal
-line?  https://www.punctuationmatters.com/hyphen-dash-n-dash-and-m-dash/
-talks about it in the context of publications, but I think we need
-something more suited to our needs for kernel documentation.
+> To that end, here is the list in -rcu against current mainline, from
+> youngest to oldest:
+> 
+> b5691dd1cd7a kvfree_rcu: Fix comments according to current code
+> 2349a35d39e7 kvfree_rcu: Refactor kfree_rcu_monitor()
+> bfa15885893f kvfree_rcu: Release a page cache under memory pressure
+> de9d86c3b0b7 kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+> 54a0393340f7 kvfree_rcu: Add a bulk-list check when a scheduler is run
+> 7490789de1ac kvfree_rcu: Update "monitor_todo" once a batch is started
+> 28e690ce0347 kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+> 
+> Please let me know how you would like to proceed.
+> 
+> 							Thanx, Paul
