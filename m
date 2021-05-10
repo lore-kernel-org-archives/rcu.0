@@ -2,108 +2,138 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05084C43600
-	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51F18C433B4
+	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:07:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3139611BE
-	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:07:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D388611BE
+	for <rcu@archiver.kernel.org>; Mon, 10 May 2021 14:07:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238640AbhEJOIi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 May 2021 10:08:38 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:37919 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235412AbhEJOBt (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Mon, 10 May 2021 10:01:49 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 14AAD5807B2;
-        Mon, 10 May 2021 10:00:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 10 May 2021 10:00:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=fwXudyHn8IUNsmfHA12W5pUxFzr
-        IcUsJJs6niPOOwGc=; b=gQh6u0zhPsG//1fbjCgHH3SUq5OZEixVi+ckcNcOvNr
-        8f8S6u6OqczboxIeZQzxpdw3AUy1t45vyyuSQKDA1+yJJEqv0Na0yFB8YXQoxGQa
-        A5mz/uekXLKQlXSBVpDzZgWHaTwxLQ8cfd/84Seg6MJA86M+DwrG/rxkfmjHnsDx
-        Vsn+We4G3Oh5Yvv4HNwlluWEHPMQsGoYqOZqIpzyUGPfcSXaDfcxgaoBasafO20O
-        Nia4uZb9+lsHdBKwEogjjnykkTJJzKThWOeq3e2hyjT/F/nLvkiGpnFJ0uMYCJ5w
-        yhbph4b45d/9JdizeckN5aTq6WAACtGxOiZQK1Svtuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fwXudy
-        Hn8IUNsmfHA12W5pUxFzrIcUsJJs6niPOOwGc=; b=FkYLunR8+bNyojGntZzlTv
-        lNhoU5Ih8GFYdgqBiM9GEeBgkR7PC0rd49vKxgNK2oVHYiwvnJ0pFHee6wyNEefG
-        07iyoKlPp2/47lNX2/0a3w6XYC3Muan3VrHn9DIyh2AJDD/sq19lwcD+nClmgOGW
-        3kjTJut/WH9S1nO20R6vTeVSVeiFhLK/oh1ul5trEQZynTCu46HI2dcf9dXPVKk9
-        sOjDpOdiQFUH6B6gq1Emr8rDL+S3scV3gAHdetS1J2hIDO0dgu0hscWNc8fHxaey
-        25F3JvGPZJisNAQmAtq62YqH7TCAIzVvBqJwx8rI9Oyho2YDtxrFPxf1S0VsKOTA
-        ==
-X-ME-Sender: <xms:hDyZYCqZ48w__j-3J2DdcFFyCNO8Px1wZAdweI2vgyXQ5g_1A_avfw>
-    <xme:hDyZYAoPMp-2hhXE5dIuFZVKJLDFR-LeVjsu56BtdhTJGnUi8Md4Pqb1pnf9Vqqdn
-    t02Gw-Ku9S6gnwxX4I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttderjeenucfhrhhomhepuegvnhcu
-    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
-    gvrhhnpeevffdtteetgfdttdekueefgedttddtueeugeekgeetffeuteffjeduieehhfek
-    tdenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
-X-ME-Proxy: <xmx:hDyZYHO7a0I2ObO3iNQCJFMynfyvzQSxH3x8A4ShPc13xjvG6wh63A>
-    <xmx:hDyZYB6OL9_iqJiCXEkFvw1uMnu0UHjkSyxn6Irx0qOidEFWAmkwbA>
-    <xmx:hDyZYB472gSq8MYTawlNh6oofIzwaZQvJxltEegElvbnNVF17UiCaA>
-    <xmx:hjyZYNFuZhUi4dOrdPamnliiTh3owe6Tf-ewK9C2k9SXGvHlGfVlTg>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 10 May 2021 10:00:35 -0400 (EDT)
-Date:   Mon, 10 May 2021 10:00:34 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-Message-ID: <YJk8gkMlk8dtaEsz@erythro.dev.benboeckel.internal>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
- <20210510135518.305cc03d@coco.lan>
+        id S238688AbhEJOIj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 May 2021 10:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhEJOCt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 May 2021 10:02:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2C36101B;
+        Mon, 10 May 2021 14:01:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620655304;
+        bh=F7dbRtEIaaThwBLKKfEpeXJ/mhUzWheRAgnCoFAyEwM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lUuYc6yk7D1Y57pKfM61xU70A/ZwBKnBFIIF5lm0vkdMLhBIHWcT6UqBDD89l4dUl
+         vjZ/mlvuO5ZR6z2LKgsBvjZrDWXtuuwxnBYK6EJMHfrtb9O5vGrq4hSF804WvEkZF/
+         01ocGttJbpbTIhWW2XD5XQ6anS0BGPC4oAGlYd0BHpwgqRtA6yHoKiAPl7/iEcGvBT
+         R359LZvxxTBsqvpOIue3LUbhps0b+8nJaZqEkD1Q+sJ93/4EgeXIf0ol8Obiv+EGlN
+         qgwH/jpI5JRQLSHX7CEsJ/mQzeU/PToVcHSNARWkLMXNge/2izTBtdzbbAK48T7+iE
+         n3aj7myzAbHcg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DEEE65C00D5; Mon, 10 May 2021 07:01:43 -0700 (PDT)
+Date:   Mon, 10 May 2021 07:01:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210510140143.GD975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
+ <20210510100901.GA2019@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510135518.305cc03d@coco.lan>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <20210510100901.GA2019@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 10, 2021 at 13:55:18 +0200, Mauro Carvalho Chehab wrote:
->     $ git grep "CPU 0 has been" Documentation/RCU/
->       Documentation/RCU/Design/Data-Structures/Data-Structures.rst:| #. CPU 0 has been in dyntick-idle mode for quite some time. When it   |
->       Documentation/RCU/Design/Data-Structures/Data-Structures.rst:|    notices that CPU 0 has been in dyntick idle mode, which qualifies  |
+On Mon, May 10, 2021 at 12:09:01PM +0200, Uladzislau Rezki wrote:
+> On Sun, May 09, 2021 at 04:59:54PM -0700, Andrew Morton wrote:
+> > On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
+> > 
+> > > Rearm the monitor work directly from its own function that
+> > > is kfree_rcu_monitor(). So this patch puts the invocation
+> > > timing control in one place.
+> > >
+> > > ...
+> > >
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> > >  	return !repeat;
+> > >  }
+> > >  
+> > > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > > -					  unsigned long flags)
+> > > +/*
+> > > + * This function queues a new batch. If success or nothing to
+> > > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > > + * a reclaim kthread has not processed a previous batch.
+> > > + */
+> > > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> > >  {
+> > > +	unsigned long flags;
+> > > +	int ret;
+> > > +
+> > > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > +
+> > >  	// Attempt to start a new batch.
+> > > -	if (queue_kfree_rcu_work(krcp)) {
+> > > +	ret = queue_kfree_rcu_work(krcp);
+> > 
+> > This code has changed slightly in mainline.  Can you please redo,
+> > retest and resend?
+> > 
+> > > +	if (ret)
+> > >  		// Success! Our job is done here.
+> > >  		krcp->monitor_todo = false;
+> > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > -		return;
+> > > -	}
+> > 
+> > It's conventional to retain the braces here, otherwise the code looks
+> > weird.  Unless you're a python programmer ;)
+> > 
+> > 
+> Hello, Anrew.
+> 
+> This refactoring is not up to date and is obsolete, instead we have done 
+> bigger rework of kfree_rcu_monitor(). It is located here:
+> 
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu/+/2349a35d39e7af5eef9064cbd0e42309040551da%5E%21/#F0
 
-The kernel documentation uses hard line wraps, so such a naive grep is
-going to always fail unless such line wraps are taken into account. Not
-saying this isn't an improvement in and of itself, but smarter searching
-strategies are likely needed anyways.
+If Andrew would like to start taking these kvfree_rcu() patches,
+that would be all to the good.  For example, there is likely much
+more opportunity for optimization by bringing them closer to the
+sl*b allocators.  Yes, they will need some privileged access to RCU
+internals, but not that much.  And at some point, they should move from
+their current home in kernel/rcu/tree.c to somewhere in mm.
 
---Ben
+To that end, here is the list in -rcu against current mainline, from
+youngest to oldest:
+
+b5691dd1cd7a kvfree_rcu: Fix comments according to current code
+2349a35d39e7 kvfree_rcu: Refactor kfree_rcu_monitor()
+bfa15885893f kvfree_rcu: Release a page cache under memory pressure
+de9d86c3b0b7 kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+54a0393340f7 kvfree_rcu: Add a bulk-list check when a scheduler is run
+7490789de1ac kvfree_rcu: Update "monitor_todo" once a batch is started
+28e690ce0347 kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+
+Please let me know how you would like to proceed.
+
+							Thanx, Paul
