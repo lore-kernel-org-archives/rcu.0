@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B9CC4361B
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F92DC4363C
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C604B61931
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2EB5061932
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEKXNm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:13:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+        id S229980AbhEKXNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:13:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230336AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6767561952;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FB561963;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=z5Ue1qKxYKPogfXdLCoyPZEQoULfCVbxyQmjN0XplRM=;
+        bh=ooQpLhakMF+iC+06mvjV16KpkMzrtX0sKaEg6443Vp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d745UZO5cevgy/t6JPgDCHxLsgkWF3Eu1+GovVpfRBRJbzC3W/KDTTBnpqaJz/TEV
-         wPMQFni3Logk+AUzh8sA2KSrAozVarInPgEvt/+CZCdvbMDG3Er0iW5sTQW6t1F9C3
-         hxZYJoEu+GM+40Zo51xsDlOhlwIl3GVQffM6fJ6sZgTm+B/KLXBWK5itMNbnmxuiK2
-         DZCQSteOcUbajiNRytgO7lqBAJl8lf9ky+8XqMuly/7Jb80qxwT2rYrpjheKGbO57c
-         N0C7XrkzT+rd/RTFq3dloBk7xAtglIilWkxDXsQhw64ukNguPdUjXTtjfc5rmkNZQz
-         6B9Z+O5vmlygA==
+        b=qbzlOW/dTaZfj3bXtw/hVUHgmSSJMxMXwJqXtXCr0DWMFn+PtRyZYr0cuGcaWsvwM
+         xWb3wIeHH8mZb1lbDXTvXDT8YPMrG6yiqJLEbc4JFx6fhjiEaLBmFJOQp3RqA94aXR
+         spvm5rXf11Ocm4xbWL1aZZN8g/T7dHQYBY/6Ugyj7yxGPzh0sxeGh6N/GmIrtDIzyy
+         kg+f8zOAVrg4m3TM42I/PyGBV8P/7sEofqyuiUQkFVhBKcMTMsvfzrO92mqNNspLLA
+         NlfOwsE2B4fnqq7BKpeoOV44+dLobcN1f8zfaoo1v97HC4vV7zYTDPwQD6uEF4YaE/
+         N7IScI7TSCmmg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8C2E15C0E5C; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 974735C0EBE; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/26] rcutorture: Make rcu_torture_boost_failed() check for GP end
-Date:   Tue, 11 May 2021 16:12:16 -0700
-Message-Id: <20210511231223.2895398-19-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 25/26] rcutorture: Move mem_dump_obj() tests into separate function
+Date:   Tue, 11 May 2021 16:12:22 -0700
+Message-Id: <20210511231223.2895398-25-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -54,42 +54,117 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It is possible that a delayed grace period that rcu_torture_boost()
-was polling for ended while rcu_torture_boost_failed() was printing the
-failure splat.  It would be good to know when this happens.  This commit
-therefore has rcu_torture_boost_failed() recheck the grace period after
-printing the splat, and printing a message indicating whether or not
-the grace period has ended.
+To make the purpose of the code more apparent, this commit moves the
+tests of mem_dump_obj() to a new rcu_torture_mem_dump_obj() function
+and calls it from rcu_torture_cleanup().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/rcutorture.c | 81 +++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 39 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 31338b2d6609..02a14dfcae67 100644
+index 8b347b9659aa..ec69273898af 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -919,6 +919,7 @@ static void rcu_torture_enable_rt_throttle(void)
- static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start, unsigned long end)
- {
- 	static int dbg_done;
-+	bool gp_done;
+@@ -1868,48 +1868,49 @@ rcu_torture_stats(void *arg)
+ 		torture_shutdown_absorb("rcu_torture_stats");
+ 	} while (!torture_must_stop());
+ 	torture_kthread_stopping("rcu_torture_stats");
+-
+-	{
+-		struct rcu_head *rhp;
+-		struct kmem_cache *kcp;
+-		static int z;
+-
+-		kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
+-		rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
+-		pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
+-		pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
+-		mem_dump_obj(ZERO_SIZE_PTR);
+-		pr_alert("mem_dump_obj(NULL):");
+-		mem_dump_obj(NULL);
+-		pr_alert("mem_dump_obj(%px):", &rhp);
+-		mem_dump_obj(&rhp);
+-		pr_alert("mem_dump_obj(%px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(%px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		pr_alert("mem_dump_obj(%px):", &z);
+-		mem_dump_obj(&z);
+-		kmem_cache_free(kcp, rhp);
+-		kmem_cache_destroy(kcp);
+-		rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+-		pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+-		pr_alert("mem_dump_obj(kmalloc %px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		kfree(rhp);
+-		rhp = vmalloc(4096);
+-		pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+-		pr_alert("mem_dump_obj(vmalloc %px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		vfree(rhp);
+-	}
+-
+ 	return 0;
+ }
  
- 	if (end - start > test_boost_duration * HZ - HZ / 2) {
- 		// Recheck after checking time to avoid false positives.
-@@ -931,6 +932,11 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
- 			pr_info("Boost inversion thread ->rt_priority %u gp_state %lu jiffies %lu\n",
- 				current->rt_priority, gp_state, end - start);
- 			cur_ops->gp_kthread_dbg();
-+			// Recheck after print to flag grace period ending during splat.
-+			gp_done = cur_ops->poll_gp_state(gp_state);
-+			pr_info("Boost inversion: GP %lu %s.\n", gp_state,
-+				gp_done ? "ended already" : "still pending");
++/* Test mem_dump_obj() and friends.  */
++static void rcu_torture_mem_dump_obj(void)
++{
++	struct rcu_head *rhp;
++	struct kmem_cache *kcp;
++	static int z;
 +
- 		}
++	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
++	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
++	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
++	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
++	mem_dump_obj(ZERO_SIZE_PTR);
++	pr_alert("mem_dump_obj(NULL):");
++	mem_dump_obj(NULL);
++	pr_alert("mem_dump_obj(%px):", &rhp);
++	mem_dump_obj(&rhp);
++	pr_alert("mem_dump_obj(%px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(%px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	pr_alert("mem_dump_obj(%px):", &z);
++	mem_dump_obj(&z);
++	kmem_cache_free(kcp, rhp);
++	kmem_cache_destroy(kcp);
++	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
++	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
++	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	kfree(rhp);
++	rhp = vmalloc(4096);
++	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
++	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	vfree(rhp);
++}
++
+ static void
+ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ {
+@@ -2825,6 +2826,8 @@ rcu_torture_cleanup(void)
+ 	if (cur_ops->cleanup != NULL)
+ 		cur_ops->cleanup();
  
- 		return true; // failed
++	rcu_torture_mem_dump_obj();
++
+ 	rcu_torture_stats_print();  /* -After- the stats thread is stopped! */
+ 
+ 	if (err_segs_recorded) {
 -- 
 2.31.1.189.g2e36527f23
 
