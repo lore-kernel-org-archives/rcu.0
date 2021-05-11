@@ -2,38 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AA82C433ED
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E446DC433B4
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 44C7861278
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:11:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE1CA61979
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhEKXM4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:12:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S230130AbhEKXNc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:13:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKXM4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 19:12:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C22A611F0;
-        Tue, 11 May 2021 23:11:49 +0000 (UTC)
+        id S229637AbhEKXNb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 19:13:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A04D9611F0;
+        Tue, 11 May 2021 23:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774709;
-        bh=zBzw4r9l2+Rfjh0AnYkkAiHcc5UgED/szOpl52wzT2o=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=BReDHbu9I/esUgifJWngKvl+GdkQti1Ra02RLK6VYtjXP5Cz1Vi39rlf/4N/yD7I4
-         YqBYSwGG40GLyveXVSFS4F5x4iTljQUUgwtuNY1WlFczspnBlBciPLw3oh/ROuWQFe
-         NtXVpg2JZOVTzGqKoeakQ/3SP/5KMD15wrqYnBmDV2t8vRKf+2UOZ99rmDLjdHn5pT
-         5/+hRQW9VUkLIGhZvz8RxMXkMqa8snemxo0Ro/c+tfODrt1sEXjkZ1EzT0+CYsa+Dn
-         1t6zbIOYUoKH1mFK9n32Dsr7RU5lj6L1/lydzCHfDG1WR4aUAjykYNOBuwqL1372Hl
-         9bFIn8cZWO+ZA==
+        s=k20201202; t=1620774744;
+        bh=DAEHsw/czd22zLpWKro025Lo1t93Ba4t6tCU3t5XFrQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=faXAoeaTtJ5gcEvQ3KiF4vyliFYAzY7eshc7+n2uBjJL4z3CWX9hVrrz6mdao11Sg
+         AtBz7JNMwsb073DabuQocii63nGQiM4lQdRjyRg27rXIP2JmyteD1I78a3mOWj1yrd
+         M0YiQFpvkYK1wtWE+Sgf9cq+OeYTzPZb0kdgNlnNnb8Wr28XLrkzyex38Du3GRQeyJ
+         Ru3Rg32VPX35wFhogmf1zZLZ9OobsjN+DBUzAQIsk0vdVG/Ir91jEWF0J1zyqniwws
+         5YfVnZx/Ow9jJ0pF2Q91hOTDt0cYaJa/TVGIxSBhrzrirw1JpfC2Z5Pl/r2N/QXJfF
+         497BdVPSiMAvg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3E89A5C0138; Tue, 11 May 2021 16:11:49 -0700 (PDT)
-Date:   Tue, 11 May 2021 16:11:49 -0700
+        id 6E2F15C09EF; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,100 +40,76 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/26] Torture-test updates for v5.14
-Message-ID: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/26] torture: Make kvm-again.sh use "scenarios" rather than "batches" file
+Date:   Tue, 11 May 2021 16:12:00 -0700
+Message-Id: <20210511231223.2895398-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
+References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit saves a few lines of code by making kvm-again.sh use the
+"scenarios" file rather than the "batches" file, both of which are
+generated by kvm.sh.
 
-This series provides torture-test updates:
+This results in a break point because new versions of kvm-again.sh cannot
+handle "res" directories produced by old versions of kvm.sh, which lack
+the "scenarios" file.  In the unlikely event that this becomes a problem,
+a trivial script suffices to convert the "batches" file to a "scenarios"
+file, and this script may be easily extracted from kvm.sh.
 
-1.	Fix remaining erroneous torture.sh instance of $*.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ .../selftests/rcutorture/bin/kvm-again.sh     | 22 +++++--------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-2.	Add "scenarios" option to kvm.sh --dryrun parameter.
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index 46e47a00a7db..b74bb4343ab9 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -29,7 +29,7 @@ then
+ 	echo "Usage: $scriptname /path/to/old/run [ options ]"
+ 	exit 1
+ fi
+-if ! cp "$oldrun/batches" $T/batches.oldrun
++if ! cp "$oldrun/scenarios" $T/scenarios.oldrun
+ then
+ 	# Later on, can reconstitute this from console.log files.
+ 	echo Prior run batches file does not exist: $oldrun/batches
+@@ -165,22 +165,12 @@ done
+ grep '^#' $i | sed -e 's/^# //' > $T/qemu-cmd-settings
+ . $T/qemu-cmd-settings
+ 
+-grep -v '^#' $T/batches.oldrun | awk '
+-BEGIN {
+-	oldbatch = 1;
+-}
+-
++grep -v '^#' $T/scenarios.oldrun | awk '
+ {
+-	if (oldbatch != $1) {
+-		print "kvm-test-1-run-batch.sh" curbatch;
+-		curbatch = "";
+-		oldbatch = $1;
+-	}
+-	curbatch = curbatch " " $2;
+-}
+-
+-END {
+-	print "kvm-test-1-run-batch.sh" curbatch
++	curbatch = "";
++	for (i = 2; i <= NF; i++)
++		curbatch = curbatch " " $i;
++	print "kvm-test-1-run-batch.sh" curbatch;
+ }' > $T/runbatches.sh
+ 
+ if test -n "$dryrun"
+-- 
+2.31.1.189.g2e36527f23
 
-3.	Make kvm-again.sh use "scenarios" rather than "batches" file.
-
-4.	Allow CPU hotplug to be enabled.
-
-5.	Allow CPU hotplug to be enabled.
-
-6.	Add kvm-remote.sh script for distributed rcutorture test runs.
-
-7.	Add acqrel, lock, and lock-irq.
-
-8.	Abstract read-lock-held checks.
-
-9.	Fix grace-period rate output.
-
-10.	Abstract end-of-run summary.
-
-11.	Make kvm.sh use abstracted kvm-end-run-stats.sh.
-
-12.	Make the build machine control N in "make -jN".
-
-13.	Make kvm-find-errors.sh account for kvm-remote.sh.
-
-14.	Judge RCU priority boosting on grace periods, not callbacks.
-
-15.	Correctly fetch number of CPUs for non-English languages,
-	courtesy of Frederic Weisbecker.
-
-16.	Set kvm.sh language to English.
-
-17.	Delay-based false positives for RCU priority boosting tests.
-
-18.	Consolidate rcu_torture_boost() timing and statistics.
-
-19.	Make rcu_torture_boost_failed() check for GP end.
-
-20.	Add BUSTED-BOOST to test RCU priority boosting tests.
-
-21.	Forgive RCU boost failures when CPUs don't pass through QS.
-
-22.	Don't count CPU-stalled time against priority boosting.
-
-23.	Make kvm-remote.sh account for network failure in pathname checks.
-
-24.	Don't cap remote runs by build-system number of CPUs.
-
-25.	Move mem_dump_obj() tests into separate function.
-
-26.	Don't penalize priority boosting when there is nothing to boost.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/rcu.h                                                 |    2 
- b/kernel/rcu/rcutorture.c                                          |   29 
- b/kernel/rcu/refscale.c                                            |  109 +++
- b/kernel/rcu/tree_stall.h                                          |   36 +
- b/tools/testing/selftests/rcutorture/bin/kvm-again.sh              |   22 
- b/tools/testing/selftests/rcutorture/bin/kvm-build.sh              |    6 
- b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh      |   40 +
- b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh        |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcu.sh        |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh             |  227 +++++++
- b/tools/testing/selftests/rcutorture/bin/kvm.sh                    |   28 
- b/tools/testing/selftests/rcutorture/bin/torture.sh                |    2 
- b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST      |   17 
- b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot |    8 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE         |    2 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/TREE54       |    2 
- b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT    |    2 
- b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT      |    2 
- kernel/rcu/rcutorture.c                                            |  300 +++++-----
- kernel/rcu/tree_stall.h                                            |   27 
- tools/testing/selftests/rcutorture/bin/kvm-again.sh                |   11 
- tools/testing/selftests/rcutorture/bin/kvm-build.sh                |    2 
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh               |   30 -
- tools/testing/selftests/rcutorture/bin/kvm.sh                      |   33 -
- 24 files changed, 726 insertions(+), 215 deletions(-)
