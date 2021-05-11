@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF2B2C2B9F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A735BC2B9F2
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE66A61925
+	by mail.kernel.org (Postfix) with ESMTP id 78A9661931
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhEKXNq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S230489AbhEKXNq (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 11 May 2021 19:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhEKXNc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 19:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 029C561937;
+        id S230355AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 19:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B65C6195F;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=DxBhv9EVvKuU9XTN8XRXyc+TeqOt5jOmLL3qGBXfNXA=;
+        bh=ZISU9GnMcTdlqU0QtK98c9RS17RDKlC8gFyxQoC9LHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iS6HN4zWCSuCylHP/QPbfduoiLrsPmustn/QTRW4jUthXb2DQIgLbr6pi1dWfK77/
-         yFIiBOfEvD45967kQ5FRUSVs9mXEbu/RfohtEpaZHLiOvYFWopQs/J818qUMXIgTB0
-         t0ciPezahehJ8BnIZc06UL0g3oVKU4UHyM7LR3u5NmyG7O2WestW3bvtLN+kh1Qnn5
-         lvU8ui5OvW34MjJwLhxn4FWB57XNhL6tpqNdJggiwtvkvkfjiDsnL7hTw0h5Zi6Xwa
-         AM9ZWp9pKi/t1YOwY2HNNgLubdqGsX6SyuhKrFndaV0mrkQlu3pEivimWJ16u8bkp1
-         CkeFn/bPMhqng==
+        b=oFlDOBC73ih0iNtxjUaIPkjVQ8sQQcrCUHKvAmYBRzgSGZWb2E78Hg1IxRNT2K3d1
+         hRiuzntQX/1XEspLdnCVDdlyXE54DglXXK8LQj/yurJPxp8GKQy0RD2f0gAdUPnxbF
+         8SyiN/716NsISqWvY88ntPZcvW2d39IojE2uI3uCYdl0Vzr31J+9duDB3D7zWb3llO
+         0CSS1eXQnh3/+g0ITIm9Ywqnc31wNSGopLdBAHKeToiMvcDNBS8W+dpUb8dpKnP2GP
+         fxOxC+GzXrG8D4kNJ7FZjG3fqeC/bNI2NMtVD5hMwYCf7Uj2vhBxvk9zm7JBzlKqft
+         lVRKfbFRuUaqw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 760055C0DD7; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 91B4F5C0E5F; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/26] refscale: Add acqrel, lock, and lock-irq
-Date:   Tue, 11 May 2021 16:12:04 -0700
-Message-Id: <20210511231223.2895398-7-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 22/26] rcutorture: Don't count CPU-stalled time against priority boosting
+Date:   Tue, 11 May 2021 16:12:19 -0700
+Message-Id: <20210511231223.2895398-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -54,144 +54,120 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds scale_type of acqrel, lock, and lock-irq to
-test acquisition and release.  Note that the refscale.nreaders=1
-module parameter is required if you wish to test uncontended locking.
-In contrast, acqrel uses a per-CPU variable, so should be just fine with
-large values of the refscale.nreaders=1 module parameter.
+It will frequently be the case that rcu_torture_boost() will get a
+->start_gp_poll() cookie that needs almost all of the current grace period
+plus an additional grace period to elapse before ->poll_gp_state() will
+return true.  It is quite possible that the current grace period will have
+(say) two seconds of stall by a CPU failing to pass through a quiescent
+state, followed by 300 milliseconds of delay due to a preempted reader.
+The next grace period might suffer only one second of stall by a CPU,
+followed by another 300 milliseconds of delay due to a preempted reader.
+This is an example of RCU priority boosting doing its job, but the full
+elapsed time of 3.6 seconds exceeds the 3.5-second limit.  In addition,
+there is no CPU stall in force at the 3.5-second mark, so this would
+nevertheless currently be counted as an RCU priority boosting failure.
+
+This commit therefore avoids this sort of false positive by resetting
+the gp_state_time timestamp any time that the current grace period is
+being blocked by a CPU.  This results in extremely frequent calls to
+the ->check_boost_failed() function, so this commit provides a lockless
+fastpath that is selected by supplying a NULL CPU-number pointer.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 109 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 107 insertions(+), 2 deletions(-)
+ kernel/rcu/rcutorture.c | 13 ++++++++-----
+ kernel/rcu/tree_stall.h | 10 ++++++++++
+ 2 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 02dd9767b559..313d4547cbc7 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -362,6 +362,111 @@ static struct ref_scale_ops rwsem_ops = {
- 	.name		= "rwsem"
- };
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 5ae4dcc6ba27..8b347b9659aa 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -918,17 +918,18 @@ static void rcu_torture_enable_rt_throttle(void)
+ 	old_rt_runtime = -1;
+ }
  
-+// Definitions for global spinlock
-+static DEFINE_SPINLOCK(test_lock);
-+
-+static void ref_lock_section(const int nloops)
-+{
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		spin_lock(&test_lock);
-+		spin_unlock(&test_lock);
-+	}
-+	preempt_enable();
-+}
-+
-+static void ref_lock_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		spin_lock(&test_lock);
-+		un_delay(udl, ndl);
-+		spin_unlock(&test_lock);
-+	}
-+	preempt_enable();
-+}
-+
-+static struct ref_scale_ops lock_ops = {
-+	.readsection	= ref_lock_section,
-+	.delaysection	= ref_lock_delay_section,
-+	.name		= "lock"
-+};
-+
-+// Definitions for global irq-save spinlock
-+
-+static void ref_lock_irq_section(const int nloops)
-+{
-+	unsigned long flags;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		spin_lock_irqsave(&test_lock, flags);
-+		spin_unlock_irqrestore(&test_lock, flags);
-+	}
-+	preempt_enable();
-+}
-+
-+static void ref_lock_irq_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	unsigned long flags;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		spin_lock_irqsave(&test_lock, flags);
-+		un_delay(udl, ndl);
-+		spin_unlock_irqrestore(&test_lock, flags);
-+	}
-+	preempt_enable();
-+}
-+
-+static struct ref_scale_ops lock_irq_ops = {
-+	.readsection	= ref_lock_irq_section,
-+	.delaysection	= ref_lock_irq_delay_section,
-+	.name		= "lock-irq"
-+};
-+
-+// Definitions acquire-release.
-+static DEFINE_PER_CPU(unsigned long, test_acqrel);
-+
-+static void ref_acqrel_section(const int nloops)
-+{
-+	unsigned long x;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		x = smp_load_acquire(this_cpu_ptr(&test_acqrel));
-+		smp_store_release(this_cpu_ptr(&test_acqrel), x + 1);
-+	}
-+	preempt_enable();
-+}
-+
-+static void ref_acqrel_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	unsigned long x;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		x = smp_load_acquire(this_cpu_ptr(&test_acqrel));
-+		un_delay(udl, ndl);
-+		smp_store_release(this_cpu_ptr(&test_acqrel), x + 1);
-+	}
-+	preempt_enable();
-+}
-+
-+static struct ref_scale_ops acqrel_ops = {
-+	.readsection	= ref_acqrel_section,
-+	.delaysection	= ref_acqrel_delay_section,
-+	.name		= "acqrel"
-+};
-+
- static void rcu_scale_one_reader(void)
+-static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start, unsigned long end)
++static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *start)
  {
- 	if (readdelay <= 0)
-@@ -653,8 +758,8 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &rcu_trace_ops, &rcu_tasks_ops,
--		&refcnt_ops, &rwlock_ops, &rwsem_ops,
-+		&rcu_ops, &srcu_ops, &rcu_trace_ops, &rcu_tasks_ops, &refcnt_ops, &rwlock_ops,
-+		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
- 	};
+ 	int cpu;
+ 	static int dbg_done;
++	unsigned long end = jiffies;
+ 	bool gp_done;
+ 	unsigned long j;
+ 	static unsigned long last_persist;
+ 	unsigned long lp;
+ 	unsigned long mininterval = test_boost_duration * HZ - HZ / 2;
  
- 	if (!torture_init_begin(scale_type, verbose))
+-	if (end - start > mininterval) {
++	if (end - *start > mininterval) {
+ 		// Recheck after checking time to avoid false positives.
+ 		smp_mb(); // Time check before grace-period check.
+ 		if (cur_ops->poll_gp_state(gp_state))
+@@ -945,7 +946,7 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
+ 		n_rcu_torture_boost_failure++;
+ 		if (!xchg(&dbg_done, 1) && cur_ops->gp_kthread_dbg) {
+ 			pr_info("Boost inversion thread ->rt_priority %u gp_state %lu jiffies %lu\n",
+-				current->rt_priority, gp_state, end - start);
++				current->rt_priority, gp_state, end - *start);
+ 			cur_ops->gp_kthread_dbg();
+ 			// Recheck after print to flag grace period ending during splat.
+ 			gp_done = cur_ops->poll_gp_state(gp_state);
+@@ -955,6 +956,8 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
+ 		}
+ 
+ 		return true; // failed
++	} else if (cur_ops->check_boost_failed && !cur_ops->check_boost_failed(gp_state, NULL)) {
++		*start = jiffies;
+ 	}
+ 
+ 	return false; // passed
+@@ -995,7 +998,7 @@ static int rcu_torture_boost(void *arg)
+ 		while (time_before(jiffies, endtime)) {
+ 			// Has current GP gone too long?
+ 			if (gp_initiated && !failed && !cur_ops->poll_gp_state(gp_state))
+-				failed = rcu_torture_boost_failed(gp_state, gp_state_time, jiffies);
++				failed = rcu_torture_boost_failed(gp_state, &gp_state_time);
+ 			// If we don't have a grace period in flight, start one.
+ 			if (!gp_initiated || cur_ops->poll_gp_state(gp_state)) {
+ 				gp_state = cur_ops->start_gp_poll();
+@@ -1016,7 +1019,7 @@ static int rcu_torture_boost(void *arg)
+ 
+ 		// In case the grace period extended beyond the end of the loop.
+ 		if (gp_initiated && !failed && !cur_ops->poll_gp_state(gp_state))
+-			rcu_torture_boost_failed(gp_state, gp_state_time, jiffies);
++			rcu_torture_boost_failed(gp_state, &gp_state_time);
+ 
+ 		/*
+ 		 * Set the start time of the next test interval.
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index af92d9fee0d4..8bde1b53b0c9 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -723,6 +723,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+  * count this as an RCU priority boosting failure.  A return of true says
+  * RCU priority boosting is to blame, and false says otherwise.  If false
+  * is returned, the first of the CPUs to blame is stored through cpup.
++ *
++ * If cpup is NULL, then a lockless quick check is carried out, suitable
++ * for high-rate usage.  On the other hand, if cpup is non-NULL, each
++ * rcu_node structure's ->lock is acquired, ruling out high-rate usage.
+  */
+ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+ {
+@@ -731,6 +735,12 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+ 	struct rcu_node *rnp;
+ 
+ 	rcu_for_each_leaf_node(rnp) {
++		if (!cpup) {
++			if (READ_ONCE(rnp->qsmask))
++				return false;
++			else
++				continue;
++		}
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		if (!rnp->qsmask) {
+ 			// No CPUs without quiescent states for this rnp.
 -- 
 2.31.1.189.g2e36527f23
 
