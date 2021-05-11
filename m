@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A735BC2B9F2
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F91AC43140
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 78A9661931
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3AB896192C
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhEKXNq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48298 "EHLO mail.kernel.org"
+        id S230466AbhEKXNp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230355AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230361AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B65C6195F;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A54A961972;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=ZISU9GnMcTdlqU0QtK98c9RS17RDKlC8gFyxQoC9LHU=;
+        bh=0GWhW/hCulbARv7+j0XEFQtQlx4ol+9OsgZn7m0LbX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oFlDOBC73ih0iNtxjUaIPkjVQ8sQQcrCUHKvAmYBRzgSGZWb2E78Hg1IxRNT2K3d1
-         hRiuzntQX/1XEspLdnCVDdlyXE54DglXXK8LQj/yurJPxp8GKQy0RD2f0gAdUPnxbF
-         8SyiN/716NsISqWvY88ntPZcvW2d39IojE2uI3uCYdl0Vzr31J+9duDB3D7zWb3llO
-         0CSS1eXQnh3/+g0ITIm9Ywqnc31wNSGopLdBAHKeToiMvcDNBS8W+dpUb8dpKnP2GP
-         fxOxC+GzXrG8D4kNJ7FZjG3fqeC/bNI2NMtVD5hMwYCf7Uj2vhBxvk9zm7JBzlKqft
-         lVRKfbFRuUaqw==
+        b=DoMcg1Ye25S+wzlfBrtKkpgQydx7z4zc22FqiiZMMZZUznXFTmNeQ2V/mGLNOxKtF
+         38zQmImlexYRop50lJSqZWnTknRlDjLt8GS+mDRaV27SoGJ1uw42Sx9OUPk9ClSY99
+         UPhp+R0HyYJDsWPWp/yb0ubyximK/iMm3UadtiI2c3ukdwa5xsh+88tMP0rmChddXY
+         QXYbLOmUFoX2Zv0+If/Tcw3/qcos5+hAZxEAA2dGE8DBIdRnkTTYN6kA+NZNqUYx6c
+         unMkhfH56xsnbkvxnH4gAuQK5dnxB8wfPgXvkO0DXDLSH6P4ABgMyIL64ipzjP1yYT
+         0xhHpRPdy7gBA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 91B4F5C0E5F; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 957545C0EB2; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 22/26] rcutorture: Don't count CPU-stalled time against priority boosting
-Date:   Tue, 11 May 2021 16:12:19 -0700
-Message-Id: <20210511231223.2895398-22-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/26] torture: Don't cap remote runs by build-system number of CPUs
+Date:   Tue, 11 May 2021 16:12:21 -0700
+Message-Id: <20210511231223.2895398-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -54,120 +54,81 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It will frequently be the case that rcu_torture_boost() will get a
-->start_gp_poll() cookie that needs almost all of the current grace period
-plus an additional grace period to elapse before ->poll_gp_state() will
-return true.  It is quite possible that the current grace period will have
-(say) two seconds of stall by a CPU failing to pass through a quiescent
-state, followed by 300 milliseconds of delay due to a preempted reader.
-The next grace period might suffer only one second of stall by a CPU,
-followed by another 300 milliseconds of delay due to a preempted reader.
-This is an example of RCU priority boosting doing its job, but the full
-elapsed time of 3.6 seconds exceeds the 3.5-second limit.  In addition,
-there is no CPU stall in force at the 3.5-second mark, so this would
-nevertheless currently be counted as an RCU priority boosting failure.
+Currently, if a torture scenario requires more CPUs than are present
+on the build system, kvm.sh and friends limit the CPUs available to
+that scenario.  This makes total sense when the build system and the
+system running the scenarios are one and the same, but not so much when
+remote systems might well have more CPUs.
 
-This commit therefore avoids this sort of false positive by resetting
-the gp_state_time timestamp any time that the current grace period is
-being blocked by a CPU.  This results in extremely frequent calls to
-the ->check_boost_failed() function, so this commit provides a lockless
-fastpath that is selected by supplying a NULL CPU-number pointer.
+This commit therefore introduces a --remote flag to kvm.sh that suppresses
+this CPU-limiting behavior, and causes kvm-remote.sh to use this flag.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 13 ++++++++-----
- kernel/rcu/tree_stall.h | 10 ++++++++++
- 2 files changed, 18 insertions(+), 5 deletions(-)
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh |  2 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh      | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 5ae4dcc6ba27..8b347b9659aa 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -918,17 +918,18 @@ static void rcu_torture_enable_rt_throttle(void)
- 	old_rt_runtime = -1;
- }
- 
--static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start, unsigned long end)
-+static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *start)
- {
- 	int cpu;
- 	static int dbg_done;
-+	unsigned long end = jiffies;
- 	bool gp_done;
- 	unsigned long j;
- 	static unsigned long last_persist;
- 	unsigned long lp;
- 	unsigned long mininterval = test_boost_duration * HZ - HZ / 2;
- 
--	if (end - start > mininterval) {
-+	if (end - *start > mininterval) {
- 		// Recheck after checking time to avoid false positives.
- 		smp_mb(); // Time check before grace-period check.
- 		if (cur_ops->poll_gp_state(gp_state))
-@@ -945,7 +946,7 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
- 		n_rcu_torture_boost_failure++;
- 		if (!xchg(&dbg_done, 1) && cur_ops->gp_kthread_dbg) {
- 			pr_info("Boost inversion thread ->rt_priority %u gp_state %lu jiffies %lu\n",
--				current->rt_priority, gp_state, end - start);
-+				current->rt_priority, gp_state, end - *start);
- 			cur_ops->gp_kthread_dbg();
- 			// Recheck after print to flag grace period ending during splat.
- 			gp_done = cur_ops->poll_gp_state(gp_state);
-@@ -955,6 +956,8 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
- 		}
- 
- 		return true; // failed
-+	} else if (cur_ops->check_boost_failed && !cur_ops->check_boost_failed(gp_state, NULL)) {
-+		*start = jiffies;
- 	}
- 
- 	return false; // passed
-@@ -995,7 +998,7 @@ static int rcu_torture_boost(void *arg)
- 		while (time_before(jiffies, endtime)) {
- 			// Has current GP gone too long?
- 			if (gp_initiated && !failed && !cur_ops->poll_gp_state(gp_state))
--				failed = rcu_torture_boost_failed(gp_state, gp_state_time, jiffies);
-+				failed = rcu_torture_boost_failed(gp_state, &gp_state_time);
- 			// If we don't have a grace period in flight, start one.
- 			if (!gp_initiated || cur_ops->poll_gp_state(gp_state)) {
- 				gp_state = cur_ops->start_gp_poll();
-@@ -1016,7 +1019,7 @@ static int rcu_torture_boost(void *arg)
- 
- 		// In case the grace period extended beyond the end of the loop.
- 		if (gp_initiated && !failed && !cur_ops->poll_gp_state(gp_state))
--			rcu_torture_boost_failed(gp_state, gp_state_time, jiffies);
-+			rcu_torture_boost_failed(gp_state, &gp_state_time);
- 
- 		/*
- 		 * Set the start time of the next test interval.
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index af92d9fee0d4..8bde1b53b0c9 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -723,6 +723,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
-  * count this as an RCU priority boosting failure.  A return of true says
-  * RCU priority boosting is to blame, and false says otherwise.  If false
-  * is returned, the first of the CPUs to blame is stored through cpup.
-+ *
-+ * If cpup is NULL, then a lockless quick check is carried out, suitable
-+ * for high-rate usage.  On the other hand, if cpup is non-NULL, each
-+ * rcu_node structure's ->lock is acquired, ruling out high-rate usage.
-  */
- bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- {
-@@ -731,6 +735,12 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp) {
-+		if (!cpup) {
-+			if (READ_ONCE(rnp->qsmask))
-+				return false;
-+			else
-+				continue;
-+		}
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		if (!rnp->qsmask) {
- 			// No CPUs without quiescent states for this rnp.
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+index 20e848d2c0bb..79e680e0e7bf 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+@@ -66,7 +66,7 @@ then
+ 		if (ds != "")
+ 			print "--datestamp " ds;
+ 	}'`"
+-	kvm.sh "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
++	kvm.sh --remote "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
+ 	ret=$?
+ 	if test "$ret" -ne 0
+ 	then
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 390bb97b07d8..b4ac4ee33222 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -44,6 +44,7 @@ TORTURE_KCONFIG_KASAN_ARG=""
+ TORTURE_KCONFIG_KCSAN_ARG=""
+ TORTURE_KMAKE_ARG=""
+ TORTURE_QEMU_MEM=512
++TORTURE_REMOTE=
+ TORTURE_SHUTDOWN_GRACE=180
+ TORTURE_SUITE=rcu
+ TORTURE_MOD=rcutorture
+@@ -80,6 +81,7 @@ usage () {
+ 	echo "       --no-initrd"
+ 	echo "       --qemu-args qemu-arguments"
+ 	echo "       --qemu-cmd qemu-system-..."
++	echo "       --remote"
+ 	echo "       --results absolute-pathname"
+ 	echo "       --torture lock|rcu|rcuscale|refscale|scf"
+ 	echo "       --trust-make"
+@@ -115,10 +117,13 @@ do
+ 		checkarg --cpus "(number)" "$#" "$2" '^[0-9]*$' '^--'
+ 		cpus=$2
+ 		TORTURE_ALLOTED_CPUS="$2"
+-		max_cpus="`identify_qemu_vcpus`"
+-		if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
++		if test -z "$TORTURE_REMOTE"
+ 		then
+-			TORTURE_ALLOTED_CPUS=$max_cpus
++			max_cpus="`identify_qemu_vcpus`"
++			if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
++			then
++				TORTURE_ALLOTED_CPUS=$max_cpus
++			fi
+ 		fi
+ 		shift
+ 		;;
+@@ -209,6 +214,9 @@ do
+ 		TORTURE_QEMU_CMD="$2"
+ 		shift
+ 		;;
++	--remote)
++		TORTURE_REMOTE=1
++		;;
+ 	--results)
+ 		checkarg --results "(absolute pathname)" "$#" "$2" '^/' '^error'
+ 		resdir=$2
 -- 
 2.31.1.189.g2e36527f23
 
