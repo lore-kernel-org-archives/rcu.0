@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C07C433B4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1636C43460
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:44:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 860556192C
+	by mail.kernel.org (Postfix) with ESMTP id BDF056192B
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:44:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhEKWpr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 18:45:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56878 "EHLO mail.kernel.org"
+        id S230009AbhEKWps (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhEKWpr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S229970AbhEKWpr (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:45:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 162B861927;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F7D96192A;
         Tue, 11 May 2021 22:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773080;
-        bh=/Gtu2CufHYyyGem7LcnB9pn9BK/SpPgwek2yC8LPhn0=;
+        bh=Dyyx978RzE0US4WnuMqJiKi2LRlG5caABC8FzHCPHis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KcGVf2J1QCm30KFG0CU56tp8n1R8tv5f/trI89jIeITOA5RtdDXDiEJCyEHCZHbsO
-         09qjb3/nrnDxaYTWk1nA3McbANLbu6nVj7mYLlOoeDG71qrbhz610+lIJ92bVI8dUB
-         YFmlwOJB+aFjMoSnf4fGlxmPleY8cNewLyPp5ouOaezX6NYDS4WmL3fBxXwsN3MPfA
-         TtFONSGA3dyfCHC9At24nmlELbb7c9CoJPBMB46qx7AOKR+6a0rWsGfMIDOUZAoTUU
-         VgmxD1f4L6ozCg8OJ920AEpDaE8wbMppxPhmJUg8KUzF7AZpEaPra3L+k2o1/aiJBs
-         oWhXdSgYFQPsQ==
+        b=EP5MyT1TwRQAZwPN13bAsl5ghAh+BWA4EclFitmU9T+I04+jKJ+2gxsYo/bc1Mvh2
+         xWoDuuxvWl4jgIQ1ietv7O8NSyd5OLvDYM+2ur/W2nwcpQdt1A/6PriLPV71ovopHX
+         P1Ssu2y5Yv0LztRpp46G0oDHczTDaKEZxtTu2nUvLArsXvtpg6l75PhYogaNEELswW
+         +HQJQ5lcfAYl2Td/N9YpCiY5XELcniagaMnZodvBA9yN52Po7TH7CqOLb1hyrHwEk8
+         L5ovWEsA/7LvAZ2pQf4LDP5kmTjgQ0HIsQgRX8jR+HTMDUf97A0ahKttFw11WPVGA1
+         to3g9AtsxolHQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DA8EF5C014E; Tue, 11 May 2021 15:44:39 -0700 (PDT)
+        id DC5FF5C09EF; Tue, 11 May 2021 15:44:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/3] doc: Fix diagram references in memory-ordering document
-Date:   Tue, 11 May 2021 15:44:37 -0700
-Message-Id: <20210511224438.2892442-2-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH tip/core/rcu 3/3] tools/rcu: Add drgn script to dump number of RCU callbacks
+Date:   Tue, 11 May 2021 15:44:38 -0700
+Message-Id: <20210511224438.2892442-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511224402.GA2892361@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511224402.GA2892361@paulmck-ThinkPad-P17-Gen-1>
@@ -55,39 +55,73 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+This commit adds an rcu-cbs.py drgn script that computes the number of
+RCU callbacks waiting to be invoked.  This information can be helpful
+when managing systems that are short of memory and that have software
+components that make heavy use of RCU, for example, by opening and
+closing files in tight loops.  (But please note that there are almost
+always better ways to get your job done than by opening and closing
+files in tight loops.)
 
-The three diagrams describing rcu_gp_init() all spuriously refer to
-the same figure, probably due to a copy/paste issue.  This commit fixes
-these references.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Reported-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst   | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/rcu/rcu-cbs.py | 46 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 tools/rcu/rcu-cbs.py
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 3f6ce41ee0c5..11cdab037bff 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -339,14 +339,14 @@ The diagram below shows the path of ordering if the leftmost
- leftmost ``rcu_node`` structure offlines its last CPU and if the next
- ``rcu_node`` structure has no online CPUs).
- 
--.. kernel-figure:: TreeRCU-gp-init-1.svg
-+.. kernel-figure:: TreeRCU-gp-init-2.svg
- 
- The final ``rcu_gp_init()`` pass through the ``rcu_node`` tree traverses
- breadth-first, setting each ``rcu_node`` structure's ``->gp_seq`` field
- to the newly advanced value from the ``rcu_state`` structure, as shown
- in the following diagram.
- 
--.. kernel-figure:: TreeRCU-gp-init-1.svg
-+.. kernel-figure:: TreeRCU-gp-init-3.svg
- 
- This change will also cause each CPU's next call to
- ``__note_gp_changes()`` to notice that a new grace period has started,
+diff --git a/tools/rcu/rcu-cbs.py b/tools/rcu/rcu-cbs.py
+new file mode 100644
+index 000000000000..f8b461b9eaa7
+--- /dev/null
++++ b/tools/rcu/rcu-cbs.py
+@@ -0,0 +1,46 @@
++#!/usr/bin/env drgn
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Dump out the number of RCU callbacks outstanding.
++#
++# On older kernels having multiple flavors of RCU, this dumps out the
++# number of callbacks for the most heavily used flavor.
++#
++# Usage: sudo drgn rcu-cbs.py
++#
++# Copyright (C) 2021 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++import sys
++import drgn
++from drgn import NULL, Object
++from drgn.helpers.linux import *
++
++def get_rdp0(prog):
++	try:
++		rdp0 = prog.variable('rcu_preempt_data', 'kernel/rcu/tree.c');
++	except LookupError:
++		rdp0 = NULL;
++
++	if rdp0 == NULL:
++		try:
++			rdp0 = prog.variable('rcu_sched_data',
++					     'kernel/rcu/tree.c');
++		except LookupError:
++			rdp0 = NULL;
++
++	if rdp0 == NULL:
++		rdp0 = prog.variable('rcu_data', 'kernel/rcu/tree.c');
++	return rdp0.address_of_();
++
++rdp0 = get_rdp0(prog);
++
++# Sum up RCU callbacks.
++sum = 0;
++for cpu in for_each_possible_cpu(prog):
++	rdp = per_cpu_ptr(rdp0, cpu);
++	len = rdp.cblist.len.value_();
++	# print("CPU " + str(cpu) + " RCU callbacks: " + str(len));
++	sum += len;
++print("Number of RCU callbacks in flight: " + str(sum));
 -- 
 2.31.1.189.g2e36527f23
 
