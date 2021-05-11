@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9755C433B4
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A902C43460
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C73A61184
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E5A761184
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhEKWyP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 18:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33586 "EHLO mail.kernel.org"
+        id S230355AbhEKWyQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhEKWyN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230172AbhEKWyN (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:54:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C4361606;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6DEB6192B;
         Tue, 11 May 2021 22:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773586;
-        bh=IxZUyRJKXHqt1jMzH6xJ7QOAHg5TorZXYUdMp/9Zjvg=;
+        bh=YTmkCZi2/uwcp+0lPCpWWxdI96DueAEbjEKyymxKsM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HTvuvwnZQeYZU/wq6oQsCBuVJuBMtURuIusLafFUOpeApcG0Q/yGd41b+IX5FE1i8
-         OcWAjmRLhIDIH+TuwFEvgwR6liP/iMJcNTtlX5Gh7mvg9u5Pej7SJs7qp7qfmh0vXE
-         df4ZyF1ZSAMkPUwspuP1yKmeolLcv1lkSr1K1LvffzPUz+K9pSYFu5W9YVAZbYMHRr
-         5Gvfp28B5v4kV7SdDHQ1tRuBonQjelOzRjdkJJ8UwJeHJdEpMdhGRaBrvY4LFejri3
-         2roYyf20sSPRMOZEupyGxKxwCKXmfCwrRCDYodoLrA+vfkH102OK/hUD4qekYr1r31
-         BtZczZ+5m1viw==
+        b=OPpIENIAWdNGH2RIb1cV2QMToQoCy2Unyc/VZs9VDTE8alVYVin+ES8PyzL55igvu
+         ba0B7CYyIqnL5N2Y04bAzzgWLrvfxLC/C2oaYN2G+JeEwSRslj+KERxlGUqhVWazJ/
+         TokSlW3mfHEfWtRz/MmRzvBKxMtQCu+iekCHIKpJIkzhqAcABsSaZwbqDvuVW6fSlZ
+         xD/fWFa1V4WxONS1d48olLd1wdIivijDs/3H/bRf+JhWsVvl6z4fZ5n/1wXDYL1Piy
+         a+ZUfYxRl8XLaBZGJIZ9R5yu9dVyqsgtyjVlO65zuMGXr+PuzmCJaHBMyMqKWg5fLH
+         TV3QIGZGykQoA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8B13F5C014E; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 8ECB85C0B55; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/19] rcu: Remove the unused rcu_irq_exit_preempt() function
-Date:   Tue, 11 May 2021 15:52:47 -0700
-Message-Id: <20210511225304.2893154-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 04/19] rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
+Date:   Tue, 11 May 2021 15:52:49 -0700
+Message-Id: <20210511225304.2893154-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -54,76 +54,50 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Commit 9ee01e0f69a9 ("x86/entry: Clean up idtentry_enter/exit()
-leftovers") left the rcu_irq_exit_preempt() in place in order to avoid
-conflicts with the -rcu tree.  Now that this change has long since hit
-mainline, this commit removes the no-longer-used rcu_irq_exit_preempt()
-function.
+Currently, rcu_spawn_core_kthreads() is invoked via an early_initcall(),
+which works, except that rcu_spawn_gp_kthread() is also invoked via an
+early_initcall() and rcu_spawn_core_kthreads() relies on adjustments to
+kthread_prio that are carried out by rcu_spawn_gp_kthread().  There is
+no guaranttee of ordering among early_initcall() handlers, and thus no
+guarantee that kthread_prio will be properly checked and range-limited
+at the time that rcu_spawn_core_kthreads() needs it.
 
+In most cases, this bug is harmless.  After all, the only reason that
+rcu_spawn_gp_kthread() adjusts the value of kthread_prio is if the user
+specified a nonsensical value for this boot parameter, which experience
+indicates is rare.
+
+Nevertheless, a bug is a bug.  This commit therefore causes the
+rcu_spawn_core_kthreads() function to be invoked directly from
+rcu_spawn_gp_kthread() after any needed adjustments to kthread_prio have
+been carried out.
+
+Fixes: 48d07c04b4cc ("rcu: Enable elimination of Tree-RCU softirq processing")
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcutiny.h |  1 -
- include/linux/rcutree.h |  1 -
- kernel/rcu/tree.c       | 22 ----------------------
- 3 files changed, 24 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 35e0be326ffc..953e70fafe38 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -86,7 +86,6 @@ static inline void rcu_irq_enter(void) { }
- static inline void rcu_irq_exit_irqson(void) { }
- static inline void rcu_irq_enter_irqson(void) { }
- static inline void rcu_irq_exit(void) { }
--static inline void rcu_irq_exit_preempt(void) { }
- static inline void rcu_irq_exit_check_preempt(void) { }
- #define rcu_is_idle_cpu(cpu) \
- 	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index b89b54130f49..53209d669400 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -49,7 +49,6 @@ void rcu_idle_enter(void);
- void rcu_idle_exit(void);
- void rcu_irq_enter(void);
- void rcu_irq_exit(void);
--void rcu_irq_exit_preempt(void);
- void rcu_irq_enter_irqson(void);
- void rcu_irq_exit_irqson(void);
- bool rcu_is_idle_cpu(int cpu);
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8e78b2430c16..f6543b8004c0 100644
+index 06f3de96997c..2532e584e95f 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -833,28 +833,6 @@ void noinstr rcu_irq_exit(void)
- 	rcu_nmi_exit();
+@@ -2889,7 +2889,6 @@ static int __init rcu_spawn_core_kthreads(void)
+ 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
+ 	return 0;
  }
+-early_initcall(rcu_spawn_core_kthreads);
  
--/**
-- * rcu_irq_exit_preempt - Inform RCU that current CPU is exiting irq
-- *			  towards in kernel preemption
-- *
-- * Same as rcu_irq_exit() but has a sanity check that scheduling is safe
-- * from RCU point of view. Invoked from return from interrupt before kernel
-- * preemption.
-- */
--void rcu_irq_exit_preempt(void)
--{
--	lockdep_assert_irqs_disabled();
--	rcu_nmi_exit();
--
--	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) <= 0,
--			 "RCU dynticks_nesting counter underflow/zero!");
--	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) !=
--			 DYNTICK_IRQ_NONIDLE,
--			 "Bad RCU  dynticks_nmi_nesting counter\n");
--	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
--			 "RCU in extended quiescent state!");
--}
--
- #ifdef CONFIG_PROVE_RCU
- /**
-  * rcu_irq_exit_check_preempt - Validate that scheduling is possible
+ /*
+  * Handle any core-RCU processing required by a call_rcu() invocation.
+@@ -4450,6 +4449,7 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	wake_up_process(t);
+ 	rcu_spawn_nocb_kthreads();
+ 	rcu_spawn_boost_kthreads();
++	rcu_spawn_core_kthreads();
+ 	return 0;
+ }
+ early_initcall(rcu_spawn_gp_kthread);
 -- 
 2.31.1.189.g2e36527f23
 
