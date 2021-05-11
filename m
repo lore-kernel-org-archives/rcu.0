@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67C1BC433ED
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43095C433B4
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:03:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4173361625
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:02:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2493361606
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:03:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhEKXDv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
+        id S230111AbhEKXEq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:04:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229996AbhEKXDv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 19:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 936ED61606;
-        Tue, 11 May 2021 23:02:44 +0000 (UTC)
+        id S229637AbhEKXEp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 19:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A34561624;
+        Tue, 11 May 2021 23:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774164;
-        bh=iwAChxWhGvH/KcZDbPAQ6E0e5/tY6h0oc8fTfC+LBgg=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=pak6OnfsuStfQ8jbJqUkxTPjnZJrzsc579WL1JMKMA5QGUtVVxAIZ3dXmGHX16H39
-         bYbQaKdEm4E8Pm9vv+vhoN5tv4sqp1QGrdpoUnO3zwR0h5HRcUukHb+/k4ClG2rCR7
-         mHNlEDR0QBrysl6QpVrJXI/SEbBKX7gq4qMkoPqJloitetPmfTNNOd9K0eQ0vrqh07
-         L6eDtmHzo+OosGNcnIvx5s+EswpXFwwo9DA6Be3iWxvNaH2cndnt/1mBnNK5mhGrom
-         h30c+8P3NQhH8AQiMxNaOiwsndGvVU6ttn2pEyRrem4OxaI1naXTLV1zQ9QYDwg4ls
-         flA7MZ5f0Wr8w==
+        s=k20201202; t=1620774218;
+        bh=SnoTqLlOBPMMzpTGhpvw3NJXjbQq0YDaTwokbU3jtas=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oH6Rhea5qX9FLmV8CC1gRnI8451aedMCt/bskZC40WBRGbWtcy+Q6dBxOMfTO+h8H
+         5cNlOSnOCqzy/O3h3TKHHjP2pArmxDsrPF9p8jKxdR0aiRKkpXMBoCjvYMdXUF4rzz
+         uEaqCAB3SmqJwv0xSTHhqA1gFgDLL6NARbAoTA8d7eVe7THjv3TP5kSU0HHuaf059Z
+         g7y1iVXQnbvgBFCIpzTEmj4G6Aqa+ny4uHh6jJA5m8xUpVt1yd8JoxnKwR3msbYUkE
+         P2F0S2Qlc02ijo/NtyKcd3px1xsjA7Jl9rUh8DtbZMM4O+G9zNHUzRIIBFoG1ndf8I
+         S71wjhIo+70RA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3EE425C0138; Tue, 11 May 2021 16:02:44 -0700 (PDT)
-Date:   Tue, 11 May 2021 16:02:44 -0700
+        id 5F39C5C0B55; Tue, 11 May 2021 16:03:38 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,63 +40,64 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/10] No-CBs CPU updates for v5.14
-Message-ID: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH tip/core/rcu 04/10] rcu/nocb: Allow de-offloading rdp leader
+Date:   Tue, 11 May 2021 16:03:30 -0700
+Message-Id: <20210511230336.2894314-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
+References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This series continues work towards runtime switching of CPUs between
-offloaded and not, including a number of cleanups and consolidations:
+The only thing that prevented an rdp leader from being de-offloaded was
+the nocb_bypass_timer that used to lock the nocb_lock of the rdp leader.
 
-1.	Use the rcuog CPU's ->nocb_timer, courtesy of Frederic Weisbecker.
+If an rdp gets de-offloaded, it will subtlely ignore rcu_nocb_lock()
+calls and do its job in the timer unsafely.  Worse yet:  If it gets
+re-offloaded in the middle of the timer, rcu_nocb_unlock() would try to
+unlock, leaving it imbalanced.
 
-2.	Revert "timer: Add timer_curr_running()", courtesy of Frederic
-	Weisbecker.
+Now that the nocb_bypass_timer doesn't use the nocb_lock anymore,
+de-offloading the rdp leader is now safe.  This commit therefore allows
+the rdp leader to be de-offloaded.
 
-3.	Directly call __wake_nocb_gp() from bypass timer, courtesy of
-	Frederic Weisbecker.
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_plugin.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-4.	Allow de-offloading rdp leader, courtesy of Frederic Weisbecker.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 82e9ffb92347..015adec5bdc5 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2489,10 +2489,6 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	int ret = 0;
+ 
+-	if (rdp == rdp->nocb_gp_rdp) {
+-		pr_info("Can't deoffload an rdp GP leader (yet)\n");
+-		return -EINVAL;
+-	}
+ 	mutex_lock(&rcu_state.barrier_mutex);
+ 	cpus_read_lock();
+ 	if (rcu_rdp_is_offloaded(rdp)) {
+-- 
+2.31.1.189.g2e36527f23
 
-5.	Cancel nocb_timer upon nocb_gp wakeup, courtesy of Frederic
-	Weisbecker.
-
-6.	Delete bypass_timer upon nocb_gp wakeup, courtesy of Frederic
-	Weisbecker.
-
-7.	Only cancel nocb timer if not polling, courtesy of Frederic
-	Weisbecker.
-
-8.	Prepare for fine-grained deferred wakeup, courtesy of Frederic
-	Weisbecker.
-
-9.	Unify timers, courtesy of Frederic Weisbecker.
-
-10.	Fix various typos in comments, courtesy of Ingo Molnar.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/timer.h                                           |    2 
- b/include/trace/events/rcu.h                                      |    1 
- b/kernel/rcu/srcutree.c                                           |    4 
- b/kernel/rcu/sync.c                                               |    4 
- b/kernel/rcu/tasks.h                                              |    8 
- b/kernel/rcu/tree.c                                               |    2 
- b/kernel/rcu/tree.h                                               |    1 
- b/kernel/rcu/tree_plugin.h                                        |  140 +++++-----
- b/kernel/time/timer.c                                             |   14 -
- b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h |    2 
- kernel/rcu/tree.c                                                 |    4 
- kernel/rcu/tree.h                                                 |   10 
- kernel/rcu/tree_plugin.h                                          |  140 ++++------
- 13 files changed, 160 insertions(+), 172 deletions(-)
