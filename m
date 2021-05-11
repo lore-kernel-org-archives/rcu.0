@@ -2,143 +2,72 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BECE0C43600
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 14:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0830FC433ED
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:41:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D44261285
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 14:36:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D551661925
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:41:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhEKOhH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 10:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbhEKOhF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 10:37:05 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E33CC06138D
-        for <rcu@vger.kernel.org>; Tue, 11 May 2021 07:35:58 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id c3so19149551oic.8
-        for <rcu@vger.kernel.org>; Tue, 11 May 2021 07:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:references:from:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ETXAFKWQdH8/eG9YgJ2MyXQqUI4w0G+a8+7kidOetNw=;
-        b=D+8UcMkB2GUwjj2F27jdDoxAVAL9rdC9MdMoJFlDBNeHzfe67XWP/sw3xSweHhjvu0
-         L7zFyh43n9/fy4cUZSlUsyNvNqDkT2TqDuEFXFN77WQ7UwdcaxgaJydbt2h0Tqt9neqT
-         2ljICDLxSDdscBg19eDiJRfFGl65YBejwUIvU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ETXAFKWQdH8/eG9YgJ2MyXQqUI4w0G+a8+7kidOetNw=;
-        b=pGDT1HT3D9tYuEzazzthqgg7DLJoxi216zu2RB53r40JyukAFD4Iqpde7eVUztw1KZ
-         Z6Rai6Mi675fIe7w/TZzTWJ8oe0pjPh9PrTXINrit3muWAPTuj/zKfgIIGx128q8Ui+g
-         Cb5F/1ZFOC7f3G9zpUoHQl5tAcm+23Tft4HbTOGpuq3ARSya+hUDFKKxYDG3n7O7/jjC
-         3WOJWHtJkHhYAJZrAQTug22RXqVaiyiGiOBn50M8UU2wQvoF6JLMh4YQZAJ0VV5r0pqW
-         gUPlvmnT8nUnvN0avHDniwVukcspQjZnjg2ZYD4QCp9GHl0f+vCVHQdaekv/QCqhiLol
-         +5Ig==
-X-Gm-Message-State: AOAM530VvVkLLJY1kOHOjD8AhBAWwDLCjCmEVFaz2K6eoWxOhVyUY7vg
-        iogsW/IfOo/A9kaGqKEKdUD3ZfYkRLbnRptx
-X-Google-Smtp-Source: ABdhPJyvp7T0CdewBKkqMXtDA5ThSmqkKCGgPnZJ05uagz+Vq5z9FBuvh4nrA0ZkdxuooO6UIklVPg==
-X-Received: by 2002:aca:53d8:: with SMTP id h207mr3883260oib.177.1620743757147;
-        Tue, 11 May 2021 07:35:57 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id 2sm3341540ota.67.2021.05.11.07.35.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 07:35:56 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] kernel.h: Split out panic and oops helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20210511074137.33666-1-andriy.shevchenko@linux.intel.com>
-From:   Alex Elder <elder@ieee.org>
-Cc:     linux-xtensa@linux-xtensa.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        coresight@lists.linaro.org, linux-leds@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, xen-devel@lists.xenproject.org
-Message-ID: <c6fa5d2c-84e2-2046-19f0-66cf5dd72077@ieee.org>
-Date:   Tue, 11 May 2021 09:35:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229932AbhEKWmX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKWmW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 18:42:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0DB61606;
+        Tue, 11 May 2021 22:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620772875;
+        bh=VknOp2+o0dB66DTbseTpEKUnlCAickufM7SgGBJu9p0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=oKQZytHSzLQOGXeDzk0cmx/dAPbmIYH/hXTx2LgiJnhHzAEJcN9e6ekRoYjaepDQ+
+         lIYHZEFy6UokGa/XyMTf7vkVeIbqSxfsELiadS/Rhne+LRPCekr9Ev/t+MA1rlcybS
+         bMEFGazbo7dH7+SIduMIdx0LxRH5L3SqVZ5DSW+jpneZ7+GV5MLGKilh59iIpN/5tv
+         mV8zTOihK8z/JBMUJVFOmO2eahaGu/m24by7vh/zpD7/BZnE1B2bvOA705hki+4Fog
+         L7Yx58sEh/GiXwLyDfpycirN9GjYsnO/zrXTuBlZvZWqHjR6CMZSwSoel4+a1j/KBY
+         5OSbk72M7kaxw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3A1505C0138; Tue, 11 May 2021 15:41:15 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:41:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/2] Add "all" to bitmap ranges
+Message-ID: <20210511224115.GA2892092@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210511074137.33666-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 5/11/21 2:41 AM, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
-> 
-> There are several purposes of doing this:
-> - dropping dependency in bug.h
-> - dropping a loop by moving out panic_notifier.h
-> - unload kernel.h from something which has its own domain
-> 
-> At the same time convert users tree-wide to use new headers, although
-> for the time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Corey Minyard <cminyard@mvista.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Wei Liu <wei.liu@kernel.org>
-> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Co-developed-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Acked-by: Sebastian Reichel <sre@kernel.org>
-> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Acked-by: Helge Deller <deller@gmx.de> # parisc
-> ---
-> v3: rebased on top of v5.13-rc1, collected a few more tags
-> 
-> Note WRT Andrew's SoB tag above: I have added it since part of the cases
-> I took from him. Andrew, feel free to amend or tell me how you want me
-> to do.
-> 
+Hello!
 
-Acked-by: Alex Elder <elder@kernel.org>
+This series adds "all" as a first-class bitmap range, for example so that
+"rcu_nocbs=all:1/2" would offload all the even-numbered CPUs regardless
+of the number of CPUs on the system.
 
-. . .
+1.	bitmap_parse: Support 'all' semantics, courtesy of Yury Norov.
 
-> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
-> index a5f7a79a1923..34b68dc43886 100644
-> --- a/drivers/net/ipa/ipa_smp2p.c
-> +++ b/drivers/net/ipa/ipa_smp2p.c
-> @@ -8,6 +8,7 @@
->   #include <linux/device.h>
->   #include <linux/interrupt.h>
->   #include <linux/notifier.h>
-> +#include <linux/panic_notifier.h>
->   #include <linux/soc/qcom/smem.h>
->   #include <linux/soc/qcom/smem_state.h>
->   
+2.	rcu/tree_plugin: Don't handle the case of 'all' CPU range,
+	courtesy of Yury Norov.
 
-. . .
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.rst |    5 +++++
+ kernel/rcu/tree_plugin.h                        |    9 +++------
+ lib/bitmap.c                                    |    9 +++++++++
+ lib/test_bitmap.c                               |    7 +++++++
+ 4 files changed, 24 insertions(+), 6 deletions(-)
