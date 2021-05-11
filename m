@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DCDBC43600
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E606FC43470
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D5EEF61925
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF79861925
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhEKXNo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S230126AbhEKXNp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230333AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29AD61970;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 793956195B;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=HUeol4gFdWksleT74+GMDrTPrwvwDRevaKoSi42xkG0=;
+        bh=1QyUomA17oQXhgGPMIkRWnhiIw4oeqNqvSDrQTrADT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=axaYhOU0RJ8fivPYyVtVQtkDU2Mu67r8Sq8ybTSwtUvrdj/2Ip/2u+tOryZORcqnv
-         tQBJmbRh/9xs76HAZ6UDuMyubm/M9Yot+Aj/PETAzDXWHmkYortus6dpOqAwGHxgFo
-         WeN6k8R1S6ctyVIr6UYMYTOuyrCWHOXZ1IKBOhvW9pKzykN9oB8Oo9bf6v165/bYm2
-         2X9UW9R6J4NidvvYwrkBOwLJLzhnW1GQFWAOdt1ulbUrIR14GP+OJE592LbFMfEKFP
-         9FsKXuXnQuL2f6HA1sx4lqrnFafL7jEGbz7/kAj/XgaCJ4OzqzkwJcEZqGxw6NYJ+R
-         vrqaooWBPOpEA==
+        b=WU7oQW5MRiA3fQt/WfBm8EGI/B+aAN716o3d5wU4uChFvX8TnqDGRO8Geg/JMarj3
+         xeNH9xpfxe4+5kjJfHIRJDQ6rz2AyPv9yMwQTaUur4X8pTQXBlX6F2nPGCUjG0jPbs
+         Wl/GvhksvXxKl3s5sXzqbIDtAbUjsgfeuCHQE8tSzOp0FicvAgjxqnof7drHpcPnDi
+         uBVPb5SbBeLuFd+DrReb/Kk4pumYXwy8P9cQgqMlTxx4DnoyFXQSfKktE3EiM1ot9i
+         YMgdSAvbDjGOAedXxQQe4Jo/dEQvomQzvMMXaFgzXzBU2qpUEQnU0tO4y0LCZsW8WR
+         eMg7BAcWoW0+A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9925A5C0EBF; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 8FE065C0E5E; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/26] rcu: Don't penalize priority boosting when there is nothing to boost
-Date:   Tue, 11 May 2021 16:12:23 -0700
-Message-Id: <20210511231223.2895398-26-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 21/26] rcutorture: Forgive RCU boost failures when CPUs don't pass through QS
+Date:   Tue, 11 May 2021 16:12:18 -0700
+Message-Id: <20210511231223.2895398-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -54,77 +54,196 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU priority boosting cannot do anything unless there is at least one
-task blocking the current RCU grace period that was preempted within
-the RCU read-side critical section that it still resides in.  However,
-the current rcu_torture_boost_failed() code will count this as an RCU
-priority-boosting failure if there were no CPUs blocking the current
-grace period.  This situation can happen (for example) if the last CPU
-blocking the current grace period was subjected to vCPU preemption,
-which is always a risk for rcutorture guest OSes.
+Currently, rcu_torture_boost() runs CPU-bound at real-time priority
+to force RCU priority inversions.  It then checks that grace periods
+progress during this CPU-bound time.  If grace periods fail to progress,
+it reports and RCU priority boosting failure.
 
-This commit therefore causes rcu_torture_boost_failed() to refrain from
-reporting failure unless there is at least one task blocking the current
-RCU grace period that was preempted within the RCU read-side critical
-section that it still resides in.
+However, it is possible (and sometimes does happen) that the grace period
+fails to progress due to a CPU failing to pass through a quiescent state
+for an extended time period (3.5 seconds by default).  This can happen
+due to vCPU preemption, long-running interrupts, and much else besides.
+There is nothing that RCU priority boosting can do about these situations,
+and so they should not be counted as RCU priority boosting failures.
+
+This commit therefore checks for CPUs (as opposed to preempted tasks)
+holding up a grace period, and flags the resulting RCU priority boosting
+failures, but does not splat nor count them as errors.  It does rate-limit
+them to avoid flooding the console log.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ kernel/rcu/rcu.h        |  2 ++
+ kernel/rcu/rcutorture.c | 67 +++++++++++++++++++++++++----------------
+ kernel/rcu/tree_stall.h | 36 ++++++++++++++++++++++
+ 3 files changed, 79 insertions(+), 26 deletions(-)
 
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index bf0827d4b659..daf0cd3f2926 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -519,6 +519,7 @@ static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
+ static inline unsigned long
+ srcu_batches_completed(struct srcu_struct *sp) { return 0; }
+ static inline void rcu_force_quiescent_state(void) { }
++static inline bool rcu_check_boost_fail(unsigned long gp_state, int *cpup) { return true; }
+ static inline void show_rcu_gp_kthreads(void) { }
+ static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
+ static inline void rcu_fwd_progress_check(unsigned long j) { }
+@@ -527,6 +528,7 @@ bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
+ unsigned long rcu_get_gp_seq(void);
+ unsigned long rcu_exp_batches_completed(void);
+ unsigned long srcu_batches_completed(struct srcu_struct *sp);
++bool rcu_check_boost_fail(unsigned long gp_state, int *cpup);
+ void show_rcu_gp_kthreads(void);
+ int rcu_get_gp_kthreads_prio(void);
+ void rcu_fwd_progress_check(unsigned long j);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 02a14dfcae67..5ae4dcc6ba27 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -340,6 +340,7 @@ struct rcu_torture_ops {
+ 	void (*fqs)(void);
+ 	void (*stats)(void);
+ 	void (*gp_kthread_dbg)(void);
++	bool (*check_boost_failed)(unsigned long gp_state, int *cpup);
+ 	int (*stall_dur)(void);
+ 	int irq_capable;
+ 	int can_boost;
+@@ -483,31 +484,32 @@ static void rcu_sync_torture_init(void)
+ }
+ 
+ static struct rcu_torture_ops rcu_ops = {
+-	.ttype		= RCU_FLAVOR,
+-	.init		= rcu_sync_torture_init,
+-	.readlock	= rcu_torture_read_lock,
+-	.read_delay	= rcu_read_delay,
+-	.readunlock	= rcu_torture_read_unlock,
+-	.readlock_held	= torture_readlock_not_held,
+-	.get_gp_seq	= rcu_get_gp_seq,
+-	.gp_diff	= rcu_seq_diff,
+-	.deferred_free	= rcu_torture_deferred_free,
+-	.sync		= synchronize_rcu,
+-	.exp_sync	= synchronize_rcu_expedited,
+-	.get_gp_state	= get_state_synchronize_rcu,
+-	.start_gp_poll	= start_poll_synchronize_rcu,
+-	.poll_gp_state	= poll_state_synchronize_rcu,
+-	.cond_sync	= cond_synchronize_rcu,
+-	.call		= call_rcu,
+-	.cb_barrier	= rcu_barrier,
+-	.fqs		= rcu_force_quiescent_state,
+-	.stats		= NULL,
+-	.gp_kthread_dbg	= show_rcu_gp_kthreads,
+-	.stall_dur	= rcu_jiffies_till_stall_check,
+-	.irq_capable	= 1,
+-	.can_boost	= IS_ENABLED(CONFIG_RCU_BOOST),
+-	.extendables	= RCUTORTURE_MAX_EXTEND,
+-	.name		= "rcu"
++	.ttype			= RCU_FLAVOR,
++	.init			= rcu_sync_torture_init,
++	.readlock		= rcu_torture_read_lock,
++	.read_delay		= rcu_read_delay,
++	.readunlock		= rcu_torture_read_unlock,
++	.readlock_held		= torture_readlock_not_held,
++	.get_gp_seq		= rcu_get_gp_seq,
++	.gp_diff		= rcu_seq_diff,
++	.deferred_free		= rcu_torture_deferred_free,
++	.sync			= synchronize_rcu,
++	.exp_sync		= synchronize_rcu_expedited,
++	.get_gp_state		= get_state_synchronize_rcu,
++	.start_gp_poll		= start_poll_synchronize_rcu,
++	.poll_gp_state		= poll_state_synchronize_rcu,
++	.cond_sync		= cond_synchronize_rcu,
++	.call			= call_rcu,
++	.cb_barrier		= rcu_barrier,
++	.fqs			= rcu_force_quiescent_state,
++	.stats			= NULL,
++	.gp_kthread_dbg		= show_rcu_gp_kthreads,
++	.check_boost_failed	= rcu_check_boost_fail,
++	.stall_dur		= rcu_jiffies_till_stall_check,
++	.irq_capable		= 1,
++	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
++	.extendables		= RCUTORTURE_MAX_EXTEND,
++	.name			= "rcu"
+ };
+ 
+ /*
+@@ -918,14 +920,27 @@ static void rcu_torture_enable_rt_throttle(void)
+ 
+ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start, unsigned long end)
+ {
++	int cpu;
+ 	static int dbg_done;
+ 	bool gp_done;
++	unsigned long j;
++	static unsigned long last_persist;
++	unsigned long lp;
++	unsigned long mininterval = test_boost_duration * HZ - HZ / 2;
+ 
+-	if (end - start > test_boost_duration * HZ - HZ / 2) {
++	if (end - start > mininterval) {
+ 		// Recheck after checking time to avoid false positives.
+ 		smp_mb(); // Time check before grace-period check.
+ 		if (cur_ops->poll_gp_state(gp_state))
+ 			return false; // passed, though perhaps just barely
++		if (cur_ops->check_boost_failed && !cur_ops->check_boost_failed(gp_state, &cpu)) {
++			// At most one persisted message per boost test.
++			j = jiffies;
++			lp = READ_ONCE(last_persist);
++			if (time_after(j, lp + mininterval) && cmpxchg(&last_persist, lp, j) == lp)
++				pr_info("Boost inversion persisted: No QS from CPU %d\n", cpu);
++			return false; // passed on a technicality
++		}
+ 		VERBOSE_TOROUT_STRING("rcu_torture_boost boosting failed");
+ 		n_rcu_torture_boost_failure++;
+ 		if (!xchg(&dbg_done, 1) && cur_ops->gp_kthread_dbg) {
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 8bde1b53b0c9..65302518e006 100644
+index 59b95cc5cbdf..af92d9fee0d4 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
-@@ -723,6 +723,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
-  * count this as an RCU priority boosting failure.  A return of true says
-  * RCU priority boosting is to blame, and false says otherwise.  If false
-  * is returned, the first of the CPUs to blame is stored through cpup.
-+ * If there was no CPU blocking the current grace period, but also nothing
-+ * in need of being boosted, *cpup is set to -1.  This can happen in case
-+ * of vCPU preemption while the last CPU is reporting its quiscent state,
-+ * for example.
-  *
-  * If cpup is NULL, then a lockless quick check is carried out, suitable
-  * for high-rate usage.  On the other hand, if cpup is non-NULL, each
-@@ -730,18 +734,25 @@ static void check_cpu_stall(struct rcu_data *rdp)
-  */
- bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- {
-+	bool atb = false;
- 	int cpu;
- 	unsigned long flags;
- 	struct rcu_node *rnp;
+@@ -716,6 +716,42 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ // RCU forward-progress mechanisms, including of callback invocation.
  
- 	rcu_for_each_leaf_node(rnp) {
- 		if (!cpup) {
--			if (READ_ONCE(rnp->qsmask))
-+			if (READ_ONCE(rnp->qsmask)) {
- 				return false;
--			else
-+			} else {
-+				if (READ_ONCE(rnp->gp_tasks))
-+					atb = true;
- 				continue;
+ 
++/*
++ * Check to see if a failure to end RCU priority inversion was due to
++ * a CPU not passing through a quiescent state.  When this happens, there
++ * is nothing that RCU priority boosting can do to help, so we shouldn't
++ * count this as an RCU priority boosting failure.  A return of true says
++ * RCU priority boosting is to blame, and false says otherwise.  If false
++ * is returned, the first of the CPUs to blame is stored through cpup.
++ */
++bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
++{
++	int cpu;
++	unsigned long flags;
++	struct rcu_node *rnp;
++
++	rcu_for_each_leaf_node(rnp) {
++		raw_spin_lock_irqsave_rcu_node(rnp, flags);
++		if (!rnp->qsmask) {
++			// No CPUs without quiescent states for this rnp.
++			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++			continue;
++		}
++		// Find the first holdout CPU.
++		for_each_leaf_node_possible_cpu(rnp, cpu) {
++			if (rnp->qsmask & (1UL << (cpu - rnp->grplo))) {
++				raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++				*cpup = cpu;
++				return false;
 +			}
- 		}
-+		*cpup = -1;
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+		if (rnp->gp_tasks)
-+			atb = true;
- 		if (!rnp->qsmask) {
- 			// No CPUs without quiescent states for this rnp.
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-@@ -758,7 +769,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
- 	// Can't blame CPUs, so must blame RCU priority boosting.
--	return true;
-+	return atb;
- }
- EXPORT_SYMBOL_GPL(rcu_check_boost_fail);
- 
++		}
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	}
++	// Can't blame CPUs, so must blame RCU priority boosting.
++	return true;
++}
++EXPORT_SYMBOL_GPL(rcu_check_boost_fail);
++
+ /*
+  * Show the state of the grace-period kthreads.
+  */
 -- 
 2.31.1.189.g2e36527f23
 
