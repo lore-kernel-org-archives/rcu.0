@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64C33C43600
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B459C433ED
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:09:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 37A696192C
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:07:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B37A61624
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:09:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhEKXI5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:08:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45556 "EHLO mail.kernel.org"
+        id S229934AbhEKXKb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:10:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhEKXIz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 19:08:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB8F6191D;
-        Tue, 11 May 2021 23:07:48 +0000 (UTC)
+        id S229920AbhEKXKb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 19:10:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B68361626;
+        Tue, 11 May 2021 23:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774468;
-        bh=ROnQvC/ifPIr86uAJh14SBS74x4piKPcueH9DyeiIl4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CxLDKOP55DCtb5YTrOjtVI/wCQMp7+nH8SE9WJJfjXpgCK4fFsAL0wVqISJMJ+b/C
-         el/xzcNXYPbG8dsjzJwIQmyn4ShcCBN5tndi7h+cGChVnIy7lNKoFXSG7hkDdMReml
-         zxXv4qDfz+9AaR8ZzWhZq2t+dqyIhb6lM758ZLorNJqa/scaVN/MBJJGga3Y6p5LRQ
-         kyloevObcOLE8i8GRJdDUyKn7GlTP97D6lx6JsEAI7gKuLmfGNeqg8V2q/IgRTwr2c
-         15BZ5Jakvr0ypMGdDXsWblF/SnNg9nWQr0wNhnmwivcdMEO0eHvFYgGWfZaxO1cnDT
-         6dn5ecfYCxKpQ==
+        s=k20201202; t=1620774564;
+        bh=f7yVnIcNg9JX9ov8g3wDGlv/bRhnW+rugvwUG0H3tNk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=htYy12xdloOhp2RyYTN+E1gh069+k2O0NDwsLEbuRe4ug/Odm4sUmlTPBM9sAI35h
+         bP20BiXo+DBqDznVDgSIonB49l0ScNelpDWdNkcw50FvSM2Ff1cSRZ+fytu1FXodDS
+         bNexLbtF0haEwqpSUf3MrGp7g5qBHOaf7+5M+Vhn0jVdoczjv9HLUbugEM/R05iLdC
+         PNPGyTfLtraSX1N/TdIUzRkf2IBgZFqtj2GCQMwJHtRsdRXLCxc6octnEk7ErimSE8
+         PPNyt/88JVnBCnwprmH2PPQrf8aAkQOw1+zSjV3d8ywfw5RGG5xHGJ6F/S8M4q82kj
+         OcmhVDIQBkg8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E39905C0D4A; Tue, 11 May 2021 16:07:47 -0700 (PDT)
+        id 2B38F5C0138; Tue, 11 May 2021 16:09:24 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:09:24 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,164 +40,35 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH tip/core/rcu 5/6] srcu: Fix broken node geometry after early ssp init
-Date:   Tue, 11 May 2021 16:07:44 -0700
-Message-Id: <20210511230745.2894650-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/4] Tasks-RCU updates for v5.14
+Message-ID: <20210511230924.GA2894768@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Hello!
 
-An srcu_struct structure that is initialized before rcu_init_geometry()
-will have its srcu_node hierarchy based on CONFIG_NR_CPUS.  Once
-rcu_init_geometry() is called, this hierarchy is compressed as needed
-for the actual maximum number of CPUs for this system.
+This series provides Tasks-RCU updates.
 
-Later on, that srcu_struct structure is confused, sometimes referring
-to its initial CONFIG_NR_CPUS-based hierarchy, and sometimes instead
-to the new num_possible_cpus() hierarchy.  For example, each of its
-->mynode fields continues to reference the original leaf rcu_node
-structures, some of which might no longer exist.  On the other hand,
-srcu_for_each_node_breadth_first() traverses to the new node hierarchy.
+1.	rcu-tasks: Add block comment laying out RCU Tasks design.
 
-There are at least two bad possible outcomes to this:
+2.	rcu-tasks: Add block comment laying out RCU Rude design.
 
-1) a) A callback enqueued early on an srcu_data structure (call it
-      *sdp) is recorded pending on sdp->mynode->srcu_data_have_cbs in
-      srcu_funnel_gp_start() with sdp->mynode pointing to a deep leaf
-      (say 3 levels).
+3.	rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states.
 
-   b) The grace period ends after rcu_init_geometry() shrinks the
-      nodes level to a single one.  srcu_gp_end() walks through the new
-      srcu_node hierarchy without ever reaching the old leaves so the
-      callback is never executed.
+4.	tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline.
 
-   This is easily reproduced on an 8 CPUs machine with CONFIG_NR_CPUS >= 32
-   and "rcupdate.rcu_self_test=1". The srcu_barrier() after early tests
-   verification never completes and the boot hangs:
+						Thanx, Paul
 
-	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
-	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
-	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
-	[ 5413.168099] Call Trace:
-	[ 5413.170555]  __schedule+0x36c/0x930
-	[ 5413.174057]  ? wait_for_completion+0x88/0x110
-	[ 5413.178423]  schedule+0x46/0xf0
-	[ 5413.181575]  schedule_timeout+0x284/0x380
-	[ 5413.185591]  ? wait_for_completion+0x88/0x110
-	[ 5413.189957]  ? mark_held_locks+0x61/0x80
-	[ 5413.193882]  ? mark_held_locks+0x61/0x80
-	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
-	[ 5413.202173]  ? wait_for_completion+0x88/0x110
-	[ 5413.206535]  wait_for_completion+0xb4/0x110
-	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
-	[ 5413.215610]  srcu_barrier+0x187/0x200
-	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
-	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
-	[ 5413.232700]  do_one_initcall+0x63/0x310
-	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
-	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
-	[ 5413.249273]  ? rest_init+0x250/0x250
-	[ 5413.252846]  kernel_init+0xa/0x110
-	[ 5413.256257]  ret_from_fork+0x22/0x30
+------------------------------------------------------------------------
 
-2) An srcu_struct structure that is initialized before rcu_init_geometry()
-   and used afterward will always have stale rdp->mynode references,
-   resulting in callbacks to be missed in srcu_gp_end(), just like in
-   the previous scenario.
-
-This commit therefore causes init_srcu_struct_nodes to initialize the
-geometry, if needed.  This ensures that the srcu_node hierarchy is
-properly built and distributed from the get-go.
-
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcu.h      |  2 ++
- kernel/rcu/srcutree.c |  3 +++
- kernel/rcu/tree.c     | 16 +++++++++++++++-
- 3 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index ca3f2af32bf8..28de768bd875 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -308,6 +308,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
- 	}
- }
- 
-+extern void rcu_init_geometry(void);
-+
- /* Returns a pointer to the first leaf rcu_node structure. */
- #define rcu_first_leaf_node() (rcu_state.level[rcu_num_lvls - 1])
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 9ec35c158740..5fdbde687feb 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -90,6 +90,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp)
- 	struct srcu_node *snp;
- 	struct srcu_node *snp_first;
- 
-+	/* Initialize geometry if it has not already been initialized. */
-+	rcu_init_geometry();
-+
- 	/* Work out the overall tree geometry. */
- 	ssp->level[0] = &ssp->node[0];
- 	for (i = 1; i < rcu_num_lvls; i++)
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c35b15229cff..0420b23fc9d0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4582,11 +4582,25 @@ static void __init rcu_init_one(void)
-  * replace the definitions in tree.h because those are needed to size
-  * the ->node array in the rcu_state structure.
-  */
--static void __init rcu_init_geometry(void)
-+void rcu_init_geometry(void)
- {
- 	ulong d;
- 	int i;
-+	static unsigned long old_nr_cpu_ids;
- 	int rcu_capacity[RCU_NUM_LVLS];
-+	static bool initialized;
-+
-+	if (initialized) {
-+		/*
-+		 * Warn if setup_nr_cpu_ids() had not yet been invoked,
-+		 * unless nr_cpus_ids == NR_CPUS, in which case who cares?
-+		 */
-+		WARN_ON_ONCE(old_nr_cpu_ids != nr_cpu_ids);
-+		return;
-+	}
-+
-+	old_nr_cpu_ids = nr_cpu_ids;
-+	initialized = true;
- 
- 	/*
- 	 * Initialize any unspecified boot parameters.
--- 
-2.31.1.189.g2e36527f23
-
+ b/kernel/rcu/rcu.h   |    4 ++++
+ b/kernel/rcu/tasks.h |   40 ++++++++++++++++++++++++++++++++++++++++
+ b/kernel/rcu/tree.c  |    1 +
+ kernel/rcu/tasks.h   |   10 +++++++---
+ 4 files changed, 52 insertions(+), 3 deletions(-)
