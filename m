@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C174C43600
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87867C43618
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F3A3D61260
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66C4E6192F
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhEKWyW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 18:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33900 "EHLO mail.kernel.org"
+        id S230172AbhEKWyX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230338AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A22A61956;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 582236194D;
         Tue, 11 May 2021 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773587;
-        bh=/BBfqj9mIzxBt9L33xPA26hQ79odhjdQso35kGo1gjE=;
+        bh=KKDkezvfsvDBcdHebQoHjhjJnMglnYNTHv+gz9t1HBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jrlvgEEUBzfI3W7CPFzTUZ1x6n92zt5TqM2y4OKcBcpegWbts7giIV3RkZnGP86/o
-         yIQZT4BXZEjlf9Ho444x2TeCRhFw65R7MRoKcrRhMQqJlI0EjFRI0O3egLaHWbhKtj
-         b3Dy1bBYH+y+mlAuLVGKr6B9LDFv+15k71P4YSEujGxkxqk/FKeYpVX8w1lfoV79KU
-         GH6k7zReU1HJWjCHwpH3HRokjuwJmhgZMJSs/m8cN9i+2FX+VN7JUveKfxk9SgIms3
-         TCST/e04RdBk/kOaA4dgOm8m1EJTbws+gj4gEM9UDVk/rtnewPutGiEuzhS9C/EPGF
-         gP/Eqy5NuA4vQ==
+        b=Wv5J72k9xCDolJsIJoZ+aeuYiSqTTOeKIhECnyRex1vgQD5y/3AKdg2fZnv4X2LI7
+         FwH1eZZs19Nzl/oPoVFcvYrEV1ioTFcnChYFXqZ9Dks2RTBDS3wz0EWDSH2Igc1KLj
+         N2+v5hIjRPffpT+GHr6pQTw/JgN78vQTtx41QOr40+PsoJI0CSAisxp20ps3s73UoQ
+         s5Gwr5t6ZP2l5xLr2HhNebW1TMtLhO43k8rWw6waflWsciyw+UyXPFqi8OQk93s6xR
+         Qq2grU5mZc65jEAEoMFT4l6t37r8bSt+dRhxsY+7YTkjR0dM3uOyfmrHS3zHSfYxdm
+         eSvMSHwrJ0qcA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A60EC5C0E59; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id A3EEC5C0E3F; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michel Lespinasse <michel@lespinasse.org>
-Subject: [PATCH tip/core/rcu 17/19] rcu: Improve comments describing RCU read-side critical sections
-Date:   Tue, 11 May 2021 15:53:02 -0700
-Message-Id: <20210511225304.2893154-17-paulmck@kernel.org>
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH tip/core/rcu 16/19] sched/isolation: reconcile rcu_nocbs= and nohz_full=
+Date:   Tue, 11 May 2021 15:53:01 -0700
+Message-Id: <20210511225304.2893154-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -55,143 +57,125 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are a number of places that call out the fact that preempt-disable
-regions of code now act as RCU read-side critical sections, where
-preempt-disable regions of code include irq-disable regions of code,
-bh-disable regions of code, hardirq handlers, and NMI handlers.  However,
-someone relying solely on (for example) the call_rcu() header comment
-might well have no idea that preempt-disable regions of code have RCU
-semantics.
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-This commit therefore updates the header comments for
-call_rcu(), synchronize_rcu(), rcu_dereference_bh_check(), and
-rcu_dereference_sched_check() to call out these new(ish) forms of RCU
-readers.
+We have a mismatch between RCU and isolation -- in relation to what is
+considered the maximum valid CPU number.
 
-Reported-by: Michel Lespinasse <michel@lespinasse.org>
-[ paulmck: Apply Matthew Wilcox and Michel Lespinasse feedback. ]
+This matters because nohz_full= and rcu_nocbs= are joined at the hip; in
+fact the former will enforce the latter.  So we don't want a CPU mask to
+be valid for one and denied for the other.
+
+The difference 1st appeared as of v4.15; further details are below.
+
+As it is confusing to anyone who isn't looking at the code regularly, a
+reminder is in order; three values exist here:
+
+CONFIG_NR_CPUS	- compiled in maximum cap on number of CPUs supported.
+nr_cpu_ids 	- possible # of CPUs (typically reflects what ACPI says)
+cpus_present	- actual number of present/detected/installed CPUs.
+
+For this example, I'll refer to NR_CPUS=64 from "make defconfig" and
+nr_cpu_ids=6 for ACPI reporting on a board that could run a six core,
+and present=4 for a quad that is physically in the socket.  From dmesg:
+
+ smpboot: Allowing 6 CPUs, 2 hotplug CPUs
+ setup_percpu: NR_CPUS:64 nr_cpumask_bits:64 nr_cpu_ids:6 nr_node_ids:1
+ rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=6.
+ smp: Brought up 1 node, 4 CPUs
+
+And from userspace, see:
+
+   paul@trash:/sys/devices/system/cpu$ cat present
+   0-3
+   paul@trash:/sys/devices/system/cpu$ cat possible
+   0-5
+   paul@trash:/sys/devices/system/cpu$ cat kernel_max
+   63
+
+Everything is fine if we boot 5x5 for rcu/nohz:
+
+  Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-5 rcu_nocbs=2-5 root=/dev/sda1 ro
+  NO_HZ: Full dynticks CPUs: 2-5.
+  rcu: 	Offload RCU callbacks from CPUs: 2-5.
+
+..even though there is no CPU 4 or 5.  Both RCU and nohz_full are OK.
+Now we push that > 6 but less than NR_CPU and with 15x15 we get:
+
+  Command line: BOOT_IMAGE=/boot/bzImage rcu_nocbs=2-15 nohz_full=2-15 root=/dev/sda1 ro
+  rcu: 	Note: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.
+  rcu: 	Offload RCU callbacks from CPUs: 2-5.
+
+These are both functionally equivalent, as we are only changing flags on
+phantom CPUs that don't exist, but note the kernel interpretation changes.
+And worse, it only changes for one of the two - which is the problem.
+
+RCU doesn't care if you want to restrict the flags on phantom CPUs but
+clearly nohz_full does after this change from v4.15 (edb9382175c3):
+
+-       if (cpulist_parse(str, non_housekeeping_mask) < 0) {
+-               pr_warn("Housekeeping: Incorrect nohz_full cpumask\n");
++       err = cpulist_parse(str, non_housekeeping_mask);
++       if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
++               pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
+
+To be clear, the sanity check on "possible" (nr_cpu_ids) is new here.
+
+The goal was reasonable ; not wanting housekeeping to land on a
+not-possible CPU, but note two things:
+
+1) this is an exclusion list, not an inclusion list; we are tracking
+non_housekeeping CPUs; not ones who are explicitly assigned housekeeping
+
+2) we went one further in 9219565aa890 - ensuring that housekeeping was
+sanity checking against present and not just possible CPUs.
+
+To be clear, this means the check added in v4.15 is doubly redundant.
+And more importantly, overly strict/restrictive.
+
+We care now, because the bitmap boot arg parsing now knows that a value
+of "N" is NR_CPUS; the size of the bitmap, but the bitmap code doesn't
+know anything about the subtleties of our max/possible/present CPU
+specifics as outlined above.
+
+So drop the check added in v4.15 (edb9382175c3) and make RCU and
+nohz_full both in alignment again on NR_CPUS so "N" works for both,
+and then they can fall back to nr_cpu_ids internally just as before.
+
+  Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-N rcu_nocbs=2-N root=/dev/sda1 ro
+  NO_HZ: Full dynticks CPUs: 2-5.
+  rcu: 	Offload RCU callbacks from CPUs: 2-5.
+
+As shown above, with this change, RCU and nohz_full are in sync, even
+with the use of the "N" placeholder.  Same result is achieved with "15".
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 35 ++++++++++++++++++++++++++++-------
- kernel/rcu/tree.c        | 24 ++++++++++++++----------
- 2 files changed, 42 insertions(+), 17 deletions(-)
+ kernel/sched/isolation.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index a10480f2b4ef..45e58f14b1ce 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -532,7 +532,12 @@ do {									      \
-  * @p: The pointer to read, prior to dereferencing
-  * @c: The conditions under which the dereference will take place
-  *
-- * This is the RCU-bh counterpart to rcu_dereference_check().
-+ * This is the RCU-bh counterpart to rcu_dereference_check().  However,
-+ * please note that starting in v5.0 kernels, vanilla RCU grace periods
-+ * wait for local_bh_disable() regions of code in addition to regions of
-+ * code demarked by rcu_read_lock() and rcu_read_unlock().  This means
-+ * that synchronize_rcu(), call_rcu, and friends all take not only
-+ * rcu_read_lock() but also rcu_read_lock_bh() into account.
-  */
- #define rcu_dereference_bh_check(p, c) \
- 	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
-@@ -543,6 +548,11 @@ do {									      \
-  * @c: The conditions under which the dereference will take place
-  *
-  * This is the RCU-sched counterpart to rcu_dereference_check().
-+ * However, please note that starting in v5.0 kernels, vanilla RCU grace
-+ * periods wait for preempt_disable() regions of code in addition to
-+ * regions of code demarked by rcu_read_lock() and rcu_read_unlock().
-+ * This means that synchronize_rcu(), call_rcu, and friends all take not
-+ * only rcu_read_lock() but also rcu_read_lock_sched() into account.
-  */
- #define rcu_dereference_sched_check(p, c) \
- 	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
-@@ -634,6 +644,12 @@ do {									      \
-  * sections, invocation of the corresponding RCU callback is deferred
-  * until after the all the other CPUs exit their critical sections.
-  *
-+ * In v5.0 and later kernels, synchronize_rcu() and call_rcu() also
-+ * wait for regions of code with preemption disabled, including regions of
-+ * code with interrupts or softirqs disabled.  In pre-v5.0 kernels, which
-+ * define synchronize_sched(), only code enclosed within rcu_read_lock()
-+ * and rcu_read_unlock() are guaranteed to be waited for.
-+ *
-  * Note, however, that RCU callbacks are permitted to run concurrently
-  * with new RCU read-side critical sections.  One way that this can happen
-  * is via the following sequence of events: (1) CPU 0 enters an RCU
-@@ -728,9 +744,11 @@ static inline void rcu_read_unlock(void)
- /**
-  * rcu_read_lock_bh() - mark the beginning of an RCU-bh critical section
-  *
-- * This is equivalent of rcu_read_lock(), but also disables softirqs.
-- * Note that anything else that disables softirqs can also serve as
-- * an RCU read-side critical section.
-+ * This is equivalent to rcu_read_lock(), but also disables softirqs.
-+ * Note that anything else that disables softirqs can also serve as an RCU
-+ * read-side critical section.  However, please note that this equivalence
-+ * applies only to v5.0 and later.  Before v5.0, rcu_read_lock() and
-+ * rcu_read_lock_bh() were unrelated.
-  *
-  * Note that rcu_read_lock_bh() and the matching rcu_read_unlock_bh()
-  * must occur in the same context, for example, it is illegal to invoke
-@@ -763,9 +781,12 @@ static inline void rcu_read_unlock_bh(void)
- /**
-  * rcu_read_lock_sched() - mark the beginning of a RCU-sched critical section
-  *
-- * This is equivalent of rcu_read_lock(), but disables preemption.
-- * Read-side critical sections can also be introduced by anything else
-- * that disables preemption, including local_irq_disable() and friends.
-+ * This is equivalent to rcu_read_lock(), but also disables preemption.
-+ * Read-side critical sections can also be introduced by anything else that
-+ * disables preemption, including local_irq_disable() and friends.  However,
-+ * please note that the equivalence to rcu_read_lock() applies only to
-+ * v5.0 and later.  Before v5.0, rcu_read_lock() and rcu_read_lock_sched()
-+ * were unrelated.
-  *
-  * Note that rcu_read_lock_sched() and the matching rcu_read_unlock_sched()
-  * must occur in the same context, for example, it is illegal to invoke
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2437960a2795..4b00e4fbfa10 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3059,12 +3059,14 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-  * period elapses, in other words after all pre-existing RCU read-side
-  * critical sections have completed.  However, the callback function
-  * might well execute concurrently with RCU read-side critical sections
-- * that started after call_rcu() was invoked.  RCU read-side critical
-- * sections are delimited by rcu_read_lock() and rcu_read_unlock(), and
-- * may be nested.  In addition, regions of code across which interrupts,
-- * preemption, or softirqs have been disabled also serve as RCU read-side
-- * critical sections.  This includes hardware interrupt handlers, softirq
-- * handlers, and NMI handlers.
-+ * that started after call_rcu() was invoked.
-+ *
-+ * RCU read-side critical sections are delimited by rcu_read_lock()
-+ * and rcu_read_unlock(), and may be nested.  In addition, but only in
-+ * v5.0 and later, regions of code across which interrupts, preemption,
-+ * or softirqs have been disabled also serve as RCU read-side critical
-+ * sections.  This includes hardware interrupt handlers, softirq handlers,
-+ * and NMI handlers.
-  *
-  * Note that all CPUs must agree that the grace period extended beyond
-  * all pre-existing RCU read-side critical section.  On systems with more
-@@ -3730,10 +3732,12 @@ static int rcu_blocking_is_gp(void)
-  * read-side critical sections have completed.  Note, however, that
-  * upon return from synchronize_rcu(), the caller might well be executing
-  * concurrently with new RCU read-side critical sections that began while
-- * synchronize_rcu() was waiting.  RCU read-side critical sections are
-- * delimited by rcu_read_lock() and rcu_read_unlock(), and may be nested.
-- * In addition, regions of code across which interrupts, preemption, or
-- * softirqs have been disabled also serve as RCU read-side critical
-+ * synchronize_rcu() was waiting.
-+ *
-+ * RCU read-side critical sections are delimited by rcu_read_lock()
-+ * and rcu_read_unlock(), and may be nested.  In addition, but only in
-+ * v5.0 and later, regions of code across which interrupts, preemption,
-+ * or softirqs have been disabled also serve as RCU read-side critical
-  * sections.  This includes hardware interrupt handlers, softirq handlers,
-  * and NMI handlers.
-  *
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 5a6ea03f9882..7f06eaf12818 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -81,11 +81,9 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
+ {
+ 	cpumask_var_t non_housekeeping_mask;
+ 	cpumask_var_t tmp;
+-	int err;
+ 
+ 	alloc_bootmem_cpumask_var(&non_housekeeping_mask);
+-	err = cpulist_parse(str, non_housekeeping_mask);
+-	if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
++	if (cpulist_parse(str, non_housekeeping_mask) < 0) {
+ 		pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
+ 		free_bootmem_cpumask_var(non_housekeeping_mask);
+ 		return 0;
 -- 
 2.31.1.189.g2e36527f23
 
