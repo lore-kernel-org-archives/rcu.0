@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D52FC43460
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:09:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26C7DC43470
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:09:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 633A7616E8
+	by mail.kernel.org (Postfix) with ESMTP id 04B4361925
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:09:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhEKXKw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 19:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
+        id S230291AbhEKXKx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 19:10:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229951AbhEKXKv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S229934AbhEKXKv (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 19:10:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B961B6191D;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6C8D61919;
         Tue, 11 May 2021 23:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774584;
-        bh=+nquWZndN1aE3ASNE8akUAlwQVxp/0FBTEaXYM2bZrE=;
+        bh=MM0CqeSkHwAV3YroUCw4vgYKKdVO10PGjsqK32KIwy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VNW9abFqbGmoYWorqLY3+MECFOL1Sj2ack5LbUBWCMyIu37psvBJWIKlzj1jRAvB7
-         fDXw+CBuwxxwtM3U84kxTYtgNL5K8MWmNxTNSTUKJxN4aucD6rL7swM0k62GT+xV4q
-         ngVtowrzusoWAHx1U+wrRDgw+LCkwpPxtz0XOu4zSlDTVn9VwBrry0o2ZMSjceP/9Z
-         4ehFlpiawFwADCPGwoNMxmdpo825Pl8m8XHr61Ga0BgvRbXmKCkvKdEBXXScCdGmMe
-         IoxKxei63Nj0LerW7SHmTYXTB+MC/hP+PQyeAmT06pCsUQ90MHyQM745irp+JCeYkA
-         AMxxXSVS3Rbwg==
+        b=m+WcdkcUve8Uiw+3kZgnsUjAZqrflGb71NoTEKKRQTGMRJb/TVAU+GpoV8jFt7hpi
+         7Pp9ldTXKWaQdAvGIWPp7cn3OKeTsAG2pQ29zCYPMLLetmE8H9A7hmdZEYUCWFCw0e
+         z+Qk2+xQp0lqubqFTbhn5tdm0wGnZynIYQijD/pAbV44F5cAuItvOvro5rsWfFOvw8
+         zssO5MXhIeaLmzsLOcfrm2qsvpXPN2R73YXcad5JxsWYEAwpzG/pId8tdnPeF2AZs4
+         2CZdlugMrU2VGqn8RC16HbcYQ/rq0WwFFeMlOuWvHeGcRpFsPT9MOj1+X28l2C9yzq
+         cWuD6DRMq71/w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 54AC05C014E; Tue, 11 May 2021 16:09:44 -0700 (PDT)
+        id 56B2D5C09EF; Tue, 11 May 2021 16:09:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,48 +41,52 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/4] rcu-tasks: Add block comment laying out RCU Rude design
-Date:   Tue, 11 May 2021 16:09:40 -0700
-Message-Id: <20210511230942.2894861-2-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states
+Date:   Tue, 11 May 2021 16:09:41 -0700
+Message-Id: <20210511230942.2894861-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a block comment that gives a high-level overview of
-how RCU Rude grace periods progress.  It also gives an overview of the
-memory ordering.
+Heavy networking load can cause a CPU to execute continuously and
+indefinitely within ksoftirqd, in which case there will be no voluntary
+task switches and thus no RCU-tasks quiescent states.  This commit
+therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
+quiescent state.
 
+This of course means that __do_softirq() and its callers cannot be
+invoked from within a tracing trampoline.
+
+Reported-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/rcu/tasks.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 94d2c2c7f0ab..d6aa352cd705 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -645,8 +645,13 @@ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- // passing an empty function to schedule_on_each_cpu().  This approach
- // provides an asynchronous call_rcu_tasks_rude() API and batching
- // of concurrent calls to the synchronous synchronize_rcu_rude() API.
--// This sends IPIs far and wide and induces otherwise unnecessary context
--// switches on all online CPUs, whether idle or not.
-+// This invokes schedule_on_each_cpu() in order to send IPIs far and wide
-+// and induces otherwise unnecessary context switches on all online CPUs,
-+// whether idle or not.
-+//
-+// Callback handling is provided by the rcu_tasks_kthread() function.
-+//
-+// Ordering is provided by the scheduler's context-switch code.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8e78b2430c16..f4daa4e60b14 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -242,6 +242,7 @@ void rcu_softirq_qs(void)
+ {
+ 	rcu_qs();
+ 	rcu_preempt_deferred_qs(current);
++	rcu_tasks_qs(current, false);
+ }
  
- // Empty function to allow workqueues to force a context switch.
- static void rcu_tasks_be_rude(struct work_struct *work)
+ /*
 -- 
 2.31.1.189.g2e36527f23
 
