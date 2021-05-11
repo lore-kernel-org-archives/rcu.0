@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F92DC4363C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C66C43461
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2EB5061932
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F3B7061925
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 23:12:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhEKXNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S230448AbhEKXNn (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 11 May 2021 19:13:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230336AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230301AbhEKXNd (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FB561963;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB2961953;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=ooQpLhakMF+iC+06mvjV16KpkMzrtX0sKaEg6443Vp0=;
+        bh=N3DvynfywbR4vMcPllaNtoW+0w0OcoOfnSuf8rhnS7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qbzlOW/dTaZfj3bXtw/hVUHgmSSJMxMXwJqXtXCr0DWMFn+PtRyZYr0cuGcaWsvwM
-         xWb3wIeHH8mZb1lbDXTvXDT8YPMrG6yiqJLEbc4JFx6fhjiEaLBmFJOQp3RqA94aXR
-         spvm5rXf11Ocm4xbWL1aZZN8g/T7dHQYBY/6Ugyj7yxGPzh0sxeGh6N/GmIrtDIzyy
-         kg+f8zOAVrg4m3TM42I/PyGBV8P/7sEofqyuiUQkFVhBKcMTMsvfzrO92mqNNspLLA
-         NlfOwsE2B4fnqq7BKpeoOV44+dLobcN1f8zfaoo1v97HC4vV7zYTDPwQD6uEF4YaE/
-         N7IScI7TSCmmg==
+        b=h7T0L4Dur3N8LblX6jCptlHrf8PhjlWmHw8PChhQKwlNANJNdpv/cM3ymkt907AAi
+         5moGPlZmi0npy6QfaUMYBSPBU87IQXdb2ResoMudSHnsD+Rn5Qt8RpXAj97/vV2Ods
+         SUMqwQUSIA4gA+kMxv7DXEDeXMUXezZYWm4z2tx0GFvmVmcvntdhUzWhwdwTmfbPm4
+         zcb6nNlxVr5WOuNDK4gQGk1tXVSNyZIon+74tqk+yhLgs86MKrs2CjnH5FLcLoxbCN
+         VHPLYRzU+wn5M0iP5KBzvpgGHrydFXhQaofcJBsaQ2cxKnknI8D+fdYbNUDYp7Rqot
+         J+iUAkXfoYVgg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 974735C0EBE; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 8A1E55C0E5B; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 25/26] rcutorture: Move mem_dump_obj() tests into separate function
-Date:   Tue, 11 May 2021 16:12:22 -0700
-Message-Id: <20210511231223.2895398-25-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 18/26] rcutorture: Consolidate rcu_torture_boost() timing and statistics
+Date:   Tue, 11 May 2021 16:12:15 -0700
+Message-Id: <20210511231223.2895398-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -54,117 +54,51 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-To make the purpose of the code more apparent, this commit moves the
-tests of mem_dump_obj() to a new rcu_torture_mem_dump_obj() function
-and calls it from rcu_torture_cleanup().
+This commit consolidates two loops in rcu_torture_boost(), one of which
+counts the number of boost-test episodes and the other of which computes
+the start time of the next episode, into one loop that does both with but
+a single acquisition of boost_mutex.  This means that the count of the
+number of boost-test episodes is incremented after an episode completes
+rather than before it starts, but it also avoids the over-counting that
+was possible previously.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 81 +++++++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 39 deletions(-)
+ kernel/rcu/rcutorture.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8b347b9659aa..ec69273898af 100644
+index 3defd0febe15..31338b2d6609 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1868,48 +1868,49 @@ rcu_torture_stats(void *arg)
- 		torture_shutdown_absorb("rcu_torture_stats");
- 	} while (!torture_must_stop());
- 	torture_kthread_stopping("rcu_torture_stats");
--
--	{
--		struct rcu_head *rhp;
--		struct kmem_cache *kcp;
--		static int z;
--
--		kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
--		rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
--		pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
--		pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
--		mem_dump_obj(ZERO_SIZE_PTR);
--		pr_alert("mem_dump_obj(NULL):");
--		mem_dump_obj(NULL);
--		pr_alert("mem_dump_obj(%px):", &rhp);
--		mem_dump_obj(&rhp);
--		pr_alert("mem_dump_obj(%px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(%px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		pr_alert("mem_dump_obj(%px):", &z);
--		mem_dump_obj(&z);
--		kmem_cache_free(kcp, rhp);
--		kmem_cache_destroy(kcp);
--		rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
--		pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
--		pr_alert("mem_dump_obj(kmalloc %px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		kfree(rhp);
--		rhp = vmalloc(4096);
--		pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
--		pr_alert("mem_dump_obj(vmalloc %px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		vfree(rhp);
--	}
--
- 	return 0;
- }
+@@ -956,15 +956,6 @@ static int rcu_torture_boost(void *arg)
+ 		bool failed = false; // Test failed already in this test interval
+ 		bool gp_initiated = false;
  
-+/* Test mem_dump_obj() and friends.  */
-+static void rcu_torture_mem_dump_obj(void)
-+{
-+	struct rcu_head *rhp;
-+	struct kmem_cache *kcp;
-+	static int z;
-+
-+	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
-+	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
-+	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
-+	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
-+	mem_dump_obj(ZERO_SIZE_PTR);
-+	pr_alert("mem_dump_obj(NULL):");
-+	mem_dump_obj(NULL);
-+	pr_alert("mem_dump_obj(%px):", &rhp);
-+	mem_dump_obj(&rhp);
-+	pr_alert("mem_dump_obj(%px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(%px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	pr_alert("mem_dump_obj(%px):", &z);
-+	mem_dump_obj(&z);
-+	kmem_cache_free(kcp, rhp);
-+	kmem_cache_destroy(kcp);
-+	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-+	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
-+	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	kfree(rhp);
-+	rhp = vmalloc(4096);
-+	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
-+	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	vfree(rhp);
-+}
-+
- static void
- rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
- {
-@@ -2825,6 +2826,8 @@ rcu_torture_cleanup(void)
- 	if (cur_ops->cleanup != NULL)
- 		cur_ops->cleanup();
+-		/* Increment n_rcu_torture_boosts once per boost-test */
+-		while (!kthread_should_stop()) {
+-			if (mutex_trylock(&boost_mutex)) {
+-				n_rcu_torture_boosts++;
+-				mutex_unlock(&boost_mutex);
+-				break;
+-			}
+-			schedule_timeout_uninterruptible(1);
+-		}
+ 		if (kthread_should_stop())
+ 			goto checkwait;
  
-+	rcu_torture_mem_dump_obj();
-+
- 	rcu_torture_stats_print();  /* -After- the stats thread is stopped! */
- 
- 	if (err_segs_recorded) {
+@@ -1015,7 +1006,10 @@ static int rcu_torture_boost(void *arg)
+ 		 */
+ 		while (oldstarttime == boost_starttime && !kthread_should_stop()) {
+ 			if (mutex_trylock(&boost_mutex)) {
+-				boost_starttime = jiffies + test_boost_interval * HZ;
++				if (oldstarttime == boost_starttime) {
++					boost_starttime = jiffies + test_boost_interval * HZ;
++					n_rcu_torture_boosts++;
++				}
+ 				mutex_unlock(&boost_mutex);
+ 				break;
+ 			}
 -- 
 2.31.1.189.g2e36527f23
 
