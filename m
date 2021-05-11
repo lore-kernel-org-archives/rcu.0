@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54ADDC433ED
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 805F8C433ED
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3B05A6192B
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:52:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61A6D61184
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhEKWxy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 18:53:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
+        id S230329AbhEKWyP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhEKWxs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 May 2021 18:53:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7387561184;
-        Tue, 11 May 2021 22:52:41 +0000 (UTC)
+        id S230012AbhEKWyN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 May 2021 18:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD5A961928;
+        Tue, 11 May 2021 22:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620773561;
-        bh=Xn+AIPqTrejOU6g7pgGUlUjZH9nKVNH6Ey5HLiEnDe0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Zg7ih0ebJsGTkUEamP/QiJdiGyH8BF+ghE5Aalg1dF/DUh9unzPjdNL2BBlxiy26G
-         3SHpHsZuQ+46F9PKWT48EvfgKrxqyhkFEIeHu3maMTaBNFrNMs+gJ50H/dflj5O5kz
-         vbTVQ7+pBOufIGJbP+4yXjP4GFaAqnRalP5hPFHkDNZZZVFX7+Gr33sklNyvZ3/NPC
-         sx6AkuAH3YdTQROKG+7njwy4Ra3V9WHrYLprEwWRAnZ4GKQSpfCusziVwPRUaGuhXU
-         8m+WJDa44mxnx+BavgG+bUqYfovYVlurzFUqtcWxgeMZqxV7KwInrE4AoTohh/CaBs
-         VJiYd6poPvfLQ==
+        s=k20201202; t=1620773586;
+        bh=B7ur2L0bEuQWoB0Xyaqdy5OOu/Zub/NIDQtO1pZbSfY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lgUBBv3aZAzb8OEmEqRFOVK6z8Xf0SUs2wiq/XHZk7uLr0I1mBNxoh3jpEtLr4wxS
+         32qAr9cSuk33rn4AH+OX2jdwl5jPFtSailxKpdplyczINKOVEEUYVeiKCfRtLTIRoS
+         z20HBijxGod4DKmiu29uiMgYZ/5Z/bVZf/3LyrigYdhqb2F13Oa2it1epL3S0lV48c
+         IUfuejsPPctXASEUhrDQ5zfw+EnipYZgkoZX97qGq/o5eIT/pihPD9b/6VhvOWKInH
+         zL/Cm9nfUdjxjRP9nHZeiDQsMjB5XztaPIOs92LtuO5n5/nUTqTE8X1kg9UM5jz+8D
+         jjgnwfqlZWHBw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 43BE65C0138; Tue, 11 May 2021 15:52:41 -0700 (PDT)
-Date:   Tue, 11 May 2021 15:52:41 -0700
+        id 891505C0138; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -40,83 +40,56 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/19] Miscellaneous fixes for v5.14
-Message-ID: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/19] rcu: Fix typo in comment: kthead -> kthread
+Date:   Tue, 11 May 2021 15:52:46 -0700
+Message-Id: <20210511225304.2893154-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
+References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Rolf Eike Beer <eb@emlix.com>
 
-This series contains miscellaneous fixes, perhaps most notably the
-rescusitation of RCU priority boosting.
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tree_plugin.h | 2 +-
+ mm/oom_kill.c            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-1.	Fix typo in comment: kthead -> kthread, courtesy of Rolf Eike
-	Beer.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index ad0156b86937..2cbe8f8456e6 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1940,7 +1940,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ }
+ 
+ /*
+- * Awaken the no-CBs grace-period kthead if needed, either due to it
++ * Awaken the no-CBs grace-period kthread if needed, either due to it
+  * legitimately being asleep or due to overload conditions.
+  *
+  * If warranted, also wake up the kthread servicing this CPUs queues.
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index eefd3f5fde46..54527de9cd2d 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -922,7 +922,7 @@ static void __oom_kill_process(struct task_struct *victim, const char *message)
+ 			continue;
+ 		}
+ 		/*
+-		 * No kthead_use_mm() user needs to read from the userspace so
++		 * No kthread_use_mm() user needs to read from the userspace so
+ 		 * we are ok to reap it.
+ 		 */
+ 		if (unlikely(p->flags & PF_KTHREAD))
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Remove the unused rcu_irq_exit_preempt() function.
-
-3.	Improve tree.c comments and add code cleanups, courtesy of
-	Zhouyi Zhou.
-
-4.	Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread().
-
-5.	Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output.
-
-6.	Add ->gp_max to show_rcu_gp_kthreads() output.
-
-7.	Explicitly flag likely false-positive report.
-
-8.	Reject RCU_LOCKDEP_WARN() false positives.
-
-9.	Add quiescent states and boost states to show_rcu_gp_kthreads()
-	output.
-
-10.	Make RCU priority boosting work on single-CPU rcu_node structures.
-
-11.	Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP.
-
-12.	Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs.
-
-13.	Make rcu_gp_cleanup() be noinline for tracing.
-
-14.	Point to documentation of ordering guarantees.
-
-15.	Create an unrcu_pointer() to remove __rcu from a pointer.
-
-16.	reconcile rcu_nocbs= and nohz_full=, courtesy of Paul Gortmaker.
-
-17.	Improve comments describing RCU read-side critical sections.
-
-18.	Remove obsolete rcu_read_unlock() deadlock commentary.
-
-19.	Add missing __releases() annotation, courtesy of Jules Irenge.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h |    2 -
- b/include/linux/rcutiny.h  |    1 
- b/include/linux/rcutree.h  |    1 
- b/kernel/locking/lockdep.c |    6 ++-
- b/kernel/rcu/Kconfig.debug |    2 -
- b/kernel/rcu/srcutree.c    |    3 +
- b/kernel/rcu/tree.c        |   22 ------------
- b/kernel/rcu/tree.h        |    1 
- b/kernel/rcu/tree_plugin.h |    2 -
- b/kernel/rcu/tree_stall.h  |    8 ++--
- b/kernel/rcu/update.c      |    2 -
- b/kernel/sched/isolation.c |    4 --
- b/mm/oom_kill.c            |    2 -
- include/linux/rcupdate.h   |   82 ++++++++++++++++++++++++++-------------------
- kernel/rcu/tree.c          |   74 +++++++++++++++++++++++++---------------
- kernel/rcu/tree.h          |    2 -
- kernel/rcu/tree_plugin.h   |   30 ++++------------
- kernel/rcu/tree_stall.h    |   21 ++++++++---
- 18 files changed, 138 insertions(+), 127 deletions(-)
