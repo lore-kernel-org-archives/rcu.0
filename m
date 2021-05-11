@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A902C43460
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20563C43461
 	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E5A761184
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01BC361184
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhEKWyQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S230361AbhEKWyQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 11 May 2021 18:54:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhEKWyN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230167AbhEKWyN (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:54:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6DEB6192B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C24026192C;
         Tue, 11 May 2021 22:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773586;
-        bh=YTmkCZi2/uwcp+0lPCpWWxdI96DueAEbjEKyymxKsM4=;
+        bh=33SghJiwy5Jn22f7sV2RV4nt5XTeKYFmP+29pYwkJNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPpIENIAWdNGH2RIb1cV2QMToQoCy2Unyc/VZs9VDTE8alVYVin+ES8PyzL55igvu
-         ba0B7CYyIqnL5N2Y04bAzzgWLrvfxLC/C2oaYN2G+JeEwSRslj+KERxlGUqhVWazJ/
-         TokSlW3mfHEfWtRz/MmRzvBKxMtQCu+iekCHIKpJIkzhqAcABsSaZwbqDvuVW6fSlZ
-         xD/fWFa1V4WxONS1d48olLd1wdIivijDs/3H/bRf+JhWsVvl6z4fZ5n/1wXDYL1Piy
-         a+ZUfYxRl8XLaBZGJIZ9R5yu9dVyqsgtyjVlO65zuMGXr+PuzmCJaHBMyMqKWg5fLH
-         TV3QIGZGykQoA==
+        b=ql2q5h/0eh5fs75KxPAimbTIp1+qky6kB3TynXdPmx2uzVR42OiwRCkQ6HugfBhSM
+         +gdvszrMORoMR3xt2E76dr4bgFP8dvrCsZ9uj/EGxcjahPf1z9wuF8UQVQbUlu7ftd
+         47ETEeWYu643ejPH041iydL1O3EfMC49oXQp+tomp/Zham/qCi776U3BkGMKWoDjdY
+         CwvYOekDLsE/0xvOuVQvhHiZarTj6zyWTSnKBEzhgjJTqlxXux833unl6AhILvAzWD
+         uhAx/BUGm9LcjbAmwVOI6rIhzARM6al507qPufasPMZNnrJW/vGRbu57v4hWylVDQ6
+         3KKTQhQ/offvw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8ECB85C0B55; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 909245C0D4A; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/19] rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
-Date:   Tue, 11 May 2021 15:52:49 -0700
-Message-Id: <20210511225304.2893154-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/19] rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output
+Date:   Tue, 11 May 2021 15:52:50 -0700
+Message-Id: <20210511225304.2893154-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -54,50 +54,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, rcu_spawn_core_kthreads() is invoked via an early_initcall(),
-which works, except that rcu_spawn_gp_kthread() is also invoked via an
-early_initcall() and rcu_spawn_core_kthreads() relies on adjustments to
-kthread_prio that are carried out by rcu_spawn_gp_kthread().  There is
-no guaranttee of ordering among early_initcall() handlers, and thus no
-guarantee that kthread_prio will be properly checked and range-limited
-at the time that rcu_spawn_core_kthreads() needs it.
+This commit adds ->rt_priority and ->gp_start to show_rcu_gp_kthreads()
+output in order to better diagnose RCU priority boosting failures.
 
-In most cases, this bug is harmless.  After all, the only reason that
-rcu_spawn_gp_kthread() adjusts the value of kthread_prio is if the user
-specified a nonsensical value for this boot parameter, which experience
-indicates is rare.
-
-Nevertheless, a bug is a bug.  This commit therefore causes the
-rcu_spawn_core_kthreads() function to be invoked directly from
-rcu_spawn_gp_kthread() after any needed adjustments to kthread_prio have
-been carried out.
-
-Fixes: 48d07c04b4cc ("rcu: Enable elimination of Tree-RCU softirq processing")
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_stall.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 06f3de96997c..2532e584e95f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2889,7 +2889,6 @@ static int __init rcu_spawn_core_kthreads(void)
- 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
- 	return 0;
- }
--early_initcall(rcu_spawn_core_kthreads);
- 
- /*
-  * Handle any core-RCU processing required by a call_rcu() invocation.
-@@ -4450,6 +4449,7 @@ static int __init rcu_spawn_gp_kthread(void)
- 	wake_up_process(t);
- 	rcu_spawn_nocb_kthreads();
- 	rcu_spawn_boost_kthreads();
-+	rcu_spawn_core_kthreads();
- 	return 0;
- }
- early_initcall(rcu_spawn_gp_kthread);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 59b95cc5cbdf..fb4702570316 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -726,6 +726,7 @@ void show_rcu_gp_kthreads(void)
+ 	unsigned long j;
+ 	unsigned long ja;
+ 	unsigned long jr;
++	unsigned long js;
+ 	unsigned long jw;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+@@ -734,11 +735,12 @@ void show_rcu_gp_kthreads(void)
+ 	j = jiffies;
+ 	ja = j - data_race(rcu_state.gp_activity);
+ 	jr = j - data_race(rcu_state.gp_req_activity);
++	js = j - data_race(rcu_state.gp_start);
+ 	jw = j - data_race(rcu_state.gp_wake_time);
+-	pr_info("%s: wait state: %s(%d) ->state: %#lx delta ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_flags %#x\n",
++	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_flags %#x\n",
+ 		rcu_state.name, gp_state_getname(rcu_state.gp_state),
+-		rcu_state.gp_state, t ? t->state : 0x1ffffL,
+-		ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
++		rcu_state.gp_state, t ? t->state : 0x1ffffL, t ? t->rt_priority : 0xffU,
++		js, ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
+ 		(long)data_race(rcu_state.gp_seq),
+ 		(long)data_race(rcu_get_root()->gp_seq_needed),
+ 		data_race(rcu_state.gp_flags));
 -- 
 2.31.1.189.g2e36527f23
 
