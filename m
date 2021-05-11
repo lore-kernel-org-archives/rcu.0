@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08AC6C43462
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC3BFC43616
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E772961260
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C965B61260
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhEKWyU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 May 2021 18:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33940 "EHLO mail.kernel.org"
+        id S230427AbhEKWyW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 May 2021 18:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230347AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CF8A6194F;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B6FF61958;
         Tue, 11 May 2021 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773587;
-        bh=KgziwQ3KEzjZpdc2RZwuwHdOl/+SEw4HMLIaX5nV6Pg=;
+        bh=EotQ6cg7YP76P2IiUcgViwV/juVh+1b5V3AQ01poaqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iNj5WQ0dtF4BMhn5pfRNG2M85U9NRSB5Z23NM3nIbtPAQpEPSuQNmTpMnWiYXN8TZ
-         GZMLJSOmS+OLh/jOBM31kthMU6mqGPe8TwoylPaL4S2CI79cwIq0jF0qnfwZMwbuf2
-         lpQCpCh1WF8bVw6nFBMlHW7BL5vIrl/I0WNL17Cq/pf06F50O6zPM+/eGcTHSSvDhv
-         aKG1Q4E6PFoZnqRGyw1qZhJ3ER5LWFqQpcvP0yT9p4fG0dAhJRRWPI9o6JLCzGi/nF
-         UZXYcPSeSFFPyOqq2QLzK44NJwTV0qehHfborYcgtAjbk/mv5ecUn2nAm7PlV8lVya
-         sr61f+BYDjBfg==
+        b=sjVhl1SYcF/nSFYdhPCGq2qvIXT/fxMkEvg7YDg5Rjqv2t8dV7M7zhdXZZD0+5PQl
+         dJjBqeX5Jcdgi2wDdGQLBQCvWMY/r31gZOwP2UL7348Yax0fbGF6m5MjzK92x46BKE
+         KLXZdMHcIc9x212F6/w0JsFeoaQHqQx18m2mLrgO6WNR5hsZtvUg64DSl/3xIoZXh5
+         wylgTxbyHJ5oUWfxhg/ZzY3VpehLuDcXiOofvtkj3nQIjj0ZNXcv31qj3y9kgTvWvG
+         8Ig2/c9cV8jLiFtUWzUM1ULfQzr0K4QjIbuCUGhC4/7TOd4dQ+5r0FTBwxfkuUsHkU
+         MyZyBd+5SE/Nw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A027A5C0E09; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id A9D2D5C0E5C; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 14/19] rcu: Point to documentation of ordering guarantees
-Date:   Tue, 11 May 2021 15:52:59 -0700
-Message-Id: <20210511225304.2893154-14-paulmck@kernel.org>
+        Jules Irenge <jbi.octave@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 19/19] rcu: Add missing __releases() annotation
+Date:   Tue, 11 May 2021 15:53:04 -0700
+Message-Id: <20210511225304.2893154-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -54,95 +55,34 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Add comments to synchronize_rcu() and friends that point to
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
+From: Jules Irenge <jbi.octave@gmail.com>
 
+Sparse reports a warning at rcu_print_task_stall():
+
+"warning: context imbalance in rcu_print_task_stall - unexpected unlock"
+
+The root cause is a missing annotation on rcu_print_task_stall().
+
+This commit therefore adds the missing __releases(rnp->lock) annotation.
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c |  3 +++
- kernel/rcu/tree.c     | 20 ++++++++++++++++++--
- 2 files changed, 21 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_stall.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index e26547b34ad3..f8340c3b1c00 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1000,6 +1000,9 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
-  * synchronize_srcu(), srcu_read_lock(), and srcu_read_unlock() are
-  * passed the same srcu_struct structure.
-  *
-+ * Implementation of these memory-ordering guarantees is similar to
-+ * that of synchronize_rcu().
-+ *
-  * If SRCU is likely idle, expedite the first request.  This semantic
-  * was provided by Classic SRCU, and is relied upon by its users, so TREE
-  * SRCU must also provide it.  Note that detecting idleness is heuristic
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6eb64e44bdcd..2437960a2795 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3084,6 +3084,9 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-  * between the call to call_rcu() and the invocation of "func()" -- even
-  * if CPU A and CPU B are the same CPU (but again only if the system has
-  * more than one CPU).
-+ *
-+ * Implementation of these memory-ordering guarantees is described here:
-+ * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index e6bd518e0bc4..ffb8cf6c6437 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -314,6 +314,7 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
+  * tasks blocked within RCU read-side critical sections.
   */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
++	__releases(rnp->lock)
  {
-@@ -3751,6 +3754,9 @@ static int rcu_blocking_is_gp(void)
-  * to have executed a full memory barrier during the execution of
-  * synchronize_rcu() -- even if CPU A and CPU B are the same CPU (but
-  * again only if the system has more than one CPU).
-+ *
-+ * Implementation of these memory-ordering guarantees is described here:
-+ * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
-  */
- void synchronize_rcu(void)
- {
-@@ -3821,7 +3827,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
- /**
-  * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
-  *
-- * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-+ * @oldstate: value from get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-  *
-  * If a full RCU grace period has elapsed since the earlier call from
-  * which oldstate was obtained, return @true, otherwise return @false.
-@@ -3837,6 +3843,11 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
-  * (many hours even on 32-bit systems) should check them occasionally
-  * and either refresh them or set a flag indicating that the grace period
-  * has completed.
-+ *
-+ * This function provides the same memory-ordering guarantees that
-+ * would be provided by a synchronize_rcu() that was invoked at the call
-+ * to the function that provided @oldstate, and that returned at the end
-+ * of this function.
-  */
- bool poll_state_synchronize_rcu(unsigned long oldstate)
- {
-@@ -3851,7 +3862,7 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
- /**
-  * cond_synchronize_rcu - Conditionally wait for an RCU grace period
-  *
-- * @oldstate: return value from earlier call to get_state_synchronize_rcu()
-+ * @oldstate: value from get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-  *
-  * If a full RCU grace period has elapsed since the earlier call to
-  * get_state_synchronize_rcu() or start_poll_synchronize_rcu(), just return.
-@@ -3861,6 +3872,11 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
-  * counter wrap is harmless.  If the counter wraps, we have waited for
-  * more than 2 billion grace periods (and way more on a 64-bit system!),
-  * so waiting for one additional grace period should be just fine.
-+ *
-+ * This function provides the same memory-ordering guarantees that
-+ * would be provided by a synchronize_rcu() that was invoked at the call
-+ * to the function that provided @oldstate, and that returned at the end
-+ * of this function.
-  */
- void cond_synchronize_rcu(unsigned long oldstate)
- {
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	return 0;
 -- 
 2.31.1.189.g2e36527f23
 
