@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC3BFC43616
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF40AC43611
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C965B61260
-	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC5D561933
+	for <rcu@archiver.kernel.org>; Tue, 11 May 2021 22:53:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhEKWyW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S230421AbhEKWyW (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Tue, 11 May 2021 18:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S230334AbhEKWyP (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B6FF61958;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F65B61944;
         Tue, 11 May 2021 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773587;
-        bh=EotQ6cg7YP76P2IiUcgViwV/juVh+1b5V3AQ01poaqM=;
+        bh=Ud2n0T8oZD2qnxbpdVkRyBdjRbcSWf12xNXu/Qey03s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjVhl1SYcF/nSFYdhPCGq2qvIXT/fxMkEvg7YDg5Rjqv2t8dV7M7zhdXZZD0+5PQl
-         dJjBqeX5Jcdgi2wDdGQLBQCvWMY/r31gZOwP2UL7348Yax0fbGF6m5MjzK92x46BKE
-         KLXZdMHcIc9x212F6/w0JsFeoaQHqQx18m2mLrgO6WNR5hsZtvUg64DSl/3xIoZXh5
-         wylgTxbyHJ5oUWfxhg/ZzY3VpehLuDcXiOofvtkj3nQIjj0ZNXcv31qj3y9kgTvWvG
-         8Ig2/c9cV8jLiFtUWzUM1ULfQzr0K4QjIbuCUGhC4/7TOd4dQ+5r0FTBwxfkuUsHkU
-         MyZyBd+5SE/Nw==
+        b=ZsZUQPuRsU13u2ncYJUanG1pWSHRLRdJP8lVZ3Gh4VnHpW22mkCKYE+/WefPJ8694
+         LV7wEoBMHHADMjYfOeiCOmf9ScYm/Q58Bko2WuZIeNQHQh1JjONsZoVz+BpJ+KtYH6
+         rXhCj6Khw09JGiTroJFvdstaQVuRlv3e/UZExcD3cOp4PsU7LrplJE5Yy4vZ5WUW2o
+         eKDbHFO5oYtZgin+XPIwSS/TUcEy1CeSS686F0KOngKY7f+tOCoOzXC8N/Pae9PNUO
+         SEhP7o4CsigKU0J1Is4zu9Kj9gRh0ypPkNaf70Lcubf50G12mOvcsp6RsCEhOFl0Go
+         4b4S9mj6QP9cQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9D2D5C0E5C; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 9E7A65C0DFD; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Jules Irenge <jbi.octave@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/19] rcu: Add missing __releases() annotation
-Date:   Tue, 11 May 2021 15:53:04 -0700
-Message-Id: <20210511225304.2893154-19-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/19] rcu: Make rcu_gp_cleanup() be noinline for tracing
+Date:   Tue, 11 May 2021 15:52:58 -0700
+Message-Id: <20210511225304.2893154-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -55,34 +54,29 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Jules Irenge <jbi.octave@gmail.com>
+Although there are trace events for RCU grace periods, these are only
+enabled in CONFIG_RCU_TRACE=y kernels.  This commit therefore marks
+rcu_gp_cleanup() noinline in order to provide a function that can be
+traced that is invoked near the end of each grace period.
 
-Sparse reports a warning at rcu_print_task_stall():
-
-"warning: context imbalance in rcu_print_task_stall - unexpected unlock"
-
-The root cause is a missing annotation on rcu_print_task_stall().
-
-This commit therefore adds the missing __releases(rnp->lock) annotation.
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index e6bd518e0bc4..ffb8cf6c6437 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -314,6 +314,7 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  * tasks blocked within RCU read-side critical sections.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 00a3ebca70b8..6eb64e44bdcd 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2026,7 +2026,7 @@ static void rcu_gp_fqs_loop(void)
+ /*
+  * Clean up after the old grace period.
   */
- static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
-+	__releases(rnp->lock)
+-static void rcu_gp_cleanup(void)
++static noinline void rcu_gp_cleanup(void)
  {
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	return 0;
+ 	int cpu;
+ 	bool needgp = false;
 -- 
 2.31.1.189.g2e36527f23
 
