@@ -2,149 +2,200 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DBCC43460
-	for <rcu@archiver.kernel.org>; Fri, 14 May 2021 06:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB2FC43618
+	for <rcu@archiver.kernel.org>; Fri, 14 May 2021 08:21:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 509D5613C1
-	for <rcu@archiver.kernel.org>; Fri, 14 May 2021 06:04:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2234260C3F
+	for <rcu@archiver.kernel.org>; Fri, 14 May 2021 08:21:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhENGFs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 May 2021 02:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35906 "EHLO mail.kernel.org"
+        id S233506AbhENIWm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 May 2021 04:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230121AbhENGFr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 May 2021 02:05:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E9D61442;
-        Fri, 14 May 2021 06:04:32 +0000 (UTC)
+        id S233416AbhENIWk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 May 2021 04:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C728061408;
+        Fri, 14 May 2021 08:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620972276;
-        bh=7thu+ANECwgoapk9y0rfkNoObCgHdSaeFn1wY2GgHFI=;
+        s=k20201202; t=1620980488;
+        bh=gH2wh+Hc0GOhQOIRbo/h4JAX62sDUeKs2tmsR+5ILos=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OBJbVCryd33z13cNpyWRwNInMMyoRKj2bV2jrZzMXTAvLt/nnwAR6Z31v+sXp+M6L
-         7ChtYZgbFbVn11XEWeUR75Tem8WuDh615FHBcSCX6Uvq66xVM+3wTG6YHQJnhtP3lV
-         4rEjhKeOIy/cVYA4beD6+n6bcxz9Grrk9FUGA3xoc0mtBMBXjhBjA/YOxRqtCcmkaa
-         ftk5eY7tusNcY28Jz9h5TCoBVxAYuJpHpPVqMvV2YUU/8mORKDzYwh8fXQjYThT08D
-         /AyU94aO9ItUwtYZBBnR/9Ya/iO00ATJUl6tT+wxb/vI2fiyO+et5tAI6OC/FT8/37
-         o3MLW5UfNVXlg==
-Date:   Fri, 14 May 2021 15:04:31 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
- Tasks quiescent states
-Message-Id: <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
-In-Reply-To: <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
-References: <20210512182747.3445812-4-paulmck@kernel.org>
-        <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
-        <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
-        <20210514024912.a38f755add13a0f1dc73395a@kernel.org>
-        <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        b=e4qbUbfx0hxY+yj5rwe10X7fv77kQb6ZtXwJRT57564V2F/AP6l30KEqmfnQ8Z9/m
+         GbE6KTSFaLVgK/IALz8lgNCCJI09Wv6ypJxw7X8+NYsSH+qLTaA3rBVUJFbnXj6RkO
+         OLP+toeaBJ59mDypgIfhUX1EfHY2OFa2Ex63sriWaBCbSg8WSO+y0qdrgc5mMfEUKi
+         zoIKuKJCbIWchz7V1P1kNvQQPYr/hVEIXMXwl9v4IpEIdTp9mOKu3ZsGi5lbDjocf7
+         LN9AhGRwhMXdDuYb3SF+qI1QUoGfgKM56pIxwAOv5jsDOpM5r9sAA4fr4BFVLy6RmQ
+         IhAi7M7Jw2dRw==
+Date:   Fri, 14 May 2021 10:21:18 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <20210514102118.1b71bec3@coco.lan>
+In-Reply-To: <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+Em Wed, 12 May 2021 18:07:04 +0100
+David Woodhouse <dwmw2@infradead.org> escreveu:
 
-On Thu, 13 May 2021 12:15:39 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+> On Wed, 2021-05-12 at 14:50 +0200, Mauro Carvalho Chehab wrote:
+> > Such conversion tools - plus some text editor like LibreOffice  or simi=
+lar  - have
+> > a set of rules that turns some typed ASCII characters into UTF-8 altern=
+atives,
+> > for instance converting commas into curly commas and adding non-breakab=
+le
+> > spaces. All of those are meant to produce better results when the text =
+is
+> > displayed in HTML or PDF formats. =20
+>=20
+> And don't we render our documentation into HTML or PDF formats?=20
 
-> On Fri, May 14, 2021 at 02:49:12AM +0900, Masami Hiramatsu wrote:
-> > On Thu, 13 May 2021 07:21:10 -0700
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > > On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > On Wed, 12 May 2021 11:27:46 -0700
-> > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > 
-> > > > > Heavy networking load can cause a CPU to execute continuously and
-> > > > > indefinitely within ksoftirqd, in which case there will be no voluntary
-> > > > > task switches and thus no RCU-tasks quiescent states.  This commit
-> > > > > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
-> > > > > quiescent state.
-> > > > > 
-> > > > > This of course means that __do_softirq() and its callers cannot be
-> > > > > invoked from within a tracing trampoline.
-> > > > 
-> > > > I would like to confirm that you mean "tracing trampoline" here is
-> > > > the code on the trampoline buffer, not the handler code which is
-> > > > invoked from the trampoline buffer but it is protected by preempt_disable(),
-> > > > am I understand correctly?
-> > > 
-> > > Maybe?  ;-)
-> > > 
-> > > If the handler code is invoked from the trampoline buffer, but
-> > > returns somewhere else, then it is OK for the handler code to invoke
-> > > __do_softirq() or its callers.
-> > > 
-> > > In addition, if the handler code is invoked from the trampoline buffer is
-> > > guaranteed never to be running in the context of the ksoftirqd kthread,
-> > > then it is also OK for the handler code to invoke __do_softirq() or
-> > > its callers.
-> > > 
-> > > Otherwise, if the handler code might return back into the trampoline
-> > > buffer and if that code might be running in the context of the ksoftirqd
-> > > kthread, invoking __do_softirq() or one of its callers could result in
-> > > the trampoline buffer no longer being there when it was returned to.
-> > 
-> > Hmm, the optprobe may be involved in this case. It always return to
-> > the trampoline and handler does not disable irqs (only disable preempt).
-> > BTW, what will call the __do_softirq()? Is hardirq safe?
-> 
-> As long as your code does not explicitly call __do_softirq() or one of
-> its callers, you should be OK.
-> 
-> Let's suppose that your code takes a hardirq from ksoftirqd context.
-> In that case, the return-from-irq path will notice the ksoftirqd
-> context and refrain from calling __do_softirqd().  Life is good.
-> (See the invoke_softirq() function for more detail.)
-> 
-> On the other hand, if your code takes a hardirq from some non-ksoftirqd
-> context, and if this hardirq decides to handle softirqs on exit
-> from the hardirq, the "__this_cpu_read(ksoftirqd) == current" within
-> __do_softirq() will fail, so that rcu_softirq_qs() will not be called.
-> Life is still good.
+Yes.
 
-Ah, OK. This is good.
+> Are
+> some of those non-breaking spaces not actually *useful* for their
+> intended purpose?
 
-> 
-> Either way, as long as your handler does not explicitly invoke
-> __do_softirq(), life is good.
+No.
 
-There should be no such code, I hope. 
+The thing is: non-breaking space can cause a lot of problems.
 
-> 
-> The bad case is when you instrument a function that is invoked in the
-> context of a ksoftirqd kthread, and the corresponding handler (or
-> some function that the handler explicitly calls) directly invokes
-> __do_softirq() or one of its caller.
-> 
-> Is that more helpful?
+We even had to disable Sphinx usage of non-breaking space for
+PDF outputs, as this was causing bad LaTeX/PDF outputs.
 
-OK, I got it. So it would be better to be commented later.
-But anyway I can't imagine that there is any reason to call
-__do_softirq() inside kprobe handler :)
+See, commit: 3b4c963243b1 ("docs: conf.py: adjust the LaTeX document output=
+")
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+The afore mentioned patch disables Sphinx default behavior of
+using NON-BREAKABLE SPACE on literal blocks and strings, using this
+special setting: "parsedliteralwraps=3Dtrue".
 
-Thank you,
+When NON-BREAKABLE SPACE were used on PDF outputs, several parts of=20
+the media uAPI docs were violating the document margins by far,
+causing texts to be truncated.
 
+So, please **don't add NON-BREAKABLE SPACE**, unless you test
+(and keep testing it from time to time) if outputs on all
+formats are properly supporting it on different Sphinx versions.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+-
+
+Also, most of those came from conversion tools, together with other
+eccentricities, like the usage of U+FEFF (BOM) character at the
+start of some documents. The remaining ones seem to came from=20
+cut-and-paste.
+
+For instance,  bibliographic references (there are a couple of
+those on media) sometimes have NON-BREAKABLE SPACE. I'm pretty
+sure that those came from cut-and-pasting the document titles
+from their names at the original PDF documents or web pages that
+are referenced.
+
+> > While it is perfectly fine to use UTF-8 characters in Linux, and specia=
+lly at
+> > the documentation,  it is better to  stick to the ASCII subset  on such
+> > particular case,  due to a couple of reasons:
+> >=20
+> > 1. it makes life easier for tools like grep; =20
+>=20
+> Barely, as noted, because of things like line feeds.
+
+You can use grep with "-z" to seek for multi-line strings(*), Like:
+
+	$ grep -Pzl 'grace period started,\s*then' $(find Documentation/ -type f)
+	Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+
+(*) Unfortunately, while "git grep" also has a "-z" flag, it
+    seems that this is (currently?) broken with regards of handling multili=
+nes:
+
+	$ git grep -Pzl 'grace period started,\s*then'
+	$
+
+> > 2. they easier to edit with the some commonly used text/source
+> >    code editors. =20
+>=20
+> That is nonsense. Any but the most broken and/or anachronistic
+> environments and editors will be just fine.
+
+Not really.
+
+I do use a lot of UTF-8 here, as I type texts in Portuguese, but I rely
+on the US-intl keyboard settings, that allow me to type as "'a" for =C3=A1.
+However, there's no shortcut for non-Latin UTF-codes, as far as I know.
+
+So, if would need to type a curly comma on the text editors I normally=20
+use for development (vim, nano, kate), I would need to cut-and-paste
+it from somewhere[1].
+
+[1] If I have a table with UTF-8 codes handy, I could type the UTF-8=20
+    number manually... However, it seems that this is currently broken=20
+    at least on Fedora 33 (with Mate Desktop and US intl keyboard with=20
+    dead keys).
+
+    Here, <CTRL><SHIFT>U is not working. No idea why. I haven't=20
+    test it for *years*, as I din't see any reason why I would
+    need to type UTF-8 characters by numbers until we started
+    this thread.
+=20
+In practice, on the very rare cases where I needed to write
+non-Latin utf-8 chars (maybe once in a year or so, Like when I
+would need to use a Greek letter or some weird symbol), there changes
+are high that I wouldn't remember its UTF-8 code.
+
+So, If I need to spend time to seek for an specific symbol, after
+finding it, I just cut-and-paste it.
+
+But even in the best case scenario where I know the UTF-8 and
+<CTRL><SHIFT>U works, if I wanted to use, for instance, a curly
+comma, the keystroke sequence would be:
+
+	<CTRL><SHIFT>U201csome string<CTRL><SHIFT>U201d
+
+That's a lot harder than typing and has a higher chances of
+mistakenly add a wrong symbol than just typing:
+
+	"some string"
+
+Knowing that both will produce *exactly* the same output, why
+should I bother doing it the hard way?
+
+-
+
+Now, I'm not arguing that you can't use whatever UTF-8 symbol you
+want on your docs. I'm just saying that, now that the conversion=20
+is over and a lot of documents ended getting some UTF-8 characters
+by accident, it is time for a cleanup.
+
+Thanks,
+Mauro
