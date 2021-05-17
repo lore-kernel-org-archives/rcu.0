@@ -2,163 +2,150 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08657C433B4
-	for <rcu@archiver.kernel.org>; Mon, 17 May 2021 16:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE046C433B4
+	for <rcu@archiver.kernel.org>; Mon, 17 May 2021 18:24:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF0DF610A8
-	for <rcu@archiver.kernel.org>; Mon, 17 May 2021 16:23:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD1BF611EE
+	for <rcu@archiver.kernel.org>; Mon, 17 May 2021 18:24:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243009AbhEQQZD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 May 2021 12:25:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45912 "EHLO mail.kernel.org"
+        id S230527AbhEQS0H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 May 2021 14:26:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346334AbhEQQY3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 May 2021 12:24:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0079461042;
-        Mon, 17 May 2021 16:23:13 +0000 (UTC)
+        id S233592AbhEQS0H (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 May 2021 14:26:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3EDF61241;
+        Mon, 17 May 2021 18:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621268593;
-        bh=LX1Um5xURyTO5CyK1WgfQ2dHQ8bucxW1gMUuqNrXqvk=;
+        s=k20201202; t=1621275890;
+        bh=agtqME+MKmOmL3aHSZ0CiwFpj5LnjrmqdL388mt/8PI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tHd8cQLt8uXFmwCFoRcNsI9tWllC1HrjOmdoN34cdKStXcSbAbfdjeYyh2GVb7uwW
-         VYK/mqS7qqSL7Dva0pGgU/meyuaQn5JFgnMsyvpnapLzVuWCww6A3UcL573AKPzf9D
-         6doWT+aOjttLE0EtKYBeh2ljNEa5h4wqa2QGhqfHQSScQeJoRh/MyxJ9EoRs5x6V9o
-         W4S8aUjeJdmMRyCwCMVBkm2e+jkIH7tLZsJ5MF/1mLQxaGNbjlzLhQLX7gY3uKBmUJ
-         iyvKcByFKHRH7QtFsZssDHJL7E4Ro2XCDilPo5F90u4mBbDmq06r9EGYNN6TlyHGNV
-         2Fx/LKuQTkeaQ==
+        b=cNIzKIMnVD7el6yhUFHTVuSo/cF8AFYjDx/7JWn9swaI2SV07JxBLMHPY1pMY1a6E
+         N2Y0AagWNaWu8W90Fw6R45oFm5hiCyx/46EzqHrpLlQUlBSg3R2EseybSk6rLmfUlh
+         LSx/HYqxJvwLDIWOxuzF9NhVGRktueq+1i95AyH5tto4RDmaEbRPwwAwr2F+TgIDbB
+         Gkfl3y4z/+UGKrlsf+D4QrRVogKM14kpytdWPlqsmgOvfcHW5QdH1jX/ZemrPdA0vv
+         tWwnUdVTvQbWVHVeI7HO8tEyTFGig8fVww3Du+ahYAc5hWKd3+1Xp10IzIqsIgl8TQ
+         EnhI8X2oxO5wA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C35885C00C6; Mon, 17 May 2021 09:23:12 -0700 (PDT)
-Date:   Mon, 17 May 2021 09:23:12 -0700
+        id C019B5C00C6; Mon, 17 May 2021 11:24:50 -0700 (PDT)
+Date:   Mon, 17 May 2021 11:24:50 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
+ Tasks quiescent states
+Message-ID: <20210517182450.GL4441@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
+References: <20210512182747.3445812-4-paulmck@kernel.org>
+ <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
+ <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210514024912.a38f755add13a0f1dc73395a@kernel.org>
+ <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210516102716.689596-1-senozhatsky@chromium.org>
+In-Reply-To: <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, May 16, 2021 at 07:27:16PM +0900, Sergey Senozhatsky wrote:
-> Soft watchdog timer function checks if a virtual machine
-> was suspended and hence what looks like a lockup in fact
-> is a false positive.
+On Fri, May 14, 2021 at 03:04:31PM +0900, Masami Hiramatsu wrote:
+> Hi Paul,
 > 
-> This is what kvm_check_and_clear_guest_paused() does: it
-> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-> and if it's set then we need to touch all watchdogs and bail
-> out.
+> On Thu, 13 May 2021 12:15:39 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-> check works fine.
+> > On Fri, May 14, 2021 at 02:49:12AM +0900, Masami Hiramatsu wrote:
+> > > On Thu, 13 May 2021 07:21:10 -0700
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > 
+> > > > On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
+> > > > > Hi Paul,
+> > > > > 
+> > > > > On Wed, 12 May 2021 11:27:46 -0700
+> > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > > 
+> > > > > > Heavy networking load can cause a CPU to execute continuously and
+> > > > > > indefinitely within ksoftirqd, in which case there will be no voluntary
+> > > > > > task switches and thus no RCU-tasks quiescent states.  This commit
+> > > > > > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
+> > > > > > quiescent state.
+> > > > > > 
+> > > > > > This of course means that __do_softirq() and its callers cannot be
+> > > > > > invoked from within a tracing trampoline.
+> > > > > 
+> > > > > I would like to confirm that you mean "tracing trampoline" here is
+> > > > > the code on the trampoline buffer, not the handler code which is
+> > > > > invoked from the trampoline buffer but it is protected by preempt_disable(),
+> > > > > am I understand correctly?
+> > > > 
+> > > > Maybe?  ;-)
+> > > > 
+> > > > If the handler code is invoked from the trampoline buffer, but
+> > > > returns somewhere else, then it is OK for the handler code to invoke
+> > > > __do_softirq() or its callers.
+> > > > 
+> > > > In addition, if the handler code is invoked from the trampoline buffer is
+> > > > guaranteed never to be running in the context of the ksoftirqd kthread,
+> > > > then it is also OK for the handler code to invoke __do_softirq() or
+> > > > its callers.
+> > > > 
+> > > > Otherwise, if the handler code might return back into the trampoline
+> > > > buffer and if that code might be running in the context of the ksoftirqd
+> > > > kthread, invoking __do_softirq() or one of its callers could result in
+> > > > the trampoline buffer no longer being there when it was returned to.
+> > > 
+> > > Hmm, the optprobe may be involved in this case. It always return to
+> > > the trampoline and handler does not disable irqs (only disable preempt).
+> > > BTW, what will call the __do_softirq()? Is hardirq safe?
+> > 
+> > As long as your code does not explicitly call __do_softirq() or one of
+> > its callers, you should be OK.
+> > 
+> > Let's suppose that your code takes a hardirq from ksoftirqd context.
+> > In that case, the return-from-irq path will notice the ksoftirqd
+> > context and refrain from calling __do_softirqd().  Life is good.
+> > (See the invoke_softirq() function for more detail.)
+> > 
+> > On the other hand, if your code takes a hardirq from some non-ksoftirqd
+> > context, and if this hardirq decides to handle softirqs on exit
+> > from the hardirq, the "__this_cpu_read(ksoftirqd) == current" within
+> > __do_softirq() will fail, so that rcu_softirq_qs() will not be called.
+> > Life is still good.
 > 
-> There is, however, one more watchdog that runs from IRQ, so
-> watchdog timer fn races with it, and that watchdog is not aware
-> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+> Ah, OK. This is good.
 > 
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    __hrtimer_run_queues()
->     tick_sched_timer()
->      tick_sched_handle()
->       update_process_times()
->        rcu_sched_clock_irq()
+> > 
+> > Either way, as long as your handler does not explicitly invoke
+> > __do_softirq(), life is good.
 > 
-> This triggers RCU stalls on our devices during VM resume.
+> There should be no such code, I hope. 
 > 
-> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-> then there is nothing on this VCPU that touches watchdogs and
-> RCU reads stale gp stall timestamp and new jiffies value, which
-> makes it think that RCU has stalled.
+> > 
+> > The bad case is when you instrument a function that is invoked in the
+> > context of a ksoftirqd kthread, and the corresponding handler (or
+> > some function that the handler explicitly calls) directly invokes
+> > __do_softirq() or one of its caller.
+> > 
+> > Is that more helpful?
 > 
-> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-> don't report RCU stalls when we resume the VM.
+> OK, I got it. So it would be better to be commented later.
+> But anyway I can't imagine that there is any reason to call
+> __do_softirq() inside kprobe handler :)
+> 
+> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Good point!
-
-But if I understand your patch correctly, if the virtual machine is
-stopped at any point during a grace period, even if only for a short time,
-stall warnings are suppressed for that grace period forever, courtesy of
-the call to rcu_cpu_stall_reset().  So, if something really is stalling,
-and the virtual machine just happens to stop for a few milliseconds, the
-stall warning is completely suppressed.  Which would make it difficult
-to debug the underlying stall condition.
-
-Is it possible to provide RCU with information on the duration of the
-virtual-machine stoppage so that RCU could adjust the timing of the
-stall warning?  Maybe by having something like rcu_cpu_stall_reset()
-that takes the duration of the stoppage in jiffies?
-
-Please note that I am not completely opposed to your patch below, but
-I figured that this was a good time to ask if we can do better.
+I will apply on the next rebase, thank you!
 
 							Thanx, Paul
-
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 59b95cc5cbdf..cb233c79f0bc 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -7,6 +7,8 @@
->   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
->   */
->  
-> +#include <asm/kvm_para.h>
-> +
->  //////////////////////////////////////////////////////////////////////////////
->  //
->  // Controlling CPU stall warnings, including delay calculation.
-> @@ -695,6 +697,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
->  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
->  
-> +		/*
-> +		 * If a virtual machine is stopped by the host it can look to
-> +		 * the watchdog like an RCU stall. Check to see if the host
-> +		 * stopped the vm.
-> +		 */
-> +		if (kvm_check_and_clear_guest_paused())
-> +			return;
-> +
->  		/* We haven't checked in, so go dump stack. */
->  		print_cpu_stall(gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-> @@ -704,6 +714,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
->  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
->  
-> +		/*
-> +		 * If a virtual machine is stopped by the host it can look to
-> +		 * the watchdog like an RCU stall. Check to see if the host
-> +		 * stopped the vm.
-> +		 */
-> +		if (kvm_check_and_clear_guest_paused())
-> +			return;
-> +
->  		/* They had a few time units to dump stack, so complain. */
->  		print_other_cpu_stall(gs2, gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
