@@ -2,57 +2,57 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2135C433ED
-	for <rcu@archiver.kernel.org>; Thu, 20 May 2021 05:50:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F0CC433B4
+	for <rcu@archiver.kernel.org>; Thu, 20 May 2021 06:18:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7E1F6610CC
-	for <rcu@archiver.kernel.org>; Thu, 20 May 2021 05:50:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A74E6611AB
+	for <rcu@archiver.kernel.org>; Thu, 20 May 2021 06:18:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhETFwS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 May 2021 01:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S229681AbhETGTe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 May 2021 02:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhETFwR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 May 2021 01:52:17 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA1FC061574
-        for <rcu@vger.kernel.org>; Wed, 19 May 2021 22:50:55 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id a11so8377073plh.3
-        for <rcu@vger.kernel.org>; Wed, 19 May 2021 22:50:55 -0700 (PDT)
+        with ESMTP id S229676AbhETGTe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 May 2021 02:19:34 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01D0C06175F
+        for <rcu@vger.kernel.org>; Wed, 19 May 2021 23:18:13 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q15so11099239pgg.12
+        for <rcu@vger.kernel.org>; Wed, 19 May 2021 23:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=5j8UDwTOGX/Y+8tKiT9hVDcgkDZBbrwX9nQahsRpL+w=;
-        b=CQYXIJEsLnEsHjq5fYQw+hBYhQQvNaIDKw4c0IpN+3o1C9G3b643NHwKG0H7f8vnHO
-         cEAxSmHKaUZ0aPzorSm+Qd67aZ79QzF6tIIQIhHbrqNGGfmZySaOgzoAeXH/QmhaVvwf
-         P5Z66/JRoRTX5eR8pNVg5PDT6MhKKseTc2vmY=
+        bh=01MV2hP3VJImp8lv5HjPWYkORCHdBsuXiy9X6dXV6YU=;
+        b=DsRG7WxRE7EMzawpEEJOKHEzG9I7QHPq0kzxxD6dXmFCQGdKCs40LMDkMk0R1wcoFD
+         +lv6rZ1ePCj3qrDc/Um2NyMQUdMtpgC3PwBa51r0rWoP3I+Qi0OfGcA1bNTi5uCBZtz4
+         PehpSwwGHZc7hudZeNCx0mi3VE4prwfrexFq8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5j8UDwTOGX/Y+8tKiT9hVDcgkDZBbrwX9nQahsRpL+w=;
-        b=UKQ9d65HdDP956RCcejGxqnjCqAlFylyBuZQqkNJFvr/qhS5zPjvtZlv9X7qW24dVW
-         EvNM02cdje/Wa+cHRp85kEhEqU96NEcXVAM6OB0cPGcc9qRuyWbGYSc04YG8VNj3lU/G
-         8m5wXrYIi6YwmxAJvAuuEdloVJ1io/1MeR/HvOYN3Jr3aI2hsjoWeeUDC8HpmKprZZ0E
-         rLn57Ds3S1LawqoZ41FTjnCSKh7U6jwoTAzQGB1mLZjx5e/PVxG4wyp2FtZjMnqJGXAp
-         foLYhFL9ay3GKfvN9wiHvHydrF4/pjXqs6PKjR4nAd3tRXwPEmXehdNeBG6+RHz7A+yZ
-         tj7A==
-X-Gm-Message-State: AOAM530fJ/N3Eg5eZ0Hi9261mIMFRou1B0n5I6K6HQnHUj4avMmZQSk4
-        ATrTabb19RzJw1U+MJzAJk4QJA==
-X-Google-Smtp-Source: ABdhPJxVLVnGYXgiGDwNIEKr8UyrWbgUqr/T81FZBGliRXJyMSYeTvKb5deEFZQQIQKcNgyoWauI+Q==
-X-Received: by 2002:a17:90a:fed:: with SMTP id 100mr3077336pjz.89.1621489855077;
-        Wed, 19 May 2021 22:50:55 -0700 (PDT)
+        bh=01MV2hP3VJImp8lv5HjPWYkORCHdBsuXiy9X6dXV6YU=;
+        b=ntlNK7tnUnMVRBIzGjGvJ9Ir2wfmgkdu0PCN33dTPZiYLNYpK+5zTHkf5UPbBIhOAj
+         xnn70SXM6pbRqmnqLqRjkA7N+kTEDDytkB2TuapZR2wPUNLT1oyekNyeAjdiBwJnhfBM
+         nZ/rpXXHYmwk7FOv2C82A5SbdTDlliCrz8J17/0oQ/1x3io9H9+1oq8L0xfr0n+Mj477
+         klUdbCE1Aw+CxrMeUAcyvGr2cpbCzebt4I++qmuvTX5iHATF4QXWCLFMee7TLM8XXmZo
+         Tr3i5Z2aeYLE/9jqyQcqNzPNGX2pWdabkTpCyGqiKPt/JD5GXsqR0DOYS3UNQQaTHf1z
+         5zhg==
+X-Gm-Message-State: AOAM5305mUh/+l+qXREGkVQN5fvT9o64sB1BzztQHZVPg7PbYMWy8oW4
+        AzNkq6FwIvnOdbCjUT18rJAjdw==
+X-Google-Smtp-Source: ABdhPJwWnAZwLnVFnZ+A8woriH+Ho+piMTb6AvydDLDkPisvxoo5+SiK+QE67zK46llEijxDGrYEKA==
+X-Received: by 2002:a63:64c6:: with SMTP id y189mr2932733pgb.333.1621491493223;
+        Wed, 19 May 2021 23:18:13 -0700 (PDT)
 Received: from google.com ([2409:10:2e40:5100:48db:abf:343e:b4f7])
-        by smtp.gmail.com with ESMTPSA id 63sm925774pfz.26.2021.05.19.22.50.52
+        by smtp.gmail.com with ESMTPSA id x21sm1073113pfr.124.2021.05.19.23.18.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 22:50:54 -0700 (PDT)
-Date:   Thu, 20 May 2021 14:50:49 +0900
+        Wed, 19 May 2021 23:18:12 -0700 (PDT)
+Date:   Thu, 20 May 2021 15:18:07 +0900
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
@@ -64,7 +64,7 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <YKX4ueNIabfd1DAD@google.com>
+Message-ID: <YKX/H0EwRRLM+cAa@google.com>
 References: <20210516102716.689596-1-senozhatsky@chromium.org>
  <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
  <YKMbQQ0qBAixXC5p@google.com>
@@ -80,35 +80,42 @@ X-Mailing-List: rcu@vger.kernel.org
 On (21/05/18 16:15), Paul E. McKenney wrote:
 > 
 > In the shorter term...  PVCLOCK_GUEST_STOPPED is mostly for things like
-> guest migration and debugger breakpoints, correct?
+> guest migration and debugger breakpoints, correct?  Either way, I am
+> wondering if rcu_cpu_stall_reset() should take a lighter touch.  Right
+> now, it effectively disables all stalls for the current grace period.
+> Why not make it restart the stall timeout when the stoppage is detected?
 
-Our use case is a bit different. We suspend VM when user puts the host
-system into sleep (which can happen multiple times a day).
+rcu_cpu_stall_reset() is used in many other places, not sure if we can
+change its behaviour rcu_cpu_stall_reset().
 
-> Either way, I am wondering if rcu_cpu_stall_reset() should take a lighter
-> touch.  Right now, it effectively disables all stalls for the current grace
-> period. Why not make it restart the stall timeout when the stoppage is detected?
+Maybe it'll be possible to just stop calling it from PV-clock and do
+something like this
 
-Sounds good. I can cook a patch and run some tests.
-Or do you want to send a patch?
+---
 
-> The strange thing is that unless something is updating the jiffies counter
-> to make it look like the system was up during the stoppage time interval,
-> there should be no reason to tell RCU anything.  Is the jiffies counter
-> updated in this manner?  (Not seeing it right offhand, but I don't claim
-> to be familiar with this code.)
-
-VCPUs are not resumed all at once. It's up to the host to schedule VCPUs
-for execution. So, for example, when we resume VCPU-3 and it discovers
-this_cpu PVCLOCK_GUEST_STOPPED, other VCPUs, e.g. VCPU-0, can already be
-resumed, up and running processing timer interrupts and adding ticks to
-jiffies.
-
-I can reproduce it.
-While VCPU-2 has PVCLOCK_GUEST_STOPPED set (resuming) and is in
-check_cpu_stall(), the VCPU-3 is executing:
-
-	apic_timer_interrupt()
-	 tick_irq_enter()
-	  tick_do_update_jiffies64()
-	   do_timer()
+diff --git a/arch/x86/kernel/pvclock.c b/arch/x86/kernel/pvclock.c
+index eda37df016f0..2d2489eda8e6 100644
+--- a/arch/x86/kernel/pvclock.c
++++ b/arch/x86/kernel/pvclock.c
+@@ -40,7 +40,7 @@ void pvclock_touch_watchdogs(void)
+ {
+ 	touch_softlockup_watchdog_sync();
+ 	clocksource_touch_watchdog();
+-	rcu_cpu_stall_reset();
++	record_gp_stall_check_time();
+ 	reset_hung_task_detector();
+ }
+ 
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index cb233c79f0bc..6b3165c7a2c3 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -137,7 +137,7 @@ void rcu_cpu_stall_reset(void)
+ // Interaction with RCU grace periods
+ 
+ /* Start of new grace period, so record stall time (and forcing times). */
+-static void record_gp_stall_check_time(void)
++void record_gp_stall_check_time(void)
+ {
+ 	unsigned long j = jiffies;
+ 	unsigned long j1;
