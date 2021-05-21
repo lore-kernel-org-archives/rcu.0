@@ -2,96 +2,135 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E706FC433ED
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 00:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA106C433ED
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 02:16:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDD74610CB
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 00:15:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A125C6121E
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 02:16:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhEUARP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 May 2021 20:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhEUARN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 May 2021 20:17:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D794F6109F;
-        Fri, 21 May 2021 00:15:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621556151;
-        bh=KN/xo1lyoIiciG9V+VqlWx19KUfp8J5f+WyREaqusoU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e6JBFVBMjMOtGuOw3ilgjfYaLUsfqnviBEew5unIppvInUsZXyizRTMSrQSWvYHuA
-         kkfJktbLa2XxBrODrZqhxlrG66hNiDXSWcoK/krfiry6dPQb7t121a5YirPmzeJc2E
-         s9qv2ejQWrwtmnPTvyeDV6eMta/yfZgNRvkJBPw/KBtlCe9W9o+FjbovdfnZdk3e0n
-         uY9l2hRjQTvbKvrnhcN9OieseLRnBSJByVwTT88p6RRizfqwvhJ6XfoP7WE0fZ3E9J
-         nx3b37oSJdq51xp/fOly1Opm6vCbxnVEj2OC21F5xFj/wP0xUYMZNbuVIS+DsNkeGu
-         EE783aWZleRCA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A05D15C023D; Thu, 20 May 2021 17:15:51 -0700 (PDT)
-Date:   Thu, 20 May 2021 17:15:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+        id S231615AbhEUCRe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 May 2021 22:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232347AbhEUCRd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 May 2021 22:17:33 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B45AC061574;
+        Thu, 20 May 2021 19:16:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id s20so10148769plr.13;
+        Thu, 20 May 2021 19:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
+        b=M+zeTEoLI1/GYxmn5GOJHv/QEEKYeQxcWuZj9YJ9XB5FVShC3Q37jZR+nMsUOWQRPa
+         tjc8ticmX6XmY+Fhq4+mCG/l5uwbyEtTG3Iex5XLkKeoqq6+eN21lYPnGaQNoixJi77r
+         c/xZbyLgrMC263s59XTEuLtVwfWvY3fa+1ox3lOXnshpmLfe0102gK/JEz3yjfC8PSBR
+         eD8XIBye5XZESvp1EV6EeHwI4kITe6qFuU0IpEpVfrioRks5WznTBJbPPU+3VT2jf998
+         kyer0otHWNcpAgDo6NlOtARlTHVhc9vWjt+FfKsCiuQRpRbzzFnUBu199WPfVCc26Lgs
+         TNZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
+        b=g7j2BXhCdBGGJssixRev8Ur2hbTwVDhwxFHu6jdZ668GrEHK8PsgipunvMcyETqM1Y
+         2ePb7VtIijzXsqMJG/EcRA+gMbGVmHAmTzs8ZISeM2G0FE6kpeyx89TA1hFTaSCg3sxw
+         UnU0voz/90XsrhWNg9KrzQGWKQCfRrLpRYdix3gRJgS3QoRe6kvMIOQvCcpnNZyI9thM
+         8A57mWV5zkkymznWnLi36yLB+5uuIMWXjqBeKlmZRjzS3IUxJABB/W1p4RSE+mu9FVNZ
+         /P3l2IXp5STml09sKhMGL7ud5P/UdsMvrfJ8t2YUkWCb5xMRSOB+9rWTF94EiNDXAotN
+         Eqrg==
+X-Gm-Message-State: AOAM530kdFG+RZiQNob/ZvEakFaXvWq9qEN80vm6U/muUZRszpGukSIe
+        1l93mui3lA8JqlgyfQvReIc=
+X-Google-Smtp-Source: ABdhPJz1/Z+AXBrAyurv/F0sH5f5HiGnIKoys49PW6W/IZ8autG8bmKbnH7X5qNzegikiUxhACOmHQ==
+X-Received: by 2002:a17:902:65:b029:ef:abd6:477f with SMTP id 92-20020a1709020065b02900efabd6477fmr9291652pla.77.1621563368879;
+        Thu, 20 May 2021 19:16:08 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id o3sm3016891pgh.22.2021.05.20.19.16.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 19:16:08 -0700 (PDT)
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210521001551.GS4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
- <YKMbQQ0qBAixXC5p@google.com>
- <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
- <YKX4ueNIabfd1DAD@google.com>
- <20210520145708.GK4441@paulmck-ThinkPad-P17-Gen-1>
- <YKbkAXELPxXJcsHA@google.com>
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH -rcu] Documentation/RCU: Fix nested inline markup
+Message-ID: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
+Date:   Fri, 21 May 2021 11:16:04 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKbkAXELPxXJcsHA@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 21, 2021 at 07:34:41AM +0900, Sergey Senozhatsky wrote:
-> On (21/05/20 07:57), Paul E. McKenney wrote:
-> > > 
-> > > Sounds good. I can cook a patch and run some tests.
-> > > Or do you want to send a patch?
-> > 
-> > Given that you have the test setup, things might go faster if you do
-> > the patch, especially taking timezones into consideration.  Of course,
-> > if you run into difficulties, you know where to find me.
-> 
-> OK. Sounds good to me.
-> 
-> > > While VCPU-2 has PVCLOCK_GUEST_STOPPED set (resuming) and is in
-> > > check_cpu_stall(), the VCPU-3 is executing:
-> > > 
-> > > 	apic_timer_interrupt()
-> > > 	 tick_irq_enter()
-> > > 	  tick_do_update_jiffies64()
-> > > 	   do_timer()
-> > 
-> > OK, but the normal grace period time is way less than one second, and
-> > the stall timeout in mainline is 21 seconds, so that would be a -lot-
-> > of jiffies of skew.  Or does the restarting really take that long a time?
-> 
-> That's a good question. I see huge jiffies spike in the logs.
-> I suspect that resuming a VM can take some time, especially on a "not
-> powerful at all" overcommitted host (more virtual CPUs than physical
-> ones).
+To avoid the ``foo`` markup inside the `bar`__ hyperlink marker,
+use the "replace" directive [1].
 
-I really am just asking the question.  ;-)
+This should restore the intended appearance of the link.
 
-After all, if restarting a VM can take that long, then it can take
-that long.
+Tested with sphinx versions 1.7.9 and 2.4.4.
 
-							Thanx, Paul
+[1]: https://docutils.sourceforge.io/docs/ref/rst/directives.html#replace
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hi Paul,
+
+This fixes broken-looking cross reference in section
+"Publish/Subscribe Guarantee" at:
+
+https://www.kernel.org/doc/html/latest/RCU/Design/Requirements/Requirements.html#publish-subscribe-guarantee
+
+To-be-replaced macro string can be much shorter.
+I preserved the whole string considering the readability of .rst.
+
+        Thanks, Akira
+--
+ Documentation/RCU/Design/Requirements/Requirements.rst | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 38a39476fc24..45278e2974c0 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -362,9 +362,8 @@ do_something_gp() uses rcu_dereference() to fetch from ``gp``:
+       12 }
+ 
+ The rcu_dereference() uses volatile casts and (for DEC Alpha) memory
+-barriers in the Linux kernel. Should a `high-quality implementation of
+-C11 ``memory_order_consume``
+-[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
++barriers in the Linux kernel. Should a |high-quality implementation of
++C11 memory_order_consume [PDF]|_
+ ever appear, then rcu_dereference() could be implemented as a
+ ``memory_order_consume`` load. Regardless of the exact implementation, a
+ pointer fetched by rcu_dereference() may not be used outside of the
+@@ -374,6 +373,9 @@ element has been passed from RCU to some other synchronization
+ mechanism, most commonly locking or `reference
+ counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
+ 
++.. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
++.. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
++
+ In short, updaters use rcu_assign_pointer() and readers use
+ rcu_dereference(), and these two RCU API elements work together to
+ ensure that readers have a consistent view of newly added data elements.
+-- 
+2.17.1
+
