@@ -2,116 +2,122 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B53C47076
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 15:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D35FBC4707A
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 17:36:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 981FC613E2
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 15:56:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B0C57611AB
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 17:36:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhEUP6C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 May 2021 11:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235488AbhEUP6B (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 May 2021 11:58:01 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531DDC061574
-        for <rcu@vger.kernel.org>; Fri, 21 May 2021 08:56:38 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id c17so15222923pfn.6
-        for <rcu@vger.kernel.org>; Fri, 21 May 2021 08:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FU6Xt3Q0npwd76ndNbqtS7CA/D4kpjpW7DA7NbFpzmA=;
-        b=C3Rg3mYeETpx5hrBgo9uz/N2Ly+1d98Z7CHaaLznqPmJMO6uv5L9ShAzH80RC+wBbo
-         p5Uo8i1qMtiM5qxcqzXJReulf7RSjt9AXpR4dyqWX93HN2IQGIinJlwNSFCHDA72hnQV
-         TA8uj3zjo4657XpAdwHKyJf1tXDblCpHfUr4U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FU6Xt3Q0npwd76ndNbqtS7CA/D4kpjpW7DA7NbFpzmA=;
-        b=k4T0PvvqOpAeN+c6iGMIE2ozUT82z0uVY0SRtRA6Qado36j2KAgiCbK82LNtl+a0wQ
-         8SL7kmis/A+NmIL1iGbNoz89U21bdZwFrb7JqegKGy1Lb1PKX1GTPJY0/gWoEpEnV4BD
-         Mlp8dhLgtCztreMWwF3sGEBizd1YJ7EnF2JXF4Y9yv9ocbkhfwuid8Frpac+Q1W+TUHF
-         86A7OL95eR49Qbs4+HJBKj9lkMkyy9y4KvxDJobVVxFsDWDJieQubC5edUo7OdwWH6xB
-         GeK0pzKcwAxs4EZngKNwUNwbDddKaL6uvZlclu00odKIpp6Lrk+qPfUAcH6OSd2CluUP
-         fnLg==
-X-Gm-Message-State: AOAM531YI9eWsaa6aRibWss8zTOSyRMOzhlLycpkaC2ysEfiH0CxBlvf
-        Sqjnp+p7JEHqfU+KeMh/AmoALg==
-X-Google-Smtp-Source: ABdhPJwYpfe9/4eKUBoPdc8xy2I0ri+MklwAsL9NUU/7V7lzUz7roAnIpqEpBQs6amn8bel/cOnn3A==
-X-Received: by 2002:a63:af0f:: with SMTP id w15mr10597776pge.295.1621612597912;
-        Fri, 21 May 2021 08:56:37 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:245d:3890:fa95:996e])
-        by smtp.gmail.com with ESMTPSA id k15sm4767123pfi.0.2021.05.21.08.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 08:56:37 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S234066AbhEURh3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 May 2021 13:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233220AbhEURh3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 May 2021 13:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB0261168;
+        Fri, 21 May 2021 17:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621618565;
+        bh=4aOxbiHGvShE6QjDYszuUr7TvUl6/VFWQI8sBfUysUU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hi/W261FoFNP/QGvNDUiE95mXNskFLc5lTf+X6+xBckoXCXTUbFgBWOs+mNSEimqc
+         BECCpY4bBmHV9tLiHbfx+KXp4E63V22HCPy0T6uV/K2UYGY2ePy9x1kylXpk2K7muk
+         yStUy+YvZw89WdmyeBt5bXCI1yJkcaypO2RAc9T9MUCIQDJni65alU1znT8iCKiMmU
+         JzrsPKJO+ZpUWot7kc3/bMwwNuGag2n3kAsl71E/apkcFjZXbK2Tf3zylLniNoISFz
+         kEt6RDV6MEVncFpP0DTRAtzEz8msJ1TNDFsQPC6LgjAhnSj57wx9rk6roxQkD3+d6i
+         Jl97pgwyVSl7w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 89EBE5C0164; Fri, 21 May 2021 10:36:05 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:36:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
 Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH 2/2] rcu: do not disable gp stall detection in rcu_cpu_stall_reset()
-Date:   Sat, 22 May 2021 00:56:24 +0900
-Message-Id: <20210521155624.174524-2-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
-References: <20210521155624.174524-1-senozhatsky@chromium.org>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -rcu] Documentation/RCU: Fix nested inline markup
+Message-ID: <20210521173605.GA4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-rcu_cpu_stall_reset() is one of the functions virtual CPUs
-execute during VM resume in order to handle jiffies skew
-that can trigger false positive stall warnings. Paul has
-pointed out that this approach is problematic because
-rcu_cpu_stall_reset() disables RCU grace period stall-detection
-virtually forever, while in fact it can just restart the
-stall-detection timeout.
+On Fri, May 21, 2021 at 11:16:04AM +0900, Akira Yokosawa wrote:
+> To avoid the ``foo`` markup inside the `bar`__ hyperlink marker,
+> use the "replace" directive [1].
+> 
+> This should restore the intended appearance of the link.
+> 
+> Tested with sphinx versions 1.7.9 and 2.4.4.
+> 
+> [1]: https://docutils.sourceforge.io/docs/ref/rst/directives.html#replace
+> 
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 
-Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- kernel/rcu/tree_stall.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Queued, thank you!  Or if this should instead go via the Documentation
+tree:
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index bc689911a81d..b9b52f91e5b8 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -119,17 +119,14 @@ static void panic_on_rcu_stall(void)
- }
- 
- /**
-- * rcu_cpu_stall_reset - prevent further stall warnings in current grace period
-- *
-- * Set the stall-warning timeout way off into the future, thus preventing
-- * any RCU CPU stall-warning messages from appearing in the current set of
-- * RCU grace periods.
-+ * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
-  *
-  * The caller must disable hard irqs.
-  */
- void rcu_cpu_stall_reset(void)
- {
--	WRITE_ONCE(rcu_state.jiffies_stall, jiffies + ULONG_MAX / 2);
-+	WRITE_ONCE(rcu_state.jiffies_stall,
-+		   jiffies + rcu_jiffies_till_stall_check());
- }
- 
- //////////////////////////////////////////////////////////////////////////////
--- 
-2.31.1.818.g46aad6cb9e-goog
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
+> ---
+> Hi Paul,
+> 
+> This fixes broken-looking cross reference in section
+> "Publish/Subscribe Guarantee" at:
+> 
+> https://www.kernel.org/doc/html/latest/RCU/Design/Requirements/Requirements.html#publish-subscribe-guarantee
+> 
+> To-be-replaced macro string can be much shorter.
+> I preserved the whole string considering the readability of .rst.
+
+And completely agreed on keeping the .rst readable.
+
+							Thanx, Paul
+
+>         Thanks, Akira
+> --
+>  Documentation/RCU/Design/Requirements/Requirements.rst | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 38a39476fc24..45278e2974c0 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -362,9 +362,8 @@ do_something_gp() uses rcu_dereference() to fetch from ``gp``:
+>        12 }
+>  
+>  The rcu_dereference() uses volatile casts and (for DEC Alpha) memory
+> -barriers in the Linux kernel. Should a `high-quality implementation of
+> -C11 ``memory_order_consume``
+> -[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
+> +barriers in the Linux kernel. Should a |high-quality implementation of
+> +C11 memory_order_consume [PDF]|_
+>  ever appear, then rcu_dereference() could be implemented as a
+>  ``memory_order_consume`` load. Regardless of the exact implementation, a
+>  pointer fetched by rcu_dereference() may not be used outside of the
+> @@ -374,6 +373,9 @@ element has been passed from RCU to some other synchronization
+>  mechanism, most commonly locking or `reference
+>  counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
+>  
+> +.. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
+> +.. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
+> +
+>  In short, updaters use rcu_assign_pointer() and readers use
+>  rcu_dereference(), and these two RCU API elements work together to
+>  ensure that readers have a consistent view of newly added data elements.
+> -- 
+> 2.17.1
+> 
