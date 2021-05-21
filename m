@@ -2,135 +2,98 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA858C433ED
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 10:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21955C433ED
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 14:01:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8766C613CB
-	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 10:09:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EA8666128A
+	for <rcu@archiver.kernel.org>; Fri, 21 May 2021 14:01:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhEUKKm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 May 2021 06:10:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3926 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233350AbhEUKKk (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 21 May 2021 06:10:40 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LA36ZL055466;
-        Fri, 21 May 2021 06:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=GU3OgEF71usx2GCy1UvEbNnrKwsrwrSyWiTISbRlXoA=;
- b=nbi9Lj57QkFqP0g5c38OJ/cGYseNYyriFy3MS+e8AwcSoq3MuR7wl5rhDZhFJQfGaJyn
- yzEbjfW+LQ2eqrZiM0nX1BOUS6bTJzrLmTKy181+ncSZaXZlGKr70uXvAi2i08lECcA/
- 5ctiIR0uujaCSZIzEp3waTjSgKKSLGQvockGu65jgP5vGFR22d31Pj/KtAJJv8VFkcPt
- 2+8wTx5W2UAwHNwUZKlzOI2LVl0gIGSmRx/MhDfQm/ke/F3uvNif8+BVbMOXSZ9W1xD9
- hqS6KaPqmo5HZdz3RTuM+V/RA+PpqeeJKe5/Yp0/w2YCkt5xwrrSa4YrfbafuWJ+ihB0 oQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38p9kvt78h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 06:08:45 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14LA3jE0057052;
-        Fri, 21 May 2021 06:08:44 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38p9kvt77w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 06:08:44 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LA0Abc024340;
-        Fri, 21 May 2021 10:08:42 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 38j5x89q8a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 10:08:42 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LA8eDg32702878
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 10:08:40 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40C33A405B;
-        Fri, 21 May 2021 10:08:40 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5A67A4054;
-        Fri, 21 May 2021 10:08:39 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 10:08:39 +0000 (GMT)
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        id S232632AbhEUODN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 May 2021 10:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232587AbhEUODM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 May 2021 10:03:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0574600CC;
+        Fri, 21 May 2021 14:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621605709;
+        bh=4NU3L/wRMJdaIM1lpW4/qgGxrymlw6Y10w9dSIEXwHg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k0aXQLcppBc724fUuHCe8op2TXc4CanDDbbLvjvCE5wNC9UWY6gV2O96k4/vExpQ6
+         dBWxwqNxS2vznmWLyuIaTROH/FOqw/hGNAwA7AZy+LvODPk578qrIAS7/Bw4V2gunk
+         eH1767xBA0VL5/aOcLBwFOnQO53LrvzF5uK0gbR4KSmQU/UlgsoT39Ttp15YD9B33K
+         e7oUmMYn8ALCmu3DsrJwklZTSbtrkQkW7VP0/p6LMsyQVFsV0fJwZhq4pFMIMXeGeh
+         cTYn8v+22Qpb7vx2u9ZPd2sU2neE26jgzlJeAUKVoscCwpeOKEXLio40mFRYQaYKsH
+         PQeuHh2aaYIwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 94CF75C033C; Fri, 21 May 2021 07:01:49 -0700 (PDT)
+Date:   Fri, 21 May 2021 07:01:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] rculist: unify documentation about missing list_empty_rcu()
-Date:   Fri, 21 May 2021 12:08:29 +0200
-Message-Id: <20210521100829.257385-1-jwi@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210521140149.GV4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
+ <YKdU0U0aHKm2x3Y7@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uxqhgkbKAHIHcuc0wQ4DuKMWdlcFymhX
-X-Proofpoint-ORIG-GUID: x37O0_AqHiZCK-KmNum_OKFu-2nBw7I5
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_03:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=0 clxscore=1011 bulkscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKdU0U0aHKm2x3Y7@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-We have two separate sections that talk about why list_empty_rcu()
-is not needed, consolidate them.
+On Fri, May 21, 2021 at 03:36:01PM +0900, Sergey Senozhatsky wrote:
+> On (21/05/16 19:27), Sergey Senozhatsky wrote:
+> >  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 59b95cc5cbdf..cb233c79f0bc 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -7,6 +7,8 @@
+> >   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+> >   */
+> >  
+> > +#include <asm/kvm_para.h>
+> > +
+> 
+> D'oh, why did I do this...
+> 
+> Paul, I've a trivial fixup. How do you want to handle it?
 
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
----
- include/linux/rculist.h | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+I dropped your earlier patch due to the warning and also because it
+looked like you might have a different approach.
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index f8633d37e358..f8f42ce04382 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -10,15 +10,6 @@
- #include <linux/list.h>
- #include <linux/rcupdate.h>
- 
--/*
-- * Why is there no list_empty_rcu()?  Because list_empty() serves this
-- * purpose.  The list_empty() function fetches the RCU-protected pointer
-- * and compares it to the address of the list head, but neither dereferences
-- * this pointer itself nor provides this pointer to the caller.  Therefore,
-- * it is not necessary to use rcu_dereference(), so that list_empty() can
-- * be used anywhere you would want to use a list_empty_rcu().
-- */
--
- /*
-  * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
-  * @list: list to be initialized
-@@ -334,6 +325,12 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
-  * list_first_entry() because they would be protected by a lock that blocks
-  * writers.
-  *
-+ * list_empty() fetches the RCU-protected pointer and compares it to the address
-+ * of the list head. But it neither dereferences this pointer itself, nor
-+ * provides this pointer to the caller. Therefore it is not necessary to use
-+ * rcu_dereference(), and list_empty() can be used anywhere you would want to
-+ * use a list_empty_rcu().
-+ *
-  * See list_first_or_null_rcu for an alternative.
-  */
- 
--- 
-2.25.1
+So please just send the fixed-up patch and I will pull it in and see
+how it does.
 
+							Thanx, Paul
+
+> ---
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index cd815b19740a..b9b52f91e5b8 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -7,7 +7,7 @@
+>   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+> -#include <asm/kvm_para.h>
+> +#include <linux/kvm_para.h>
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
