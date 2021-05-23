@@ -2,251 +2,192 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D389AC4707A
-	for <rcu@archiver.kernel.org>; Sun, 23 May 2021 06:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC852C4707A
+	for <rcu@archiver.kernel.org>; Sun, 23 May 2021 09:41:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAB9E61244
-	for <rcu@archiver.kernel.org>; Sun, 23 May 2021 06:52:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A29D3610A2
+	for <rcu@archiver.kernel.org>; Sun, 23 May 2021 09:41:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhEWGxi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 May 2021 02:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhEWGxg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 23 May 2021 02:53:36 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E0BC061574
-        for <rcu@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id 124so11815842qkh.10
-        for <rcu@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
-        b=vP9JMOrheZhsSQxdzHTPpsVLOx93NAsnpxVjx7qWDjqiPOA5sPxeKgqLRpH/YuB3hr
-         1qe60N79JPZxkEv0X6phzI4CifdnGlE+t6Nva9C3zQZovpMGOkVp5lmoGr777iNT03W0
-         v5F8fmk7Xq+CA6TOZstNVcgk9PqWhgYDqQBQfDPEEDpbdsZDINL7kkzeDTqoBYqnH6zs
-         sIYXQ+TeL+b7KMd+a72+xHzcSrboJGUiVE8RzEzhdLf1wC2DqY0uTNbNPFHzgYorXpOY
-         9raAazXFrPu6VKjQ1jxhlUBJEICMCHM7VJIPNiT7EKV+xi5+Qpw3AmZTtIcTUB3thFmP
-         lBAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
-        b=psx4jyM4OKth2S77A1EKMwdvPDCdEQebK2yjnOZ8Yw2/yKHAt9M4nGwR43242Um0UP
-         SI0tMrVrEcaQNDvURs6CDTifF+bwrx29lVCkgv6e3FNE51fk45ZbhUan2r4Dk7tFMfRQ
-         7t89hKcJV+fyUlx2I4x11YVzvDvYUBcimN/2HrftK8cd45Wfy3pG/eaICnOwQYiVO+v3
-         KjTpOHrVXbPsNqSLv4M+9haHabyva50NDvZC+/D1jnieLpTLIvSYvQ/G7GGmgaAUsX5g
-         FsggjhcDRW2axkCKgVAwX282rqd8TB0M99I+XPD7lA/AVlnO8Yb6rqNfkqyoU35VIHiK
-         TJMQ==
-X-Gm-Message-State: AOAM531CwHSes9k+waBn662MhJxAfLXlVCjEHDxZtLZDrOtB10xK52CF
-        Y0P14DH/szgC8e38WRG/z7p2HAVDwEqkX0GmEF4Jqgtd8gA=
-X-Google-Smtp-Source: ABdhPJybtfNNH0p75laysKYjeecXDAfkDnX74lkQEOtFjdMIaaxxvonlEZuLerS023UXGnaoGTPnypA/Te66B8HZiWU=
-X-Received: by 2002:a37:4694:: with SMTP id t142mr22939783qka.265.1621752727959;
- Sat, 22 May 2021 23:52:07 -0700 (PDT)
+        id S231669AbhEWJmx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 May 2021 05:42:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47106 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231658AbhEWJmx (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Sun, 23 May 2021 05:42:53 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14N9Xv5J148295;
+        Sun, 23 May 2021 05:40:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ociFyizVsM28GJMvNG8DMaVsQoWuT8RJpNowjEhIi/A=;
+ b=K4dL4tad0pExKFz47Pi+fXjgDsK+xN+KiMKNKZYQWhG9zSr6NX7weICFKnsFj+kaYt3L
+ cjHzQNqOLPBh4O5YalR0aEGcYPBsQ2+KNPLZCrkNoKCVqQSnA8hLNO+/VSxLj/xGqsYl
+ JJ0stIYgIr5tbyBB4Y7RhF+PbEGBQXrQ7gUXd+QU7aslg2tCTyqOEi3oOpil0DhnmLch
+ NYFxHZYHrbAHloOQarB104S5iBPlJ32O65w4DgL/Xy1S7HXuoWBMeIV4iZEMITaLeoOe
+ /IvC50J8+V8BcsPNljCGDyZXLS60N3yUhuBOWXyEFOZ+LDo8yQq5FaJ92JUjdo6+ORIK 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 05:40:50 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14N9XtbO148186;
+        Sun, 23 May 2021 05:40:50 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 05:40:49 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14N9RHK1014616;
+        Sun, 23 May 2021 09:40:47 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 38psk886e7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 09:40:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14N9eG5M27394388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 23 May 2021 09:40:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3049AA405B;
+        Sun, 23 May 2021 09:40:45 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8820AA4054;
+        Sun, 23 May 2021 09:40:44 +0000 (GMT)
+Received: from [9.145.68.41] (unknown [9.145.68.41])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 23 May 2021 09:40:44 +0000 (GMT)
+Subject: Re: [PATCH] rculist: unify documentation about missing
+ list_empty_rcu()
+To:     paulmck@kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210521100829.257385-1-jwi@linux.ibm.com>
+ <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+Message-ID: <65f39db3-41ec-dc7a-0600-082439735556@linux.ibm.com>
+Date:   Sun, 23 May 2021 12:40:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <000000000000f034fc05c2da6617@google.com>
-In-Reply-To: <000000000000f034fc05c2da6617@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 23 May 2021 08:51:56 +0200
-Message-ID: <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PJbQW_UKfbcYwrwzdjm9YwtFxDsoDmjv
+X-Proofpoint-ORIG-GUID: K0wzkeLPKojKPCB2E9q8h2zUiuIwmpm-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-22_08:2021-05-20,2021-05-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 impostorscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105230070
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 21, 2021 at 7:29 PM syzbot
-<syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+On 21.05.21 20:56, Paul E. McKenney wrote:
+> On Fri, May 21, 2021 at 12:08:29PM +0200, Julian Wiedmann wrote:
+>> We have two separate sections that talk about why list_empty_rcu()
+>> is not needed, consolidate them.
+>>
+>> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+> 
+> Good catch, thank you!  As usual, I could not resist the urge to further
+> wordsmith, resulting in the following.  Please let me know if I messed
+> anything up.
+> 
+> 							Thanx, Paul
+> 
 
-This looks rcu-related. +rcu mailing list
+I expected no different ;). LGTM, and clearly emphasizing that one shall
+not mix list_empty() with list_first_entry_rcu() is a nice improvement.
 
-> ==================================================================
-> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
-> Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
->
-> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
->  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> Allocated by task 8477:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:428 [inline]
->  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
->  kasan_slab_alloc include/linux/kasan.h:236 [inline]
->  slab_post_alloc_hook mm/slab.h:524 [inline]
->  slab_alloc_node mm/slub.c:2912 [inline]
->  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Freed by task 12:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->  ____kasan_slab_free mm/kasan/common.c:360 [inline]
->  ____kasan_slab_free mm/kasan/common.c:325 [inline]
->  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
->  kasan_slab_free include/linux/kasan.h:212 [inline]
->  slab_free_hook mm/slub.c:1581 [inline]
->  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
->  slab_free mm/slub.c:3166 [inline]
->  kmem_cache_free+0x8a/0x740 mm/slub.c:3182
->  __put_task_struct+0x26f/0x400 kernel/fork.c:747
->  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
->  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> Last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  release_task+0xca1/0x1690 kernel/exit.c:226
->  wait_task_zombie kernel/exit.c:1108 [inline]
->  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
->  do_wait_thread kernel/exit.c:1398 [inline]
->  do_wait+0x724/0xd40 kernel/exit.c:1515
->  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
->  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Second to last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  context_switch kernel/sched/core.c:4342 [inline]
->  __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
->  preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
->  preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
->  try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
->  wake_up_process kernel/sched/core.c:3552 [inline]
->  wake_up_q+0x96/0x100 kernel/sched/core.c:597
->  futex_wake+0x3e9/0x490 kernel/futex.c:1634
->  do_futex+0x326/0x1780 kernel/futex.c:3738
->  __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The buggy address belongs to the object at ffff888027679c40
->  which belongs to the cache task_struct of size 6976
-> The buggy address is located 1052 bytes inside of
->  6976-byte region [ffff888027679c40, ffff88802767b780)
-> The buggy address belongs to the page:
-> page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
-> head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
-> raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
->  prep_new_page mm/page_alloc.c:2358 [inline]
->  get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
->  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
->  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
->  alloc_slab_page mm/slub.c:1644 [inline]
->  allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
->  new_slab mm/slub.c:1847 [inline]
->  new_slab_objects mm/slub.c:2593 [inline]
->  ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
->  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
->  slab_alloc_node mm/slub.c:2878 [inline]
->  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
->  call_usermodehelper_exec_work kernel/umh.c:174 [inline]
->  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> page_owner free stack trace missing
->
-> Memory state around the buggy address:
->  ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                                     ^
->  ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000f034fc05c2da6617%40google.com.
+
+> ------------------------------------------------------------------------
+> 
+> commit 6e9da58a4b391035e1ce77b8d867cdcdc73521b2
+> Author: Julian Wiedmann <jwi@linux.ibm.com>
+> Date:   Fri May 21 12:08:29 2021 +0200
+> 
+>     rculist: Unify documentation about missing list_empty_rcu()
+>     
+>     We have two separate sections that talk about why list_empty_rcu()
+>     is not needed, so this commit consolidates them.
+>     
+>     Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+>     [ paulmck: The usual wordsmithing. ]
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index f8633d37e358..d29740be4833 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -10,15 +10,6 @@
+>  #include <linux/list.h>
+>  #include <linux/rcupdate.h>
+>  
+> -/*
+> - * Why is there no list_empty_rcu()?  Because list_empty() serves this
+> - * purpose.  The list_empty() function fetches the RCU-protected pointer
+> - * and compares it to the address of the list head, but neither dereferences
+> - * this pointer itself nor provides this pointer to the caller.  Therefore,
+> - * it is not necessary to use rcu_dereference(), so that list_empty() can
+> - * be used anywhere you would want to use a list_empty_rcu().
+> - */
+> -
+>  /*
+>   * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
+>   * @list: list to be initialized
+> @@ -318,21 +309,29 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+>  /*
+>   * Where are list_empty_rcu() and list_first_entry_rcu()?
+>   *
+> - * Implementing those functions following their counterparts list_empty() and
+> - * list_first_entry() is not advisable because they lead to subtle race
+> - * conditions as the following snippet shows:
+> + * They do not exist because they would lead to subtle race conditions:
+>   *
+>   * if (!list_empty_rcu(mylist)) {
+>   *	struct foo *bar = list_first_entry_rcu(mylist, struct foo, list_member);
+>   *	do_something(bar);
+>   * }
+>   *
+> - * The list may not be empty when list_empty_rcu checks it, but it may be when
+> - * list_first_entry_rcu rereads the ->next pointer.
+> - *
+> - * Rereading the ->next pointer is not a problem for list_empty() and
+> - * list_first_entry() because they would be protected by a lock that blocks
+> - * writers.
+> + * The list might be non-empty when list_empty_rcu() checks it, but it
+> + * might have become empty by the time that list_first_entry_rcu() rereads
+> + * the ->next pointer, which would result in a SEGV.
+> + *
+> + * When not using RCU, it is OK for list_first_entry() to re-read that
+> + * pointer because both functions should be protected by some lock that
+> + * blocks writers.
+> + *
+> + * When using RCU, list_empty() uses READ_ONCE() to fetch the
+> + * RCU-protected ->next pointer and then compares it to the address of the
+> + * list head.  However, it neither dereferences this pointer nor provides
+> + * this pointer to its caller.  Thus, READ_ONCE() suffices (that is,
+> + * rcu_dereference() is not needed), which means that list_empty() can be
+> + * used anywhere you would want to use list_empty_rcu().  Just don't
+> + * expect anything useful to happen if you do a subsequent lockless
+> + * call to list_first_entry_rcu()!!!
+>   *
+>   * See list_first_or_null_rcu for an alternative.
+>   */
+> 
+
