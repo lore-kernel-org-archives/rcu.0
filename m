@@ -2,38 +2,50 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE9DEC47093
-	for <rcu@archiver.kernel.org>; Wed,  2 Jun 2021 15:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F41FC4708F
+	for <rcu@archiver.kernel.org>; Wed,  2 Jun 2021 16:46:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9AB0D61246
-	for <rcu@archiver.kernel.org>; Wed,  2 Jun 2021 15:10:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5492760FF0
+	for <rcu@archiver.kernel.org>; Wed,  2 Jun 2021 16:46:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhFBPMP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Jun 2021 11:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhFBPML (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:12:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73C1A61182;
-        Wed,  2 Jun 2021 15:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622646628;
-        bh=MmmB5edNPbRN/+c+2On4lV0BgwteW7Cw405ip5Z8YuI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eoW8oxXoywj95HF19beDzh3Wa+WhWkiyj9FjvvSEw7ScJ8OuGQbEy6+2TGjP0xVYN
-         XSSJAJXvhI5MOj1+GRdHIbg46k9rJSpJMlo/HDJefXpEwJPCDFcYn8COIR/VQO5DZl
-         47yzM30C6QaWLqEpy6LeVNCLBHEk+aKjfkrC6CQ5ViDR3bMQ0fCKMIt+zFjJNZMY+v
-         SNl2CwOo9QKvwQF6AUEFLQH9ccSyIziiULTl3YApDUWutkiYOLv0+Q04TM9wwWdkfx
-         bdsysjlbcoFBsmj9C1l84fr+oHwMhBsnHonyI6jC2MFd17CoX0BlIS16/UkYyFRS6U
-         MochfZ+/mAepQ==
-Date:   Wed, 2 Jun 2021 16:10:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
+        id S230129AbhFBQsO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Jun 2021 12:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhFBQsN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:48:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140ABC061574;
+        Wed,  2 Jun 2021 09:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7tohifuv5JYW3E7Hk1sVQuIjPI/C8MKSY3MQl5vvB4s=; b=kdu4BwlchYINw3C+EcBocsHDUy
+        a91P+WO2n/ztNAZpC4i1gw7tqOKUFzwWu58suQdLAjM2YXFikv/5/oaqPmf99JVYKCNj2WJKpDQ0i
+        S0c8GI0OlAIisTgxakan8G10HFtH5HuNw7Hqdqi3RHiYYq3zdmBzXy5lsDnRzF3TJVEtdO68TnpgS
+        8K25eJH4v8dAAo7rswaiwcEE8nXrQyqHEIrzfWlp7ORDwYUd2bEDZxmNSuwBFuW4xEFDNeWs3Yg6U
+        o+Kb0+cIMahvxPwVt/nlQwL5AtLXT/J6J+qePZba4xfUkA84xt+DhB39swRCy3609n/Mv+E85Mgmt
+        FcuTDgEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loU0X-00BKKW-No; Wed, 02 Jun 2021 16:46:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7E12300299;
+        Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A73D2016D6DD; Wed,  2 Jun 2021 18:46:16 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 18:46:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
         Juri Lelli <juri.lelli@redhat.com>,
@@ -81,58 +93,54 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         kgdb-bugreport@lists.sourceforge.net,
         linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
         rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
-Message-ID: <20210602151010.GE31179@willie-the-truck>
+Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
+Message-ID: <YLe12Ba4CrvhMhFI@hirez.programming.kicks-ass.net>
 References: <20210602131225.336600299@infradead.org>
- <20210602133040.587042016@infradead.org>
+ <20210602133040.334970485@infradead.org>
+ <20210602145921.GB31179@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602133040.587042016@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602145921.GB31179@willie-the-truck>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:12:31PM +0200, Peter Zijlstra wrote:
-> Change the type and name of task_struct::state. Drop the volatile and
-> shrink it to an 'unsigned int'. Rename it in order to find all uses
-> such that we can use READ_ONCE/WRITE_ONCE as appropriate.
+On Wed, Jun 02, 2021 at 03:59:21PM +0100, Will Deacon wrote:
+> On Wed, Jun 02, 2021 at 03:12:27PM +0200, Peter Zijlstra wrote:
+> > Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
+> > task_is_running(p).
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  arch/x86/kernel/process.c |    4 ++--
+> >  block/blk-mq.c            |    2 +-
+> >  include/linux/sched.h     |    2 ++
+> >  kernel/locking/lockdep.c  |    2 +-
+> >  kernel/rcu/tree_plugin.h  |    2 +-
+> >  kernel/sched/core.c       |    6 +++---
+> >  kernel/sched/stats.h      |    2 +-
+> >  kernel/signal.c           |    2 +-
+> >  kernel/softirq.c          |    3 +--
+> >  mm/compaction.c           |    2 +-
+> >  10 files changed, 14 insertions(+), 13 deletions(-)
+> > 
+> > --- a/arch/x86/kernel/process.c
+> > +++ b/arch/x86/kernel/process.c
+> > @@ -931,7 +931,7 @@ unsigned long get_wchan(struct task_stru
+> >  	unsigned long start, bottom, top, sp, fp, ip, ret = 0;
+> >  	int count = 0;
+> >  
+> > -	if (p == current || p->state == TASK_RUNNING)
+> > +	if (p == current || task_is_running(p))
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  block/blk-mq.c                 |    2 -
->  drivers/md/dm.c                |    6 ++--
->  fs/binfmt_elf.c                |    8 +++---
->  fs/userfaultfd.c               |    4 +--
->  include/linux/sched.h          |   31 +++++++++++------------
->  include/linux/sched/debug.h    |    2 -
->  include/linux/sched/signal.h   |    2 -
->  init/init_task.c               |    2 -
->  kernel/cgroup/cgroup-v1.c      |    2 -
->  kernel/debug/kdb/kdb_support.c |   18 +++++++------
->  kernel/fork.c                  |    4 +--
->  kernel/hung_task.c             |    2 -
->  kernel/kthread.c               |    4 +--
->  kernel/locking/mutex.c         |    6 ++--
->  kernel/locking/rtmutex.c       |    4 +--
->  kernel/locking/rwsem.c         |    2 -
->  kernel/ptrace.c                |   12 ++++-----
->  kernel/rcu/rcutorture.c        |    4 +--
->  kernel/rcu/tree_stall.h        |   12 ++++-----
->  kernel/sched/core.c            |   53 +++++++++++++++++++++--------------------
->  kernel/sched/deadline.c        |   10 +++----
->  kernel/sched/fair.c            |   11 +++++---
->  lib/syscall.c                  |    4 +--
->  net/core/dev.c                 |    2 -
->  24 files changed, 108 insertions(+), 99 deletions(-)
+> Looks like this one in get_wchan() has been cargo-culted across most of
+> arch/ so they'll need fixing up before you rename the struct member.
 
-I think this makes the code a _lot_ easier to understand, so:
+Yeah, this was x86_64 allmodconfig driven, I've already got a bunch of
+robot mail telling me other archs need help, I'll fix it iup.
 
-Acked-by: Will Deacon <will@kernel.org>
+> There's also a weird one in tools/bpf/runqslower/runqslower.bpf.c (!)
 
-on the assumption that you'll fix get_wchan() for !x86 as well.
-
-Cheers,
-
-Will
+I'm tempted to let the bpf people sort their own gunk. This is not an
+ABI. I so don't care breaking every script out there.
