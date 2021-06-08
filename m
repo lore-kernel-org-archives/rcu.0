@@ -2,160 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB963C47082
-	for <rcu@archiver.kernel.org>; Mon,  7 Jun 2021 11:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5635FC47082
+	for <rcu@archiver.kernel.org>; Tue,  8 Jun 2021 07:50:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A3F0961159
-	for <rcu@archiver.kernel.org>; Mon,  7 Jun 2021 11:11:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33FA960C40
+	for <rcu@archiver.kernel.org>; Tue,  8 Jun 2021 07:50:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFGLMr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Jun 2021 07:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhFGLMq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:12:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60354C061766;
-        Mon,  7 Jun 2021 04:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NLj4NYDQW6SbenCIcbS9QrwkO4aohp/HPEuCGPuaREs=; b=cPnEKquwt970ZOfmptV8ZPqMgA
-        nDKIN3sS9ih9nuu8IzgPQnkE+3vwyvAnDc2ZrMU9wmERzTb3IGMYGi4WE6+4lUgqF2JtL/lM/I5kJ
-        eiHF9IMB2d+Y9lTFFFVOwPJJI9S76oa/nkFLOGjGCPqHZTpDXHEuTaeqYbLfHC8bQodhRsFoh+Qy8
-        dTHV3vTaUZfqdQXrfYxuM6d63mJeyrNKoQ2Zm8n4XPuwlvYtbjKQlZwLanaf8FCczQxwMbK2aY9KZ
-        5ZBbcHBMtWS/MR3PhHmCJk3dhHVW0UT+bEq4donFnJVNzTVZUBUUF9jUBREUKuzW6aCVhr/V5xCxL
-        LVjMXPEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqD9Y-004Mvp-0K; Mon, 07 Jun 2021 11:10:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C9BD33002A6;
-        Mon,  7 Jun 2021 13:10:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A8BB82CF3852B; Mon,  7 Jun 2021 13:10:49 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 13:10:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        id S229556AbhFHHvz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Jun 2021 03:51:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3786 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhFHHvy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Jun 2021 03:51:54 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzj2F0fLWzWpGM;
+        Tue,  8 Jun 2021 15:45:09 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:49:59 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 15:49:59 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
-Message-ID: <YL3+ucpG/LOcO35G@hirez.programming.kicks-ass.net>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.587042016@infradead.org>
- <20210607104500.sopvslejuoxwzhrs@maple.lan>
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] rcu: remove trailing spaces and tabs
+Date:   Tue, 8 Jun 2021 15:49:48 +0800
+Message-ID: <20210608074948.13014-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607104500.sopvslejuoxwzhrs@maple.lan>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:45:00AM +0100, Daniel Thompson wrote:
-> On Wed, Jun 02, 2021 at 03:12:31PM +0200, Peter Zijlstra wrote:
-> > Change the type and name of task_struct::state. Drop the volatile and
-> > shrink it to an 'unsigned int'. Rename it in order to find all uses
-> > such that we can use READ_ONCE/WRITE_ONCE as appropriate.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  ...
-> >  kernel/debug/kdb/kdb_support.c |   18 +++++++------
-> >  ...
-> > --- a/kernel/debug/kdb/kdb_support.c
-> > +++ b/kernel/debug/kdb/kdb_support.c
-> > @@ -609,23 +609,25 @@ unsigned long kdb_task_state_string(cons
-> >   */
-> >  char kdb_task_state_char (const struct task_struct *p)
-> >  {
-> > -	int cpu;
-> > -	char state;
-> > +	unsigned int p_state;
-> >  	unsigned long tmp;
-> > +	char state;
-> > +	int cpu;
-> >  
-> >  	if (!p ||
-> >  	    copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
-> >  		return 'E';
-> >  
-> >  	cpu = kdb_process_cpu(p);
-> > -	state = (p->state == 0) ? 'R' :
-> > -		(p->state < 0) ? 'U' :
-> > -		(p->state & TASK_UNINTERRUPTIBLE) ? 'D' :
-> > -		(p->state & TASK_STOPPED) ? 'T' :
-> > -		(p->state & TASK_TRACED) ? 'C' :
-> > +	p_state = READ_ONCE(p->__state);
-> > +	state = (p_state == 0) ? 'R' :
-> > +		(p_state < 0) ? 'U' :
-> 
-> Looks like the U here stands for Unreachable since this patch makes it
-> more obvious that this clause is (and previously was) exactly that!
-> 
-> Dropping the U state would be good since I guess this will show up as a
-> "new" warning in some tools. However it was a preexisting problem so with
-> or without this cleaned up:
-> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+Run the following command to find and remove the trailing spaces and tabs:
 
-Thanks!
+find kernel/rcu/ -type f | xargs sed -r -i 's/[ \t]+$//'
 
-Note that there's a second instance of this exact code in
-arch/powerpc/xmon/xmon.c, with the same 'U' issue.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll repost this soon, as it seems I've fixed all robot failout (fingers
-crossed).
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 6140709f7249..3f38d5ac5bb0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -259,7 +259,7 @@ static noinstr unsigned long rcu_dynticks_inc(int incby)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	int seq;
+-	
++
+ 	seq = READ_ONCE(rdp->dynticks) + incby;
+ 	smp_store_release(&rdp->dynticks, seq);
+ 	smp_mb();  // Fundamental RCU ordering guarantee.
+-- 
+2.25.1
+
+
