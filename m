@@ -2,105 +2,203 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E29EC49EA2
-	for <rcu@archiver.kernel.org>; Fri, 18 Jun 2021 20:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6BCCC48BDF
+	for <rcu@archiver.kernel.org>; Fri, 18 Jun 2021 20:45:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 70B1061260
-	for <rcu@archiver.kernel.org>; Fri, 18 Jun 2021 20:42:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BA986109E
+	for <rcu@archiver.kernel.org>; Fri, 18 Jun 2021 20:45:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhFRUo5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 18 Jun 2021 16:44:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58948 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbhFRUou (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:44:50 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624048959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=viaF2+vzF8yGuceHiGdcXmR+KhaApSpPdBORO7fsb08=;
-        b=ezsxCMn96b+2rHdzRATVpDVBpAYMddpcAvBC98rFOdITrLchNFKuyjWGTqiD/peJdjfyZo
-        9uA2SACZ7MDy7RW/rBDSPjsl2GGYfeESMBAKGPmDMR4ZLxDMQmS9JRSgoiTdHgKzEYCA7D
-        0fAwkVCTrOBU59v1jzl5McNQQNJ3p/rhehvTGnWJEzlHBUzdoN7aS303gjP3spWP7G5SWh
-        ok/HPjFbxtVYnv1cMLG8UEqBdXEujEWCyqYYoB7pWpTPWqBlc8VdE/cR1EqGjaCBnteb3s
-        iVmZgxZGlmKicLxoqfVSOyzZNaJs/Rs1Ug91LJmtPT/PUyTsAQAPvUaoSq+7Vw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624048959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=viaF2+vzF8yGuceHiGdcXmR+KhaApSpPdBORO7fsb08=;
-        b=vMq4tRHu7ixDGl3mtG0JpRgtNMAsZHXhoKJUnNyvBYVWnj1SLFxNFsZoD5kQMCDWRCTerB
-        6JPjgWDDW4WzKbBQ==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 5/6] sched,timer: Use __set_current_state()
-In-Reply-To: <20210602133040.524487671@infradead.org>
-References: <20210602131225.336600299@infradead.org> <20210602133040.524487671@infradead.org>
-Date:   Fri, 18 Jun 2021 22:42:38 +0200
-Message-ID: <87sg1eewg1.ffs@nanos.tec.linutronix.de>
+        id S233948AbhFRUrg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 18 Jun 2021 16:47:36 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:33565 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234083AbhFRUre (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 18 Jun 2021 16:47:34 -0400
+Received: by mail-il1-f200.google.com with SMTP id p17-20020a9274110000b02901edf6e94688so6737645ilc.0
+        for <rcu@vger.kernel.org>; Fri, 18 Jun 2021 13:45:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WWy358Ai3kRq2oHNuyRjq5Ya1NqTVhnP0/NxBKOX8F8=;
+        b=b7iJLVOy5tqzqRoFJ01m9l5LWpmAWSsrFb9QOTFDVh66YXjQSkU3MXbe8C9RdUW/fd
+         z4xp9QI3RRkKWRRD9+r58HkwmHt9bGQQFnTndCInSva/cTaT7eIQymfe5cpeR6oNwP70
+         LEE3A1AOWloBIQ2g32z5zW8v1wGgvLuk+iWQiQx3w5Ny/D6BtVITmsthrnO1M6MvQ8NX
+         xzmYXRCGcF7C7jQPjnRHi5WxlxtEan7AI91RmPy+NbDWi8eUE1pOifiLdx30zW0b5w6a
+         VVjh8B5i+5nbS3ZvpCsnCBzY+EI3MVBdJnUHuJCoJ5UgKT/8TvQgnkEZnAB68QbWZdda
+         skSw==
+X-Gm-Message-State: AOAM531XTfrkQryEnlIsibksS6IAUwJrBbNryVMHOZqulUM0GyMg5Bpl
+        AtjbgaWB+Ra3n9h46Zo+u7nZz84YND/7RRv48xdG16iVFLp9
+X-Google-Smtp-Source: ABdhPJx8Re1LIzYZ2B7UVB8Z4gWXT/X637J6gdoS+9MRRpNPWLdN6ZGOdDoLZTgQIKAoTCA5toghBPk9v6JwRevIjTbChfpPPDhB
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6638:191d:: with SMTP id p29mr5070003jal.75.1624049123988;
+ Fri, 18 Jun 2021 13:45:23 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:45:23 -0700
+In-Reply-To: <000000000000f034fc05c2da6617@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022183205c5106739@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, dvyukov@google.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, john.fastabend@gmail.com,
+        josh@joshtriplett.org, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        netdev@vger.kernel.org, paulmck@kernel.org, peterz@infradead.org,
+        rcu@vger.kernel.org, rostedt@goodmis.org, shakeelb@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        yanfei.xu@windriver.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 02 2021 at 15:12, Peter Zijlstra wrote:
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+syzbot has found a reproducer for the following issue on:
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+HEAD commit:    0c38740c selftests/bpf: Fix ringbuf test fetching map FD
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=128a7e34300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+Read of size 1 at addr ffff8880294cbc9c by task rcu_tasks_trace/12
+
+CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 8499:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+ kasan_slab_alloc include/linux/kasan.h:236 [inline]
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:2913 [inline]
+ kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 12:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1582 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
+ slab_free mm/slub.c:3167 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3183
+ __put_task_struct+0x26f/0x400 kernel/fork.c:747
+ trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+ check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff8880294cb880
+ which belongs to the cache task_struct of size 6976
+The buggy address is located 1052 bytes inside of
+ 6976-byte region [ffff8880294cb880, ffff8880294cd3c0)
+The buggy address belongs to the page:
+page:ffffea0000a53200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294c8
+head:ffffea0000a53200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffffea00008d6400 0000000200000002 ffff888140005140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 15187628853, free_ts 0
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1034/0x2bf0 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1645 [inline]
+ allocate_slab+0x32e/0x4c0 mm/slub.c:1785
+ new_slab mm/slub.c:1848 [inline]
+ new_slab_objects mm/slub.c:2594 [inline]
+ ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
+ slab_alloc_node mm/slub.c:2879 [inline]
+ kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+ create_kthread kernel/kthread.c:336 [inline]
+ kthreadd+0x52a/0x790 kernel/kthread.c:679
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff8880294cbb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880294cbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff8880294cbd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
