@@ -2,203 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C72FBC11F68
-	for <rcu@archiver.kernel.org>; Sat, 10 Jul 2021 02:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8176C07E9A
+	for <rcu@archiver.kernel.org>; Mon, 12 Jul 2021 16:15:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ACA50613B7
-	for <rcu@archiver.kernel.org>; Sat, 10 Jul 2021 02:28:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87CA2611C1
+	for <rcu@archiver.kernel.org>; Mon, 12 Jul 2021 16:15:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhGJCba (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jul 2021 22:31:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233534AbhGJC36 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D2D613E4;
-        Sat, 10 Jul 2021 02:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625884033;
-        bh=n9gk8K25y3KMur0ufFv43FMqufpb62FEYFsHc5RPVIo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QeZ79xw5WMZsOzdpJ9J76kXnTo7UeMq0MDrFiupCHVQ+z7JgTozVjvno0wRXpeFWQ
-         m+B7YOp11EnZIzPsP3TMsVOqDjAQ7tcSN1emtrXm5xjVghErnzfJE6HQKDjQpI1P3p
-         tLR2poFRymiqM6LKv+xxlyLsOlfZdKlhSxO6ySsC3WPx0AKeq/jqXiaOdwT+T7BSoN
-         g3PFalT5qidL3yx8iwPACFrKYvWVL+ClG/o5+5O5CrJhG1oeXEs18v+OMnBFH9lyRk
-         cv2drPk7gf0fb9N27K2XlAQmmbQnZbGkcqebJ8IR6hueAz7aUOfgRcalx731T1BvjI
-         +MLS1M1FmDqRA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/63] srcu: Fix broken node geometry after early ssp init
-Date:   Fri,  9 Jul 2021 22:26:08 -0400
-Message-Id: <20210710022709.3170675-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210710022709.3170675-1-sashal@kernel.org>
-References: <20210710022709.3170675-1-sashal@kernel.org>
+        id S233049AbhGLQRz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jul 2021 12:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233331AbhGLQRy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:17:54 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80010C0613E5
+        for <rcu@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id s23so10287299oij.0
+        for <rcu@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
+        b=AbpB9NFkivLNuosYIWvKL71WOfuPwi8YqR7L8+G4VIKzwgw0I0TZzvktCDfen0QAk4
+         b6S6jvJu20o1MOKm38nzot3ALqyqfbf4T5qQ421/2iNWqN16E2KzlznryHqFZzZqDhkd
+         MK3LM9ULwa+hjaLJsqTSUh0y3qh2FXEA+otUK2pfqnlvMjUSziU8e8kIU1CsqqxsrtNW
+         HMq6L55484zxw4NAnGspGoB6DmwVXXdNwbDoYUNpw8C4SVHiIT4OjNDaRzXW4Jcu0CLS
+         DQzMXSpmQwszFg/DWghgxEt5MYq5eFh+ULV90B+oPIvp6cvx2l8SguSbo7qEo+jvfi+O
+         8obQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
+        b=HiNlSIfAc/BRy3RcMe+qTKTgiNZMxakstsALSt3gkOktnJnfcOnovfHJRtafbZwluY
+         ETp83G3xoW/JQYL+z3xs57DftRsA7bfv4o2yFNodKueY+SbNJMu17jKD74E2iSNa8Okf
+         U02RbTZN3E2kLXsdFSFbGoSHNWk8BeVgkVN8kP8LoFVfYauCPwmvgJmFN3k17HW/+Ua4
+         VV1NsN2RF6N3xSStHAXA2p4Itz7gh7plVv6P9hJ0OfRa3ogpQadKY53/gFQAYW0msyT3
+         7WIhT9IziBiXjNHbbB0rOzKMy4qHCjd+mgrHZMXtAhjZzfdGdeTye9mxPscpDq2XPKv5
+         dOMg==
+X-Gm-Message-State: AOAM531GD9u5KVM3IFKTaNvl+eu3vKYcM1zK5yTJiaa51DmoZMzzQNdE
+        52CuVqwWz1zMQb9+h4hlOFQhlevepHytc0gdOppKYg==
+X-Google-Smtp-Source: ABdhPJyLF+HJKYz9ORQ3Boka9gZdd71uRQq9T6PQLP7dSPLRKMAB1YdJqaaUiHwCFm6SnBVl0V43xixkVYB1KdKJYWE=
+X-Received: by 2002:a05:6808:284:: with SMTP id z4mr5073375oic.70.1626106503239;
+ Mon, 12 Jul 2021 09:15:03 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <00000000000080403805c6ef586d@google.com>
+In-Reply-To: <00000000000080403805c6ef586d@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 12 Jul 2021 18:14:37 +0200
+Message-ID: <CANpmjNPx2b+W2OZxNROTWfGcU92bwqyDe-=vxgnV9MEurjyqzQ@mail.gmail.com>
+Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
+To:     syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+[-Bcc: fsdevel]
+[+Cc: Paul, rcu@vger.kernel.org]
 
-[ Upstream commit b5befe842e6612cf894cf4a199924ee872d8b7d8 ]
-
-An srcu_struct structure that is initialized before rcu_init_geometry()
-will have its srcu_node hierarchy based on CONFIG_NR_CPUS.  Once
-rcu_init_geometry() is called, this hierarchy is compressed as needed
-for the actual maximum number of CPUs for this system.
-
-Later on, that srcu_struct structure is confused, sometimes referring
-to its initial CONFIG_NR_CPUS-based hierarchy, and sometimes instead
-to the new num_possible_cpus() hierarchy.  For example, each of its
-->mynode fields continues to reference the original leaf rcu_node
-structures, some of which might no longer exist.  On the other hand,
-srcu_for_each_node_breadth_first() traverses to the new node hierarchy.
-
-There are at least two bad possible outcomes to this:
-
-1) a) A callback enqueued early on an srcu_data structure (call it
-      *sdp) is recorded pending on sdp->mynode->srcu_data_have_cbs in
-      srcu_funnel_gp_start() with sdp->mynode pointing to a deep leaf
-      (say 3 levels).
-
-   b) The grace period ends after rcu_init_geometry() shrinks the
-      nodes level to a single one.  srcu_gp_end() walks through the new
-      srcu_node hierarchy without ever reaching the old leaves so the
-      callback is never executed.
-
-   This is easily reproduced on an 8 CPUs machine with CONFIG_NR_CPUS >= 32
-   and "rcupdate.rcu_self_test=1". The srcu_barrier() after early tests
-   verification never completes and the boot hangs:
-
-	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
-	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
-	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
-	[ 5413.168099] Call Trace:
-	[ 5413.170555]  __schedule+0x36c/0x930
-	[ 5413.174057]  ? wait_for_completion+0x88/0x110
-	[ 5413.178423]  schedule+0x46/0xf0
-	[ 5413.181575]  schedule_timeout+0x284/0x380
-	[ 5413.185591]  ? wait_for_completion+0x88/0x110
-	[ 5413.189957]  ? mark_held_locks+0x61/0x80
-	[ 5413.193882]  ? mark_held_locks+0x61/0x80
-	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
-	[ 5413.202173]  ? wait_for_completion+0x88/0x110
-	[ 5413.206535]  wait_for_completion+0xb4/0x110
-	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
-	[ 5413.215610]  srcu_barrier+0x187/0x200
-	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
-	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
-	[ 5413.232700]  do_one_initcall+0x63/0x310
-	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
-	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
-	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
-	[ 5413.249273]  ? rest_init+0x250/0x250
-	[ 5413.252846]  kernel_init+0xa/0x110
-	[ 5413.256257]  ret_from_fork+0x22/0x30
-
-2) An srcu_struct structure that is initialized before rcu_init_geometry()
-   and used afterward will always have stale rdp->mynode references,
-   resulting in callbacks to be missed in srcu_gp_end(), just like in
-   the previous scenario.
-
-This commit therefore causes init_srcu_struct_nodes to initialize the
-geometry, if needed.  This ensures that the srcu_node hierarchy is
-properly built and distributed from the get-go.
-
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/rcu.h      |  2 ++
- kernel/rcu/srcutree.c |  3 +++
- kernel/rcu/tree.c     | 16 +++++++++++++++-
- 3 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 8fd4f82c9b3d..7fd1c18b7cf1 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -316,6 +316,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
- 	}
- }
- 
-+extern void rcu_init_geometry(void);
-+
- /* Returns a pointer to the first leaf rcu_node structure. */
- #define rcu_first_leaf_node() (rcu_state.level[rcu_num_lvls - 1])
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 21acdff3bd27..21115ffb6c44 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -90,6 +90,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 	struct srcu_node *snp;
- 	struct srcu_node *snp_first;
- 
-+	/* Initialize geometry if it has not already been initialized. */
-+	rcu_init_geometry();
-+
- 	/* Work out the overall tree geometry. */
- 	ssp->level[0] = &ssp->node[0];
- 	for (i = 1; i < rcu_num_lvls; i++)
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4dfa9dd47223..f90f2c4b2608 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3425,11 +3425,25 @@ static void __init rcu_init_one(void)
-  * replace the definitions in tree.h because those are needed to size
-  * the ->node array in the rcu_state structure.
-  */
--static void __init rcu_init_geometry(void)
-+void rcu_init_geometry(void)
- {
- 	ulong d;
- 	int i;
-+	static unsigned long old_nr_cpu_ids;
- 	int rcu_capacity[RCU_NUM_LVLS];
-+	static bool initialized;
-+
-+	if (initialized) {
-+		/*
-+		 * Warn if setup_nr_cpu_ids() had not yet been invoked,
-+		 * unless nr_cpus_ids == NR_CPUS, in which case who cares?
-+		 */
-+		WARN_ON_ONCE(old_nr_cpu_ids != nr_cpu_ids);
-+		return;
-+	}
-+
-+	old_nr_cpu_ids = nr_cpu_ids;
-+	initialized = true;
- 
- 	/*
- 	 * Initialize any unspecified boot parameters.
--- 
-2.30.2
-
+On Mon, 12 Jul 2021 at 18:09, syzbot
+<syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    e73f0f0e Linux 5.14-rc1
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=172196d2300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e73542d774430b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e08a83a1940ec3846cd5
+> compiler:       Debian clang version 11.0.1-2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KCSAN: data-race in call_rcu / rcu_gp_kthread
+>
+> write to 0xffffffff837328a0 of 8 bytes by task 11 on cpu 0:
+>  rcu_gp_fqs kernel/rcu/tree.c:1949 [inline]
+>  rcu_gp_fqs_loop kernel/rcu/tree.c:2010 [inline]
+>  rcu_gp_kthread+0xd78/0xec0 kernel/rcu/tree.c:2169
+>  kthread+0x262/0x280 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>
+> read to 0xffffffff837328a0 of 8 bytes by task 30193 on cpu 1:
+>  __call_rcu_core kernel/rcu/tree.c:2946 [inline]
+>  __call_rcu kernel/rcu/tree.c:3062 [inline]
+>  call_rcu+0x4b0/0x6c0 kernel/rcu/tree.c:3109
+>  file_free fs/file_table.c:58 [inline]
+>  __fput+0x43e/0x4e0 fs/file_table.c:298
+>  ____fput+0x11/0x20 fs/file_table.c:313
+>  task_work_run+0xae/0x130 kernel/task_work.c:164
+>  get_signal+0x156c/0x15e0 kernel/signal.c:2581
+>  arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:865
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:302
+>  do_syscall_64+0x49/0x90 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> value changed: 0x0000000000000f57 -> 0x0000000000000f58
+>
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 1 PID: 30193 Comm: syz-executor.5 Tainted: G        W         5.14.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000080403805c6ef586d%40google.com.
