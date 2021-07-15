@@ -2,111 +2,137 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4F8C07E96
-	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 03:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9028C07E96
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 08:45:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D60C46102A
-	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 03:51:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C3406611AB
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 08:45:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhGODym (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Jul 2021 23:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231378AbhGODym (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:54:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E877A61260;
-        Thu, 15 Jul 2021 03:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626321109;
-        bh=zIDGkmlUgIcJ8m1hju69tcRsdb7X1rACjkflE4i/S8M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J4LGlPDKjIyWxmNQMGq6+gL9PG/MTFmW6So3m0K4toC2VEGpR9B00yqlzZ8RsErDR
-         Jvz+4IB8pweMsC2/Wi19i2C/qhtckSSCkCFpBV9636xsbt1FJY/b8CBAQWTqD112YO
-         MTvV996YH5FzKVNK6nS/yNOOvNmKuCNLbGFTtQh/1Oy0uO/9JRC3hNv+mDLCqPFN+w
-         cvYXFBuGsrM9DRK4EK4nod+ekDx1DZ/nxrPiHDUs/f2UuhyRYB2SlIlrLRfYYndeUN
-         uE/kGRBc1zV9L4/DyyKYkd7g/3aGy141GSaC/u0xnXAyjzrVIxSk6HPF51WfUNKlMw
-         0Rx2I0qbdZG3Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 90AD15C03DE; Wed, 14 Jul 2021 20:51:49 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 20:51:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+        id S240758AbhGOIsL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Jul 2021 04:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhGOIsK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Jul 2021 04:48:10 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EEFC06175F;
+        Thu, 15 Jul 2021 01:45:17 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id gh6so2452938qvb.3;
+        Thu, 15 Jul 2021 01:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VGtthBPDKh9JZVcjAhT7jQp0Mz38vxl7SuIjFvZmI7M=;
+        b=XmwJpTnpFg82Sg8RoZYs+We1av5pGWVB0k0fB92abqpAFOsc5n+qiRIXLGGHLE3mUw
+         IJWCVaH0qKTNYIkAgOD5VyyXLxWN58JaCx45zS5b/ZZRKyd9yH8QuarV5+UuUnhyRlgc
+         NswcWxwb0eusBDw90mkWtIGzjUWLZ0TLwNA2E290Q6XCEpzw7FzFq7nvv9kchdMX060z
+         rpl0t42a83tx3OHTFKDWZoeUmWsiib6V07Jwg+gmLIEBWkr5VxJD9ZQyyOigBj87miIL
+         TobjIJ1ZA6fcezkLiTuccHrkvDIXhDO5EbmQ1bAmdvKf47H0qP9pU6dGhjYH30NrSwpg
+         cK0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VGtthBPDKh9JZVcjAhT7jQp0Mz38vxl7SuIjFvZmI7M=;
+        b=ZJKg7fJMv9srV7SNJiIz0Te0MWIfYkWWYDgymtY/TPtnzeA4bvT+Bt2w//CwTmOw7M
+         jPvp/aLQ5WomrYQkVeTeB6K6noQ/xk034viX+KSxFWOvz9X8fnglmKvnIlQFtxK8rsMy
+         s1skOb9oME8YnrPGrUYVbdXHThXOwf3OnlqcMn90VwYeL+q938UG98TavfGxM9jfgXTL
+         tU1EMCBMiUWEOCcXssrb/kDahSNtw9U7hqsIPAlUsGe0J3MkfV3sItS3dMEOztTkVig5
+         CVdkwMJCKnCZ3abj60PeSYtbXg6dxdG/xfs0jDvJjdSdcMiPMbdfSIFLGLE1h+90N/Gr
+         aOnQ==
+X-Gm-Message-State: AOAM5327r2faXxzx1j4eTQlQsDJhEICi5nXY+eHiFYqqY6ENEeEr3u5p
+        pj5n2mo9VhcVXLbRI9pVAqn6qot5b23ugCua63I=
+X-Google-Smtp-Source: ABdhPJwIrwhFdK0QYPqiBC0hUitVC7dYvLIbqLb8bjBSUxG6pRP4XXINjAXbq2jZHJN3BjraS14DVyBzfoYAB3b9mHs=
+X-Received: by 2002:a0c:9ac7:: with SMTP id k7mr3060442qvf.49.1626338716448;
+ Thu, 15 Jul 2021 01:45:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+ <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1> <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com> <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Thu, 15 Jul 2021 16:45:04 +0800
+Message-ID: <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+To:     paulmck@kernel.org
 Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Triplett <josh@joshtriplett.org>,
         rostedt <rostedt@goodmis.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Joel Fernandes, Google" <joel@joelfernandes.org>,
         rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Message-ID: <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
- <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
- <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
- <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
+        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
+        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
-> On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
-> > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
-> > > >
-> > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > >>
-> > > > >> Hi Paul,
-> > > > >>
-> > > > >> During my studying of RCU, I did a grep in the kernel source tree.
-> > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
-> > > > >>
-> > > > >> Without memory fencing, the idle/userspace task inspection may not
-> > > > >> be so accurate.
-> > > > >>
-> > > > >> Thanks for your constant encouragement for my studying.
-> > > > >>
-> > > > >> Best Wishes
-> > > > >> Zhouyi
-> > > > >>
-> > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > >
-> > > > > Good eyes, and those could cause real bugs, so thank you!
-> > > >
-> > > > Hi Paul,
-> > > >
-> > > > This makes me wonder: what is missing testing-wise in rcutorture to
-> > > > catch those issues with testing before they reach mainline ?
+On Thu, Jul 15, 2021 at 11:51 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
+> > On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
-> > > My guess:  Running on weakly ordered architectures.  ;-)
+> > > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
+> > > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
+> > > > >
+> > > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
+> > > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > >>
+> > > > > >> Hi Paul,
+> > > > > >>
+> > > > > >> During my studying of RCU, I did a grep in the kernel source tree.
+> > > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+> > > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
+> > > > > >>
+> > > > > >> Without memory fencing, the idle/userspace task inspection may not
+> > > > > >> be so accurate.
+> > > > > >>
+> > > > > >> Thanks for your constant encouragement for my studying.
+> > > > > >>
+> > > > > >> Best Wishes
+> > > > > >> Zhouyi
+> > > > > >>
+> > > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > > >
+> > > > > > Good eyes, and those could cause real bugs, so thank you!
+> > > > >
+> > > > > Hi Paul,
+> > > > >
+> > > > > This makes me wonder: what is missing testing-wise in rcutorture to
+> > > > > catch those issues with testing before they reach mainline ?
+> > > >
+> > > > My guess:  Running on weakly ordered architectures.  ;-)
+> > >
+> > > And another guess:  A tool that identifies use of Kconfig options
+> > > that are not defined in any Kconfig* file.
+> > Based on Paul's second guess ;-),  I did a small research, and I think
+> > the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
+> > to identify use of Kconfig options that are not defined in any Kconfig* file.
 > >
-> > And another guess:  A tool that identifies use of Kconfig options
-> > that are not defined in any Kconfig* file.
-> Based on Paul's second guess ;-),  I did a small research, and I think
-> the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
-> to identify use of Kconfig options that are not defined in any Kconfig* file.
-> 
-> As I am a C/C++ programmer, I would be glad to take some time to learn
-> perl (checkpatch is implented in perl) first if no other volunteer is
-> about to do it ;-)
-
-I haven't heard anyone else volunteer.  ;-)
-
-Others might have opinions on where best to implement these checks,
-but I must confess that I have not given it much thought.
-
-							Thanx, Paul
+> > As I am a C/C++ programmer, I would be glad to take some time to learn
+> > perl (checkpatch is implented in perl) first if no other volunteer is
+> > about to do it ;-)
+>
+> I haven't heard anyone else volunteer.  ;-)
+>
+> Others might have opinions on where best to implement these checks,
+> but I must confess that I have not given it much thought.
+I recklessly cc the maintainers of checkpatch.pl without your
+permission to see others' opion,
+and I begin to study perl at the same time, after all, learning
+something is always good ;-)
+>
+>                                                         Thanx, Paul
+Best Wishes
+Zhouyi
