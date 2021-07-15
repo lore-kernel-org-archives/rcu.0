@@ -2,115 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FSL_HELO_FAKE,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB23C07E96
-	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 09:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14C37C07E96
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 13:32:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D82660BD3
-	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 09:09:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDDFD613C4
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 13:32:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbhGOJMo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Jul 2021 05:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhGOJMo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:12:44 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6828FC06175F
-        for <rcu@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id w15so5377735pgk.13
-        for <rcu@vger.kernel.org>; Thu, 15 Jul 2021 02:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
-        b=LsTt8+jKu7B2i3FTudYEE6Cx0zDvQrhi/SyMFOLRQ0RA8dvTjPxYA4KfIQGrVmwQiD
-         XkFdISvOWcgEJyCbg4z/KPXoUG6xgRwwZBPCt6raWN9FRWTbWUsGnk5s289nys7fn4sX
-         B0+Oy0Xuz4roi2d5VWeGko2eDqXACou67289I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KUb2QkrkQ8ko4G078uye8RdkQ5z0d+6I4mThvq6tm5M=;
-        b=CCvQV3c7P8lVgv7z2masPukYgzviYM94QoG7msRpcwjt5BARfJdW1+MCDJaZB1UQPJ
-         dzWhLT+EozVuW7jZpIqztRXUD+IOOL3aFyhVbqj+Vq5XL2P0aYOSqyw71OTOkCoufDP9
-         hCxkeBiX/Kk1+/jpywd7KZDTK7RmbHAxJCexGgIkH9LiW0+c4nntls7aWi06x8yK8NiU
-         vRYOmMDC20TNKQB/n7t5t5rTa7Jfbf6yFbZc0qhtO42H2p3SyilESt+7qZsnIIwJblez
-         hD3wdHD54CSHYi8AEKCTDGBWsBqKchzhhIAjqataCxG08HyFxDxjxBhWSPDwZjrITZc+
-         zZFQ==
-X-Gm-Message-State: AOAM532KJhifs3o+Nt+fE79bxwSoZoQOF/yc7Bxww2rwprNGbh9V47lv
-        AyAnfB+unF0mDcfqX8yMoIQfeg==
-X-Google-Smtp-Source: ABdhPJwlXpAIZhgHr+sKRH9JqJhO8b5bbttsmXnjTJUyUqXp5WVPhcSpjW5bawKM30k3u+REa/x7wA==
-X-Received: by 2002:a65:67d6:: with SMTP id b22mr3565984pgs.271.1626340190981;
-        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:cf9:3b54:4709:3747])
-        by smtp.gmail.com with ESMTPSA id o10sm5837260pfu.131.2021.07.15.02.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 02:09:50 -0700 (PDT)
-Date:   Thu, 15 Jul 2021 18:09:45 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+        id S237305AbhGONff (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Jul 2021 09:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232113AbhGONff (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Jul 2021 09:35:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C152613C3;
+        Thu, 15 Jul 2021 13:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626355962;
+        bh=0/bB+AOFBoHuvGu4BNLp/b32//0AS6DhMAkFlQyyyTE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ONUsoHkDT05z3VuKLkvHPCtvcJ2SXmhykk6vi1/0sSCVrN7Gahc+2rZ06vpxomSlt
+         4UaMeSTPeNyIWDvU7RP/lb0eIgLMGurLWUlOcIJ0pIYljbbCcXXzXeGwSO9N4J3hWl
+         WB0vGjKN8cdtGVhjAT7PveWN2GIpe9vUhVcU0Oy/8BpCxi8+UlQFNeakrMUpJ2/bJ4
+         /FlXr6nKHlMkgPTCsW9eJOfrBcIY4tenjCYXTgjKlsumJR7KOXGR3nuB/OWSjEb+wc
+         j1bBQNOu5TSecnIr29NeOIkSVqDxYrFLd11/MZLdnCks1I9mTtXnDkOozGC8XJ9O8b
+         wqqyMPr+SyZrw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BE9F45C03A0; Thu, 15 Jul 2021 06:32:41 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 06:32:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
-Message-ID: <YO/7WS/WefdkFFbj@google.com>
+Message-ID: <20210715133241.GJ4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20210521155624.174524-1-senozhatsky@chromium.org>
+ <YO/7WS/WefdkFFbj@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
+In-Reply-To: <YO/7WS/WefdkFFbj@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On (21/05/22 00:56), Sergey Senozhatsky wrote:
-> Soft watchdog timer function checks if a virtual machine
-> was suspended and hence what looks like a lockup in fact
-> is a false positive.
+On Thu, Jul 15, 2021 at 06:09:45PM +0900, Sergey Senozhatsky wrote:
+> On (21/05/22 00:56), Sergey Senozhatsky wrote:
+> > Soft watchdog timer function checks if a virtual machine
+> > was suspended and hence what looks like a lockup in fact
+> > is a false positive.
+> > 
+> > This is what kvm_check_and_clear_guest_paused() does: it
+> > tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
+> > and if it's set then we need to touch all watchdogs and bail
+> > out.
+> > 
+> > Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
+> > check works fine.
+> > 
+> > There is, however, one more watchdog that runs from IRQ, so
+> > watchdog timer fn races with it, and that watchdog is not aware
+> > of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+> > 
+> > apic_timer_interrupt()
+> >  smp_apic_timer_interrupt()
+> >   hrtimer_interrupt()
+> >    __hrtimer_run_queues()
+> >     tick_sched_timer()
+> >      tick_sched_handle()
+> >       update_process_times()
+> >        rcu_sched_clock_irq()
+> > 
+> > This triggers RCU stalls on our devices during VM resume.
+> > 
+> > If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
+> > before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
+> > then there is nothing on this VCPU that touches watchdogs and
+> > RCU reads stale gp stall timestamp and new jiffies value, which
+> > makes it think that RCU has stalled.
+> > 
+> > Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
+> > don't report RCU stalls when we resume the VM.
 > 
-> This is what kvm_check_and_clear_guest_paused() does: it
-> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-> and if it's set then we need to touch all watchdogs and bail
-> out.
+> Hello Paul,
 > 
-> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-> check works fine.
-> 
-> There is, however, one more watchdog that runs from IRQ, so
-> watchdog timer fn races with it, and that watchdog is not aware
-> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
-> 
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    __hrtimer_run_queues()
->     tick_sched_timer()
->      tick_sched_handle()
->       update_process_times()
->        rcu_sched_clock_irq()
-> 
-> This triggers RCU stalls on our devices during VM resume.
-> 
-> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-> then there is nothing on this VCPU that touches watchdogs and
-> RCU reads stale gp stall timestamp and new jiffies value, which
-> makes it think that RCU has stalled.
-> 
-> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-> don't report RCU stalls when we resume the VM.
+> I've noticed that this patch set didn't make it to Linus's tree.
+> Was it intentional?
 
-Hello Paul,
+This patch (and the 18 preceding it) didn't make the cutoff for the
+just-past merge window.  If this patch is urgent, please let me know
+and I can push it, with luck by the end of next week.
 
-I've noticed that this patch set didn't make it to Linus's tree.
-Was it intentional?
+If that one is urgent, are these two also?
+
+817690fd18af ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+9ed9bf0d17cd ("rcu: Start timing stall repetitions after warning complete")
+
+If so, it is better to handle them as a group than separately.
+
+The cutoff for a given merge window is normally shortly after the close
+of the previous merge window.  This time, I am a bit slow creating
+branches, but the cutoff for the v5.15 merge window should be by the
+end of the week.  This is a bit more lag than most subsystems, but
+this is after all RCU.
+
+As always, if a given commit is urgent, please let me know and I
+will see what I can do to fast-track it.
+
+For reference:
+
+https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/rcutodo.html
+
+Again, if this one needs to hit mainline before the v5.15 merge
+window, please let me know.
+
+							Thanx, Paul
