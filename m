@@ -2,108 +2,111 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A05C2C47E48
-	for <rcu@archiver.kernel.org>; Wed, 14 Jul 2021 20:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4F8C07E96
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 03:51:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8BCA0613D0
-	for <rcu@archiver.kernel.org>; Wed, 14 Jul 2021 20:50:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D60C46102A
+	for <rcu@archiver.kernel.org>; Thu, 15 Jul 2021 03:51:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234267AbhGNUxh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Jul 2021 16:53:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
+        id S231602AbhGODym (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Jul 2021 23:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234229AbhGNUxg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Jul 2021 16:53:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 942A0613C9;
-        Wed, 14 Jul 2021 20:50:44 +0000 (UTC)
+        id S231378AbhGODym (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Jul 2021 23:54:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E877A61260;
+        Thu, 15 Jul 2021 03:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626295844;
-        bh=N4KlIPh5PrSGMYjvvd0AGTVj4PtDoBEX4kkmgF9jlpI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mm7mIEvCYUqRxaTftdlNpojJW9+MO1+3J68GOfJGbRlFXh9J3BAHTfcWOed3bBUGI
-         hKD+Zt/BcCJ/354Ys8FFcOzOO3dwYUCh5pbzV2XcGEGZ9E1jrn9AXyb32xOnJ7FoJR
-         mPdppLKk/5c0RgBiHjLvFX4NkvoRTWsnUgOqoeFSjbZCHkuXf32jZmm9R13VyQ4OyH
-         iSDBk+MymUeK5cR+Y47m6Oy3gDYy9420zgbahe9xkwTw5z6kBobacWsPBX0L1/7hJI
-         Tpmsnoek9oHTRuiAkQ3kfpAnNT4ea8/pn7Y2h8wYV9OawoJKrhejBMLg6VhIlIqzZS
-         rTuawjkzPdQDg==
+        s=k20201202; t=1626321109;
+        bh=zIDGkmlUgIcJ8m1hju69tcRsdb7X1rACjkflE4i/S8M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=J4LGlPDKjIyWxmNQMGq6+gL9PG/MTFmW6So3m0K4toC2VEGpR9B00yqlzZ8RsErDR
+         Jvz+4IB8pweMsC2/Wi19i2C/qhtckSSCkCFpBV9636xsbt1FJY/b8CBAQWTqD112YO
+         MTvV996YH5FzKVNK6nS/yNOOvNmKuCNLbGFTtQh/1Oy0uO/9JRC3hNv+mDLCqPFN+w
+         cvYXFBuGsrM9DRK4EK4nod+ekDx1DZ/nxrPiHDUs/f2UuhyRYB2SlIlrLRfYYndeUN
+         uE/kGRBc1zV9L4/DyyKYkd7g/3aGy141GSaC/u0xnXAyjzrVIxSk6HPF51WfUNKlMw
+         0Rx2I0qbdZG3Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 677AB5C037D; Wed, 14 Jul 2021 13:50:44 -0700 (PDT)
+        id 90AD15C03DE; Wed, 14 Jul 2021 20:51:49 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 20:51:49 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        valentin.schneider@arm.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu/urgent 2/2] refscale: Avoid false-positive warnings in ref_scale_reader()
-Date:   Wed, 14 Jul 2021 13:50:43 -0700
-Message-Id: <20210714205043.2033697-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210714204928.GA2033276@paulmck-ThinkPad-P17-Gen-1>
-References: <20210714204928.GA2033276@paulmck-ThinkPad-P17-Gen-1>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+Message-ID: <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+ <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+ <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If the call to set_cpus_allowed_ptr() in ref_scale_reader()
-fails, a later WARN_ONCE() complains.  But with the advent of
-570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of
-nr_cpus_allowed"), this complaint can be drowned out by complaints from
-smp_processor_id().  The rationale for this change is that refscale's
-kthreads are not marked with PF_NO_SETAFFINITY, which means that a system
-administrator could change affinity at any time.
+On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
+> On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
+> > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
+> > > >
+> > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
+> > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > >>
+> > > > >> Hi Paul,
+> > > > >>
+> > > > >> During my studying of RCU, I did a grep in the kernel source tree.
+> > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
+> > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
+> > > > >>
+> > > > >> Without memory fencing, the idle/userspace task inspection may not
+> > > > >> be so accurate.
+> > > > >>
+> > > > >> Thanks for your constant encouragement for my studying.
+> > > > >>
+> > > > >> Best Wishes
+> > > > >> Zhouyi
+> > > > >>
+> > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > > >
+> > > > > Good eyes, and those could cause real bugs, so thank you!
+> > > >
+> > > > Hi Paul,
+> > > >
+> > > > This makes me wonder: what is missing testing-wise in rcutorture to
+> > > > catch those issues with testing before they reach mainline ?
+> > >
+> > > My guess:  Running on weakly ordered architectures.  ;-)
+> >
+> > And another guess:  A tool that identifies use of Kconfig options
+> > that are not defined in any Kconfig* file.
+> Based on Paul's second guess ;-),  I did a small research, and I think
+> the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
+> to identify use of Kconfig options that are not defined in any Kconfig* file.
+> 
+> As I am a C/C++ programmer, I would be glad to take some time to learn
+> perl (checkpatch is implented in perl) first if no other volunteer is
+> about to do it ;-)
 
-However, refscale is a performance/stress test, and the system
-administrator might well have a valid test-the-test reason for changing
-affinity.  This commit therefore changes to raw_smp_processor_id()
-in order to avoid the noise, and also adds a WARN_ON_ONCE() to the
-call to set_cpus_allowed_ptr() in order to directly detect immediate
-failure.  There is no WARN_ON_ONCE() within the test loop, allowing
-human-reflex-based affinity resetting, if desired.
+I haven't heard anyone else volunteer.  ;-)
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/refscale.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Others might have opinions on where best to implement these checks,
+but I must confess that I have not given it much thought.
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 313d4547cbc7..d998a76fb542 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -487,13 +487,13 @@ ref_scale_reader(void *arg)
- 	s64 duration;
- 
- 	VERBOSE_SCALEOUT_BATCH("ref_scale_reader %ld: task started", me);
--	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
-+	WARN_ON_ONCE(set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids)));
- 	set_user_nice(current, MAX_NICE);
- 	atomic_inc(&n_init);
- 	if (holdoff)
- 		schedule_timeout_interruptible(holdoff * HZ);
- repeat:
--	VERBOSE_SCALEOUT_BATCH("ref_scale_reader %ld: waiting to start next experiment on cpu %d", me, smp_processor_id());
-+	VERBOSE_SCALEOUT_BATCH("ref_scale_reader %ld: waiting to start next experiment on cpu %d", me, raw_smp_processor_id());
- 
- 	// Wait for signal that this reader can start.
- 	wait_event(rt->wq, (atomic_read(&nreaders_exp) && smp_load_acquire(&rt->start_reader)) ||
-@@ -503,7 +503,7 @@ ref_scale_reader(void *arg)
- 		goto end;
- 
- 	// Make sure that the CPU is affinitized appropriately during testing.
--	WARN_ON_ONCE(smp_processor_id() != me);
-+	WARN_ON_ONCE(raw_smp_processor_id() != me);
- 
- 	WRITE_ONCE(rt->start_reader, 0);
- 	if (!atomic_dec_return(&n_started))
--- 
-2.31.1.189.g2e36527f23
-
+							Thanx, Paul
