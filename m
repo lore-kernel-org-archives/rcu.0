@@ -2,178 +2,160 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25453C636CA
-	for <rcu@archiver.kernel.org>; Sat, 17 Jul 2021 22:03:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41765C636C8
+	for <rcu@archiver.kernel.org>; Sun, 18 Jul 2021 21:01:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E91256100A
-	for <rcu@archiver.kernel.org>; Sat, 17 Jul 2021 22:03:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 24901610CB
+	for <rcu@archiver.kernel.org>; Sun, 18 Jul 2021 21:01:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhGQWGp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Jul 2021 18:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhGQWGp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Jul 2021 18:06:45 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A4C061762;
-        Sat, 17 Jul 2021 15:03:47 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id nd37so21041239ejc.3;
-        Sat, 17 Jul 2021 15:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IWdaGFPzrQtxwDMoSrykP9DB3UY/nGQkXWNBfMY4IEw=;
-        b=JAA1cgbQ81iA7FqwA27Ls0FDhBGKSFgIHMIPnhstTzhyDO0nRgbG5GwtAfFLymfgJ8
-         k7PcyANNT5qRv7nz/MwnMatiwlVBmhHkx3ZBm93x4/QnKKrfJAyH/Vzo66dntgiYiRfF
-         wskDs0IQvzxv/BFcqPD7mIAK1StJkcVWuiIUKQ0ZlePCntQlGYs1iREiBz890zt0dS5M
-         xQo2kJ3pLpHxU+WjcxWZ3/hSAWlMdx8iHv8OhcaBzQw0C2p1UXGNRK5V8R2/Wam/AS3b
-         q/gytkrXBv1MLrajKTCbZKmB2q5dlGWgqlBRe3bAxptPG5bnE6fjqj2zMGzedbTQOLyb
-         /RVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IWdaGFPzrQtxwDMoSrykP9DB3UY/nGQkXWNBfMY4IEw=;
-        b=ZIUHObc4unVMPYCj++Cj3Q531fvTcgnGVrS9DMRKwpe/P1sXIb2a01Y8IkyXVLMxiA
-         +sXOHBF+jiL4DJeKHjU65xtwTrsyu28VyrcidoUtHbFXmXyiCty6zoTtvdCr04N/Qp5G
-         AqFYE7fEXmIRZoMkODQnO0YeAlLIGQYqEnsv/Gfmjj3U8pt6B00C0CZ6+KUUqkWMMjD/
-         W5xyzPPHuVvNrEi4sssVU9fzehilYm0wxpWZuXuBylPlT8kFE1XZjqLi6y+4sfEYHJb8
-         VK2sSthpEs6TPQ93ktQIrkv7rnME8Q346J2PXbpI0TWswQ+kMgWfhGUjZMwBggODSKbC
-         gxnQ==
-X-Gm-Message-State: AOAM530ZlRcOsNG5yQkeas8fhXXDMIRV/EHNbTWis2Rq1H3Jc+YfJkwc
-        jUUU8mKKZccwDC/QtcsNdAQTDgcnpAaVulwAaQw=
-X-Google-Smtp-Source: ABdhPJx/bVG/+f5cDTG05pqgwjT03uO1ugT+RxTJWMohEj0lWYMRyNe7JoX+RDdelc3oMjl53YYOLyE9X6VklhSWw4c=
-X-Received: by 2002:a17:907:7203:: with SMTP id dr3mr19141903ejc.52.1626559426168;
- Sat, 17 Jul 2021 15:03:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
- <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1> <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
- <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1> <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
- <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sun, 18 Jul 2021 06:03:34 +0800
-Message-ID: <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-To:     paulmck@kernel.org
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S232878AbhGRVE2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 18 Jul 2021 17:04:28 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:55588 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhGRVE1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 18 Jul 2021 17:04:27 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id ACB80B3DDA6;
+        Sun, 18 Jul 2021 23:01:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1626642086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nuNEHpRuvz2uyV8EpNDOxUhNUR1kzfNBXqMI2tk0wGo=;
+        b=PbkHcDtD7NiQwH9x/u+3Ey2V9td+Iwx46hM6Aa00WEPHpVW/Eaf0AVOCwuNeRsXKCRU5KA
+        YPHA1Jw1WNiCkmrvyT+W30FJJIlvrTrjzmkr/9/gPRmu8RxbRAGl9Ep0kcF8Mqtmt420XA
+        h1WD1iJ7L8nfeg6R3hDlEnbIjKC91cU=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-stable@vger.kernel.org,
+        Chris Clayton <chris2553@googlemail.com>,
+        Chris Rankin <rankincj@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
-        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        mingo@kernel.org
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Date:   Sun, 18 Jul 2021 23:01:24 +0200
+Message-ID: <2245518.LNIG0phfVR@natalenko.name>
+In-Reply-To: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul
-During the research, I found a already existing tool to detect
-undefined Kconfig macro:
-scripts/checkkconfigsymbols.py. It is marvellous!
+Hello.
 
-By invoking ./scripts/checkkconfigsymbols.py > /tmp/log, I found
-following possibly undefined Kconfig macros
-which may need our attention:
+On sobota 17. =C4=8Dervence 2021 22:22:08 CEST Chris Clayton wrote:
+> I checked the output from dmesg yesterday and found the following warning:
+>=20
+> [Fri Jul 16 09:15:29 2021] ------------[ cut here ]------------
+> [Fri Jul 16 09:15:29 2021] WARNING: CPU: 11 PID: 2701 at
+> kernel/rcu/tree_plugin.h:359 rcu_note_context_switch+0x37/0x3d0 [Fri Jul =
+16
+> 09:15:29 2021] Modules linked in: uas hidp rfcomm bnep xt_MASQUERADE
+> iptable_nat nf_nat xt_LOG nf_log_syslog xt_limit xt_multiport xt_conntrack
+> iptable_filter btusb btintel wmi_bmof uvcvideo videobuf2_vmalloc
+> videobuf2_memops videobuf2_v4l2 videobuf2_common coretemp hwmon
+> snd_hda_codec_hdmi x86_pkg_temp_thermal snd_hda_codec_realtek
+> snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg
+> snd_hda_codec snd_hwdep snd_hda_core i2c_i801 i2c_smbus iwlmvm mac80211
+> iwlwifi i915 mei_me mei cfg80211 intel_lpss_pci intel_lpss wmi
+> nf_conntrack_ftp xt_helper nf_conntrack nf_defrag_ipv4 tun
+> [Fri Jul 16 09:15:29 2021] CPU: 11 PID: 2701 Comm: lpqd Not tainted 5.13.2
+> #1 [Fri Jul 16 09:15:29 2021] Hardware name: Notebook                    =
+ =20
+>   NP50DE_DB                       /NP50DE_DB , BIOS 1.07.04 02/17/2020
+> [Fri Jul 16 09:15:29 2021] RIP: 0010:rcu_note_context_switch+0x37/0x3d0
+> [Fri Jul 16 09:15:29 2021] Code: 02 00 e8 ec a0 6c 00 89 c0 65 4c 8b 2c 25
+> 00 6d 01 00 48 03 1c c5 80 56 e1 b6 40 84 ed 75 0d 41 8b 95 04 03 00 00 85
+> d2 7e 02 <0f> 0b 65 48 8b 04 25 00 6d 01 00 8b 80 04 03 00 00 85 c0 7e 0a
+> 41 [Fri Jul 16 09:15:29 2021] RSP: 0000:ffffb5d483837c70 EFLAGS: 00010002
+> [Fri Jul 16 09:15:29 2021] RAX: 000000000000000b RBX: ffff9b77806e1d80 RC=
+X:
+> 0000000000000100 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000001 RSI:
+> ffffffffb6d82ead RDI: ffffffffb6da5e4e [Fri Jul 16 09:15:29 2021] RBP:
+> 0000000000000000 R08: 0000000000000001 R09: 0000000000000000 [Fri Jul 16
+> 09:15:29 2021] R10: 000000067bce4fff R11: 0000000000000000 R12:
+> ffff9b77806e1100 [Fri Jul 16 09:15:29 2021] R13: ffff9b734a833a00 R14:
+> ffff9b734a833a00 R15: 0000000000000000 [Fri Jul 16 09:15:29 2021] FS:=20
+> 00007fccbfc5fe40(0000) GS:ffff9b77806c0000(0000) knlGS:0000000000000000
+> [Fri Jul 16 09:15:29 2021] CS:  0010 DS: 0000 ES: 0000 CR0:
+> 0000000080050033 [Fri Jul 16 09:15:29 2021] CR2: 00007fccc2db7290 CR3:
+> 00000003fb0b8002 CR4: 00000000007706e0 [Fri Jul 16 09:15:29 2021] PKRU:
+> 55555554
+> [Fri Jul 16 09:15:29 2021] Call Trace:
+> [Fri Jul 16 09:15:29 2021]  __schedule+0x86/0x810
+> [Fri Jul 16 09:15:29 2021]  schedule+0x40/0xe0
+> [Fri Jul 16 09:15:29 2021]  io_schedule+0x3d/0x60
+> [Fri Jul 16 09:15:29 2021]  wait_on_page_bit_common+0x129/0x390
+> [Fri Jul 16 09:15:29 2021]  ? __filemap_set_wb_err+0x10/0x10
+> [Fri Jul 16 09:15:29 2021]  __lock_page_or_retry+0x13f/0x1d0
+> [Fri Jul 16 09:15:29 2021]  do_swap_page+0x335/0x5b0
+> [Fri Jul 16 09:15:29 2021]  __handle_mm_fault+0x444/0xb20
+> [Fri Jul 16 09:15:29 2021]  handle_mm_fault+0x5c/0x170
+> [Fri Jul 16 09:15:29 2021]  ? find_vma+0x5b/0x70
+> [Fri Jul 16 09:15:29 2021]  exc_page_fault+0x1ab/0x610
+> [Fri Jul 16 09:15:29 2021]  ? fpregs_assert_state_consistent+0x19/0x40
+> [Fri Jul 16 09:15:29 2021]  ? asm_exc_page_fault+0x8/0x30
+> [Fri Jul 16 09:15:29 2021]  asm_exc_page_fault+0x1e/0x30
+> [Fri Jul 16 09:15:29 2021] RIP: 0033:0x7fccc2d3c520
+> [Fri Jul 16 09:15:29 2021] Code: 68 4c 00 00 00 e9 20 fb ff ff ff 25 7a ad
+> 07 00 68 4d 00 00 00 e9 10 fb ff ff ff 25 72 ad 07 00 68 4e 00 00 00 e9 00
+> fb ff ff <ff> 25 6a ad 07 00 68 4f 00 00 00 e9 f0 fa ff ff ff 25 62 ad 07
+> 00 [Fri Jul 16 09:15:29 2021] RSP: 002b:00007ffebd529048 EFLAGS: 00010293
+> [Fri Jul 16 09:15:29 2021] RAX: 0000000000000001 RBX: 00007fccc46e2890 RC=
+X:
+> 0000000000000010 [Fri Jul 16 09:15:29 2021] RDX: 0000000000000010 RSI:
+> 0000000000000000 RDI: 00007fccc46e2890 [Fri Jul 16 09:15:29 2021] RBP:
+> 000056264f1dd4a0 R08: 000056264f21aba0 R09: 000056264f1f58a0 [Fri Jul 16
+> 09:15:29 2021] R10: 0000000000000007 R11: 0000000000000246 R12:
+> 000056264f21ac00 [Fri Jul 16 09:15:29 2021] R13: 000056264f1e0a30 R14:
+> 00007ffebd529080 R15: 00000000000dd87b [Fri Jul 16 09:15:29 2021] ---[ end
+> trace c8b06e067d8b0fc2 ]---
+>=20
+> At the time the warning was issued I was creating a (weekly) backup of my
+> linux system (home-brewed based on the guidance from Linux From Scratch).
+> My backup routine is completed by copying the archive files (created with
+> dar) and a directory that contains about 7000 source and binary rpm files
+> to an external USB drive. I didn't spot the warning until later in the da=
+y,
+> so I'm not sure exactly where I was in my backup process.
+>=20
+> I haven't seen this warning before. Consequently, I don;t know how easy (=
+or
+> otherwise) it is to reproduce.
+>=20
+> Let me know if I can provide any additional diagnostics, but please cc me=
+ as
+> I'm not subscribed.
 
-PREEMPT_LOCK
-Referencing files: include/linux/lockdep_types.h
+Confirming the same for me with v5.13.2, and cross-referencing another
+report [1] against v5.12.17.
 
-PREEMT_DYNAMIC
-Referencing files: kernel/entry/common.c
+Also Cc'ing relevant people on this.
 
-TREE_PREEMPT_RCU
-Referencing files: arch/sh/configs/sdk7786_defconfig
+Thanks.
 
-RCU_CPU_STALL_INFO
-Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
+[1] https://lore.kernel.org/lkml/CAK2bqVK0Q9YcpakE7_Rc6nr-E4e2GnMOgi5jJj=3D=
+_Eh_1kEHLHA@mail.gmail.com/
 
-RCU_NOCB_CPU_ALL
-Referencing files:
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
 
-RCU_TORTURE_TESTS
-Referencing files: kernel/rcu/rcutorture.c
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-and finally the macro which drive me to do this research
 
-TASKS_RCU_TRACE
-Referencing files: include/linux/rcupdate.h, kernel/rcu/tree_plugin.h
-
-On Fri, Jul 16, 2021 at 2:09 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Jul 15, 2021 at 04:45:04PM +0800, Zhouyi Zhou wrote:
-> > On Thu, Jul 15, 2021 at 11:51 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
-> > > > On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
-> > > > > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
-> > > > > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
-> > > > > > >
-> > > > > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> > > > > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > >>
-> > > > > > > >> Hi Paul,
-> > > > > > > >>
-> > > > > > > >> During my studying of RCU, I did a grep in the kernel source tree.
-> > > > > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> > > > > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
-> > > > > > > >>
-> > > > > > > >> Without memory fencing, the idle/userspace task inspection may not
-> > > > > > > >> be so accurate.
-> > > > > > > >>
-> > > > > > > >> Thanks for your constant encouragement for my studying.
-> > > > > > > >>
-> > > > > > > >> Best Wishes
-> > > > > > > >> Zhouyi
-> > > > > > > >>
-> > > > > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > >
-> > > > > > > > Good eyes, and those could cause real bugs, so thank you!
-> > > > > > >
-> > > > > > > Hi Paul,
-> > > > > > >
-> > > > > > > This makes me wonder: what is missing testing-wise in rcutorture to
-> > > > > > > catch those issues with testing before they reach mainline ?
-> > > > > >
-> > > > > > My guess:  Running on weakly ordered architectures.  ;-)
-> > > > >
-> > > > > And another guess:  A tool that identifies use of Kconfig options
-> > > > > that are not defined in any Kconfig* file.
-> > > > Based on Paul's second guess ;-),  I did a small research, and I think
-> > > > the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
-> > > > to identify use of Kconfig options that are not defined in any Kconfig* file.
-> > > >
-> > > > As I am a C/C++ programmer, I would be glad to take some time to learn
-> > > > perl (checkpatch is implented in perl) first if no other volunteer is
-> > > > about to do it ;-)
-> > >
-> > > I haven't heard anyone else volunteer.  ;-)
-> > >
-> > > Others might have opinions on where best to implement these checks,
-> > > but I must confess that I have not given it much thought.
-> > I recklessly cc the maintainers of checkpatch.pl without your
-> > permission to see others' opion,
-> > and I begin to study perl at the same time, after all, learning
-> > something is always good ;-)
->
-> Works for me!
->
->                                                         Thanx, Paul
-Best Wishes
-Zhouyi
