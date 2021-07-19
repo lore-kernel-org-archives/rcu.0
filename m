@@ -2,45 +2,36 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D44C12002
-	for <rcu@archiver.kernel.org>; Mon, 19 Jul 2021 11:23:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F227C07E9D
+	for <rcu@archiver.kernel.org>; Mon, 19 Jul 2021 11:50:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55029610C7
-	for <rcu@archiver.kernel.org>; Mon, 19 Jul 2021 11:23:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 305F86113A
+	for <rcu@archiver.kernel.org>; Mon, 19 Jul 2021 11:50:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236339AbhGSKnP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Jul 2021 06:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236491AbhGSKnO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Jul 2021 06:43:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7920CC061574;
-        Mon, 19 Jul 2021 03:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8h+gj7zMndgQ4v2Max/ZsB0/KwqWBXcqOeZTsebwUqk=; b=gW/ia2amiUtk2+XkJaE5YxL0cz
-        clPKSzMoF3fVNbFSKTYkVGVJPMIuN46DVHFZlG8fdHGaMbLJaFnHJwnt2tdgjSg6wHvocqC8NHC3d
-        cpSEArsyy272WbCLLPVNlqxa2UY0/xG0OEzbirzpeeyjZRFMHcMe7pt6QG/9buJYx/R7OAZjOAATh
-        v2gpydY18wkgPxhwl5AiKwSozqfsHnkl6xEd09VE0V+IUeEqiSuOua/Ez+vPEiY9t43wQALDKOxcx
-        Nj3J5p9iAYnOziuHbqS1lYsvCj5G5kABcJj+uSKOLlEZA9IPWvZ6wXqAmx73yweSDhuq9gkwTH4oo
-        vi3rB+cw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5RLl-006nhP-Aq; Mon, 19 Jul 2021 11:22:44 +0000
-Date:   Mon, 19 Jul 2021 12:22:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>, paulmck@kernel.org,
+        id S231290AbhGSLJa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Jul 2021 07:09:30 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11344 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhGSLJa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Jul 2021 07:09:30 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GT0Qk0cnTz7tG1;
+        Mon, 19 Jul 2021 19:45:34 +0800 (CST)
+Received: from [10.174.177.180] (10.174.177.180) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 19:50:07 +0800
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Boqun Feng <boqun.feng@gmail.com>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>, <paulmck@kernel.org>,
         Oleksandr Natalenko <oleksandr@natalenko.name>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Clayton <chris2553@googlemail.com>,
+        <stable@vger.kernel.org>, Chris Clayton <chris2553@googlemail.com>,
         Chris Rankin <rankincj@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -50,34 +41,54 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>,
         rcu <rcu@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>, gregkh@linuxfoundation.org
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Message-ID: <YPVgaY6uw59Fqg5x@casper.infradead.org>
+        "Huang, Ying" <ying.huang@intel.com>, <gregkh@linuxfoundation.org>
 References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <2245518.LNIG0phfVR@natalenko.name>
- <6698965.kvI7vG0SvZ@natalenko.name>
+ <2245518.LNIG0phfVR@natalenko.name> <6698965.kvI7vG0SvZ@natalenko.name>
  <20210718215914.GQ4397@paulmck-ThinkPad-P17-Gen-1>
  <YPSweHyCrD2q2Pue@casper.infradead.org>
  <20210719015313.GS4397@paulmck-ThinkPad-P17-Gen-1>
  <CAABZP2yE+3vzd+LgJDJcJ2f8qttJQSUQ6efD9MaFd2iD4xPTZA@mail.gmail.com>
- <YPTmtNMJpykEpzx6@casper.infradead.org>
- <YPVQfaamqwu1PRrK@boqun-archlinux>
+ <YPTmtNMJpykEpzx6@casper.infradead.org> <YPVQfaamqwu1PRrK@boqun-archlinux>
  <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
+ <YPVgaY6uw59Fqg5x@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8058e175-cec5-c243-6499-c1cd4e3c8605@huawei.com>
+Date:   Mon, 19 Jul 2021 19:50:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08803f78-3e99-6b3f-e809-5828fe47cf06@huawei.com>
+In-Reply-To: <YPVgaY6uw59Fqg5x@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.180]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
-> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize against
-> concurrent swapoff, i.e. there's percpu_ref inside get_swap_device() instead of
-> rcu_read_lock(). Please see commit 63d8620ecf93 ("mm/swapfile: use percpu_ref to
-> serialize against concurrent swapoff") for detail.
+On 2021/7/19 19:22, Matthew Wilcox wrote:
+> On Mon, Jul 19, 2021 at 07:12:58PM +0800, Miaohe Lin wrote:
+>> When in the commit 2799e77529c2a, we're using the percpu_ref to serialize against
+>> concurrent swapoff, i.e. there's percpu_ref inside get_swap_device() instead of
+>> rcu_read_lock(). Please see commit 63d8620ecf93 ("mm/swapfile: use percpu_ref to
+>> serialize against concurrent swapoff") for detail.
+> 
+> Oh, so this is a backport problem.  2799e77529c2 was backported without
+> its prerequisite 63d8620ecf93.  Greg, probably best to just drop
 
-Oh, so this is a backport problem.  2799e77529c2 was backported without
-its prerequisite 63d8620ecf93.  Greg, probably best to just drop
-2799e77529c2 from all stable trees; the race described is not very
-important (swapoff vs reading a page back from that swap device).
+Yes, they're posted as a patch set:
+
+https://lkml.kernel.org/r/20210426123316.806267-1-linmiaohe@huawei.com
+
+> 2799e77529c2 from all stable trees; the race described is not very
+> important (swapoff vs reading a page back from that swap device).
+> .
+> 
+
+The swapoff races with reading a page back from that swap device should be really
+uncommon as most users only do swapoff when the system is going to shutdown.
+
+Sorry for the trouble!
