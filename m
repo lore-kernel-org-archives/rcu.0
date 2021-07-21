@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEE28C63797
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A39EC6377C
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA8996128E
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4460F61244
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240410AbhGUTkz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50108 "EHLO mail.kernel.org"
+        id S240417AbhGUTk4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 15:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237346AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S237450AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A76E861357;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF2E61358;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=QhuNcsunZD2QYw6aN/2PjhF7hYYh0BTHMfQNysrs8x4=;
+        bh=BKxY760Q0+rm4WqKjHEoXmDIxEOWQtXd1bpJVPxdpAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g+azx71pU4jAYLhP++cXgQ7IP6GXrStmWvO5i03OCs6y5OoAb2KzDvBrEysUj1Ihb
-         8Zi1yKpGXzjR07p7cM50EnZApUW0l9pt2uGI8ngoiIgPRTv0YGcKZWvzbR+jocozHM
-         031cVGWeKaNmK5ECRzk4PBGWaZpItdfcQsfxuy1x5u6UiO6etZhwSt5cVpYiNNs1PY
-         V8/V154E9bL9wik18M/u4KJ0GZ3BvNXOvJ/L1UizNQEFzLBU4jSdKWHEBCfygQokMO
-         rVfp+w30LueQkMTHShz1EtwK0Ham3NSgHwV5A6rRy2k8oUPSwyzXTWNHPSmRXGWU2m
-         GDhEQBOiCGJTg==
+        b=H164hPdmIF7rWaKoONLGVL2Rr9yWzrw62TBX/WET7LZ7lrjlfw8DmAkVlj3BbbdcU
+         2jhGSrdNI9wZ+TXNP5EkxFKeJ4nB8KfTK5DuUOz/QfaMVrSk0i/d/HzNH/HKbVqKbS
+         B0pDLI2SEoKhS6+A+wIOcklX9lhS16JcmdcLlHL6+lHtChrczAhE4lvLlYykXVJs2F
+         Y0sabhNsqZvRjRXuMbdO54Xo4l3PeAuEz7sxudDxCIdTvk8eqcuctZimAVy50PEm+v
+         u6+wIJoT6s6Ha+aYkkqjF41IftFaKvET7WcwcepZgXnCvy9xRsFrGPl+/9cjFTwOa0
+         mmRIW6+2dn8zg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 26D025C0E45; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 434A35C0C70; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH rcu 09/18] rcu: Start timing stall repetitions after warning complete
-Date:   Wed, 21 Jul 2021 13:21:17 -0700
-Message-Id: <20210721202127.2129660-9-paulmck@kernel.org>
+        Liu Song <liu.song11@zte.com.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 15/18] rcu: Remove useless "ret" update in rcu_gp_fqs_loop()
+Date:   Wed, 21 Jul 2021 13:21:23 -0700
+Message-Id: <20210721202127.2129660-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -55,60 +55,34 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Systems with low-bandwidth consoles can have very large printk()
-latencies, and on such systems it makes no sense to have the next RCU CPU
-stall warning message start output before the prior message completed.
-This commit therefore sets the time of the next stall only after the
-prints have completed.  While printing, the time of the next stall
-message is set to ULONG_MAX/2 jiffies into the future.
+From: Liu Song <liu.song11@zte.com.cn>
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Within rcu_gp_fqs_loop(), the "ret" local variable is set to the
+return value from swait_event_idle_timeout_exclusive(), but "ret" is
+unconditionally overwritten later in the code.  This commit therefore
+removes this useless assignment.
+
+Signed-off-by: Liu Song <liu.song11@zte.com.cn>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index e199022dce9dc..42847caa3909b 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -647,6 +647,7 @@ static void print_cpu_stall(unsigned long gps)
- 
- static void check_cpu_stall(struct rcu_data *rdp)
- {
-+	bool didstall = false;
- 	unsigned long gs1;
- 	unsigned long gs2;
- 	unsigned long gps;
-@@ -692,7 +693,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    ULONG_CMP_GE(gps, js))
- 		return; /* No stall or GP completed since entering function. */
- 	rnp = rdp->mynode;
--	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-+	jn = jiffies + ULONG_MAX / 2;
- 	if (rcu_gp_in_progress() &&
- 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-@@ -709,6 +710,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		print_cpu_stall(gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
- 			rcu_ftrace_dump(DUMP_ALL);
-+		didstall = true;
- 
- 	} else if (rcu_gp_in_progress() &&
- 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
-@@ -726,6 +728,11 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		print_other_cpu_stall(gs2, gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
- 			rcu_ftrace_dump(DUMP_ALL);
-+		didstall = true;
-+	}
-+	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-+		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-+		WRITE_ONCE(rcu_state.jiffies_stall, jn);
- 	}
- }
- 
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 37bc3a702b6ea..7b65ac3f49e5a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1960,8 +1960,8 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+ 				       TPS("fqswait"));
+ 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+-		ret = swait_event_idle_timeout_exclusive(
+-				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
++		(void)swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
++				 rcu_gp_fqs_check_wake(&gf), j);
+ 		rcu_gp_torture_wait();
+ 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
+ 		/* Locking provides needed memory barriers. */
 -- 
 2.31.1.189.g2e36527f23
 
