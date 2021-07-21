@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 843A8C6377A
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F505C6377B
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E9B660725
+	by mail.kernel.org (Postfix) with ESMTP id EF30C60725
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbhGUT5q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56328 "EHLO mail.kernel.org"
+        id S232880AbhGUT5r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 15:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231740AbhGUT5p (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S231989AbhGUT5p (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BAAB61221;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6A76124B;
         Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626899901;
-        bh=uo3mNzC8JGMN95RX/9rMuLZ2tfHn/qJe6eYq/zLbUPA=;
+        bh=GigiSkqXTDy+QkyYs7Y/oDOjKdcjT/+3+R3H9fSvMOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTZrRS1GGtOB00DC2yzWdDK+eQAxiVMlCJRsHEuIPAeb5H4ol4TtXZqNJjCSL7iiq
-         0/aY7xiS6wImy4OH2J+nYYKjsDqDkBrlQeJgyWSPdrgXRHALJseWiFUousi+5ebcOQ
-         h+xeN+ZBJ4zYAq1qjTLbhVzTg4Ng3m/POohUTwFmt1v/XExa8wkaYcoaOXQ5/Rdgbo
-         zDDZdAKwVhk0672hCWH7qVO9VlwpD3oEq2WMbjVfNt1L6ic6Dkr+TNc4Rg25rEs7YX
-         YqSfNmyQ1J0n3EsxS5F7WKs3eUYMYmekIvUqra8747LKIFisQyXJ3D+Qu6otPN1IVb
-         S3OFmV6cXVXqQ==
+        b=VR/mXfWqTQUi9xVyVpjTWkROpuiANmjgWANZtEIAB49b2+F0aZVWKg3zczTsoWWqx
+         aXAvm0iCAR98vHKJcKVXf+qSkqLPrQRY2wbIWGUuD4j55XV79agfJjH7HwoZakR2Xa
+         JGEiK/xZ4JL8ehZ1G8ut4hFpQIP2laT97Z04uGxFhneKwaznANROIwwF0atRpWUW53
+         yVhByrde4bzO5D2ZqU14QhsJ3OWcFJI0FRxQsSdmoo1EF5M8iKm+RixpeOQVoGtGq0
+         Y0fccOyDT8pNRY6DPNBpb2qFg7X9KWJ+JH+xWFSiyFxuCIOmv6z2zLujo68YPv9CgZ
+         kWPGLUQH+TvPQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 597595C0A11; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
+        id 60CFD5C0BF4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/5] rcu-tasks: Mark ->trc_reader_special.b.need_qs data races
-Date:   Wed, 21 Jul 2021 13:38:16 -0700
-Message-Id: <20210721203818.3398345-3-paulmck@kernel.org>
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 5/5] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
+Date:   Wed, 21 Jul 2021 13:38:18 -0700
+Message-Id: <20210721203818.3398345-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
@@ -54,54 +55,59 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are several ->trc_reader_special.b.need_qs data races that are
-too low-probability for KCSAN to notice, but which will happen sooner
-or later.  This commit therefore marks these accesses.
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
+This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
+instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
+could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
+memory-ordering bugs that could result in false-positive quiescent
+states and too-short grace periods.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/rcupdate.h | 2 +-
+ kernel/rcu/tree_plugin.h | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index f6b5320c44849..1cece5e9be9a9 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -850,7 +850,7 @@ static DEFINE_IRQ_WORK(rcu_tasks_trace_iw, rcu_read_unlock_iw);
- /* If we are the last reader, wake up the grace-period kthread. */
- void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d9680b798b211..955c82b4737c5 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
+ # define synchronize_rcu_tasks synchronize_rcu
+ # endif
+ 
+-# ifdef CONFIG_TASKS_RCU_TRACE
++# ifdef CONFIG_TASKS_TRACE_RCU
+ # define rcu_tasks_trace_qs(t)						\
+ 	do {								\
+ 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index de1dc3bb7f701..6ce104242b23d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+ /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+ static void rcu_dynticks_task_trace_enter(void)
  {
--	int nq = t->trc_reader_special.b.need_qs;
-+	int nq = READ_ONCE(t->trc_reader_special.b.need_qs);
- 
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
- 	    t->trc_reader_special.b.need_mb)
-@@ -916,7 +916,7 @@ static void trc_read_check_handler(void *t_in)
- 	// Get here if the task is in a read-side critical section.  Set
- 	// its state so that it will awaken the grace-period kthread upon
- 	// exit from that critical section.
--	WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+	WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs));
- 	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 
- reset_ipi:
-@@ -968,7 +968,7 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 	// state so that it will awaken the grace-period kthread upon exit
- 	// from that critical section.
- 	atomic_inc(&trc_n_readers_need_end); // One more to wait on.
--	WARN_ON_ONCE(t->trc_reader_special.b.need_qs);
-+	WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs));
- 	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
- 	return true;
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = true;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  }
-@@ -1103,7 +1103,7 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
- 		 ".i"[is_idle_task(t)],
- 		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
- 		 READ_ONCE(t->trc_reader_nesting),
--		 " N"[!!t->trc_reader_special.b.need_qs],
-+		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
- 		 cpu);
- 	sched_show_task(t);
+ 
+ /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+ static void rcu_dynticks_task_trace_exit(void)
+ {
+-#ifdef CONFIG_TASKS_RCU_TRACE
++#ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+ 		current->trc_reader_special.b.need_mb = false;
+-#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
++#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
  }
 -- 
 2.31.1.189.g2e36527f23
