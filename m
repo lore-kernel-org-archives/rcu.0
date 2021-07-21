@@ -2,147 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E22A9C6377B
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22024C6377A
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:55:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BB5C36101B
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:42:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A3EB6108B
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:55:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhGUUBa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 16:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhGUUBa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Jul 2021 16:01:30 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE9FC061757
-        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:05 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id m16so5084450lfg.13
-        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=csX/v4wZK/8khKbWOQHMHKPVkpan3K/PQpV5i6hI1c0=;
-        b=RIOdAP9M9gXS951krhcwLpREAahAyipS213qzagLjn9qzHnaba4oO8CHqBJEXCWXL8
-         +FxzgIvAS2ZmXmep4rv8XOlP7+zh/uTP17V4d0uuaZivHXqxLDzTHqsr8T2h/2tfvOG+
-         baDbARcSNcjAOApHnuGY1cVlFgtvbyDiPc0Xo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=csX/v4wZK/8khKbWOQHMHKPVkpan3K/PQpV5i6hI1c0=;
-        b=RHU8bWJ1HVs5ymQGNLxzFGdRYnsG/NBvWShd7pNkBXDotzqWdPzyd7k3SUkRriar0K
-         v4Ge21DGFm7t1oFjGUQ+y7TY5L4bo0NATtQ9F1CWOQg6HBb4Cxv308sk08LUrYEMxaHA
-         mX6Qrsjz0OFJe8fuUiqfJ9j2aekJusnr2boXjyk071w8HGKmRAHky3EeQWJmbu1JYWkR
-         i4jnIZ4yI96HPtHdhCl/hyg1g3EgDA+MtvKK7M6UFAhdqqUVwYXHA/2tKWtRC4lN8791
-         hbqewZl78uukIhFcwwY0aPDw8Emn4pBGpgKGAb6UmHElwIX64+gZX5uvg/T8temV7kYm
-         ICHw==
-X-Gm-Message-State: AOAM530DrLlzCULezGb8jdjnw4/ta3lk1Lq0Qu9B/8JZw2CMD9VrJJuI
-        ElsnepmcOHoCRV3hB/+obI7gLwoUpcEO6A8X
-X-Google-Smtp-Source: ABdhPJyX0ExtkGJYyvKyD277LTwFx+w9zDPvju5T5hpjjjF1VfqDUCK100LYW0i9oG2l8E6+Pvxk/A==
-X-Received: by 2002:ac2:5e3c:: with SMTP id o28mr28164908lfg.592.1626900123978;
-        Wed, 21 Jul 2021 13:42:03 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id j21sm1814643lfg.56.2021.07.21.13.42.02
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 13:42:02 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id b16so3400135ljq.9
-        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:02 -0700 (PDT)
-X-Received: by 2002:a2e:90cd:: with SMTP id o13mr16138636ljg.465.1626900121924;
- Wed, 21 Jul 2021 13:42:01 -0700 (PDT)
+        id S229461AbhGUUOj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 16:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229841AbhGUUOf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:14:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C95611C1;
+        Wed, 21 Jul 2021 20:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626900911;
+        bh=lwGCCLLRxD/zF8v0rUDtLAsLAq5VfjL8yHIso29kuwI=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=tD5Gd+zfbqUoG8eqT/VlNQ+4bjhLnXnCFVZXe5agaikHPjyxb5nSWkwYRw2i/V4ji
+         pI0JK7bpVlwPTT+b0BVebjYP6n8ZGwzLYcHdMX+B6cyb6d0gZBnSG04SoXYs5KnGGZ
+         cVC3AgqCIJH+kirfORMflET/pMifL83hP6IONZNxO7yd2C+DO/yjPed0Anb5bBLb6E
+         zhYsnS43t+RTFdN2MvfuvKr9ukRXFx+f7iLVTsh80vV+lWIRLiFkTyR/aJX9pac0/X
+         V/EDH8G2NOI6W4gk2spOlN+cYgrgH29r4ewUZDbp2VA8HEtNRo7g880PeoFa4hTycV
+         ppFh6Cbp+8jtQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 353D85C09A4; Wed, 21 Jul 2021 13:55:11 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 13:55:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH rcu 0/21] Torture-test scripting updates for v5.15
+Message-ID: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org>
-In-Reply-To: <20210721202127.2129660-4-paulmck@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 21 Jul 2021 13:41:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
-Message-ID: <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
-Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hmm.
+Hello!
 
-This actually seems to make some of the ordering worse.
+This series contains torture-test scripting updates:
 
-I'm not seeing a lot of weakening or optimization, but it depends a
-bit on what is common and what is not.
+1.	Add clocksource-watchdog testing to torture.sh.
 
-On Wed, Jul 21, 2021 at 1:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> +/*
-> + * Increment the current CPU's rcu_data structure's ->dynticks field
-> + * with ordering.  Return the new value.
-> + */
-> +static noinstr unsigned long rcu_dynticks_inc(int incby)
-> +{
-> +       struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-> +       int seq;
-> +
-> +       seq = READ_ONCE(rdp->dynticks) + incby;
-> +       smp_store_release(&rdp->dynticks, seq);
-> +       smp_mb();  // Fundamental RCU ordering guarantee.
-> +       return seq;
-> +}
+2.	Make torture.sh accept --do-all and --donone.
 
-So this is actually likely *more* expensive than the old code was, at
-least on x86.
+3.	Enable KCSAN summaries over groups of torture-test runs.
 
-The READ_ONCE/smp_store_release are cheap, but then the smp_mb() is expensive.
+4.	Create KCSAN summaries for torture.sh runs.
 
-The old code did just arch_atomic_inc_return(), which included the
-memory barrier.
+5.	Make kvm-recheck-scf.sh tolerate qemu-cmd comments.
 
-There *might* be some cache ordering advantage to letting the
-READ_ONCE() float upwards, but from a pure barrier standpoint this is
-more expensive than what we used to have.
+6.	Make kvm-recheck-lock.sh tolerate qemu-cmd comments.
 
-> -       if (atomic_read(&rdp->dynticks) & 0x1)
-> +       if (READ_ONCE(rdp->dynticks) & 0x1)
->                 return;
-> -       atomic_inc(&rdp->dynticks);
-> +       rcu_dynticks_inc(1);
+7.	Log more kvm-remote.sh information.
 
-And this one seems to not take advantage of the new rule, so we end up
-having two reads, and then that potentially more expensive sequence.
+8.	Protect kvm-remote.sh directory trees from /tmp reaping.
 
->  static int rcu_dynticks_snap(struct rcu_data *rdp)
->  {
-> -       return atomic_add_return(0, &rdp->dynticks);
-> +       smp_mb();  // Fundamental RCU ordering guarantee.
-> +       return smp_load_acquire(&rdp->dynticks);
->  }
+9.	Make kvm-recheck.sh skip kcsan.sum for build-only runs.
 
-This is likely cheaper - not because of barriers, but simply because
-it avoids dirtying the cacheline.
+10.	Move parse-console.sh call to PATH-aware scripts.
 
-So which operation do we _care_ about, and do we have numbers for why
-this improves anything? Because looking at the patch, it's not obvious
-that this is an improvement.
+11.	Put kvm.sh batch-creation awk script into a temp file.
 
-              Linus
+12.	Make kvm.sh select per-scenario affinity masks.
+
+13.	Don't redirect qemu-cmd comment lines.
+
+14.	Make kvm-test-1-run-qemu.sh apply affinity.
+
+15.	Upgrade two-CPU scenarios to four CPUs.
+
+16.	Use numeric taskset argument in jitter.sh.
+
+17.	Consistently name "qemu*" test output files.
+
+18.	Make kvm-test-1-run-batch.sh select per-scenario affinity masks.
+
+19.	Don't use "test" command's "-a" argument.
+
+20.	Add timestamps to kvm-test-1-run-qemu.sh output.
+
+21.	Make kvm-test-1-run-qemu.sh check for reboot loops.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/tools/testing/selftests/rcutorture/bin/jitter.sh               |   10 
+ b/tools/testing/selftests/rcutorture/bin/kcsan-collapse.sh       |    2 
+ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh            |    2 
+ b/tools/testing/selftests/rcutorture/bin/kvm-assign-cpus.sh      |  105 ++++++++++
+ b/tools/testing/selftests/rcutorture/bin/kvm-get-cpus-script.sh  |   87 ++++++++
+ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-lock.sh     |    2 
+ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh      |    2 
+ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh          |    5 
+ b/tools/testing/selftests/rcutorture/bin/kvm-remote-noreap.sh    |   30 ++
+ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh           |   15 +
+ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh |    1 
+ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh  |    2 
+ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh       |    1 
+ b/tools/testing/selftests/rcutorture/bin/kvm.sh                  |   27 +-
+ b/tools/testing/selftests/rcutorture/bin/torture.sh              |   29 ++
+ b/tools/testing/selftests/rcutorture/configs/rcu/RUDE01          |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS01         |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03         |    2 
+ tools/testing/selftests/rcutorture/bin/kvm-again.sh              |    2 
+ tools/testing/selftests/rcutorture/bin/kvm-remote.sh             |    7 
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run-batch.sh   |   23 ++
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh    |   57 +++--
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh         |    1 
+ tools/testing/selftests/rcutorture/bin/kvm.sh                    |   14 +
+ tools/testing/selftests/rcutorture/bin/torture.sh                |    8 
+ 25 files changed, 373 insertions(+), 65 deletions(-)
