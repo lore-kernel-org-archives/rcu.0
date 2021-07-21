@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C955C6377B
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99758C6377A
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38A206124C
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 848306124C
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhGUUVR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 16:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33182 "EHLO mail.kernel.org"
+        id S230015AbhGUUVS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 16:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhGUUVH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S229738AbhGUUVH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F7061370;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5F161377;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=RdAL1UJ/R+LAq6pmS9aqielVwWYgDIKANDlmflWnGsE=;
+        bh=G8La4NjHWKPC8j0EAHrMvvJRJqzlGgBYRKyw0zCFXlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LwRfv0/l4LHyO1DcD6AXu30JhmBMRrs6bu/qj7Tgd6hNiRBzIMxORWHQzhx9n6Lig
-         mO58qC9vXzK6/8kqhlJwXJPc8zE8L8O8Ff33FLC5WQwXWmgv0K4hPxNB2BIgIE1g98
-         RPYNgSe8EhDPvmWXTbnjC011PreAvduZNjdZ6g/NxnvbSgsqvD7OgXHnbefZYlu+2r
-         +8kkHX2SODzd8IF2l8zVkSP6iZXTfpKfEcP/TyKLE0GXOMwT/fp7/kclm6j+hlwVsm
-         0PHSmwGr1bREuluZrr6TjxJRq6x4zGDmDkxxl4lfBPSjV6h7yRKB9VpixNEeulafUG
-         VxP1dnc1885FQ==
+        b=IEi2XzbQmgMkU4DhTsupSx7R/DqXioYuBMYxF+MHmnbD2TOzCCqvuArzqmbV3urvT
+         Fzw4BqSC06cQrhqZy1nYWp/0AFW8q9dIXAtlwf5F7b6wtpOmCgLn6bva5clNyRXG8K
+         jDF2ttHgXY3kZyONEP2RexHg5+1eGs9bt5ERpeafknSZfnUxPxNECrCSoAAtDM3lV6
+         cFsKHheW7gvNuYljsFPYfrQEWEfjxY62A2GRHcSQsJwh8lLyiEmkj81LdLM61+geVq
+         u91fmwj+cbalofEBVIuYZwMDXv5IWYf8dfKQxk2RibGOEFAju4Go0gu4SvtMtSMV3H
+         6KOrc/tGVoZfA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E819B5C2315; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id EBC1F5C259B; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 17/21] torture: Consistently name "qemu*" test output files
-Date:   Wed, 21 Jul 2021 14:01:36 -0700
-Message-Id: <20210721210140.787717-17-paulmck@kernel.org>
+Subject: [PATCH rcu 19/21] torture: Don't use "test" command's "-a" argument
+Date:   Wed, 21 Jul 2021 14:01:38 -0700
+Message-Id: <20210721210140.787717-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -54,101 +54,58 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There is "qemu-affinity", "qemu-cmd", "qemu-retval", but also "qemu_pid".
-This is hard to remember, not so good for bash tab completion, and just
-plain inconsistent.  This commit therefore renames the "qemu_pid" file to
-"qemu-pid".  A couple of the scripts must deal with old runs, and thus
-must handle both "qemu_pid" and "qemu-pid", but new runs will produce
-"qemu-pid".
+There was a time long ago when the "test" command's documentation
+claimed that the "-a" and "-o" arguments did something useful.
+But this documentation now suggests letting the shell execute
+these boolean operators, so this commit applies that suggestion to
+kvm-test-1-run-qemu.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-again.sh        |  2 +-
- .../selftests/rcutorture/bin/kvm-remote.sh       |  2 +-
- .../rcutorture/bin/kvm-test-1-run-qemu.sh        | 16 ++++++++--------
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ .../selftests/rcutorture/bin/kvm-test-1-run-qemu.sh    | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index d8c8483c46f13..b7b8d6856d7ec 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -142,7 +142,7 @@ then
- 	echo "Cannot copy from $oldrun to $rundir."
- 	usage
- fi
--rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
-+rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
- touch "$rundir/log"
- echo $scriptname $args | tee -a "$rundir/log"
- echo $oldrun > "$rundir/re-run"
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index f52641fdd1fe7..19cadb1b2f2d3 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -254,7 +254,7 @@ do
- 		sleep 30
- 	done
- 	echo " ---" Collecting results from $i `date`
--	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu_pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
-+	( cd "$oldrun"; ssh $i "cd $rundir; tar -czf - kvm-remote-*.sh.out */console.log */kvm-test-1-run*.sh.out */qemu[_-]pid */qemu-retval; rm -rf $T > /dev/null 2>&1" | tar -xzf - )
- done
- 
- ( kvm-end-run-stats.sh "$oldrun" "$starttime"; echo $? > $T/exitcode ) | tee -a "$oldrun/remote-log"
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-index b9a0bb6f01154..d828a34b5b89f 100755
+index d828a34b5b89f..ca1d49c1c2f45 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-@@ -47,7 +47,7 @@ then
- fi
- sed -e 's/^[^#].*$/'"$taskset_command"'& 2>\&1 \&/' < $resdir/qemu-cmd > $T/qemu-cmd
- echo 'qemu_pid=$!' >> $T/qemu-cmd
--echo 'echo $qemu_pid > $resdir/qemu_pid' >> $T/qemu-cmd
-+echo 'echo $qemu_pid > $resdir/qemu-pid' >> $T/qemu-cmd
- echo 'taskset -c -p $qemu_pid > $resdir/qemu-affinity' >> $T/qemu-cmd
- 
- # In case qemu refuses to run...
-@@ -55,14 +55,14 @@ echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
- 
- # Attempt to run qemu
- kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
--( . $T/qemu-cmd; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
-+( . $T/qemu-cmd; wait `cat  $resdir/qemu-pid`; echo $? > $resdir/qemu-retval ) &
- commandcompleted=0
- if test -z "$TORTURE_KCONFIG_GDB_ARG"
- then
- 	sleep 10 # Give qemu's pid a chance to reach the file
--	if test -s "$resdir/qemu_pid"
-+	if test -s "$resdir/qemu-pid"
- 	then
--		qemu_pid=`cat "$resdir/qemu_pid"`
-+		qemu_pid=`cat "$resdir/qemu-pid"`
- 		echo Monitoring qemu job at pid $qemu_pid
- 	else
- 		qemu_pid=""
-@@ -89,9 +89,9 @@ then
+@@ -89,7 +89,7 @@ then
  fi
  while :
  do
--	if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
-+	if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
+-	if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
++	if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
  	then
--		qemu_pid=`cat "$resdir/qemu_pid"`
-+		qemu_pid=`cat "$resdir/qemu-pid"`
+ 		qemu_pid=`cat "$resdir/qemu-pid"`
  	fi
- 	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
- 	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
-@@ -122,9 +122,9 @@ do
+@@ -122,11 +122,11 @@ do
  		break
  	fi
  done
--if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
-+if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
+-if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
++if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
  then
--	qemu_pid=`cat "$resdir/qemu_pid"`
-+	qemu_pid=`cat "$resdir/qemu-pid"`
+ 	qemu_pid=`cat "$resdir/qemu-pid"`
  fi
- if test $commandcompleted -eq 0 -a -n "$qemu_pid"
+-if test $commandcompleted -eq 0 -a -n "$qemu_pid"
++if test $commandcompleted -eq 0 && test -n "$qemu_pid"
  then
+ 	if ! test -f "$resdir/../STOP.1"
+ 	then
+@@ -159,11 +159,11 @@ then
+ 		then
+ 			last_ts=0
+ 		fi
+-		if test "$newline" != "$oldline" -a "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		if test "$newline" != "$oldline" && test "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
+ 		then
+ 			must_continue=yes
+ 		fi
+-		if test $must_continue = no -a $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		if test $must_continue = no && test $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
+ 		then
+ 			echo "!!! PID $qemu_pid hung at $kruntime vs. $seconds seconds" >> $resdir/Warnings 2>&1
+ 			kill -KILL $qemu_pid
 -- 
 2.31.1.189.g2e36527f23
 
