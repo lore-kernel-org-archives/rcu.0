@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 520FCC6377C
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A529C6377A
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:04:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3EF2561363
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:04:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E90B261362
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:04:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhGUUYI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S230021AbhGUUYI (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 21 Jul 2021 16:24:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhGUUYH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S229908AbhGUUYH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 16:24:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5963661285;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F0261264;
         Wed, 21 Jul 2021 21:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901483;
-        bh=KCVmElLnyJJDyLi/tiwKtNc0ccGtyECFx6O/8bB8cao=;
+        bh=BRCA3cizbBxreJRulOEZaGT1dH+vBvoN0yRwdhOIDXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yy0jVeOKoJ5Pdl7iuq0y98eojBqrxJ1+E/yUD13mCfue/zc9bWRTWYqxWtmGLh455
-         NJeCPPmvu58Rd30clinfDJ/WfRuwrP/aafJnAJAAkmzf72y8Uwgn1VcT9tpsbg6pV/
-         7ERJiCQlt55wKfc4V5fUsPdq4EUif9u2fZh0E/uoAbEk3KxJlmVHRP4XED/bKJYM8g
-         EQhju0VK97FcVY6AGPLn/bh2lNurTEuyUWAdsTdhfoeNjsS6asaNb9XOAU2MJ351NZ
-         jeqknLVeHjvkSMQJ4pViC2R+VfWi5WGj6hXAiIL3wepF1F6i2onQ2uiwCVcKy8xJ1W
-         sXR6AFmGT/RQQ==
+        b=NqjY/CkneNItcKa12J60Xuq2mrGrTF1kYM1PZBkd68l3VxTc8fsEVqFgpqskGPCls
+         tzjCqRO1272inrIIrkoJMxzK47COzOD9mjoWZfiKGLgLOZDiNqjzbgrZ9aD9oDkyeZ
+         W7DqFsjalpPGm4uNPSUVu/FHOxPZK7Cejdpl/mOBOhi3abaut6e0+AqCDt4sLuRmep
+         48CbLY9fdItr7ECvRlE5R8UKPZJcuLPyflz5QH6yPQe0CeTaypL12EgV1G91/B69qj
+         oEDrj2yq8HtCrlkl3XH5b8j8RzYpSvjje8zTsqlkxsXbI7RMh/Xg8A4DoJfMQt0x85
+         macz8cEv/CXWQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2B1865C0BF4; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
+        id 20CF55C0A11; Wed, 21 Jul 2021 14:04:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/7] locktorture: Count lock readers
-Date:   Wed, 21 Jul 2021 14:04:39 -0700
-Message-Id: <20210721210441.796995-5-paulmck@kernel.org>
+        "Jiangong.Han" <jiangong.han@windriver.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 3/7] rcuscale: Console output claims too few grace periods
+Date:   Wed, 21 Jul 2021 14:04:37 -0700
+Message-Id: <20210721210441.796995-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721210421.GA788053@paulmck-ThinkPad-P17-Gen-1>
@@ -54,70 +55,63 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, the lock_is_read_held variable is bool, so that a reader sets
-it to true just after lock acquisition and then to false just before
-lock release.  This works in a rough statistical sense, but can result
-in false negatives just after one of a pair of concurrent readers has
-released the lock.  This approach does have low overhead, but at the
-expense of the setting to true potentially never leaving the reader's
-store buffer, thus resulting in an unconditional false negative.
+From: "Jiangong.Han" <jiangong.han@windriver.com>
 
-This commit therefore converts this variable to atomic_t and makes
-the reader use atomic_inc() just after acquisition and atomic_dec()
-just before release.  This does increase overhead, but this increase is
-negligible compared to the 10-microsecond lock hold time.
+The rcuscale console output claims N grace periods, numbered from zero
+to N, which means that there were really N+1 grace periods.  The root
+cause of this bug is that rcu_scale_writer() stores the number of the
+last grace period (numbered from zero) into writer_n_durations[me]
+instead of the number of grace periods.  This commit therefore assigns
+the actual number of grace periods to writer_n_durations[me], and also
+makes the corresponding adjustment to the loop outputting per-grace-period
+measurements.
 
+Sample of old console output:
+    rcu-scale: writer 0 gps: 133
+    ......
+    rcu-scale:    0 writer-duration:     0 44003961
+    rcu-scale:    0 writer-duration:     1 32003582
+    ......
+    rcu-scale:    0 writer-duration:   132 28004391
+    rcu-scale:    0 writer-duration:   133 27996410
+
+Sample of new console output:
+    rcu-scale: writer 0 gps: 134
+    ......
+    rcu-scale:    0 writer-duration:     0 44003961
+    rcu-scale:    0 writer-duration:     1 32003582
+    ......
+    rcu-scale:    0 writer-duration:   132 28004391
+    rcu-scale:    0 writer-duration:   133 27996410
+
+Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/rcu/rcuscale.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 313d5e613fbe6..7c5a4a087cc73 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -59,7 +59,7 @@ static struct task_struct **writer_tasks;
- static struct task_struct **reader_tasks;
- 
- static bool lock_is_write_held;
--static bool lock_is_read_held;
-+static atomic_t lock_is_read_held;
- static unsigned long last_lock_release;
- 
- struct lock_stress_stats {
-@@ -682,7 +682,7 @@ static int lock_torture_writer(void *arg)
- 		if (WARN_ON_ONCE(lock_is_write_held))
- 			lwsp->n_lock_fail++;
- 		lock_is_write_held = true;
--		if (WARN_ON_ONCE(lock_is_read_held))
-+		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
- 			lwsp->n_lock_fail++; /* rare, but... */
- 
- 		lwsp->n_lock_acquired++;
-@@ -717,13 +717,13 @@ static int lock_torture_reader(void *arg)
- 			schedule_timeout_uninterruptible(1);
- 
- 		cxt.cur_ops->readlock(tid);
--		lock_is_read_held = true;
-+		atomic_inc(&lock_is_read_held);
- 		if (WARN_ON_ONCE(lock_is_write_held))
- 			lrsp->n_lock_fail++; /* rare, but... */
- 
- 		lrsp->n_lock_acquired++;
- 		cxt.cur_ops->read_delay(&rand);
--		lock_is_read_held = false;
-+		atomic_dec(&lock_is_read_held);
- 		cxt.cur_ops->readunlock(tid);
- 
- 		stutter_wait("lock_torture_reader");
-@@ -998,7 +998,6 @@ static int __init lock_torture_init(void)
- 		}
- 
- 		if (nreaders_stress) {
--			lock_is_read_held = false;
- 			cxt.lrsa = kmalloc_array(cxt.nrealreaders_stress,
- 						 sizeof(*cxt.lrsa),
- 						 GFP_KERNEL);
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index dca51fe9c73f2..2cc34a22a5060 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
+ 	if (gp_async) {
+ 		cur_ops->gp_barrier();
+ 	}
+-	writer_n_durations[me] = i_max;
++	writer_n_durations[me] = i_max + 1;
+ 	torture_kthread_stopping("rcu_scale_writer");
+ 	return 0;
+ }
+@@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
+ 			wdpp = writer_durations[i];
+ 			if (!wdpp)
+ 				continue;
+-			for (j = 0; j <= writer_n_durations[i]; j++) {
++			for (j = 0; j < writer_n_durations[i]; j++) {
+ 				wdp = &wdpp[j];
+ 				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+ 					scale_type, SCALE_FLAG,
 -- 
 2.31.1.189.g2e36527f23
 
