@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99758C6377A
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC9DC63793
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 848306124C
+	by mail.kernel.org (Postfix) with ESMTP id 032BC6124C
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 21:01:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhGUUVS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 16:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
+        id S230016AbhGUUVT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 16:21:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhGUUVH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S229669AbhGUUVH (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 16:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5F161377;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65B8F6128C;
         Wed, 21 Jul 2021 21:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626901303;
-        bh=G8La4NjHWKPC8j0EAHrMvvJRJqzlGgBYRKyw0zCFXlE=;
+        bh=G7jUtXtTZK8bR8Np9YEEsq/UnS/D4TWYXsDUgce0JbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEi2XzbQmgMkU4DhTsupSx7R/DqXioYuBMYxF+MHmnbD2TOzCCqvuArzqmbV3urvT
-         Fzw4BqSC06cQrhqZy1nYWp/0AFW8q9dIXAtlwf5F7b6wtpOmCgLn6bva5clNyRXG8K
-         jDF2ttHgXY3kZyONEP2RexHg5+1eGs9bt5ERpeafknSZfnUxPxNECrCSoAAtDM3lV6
-         cFsKHheW7gvNuYljsFPYfrQEWEfjxY62A2GRHcSQsJwh8lLyiEmkj81LdLM61+geVq
-         u91fmwj+cbalofEBVIuYZwMDXv5IWYf8dfKQxk2RibGOEFAju4Go0gu4SvtMtSMV3H
-         6KOrc/tGVoZfA==
+        b=UbkepfLzP/UmoDEJtpBirnXE+TFvpnkfNTORHFRRLZxAIqePS1XzOCooAXbxTq4+Q
+         d8PoA1ndH8uLDmvw5VH6g3X6uHMfGzRzpwSgoHwY934Z54KQ1vK3zB43K1wCR3pUkM
+         yDTGBdfDEc3J/UQWNjF4CL+aB8XhE0rrjWKWIZVM5soLxQl8GRPjJhzWUBqWbfLddd
+         Yjz2j0PJV1Fq6eMgJD4lIwvKHgDlXviMaV2x2DdK4Nf8caL2FIB7aNsyygiB2Fgh7q
+         x9FXSb2aGeE+iHzLhbsLn6iC3hQb7SmC3zZeCJt5eSar8n4yI+Z7HNGiM6dYIUzkZ/
+         wCksIrF35fGww==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EBC1F5C259B; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
+        id D8E315C0E45; Wed, 21 Jul 2021 14:01:42 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 19/21] torture: Don't use "test" command's "-a" argument
-Date:   Wed, 21 Jul 2021 14:01:38 -0700
-Message-Id: <20210721210140.787717-19-paulmck@kernel.org>
+Subject: [PATCH rcu 09/21] torture: Make kvm-recheck.sh skip kcsan.sum for build-only runs
+Date:   Wed, 21 Jul 2021 14:01:28 -0700
+Message-Id: <20210721210140.787717-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721205511.GA786917@paulmck-ThinkPad-P17-Gen-1>
@@ -54,58 +54,32 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There was a time long ago when the "test" command's documentation
-claimed that the "-a" and "-o" arguments did something useful.
-But this documentation now suggests letting the shell execute
-these boolean operators, so this commit applies that suggestion to
-kvm-test-1-run-qemu.sh.
+Currently, kvm-recheck.sh attempts to create a kcsan.sum file even for
+build-only runs.  This results in false-positive bash errors due to
+there being no console.log files in that case.  This commit therefore
+makes kvm-recheck.sh skip creating the kcsan.sum file for build-only runs.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-test-1-run-qemu.sh    | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-index d828a34b5b89f..ca1d49c1c2f45 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
-@@ -89,7 +89,7 @@ then
- fi
- while :
- do
--	if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
-+	if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index e01b31b870441..0a5419982ab3e 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -74,7 +74,10 @@ do
+ 	done
+ 	if test -f "$rd/kcsan.sum"
  	then
- 		qemu_pid=`cat "$resdir/qemu-pid"`
- 	fi
-@@ -122,11 +122,11 @@ do
- 		break
- 	fi
- done
--if test -z "$qemu_pid" -a -s "$resdir/qemu-pid"
-+if test -z "$qemu_pid" && test -s "$resdir/qemu-pid"
- then
- 	qemu_pid=`cat "$resdir/qemu-pid"`
- fi
--if test $commandcompleted -eq 0 -a -n "$qemu_pid"
-+if test $commandcompleted -eq 0 && test -n "$qemu_pid"
- then
- 	if ! test -f "$resdir/../STOP.1"
- 	then
-@@ -159,11 +159,11 @@ then
+-		if grep -q CONFIG_KCSAN=y $T
++		if ! test -f $T
++		then
++			:
++		elif grep -q CONFIG_KCSAN=y $T
  		then
- 			last_ts=0
- 		fi
--		if test "$newline" != "$oldline" -a "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
-+		if test "$newline" != "$oldline" && test "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
- 		then
- 			must_continue=yes
- 		fi
--		if test $must_continue = no -a $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
-+		if test $must_continue = no && test $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
- 		then
- 			echo "!!! PID $qemu_pid hung at $kruntime vs. $seconds seconds" >> $resdir/Warnings 2>&1
- 			kill -KILL $qemu_pid
+ 			echo "Compiler or architecture does not support KCSAN!"
+ 			echo Did you forget to switch your compiler with '--kmake-arg CC=<cc-that-supports-kcsan>'?
 -- 
 2.31.1.189.g2e36527f23
 
