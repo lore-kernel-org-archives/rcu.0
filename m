@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CD6FC6377C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FBEBC6379F
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A35E61244
+	by mail.kernel.org (Postfix) with ESMTP id 7555E61244
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240442AbhGUTlB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:41:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
+        id S240447AbhGUTlC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 15:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240381AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S236971AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEF476137D;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DED461264;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626898890;
-        bh=wEu8mtu9foqhl4vybGYweZH7nS4hW3NBN/vzNcI3m3I=;
+        s=k20201202; t=1626898889;
+        bh=Vh5Nv9OTWJlthT29pNs4NyRuESPztLsFKzhNfM5hp1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XybP3n/kcIqe8sbpm68LJpkBOtg1RehbmH5DwI2II/+DZGYFtp2oiDdIMUUygX/qH
-         oyqIriNylwWj5XILOF29LmQEG4OSwRF41dzPwZQMQuay8MwR8MknOCO+JEnzS+/cFt
-         HF199bgrYNTWO6hNfgu0Z4GkE/Ap1qLwigsKIRPV/ZI0GxeVzKUtyA2fRp59ixyuRn
-         AsDIm6+jpWPdG5QHTOEQeT0iMvEV16v1F9Pulcz4yDJjbditLe7sLUAdUMbTZEnA7N
-         d/kySepwx4db0SbuNALnTEutGYIIEN6hj7DminPbzHhqpiIo66skbhMoBicy5PnStb
-         wH9lF/VsWR1Zw==
+        b=Nge/SQ/HjEFLeVJLJ7sTAV/oTl4Fmhlkc1CzM5sIhTveEnNJPUVjFHV+zd9btCqCq
+         mhvFQny9AACo+YIM2V3O/i+wI83DpgHJUQcoGzan1IrByIDvBT9R/ixXtWnGBdU6MQ
+         veJ8+mdwJDowcoKdOIawQDa8kFqCpdea0LPGvUQELbpu5KNTZDT6rPC2tZnt5tgHOL
+         NeiPEsPb9d6yFkxL6cyLv6mBag0isvxFfsP09TPyFXyuL1wj5YrYsx9PJpBdtL5Qv7
+         90nZchJ39zS6XFQAgCT2HzxHEOdqQvsu5oQKr589yJtG4f2GH96xZK+MwaOJZQLYzf
+         UsLxIkWFEFGcQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4A75C5C22F7; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 215005C0D47; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in rcu_check_boost_fail()
-Date:   Wed, 21 Jul 2021 13:21:19 -0700
-Message-Id: <20210721202127.2129660-11-paulmck@kernel.org>
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Signed-off-by : Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 07/18] rcu/tree: Handle VM stoppage in stall detection
+Date:   Wed, 21 Jul 2021 13:21:15 -0700
+Message-Id: <20210721202127.2129660-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -54,29 +55,93 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Accesses to ->qsmask are normally protected by ->lock, but there is an
-exception in the diagnostic code in rcu_check_boost_fail().  This commit
-therefore applies data_race() to this access to avoid KCSAN complaining
-about the C-language writes protected by ->lock.
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+The soft watchdog timer function checks if a virtual machine
+was suspended and hence what looks like a lockup in fact
+is a false positive.
+
+This is what kvm_check_and_clear_guest_paused() does: it
+tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
+and if it's set then we need to touch all watchdogs and bail
+out.
+
+Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
+check works fine.
+
+There is, however, one more watchdog that runs from IRQ, so
+watchdog timer fn races with it, and that watchdog is not aware
+of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+
+apic_timer_interrupt()
+ smp_apic_timer_interrupt()
+  hrtimer_interrupt()
+   __hrtimer_run_queues()
+    tick_sched_timer()
+     tick_sched_handle()
+      update_process_times()
+       rcu_sched_clock_irq()
+
+This triggers RCU stalls on our devices during VM resume.
+
+If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
+before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
+then there is nothing on this VCPU that touches watchdogs and
+RCU reads stale gp stall timestamp and new jiffies value, which
+makes it think that RCU has stalled.
+
+Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
+don't report RCU stalls when we resume the VM.
+
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 42847caa3909b..6dd6c9aa3f757 100644
+index bd4de5bc5807e..0e7a60706d1c0 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
-@@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+@@ -7,6 +7,8 @@
+  * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+  */
  
- 	rcu_for_each_leaf_node(rnp) {
- 		if (!cpup) {
--			if (READ_ONCE(rnp->qsmask)) {
-+			if (data_race(READ_ONCE(rnp->qsmask))) {
- 				return false;
- 			} else {
- 				if (READ_ONCE(rnp->gp_tasks))
++#include <linux/kvm_para.h>
++
+ //////////////////////////////////////////////////////////////////////////////
+ //
+ // Controlling CPU stall warnings, including delay calculation.
+@@ -698,6 +700,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+ 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
++		/*
++		 * If a virtual machine is stopped by the host it can look to
++		 * the watchdog like an RCU stall. Check to see if the host
++		 * stopped the vm.
++		 */
++		if (kvm_check_and_clear_guest_paused())
++			return;
++
+ 		/* We haven't checked in, so go dump stack. */
+ 		print_cpu_stall(gps);
+ 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+@@ -707,6 +717,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+ 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+ 
++		/*
++		 * If a virtual machine is stopped by the host it can look to
++		 * the watchdog like an RCU stall. Check to see if the host
++		 * stopped the vm.
++		 */
++		if (kvm_check_and_clear_guest_paused())
++			return;
++
+ 		/* They had a few time units to dump stack, so complain. */
+ 		print_other_cpu_stall(gs2, gps);
+ 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
 -- 
 2.31.1.189.g2e36527f23
 
