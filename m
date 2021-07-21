@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FBEBC6379F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDBE3C63793
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7555E61244
+	by mail.kernel.org (Postfix) with ESMTP id D279461244
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240447AbhGUTlC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S240450AbhGUTlC (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 21 Jul 2021 15:41:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50100 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:50136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236971AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S240379AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DED461264;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E032C61279;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=Vh5Nv9OTWJlthT29pNs4NyRuESPztLsFKzhNfM5hp1s=;
+        bh=BsMVES/4pOvZzzTWNbQuBOd0AUGBlVJkPvguuj5ByGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nge/SQ/HjEFLeVJLJ7sTAV/oTl4Fmhlkc1CzM5sIhTveEnNJPUVjFHV+zd9btCqCq
-         mhvFQny9AACo+YIM2V3O/i+wI83DpgHJUQcoGzan1IrByIDvBT9R/ixXtWnGBdU6MQ
-         veJ8+mdwJDowcoKdOIawQDa8kFqCpdea0LPGvUQELbpu5KNTZDT6rPC2tZnt5tgHOL
-         NeiPEsPb9d6yFkxL6cyLv6mBag0isvxFfsP09TPyFXyuL1wj5YrYsx9PJpBdtL5Qv7
-         90nZchJ39zS6XFQAgCT2HzxHEOdqQvsu5oQKr589yJtG4f2GH96xZK+MwaOJZQLYzf
-         UsLxIkWFEFGcQ==
+        b=a4wV1bMxLAnON3LUOonogDOSRTjL1mT9c330TUXOpkylBmoYkb9pMZPY32magCquF
+         WIV1J2T+PJCNq1XepoKLN+xKtHXbJMiyZCnuFuabIU9QDzOtBGHkqGl14T3skJvLNB
+         GiA8JRwTZWTu6gYS4NkmY5dpyqetAWKtSmQJXo6bwJyqdNTyI6oYtWj7/5FWWxpZP6
+         +y/cn1EqxKUrpNXAuOUumu76sYrNACQxC0aUoXOI9xox57Cxg+7IbC7RS6NQvjJ4Fi
+         Vm1nXdfdmFzxp2bOjvn5C9L+fbi13u6YxGMY8ZLFhmhL47VZ+LaK4YzweMm9XiCmd4
+         2W0dQNDgZNXUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 215005C0D47; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 4BB0E5C0F64; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Signed-off-by : Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 07/18] rcu/tree: Handle VM stoppage in stall detection
-Date:   Wed, 21 Jul 2021 13:21:15 -0700
-Message-Id: <20210721202127.2129660-7-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 10/18] srcutiny: Mark read-side data races
+Date:   Wed, 21 Jul 2021 13:21:18 -0700
+Message-Id: <20210721202127.2129660-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -55,93 +54,56 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+This commit marks some interrupt-induced read-side data races in
+__srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
 
-The soft watchdog timer function checks if a virtual machine
-was suspended and hence what looks like a lockup in fact
-is a false positive.
-
-This is what kvm_check_and_clear_guest_paused() does: it
-tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-and if it's set then we need to touch all watchdogs and bail
-out.
-
-Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-check works fine.
-
-There is, however, one more watchdog that runs from IRQ, so
-watchdog timer fn races with it, and that watchdog is not aware
-of PVCLOCK_GUEST_STOPPED - RCU stall detector.
-
-apic_timer_interrupt()
- smp_apic_timer_interrupt()
-  hrtimer_interrupt()
-   __hrtimer_run_queues()
-    tick_sched_timer()
-     tick_sched_handle()
-      update_process_times()
-       rcu_sched_clock_irq()
-
-This triggers RCU stalls on our devices during VM resume.
-
-If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-then there is nothing on this VCPU that touches watchdogs and
-RCU reads stale gp stall timestamp and new jiffies value, which
-makes it think that RCU has stalled.
-
-Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-don't report RCU stalls when we resume the VM.
-
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ include/linux/srcutiny.h | 8 ++++----
+ kernel/rcu/srcutiny.c    | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index bd4de5bc5807e..0e7a60706d1c0 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -7,6 +7,8 @@
-  * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+ 	int idx;
+ 
+ 	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+-	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
++	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
+ 	return idx;
+ }
+ 
+@@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+ {
+ 	int idx;
+ 
+-	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
++	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
+ 	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
+ 		 tt, tf, idx,
+-		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
+-		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
++		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
++		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
+ }
+ 
+ #endif
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 26344dc6483b0..a0ba2ed49bc61 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
   */
+ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+-	int newval = ssp->srcu_lock_nesting[idx] - 1;
++	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
  
-+#include <linux/kvm_para.h>
-+
- //////////////////////////////////////////////////////////////////////////////
- //
- // Controlling CPU stall warnings, including delay calculation.
-@@ -698,6 +700,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
-+		/*
-+		 * If a virtual machine is stopped by the host it can look to
-+		 * the watchdog like an RCU stall. Check to see if the host
-+		 * stopped the vm.
-+		 */
-+		if (kvm_check_and_clear_guest_paused())
-+			return;
-+
- 		/* We haven't checked in, so go dump stack. */
- 		print_cpu_stall(gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-@@ -707,6 +717,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
- 		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
- 
-+		/*
-+		 * If a virtual machine is stopped by the host it can look to
-+		 * the watchdog like an RCU stall. Check to see if the host
-+		 * stopped the vm.
-+		 */
-+		if (kvm_check_and_clear_guest_paused())
-+			return;
-+
- 		/* They had a few time units to dump stack, so complain. */
- 		print_other_cpu_stall(gs2, gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+ 	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
 -- 
 2.31.1.189.g2e36527f23
 
