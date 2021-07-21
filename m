@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 973F0C6377A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF37C6377B
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8231360725
+	by mail.kernel.org (Postfix) with ESMTP id BDED460725
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhGUT5p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232256AbhGUT5p (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 21 Jul 2021 15:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230465AbhGUT5p (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S231787AbhGUT5p (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1DE61003;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 963AB61241;
         Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626899901;
-        bh=YmBLYBxzI0vMAZMzEd2rQpdpJpi5+nzi5i79rBSEKfE=;
+        bh=PiwE8bKHOYIPDLz77rhdrSex9XbZaPhjXnqWpREoRi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NRUilrOpdQSgjt3Wjg/YI0tKcZnzS0ey3WaCgEMEGFYdC94xH21S3fpiK39S4cfLV
-         oU/Lr+20sfJrWh+cp+f/gQ4jkDTdyPCFeEm5IQK2t25O+ocszu5rDsXhMt0RNKY8Gj
-         eHlAw2gAyEvE09ZC0tg572oaGIaYsUrbSEEQ+SGKEQ4aT97IF6wV3vmAfBaP6BuLzt
-         C8yfxJwNmMvadm/XsJ88Hw2dQzZFXrqmeS1q7fvJmHOQfQ+JL8tggNX72kL/kDj+h1
-         2b3n3xcFdSnIaHYsbcnZJzYVQoUxLTUA/dwnG8JezPD+BM2+zDghRg+ZZmd9tnAtjZ
-         EtSmqzRkgwwzg==
+        b=QJ87wJCjgVjV0PUFaVOqbZ5aCFWyMxaK5hJJkEehaAjffSU8D8kw8SaphPc4qRgmt
+         HjDh8/6XeTPdOa4wJLYK09s/s2kVXCtQQpz3D+voIFhujLwDgjJabVpxuUf22twwfN
+         PWwOd5Tt8T0M4RtyzP3c5pIVrC9dDbimz9UP3pnr9bqnKnbc39eeIFIU0tBF+db9in
+         w9/22B135Dv84EDrb8w5gGnTnCeci3bHKcqM+QMEilb3aja6h+d8h8rjo7bjEUg3++
+         yqaxc2Z/u6/Preed3KgN4Dsq20Ot0Swg1V/ajY6sEBN+FdpZ4PLzXqFHRQUNMiM+NZ
+         RIDOOBJZvbmnQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 51CDA5C09A4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
+        id 5D5E25C0A2D; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/5] rcu-tasks: Add comments explaining task_struct strategy
-Date:   Wed, 21 Jul 2021 13:38:14 -0700
-Message-Id: <20210721203818.3398345-1-paulmck@kernel.org>
+Subject: [PATCH rcu 4/5] rcu-tasks: Fix synchronize_rcu_rude() typo in comment
+Date:   Wed, 21 Jul 2021 13:38:17 -0700
+Message-Id: <20210721203818.3398345-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
@@ -54,45 +54,29 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Accesses to task_struct structures must be either protected by RCU
-or by get_task_struct().  Tasks trace RCU uses these in a non-obvious
-combination, in conjunction with an IPI handler.  This commit therefore
-adds comments explaining this usage.
+This commit replaces the fictitious synchronize_rcu_rude() function with
+its real-world synchronize_rcu_tasks_rude() counterpart.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8536c55df5142..6a117375a62a1 100644
+index 1cece5e9be9a9..f9f52daacd1c5 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -785,7 +785,10 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
- //	set that task's .need_qs flag so that task's next outermost
- //	rcu_read_unlock_trace() will report the quiescent state (in which
- //	case the count of readers is incremented).  If both attempts fail,
--//	the task is added to a "holdout" list.
-+//	the task is added to a "holdout" list.  Note that IPIs are used
-+//	to invoke trc_read_check_handler() in the context of running tasks
-+//	in order to avoid ordering overhead on common-case shared-variable
-+//	accessses.
- // rcu_tasks_trace_postscan():
- //	Initialize state and attempt to identify an immediate quiescent
- //	state as above (but only for idle tasks), unblock CPU-hotplug
-@@ -994,6 +997,12 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 	}
- 	put_task_struct(t);
- 
-+	// If this task is not yet on the holdout list, then we are in
-+	// an RCU read-side critical section.  Otherwise, the invocation of
-+	// rcu_add_holdout() that added it to the list did the necessary
-+	// get_task_struct().  Either way, the task cannot be freed out
-+	// from under this code.
-+
- 	// If currently running, send an IPI, either way, add to list.
- 	trc_add_holdout(t, bhp);
- 	if (task_curr(t) &&
+@@ -643,8 +643,8 @@ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+ //
+ // "Rude" variant of Tasks RCU, inspired by Steve Rostedt's trick of
+ // passing an empty function to schedule_on_each_cpu().  This approach
+-// provides an asynchronous call_rcu_tasks_rude() API and batching
+-// of concurrent calls to the synchronous synchronize_rcu_rude() API.
++// provides an asynchronous call_rcu_tasks_rude() API and batching of
++// concurrent calls to the synchronous synchronize_rcu_tasks_rude() API.
+ // This invokes schedule_on_each_cpu() in order to send IPIs far and wide
+ // and induces otherwise unnecessary context switches on all online CPUs,
+ // whether idle or not.
 -- 
 2.31.1.189.g2e36527f23
 
