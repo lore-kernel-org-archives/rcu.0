@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A39EC6377C
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29C67C63793
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4460F61244
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C30061244
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:21:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240417AbhGUTk4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
+        id S240415AbhGUTk7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 15:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237450AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S239993AbhGUTkx (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF2E61358;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D736135A;
         Wed, 21 Jul 2021 20:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898889;
-        bh=BKxY760Q0+rm4WqKjHEoXmDIxEOWQtXd1bpJVPxdpAY=;
+        bh=nr6BcxUc21koPlFlKSknCV36xz+31oD6hCpBOcJTGJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H164hPdmIF7rWaKoONLGVL2Rr9yWzrw62TBX/WET7LZ7lrjlfw8DmAkVlj3BbbdcU
-         2jhGSrdNI9wZ+TXNP5EkxFKeJ4nB8KfTK5DuUOz/QfaMVrSk0i/d/HzNH/HKbVqKbS
-         B0pDLI2SEoKhS6+A+wIOcklX9lhS16JcmdcLlHL6+lHtChrczAhE4lvLlYykXVJs2F
-         Y0sabhNsqZvRjRXuMbdO54Xo4l3PeAuEz7sxudDxCIdTvk8eqcuctZimAVy50PEm+v
-         u6+wIJoT6s6Ha+aYkkqjF41IftFaKvET7WcwcepZgXnCvy9xRsFrGPl+/9cjFTwOa0
-         mmRIW6+2dn8zg==
+        b=rhrlDJPyJq7OVYgj1LvtCYLOUgW+uefK8IvCeZ0/a3awscr4As7LIy2iTx3x2Yxmd
+         qS434JsmyKh46cU3A3nEqUbUrRyG0xm3SdcW8hvQHSFCb6JkNuuiGET69eudDzg9xA
+         TzH75e9Cm+Jp/feyQ0uMvyhdw9Cp4fQK0H7LUd1IlNCFdgefAfjCPy7oaQ6gkx43vU
+         9bEfO/5xklwygUx2U0rVGuaT7IdRM3VZMvvWF9TdLLUWC/aGiNZzMbPY6Nfj+Dz9nB
+         GHtHUzfAN5/qyutIODTaqp7+FiIwExO07iqd+QPbo61meqFV7HFi36wuMLFBEKudNB
+         d5zZHjvq31FSA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 434A35C0C70; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
+        id 446A85C22E5; Wed, 21 Jul 2021 13:21:29 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Liu Song <liu.song11@zte.com.cn>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 15/18] rcu: Remove useless "ret" update in rcu_gp_fqs_loop()
-Date:   Wed, 21 Jul 2021 13:21:23 -0700
-Message-Id: <20210721202127.2129660-15-paulmck@kernel.org>
+Subject: [PATCH rcu 13/18] rcu: Remove trailing spaces and tabs
+Date:   Wed, 21 Jul 2021 13:21:21 -0700
+Message-Id: <20210721202127.2129660-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
@@ -55,34 +55,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Liu Song <liu.song11@zte.com.cn>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Within rcu_gp_fqs_loop(), the "ret" local variable is set to the
-return value from swait_event_idle_timeout_exclusive(), but "ret" is
-unconditionally overwritten later in the code.  This commit therefore
-removes this useless assignment.
+Run the following command to find and remove the trailing spaces and tabs:
 
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+find kernel/rcu/ -type f | xargs sed -r -i 's/[ \t]+$//'
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 37bc3a702b6ea..7b65ac3f49e5a 100644
+index e472c78036011..37bc3a702b6ea 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1960,8 +1960,8 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
- 		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 				       TPS("fqswait"));
- 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
--		ret = swait_event_idle_timeout_exclusive(
--				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
-+		(void)swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
-+				 rcu_gp_fqs_check_wake(&gf), j);
- 		rcu_gp_torture_wait();
- 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
- 		/* Locking provides needed memory barriers. */
+@@ -259,7 +259,7 @@ static noinstr unsigned long rcu_dynticks_inc(int incby)
+ {
+ 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+ 	int seq;
+-	
++
+ 	seq = READ_ONCE(rdp->dynticks) + incby;
+ 	smp_store_release(&rdp->dynticks, seq);
+ 	smp_mb();  // Fundamental RCU ordering guarantee.
 -- 
 2.31.1.189.g2e36527f23
 
