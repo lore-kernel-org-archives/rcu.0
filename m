@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E783C63797
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E743C63793
 	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:09:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6614E61285
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:09:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C11A6128D
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:08:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240008AbhGUT2X (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43742 "EHLO mail.kernel.org"
+        id S239406AbhGUT2V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 15:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232262AbhGUT2U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S232757AbhGUT2U (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 21 Jul 2021 15:28:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C011A6120D;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC716124B;
         Wed, 21 Jul 2021 20:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1626898134;
-        bh=+nYf4Bxlw57FVUj24UdQQXqO7Ral1zh5b+lo4zZK41k=;
+        bh=6g92C+wAvL9J1SYNRz3QrTrQRktobpS9wHiznuq1Lqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EIjHrw3413G5iRP16uqRL2N3bGpci32FiqkLTUv6haHqrpNwu77DixwWAtQjnYXNz
-         S8MWAObgGJCjtPcDAAa8AiraLMVyPV61/p1cvrKells6WPkJmG9n/bDUoyRxbmoBgD
-         PYa70GVwWe40tkmIL3GuOCwqB+2cNhD2VzcOAUSI9iQnyvl0G2hgMDdnLIW50Z3uFr
-         BmJ8KJl+I99fmCjtlI47QxybtiHPwx0Q7lqQS1bks+EhM8a3YikEMk/4yZoGqDUuyS
-         UAA8hYjzNZzA1iHiFyiZx748tsvqDaHfVvbhaC6Ymfm7+NPvJtUI/3k6COjsgNETFr
-         4kBNJvynawJwQ==
+        b=TapG03q3WN1+LsRa7qqdx7Wz5Mghpp+SRsWJdwZNUrPYqjpPfDe6SgjR6iS/3LgFy
+         8tPEz3i3w3vSXQnRfDkxYotB2oG+CJaeT9WnEgcI6VVLXohwpMag3XZXnvx5Lo/uFw
+         C6X0X8L4ZrFlWPZWwDf5URLNAGpzTIHHtOUrX3O2jCdE+UpQrwJWGIn4AE0CsPQBB/
+         bqPZxmyOZlgUxCaH8S8ieAq3I9FihfGHM4hhRVf2R4Nlj5Vm/CCKssbLI7S8v1eOBm
+         MTIp+iP0b3J1nlTm8EqI4JGhnKZ4WJQc9bsJeFWz+L+iWMs/3SCT+y9QpG3toP5P9A
+         0pnIgvDwRWidQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 895FE5C0A11; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
+        id 8B91E5C0A2D; Wed, 21 Jul 2021 13:08:54 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -41,11 +41,14 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Haocheng Xie <xiehaocheng.cn@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/5] docs: Fix a typo in Documentation/RCU/stallwarn.rst
-Date:   Wed, 21 Jul 2021 13:08:51 -0700
-Message-Id: <20210721200853.1175189-3-paulmck@kernel.org>
+Subject: [PATCH rcu 4/5] rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
+Date:   Wed, 21 Jul 2021 13:08:52 -0700
+Message-Id: <20210721200853.1175189-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
 References: <20210721200806.GA950569@paulmck-ThinkPad-P17-Gen-1>
@@ -55,29 +58,63 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Haocheng Xie <xiehaocheng.cn@gmail.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-Add the missing ')' in the documentation.
+Add some missing critical pieces of explanation to understand the need
+for full memory barriers throughout the whole grace period state machine,
+thanks to Paul's explanations.
 
-Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+[ paulmck: Adjust code block per Akira Yokosawa. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/stallwarn.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../Tree-RCU-Memory-Ordering.rst              | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index 1cc944aec46f2..f1c49c626e934 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -224,7 +224,7 @@ is the number that had executed since boot at the time that this CPU
- last noted the beginning of a grace period, which might be the current
- (stalled) grace period, or it might be some earlier grace period (for
- example, if the CPU might have been in dyntick-idle mode for an extended
--time period.  The number after the "/" is the number that have executed
-+time period).  The number after the "/" is the number that have executed
- since boot until the current time.  If this latter number stays constant
- across repeated stall-warning messages, it is possible that RCU's softirq
- handlers are no longer able to execute on this CPU.  This can happen if
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+index 11cdab037bff6..eeb351296df11 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -112,6 +112,35 @@ on PowerPC.
+ The ``smp_mb__after_unlock_lock()`` invocations prevent this
+ ``WARN_ON()`` from triggering.
+ 
+++-----------------------------------------------------------------------+
++| **Quick Quiz**:                                                       |
+++-----------------------------------------------------------------------+
++| But the chain of rcu_node-structure lock acquisitions guarantees      |
++| that new readers will see all of the updater's pre-grace-period       |
++| accesses and also guarantees that the updater's post-grace-period     |
++| accesses will see all of the old reader's accesses.  So why do we     |
++| need all of those calls to smp_mb__after_unlock_lock()?               |
+++-----------------------------------------------------------------------+
++| **Answer**:                                                           |
+++-----------------------------------------------------------------------+
++| Because we must provide ordering for RCU's polling grace-period       |
++| primitives, for example, get_state_synchronize_rcu() and              |
++| poll_state_synchronize_rcu().  Consider this code::                   |
++|                                                                       |
++|  CPU 0                                     CPU 1                      |
++|  ----                                      ----                       |
++|  WRITE_ONCE(X, 1)                          WRITE_ONCE(Y, 1)           |
++|  g = get_state_synchronize_rcu()           smp_mb()                   |
++|  while (!poll_state_synchronize_rcu(g))    r1 = READ_ONCE(X)          |
++|          continue;                                                    |
++|  r0 = READ_ONCE(Y)                                                    |
++|                                                                       |
++| RCU guarantees that the outcome r0 == 0 && r1 == 0 will not           |
++| happen, even if CPU 1 is in an RCU extended quiescent state           |
++| (idle or offline) and thus won't interact directly with the RCU       |
++| core processing at all.                                               |
+++-----------------------------------------------------------------------+
++
+ This approach must be extended to include idle CPUs, which need
+ RCU's grace-period memory ordering guarantee to extend to any
+ RCU read-side critical sections preceding and following the current
 -- 
 2.31.1.189.g2e36527f23
 
