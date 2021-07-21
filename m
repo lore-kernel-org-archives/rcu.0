@@ -2,113 +2,147 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F505C6377B
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E22A9C6377B
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:42:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF30C60725
-	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:38:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB5C36101B
+	for <rcu@archiver.kernel.org>; Wed, 21 Jul 2021 20:42:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhGUT5r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Jul 2021 15:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231989AbhGUT5p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:57:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6A76124B;
-        Wed, 21 Jul 2021 20:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626899901;
-        bh=GigiSkqXTDy+QkyYs7Y/oDOjKdcjT/+3+R3H9fSvMOA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VR/mXfWqTQUi9xVyVpjTWkROpuiANmjgWANZtEIAB49b2+F0aZVWKg3zczTsoWWqx
-         aXAvm0iCAR98vHKJcKVXf+qSkqLPrQRY2wbIWGUuD4j55XV79agfJjH7HwoZakR2Xa
-         JGEiK/xZ4JL8ehZ1G8ut4hFpQIP2laT97Z04uGxFhneKwaznANROIwwF0atRpWUW53
-         yVhByrde4bzO5D2ZqU14QhsJ3OWcFJI0FRxQsSdmoo1EF5M8iKm+RixpeOQVoGtGq0
-         Y0fccOyDT8pNRY6DPNBpb2qFg7X9KWJ+JH+xWFSiyFxuCIOmv6z2zLujo68YPv9CgZ
-         kWPGLUQH+TvPQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 60CFD5C0BF4; Wed, 21 Jul 2021 13:38:21 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/5] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
-Date:   Wed, 21 Jul 2021 13:38:18 -0700
-Message-Id: <20210721203818.3398345-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721203758.GA3386731@paulmck-ThinkPad-P17-Gen-1>
+        id S229911AbhGUUBa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Jul 2021 16:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhGUUBa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:01:30 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE9FC061757
+        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:05 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m16so5084450lfg.13
+        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=csX/v4wZK/8khKbWOQHMHKPVkpan3K/PQpV5i6hI1c0=;
+        b=RIOdAP9M9gXS951krhcwLpREAahAyipS213qzagLjn9qzHnaba4oO8CHqBJEXCWXL8
+         +FxzgIvAS2ZmXmep4rv8XOlP7+zh/uTP17V4d0uuaZivHXqxLDzTHqsr8T2h/2tfvOG+
+         baDbARcSNcjAOApHnuGY1cVlFgtvbyDiPc0Xo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=csX/v4wZK/8khKbWOQHMHKPVkpan3K/PQpV5i6hI1c0=;
+        b=RHU8bWJ1HVs5ymQGNLxzFGdRYnsG/NBvWShd7pNkBXDotzqWdPzyd7k3SUkRriar0K
+         v4Ge21DGFm7t1oFjGUQ+y7TY5L4bo0NATtQ9F1CWOQg6HBb4Cxv308sk08LUrYEMxaHA
+         mX6Qrsjz0OFJe8fuUiqfJ9j2aekJusnr2boXjyk071w8HGKmRAHky3EeQWJmbu1JYWkR
+         i4jnIZ4yI96HPtHdhCl/hyg1g3EgDA+MtvKK7M6UFAhdqqUVwYXHA/2tKWtRC4lN8791
+         hbqewZl78uukIhFcwwY0aPDw8Emn4pBGpgKGAb6UmHElwIX64+gZX5uvg/T8temV7kYm
+         ICHw==
+X-Gm-Message-State: AOAM530DrLlzCULezGb8jdjnw4/ta3lk1Lq0Qu9B/8JZw2CMD9VrJJuI
+        ElsnepmcOHoCRV3hB/+obI7gLwoUpcEO6A8X
+X-Google-Smtp-Source: ABdhPJyX0ExtkGJYyvKyD277LTwFx+w9zDPvju5T5hpjjjF1VfqDUCK100LYW0i9oG2l8E6+Pvxk/A==
+X-Received: by 2002:ac2:5e3c:: with SMTP id o28mr28164908lfg.592.1626900123978;
+        Wed, 21 Jul 2021 13:42:03 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id j21sm1814643lfg.56.2021.07.21.13.42.02
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Jul 2021 13:42:02 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id b16so3400135ljq.9
+        for <rcu@vger.kernel.org>; Wed, 21 Jul 2021 13:42:02 -0700 (PDT)
+X-Received: by 2002:a2e:90cd:: with SMTP id o13mr16138636ljg.465.1626900121924;
+ Wed, 21 Jul 2021 13:42:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org>
+In-Reply-To: <20210721202127.2129660-4-paulmck@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 21 Jul 2021 13:41:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
+Message-ID: <CAHk-=wgm_W82CcbiJHZPw45QRwomFbWcHkFoOd5C5hG-5GGoRQ@mail.gmail.com>
+Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Hmm.
 
-This commit fixes several typos where CONFIG_TASKS_RCU_TRACE should
-instead be CONFIG_TASKS_TRACE_RCU.  Among other things, these typos
-could cause CONFIG_TASKS_TRACE_RCU_READ_MB=y kernels to suffer from
-memory-ordering bugs that could result in false-positive quiescent
-states and too-short grace periods.
+This actually seems to make some of the ordering worse.
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/rcupdate.h | 2 +-
- kernel/rcu/tree_plugin.h | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+I'm not seeing a lot of weakening or optimization, but it depends a
+bit on what is common and what is not.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b211..955c82b4737c5 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
- # define synchronize_rcu_tasks synchronize_rcu
- # endif
- 
--# ifdef CONFIG_TASKS_RCU_TRACE
-+# ifdef CONFIG_TASKS_TRACE_RCU
- # define rcu_tasks_trace_qs(t)						\
- 	do {								\
- 		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f701..6ce104242b23d 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
- /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
- static void rcu_dynticks_task_trace_enter(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = true;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
- 
- /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
- static void rcu_dynticks_task_trace_exit(void)
- {
--#ifdef CONFIG_TASKS_RCU_TRACE
-+#ifdef CONFIG_TASKS_TRACE_RCU
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
- 		current->trc_reader_special.b.need_mb = false;
--#endif /* #ifdef CONFIG_TASKS_RCU_TRACE */
-+#endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
- }
--- 
-2.31.1.189.g2e36527f23
+On Wed, Jul 21, 2021 at 1:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> +/*
+> + * Increment the current CPU's rcu_data structure's ->dynticks field
+> + * with ordering.  Return the new value.
+> + */
+> +static noinstr unsigned long rcu_dynticks_inc(int incby)
+> +{
+> +       struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> +       int seq;
+> +
+> +       seq = READ_ONCE(rdp->dynticks) + incby;
+> +       smp_store_release(&rdp->dynticks, seq);
+> +       smp_mb();  // Fundamental RCU ordering guarantee.
+> +       return seq;
+> +}
 
+So this is actually likely *more* expensive than the old code was, at
+least on x86.
+
+The READ_ONCE/smp_store_release are cheap, but then the smp_mb() is expensive.
+
+The old code did just arch_atomic_inc_return(), which included the
+memory barrier.
+
+There *might* be some cache ordering advantage to letting the
+READ_ONCE() float upwards, but from a pure barrier standpoint this is
+more expensive than what we used to have.
+
+> -       if (atomic_read(&rdp->dynticks) & 0x1)
+> +       if (READ_ONCE(rdp->dynticks) & 0x1)
+>                 return;
+> -       atomic_inc(&rdp->dynticks);
+> +       rcu_dynticks_inc(1);
+
+And this one seems to not take advantage of the new rule, so we end up
+having two reads, and then that potentially more expensive sequence.
+
+>  static int rcu_dynticks_snap(struct rcu_data *rdp)
+>  {
+> -       return atomic_add_return(0, &rdp->dynticks);
+> +       smp_mb();  // Fundamental RCU ordering guarantee.
+> +       return smp_load_acquire(&rdp->dynticks);
+>  }
+
+This is likely cheaper - not because of barriers, but simply because
+it avoids dirtying the cacheline.
+
+So which operation do we _care_ about, and do we have numbers for why
+this improves anything? Because looking at the patch, it's not obvious
+that this is an improvement.
+
+              Linus
