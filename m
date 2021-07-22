@@ -2,140 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36662C63798
-	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 17:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3167C4338F
+	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 20:08:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 224BE61289
-	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 17:44:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD5E860EB5
+	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 20:08:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhGVREE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Jul 2021 13:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
+        id S229649AbhGVT1o (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Jul 2021 15:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhGVRED (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Jul 2021 13:04:03 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1934C061575;
-        Thu, 22 Jul 2021 10:44:37 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id bu12so9645577ejb.0;
-        Thu, 22 Jul 2021 10:44:37 -0700 (PDT)
+        with ESMTP id S229872AbhGVT1n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Jul 2021 15:27:43 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D977C061575
+        for <rcu@vger.kernel.org>; Thu, 22 Jul 2021 13:08:18 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id x16-20020a4aea100000b0290263aab95660so1589150ood.13
+        for <rcu@vger.kernel.org>; Thu, 22 Jul 2021 13:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMX9cI2MjlCU1069Vd1zqMo3Kf3dMHKY0sEauUXVam0=;
-        b=K3iQOQmHVqTjeZYKttIfv+zKQbNyn3kcu35ed4l06BkwQoodEPvM46rTRYaob2swFF
-         M3uONQTNkd2ttJBI6rRncRJxgR6xKPT1Ge46sCEciUKYyf5vPQmWwkcCllIavSJErdVK
-         aPDG491lsbGvi/fD7WhPjLuIxqdPHiKyxZhzZZE43Eum0K0tRPnjzcWThgtjmtjZuwHn
-         pEcrfQfgIbx89SWq27cWFvFr1IOqI55cFRQAE/Hyay5Lmr7tDCMj4Y3Jh18orVJVcgbc
-         iwrF2N8m+4P+wFTf63C5/sFJdCoWulrawmE3K//IwtH7RVFEPRV9nTkqbOMceKBQ3iX/
-         DOIQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=vR34w30jvP3dUkVmH3WoVnUNRQ611+xNSh8QyCyp1FY=;
+        b=dYHEtVHvSFurDe9tsdA0Igh8CFaLRXR+Lv473iPL0UvJFhwxrrQtPenpmPYfnmoH7j
+         iIpIzDo/3A9QBkwufdjS5kqkUjtEhTrPe4d5zk5imQn7dY2XD33VbBZb+j/k//JL28xC
+         JY+XA9M6R7Tu+zVONrglvVCKbVllnsUxiq4PeZX2Mm7WPWZHBdQoHu4XPYe4uQ088KlJ
+         MdKO4O55ySjjHflQQ4l2j9o3dvmlB+OAJDBq0EJbhpCAhhjNkSBSIsIbiSmJiC6cn5VP
+         EHpO59b5KorCrgviqrOdD1Hup6z9P0N+A6RNa9NzJHXkyg4ELfKOkxAEh/HT4uwj3KTz
+         trvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMX9cI2MjlCU1069Vd1zqMo3Kf3dMHKY0sEauUXVam0=;
-        b=rt+aAYCdr9pC4sWIUWyea8aBiU668WEkXfmNTNibZ5eOZYLzcUmAR/gLsOPKRXrBoN
-         fHhie8rWUVznjKlM3v1BKhzSq0Zi2zBnLI7gUOqYT+FbPgEOMPTDuk9OsGLFJ2+0g9AO
-         9lJGZAgXq1EYOtf0sMqTKnG9tTHvRcAgGaasDJDUH5PNv2ID3hg9hTnf+AquxnaL7ibz
-         X2OIqWJGK/nN5AmqcJHySzvLl6DKvJM20PV4dLeH2eJAQMk9hjyTjWekGJI5+1bz+NIS
-         Unr8dyt/wMt6mqTmuYSxIeLq+OUwgo9uVOKgFzkZhDk/22SL6sWww3ajoAUhqsFQRn8G
-         SN0w==
-X-Gm-Message-State: AOAM530z/r736oSxGyn0je2lV89vohFNgcd1hHDqB6E6O+ANdli5JVGM
-        o4zKA3wx0Y7f5OwQn1zKRSNHSuAnbQwDCDcwc24=
-X-Google-Smtp-Source: ABdhPJyQhva9QrVgQiB5Mc+CziB2BT/qgDSdx2J40cjOdBjA2hqReE/i9pS6idiXQHzybnSf9IhsYFQUpVZBkbXPaiA=
-X-Received: by 2002:a17:906:830a:: with SMTP id j10mr965231ejx.11.1626975876310;
- Thu, 22 Jul 2021 10:44:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=vR34w30jvP3dUkVmH3WoVnUNRQ611+xNSh8QyCyp1FY=;
+        b=fv/dQE2p55t7hG3kxUDhDL6m6/IKa9LbmCR6ST9UauaTDGIA9LH0BykeJFPNun5KeU
+         CCyvAk32A8MWxWvIPSZ8Tq/oeLA4M6N98Vr1KQBKsQ+9AL/t1oAxvGvU2VsDvBPlNpyZ
+         yqwqqpejukldk9d1y59E1W2I0UO9hj/oX/bMFCHs0TOk4J1Fvh+b/gLNKy3T4bKszAzN
+         Gqe+9O9XLpAY0C27c1ej9NX1y5d9uipzt2vVZFfSIgSs41GiCbscMFRCpS4Pfe3kImQV
+         hby6+/E99fn5jTE+qLFDR1xeNRvO3h/SdUBTPZB9MJ7eCTseuxC3OW/VSly7LElw1Kwj
+         PEAg==
+X-Gm-Message-State: AOAM533V+rJiSET8baMvOQLe9jfD9biwWgG/FQJMC1fzPPIVe31GOnre
+        QY9b95LMn+kEjgZU41f0mjY7gXOqIuhBmRFypwRdApoYelZ6gA==
+X-Google-Smtp-Source: ABdhPJzx2GKplZpigWcrXe3vPYcI9zN/w21L3s2v7MOJ2yp2nhgYpLXcs52npTZPIkF+PJs9HvEzmPckQBIQbWR+l20=
+X-Received: by 2002:a4a:6b12:: with SMTP id g18mr736712ooc.27.1626984497559;
+ Thu, 22 Jul 2021 13:08:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
- <5812280.fcLxn8YiTP@natalenko.name> <YPVtBBumSTMKGuld@casper.infradead.org>
- <2237123.PRLUojbHBq@natalenko.name> <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
- <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
- <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com> <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
- <YPlmMnZKgkcLderp@casper.infradead.org>
-In-Reply-To: <YPlmMnZKgkcLderp@casper.infradead.org>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Fri, 23 Jul 2021 01:44:24 +0800
-Message-ID: <CAABZP2x_opmE2vh8GRweNvCqogFjJ09UcNq-8t6qZDMsGNY9vA@mail.gmail.com>
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Chris Clayton <chris2553@googlemail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
+From:   donghai qiao <donghai.w.qiao@gmail.com>
+Date:   Thu, 22 Jul 2021 16:08:06 -0400
+Message-ID: <CAOzhvcPb=NMCHCqyDiyWiX9DjR=RXgdQRfJDkJOdazugHe7+Zw@mail.gmail.com>
+Subject: RCU: rcu stall issues and an approach to the fix
+To:     rcu@vger.kernel.org, donghai qiao <donghai.w.qiao@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I apologize sincerely for my irresponsible and hasty email.
-I reverted the unnecessary backport of 2799e77529c2 and 2efa33fc7f6e,
-tested on the same qemu box as before with the same C program, there
-is no warning about RCU this time. dmesg only shows the backtrace of
-OOM kill.
+RCU experts,
 
-As for memory OOMs caused by grace period's undue ends, I found each
-deletion of a inode will cause a leak.
-1035    void security_inode_free(struct inode *inode)
-1036    {
-1037        integrity_inode_free(inode);
-1038        call_void_hook(inode_free_security, inode);
-1039        /*
-1040         * The inode may still be referenced in a path walk and
-1041         * a call to security_inode_permission() can be made
-1042         * after inode_free_security() is called. Ideally, the VFS
-1043         * wouldn't do this, but fixing that is a much harder
-1044         * job. For now, simply free the i_security via RCU, and
-1045         * leave the current inode->i_security pointer intact.
-1046         * The inode will be freed after the RCU grace period too.
-1047         */
-1048        if (inode->i_security)
-1049            call_rcu((struct rcu_head *)inode->i_security,
-1050                    inode_free_by_rcu);
-1051    }
+When you reply, please also keep me CC'ed.
 
-I am willing to do any experiment if there is a need.
+The problem of RCU stall might be an old problem and it can happen quite often.
+As I have observed, when the problem occurs,  at least one CPU in the system
+on which its rdp->gp_seq falls behind others by 4 (qs).
 
-Sorry again
-Best Wishes
-Zhouyi
+e.g.  On CPU 0, rdp->gp_seq = 0x13889d, but on other CPUs, their
+rdp->gp_seq = 0x1388a1.
 
-On Thu, Jul 22, 2021 at 8:36 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
-> > Thanks for reviewing,
-> >
-> > What I have deduced from the dmesg  is:
-> > In function do_swap_page,
-> > after invoking
-> > 3385        si = get_swap_device(entry); /* rcu_read_lock */
-> > and before
-> > 3561    out:
-> > 3562        if (si)
-> > 3563            put_swap_device(si);
-> > The thread got scheduled out in
-> > 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
-> >
-> > I am only familiar with Linux RCU subsystem, hope mm people can solve our
-> > confusions.
->
-> I don't understamd why you're still talking.  The problem is understood.
-> You need to revert the unnecessary backport of 2799e77529c2 and
-> 2efa33fc7f6e
+Because RCU stall issues can last a long period of time, the number of callbacks
+in the list rdp->cblist of all CPUs can accumulate to thousands. In
+the worst case,
+it triggers panic.
+
+When looking into the problem further, I'd think the problem is related to the
+Linux scheduler. When the RCU core detects the stall on a CPU, rcu_gp_kthread
+would send a rescheduling request via send_IPI to that CPU to try to force a
+context switch to make some progress. However, at least one situation can fail
+this effort, which is when the CPU is running a user thread and it is the only
+user thread in the rq, then this attempted context switching will not happen
+immediately. In particular if the system is also configured with NOHZ_FULL for
+the CPU and as long as the user thread is running, the forced context
+switch will
+never happen unless the user thread volunteers to yield the CPU. I think this
+should be one of the major root causes of these RCU stall issues. Even if
+NOHZ_FULL is not configured, there will be at least 1 tick delay which can
+affect the realtime kernel, by the way.
+
+But it seems not a good idea to craft a fix from the scheduler side because
+this has to invalidate some existing scheduling optimizations. The current
+scheduler is deliberately optimized to avoid such context switching.  So my
+question is why the RCU core cannot effectively update qs for the stalled CPU
+when it detects that the stalled CPU is running a user thread?  The reason
+is pretty obvious because when a CPU is running a user thread, it must not
+be in any kernel read-side critical sections. So it should be safe to close
+its current RCU grace period on this CPU. Also, with this approach we can make
+RCU work more efficiently than the approach of context switch which needs to
+go through an IPI interrupt and the destination CPU needs to wake up its
+ksoftirqd or wait for the next scheduling cycle.
+
+If my suggested approach makes sense, I can go ahead to fix it that way.
+
+Thanks
+Donghai
