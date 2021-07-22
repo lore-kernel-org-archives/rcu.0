@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A7C2C63793
-	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 13:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94E7CC6377D
+	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 14:00:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F232360FE7
-	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 13:26:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 724346128A
+	for <rcu@archiver.kernel.org>; Thu, 22 Jul 2021 14:00:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhGVMqV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Jul 2021 08:46:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
+        id S232148AbhGVNTw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Jul 2021 09:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231938AbhGVMqU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:46:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 709F360FEE;
-        Thu, 22 Jul 2021 13:26:54 +0000 (UTC)
+        id S232105AbhGVNTw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:19:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BE6661244;
+        Thu, 22 Jul 2021 14:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626960415;
-        bh=+uL4L29wsoeIrn9I4PopKZ7ciOxU0fozSHm7hEtJRaA=;
+        s=korg; t=1626962426;
+        bh=vYStKlL0lfpbehwAhl3t7pf+aiD3WIfX+cNEvQkFKEs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mOzAXRtqcugR4cbq3OZ5I8AKQ8QQhGkkyOozUUY9xBQ0I5NEwtkdgEsSwZCJsdN/+
-         3bjvn18Caqjm7YHAFh8jWTESB+wOgqiuj5PRefDbB42xcQurO6032HAthHLzg3O2Hd
-         5NQaMgvg+iMGAQSuZ7xMqrR8uynVN49YlEvWISUc=
-Date:   Thu, 22 Jul 2021 15:26:52 +0200
+        b=BU9bztdBMi5Ej7JJmuiMsLpZJlyrnjWZ6zNuH77O+G/Fz0hVvxfQiPT8ddS+bEnjE
+         Ad9P3IjoLHTovV15f412VlMK5ozt/bjbe3EZGqB+aauu3E3EgW3FJXiZB8PzSToctp
+         cw5jr6AEqTH5dFXzEs3knNNtNVuvd87hAIfYCOJU=
+Date:   Thu, 22 Jul 2021 16:00:24 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
@@ -48,7 +48,7 @@ Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
         Linux-MM <linux-mm@kvack.org>,
         "Huang, Ying" <ying.huang@intel.com>
 Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Message-ID: <YPlyHF5eNDiTMKzq@kroah.com>
+Message-ID: <YPl5+PkfBPI0pdHn@kroah.com>
 References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
  <5812280.fcLxn8YiTP@natalenko.name>
  <YPVtBBumSTMKGuld@casper.infradead.org>
@@ -58,36 +58,42 @@ References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
  <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
  <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
  <YPlmMnZKgkcLderp@casper.infradead.org>
+ <YPlyHF5eNDiTMKzq@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPlmMnZKgkcLderp@casper.infradead.org>
+In-Reply-To: <YPlyHF5eNDiTMKzq@kroah.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
-> > Thanks for reviewing,
+On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
+> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
+> > On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
+> > > Thanks for reviewing,
+> > > 
+> > > What I have deduced from the dmesg  is:
+> > > In function do_swap_page,
+> > > after invoking
+> > > 3385        si = get_swap_device(entry); /* rcu_read_lock */
+> > > and before
+> > > 3561    out:
+> > > 3562        if (si)
+> > > 3563            put_swap_device(si);
+> > > The thread got scheduled out in
+> > > 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
+> > > 
+> > > I am only familiar with Linux RCU subsystem, hope mm people can solve our
+> > > confusions.
 > > 
-> > What I have deduced from the dmesg  is:
-> > In function do_swap_page,
-> > after invoking
-> > 3385        si = get_swap_device(entry); /* rcu_read_lock */
-> > and before
-> > 3561    out:
-> > 3562        if (si)
-> > 3563            put_swap_device(si);
-> > The thread got scheduled out in
-> > 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
-> > 
-> > I am only familiar with Linux RCU subsystem, hope mm people can solve our
-> > confusions.
+> > I don't understamd why you're still talking.  The problem is understood.
+> > You need to revert the unnecessary backport of 2799e77529c2 and
+> > 2efa33fc7f6e
 > 
-> I don't understamd why you're still talking.  The problem is understood.
-> You need to revert the unnecessary backport of 2799e77529c2 and
-> 2efa33fc7f6e
+> Sorry for the delay, will go do so in a minute...
 
-Sorry for the delay, will go do so in a minute...
+Both now reverted from 5.10.y and 5.13.y.
+
+thanks,
 
 greg k-h
