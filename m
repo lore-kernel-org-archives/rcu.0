@@ -5,43 +5,43 @@ X-Spam-Level:
 X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7783C432BE
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6155C4320A
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:58:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D278E60ED4
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:57:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C2F3D60F02
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:58:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhGWDRA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Jul 2021 23:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        id S233909AbhGWDRn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Jul 2021 23:17:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233637AbhGWDQz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:16:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA42F60ED4;
-        Fri, 23 Jul 2021 03:57:28 +0000 (UTC)
+        id S233907AbhGWDRW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Jul 2021 23:17:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CDA60EC0;
+        Fri, 23 Jul 2021 03:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627012649;
-        bh=0fFSBGjMqGrHX5bYIH3e3/ZNEowMOG8J3Zb33Re8/po=;
+        s=k20201202; t=1627012676;
+        bh=HedbqYOwtJgtT87gQwfoGpMF3fJHIkxZjqthmxIeju8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l25YwnaECFPTXBWD0kgmWeuu/F/0AoASjnCmskxBuD/kyEinnE6F9eLFUCg8UtVjN
-         aCRPMKlhY2bC9aAJ5ddSib6Ag9/ObKw8wXcCI7VtpDOw62N5/BACSJOtuuykpryHCw
-         besb2ynlXGKIxhBPyKhuh83fAjm8bzquy44JmNSMcF1JKYNksONU3PKnwsw2CXaF/4
-         bsPy070ZV/Vek/1JSxCOgg22kv/eDWx+1mImvJwIuSfi8CoaavTgxePSEihJiCQcfr
-         BmxIuM3c3Wa9etztcc/nYLUb0mmTjzkRN29fKWQ6RLZpA/WFP1azewJMWX4cpOx35K
-         H2YQ8lMMZSGdw==
+        b=IR/Zm0f7QMFSaJYRAwV0d0kuL6QjezpMB3y+mbUPyZ0fPe9oUxdXJrjKw+bjbWNeM
+         M/aqpx0eW38UTE4s+/+ubhx8KbdAcAo88amrH6vbUesqCMATJCzlysvU0D+q5n2Iv+
+         jknYdnQOwGCf0+PFa2CSAQpKTkbvhhHnWyf+KmhinA2YwS1lRJFdSNaZQOa3wT9U7K
+         Nkw3qx5NxS2UmKXVd2bfPZWF4fm97GZ1LKJuBrGXvamXWOOiWPPfgpmxIRmXdgRc9W
+         qbDUAiRbIDoTitm/d/EaVWfnIN6Kb0uHhO4xyfiYDaIPh0nKwH/dH8AMIW7jOFp89z
+         PWty14mSE75Tg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         "Xu, Yanfei" <yanfei.xu@windriver.com>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 06/19] rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()
-Date:   Thu, 22 Jul 2021 23:57:07 -0400
-Message-Id: <20210723035721.531372-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 06/17] rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()
+Date:   Thu, 22 Jul 2021 23:57:37 -0400
+Message-Id: <20210723035748.531594-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210723035721.531372-1-sashal@kernel.org>
-References: <20210723035721.531372-1-sashal@kernel.org>
+In-Reply-To: <20210723035748.531594-1-sashal@kernel.org>
+References: <20210723035748.531594-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -71,10 +71,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 71e9d625371a..fcef5f0c60b8 100644
+index 208acb286ec2..b338f514ee5a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -937,7 +937,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+@@ -908,7 +908,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
  	// The current task had better be in a quiescent state.
  	if (t == current) {
  		t->trc_reader_checked = true;
