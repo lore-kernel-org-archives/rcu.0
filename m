@@ -2,93 +2,107 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD8EC4320A
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D77E7C4338F
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 07:02:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BFED160F49
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 03:58:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BDF2260EAF
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 07:02:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhGWDRo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Jul 2021 23:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37850 "EHLO mail.kernel.org"
+        id S234165AbhGWGVf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 23 Jul 2021 02:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233905AbhGWDRV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:17:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20AF260F25;
-        Fri, 23 Jul 2021 03:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627012675;
-        bh=ZXrRj46NdyKEbN4vE6KRRjHwnOAl6iXHvmIZKRwE23k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b2GUWBt/XfboItCAmcUEgwWLAD4OiAYkkk8ET/Z1GpUHUmpmeVZba8c+XfRf3p2oX
-         kgnVaw3ZL0coININETf93u4jdO8j3xrKLe4EmTnPoKMYZR0QdanJwYFNl+/BoHw0r0
-         8rZzRir91C8/3ttElf2NC1hwufaMiYFUJMO1tLkxSq2/nzGuDy1A//rFh7AdgtQC4y
-         znL4SbZ3miLyCPrOWutZf0JybFjhEBrGLgqDrCppLbLNZ1rpNOOFxCepqAMkhEV+IL
-         8uSd9S7Gntqe4OXpPbDdOIjxsKUT+tTnCaTrZeLkOgjRhgZ5z8ffrcf418MNuMjua7
-         QY+KVAzg84dkw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Xu, Yanfei" <yanfei.xu@windriver.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 05/17] rcu-tasks: Don't delete holdouts within trc_inspect_reader()
-Date:   Thu, 22 Jul 2021 23:57:36 -0400
-Message-Id: <20210723035748.531594-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210723035748.531594-1-sashal@kernel.org>
-References: <20210723035748.531594-1-sashal@kernel.org>
+        id S234089AbhGWGVe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:21:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F252A60EE2;
+        Fri, 23 Jul 2021 07:02:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627023728;
+        bh=02LUfP9gRBAKznttDT6gEA8Wm5l4jpvhTQOhmSmp6TY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oYElD2rhN77kwhk3cHbdJs1c1K4EEL9wI8fe4Uw3mOaPEtxJSMnhDjUPbEEf1SAzA
+         YEHykz6fGqLgjZZ4asnYJ3GIswCFOu2g/Z98w+hF9lyqReoghUDstiJGuK44r8OyR6
+         EhDzQXwJgbKvoHxsJjXUSHkuXAx5ulAcvQyMelNA=
+Date:   Fri, 23 Jul 2021 09:02:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Chris Clayton <chris2553@googlemail.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Message-ID: <YPppbUqSPTNcm3f9@kroah.com>
+References: <YPVtBBumSTMKGuld@casper.infradead.org>
+ <2237123.PRLUojbHBq@natalenko.name>
+ <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
+ <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
+ <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
+ <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
+ <YPlmMnZKgkcLderp@casper.infradead.org>
+ <YPlyHF5eNDiTMKzq@kroah.com>
+ <YPl5+PkfBPI0pdHn@kroah.com>
+ <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Fri, Jul 23, 2021 at 09:51:09AM +0800, Miaohe Lin wrote:
+> On 2021/7/22 22:00, Greg KH wrote:
+> > On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
+> >> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
+> >>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
+> >>>> Thanks for reviewing,
+> >>>>
+> >>>> What I have deduced from the dmesg  is:
+> >>>> In function do_swap_page,
+> >>>> after invoking
+> >>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
+> >>>> and before
+> >>>> 3561    out:
+> >>>> 3562        if (si)
+> >>>> 3563            put_swap_device(si);
+> >>>> The thread got scheduled out in
+> >>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
+> >>>>
+> >>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
+> >>>> confusions.
+> >>>
+> >>> I don't understamd why you're still talking.  The problem is understood.
+> >>> You need to revert the unnecessary backport of 2799e77529c2 and
+> >>> 2efa33fc7f6e
+> >>
+> >> Sorry for the delay, will go do so in a minute...
+> > 
+> > Both now reverted from 5.10.y and 5.13.y.
+> > 
+> 
+> I browsed my previous backport notifying email and found that these two patches are also
+> backported into 5.12. And it seems it's missed.
 
-[ Upstream commit 1d10bf55d85d34eb73dd8263635f43fd72135d2d ]
+5.12 is now end-of-life, it's not being touched anymore, and no one
+should continue to use it.
 
-As Yanfei pointed out, although invoking trc_del_holdout() is safe
-from the viewpoint of the integrity of the holdout list itself,
-the put_task_struct() invoked by trc_del_holdout() can result in
-use-after-free errors due to later accesses to this task_struct structure
-by the RCU Tasks Trace grace-period kthread.
+thanks,
 
-This commit therefore removes this call to trc_del_holdout() from
-trc_inspect_reader() in favor of the grace-period thread's existing call
-to trc_del_holdout(), thus eliminating that particular class of
-use-after-free errors.
-
-Reported-by: "Xu, Yanfei" <yanfei.xu@windriver.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tasks.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 73bbe792fe1e..208acb286ec2 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -879,10 +879,9 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		in_qs = likely(!t->trc_reader_nesting);
- 	}
- 
--	// Mark as checked.  Because this is called from the grace-period
--	// kthread, also remove the task from the holdout list.
-+	// Mark as checked so that the grace-period kthread will
-+	// remove it from the holdout list.
- 	t->trc_reader_checked = true;
--	trc_del_holdout(t);
- 
- 	if (in_qs)
- 		return true;  // Already in quiescent state, done!!!
--- 
-2.30.2
-
+greg k-h
