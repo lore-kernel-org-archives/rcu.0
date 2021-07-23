@@ -2,118 +2,255 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B8CC4338F
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 07:13:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2182CC4338F
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 17:25:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C97360EE2
-	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 07:13:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F2B9A60EB5
+	for <rcu@archiver.kernel.org>; Fri, 23 Jul 2021 17:25:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhGWGcw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 23 Jul 2021 02:32:52 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12242 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhGWGcw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:32:52 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GWL466T0Mz1CLTq;
-        Fri, 23 Jul 2021 15:07:34 +0800 (CST)
-Received: from [10.174.177.180] (10.174.177.180) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 15:13:23 +0800
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Chris Clayton <chris2553@googlemail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Boqun Feng <boqun.feng@gmail.com>, <paulmck@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-References: <YPVtBBumSTMKGuld@casper.infradead.org>
- <2237123.PRLUojbHBq@natalenko.name>
- <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
- <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
- <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
- <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
- <YPlmMnZKgkcLderp@casper.infradead.org> <YPlyHF5eNDiTMKzq@kroah.com>
- <YPl5+PkfBPI0pdHn@kroah.com>
- <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
- <YPppbUqSPTNcm3f9@kroah.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <a48bfbcf-e20b-83b9-4523-8da9fbbd6bec@huawei.com>
-Date:   Fri, 23 Jul 2021 15:13:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230098AbhGWQok (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 23 Jul 2021 12:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhGWQoj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:44:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB1260EB5;
+        Fri, 23 Jul 2021 17:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627061113;
+        bh=5tVXKTCVXHEQjIw6Inbn4aFyYIxJn+5HijJKWYiLAkQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=j1EaiqKsB/9PUmyBBte0fRrbPDslzJfPYj03QpGiDrMkyTnkDQ0rqpwzlTJN+hYOb
+         w8ma2dFOk2eJeHnQwOuvSG+qziqDAlQ8Fn5/8JKexuwmUa9Ply8od2eUDdCLM+JpsF
+         l6NbfN+dmA+JLvXCs0LLLIX9m36ODJUIdZw6urxlvFkKca0lRbCXkHGwbwRD5pIYNW
+         MkpRHLEkA0wZgRtgVWMzIP6eYGTcMhz2toSeggPQgertO5yb0ZtpORqRbzsL+86nrc
+         OlS4nZ+aLleJLUlBdOkMbyNwrjD7tR9PCDkD52h6wdLk159iuxUdELFuc4xmjVd7OI
+         UxAuGkJ5X+6ZQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D71FF5C0378; Fri, 23 Jul 2021 10:25:12 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 10:25:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     donghai qiao <donghai.w.qiao@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org
+Subject: Re: RCU: rcu stall issues and an approach to the fix
+Message-ID: <20210723172512.GH4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAOzhvcPb=NMCHCqyDiyWiX9DjR=RXgdQRfJDkJOdazugHe7+Zw@mail.gmail.com>
+ <YPoNgcLgJY/POS4u@boqun-archlinux>
+ <20210723034928.GE4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAOzhvcOLFzFGZAptOTrP9Xne1-LiO8jka1sPF6+0=WiLh-cQUA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YPppbUqSPTNcm3f9@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.180]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOzhvcOLFzFGZAptOTrP9Xne1-LiO8jka1sPF6+0=WiLh-cQUA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2021/7/23 15:02, Greg KH wrote:
-> On Fri, Jul 23, 2021 at 09:51:09AM +0800, Miaohe Lin wrote:
->> On 2021/7/22 22:00, Greg KH wrote:
->>> On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
->>>> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
->>>>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
->>>>>> Thanks for reviewing,
->>>>>>
->>>>>> What I have deduced from the dmesg  is:
->>>>>> In function do_swap_page,
->>>>>> after invoking
->>>>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
->>>>>> and before
->>>>>> 3561    out:
->>>>>> 3562        if (si)
->>>>>> 3563            put_swap_device(si);
->>>>>> The thread got scheduled out in
->>>>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
->>>>>>
->>>>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
->>>>>> confusions.
->>>>>
->>>>> I don't understamd why you're still talking.  The problem is understood.
->>>>> You need to revert the unnecessary backport of 2799e77529c2 and
->>>>> 2efa33fc7f6e
->>>>
->>>> Sorry for the delay, will go do so in a minute...
->>>
->>> Both now reverted from 5.10.y and 5.13.y.
->>>
->>
->> I browsed my previous backport notifying email and found that these two patches are also
->> backported into 5.12. And it seems it's missed.
+On Fri, Jul 23, 2021 at 12:20:41PM -0400, donghai qiao wrote:
+> On Thu, Jul 22, 2021 at 11:49 PM Paul E. McKenney <paulmck@kernel.org>
+> wrote:
 > 
-> 5.12 is now end-of-life, it's not being touched anymore, and no one
-> should continue to use it.
+> > On Fri, Jul 23, 2021 at 08:29:53AM +0800, Boqun Feng wrote:
+> > > On Thu, Jul 22, 2021 at 04:08:06PM -0400, donghai qiao wrote:
+> > > > RCU experts,
+> > > >
+> > > > When you reply, please also keep me CC'ed.
+> > > >
+> > > > The problem of RCU stall might be an old problem and it can happen
+> > quite often.
+> > > > As I have observed, when the problem occurs,  at least one CPU in the
+> > system
+> > > > on which its rdp->gp_seq falls behind others by 4 (qs).
+> > > >
+> > > > e.g.  On CPU 0, rdp->gp_seq = 0x13889d, but on other CPUs, their
+> > > > rdp->gp_seq = 0x1388a1.
+> > > >
+> > > > Because RCU stall issues can last a long period of time, the number of
+> > callbacks
+> > > > in the list rdp->cblist of all CPUs can accumulate to thousands. In
+> > > > the worst case,
+> > > > it triggers panic.
+> > > >
+> > > > When looking into the problem further, I'd think the problem is
+> > related to the
+> > > > Linux scheduler. When the RCU core detects the stall on a CPU,
+> > rcu_gp_kthread
+> > > > would send a rescheduling request via send_IPI to that CPU to try to
+> > force a
+> > > > context switch to make some progress. However, at least one situation
+> > can fail
+> > > > this effort, which is when the CPU is running a user thread and it is
+> > the only
+> > > > user thread in the rq, then this attempted context switching will not
+> > happen
+> > > > immediately. In particular if the system is also configured with
+> > NOHZ_FULL for
+> > >
+> > > Correct me if I'm wrong, if a CPU is solely running a user thread, how
+> > > can that CPU stall RCU? Because you need to be in a RCU read-side
+> > > critical section to stall RCU. Or the problem you're talking here is
+> > > about *recovering* from RCU stall?
 > 
-> thanks,
+> In response to Boqun's question, the crashdumps I analyzed were configured
+> with this :
+> 
+> CONFIG_PREEMPT_RCU=n
+> CONFIG_PREEMPT_COUNT=n
+> CONFIG_PROVE_RCU=n
+> 
+> Because these configurations were not enabled, the compiler generated empty
+> binary code for functions rcu_read_lock() and rcu_read_unlock() which
+> delimit rcu read-side critical sections. And the crashdump showed both
+> functions have no binary code in the kernel module and I am pretty sure.
 
-I see! Many thanks for your kindly explanation! :)
+Agreed, that is expected behavior.
 
-> 
-> greg k-h
-> .
-> 
+> In the first place I thought this kernel might be built the wrong way,
+> but later I found other sources that said this was ok.  That's why when
+> CPUs enter or leave rcu critical section, the rcu core
+> is not informed.
 
+If RCU core was informed every time that a CPU entered or left an RCU
+read-side critical section, performance and scalability would be
+abysmal.  So yes, this interaction is very arms-length.
+
+> When the current grace period is closed, rcu_gp_kthread will open a new
+> period for all. This will be reflected from every
+> CPU's rdp->gp_seq. Every CPU is responsible to update its own gp when a
+> progress is made. So when a cpu is running
+> a user thread whilst a new period is open, it can not update its rcu unless
+> a context switch occurs or upon a sched tick.
+> But if a CPU is configured as NOHZ, this will be a problem to RCU, so rcu
+> stall will happen.
+
+Except that if a CPU is running in nohz_full mode, each transition from
+kernel to user execution must invoke rcu_user_enter() and each transition
+back must invoke rcu_user_exit().  These update RCU's per-CPU state, which
+allows RCU's grace-period kthread ("rcu_sched" in this configuration)
+to detect even momentary nohz_full usermode execution.
+
+You can check this in your crash dump by looking at the offending CPU's
+rcu_data structure's ->dynticks field and comparing to the activities
+of rcu_user_enter().
+
+> When RCU detects that qs is stalled on a CPU, it tries to force a context
+> switch to make progress on that CPU. This is
+> done through a resched IPI. But this can not always succeed depending on
+> the scheduler.   A while ago, this code
+> process the resched IPI:
+> 
+> void scheduler_ipi(void)
+> {
+>         ...
+>         if (llist_empty(&this_rq()->wake_list) && !got_nohz_idle_kick())
+>                 return;
+>         ...
+>         irq_enter();
+>         sched_ttwu_pending();
+>         ...
+>         if (unlikely(got_nohz_idle_kick())) {
+>                 this_rq()->idle_balance = 1;
+>                 raise_softirq_irqoff(SCHED_SOFTIRQ);
+>         }
+>         irq_exit();
+> }
+> 
+> As you can see the function returns from the first "if statement" before it
+> can issue a SCHED_SOFTIRQ. Later this
+> code has been changed, but similar check/optimization remains in many
+> places in the scheduler. The things I try to
+> fix are those that resched_cpu fails to do.
+
+???  Current mainline has this instead:
+
+static __always_inline void scheduler_ipi(void)
+{
+	/*
+	 * Fold TIF_NEED_RESCHED into the preempt_count; anybody setting
+	 * TIF_NEED_RESCHED remotely (for the first time) will also send
+	 * this IPI.
+	 */
+	preempt_fold_need_resched();
+}
+
+Combined with the activities of resched_curr(), which is invoked
+from resched_cpu(), this should force a call to the scheduler on
+the return path from this IPI.
+
+So what kernel version are you using?
+
+Recent kernels have logic to enable the tick on nohz_full CPUs that are
+slow to supply RCU with a quiescent state, but this should happen only
+when such CPUs are spinning in kernel mode.  Again, usermode execution
+is dealt with by rcu_user_enter().
+
+> Hope this explains it.
+> Donghai
+> 
+> 
+> > Excellent point, Boqun!
+> >
+> > Donghai, have you tried reproducing this using a kernel built with
+> > CONFIG_RCU_EQS_DEBUG=y?
+> >
+> 
+> I can give this configuration a try. Will let you know the results.
+
+This should help detect any missing rcu_user_enter() or rcu_user_exit()
+calls.
+
+							Thanx, Paul
+
+> Thanks.
+> Donghai
+> 
+> 
+> >
+> >                                                         Thanx, Paul
+> >
+> > > Regards,
+> > > Boqun
+> > >
+> > > > the CPU and as long as the user thread is running, the forced context
+> > > > switch will
+> > > > never happen unless the user thread volunteers to yield the CPU. I
+> > think this
+> > > > should be one of the major root causes of these RCU stall issues. Even
+> > if
+> > > > NOHZ_FULL is not configured, there will be at least 1 tick delay which
+> > can
+> > > > affect the realtime kernel, by the way.
+> > > >
+> > > > But it seems not a good idea to craft a fix from the scheduler side
+> > because
+> > > > this has to invalidate some existing scheduling optimizations. The
+> > current
+> > > > scheduler is deliberately optimized to avoid such context switching.
+> > So my
+> > > > question is why the RCU core cannot effectively update qs for the
+> > stalled CPU
+> > > > when it detects that the stalled CPU is running a user thread?  The
+> > reason
+> > > > is pretty obvious because when a CPU is running a user thread, it must
+> > not
+> > > > be in any kernel read-side critical sections. So it should be safe to
+> > close
+> > > > its current RCU grace period on this CPU. Also, with this approach we
+> > can make
+> > > > RCU work more efficiently than the approach of context switch which
+> > needs to
+> > > > go through an IPI interrupt and the destination CPU needs to wake up
+> > its
+> > > > ksoftirqd or wait for the next scheduling cycle.
+> > > >
+> > > > If my suggested approach makes sense, I can go ahead to fix it that
+> > way.
+> > > >
+> > > > Thanks
+> > > > Donghai
+> >
