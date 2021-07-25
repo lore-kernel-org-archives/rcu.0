@@ -2,390 +2,259 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3247C4338F
-	for <rcu@archiver.kernel.org>; Sun, 25 Jul 2021 00:48:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E008C432BE
+	for <rcu@archiver.kernel.org>; Sun, 25 Jul 2021 21:44:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E7B060E90
-	for <rcu@archiver.kernel.org>; Sun, 25 Jul 2021 00:48:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72D9160F39
+	for <rcu@archiver.kernel.org>; Sun, 25 Jul 2021 21:44:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbhGYAHx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 24 Jul 2021 20:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhGYAHw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 24 Jul 2021 20:07:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8263460C41;
-        Sun, 25 Jul 2021 00:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627174103;
-        bh=VVAMUD10XvCcaG4zMbEG6jTiuJA5okTMbLlTx8rzvD8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=E4MFf3Xt6+n0LFu+fD10Ya2wtlogCBLDiqMSPATfLDghKWT0/novCCKh8vsETuZUI
-         M4Uj9tQShkyPKDysKu6gP/gxF+DH+DhYOS4MPRR4ksXJcb+f2PE3QN8FqQLWKuFRqi
-         8ifLR3uDLOP2Y4AIGSVstdI0RQj5BoLcvv+BXASyB/yMTCLQhYa1NxRWsSokMIsxHX
-         e4vRgBdB1G6uNXr0W5v0aYfrUS+Fzvh8CS9dtDTu8hJU90BPnlfXnPNaeOPvGxC5wO
-         hNuwH65fhkK3ISFiPoBa/V7+ST40J14amlqQYWlfW/iHj/Fv5U0bikH7aqHte5ei7b
-         8FCL5r83aiP9w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 33EC15C0293; Sat, 24 Jul 2021 17:48:23 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 17:48:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     donghai qiao <donghai.w.qiao@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org
-Subject: Re: RCU: rcu stall issues and an approach to the fix
-Message-ID: <20210725004823.GN4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <CAOzhvcPb=NMCHCqyDiyWiX9DjR=RXgdQRfJDkJOdazugHe7+Zw@mail.gmail.com>
- <YPoNgcLgJY/POS4u@boqun-archlinux>
- <20210723034928.GE4397@paulmck-ThinkPad-P17-Gen-1>
- <CAOzhvcOLFzFGZAptOTrP9Xne1-LiO8jka1sPF6+0=WiLh-cQUA@mail.gmail.com>
- <20210723172512.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <CAOzhvcMaTsJTS3y1FVtSOpXfG8EecYp8bKOQ0KOjCOKYJ-UerA@mail.gmail.com>
- <20210723190614.GJ4397@paulmck-ThinkPad-P17-Gen-1>
- <CAOzhvcMwTzHSbrkPv9DXVAdUcddHEJazz_6p6tzXiJht43RMYg@mail.gmail.com>
+        id S229808AbhGYVEQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 25 Jul 2021 17:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGYVEP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 25 Jul 2021 17:04:15 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC57C061757;
+        Sun, 25 Jul 2021 14:44:44 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n10so1636206plc.2;
+        Sun, 25 Jul 2021 14:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=431vP1SxHYzCIo6ntAnuLBVEe3pf46VJ4JXhlmOI2v4=;
+        b=Xzy4h3V6xdLwKf/7drpCjyw1/O5N388GGNhlDWc/SAWEpOBCKpwxxLg1oB4p+HN5VX
+         cf2HVFXPvTmtirQlkVO0rNAuKwvD8HuT3v0X/VymL881ezdHCsNA1DqeDU/uvtifh2Zv
+         aqdGC9szEMmMTau/KJR9zIeacQfEtJyEWQrmpziCUhGcMr/lnsrPqyXdmTDNhTZ7ujMk
+         KC8qyS/bITngDSCl/BZmxaaPoKAA005tkoIcWzeh4fPJRYbH5rCMXozzXWTJFuiutRYi
+         IwYJrDwKHSHHB6CRl9IFv6GPTfh01zzD84U8cj8BYKXKTGlhA2xC8q2b+pRhCpu9F6So
+         NiYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=431vP1SxHYzCIo6ntAnuLBVEe3pf46VJ4JXhlmOI2v4=;
+        b=Qqd6SWH1/Wd/ABpQQg4izquVUZ8psoBzWHdNshJyt1cCbqDNrXOgF/rTr0W8rnz9Mo
+         kHahgYrACxa3o+uc1dHNJnXkY3FCPFleQZClyOxcfWlA9oxD7PZuZsCNCfYb4kY+nbQy
+         SS+h2lkq6NZaleMKrbcmOgahsc66tigtUcb+PHKJMHcm3m9c3foKdkBn3QFtrk6zouJG
+         nPRJVDeHa+Gi8WseYmR3HPkfDlHXbys7XG936F8wL2jbUlRbksAP3ZhM4bmmL7OyJZlO
+         71nv328KPlq60vHoH/Tz4jkxzTUGzybSlbn3HpkqpZlRq2WScFX8QoVz2xoVM/EB/25b
+         t6Qw==
+X-Gm-Message-State: AOAM530ucqv1MLl6W2nZ+BbyBN8a7myLB/WiDFbPsVY7aQFjuISjw4dD
+        08zMlqH8jiM1quL2p2aUsln/2ibGYOZ+xgx3
+X-Google-Smtp-Source: ABdhPJw9S1QRJbqPMtG0DZ4UEwyu630syaVRSRj8woXEYkCyOCYysFG9MBAn/F6H1oG6MzgIA5OgMw==
+X-Received: by 2002:a17:903:2445:b029:12b:9d0e:6b97 with SMTP id l5-20020a1709032445b029012b9d0e6b97mr12080514pls.84.1627249483722;
+        Sun, 25 Jul 2021 14:44:43 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.87])
+        by smtp.gmail.com with ESMTPSA id on9sm464193pjb.47.2021.07.25.14.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 14:44:43 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, corbet@lwn.net, ysato@users.sourceforge.jp,
+        dalias@libc.org, chris@zankel.net, jcmvbkbc@gmail.com,
+        dave@stgolabs.net, tiwai@suse.de, frederic@kernel.org,
+        mchehab+huawei@kernel.org, nfraprado@protonmail.com,
+        wcohen@redhat.com, tglx@linutronix.de, viro@zeniv.linux.org.uk,
+        rric@kernel.org, viresh.kumar@linaro.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] RCU: Fix undefined Kconfig macros
+Date:   Mon, 26 Jul 2021 05:43:33 +0800
+Message-Id: <20210725214333.10623-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOzhvcMwTzHSbrkPv9DXVAdUcddHEJazz_6p6tzXiJht43RMYg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 08:01:34PM -0400, donghai qiao wrote:
-> On Fri, Jul 23, 2021 at 3:06 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Jul 23, 2021 at 02:41:20PM -0400, donghai qiao wrote:
-> > > On Fri, Jul 23, 2021 at 1:25 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Fri, Jul 23, 2021 at 12:20:41PM -0400, donghai qiao wrote:
-> > > > > On Thu, Jul 22, 2021 at 11:49 PM Paul E. McKenney <paulmck@kernel.org>
-> > > > > wrote:
-> > > > >
-> > > > > > On Fri, Jul 23, 2021 at 08:29:53AM +0800, Boqun Feng wrote:
-> > > > > > > On Thu, Jul 22, 2021 at 04:08:06PM -0400, donghai qiao wrote:
-> > > > > > > > RCU experts,
-> > > > > > > >
-> > > > > > > > When you reply, please also keep me CC'ed.
-> > > > > > > >
-> > > > > > > > The problem of RCU stall might be an old problem and it can happen
-> > > > > > quite often.
-> > > > > > > > As I have observed, when the problem occurs,  at least one CPU in the
-> > > > > > system
-> > > > > > > > on which its rdp->gp_seq falls behind others by 4 (qs).
-> > > > > > > >
-> > > > > > > > e.g.  On CPU 0, rdp->gp_seq = 0x13889d, but on other CPUs, their
-> > > > > > > > rdp->gp_seq = 0x1388a1.
-> > > > > > > >
-> > > > > > > > Because RCU stall issues can last a long period of time, the number of
-> > > > > > callbacks
-> > > > > > > > in the list rdp->cblist of all CPUs can accumulate to thousands. In
-> > > > > > > > the worst case,
-> > > > > > > > it triggers panic.
-> > > > > > > >
-> > > > > > > > When looking into the problem further, I'd think the problem is
-> > > > > > related to the
-> > > > > > > > Linux scheduler. When the RCU core detects the stall on a CPU,
-> > > > > > rcu_gp_kthread
-> > > > > > > > would send a rescheduling request via send_IPI to that CPU to try to
-> > > > > > force a
-> > > > > > > > context switch to make some progress. However, at least one situation
-> > > > > > can fail
-> > > > > > > > this effort, which is when the CPU is running a user thread and it is
-> > > > > > the only
-> > > > > > > > user thread in the rq, then this attempted context switching will not
-> > > > > > happen
-> > > > > > > > immediately. In particular if the system is also configured with
-> > > > > > NOHZ_FULL for
-> > > > > > >
-> > > > > > > Correct me if I'm wrong, if a CPU is solely running a user thread, how
-> > > > > > > can that CPU stall RCU? Because you need to be in a RCU read-side
-> > > > > > > critical section to stall RCU. Or the problem you're talking here is
-> > > > > > > about *recovering* from RCU stall?
-> > > > >
-> > > > > In response to Boqun's question, the crashdumps I analyzed were configured
-> > > > > with this :
-> > > > >
-> > > > > CONFIG_PREEMPT_RCU=n
-> > > > > CONFIG_PREEMPT_COUNT=n
-> > > > > CONFIG_PROVE_RCU=n
-> > > > >
-> > > > > Because these configurations were not enabled, the compiler generated empty
-> > > > > binary code for functions rcu_read_lock() and rcu_read_unlock() which
-> > > > > delimit rcu read-side critical sections. And the crashdump showed both
-> > > > > functions have no binary code in the kernel module and I am pretty sure.
-> > > >
-> > > > Agreed, that is expected behavior.
-> > > >
-> > > > > In the first place I thought this kernel might be built the wrong way,
-> > > > > but later I found other sources that said this was ok.  That's why when
-> > > > > CPUs enter or leave rcu critical section, the rcu core
-> > > > > is not informed.
-> > > >
-> > > > If RCU core was informed every time that a CPU entered or left an RCU
-> > > > read-side critical section, performance and scalability would be
-> > > > abysmal.  So yes, this interaction is very arms-length.
-> > >
-> > > Thanks for confirming that.
-> > >
-> > > > > When the current grace period is closed, rcu_gp_kthread will open a new
-> > > > > period for all. This will be reflected from every
-> > > > > CPU's rdp->gp_seq. Every CPU is responsible to update its own gp when a
-> > > > > progress is made. So when a cpu is running
-> > > > > a user thread whilst a new period is open, it can not update its rcu unless
-> > > > > a context switch occurs or upon a sched tick.
-> > > > > But if a CPU is configured as NOHZ, this will be a problem to RCU, so rcu
-> > > > > stall will happen.
-> > > >
-> > > > Except that if a CPU is running in nohz_full mode, each transition from
-> > > > kernel to user execution must invoke rcu_user_enter() and each transition
-> > > > back must invoke rcu_user_exit().  These update RCU's per-CPU state, which
-> > > > allows RCU's grace-period kthread ("rcu_sched" in this configuration)
-> > > > to detect even momentary nohz_full usermode execution.
-> > >
-> > > Yes, agreed.
-> > >
-> > > > You can check this in your crash dump by looking at the offending CPU's
-> > > > rcu_data structure's ->dynticks field and comparing to the activities
-> > > > of rcu_user_enter().
-> > >
-> > > On the rcu stalled CPU, its rdp->dynticks is far behind others. In the crashdump
-> > > I examined, stall happened on CPU 0,  its dynticks is 0x6eab02, but dynticks on
-> > > other CPUs are 0x82c192, 0x72a3b6, 0x880516 etc..
-> >
-> > That is expected behavior for a CPU running nohz_full user code for an
-> > extended time period.  RCU is supposed to leave that CPU strictly alone,
-> > after all.  ;-)
-> 
-> Yeah, this does happen if the CPU is enabled nohz_full. But I believe
-> I ever saw similar
-> situation on a nohz enabled CPU as well.  So shouldn't RCU close off
-> the gp for this CPU
-> rather than waiting ? That's the way I am thinking of fixing it.
+Hi Paul,
 
-Yes, the same thing can happen if a CPU remains idle for a long time.
+After I invoking scripts/checkkconfigsymbols.py in linux kernel source
+tree, I find 4 undefined Kconfig macros. I examine them one by one, and
+fix them following your advice.
 
-> > > > > When RCU detects that qs is stalled on a CPU, it tries to force a context
-> > > > > switch to make progress on that CPU. This is
-> > > > > done through a resched IPI. But this can not always succeed depending on
-> > > > > the scheduler.   A while ago, this code
-> > > > > process the resched IPI:
-> > > > >
-> > > > > void scheduler_ipi(void)
-> > > > > {
-> > > > >         ...
-> > > > >         if (llist_empty(&this_rq()->wake_list) && !got_nohz_idle_kick())
-> > > > >                 return;
-> > > > >         ...
-> > > > >         irq_enter();
-> > > > >         sched_ttwu_pending();
-> > > > >         ...
-> > > > >         if (unlikely(got_nohz_idle_kick())) {
-> > > > >                 this_rq()->idle_balance = 1;
-> > > > >                 raise_softirq_irqoff(SCHED_SOFTIRQ);
-> > > > >         }
-> > > > >         irq_exit();
-> > > > > }
-> > > > >
-> > > > > As you can see the function returns from the first "if statement" before it
-> > > > > can issue a SCHED_SOFTIRQ. Later this
-> > > > > code has been changed, but similar check/optimization remains in many
-> > > > > places in the scheduler. The things I try to
-> > > > > fix are those that resched_cpu fails to do.
-> > > >
-> > > > ???  Current mainline has this instead:
-> > > >
-> > > > static __always_inline void scheduler_ipi(void)
-> > > > {
-> > > >         /*
-> > > >          * Fold TIF_NEED_RESCHED into the preempt_count; anybody setting
-> > > >          * TIF_NEED_RESCHED remotely (for the first time) will also send
-> > > >          * this IPI.
-> > > >          */
-> > > >         preempt_fold_need_resched();
-> > > > }
-> > >
-> > > This function was changed a year ago in the upstream kernel. But this
-> > > is not the only
-> > > code that fails the request of resched from rcu.  The scheduler is
-> > > optimized to avoid
-> > > context switching which it thinks is unnecessary over the years.
-> >
-> > But RCU shouldn't get to the point where it would invoke resched_cpu().
-> > Instead, it should see that CPU's rdp->dynticks value and report a
-> > quiescent state on that CPU's behalf.  See the rcu_implicit_dynticks_qs()
-> > function and its callers.
-> 
-> What I was seeing in these crashdumps was that the rcu gp_kthread
-> invoked rcu_implicit_dynticks_qs() ---> resched_cpu()
-> 
-> rcu_implicit_dynticks_qs()
-> {
->         ......
->         if (tick_nohz_full_cpu(rdp->cpu) && time_after(......) ) {
->                   WRITE_ONCE(...);
->                   resched_cpu(rdp->cpu);
->                   WRITE_ONCE(...);
->         }
-> 
->         if (time_after (...) {
->                    if (time_aftr(...) {
->                              resched_cpu(rdp->cpu);
->                              ...
->                    }
->                    ...
->          }
->          return 0;
-> }
-> 
-> The first time, resched_cpu() was invoked from the first "if
-> statement",  later, it was invoked
-> from the second "if statement".  But because the scheduler ignored
-> that resched request from
-> rcu due to optimization, nothing happened.
+1. TREE_PREEMPT_RCU
+Referencing files: arch/sh/configs/sdk7786_defconfig
 
-I agree that this can happen.  However, it should not have happened
-in this case, because...
+It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
+that same file implies CONFIG_PREEMPT_RCU=y, so I delete the
+CONFIG_TREE_PREEMPT_RCU=y line.
 
-> > > > Combined with the activities of resched_curr(), which is invoked
-> > > > from resched_cpu(), this should force a call to the scheduler on
-> > > > the return path from this IPI.
-> > > >
-> > > > So what kernel version are you using?
-> > >
-> > > The crashdumps I have examined were generated from 4.18.0-269 which is rhel-8.4.
-> > > But this problem is reproducible on fedora 34 and the latest upstream kernel,
-> > > however, I don't have a crashdump of that kind right now.
-> >
-> > Interesting.  Are those systems doing anything unusual?  Long-running
-> > interrupts, CPU-hotplug operations, ... ?
-> 
-> Only some regular test suites. Nothing special was running. I believe no long
-> interrupts,  no CPU-hotplug. But I noticed that the console was outputting
-> some message via printk(), but the message was not too long.
-> >
-> > > > Recent kernels have logic to enable the tick on nohz_full CPUs that are
-> > > > slow to supply RCU with a quiescent state, but this should happen only
-> > > > when such CPUs are spinning in kernel mode.  Again, usermode execution
-> > > > is dealt with by rcu_user_enter().
-> > >
-> > > That also reflected why the CPU was running a user thread when the RCU stall
-> > > was detected.  So I guess something should be done for this case.
-> >
-> > You lost me on this one.  Did the rdp->dynticks value show that the
-> > CPU was in an extended quiescent state?
-> 
-> The value of rdp->dynticks on the stalled CPU0  was 0x6eab02,
-> thus    rdp->dynticks & RCU_DYNTICK_CTRL_CTR != 0
-> so it was not in an extended qs (idle).
+The reason is as follows.
+In kernel/rcu/Kconfig, we have
+config PREEMPT_RCU
+        bool
+        default y if PREEMPTION
+https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
+"The default value is only assigned to the config symbol if no other value
+ was set by the user (via the input prompt above)."
+there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
+get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
 
-And, assuming that this CPU was executing in nohz_full usermode, this
-is a bug.  If a CPU is in nohz_full usermode, then its rdp->dynticks
-field should have the RCU_DYNTICK_CTRL_CTR bit set to zero.
+2. RCU_CPU_STALL_INFO
+Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
 
-The usual cause of this situation is that there is a path to
-or run nohz_full usermode that fails to call rcu_user_enter() or
-rcu_user_exit(), respectively.  Similar problems can arise if there is
-a path between nohz_full userspace and interrupt context that does not
-invoke rcu_irq_enter() (from userspace to interrupt) or rcu_irq_exit()
-(from interrupt back to userspace).
+We now get RCU_CPU_STALL_INFO whether we want it or not, so this
+line should be deleted.
+(RCU_CPU_STALL_INFO is removed in 75c27f119b6475d95374bdad872c6938b5c26196)
 
-There were some issues of this sort around the v5.8 timeframe.  Might
-there be another patch that needs to be backported?  Or a patch that
-was backported, but should not have been?
+3. RCU_NOCB_CPU_ALL
+Referencing files:
+Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
 
-Is it possible to bisect this?
+This is an old snapshot of the code. I update this from the real
+rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
+I have invoked "make htmldocs" to ensure the result of above updating.
 
-Or, again, to run with CONFIG_RCU_EQS_DEBUG=y?
+4. RCU_TORTURE_TESTS
+Referencing files: kernel/rcu/rcutorture.c
 
-Either way, what should happen is that dyntick_save_progress_counter() or
-rcu_implicit_dynticks_qs() should see the rdp->dynticks field indicating
-nohz_full user execution, and then the quiescent state will be supplied
-on behalf of that CPU.
+forward-progress checking conflicts with CPU-stall testing, so we should
+complain when modprobe the rcutorture.ko if that happens.
 
-Now it is possible that you also have a problem where resched_cpu() isn't
-working.  But if so, that is a separate bug that should also be fixed.
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ .../Tree-RCU-Memory-Ordering.rst              | 69 +++++++++----------
+ arch/sh/configs/sdk7786_defconfig             |  1 -
+ arch/xtensa/configs/nommu_kc705_defconfig     |  1 -
+ kernel/rcu/rcutorture.c                       |  2 +-
+ 4 files changed, 33 insertions(+), 40 deletions(-)
 
-							Thanx, Paul
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+index 11cdab037bff..0c4b730bffd7 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -173,49 +173,44 @@ newly arrived RCU callbacks against future grace periods:
+     1 static void rcu_prepare_for_idle(void)
+     2 {
+     3   bool needwake;
+-    4   struct rcu_data *rdp;
+-    5   struct rcu_dynticks *rdtp = this_cpu_ptr(&rcu_dynticks);
+-    6   struct rcu_node *rnp;
+-    7   struct rcu_state *rsp;
+-    8   int tne;
+-    9
+-   10   if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_ALL) ||
+-   11       rcu_is_nocb_cpu(smp_processor_id()))
+-   12     return;
++    4   struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++    5   struct rcu_node *rnp;
++    6   int tne;
++    7
++    8   lockdep_assert_irqs_disabled();
++    9   if (rcu_rdp_is_offloaded(rdp))
++   10     return;
++   11
++   12   /* Handle nohz enablement switches conservatively. */
+    13   tne = READ_ONCE(tick_nohz_active);
+-   14   if (tne != rdtp->tick_nohz_enabled_snap) {
+-   15     if (rcu_cpu_has_callbacks(NULL))
+-   16       invoke_rcu_core();
+-   17     rdtp->tick_nohz_enabled_snap = tne;
++   14   if (tne != rdp->tick_nohz_enabled_snap) {
++   15     if (!rcu_segcblist_empty(&rdp->cblist))
++   16       invoke_rcu_core(); /* force nohz to see update. */
++   17     rdp->tick_nohz_enabled_snap = tne;
+    18     return;
+-   19   }
++   19	}
+    20   if (!tne)
+    21     return;
+-   22   if (rdtp->all_lazy &&
+-   23       rdtp->nonlazy_posted != rdtp->nonlazy_posted_snap) {
+-   24     rdtp->all_lazy = false;
+-   25     rdtp->nonlazy_posted_snap = rdtp->nonlazy_posted;
+-   26     invoke_rcu_core();
+-   27     return;
+-   28   }
+-   29   if (rdtp->last_accelerate == jiffies)
+-   30     return;
+-   31   rdtp->last_accelerate = jiffies;
+-   32   for_each_rcu_flavor(rsp) {
+-   33     rdp = this_cpu_ptr(rsp->rda);
+-   34     if (rcu_segcblist_pend_cbs(&rdp->cblist))
+-   35       continue;
+-   36     rnp = rdp->mynode;
+-   37     raw_spin_lock_rcu_node(rnp);
+-   38     needwake = rcu_accelerate_cbs(rsp, rnp, rdp);
+-   39     raw_spin_unlock_rcu_node(rnp);
+-   40     if (needwake)
+-   41       rcu_gp_kthread_wake(rsp);
+-   42   }
+-   43 }
++   22
++   23   /*
++   24    * If we have not yet accelerated this jiffy, accelerate all
++   25    * callbacks on this CPU.
++   26   */
++   27   if (rdp->last_accelerate == jiffies)
++   28     return;
++   29   rdp->last_accelerate = jiffies;
++   30   if (rcu_segcblist_pend_cbs(&rdp->cblist)) {
++   31     rnp = rdp->mynode;
++   32     raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
++   33     needwake = rcu_accelerate_cbs(rnp, rdp);
++   34     raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
++   35     if (needwake)
++   36       rcu_gp_kthread_wake();
++   37   }
++   38 }
+ 
+ But the only part of ``rcu_prepare_for_idle()`` that really matters for
+-this discussion are lines 37–39. We will therefore abbreviate this
++this discussion are lines 32–34. We will therefore abbreviate this
+ function as follows:
+ 
+ .. kernel-figure:: rcu_node-lock.svg
+diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
+index f776a1d0d277..a8662b6927ec 100644
+--- a/arch/sh/configs/sdk7786_defconfig
++++ b/arch/sh/configs/sdk7786_defconfig
+@@ -5,7 +5,6 @@ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+ CONFIG_AUDIT=y
+ CONFIG_AUDITSYSCALL=y
+-CONFIG_TREE_PREEMPT_RCU=y
+ CONFIG_RCU_TRACE=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+diff --git a/arch/xtensa/configs/nommu_kc705_defconfig b/arch/xtensa/configs/nommu_kc705_defconfig
+index 88b2e222d4bf..fcb620ef3799 100644
+--- a/arch/xtensa/configs/nommu_kc705_defconfig
++++ b/arch/xtensa/configs/nommu_kc705_defconfig
+@@ -119,7 +119,6 @@ CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_MUTEXES=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ CONFIG_STACKTRACE=y
+-# CONFIG_RCU_CPU_STALL_INFO is not set
+ CONFIG_RCU_TRACE=y
+ # CONFIG_FTRACE is not set
+ # CONFIG_LD_NO_RELAX is not set
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 40ef5417d954..434ac28949c0 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2444,7 +2444,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 	}
+ 	if (stall_cpu > 0) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, conflicts with CPU-stall testing");
+-		if (IS_MODULE(CONFIG_RCU_TORTURE_TESTS))
++		if (IS_MODULE(CONFIG_RCU_TORTURE_TEST))
+ 			return -EINVAL; /* In module, can fail back to user. */
+ 		WARN_ON(1); /* Make sure rcutorture notices conflict. */
+ 		return 0;
+-- 
+2.25.1
 
-> Thanks
-> Donghai
-> 
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > > > Hope this explains it.
-> > > > > Donghai
-> > > > >
-> > > > >
-> > > > > > Excellent point, Boqun!
-> > > > > >
-> > > > > > Donghai, have you tried reproducing this using a kernel built with
-> > > > > > CONFIG_RCU_EQS_DEBUG=y?
-> > > > > >
-> > > > >
-> > > > > I can give this configuration a try. Will let you know the results.
-> > > >
-> > > > This should help detect any missing rcu_user_enter() or rcu_user_exit()
-> > > > calls.
-> > >
-> > > Got it.
-> > >
-> > > Thanks
-> > > Donghai
-> > >
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > Thanks.
-> > > > > Donghai
-> > > > >
-> > > > >
-> > > > > >
-> > > > > >                                                         Thanx, Paul
-> > > > > >
-> > > > > > > Regards,
-> > > > > > > Boqun
-> > > > > > >
-> > > > > > > > the CPU and as long as the user thread is running, the forced context
-> > > > > > > > switch will
-> > > > > > > > never happen unless the user thread volunteers to yield the CPU. I
-> > > > > > think this
-> > > > > > > > should be one of the major root causes of these RCU stall issues. Even
-> > > > > > if
-> > > > > > > > NOHZ_FULL is not configured, there will be at least 1 tick delay which
-> > > > > > can
-> > > > > > > > affect the realtime kernel, by the way.
-> > > > > > > >
-> > > > > > > > But it seems not a good idea to craft a fix from the scheduler side
-> > > > > > because
-> > > > > > > > this has to invalidate some existing scheduling optimizations. The
-> > > > > > current
-> > > > > > > > scheduler is deliberately optimized to avoid such context switching.
-> > > > > > So my
-> > > > > > > > question is why the RCU core cannot effectively update qs for the
-> > > > > > stalled CPU
-> > > > > > > > when it detects that the stalled CPU is running a user thread?  The
-> > > > > > reason
-> > > > > > > > is pretty obvious because when a CPU is running a user thread, it must
-> > > > > > not
-> > > > > > > > be in any kernel read-side critical sections. So it should be safe to
-> > > > > > close
-> > > > > > > > its current RCU grace period on this CPU. Also, with this approach we
-> > > > > > can make
-> > > > > > > > RCU work more efficiently than the approach of context switch which
-> > > > > > needs to
-> > > > > > > > go through an IPI interrupt and the destination CPU needs to wake up
-> > > > > > its
-> > > > > > > > ksoftirqd or wait for the next scheduling cycle.
-> > > > > > > >
-> > > > > > > > If my suggested approach makes sense, I can go ahead to fix it that
-> > > > > > way.
-> > > > > > > >
-> > > > > > > > Thanks
-> > > > > > > > Donghai
-> > > > > >
