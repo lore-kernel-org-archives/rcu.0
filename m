@@ -2,108 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7405C4338F
-	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 18:39:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 131AFC4338F
+	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 18:46:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C365D61052
-	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 18:39:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EDE066056C
+	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 18:46:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbhG1Sjh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jul 2021 14:39:37 -0400
-Received: from mail.efficios.com ([167.114.26.124]:44918 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG1Sjh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:39:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2E49835A77D;
-        Wed, 28 Jul 2021 14:39:35 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id n02ovKwUYEnp; Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B663935AD8F;
-        Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B663935AD8F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627497574;
-        bh=hz4Q+TDB5rKobUuxQy5ZrYWwx6dobvw3AwtQ5A09sxQ=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=hybXLNeSX4F8QWh02WrntuVw2aSEorcUb2Zy5+eFJUj3GQEy44043OFQuhHRpVx7l
-         eZt1IJnR1fX/Lf2uVSkoarq4fKh0lCRU/JThK1YC7aUfn2N3d62ZCLZLtf/UEalVtE
-         s0xusAmIeIHGAzJB+mfSw3ld9Mv6kcy32MCcTym99JCr/3KnjvGWQWuHbr7Kqtjj3Z
-         gCqraywaJ63J/zACnguQbJD90gXnjEoOEgde9BabE47L/gpJGw926B6GLNmIZXiywl
-         QAAKKSufs3LT96uGaqiLP84ac64FotNk1sSTiVKvzguhGOq/Dxb1dMlzw+/cla1rEp
-         ueS76JReT5l1Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VxW4LVHMI1Yv; Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9EAA835A77B;
-        Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+        id S230376AbhG1SqI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jul 2021 14:46:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230164AbhG1SqH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:46:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C943560525;
+        Wed, 28 Jul 2021 18:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627497965;
+        bh=W/CZzbC/8sxlfKBzOYRrCUM1dZR05o0e8QgeUfTCKWM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WPqPx0ZpjqQhCc4KWGHhepuJwH884v84nwkr8iUu04Y6uKFwYVo44h0OfppLUrthm
+         rU85WXWpGW7R0F7tgIygipe2VQXoU/LpwnOu35BdesKm/pDmOd79gfXG/ImlS3hylw
+         xS9yE04r7SiPbw56sNr9QFwJYvxb1hVfXE5fuu15FAGZxzAJO5M8PmN2MTLxBwYCA1
+         0xRNpJlrKmIya4ando8/IMmUHsr0KtkLVF2nwADmxaTA981bETo/IwJPfIoFlf7aNh
+         Y1IkFtIUL8egfyrQ+agkDRmthVA+ulbEyoR37FPhoTrRnumfh8k/NIkv3+7bT6rmVm
+         UWf16I5t1u5lA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 92BF65C048D; Wed, 28 Jul 2021 11:46:05 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 11:46:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     paulmck <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         David Howells <dhowells@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Message-ID: <1066702992.9268.1627497574534.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAHk-=wiLZYvjcj=ztF9tF0df8mSGKXwbCdxxy-JnoaE72VY5tQ@mail.gmail.com>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com> <1810346528.8990.1627495925037.JavaMail.zimbra@efficios.com> <CAHk-=wiLZYvjcj=ztF9tF0df8mSGKXwbCdxxy-JnoaE72VY5tQ@mail.gmail.com>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
- updates
+        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728184605.GI4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Weaken ->dynticks accesses and updates
-Thread-Index: hdFDzu6BlE5e7R9k0VH579R89nPurg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Jul 28, 2021, at 2:32 PM, Linus Torvalds torvalds@linux-foundation.org wrote:
-
-> On Wed, Jul 28, 2021 at 11:12 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> Are the percpu atomics you have in mind different from what is found in
->> Documentation/core-api/this_cpu_ops.rst ?
->>
->> Namely this_cpu_add_return(pcp, val) in this case.
+On Wed, Jul 28, 2021 at 10:58:08AM -0700, Linus Torvalds wrote:
+> On Wed, Jul 28, 2021 at 10:37 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > +/*
+> > + * Increment the current CPU's rcu_data structure's ->dynticks field
+> > + * with ordering.  Return the new value.
+> > + */
+> > +static noinstr unsigned long rcu_dynticks_inc(int incby)
+> > +{
+> > +       return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
+> > +}
 > 
-> Nope.
+> Maybe inline?
+
+I bet the compiler does this already, but why give it the choice?
+I will add inline.
+
+> But more I reacted to how we sadly don't have percpu atomics. They'd
+> be fairly easy to add on x86, but I guess it's not a huge deal.
 > 
-> Those are only "CPU-atomic", ie atomic wrt interrupts etc.
-> 
-> The RCU code wants SMP-atomic, and it's mainly that we *could* do the
-> addressing more efficiently.
+> And hey, if this is pretty much the only place that would use them, I
+> guess that's not much of an issue.
 
-OK, so combining the addressing tricks of this_cpu operations with
-smp-atomic operations (e.g. LOCK prefix on x86). It may indeed become
-worthwhile given enough users, and fast enough atomic operations.
+I did a git grep for "atomic_.*this_cpu_ptr" in -rcu, and came up with
+this:
 
-Thanks,
+	arch/s390/kernel/time.c:	atomic_t *sw_ptr = this_cpu_ptr(&clock_sync_word);
+	arch/s390/kernel/time.c:	atomic_t *sw_ptr = this_cpu_ptr(&clock_sync_word);
+	arch/x86/xen/spinlock.c:	atomic_t *nest_cnt = this_cpu_ptr(&xen_qlock_wait_nest);
+	drivers/irqchip/irq-apple-aic.c:	atomic_andnot(irq_bit, this_cpu_ptr(&aic_vipi_enable));
+	drivers/irqchip/irq-apple-aic.c:	atomic_or(irq_bit, this_cpu_ptr(&aic_vipi_enable));
+	drivers/irqchip/irq-apple-aic.c:	if (atomic_read(this_cpu_ptr(&aic_vipi_flag)) & irq_bit)
+	drivers/irqchip/irq-apple-aic.c:	enabled = atomic_read(this_cpu_ptr(&aic_vipi_enable));
+	drivers/irqchip/irq-apple-aic.c:	firing = atomic_fetch_andnot(enabled, this_cpu_ptr(&aic_vipi_flag)) & enabled;
+	kernel/events/core.c:	if (atomic_read(this_cpu_ptr(&perf_cgroup_events)))
+	kernel/events/core.c:	if (atomic_read(this_cpu_ptr(&perf_cgroup_events)))
+	kernel/rcu/rcuscale.c:	atomic_dec(this_cpu_ptr(&n_async_inflight));
+	kernel/rcu/rcuscale.c:			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
+	kernel/rcu/rcuscale.c:				atomic_inc(this_cpu_ptr(&n_async_inflight));
+	kernel/rcu/tree.c:	return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
+	kernel/rcu/tree.c:	return !(atomic_read(this_cpu_ptr(&rcu_data.dynticks)) & 0x1);
+	kernel/trace/ring_buffer.c:	if (atomic_inc_return(this_cpu_ptr(&checking)) != 1)
+	kernel/trace/ring_buffer.c:	atomic_dec(this_cpu_ptr(&checking));
 
-Mathieu
+Given that this mostly moves text from the first argument to the function
+name, I suspect that we would need quite a few instances of any given
+atomic operation to make the added lines for all the definitions and
+the documentation worth it.  Maybe for atomic_read()?
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+	/**
+	 * atomic_read_this_cpu - atomically read from this CPU's variable
+	 * @p: Pointer to per-CPU variable.
+	 *
+	 * Do an atomic_read() from the current CPU's instance of the
+	 * specified per-CPU variable.
+	 */
+	#define atomic_read_this_cpu(p) atomic_read(this_cpu_ptr(p))
+
+But atomic_read_this_cpu(&rcu_data.dynticks) isn't all that much shorter
+than atomic_read(this_cpu_ptr(&rcu_data.dynticks)).
+
+							Thanx, Paul
