@@ -2,124 +2,168 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1545C432BE
-	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 19:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06802C4338F
+	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 19:45:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8292B60BD3
-	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 19:02:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA0A161040
+	for <rcu@archiver.kernel.org>; Wed, 28 Jul 2021 19:45:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhG1TCy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jul 2021 15:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhG1TCy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:02:54 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926A0C061757
-        for <rcu@vger.kernel.org>; Wed, 28 Jul 2021 12:02:51 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id y7so2424486eda.5
-        for <rcu@vger.kernel.org>; Wed, 28 Jul 2021 12:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/mLJclBpYBjhUfUWPAk4A67K9qVvzDPVHZO2WkQdA/g=;
-        b=T07r2c1vyn3l3czDvtg1PT8m1MuOm+AE7RG7tSRhBnbgravg9PfJwDbDkF+a1k0NQr
-         AfGvVfhBaow/QsjhXEHnz1RPeEKfFGDu28W7gYXNRoiQJ/4z5tgPJ8XFl5ItVK+yF8qa
-         NxCa9TsGsc+a3NyUtJskbZHARtKEs+5g0Gm+U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/mLJclBpYBjhUfUWPAk4A67K9qVvzDPVHZO2WkQdA/g=;
-        b=UU39r1AWrhAlKAoWAyhab0Un1lhuRvyrUx9qV6dhNC0MAEDS198Kxhp31+GZMMBwa6
-         pYnDJLyDImgF0jZKvUIpMXyNDnqa23QYd656xb+9XBQfF30kBbjx6crChUggrwVLJrgR
-         h8EEBaukrlm0O9Yn/HexdjHLJQi68d2dsGr2aIcWmceWBGOwZp/1m9axd2tlYqfd3UeJ
-         OgJbNRlRrxhM5oXuxOC/pDFJTGHGWTrWmlq7n52H7D4J5sZSw6qTwaQjkaNelr1maoBy
-         6uVIq8k65la9tTkoV31GYUmlKkW2gwvqF5IKSf/pCK/VIqSxofEsqeYqRjNzsqo9GdVt
-         /KrQ==
-X-Gm-Message-State: AOAM531sGbI0yzp21yKZhe22gz/kRmtSy1LSg1gnFU1cyyLro1JbrpiV
-        vvM489Z2x1Pkb+pELRwoRQyf/JmJFErwTje0HIs=
-X-Google-Smtp-Source: ABdhPJxB5ERjH2vRkjQtgDRnWPMjtll0XgQYUBUXrxYXkkhJCou2wrS5qO+sq7UerUdvmj1thsV1Lg==
-X-Received: by 2002:a05:6402:1d37:: with SMTP id dh23mr1489342edb.360.1627498969971;
-        Wed, 28 Jul 2021 12:02:49 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id o17sm185273ejb.84.2021.07.28.12.02.49
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 12:02:49 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id hp25so6219159ejc.11
-        for <rcu@vger.kernel.org>; Wed, 28 Jul 2021 12:02:49 -0700 (PDT)
-X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr681760lfv.201.1627498650428;
- Wed, 28 Jul 2021 11:57:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com> <20210728184605.GI4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210728184605.GI4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 28 Jul 2021 11:57:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj-5vtA_-9xs6zV0U20LRaRhVeE1Ky7X+9kHeucrb6_ig@mail.gmail.com>
-Message-ID: <CAHk-=wj-5vtA_-9xs6zV0U20LRaRhVeE1Ky7X+9kHeucrb6_ig@mail.gmail.com>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        id S230502AbhG1TpI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jul 2021 15:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230351AbhG1TpH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jul 2021 15:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F6660234;
+        Wed, 28 Jul 2021 19:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627501505;
+        bh=1drARiiciMyJkXP95ucTkRuZMQEwCcUIpdwazOoInjw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FdKmYivoE+aKg2VMFFYxwU0vILdH7pKmFdnSTGe5kF7z0/I4njIhZKtPUsPj83dWs
+         8GBKiuonZjWu7M25OogQJ7qc0zQSi1rO3J1P2QE1OICmm8EIYJS0NfaJN69Xmsxllw
+         mthYqWuEfYqyYUBTnmR0O3BmJ+nYzUw5UUTxP72pE62IeiiVzWUwVVlwp9r4NhUkfr
+         aGr0iYKnhVwdFQ4FVAK44Dc/zIAJTELjfd3LCLNCX+yTeJLSeRMyCxZWE4Hvuampqo
+         zXQ5FuLR6CutdNFhYfQG4bB8zJewd/UyFk0hhOUu56VkTWIL6Xgr1jL/ITiaSAD2q+
+         eYuwB80vWnDAQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A98DC5C048D; Wed, 28 Jul 2021 12:45:05 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 12:45:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     rcu <rcu@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        rostedt <rostedt@goodmis.org>,
         David Howells <dhowells@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+ <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com>
+ <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> But atomic_read_this_cpu(&rcu_data.dynticks) isn't all that much shorter
-> than atomic_read(this_cpu_ptr(&rcu_data.dynticks)).
+On Wed, Jul 28, 2021 at 11:58:54AM -0700, Paul E. McKenney wrote:
+> On Wed, Jul 28, 2021 at 02:23:05PM -0400, Mathieu Desnoyers wrote:
+> > ----- On Jul 28, 2021, at 1:37 PM, paulmck paulmck@kernel.org wrote:
+> > [...]
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 42a0032dd99f7..c87b3a271d65b 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -251,6 +251,15 @@ void rcu_softirq_qs(void)
+> > > 	rcu_tasks_qs(current, false);
+> > > }
+> > > 
+> > > +/*
+> > > + * Increment the current CPU's rcu_data structure's ->dynticks field
+> > > + * with ordering.  Return the new value.
+> > > + */
+> > > +static noinstr unsigned long rcu_dynticks_inc(int incby)
+> > > +{
+> > > +	return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
+> > > +}
+> > > +
+> > 
+> > [...]
+> > 
+> > > @@ -308,7 +317,7 @@ static void rcu_dynticks_eqs_online(void)
+> > > 
+> > > 	if (atomic_read(&rdp->dynticks) & 0x1)
+> > > 		return;
+> > 
+> > Can the thread be migrated at this point ? If yes, then
+> > the check and the increment may happen on different cpu's rdps. Is
+> > that OK ?
+> 
+> Good point!  Actually, it can be migrated, but it does not matter.
+> In fact, it so completely fails to matter that is is totally useless.  :-/
+> 
+> The incoming CPU is still offline, so this is run from some other
+> completely-online CPU.  Because this CPU is executing in non-idle
+> kernel context, that "if" condition must evaluate to true, so that the
+> rcu_dynticks_inc() below is dead code.
+> 
+> Maybe I should move the call to rcu_dynticks_eqs_online() to
+> rcu_cpu_starting(), which is pinned to the incoming CPU.  Yes, I
+> could remove it completely, but then small changes in the offline
+> process could cause great mischief.
+> 
+> Good catch, thank you!
 
-It's not so much that it's shorter to write for a human, it's that we
-could generate better code for it.
+And how about like this?
 
-That atomic_read(this_cpu_ptr()) pattern generates code like
+						Thanx, Paul
 
-        movq    $rcu_data+288, %rax
-        add %gs:this_cpu_off(%rip), %rax
-        movl    (%rax), %eax
+------------------------------------------------------------------------
 
-but it *could* just generate
+commit cb8914dcc6443cca15ce48d937a93c0dfdb114d3
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Jul 28 12:38:42 2021 -0700
 
-        movl %gs:rcu_data+288, %rax
+    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
+    
+    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
+    counter of an incoming CPU if required.  It is currently is invoked
+    from rcutree_prepare_cpu(), which runs before the incoming CPU is
+    running, and thus on some other CPU.  This makes the per-CPU accesses in
+    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
+    the running CPU cannot possibly be in dyntick-idle mode, which means
+    that rcu_dynticks_eqs_online() never has any effect.  One could argue
+    that this means that rcu_dynticks_eqs_online() is unnecessary, however,
+    removing it makes the CPU-online process vulnerable to slight changes
+    in the CPU-offline process.
+    
+    This commit therefore moves the call to rcu_dynticks_eqs_online() from
+    rcutree_prepare_cpu() to rcu_cpu_starting(), this latter being guaranteed
+    to be running on the incoming CPU.  The call to this function must of
+    course be placed before this rcu_cpu_starting() announces this CPU's
+    presence to RCU.
+    
+    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-instead.
-
-Similar patterns for the other per-cpu atomics, ie it would be
-possible to just generate
-
-        lock ; xaddl %gs:..., %rax
-
-instead of generating the address by doing that "add %gs:this_cpu_off" thing..
-
-But no, it doesn't look like there are enough users of this to matter.
-We're just talking a few extra bytes, and a couple of extra
-instructions (and possibly slightly higher register pressure, which
-then generates more instructions).
-
-The *expensive* part remains the SMP serialization of the "lock".
-
-                Linus
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 0172a5fd6d8de..aa00babdaf544 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4129,7 +4129,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+ 	rdp->blimit = blimit;
+ 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
+-	rcu_dynticks_eqs_online();
+ 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
+ 
+ 	/*
+@@ -4249,6 +4248,7 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	mask = rdp->grpmask;
+ 	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+ 	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
++	rcu_dynticks_eqs_online();
+ 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
