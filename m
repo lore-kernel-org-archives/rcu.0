@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B074C4338F
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 13:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9B1CC432BE
+	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 14:10:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 69F6F60F23
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 13:36:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 92D436054F
+	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 14:10:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhG2NgY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Jul 2021 09:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
+        id S238863AbhG2OKM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Jul 2021 10:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234314AbhG2NgW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:36:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF65E6052B;
-        Thu, 29 Jul 2021 13:36:18 +0000 (UTC)
+        id S234250AbhG2ODU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:03:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A32860F46;
+        Thu, 29 Jul 2021 14:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627565778;
-        bh=K6ZbYvTSeAPFllbF4KPvUCWrVKio91AyMs/iHX7QjnI=;
+        s=k20201202; t=1627567397;
+        bh=X4sEiDfkDpXkQx7JEk+KmwG56WVDr7UNS8u2jAOMbNA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=g0uwBoN8D2Ydb6xm6sy66/kgHGBSIrCpfw0jFuoIEIrBwODZsHbhzi2paQwghy/un
-         eU05yTwMYyd9aN4DvTQS2szlmuSHjyovVjZgeNzyGeTx0o7c7ozKNgNe5MAnXrvegb
-         JgfbFMQAAu5fbU2Z4JGCIdhDiU08tR2IOmP75D4pKbRpGaSuTUMjbyvDkYFrWtYv7D
-         9BMyG+JU0EALUQTSZXwHaU6YGDeho8GdnKX+zIbbwPPyyvsXGsB8PBNa7TcJZ24eta
-         adcOj1/cjhN85ln1wpFuU9pmXlmxVxdzblVf/QK9HZB+HBB02C7+AxJOirJUVjx/Yn
-         HUtCPq0Hclb+Q==
+        b=SME/CV4vj5SVO/nLDMVi2tNTXB7NM7nF4Z7J0vdMVuuCvpZHQR6BQ8zXoqCbnbwmm
+         J2cEjJx+yC6F9HoKUeOmNQ32sKEO7g9TpccK0KAcfidXPxvsGrw34DitAoxPddi32b
+         p65BDwV/dMuDGhygH5fnkLgXA4yyyZsFowUWtG4T9HoPIk3+tF/EwbaKe0DtHmEJtR
+         lyBANN+TMs4+v+0JzI1f79SZ81EggGOZZj+JHNIKOz/Wan9H7sA5895Ayq3M4tnKix
+         aRLzNJoNBiEhbj6ZUv5O6dVvg6Xg6UjUzGG0nM2N8IASTlMt7u98yoStAm0dEU6a/g
+         7JzWOaxvswdUg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9D5685C04E6; Thu, 29 Jul 2021 06:36:18 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 06:36:18 -0700
+        id 380435C04E6; Thu, 29 Jul 2021 07:03:17 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 07:03:17 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Boqun Feng <boqun.feng@gmail.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -42,84 +42,71 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH rcu 10/18] srcutiny: Mark read-side data races
-Message-ID: <20210729133618.GS4397@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in
+ rcu_check_boost_fail()
+Message-ID: <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-10-paulmck@kernel.org>
- <YQJlbEgaAGJvx3iN@boqun-archlinux>
+ <20210721202127.2129660-11-paulmck@kernel.org>
+ <YQJsxtypw7M/3XBD@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQJlbEgaAGJvx3iN@boqun-archlinux>
+In-Reply-To: <YQJsxtypw7M/3XBD@boqun-archlinux>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:23:08PM +0800, Boqun Feng wrote:
-> On Wed, Jul 21, 2021 at 01:21:18PM -0700, Paul E. McKenney wrote:
-> > This commit marks some interrupt-induced read-side data races in
-> > __srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
+On Thu, Jul 29, 2021 at 04:54:30PM +0800, Boqun Feng wrote:
+> On Wed, Jul 21, 2021 at 01:21:19PM -0700, Paul E. McKenney wrote:
+> > Accesses to ->qsmask are normally protected by ->lock, but there is an
+> > exception in the diagnostic code in rcu_check_boost_fail().  This commit
+> > therefore applies data_race() to this access to avoid KCSAN complaining
+> > about the C-language writes protected by ->lock.
 > > 
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > ---
-> >  include/linux/srcutiny.h | 8 ++++----
-> >  kernel/rcu/srcutiny.c    | 2 +-
-> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> >  kernel/rcu/tree_stall.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
-> > --- a/include/linux/srcutiny.h
-> > +++ b/include/linux/srcutiny.h
-> > @@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
-> >  	int idx;
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 42847caa3909b..6dd6c9aa3f757 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
 > >  
-> >  	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> > -	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> > +	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
-> >  	return idx;
-> >  }
-> >  
-> > @@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
-> >  {
-> >  	int idx;
-> >  
-> > -	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> > +	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
+> >  	rcu_for_each_leaf_node(rnp) {
+> >  		if (!cpup) {
+> > -			if (READ_ONCE(rnp->qsmask)) {
+> > +			if (data_race(READ_ONCE(rnp->qsmask))) {
 > 
-> This looks very weird, any explanation why we want to put data_race() on
-> a READ_ONCE()?
+> If the write sides allow normal writes, i.e. allowing store tearing, the
+> READ_ONCE() here could read incomplete writes, which could be anything
+> basically? And we get the same result if we remove the READ_ONCE(),
+> don't we? Yes, I know, without the READ_ONCE(), compilers can do
+> anything to optimize on rnp->qsmask, but the end result is same or
+> similar to reading incomplete writes (which is also a result by compiler
+> optimization). So if we mark something as data_race(), **in theory**, it
+> makes no difference with or without the READ_ONCE(), so I think maybe we
+> can remove the READ_ONCE() here?
 
-We don't want KCSAN to check this read, but we also don't want the
-compiler to mess it up.
+In this particular case, perhaps.  But there is also the possibility
+of ASSERT_EXCLUSIVE_WRITER() in conjunction with WRITE_ONCE(), and
+data_race(READ_ONCE(()) handles all such cases properly.
+
+Again, the point here is to prevent the compiler from messing with
+the load in strange and unpredictable ways while also telling KCSAN
+that this particular read should not be considered to be part of the
+concurrent algorithm.
 
 							Thanx, Paul
 
 > Regards,
 > Boqun
 > 
-> >  	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
-> >  		 tt, tf, idx,
-> > -		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
-> > -		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
-> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
-> >  }
-> >  
-> >  #endif
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 26344dc6483b0..a0ba2ed49bc61 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
-> >   */
-> >  void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> >  {
-> > -	int newval = ssp->srcu_lock_nesting[idx] - 1;
-> > +	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
-> >  
-> >  	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
-> >  	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
+> >  				return false;
+> >  			} else {
+> >  				if (READ_ONCE(rnp->gp_tasks))
 > > -- 
 > > 2.31.1.189.g2e36527f23
 > > 
