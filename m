@@ -8,80 +8,80 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A13C4338F
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 08:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E10DC4338F
+	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 08:55:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 40D5660EBB
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 08:23:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A7EA61059
+	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 08:55:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhG2IXj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Jul 2021 04:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S235162AbhG2IzC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Jul 2021 04:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234256AbhG2IXi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:23:38 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABEEC061757;
-        Thu, 29 Jul 2021 01:23:35 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id h18so4952705ilc.5;
-        Thu, 29 Jul 2021 01:23:35 -0700 (PDT)
+        with ESMTP id S234886AbhG2IzA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Jul 2021 04:55:00 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D2EC061757;
+        Thu, 29 Jul 2021 01:54:57 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id h1so6071098iol.9;
+        Thu, 29 Jul 2021 01:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ccd2xbEHhvpSbSnWmxqtE65ekiJ0PdRSIlSwq5h7mTU=;
-        b=W3scWnJIDk7gWJdFsSDLxRbbUkLCn9X5yeTbVgE/FSC8KBSyJ/C1LJgN6U02si68vi
-         iGxUue6tcb1Jhvj5Fte5J5P+AbR81H2DRSDQcV4d6nn2Op8a+6vPSYvPk13zuUCrJa0F
-         Nn53rnfH9plH8RCMiLvh5BrQNkgQqjnceObBKrxAjA8xGwxwp97cyI8K8cbrhKIGxOqJ
-         Uz2QTbvDznc2aVVRVkd5ACvyCQtGBEbzdTrDYMrBVeseYIA+h3LlTQki5JNeFM+L06JF
-         ZwWkXBQFhBnrcpk4MQvfVr7OsP7bhQvgleVyY1R3fw6CiMPSqar0lWNm0j/yPXF6yeEg
-         fyXg==
+        bh=N6vdYNDn6gd/T46MoBvG9s7ZIUiNhoAqMIBR6eS+uK4=;
+        b=SB763H4tZcqpohMFCcNoF3GvCHnSZH8J+1quC9EHsN9XT3wwkZ4bm5jiWcIIqC8OXc
+         zOo0iCGGbZLvmBDVVzc6K2yOgfBhyqoMPfcrpvzh9gbrpQXskubfZmnSNA7oVbP4uebY
+         VvadoyZY32RbBf8/+pZQBC3na7qgndXVf09uYRflCvM9thfeWnrwvQKA3tsrtYNLfREN
+         FviecqjwcNMwexaytGgGICvlEGk3KEAFdUlHU9l9yLU7DpcyogctoSN/DY2g8LKLX4FD
+         8ICByIYfueJPPbt8ZVunfHF11wb+MrjEFkFZYtNvD6aeS8yLtcRs97JFPx/cSlkPJ7sk
+         /XUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ccd2xbEHhvpSbSnWmxqtE65ekiJ0PdRSIlSwq5h7mTU=;
-        b=lSpq+lvBNguhMTKqdESuSGdQQ1peKmGxG6EwStfu7tocV+4Y0redMWROSnLErDxUzK
-         HSLuFyL73KveqqhCDPcBhCGp7MmipNBWk7BX02HaC91mrA3adRG1YP1jY/UIH4p+dLt3
-         LdM4UlyiuCB/cUqEzGHJtrswx9rbQCtA7xqtc11tIn4XFrP/2YTLw45S6jxj8g2YKR2N
-         rWdFJTi0Rr+P60oD5BvKRGvtl3hp0ZJYU66p/IiIzBdb+GduXZfkEktb6ht929RkJzSU
-         mDKWe3Z70zg7DI2NRvLZuNOchG6S1xJFEdlLMj+8ixkBIR5OA17aq0tvCMpkXRjJhdKM
-         Shrg==
-X-Gm-Message-State: AOAM530wOXoQbXLaIkufzIGyLy4pEphvbeMkkQNtjMyfnTVgTvPwI1l/
-        MATpoLHxwAf2sb+cVyMOxi0=
-X-Google-Smtp-Source: ABdhPJwZx4r28KmHe7qxgmiYOb6hVWI+hvshL0F+J159N0Tz5+2eIjlREChP0HVJgHejggKbkElC2g==
-X-Received: by 2002:a92:db4c:: with SMTP id w12mr3027206ilq.306.1627547014700;
-        Thu, 29 Jul 2021 01:23:34 -0700 (PDT)
+        bh=N6vdYNDn6gd/T46MoBvG9s7ZIUiNhoAqMIBR6eS+uK4=;
+        b=d/Q/FqtZrDg+QS9FPKseMPUr7q7qwdw9oJTpTgJ/jK28w2nCRIw7ZHs+OUB/M6snkX
+         L3nqZxkaiG17mSaGADyMtZ2jc53DKLUEG0IlsUYbzpRTiTH8xm9U1dl0SF9yWstq/vsj
+         nNUodwVKqzK7SonAQlv/iYqVpUpZenevcxEErNQLzrXF3s9QBSl4xBQHPmn6WR0cMVFc
+         Fq4y8gUhLaBg5xo02dCEwL4ULHuciN7bmv55cn2h86hn+72dsSB8MzdV4LNYcOz+JgKS
+         NpC07Wcvx2khnUyFEZAvQ++K2me3q6H3CMnc6nzWNRnCYrdCIqOe7QWLTWAXvqd4jIYF
+         LFaw==
+X-Gm-Message-State: AOAM533eMnZ3qE8XtCFrWx/9OFgq3cmsPDwgGy5dlkmcpH9mnvKbGAL/
+        +CXO0qlee3V0LK7Sd7QQPsA=
+X-Google-Smtp-Source: ABdhPJzJ3MNH0e799C4EyfIYGXPlv8MpqsHj1W82o7UK2kg8B+6d5wiC55W3gRJlcJojpC+oSGHieA==
+X-Received: by 2002:a6b:f813:: with SMTP id o19mr3161518ioh.49.1627548896275;
+        Thu, 29 Jul 2021 01:54:56 -0700 (PDT)
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id v16sm1474949ilh.70.2021.07.29.01.23.33
+        by smtp.gmail.com with ESMTPSA id k4sm1826601ior.55.2021.07.29.01.54.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 01:23:34 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 15DD927C0054;
-        Thu, 29 Jul 2021 04:23:33 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 29 Jul 2021 04:23:33 -0400
-X-ME-Sender: <xms:g2UCYaOMHtPBFzbNuTXv7qfmFECTDcT1KItt2E3MpSV-AhnZ0Ezb3Q>
-    <xme:g2UCYY9vlp6RE6ET7HHHgwp-UtqvNsN4NX12FqAD74f_D1qZO2KluMFgFxe97NMq9
-    Qbe_8-lvSYajJ7x4g>
-X-ME-Received: <xmr:g2UCYRRSfH-gZJt6v8ALoYQ37W0kvIF0CWkAFliB3ZzWWIuqkehUKTfphf0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheduucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghn
-    ghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnh
-    epvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedvgeejnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunh
-    domhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeej
-    keehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnh
-    grmhgv
-X-ME-Proxy: <xmx:g2UCYatWAEH5ZYYFwv0RsQIeeP5B4ki8peLKXTWdUzC5vT4LxgsD4Q>
-    <xmx:g2UCYSdN6mY9RTcXfPb9VK4QWKnbQXWHZlXUHMdXU-fDoS1dgJdhog>
-    <xmx:g2UCYe1_7sWuuaXDXjqrk0kD51NA169RA4TZeSZ-I6PvxYcQdBDSUg>
-    <xmx:hWUCYVspfXrByHZ6tGaja9PAa5ZVbvDXz9UxbZLurdO9HkSTvOAqASpZjbs>
+        Thu, 29 Jul 2021 01:54:55 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 66B7027C0054;
+        Thu, 29 Jul 2021 04:54:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 29 Jul 2021 04:54:54 -0400
+X-ME-Sender: <xms:3WwCYZ49cvqtm3VjLUU01p-Ub0ZNmJSRlkk12PW13tHh0TPSOashtA>
+    <xme:3WwCYW5Mnl9Q3Q2852XZqwG9_5jmGT-fP60YHCS6hb6KnOie4-J0laohbAjSpx78x
+    GWA_w3o1OMrCAJ6uw>
+X-ME-Received: <xmr:3WwCYQe32b8DjrCHaHo8Jb4Q7MC2tnXS6uzVSn7fROp74-lgChCxaezXy6tR6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddthecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:3WwCYSKkelvMCoZLdwkfbavYFU1xqBZlUopzMSmfcLJYosb5mid3rg>
+    <xmx:3WwCYdIySipw23VXuEqYF2aVHTTPBDbtogz-36Vhva4d3ifw6xHMng>
+    <xmx:3WwCYbzrviHNnx7RsDb-25Hb7rM7Y6S6hQ92p_7Q2A2ridCuFqHFyg>
+    <xmx:3mwCYW7U0YDv4uYplGb9Swet0TmPvdkdGfMpM4Yn5AXHtMLFSp8Zz1hj6wY>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 04:23:30 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 16:23:08 +0800
+ 29 Jul 2021 04:54:52 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 16:54:30 +0800
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -90,76 +90,57 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH rcu 10/18] srcutiny: Mark read-side data races
-Message-ID: <YQJlbEgaAGJvx3iN@boqun-archlinux>
+Subject: Re: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in
+ rcu_check_boost_fail()
+Message-ID: <YQJsxtypw7M/3XBD@boqun-archlinux>
 References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-10-paulmck@kernel.org>
+ <20210721202127.2129660-11-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721202127.2129660-10-paulmck@kernel.org>
+In-Reply-To: <20210721202127.2129660-11-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 01:21:18PM -0700, Paul E. McKenney wrote:
-> This commit marks some interrupt-induced read-side data races in
-> __srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
+On Wed, Jul 21, 2021 at 01:21:19PM -0700, Paul E. McKenney wrote:
+> Accesses to ->qsmask are normally protected by ->lock, but there is an
+> exception in the diagnostic code in rcu_check_boost_fail().  This commit
+> therefore applies data_race() to this access to avoid KCSAN complaining
+> about the C-language writes protected by ->lock.
 > 
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  include/linux/srcutiny.h | 8 ++++----
->  kernel/rcu/srcutiny.c    | 2 +-
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>  kernel/rcu/tree_stall.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
-> --- a/include/linux/srcutiny.h
-> +++ b/include/linux/srcutiny.h
-> @@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
->  	int idx;
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 42847caa3909b..6dd6c9aa3f757 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
 >  
->  	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> -	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> +	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
->  	return idx;
->  }
->  
-> @@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
->  {
->  	int idx;
->  
-> -	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> +	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
+>  	rcu_for_each_leaf_node(rnp) {
+>  		if (!cpup) {
+> -			if (READ_ONCE(rnp->qsmask)) {
+> +			if (data_race(READ_ONCE(rnp->qsmask))) {
 
-This looks very weird, any explanation why we want to put data_race() on
-a READ_ONCE()?
+If the write sides allow normal writes, i.e. allowing store tearing, the
+READ_ONCE() here could read incomplete writes, which could be anything
+basically? And we get the same result if we remove the READ_ONCE(),
+don't we? Yes, I know, without the READ_ONCE(), compilers can do
+anything to optimize on rnp->qsmask, but the end result is same or
+similar to reading incomplete writes (which is also a result by compiler
+optimization). So if we mark something as data_race(), **in theory**, it
+makes no difference with or without the READ_ONCE(), so I think maybe we
+can remove the READ_ONCE() here?
 
 Regards,
 Boqun
 
->  	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
->  		 tt, tf, idx,
-> -		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
-> -		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
-> +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
->  }
->  
->  #endif
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index 26344dc6483b0..a0ba2ed49bc61 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
->   */
->  void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
->  {
-> -	int newval = ssp->srcu_lock_nesting[idx] - 1;
-> +	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
->  
->  	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
->  	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
+>  				return false;
+>  			} else {
+>  				if (READ_ONCE(rnp->gp_tasks))
 > -- 
 > 2.31.1.189.g2e36527f23
 > 
