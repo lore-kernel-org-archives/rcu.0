@@ -2,304 +2,171 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F4166C4338F
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 18:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 120F5C4338F
+	for <rcu@archiver.kernel.org>; Fri, 30 Jul 2021 02:29:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D805560249
-	for <rcu@archiver.kernel.org>; Thu, 29 Jul 2021 18:42:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF0AA60F46
+	for <rcu@archiver.kernel.org>; Fri, 30 Jul 2021 02:29:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhG2SmY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Jul 2021 14:42:24 -0400
-Received: from mail.efficios.com ([167.114.26.124]:38974 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhG2SmX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:42:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0E1E936E8DF;
-        Thu, 29 Jul 2021 14:42:19 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kV2wwXWkCfWx; Thu, 29 Jul 2021 14:42:18 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 16CF436E94A;
-        Thu, 29 Jul 2021 14:42:18 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 16CF436E94A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627584138;
-        bh=jkmWXunynI7QN/jXYOuYfGgnD3ehJBGjrYFbBVY6tOY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=b47awVRbav7gBpEljUUjQV3ik4oa3+IxHHnPJ1AdstFqFgNdVxCcHtU9D3F1ANcCd
-         uHmK+EB88yShIvM2nmcaYK9vHDFFfaJZBuUGplen76hfuxIoZ/AFm4vgK/qEayhs3u
-         1ZbVnhiOTKxcvWI9iYsCgixh5tz+J5JjAKIWaa3bixbQijTBnDOsTJEesZ5WCkAFgG
-         P1x0v1Ug99p4H6mWgAzgSMDWwywM5S1WFk6W1U6CURoyQDcxjIPp527Y/KegPsS5Md
-         tTnh6gJB1x/tUOn9gny/U3fPFhEG1nWnY/1T9aA94xllSJj4YPcFwXfi5Kyqdk5McQ
-         HaLNWJIQenATA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id uiJIwXIIqIsf; Thu, 29 Jul 2021 14:42:18 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E72B936EB0F;
-        Thu, 29 Jul 2021 14:42:17 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 14:42:17 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <2059529299.18.1627584137760.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210729180517.GZ4397@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1> <874308613.9545.1627502582005.JavaMail.zimbra@efficios.com> <20210728202802.GL4397@paulmck-ThinkPad-P17-Gen-1> <1929727713.10248.1627569678176.JavaMail.zimbra@efficios.com> <20210729155713.GW4397@paulmck-ThinkPad-P17-Gen-1> <251687084.10484.1627580501645.JavaMail.zimbra@efficios.com> <20210729180517.GZ4397@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
- updates
+        id S235622AbhG3C3d (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Jul 2021 22:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhG3C3c (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Jul 2021 22:29:32 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C27C061765;
+        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id a14so7918005ila.1;
+        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QeHotJjJc3ECxkXaUSL9CsnihU3YDOrBs2SQnUF73R4=;
+        b=F1NVJbag9cOonSXYlxMIWsdTp1za0D+hChGTKIMF0ZPE9UHMOab7hWjaqkm//WH82x
+         s117SygQkZlF68srGFhpqOgKQ7n/20Gl9g/6u5e+tKPvW58wjl1DdClGFvdWUmw0g5M+
+         EHs96zwVbMEtV8/qON1tQrstpQdzPlsw1uGjbB2AQ3YjulyZO9qb6jg01cLSpthlzVz+
+         eeuoBcqrP7EDG54EuESGU08ar5WPte+7ZegDxAE7k/tDgqKePIoJVzQgYEv9LwD/Bnbo
+         devit/0n1UGNLzWeh2KJLZYgyjNACf3hjfjix+x/5HaLa1ChlYwfCOf+wke1ixGzEflZ
+         B8NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QeHotJjJc3ECxkXaUSL9CsnihU3YDOrBs2SQnUF73R4=;
+        b=VMf+LiUMUIOn8ZdVwzeAftdvOvRtz+lF5rR/RReM/ogM7oWDEDAcA4Qb6tVjugXSjl
+         mq0VwfxwKHIq0ZVov6agEMdNuJ8lcBVv6b/z6ZSwbv9Wj7RrM/BhveHQXcJJnRZb5XCN
+         +PQ3bSiCqul2neJus72+kyyJAfBJDoNl78mDRlgPDw84FyPrbB68IQIqcaAqaACr5Y5Q
+         R6NeiJ+63r2UQI+UL4+sxvwzwAVjr75JLLtM2refx54oZeR8W+GYkwTgFG7+78LE1mat
+         kNt+NDpAcKst15kLNRAVUwbhjorl9DFI0Q/nI1gmE3MVioH5KjXOzzDn04XIYXIMQXKw
+         n0VQ==
+X-Gm-Message-State: AOAM532yhZDXiJ1Exkaa2wtau9KeDqhCQ1g9JtwszXiPk4x1oLdms6xq
+        xIy0CNjS42WKw8Uu2Yp9fM0=
+X-Google-Smtp-Source: ABdhPJwUdbrwjaG+48nemknI5rQPG5KCH7rLSP/tMRXY6xez3t4sgVSCIqiv81EoNGjLihcJCcQF/Q==
+X-Received: by 2002:a92:d10c:: with SMTP id a12mr217675ilb.100.1627612167192;
+        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id t11sm73693ilp.66.2021.07.29.19.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 19:29:26 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7174427C0054;
+        Thu, 29 Jul 2021 22:29:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 29 Jul 2021 22:29:25 -0400
+X-ME-Sender: <xms:A2QDYVOLowlpEvRrV9hfo1HR897GHZGYYowzpUfJy2Nf_m6s9vADEg>
+    <xme:A2QDYX8ASby-OVReSGusaZExFSUqOe7mEB9-PjJ-VK8WsBFaQ08560VKCDAyE7P9u
+    D04PhxmkrYPISaUrQ>
+X-ME-Received: <xmr:A2QDYUSo-09UGMR4658vtKMNFhY_srdLNjd2kzG-xYSBNuhWpQs66KI3xNUhAw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:A2QDYRsp54LXuBVOtWs1cWT3Ycf2QdfvEI4yBXk6rGj88xGv4HzBUQ>
+    <xmx:A2QDYdeGgvYKNvbCpwIv79iMaKSCRG3wecKLF-CcOk6cUYzTgn-kFA>
+    <xmx:A2QDYd0v03t65b6SqVcNklhMCJsAOvmkyP3IGlmbg_Yt7HTvdO-brg>
+    <xmx:BWQDYYuBcnjzo_-HBGfzwBgJJDiorvyj-_0R2MgMoqt6eSjnSqBNzIlsrUk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 22:29:23 -0400 (EDT)
+Date:   Fri, 30 Jul 2021 10:28:58 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in
+ rcu_check_boost_fail()
+Message-ID: <YQNj6v2o5hG/MoXZ@boqun-archlinux>
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-11-paulmck@kernel.org>
+ <YQJsxtypw7M/3XBD@boqun-archlinux>
+ <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Weaken ->dynticks accesses and updates
-Thread-Index: LAKi/uQQWmj1FoktMrBXq29taY5DLg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
------ On Jul 29, 2021, at 2:05 PM, paulmck paulmck@kernel.org wrote:
-
-> On Thu, Jul 29, 2021 at 01:41:41PM -0400, Mathieu Desnoyers wrote:
->> ----- On Jul 29, 2021, at 11:57 AM, paulmck paulmck@kernel.org wrote:
->> 
->> > On Thu, Jul 29, 2021 at 10:41:18AM -0400, Mathieu Desnoyers wrote:
->> >> ----- On Jul 28, 2021, at 4:28 PM, paulmck paulmck@kernel.org wrote:
->> >> 
->> >> > On Wed, Jul 28, 2021 at 04:03:02PM -0400, Mathieu Desnoyers wrote:
->> >> >> ----- On Jul 28, 2021, at 3:45 PM, paulmck paulmck@kernel.org wrote:
->> >> >> [...]
->> >> >> > 
->> >> >> > And how about like this?
->> >> >> > 
->> >> >> >						Thanx, Paul
->> >> >> > 
->> >> >> > ------------------------------------------------------------------------
->> >> >> > 
->> >> >> > commit cb8914dcc6443cca15ce48d937a93c0dfdb114d3
->> >> >> > Author: Paul E. McKenney <paulmck@kernel.org>
->> >> >> > Date:   Wed Jul 28 12:38:42 2021 -0700
->> >> >> > 
->> >> >> >    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->> >> >> >    
->> >> >> >    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->> >> >> >    counter of an incoming CPU if required.  It is currently is invoked
->> >> >> 
->> >> >> "is currently is" -> "is currently"
->> >> > 
->> >> > Good catch, fixed!
->> >> > 
->> >> >> >    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->> >> >> >    running, and thus on some other CPU.  This makes the per-CPU accesses in
->> >> >> >    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->> >> >> >    the running CPU cannot possibly be in dyntick-idle mode, which means
->> >> >> >    that rcu_dynticks_eqs_online() never has any effect.  One could argue
->> >> >> >    that this means that rcu_dynticks_eqs_online() is unnecessary, however,
->> >> >> >    removing it makes the CPU-online process vulnerable to slight changes
->> >> >> >    in the CPU-offline process.
->> >> >> 
->> >> >> Why favor moving this from the prepare_cpu to the cpu_starting hotplug step,
->> >> >> rather than using the target cpu's rdp from rcutree_prepare_cpu ? Maybe there
->> >> >> was a good reason for having this very early in the prepare_cpu step ?
->> >> > 
->> >> > Some years back, there was a good reason. This reason was that
->> >> > rcutree_prepare_cpu() marked the CPU as being online from an RCU
->> >> > viewpoint.  But now rcu_cpu_starting() is the one that marks the CPU as
->> >> > being online, so the ->dynticks check can be deferred to this function.
->> >> > 
->> >> >> Also, the commit message refers to this bug as having no effect because the
->> >> >> running CPU cannot possibly be in dyntick-idle mode. I understand that calling
->> >> >> this function was indeed effect-less, but then why is it OK for the CPU coming
->> >> >> online to skip this call in the first place ? This commit message hints at
->> >> >> "slight changes in the CPU-offline process" which could break it, but therer is
->> >> >> no explanation of what makes this not an actual bug fix.
->> >> > 
->> >> > Because rcutorture would not have suffered in silence had this
->> >> > situation ever arisen.
->> >> 
->> >> Testing can usually prove the presence of a bug, but it's rather tricky to prove
->> >> the absence of bug.
->> > 
->> > In general, true enough.
->> > 
->> > But in this particular case, a WARN would have deterministically triggered
->> > the very next time that this CPU found its way either to the idle loop
->> > or to nohz_full usermode execution.
->> > 
->> >> > I have updated the commit log to answer these questions as shown
->> >> > below.  Thoughts?
->> >> 
->> >> I'm still concerned about one scenario wrt moving rcu_dynticks_eqs_online()
->> >> from rcutree_prepare_cpu to rcu_cpu_starting. What happens if an interrupt
->> >> handler, or a NMI handler, nests early over the CPU-online startup code ?
->> >> AFAIU, this interrupt handler could contain RCU read-side critical sections,
->> >> but if the eqs state does not show the CPU as "online", I wonder whether it
->> >> will work as expected.
->> > 
->> > Interrupts are still disabled at this point in the onlining process,
->> > my _irqsave() locks notwithstanding.
->> > 
->> > You are right about NMI handlers, but there would be much more damage
->> > from an early NMI handler than mere RCU issues.  And this can be handled
->> > as described in the next paragraph.
->> > 
->> > Now, there are architectures (including x86) that need RCU readers
->> > before notify_cpu_starting() time (which is where rcu_cpu_starting()
->> > is invoked by default, and those architectures can (and do) simply
->> > place a call to rcu_cpu_starting() at an earlier appropriate point in
->> > the architecture-specific CPU-bringup code.  And this is in fact the
->> > reason for the ->cpu_started check at the beginning of rcu_cpu_starting().
->> > So an architecture using NMIs early in the CPU-bringup code should
->> > invoke rcu_cpu_starting() before enabling NMIs.
->> > 
->> > So why not just be safe and mark the CPU online early in the process?
->> > 
->> > Because that could result in unbounded grace periods and strange
->> > deadlocks.  These deadlocks were broken earlier by code that assumed that
->> > a CPU could not possibly take more than one jiffy to come online, but that
->> > assumption is clearly broken on todays systems, even the bare-metal ones.
->> > 
->> > In theory, I could change the raw_spin_lock_irqsave_rcu_node() to
->> > raw_spin_lock_rcu_node(), rely on the lockdep_assert_irqs_disabled()
->> > in the matching raw_spin_unlock_rcu_node(), and ditch the "flags"
->> > local variable, but rcu_report_qs_rnp() needs that "flags" argument.
->> > 
->> > OK, I guess one approach is to get the "flags" value from local_save_flags()
->> > and get rid of the _irqsave and _irq restore.  Assuming lockdep is
->> > functional that early in CPU bringup.
->> > 
->> > But would that really be better than status quo?
->> 
->> I'm OK with your explanation about the fact that interrupts and NMIs scenarios
->> are correctly handled, so moving this call from prepare_cpu to cpu_starting
->> is fine with me.
+On Thu, Jul 29, 2021 at 07:03:17AM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 29, 2021 at 04:54:30PM +0800, Boqun Feng wrote:
+> > On Wed, Jul 21, 2021 at 01:21:19PM -0700, Paul E. McKenney wrote:
+> > > Accesses to ->qsmask are normally protected by ->lock, but there is an
+> > > exception in the diagnostic code in rcu_check_boost_fail().  This commit
+> > > therefore applies data_race() to this access to avoid KCSAN complaining
+> > > about the C-language writes protected by ->lock.
+> > > 
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  kernel/rcu/tree_stall.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > > index 42847caa3909b..6dd6c9aa3f757 100644
+> > > --- a/kernel/rcu/tree_stall.h
+> > > +++ b/kernel/rcu/tree_stall.h
+> > > @@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+> > >  
+> > >  	rcu_for_each_leaf_node(rnp) {
+> > >  		if (!cpup) {
+> > > -			if (READ_ONCE(rnp->qsmask)) {
+> > > +			if (data_race(READ_ONCE(rnp->qsmask))) {
+> > 
+> > If the write sides allow normal writes, i.e. allowing store tearing, the
+> > READ_ONCE() here could read incomplete writes, which could be anything
+> > basically? And we get the same result if we remove the READ_ONCE(),
+> > don't we? Yes, I know, without the READ_ONCE(), compilers can do
+> > anything to optimize on rnp->qsmask, but the end result is same or
+> > similar to reading incomplete writes (which is also a result by compiler
+> > optimization). So if we mark something as data_race(), **in theory**, it
+> > makes no difference with or without the READ_ONCE(), so I think maybe we
+> > can remove the READ_ONCE() here?
 > 
-> I will add a "Link:" to this conversation.
+> In this particular case, perhaps.  But there is also the possibility
+> of ASSERT_EXCLUSIVE_WRITER() in conjunction with WRITE_ONCE(), and
+> data_race(READ_ONCE(()) handles all such cases properly.
 > 
-> May I also add your "Acked-by" or similar?
-
-Of course, feel free to add my Acked-by.
-
-Thanks,
-
-Mathieu
-
+> Again, the point here is to prevent the compiler from messing with
+> the load in strange and unpredictable ways while also telling KCSAN
+> that this particular read should not be considered to be part of the
+> concurrent algorithm.
 > 
->							Thanx, Paul
-> 
->> Thanks,
->> 
->> Mathieu
->> 
->> > 
->> >							Thanx, Paul
->> > 
->> >> Thanks,
->> >> 
->> >> Mathieu
->> >> 
->> >> > 
->> >> >							Thanx, Paul
->> >> > 
->> >> > ------------------------------------------------------------------------
->> >> > 
->> >> > commit 516c8c4cc6fce62539f7e0182739812db4591c1d
->> >> > Author: Paul E. McKenney <paulmck@kernel.org>
->> >> > Date:   Wed Jul 28 12:38:42 2021 -0700
->> >> > 
->> >> >    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->> >> >    
->> >> >    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->> >> >    counter of an incoming CPU when required.  It is currently invoked
->> >> >    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->> >> >    running, and thus on some other CPU.  This makes the per-CPU accesses in
->> >> >    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->> >> >    the running CPU cannot possibly be in dyntick-idle mode, which means
->> >> >    that rcu_dynticks_eqs_online() never has any effect.
->> >> >    
->> >> >    It is currently OK for rcu_dynticks_eqs_online() to have no effect, but
->> >> >    only because the CPU-offline process just happens to leave ->dynticks in
->> >> >    the correct state.  After all, if ->dynticks were in the wrong state on a
->> >> >    just-onlined CPU, rcutorture would complain bitterly the next time that
->> >> >    CPU went idle, at least in kernels built with CONFIG_RCU_EQS_DEBUG=y,
->> >> >    for example, those built by rcutorture scenario TREE04.  One could
->> >> >    argue that this means that rcu_dynticks_eqs_online() is unnecessary,
->> >> >    however, removing it would make the CPU-online process vulnerable to
->> >> >    slight changes in the CPU-offline process.
->> >> >    
->> >> >    One could also ask why it is safe to move the rcu_dynticks_eqs_online()
->> >> >    call so late in the CPU-online process.  Indeed, there was a time when it
->> >> >    would not have been safe, which does much to explain its current location.
->> >> >    However, the marking of a CPU as online from an RCU perspective has long
->> >> >    since moved from rcutree_prepare_cpu() to rcu_cpu_starting(), and all
->> >> >    that is required is that ->dynticks be set correctly by the time that
->> >> >    the CPU is marked as online from an RCU perspective.  After all, the RCU
->> >> >    grace-period kthread does not check to see if offline CPUs are also idle.
->> >> >    (In case you were curious, this is one reason why there is quiescent-state
->> >> >    reporting as part of the offlining process.)
->> >> >    
->> >> >    This commit therefore moves the call to rcu_dynticks_eqs_online() from
->> >> >    rcutree_prepare_cpu() to rcu_cpu_starting(), this latter being guaranteed
->> >> >    to be running on the incoming CPU.  The call to this function must of
->> >> >    course be placed before this rcu_cpu_starting() announces this CPU's
->> >> >    presence to RCU.
->> >> >    
->> >> >    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> >> >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->> >> > 
->> >> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> >> > index 0172a5fd6d8de..aa00babdaf544 100644
->> >> > --- a/kernel/rcu/tree.c
->> >> > +++ b/kernel/rcu/tree.c
->> >> > @@ -4129,7 +4129,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
->> >> > 	rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
->> >> > 	rdp->blimit = blimit;
->> >> > 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
->> >> > -	rcu_dynticks_eqs_online();
->> >> > 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
->> >> > 
->> >> > 	/*
->> >> > @@ -4249,6 +4248,7 @@ void rcu_cpu_starting(unsigned int cpu)
->> >> > 	mask = rdp->grpmask;
->> >> > 	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
->> >> > 	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
->> >> > +	rcu_dynticks_eqs_online();
->> >> > 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
->> >> > 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->> >> >  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
->> >> 
->> >> --
->> >> Mathieu Desnoyers
->> >> EfficiOS Inc.
->> > > http://www.efficios.com
->> 
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
-> > http://www.efficios.com
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thanks for explaining this ;-)
+
+I guess I'm just a little concerned that things may end up with using
+data_race(READ_ONCE()) everywhere instead of data_race(), because who
+doesn't want his/her racy code to be 1) not reported by KCSan (using
+data_race()), and 2) less racy (using READ_ONCE())? ;-)
+
+Regards,
+Boqun
+
+> 							Thanx, Paul
+> 
+> > Regards,
+> > Boqun
+> > 
+> > >  				return false;
+> > >  			} else {
+> > >  				if (READ_ONCE(rnp->gp_tasks))
+> > > -- 
+> > > 2.31.1.189.g2e36527f23
+> > > 
