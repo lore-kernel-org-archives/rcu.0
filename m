@@ -2,276 +2,165 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_RED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62693C4338F
-	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 15:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CB28C4320A
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 15:52:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49B6B60EC0
-	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 15:31:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32FA860F93
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 15:52:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236930AbhHCPb1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Aug 2021 11:31:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51468 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236944AbhHCPbJ (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 3 Aug 2021 11:31:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628004658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ef5H/YzWjPRhpmEEex0YbOyxkXYC0ZJIajn0GIxKBlE=;
-        b=TGpgZpoF2p4ZZ1nHdZwdhFhp9rgf8IBnwlL2lY4V8cqSlW/FAV3p6QRo0Fd9OZT2iZNVk3
-        iW4M2FPOIpXU3dhApptJIa4+DHHKVcNN3gkpaW8TbMzxtP2konjJk5XMiwcv1G0RKEuxzl
-        zSsRitvxOKzRB18S6n5z/3l8YJZJKGA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-_69iDMBMOLCoi0kPRRY2Qw-1; Tue, 03 Aug 2021 11:30:44 -0400
-X-MC-Unique: _69iDMBMOLCoi0kPRRY2Qw-1
-Received: by mail-ed1-f72.google.com with SMTP id b13-20020a056402278db029039c013d5b80so10672145ede.7
-        for <rcu@vger.kernel.org>; Tue, 03 Aug 2021 08:30:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ef5H/YzWjPRhpmEEex0YbOyxkXYC0ZJIajn0GIxKBlE=;
-        b=J0aZecf82W2a+sxLq5RIbvGo+IZp+/cBphRNsNIsfxaw7nA6HjUTAGnQJ9lzfYIk0D
-         jWr2tgCuf1f3DSdFi2qqcrMkPncXsJxzc8LXgEqzQwHRPoYGicvbPvxFHAVbQO4jr9Kt
-         jSuXeZ4HBncEUR8XgItFtGksk/5dSHt0WB3jLDnUEB2qrRjSD2+CznPPBlV0UU3hqdAb
-         P8V/6Khg2WumV+mMTLptF1PMrsiurAOz7kAimk69WNqOouAUAeNWQU1+CMrbqzlMPrNB
-         IF76ZlOq0fQVnwIg4gMqbZx5L/qnKtXVg3c2Gr983vps/txXvZULpdT4DBHpLCoG7EpC
-         OWPA==
-X-Gm-Message-State: AOAM531LPHRnokXHx4zvRmVw0EylloCW8ZbgsrgPPhdyowiU8Bk1L88F
-        /PhndSc/S5nTuNboH19GXaRpvsUZ+1kl4xoqS6Q+y1bt4OzIKN9AewZKJqhjTCuovBIMeMMefB+
-        wWp+FGWu4JWgB
-X-Received: by 2002:a17:906:1da1:: with SMTP id u1mr20660409ejh.307.1628004643325;
-        Tue, 03 Aug 2021 08:30:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxf6rV1ZatT2GQ6a3+XcXIUCr6rut+vBVs6RfI7E2ACDBMkrHwlwXE3OZTZ7a4m4dn8RViNBQ==
-X-Received: by 2002:a17:906:1da1:: with SMTP id u1mr20660382ejh.307.1628004643075;
-        Tue, 03 Aug 2021 08:30:43 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b17sm4094598edd.27.2021.08.03.08.30.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 08:30:42 -0700 (PDT)
-Subject: Re: [PATCH 00/38] Replace deprecated CPU-hotplug
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ben Segall <bsegall@google.com>,
-        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        coresight@lists.linaro.org,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gonglei <arei.gonglei@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jiri Kosina <jikos@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>, kvm-ppc@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Len Brown <lenb@kernel.org>, Len Brown <len.brown@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-raid@vger.kernel.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Namhyung Kim <namhyung@kernel.org>, netdev@vger.kernel.org,
-        nouveau@lists.freedesktop.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        platform-driver-x86@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org
-References: <20210803141621.780504-1-bigeasy@linutronix.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <83dc5dfd-1ed0-f428-826f-fb819911fc89@redhat.com>
-Date:   Tue, 3 Aug 2021 17:30:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237020AbhHCPwi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Aug 2021 11:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237050AbhHCPwi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Aug 2021 11:52:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB5860EE8;
+        Tue,  3 Aug 2021 15:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628005946;
+        bh=i7hDjTR9h/oiAZYkg8AT4x1Ck7tSiz+tHAzh0re3f2w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JSSEnCKReSKp1IrYRMZgcvkUGC3F4Ev3olZKIfLBogoro5DnCwMdmDv4s9OhKwiFO
+         xqokdeOCS2CQYnYyCo3fnLihoGQEF3pCAj7CJcx1sjGxCg5Q8DXQbybFGcFCkB1eXK
+         oH2Si/2833mXqvMB3QLFtu4EHgI2ECJMyL/QgnUfr5cIX6hmfj1iPnmGk9xZbaj1oI
+         if73z6EyJ5nBeoBaJiJu9fY9j/hUue2rSS7T/5PuURuq6pM5QmnZ4l5sSfyDSdEZiH
+         aRQTHk8seVtBdnNx3DndS2/g6w/hNX73ihWw7tkIqzLFZYI1AZjibLvyL3QrZU31ba
+         Rt2b6rvR8kCuA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 93E8B5C04D4; Tue,  3 Aug 2021 08:52:26 -0700 (PDT)
+Date:   Tue, 3 Aug 2021 08:52:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Yanfei Xu <yanfei.xu@windriver.com>
+Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
+ non-release of rcu_node ->lock
+Message-ID: <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-2-paulmck@kernel.org>
+ <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210803141621.780504-1-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Sebastien,
-
-On 8/3/21 4:15 PM, Sebastian Andrzej Siewior wrote:
-> This is a tree wide replacement of the deprecated CPU hotplug functions
-> which are only wrappers around the actual functions.
+On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
+> Hi
 > 
-> Each patch is independent and can be picked up by the relevant maintainer.
-
-Ok; and I take it that then also is the plan for merging these ?
-
-FWIW I'm fine with the drivers/platform/x86 patch going upstream
-through some other tree if its easier to keep the set together ...
-
-Regards,
-
-Hans
-
-
-
+> On 07/21/21 13:21, Paul E. McKenney wrote:
+> > From: Yanfei Xu <yanfei.xu@windriver.com>
+> > 
+> > If rcu_print_task_stall() is invoked on an rcu_node structure that does
+> > not contain any tasks blocking the current grace period, it takes an
+> > early exit that fails to release that rcu_node structure's lock.  This
+> > results in a self-deadlock, which is detected by lockdep.
+> > 
+> > To reproduce this bug:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
+> > 
+> > This will also result in other complaints, including RCU's scheduler
+> > hook complaining about blocking rather than preemption and an rcutorture
+> > writer stall.
+> > 
+> > Only a partial RCU CPU stall warning message will be printed because of
+> > the self-deadlock.
+> > 
+> > This commit therefore releases the lock on the rcu_print_task_stall()
+> > function's early exit path.
+> > 
+> > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
+> > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
 > 
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Amit Kucheria <amitk@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: cgroups@vger.kernel.org
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Davidlohr Bueso <dave@stgolabs.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Gonglei <arei.gonglei@huawei.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Julian Wiedmann <jwi@linux.ibm.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Karol Herbst <karolherbst@gmail.com>
-> Cc: Karsten Graul <kgraul@linux.ibm.com>
-> Cc: kvm-ppc@vger.kernel.org
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: Len Brown <len.brown@intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-edac@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-raid@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: live-patching@vger.kernel.org
-> Cc: Mark Gross <mgross@linux.intel.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mike Travis <mike.travis@hpe.com>
-> Cc: Miroslav Benes <mbenes@suse.cz>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: nouveau@lists.freedesktop.org
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Pekka Paalanen <ppaalanen@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Cc: rcu@vger.kernel.org
-> Cc: Robin Holt <robinmholt@gmail.com>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steffen Klassert <steffen.klassert@secunet.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Steve Wahl <steve.wahl@hpe.com>
-> Cc: Stuart Hayes <stuart.w.hayes@gmail.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: x86@kernel.org
-> Cc: Zefan Li <lizefan.x@bytedance.com>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> 
-> Sebastian
-> 
+> We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
+> relevant here? Trying to apply the patches and test, but the problem is tricky
+> to reproduce so thought worth asking first.
 
+Looks like the relevant symptoms to me, so I suggest trying this series
+from -rcu:
+
+8baded711edc ("rcu: Fix to include first blocked task in stall warning")
+f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
+
+							Thanx, Paul
+
+> 	[ 1010.244334] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:"}
+> 	[ 1010.250538] rcu: \t2-...!: (42 GPs behind) idle=884/0/0x0 softirq=1646/1647 fqs=0  (false positive?)"}
+> 	[ 1010.259746] rcu: \t3-...!: (1 ticks this GP) idle=134/0/0x0 softirq=3205/3205 fqs=0  (false positive?)"}
+> 	[ 1010.269013] \t(detected by 4, t=6502 jiffies, g=9121, q=110)"}
+> 	[ 1010.274621] "}
+> 	[ 1010.276115] ============================================"}
+> 	[ 1010.281438] WARNING: possible recursive locking detected"}
+> 	[ 1010.286763] 5.10.43-g92fdbb553f50-ab979 #1 Not tainted"}
+> 	[ 1010.291912] --------------------------------------------"}
+> 	[ 1010.297235] swapper/4/0 is trying to acquire lock:"}
+> 	[ 1010.302037] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x60/0xf8"}
+> 	[ 1010.310183] "}
+> 	[ 1010.310183] but task is already holding lock:"}
+> 	[ 1010.316028] ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
+> 	[ 1010.324341] "}
+> 	[ 1010.324341] other info that might help us debug this:"}
+> 	[ 1010.330882]  Possible unsafe locking scenario:"}
+> 	[ 1010.330882] "}
+> 	[ 1010.336813]        CPU0"}
+> 	[ 1010.339263]        ----"}
+> 	[ 1010.341713]   lock(rcu_node_0);"}
+> 	[ 1010.344872]   lock(rcu_node_0);"}
+> 	[ 1010.348029] "}
+> 	[ 1010.348029]  *** DEADLOCK ***"}
+> 	[ 1010.348029] "}
+> 	[ 1010.353961]  May be due to missing lock nesting notation"}
+> 	[ 1010.353961] "}
+> 	[ 1010.360764] 1 lock held by swapper/4/0:"}
+> 	[ 1010.364607]  #0: ffff8000121fe618 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x658/0xca0"}
+> 	[ 1010.373359] "}
+> 	[ 1010.373359] stack backtrace:"}
+> 	[ 1010.377729] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.10.43-g92fdbb553f50-ab979 #1"}
+> 	[ 1010.385489] Hardware name: ARM Juno development board (r0) (DT)"}
+> 	[ 1010.391421] Call trace:"}
+> 	[ 1010.393877]  dump_backtrace+0x0/0x1c0"}
+> 	[ 1010.397551]  show_stack+0x24/0x30"}
+> 	[ 1010.400877]  dump_stack_lvl+0xf4/0x130"}
+> 	[ 1010.404636]  dump_stack+0x18/0x58"}
+> 	[ 1010.407962]  __lock_acquire+0xa18/0x1ffc"}
+> 	[ 1010.411895]  lock_acquire.part.0+0xc8/0x30c"}
+> 	[ 1010.416089]  lock_acquire+0x68/0x84"}
+> 	[ 1010.419589]  _raw_spin_lock_irqsave+0x84/0x158"}
+> 	[ 1010.424045]  rcu_dump_cpu_stacks+0x60/0xf8"}
+> 	[ 1010.428154]  rcu_sched_clock_irq+0x8d8/0xca0"}
+> 	[ 1010.432435]  update_process_times+0x6c/0xb0"}
+> 	[ 1010.436632]  tick_sched_handle+0x3c/0x60"}
+> 	[ 1010.440566]  tick_sched_timer+0x58/0xb0"}
+> 	[ 1010.444412]  __hrtimer_run_queues+0x1a4/0x5b0"}
+> 	[ 1010.448781]  hrtimer_interrupt+0xf4/0x2cc"}
+> 	[ 1010.452803]  arch_timer_handler_phys+0x40/0x50"}
+> 	[ 1010.457260]  handle_percpu_devid_irq+0x98/0x180"}
+> 	[ 1010.461803]  __handle_domain_irq+0x80/0xec"}
+> 	[ 1010.465911]  gic_handle_irq+0x5c/0xf0"}
+> 	[ 1010.469583]  el1_irq+0xcc/0x180"}
+> 	[ 1010.472735]  cpuidle_enter_state+0xe8/0x350"}
+> 	[ 1010.476929]  cpuidle_enter+0x44/0x60"}
+> 	[ 1010.480515]  do_idle+0x25c/0x2f0"}
+> 	[ 1010.483751]  cpu_startup_entry+0x34/0x8c"}
+> 	[ 1010.487687]  secondary_start_kernel+0x154/0x190"}
+> 
+> 
+> Thanks
+> 
+> --
+> Qais Yousef
