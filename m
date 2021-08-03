@@ -2,202 +2,251 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_RED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32694C4338F
-	for <rcu@archiver.kernel.org>; Fri, 30 Jul 2021 17:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09310C4320E
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 14:16:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0CD5560F46
-	for <rcu@archiver.kernel.org>; Fri, 30 Jul 2021 17:18:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D2E5A6054F
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 14:16:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhG3RSG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Jul 2021 13:18:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhG3RSF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:18:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A979A60E93;
-        Fri, 30 Jul 2021 17:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627665480;
-        bh=DRo2yjn7ZjhRYqZjBVZhU9wmXQ2e5A7P6sYXN+gy2Xg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=N17uVNCC1eq49CzR7MVriN7QvmU63JmO5hqP3lk3ENc7HGl7UOTrzM/J3BB1/0CNA
-         XwlWfguUdZfibXW1vjVTBbZEnAXJxcEK4uRvY4CR86XIbkZlHe9jQ8NZB8FNjRHpL7
-         Ox7KkqAYH6e97+hh+IjgYmolXJKHk/igJTHSXYa6D9/84Qroe7/crM7VCg6Lr2fsWo
-         QRyZpL9JLkMivb1XoKOCDij/lN6PvhW68wPRE97hGcc34d4qI0/gpXAeoTxaSafOn6
-         fegTw0jArKf/Q3mzD2EDvOIDGItEtpk0ae54QwdCHOYWcc9G3adFut8WWK9PXX+9mI
-         IqzhSBwFflGcg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 72B6E5C06D1; Fri, 30 Jul 2021 10:18:00 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 10:18:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-Message-ID: <20210730171800.GH4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org>
- <YQJfjFv8lOnkUkhs@boqun-archlinux>
- <20210729105331.GA301667@lothringen>
- <YQOUmZmAZQIhjEWC@boqun-archlinux>
+        id S236475AbhHCOQw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Aug 2021 10:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236205AbhHCOQs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Aug 2021 10:16:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3671AC061757;
+        Tue,  3 Aug 2021 07:16:37 -0700 (PDT)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628000193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qkfc7lxCqn4p3B20wjfjiLsyLpuZIa2kIlbDitBY8sw=;
+        b=fStBYY9cDOofnMkMc6JUcZVYcNWx/eg2N05Pb/o7ef6JJTcTG48t+GioJgBl+eXKMJGEgi
+        TVCeDR+EwHJjgdulnpLwVy12sseYnaixefw5o14vk+2PAOm/LUlJHLssIOZ+nJyuRxaM3r
+        fCCG5ZeBAdz/Q3kIzOJQstWW7ST+mFehWQwEJk+hKZizcoepZD/zOgz+f7GO7oZ2MtK2DY
+        wm7slubFVtLqvtY6o7cEl9ZIw3mvJ35go7HuaiPxyi+ESejsT+e0qaP6D0Fis4EUqsKcRu
+        JGNGT0BYA9PAUGHVfsb3cVOtZwFCr59O6V6ObVy+T4OF395mknhLgwpLJFiGUg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628000193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qkfc7lxCqn4p3B20wjfjiLsyLpuZIa2kIlbDitBY8sw=;
+        b=pGmFmcj1u+vX59p9gWCClfCslb9a1WxY2Pwa8q+HwkfzdAY6X/r9JgYaxIXaCJOpPNDW2W
+        rceMZSe2cSwuwVDA==
+To:     linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ben Segall <bsegall@google.com>,
+        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        coresight@lists.linaro.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jiri Kosina <jikos@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>, kvm-ppc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>, Len Brown <len.brown@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Namhyung Kim <namhyung@kernel.org>, netdev@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        platform-driver-x86@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
+        Robin Holt <robinmholt@gmail.com>, Song Liu <song@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH 00/38] Replace deprecated CPU-hotplug
+Date:   Tue,  3 Aug 2021 16:15:43 +0200
+Message-Id: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQOUmZmAZQIhjEWC@boqun-archlinux>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 01:56:41PM +0800, Boqun Feng wrote:
-> On Thu, Jul 29, 2021 at 12:53:31PM +0200, Frederic Weisbecker wrote:
-> > On Thu, Jul 29, 2021 at 03:58:04PM +0800, Boqun Feng wrote:
-> > > > The following litmus test, also adapted from the one supplied off-list
-> > > > by Frederic Weisbecker, models the RCU grace-period kthread detecting
-> > > > a non-idle CPU that is concurrently transitioning to idle:
-> > > > 
-> > > > 	C dynticks-into-idle
-> > > > 
-> > > > 	{
-> > > > 		DYNTICKS=1; (* Initially non-idle. *)
-> > > > 	}
-> > > > 
-> > > > 	P0(int *X, int *DYNTICKS)
-> > > > 	{
-> > > > 		int dynticks;
-> > > > 
-> > > > 		// Non-idle.
-> > > > 		WRITE_ONCE(*X, 1);
-> > > > 		dynticks = READ_ONCE(*DYNTICKS);
-> > > > 		smp_store_release(DYNTICKS, dynticks + 1);
-> > > > 		smp_mb();
-> > > 
-> > > this smp_mb() is not needed, as we rely on the release-acquire pair to
-> > > provide the ordering.
-> > > 
-> > > This means that if we use different implementations (one w/ smp_mb(),
-> > > another w/o) rcu_dynticks_inc() for idle-to-nonidle and nonidle-to-idle,
-> > > we could save a smp_mb(). Thoughts?
-> > 
-> > That's exactly what I wanted to propose but everybody was sober. Namely order
-> > only the RCU read side critical sections before/after idle together:
-> > 
-> >      READ side critical section
-> >      //enter idle
-> >      //exit idle
-> >      smp_mb()
-> >      READ side critical section
-> > 
-> > instead of ordering the RCU read side critical section before idle - with the RCU
-> > idle extended quiescent state - with the RCU read side critical section after idle:
-> > 
-> >      READ side critical section
-> >      //enter idle
-> >      smp_mb();
-> >      //exit idle
-> >      smp_mb()
-> >      READ side critical section
-> > 
-> > So the side effect now is that if the write side waits for the reader to
-> > report a quiescent state and scans its dynticks state and see it's not yet in
-> > RCU idle mode, then later on when the read side enters in RCU idle mode we
-> > expect it to see the write side updates.
-> > But after the barrier removal the reader will only see the write side update
-> > once we exit RCU idle mode.
-> > 
-> > So the following may happen:
-> > 
-> > 	P0(int *X, int *Y, int *DYNTICKS)
-> > 	{
-> > 		int y;
-> > 
-> > 		WRITE_ONCE(*X, 1);
-> > 		smp_store_release(DYNTICKS, 1); // rcu_eqs_enter
-> > 		//smp_mb() not there anymore
-> > 		y = READ_ONCE(*Y);
-> > 		smp_store_release(DYNTICKS, 2); // rcu_eqs_exit()
-> > 		smp_mb();
-> > 	}
-> > 
-> > 	P1(int *X, int *Y, int *DYNTICKS)
-> > 	{
-> > 		int x;
-> > 		int dynticks;
-> > 		
-> > 		WRITE_ONCE(*Y, 1);
-> > 		smp_mb();
-> > 		dynticks = smp_load_acquire(DYNTICKS);
-> > 		x = READ_ONCE(*X);
-> > 	}
-> > 
-> > 	exists (1:x=0 /\ 0:y=0)
-> > 
-> 
-> Thanks for the detailed explanation ;-)
-> 
-> > Theoretically it shouldn't matter because the RCU idle mode isn't
-> > supposed to perform RCU reads. But theoretically again once a CPU
-> 
-> Right, in LOCKDEP=y kernel, rcu_read_lock_held() requires
-> rcu_is_watching(), so rcu_dereference() is not allowed in idle mode,
-> unless using RCU_NONIDLE() or rcu_irq_enter_irqson() to temporarily exit
-> the idle mode.
-> 
-> > has reported a quiescent state, any further read is expected to see
-> > the latest updates from the write side.
-> 
-> Yes, but in your above case, doesn't P0 already reach to a quiescent
-> state even before WRITE_ONCE()? IOW, that case is similar to the
-> following:
-> 
-> 	P0(int *X, int *Y)
-> 	{
-> 		// in QS
-> 
-> 		WRITE_ONCE(*X, 1);
-> 		y = READ_ONCE(*Y);
-> 	}
-> 
-> 	P1(int *X, int *Y)
-> 	{
-> 		WRITE_ONCE(*Y, 1);
-> 		synchronize_rcu();
-> 		x = READ_ONCE(*X);
-> 	}
-> 
-> 	exists (1:x=0 /\ 0:y=0)
-> 
-> And RCU doesn't guarantee the READ_ONCE() on P0 sees the WRITE_ONCE() on
-> P1.
-> 
-> > 
-> > So I don't know what to think. In practice I believe it's not a big deal
-> > because RCU idle mode code is usually a fragile path that just handles
-> > cpuidle code to put the CPU in/out low power mode. But what about dragons...
-> 
-> My current thought is that if the cpuidle code requires some ordering
-> with synchronize_rcu(), RCU_NONIDLE() should be used, and ordering can
-> be guaranteed in this case (RCU_NONIDLE() has a rcu_eqs_exit() in it).
-> Otherwise, it's a bug.
-> 
-> So looks like we can drop that smp_mb() in rcu_eqs_enter()? At least, we
-> can say something in the doc to prevent people from relying on the
-> ordering between normal reads in RCU idle mode and synchronize_rcu().
-> 
-> Thoughts?
+This is a tree wide replacement of the deprecated CPU hotplug functions
+which are only wrappers around the actual functions.
 
-Is there a benchmark that can show a system-level difference?  My
-guess is that the realtime interrupt-latency and scheduler-latency
-benchmarks would have the best chance of seeing this.
+Each patch is independent and can be picked up by the relevant maintainer.
 
-							Thanx, Paul
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Amit Kucheria <amitk@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: cgroups@vger.kernel.org
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: coresight@lists.linaro.org
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Joe Lawrence <joe.lawrence@redhat.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Julian Wiedmann <jwi@linux.ibm.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Karol Herbst <karolherbst@gmail.com>
+Cc: Karsten Graul <kgraul@linux.ibm.com>
+Cc: kvm-ppc@vger.kernel.org
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Len Brown <len.brown@intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-edac@vger.kernel.org
+Cc: linux-hwmon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-pm@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-raid@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: live-patching@vger.kernel.org
+Cc: Mark Gross <mgross@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Mike Travis <mike.travis@hpe.com>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: nouveau@lists.freedesktop.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Pekka Paalanen <ppaalanen@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: platform-driver-x86@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: rcu@vger.kernel.org
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Steve Wahl <steve.wahl@hpe.com>
+Cc: Stuart Hayes <stuart.w.hayes@gmail.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: virtualization@lists.linux-foundation.org
+Cc: x86@kernel.org
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Zhang Rui <rui.zhang@intel.com>
+
+Sebastian
+
