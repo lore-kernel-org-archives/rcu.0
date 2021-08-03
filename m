@@ -2,108 +2,146 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60294C4338F
-	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 16:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A528C19F38
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 16:10:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3DE6361029
-	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 16:00:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E44D861101
+	for <rcu@archiver.kernel.org>; Tue,  3 Aug 2021 16:10:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbhHCQAc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Aug 2021 12:00:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237135AbhHCQAc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:00:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 545D260F45;
-        Tue,  3 Aug 2021 16:00:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628006421;
-        bh=cn21b26xb0ddfDtkJ/ZSGanqT6OffWbsd/0X6amzDzo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DIu/sT9tsRLLSAkcqEJj9LJGX0c4tK3dROCaLYdbbGyoNF3WdFyoc44o/K8cbIwMy
-         CHt5fkZrSaa2DmhDAEtNrnnhHqgR2NQFmUDvv5Lrqzwqc+DUOapW+CaSEbLf43pUvr
-         +CbEByvv6UtgweVoKOPzzbVraOFZLAt9zTngpaVmibWK1acOjfgUaQxelZhF9sj20m
-         ugCSoFRJkMwirvqc1IQfPfQF1cssQUGi2cNofG+m2w1/oJoTNNILfoCOvMfz3dNHlt
-         Ap5WZxpGZoH7VeKRHenyWZ322ucmWUSA+swZnz97OFPOKL2hJnD6afmCsJARICDNqK
-         1UdcwjYj1P1PQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1F7555C04D4; Tue,  3 Aug 2021 09:00:21 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 09:00:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+        id S232289AbhHCQKy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Aug 2021 12:10:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58112 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231688AbhHCQKv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:10:51 -0400
+Date:   Tue, 3 Aug 2021 18:10:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628007036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZhCR89X1oG7iNKpxBHqwK160maOrSQVKgeomxdN0wRc=;
+        b=LwdXqV6TEL+jelWYIVu/L1AwkukJUhfDeR6fxf6HaCffMyf5pGalG64DdzD6SrFbnK74/x
+        PVNjb7a8JiALCQD3CJBVmxfKVnGPRCXtU70BUFy11admR5LtOLT9dQeI/ENtXdJ/CkhTdc
+        pZNvsYTpT+QPzjRhgzvNT0CjgoFJhxwmycapteSubpDkPSBjZ+FP8bxnvUSWW30Gz0Y7dW
+        1ffy1Rr5tDaLDwQ1cWTtCeME4yw92tE3YUaDago5Lw9pEtw1H1L8au8do+a32W2/sN3gs0
+        btcFKclunpFVufnMA6+fMpSDPoeRfMtyi+RFwzALyjj/jtaWzgKiRMXG8gO4tg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628007036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZhCR89X1oG7iNKpxBHqwK160maOrSQVKgeomxdN0wRc=;
+        b=CjGblo5JavDHAEsakSWenCqJ60bnDYFeC+TGn7n/YdarB5rRq+iJbcWjrVSzA5F0n0kDM4
+        Vc1wmHGVCRR8DGCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Hans de Goede <hdegoede@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
         Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ben Segall <bsegall@google.com>,
+        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        coresight@lists.linaro.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jiri Kosina <jikos@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>, kvm-ppc@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 31/38] rcu: Replace deprecated CPU-hotplug functions.
-Message-ID: <20210803160021.GR4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        Len Brown <lenb@kernel.org>, Len Brown <len.brown@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Namhyung Kim <namhyung@kernel.org>, netdev@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        platform-driver-x86@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, x86@kernel.org
+Subject: Re: [PATCH 00/38] Replace deprecated CPU-hotplug
+Message-ID: <20210803161033.vp3o34meyw3ek43z@linutronix.de>
 References: <20210803141621.780504-1-bigeasy@linutronix.de>
- <20210803141621.780504-32-bigeasy@linutronix.de>
+ <83dc5dfd-1ed0-f428-826f-fb819911fc89@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210803141621.780504-32-bigeasy@linutronix.de>
+In-Reply-To: <83dc5dfd-1ed0-f428-826f-fb819911fc89@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:16:14PM +0200, Sebastian Andrzej Siewior wrote:
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
-> 
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
-> 
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: rcu@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 2021-08-03 17:30:40 [+0200], Hans de Goede wrote:
+> Hi Sebastien,
+Hi Hans,
 
-I have queued this one and 35/38 (rcutorture) for v5.16.  If you would
-prefer to send them some other route, please let me know and:
-
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
-> ---
->  kernel/rcu/tree.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On 8/3/21 4:15 PM, Sebastian Andrzej Siewior wrote:
+> > This is a tree wide replacement of the deprecated CPU hotplug functions
+> > which are only wrappers around the actual functions.
+> > 
+> > Each patch is independent and can be picked up by the relevant maintainer.
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 51f24ecd94b26..f116ce58f4e68 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4050,7 +4050,7 @@ void rcu_barrier(void)
->  	 */
->  	init_completion(&rcu_state.barrier_completion);
->  	atomic_set(&rcu_state.barrier_cpu_count, 2);
-> -	get_online_cpus();
-> +	cpus_read_lock();
->  
->  	/*
->  	 * Force each CPU with callbacks to register a new callback.
-> @@ -4081,7 +4081,7 @@ void rcu_barrier(void)
->  					  rcu_state.barrier_sequence);
->  		}
->  	}
-> -	put_online_cpus();
-> +	cpus_read_unlock();
->  
->  	/*
->  	 * Now that we have an rcu_barrier_callback() callback on each
-> -- 
-> 2.32.0
+> Ok; and I take it that then also is the plan for merging these ?
 > 
+> FWIW I'm fine with the drivers/platform/x86 patch going upstream
+> through some other tree if its easier to keep the set together ...
+
+There is no need to keep that set together since each patch is
+independent. Please merge it through your tree.
+
+> Regards,
+> 
+> Hans
+
+Sebastian
