@@ -2,144 +2,144 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48522C4338F
-	for <rcu@archiver.kernel.org>; Wed,  4 Aug 2021 22:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17ABFC4338F
+	for <rcu@archiver.kernel.org>; Wed,  4 Aug 2021 22:37:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16B616109F
-	for <rcu@archiver.kernel.org>; Wed,  4 Aug 2021 22:34:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E87396056B
+	for <rcu@archiver.kernel.org>; Wed,  4 Aug 2021 22:37:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhHDWeU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Aug 2021 18:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59084 "EHLO mail.kernel.org"
+        id S229946AbhHDWh0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Aug 2021 18:37:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhHDWeR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 934E66104F;
-        Wed,  4 Aug 2021 22:33:58 +0000 (UTC)
+        id S229611AbhHDWh0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:37:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A4C60F41;
+        Wed,  4 Aug 2021 22:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628116438;
-        bh=0dsbEmAguaSfHlozxbO03jG4cUL4rS7RbChy6uYIzB4=;
+        s=k20201202; t=1628116632;
+        bh=CZDc3cuXIwg9cgSdNmFX+JqgPpKv7JvIYL0xpPA/LpY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Z+kQZHeg13krHlaBS4u37wzE0TuHStij2oh+bIs7ldGzauoqqf2YKFN5fvitdEX/V
-         nqKax6KBKKUiepCqjGpdPgluxwscIC6VyNJ5wskwLDn/S3JcbiwyfWo3MwocEwGR4g
-         YXe1SKF/yc/e8zLJUYya70ZrRNhnumxRIwUOTtevSyAZIm6/HgxLvqBW+c0JDsP3b9
-         FhZMOJtHL/w2VezQnUZeJwK9B/Cj0qSTlMXgB4Zr/g6cebW9NhpuWJl2PpU7BsaGFw
-         gCp2qMhi5fXDxDioV0+1lBRD2b9HDL8z2kHKdAkLT0FbBWnWK0YgVFPL89jqGmS1H8
-         tvoQBghUxM58g==
+        b=ZKUVPraVYkfCzKNwBVmOMqZ5pvwwG1NhufBNSrcln+cpyDr3l2dafv/3GPXEfTXSH
+         IrPFtutGDy3ybFQPQGqtKSQeVFLFaUQzRjwGt5Dp/cMUU+aAe0zQFj9/sRyHrBwP/Y
+         eqGNkQYKfL/aT5TnPlWcRwfU9/lwcB1CGREu+t92WOLMxXQwoJZuWalbsquaI8tUKf
+         29ktO/4KqXZGTEpsoyaJOSt0WGMWl5qP4k+ENCNSVWdLX36GEAGZgGyt6YYiWkylTH
+         GWdv3J1o6f9F7eRBjUs0eqHfokzwd3KbGgwihKExwZpAsU0UtUWFojRj9GYjH48uSB
+         J38/ArSapK0oQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5944E5C22D9; Wed,  4 Aug 2021 15:33:58 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 15:33:58 -0700
+        id 950F85C22D9; Wed,  4 Aug 2021 15:37:12 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 15:37:12 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210804223358.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Scott Wood <swood@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 1/2] rcutorture: Don't disable softirqs with preemption
+ disabled when PREEMPT_RT
+Message-ID: <20210804223712.GA4397@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
- <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
- <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
- <20210804135017.g6tfaubvygki2osk@e107158-lin.cambridge.arm.com>
+References: <20210803225437.3612591-1-valentin.schneider@arm.com>
+ <20210803225437.3612591-2-valentin.schneider@arm.com>
+ <20210803234352.GX4397@paulmck-ThinkPad-P17-Gen-1>
+ <87v94la4zm.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804135017.g6tfaubvygki2osk@e107158-lin.cambridge.arm.com>
+In-Reply-To: <87v94la4zm.mognet@arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:50:17PM +0100, Qais Yousef wrote:
-> On 08/03/21 09:28, Paul E. McKenney wrote:
-> > On Tue, Aug 03, 2021 at 05:12:21PM +0100, Qais Yousef wrote:
-> > > On 08/03/21 08:52, Paul E. McKenney wrote:
-> > > > On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
-> > > > > Hi
-> > > > > 
-> > > > > On 07/21/21 13:21, Paul E. McKenney wrote:
-> > > > > > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > > 
-> > > > > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > > > > > not contain any tasks blocking the current grace period, it takes an
-> > > > > > early exit that fails to release that rcu_node structure's lock.  This
-> > > > > > results in a self-deadlock, which is detected by lockdep.
-> > > > > > 
-> > > > > > To reproduce this bug:
-> > > > > > 
-> > > > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > > > > > 
-> > > > > > This will also result in other complaints, including RCU's scheduler
-> > > > > > hook complaining about blocking rather than preemption and an rcutorture
-> > > > > > writer stall.
-> > > > > > 
-> > > > > > Only a partial RCU CPU stall warning message will be printed because of
-> > > > > > the self-deadlock.
-> > > > > > 
-> > > > > > This commit therefore releases the lock on the rcu_print_task_stall()
-> > > > > > function's early exit path.
-> > > > > > 
-> > > > > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > > > > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > ---
-> > > > > 
-> > > > > We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-> > > > > relevant here? Trying to apply the patches and test, but the problem is tricky
-> > > > > to reproduce so thought worth asking first.
-> > > > 
-> > > > Looks like the relevant symptoms to me, so I suggest trying this series
-> > > > from -rcu:
-> > > > 
-> > > > 8baded711edc ("rcu: Fix to include first blocked task in stall warning")
-> > > > f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
-> > > 
-> > > Great thanks. These are the ones we picked as the rest was a bit tricky to
-> > > apply on 5.10.
-> > > 
-> > > While at it, we see these errors too though they look harmless. They happen
-> > > all the time
-> > > 
-> > > 	[  595.292685] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!"}
-> > > 	[  595.301467] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.389353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.397454] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.417112] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.425215] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.438807] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 
-> > > I used to see them on mainline a while back but seem to have been fixed.
-> > > Something didn't get backported to 5.10 perhaps?
-> > 
-> > I believe that you need at least this one:
-> > 
-> > 47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
+On Wed, Aug 04, 2021 at 11:17:33AM +0100, Valentin Schneider wrote:
 > 
-> After looking at the content of the patch, it's not related. We don't run with
-> PREEMPT_RT.
+> +Cc Scott, Sebastian
 > 
-> I think we're hitting a genuine issue, most likely due to out-of-tree changes
-> done by Android to fix RT latency problems against softirq (surprise surprise).
+> On 03/08/21 16:43, Paul E. McKenney wrote:
+> > On Tue, Aug 03, 2021 at 11:54:36PM +0100, Valentin Schneider wrote:
+> >> Running RCU torture with CONFIG_PREEMPT_RT under v5.13-rt1 triggers:
+> >>
+> >> [   10.821700] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
+> >> [   10.821716] WARNING: CPU: 5 PID: 137 at kernel/softirq.c:173 __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+> >> [   10.821739] Modules linked in:
+> >> [   10.821749] CPU: 5 PID: 137 Comm: rcu_torture_rea Not tainted 5.13.0-rt1-00005-g08bbda29766a #129
+> >> [   10.821759] Hardware name: ARM Juno development board (r0) (DT)
+> >> [   10.821765] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> >> [   10.821938] Call trace:
+> >> [   10.821941] __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+> >> [   10.821950] rcutorture_one_extend (./include/linux/rcupdate.h:274 ./include/linux/rcupdate.h:737 kernel/rcu/rcutorture.c:1443)
+> >> [   10.821960] rcu_torture_one_read (kernel/rcu/rcutorture.c:1590 kernel/rcu/rcutorture.c:1638)
+> >> [   10.821968] rcu_torture_reader (kernel/rcu/rcutorture.c:1730)
+> >> [   10.821976] kthread (kernel/kthread.c:321)
+> >> [   10.821986] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+> >> [   10.821997] irq event stamp: 478635
+> >> [   10.822001] hardirqs last enabled at (478635): _raw_spin_unlock_irq (./arch/arm64/include/asm/irqflags.h:35 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:202)
+> >> [   10.822016] hardirqs last disabled at (478634): __schedule (kernel/sched/core.c:5154 (discriminator 1))
+> >> [   10.822029] softirqs last enabled at (478626): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
+> >> [   10.822040] softirqs last disabled at (478622): rcutorture_one_extend (./include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
+> >>
+> >> Per this warning, softirqs cannot be disabled in a non-preemptible region
+> >> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
+> >>
+> >> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> >> ---
+> >>  kernel/rcu/rcutorture.c | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >> index 6096a7d14342..680f66b65f14 100644
+> >> --- a/kernel/rcu/rcutorture.c
+> >> +++ b/kernel/rcu/rcutorture.c
+> >> @@ -1537,6 +1537,8 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+> >>       * them on non-RT.
+> >>       */
+> >>      if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> >
+> > This depends on some rcutorture patches in -rt that are not yet in
+> > -rcu.  Would -rt be a good place for this one, or are those patches
+> > now ready for -rcu?
+> >
 > 
-> Thanks for your help and sorry for the noise.
+> Right, this goes along with
+> 
+>   72d6f4f680bf ("rcutorture: Avoid problematic critical section nesting on RT")
+> 
+> (from v5.13-rt1), which seems to apply cleanly on top of the current
+> mainline. So if we want this to go straight into -rcu, the above needs to
+> go along with it.
 
-No problem!
+Ah, this one needs to have its changes conditioned on PREEMPT_RT.
+The situations that this patch excludes really can happen in mainline,
+so they still need to be tested in mainline.
 
-But I used to see this very frequently in non-PREEMPT_RT rcutorture runs,
-and there was a patch from Thomas that made them go away.  So it might
-be worth looking at has patches in this area since 5.10.  Maybe I just
-got confused and picked the wrong one.
+It all comes back now.  ;-)
 
 							Thanx, Paul
+
+> Thomas et al, any objections?
+> 
+> >                                                       Thanx, Paul
+> >
+> >> +		/* Can't disable bh in atomic context under PREEMPT_RT */
+> >> +		mask &= ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
+> >>              /*
+> >>               * Can't release the outermost rcu lock in an irq disabled
+> >>               * section without preemption also being disabled, if irqs
+> >> --
+> >> 2.25.1
+> >>
