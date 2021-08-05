@@ -1,106 +1,113 @@
 Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Level: **
+X-Spam-Status: No, score=2.4 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,LOTS_OF_MONEY,MAILING_LIST_MULTI,
+	MONEY_FREEMAIL_REPTO,MONEY_NOHTML,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E489C4338F
-	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 21:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D210C43214
+	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 22:04:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 53F3661102
-	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 21:08:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 21E806113C
+	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 22:04:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241614AbhHEVIj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Aug 2021 17:08:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241387AbhHEVIj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Aug 2021 17:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71EF260EBC;
-        Thu,  5 Aug 2021 21:08:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628197704;
-        bh=SRtaowijoG8twAxHHQPP1frqmBFYAiBOGw+39md1RVo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nHRGhN7ts/aOENkjY13K+SLhMIvNR351kTPTtkF6AnSvp5rr/ExKU5kckq0dKRbpY
-         O6+vZb5T1E5OZ/iJVTPbClsqti5PgCkvIULQYEfLc0ffrXYE6czPD2xZPkOCzDu0SV
-         ehNOYEfQBriqlXvRGwYghWT9mMTFacUzReWgtgHw1jGf1UAvE7bUBwx9WqPmgffoPa
-         i9djO3u2yhnd6R7dbjnJz8WaI/kVG/o44IsEbL2vTumJaocbnWNIcQFwHTL6F6bm2b
-         3+R3xcp+yWN5TVVD8yR9/UpOnGZCf9kcbEu5i/Sb0t0eoF37mJWDuGa9wfdujoTxhR
-         9Ih14r7LrNMmQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3D48D5C271F; Thu,  5 Aug 2021 14:08:24 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 14:08:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        bigeasy@linutronix.de, tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Message-ID: <20210805210824.GA1203206@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210805080123.16320-1-juri.lelli@redhat.com>
- <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+        id S238356AbhHEWFC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Aug 2021 18:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238683AbhHEWE5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Aug 2021 18:04:57 -0400
+Received: from server.example.com (unknown [IPv6:2001:41d0:8:808d::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641EDC06179A
+        for <rcu@vger.kernel.org>; Thu,  5 Aug 2021 15:04:40 -0700 (PDT)
+Received: by server.example.com (Postfix, from userid 1023)
+        id 005A3D46AA3; Thu,  5 Aug 2021 21:15:44 +0000 (UTC)
+To:     rcu@vger.kernel.org
+Subject: {Spam?} =?UTF-8?Q?Z._HD,Sehr_geehrte_/_r_Fondsempf=C3=A4nger?=
+Date:   Thu, 5 Aug 2021 21:15:44 +0000
+From:   "ANWALT BILBAO &EMMA ASSOZIIERT & CO..." 
+        <support@quali.speed.hebergement-com4design.fr>
+Reply-To: buroLotto.es@spainmail.com
+Message-ID: <5c3c61c63d40ad6c99d56e3faa199979@www.quali.speed.hebergement-com4design.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-yoursite-MailScanner-Information: Please contact the ISP for more information
+X-yoursite-MailScanner-ID: 005A3D46AA3.AAE1D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-SpamCheck: spam, SpamAssassin (cached, score=7.061,
+        required 6, ADVANCE_FEE_2_NEW_MONEY 0.15,
+        FREEMAIL_FORGED_REPLYTO 2.50, FREEMAIL_REPLYTO 1.00,
+        LOTS_OF_MONEY 0.00, MONEY_FREEMAIL_REPTO 2.43, MONEY_NOHTML 0.97,
+        NO_RELAYS -0.00, T_FILL_THIS_FORM_SHORT 0.01, XFER_LOTSA_MONEY 0.00)
+X-yoursite-MailScanner-SpamScore: sssssss
+X-yoursite-MailScanner-From: support@quali.speed.hebergement-com4design.fr
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 09:03:37AM -0700, Paul E. McKenney wrote:
-> On Thu, Aug 05, 2021 at 10:01:23AM +0200, Juri Lelli wrote:
-> > Certain configurations (e.g., systems that make heavy use of netns)
-> > need to use synchronize_rcu_expedited() to service RCU grace periods
-> > even after boot.
-> > 
-> > Even though synchronize_rcu_expedited() has been traditionally
-> > considered harmful for RT for the heavy use of IPIs, it is perfectly
-> > usable under certain conditions (e.g. nohz_full).
-> > 
-> > Make rcupdate.rcu_normal_after_boot= again writeable on RT, but keep
-> > its default value to 1 (enabled) to avoid regressions. Users who need
-> > synchronize_rcu_expedited() will boot with rcupdate.rcu_normal_after_
-> > boot=0 in the kernel cmdline.
-> > 
-> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> 
-> Makes sense to me!
-> 
-> But would another of the -rt people be willing to give an Acked-by?
-> For example, maybe they would prefer this kernel boot parameter to be
-> exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
-> situations where rcu_normal_after_boot makes sense?
+Rechtsanwältin BILBAO &EMMA ASSOZIIERT & CO...
+#########################################
+AV/DE GRAN VIA NO.38k, 28008 MADRID.   SPAIN 
+TEL. ( 34) 602 810 185 FAX: ( 34) 931-702-120
+Eingetragener Fall NR: GY/Q3J63753 / SQQ/93000XS10.
 
-Ah, and this will also need to be reflected in the WARN_ON_ONCE()
-in synchronize_rcu_expedited_wait() in kernel/rcu/tree_exp.h.
+Ihnen wird empfohlen, die folgenden Informationen an Ihre Bevollmächtigte zu senden. Rechtsanwältin  BILBAO & EMMA  ASSOZIIERT CO ERMÖGLICHT IHNEN DIE FREIGABE IHRES FONDS:Wir bitten dringend, Ihre E-Mails an unsere Büro-E-Mail zu beantworten, buroLotto.es@spainmail.com, 
 
-							Thanx, Paul
+Wir gratulieren und informieren Sie über die Auswahl des Geldpreises €935.470,00 EUROS, SOMMERBONANZA, EL GORDO DE LA PRIMITIVA LOTTERIE IN VERBINDUNG MIT EUROMILLIONS ESPAÑA INTERNATIONAL LOTTERIE BEFÖRDERUNG  PROGRAMM Madrid Spanien
 
-> > ---
-> >  kernel/rcu/update.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > index c21b38cc25e9..0fdbf937edac 100644
-> > --- a/kernel/rcu/update.c
-> > +++ b/kernel/rcu/update.c
-> > @@ -57,9 +57,7 @@
-> >  module_param(rcu_expedited, int, 0);
-> >  module_param(rcu_normal, int, 0);
-> >  static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
-> > -#ifndef CONFIG_PREEMPT_RT
-> >  module_param(rcu_normal_after_boot, int, 0);
-> > -#endif
-> >  #endif /* #ifndef CONFIG_TINY_RCU */
-> >  
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > -- 
-> > 2.31.1
-> > 
+ Sehr Geehrter  Begünstigten, 
+Wir möchten Sie informieren, dass das Büro des nicht Beanspruchten Preisgeldes in Spanien,unsere Anwaltskanzlei ernannt hat, als gesetzliche Berater zu handeln, in der Verarbeitung und der Zahlung eines Preisgeldes, das auf Ihrem Namen gutgeschrieben wurde, und nun seit über zwei Jahren nicht beansprucht wurde.
+
+ Der Gesamtbetrag der ihnen zusteht beträgt momentan €935, 470, 15, cent.
+
+Der Gesamtbetrag der ihnen zusteht beträgt momentan  €935, 470, 15, neunhundert fünfunddreißigtausend, vierhundertsiebzig und fünfzehn Cent, Das ursprüngliche Preisgeld bertug €785.810, 15.00 EUROS. Siebenhundert Fünfundachtzigtausend Acht Hundertzehn Euro und fünfzehn Cent Diese Summe wurde fuer nun mehr als zwei Jahre,Gewinnbringend  angelegt,daher die aufstockung auf die oben genannte Gesamtsumme.Entsprechend dem Büros des nicht Beanspruchten  Preisgeldes,wurde dieses Geld als nicht beanspruchten Gewinn einer Lotterie Firma bei ihnen zum verwalten niedergelegt und  in ihrem namen versichert. Nach Ansicht der Lotterie Firma wurde ihnen das Geld nach einer Weihnachts Förderung Lotterie  zugesprochen. 
+
+ Die Kupons wurden von einer Investmentgesellschaft gekauft.Nach Ansicht der Lotterie Firma wurden sie damals Angeschrieben um Sie über dieses Geld zu informieren es hat sich aber leider bis zum Ablauf  der  gesetzten  Frist  keiner gemeldet um den Gewinn zu Beanspruchen. Dieses war der Grund weshalb das Geld zum verwalten niedergelegt wurde. Gemab des Spanischen Gesetzes muss der inhaber alle zwei Jahre ueber seinen vorhanden Gewinn informiert werden.Sollte dass Geld wieder nicht beansprucht werden,.wird der Gewinn abermals ueber eine Investierung gesellschaft fur eine weitere Periode von zwei Jahren angelegt werden.Wir sind daher, durch das Buro des nicht Beanspruchten Preisgelds beauftragt worden sie anzuschreiben.Dies ist eine Notifikation für das Beanspruchen dieses Gelds.
+
+Wir möchten sie darauf hinweisen, dass die Lotteriegesellschaft überprüfen und bestätigen wird ob ihre Identität  übereinstimmt bevor ihnen ihr Geld ausbezahlt wird.Wir werden sie beraten wie sie ihren Anspruch geltend machen.Bitte  setzen sie sich dafuer mit unserer Deutsch Spanisch oder Englisch Sprachigen Rechtsanwalt in Verbindung Rechtsanwältin: Bilbao & Emma ASSOZIIERT & CO.., TEL( 34) 602 810 185 & email,( Ihre Antwort sollte an diese E-MAIL-Adresse gerichtet, (promolottooffice@spainmail.com  )ist zustaendig fuer  Auszahlungen ins Ausland und wird ihnen in dieser sache zur seite stehen. Der Anspruch sollte vor den 30 August 2021 geltend  gemacht werden,da sonst dass Geld wieder angelegt werden wuerde.Wir freuen uns, von Ihnen zu hören, während wir Ihnen  unsere Rechtshilfe Versichern.
+
+Nachdem Sie die von Ihnen geforderten Daten bereitgestellt haben, können Sie davon ausgehen, dass Sie innerhalb weniger  Stunden direkt von diesem Büro erfahren werden. Bis dahin müssen wir Ihre Informationen verarbeitet und Ihre Fonds Akte für  die Zustellung vorbereitet haben, um Verzögerungen zu vermeiden. 
+Wir gehen davon aus, dass Sie die erläuternden Anweisungen und Anweisungen für den Erhalt Ihrer Prämien (935 €, 470, 15 Cent) verstehen, die Ihnen von der spanischen Euro Millones /El Gordo de la Primitiva International lotterie Madrid Spain legal zugesprochen werden.
+
+HINWEIS: Um unnötige Verzögerungen zu vermeiden, wenn es eine Änderung Ihrer Adresse oder Komplikationen geben, informieren Sie Ihren Agenten so schnell wie möglich, Ihr Agent wird 10% des Premium Preises bezahlt, da die Provision NACH Dem, was Sie Ihr Geld auf Ihr kostenpflichtiges Konto erhalten haben. Das Zahlungsbearbeitung Formular ist mit einer Fotokopie Ihres Ausweises auszufüllen und zur Überprüfung per Faxnummer zu senden: ( 34) 935457490 & E-Mail: Wir bitten dringend, Ihre E-Mails an unsere Büro-E-Mail zu beantworten  promolottooffice@spainmail.com
+
+Mit Freundlichen Grüßen
+Rechtsanwältin Bilbao & Emma ASSOZIIERT & CO..
+
+ANMELDEFORMULAR FÜR DEN GEWINNANSPRUCH Vom 28. Juni bis 30. August 2021
+Hinweis bitte geben Sie die folgenden Informationen, wie unten gefordert, faxen   34935457490 oder e mail: promolottooffice@spainmail.com ,es zurück in mein Büro sofort für uns in der Lage zu sein die Legalisierung Prozess Ihrer  Persönliche investiertes Preisgeld zu vervollständigen, und das Geld wird Ihnen von Zentralbank spain Int  ausgezahlt.  Alle Prozess Überprüfung durch unsere Kanzlei ist für Sie kostenlos, weil unsere Kosten werden von der internationalen  Lotto Kommission am Ende des Prozesses zu zahlen, wenn Sie Ihr Geld erhalten.Wenn Sie nicht die erforderlichen  Informationen vor der Zeit gegeben hat, können ist Anwaltskanzlei nicht haftbar gemacht werden, wenn Ihr Geld reinvestiert  wurde.
+
+Ein Bestätigungsschreiben wird Ihnen gefaxt werden sofort wenn wir komplette Überprüfung der Informationen die Sie uns zur  Verfügung stellen habe, Ich werde die Investmentbank unverzüglich über die von Ihnen angegebene Informationen zu kommen,  bevor sie werden mit Ihnen Kontakt aufnehmen für die ausZahlung von Ihrem Geld . Ihre Daten werden vertraulich gehalten  nach der Europäischen Union Datenschutzrecht.
+
+"Antworten Sie nicht auf die Absenderadresse oder die Quell-E-Mail-Adresse, es wird über den Computer gesendet virtuelle  Hilfe für die Antwort wird  nicht meine menschliche sondern Computer" Daher müssen Sie die Treuhänder über Telefon und E- Mail-Adresse oben" (ACHTUNG Wir (bitten Sie, auf diese E-Mail-Adresse zu antworten, (promolottooffice@spainmail.com )
+########################################################
+
+REF.NR:………………………………STAPELN Sie NR:…………………………
+Vorname:……………………Vor-NACHNAME…………………………………
+GEBURTSDATUM:……………………………BERUF:……………………………
+STRASSE:………………………………………PLZ/ORT…………………………
+ADRESSE:……………………………………………………………………………
+TELEFON:(___)……………………HANDY:(__)………………FAX (__)………
+EMAIL:…………………………………………………………Nationalitit:……
+
+HINWEIS: BANKVERBINDUNG IST NUR ERFORDERLICH, WENN SIE BESCHLIEßEN, IHREN GEWINN ZU ERHALTEN PER ÜBERWEISUNG
+
+Nachdem Sie die von Ihnen geforderten Daten bereitgestellt haben, können Sie davon ausgehen, dass Sie innerhalb weniger  Stunden direkt von diesem Büro erfahren werden. Bis dahin müssen wir Ihre Informationen verarbeitet und Ihre Fonds Akte für  die Zustellung vorbereitet haben, um Verzögerungen zu vermeiden. Wir gehen davon aus, dass Sie die erklärenden Anweisungen  und Anweisungen zum Einholen und Einholen Ihrer Auszeichnungen (€935,470,15 EUROS) verstehen, die Ihnen vom spanischen Euro Millones de La Primitiva International Madrid legal zugesprochen wurden
+
+BANK ZAHLUNGSOPTIONEN: A / BANKÜBERWEISUNG Oder BANK CERTIFIED CHECK (BANKDATEN SIND NUR NOTWENDIG, WENN SIE SICH FÜR EINE  BANKÜBERWEISUNG ENTSCHIEDEN HABEN)
+ZAHLUNGSOPTION: (A) BESTÄTIGTER SCHECK (BEZAHLEN Sie ÜBERTRAGUNG EIN
+
+BETRÄGE GEWONNEN: ……………………………………………………
+NAME DER BANK:……………………………………………………………
+KONTONUMMER:…………………………SWIFT-CODE:…………………
+ADRESSE DER BANK …………………………………………………………
+GEB-DATUM:…………Unterschrift …………(Erst bei hmeAbna)
+
+Rechtsanwältin  Bilbao & Emma Asociados, Abogados, Fiscal Y Accesorios horario de consultas Lunes.bis Samstag De. 09 - 16.30 Uhr  654280 / MLA & (Seien Sie informiert, dass Ihr Vertreter 10% des Preises als Provision erhält, wenn Sie Ihr Geld auf Ihrem  angegebenen Konto erhalten haben) Mitglied des Consejo de Constitucional de España, (ACHTUNG Wir bitten Sie, auf diese E-Mail-Adresse zu antworten (promolottooffice@spainmail.com) BÜRO-KONTOINFORMATIONEN- BANK NAME: P.F.S.SPAIN SL SWIFT CODE: PFSSESM1 IBAN: ES17 6713   0002 5700 0584 3906)COPYRIGHT 2019.LOTERIA SPANIEN. Alle Rechte vorbehalten. NUTZUNGSBEDINGUNGEN HANDELSPOLITIK DATENSCHUTZ VON BESCHWERDEN....
+ 
+Diese E-Mail ist für den vorgesehenen Empfänger bestimmt und enthält Informationen, die vertraulich sein können. Wenn Sie nicht der beabsichtigte Empfänger sind, benachrichtigen Sie bitte den Absender per E-Mail und löschen Sie diese E-Mail aus Ihrem Posteingang. Jede unbefugte Nutzung oder Verbreitung dieser E-Mail, ganz oder teilweise, ist strengstens untersagt und kann rechtswidrig sein. Alle in dieser E-Mail enthaltenen Preisangebote sind nur indikativ und führen zu keiner rechtlich bindenden oder durchsetzbaren Verpflichtung. Sofern nicht ausdrücklich als beabsichtigter E-Vertrag bezeichnet, stellt diese E-Mail kein Vertragsangebot, keine Vertragsänderung oder eine Annahme eines Vertragsangebots dar.
+WWW.GORDO/ EUROMILLIONS ESPAÑA  Sitz der Gesellschaft: Torre Europa Paseo de la Barcelona 15. Planta 16 28006 • Madrid. (Spanien)
+
