@@ -2,110 +2,108 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A75FEC4320A
-	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 08:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2075C4338F
+	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 11:51:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82308610A0
-	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 08:01:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9EAD610A8
+	for <rcu@archiver.kernel.org>; Thu,  5 Aug 2021 11:51:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239195AbhHEIB7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Aug 2021 04:01:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239182AbhHEIB6 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Thu, 5 Aug 2021 04:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628150504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=K2ghss8N4x5+qkA+P5j44zXDC0+0LL6Ii3eIbL81nCo=;
-        b=RhYuf7WGRwH2LeAcDTkSwR6MRMb3FeFRGs5M7lD/VqWFjl987/i9qkfwuMOlYrkuq/TDNg
-        ezG+t9sdXAlpcQBPir6nSCU9lhUeFpHs27TX3kSQ4jzwPy4+enKqGrQpUqcsP/ICXmMu9+
-        ZRT7dC6oz2JOX0rVUmqQPbJlnGD12/Q=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-iIze_m5NMtCPAbK_mpivGw-1; Thu, 05 Aug 2021 04:01:43 -0400
-X-MC-Unique: iIze_m5NMtCPAbK_mpivGw-1
-Received: by mail-ed1-f70.google.com with SMTP id cm18-20020a0564020c92b02903bc7f21d540so2741771edb.13
-        for <rcu@vger.kernel.org>; Thu, 05 Aug 2021 01:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2ghss8N4x5+qkA+P5j44zXDC0+0LL6Ii3eIbL81nCo=;
-        b=ACQwN9Lxh8S9T7rI5IZJnPhJ36SWYuSP19BPtcRijpaYzucUHuj0NmkIZEQmUTypj5
-         yYa/XTzbSYjJgEhO6k5gLdFsG5F0vhk0esMBlWSckp29cIukoQYMOQL03xTYV64vLuwC
-         7tw0JkI8HHfg01B7Wr8I+cumfpdt5DOV2me2cZL5qrlEjwuoyBPA8L1zi+K53IRhMyUD
-         g4KJz+GNWqv1CX6DwoCanx2W1n9fbN3grep07CBSmfLEUGEK+5kRaLtfk4pSpkz19hYi
-         e53xV5DhxyCgwoKx70SxdAjYi+JyuGZKPIAiQzjO2TVLT0GXS4u1kW+x1S08MWl18Ls3
-         x8FA==
-X-Gm-Message-State: AOAM533PcCbF/X+qBcnyEtxXTz/oC3+AostGNybzotzbG6aVbBsXz+PA
-        wx4S5ieTlKRRz1CsHDHidxZS8bLT7n3+p9g02Xt5PwxMX2iBmDYmN9yhk0kd3K6yVgWO/lRBnig
-        o8DZLDulptmSq
-X-Received: by 2002:a17:906:8443:: with SMTP id e3mr3653493ejy.46.1628150502341;
-        Thu, 05 Aug 2021 01:01:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRZM+Kqhl+Aet0UV2RVMRB/Uaogk6zdAX2mcOhTRyejWYvAHB4AjPVaC92ipDE99MWEylOig==
-X-Received: by 2002:a17:906:8443:: with SMTP id e3mr3653470ejy.46.1628150502187;
-        Thu, 05 Aug 2021 01:01:42 -0700 (PDT)
-Received: from localhost.localdomain.com ([151.29.52.108])
-        by smtp.gmail.com with ESMTPSA id n15sm1925851edw.70.2021.08.05.01.01.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 01:01:41 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        peterz@infradead.org, bigeasy@linutronix.de, tglx@linutronix.de,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Date:   Thu,  5 Aug 2021 10:01:23 +0200
-Message-Id: <20210805080123.16320-1-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S241133AbhHELwJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Aug 2021 07:52:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:43352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241116AbhHELwJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:52:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 317291042;
+        Thu,  5 Aug 2021 04:51:55 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 429323F719;
+        Thu,  5 Aug 2021 04:51:53 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 2/2] rcutorture: Nudge ksoftirqd priority for RCU boost testing
+In-Reply-To: <20210804225332.GB4397@paulmck-ThinkPad-P17-Gen-1>
+References: <20210803225437.3612591-1-valentin.schneider@arm.com> <20210803225437.3612591-3-valentin.schneider@arm.com> <20210803234231.GW4397@paulmck-ThinkPad-P17-Gen-1> <87tuk5a4yk.mognet@arm.com> <20210804225332.GB4397@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 05 Aug 2021 12:51:48 +0100
+Message-ID: <87mtpw9kiz.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Certain configurations (e.g., systems that make heavy use of netns)
-need to use synchronize_rcu_expedited() to service RCU grace periods
-even after boot.
+On 04/08/21 15:53, Paul E. McKenney wrote:
+> On Wed, Aug 04, 2021 at 11:18:11AM +0100, Valentin Schneider wrote:
+>>
+>> Hm so v5.13-rt1 has this commit:
+>>
+>>   5e59fba573e6 ("rcutorture: Fix testing of RCU priority boosting")
+>>
+>> which gates RCU boost torture testing under CONFIG_PREEMPT_RT. Now, AFAICT
+>> the TIMER_SOFTIRQ priority problem is there regardless of
+>> CONFIG_PREEMPT_RT, so this patch would (should?) make sense even on
+>> !CONFIG_PREEMPT_RT.
+>
+> What rcutorture scenario TREE03 does is to boot with tree.use_softirq=0
+> and threadirqs.  I see your point about timers and softirq, but this
+> does run reliably for me.
+>
+> Ah, I see why.  Commit ea6d962e80b6 ("rcutorture: Judge RCU priority
+> boosting on grace periods, not callbacks") includes boosting the priority
+> of the ksoftirqd kthreads.  But only when running rcutorture builtin,
+> not as a module.  Here is the code in rcu_torture_init():
+>
+>               // Testing RCU priority boosting requires rcutorture do
+>               // some serious abuse.  Counter this by running ksoftirqd
+>               // at higher priority.
+>               if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+>                       for_each_online_cpu(cpu) {
+>                               struct sched_param sp;
+>                               struct task_struct *t;
+>
+>                               t = per_cpu(ksoftirqd, cpu);
+>                               WARN_ON_ONCE(!t);
+>                               sp.sched_priority = 2;
+>                               sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+>                       }
+>               }
+>
+> I take it that you were running rcutorture as a module?
+>
+> This describes how to run it built-in, if that works for you:
+>
+> https://paulmck.livejournal.com/61432.html
+>
+> More specifically: https://paulmck.livejournal.com/57769.html
+>
+> Alternatively, the "IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)" check could be
+> removed in the above code, and the ksoftirqd kthreads could have their
+> original priority restored in rcu_torture_cleanup().
+>
+> Thoughts?
+>
 
-Even though synchronize_rcu_expedited() has been traditionally
-considered harmful for RT for the heavy use of IPIs, it is perfectly
-usable under certain conditions (e.g. nohz_full).
+I actually run rcutorture as a builtin, but from what I can tell the above
+patch came in v5.14-rc1, and ofc I'm running my tests on v5.13-rt1... I
+should have paid closer attention to what was in the latest mainline,
+apologies for the noise. 
 
-Make rcupdate.rcu_normal_after_boot= again writeable on RT, but keep
-its default value to 1 (enabled) to avoid regressions. Users who need
-synchronize_rcu_expedited() will boot with rcupdate.rcu_normal_after_
-boot=0 in the kernel cmdline.
-
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/rcu/update.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c21b38cc25e9..0fdbf937edac 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -57,9 +57,7 @@
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
- static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
--#ifndef CONFIG_PREEMPT_RT
- module_param(rcu_normal_after_boot, int, 0);
--#endif
- #endif /* #ifndef CONFIG_TINY_RCU */
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
--- 
-2.31.1
-
+FWIW tweaking ksoftirqd priority only when the torture module is builtin
+makes sense to me.
