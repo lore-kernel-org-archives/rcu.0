@@ -2,90 +2,104 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14316C432BE
-	for <rcu@archiver.kernel.org>; Fri,  6 Aug 2021 17:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE185C4338F
+	for <rcu@archiver.kernel.org>; Sat,  7 Aug 2021 00:58:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE846611C3
-	for <rcu@archiver.kernel.org>; Fri,  6 Aug 2021 17:44:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 90D90611CB
+	for <rcu@archiver.kernel.org>; Sat,  7 Aug 2021 00:58:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241119AbhHFRo2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Aug 2021 13:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35734 "EHLO mail.kernel.org"
+        id S229707AbhHGA6r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Aug 2021 20:58:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:42730 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhHFRo1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BD96115C;
-        Fri,  6 Aug 2021 17:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628271851;
-        bh=uSuJHg6HLpSIc2RgweeUEidWnwRjqdoYEFwHJKSZkF0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rFOe6DyQWR6aPGFt0DZnkUKqtant8N5X5tglQZwhMJyn0kxSzByqc7T8s5NC0W2ue
-         6bULkEjc/9DTmB9ibbBT7q8kC5RYDihSOjBxTCbYLRSUwWDlvvBRONEWLc2T4DqcFd
-         XR+VAeTVfXIHYmLi/W9pKw+qIPxzmBSWFxb6lOUgakcyouuz8V9OHQNZ/6Dv6Jnkdd
-         +fFfNzzVAa5ZKCBoPYtn6rR+w4Gmxc06G/lYHVOxgb2QCpbzgKGBVWE8SnPiIOB1Ds
-         iv4uuFZBChOh5vNE0pE1YDVa573PZ8u9RYwWWWFcPAwi7nT16loR/n0HlyvevXiMKD
-         FiX7669EEUA0Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AD7115C0546; Fri,  6 Aug 2021 10:44:11 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 10:44:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Message-ID: <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210805080123.16320-1-juri.lelli@redhat.com>
- <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
- <20210806080455.wkhlebgt7howjcrk@linutronix.de>
+        id S229589AbhHGA6q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Aug 2021 20:58:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0B236D;
+        Fri,  6 Aug 2021 17:58:29 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 077CA3F66F;
+        Fri,  6 Aug 2021 17:58:26 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v2 0/4] rcu, arm64: PREEMPT_RT fixlets
+Date:   Sat,  7 Aug 2021 01:58:03 +0100
+Message-Id: <20210807005807.1083943-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806080455.wkhlebgt7howjcrk@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 10:04:55AM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-08-05 09:03:37 [-0700], Paul E. McKenney wrote:
-> > Makes sense to me!
-> > 
-> > But would another of the -rt people be willing to give an Acked-by?
-> > For example, maybe they would prefer this kernel boot parameter to be
-> > exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
-> > situations where rcu_normal_after_boot makes sense?
-> 
-> Julia crafted that "rcu_normal_after_boot = 1" for RT after we had more
-> and more synchronize_rcu_expedited() users popping up. I would like to
-> keep that part (default value) since it good to have for most users.
-> 
-> I don't mind removing CONFIG_PREEMPT_RT part here if there are legitimate
-> use cases for using "rcu_normal_after_boot = 0".
-> Paul suggested initially to restrict that option for PREEMPT_RT and I
-> would follow here Paul's guidance to either remove it or restrict it to
-> NO_HZ_FULL in RT's case (as suggested).
+Hi folks,
 
-Given what I know now, I suggest the following:
+this is v2 of:
 
-o	Restrict the option to !PREEMPT_RT unless NO_HZ_FULL.
-	Maybe "!defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)".
+  https://lore.kernel.org/lkml/20210721115118.729943-1-valentin.schneider@arm.com/
 
-	If there is some non-NO_HZ_FULL PREEMPT_RT configuration that
-	tolerates expedited grace periods, this would need to change.
+respun from Frederic and Paul's helpful feedback. Tested atop v5.14-rc4-rt6 with
+the v1 patches reverted. There, commit 
 
-o	Change the permissions from "0" to "0444", if desired.	If you
-	would rather not, I can do this in a follow-up patch.  (No idea
-	why I let such an ugly serviceability issue through, but the
-	previous pair of module_param() instances have the same problem.)
+  d76e0926d835 ("rcu/nocb: Use the rcuog CPU's ->nocb_timer")
 
-Anything I am missing?
+prevents the NOCB offload warning from firing if there are no NOCB CPUs (which
+is sensible). Adding a single NOCB CPU brings the warning back, which patch 3
+fixes.
 
-							Thanx, Paul
+Note that patches 2 & 4 are already in v5.14-rc4-rt6, but still apply against
+mainline.
+
+Revisions
+=========
+
+v1 -> v2
+++++++++
+
+o Rebased and tested against v5.14-rc4-rt6
+o Picked rcutorture patch from
+  https://lore.kernel.org/lkml/20210803225437.3612591-2-valentin.schneider@arm.com/
+o Added a local_lock to protect NOCB offload state under PREEMPT_RT (Frederic,
+  Paul)
+
+Valentin Schneider (4):
+  rcutorture: Don't disable softirqs with preemption disabled when
+    PREEMPT_RT
+  sched: Introduce is_pcpu_safe()
+  rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
+  arm64: mm: Make arch_faults_on_old_pte() check for migratability
+
+ arch/arm64/include/asm/pgtable.h |  2 +-
+ include/linux/sched.h            | 10 ++++
+ kernel/rcu/rcutorture.c          |  2 +
+ kernel/rcu/tree.c                |  4 ++
+ kernel/rcu/tree.h                |  4 ++
+ kernel/rcu/tree_plugin.h         | 82 ++++++++++++++++++++++++++++----
+ 6 files changed, 94 insertions(+), 10 deletions(-)
+
+--
+2.25.1
+
