@@ -2,61 +2,62 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-19.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9D54C4338F
-	for <rcu@archiver.kernel.org>; Tue, 10 Aug 2021 08:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3040EC4338F
+	for <rcu@archiver.kernel.org>; Tue, 10 Aug 2021 08:48:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ABFE360F25
-	for <rcu@archiver.kernel.org>; Tue, 10 Aug 2021 08:48:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13A0D60234
+	for <rcu@archiver.kernel.org>; Tue, 10 Aug 2021 08:48:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhHJIsv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Aug 2021 04:48:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54649 "EHLO
+        id S237538AbhHJIsz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Aug 2021 04:48:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56712 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236828AbhHJIsv (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 10 Aug 2021 04:48:51 -0400
+        by vger.kernel.org with ESMTP id S237415AbhHJIsx (ORCPT
+        <rfc822;rcu@vger.kernel.org>); Tue, 10 Aug 2021 04:48:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628585309;
+        s=mimecast20190719; t=1628585311;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PKUTk+76laugq4Cr2nwyksE4Heb04pD9E5SNbJNctsA=;
-        b=UG6URQNx34V2H1IjPgI6xFkUJAf0uPlvfjWMOw8b1WXga4iVJ2j3pjbElit1Y3Ac4eRzdz
-        zRqvz6WSM9zx7iDX/s3rlMmRadPU5/XUX+ka/fZ4D4yPFxJ65HAhbBEP1uYSIQg2ufZY2Y
-        qghJV75Gyj+8NSdixBkcVOOcvKTUqRQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-fRNDOGlPNrWlC-vuOTpuFg-1; Tue, 10 Aug 2021 04:48:28 -0400
-X-MC-Unique: fRNDOGlPNrWlC-vuOTpuFg-1
-Received: by mail-ed1-f69.google.com with SMTP id l3-20020aa7c3030000b02903bccf1897f9so10418005edq.19
-        for <rcu@vger.kernel.org>; Tue, 10 Aug 2021 01:48:28 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WWWfZfczx65IParlduf54SQJn/f7jfyxJXfN8MyeRwI=;
+        b=csBk94EAfIvBMDh3QQcJF+1cwN4SNRcvP82LWqH67CxWEqTC4njJ+3+IZPPpzy9vZzpmwp
+        upbwfHiw28OGKfv0vpYRREMlKnzgwHQoUeQjraoUwiLRKcPkmphKkl44K/3upmXChnTiJt
+        tGsr4FQ2HtcnDQxywwXO4tcNCKJqKMs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-ZauuV1L4PUOicG4xtf0yfQ-1; Tue, 10 Aug 2021 04:48:29 -0400
+X-MC-Unique: ZauuV1L4PUOicG4xtf0yfQ-1
+Received: by mail-ej1-f71.google.com with SMTP id r21-20020a1709067055b02904be5f536463so5342845ejj.0
+        for <rcu@vger.kernel.org>; Tue, 10 Aug 2021 01:48:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PKUTk+76laugq4Cr2nwyksE4Heb04pD9E5SNbJNctsA=;
-        b=ZHzNWFCam9R6C1AKJSPQHe63CWHPMVD+ve07KBM7PM7AFKPUx5N5MsiM5KU0VE6B60
-         trFZ6Fl0qCAolstJhXusWIto4ktxfCdLZS+Osyrs8IEneVUUPycQ6Sngcx6kbFblMER6
-         CD0+DHEqYJoQ7a5ppgxqjBaF7G0miGs8EYg75AsKbq5o4hjvw8myL07IS1+qNeshSMYU
-         Oc6nPSu5q36aPmzwvX5hMZbkYgz4TBn0sjjTqQlEd1JDgHBPz6iR3huqOTg0oSJI0xIv
-         dX+Z92iGGSY8bLidLZk0giNDGJ2mok7qR89Q1S8X+ixeTjU0JhKs+FryUPb/jV9kKLAh
-         IHMg==
-X-Gm-Message-State: AOAM530ZKq16/b9AXp39io+97DWVu2/zHHXP33ZaUMXTtZFTmQ3snU/U
-        LI1VNwO5j50kzEwc1tC9Zg6OHk2kQVXH42XstA/KohrKhUJEn4GqG+Q4UPpl9qNxvxRythPNVOy
-        fTmlCt3oj/9ET
-X-Received: by 2002:a17:906:cd02:: with SMTP id oz2mr1164204ejb.227.1628585307148;
-        Tue, 10 Aug 2021 01:48:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyheDIpLjXKFM5u8jw6L0eI1kwX1Dc7r3iPjoVrOT6gQ4QtZ8X7tCUI7yirfMTRZQ9clwv1nQ==
-X-Received: by 2002:a17:906:cd02:: with SMTP id oz2mr1164195ejb.227.1628585306983;
-        Tue, 10 Aug 2021 01:48:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WWWfZfczx65IParlduf54SQJn/f7jfyxJXfN8MyeRwI=;
+        b=TalYHRQSxYsigyQN1O2yyIgkspEmjIR/v3YBMN2bQX8/6IznCK9/l7dUzW7n/p+WPS
+         1055NQ7cxd+xcmV3sqtovi+UajeTeMeLL7L+fsxj205LEp1ShoABXLG6mDbadW/6tOoz
+         N/6/wgZIpKZq1ko2xltQiHF3I3IYL1C+dg1emnGCfs9vWQuotlS0s25O4eG0yySUSc16
+         hksyekKxC0sG+Gs1zPwOH8im1wo0PEfW2ifU/xmuMGtWAIFTGBRrQfePXwk7qYUXyBst
+         XdLcKaodr3duwBDsgN5Pvish4Jbbxk4GtAj7CZsdslvlyeTOz5L7feOXliZ0nsaMIohk
+         vsHw==
+X-Gm-Message-State: AOAM5306huXNMETjSXAJVafOu3oMzpkWYusD94eClTfw3UTAKb8jj3BE
+        a5p0AxnXkaxePdBZdWU2jQGFc04AqXNevnPeCU85OK5aDihzX0kYJ+fARql783qdi4oBZXWNzrd
+        dGASpd4XgbzQf
+X-Received: by 2002:a17:906:c006:: with SMTP id e6mr26785994ejz.510.1628585308627;
+        Tue, 10 Aug 2021 01:48:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzn80ECnujwqU7hjqyUptCj/nIeG0tDzxXAB3iqy+3raekA06q/d65FphjKgOD6D/7OJW+HXg==
+X-Received: by 2002:a17:906:c006:: with SMTP id e6mr26785981ejz.510.1628585308409;
+        Tue, 10 Aug 2021 01:48:28 -0700 (PDT)
 Received: from localhost.localdomain.com ([151.29.52.108])
-        by smtp.gmail.com with ESMTPSA id la23sm6557667ejc.63.2021.08.10.01.48.25
+        by smtp.gmail.com with ESMTPSA id la23sm6557667ejc.63.2021.08.10.01.48.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 01:48:26 -0700 (PDT)
+        Tue, 10 Aug 2021 01:48:27 -0700 (PDT)
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     paulmck@kernel.org, josh@joshtriplett.org
 Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
@@ -64,43 +65,65 @@ Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
         rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         jiangshanlai@gmail.com, joel@joelfernandes.org,
         rcu@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v2 0/2] rcu: Make rcu_normal_after_boot writable again
-Date:   Tue, 10 Aug 2021 10:48:14 +0200
-Message-Id: <20210810084816.155203-1-juri.lelli@redhat.com>
+Subject: [PATCH v2 1/2] rcu: Make rcu_normal_after_boot writable again
+Date:   Tue, 10 Aug 2021 10:48:15 +0200
+Message-Id: <20210810084816.155203-2-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210810084816.155203-1-juri.lelli@redhat.com>
+References: <20210810084816.155203-1-juri.lelli@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Certain configurations (e.g., systems that make heavy use of netns)
+need to use synchronize_rcu_expedited() to service RCU grace periods
+even after boot.
 
-v2 of a proposed RCU change to make rcu_normal_after_boot feature usable
-on PREEMPT_RT as well, as it turns out it's useful on RT as well on
-NO_HZ_FULL configurations.
+Even though synchronize_rcu_expedited() has been traditionally
+considered harmful for RT for the heavy use of IPIs, it is perfectly
+usable under certain conditions (e.g. nohz_full).
 
-v2 gained an additional patch to revise rcu update module parameters
-permissions (as suggested during v1 review [1]).
+Make rcupdate.rcu_normal_after_boot= again writeable on RT (if NO_HZ_
+FULL is defined), but keep its default value to 1 (enabled) to avoid
+regressions. Users who need synchronize_rcu_expedited() will boot with
+rcupdate.rcu_normal_after_ boot=0 in the kernel cmdline.
 
-Changes wrt v1:
+Reflect the change in synchronize_rcu_expedited_wait() by removing the
+WARN related to CONFIG_PREEMPT_RT.
 
- - Restrict the option to !PREEMPT_RT || NO_HZ_FULL (Paul, Sebastian)
- - Change module params permissions (Paul) (02/02)
-
-Thanks,
-Juri
-
-v1 - https://lore.kernel.org/lkml/20210805080123.16320-1-juri.lelli@redhat.com/
-
-Juri Lelli (2):
-  rcu: Make rcu_normal_after_boot writable again
-  rcu: Make rcu update module parameters world-readable
-
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+---
  kernel/rcu/tree_exp.h | 1 -
- kernel/rcu/update.c   | 8 ++++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ kernel/rcu/update.c   | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 2796084ef85a..d9e4f8eb9ae2 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -512,7 +512,6 @@ static void synchronize_rcu_expedited_wait(void)
+ 		j = READ_ONCE(jiffies_till_first_fqs);
+ 		if (synchronize_rcu_expedited_wait_once(j + HZ))
+ 			return;
+-		WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT));
+ 	}
+ 
+ 	for (;;) {
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index c21b38cc25e9..bd551134e2f4 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -57,7 +57,7 @@
+ module_param(rcu_expedited, int, 0);
+ module_param(rcu_normal, int, 0);
+ static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
+-#ifndef CONFIG_PREEMPT_RT
++#if !defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)
+ module_param(rcu_normal_after_boot, int, 0);
+ #endif
+ #endif /* #ifndef CONFIG_TINY_RCU */
 -- 
 2.31.1
 
