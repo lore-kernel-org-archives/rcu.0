@@ -8,54 +8,54 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78389C4338F
-	for <rcu@archiver.kernel.org>; Wed, 11 Aug 2021 03:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2FC0C4338F
+	for <rcu@archiver.kernel.org>; Wed, 11 Aug 2021 03:12:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5CFA460EC0
-	for <rcu@archiver.kernel.org>; Wed, 11 Aug 2021 03:01:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EA3D60243
+	for <rcu@archiver.kernel.org>; Wed, 11 Aug 2021 03:12:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhHKDCF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Aug 2021 23:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
+        id S232795AbhHKDNN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Aug 2021 23:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhHKDBa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:01:30 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB9EC061388;
-        Tue, 10 Aug 2021 19:59:55 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so7365326pjb.3;
-        Tue, 10 Aug 2021 19:59:55 -0700 (PDT)
+        with ESMTP id S232102AbhHKDNN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Aug 2021 23:13:13 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37D8C061765;
+        Tue, 10 Aug 2021 20:12:50 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id a8so1196319pjk.4;
+        Tue, 10 Aug 2021 20:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kSZRq8ntqj28TNNxiPdEJFUwJIVmHzf13EePntIiFzY=;
-        b=cYME/lcwe1HDj+Fk7/SdLr/gMbjUtjKli+dt53YhEmFFkckwdhAmprNhFHtKmi6P+j
-         X+QYknbISTmyegACbuZDCY25Uv1VPf+R7CkOCV4bcEHDY/KtiJkqwQ80+Hi8hip5cVkR
-         xcy9wK/OTDXlHH7zdSERSX0XOSoK9tFPzFKwITtwDi21gmQ6Z6IoZXPLUYwPAupMZofF
-         Cba7McADXuoym9sdxSxxp5l98Yl+rvZ4PCfS1WOfABIHf6u8s8P2DEw81xuzQphZebBK
-         ENu0KUvcR7C0gqLJsJIGhin8jKMspIUP+ouDqYgG3U139xi+Q8U7JSMz2asIaAQDwjpY
-         pUvg==
+        bh=uYZ0FfImjYYOyJPM3xU7MkNuSAhJfWOgyjhwSopSKMY=;
+        b=mMSzDSilzYK3yhDnd30DmCmgY/DlYXXcqefC38X8+aNAotep1g2tRj+4CyqznkK83t
+         SUoUQaB9ChgqJLzHS5nn94NYURG+E4hpcmbgluQDw2IRo/4wvUH20YbPSqyw7AY0XJB7
+         PbUXV8UGDq9eTGhQNk+RdciSFpjIkolHRH8fC/SH4vAPxSt5zUrtNz8QCyO/Y7enPA96
+         hj2vjPJo6QIuwHJhhXXuI5XbxVemIBeAGZtwN2KgvSQxv/W7BMe+RrkudG/qDwRks91t
+         0zJzi+/AjNOz9KYwUZXv7ZSjkFLtfUF7SpIe8OFLZuoBb5koZcOxUQpCeu/wAClsuJPw
+         WNew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kSZRq8ntqj28TNNxiPdEJFUwJIVmHzf13EePntIiFzY=;
-        b=M/0CMAzOfgfcigoHguri0ohKLX1tMswiAWWJvCAkLm0y9TE8TqJ6uzVBqf2XAZ/8ZE
-         jY2hI2XDAxNa9G5NX0Ov/vlVko+rFbZlalhz39wn0SCnDGB9u+QMMHnB3T81P9SW/oM/
-         AV/8X+eBVLXqU+3egkLlRrmOnUyjZL+Ep2V6PXrizKUxPyOPVbBR2DlW9RUpQee0/VGC
-         KZPRaVJm05KgDp85P7uezYzWUjGSUF0olfJlsKE3o53Miag1Uy3yPtWMsk8dW0W440mj
-         on+GVAphFaC2nN44QEZg42pRYn8RaU/aqZWobQskW4mIQTi/D2Uw7JGOHXB4ligUJQUW
-         7PZQ==
-X-Gm-Message-State: AOAM5312Ua+TGLp0GibcJ7ePf7Nc/mq64DYJzKI4sUtyDeQveNepnU60
-        1x96OqZxe5RJVVLZYxrHBaM=
-X-Google-Smtp-Source: ABdhPJzn3RA+PlWT/jS6cwheRBfz2s3WPTEeiZkjKvDQtnrI9sut+MPGLcSENH8yOTQfLbWgjUTtww==
-X-Received: by 2002:a17:902:7889:b029:12b:cf54:4bf1 with SMTP id q9-20020a1709027889b029012bcf544bf1mr1249957pll.85.1628650794747;
-        Tue, 10 Aug 2021 19:59:54 -0700 (PDT)
+        bh=uYZ0FfImjYYOyJPM3xU7MkNuSAhJfWOgyjhwSopSKMY=;
+        b=Pou2IlPyekB5ImcxDyqQRteNo5HwDY7DnmF3mUZWemWezNuCBzW5Q6Yq+HaCe10NIF
+         DkzYKl5zfj/jh3wij633Rt/ag7g0XOQZpD20K5ono7Jq9ZHiEwxZRlXN0WZTiWpHr5d4
+         LQzCyBfyoUu0oWOFtk1BGMeSmUqn7OjEbMkWIPa5/onu5L+R7xU+x9b+pJOQuEAjOZd2
+         Js1IRKutFIh7LEZfJZYxqxxLSHBs7W2weG+1ARwq2KKv65hiF2KKoQYt9UumaCAjl6jy
+         VwrCuTKyZiXwqi0dlCKXV0ehbWGNwDPe7Cenma9TUnYZ3Tyu4QEWVWaAy6ZW7/7EQnV9
+         JthA==
+X-Gm-Message-State: AOAM5304fou2LYAepZZjznRmPtnHTttevbcdnhsFwQusjCMGYWBeiG6W
+        6h2JSD/H2lKqA45PQvR0cb0=
+X-Google-Smtp-Source: ABdhPJxPj9oB/tbZybJdQQeQmws5xRQhrCstouHBdrPFUBRqfUbvRHl8mL7JUqBxVcU+J/CMJ2OPqw==
+X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr8178151pjj.165.1628651570276;
+        Tue, 10 Aug 2021 20:12:50 -0700 (PDT)
 Received: from localhost.localdomain ([154.16.166.173])
-        by smtp.gmail.com with ESMTPSA id h7sm23657036pjs.38.2021.08.10.19.59.48
+        by smtp.gmail.com with ESMTPSA id z9sm25309765pfa.2.2021.08.10.20.12.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 19:59:54 -0700 (PDT)
+        Tue, 10 Aug 2021 20:12:49 -0700 (PDT)
 From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
 To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
         longman@redhat.com, boqun.feng@gmail.com, paulmck@kernel.org,
@@ -64,9 +64,9 @@ To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
         joel@joelfernandes.org, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org
 Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH V2][RFC] lockdep: improve comments in wait-type checks
-Date:   Wed, 11 Aug 2021 10:59:20 +0800
-Message-Id: <20210811025920.20751-1-zhouzhouyi@gmail.com>
+Subject: [PATCH V3][RFC] lockdep: improve comments in wait-type checks
+Date:   Wed, 11 Aug 2021 11:12:18 +0800
+Message-Id: <20210811031218.21177-1-zhouzhouyi@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,9 +74,10 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-comments in wait-type checks be improved by mentioning the
+I think the comments in wait-type checks can be improved by mentioning the
 PREEPT_RT kernel configure option.
 
+Sorry for the previous noise.
 Many thanks
 Zhouyi
 
