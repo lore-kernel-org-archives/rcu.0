@@ -2,308 +2,141 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4230C4338F
-	for <rcu@archiver.kernel.org>; Fri, 13 Aug 2021 18:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA035C432BE
+	for <rcu@archiver.kernel.org>; Sat, 14 Aug 2021 01:43:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB6776109E
-	for <rcu@archiver.kernel.org>; Fri, 13 Aug 2021 18:49:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 93AC7610F7
+	for <rcu@archiver.kernel.org>; Sat, 14 Aug 2021 01:43:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbhHMSth (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Aug 2021 14:49:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:56640 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233213AbhHMStR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Aug 2021 14:49:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEB77D6E;
-        Fri, 13 Aug 2021 11:48:49 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC95E3F40C;
-        Fri, 13 Aug 2021 11:48:46 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        id S232615AbhHNBnQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Aug 2021 21:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236284AbhHNBnP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Aug 2021 21:43:15 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922FFC0617AD;
+        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so18532803pjb.3;
+        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m5idM3Ueup4b94JMyXu62nSSGfYlEtXvaikv0F9J55U=;
+        b=vdmL6s1BTz5qC5et9VmTkY2s0iXRifELOl9oqWeoiEujLkdqwSicCYEIaJDubnBJGh
+         ki3rsrAOzjdWQD6uqzKSZAymDRP7XD+I/pT3bZifdWKu7M/FbFJEb7bwlgBWoPleJiLx
+         FWAABX3HqoByphFyNuDKSywZYlrJQGYaCS8MFftqXkLxfolK4/HB6X6hovWh3gH8Qznf
+         Kj5uJLYVDaO//EESOEdv2O77fyvQ9yZWBoaTvIY1rxUoe4hChjat4N1bhb7bxiPNtHw0
+         l807wnAqb9XbgXy06uTzg4fiMslOO9zNtnUrAvjr3hrRkjmcZoWGOFG0nulrmerdFc9R
+         867Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m5idM3Ueup4b94JMyXu62nSSGfYlEtXvaikv0F9J55U=;
+        b=n9Umdhsay31xKhrZ3Cxfbph+/94hn9glVZwE+MnFI42H2kDKOf0ScZ901fJWG1bFDP
+         SX6IbncWZq27jHuvFbcm+5HDwvs+5tasnjyHHaZwKf7frZUy/lQ3MXOmGDR3aiH0YHrA
+         xB0LMfOJijnPKWQRjgH/ZugYwhu0UlPTvTDBI2ANlOFHNOXn84H3MCw6G0SQp/bgxjos
+         gNVFUII3h9Lp+bBmoxQNJl6t6z9B1otfnrRSJp6dM/Dfd4rNJYCCf0gBT3GuMXjD2PaK
+         Lfk1P070NNKqlaaqL9az/HEcUjkhk24D2PIs0cfdRFEJkwvrt8XCgye7tLFTy326fwwc
+         DkJw==
+X-Gm-Message-State: AOAM532O54sGV6brSQzTN4I69BkTMrYHHj2Zyp4M64Cm3tORz3yAnvkt
+        CBtzX3aVwHTHqoEYxsexR47RqMrMWH4=
+X-Google-Smtp-Source: ABdhPJxLHxY5B/1/24SCUn7XXKlwC94b5w3syA9kZtJZKyl6crABDt97iM/RyZ5rE5bZWb7g3CLTvQ==
+X-Received: by 2002:a17:90a:c7d5:: with SMTP id gf21mr5221555pjb.111.1628905366170;
+        Fri, 13 Aug 2021 18:42:46 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id w2sm2907847pjq.5.2021.08.13.18.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 18:42:45 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
-In-Reply-To: <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-4-valentin.schneider@arm.com> <20210813002045.GZ4126399@paulmck-ThinkPad-P17-Gen-1>
-Date:   Fri, 13 Aug 2021 19:48:41 +0100
-Message-ID: <87v9496v06.mognet@arm.com>
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] preempt: add in_serving_irq() and apply to rcutiny and vsprintf
+Date:   Sat, 14 Aug 2021 09:42:34 +0800
+Message-Id: <20210814014234.51395-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/08/21 17:20, Paul E. McKenney wrote:
-> On Wed, Aug 11, 2021 at 09:13:53PM +0100, Valentin Schneider wrote:
->> rcu_core() preemptability considerations
->> ========================================
->> 
->> As pointed out by Paul [2], keeping rcu_check_quiescent_state() preemptible
->> (which is the case under CONFIG_PREEMPT_RT) requires some consideration.
->> 
->> note_gp_changes() itself runs with irqs off, and enters
->> __note_gp_changes() with rnp->lock held (raw_spinlock), thus is safe vs
->> preemption.
->> 
->> rdp->core_needs_qs *could* change after being read by the RCU core
->> kthread if it then gets preempted. Consider, with
->> CONFIG_RCU_STRICT_GRACE_PERIOD:
->> 
->>   rcuc/x                                   task_foo
->> 
->>     rcu_check_quiescent_state()
->>     `\
->>       rdp->core_needs_qs == true
->> 			     <PREEMPT>
->> 					   rcu_read_unlock()
->> 					   `\
->> 					     rcu_preempt_deferred_qs_irqrestore()
->> 					     `\
->> 					       rcu_report_qs_rdp()
->> 					       `\
->> 						 rdp->core_needs_qs := false;
->> 
->> This would let rcuc/x's rcu_check_quiescent_state() proceed further down to
->> rcu_report_qs_rdp(), but if task_foo's earlier rcu_report_qs_rdp()
->> invocation would have cleared the rdp grpmask from the rnp mask, so
->> rcuc/x's invocation would simply bail.
->> 
->> Since rcu_report_qs_rdp() can be safely invoked, even if rdp->core_needs_qs
->> changed, it appears safe to keep rcu_check_quiescent_state() preemptible.
->
-> Another concern...
->
-> During the preemption of rcu_check_quiescent_state() someone might report
-> a quiescent state on behalf of CPU x (perhaps due to its having recently
-> been idle) and then the RCU grace-period kthread might start running on
-> CPU x, where it might initialize a new grace period in rcu_gp_init().
-> It can then invoke __note_gp_changes(), also on CPU x.
->
+At some places we need to determine whether we're in nmi, hardirq or
+softirq context. This adds a macro in_serving_irq() as a shortcut for
+that.
 
-(this is me "writing out loud" to make sure I can follow)
+Meanwhile, apply this new macro to existing code in rcutiny and vsprintf.
 
-I take it the preemption of rcuc/x itself would count as a quiescent state,
-if the current grace period started before rcuc/x's rcu_read_lock()
-(rcuc/x would end up in ->blkd_tasks but wouldn't affect ->gp_tasks).
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ include/linux/preempt.h | 4 +++-
+ include/linux/rcutiny.h | 3 +--
+ lib/vsprintf.c          | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-Then if we get something to run rcu_report_qs_rnp() with a mask spanning
-CPU x - I think the GP kthread doing quiescent state forcing might fit the
-bill - we'll let the GP kthread initialize a new GP.
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 9881eac0698f..9a1c924e2c6c 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -92,12 +92,14 @@
+  * in_nmi()		- We're in NMI context
+  * in_hardirq()		- We're in hard IRQ context
+  * in_serving_softirq()	- We're in softirq context
++ * in_serving_irq()	- We're in nmi, hardirq or softirq context
+  * in_task()		- We're in task context
+  */
+ #define in_nmi()		(nmi_count())
+ #define in_hardirq()		(hardirq_count())
+ #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
++#define in_serving_irq()	(in_nmi() | in_hardirq() | in_serving_softirq())
++#define in_task()		(!in_serving_irq())
+ 
+ /*
+  * The following macros are deprecated and should not be used in new code:
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 7fedbd33d5d2..812d42f22e9c 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -87,8 +87,7 @@ static inline void rcu_irq_exit_irqson(void) { }
+ static inline void rcu_irq_enter_irqson(void) { }
+ static inline void rcu_irq_exit(void) { }
+ static inline void rcu_irq_exit_check_preempt(void) { }
+-#define rcu_is_idle_cpu(cpu) \
+-	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
++#define rcu_is_idle_cpu(cpu) (is_idle_task(current) && !in_serving_irq())
+ static inline void exit_rcu(void) { }
+ static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
+ {
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 2c5b4351330c..9324439c8543 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
+ 		 * kptr_restrict==1 cannot be used in IRQ context
+ 		 * because its test for CAP_SYSLOG would be meaningless.
+ 		 */
+-		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
++		if (in_serving_irq()) {
+ 			if (spec.field_width == -1)
+ 				spec.field_width = 2 * sizeof(ptr);
+ 			return error_string(buf, end, "pK-error", spec);
+-- 
+2.30.2
 
-> If preempted as shown above just after checking >core_needs_qs, the
-> ->cpu_no_qs.b.norm field will be set by the grace-period kthread, which
-> will cause the rcu_check_quiescent_state() function's subsequent check
-> of ->cpu_no_qs.b.norm to take an early exit.  So OK here.
->
-
-Right
-
-> On the other hand, if preempted just after the rcu_check_quiescent_state()
-> function's check of ->cpu_no_qs.b.norm, the later invocation of
-> rcu_report_qs_rdp() should take an early exit due to ->gp_seq mismatch.
-> So OK here.
->
-
-If, as described in your scenario above, the GP kthread has preempted
-rcuc/x, initialized a new GP and has run __note_gp_changes() (on CPU x),
-then wouldn't the rdp->gp_seq and rnp->gp_seq match when rcuc/x gets to run
-again?
-
-And because we would've then had a context switch between the GP kthread
-and rcuc/x, we would've noted a quiescent state for CPU x, which would let
-rcuc/x's rcu_report_qs_rdp() continue - or have I erred on the way there?
-
-> However, this should be added to the commit log.  Might be a big commit
-> log, but mass storage is cheap these days.  ;-)
->
-
-No objections here!
-
-> This needs a review of each and every manipulation of ->core_needs_qs
-> and ->cpu_no_qs.b.norm.  For example, the preemptions will cause the
-> scheduler to invoke RCU's context-switch hooks, which also mess with
-> ->cpu_no_qs.b.norm.  I can get to that some time next week (or tomorrow,
-> if things go better than expected), but it would be good for you (and
-> others) to check as well.
->
-
-I have some notes scribbled down regarding those that I need to go through
-again, but that won't be before a week's time - I'll be away next week.
-
-> Frederic should look this over, but I am taking a quick pass in the
-> meantime.  Please see below.
->
-
-Thanks!
-
->> @@ -210,6 +210,8 @@ struct rcu_data {
->>  	struct timer_list nocb_timer;	/* Enforce finite deferral. */
->>  	unsigned long nocb_gp_adv_time;	/* Last call_rcu() CB adv (jiffies). */
->>  
->> +	local_lock_t nocb_local_lock;
->
-> Should this go near the beginning of the structure, given that code
-> paths taking this lock tend to access ->cpu_no_qs, ->core_needs_qs,
-> and so on?
->
-> Given that it is used to protect core processing (not just offloaded
-> callbacks), might ->core_local_lock be a better name?
->
-
-It would still have to be in a #define CONFIG_RCU_NOCB_CPU region IMO, as
-it only exists to protect access of the offloading state - hence the name,
-but I'm not particularly attached to it.
-
-> Please keep in mind that you can build kernels that offload callbacks
-> but that still use softirq for RCU core processing.  And vice versa,
-> that is, kernels that use rcuc kthreads but do not offload callbacks.
->
-
-AFAICT the problem only stands if core processing becomes preemptible,
-which is only the case under PREEMPT_RT (at least for now), and that implies
-core processing done purely via kthreads.
-
->> +
->>  	/* The following fields are used by call_rcu, hence own cacheline. */
->>  	raw_spinlock_t nocb_bypass_lock ____cacheline_internodealigned_in_smp;
->>  	struct rcu_cblist nocb_bypass;	/* Lock-contention-bypass CB list. */
->> @@ -445,6 +447,8 @@ static void rcu_nocb_unlock(struct rcu_data *rdp);
->>  static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
->>  				       unsigned long flags);
->>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
->> +static void rcu_nocb_local_lock(struct rcu_data *rdp);
->> +static void rcu_nocb_local_unlock(struct rcu_data *rdp);
->>  #ifdef CONFIG_RCU_NOCB_CPU
->>  static void __init rcu_organize_nocb_kthreads(void);
->>  #define rcu_nocb_lock_irqsave(rdp, flags)				\
->> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->> index 0ff5e4fb933e..11c4ff00afde 100644
->> --- a/kernel/rcu/tree_plugin.h
->> +++ b/kernel/rcu/tree_plugin.h
->> @@ -21,6 +21,17 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
->>  	return lockdep_is_held(&rdp->nocb_lock);
->>  }
->>  
->> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
->> +{
->> +	return lockdep_is_held(
->> +#ifdef CONFIG_PREEMPT_RT
->> +		&rdp->nocb_local_lock.lock
->> +#else
->> +		&rdp->nocb_local_lock
->> +#endif
->
-> It would be good if this was abstracted.  Or is this the only place
-> in the kernel that needs this #ifdef?  Maybe a lockdep_is_held_rt()
-> or lockdep_is_held_local(), as the case may be?
->
-
-It does look like the first/only place that tries to access a local_lock's
-dep_map regardless of CONFIG_PREEMPT_RT. Looking at it some more, I'm not
-sure if it's really useful: !PREEMPT_RT local_locks disable preemption, so
-the preemption check in rcu_rdp_is_offloaded() will short circuit the
-lockdep check when !PREEMPT_RT...
-
-One thing I should perhaps point out - the local lock is only really needed
-for PREEMPT_RT; for !PREEMPT_RT it will just disable preemption, and it's
-only used in places that *already* disabled preemption (when !PREEMPT_RT).
-I initially gated the lock under CONFIG_PREEMPT_RT, but changed that as I
-found it reduced the ifdeffery.
-
->> +	);
->> +}
->> +
->>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  {
->>  	/* Race on early boot between thread creation and assignment */
->> @@ -38,7 +49,10 @@ static inline int rcu_lockdep_is_held_nocb(struct rcu_data *rdp)
->>  {
->>  	return 0;
->>  }
->> -
->> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
->> +{
->> +	return 0;
->
-> This is backwards of normal lockdep practice, which defaults to locks
-> always held.  And that will be what happens once lockdep has detected
-> its first deadlock, correct?  At which point, this function and its
-> earlier instance will be in conflict.
->
-> Or is there some subtle reason why this conflict would be OK?
->
-
-This follows the !CONFIG_RCU_NOCB definition of rcu_lockdep_is_held_nocb(),
-which looked fine to me.
-
-Actually with the way I wrote rcu_local_offload_access_safe(), we don't
-even access that function when !CONFIG_RCU_NOCB...
-
->> +}
->>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  {
->>  	return false;
->> @@ -46,23 +60,44 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  
->>  #endif /* #ifdef CONFIG_RCU_NOCB_CPU */
->>  
->> +/*
->> + * Is a local read of the rdp's offloaded state safe and stable?
->> + * See rcu_nocb_local_lock() & family.
->> + */
->> +static inline bool rcu_local_offload_access_safe(struct rcu_data *rdp)
->> +{
->> +	if (!preemptible())
->> +		return true;
->> +
->> +	if (!migratable()) {
->> +		if (!IS_ENABLED(CONFIG_RCU_NOCB))
->
-> Do we also need to consult the use_softirq module parameter that controls
-> whether or not there are rcuc kthreads?
->
-> Actually, if !IS_ENABLED(CONFIG_RCU_NOCB) then rcu_rdp_is_offloaded()
-> can simply return false without bothering with the RCU_LOCKDEP_WARN().
-> Might be worth getting that out of the way of the RCU_LOCKDEP_WARN()
-> condition.  ;-)
->
-
-I _assumed_ the check was there even for !CONFIG_RCU_NOCB to provide a wider
-test coverage of the calling conditions.
-
-If that RCU_LOCKDEP_WARN() becomes conditionnal on CONFIG_RCU_NOCB then
-yes, we could clean that up.
-
->> +			return true;
->> +
->> +		return rcu_lockdep_is_held_nocb_local(rdp);
->> +	}
->> +
->> +	return false;
->> +}
->> +
