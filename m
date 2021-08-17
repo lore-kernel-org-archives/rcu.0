@@ -2,184 +2,141 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 326BBC4338F
-	for <rcu@archiver.kernel.org>; Mon, 16 Aug 2021 16:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AB96C4338F
+	for <rcu@archiver.kernel.org>; Tue, 17 Aug 2021 12:13:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11DB460F4B
-	for <rcu@archiver.kernel.org>; Mon, 16 Aug 2021 16:03:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF58C61029
+	for <rcu@archiver.kernel.org>; Tue, 17 Aug 2021 12:13:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbhHPQES (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Aug 2021 12:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S237231AbhHQMOX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Aug 2021 08:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhHPQES (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Aug 2021 12:04:18 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909B8C061764;
-        Mon, 16 Aug 2021 09:03:46 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id v16so8307729ilo.10;
-        Mon, 16 Aug 2021 09:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MtbxSjBnllc9I3A9efdStus8BBZ5PoMeQpu9vIkyVbg=;
-        b=ADq8oZfQWD5SUhNAPAR3uwOfgTWKdTC94L0rkGT3J8z7WzNaNvmgvUWwJITfb3Abap
-         kEZs0aDYOMslbhN89bEPnhxZuG0mkNZ69AWes9hXuGXEj4xO1o7ANq40MH3zh3CGadLj
-         qOOLDi8+344B50Wll2xYvoqVYCEuOACI/FB0Kl1zPldkY8AHmNbwO7WXj8rpgEQNNacJ
-         /TG5CGJRFnfrODArluzT7g2lDqrOVaQHsp3tvzJFibC8au1jGaHl/EP+2QR/kUO3167Y
-         taZdeHk1JFcFRldZ0WsKZwTRn0Gpw2XBfVJohFtOYgpaAaFNk7xkwoEPDJM+wtrsYij0
-         Ha5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MtbxSjBnllc9I3A9efdStus8BBZ5PoMeQpu9vIkyVbg=;
-        b=g1z/iGitW6a7915jPQ6RZg0yq/yiykHSJK4TWZVW+zoalPdIiD4eFDHLE0O1fiJ/oL
-         8e/OZiul2bpOgmcnmP372GHXRoMFJzZiltJsBWC+FR6Fm/Vbla3Wfdc8iG3vvL5lW+3p
-         uKfw9RJ+NP1YEgzxJYGZ2Pf/plAY2/Wo/a7YhUskx2tXqrWg7muv/Ro6BvQ5+33CiMVK
-         LoaODJ4DoA9k6y6KgPyGpQhWyEhMQzPGluq3iYdd8Za71U8+A+AhCdfwFawglJvfsTCC
-         TXOqr3djP05qAJO07bQMYftd8xNaG331zpjdZ6f3AH31q4GVhCiXW+5SFaeogJamA/Bu
-         6bBg==
-X-Gm-Message-State: AOAM5312s+douriMQ3n+xTQBJ5+xlzHFeAU5vFX+nkguRLvZbotMEo89
-        Cjnl7VZD0N594U0UICJbmgk=
-X-Google-Smtp-Source: ABdhPJzAfg+WhEqzXoJZpOKN6ThzoyqVQ/7/qiZXfyLYbJ0149wDFU4I2nPZKU1eQvQDVcYSOEpe1w==
-X-Received: by 2002:a92:c702:: with SMTP id a2mr10891642ilp.210.1629129826058;
-        Mon, 16 Aug 2021 09:03:46 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id j6sm5879002iom.5.2021.08.16.09.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 09:03:45 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id B266E27C0054;
-        Mon, 16 Aug 2021 12:03:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 16 Aug 2021 12:03:44 -0400
-X-ME-Sender: <xms:XowaYaV3KIUALJEvq-yzySMq0x50oGdRkGBCmJEX7Qh9AQyKkek4AQ>
-    <xme:XowaYWlLy7dqdpZxOJZiP_63xqvabDG5Z74BQUWog7TkzhMcrMmyY8UcnvjtPoiV_
-    BbW8akqE5dsxHKB4Q>
-X-ME-Received: <xmr:XowaYebJe3FAVTwB_Mu5CbUwx2JmufhSxKmTuBHSk2_qzgFCuKwJ1oeFvJQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrledugdelgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:XowaYRUHBWLFVvMu5-hfoKKD8SRb-HTbyhifxZ9--hsEob7FZUmIqg>
-    <xmx:XowaYUmmIDrv8KIo0AGZ3Ncsg8HPmqIgxX1cOMM96B28d6PgBazxFQ>
-    <xmx:XowaYWf_fi-J46t27UlqMahRAomdsSzIFIKeI1JP3IjJT_eygUWd4A>
-    <xmx:YIwaYddcEU1xNgyqChfvueNNkrOUK2vBQaRtmkKsz7b5xLyHtAdmqYximkY>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Aug 2021 12:03:41 -0400 (EDT)
-Date:   Tue, 17 Aug 2021 00:03:16 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        with ESMTP id S236113AbhHQMOW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Aug 2021 08:14:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703ABC061764;
+        Tue, 17 Aug 2021 05:13:49 -0700 (PDT)
+Date:   Tue, 17 Aug 2021 14:13:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629202426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d+uxAWrK6C0K97c8hr+MoI9FmXO1BEDPSMGIWGczVk8=;
+        b=yrlAYk9W1HkvijTPh6VaegiUXmmAdYVcDOkdESa0jH/HQYqih+P+5LqH2QRQOBCmjOCOvK
+        oaK1y7xnAS2Fn3a+xQ9/iyH1hO+oNt4KyhK9u4nM7eukazdjM/Y+2NdJtOVddf/X87zihV
+        G9b81Qk6himwgAR7xg4OSMbkrNMZsCHs0gXJq47wnSvB2vBr7nn16QnOE65lWLAgyQ4Zbz
+        uKH2Hs4ksrRMk+oCuh9HWRkrF2GFcS78Y7ontWCgfSVwGslm/TGeoL/YLhtkwo3sk2KuZ3
+        twe0CYOOhF+OoM/rizz4ljcQF39bk49m1+vE9Gkdiyzyh0YwAG7b+m/4gnvc8g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629202427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d+uxAWrK6C0K97c8hr+MoI9FmXO1BEDPSMGIWGczVk8=;
+        b=v/OZAm542MS2E32XiA5RqzfEd9kCCfdxNFDNsNISAfhDREJorL86wsOolhrmT5IlqkhX2m
+        c9C0u9GW5DUbeGBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] preempt: add in_serving_irq() and apply to rcutiny and
- vsprintf
-Message-ID: <YRqMRFPDL0U9Orec@boqun-archlinux>
-References: <20210814014234.51395-1-changbin.du@gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 1/4] rcutorture: Don't disable softirqs with
+ preemption disabled when PREEMPT_RT
+Message-ID: <20210817121345.5iyj5epemczn3a52@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210814014234.51395-1-changbin.du@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210811201354.1976839-2-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Aug 14, 2021 at 09:42:34AM +0800, Changbin Du wrote:
-> At some places we need to determine whether we're in nmi, hardirq or
-> softirq context. This adds a macro in_serving_irq() as a shortcut for
-> that.
-> 
-> Meanwhile, apply this new macro to existing code in rcutiny and vsprintf.
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+On 2021-08-11 21:13:51 [+0100], Valentin Schneider wrote:
+> Running RCU torture with CONFIG_PREEMPT_RT under v5.14-rc4-rt6 triggers:
+>=20
+> [    8.755472] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
+> [    8.755482] WARNING: CPU: 1 PID: 137 at kernel/softirq.c:172 __local_b=
+h_disable_ip (kernel/softirq.c:172 (discriminator 31))
+> [    8.755500] Modules linked in:
+> [    8.755506] CPU: 1 PID: 137 Comm: rcu_torture_rea Not tainted 5.14.0-r=
+c4-rt6 #171
+> [    8.755514] Hardware name: ARM Juno development board (r0) (DT)
+> [    8.755518] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=3D--)
+> [    8.755622] Call trace:
+> [    8.755624] __local_bh_disable_ip (kernel/softirq.c:172 (discriminator=
+ 31))
+> [    8.755633] rcutorture_one_extend (kernel/rcu/rcutorture.c:1453)
+> [    8.755640] rcu_torture_one_read (kernel/rcu/rcutorture.c:1601 kernel/=
+rcu/rcutorture.c:1645)
+> [    8.755645] rcu_torture_reader (kernel/rcu/rcutorture.c:1737)
+> [    8.755650] kthread (kernel/kthread.c:327)
+> [    8.755656] ret_from_fork (arch/arm64/kernel/entry.S:783)
+> [    8.755663] irq event stamp: 11959
+> [    8.755666] hardirqs last enabled at (11959): __rcu_read_unlock (kerne=
+l/rcu/tree_plugin.h:695 kernel/rcu/tree_plugin.h:451)
+> [    8.755675] hardirqs last disabled at (11958): __rcu_read_unlock (kern=
+el/rcu/tree_plugin.h:661 kernel/rcu/tree_plugin.h:451)
+> [    8.755683] softirqs last enabled at (11950): __local_bh_enable_ip (./=
+arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:261)
+> [    8.755692] softirqs last disabled at (11942): rcutorture_one_extend (=
+=2E/include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
+>=20
+> Per this warning, softirqs cannot be disabled in a non-preemptible region
+> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
+>=20
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  include/linux/preempt.h | 4 +++-
->  include/linux/rcutiny.h | 3 +--
->  lib/vsprintf.c          | 2 +-
->  3 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-> index 9881eac0698f..9a1c924e2c6c 100644
-> --- a/include/linux/preempt.h
-> +++ b/include/linux/preempt.h
-> @@ -92,12 +92,14 @@
->   * in_nmi()		- We're in NMI context
->   * in_hardirq()		- We're in hard IRQ context
->   * in_serving_softirq()	- We're in softirq context
-> + * in_serving_irq()	- We're in nmi, hardirq or softirq context
->   * in_task()		- We're in task context
->   */
->  #define in_nmi()		(nmi_count())
->  #define in_hardirq()		(hardirq_count())
->  #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
-> -#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-> +#define in_serving_irq()	(in_nmi() | in_hardirq() | in_serving_softirq())
-> +#define in_task()		(!in_serving_irq())
->  
+>  kernel/rcu/rcutorture.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index eecd1caef71d..4f3db1d3170d 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1548,6 +1548,8 @@ rcutorture_extend_mask(int oldmask, struct torture_=
+random_state *trsp)
+>  	 * them on non-RT.
+>  	 */
+>  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+> +		/* Can't disable bh in atomic context under PREEMPT_RT */
+> +		mask &=3D ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
 
-So in_serving_irq() is !in_task(), right? If so, why not...
+Let me stare at this=E2=80=A6
 
->  /*
->   * The following macros are deprecated and should not be used in new code:
-> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> index 7fedbd33d5d2..812d42f22e9c 100644
-> --- a/include/linux/rcutiny.h
-> +++ b/include/linux/rcutiny.h
-> @@ -87,8 +87,7 @@ static inline void rcu_irq_exit_irqson(void) { }
->  static inline void rcu_irq_enter_irqson(void) { }
->  static inline void rcu_irq_exit(void) { }
->  static inline void rcu_irq_exit_check_preempt(void) { }
-> -#define rcu_is_idle_cpu(cpu) \
-> -	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
-> +#define rcu_is_idle_cpu(cpu) (is_idle_task(current) && !in_serving_irq())
+>  		/*
+>  		 * Can't release the outermost rcu lock in an irq disabled
+>  		 * section without preemption also being disabled, if irqs
+> --=20
+> 2.25.1
 
-... use in_task() here, and ...
-
->  static inline void exit_rcu(void) { }
->  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->  {
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 2c5b4351330c..9324439c8543 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
->  		 * kptr_restrict==1 cannot be used in IRQ context
->  		 * because its test for CAP_SYSLOG would be meaningless.
->  		 */
-> -		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
-> +		if (in_serving_irq()) {
-
-... use !in_task() here?
-
-And don't introduce the in_serving_irq() at all.
-
-Regards,
-Boqun
-
->  			if (spec.field_width == -1)
->  				spec.field_width = 2 * sizeof(ptr);
->  			return error_string(buf, end, "pK-error", spec);
-> -- 
-> 2.30.2
-> 
+Sebastian
