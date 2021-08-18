@@ -2,123 +2,77 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3714C4338F
-	for <rcu@archiver.kernel.org>; Tue, 17 Aug 2021 19:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F37E2C4338F
+	for <rcu@archiver.kernel.org>; Wed, 18 Aug 2021 07:29:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC93F61038
-	for <rcu@archiver.kernel.org>; Tue, 17 Aug 2021 19:30:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D3BCC61076
+	for <rcu@archiver.kernel.org>; Wed, 18 Aug 2021 07:29:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhHQTa6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Aug 2021 15:30:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38395 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229640AbhHQTa6 (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Tue, 17 Aug 2021 15:30:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629228624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9FE22rxp6AYKElT4XtdoX7zLTcx3lonKYmaIy1Dz4c=;
-        b=He0effpauMIpqPe5fOeW9ccfgWnsQPWdweQ/IBc6MnVlgTaVx4WUTsD41K47SS39RlWZSE
-        lGwGIOgHiBJmUyAveD4A16LHlyjlNIiSU7F3bOPl2NOae39KJAn0WGaLzgXoQrNqjYd8cK
-        ITVW3h75o8pXIoCOGQBrykMI/J1kCCE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-4vvYO79JPfeSXV7wb0FHTg-1; Tue, 17 Aug 2021 15:30:23 -0400
-X-MC-Unique: 4vvYO79JPfeSXV7wb0FHTg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S238109AbhHRH3e (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Aug 2021 03:29:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33813 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232380AbhHRH3c (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Aug 2021 03:29:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629271738; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BFpIm1za3PUOq2erDVvRfM+67PBhnjQaTiTXMeThml0=; b=sbuyWgMynla/1AJ6e4nX/lFOI1LhadlntiE/c9NwLf76hFMyvNDyjH1l0zuWT5vvv2eEKQI5
+ XNUcuaEXhGNF2J6yZow+eumx+nV+V8m9SmifpqaSgXG+oLfyu/naVwW4exwxTNnSCwIiGymF
+ KoAsXQgmRsaURFN0/SDmBio90aA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 611cb6b19507ca1a3403e293 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Aug 2021 07:28:49
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 19335C43617; Wed, 18 Aug 2021 07:28:49 +0000 (UTC)
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C148F1008060;
-        Tue, 17 Aug 2021 19:30:19 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.10.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4CC301036D28;
-        Tue, 17 Aug 2021 19:30:12 +0000 (UTC)
-Date:   Tue, 17 Aug 2021 15:30:10 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-Message-ID: <YRwOQtvOW02QFVow@lorien.usersys.redhat.com>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-3-valentin.schneider@arm.com>
- <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210817170925.2jwqvgvmqab2glwu@linutronix.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91484C4338F;
+        Wed, 18 Aug 2021 07:28:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 91484C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH 0/5] rcu-tasks miscellaneous fixes
+Date:   Wed, 18 Aug 2021 12:58:38 +0530
+Message-Id: <1629271723-3816-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 07:09:25PM +0200 Sebastian Andrzej Siewior wrote:
-> On 2021-08-11 21:13:52 [+0100], Valentin Schneider wrote:
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index debc960f41e3..8ba7b4a7ee69 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1715,6 +1715,16 @@ static inline bool is_percpu_thread(void)
-> >  #endif
-> >  }
-> >  
-> > +/* Is the current task guaranteed to stay on its current CPU? */
-> > +static inline bool migratable(void)
-> 
-> I'm going to rename this in my tree to `is_migratable' because of
+Minor typos in comments and fixes for rcu-tasks.
 
-It's better anyway. See is_percpu_thread() 5 lines above :)
+Neeraj Upadhyay (5):
+  rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment
+  rcu-tasks: Correct firstreport usage in check_all_holdout_tasks_trace
+  rcu-tasks: Correct check for no_hz_full cpu in show_stalled_task_trace
+  rcu-tasks: Fix read-side primitives comment for call_rcu_tasks_trace
+  rcu-tasks: Clarify read side section info for rcu_tasks_rude GP
+    primitives
 
-
-> |security/keys/trusted-keys/trusted_core.c:45:22: error: ‘migratable’ redeclared as different kind of symbol
-> |   45 | static unsigned char migratable;
-> |      |                      ^~~~~~~~~~
-> |In file included from arch/arm64/include/asm/compat.h:16,
-> |                 from arch/arm64/include/asm/stat.h:13,
-> |                 from include/linux/stat.h:6,
-> |                 from include/linux/sysfs.h:22,
-> |                 from include/linux/kobject.h:20,
-> |                 from include/linux/of.h:17,
-> |                 from include/linux/irqdomain.h:35,
-> |                 from include/linux/acpi.h:13,
-> |                 from include/linux/tpm.h:21,
-> |                 from include/keys/trusted-type.h:12,
-> |                 from security/keys/trusted-keys/trusted_core.c:10:
-> |include/linux/sched.h:1719:20: note: previous definition of ‘migratable’ was here
-> | 1719 | static inline bool migratable(void)
-> |      |                    ^~~~~~~~~~
-> 
-> Sebastian
-> 
+ kernel/rcu/tasks.h | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
 -- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+hosted by The Linux Foundation
 
