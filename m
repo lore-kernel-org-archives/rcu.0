@@ -8,61 +8,60 @@ X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29D71C4338F
-	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 14:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4E97C4338F
+	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 14:45:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 14BAB61214
-	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 14:43:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DF0561220
+	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 14:45:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbhHXOoQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Aug 2021 10:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S237915AbhHXOqF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Aug 2021 10:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237801AbhHXOoP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:44:15 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66265C061757;
-        Tue, 24 Aug 2021 07:43:31 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id x11so44990854ejv.0;
-        Tue, 24 Aug 2021 07:43:31 -0700 (PDT)
+        with ESMTP id S237902AbhHXOqE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:46:04 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E151C061757;
+        Tue, 24 Aug 2021 07:45:20 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id dm15so7076659edb.10;
+        Tue, 24 Aug 2021 07:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IA1Q0iyJnFyXg0kf5oPdvIoooL7RmKaTRR2Z0M5Fthg=;
-        b=FS8AAa5yPX+3reawFSOOWtRVHJQ7tPQMeFjjRH7VU7nkTlHYw/wbhxkC3LL1Bovdqw
-         kTVYWdZOAy9aWdGnLbbRas8VMeNxQPjzlFd9tI9uTaT2tOJE+XS2n4Ynj4Gx7/JalHrI
-         s87lN7jG7bDzW/hKyrXEuCM7pGxWR3buoGBL3izh6Jkc2wPxbm4TNtm9BmVTGj7AYwwv
-         Ideo+SRaOfm76cmeI1HsVzmpI/wlRmpiErBp70kO+d00hxTVtFZJ/A5s2PCaaFY/yzSi
-         7JEqXcjNoya+LiQKxuxjRdYWwVNVpQTspUAvpxZajHA2rKSQwWUwegxdMc1hHIosm/ri
-         bU6w==
+        bh=OBWcZREBUGB90xDbuFF9gZCvZy0CAlmgbb34f8DLTCA=;
+        b=OX4xbhOYvpditCNbjIcDT+wiZ7eKJxv1Cfh+ILYt6ici869VEpTrVGCpAqvXi419fu
+         pZv/g04QnU7zeUIUXv4zWwhL/FdYo/ji/mfTsXCjqFPawlG66FcaJqc5Ot/9ckcLIPlP
+         JxE/DcJFAgPFNKeP6l/UnTzw+ESNG9PC0oDq91SZUz6Yw8fzf6mVTkyeZpDJOBr8otPZ
+         i5iNYX+SiE8pe7YgJwRQwUcmPnKeU9nZZQkCM85pXdpBNCJkO4qLnPd/4/ix7dTUIuXE
+         ZUrpJ964+LxsTppwouVy8aFnzmxH0YgXwULMFU0Mg9ZHCIb5Drtt4GlL62EEd/sxqNBU
+         z7ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IA1Q0iyJnFyXg0kf5oPdvIoooL7RmKaTRR2Z0M5Fthg=;
-        b=fRD2XQVJKrZmIHq1fx/uE4c3Y2zaj6Z/YtSBNSpIzw+6Hroa7tEV3I5puorJuIuxgH
-         zWqzOkjRbzjuQKTcU0wVM85vk1t8hK2fuqDPjeB661WInZ/LsoQVrDf+Qn/SmZm3oZnV
-         dVkeY8f3UFoU5hZB51FHwu0uV2nLY6fpRONs1hbVvUpaioAVxBBJf3tst98v8LoPN8vW
-         KfGBLT9cb2QqCiraQ/hPB72Tq2FGcPYZsGNIU6HAy3M+CqbNWk0QQ7D1vB4qg7sxFCdO
-         3yD6cw7Ac+ryhCLi6/vFcqneKO3z2gj2TRAnMUdpbYBfCNUyJbL45Tc1boLw0UNkrOUT
-         bGqw==
-X-Gm-Message-State: AOAM533l7aHf8dhG/e8M/qT1C2UwcfhqLBsUZJu7GKVFU07HGCQxBO0c
-        vmHBkwSBWJ6JfokSd0QDZ2GtJKvrWMoWUZ0Yd70=
-X-Google-Smtp-Source: ABdhPJyoE5kIHbbujgDIf+OYP2FxVEo3R6EwQOgxJCM0EN7nTyF16CEVs3QmzWjKoyzuOxs5nqpK5NpGAGNiFGCfDYM=
-X-Received: by 2002:a17:906:6c8f:: with SMTP id s15mr4302205ejr.52.1629816210025;
- Tue, 24 Aug 2021 07:43:30 -0700 (PDT)
+        bh=OBWcZREBUGB90xDbuFF9gZCvZy0CAlmgbb34f8DLTCA=;
+        b=tuRCs3GeMVm66XSfiu1G5/31ZkXDqsUpH/SIEcS3PVEwuw/cj1XT9uGr5fP2GtJgUe
+         WG4mhrfakFPK6hVtEqt+QSazBWgunjnlpTeakK1ClPy9grBVyeQ6LXzQXsi91dhC9hk2
+         bUv0ln7vlzbMr4e7pjZuIvtdspxdMjnIQ1IopmCUVs/zPC8yIb9tqqfSRyHF20J+z3wR
+         qnYfPYtV9KRi2g8DLpiPfQZaWEWtmRhx9/9dvrVSxHQsvK0OoVg6QLMwHiq00H2Dlg0F
+         piRVD7ir6bhMiOwmKjul0SB5/rxTyA66+ZH7e4LfWUqlzue9qeAU1O92wtBE0beIwAmy
+         Dzcw==
+X-Gm-Message-State: AOAM530fSk1VhdGXe2+P5iWIqygkRf6I7H7PWe60u82G6i5JeBkaeiA2
+        8aEGeD7YAr4QoLUylxPmS3ZNJVfceMIw0S40jc8=
+X-Google-Smtp-Source: ABdhPJxp5jekdTwMBfEg6CBzgyuzrUwBX+xnhgMLf9B/+mzSuXsYs2HpJn5Sb7aUgq/+/NsPewtAYsWrnOsI8IsGMRg=
+X-Received: by 2002:a50:ec10:: with SMTP id g16mr20734850edr.35.1629816318732;
+ Tue, 24 Aug 2021 07:45:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810210319.6564-1-zhouzhouyi@gmail.com> <YRM5heBfgNtEGvoC@boqun-archlinux>
- <YST4aWMArEBsKW07@hirez.programming.kicks-ass.net>
-In-Reply-To: <YST4aWMArEBsKW07@hirez.programming.kicks-ass.net>
+References: <20210811025920.20751-1-zhouzhouyi@gmail.com> <YST4vtfcbJGKqoYD@hirez.programming.kicks-ass.net>
+In-Reply-To: <YST4vtfcbJGKqoYD@hirez.programming.kicks-ass.net>
 From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 24 Aug 2021 22:43:18 +0800
-Message-ID: <CAABZP2wtAVYmWfSBmJDyaLuTFQGq6KsN=3uogZtm8FK1_bAJAg@mail.gmail.com>
-Subject: Re: [PATCH][RFC] lockdep: improve comments in wait-type checks
+Date:   Tue, 24 Aug 2021 22:45:07 +0800
+Message-ID: <CAABZP2zkTtOTknzvr0WkA+FprwzaYOP6QWk_FThMGaYTsoP_SA@mail.gmail.com>
+Subject: Re: [PATCH V2][RFC] lockdep: improve comments in wait-type checks
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, paulmck@kernel.org,
+Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
+        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -75,49 +74,21 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thank both of you for correcting my mistakes.
-I do benefit a lot from your emails.
+On Tue, Aug 24, 2021 at 9:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Aug 11, 2021 at 10:59:20AM +0800, Zhouyi Zhou wrote:
+> > comments in wait-type checks be improved by mentioning the
+> > PREEPT_RT kernel configure option.
+> >
+> > Many thanks
+> > Zhouyi
+> >
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>
+> Acked goes after sobs, fixed that for you.
+>
+> Thanks!
+Sincere thanks for your help and guidance
 
-Cheers
-Zhouyi
-
-On Tue, Aug 24, 2021 at 9:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Aug 11, 2021 at 10:44:21AM +0800, Boqun Feng wrote:
-> > Hi,
-> >
-> > On Wed, Aug 11, 2021 at 05:03:19AM +0800, Zhouyi Zhou wrote:
-> > > Hi Peter,
-> > >   I think comments in wait-type checks may benifit from some comments
-> > > improvement.
-> >
-> > Thanks for looking into this!
-> >
-> > Even for an RFC patch, it's better that you write a proper commit log,
-> > and note that you can put all this background information right after
-> > the "---" line, if you think that will help people review it.
-> >
-> > >   I recklessly add Paul to signed-off-by, because I asked his opinion
-> > > about comment in rcu_read_lock_bh part.
-> > >
-> >
-> > Probably a Suggested-by will suffice, but I leave that to Paul ;-)
->
-> This, also since Paul never actually touched the patch.
->
-> > > Thanks a lot
-> > > Zhouyi
-> > >
-> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> > Please make you the last one in the "Signed-off-by" list, see
-> > Documentation/process/submitting-patches.rst:
-> >
-> > "Notably, the last Signed-off-by: must always be that of the developer
-> > submitting the patch."
->
-> The first sob should be that of the author, and given that's the same
-> person as the submitter in this case, he's got a problem at his hands
-> ;-)
->
+Zhouyi ;-)
