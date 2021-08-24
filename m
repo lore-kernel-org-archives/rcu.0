@@ -2,122 +2,103 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 445DFC4338F
-	for <rcu@archiver.kernel.org>; Sun, 22 Aug 2021 18:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97713C4338F
+	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 13:47:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 19DDE6126A
-	for <rcu@archiver.kernel.org>; Sun, 22 Aug 2021 18:15:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BDC56103B
+	for <rcu@archiver.kernel.org>; Tue, 24 Aug 2021 13:47:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhHVSQV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 22 Aug 2021 14:16:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:45830 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230245AbhHVSQT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 22 Aug 2021 14:16:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7C731042;
-        Sun, 22 Aug 2021 11:15:37 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD3FF3F5A1;
-        Sun, 22 Aug 2021 11:15:34 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
-In-Reply-To: <20210817153613.l5f66czar6pajexo@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-4-valentin.schneider@arm.com> <20210817153613.l5f66czar6pajexo@linutronix.de>
-Date:   Sun, 22 Aug 2021 19:15:32 +0100
-Message-ID: <87bl5p73cr.mognet@arm.com>
+        id S237581AbhHXNsf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Aug 2021 09:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237541AbhHXNsd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:48:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F87C061757;
+        Tue, 24 Aug 2021 06:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ILj4XmfWQXIyzl8A5H+kdT/BqqpNT9Em5fDQ/6CntDo=; b=hDmbCCBH672Cm7KZMqVkOl5puv
+        gEwrlzbPC/sOnFf0o4JoRgzedBbMA02vRIp257K+VOzm/UIW6MLs5accdCbuh4rhX9HgMg3qblcdC
+        lOdPE6HOWLwppLnbxFx8RkNJUSA44ysCPy13PzgAJv4CKD9ttn5O3NI7G5/PuZX7dMWnte05il//x
+        U4HzHq3iHf7PPigiwutlyOe21HXuIw4Y1rk3+xWmv/vpLyvPP1bVk9uY/zM2u7f7UBBnnMpQRa7sd
+        vmVzULrmpWdpi9lms53EVJahkzCx7Fwf4UWmDg2//ZtnXypVf7U+uIQh6HnY0NvyLYlLPwnBZn2dz
+        FSTVFSnQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIWlu-00CbXe-Sj; Tue, 24 Aug 2021 13:47:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4DD5300252;
+        Tue, 24 Aug 2021 15:47:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 87CEF2C5B4A97; Tue, 24 Aug 2021 15:47:21 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 15:47:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, paulmck@kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH][RFC] lockdep: improve comments in wait-type checks
+Message-ID: <YST4aWMArEBsKW07@hirez.programming.kicks-ass.net>
+References: <20210810210319.6564-1-zhouzhouyi@gmail.com>
+ <YRM5heBfgNtEGvoC@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRM5heBfgNtEGvoC@boqun-archlinux>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 17/08/21 17:36, Sebastian Andrzej Siewior wrote:
->> +static inline int rcu_lockdep_is_held_nocb_local(struct rcu_data *rdp)
->> +{
->> +	return lockdep_is_held(
->> +#ifdef CONFIG_PREEMPT_RT
->> +		&rdp->nocb_local_lock.lock
->> +#else
->> +		&rdp->nocb_local_lock
->> +#endif
->> +	);
->> +}
->
-> Now that I see it and Paul asked for it, please just use !RT version.
->       return lockdep_is_held(&rdp->nocb_local_lock);
->
-> and RT will work, too.
->
+On Wed, Aug 11, 2021 at 10:44:21AM +0800, Boqun Feng wrote:
+> Hi,
+> 
+> On Wed, Aug 11, 2021 at 05:03:19AM +0800, Zhouyi Zhou wrote:
+> > Hi Peter,
+> >   I think comments in wait-type checks may benifit from some comments
+> > improvement.
+> 
+> Thanks for looking into this!
+> 
+> Even for an RFC patch, it's better that you write a proper commit log,
+> and note that you can put all this background information right after
+> the "---" line, if you think that will help people review it.
+> 
+> >   I recklessly add Paul to signed-off-by, because I asked his opinion
+> > about comment in rcu_read_lock_bh part.
+> > 
+> 
+> Probably a Suggested-by will suffice, but I leave that to Paul ;-)
 
-The above was required due to the (previous) definition of local_lock_t:
+This, also since Paul never actually touched the patch.
 
-  typedef struct {
-          spinlock_t		lock;
-  } local_lock_t;
+> > Thanks a lot
+> > Zhouyi
+> > 
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Please make you the last one in the "Signed-off-by" list, see
+> Documentation/process/submitting-patches.rst:
+> 
+> "Notably, the last Signed-off-by: must always be that of the developer
+> submitting the patch."
 
-On -rt11 I see this is now:
+The first sob should be that of the author, and given that's the same
+person as the submitter in this case, he's got a problem at his hands
+;-)
 
-  typedef spinlock_t local_lock_t;
-
-which indeed means the iffdefery can (actually it *has* to) go.
-
->>  static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->>  {
->>      /* Race on early boot between thread creation and assignment */
->> @@ -1629,6 +1664,22 @@ static void rcu_nocb_unlock_irqrestore(struct rcu_data *rdp,
->>      }
->>  }
->>
->> +/*
->> + * The invocation of rcu_core() within the RCU core kthreads remains preemptible
->> + * under PREEMPT_RT, thus the offload state of a CPU could change while
->> + * said kthreads are preempted. Prevent this from happening by protecting the
->> + * offload state with a local_lock().
->> + */
->> +static void rcu_nocb_local_lock(struct rcu_data *rdp)
->> +{
->> +	local_lock(&rcu_data.nocb_local_lock);
->> +}
->> +
->> +static void rcu_nocb_local_unlock(struct rcu_data *rdp)
->> +{
->> +	local_unlock(&rcu_data.nocb_local_lock);
->> +}
->> +
-> Do you need to pass rdp given that it is not used?
->
-
-Not anymore, you're right.
-
->>  /* Lockdep check that ->cblist may be safely accessed. */
->>  static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp)
->>  {
->
-> Sebastian
