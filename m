@@ -2,46 +2,47 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 471BDC4338F
-	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 07:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AAF1C4320A
+	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 07:11:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2481F610FB
-	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 07:11:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53582613AB
+	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 07:11:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238702AbhHYHMB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Aug 2021 03:12:01 -0400
+        id S239005AbhHYHMS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Aug 2021 03:12:18 -0400
 Received: from so254-9.mailgun.net ([198.61.254.9]:38919 "EHLO
         so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238318AbhHYHMA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Aug 2021 03:12:00 -0400
+        with ESMTP id S239118AbhHYHMM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Aug 2021 03:12:12 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629875475; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=sWhAYxAL7TT2/0TBaegjVGuh0rk6amExECv1CD+bCpg=; b=GUYly0wv/Cm1hFaIHlAxfg1aoHyGyJWI9hWLrsL0TDwn8amFYcmVJ3ZaODU1tskQXd+cVNNG
- Iu6i93bMuM2iN7fMxCLRUTwfezd8oeHItyYX3+yTy6SwQCoOdG/kkRX6gJ6zaVqWNSBKTYVJ
- /n8rWQ/nixt5m2JD38X2DvAwnsk=
+ s=smtp; t=1629875487; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=NCqkmtmm5j+H1C/l7UvmVOpMSwLfWqn8gxg5rAKzY3A=; b=i58jnuC1+vMhFPQd9Z1RksbTMySkrtcAYk82Q8czBZbBSgS1ekkxh8jwtadRjIiyh4ZZ9qR/
+ B9iaths0uhG2sIUN1yocgRpUhm93wBslQVZ021rL8xAnAfn3teA6szQnFi3cQ+yOLHqhrMp8
+ W62GKolF2dTI5s0pnEww1sYi/Fk=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyJkZDlkNSIsICJyY3VAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6125ed06fc1f4cb692ec55b1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 07:11:02
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6125ed1fe0fcecca19efe628 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 25 Aug 2021 07:11:27
  GMT
 Sender: neeraju=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7B797C4360C; Wed, 25 Aug 2021 07:11:02 +0000 (UTC)
+        id 98060C4361A; Wed, 25 Aug 2021 07:11:26 +0000 (UTC)
 Received: from localhost (unknown [202.46.22.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0029CC4338F;
-        Wed, 25 Aug 2021 07:11:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0029CC4338F
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF59EC4338F;
+        Wed, 25 Aug 2021 07:11:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DF59EC4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
 From:   Neeraj Upadhyay <neeraju@codeaurora.org>
@@ -51,30 +52,37 @@ To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         urezki@gmail.com, frederic@kernel.org, boqun.feng@gmail.com,
         Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH v2 0/5] rcu-tasks miscellaneous fixes
-Date:   Wed, 25 Aug 2021 12:40:46 +0530
-Message-Id: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
+Subject: [PATCH v2 3/5] rcu-tasks: Correct check for no_hz_full cpu in show_stalled_task_trace
+Date:   Wed, 25 Aug 2021 12:40:49 +0530
+Message-Id: <1629875451-20628-4-git-send-email-neeraju@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
+References: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Minor typos in comments and fixes for rcu-tasks.
+Correct the check for no_hz_full cpu in show_stalled_task_trace(),
+to include cpu 0.
 
-V1 -> V2:
-- Update comment in patch 4/5, as suggested by Paul.
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+---
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Neeraj Upadhyay (5):
-  rcu-tasks: Fix s/rcu_add_holdout/trc_add_holdout/ typo in comment
-  rcu-tasks: Correct firstreport usage in check_all_holdout_tasks_trace
-  rcu-tasks: Correct check for no_hz_full cpu in show_stalled_task_trace
-  rcu-tasks: Fix read-side primitives comment for call_rcu_tasks_trace
-  rcu-tasks: Clarify read side section info for rcu_tasks_rude GP
-    primitives
-
- kernel/rcu/tasks.h | 36 ++++++++++++++++--------------------
- 1 file changed, 16 insertions(+), 20 deletions(-)
-
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 9db7293..244e06a 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1091,7 +1091,7 @@ static void show_stalled_task_trace(struct task_struct *t, bool *firstreport)
+ 		 t->pid,
+ 		 ".I"[READ_ONCE(t->trc_ipi_to_cpu) > 0],
+ 		 ".i"[is_idle_task(t)],
+-		 ".N"[cpu > 0 && tick_nohz_full_cpu(cpu)],
++		 ".N"[cpu >= 0 && tick_nohz_full_cpu(cpu)],
+ 		 READ_ONCE(t->trc_reader_nesting),
+ 		 " N"[!!READ_ONCE(t->trc_reader_special.b.need_qs)],
+ 		 cpu);
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
 hosted by The Linux Foundation
