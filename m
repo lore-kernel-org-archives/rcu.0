@@ -2,110 +2,68 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C96FC4338F
-	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 17:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99FE8C4320A
+	for <rcu@archiver.kernel.org>; Thu, 26 Aug 2021 14:59:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 544D061076
-	for <rcu@archiver.kernel.org>; Wed, 25 Aug 2021 17:08:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7FD5460F45
+	for <rcu@archiver.kernel.org>; Thu, 26 Aug 2021 14:59:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhHYRJl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Aug 2021 13:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhHYRJl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5884161058;
-        Wed, 25 Aug 2021 17:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629911335;
-        bh=UtxyPyMT37B3hC/Zps+12oz+PHhGWMUtosdIzv2AlJI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CUIR+LzgUQUS/73QoYREpFX/k17oouO/BV0xZ/iYPiMVJI1yzsG2/g7VmpogGvWnQ
-         DsGTfQI1X3XPqgDITcKJMbNMA8o2HljIqjerv6uVCyoD7IBMKkLyX91EQthbPDGTIz
-         T5W3nzHqwRsA/Vo+wgQxgY6MhBo5tbbakyFXOXRbZnL5c+vhkqsWMYfrPvnRgY+FK+
-         RXbBDT5BK54EMhmLUGBH871+TW1HO8bd+pNn6zbr3sOcyFMtrqv2FQSXhQ5LC8nONh
-         gXkmg0ALPNr8ds/UV4A7yHHozoDoqXINZE6/0f4T3Bob7+X0XaNQp/a/x4hdnX01ZP
-         9BstLZQZyQCZg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 14DB35C0399; Wed, 25 Aug 2021 10:08:55 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 10:08:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        frederic@kernel.org, boqun.feng@gmail.com
-Subject: Re: [PATCH v2 4/5] rcu-tasks: Fix read-side primitives comment for
- call_rcu_tasks_trace
-Message-ID: <20210825170855.GJ4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <1629875451-20628-1-git-send-email-neeraju@codeaurora.org>
- <1629875451-20628-5-git-send-email-neeraju@codeaurora.org>
+        id S231771AbhHZO7v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Aug 2021 10:59:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49812 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231458AbhHZO7u (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Aug 2021 10:59:50 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 359A8222A0;
+        Thu, 26 Aug 2021 14:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629989942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LlngO2XtBN9Z6E5LGlEiMJXvHx+ew4KQpu73GXvjyS4=;
+        b=dKvZNEZOC38s/Q8ec8unUBMIQqK2jIzWDmQupyuzePOYR2FDUPaYcQPFhXfDxPvjqCnnXI
+        LLHYFIjOdvln9tFxRZwTjGh7aLc92q1qGwwlyOC0fgGXXvWvfKjTq02BVhR7XZsSlp+V4w
+        B1bYsZ+2Z+lEpdq8YsXcwo59o/rxjnw=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EA707A3B8F;
+        Thu, 26 Aug 2021 14:59:01 +0000 (UTC)
+Date:   Thu, 26 Aug 2021 16:58:58 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] kernel: in_irq() cleanup
+Message-ID: <YSesMuP/2y3OfdqB@alley>
+References: <20210813145101.85782-1-changbin.du@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1629875451-20628-5-git-send-email-neeraju@codeaurora.org>
+In-Reply-To: <20210813145101.85782-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:40:50PM +0530, Neeraj Upadhyay wrote:
-> call_rcu_tasks_trace() does have read-side primitives - rcu_read_lock_trace()
-> and rcu_read_unlock_trace(). Fix this information in the comments.
+On Fri 2021-08-13 22:51:01, Changbin Du wrote:
+> Replace the obsolete and ambiguos macro in_irq() with new
+> macro in_hardirq().
 > 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
-Queued for v5.16, thank you very much!
+Reviewed-by: Petr Mladek <pmladek@suse.com>   # for vsprintf.c
 
-(The other four patches are already queued.)
+But the rest looks good as well.
 
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tasks.h | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 244e06a..c5f1c2f 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1212,15 +1212,11 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
->   * @rhp: structure to be used for queueing the RCU updates.
->   * @func: actual callback function to be invoked after the grace period
->   *
-> - * The callback function will be invoked some time after a full grace
-> - * period elapses, in other words after all currently executing RCU
-> - * read-side critical sections have completed. call_rcu_tasks_trace()
-> - * assumes that the read-side critical sections end at context switch,
-> - * cond_resched_rcu_qs(), or transition to usermode execution.  As such,
-> - * there are no read-side primitives analogous to rcu_read_lock() and
-> - * rcu_read_unlock() because this primitive is intended to determine
-> - * that all tasks have passed through a safe state, not so much for
-> - * data-structure synchronization.
-> + * The callback function will be invoked some time after a trace rcu-tasks
-> + * grace period elapses, in other words after all currently executing
-> + * trace rcu-tasks read-side critical sections have completed. These
-> + * read-side critical sections are delimited by calls to rcu_read_lock_trace()
-> + * and rcu_read_unlock_trace().
->   *
->   * See the description of call_rcu() for more detailed information on
->   * memory ordering guarantees.
-> @@ -1236,7 +1232,7 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks_trace);
->   *
->   * Control will return to the caller some time after a trace rcu-tasks
->   * grace period has elapsed, in other words after all currently executing
-> - * rcu-tasks read-side critical sections have elapsed.  These read-side
-> + * trace rcu-tasks read-side critical sections have elapsed. These read-side
->   * critical sections are delimited by calls to rcu_read_lock_trace()
->   * and rcu_read_unlock_trace().
->   *
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-> hosted by The Linux Foundation
-> 
+Best Regards,
+Petr
