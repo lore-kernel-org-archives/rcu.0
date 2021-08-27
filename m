@@ -2,137 +2,224 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E25E3C432BE
-	for <rcu@archiver.kernel.org>; Fri, 27 Aug 2021 20:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F605C432BE
+	for <rcu@archiver.kernel.org>; Fri, 27 Aug 2021 21:52:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA30F60F92
-	for <rcu@archiver.kernel.org>; Fri, 27 Aug 2021 20:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33B1F60FD8
+	for <rcu@archiver.kernel.org>; Fri, 27 Aug 2021 21:52:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhH0U1z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Aug 2021 16:27:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21804 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229591AbhH0U1y (ORCPT
-        <rfc822;rcu@vger.kernel.org>); Fri, 27 Aug 2021 16:27:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630096024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JvUFmdthk7jLPef6R9/TSXU1gnYsUf+KUTcBRx1p1DE=;
-        b=PV3sZ17PAclVpGpZNXZbjcVDsPmDLSukFWTq5swgl32VKRiNB8n4S3tBsy5MYibsnCxYVf
-        wVT/sc9UcIDIxfe2d6Afkf4j/f14DO73MOsXhugfpwTqTWr5DwWUcf0PE2T603vsP2POc2
-        wwGc+KdV6I7QF/1a8Mnc22KGYqEOEP8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-xvYg1o7cPRSX34oX-cOx7g-1; Fri, 27 Aug 2021 16:27:03 -0400
-X-MC-Unique: xvYg1o7cPRSX34oX-cOx7g-1
-Received: by mail-qv1-f72.google.com with SMTP id t12-20020ad45bcc000000b003772069d04aso1483648qvt.19
-        for <rcu@vger.kernel.org>; Fri, 27 Aug 2021 13:27:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JvUFmdthk7jLPef6R9/TSXU1gnYsUf+KUTcBRx1p1DE=;
-        b=LGIuxUquF7GvDr0r5HELnnBA64PcgPNHUo8EFYyxQ3zHzEPAC26mcerOAz7fUprHdW
-         WEPw1EzFyhIL5ewyQzjD2COzMSfMOljRdOpmdRgOV+WQon2IycXyRVYxWGNPizXCMn7n
-         cZdYxVip1wpmfMlLUiB1g+GY+8RWA4zGX4nujTvul2ckJlSzOPFAG82yI+TnIcd2353r
-         PxQtJzIHq54h3Fx2fDntS+LA+67yoWLVC27oY9jvoR6SS4ANQJvbAUZA02NwXjZGTbBH
-         xGTT+kDsTMju/ziOqxUSG4a9F/iDzspHzJnXqoO19P2PR6HdJ+DwureKbemzeaV/Wpzg
-         PNGw==
-X-Gm-Message-State: AOAM530QR+ICA57OEmVGvHX73+c/bOiX3tSuC1qsTVf9jeok1w0Dm4zV
-        IVfLDxhUD6YptTVhKI62kb4DdlBWntc338vS2s+Fhqkc3+iCnaVghGjShRLHW7BcqhAD1xWxLrG
-        +zQh8DP+qqBt9
-X-Received: by 2002:ac8:47d7:: with SMTP id d23mr10075293qtr.73.1630096022620;
-        Fri, 27 Aug 2021 13:27:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwaVC191a1tAlIadHotO6wANwljm8N7F7Z8+S2yDbcvImQy/MRUKFShJP3VGOS4gvfCCav+Pg==
-X-Received: by 2002:ac8:47d7:: with SMTP id d23mr10075280qtr.73.1630096022406;
-        Fri, 27 Aug 2021 13:27:02 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id m8sm5202923qkk.130.2021.08.27.13.27.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 13:27:01 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] rcu: Avoid unneeded function call in rcu_read_unlock()
-To:     paulmck@kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        andrii@kernel.org
-References: <20210827022122.15816-1-longman@redhat.com>
- <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
-Message-ID: <34cbf3f5-9485-a82d-2548-272e87033ab2@redhat.com>
-Date:   Fri, 27 Aug 2021 16:27:00 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231941AbhH0Vxh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Aug 2021 17:53:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231906AbhH0Vxh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Aug 2021 17:53:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC4760C40;
+        Fri, 27 Aug 2021 21:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630101167;
+        bh=MeVrs+QwEmHv2FM/WqCkqjlYLXtPrTGBHIHlx5hcLS8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jE6N8IxaLlRoksFZaRXeOdb14s4+xNszl131HWKQFl+sAaMg27SIzSwpfJYbrMhAn
+         4f4trs66ddXZqvaYpPkXW5p9LmTfZFwMazNfX3B9Am2p3EEP/2A1xKGqMnh0rrgGeG
+         7UqrQtKDmQJ/yFxB5iwnpZnkbY7S1Bcx/VMJa0iNB1EtNUIZmUk5Dw8C9/+5uAuiN9
+         Vbi7qURvKKY9d0846ln7c1JS8U1nJ5Dico4pMpNKyzL25j8cw1BXyg2w2SCHUVGSAw
+         wlFjxwgYZPcXF2P+aNv2400/bIjM7WdBJGmXWlzd+0eF7lmpaoWKrB4n/XlPZOC012
+         CK6mxtY419ZcQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6CC745C059E; Fri, 27 Aug 2021 14:52:47 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 14:52:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, urezki@gmail.com,
+        frederic@kernel.org, boqun.feng@gmail.com
+Subject: Re: [PATCH] rcu-tasks: Correct IPI failure handling in
+ trc_wait_for_one_reader
+Message-ID: <20210827215247.GQ4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1630052015-16600-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1630052015-16600-1-git-send-email-neeraju@codeaurora.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 8/27/21 2:34 PM, Paul E. McKenney wrote:
-> On Thu, Aug 26, 2021 at 10:21:22PM -0400, Waiman Long wrote:
->> Since commit aa40c138cc8f3 ("rcu: Report QS for outermost
->> PREEMPT=n rcu_read_unlock() for strict GPs"). A real function call
->> rcu_read_unlock_strict() is added to the inlined rcu_read_unlock().
->> The rcu_read_unlock_strict() call is only needed if the performance
->> sagging CONFIG_RCU_STRICT_GRACE_PERIOD option is set. This config
->> option isn't set for most production kernels while the function call
->> overhead remains.
->>
->> To provide a slight performance improvement, the
->> CONFIG_RCU_STRICT_GRACE_PERIOD config check is moved from
->> rcu_read_unlock_strict() to __rcu_read_unlock() so that the function
->> call can be compiled out in most cases.
->>
->> Besides, the GPL exported rcu_read_unlock_strict() also impact the
->> the compilation of non-GPL kernel modules as rcu_read_unlock() is a
->> frequently used kernel API.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> Nice, and good eyes!!!
->
-> I have queued this for v5.16, that is, not the upcoming merge window
-> but the one after that.
->
-> I did my usual wordsmithing, so please check the following in case I
-> messed something up.  I intentionally omitted the EXPORT_SYMBOL_GPL()
-> discussion because:
->
-> 1.	Kernels built with CONFIG_PREEMPT=y have the same issue
-> 	with the __rcu_read_lock() and __rcu_read_unlock() functions.
->
-> 2.	Many other RCU functions are EXPORT_SYMBOL_GPL() and have
-> 	been for almost two decades.
->
-> But if someone does use RCU readers within CONFIG_PREEMPT=n kernels from
-> a binary module, I will happily refer them to you for any RCU issues
-> that they encounter.  ;-)
->
-> I am also CCing the BPF guys in case my interpretation of the code in
-> the BPF verifier is incorrect.
->
-> 							Thanx, Paul
->
-It looks good to me. Thanks for the rewording. I did regret mentioning 
-about about the GPL export symbol in the commit log and it is good that 
-you had taken it out.
+On Fri, Aug 27, 2021 at 01:43:35PM +0530, Neeraj Upadhyay wrote:
+> The trc_wait_for_one_reader() function is called at multiple stages
+> of trace rcu-tasks GP function, rcu_tasks_wait_gp():
+> 
+> - First, it is called as part of per task function -
+>   rcu_tasks_trace_pertask(), for all non-idle tasks. As part of per task
+>   processing, this function add the task in the holdout list and if the
+>   task is currently running on a CPU, it sends IPI to the task's CPU.
+>   The IPI handler takes action depending on whether task is in trace
+>   rcu-tasks read side critical section or not:
+> 
+>   - a. If the task is in trace rcu-tasks read side critical section
+>        (t->trc_reader_nesting != 0), the IPI handler sets the task's
+>        ->trc_reader_special.b.need_qs, so that this task notifies exit
+>        from its outermost read side critical section (by decrementing
+>        trc_n_readers_need_end) to the GP handling function.
+>        trc_wait_for_one_reader() also increments trc_n_readers_need_end,
+>        so that the trace rcu-tasks GP handler function waits for this
+>        task's read side exit notification. The IPI handler also sets
+>        t->trc_reader_checked to true, and no further IPIs are sent for
+>        this task, for this trace rcu-tasks grace period and this
+>        task can be removed from holdout list.
+> 
+>   - b. If the task is in the process of exiting its trace rcu-tasks
+>        read side critical section, (t->trc_reader_nesting < 0), defer
+>        this task's processing to future calls to trc_wait_for_one_reader().
+> 
+>   - c. If task is not in rcu-task read side critical section,
+>        t->trc_reader_nesting == 0, ->trc_reader_checked is set for this
+>        task, so that, this task is removed from holdout list.
+> 
+> - Second, trc_wait_for_one_reader() is called as part of post scan, in
+>   function rcu_tasks_trace_postscan(), for all idle tasks.
+> 
+> - Third, in function check_all_holdout_tasks_trace(), for each task in
+>   the holdout list, this function is called, if there isn't a pending IPI
+>   for the task (->trc_ipi_to_cpu == -1). This function removed the task
+>   from holdout list, if IPI handler has completed the required work,
+>   to ensure that the current trace rcu-tasks grace period either waits
+>   for this task, or this task is not in a trace rcu-tasks read side
+>   critical section.
+> 
+> Now, considering the scenario where smp_call_function_single() fails in
+> first case, inside rcu_tasks_trace_pertask(). In this case,
+> ->trc_ipi_to_cpu is set to the current CPU for that task. This will
+> result in trc_wait_for_one_reader() getting skipped in third case,
+> inside check_all_holdout_tasks_trace(), for this task. This further
+> results in ->trc_reader_checked never getting set for this task,
+> and the task not getting removed from holdout list. This can cause
+> the current trace rcu-tasks grace period to stall.
+> 
+> Fix the above problem, by resetting ->trc_ipi_to_cpu to -1, on
+> smp_call_function_single() failure, so that future IPI calls can
+> be send for this task. As all three callers (rcu_tasks_trace_pertask(),
+> rcu_tasks_trace_postscan(), check_all_holdout_tasks_trace())
+> of trc_wait_for_one_reader() run with CPU read lock held,
+> smp_call_function_single() cannot race with CPU hotplug. So,
+> also add a warning, to report and identify any such failure.
+> 
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> ---
+> 
+> Ran rcutorture TRACE01 tree for 10 hrs with below commandline, didn't
+> observe warning:
+> 
+> Command line: debug_boot_weak_hash panic=-1 selinux=0 initcall_debug debug
+> console=ttyS0 rcutree.rcu_fanout_leaf=4 nohz_full=1-N rcutorture.onoff_interval=1000
+> rcutorture.onoff_holdoff=30 rcutorture.n_barrier_cbs=4 rcutorture.stat_interval=15
+> rcutorture.shutdown_secs=36000 rcutorture.test_no_idle_hz=1 rcutorture.verbose=1
+> rcutorture.torture_type=tasks-tracing
 
-Cheers,
-Longman
+Very good, thank you!
 
+I queued this for v5.16 (not the upcoming merge window, but the one after
+that) and for review and further testing.  I did a little wordsmithing,
+so could you please check to make sure that I didn't mess something up?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 2717b14fb5fc57e5f131cc0bac26c85fc03a0cd2
+Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+Date:   Fri Aug 27 13:43:35 2021 +0530
+
+    rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
+    
+    The trc_wait_for_one_reader() function is called at multiple stages
+    of trace rcu-tasks GP function, rcu_tasks_wait_gp():
+    
+    - First, it is called as part of per task function -
+      rcu_tasks_trace_pertask(), for all non-idle tasks. As part of per task
+      processing, this function add the task in the holdout list and if the
+      task is currently running on a CPU, it sends IPI to the task's CPU.
+      The IPI handler takes action depending on whether task is in trace
+      rcu-tasks read side critical section or not:
+    
+      - a. If the task is in trace rcu-tasks read side critical section
+           (t->trc_reader_nesting != 0), the IPI handler sets the task's
+           ->trc_reader_special.b.need_qs, so that this task notifies exit
+           from its outermost read side critical section (by decrementing
+           trc_n_readers_need_end) to the GP handling function.
+           trc_wait_for_one_reader() also increments trc_n_readers_need_end,
+           so that the trace rcu-tasks GP handler function waits for this
+           task's read side exit notification. The IPI handler also sets
+           t->trc_reader_checked to true, and no further IPIs are sent for
+           this task, for this trace rcu-tasks grace period and this
+           task can be removed from holdout list.
+    
+      - b. If the task is in the process of exiting its trace rcu-tasks
+           read side critical section, (t->trc_reader_nesting < 0), defer
+           this task's processing to future calls to trc_wait_for_one_reader().
+    
+      - c. If task is not in rcu-task read side critical section,
+           t->trc_reader_nesting == 0, ->trc_reader_checked is set for this
+           task, so that this task is removed from holdout list.
+    
+    - Second, trc_wait_for_one_reader() is called as part of post scan, in
+      function rcu_tasks_trace_postscan(), for all idle tasks.
+    
+    - Third, in function check_all_holdout_tasks_trace(), this function is
+      called for each task in the holdout list, but only if there isn't
+      a pending IPI for the task (->trc_ipi_to_cpu == -1). This function
+      removed the task from holdout list, if IPI handler has completed the
+      required work, to ensure that the current trace rcu-tasks grace period
+      either waits for this task, or this task is not in a trace rcu-tasks
+      read side critical section.
+    
+    Now, considering the scenario where smp_call_function_single() fails in
+    first case, inside rcu_tasks_trace_pertask(). In this case,
+    ->trc_ipi_to_cpu is set to the current CPU for that task. This will
+    result in trc_wait_for_one_reader() getting skipped in third case,
+    inside check_all_holdout_tasks_trace(), for this task. This further
+    results in ->trc_reader_checked never getting set for this task,
+    and the task not getting removed from holdout list. This can cause
+    the current trace rcu-tasks grace period to stall.
+    
+    Fix the above problem, by resetting ->trc_ipi_to_cpu to -1, on
+    smp_call_function_single() failure, so that future IPI calls can
+    be send for this task.
+    
+    Note that all three of the trc_wait_for_one_reader() function's
+    callers (rcu_tasks_trace_pertask(), rcu_tasks_trace_postscan(),
+    check_all_holdout_tasks_trace()) hold cpu_read_lock().  This means
+    that smp_call_function_single() cannot race with CPU hotplug, and thus
+    should never fail.  Therefore, also add a warning in order to report
+    any such failure in case smp_call_function_single() grows some other
+    reason for failure.
+    
+    Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index e6f0def1cb60..c110fd080c5b 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1014,9 +1014,11 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 		if (smp_call_function_single(cpu, trc_read_check_handler, t, 0)) {
+ 			// Just in case there is some other reason for
+ 			// failure than the target CPU being offline.
++			WARN_ONCE(1, "%s():  smp_call_function_single() failed for CPU: %d\n",
++				  __func__, cpu);
+ 			rcu_tasks_trace.n_ipis_fails++;
+ 			per_cpu(trc_ipi_to_cpu, cpu) = false;
+-			t->trc_ipi_to_cpu = cpu;
++			t->trc_ipi_to_cpu = -1;
+ 		}
+ 	}
+ }
