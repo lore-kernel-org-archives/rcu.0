@@ -2,184 +2,126 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 808D2C432BE
-	for <rcu@archiver.kernel.org>; Mon, 30 Aug 2021 20:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45598C4320E
+	for <rcu@archiver.kernel.org>; Tue, 31 Aug 2021 15:21:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F7B6603E7
-	for <rcu@archiver.kernel.org>; Mon, 30 Aug 2021 20:30:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D8E160724
+	for <rcu@archiver.kernel.org>; Tue, 31 Aug 2021 15:21:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhH3Ubv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Aug 2021 16:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232906AbhH3Ubv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 631BF601FF;
-        Mon, 30 Aug 2021 20:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630355457;
-        bh=PQ/UUD8FB2gcWzuczuUee+HXWZBb4JP7G6smzvxluYs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c80kt7clZNEi6jQbl9Fd5B4FM/Ou77qrdxurAC3S5qEdRVA3JQDOBsZUhvWjB/e+u
-         Acv1LftdExbsFFesVSV1O5w/fvRVRp4yDNH/IiL9qIuCx6mYNDmm6vXeu0V+w4Vlya
-         kBgO3nSoj97DHwz0OOPduUWC/m83oHJtgw9NbLLub4sEghrd3qEP5L+leLdXwH4Q9d
-         P7IYNecBFmHTOPds96FX4MewYBfvaWjAiCaka2A2OXTLdN22ATaiqBCx8q2ec/0JPA
-         TiIvro0INuWu2WPJsMMXeK83SRBFV+fDUJs+Ul+TTOQB03OApvyZZNW3p7HpzifyAM
-         sSMFtiTGFnB2g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 35E825C0566; Mon, 30 Aug 2021 13:30:57 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:30:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH] rcu: Avoid unneeded function call in rcu_read_unlock()
-Message-ID: <20210830203057.GZ4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210827022122.15816-1-longman@redhat.com>
- <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
- <CAEf4BzZ+OauJV_O5VDSM_WydA-xxLKcmx0vzT3P02CESzrJcnw@mail.gmail.com>
- <20210830184610.GX4156@paulmck-ThinkPad-P17-Gen-1>
- <CAEf4BzYJLLyf80JsZsjQOd8LHoALAGXsTV8Hx46S79s2zf=6jQ@mail.gmail.com>
+        id S239122AbhHaPWn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Aug 2021 11:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238853AbhHaPWn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:22:43 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC7CC061575
+        for <rcu@vger.kernel.org>; Tue, 31 Aug 2021 08:21:47 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q14so28357499wrp.3
+        for <rcu@vger.kernel.org>; Tue, 31 Aug 2021 08:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=PdWzVy+KCoOf7GLLv9OU4SNDxgUfYq96U+qVTICtiis=;
+        b=WLscQd4jv2T8IKORw/Q19+nCUf+1IeY0MMDPzeNldNC4lvj+bVjXog7NqdBnVceHW3
+         QAdxCJby391pRCJgXVvvoPRzJ8xt1195Cqylf5Z6+mfHnRuqrRczpEr11zv/HqmQqxHZ
+         L47g3ZhPA0E/qbOaR+3rVCWIyVOm0R5TIsA8vc97NuDxQMIkyCET9CkAfqMFZaIJFg4t
+         681nqNs3uXsYiKguPtzmq/kqnfZl50mVbgmp/EY1hflI1zY5jPEDmADnpmc3LVoU/eZJ
+         flL/OoQBc7+4CJvIO/CFFCihWY5HKYejtbu5063YLxXun0bMhxSdNGRgPD05c4Er6J/a
+         Hurw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=PdWzVy+KCoOf7GLLv9OU4SNDxgUfYq96U+qVTICtiis=;
+        b=pnO3ujgShVNZryUfu/9XqgAJiQWyjt1BwDvCUSn6QVJgBPwErFxVv+GIGtXDA3yORs
+         9vApUQckwd6M1xQ5aZO5a5LCxbRFTN8RTeN9I6b8DMGxicryy1A49hB6+N/+z2rh0QKD
+         u6Lb8JwPL3S6mb63sPGmpOJ8BR67Et1QWDZJzrPeqJtkiOdyMAIts3NKlrBp4ZNMgzsW
+         qdD8b9ydR+wp/CUhqXqEldEhhu4FmCEJ6FgZt136oTMHb0yVGlEY6hsxoCm+g2soGR6u
+         VlqsT5rXpz4ggrvs42md3IsOit/dBVtJlqPWxBXiIwj1b/t4l+6YaI2a7woj5usZ1jV/
+         VIOQ==
+X-Gm-Message-State: AOAM5301R4cYvT5NeJRFeQh35CiE30LicrSxC4g8SusONt70M8VPGbTt
+        uft/UgkYk6HCMhz1gVn0CMj53Q==
+X-Google-Smtp-Source: ABdhPJzCgW0b2yP2tbW046Yx26EYiNa5/xe/k5Pl/qfv9dFJIcFZg8y6wcEXodMiOlGWKxi+3c7zlw==
+X-Received: by 2002:a05:6000:34a:: with SMTP id e10mr13836206wre.421.1630423306313;
+        Tue, 31 Aug 2021 08:21:46 -0700 (PDT)
+Received: from trex (162.red-79-154-201.dynamicip.rima-tde.net. [79.154.201.162])
+        by smtp.gmail.com with ESMTPSA id u27sm19342861wru.2.2021.08.31.08.21.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 31 Aug 2021 08:21:45 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Tue, 31 Aug 2021 17:21:44 +0200
+To:     paulmck@kernel.org
+List-Id: <soc.lore.kernel.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: rcu_preempt detected stalls
+Message-ID: <20210831152144.GA28128@trex>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYJLLyf80JsZsjQOd8LHoALAGXsTV8Hx46S79s2zf=6jQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 12:34:04PM -0700, Andrii Nakryiko wrote:
-> On Mon, Aug 30, 2021 at 11:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Aug 30, 2021 at 11:36:51AM -0700, Andrii Nakryiko wrote:
-> > > On Fri, Aug 27, 2021 at 11:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Thu, Aug 26, 2021 at 10:21:22PM -0400, Waiman Long wrote:
-> > > > > Since commit aa40c138cc8f3 ("rcu: Report QS for outermost
-> > > > > PREEMPT=n rcu_read_unlock() for strict GPs"). A real function call
-> > > > > rcu_read_unlock_strict() is added to the inlined rcu_read_unlock().
-> > > > > The rcu_read_unlock_strict() call is only needed if the performance
-> > > > > sagging CONFIG_RCU_STRICT_GRACE_PERIOD option is set. This config
-> > > > > option isn't set for most production kernels while the function call
-> > > > > overhead remains.
-> > > > >
-> > > > > To provide a slight performance improvement, the
-> > > > > CONFIG_RCU_STRICT_GRACE_PERIOD config check is moved from
-> > > > > rcu_read_unlock_strict() to __rcu_read_unlock() so that the function
-> > > > > call can be compiled out in most cases.
-> > > > >
-> > > > > Besides, the GPL exported rcu_read_unlock_strict() also impact the
-> > > > > the compilation of non-GPL kernel modules as rcu_read_unlock() is a
-> > > > > frequently used kernel API.
-> > > > >
-> > > > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > >
-> > > > Nice, and good eyes!!!
-> > > >
-> > > > I have queued this for v5.16, that is, not the upcoming merge window
-> > > > but the one after that.
-> > > >
-> > > > I did my usual wordsmithing, so please check the following in case I
-> > > > messed something up.  I intentionally omitted the EXPORT_SYMBOL_GPL()
-> > > > discussion because:
-> > > >
-> > > > 1.      Kernels built with CONFIG_PREEMPT=y have the same issue
-> > > >         with the __rcu_read_lock() and __rcu_read_unlock() functions.
-> > > >
-> > > > 2.      Many other RCU functions are EXPORT_SYMBOL_GPL() and have
-> > > >         been for almost two decades.
-> > > >
-> > > > But if someone does use RCU readers within CONFIG_PREEMPT=n kernels from
-> > > > a binary module, I will happily refer them to you for any RCU issues
-> > > > that they encounter.  ;-)
-> > > >
-> > > > I am also CCing the BPF guys in case my interpretation of the code in
-> > > > the BPF verifier is incorrect.
-> > > >
-> > >
-> > > LGTM from the BPF side, nothing really changed about when
-> > > rcu_read_unlock_strict is an actual function vs no-op macro. It's also
-> > > important to minimize the number of function calls in the context of
-> > > recent LBR on-demand work done by Song, so this is a great
-> > > improvement!
-> >
-> > Thank you for looking this over!  May I add your Acked-by or similar?
-> >
-> 
-> Sure.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Hi
 
-Thank you!  I will add this on the next rebase.
+When enabling CONFIG_PREEMPT and running the stress-ng scheduler class
+tests on arm64 (xilinx zynqmp and imx imx8mm SoCs) we are observing the following.
 
-							Thanx, Paul
+[   62.578917] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:                                                              
+[   62.585015]  (detected by 0, t=5253 jiffies, g=3017, q=2972)                                                                   
+[   62.590663] rcu: All QSes seen, last rcu_preempt kthread activity 5254 (4294907943-4294902689), jiffies_till_next_fqs=1, root  
++->qsmask 0x0                                                                                                                     
+[   62.603086] rcu: rcu_preempt kthread starved for 5258 jiffies! g3017 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1               
+[   62.613246] rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.                        
+[   62.622359] rcu: RCU grace-period kthread stack dump:                                                                          
+[   62.627395] task:rcu_preempt     state:R  running task     stack:    0 pid:   14 ppid:     2 flags:0x00000028                  
+[   62.637308] Call trace:                                                                                                        
+[   62.639748]  __switch_to+0x11c/0x190                                                                                           
+[   62.643319]  __schedule+0x3b8/0x8d8                                                                                            
+[   62.646796]  schedule+0x4c/0x108                                                                                               
+[   62.650018]  schedule_timeout+0x1ac/0x358                                                                                      
+[   62.654021]  rcu_gp_kthread+0x6a8/0x12b8                                                                                       
+[   62.657933]  kthread+0x14c/0x158                                                                                               
+[   62.661153]  ret_from_fork+0x10/0x18                                                                                           
+[   62.682919] BUG: scheduling while atomic: stress-ng-hrtim/831/0x00000002                                                       
+[   62.689604] Preemption disabled at:                                                                                            
+[   62.689614] [<ffffffc010059418>] irq_enter_rcu+0x30/0x58                                                                       
+[   62.698393] CPU: 0 PID: 831 Comm: stress-ng-hrtim Not tainted 5.10.42+ #5                                         
+[   62.706296] Hardware name: Zynqmp new (DT)                                                                                        
+[   62.710115] Call trace:                                                                                                        
+[   62.712548]  dump_backtrace+0x0/0x240                                                                                          
+[   62.716202]  show_stack+0x2c/0x38                                                                                              
+[   62.719510]  dump_stack+0xcc/0x104                                                                                             
+[   62.722904]  __schedule_bug+0x78/0xc8                                                                                          
+[   62.726556]  __schedule+0x70c/0x8d8                                                                                            
+[   62.730037]  schedule+0x4c/0x108                                                                                               
+[   62.733259]  do_notify_resume+0x224/0x5d8                                                                                      
+[   62.737259]  work_pending+0xc/0x2a4
 
-> > > > ------------------------------------------------------------------------
-> > > >
-> > > > commit 4a9f53b997b809c0256838e31c604aeeded2345a
-> > > > Author: Waiman Long <longman@redhat.com>
-> > > > Date:   Thu Aug 26 22:21:22 2021 -0400
-> > > >
-> > > >     rcu: Avoid unneeded function call in rcu_read_unlock()
-> > > >
-> > > >     Since commit aa40c138cc8f3 ("rcu: Report QS for outermost PREEMPT=n
-> > > >     rcu_read_unlock() for strict GPs") the function rcu_read_unlock_strict()
-> > > >     is invoked by the inlined rcu_read_unlock() function.  However,
-> > > >     rcu_read_unlock_strict() is an empty function in production kernels,
-> > > >     which are built with CONFIG_RCU_STRICT_GRACE_PERIOD=n.
-> > > >
-> > > >     There is a mention of rcu_read_unlock_strict() in the BPF verifier,
-> > > >     but this is in a deny-list, meaning that BPF does not care whether
-> > > >     rcu_read_unlock_strict() is ever called.
-> > > >
-> > > >     This commit therefore provides a slight performance improvement
-> > > >     by hoisting the check of CONFIG_RCU_STRICT_GRACE_PERIOD from
-> > > >     rcu_read_unlock_strict() into rcu_read_unlock(), thus avoiding the
-> > > >     pointless call to an empty function.
-> > > >
-> > > >     Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > > >     Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > >     Signed-off-by: Waiman Long <longman@redhat.com>
-> > > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >
-> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > > index 434d12fe2d4f..5e0beb5c5659 100644
-> > > > --- a/include/linux/rcupdate.h
-> > > > +++ b/include/linux/rcupdate.h
-> > > > @@ -71,7 +71,8 @@ static inline void __rcu_read_lock(void)
-> > > >  static inline void __rcu_read_unlock(void)
-> > > >  {
-> > > >         preempt_enable();
-> > > > -       rcu_read_unlock_strict();
-> > > > +       if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
-> > > > +               rcu_read_unlock_strict();
-> > > >  }
-> > > >
-> > > >  static inline int rcu_preempt_depth(void)
-> > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > index 7a4876a3a882..0b55c647ab80 100644
-> > > > --- a/kernel/rcu/tree_plugin.h
-> > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > @@ -814,8 +814,7 @@ void rcu_read_unlock_strict(void)
-> > > >  {
-> > > >         struct rcu_data *rdp;
-> > > >
-> > > > -       if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
-> > > > -          irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-> > > > +       if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-> > > >                 return;
-> > > >         rdp = this_cpu_ptr(&rcu_data);
-> > > >         rcu_report_qs_rdp(rdp);
+The error results in OOM eventually.
+
+RCU priority boosting does work around this issue but it seems to me
+a workaround more than a fix (otherwise boosting would be enabled
+by CONFIG_PREEMPT for arm64 I guess?).
+
+The question is: is this an arm64 bug that should be investigated? or
+is this some known corner case of running stress-ng that is already
+understood?
+
+thanks
+Jorge
+
+
+
