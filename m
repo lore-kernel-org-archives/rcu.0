@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A739C433F5
-	for <rcu@archiver.kernel.org>; Mon,  6 Sep 2021 01:20:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 672BBC433F5
+	for <rcu@archiver.kernel.org>; Mon,  6 Sep 2021 01:22:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 73AA4610E9
-	for <rcu@archiver.kernel.org>; Mon,  6 Sep 2021 01:20:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F695610C8
+	for <rcu@archiver.kernel.org>; Mon,  6 Sep 2021 01:22:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238728AbhIFBVM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 5 Sep 2021 21:21:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37546 "EHLO mail.kernel.org"
+        id S239552AbhIFBXC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 5 Sep 2021 21:23:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238662AbhIFBVH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FB5E6103E;
-        Mon,  6 Sep 2021 01:20:02 +0000 (UTC)
+        id S238949AbhIFBWH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:22:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51AE60F45;
+        Mon,  6 Sep 2021 01:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630891203;
-        bh=JvBk2JMvZ/PfHoePfYK7+KsyFPuR5azC3p+PTOc+jEk=;
+        s=k20201202; t=1630891263;
+        bh=Vi8VJ8Zz3ZITM3PfnCulQbj26EPeL8gM/cM4IdtU9Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VkWKXlJRwOutXrrOHNji5aXzzpr0wEvb6Ifi2bBZUx3kW5EnW00V/+GZ3N25VYqAs
-         zzN48S3FGYLS+DKvtlhZ6zi4raZYur39jm95NqhTD5ulvLmwhQpjGjx6N9PjXWVTy/
-         KTeX98HrVPA4Fs2Wsb8UOuIsEowP0vPg3WtjtkJxqr29rH613Gy5tMuP5UxWxVPt3q
-         t4PIDbGDy/x5NyAj17gCGSaOzhobIex+NFV9nCB8ZRkakz/0iX8nGUz6W9/3ZY2vWP
-         EyBhXri8m+Pk4GRabEeV4olOTNGUr9vKOZYLx+MleyGhxZe51OIQNhF2KdEo8RWpaW
-         sXo8TPnRLkZew==
+        b=XU172u0vxxRJXinbRiu4hS++pI1M0e2pd4fZLdl+r8z/aJkarpXO2dRJw/zZsQWJL
+         dBAK3p0y2MIwnAVODzyHcS4MJRMoRAbNWNiZ2YwGCmwA4O6SL9BRsIkqk6vCOFQFWq
+         ulDYhsVp1nu3CuoQLVzEnEqShgBJ2Uqg4wdXnAFsV/62DA/c3DDYu46LdS+TNrhNQR
+         5Uz8Nw0w5+w9mtjUj+IC80mfh/4tBJCXXxVcZLm02/Waiq8mtpeBkt2MGTMu1rwWYL
+         3l99PKA2UC6KSSa2to+ithP1tiwZ4flO01yHLlIRhn8NxofkqFQp6z4OHAF7BpznBf
+         0owAeuN4BGKog==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         "Signed-off-by : Paul E . McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 09/47] rcu/tree: Handle VM stoppage in stall detection
-Date:   Sun,  5 Sep 2021 21:19:13 -0400
-Message-Id: <20210906011951.928679-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 09/46] rcu/tree: Handle VM stoppage in stall detection
+Date:   Sun,  5 Sep 2021 21:20:14 -0400
+Message-Id: <20210906012052.929174-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210906011951.928679-1-sashal@kernel.org>
-References: <20210906011951.928679-1-sashal@kernel.org>
+In-Reply-To: <20210906012052.929174-1-sashal@kernel.org>
+References: <20210906012052.929174-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -98,7 +98,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+)
 
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 6c76988cc019..3d11155e0033 100644
+index 59b95cc5cbdf..4aaa4a12e95f 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
 @@ -7,6 +7,8 @@
@@ -110,7 +110,7 @@ index 6c76988cc019..3d11155e0033 100644
  //////////////////////////////////////////////////////////////////////////////
  //
  // Controlling CPU stall warnings, including delay calculation.
-@@ -696,6 +698,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+@@ -695,6 +697,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
  
@@ -125,7 +125,7 @@ index 6c76988cc019..3d11155e0033 100644
  		/* We haven't checked in, so go dump stack. */
  		print_cpu_stall(gps);
  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-@@ -705,6 +715,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+@@ -704,6 +714,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
  
