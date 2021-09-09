@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A23AFC433FE
-	for <rcu@archiver.kernel.org>; Thu,  9 Sep 2021 11:42:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC68C433FE
+	for <rcu@archiver.kernel.org>; Thu,  9 Sep 2021 12:11:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82A4461215
-	for <rcu@archiver.kernel.org>; Thu,  9 Sep 2021 11:42:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56A12610E9
+	for <rcu@archiver.kernel.org>; Thu,  9 Sep 2021 12:11:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239082AbhIILoC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Sep 2021 07:44:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46894 "EHLO mail.kernel.org"
+        id S1347720AbhIIMMS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Sep 2021 08:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236954AbhIILnD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2CB611CE;
-        Thu,  9 Sep 2021 11:41:53 +0000 (UTC)
+        id S1348907AbhIIMFI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:05:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8072611CC;
+        Thu,  9 Sep 2021 11:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631187714;
-        bh=2x7/CSbTysEkoXuTJRs3YjYmDB0FmJSXP4i7ZfdVy3s=;
+        s=k20201202; t=1631188034;
+        bh=thpL6AW9gfvM62P9aPozmTg4bDfzk4C3pcgMyurRBJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rPN35eYf8HKSsBGVjY82PWGIdb0w3ncp+gnQEPDwW4FTEA497MOCPi8NUJ2EBOPx8
-         0J1AL+lqDHLRZl++yAnoNNvPvFRngbPq1ycs96sJlKMowS+AIFJOZ4QmzLWKlNFyhr
-         fSiOiA8umxaHT5PSqVmd+QJnLSCX1/rS+Bm4tuRI3jNhVyQkUvc6dzFx26dys+F2+6
-         ocwSzyhpKCY29gDXoZ0HwDdA6oapN0l4Waqj7ea73dKQZuaH63XmS7QmrMEIhJED8R
-         oM9TwkYgtB+s4nRCor+B1SSO8pavgBMlXP7Zx50AqcRKTFAGsdijkKspgvaozkIdFI
-         aiWllXl2fQnyQ==
+        b=BjXysXZUnVMx3BvTse4euWb602aMDf8UImrz4ytc6IJVeV6CRCIKQfY+EsD8vJUOf
+         G6ydAYU8iJ/iqMG/XoMBo25ksLR5nqo/blOuCqrN88bXQl2E29MDX0SQorUeKZQuJW
+         0lTzZSl7I4JTYA+hm00ZmBBrm/rcL73fol0ojru8Sjy1DdEwN7K3bv+lu0k943vYBj
+         0qEqCcthNBdc03a0QwjTOYMSy+9jYDunVRCzjWNIXvVjESKOoGJ0Kc+iIH/xcz4uRa
+         Zi9GgHZmG0AoH3Hy8wPic0LQhWzIpxy4rykKPMifB+qAn+DeUe9v+anp2bLZXyUX47
+         xvdL404628+zQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 037/252] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
-Date:   Thu,  9 Sep 2021 07:37:31 -0400
-Message-Id: <20210909114106.141462-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 030/219] rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
+Date:   Thu,  9 Sep 2021 07:43:26 -0400
+Message-Id: <20210909114635.143983-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
-References: <20210909114106.141462-1-sashal@kernel.org>
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -69,7 +69,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index d9680b798b21..955c82b4737c 100644
+index 1199ffd305d1..fcd8ec0b7408 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
 @@ -167,7 +167,7 @@ void synchronize_rcu_tasks(void);
@@ -82,10 +82,10 @@ index d9680b798b21..955c82b4737c 100644
  	do {								\
  		if (!likely(READ_ONCE((t)->trc_reader_checked)) &&	\
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index de1dc3bb7f70..6ce104242b23 100644
+index ad0156b86937..d14905051535 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2982,17 +2982,17 @@ static void noinstr rcu_dynticks_task_exit(void)
+@@ -2995,17 +2995,17 @@ static void noinstr rcu_dynticks_task_exit(void)
  /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
  static void rcu_dynticks_task_trace_enter(void)
  {
